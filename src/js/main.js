@@ -381,7 +381,11 @@ var Rance;
             var min = 500 * this.template.maxStrength;
             var max = 1000 * this.template.maxStrength;
             this.maxStrength = Rance.randInt(min, max);
-            this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
+            if (Math.random() > 0.5) {
+                this.currentStrength = this.maxStrength;
+            } else {
+                this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
+            }
         };
         Unit.prototype.setActionPoints = function () {
             this.maxActionPoints = Rance.randInt(3, 6);
@@ -503,12 +507,16 @@ var Rance;
 
         [fleet1, fleet2].forEach(function (fleet) {
             for (var i = 0; i < 2; i++) {
+                var emptySlot = Rance.randInt(0, 3);
                 var row = [];
-                for (var j = 0; j < 3; j++) {
-                    var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
-                    row.push(new Rance.Unit(Rance.Templates.ShipTypes[type]));
+                for (var j = 0; j < 4; j++) {
+                    if (j === emptySlot) {
+                        row.push(null);
+                    } else {
+                        var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
+                        row.push(new Rance.Unit(Rance.Templates.ShipTypes[type]));
+                    }
                 }
-                row.push(null);
                 fleet.push(row);
             }
         });

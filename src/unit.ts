@@ -50,7 +50,14 @@ module Rance
       var min = 500 * this.template.maxStrength;
       var max = 1000 * this.template.maxStrength;
       this.maxStrength = randInt(min, max);
-      this.currentStrength = randInt(this.maxStrength / 10, this.maxStrength);
+      if (Math.random() > 0.5)
+      {
+        this.currentStrength = this.maxStrength;
+      }
+      else
+      {
+        this.currentStrength = randInt(this.maxStrength / 10, this.maxStrength);
+      }
     }
     setActionPoints()
     {

@@ -14,13 +14,20 @@ module Rance
     {
       for (var i = 0; i < 2; i++)
       {
+        var emptySlot = randInt(0, 3);
         var row = [];
-        for (var j = 0; j < 3; j++)
+        for (var j = 0; j < 4; j++)
         {
-          var type = getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
-          row.push(new Unit(Templates.ShipTypes[type]));
+          if (j === emptySlot)
+          {
+            row.push(null);
+          }
+          else
+          {
+            var type = getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
+            row.push(new Unit(Templates.ShipTypes[type]));
+          }
         }
-        row.push(null);
         fleet.push(row);
       }
     });
