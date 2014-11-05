@@ -21,7 +21,39 @@ body {
 .battle-container
 {
   display: flex;
+  flex-flow: column;
+}
+
+.turn-order-container
+{
+  display: flex;
   flex-flow: row;
+}
+
+.turn-order-unit
+{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: hidden;
+  min-width: 70px;
+  margin: 0 2px;
+}
+
+.turn-order-unit-friendly
+{
+  background-color: lime;
+}
+
+.turn-order-unit-enemy
+{
+  background-color: red;
+}
+
+.fleets-container
+{
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
 }
 
 .battle-fleet
@@ -40,7 +72,7 @@ body {
 {
   display: flex;
   flex-flow: row;
-  width: 180px;
+  max-width: 180px;
   height: 64px;
   margin: 5px;
 }
@@ -55,6 +87,11 @@ body {
   min-width: 64px;
   min-height: 64px;
   background-color: red;
+
+  @media(max-width: 800px)
+  {
+    display: none;
+  }
 }
 
 .unit-info

@@ -46,6 +46,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var TurnOrder: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Battle: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -118,6 +123,9 @@ declare module Rance {
     class Battle {
         public unitsById: {
             [id: number]: Rance.Unit;
+        };
+        public unitsBySide: {
+            [side: string]: Rance.Unit[];
         };
         public side1: Rance.Unit[][];
         public side2: Rance.Unit[][];

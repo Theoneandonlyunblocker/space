@@ -1,6 +1,6 @@
 /// <reference path="fleet.ts"/>
 /// <reference path="turncounter.ts"/>
-
+/// <reference path="turnorder.ts"/>
 
 module Rance
 {
@@ -14,20 +14,27 @@ module Rance
 
         return(
           React.DOM.div({className: "battle-container"},
-            UIComponents.Fleet(
+            UIComponents.TurnOrder(
             {
-              fleet: battle.side1
+              turnOrder: battle.turnOrder,
+              unitsBySide: battle.unitsBySide
             }),
-            UIComponents.TurnCounter(
-            {
-              turnsLeft: battle.turnsLeft,
-              maxTurns: battle.maxTurns
-            }),
-            UIComponents.Fleet(
-            {
-              fleet: battle.side2,
-              facesLeft: true
-            })
+            React.DOM.div({className: "fleets-container"},
+              UIComponents.Fleet(
+              {
+                fleet: battle.side1
+              }),
+              UIComponents.TurnCounter(
+              {
+                turnsLeft: battle.turnsLeft,
+                maxTurns: battle.maxTurns
+              }),
+              UIComponents.Fleet(
+              {
+                fleet: battle.side2,
+                facesLeft: true
+              })
+            )
           )
         );
       }

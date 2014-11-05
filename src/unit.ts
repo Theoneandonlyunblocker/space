@@ -4,6 +4,9 @@
 
 module Rance
 {
+  var idGenerators = idGenerators || {};
+  idGenerators.unit = 0;
+
   export class Unit
   {
     template: Templates.TypeTemplate;
@@ -34,8 +37,10 @@ module Rance
 
     constructor(template: Templates.TypeTemplate)
     {
+      this.id = idGenerators.unit++;
+
       this.template = template;
-      this.name = template.typeName;
+      this.name = this.id + " " + template.typeName;
       this.isSquadron = template.isSquadron;
       this.setValues();
     }

@@ -263,8 +263,41 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.TurnOrder = React.createClass({
+            render: function () {
+                var turnOrder = this.props.turnOrder;
+
+                var toRender = [];
+
+                for (var i = 0; i < turnOrder.length && i <= 8; i++) {
+                    var unit = turnOrder[i];
+
+                    var data = {
+                        key: "" + i,
+                        className: "turn-order-unit"
+                    };
+
+                    if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
+                        data.className += " turn-order-unit-friendly";
+                    } else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
+                        data.className += " turn-order-unit-enemy";
+                    }
+
+                    toRender.push(React.DOM.div(data, unit.name));
+                }
+
+                return (React.DOM.div({ className: "turn-order-container" }, toRender));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleet.ts"/>
 /// <reference path="turncounter.ts"/>
+/// <reference path="turnorder.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -272,7 +305,10 @@ var Rance;
             render: function () {
                 var battle = this.props.battle;
 
-                return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.Fleet({
+                return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.TurnOrder({
+                    turnOrder: battle.turnOrder,
+                    unitsBySide: battle.unitsBySide
+                }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1
                 }), Rance.UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
@@ -280,7 +316,7 @@ var Rance;
                 }), Rance.UIComponents.Fleet({
                     fleet: battle.side2,
                     facesLeft: true
-                })));
+                }))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -365,10 +401,15 @@ var Rance;
 /// <reference path="utility.ts"/>
 var Rance;
 (function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.unit = 0;
+
     var Unit = (function () {
         function Unit(template) {
+            this.id = idGenerators.unit++;
+
             this.template = template;
-            this.name = template.typeName;
+            this.name = this.id + " " + template.typeName;
             this.isSquadron = template.isSquadron;
             this.setValues();
         }
@@ -434,17 +475,23 @@ var Rance;
     var Battle = (function () {
         function Battle(units) {
             this.unitsById = {};
+            this.unitsBySide = {
+                side1: [],
+                side2: []
+            };
             this.turnOrder = [];
             var self = this;
 
             this.side1 = units.side1;
             this.side2 = units.side2;
 
-            [this.side1, this.side2].forEach(function (side) {
+            ["side1", "side2"].forEach(function (sideId) {
+                var side = self[sideId];
                 for (var i = 0; i < side.length; i++) {
                     for (var j = 0; j < side[i].length; j++) {
                         if (side[i][j] && side[i][j].id) {
                             self.unitsById[side[i][j].id] = side[i][j];
+                            self.unitsBySide[sideId].push(side[i][j]);
                         }
                     }
                 }
@@ -459,7 +506,7 @@ var Rance;
         };
         Battle.prototype.forEachUnit = function (operator) {
             for (var id in this.unitsById) {
-                operator.call(null, this.unitsById[id]);
+                operator.call(this, this.unitsById[id]);
             }
         };
         Battle.prototype.initUnit = function (unit) {
