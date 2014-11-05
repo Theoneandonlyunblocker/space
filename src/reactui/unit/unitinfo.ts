@@ -1,4 +1,5 @@
 /// <reference path="unitstrength.ts"/>
+/// <reference path="unitactions.ts"/>
 
 module Rance
 {
@@ -11,11 +12,12 @@ module Rance
         var unit = this.props.unit;
 
         return(
-          React.DOM.div("react-unit-info",
-            React.DOM.div({className: "react-unit-info-name"},
+          React.DOM.div({className: "unit-info"},
+            React.DOM.div({className: "unit-info-name"},
               this.props.name
             ),
-            UIComponents.UnitStrength(this.props.strengthProps)
+            UIComponents.UnitStrength(this.props.strengthProps),
+            UIComponents.UnitActions(this.props.actionProps)
           )
         );
       }

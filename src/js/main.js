@@ -7,7 +7,11 @@ var Rance;
             },
             makeCapitalInfo: function () {
                 var text = this.makeStrengthText();
-                var bar = React.DOM.div({ className: "unit-strength-bar" }, null);
+                var bar = React.DOM.progress({
+                    className: "unit-strength-bar",
+                    max: this.props.maxStrength,
+                    value: this.props.currentStrength
+                });
 
                 return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
             },
@@ -49,11 +53,43 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.UnitActions = React.createClass({
+            render: function () {
+                var availableSrc = "img\/icons\/availableAction.png";
+                var spentSrc = "img\/icons\/spentAction.png";
+
+                var icons = [];
+                var availableCount = this.props.maxActionPoints - this.props.currentActionPoints;
+
+                for (var i = 0; i < availableCount; i++) {
+                    icons.push(React.DOM.img({
+                        src: availableSrc,
+                        key: "available" + i
+                    }));
+                }
+                for (var i = 0; i < this.props.maxActionPoints - availableCount; i++) {
+                    icons.push(React.DOM.img({
+                        src: spentSrc,
+                        key: "spent" + i
+                    }));
+                }
+
+                return (React.DOM.div({ className: "unit-action-points" }, icons));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="unitstrength.ts"/>
+/// <reference path="unitactions.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.UnitInfo = React.createClass({
             render: function () {
                 var unit = this.props.unit;
 
-                return (React.DOM.div("react-unit-info", React.DOM.div({ className: "react-unit-info-name" }, this.props.name), Rance.UIComponents.UnitStrength(this.props.strengthProps)));
+                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), Rance.UIComponents.UnitStrength(this.props.strengthProps), Rance.UIComponents.UnitActions(this.props.actionProps)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -68,11 +104,11 @@ var Rance;
                 var unit = this.props.unit;
 
                 var imageProps = {
-                    className: "react-unit-icon",
+                    className: "unit-icon",
                     src: this.props.icon
                 };
 
-                return (React.DOM.div("react-unit-icon-container", React.DOM.img(imageProps)));
+                return (React.DOM.div({ className: "unit-icon-container" }, React.DOM.img(imageProps)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -87,31 +123,177 @@ var Rance;
             render: function () {
                 var unit = this.props.unit;
 
+                var containerProps = {
+                    className: "unit-container"
+                };
+
                 var infoProps = {
+                    key: "info",
                     name: unit.name,
                     strengthProps: {
                         maxStrength: unit.maxStrength,
                         currentStrength: unit.currentStrength,
                         isSquadron: unit.isSquadron
+                    },
+                    actionProps: {
+                        maxActionPoints: unit.maxActionPoints,
+                        currentActionPoints: unit.currentActionPoints
                     }
                 };
 
-                return (React.DOM.div({ className: "react-unit-container" }, Rance.UIComponents.UnitIcon({ icon: unit.template.icon })));
+                var elements = [
+                    React.DOM.div({ className: "unit-image", key: "image" }),
+                    Rance.UIComponents.UnitInfo(infoProps),
+                    Rance.UIComponents.UnitIcon({ icon: unit.template.icon, key: "icon" })
+                ];
+
+                if (this.props.facesLeft) {
+                    containerProps.className += " faces-left";
+                    elements = elements.reverse();
+                } else {
+                    containerProps.className += " faces-right";
+                }
+
+                return (React.DOM.div(containerProps, elements));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.EmptyUnit = React.createClass({
+            render: function () {
+                var data = {
+                    className: "unit-container unit-empty"
+                };
+
+                data.className += (this.props.facesLeft ? " faces-left" : " faces-right");
+
+                return (React.DOM.div(data, null));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../unit/unit.ts"/>
+/// <reference path="../unit/emptyunit.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FleetColumn = React.createClass({
+            render: function () {
+                var column = this.props.column;
+
+                var units = [];
+
+                for (var i = 0; i < column.length; i++) {
+                    var data = {};
+
+                    data.key = i;
+                    data.facesLeft = this.props.facesLeft;
+
+                    if (!column[i]) {
+                        units.push(Rance.UIComponents.EmptyUnit(data));
+                    } else {
+                        data.unit = column[i];
+                        units.push(Rance.UIComponents.Unit(data));
+                    }
+                }
+
+                return (React.DOM.div({ className: "battle-fleet-column" }, units));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetcolumn.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Fleet = React.createClass({
+            render: function () {
+                var fleet = this.props.fleet;
+
+                var columns = [];
+
+                for (var i = 0; i < fleet.length; i++) {
+                    columns.push(Rance.UIComponents.FleetColumn({
+                        key: i,
+                        column: fleet[i],
+                        facesLeft: this.props.facesLeft
+                    }));
+                }
+
+                return (React.DOM.div({ className: "battle-fleet" }, columns));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.TurnCounter = React.createClass({
+            render: function () {
+                var turnsLeft = this.props.turnsLeft;
+
+                var turns = [];
+
+                var usedTurns = this.props.maxTurns - turnsLeft;
+
+                for (var i = 0; i < usedTurns; i++) {
+                    turns.push(React.DOM.div({
+                        key: "used" + i,
+                        className: "turn-counter used-turn"
+                    }));
+                }
+
+                for (var i = 0; i < turnsLeft; i++) {
+                    turns.push(React.DOM.div({
+                        key: "available" + i,
+                        className: "turn-counter available-turn"
+                    }));
+                }
+
+                return (React.DOM.div({ className: "turns-container" }, turns));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleet.ts"/>
+/// <reference path="turncounter.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Battle = React.createClass({
+            render: function () {
+                var battle = this.props.battle;
+
+                return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.Fleet({
+                    fleet: battle.side1
+                }), Rance.UIComponents.TurnCounter({
+                    turnsLeft: battle.turnsLeft,
+                    maxTurns: battle.maxTurns
+                }), Rance.UIComponents.Fleet({
+                    fleet: battle.side2,
+                    facesLeft: true
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
-/// <reference path="unit/unit.ts"/>
+/// <reference path="battle/battle.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Stage = React.createClass({
             render: function () {
-                return (React.DOM.div({ className: "react-stage" }, Rance.UIComponents.Unit({
-                    unit: this.props.unit
-                })));
+                return (React.DOM.div({ className: "react-stage" }, Rance.UIComponents.Battle({ battle: this.props.battle })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -122,13 +304,13 @@ var Rance;
 var Rance;
 (function (Rance) {
     var ReactUI = (function () {
-        function ReactUI(container, unit) {
+        function ReactUI(container, battle) {
             this.container = container;
-            this.unit = unit;
+            this.battle = battle;
             this.render();
         }
         ReactUI.prototype.render = function () {
-            React.renderComponent(Rance.UIComponents.Stage({ unit: this.unit }), this.container);
+            React.renderComponent(Rance.UIComponents.Stage({ battle: this.battle }), this.container);
         };
         return ReactUI;
     })();
@@ -141,9 +323,9 @@ var Rance;
             ShipTypes.fighterSquadron = {
                 typeName: "Fighter Squadron",
                 isSquadron: true,
-                icon: "img\/sprites\/f.png",
+                icon: "img\/icons\/f.png",
                 maxStrength: 0.7,
-                attributes: {
+                attributeLevels: {
                     attack: 0.8,
                     defence: 0.6,
                     intelligence: 0.4,
@@ -153,9 +335,9 @@ var Rance;
             ShipTypes.battleCruiser = {
                 typeName: "Battlecruiser",
                 isSquadron: false,
-                icon: "img\/sprites\/b.png",
+                icon: "img\/icons\/b.png",
                 maxStrength: 1,
-                attributes: {
+                attributeLevels: {
                     attack: 0.8,
                     defence: 0.8,
                     intelligence: 0.7,
@@ -167,7 +349,20 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    Rance.randInt = randInt;
+    function getRandomArrayItem(target) {
+        var _rnd = Math.floor(Math.random() * (target.length));
+        return target[_rnd];
+    }
+    Rance.getRandomArrayItem = getRandomArrayItem;
+})(Rance || (Rance = {}));
 /// <reference path="../data/templates/typetemplates.ts" />
+/// <reference path="utility.ts"/>
 var Rance;
 (function (Rance) {
     var Unit = (function () {
@@ -178,24 +373,154 @@ var Rance;
             this.setValues();
         }
         Unit.prototype.setValues = function () {
+            this.setBaseHealth();
+            this.setActionPoints();
+            this.setAttributes();
+        };
+        Unit.prototype.setBaseHealth = function () {
+            var min = 500 * this.template.maxStrength;
+            var max = 1000 * this.template.maxStrength;
+            this.maxStrength = Rance.randInt(min, max);
+            this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
+        };
+        Unit.prototype.setActionPoints = function () {
+            this.maxActionPoints = Rance.randInt(3, 6);
+            this.currentActionPoints = Rance.randInt(0, this.maxActionPoints);
+        };
+        Unit.prototype.setAttributes = function (experience, variance) {
+            if (typeof experience === "undefined") { experience = 1; }
+            if (typeof variance === "undefined") { variance = 1; }
             var template = this.template;
 
-            this.maxStrength = template.maxStrength * 1000;
-            this.currentStrength = this.maxStrength;
+            var attributes = {
+                attack: 1,
+                defence: 1,
+                intelligence: 1,
+                speed: 1
+            };
+
+            for (var attribute in template.attributeLevels) {
+                var attributeLevel = template.attributeLevels[attribute];
+
+                var min = 8 * experience * attributeLevel + 1;
+                var max = 16 * experience * attributeLevel + 1 + variance;
+
+                attributes[attribute] = Rance.randInt(min, max);
+                if (attributes[attribute] > 20)
+                    attributes[attribute] = 20;
+            }
+
+            this.attributes = attributes;
+        };
+        Unit.prototype.getBaseMoveDelay = function () {
+            return 30 - this.attributes.speed;
+        };
+        Unit.prototype.resetBattleStats = function () {
+            this.battleStats = {
+                moveDelay: this.getBaseMoveDelay()
+            };
         };
         return Unit;
     })();
     Rance.Unit = Unit;
 })(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    var Battle = (function () {
+        function Battle(units) {
+            this.unitsById = {};
+            this.turnOrder = [];
+            var self = this;
+
+            this.side1 = units.side1;
+            this.side2 = units.side2;
+
+            [this.side1, this.side2].forEach(function (side) {
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (side[i][j] && side[i][j].id) {
+                            self.unitsById[side[i][j].id] = side[i][j];
+                        }
+                    }
+                }
+            });
+        }
+        Battle.prototype.init = function () {
+            this.forEachUnit(this.initUnit);
+
+            this.maxTurns = 24;
+            this.turnsLeft = 15;
+            this.updateTurnOrder();
+        };
+        Battle.prototype.forEachUnit = function (operator) {
+            for (var id in this.unitsById) {
+                operator.call(null, this.unitsById[id]);
+            }
+        };
+        Battle.prototype.initUnit = function (unit) {
+            unit.resetBattleStats();
+            this.addUnitToTurnOrder(unit);
+        };
+        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex < 0)
+                return false;
+
+            this.turnOrder.splice(unitIndex, 1);
+        };
+        Battle.prototype.addUnitToTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex >= 0)
+                return false;
+
+            this.turnOrder.push(unit);
+        };
+        Battle.prototype.updateTurnOrder = function () {
+            function turnOrderSortFunction(a, b) {
+                if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
+                    return a.battleStats.moveDelay - b.battleStats.moveDelay;
+                } else {
+                    return a.id - b.id;
+                }
+            }
+
+            this.turnOrder.sort(turnOrderSortFunction);
+        };
+        return Battle;
+    })();
+    Rance.Battle = Battle;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
-var unit, reactUI;
+/// <reference path="battle.ts"/>
+var fleet1, fleet2, battle, reactUI;
 var Rance;
 (function (Rance) {
     document.addEventListener('DOMContentLoaded', function () {
-        unit = new Rance.Unit(Rance.Templates.ShipTypes.fighterSquadron);
+        fleet1 = [];
+        fleet2 = [];
 
-        reactUI = new Rance.ReactUI(document.getElementById("react-container"), unit);
+        [fleet1, fleet2].forEach(function (fleet) {
+            for (var i = 0; i < 2; i++) {
+                var row = [];
+                for (var j = 0; j < 3; j++) {
+                    var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
+                    row.push(new Rance.Unit(Rance.Templates.ShipTypes[type]));
+                }
+                row.push(null);
+                fleet.push(row);
+            }
+        });
+
+        battle = new Rance.Battle({
+            side1: fleet1,
+            side2: fleet2
+        });
+
+        battle.init();
+
+        reactUI = new Rance.ReactUI(document.getElementById("react-container"), battle);
     });
 })(Rance || (Rance = {}));
 //# sourceMappingURL=main.js.map

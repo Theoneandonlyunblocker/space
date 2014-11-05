@@ -6,14 +6,14 @@ module Rance
 {
   export class ReactUI
   {
-    constructor(public container: HTMLElement, public unit)
+    constructor(public container: HTMLElement, public battle)
     {
       this.render();
     }
     render()
     {
       React.renderComponent(
-        UIComponents.Stage({unit: this.unit}),
+        UIComponents.Stage({battle: this.battle}),
         this.container
       );
     }

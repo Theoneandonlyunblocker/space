@@ -1,6 +1,6 @@
 /// <reference path="../../lib/react.d.ts" />
 
-/// <reference path="unit/unit.ts"/>
+/// <reference path="battle/battle.ts"/>
 
 module Rance
 {
@@ -12,10 +12,7 @@ module Rance
       {
         return(
           React.DOM.div({className: "react-stage"},
-            UIComponents.Unit(
-            {
-              unit: this.props.unit
-            })
+            UIComponents.Battle({battle: this.props.battle})
           )
         );
       }

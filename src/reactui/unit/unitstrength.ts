@@ -15,7 +15,12 @@ module Rance
       makeCapitalInfo: function()
       {
         var text = this.makeStrengthText();
-        var bar = React.DOM.div({className: "unit-strength-bar"}, null);
+        var bar = React.DOM.progress(
+          {
+            className: "unit-strength-bar",
+            max: this.props.maxStrength,
+            value: this.props.currentStrength
+          });
 
         return(
           React.DOM.div({className: "unit-strength-container"},

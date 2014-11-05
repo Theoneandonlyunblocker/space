@@ -12,12 +12,12 @@ module Rance
 
         var imageProps: any =
         {
-          className: "react-unit-icon",
+          className: "unit-icon",
           src: this.props.icon
         }
 
         return(
-          React.DOM.div("react-unit-icon-container",
+          React.DOM.div({className: "unit-icon-container"},
             React.DOM.img(imageProps)
           )
         );

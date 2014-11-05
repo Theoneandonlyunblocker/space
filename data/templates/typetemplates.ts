@@ -8,7 +8,7 @@ module Rance
       isSquadron: boolean;
       icon: string;
       maxStrength: number;
-      attributes:
+      attributeLevels:
       {
         attack: number;
         defence: number;
@@ -22,9 +22,9 @@ module Rance
       {
         typeName: "Fighter Squadron",
         isSquadron: true,
-        icon: "img\/sprites\/f.png",
+        icon: "img\/icons\/f.png",
         maxStrength: 0.7,
-        attributes:
+        attributeLevels:
         {
           attack: 0.8,
           defence: 0.6,
@@ -36,9 +36,9 @@ module Rance
       {
         typeName: "Battlecruiser",
         isSquadron: false,
-        icon: "img\/sprites\/b.png",
+        icon: "img\/icons\/b.png",
         maxStrength: 1,
-        attributes:
+        attributeLevels:
         {
           attack: 0.8,
           defence: 0.8,
