@@ -92,11 +92,23 @@ body {
 
 .unit-container
 {
+  position: relative;
   display: flex;
   flex-flow: row;
   flex: 1;
   padding: 1px;
 }
+
+/*
+.unit-container:hover::before
+{
+  content: "";
+  position: absolute;
+  border: 3px solid red;
+  height: 100%;
+  width: 100%;
+}
+*/
 
 .friendly-unit
 {

@@ -421,14 +421,14 @@ var Rance;
 
                     containerProps.style = {
                         top: parentRect.top,
-                        left: parentRect.right - 48 - 128
+                        left: parentRect.right - 96 - 128
                     };
                 } else {
                     containerProps.className += " ability-tooltip-faces-right";
 
                     containerProps.style = {
                         top: parentRect.top,
-                        left: parentRect.left + 48
+                        left: parentRect.left + 96
                     };
                 }
 
@@ -437,6 +437,7 @@ var Rance;
                     var data = {};
 
                     data.className = "ability-tooltip-ability";
+                    data.key = i;
 
                     abilityElements.push(React.DOM.div(data, ability.name));
                 }
@@ -476,8 +477,6 @@ var Rance;
             handleMouseLeaveUnit: function (e) {
                 if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip)
                     return;
-
-                console.log(e.nativeEvent.toElement);
 
                 if (e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement && e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode() && e.nativeEvent.toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
                     this.clearAbilityTooltip();

@@ -25,7 +25,7 @@ module Rance
           containerProps.style =
           {
             top: parentRect.top,
-            left: parentRect.right - 48 - 128
+            left: parentRect.right - 96 - 128
           }
         }
         else
@@ -35,7 +35,7 @@ module Rance
           containerProps.style =
           {
             top: parentRect.top,
-            left: parentRect.left + 48
+            left: parentRect.left + 96
           }
         }
 
@@ -45,6 +45,7 @@ module Rance
           var data: any = {};
 
           data.className = "ability-tooltip-ability";
+          data.key = i;
 
           abilityElements.push(
             React.DOM.div(data,

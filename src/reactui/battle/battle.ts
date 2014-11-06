@@ -38,8 +38,6 @@ module Rance
       {
         if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip) return;
 
-        console.log(e.nativeEvent.toElement);
-
         if(
           e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement &&
           e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode() &&
