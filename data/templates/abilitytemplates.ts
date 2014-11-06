@@ -18,14 +18,23 @@ module Rance
 
     export module Abilities
     {
-      export var attack: AbilityTemplate =
+      export var rangedAttack: AbilityTemplate =
       {
-        name: "attack",
+        name: "rangedAttack",
         delay: 0,
         actionsUse: 1,
         targetFleets: "enemy",
         targetingFunction: targetNeighbors,
         targetRange: "all"
+      }
+      export var closeAttack: AbilityTemplate =
+      {
+        name: "closeAttack",
+        delay: 0,
+        actionsUse: 1,
+        targetFleets: "enemy",
+        targetingFunction: targetNeighbors,
+        targetRange: "close"
       }
       export var standBy: AbilityTemplate =
       {

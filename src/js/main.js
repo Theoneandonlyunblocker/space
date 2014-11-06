@@ -723,13 +723,21 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (Abilities) {
-            Abilities.attack = {
-                name: "attack",
+            Abilities.rangedAttack = {
+                name: "rangedAttack",
                 delay: 0,
                 actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all"
+            };
+            Abilities.closeAttack = {
+                name: "closeAttack",
+                delay: 0,
+                actionsUse: 1,
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetNeighbors,
+                targetRange: "close"
             };
             Abilities.standBy = {
                 name: "standBy",
@@ -761,7 +769,8 @@ var Rance;
                     speed: 1
                 },
                 abilities: [
-                    Rance.Templates.Abilities.attack,
+                    Rance.Templates.Abilities.rangedAttack,
+                    Rance.Templates.Abilities.closeAttack,
                     Rance.Templates.Abilities.standBy
                 ]
             };
@@ -777,7 +786,8 @@ var Rance;
                     speed: 0.6
                 },
                 abilities: [
-                    Rance.Templates.Abilities.attack,
+                    Rance.Templates.Abilities.rangedAttack,
+                    Rance.Templates.Abilities.closeAttack,
                     Rance.Templates.Abilities.standBy
                 ]
             };
