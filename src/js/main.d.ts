@@ -21,7 +21,13 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var Unit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Unit: React.ReactComponentFactory<{
+            hasPopup: boolean;
+            popupElement: any;
+        }, React.ReactComponent<{
+            hasPopup: boolean;
+            popupElement: any;
+        }, {}>>;
     }
 }
 declare module Rance {

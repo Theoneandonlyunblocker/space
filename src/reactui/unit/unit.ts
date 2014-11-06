@@ -7,6 +7,15 @@ module Rance
   {
     export var Unit = React.createClass(
     {
+      getInitialState: function()
+      {
+        return(
+        {
+          hasPopup: false,
+          popupElement: null
+        });
+      },
+
       tooltipContent: function()
       {
         return React.DOM.div(null, "lol");
@@ -34,6 +43,42 @@ module Rance
         )
       },
 
+      handleMouseEnter: function(e)
+      {
+        if (this.state.hasPopup) return;
+
+        
+        var popupElement = document.createElement("div");
+
+        document.body.appendChild(popupElement);
+        popupElement.innerHTML = this.props.unit.name;
+        popupElement.classList.add("tooltip");
+
+        this.setState(
+        {
+          hasPopup: true,
+          popupElement: popupElement
+        });
+      },
+
+      handleMouseLeave: function(e)
+      {
+        console.log(e.nativeEvent.toElement, e.nativeEvent.toElement === this.state.popupElement)
+        if (this.state.hasPopup)
+        {
+          if (e.nativeEvent.toElement !== this.getDOMNode() &&
+            e.nativeEvent.toElement !== this.state.popupElement)
+          {
+            document.body.removeChild(this.state.popupElement);
+            this.setState(
+            {
+              hasPopup: false,
+              popupElement: null
+            });
+          }
+        }
+      },
+
       render: function()
       {
         var unit = this.props.unit;
@@ -45,7 +90,9 @@ module Rance
         };
         var wrapperProps =
         {
-          className: "unit-wrapper"
+          className: "unit-wrapper",
+          onMouseEnter: this.handleMouseEnter,
+          onMouseLeave: this.handleMouseLeave
         };
 
         if (this.props.facesLeft)
