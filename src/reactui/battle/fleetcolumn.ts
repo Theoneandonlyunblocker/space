@@ -21,6 +21,8 @@ module Rance
           data.facesLeft = this.props.facesLeft;
           data.activeUnit = this.props.activeUnit;
           data.activeTargets = this.props.activeTargets;
+          data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
+          data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
 
           if (!column[i])
           {

@@ -9,6 +9,7 @@ module Rance
       name: string;
       delay: number;
       interruptsNeeded?: number;
+      actionsUse: number;
       targetFleets: string; // ally, enemy, all
       targetingFunction: TargetingFunction;
       targetRange: string; // self, close, all
@@ -21,6 +22,7 @@ module Rance
       {
         name: "testAbility",
         delay: 0,
+        actionsUse: 1,
         targetFleets: "enemy",
         targetingFunction: targetNeighbors,
         targetRange: "all"
@@ -29,6 +31,7 @@ module Rance
       {
         name: "standBy",
         delay: 0,
+        actionsUse: 0,
         targetFleets: "all",
         targetingFunction: targetSingle,
         targetRange: "self"

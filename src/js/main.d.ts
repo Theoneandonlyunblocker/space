@@ -21,13 +21,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var Unit: React.ReactComponentFactory<{
-            hasPopup: boolean;
-            popupElement: any;
-        }, React.ReactComponent<{
-            hasPopup: boolean;
-            popupElement: any;
-        }, {}>>;
+        var Unit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
@@ -53,6 +47,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var TurnOrder: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AbilityTooltip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
@@ -97,6 +96,7 @@ declare module Rance {
             name: string;
             delay: number;
             interruptsNeeded?: number;
+            actionsUse: number;
             targetFleets: string;
             targetingFunction: Rance.TargetingFunction;
             targetRange: string;

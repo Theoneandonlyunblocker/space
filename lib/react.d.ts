@@ -198,7 +198,7 @@ declare module React {
     }
     
     
-    interface ReactComponentSpec<P,S> extends ReactMixin<P, S> {
+    interface ReactComponentSpec<P,any> extends ReactMixin<P, any> {
         
          /**
          * The mixins array allows you to use mixins to share behavior among multiple components. 
@@ -218,7 +218,7 @@ declare module React {
         /**
          * Invoked once before the component is mounted. The return value will be used as the initial value of this.state.
          */
-        getInitialState?(): S;
+        getInitialState?(): any;
         
         
         /**

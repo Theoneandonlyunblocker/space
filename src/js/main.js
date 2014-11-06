@@ -162,31 +162,10 @@ var Rance;
                 return React.DOM.div(null, elements);
             },
             handleMouseEnter: function (e) {
-                if (this.state.hasPopup)
-                    return;
-
-                var popupElement = document.createElement("div");
-
-                document.body.appendChild(popupElement);
-                popupElement.innerHTML = this.props.unit.name;
-                popupElement.classList.add("tooltip");
-
-                this.setState({
-                    hasPopup: true,
-                    popupElement: popupElement
-                });
+                this.props.handleMouseEnterUnit(e, this.props.unit, this.props.facesLeft, this.getDOMNode());
             },
             handleMouseLeave: function (e) {
-                console.log(e.nativeEvent.toElement, e.nativeEvent.toElement === this.state.popupElement);
-                if (this.state.hasPopup) {
-                    if (e.nativeEvent.toElement !== this.getDOMNode() && e.nativeEvent.toElement !== this.state.popupElement) {
-                        document.body.removeChild(this.state.popupElement);
-                        this.setState({
-                            hasPopup: false,
-                            popupElement: null
-                        });
-                    }
-                }
+                this.props.handleMouseLeaveUnit(e, this.props.unit, this.props.facesLeft, this.getDOMNode());
             },
             render: function () {
                 var unit = this.props.unit;
@@ -313,6 +292,8 @@ var Rance;
                     data.facesLeft = this.props.facesLeft;
                     data.activeUnit = this.props.activeUnit;
                     data.activeTargets = this.props.activeTargets;
+                    data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
+                    data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
 
                     if (!column[i]) {
                         units.push(Rance.UIComponents.EmptyUnit(data));
@@ -343,7 +324,9 @@ var Rance;
                         key: i,
                         column: fleet[i],
                         facesLeft: this.props.facesLeft,
-                        activeUnit: this.props.activeUnit
+                        activeUnit: this.props.activeUnit,
+                        handleMouseEnterUnit: this.props.handleMouseEnterUnit,
+                        handleMouseLeaveUnit: this.props.handleMouseLeaveUnit
                     }));
                 }
 
@@ -417,17 +400,116 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.AbilityTooltip = React.createClass({
+            render: function () {
+                var abilities = this.props.activeTargets[this.props.targetUnit.id];
+
+                var abilityElements = [];
+
+                var containerProps = {
+                    className: "ability-tooltip",
+                    onMouseLeave: this.props.handleMouseLeave
+                };
+
+                var parentRect = this.props.parentElement.getBoundingClientRect();
+
+                if (this.props.facesLeft) {
+                    containerProps.className += " ability-tooltip-faces-left";
+
+                    containerProps.style = {
+                        top: parentRect.top,
+                        left: parentRect.left + 30
+                    };
+                } else {
+                    containerProps.className += " ability-tooltip-faces-right";
+
+                    containerProps.style = {
+                        top: parentRect.top,
+                        left: parentRect.right - 30
+                    };
+                }
+
+                for (var i = 0; i < abilities.length; i++) {
+                    var ability = abilities[i];
+                    var data = {};
+
+                    data.className = "ability-tooltip-ability";
+
+                    abilityElements.push(React.DOM.div(data, ability.name));
+                }
+
+                return (React.DOM.div(containerProps, abilityElements));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleet.ts"/>
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
+/// <reference path="abilitytooltip.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Battle = React.createClass({
+            getInitialState: function () {
+                return ({
+                    drawAbilityTooltip: false,
+                    abilityTooltip: {
+                        targetUnit: null,
+                        parentElement: null
+                    }
+                });
+            },
+            clearAbilityTooltip: function () {
+                this.setState({
+                    drawAbilityTooltip: false,
+                    abilityTooltip: {
+                        targetUnit: null,
+                        parentElement: null
+                    }
+                });
+            },
+            handleMouseLeaveUnit: function (e) {
+                if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip)
+                    return;
+
+                console.log(e.nativeEvent.toElement);
+
+                if (e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement && e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode()) {
+                    this.clearAbilityTooltip();
+                }
+            },
+            handleMouseEnterUnit: function (e, unit, facesLeft, parentElement) {
+                this.setState({
+                    drawAbilityTooltip: true,
+                    abilityTooltip: {
+                        targetUnit: unit,
+                        parentElement: parentElement,
+                        facesLeft: facesLeft
+                    }
+                });
+            },
             render: function () {
                 var battle = this.props.battle;
 
                 var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+
+                var abilityTooltip = null;
+
+                if (this.state.drawAbilityTooltip && activeTargets[this.state.abilityTooltip.targetUnit.id]) {
+                    abilityTooltip = Rance.UIComponents.AbilityTooltip({
+                        handleMouseLeave: this.handleMouseLeaveUnit,
+                        targetUnit: this.state.abilityTooltip.targetUnit,
+                        parentElement: this.state.abilityTooltip.parentElement,
+                        facesLeft: this.state.abilityTooltip.facesLeft,
+                        activeTargets: activeTargets,
+                        ref: "abilityTooltip"
+                    });
+                }
 
                 return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
@@ -435,7 +517,9 @@ var Rance;
                 }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
-                    activeTargets: activeTargets
+                    activeTargets: activeTargets,
+                    handleMouseEnterUnit: this.handleMouseEnterUnit,
+                    handleMouseLeaveUnit: this.handleMouseLeaveUnit
                 }), Rance.UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
@@ -443,8 +527,10 @@ var Rance;
                     fleet: battle.side2,
                     facesLeft: true,
                     activeUnit: battle.activeUnit,
-                    activeTargets: activeTargets
-                }))));
+                    activeTargets: activeTargets,
+                    handleMouseEnterUnit: this.handleMouseEnterUnit,
+                    handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                }), abilityTooltip)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -641,6 +727,7 @@ var Rance;
             Abilities.testAbility = {
                 name: "testAbility",
                 delay: 0,
+                actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all"
@@ -648,6 +735,7 @@ var Rance;
             Abilities.standBy = {
                 name: "standBy",
                 delay: 0,
+                actionsUse: 0,
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self"

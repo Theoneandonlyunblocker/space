@@ -19,7 +19,9 @@ module Rance
             key: i,
             column: fleet[i],
             facesLeft: this.props.facesLeft,
-            activeUnit: this.props.activeUnit
+            activeUnit: this.props.activeUnit,
+            handleMouseEnterUnit: this.props.handleMouseEnterUnit,
+            handleMouseLeaveUnit: this.props.handleMouseLeaveUnit
           }));
         }
 

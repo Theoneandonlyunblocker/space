@@ -42,41 +42,15 @@ module Rance
           elements
         )
       },
-
       handleMouseEnter: function(e)
       {
-        if (this.state.hasPopup) return;
-
-        
-        var popupElement = document.createElement("div");
-
-        document.body.appendChild(popupElement);
-        popupElement.innerHTML = this.props.unit.name;
-        popupElement.classList.add("tooltip");
-
-        this.setState(
-        {
-          hasPopup: true,
-          popupElement: popupElement
-        });
+        this.props.handleMouseEnterUnit(e, this.props.unit,
+          this.props.facesLeft, this.getDOMNode());
       },
-
       handleMouseLeave: function(e)
       {
-        console.log(e.nativeEvent.toElement, e.nativeEvent.toElement === this.state.popupElement)
-        if (this.state.hasPopup)
-        {
-          if (e.nativeEvent.toElement !== this.getDOMNode() &&
-            e.nativeEvent.toElement !== this.state.popupElement)
-          {
-            document.body.removeChild(this.state.popupElement);
-            this.setState(
-            {
-              hasPopup: false,
-              popupElement: null
-            });
-          }
-        }
+        this.props.handleMouseLeaveUnit(e, this.props.unit,
+          this.props.facesLeft, this.getDOMNode());
       },
 
       render: function()
