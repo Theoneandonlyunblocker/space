@@ -18,9 +18,9 @@ module Rance
 
     export module Abilities
     {
-      export var testAbility: AbilityTemplate =
+      export var attack: AbilityTemplate =
       {
-        name: "testAbility",
+        name: "attack",
         delay: 0,
         actionsUse: 1,
         targetFleets: "enemy",

@@ -102,7 +102,7 @@ declare module Rance {
             targetRange: string;
         }
         module Abilities {
-            var testAbility: AbilityTemplate;
+            var attack: AbilityTemplate;
             var standBy: AbilityTemplate;
         }
     }

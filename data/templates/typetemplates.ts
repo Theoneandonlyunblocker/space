@@ -37,7 +37,7 @@ module Rance
         },
         abilities:
         [
-          Abilities.testAbility,
+          Abilities.attack,
           Abilities.standBy
         ]
       }
@@ -56,7 +56,7 @@ module Rance
         },
         abilities:
         [
-          Abilities.testAbility,
+          Abilities.attack,
           Abilities.standBy
         ]
       }

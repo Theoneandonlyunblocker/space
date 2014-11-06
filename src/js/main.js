@@ -421,14 +421,14 @@ var Rance;
 
                     containerProps.style = {
                         top: parentRect.top,
-                        left: parentRect.left + 30
+                        left: parentRect.right - 48 - 128
                     };
                 } else {
                     containerProps.className += " ability-tooltip-faces-right";
 
                     containerProps.style = {
                         top: parentRect.top,
-                        left: parentRect.right - 30
+                        left: parentRect.left + 48
                     };
                 }
 
@@ -479,7 +479,7 @@ var Rance;
 
                 console.log(e.nativeEvent.toElement);
 
-                if (e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement && e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode()) {
+                if (e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement && e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode() && e.nativeEvent.toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
                     this.clearAbilityTooltip();
                 }
             },
@@ -724,8 +724,8 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (Abilities) {
-            Abilities.testAbility = {
-                name: "testAbility",
+            Abilities.attack = {
+                name: "attack",
                 delay: 0,
                 actionsUse: 1,
                 targetFleets: "enemy",
@@ -762,7 +762,7 @@ var Rance;
                     speed: 1
                 },
                 abilities: [
-                    Rance.Templates.Abilities.testAbility,
+                    Rance.Templates.Abilities.attack,
                     Rance.Templates.Abilities.standBy
                 ]
             };
@@ -778,7 +778,7 @@ var Rance;
                     speed: 0.6
                 },
                 abilities: [
-                    Rance.Templates.Abilities.testAbility,
+                    Rance.Templates.Abilities.attack,
                     Rance.Templates.Abilities.standBy
                 ]
             };

@@ -39,10 +39,10 @@ body {
 .ability-tooltip {
   position: absolute;
   display: block;
-  height: 64px;
+  height: 62px;
   border: 1px solid black;
   background-color: #DDD;
-  padding: 2px;
+  width: 128px;
 }
 .fleets-container {
   display: flex;

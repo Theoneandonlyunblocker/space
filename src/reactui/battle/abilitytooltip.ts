@@ -25,7 +25,7 @@ module Rance
           containerProps.style =
           {
             top: parentRect.top,
-            left: parentRect.left + 30
+            left: parentRect.right - 48 - 128
           }
         }
         else
@@ -35,7 +35,7 @@ module Rance
           containerProps.style =
           {
             top: parentRect.top,
-            left: parentRect.right - 30
+            left: parentRect.left + 48
           }
         }
 

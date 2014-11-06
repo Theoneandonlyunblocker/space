@@ -42,7 +42,8 @@ module Rance
 
         if(
           e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement &&
-          e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode()
+          e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode() &&
+          e.nativeEvent.toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()
         )
         {
           this.clearAbilityTooltip();
