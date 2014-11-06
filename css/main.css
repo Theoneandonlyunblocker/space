@@ -9,13 +9,6 @@ body {
   margin: 0;
   border: 0;
 }
-#main {
-  position: relative;
-  order: 1;
-  display: flex;
-  flex-flow: row;
-  flex: 1;
-}
 .battle-container {
   display: flex;
   flex-flow: column;
@@ -25,10 +18,11 @@ body {
   flex-flow: row;
 }
 .turn-order-unit {
+  display: flex;
+  flex: 1;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
-  min-width: 70px;
   margin: 0 2px;
 }
 .turn-order-unit-friendly {
@@ -45,15 +39,16 @@ body {
 .battle-fleet {
   display: flex;
   flex-flow: row;
+  flex: 1;
 }
 .battle-fleet-column {
   display: flex;
   flex-flow: column;
+  flex: 1;
 }
 .unit-wrapper {
   display: flex;
   flex-flow: row;
-  max-width: 180px;
   height: 64px;
   margin: 5px;
 }

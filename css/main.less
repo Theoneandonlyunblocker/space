@@ -10,14 +10,6 @@ body {
   border: 0;
 }
 
-#main {
-  position: relative;
-  order: 1;
-  display: flex;
-  flex-flow: row;
-  flex: 1;
-}
-
 .battle-container
 {
   display: flex;
@@ -32,10 +24,11 @@ body {
 
 .turn-order-unit
 {
+  display: flex;
+  flex: 1;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
-  min-width: 70px;
   margin: 0 2px;
 }
 
@@ -60,19 +53,20 @@ body {
 {
   display: flex;
   flex-flow: row;
+  flex: 1;
 }
 
 .battle-fleet-column
 {
   display: flex;
   flex-flow: column;
+  flex: 1;
 }
 
 .unit-wrapper
 {
   display: flex;
   flex-flow: row;
-  max-width: 180px;
   height: 64px;
   margin: 5px;
 }
