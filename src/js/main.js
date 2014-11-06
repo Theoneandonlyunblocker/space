@@ -127,7 +127,7 @@ var Rance;
 
                 var middleElement = this.props.icon ? React.DOM.img(imageProps) : React.DOM.div(imageProps);
 
-                return (React.DOM.div({ className: "unit-icon-container" }, React.DOM.div(fillerProps), React.DOM.img(imageProps), React.DOM.div(fillerProps)));
+                return (React.DOM.div({ className: "unit-icon-container" }, React.DOM.div(fillerProps), middleElement, React.DOM.div(fillerProps)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

@@ -45,7 +45,7 @@ module Rance
         return(
           React.DOM.div({className: "unit-icon-container"},
             React.DOM.div(fillerProps),
-            React.DOM.img(imageProps),
+            middleElement,
             React.DOM.div(fillerProps)
           )
         );
