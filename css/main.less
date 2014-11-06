@@ -68,13 +68,46 @@ body {
   flex-flow: column;
 }
 
-.unit-container
+.unit-wrapper
 {
   display: flex;
   flex-flow: row;
   max-width: 180px;
   height: 64px;
   margin: 5px;
+}
+
+.unit-container
+{
+  display: flex;
+  flex-flow: row;
+  flex: 1;
+  padding: 1px;
+}
+
+.friendly-unit
+{
+  .unit-border-no-right;
+}
+
+.enemy-unit
+{
+  .unit-border-no-left;
+}
+
+.friendly-unit-bg
+{
+  background-color: rgba(100,120,250,0.5);
+}
+
+.enemy-unit-bg
+{
+  background-color: rgba(250,100,120,0.5);
+}
+
+.active-unit-bg
+{
+  background-color: rgba(200,200,20,0.5) !important;
 }
 
 .unit-empty
@@ -85,7 +118,6 @@ body {
 .unit-image
 {
   min-width: 64px;
-  min-height: 64px;
   background-color: red;
 
   @media(max-width: 800px)
@@ -100,6 +132,7 @@ body {
   flex: 1;
   flex-flow: column;
   justify-content: space-between;
+  padding-left: 2px;
 }
 
 .unit-info-name
@@ -147,6 +180,46 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-flow: column;
+  width: 20px;
+
+  >*
+  {
+    flex: 1;
+  }
+}
+
+.unit-icon
+{
+  width: 100%;
+}
+
+.unit-icon-filler
+{
+  width: 100%;
+  background-color: white;
+}
+
+.unit-border-no-left
+{
+  border: 1px solid black;
+  border-left: 0;
+}
+
+.unit-border-no-right
+{
+  border: 1px solid black;
+  border-right: 0;
+}
+
+.unit-border-left
+{
+  border-left: 1px solid black;
+}
+
+.unit-border-right
+{
+  border-right: 1px solid black;
 }
 
 .turns-container

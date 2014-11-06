@@ -110,6 +110,8 @@ declare module Rance {
         };
         public battleStats: {
             moveDelay: number;
+            side: string;
+            position: number[];
         };
         constructor(template: Rance.Templates.TypeTemplate);
         public setValues(): void;
@@ -118,6 +120,7 @@ declare module Rance {
         public setAttributes(experience?: number, variance?: number): void;
         public getBaseMoveDelay(): number;
         public resetBattleStats(): void;
+        public setBattlePosition(side: string, position: number[]): void;
     }
 }
 declare module Rance {
@@ -140,13 +143,14 @@ declare module Rance {
         });
         public init(): void;
         public forEachUnit(operator: (Unit: any) => any): void;
-        public initUnit(unit: Rance.Unit): void;
+        public initUnit(unit: Rance.Unit, side: string, position: number[]): void;
         public removeUnitFromTurnOrder(unit: Rance.Unit): boolean;
         public addUnitToTurnOrder(unit: Rance.Unit): boolean;
         public updateTurnOrder(): void;
         public setActiveUnit(): void;
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
+        public getOpposingFleet(unit: Rance.Unit): void;
     }
 }
 declare module Rance {

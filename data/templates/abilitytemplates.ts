@@ -1,3 +1,5 @@
+/// <reference path="../../src/targeting.ts" />
+
 module Rance
 {
   module Templates
@@ -6,9 +8,10 @@ module Rance
     {
       name: string;
       delay: number;
+      interruptsNeeded?: number;
       canTarget: string; // ally, enemy, all
-      targetArea: string; // single, smallRow, column, row, cross, t, all
-      targetRange: string; // close, far, all
+      targetingFunction: TargetingFunction;
+      targetRange: string; // self, close, far, all
       effect: (any) => void;
     }
   }

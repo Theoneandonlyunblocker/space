@@ -22,7 +22,8 @@ module Rance
             React.DOM.div({className: "fleets-container"},
               UIComponents.Fleet(
               {
-                fleet: battle.side1
+                fleet: battle.side1,
+                activeUnit: battle.activeUnit
               }),
               UIComponents.TurnCounter(
               {
@@ -32,7 +33,8 @@ module Rance
               UIComponents.Fleet(
               {
                 fleet: battle.side2,
-                facesLeft: true
+                facesLeft: true,
+                activeUnit: battle.activeUnit
               })
             )
           )

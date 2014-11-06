@@ -31,10 +31,12 @@ module Rance
       side2: Unit[][];
     })
     {
-      var self = this;
-
       this.side1 = units.side1;
       this.side2 = units.side2;
+    }
+    init()
+    {
+      var self = this;
 
       ["side1", "side2"].forEach(function(sideId)
       {
@@ -47,14 +49,12 @@ module Rance
             {
               self.unitsById[side[i][j].id] = side[i][j];
               self.unitsBySide[sideId].push(side[i][j]);
+
+              self.initUnit(side[i][j], sideId, [i, j]);
             }
           }
         }
       });
-    }
-    init()
-    {
-      this.forEachUnit(this.initUnit);
 
       this.maxTurns = 24;
       this.turnsLeft = 15;
@@ -68,9 +68,10 @@ module Rance
          operator.call(this, this.unitsById[id]);
       }
     }
-    initUnit(unit: Unit)
+    initUnit(unit: Unit, side: string, position: number[])
     {
       unit.resetBattleStats();
+      unit.setBattlePosition(side, position);
       this.addUnitToTurnOrder(unit);
     }
     removeUnitFromTurnOrder(unit: Unit)
@@ -127,6 +128,10 @@ module Rance
           return this[side];
         }
       }
+    }
+    getOpposingFleet(unit: Unit)
+    {
+
     }
   }
 }

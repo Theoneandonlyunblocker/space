@@ -17,7 +17,9 @@ module Rance
           var data =
           {
             key: "" + i,
-            className: "turn-order-unit"
+            className: "turn-order-unit",
+            title: "delay: " + unit.battleStats.moveDelay + "\n" +
+              "speed: " + unit.attributes.speed
           };
 
           if (this.props.unitsBySide.side1.indexOf(unit) > -1)

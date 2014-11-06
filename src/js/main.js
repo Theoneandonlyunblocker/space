@@ -108,7 +108,21 @@ var Rance;
                     src: this.props.icon
                 };
 
-                return (React.DOM.div({ className: "unit-icon-container" }, React.DOM.img(imageProps)));
+                var fillerProps = {
+                    className: "unit-icon-filler"
+                };
+
+                if (this.props.facesLeft) {
+                    fillerProps.className += " unit-border-right";
+                    imageProps.className += " unit-border-no-right";
+                } else {
+                    fillerProps.className += " unit-border-left";
+                    imageProps.className += " unit-border-no-left";
+                }
+
+                var middleElement = this.props.icon ? React.DOM.img(imageProps) : React.DOM.div(imageProps);
+
+                return (React.DOM.div({ className: "unit-icon-container" }, React.DOM.div(fillerProps), React.DOM.img(imageProps), React.DOM.div(fillerProps)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -124,8 +138,25 @@ var Rance;
                 var unit = this.props.unit;
 
                 var containerProps = {
-                    className: "unit-container"
+                    className: "unit-container",
+                    key: "container"
                 };
+                var wrapperProps = {
+                    className: "unit-wrapper"
+                };
+
+                if (this.props.facesLeft) {
+                    containerProps.className += " enemy-unit";
+                    wrapperProps.className += " enemy-unit-bg";
+                } else {
+                    containerProps.className += " friendly-unit";
+                    wrapperProps.className += " friendly-unit-bg";
+                }
+
+                if (unit.id === this.props.activeUnit.id) {
+                    containerProps.className += " active-unit";
+                    wrapperProps.className += " active-unit-bg";
+                }
 
                 var infoProps = {
                     key: "info",
@@ -141,37 +172,65 @@ var Rance;
                     }
                 };
 
-                var elements = [
+                var containerElements = [
                     React.DOM.div({ className: "unit-image", key: "image" }),
-                    Rance.UIComponents.UnitInfo(infoProps),
-                    Rance.UIComponents.UnitIcon({ icon: unit.template.icon, key: "icon" })
+                    Rance.UIComponents.UnitInfo(infoProps)
                 ];
 
                 if (this.props.facesLeft) {
-                    containerProps.className += " faces-left";
-                    elements = elements.reverse();
-                } else {
-                    containerProps.className += " faces-right";
+                    containerElements = containerElements.reverse();
                 }
 
-                return (React.DOM.div(containerProps, elements));
+                var allElements = [
+                    React.DOM.div(containerProps, containerElements),
+                    Rance.UIComponents.UnitIcon({
+                        icon: unit.template.icon,
+                        facesLeft: this.props.facesLeft,
+                        key: "icon"
+                    })
+                ];
+
+                if (this.props.facesLeft) {
+                    allElements = allElements.reverse();
+                }
+
+                return (React.DOM.div(wrapperProps, allElements));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="uniticon.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
             render: function () {
-                var data = {
-                    className: "unit-container unit-empty"
+                var containerProps = {
+                    className: "unit-container",
+                    key: "container"
                 };
 
-                data.className += (this.props.facesLeft ? " faces-left" : " faces-right");
+                if (this.props.facesLeft) {
+                    containerProps.className += " enemy-unit";
+                } else {
+                    containerProps.className += " friendly-unit";
+                }
 
-                return (React.DOM.div(data, null));
+                var allElements = [
+                    React.DOM.div(containerProps, null),
+                    Rance.UIComponents.UnitIcon({
+                        icon: null,
+                        facesLeft: this.props.facesLeft,
+                        key: "icon"
+                    })
+                ];
+
+                if (this.props.facesLeft) {
+                    allElements = allElements.reverse();
+                }
+
+                return (React.DOM.div({ className: "unit-wrapper" }, allElements));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -193,6 +252,7 @@ var Rance;
 
                     data.key = i;
                     data.facesLeft = this.props.facesLeft;
+                    data.activeUnit = this.props.activeUnit;
 
                     if (!column[i]) {
                         units.push(Rance.UIComponents.EmptyUnit(data));
@@ -222,7 +282,8 @@ var Rance;
                     columns.push(Rance.UIComponents.FleetColumn({
                         key: i,
                         column: fleet[i],
-                        facesLeft: this.props.facesLeft
+                        facesLeft: this.props.facesLeft,
+                        activeUnit: this.props.activeUnit
                     }));
                 }
 
@@ -277,7 +338,8 @@ var Rance;
 
                     var data = {
                         key: "" + i,
-                        className: "turn-order-unit"
+                        className: "turn-order-unit",
+                        title: "delay: " + unit.battleStats.moveDelay + "\n" + "speed: " + unit.attributes.speed
                     };
 
                     if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
@@ -309,13 +371,15 @@ var Rance;
                     turnOrder: battle.turnOrder,
                     unitsBySide: battle.unitsBySide
                 }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
-                    fleet: battle.side1
+                    fleet: battle.side1,
+                    activeUnit: battle.activeUnit
                 }), Rance.UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
                 }), Rance.UIComponents.Fleet({
                     fleet: battle.side2,
-                    facesLeft: true
+                    facesLeft: true,
+                    activeUnit: battle.activeUnit
                 }))));
             }
         });
@@ -475,8 +539,15 @@ var Rance;
         };
         Unit.prototype.resetBattleStats = function () {
             this.battleStats = {
-                moveDelay: this.getBaseMoveDelay()
+                moveDelay: this.getBaseMoveDelay(),
+                side: null,
+                position: null
             };
+            console.log(this.attributes.speed, this.battleStats.moveDelay);
+        };
+        Unit.prototype.setBattlePosition = function (side, position) {
+            this.battleStats.side = side;
+            this.battleStats.position = position;
         };
         return Unit;
     })();
@@ -493,10 +564,11 @@ var Rance;
                 side2: []
             };
             this.turnOrder = [];
-            var self = this;
-
             this.side1 = units.side1;
             this.side2 = units.side2;
+        }
+        Battle.prototype.init = function () {
+            var self = this;
 
             ["side1", "side2"].forEach(function (sideId) {
                 var side = self[sideId];
@@ -505,13 +577,12 @@ var Rance;
                         if (side[i][j] && side[i][j].id) {
                             self.unitsById[side[i][j].id] = side[i][j];
                             self.unitsBySide[sideId].push(side[i][j]);
+
+                            self.initUnit(side[i][j], sideId, [i, j]);
                         }
                     }
                 }
             });
-        }
-        Battle.prototype.init = function () {
-            this.forEachUnit(this.initUnit);
 
             this.maxTurns = 24;
             this.turnsLeft = 15;
@@ -523,8 +594,9 @@ var Rance;
                 operator.call(this, this.unitsById[id]);
             }
         };
-        Battle.prototype.initUnit = function (unit) {
+        Battle.prototype.initUnit = function (unit, side, position) {
             unit.resetBattleStats();
+            unit.setBattlePosition(side, position);
             this.addUnitToTurnOrder(unit);
         };
         Battle.prototype.removeUnitFromTurnOrder = function (unit) {
@@ -570,6 +642,8 @@ var Rance;
                     return this[side];
                 }
             }
+        };
+        Battle.prototype.getOpposingFleet = function (unit) {
         };
         return Battle;
     })();

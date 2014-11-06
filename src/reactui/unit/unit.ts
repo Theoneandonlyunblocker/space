@@ -13,8 +13,30 @@ module Rance
 
         var containerProps =
         {
-          className: "unit-container"
+          className: "unit-container",
+          key: "container"
         };
+        var wrapperProps =
+        {
+          className: "unit-wrapper"
+        };
+
+        if (this.props.facesLeft)
+        {
+          containerProps.className += " enemy-unit";
+          wrapperProps.className += " enemy-unit-bg";
+        }
+        else
+        {
+          containerProps.className += " friendly-unit";
+          wrapperProps.className += " friendly-unit-bg";
+        }
+
+        if (unit.id === this.props.activeUnit.id)
+        {
+          containerProps.className += " active-unit";
+          wrapperProps.className += " active-unit-bg";
+        }
 
         var infoProps =
         {
@@ -33,26 +55,38 @@ module Rance
           }
         }
 
-        var elements =
+        var containerElements =
         [
           React.DOM.div({className: "unit-image", key: "image"}),
           UIComponents.UnitInfo(infoProps),
-          UIComponents.UnitIcon({icon: unit.template.icon, key: "icon"})
         ];
 
         if (this.props.facesLeft)
         {
-          containerProps.className += " faces-left";
-          elements = elements.reverse();
+          containerElements = containerElements.reverse();
         }
-        else
+
+        var allElements =
+        [
+          React.DOM.div(containerProps,
+            containerElements
+          ),
+          UIComponents.UnitIcon(
+            {
+              icon: unit.template.icon,
+              facesLeft: this.props.facesLeft,
+              key: "icon"
+            })
+        ];
+
+        if (this.props.facesLeft)
         {
-          containerProps.className += " faces-right";
+          allElements = allElements.reverse();
         }
 
         return(
-          React.DOM.div(containerProps,
-            elements
+          React.DOM.div(wrapperProps,
+            allElements
           )
         );
       }

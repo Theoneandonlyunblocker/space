@@ -18,7 +18,8 @@ module Rance
           {
             key: i,
             column: fleet[i],
-            facesLeft: this.props.facesLeft
+            facesLeft: this.props.facesLeft,
+            activeUnit: this.props.activeUnit
           }));
         }
 

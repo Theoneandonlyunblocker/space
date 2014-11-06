@@ -32,6 +32,8 @@ module Rance
     battleStats:
     {
       moveDelay: number;
+      side: string;
+      position: number[];
       //queuedAction: Action;
     };
 
@@ -102,8 +104,16 @@ module Rance
     {
       this.battleStats =
       {
-        moveDelay: this.getBaseMoveDelay()
+        moveDelay: this.getBaseMoveDelay(),
+        side: null,
+        position: null
       }
+      console.log(this.attributes.speed ,this.battleStats.moveDelay)
+    }
+    setBattlePosition(side: string, position: number[])
+    {
+      this.battleStats.side = side;
+      this.battleStats.position = position;
     }
   }
 }

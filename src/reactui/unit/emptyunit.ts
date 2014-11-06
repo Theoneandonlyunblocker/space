@@ -1,3 +1,5 @@
+/// <reference path="uniticon.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -6,16 +8,42 @@ module Rance
     {
       render: function()
       {
-        var data: any =
+        var containerProps =
         {
-          className: "unit-container unit-empty"
+          className: "unit-container",
+          key: "container"
         };
 
-        data.className += (this.props.facesLeft ? " faces-left" : " faces-right");
+        if (this.props.facesLeft)
+        {
+          containerProps.className += " enemy-unit";
+        }
+        else
+        {
+          containerProps.className += " friendly-unit";
+        }
+
+        var allElements =
+        [
+          React.DOM.div(containerProps,
+            null
+          ),
+          UIComponents.UnitIcon(
+            {
+              icon: null,
+              facesLeft: this.props.facesLeft,
+              key: "icon"
+            })
+        ];
+
+        if (this.props.facesLeft)
+        {
+          allElements = allElements.reverse();
+        }
         
         return(
-          React.DOM.div(data,
-            null
+          React.DOM.div({className: "unit-wrapper"},
+            allElements
           )
         );
       }

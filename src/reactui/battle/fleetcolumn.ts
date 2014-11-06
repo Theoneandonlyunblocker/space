@@ -19,6 +19,7 @@ module Rance
 
           data.key = i;
           data.facesLeft = this.props.facesLeft;
+          data.activeUnit = this.props.activeUnit;
 
           if (!column[i])
           {
