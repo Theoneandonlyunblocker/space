@@ -70,7 +70,6 @@ module Rance
     }
     initUnit(unit: Unit, side: string, position: number[])
     {
-      console.log(unit.id);
       unit.resetBattleStats();
       unit.setBattlePosition(side, position);
       this.addUnitToTurnOrder(unit);

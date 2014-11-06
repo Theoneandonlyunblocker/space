@@ -93,8 +93,6 @@ module Rance
       [id: number]: Templates.AbilityTemplate[];
     } = {};
 
-    debugger;
-
     for (var i = 0; i < user.abilities.length; i++)
     {
       var ability = user.abilities[i];

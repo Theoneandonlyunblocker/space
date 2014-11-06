@@ -7,13 +7,14 @@ module Rance
   {
     export var Unit = React.createClass(
     {
-
       tooltipContent: function()
       {
+        return React.DOM.div(null, "lol");
+
         if (!this.props.activeTargets ||
           !this.props.activeTargets[this.props.unit.id])
         {
-          return;
+          return null;
         }
 
         var elements = [];
@@ -58,7 +59,9 @@ module Rance
           wrapperProps.className += " friendly-unit-bg";
         }
 
-        if (unit.id === this.props.activeUnit.id)
+        var isActiveUnit = (unit.id === this.props.activeUnit.id);
+
+        if (isActiveUnit)
         {
           containerProps.className += " active-unit";
           wrapperProps.className += " active-unit-bg";
@@ -101,7 +104,8 @@ module Rance
             {
               icon: unit.template.icon,
               facesLeft: this.props.facesLeft,
-              key: "icon"
+              key: "icon",
+              isActiveUnit: isActiveUnit
             })
         ];
 

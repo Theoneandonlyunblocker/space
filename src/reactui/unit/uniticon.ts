@@ -21,6 +21,12 @@ module Rance
           className: "unit-icon-filler"
         };
 
+        if (this.props.isActiveUnit)
+        {
+          fillerProps.className += " active-border";
+          imageProps.className += " active-border";
+        }
+
         if (this.props.facesLeft)
         {
           fillerProps.className += " unit-border-right";

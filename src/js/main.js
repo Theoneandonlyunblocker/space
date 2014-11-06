@@ -112,6 +112,11 @@ var Rance;
                     className: "unit-icon-filler"
                 };
 
+                if (this.props.isActiveUnit) {
+                    fillerProps.className += " active-border";
+                    imageProps.className += " active-border";
+                }
+
                 if (this.props.facesLeft) {
                     fillerProps.className += " unit-border-right";
                     imageProps.className += " unit-border-no-right";
@@ -135,8 +140,10 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Unit = React.createClass({
             tooltipContent: function () {
+                return React.DOM.div(null, "lol");
+
                 if (!this.props.activeTargets || !this.props.activeTargets[this.props.unit.id]) {
-                    return;
+                    return null;
                 }
 
                 var elements = [];
@@ -167,7 +174,9 @@ var Rance;
                     wrapperProps.className += " friendly-unit-bg";
                 }
 
-                if (unit.id === this.props.activeUnit.id) {
+                var isActiveUnit = (unit.id === this.props.activeUnit.id);
+
+                if (isActiveUnit) {
                     containerProps.className += " active-unit";
                     wrapperProps.className += " active-unit-bg";
                 }
@@ -200,7 +209,8 @@ var Rance;
                     Rance.UIComponents.UnitIcon({
                         icon: unit.template.icon,
                         facesLeft: this.props.facesLeft,
-                        key: "icon"
+                        key: "icon",
+                        isActiveUnit: isActiveUnit
                     })
                 ];
 
@@ -696,7 +706,6 @@ var Rance;
             }
         };
         Battle.prototype.initUnit = function (unit, side, position) {
-            console.log(unit.id);
             unit.resetBattleStats();
             unit.setBattlePosition(side, position);
             this.addUnitToTurnOrder(unit);
@@ -823,8 +832,6 @@ var Rance;
 
     function getTargetsForAllAbilities(battle, user) {
         var allTargets = {};
-
-        debugger;
 
         for (var i = 0; i < user.abilities.length; i++) {
             var ability = user.abilities[i];
