@@ -160,15 +160,14 @@ body {
   flex-flow: column;
   width: 20px;
 }
-.unit-icon-container > * {
-  flex: 1;
-}
 .unit-icon {
   width: 100%;
+  flex: 0 20px;
 }
 .unit-icon-filler {
   width: 100%;
   background-color: white;
+  flex: 1;
 }
 .unit-border-no-left {
   border: 1px solid black;
