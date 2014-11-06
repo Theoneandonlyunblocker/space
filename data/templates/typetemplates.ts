@@ -1,3 +1,6 @@
+/// <reference path="abilitytemplates.ts"/>
+
+
 module Rance
 {
   export module Templates
@@ -14,7 +17,8 @@ module Rance
         defence: number;
         intelligence: number;
         speed: number;
-      }
+      };
+      abilities: AbilityTemplate[];
     }
     export module ShipTypes
     {
@@ -30,7 +34,12 @@ module Rance
           defence: 0.6,
           intelligence: 0.4,
           speed: 1
-        }
+        },
+        abilities:
+        [
+          Abilities.testAbility,
+          Abilities.standBy
+        ]
       }
       export var battleCruiser: TypeTemplate =
       {
@@ -44,7 +53,12 @@ module Rance
           defence: 0.8,
           intelligence: 0.7,
           speed: 0.6
-        }
+        },
+        abilities:
+        [
+          Abilities.testAbility,
+          Abilities.standBy
+        ]
       }
     }
   }

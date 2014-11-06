@@ -1,6 +1,8 @@
 /// <reference path="../data/templates/typetemplates.ts" />
+/// <reference path="../data/templates/abilitytemplates.ts" />
 
 /// <reference path="utility.ts"/>
+/// <reference path="ability.ts"/>
 
 module Rance
 {
@@ -37,11 +39,14 @@ module Rance
       //queuedAction: Action;
     };
 
+    abilities: Templates.AbilityTemplate[];
+
     constructor(template: Templates.TypeTemplate)
     {
       this.id = idGenerators.unit++;
 
       this.template = template;
+      this.abilities = template.abilities;
       this.name = this.id + " " + template.typeName;
       this.isSquadron = template.isSquadron;
       this.setValues();
@@ -108,12 +113,12 @@ module Rance
         side: null,
         position: null
       }
-      console.log(this.attributes.speed ,this.battleStats.moveDelay)
     }
     setBattlePosition(side: string, position: number[])
     {
       this.battleStats.side = side;
       this.battleStats.position = position;
     }
+
   }
 }

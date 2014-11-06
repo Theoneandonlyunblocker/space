@@ -7,6 +7,32 @@ module Rance
   {
     export var Unit = React.createClass(
     {
+
+      tooltipContent: function()
+      {
+        if (!this.props.activeTargets ||
+          !this.props.activeTargets[this.props.unit.id])
+        {
+          return;
+        }
+
+        var elements = [];
+        var targetableOnThis = this.props.activeTargets[this.props.unit.id];
+
+        for (var i = 0; i < targetableOnThis.length; i++)
+        {
+          elements.push(
+            React.DOM.div({key: ""+ i},
+              targetableOnThis[i].name
+            )
+          );
+        }
+
+        return React.DOM.div(null,
+          elements
+        )
+      },
+
       render: function()
       {
         var unit = this.props.unit;

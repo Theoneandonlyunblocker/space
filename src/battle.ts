@@ -45,7 +45,7 @@ module Rance
         {
           for (var j = 0; j < side[i].length; j++)
           {
-            if (side[i][j] && side[i][j].id)
+            if (side[i][j])
             {
               self.unitsById[side[i][j].id] = side[i][j];
               self.unitsBySide[sideId].push(side[i][j]);
@@ -70,6 +70,7 @@ module Rance
     }
     initUnit(unit: Unit, side: string, position: number[])
     {
+      console.log(unit.id);
       unit.resetBattleStats();
       unit.setBattlePosition(side, position);
       this.addUnitToTurnOrder(unit);

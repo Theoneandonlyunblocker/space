@@ -31,4 +31,35 @@ module Rance
     };
     return result;
   }
+  export function flatten2dArray(toFlatten: any[][]): any[]
+  {
+    var flattened = [];
+    for (var i = 0; i < toFlatten.length; i++)
+    {
+      for (var j = 0; j < toFlatten[i].length; j++)
+      {
+        flattened.push(toFlatten[i][j]);
+      }
+    }
+
+    return flattened;
+  }
+  export function reverseSide(side: string)
+  {
+    switch (side)
+    {
+      case "side1":
+      {
+        return "side2";
+      }
+      case "side2":
+      {
+        return "side1";
+      }
+      default:
+      {
+        throw new Error("Invalid side");
+      }
+    }
+  }
 }

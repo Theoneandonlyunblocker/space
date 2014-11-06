@@ -134,6 +134,20 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Unit = React.createClass({
+            tooltipContent: function () {
+                if (!this.props.activeTargets || !this.props.activeTargets[this.props.unit.id]) {
+                    return;
+                }
+
+                var elements = [];
+                var targetableOnThis = this.props.activeTargets[this.props.unit.id];
+
+                for (var i = 0; i < targetableOnThis.length; i++) {
+                    elements.push(React.DOM.div({ key: "" + i }, targetableOnThis[i].name));
+                }
+
+                return React.DOM.div(null, elements);
+            },
             render: function () {
                 var unit = this.props.unit;
 
@@ -253,6 +267,7 @@ var Rance;
                     data.key = i;
                     data.facesLeft = this.props.facesLeft;
                     data.activeUnit = this.props.activeUnit;
+                    data.activeTargets = this.props.activeTargets;
 
                     if (!column[i]) {
                         units.push(Rance.UIComponents.EmptyUnit(data));
@@ -367,19 +382,23 @@ var Rance;
             render: function () {
                 var battle = this.props.battle;
 
+                var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+
                 return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
                     unitsBySide: battle.unitsBySide
                 }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
-                    activeUnit: battle.activeUnit
+                    activeUnit: battle.activeUnit,
+                    activeTargets: activeTargets
                 }), Rance.UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
                 }), Rance.UIComponents.Fleet({
                     fleet: battle.side2,
                     facesLeft: true,
-                    activeUnit: battle.activeUnit
+                    activeUnit: battle.activeUnit,
+                    activeTargets: activeTargets
                 }))));
             }
         });
@@ -418,39 +437,6 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    (function (Templates) {
-        (function (ShipTypes) {
-            ShipTypes.fighterSquadron = {
-                typeName: "Fighter Squadron",
-                isSquadron: true,
-                icon: "img\/icons\/f.png",
-                maxStrength: 0.7,
-                attributeLevels: {
-                    attack: 0.8,
-                    defence: 0.6,
-                    intelligence: 0.4,
-                    speed: 1
-                }
-            };
-            ShipTypes.battleCruiser = {
-                typeName: "Battlecruiser",
-                isSquadron: false,
-                icon: "img\/icons\/b.png",
-                maxStrength: 1,
-                attributeLevels: {
-                    attack: 0.8,
-                    defence: 0.8,
-                    intelligence: 0.7,
-                    speed: 0.6
-                }
-            };
-        })(Templates.ShipTypes || (Templates.ShipTypes = {}));
-        var ShipTypes = Templates.ShipTypes;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
     function randInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
@@ -473,181 +459,31 @@ var Rance;
         return result;
     }
     Rance.getFrom2dArray = getFrom2dArray;
-})(Rance || (Rance = {}));
-/// <reference path="../data/templates/typetemplates.ts" />
-/// <reference path="utility.ts"/>
-var Rance;
-(function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.unit = 0;
-
-    var Unit = (function () {
-        function Unit(template) {
-            this.id = idGenerators.unit++;
-
-            this.template = template;
-            this.name = this.id + " " + template.typeName;
-            this.isSquadron = template.isSquadron;
-            this.setValues();
+    function flatten2dArray(toFlatten) {
+        var flattened = [];
+        for (var i = 0; i < toFlatten.length; i++) {
+            for (var j = 0; j < toFlatten[i].length; j++) {
+                flattened.push(toFlatten[i][j]);
+            }
         }
-        Unit.prototype.setValues = function () {
-            this.setBaseHealth();
-            this.setActionPoints();
-            this.setAttributes();
-        };
-        Unit.prototype.setBaseHealth = function () {
-            var min = 500 * this.template.maxStrength;
-            var max = 1000 * this.template.maxStrength;
-            this.maxStrength = Rance.randInt(min, max);
-            if (Math.random() > 0.5) {
-                this.currentStrength = this.maxStrength;
-            } else {
-                this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
+
+        return flattened;
+    }
+    Rance.flatten2dArray = flatten2dArray;
+    function reverseSide(side) {
+        switch (side) {
+            case "side1": {
+                return "side2";
             }
-        };
-        Unit.prototype.setActionPoints = function () {
-            this.maxActionPoints = Rance.randInt(3, 6);
-            this.currentActionPoints = Rance.randInt(0, this.maxActionPoints);
-        };
-        Unit.prototype.setAttributes = function (experience, variance) {
-            if (typeof experience === "undefined") { experience = 1; }
-            if (typeof variance === "undefined") { variance = 1; }
-            var template = this.template;
-
-            var attributes = {
-                attack: 1,
-                defence: 1,
-                intelligence: 1,
-                speed: 1
-            };
-
-            for (var attribute in template.attributeLevels) {
-                var attributeLevel = template.attributeLevels[attribute];
-
-                var min = 8 * experience * attributeLevel + 1;
-                var max = 16 * experience * attributeLevel + 1 + variance;
-
-                attributes[attribute] = Rance.randInt(min, max);
-                if (attributes[attribute] > 20)
-                    attributes[attribute] = 20;
+            case "side2": {
+                return "side1";
             }
-
-            this.attributes = attributes;
-        };
-        Unit.prototype.getBaseMoveDelay = function () {
-            return 30 - this.attributes.speed;
-        };
-        Unit.prototype.resetBattleStats = function () {
-            this.battleStats = {
-                moveDelay: this.getBaseMoveDelay(),
-                side: null,
-                position: null
-            };
-            console.log(this.attributes.speed, this.battleStats.moveDelay);
-        };
-        Unit.prototype.setBattlePosition = function (side, position) {
-            this.battleStats.side = side;
-            this.battleStats.position = position;
-        };
-        return Unit;
-    })();
-    Rance.Unit = Unit;
-})(Rance || (Rance = {}));
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    var Battle = (function () {
-        function Battle(units) {
-            this.unitsById = {};
-            this.unitsBySide = {
-                side1: [],
-                side2: []
-            };
-            this.turnOrder = [];
-            this.side1 = units.side1;
-            this.side2 = units.side2;
+            default: {
+                throw new Error("Invalid side");
+            }
         }
-        Battle.prototype.init = function () {
-            var self = this;
-
-            ["side1", "side2"].forEach(function (sideId) {
-                var side = self[sideId];
-                for (var i = 0; i < side.length; i++) {
-                    for (var j = 0; j < side[i].length; j++) {
-                        if (side[i][j] && side[i][j].id) {
-                            self.unitsById[side[i][j].id] = side[i][j];
-                            self.unitsBySide[sideId].push(side[i][j]);
-
-                            self.initUnit(side[i][j], sideId, [i, j]);
-                        }
-                    }
-                }
-            });
-
-            this.maxTurns = 24;
-            this.turnsLeft = 15;
-            this.updateTurnOrder();
-            this.setActiveUnit();
-        };
-        Battle.prototype.forEachUnit = function (operator) {
-            for (var id in this.unitsById) {
-                operator.call(this, this.unitsById[id]);
-            }
-        };
-        Battle.prototype.initUnit = function (unit, side, position) {
-            unit.resetBattleStats();
-            unit.setBattlePosition(side, position);
-            this.addUnitToTurnOrder(unit);
-        };
-        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex < 0)
-                return false;
-
-            this.turnOrder.splice(unitIndex, 1);
-        };
-        Battle.prototype.addUnitToTurnOrder = function (unit) {
-            var unitIndex = this.turnOrder.indexOf(unit);
-            if (unitIndex >= 0)
-                return false;
-
-            this.turnOrder.push(unit);
-        };
-        Battle.prototype.updateTurnOrder = function () {
-            function turnOrderSortFunction(a, b) {
-                if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
-                    return a.battleStats.moveDelay - b.battleStats.moveDelay;
-                } else {
-                    return a.id - b.id;
-                }
-            }
-
-            this.turnOrder.sort(turnOrderSortFunction);
-        };
-        Battle.prototype.setActiveUnit = function () {
-            this.activeUnit = this.turnOrder[0];
-        };
-        Battle.prototype.endTurn = function () {
-            this.turnsLeft--;
-            this.updateTurnOrder();
-            this.setActiveUnit();
-        };
-        Battle.prototype.getFleetsForSide = function (side) {
-            switch (side) {
-                case "all": {
-                    return this.side1.concat(this.side2);
-                }
-                case "side1":
-                case "side2": {
-                    return this[side];
-                }
-            }
-        };
-        Battle.prototype.getOpposingFleet = function (unit) {
-        };
-        return Battle;
-    })();
-    Rance.Battle = Battle;
+    }
+    Rance.reverseSide = reverseSide;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -752,10 +588,349 @@ var Rance;
         return Rance.getFrom2dArray(fleets, allTargets);
     };
 })(Rance || (Rance = {}));
+/// <reference path="../../src/targeting.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Abilities) {
+            Abilities.testAbility = {
+                name: "testAbility",
+                delay: 0,
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetNeighbors,
+                targetRange: "all"
+            };
+            Abilities.standBy = {
+                name: "standBy",
+                delay: 0,
+                targetFleets: "all",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "self"
+            };
+        })(Templates.Abilities || (Templates.Abilities = {}));
+        var Abilities = Templates.Abilities;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="abilitytemplates.ts"/>
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (ShipTypes) {
+            ShipTypes.fighterSquadron = {
+                typeName: "Fighter Squadron",
+                isSquadron: true,
+                icon: "img\/icons\/f.png",
+                maxStrength: 0.7,
+                attributeLevels: {
+                    attack: 0.8,
+                    defence: 0.6,
+                    intelligence: 0.4,
+                    speed: 1
+                },
+                abilities: [
+                    Rance.Templates.Abilities.testAbility,
+                    Rance.Templates.Abilities.standBy
+                ]
+            };
+            ShipTypes.battleCruiser = {
+                typeName: "Battlecruiser",
+                isSquadron: false,
+                icon: "img\/icons\/b.png",
+                maxStrength: 1,
+                attributeLevels: {
+                    attack: 0.8,
+                    defence: 0.8,
+                    intelligence: 0.7,
+                    speed: 0.6
+                },
+                abilities: [
+                    Rance.Templates.Abilities.testAbility,
+                    Rance.Templates.Abilities.standBy
+                ]
+            };
+        })(Templates.ShipTypes || (Templates.ShipTypes = {}));
+        var ShipTypes = Templates.ShipTypes;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    var Battle = (function () {
+        function Battle(units) {
+            this.unitsById = {};
+            this.unitsBySide = {
+                side1: [],
+                side2: []
+            };
+            this.turnOrder = [];
+            this.side1 = units.side1;
+            this.side2 = units.side2;
+        }
+        Battle.prototype.init = function () {
+            var self = this;
+
+            ["side1", "side2"].forEach(function (sideId) {
+                var side = self[sideId];
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (side[i][j]) {
+                            self.unitsById[side[i][j].id] = side[i][j];
+                            self.unitsBySide[sideId].push(side[i][j]);
+
+                            self.initUnit(side[i][j], sideId, [i, j]);
+                        }
+                    }
+                }
+            });
+
+            this.maxTurns = 24;
+            this.turnsLeft = 15;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+        };
+        Battle.prototype.forEachUnit = function (operator) {
+            for (var id in this.unitsById) {
+                operator.call(this, this.unitsById[id]);
+            }
+        };
+        Battle.prototype.initUnit = function (unit, side, position) {
+            console.log(unit.id);
+            unit.resetBattleStats();
+            unit.setBattlePosition(side, position);
+            this.addUnitToTurnOrder(unit);
+        };
+        Battle.prototype.removeUnitFromTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex < 0)
+                return false;
+
+            this.turnOrder.splice(unitIndex, 1);
+        };
+        Battle.prototype.addUnitToTurnOrder = function (unit) {
+            var unitIndex = this.turnOrder.indexOf(unit);
+            if (unitIndex >= 0)
+                return false;
+
+            this.turnOrder.push(unit);
+        };
+        Battle.prototype.updateTurnOrder = function () {
+            function turnOrderSortFunction(a, b) {
+                if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
+                    return a.battleStats.moveDelay - b.battleStats.moveDelay;
+                } else {
+                    return a.id - b.id;
+                }
+            }
+
+            this.turnOrder.sort(turnOrderSortFunction);
+        };
+        Battle.prototype.setActiveUnit = function () {
+            this.activeUnit = this.turnOrder[0];
+        };
+        Battle.prototype.endTurn = function () {
+            this.turnsLeft--;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+        };
+        Battle.prototype.getFleetsForSide = function (side) {
+            switch (side) {
+                case "all": {
+                    return this.side1.concat(this.side2);
+                }
+                case "side1":
+                case "side2": {
+                    return this[side];
+                }
+            }
+        };
+        Battle.prototype.getOpposingFleet = function (unit) {
+        };
+        return Battle;
+    })();
+    Rance.Battle = Battle;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="battle.ts"/>
+/// <reference path="unit.ts"/>
+/// <reference path="targeting.ts"/>
+var Rance;
+(function (Rance) {
+    function useAbility(battle, user, ability) {
+    }
+    Rance.useAbility = useAbility;
+    function getPotentialTargets(battle, user, ability) {
+        if (ability.targetRange === "self") {
+            return [user];
+        }
+
+        if (ability.targetRange === "close") {
+            var closestColumnPerSide = {
+                side1: 1,
+                side2: 0
+            };
+
+            if (user.battleStats.position[0] !== closestColumnPerSide[user.battleStats.side]) {
+                return [];
+            }
+
+            var oppositeSide = Rance.reverseSide(user.battleStats.side);
+
+            return battle[oppositeSide][closestColumnPerSide[oppositeSide]].filter(Boolean);
+        }
+
+        var fleetsToTarget = getFleetsToTarget(battle, user, ability);
+
+        return Rance.flatten2dArray(fleetsToTarget).filter(Boolean);
+
+        throw new Error();
+    }
+    Rance.getPotentialTargets = getPotentialTargets;
+    function getFleetsToTarget(battle, user, ability) {
+        switch (ability.targetFleets) {
+            case "all": {
+                return battle.side1.concat(battle.side2);
+            }
+            case "ally": {
+                return battle[user.battleStats.side];
+            }
+            case "enemy": {
+                return battle[Rance.reverseSide(user.battleStats.side)];
+            }
+        }
+    }
+    Rance.getFleetsToTarget = getFleetsToTarget;
+    function getPotentialTargetsByPosition(battle, user, ability) {
+        var targets = getPotentialTargets(battle, user, ability);
+        var targetPositions = [];
+
+        for (var i = 0; i < targets.length; i++) {
+            targetPositions.push(targets[i].battleStats.position);
+        }
+
+        return targetPositions;
+    }
+    Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
+    function getUnitsInAbilityArea(battle, user, ability, target) {
+        var targetFleets = getFleetsToTarget(battle, user, ability);
+
+        var inArea = ability.targetingFunction(targetFleets, target);
+
+        return inArea.filter(Boolean);
+    }
+    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
+
+    function getTargetsForAllAbilities(battle, user) {
+        var allTargets = {};
+
+        debugger;
+
+        for (var i = 0; i < user.abilities.length; i++) {
+            var ability = user.abilities[i];
+
+            var targets = getPotentialTargets(battle, user, ability);
+
+            for (var j = 0; j < targets.length; j++) {
+                var target = targets[j];
+
+                if (!allTargets[target.id]) {
+                    allTargets[target.id] = [];
+                }
+
+                allTargets[target.id].push(ability);
+            }
+        }
+
+        return allTargets;
+    }
+    Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/typetemplates.ts" />
+/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="utility.ts"/>
+/// <reference path="ability.ts"/>
+var Rance;
+(function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.unit = 0;
+
+    var Unit = (function () {
+        function Unit(template) {
+            this.id = idGenerators.unit++;
+
+            this.template = template;
+            this.abilities = template.abilities;
+            this.name = this.id + " " + template.typeName;
+            this.isSquadron = template.isSquadron;
+            this.setValues();
+        }
+        Unit.prototype.setValues = function () {
+            this.setBaseHealth();
+            this.setActionPoints();
+            this.setAttributes();
+        };
+        Unit.prototype.setBaseHealth = function () {
+            var min = 500 * this.template.maxStrength;
+            var max = 1000 * this.template.maxStrength;
+            this.maxStrength = Rance.randInt(min, max);
+            if (Math.random() > 0.5) {
+                this.currentStrength = this.maxStrength;
+            } else {
+                this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
+            }
+        };
+        Unit.prototype.setActionPoints = function () {
+            this.maxActionPoints = Rance.randInt(3, 6);
+            this.currentActionPoints = Rance.randInt(0, this.maxActionPoints);
+        };
+        Unit.prototype.setAttributes = function (experience, variance) {
+            if (typeof experience === "undefined") { experience = 1; }
+            if (typeof variance === "undefined") { variance = 1; }
+            var template = this.template;
+
+            var attributes = {
+                attack: 1,
+                defence: 1,
+                intelligence: 1,
+                speed: 1
+            };
+
+            for (var attribute in template.attributeLevels) {
+                var attributeLevel = template.attributeLevels[attribute];
+
+                var min = 8 * experience * attributeLevel + 1;
+                var max = 16 * experience * attributeLevel + 1 + variance;
+
+                attributes[attribute] = Rance.randInt(min, max);
+                if (attributes[attribute] > 20)
+                    attributes[attribute] = 20;
+            }
+
+            this.attributes = attributes;
+        };
+        Unit.prototype.getBaseMoveDelay = function () {
+            return 30 - this.attributes.speed;
+        };
+        Unit.prototype.resetBattleStats = function () {
+            this.battleStats = {
+                moveDelay: this.getBaseMoveDelay(),
+                side: null,
+                position: null
+            };
+        };
+        Unit.prototype.setBattlePosition = function (side, position) {
+            this.battleStats.side = side;
+            this.battleStats.position = position;
+        };
+        return Unit;
+    })();
+    Rance.Unit = Unit;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="targeting.ts"/>
+/// <reference path="ability.ts"/>
 var fleet1, fleet2, battle, reactUI;
 var Rance;
 (function (Rance) {

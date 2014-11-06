@@ -12,6 +12,8 @@ module Rance
       {
         var battle = this.props.battle;
 
+        var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
+
         return(
           React.DOM.div({className: "battle-container"},
             UIComponents.TurnOrder(
@@ -23,7 +25,8 @@ module Rance
               UIComponents.Fleet(
               {
                 fleet: battle.side1,
-                activeUnit: battle.activeUnit
+                activeUnit: battle.activeUnit,
+                activeTargets: activeTargets
               }),
               UIComponents.TurnCounter(
               {
@@ -34,7 +37,8 @@ module Rance
               {
                 fleet: battle.side2,
                 facesLeft: true,
-                activeUnit: battle.activeUnit
+                activeUnit: battle.activeUnit,
+                activeTargets: activeTargets
               })
             )
           )
