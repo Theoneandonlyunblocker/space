@@ -27,7 +27,7 @@ body {
 .turn-order-unit {
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: hidden;
+  text-overflow: clip;
   min-width: 70px;
   margin: 0 2px;
 }

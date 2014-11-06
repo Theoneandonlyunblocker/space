@@ -10,7 +10,7 @@ module Rance
 
         var toRender = [];
 
-        for (var i = 0; i < turnOrder.length && i <= 8; i++)
+        for (var i = 0; i < turnOrder.length && i < 8; i++)
         {
           var unit = turnOrder[i];
 

@@ -1,6 +1,7 @@
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="battle.ts"/>
+/// <reference path="targeting.ts"/>
 
 var fleet1, fleet2, battle, reactUI;
 module Rance

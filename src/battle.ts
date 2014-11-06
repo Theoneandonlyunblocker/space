@@ -59,6 +59,7 @@ module Rance
       this.maxTurns = 24;
       this.turnsLeft = 15;
       this.updateTurnOrder();
+      this.setActiveUnit();
     }
     forEachUnit(operator: (Unit) => any)
     {
@@ -102,7 +103,30 @@ module Rance
 
       this.turnOrder.sort(turnOrderSortFunction);
     }
-
-
+    setActiveUnit()
+    {
+      this.activeUnit = this.turnOrder[0];
+    }
+    endTurn()
+    {
+      this.turnsLeft--;
+      this.updateTurnOrder();
+      this.setActiveUnit();
+    }
+    getFleetsForSide(side: string)
+    {
+      switch (side)
+      {
+        case "all":
+        {
+          return this.side1.concat(this.side2);
+        }
+        case "side1":
+        case "side2":
+        {
+          return this[side];
+        }
+      }
+    }
   }
 }

@@ -90,6 +90,7 @@ declare module Rance {
 declare module Rance {
     function randInt(min: any, max: any): number;
     function getRandomArrayItem(target: any[]): any;
+    function getFrom2dArray(target: any[][], arr: number[][]): any[];
 }
 declare module Rance {
     class Unit {
@@ -143,7 +144,21 @@ declare module Rance {
         public removeUnitFromTurnOrder(unit: Rance.Unit): boolean;
         public addUnitToTurnOrder(unit: Rance.Unit): boolean;
         public updateTurnOrder(): void;
+        public setActiveUnit(): void;
+        public endTurn(): void;
+        public getFleetsForSide(side: string): any;
     }
+}
+declare module Rance {
+    interface TargetingFunction {
+        (fleets: Rance.Unit[][], target: number[]): Rance.Unit[];
+    }
+    var targetSingle: TargetingFunction;
+    var targetAll: TargetingFunction;
+    var targetRow: TargetingFunction;
+    var targetColumn: TargetingFunction;
+    var targetColumnNeighbors: TargetingFunction;
+    var targetNeighbors: TargetingFunction;
 }
 declare var fleet1: any, fleet2: any, battle: any, reactUI: any;
 declare module Rance {

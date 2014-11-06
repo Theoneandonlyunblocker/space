@@ -272,7 +272,7 @@ var Rance;
 
                 var toRender = [];
 
-                for (var i = 0; i < turnOrder.length && i <= 8; i++) {
+                for (var i = 0; i < turnOrder.length && i < 8; i++) {
                     var unit = turnOrder[i];
 
                     var data = {
@@ -396,6 +396,19 @@ var Rance;
         return target[_rnd];
     }
     Rance.getRandomArrayItem = getRandomArrayItem;
+    function getFrom2dArray(target, arr) {
+        var result = [];
+        for (var i = 0; i < arr.length; i++) {
+            if ((arr[i] !== undefined) && (arr[i][0] >= 0 && arr[i][0] < target.length) && (arr[i][1] >= 0 && arr[i][1] < target[0].length)) {
+                result.push(target[arr[i][0]][arr[i][1]]);
+            } else {
+                result.push(null);
+            }
+        }
+        ;
+        return result;
+    }
+    Rance.getFrom2dArray = getFrom2dArray;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/typetemplates.ts" />
 /// <reference path="utility.ts"/>
@@ -503,6 +516,7 @@ var Rance;
             this.maxTurns = 24;
             this.turnsLeft = 15;
             this.updateTurnOrder();
+            this.setActiveUnit();
         };
         Battle.prototype.forEachUnit = function (operator) {
             for (var id in this.unitsById) {
@@ -538,13 +552,136 @@ var Rance;
 
             this.turnOrder.sort(turnOrderSortFunction);
         };
+        Battle.prototype.setActiveUnit = function () {
+            this.activeUnit = this.turnOrder[0];
+        };
+        Battle.prototype.endTurn = function () {
+            this.turnsLeft--;
+            this.updateTurnOrder();
+            this.setActiveUnit();
+        };
+        Battle.prototype.getFleetsForSide = function (side) {
+            switch (side) {
+                case "all": {
+                    return this.side1.concat(this.side2);
+                }
+                case "side1":
+                case "side2": {
+                    return this[side];
+                }
+            }
+        };
         return Battle;
     })();
     Rance.Battle = Battle;
 })(Rance || (Rance = {}));
+/// <reference path="utility.ts"/>
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    //**
+    //**
+    //X*
+    //**
+    Rance.targetSingle;
+    Rance.targetSingle = function (fleets, target) {
+        return Rance.getFrom2dArray(fleets, [target]);
+    };
+
+    //XX
+    //XX
+    //XX
+    //XX
+    Rance.targetAll;
+    Rance.targetAll = function (fleets, target) {
+        var allTargets = [];
+
+        for (var i = 0; i < fleets.length; i++) {
+            for (var j = 0; j < fleets[i].length; j++) {
+                allTargets.push(fleets[i][j]);
+            }
+        }
+
+        return allTargets;
+    };
+
+    //**
+    //**
+    //XX
+    //**
+    Rance.targetRow;
+    Rance.targetRow = function (fleets, target) {
+        var y = target[1];
+        var allTargets = [];
+
+        for (var i = 0; i < fleets.length; i++) {
+            allTargets.push([i, y]);
+        }
+
+        return Rance.getFrom2dArray(fleets, allTargets);
+    };
+
+    //X*
+    //X*
+    //X*
+    //X*
+    Rance.targetColumn;
+    Rance.targetColumn = function (fleets, target) {
+        var x = target[0];
+        var allTargets = [];
+
+        for (var i = 0; i < fleets[x].length; i++) {
+            allTargets.push([x, i]);
+        }
+
+        return Rance.getFrom2dArray(fleets, allTargets);
+    };
+
+    //**
+    //X*
+    //X*
+    //X*
+    Rance.targetColumnNeighbors;
+    Rance.targetColumnNeighbors = function (fleets, target) {
+        var x = target[0];
+        var y = target[1];
+        var allTargets = [];
+
+        for (var i = 0; i < fleets[x].length; i++) {
+            if (Math.abs(i - y) <= 1) {
+                allTargets.push([x, i]);
+            }
+        }
+
+        return Rance.getFrom2dArray(fleets, allTargets);
+    };
+
+    //**
+    //X*
+    //XX
+    //X*
+    Rance.targetNeighbors;
+    Rance.targetNeighbors = function (fleets, target) {
+        var x = target[0];
+        var y = target[1];
+        var allTargets = [];
+
+        for (var i = x - 1; i < x + 1; i++) {
+            allTargets.push([i, y]);
+        }
+
+        allTargets.push([x, y - 1]);
+        allTargets.push([x, y + 1]);
+
+        console.log(allTargets);
+
+        return Rance.getFrom2dArray(fleets, allTargets);
+    };
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="battle.ts"/>
+/// <reference path="targeting.ts"/>
 var fleet1, fleet2, battle, reactUI;
 var Rance;
 (function (Rance) {
