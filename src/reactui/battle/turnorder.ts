@@ -6,7 +6,8 @@ module Rance
     {
       render: function()
       {
-        var turnOrder = this.props.turnOrder.slice(0);
+        var maxUnits = 7;
+        var turnOrder = this.props.turnOrder.slice(0, maxUnits);
 
         if (this.props.potentialDelay)
         {
@@ -22,8 +23,11 @@ module Rance
 
           turnOrder.sort(turnOrderSortFunction);
         }
-        
-        turnOrder = turnOrder.slice(0, 7);
+
+        if (this.props.turnOrder.length !== maxUnits)
+        {
+          turnOrder = turnOrder.slice(0, maxUnits);
+        }
 
         var toRender = [];
 
@@ -61,6 +65,15 @@ module Rance
           toRender.push(
             React.DOM.div(data, unit.name)
           )
+
+        }
+
+        if (this.props.turnOrder.length > maxUnits)
+        {
+          toRender.push(React.DOM.div(
+          {
+            className: "turn-order-more"
+          }, "..."));
         }
 
         return(

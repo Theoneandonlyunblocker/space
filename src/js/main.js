@@ -390,7 +390,8 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
             render: function () {
-                var turnOrder = this.props.turnOrder.slice(0);
+                var maxUnits = 7;
+                var turnOrder = this.props.turnOrder.slice(0, maxUnits);
 
                 if (this.props.potentialDelay) {
                     turnOrder.push({
@@ -404,7 +405,9 @@ var Rance;
                     turnOrder.sort(Rance.turnOrderSortFunction);
                 }
 
-                turnOrder = turnOrder.slice(0, 7);
+                if (this.props.turnOrder.length !== maxUnits) {
+                    turnOrder = turnOrder.slice(0, maxUnits);
+                }
 
                 var toRender = [];
 
@@ -432,6 +435,12 @@ var Rance;
                     }
 
                     toRender.push(React.DOM.div(data, unit.name));
+                }
+
+                if (this.props.turnOrder.length > maxUnits) {
+                    toRender.push(React.DOM.div({
+                        className: "turn-order-more"
+                    }, "..."));
                 }
 
                 return (React.DOM.div({ className: "turn-order-container" }, toRender));
