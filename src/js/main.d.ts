@@ -206,6 +206,7 @@ declare module Rance {
         public removeStrength(amount: number): void;
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
+        public isTargetable(): boolean;
     }
 }
 declare var fleet1: any, fleet2: any, battle: any, reactUI: any;

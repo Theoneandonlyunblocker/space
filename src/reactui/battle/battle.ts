@@ -19,7 +19,8 @@ module Rance
             targetUnit: null,
             parentElement: null
           },
-          hoveredAbility: null
+          hoveredAbility: null,
+          hoveredUnit: null
         });
       },
 
@@ -40,7 +41,7 @@ module Rance
       },
       handleMouseLeaveUnit: function(e)
       {
-        if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip) return;
+        if (!this.state.drawAbilityTooltip && !this.state.hoveredUnit) return;
 
 
         var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -53,11 +54,15 @@ module Rance
 
         if(
           toElement !== this.state.abilityTooltip.parentElement &&
-          toElement !== this.refs.abilityTooltip.getDOMNode() &&
+          (this.refs.abilityTooltip && toElement !== this.refs.abilityTooltip.getDOMNode()) &&
           toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()
         )
         {
           this.clearAbilityTooltip();
+          this.setState(
+          {
+            hoveredUnit: null
+          });
         }
       },
       handleMouseEnterUnit: function(e, unit, facesLeft, parentElement)
@@ -70,7 +75,8 @@ module Rance
             targetUnit: unit,
             parentElement: parentElement,
             facesLeft: facesLeft
-          }
+          },
+          hoveredUnit: unit
         });
       },
 
@@ -152,6 +158,7 @@ module Rance
               {
                 fleet: battle.side1,
                 activeUnit: battle.activeUnit,
+                hoveredUnit: this.state.hoveredUnit,
                 activeTargets: activeTargets,
                 targetsInPotentialArea: this.state.targetsInPotentialArea,
                 handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -167,6 +174,7 @@ module Rance
                 fleet: battle.side2,
                 facesLeft: true,
                 activeUnit: battle.activeUnit,
+                hoveredUnit: this.state.hoveredUnit,
                 activeTargets: activeTargets,
                 targetsInPotentialArea: this.state.targetsInPotentialArea,
                 handleMouseEnterUnit: this.handleMouseEnterUnit,

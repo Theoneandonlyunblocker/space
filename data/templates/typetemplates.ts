@@ -37,7 +37,6 @@ module Rance
         },
         abilities:
         [
-          Abilities.rangedAttack,
           Abilities.closeAttack,
           Abilities.standBy
         ]

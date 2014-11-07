@@ -67,19 +67,8 @@ module Rance
           className: "unit-wrapper"
         };
 
-        var targetable = true;
-
-        if (unit.currentStrength <= 0)
-        {
-          targetable = false;
-          console.log(unit, targetable);
-        }
-
-        if (targetable)
-        {
-          wrapperProps.onMouseEnter = this.handleMouseEnter;
-          wrapperProps.onMouseLeave = this.handleMouseLeave;
-        }
+        wrapperProps.onMouseEnter = this.handleMouseEnter;
+        wrapperProps.onMouseLeave = this.handleMouseLeave;
 
         if (this.props.facesLeft)
         {
@@ -107,6 +96,11 @@ module Rance
         if (isInPotentialTargetArea)
         {
           wrapperProps.className += " target-unit-bg";
+        }
+
+        if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id)
+        {
+          wrapperProps.className += " hovered-unit";
         }
 
         var infoProps =

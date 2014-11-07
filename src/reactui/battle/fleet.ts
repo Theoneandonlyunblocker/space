@@ -20,6 +20,7 @@ module Rance
             column: fleet[i],
             facesLeft: this.props.facesLeft,
             activeUnit: this.props.activeUnit,
+            hoveredUnit: this.props.hoveredUnit,
             handleMouseEnterUnit: this.props.handleMouseEnterUnit,
             handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
             targetsInPotentialArea: this.props.targetsInPotentialArea

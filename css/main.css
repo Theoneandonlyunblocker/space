@@ -22,7 +22,6 @@ body {
 .turn-order-container {
   display: flex;
   flex-flow: row;
-  justify-content: center;
 }
 .turn-order-unit {
   display: flex;
@@ -58,10 +57,19 @@ body {
   flex: none;
   flex-basis: 0px;
   flex-flow: column;
-  height: 62px;
-  border: 1px solid black;
-  background-color: #DDD;
   width: 128px;
+  height: 64px;
+}
+.ability-tooltip-ability {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  max-height: 50%;
+  background-color: #DDD;
+}
+.ability-tooltip-ability:hover {
+  background-color: #AAF;
 }
 .fleets-container {
   display: flex;
@@ -83,6 +91,7 @@ body {
 }
 .unit-wrapper {
   display: flex;
+  position: relative;
   flex-flow: row;
   height: 64px;
   margin: 5px;
@@ -94,16 +103,14 @@ body {
   flex: 1;
   padding: 1px;
 }
-/*
-.unit-container:hover::before
-{
+.hovered-unit::before {
   content: "";
+  pointer-events: none;
   position: absolute;
   border: 3px solid red;
   height: 100%;
   width: 100%;
 }
-*/
 .friendly-unit {
   border: 1px solid black;
   border-right: 0;

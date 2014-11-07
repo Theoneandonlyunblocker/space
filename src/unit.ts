@@ -151,5 +151,9 @@ module Rance
     {
       this.battleStats.moveDelay += amount;
     }
+    isTargetable()
+    {
+      return this.currentStrength > 0;
+    }
   }
 }

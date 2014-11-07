@@ -62,7 +62,21 @@ module Rance
       fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
     }
 
-    return flatten2dArray(fleetsToTarget).filter(Boolean);
+    var fleetFilterFN = function(target: Unit)
+    {
+      if (!Boolean(target))
+      {
+        return false;
+      }
+      else if (!target.isTargetable())
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    return flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
 
 
     throw new Error();

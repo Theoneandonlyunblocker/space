@@ -178,17 +178,8 @@ var Rance;
                     className: "unit-wrapper"
                 };
 
-                var targetable = true;
-
-                if (unit.currentStrength <= 0) {
-                    targetable = false;
-                    console.log(unit, targetable);
-                }
-
-                if (targetable) {
-                    wrapperProps.onMouseEnter = this.handleMouseEnter;
-                    wrapperProps.onMouseLeave = this.handleMouseLeave;
-                }
+                wrapperProps.onMouseEnter = this.handleMouseEnter;
+                wrapperProps.onMouseLeave = this.handleMouseLeave;
 
                 if (this.props.facesLeft) {
                     containerProps.className += " enemy-unit";
@@ -209,6 +200,10 @@ var Rance;
 
                 if (isInPotentialTargetArea) {
                     wrapperProps.className += " target-unit-bg";
+                }
+
+                if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
+                    wrapperProps.className += " hovered-unit";
                 }
 
                 var infoProps = {
@@ -308,6 +303,7 @@ var Rance;
                     data.facesLeft = this.props.facesLeft;
                     data.activeUnit = this.props.activeUnit;
                     data.activeTargets = this.props.activeTargets;
+                    data.hoveredUnit = this.props.hoveredUnit;
                     data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
@@ -342,6 +338,7 @@ var Rance;
                         column: fleet[i],
                         facesLeft: this.props.facesLeft,
                         activeUnit: this.props.activeUnit,
+                        hoveredUnit: this.props.hoveredUnit,
                         handleMouseEnterUnit: this.props.handleMouseEnterUnit,
                         handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
                         targetsInPotentialArea: this.props.targetsInPotentialArea
@@ -521,7 +518,8 @@ var Rance;
                         targetUnit: null,
                         parentElement: null
                     },
-                    hoveredAbility: null
+                    hoveredAbility: null,
+                    hoveredUnit: null
                 });
             },
             clearAbilityTooltip: function () {
@@ -537,7 +535,7 @@ var Rance;
                 });
             },
             handleMouseLeaveUnit: function (e) {
-                if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip)
+                if (!this.state.drawAbilityTooltip && !this.state.hoveredUnit)
                     return;
 
                 var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -547,8 +545,11 @@ var Rance;
                     return;
                 }
 
-                if (toElement !== this.state.abilityTooltip.parentElement && toElement !== this.refs.abilityTooltip.getDOMNode() && toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
+                if (toElement !== this.state.abilityTooltip.parentElement && (this.refs.abilityTooltip && toElement !== this.refs.abilityTooltip.getDOMNode()) && toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
                     this.clearAbilityTooltip();
+                    this.setState({
+                        hoveredUnit: null
+                    });
                 }
             },
             handleMouseEnterUnit: function (e, unit, facesLeft, parentElement) {
@@ -558,7 +559,8 @@ var Rance;
                         targetUnit: unit,
                         parentElement: parentElement,
                         facesLeft: facesLeft
-                    }
+                    },
+                    hoveredUnit: unit
                 });
             },
             handleAbilityUse: function (ability, target) {
@@ -613,6 +615,7 @@ var Rance;
                 }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
+                    hoveredUnit: this.state.hoveredUnit,
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -624,6 +627,7 @@ var Rance;
                     fleet: battle.side2,
                     facesLeft: true,
                     activeUnit: battle.activeUnit,
+                    hoveredUnit: this.state.hoveredUnit,
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -905,7 +909,6 @@ var Rance;
                     speed: 1
                 },
                 abilities: [
-                    Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.closeAttack,
                     Rance.Templates.Abilities.standBy
                 ]
@@ -1103,7 +1106,17 @@ var Rance;
             fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
         }
 
-        return Rance.flatten2dArray(fleetsToTarget).filter(Boolean);
+        var fleetFilterFN = function (target) {
+            if (!Boolean(target)) {
+                return false;
+            } else if (!target.isTargetable()) {
+                return false;
+            }
+
+            return true;
+        };
+
+        return Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
 
         throw new Error();
     }
@@ -1284,6 +1297,9 @@ var Rance;
         };
         Unit.prototype.addMoveDelay = function (amount) {
             this.battleStats.moveDelay += amount;
+        };
+        Unit.prototype.isTargetable = function () {
+            return this.currentStrength > 0;
         };
         return Unit;
     })();
