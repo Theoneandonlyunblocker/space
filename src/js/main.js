@@ -198,7 +198,7 @@ var Rance;
                     wrapperProps.className += " friendly-unit-bg";
                 }
 
-                var isActiveUnit = (unit.id === this.props.activeUnit.id);
+                var isActiveUnit = (this.props.activeUnit && unit.id === this.props.activeUnit.id);
 
                 if (isActiveUnit) {
                     containerProps.className += " active-unit";
@@ -1040,6 +1040,10 @@ var Rance;
     Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
 
     function getTargetsForAllAbilities(battle, user) {
+        if (!user || !battle.activeUnit) {
+            return false;
+        }
+
         var allTargets = {};
 
         for (var i = 0; i < user.abilities.length; i++) {

@@ -92,7 +92,8 @@ module Rance
           wrapperProps.className += " friendly-unit-bg";
         }
 
-        var isActiveUnit = (unit.id === this.props.activeUnit.id);
+        var isActiveUnit = ( this.props.activeUnit &&
+          unit.id === this.props.activeUnit.id);
 
         if (isActiveUnit)
         {

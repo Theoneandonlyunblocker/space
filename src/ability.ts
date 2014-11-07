@@ -132,6 +132,11 @@ module Rance
 
   export function getTargetsForAllAbilities(battle: Battle, user: Unit)
   {
+    if (!user || !battle.activeUnit)
+    {
+      return false;
+    }
+
     var allTargets:
     {
       [id: number]: Templates.AbilityTemplate[];

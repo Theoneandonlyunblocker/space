@@ -166,9 +166,7 @@ declare module Rance {
     function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
     function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
-    function getTargetsForAllAbilities(battle: Battle, user: Unit): {
-        [id: number]: Templates.AbilityTemplate[];
-    };
+    function getTargetsForAllAbilities(battle: Battle, user: Unit): {};
 }
 declare module Rance {
     class Unit {
