@@ -69,18 +69,24 @@ module Rance
         this.props.battle.endTurn();
       },
 
-      handleMouseEnterAbility: function(e, ability)
+      handleMouseEnterAbility: function(ability)
       {
         this.setState(
         {
-          hoveredAbility: ability
+          hoveredAbility: ability,
+          potentialDelay:
+          {
+            id: this.props.battle.activeUnit.id,
+            delay: this.props.battle.activeUnit.battleStats.moveDelay + ability.moveDelay
+          }
         });
       },
-      handleMouseLeaveAbility: function(e)
+      handleMouseLeaveAbility: function()
       {
         this.setState(
         {
-          hoveredAbility: null
+          hoveredAbility: null,
+          potentialDelay: null
         });
       },
 
@@ -117,7 +123,8 @@ module Rance
             UIComponents.TurnOrder(
             {
               turnOrder: battle.turnOrder,
-              unitsBySide: battle.unitsBySide
+              unitsBySide: battle.unitsBySide,
+              potentialDelay: this.state.potentialDelay
             }),
             React.DOM.div({className: "fleets-container"},
               UIComponents.Fleet(

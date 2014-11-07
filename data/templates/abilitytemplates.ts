@@ -48,7 +48,7 @@ module Rance
       export var wholeRowAttack: AbilityTemplate =
       {
         name: "wholeRowAttack",
-        moveDelay: 90,
+        moveDelay: 300,
         actionsUse: 1,
         targetFleets: "all",
         targetingFunction: targetRow,

@@ -6,7 +6,7 @@ module Rance
     {
       render: function()
       {
-        var turnOrder = this.props.turnOrder.slice(0);
+        var turnOrder = this.props.turnOrder.slice(0, 7);
 
         if (this.props.potentialDelay)
         {
@@ -25,17 +25,21 @@ module Rance
 
         var toRender = [];
 
-        for (var i = 0; i < turnOrder.length && i < 8; i++)
+        for (var i = 0; i < turnOrder.length; i++)
         {
           var unit = turnOrder[i];
-
+          
           if (unit.isFake)
           {
+            console.log(turnOrder)
+            console.log("potential delay", this.props.potentialDelay.delay)
+            console.log("unit delay", unit.battleStats.moveDelay)
+
             toRender.push(React.DOM.div(
             {
               className: "turn-order-arrow",
               key: "" + i
-            }));
+            }, "lol"));
             continue;
           }
 

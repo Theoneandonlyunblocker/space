@@ -382,7 +382,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
             render: function () {
-                var turnOrder = this.props.turnOrder.slice(0);
+                var turnOrder = this.props.turnOrder.slice(0, 7);
 
                 if (this.props.potentialDelay) {
                     turnOrder.push({
@@ -398,14 +398,18 @@ var Rance;
 
                 var toRender = [];
 
-                for (var i = 0; i < turnOrder.length && i < 8; i++) {
+                for (var i = 0; i < turnOrder.length; i++) {
                     var unit = turnOrder[i];
 
                     if (unit.isFake) {
+                        console.log(turnOrder);
+                        console.log("potential delay", this.props.potentialDelay.delay);
+                        console.log("unit delay", unit.battleStats.moveDelay);
+
                         toRender.push(React.DOM.div({
                             className: "turn-order-arrow",
                             key: "" + i
-                        }));
+                        }, "lol"));
                         continue;
                     }
 
@@ -436,9 +440,6 @@ var Rance;
         UIComponents.AbilityTooltip = React.createClass({
             handleAbilityUse: function (ability) {
                 this.props.handleAbilityUse(ability, this.props.targetUnit);
-            },
-            handleMouseEnterAbility: function (e, ability) {
-                this.props.handleMouseEnterAbility(e, ability);
             },
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
@@ -476,9 +477,7 @@ var Rance;
                     data.key = i;
                     data.onClick = this.handleAbilityUse.bind(null, ability);
 
-                    data.onMouseEnter = function (e) {
-                        this.handleMouseEnterAbility(e, ability);
-                    }.bind(this);
+                    data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
                     data.onMouseLeave = this.props.handleMouseLeaveAbility;
 
                     abilityElements.push(React.DOM.div(data, ability.name));
@@ -540,17 +539,20 @@ var Rance;
                 this.clearAbilityTooltip();
                 this.props.battle.endTurn();
             },
-            handleMouseEnterAbility: function (e, ability) {
+            handleMouseEnterAbility: function (ability) {
                 this.setState({
-                    hoveredAbility: ability
+                    hoveredAbility: ability,
+                    potentialDelay: {
+                        id: this.props.battle.activeUnit.id,
+                        delay: this.props.battle.activeUnit.battleStats.moveDelay + ability.moveDelay
+                    }
                 });
-                console.log("enter ", ability, this.state.hoveredAbility);
             },
-            handleMouseLeaveAbility: function (e) {
+            handleMouseLeaveAbility: function () {
                 this.setState({
-                    hoveredAbility: null
+                    hoveredAbility: null,
+                    potentialDelay: null
                 });
-                console.log("leave ", this.state.hoveredAbility);
             },
             render: function () {
                 var battle = this.props.battle;
@@ -575,7 +577,8 @@ var Rance;
 
                 return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
-                    unitsBySide: battle.unitsBySide
+                    unitsBySide: battle.unitsBySide,
+                    potentialDelay: this.state.potentialDelay
                 }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
@@ -816,7 +819,7 @@ var Rance;
             };
             Abilities.wholeRowAttack = {
                 name: "wholeRowAttack",
-                moveDelay: 90,
+                moveDelay: 300,
                 actionsUse: 1,
                 targetFleets: "all",
                 targetingFunction: Rance.targetRow,
