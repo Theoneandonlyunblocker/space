@@ -86,13 +86,8 @@ module Rance
     var y = target[1];
     var allTargets = [];
 
-    for (var i = 0; i < fleets[x].length; i++)
-    {
-      if (Math.abs(i - y) <= 1)
-      {
-        allTargets.push([x,i]);
-      }
-    }
+    allTargets.push([x, y-1]);
+    allTargets.push([x, y+1]);
 
     return getFrom2dArray(fleets, allTargets);
   };
@@ -108,13 +103,13 @@ module Rance
     var y = target[1];
     var allTargets = [];
 
-    for (var i = x-1; i < x+1; i++)
-    {
-      allTargets.push([i, y]);
-    }
-
+    allTargets.push([x, y]);
+    allTargets.push([x-1, y]);
+    allTargets.push([x+1, y]);
     allTargets.push([x, y-1]);
     allTargets.push([x, y+1]);
+
+    console.log(target, allTargets);
 
     return getFrom2dArray(fleets, allTargets);
   };

@@ -59,15 +59,15 @@ var Rance;
                 var spentSrc = "img\/icons\/spentAction.png";
 
                 var icons = [];
-                var availableCount = this.props.maxActionPoints - this.props.currentActionPoints;
 
-                for (var i = 0; i < availableCount; i++) {
+                for (var i = 0; i < this.props.currentActionPoints; i++) {
                     icons.push(React.DOM.img({
                         src: availableSrc,
                         key: "available" + i
                     }));
                 }
-                for (var i = 0; i < this.props.maxActionPoints - availableCount; i++) {
+                var availableCount = this.props.maxActionPoints - this.props.currentActionPoints;
+                for (var i = 0; i < availableCount; i++) {
                     icons.push(React.DOM.img({
                         src: spentSrc,
                         key: "spent" + i
@@ -205,7 +205,7 @@ var Rance;
                     },
                     actionProps: {
                         maxActionPoints: unit.maxActionPoints,
-                        currentActionPoints: unit.currentActionPoints
+                        currentActionPoints: unit.battleStats.currentActionPoints
                     }
                 };
 
@@ -405,7 +405,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.AbilityTooltip = React.createClass({
             handleAbilityUse: function (ability) {
-                console.log(ability, this.props.targetUnit);
                 this.props.handleAbilityUse(ability, this.props.targetUnit);
             },
             render: function () {
@@ -499,6 +498,7 @@ var Rance;
             },
             handleAbilityUse: function (ability, target) {
                 Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
+                this.clearAbilityTooltip();
                 this.props.battle.endTurn();
             },
             render: function () {
@@ -697,11 +697,8 @@ var Rance;
         var y = target[1];
         var allTargets = [];
 
-        for (var i = 0; i < fleets[x].length; i++) {
-            if (Math.abs(i - y) <= 1) {
-                allTargets.push([x, i]);
-            }
-        }
+        allTargets.push([x, y - 1]);
+        allTargets.push([x, y + 1]);
 
         return Rance.getFrom2dArray(fleets, allTargets);
     };
@@ -716,12 +713,13 @@ var Rance;
         var y = target[1];
         var allTargets = [];
 
-        for (var i = x - 1; i < x + 1; i++) {
-            allTargets.push([i, y]);
-        }
-
+        allTargets.push([x, y]);
+        allTargets.push([x - 1, y]);
+        allTargets.push([x + 1, y]);
         allTargets.push([x, y - 1]);
         allTargets.push([x, y + 1]);
+
+        console.log(target, allTargets);
 
         return Rance.getFrom2dArray(fleets, allTargets);
     };
@@ -734,7 +732,7 @@ var Rance;
         (function (Abilities) {
             Abilities.rangedAttack = {
                 name: "rangedAttack",
-                delay: 100,
+                moveDelay: 100,
                 actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetSingle,
@@ -745,7 +743,7 @@ var Rance;
             };
             Abilities.closeAttack = {
                 name: "closeAttack",
-                delay: 90,
+                moveDelay: 90,
                 actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetNeighbors,
@@ -756,7 +754,7 @@ var Rance;
             };
             Abilities.standBy = {
                 name: "standBy",
-                delay: 50,
+                moveDelay: 50,
                 actionsUse: 0,
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
@@ -858,7 +856,7 @@ var Rance;
         };
         Battle.prototype.initUnit = function (unit, side, position) {
             unit.resetBattleStats();
-            unit.setBattlePosition(side, position);
+            unit.setBattlePosition(this, side, position);
             this.addUnitToTurnOrder(unit);
         };
         Battle.prototype.removeUnitFromTurnOrder = function (unit) {
@@ -929,6 +927,9 @@ var Rance;
 
             ability.effect.call(null, user, target);
         }
+
+        user.removeActionPoints(ability.actionsUse);
+        user.addMoveDelay(ability.moveDelay);
     }
     Rance.useAbility = useAbility;
     function validateTarget(battle, user, ability, target) {
@@ -1065,7 +1066,7 @@ var Rance;
             var min = 500 * this.template.maxStrength;
             var max = 1000 * this.template.maxStrength;
             this.maxStrength = Rance.randInt(min, max);
-            if (Math.random() > 0.5) {
+            if (true) {
                 this.currentStrength = this.maxStrength;
             } else {
                 this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
@@ -1073,7 +1074,6 @@ var Rance;
         };
         Unit.prototype.setActionPoints = function () {
             this.maxActionPoints = Rance.randInt(3, 6);
-            this.currentActionPoints = Rance.randInt(0, this.maxActionPoints);
         };
         Unit.prototype.setAttributes = function (experience, variance) {
             if (typeof experience === "undefined") { experience = 1; }
@@ -1106,11 +1106,14 @@ var Rance;
         Unit.prototype.resetBattleStats = function () {
             this.battleStats = {
                 moveDelay: this.getBaseMoveDelay(),
+                currentActionPoints: this.maxActionPoints,
+                battle: null,
                 side: null,
                 position: null
             };
         };
-        Unit.prototype.setBattlePosition = function (side, position) {
+        Unit.prototype.setBattlePosition = function (battle, side, position) {
+            this.battleStats.battle = battle;
             this.battleStats.side = side;
             this.battleStats.position = position;
         };
@@ -1120,6 +1123,15 @@ var Rance;
             if (this.currentStrength < 0) {
                 this.currentStrength = 0;
             }
+        };
+        Unit.prototype.removeActionPoints = function (amount) {
+            this.battleStats.currentActionPoints -= amount;
+            if (this.battleStats.currentActionPoints < 0) {
+                this.battleStats.currentActionPoints = 0;
+            }
+        };
+        Unit.prototype.addMoveDelay = function (amount) {
+            this.battleStats.moveDelay += amount;
         };
         return Unit;
     })();

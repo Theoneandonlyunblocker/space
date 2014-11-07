@@ -8,7 +8,7 @@ module Rance
     export interface AbilityTemplate
     {
       name: string;
-      delay: number;
+      moveDelay: number;
       interruptsNeeded?: number;
       actionsUse: number;
       targetFleets: string; // ally, enemy, all
@@ -22,7 +22,7 @@ module Rance
       export var rangedAttack: AbilityTemplate =
       {
         name: "rangedAttack",
-        delay: 100,
+        moveDelay: 100,
         actionsUse: 1,
         targetFleets: "enemy",
         targetingFunction: targetSingle,
@@ -35,7 +35,7 @@ module Rance
       export var closeAttack: AbilityTemplate =
       {
         name: "closeAttack",
-        delay: 90,
+        moveDelay: 90,
         actionsUse: 1,
         targetFleets: "enemy",
         targetingFunction: targetNeighbors,
@@ -48,7 +48,7 @@ module Rance
       export var standBy: AbilityTemplate =
       {
         name: "standBy",
-        delay: 50,
+        moveDelay: 50,
         actionsUse: 0,
         targetFleets: "all",
         targetingFunction: targetSingle,

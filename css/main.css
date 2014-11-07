@@ -148,7 +148,7 @@ body {
   height: 10px;
 }
 .wounded {
-  color: #D3CB28;
+  color: yellow;
 }
 .critical {
   color: red;

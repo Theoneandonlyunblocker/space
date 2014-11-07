@@ -94,7 +94,7 @@ declare module Rance {
     module Templates {
         interface AbilityTemplate {
             name: string;
-            delay: number;
+            moveDelay: number;
             interruptsNeeded?: number;
             actionsUse: number;
             targetFleets: string;
@@ -179,7 +179,6 @@ declare module Rance {
         public currentStrength: number;
         public isSquadron: boolean;
         public maxActionPoints: number;
-        public currentActionPoints: number;
         public attributes: {
             attack: number;
             defence: number;
@@ -187,9 +186,11 @@ declare module Rance {
             speed: number;
         };
         public battleStats: {
+            battle: Rance.Battle;
             moveDelay: number;
             side: string;
             position: number[];
+            currentActionPoints: number;
         };
         public abilities: Rance.Templates.AbilityTemplate[];
         constructor(template: Rance.Templates.TypeTemplate);
@@ -199,8 +200,10 @@ declare module Rance {
         public setAttributes(experience?: number, variance?: number): void;
         public getBaseMoveDelay(): number;
         public resetBattleStats(): void;
-        public setBattlePosition(side: string, position: number[]): void;
+        public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
         public removeStrength(amount: number): void;
+        public removeActionPoints(amount: number): void;
+        public addMoveDelay(amount: number): void;
     }
 }
 declare var fleet1: any, fleet2: any, battle: any, reactUI: any;

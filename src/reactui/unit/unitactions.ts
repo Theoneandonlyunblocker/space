@@ -12,11 +12,8 @@ module Rance
         var spentSrc = "img\/icons\/spentAction.png";
 
         var icons = [];
-        var availableCount = this.props.maxActionPoints - this.props.currentActionPoints;
 
-
-
-        for (var i = 0; i < availableCount; i++)
+        for (var i = 0; i < this.props.currentActionPoints; i++)
         {
           icons.push(React.DOM.img(
             {
@@ -25,7 +22,8 @@ module Rance
             }
           ));
         }
-        for (var i = 0; i < this.props.maxActionPoints - availableCount; i++)
+        var availableCount = this.props.maxActionPoints - this.props.currentActionPoints;
+        for (var i = 0; i < availableCount; i++)
         {
           icons.push(React.DOM.img(
             {

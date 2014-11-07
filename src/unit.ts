@@ -21,7 +21,7 @@ module Rance
     isSquadron: boolean;
 
     maxActionPoints: number;    
-    currentActionPoints: number;
+    
 
     attributes:
     {
@@ -33,9 +33,11 @@ module Rance
 
     battleStats:
     {
+      battle: Battle;
       moveDelay: number;
       side: string;
       position: number[];
+      currentActionPoints: number;
       //queuedAction: Action;
     };
 
@@ -62,7 +64,7 @@ module Rance
       var min = 500 * this.template.maxStrength;
       var max = 1000 * this.template.maxStrength;
       this.maxStrength = randInt(min, max);
-      if (Math.random() > 0.5)
+      if (true)//(Math.random() > 0.5)
       {
         this.currentStrength = this.maxStrength;
       }
@@ -74,7 +76,6 @@ module Rance
     setActionPoints()
     {
       this.maxActionPoints = randInt(3, 6);
-      this.currentActionPoints = randInt(0, this.maxActionPoints);
     }
     setAttributes(experience: number = 1, variance: number = 1)
     {
@@ -110,12 +111,15 @@ module Rance
       this.battleStats =
       {
         moveDelay: this.getBaseMoveDelay(),
+        currentActionPoints: this.maxActionPoints,
+        battle: null,
         side: null,
         position: null
       }
     }
-    setBattlePosition(side: string, position: number[])
+    setBattlePosition(battle: Battle, side: string, position: number[])
     {
+      this.battleStats.battle = battle;
       this.battleStats.side = side;
       this.battleStats.position = position;
     }
@@ -127,6 +131,18 @@ module Rance
       {
         this.currentStrength = 0;
       }
+    }
+    removeActionPoints(amount: number)
+    {
+      this.battleStats.currentActionPoints -= amount;
+      if (this.battleStats.currentActionPoints < 0)
+      {
+        this.battleStats.currentActionPoints = 0;
+      }
+    }
+    addMoveDelay(amount: number)
+    {
+      this.battleStats.moveDelay += amount;
     }
 
   }

@@ -101,7 +101,7 @@ module Rance
           actionProps:
           {
             maxActionPoints: unit.maxActionPoints,
-            currentActionPoints: unit.currentActionPoints
+            currentActionPoints: unit.battleStats.currentActionPoints
           }
         }
 

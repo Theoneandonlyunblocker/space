@@ -73,7 +73,7 @@ module Rance
     initUnit(unit: Unit, side: string, position: number[])
     {
       unit.resetBattleStats();
-      unit.setBattlePosition(side, position);
+      unit.setBattlePosition(this, side, position);
       this.addUnitToTurnOrder(unit);
     }
     removeUnitFromTurnOrder(unit: Unit)

@@ -64,6 +64,7 @@ module Rance
       handleAbilityUse: function(ability, target)
       {
         useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
+        this.clearAbilityTooltip();
         this.props.battle.endTurn();
       },
 

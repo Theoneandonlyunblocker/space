@@ -23,6 +23,9 @@ module Rance
 
       ability.effect.call(null, user, target);
     }
+
+    user.removeActionPoints(ability.actionsUse);
+    user.addMoveDelay(ability.moveDelay);
   }
   export function validateTarget(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate, target: Unit)

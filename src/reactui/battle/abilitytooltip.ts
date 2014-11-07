@@ -7,7 +7,6 @@ module Rance
 
       handleAbilityUse: function(ability)
       {
-        console.log(ability, this.props.targetUnit);
         this.props.handleAbilityUse(ability, this.props.targetUnit)
       },
 
