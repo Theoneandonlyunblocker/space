@@ -1,4 +1,5 @@
 /// <reference path="../../src/targeting.ts" />
+/// <reference path="../../src/unit.ts" />
 
 module Rance
 {
@@ -13,7 +14,7 @@ module Rance
       targetFleets: string; // ally, enemy, all
       targetingFunction: TargetingFunction;
       targetRange: string; // self, close, all
-      //effect: (any) => void;
+      effect: (user: Unit, target: Unit) => void;
     }
 
     export module Abilities
@@ -21,29 +22,38 @@ module Rance
       export var rangedAttack: AbilityTemplate =
       {
         name: "rangedAttack",
-        delay: 0,
+        delay: 100,
         actionsUse: 1,
         targetFleets: "enemy",
-        targetingFunction: targetNeighbors,
-        targetRange: "all"
+        targetingFunction: targetSingle,
+        targetRange: "all",
+        effect: function(user: Unit, target: Unit)
+        {
+          target.removeStrength(100);
+        }
       }
       export var closeAttack: AbilityTemplate =
       {
         name: "closeAttack",
-        delay: 0,
+        delay: 90,
         actionsUse: 1,
         targetFleets: "enemy",
         targetingFunction: targetNeighbors,
-        targetRange: "close"
+        targetRange: "close",
+        effect: function(user: Unit, target: Unit)
+        {
+          target.removeStrength(100);
+        }
       }
       export var standBy: AbilityTemplate =
       {
         name: "standBy",
-        delay: 0,
+        delay: 50,
         actionsUse: 0,
         targetFleets: "all",
         targetingFunction: targetSingle,
-        targetRange: "self"
+        targetRange: "self",
+        effect: function(){}
       }
     }
   }

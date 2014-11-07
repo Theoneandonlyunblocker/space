@@ -61,6 +61,12 @@ module Rance
         });
       },
 
+      handleAbilityUse: function(ability, target)
+      {
+        useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
+        this.props.battle.endTurn();
+      },
+
 
       render: function()
       {
@@ -77,6 +83,7 @@ module Rance
         {
           abilityTooltip = UIComponents.AbilityTooltip(
           {
+            handleAbilityUse: this.handleAbilityUse,
             handleMouseLeave: this.handleMouseLeaveUnit,
             targetUnit: this.state.abilityTooltip.targetUnit,
             parentElement: this.state.abilityTooltip.parentElement,

@@ -100,6 +100,7 @@ declare module Rance {
             targetFleets: string;
             targetingFunction: Rance.TargetingFunction;
             targetRange: string;
+            effect: (user: Rance.Unit, target: Rance.Unit) => void;
         }
         module Abilities {
             var rangedAttack: AbilityTemplate;
@@ -156,11 +157,11 @@ declare module Rance {
         public setActiveUnit(): void;
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
-        public getOpposingFleet(unit: Rance.Unit): void;
     }
 }
 declare module Rance {
-    function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): void;
+    function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): void;
+    function validateTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): boolean;
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
     function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
@@ -199,6 +200,7 @@ declare module Rance {
         public getBaseMoveDelay(): number;
         public resetBattleStats(): void;
         public setBattlePosition(side: string, position: number[]): void;
+        public removeStrength(amount: number): void;
     }
 }
 declare var fleet1: any, fleet2: any, battle: any, reactUI: any;

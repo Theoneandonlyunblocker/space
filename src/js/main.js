@@ -404,6 +404,10 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.AbilityTooltip = React.createClass({
+            handleAbilityUse: function (ability) {
+                console.log(ability, this.props.targetUnit);
+                this.props.handleAbilityUse(ability, this.props.targetUnit);
+            },
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
 
@@ -438,6 +442,7 @@ var Rance;
 
                     data.className = "ability-tooltip-ability";
                     data.key = i;
+                    data.onClick = this.handleAbilityUse.bind(null, ability);
 
                     abilityElements.push(React.DOM.div(data, ability.name));
                 }
@@ -492,6 +497,10 @@ var Rance;
                     }
                 });
             },
+            handleAbilityUse: function (ability, target) {
+                Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
+                this.props.battle.endTurn();
+            },
             render: function () {
                 var battle = this.props.battle;
 
@@ -501,6 +510,7 @@ var Rance;
 
                 if (this.state.drawAbilityTooltip && activeTargets[this.state.abilityTooltip.targetUnit.id]) {
                     abilityTooltip = Rance.UIComponents.AbilityTooltip({
+                        handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
                         targetUnit: this.state.abilityTooltip.targetUnit,
                         parentElement: this.state.abilityTooltip.parentElement,
@@ -713,39 +723,46 @@ var Rance;
         allTargets.push([x, y - 1]);
         allTargets.push([x, y + 1]);
 
-        console.log(allTargets);
-
         return Rance.getFrom2dArray(fleets, allTargets);
     };
 })(Rance || (Rance = {}));
 /// <reference path="../../src/targeting.ts" />
+/// <reference path="../../src/unit.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (Abilities) {
             Abilities.rangedAttack = {
                 name: "rangedAttack",
-                delay: 0,
+                delay: 100,
                 actionsUse: 1,
                 targetFleets: "enemy",
-                targetingFunction: Rance.targetNeighbors,
-                targetRange: "all"
+                targetingFunction: Rance.targetSingle,
+                targetRange: "all",
+                effect: function (user, target) {
+                    target.removeStrength(100);
+                }
             };
             Abilities.closeAttack = {
                 name: "closeAttack",
-                delay: 0,
+                delay: 90,
                 actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetNeighbors,
-                targetRange: "close"
+                targetRange: "close",
+                effect: function (user, target) {
+                    target.removeStrength(100);
+                }
             };
             Abilities.standBy = {
                 name: "standBy",
-                delay: 0,
+                delay: 50,
                 actionsUse: 0,
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
-                targetRange: "self"
+                targetRange: "self",
+                effect: function () {
+                }
             };
         })(Templates.Abilities || (Templates.Abilities = {}));
         var Abilities = Templates.Abilities;
@@ -821,14 +838,16 @@ var Rance;
                             self.unitsById[side[i][j].id] = side[i][j];
                             self.unitsBySide[sideId].push(side[i][j]);
 
-                            self.initUnit(side[i][j], sideId, [i, j]);
+                            var pos = sideId === "side1" ? [i, j] : [i + 2, j];
+
+                            self.initUnit(side[i][j], sideId, pos);
                         }
                     }
                 }
             });
 
             this.maxTurns = 24;
-            this.turnsLeft = 15;
+            this.turnsLeft = this.maxTurns;
             this.updateTurnOrder();
             this.setActiveUnit();
         };
@@ -886,8 +905,6 @@ var Rance;
                 }
             }
         };
-        Battle.prototype.getOpposingFleet = function (unit) {
-        };
         return Battle;
     })();
     Rance.Battle = Battle;
@@ -898,30 +915,48 @@ var Rance;
 /// <reference path="targeting.ts"/>
 var Rance;
 (function (Rance) {
-    function useAbility(battle, user, ability) {
+    function useAbility(battle, user, ability, target) {
+        var isValidTarget = validateTarget(battle, user, ability, target);
+
+        if (!isValidTarget) {
+            console.warn("Invalid target");
+        }
+
+        var targetsInArea = getUnitsInAbilityArea(battle, user, ability, target.battleStats.position);
+
+        for (var i = 0; i < targetsInArea.length; i++) {
+            var target = targetsInArea[i];
+
+            ability.effect.call(null, user, target);
+        }
     }
     Rance.useAbility = useAbility;
+    function validateTarget(battle, user, ability, target) {
+        var potentialTargets = getPotentialTargets(battle, user, ability);
+
+        return potentialTargets.indexOf(target) >= 0;
+    }
+    Rance.validateTarget = validateTarget;
     function getPotentialTargets(battle, user, ability) {
         if (ability.targetRange === "self") {
             return [user];
         }
+        var fleetsToTarget = getFleetsToTarget(battle, user, ability);
 
         if (ability.targetRange === "close") {
-            var closestColumnPerSide = {
-                side1: 1,
-                side2: 0
+            var farColumnForSide = {
+                side1: 0,
+                side2: 3
             };
 
-            if (user.battleStats.position[0] !== closestColumnPerSide[user.battleStats.side]) {
+            if (user.battleStats.position[0] === farColumnForSide[user.battleStats.side]) {
                 return [];
             }
 
             var oppositeSide = Rance.reverseSide(user.battleStats.side);
 
-            return battle[oppositeSide][closestColumnPerSide[oppositeSide]].filter(Boolean);
+            fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
         }
-
-        var fleetsToTarget = getFleetsToTarget(battle, user, ability);
 
         return Rance.flatten2dArray(fleetsToTarget).filter(Boolean);
 
@@ -929,16 +964,33 @@ var Rance;
     }
     Rance.getPotentialTargets = getPotentialTargets;
     function getFleetsToTarget(battle, user, ability) {
+        var nullFleet = [
+            [null, null, null, null],
+            [null, null, null, null]
+        ];
+        var insertNullBefore;
+        var toConcat;
+
         switch (ability.targetFleets) {
             case "all": {
                 return battle.side1.concat(battle.side2);
             }
             case "ally": {
-                return battle[user.battleStats.side];
+                insertNullBefore = user.battleStats.side === "side1" ? false : true;
+                toConcat = battle[user.battleStats.side];
+                break;
             }
             case "enemy": {
-                return battle[Rance.reverseSide(user.battleStats.side)];
+                insertNullBefore = user.battleStats.side === "side1" ? true : false;
+                toConcat = battle[Rance.reverseSide(user.battleStats.side)];
+                break;
             }
+        }
+
+        if (insertNullBefore) {
+            return nullFleet.concat(toConcat);
+        } else {
+            return toConcat.concat(nullFleet);
         }
     }
     Rance.getFleetsToTarget = getFleetsToTarget;
@@ -1061,6 +1113,13 @@ var Rance;
         Unit.prototype.setBattlePosition = function (side, position) {
             this.battleStats.side = side;
             this.battleStats.position = position;
+        };
+
+        Unit.prototype.removeStrength = function (amount) {
+            this.currentStrength -= amount;
+            if (this.currentStrength < 0) {
+                this.currentStrength = 0;
+            }
         };
         return Unit;
     })();

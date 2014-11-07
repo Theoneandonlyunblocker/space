@@ -120,5 +120,14 @@ module Rance
       this.battleStats.position = position;
     }
 
+    removeStrength(amount: number)
+    {
+      this.currentStrength -= amount;
+      if (this.currentStrength < 0)
+      {
+        this.currentStrength = 0;
+      }
+    }
+
   }
 }

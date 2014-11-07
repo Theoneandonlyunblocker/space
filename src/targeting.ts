@@ -116,8 +116,6 @@ module Rance
     allTargets.push([x, y-1]);
     allTargets.push([x, y+1]);
 
-    console.log(allTargets);
-
     return getFrom2dArray(fleets, allTargets);
   };
 }

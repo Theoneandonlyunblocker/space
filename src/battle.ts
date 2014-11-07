@@ -50,14 +50,16 @@ module Rance
               self.unitsById[side[i][j].id] = side[i][j];
               self.unitsBySide[sideId].push(side[i][j]);
 
-              self.initUnit(side[i][j], sideId, [i, j]);
+              var pos = sideId === "side1" ? [i, j] : [i+2, j];
+
+              self.initUnit(side[i][j], sideId, pos);
             }
           }
         }
       });
 
       this.maxTurns = 24;
-      this.turnsLeft = 15;
+      this.turnsLeft = this.maxTurns;
       this.updateTurnOrder();
       this.setActiveUnit();
     }
@@ -128,10 +130,6 @@ module Rance
           return this[side];
         }
       }
-    }
-    getOpposingFleet(unit: Unit)
-    {
-
     }
   }
 }

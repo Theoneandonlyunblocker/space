@@ -6,9 +6,30 @@
 module Rance
 {
   export function useAbility(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate)
+    ability: Templates.AbilityTemplate, target: Unit)
   {
+    var isValidTarget = validateTarget(battle, user, ability, target);
 
+    if (!isValidTarget)
+    {
+      console.warn("Invalid target");
+    }
+
+    var targetsInArea = getUnitsInAbilityArea(battle, user, ability, target.battleStats.position);
+
+    for (var i = 0; i < targetsInArea.length; i++)
+    {
+      var target = targetsInArea[i];
+
+      ability.effect.call(null, user, target);
+    }
+  }
+  export function validateTarget(battle: Battle, user: Unit,
+    ability: Templates.AbilityTemplate, target: Unit)
+  {
+    var potentialTargets = getPotentialTargets(battle, user, ability);
+
+    return potentialTargets.indexOf(target) >= 0;
   }
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate): Unit[]
@@ -17,27 +38,26 @@ module Rance
     {
       return [user];
     }
+    var fleetsToTarget = getFleetsToTarget(battle, user, ability);
 
     if (ability.targetRange === "close")
     {
-      var closestColumnPerSide =
+      var farColumnForSide =
       {
-        side1: 1,
-        side2: 0
+        side1: 0,
+        side2: 3
       };
 
-      if (user.battleStats.position[0] !==
-        closestColumnPerSide[user.battleStats.side])
+      if (user.battleStats.position[0] ===
+        farColumnForSide[user.battleStats.side])
       {
         return [];
       }
 
       var oppositeSide = reverseSide(user.battleStats.side);
 
-      return battle[oppositeSide][closestColumnPerSide[oppositeSide]].filter(Boolean);
+      fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
     }
-
-    var fleetsToTarget = getFleetsToTarget(battle, user, ability);
 
     return flatten2dArray(fleetsToTarget).filter(Boolean);
 
@@ -47,6 +67,14 @@ module Rance
   export function getFleetsToTarget(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate): Unit[][]
   {
+    var nullFleet =
+    [
+      [null, null, null, null],
+      [null, null, null, null]
+    ];
+    var insertNullBefore;
+    var toConcat;
+
     switch (ability.targetFleets)
     {
       case "all":
@@ -55,12 +83,25 @@ module Rance
       }
       case "ally":
       {
-        return battle[user.battleStats.side];
+        insertNullBefore = user.battleStats.side === "side1" ? false : true;
+        toConcat = battle[user.battleStats.side];
+        break;
       }
       case "enemy":
       {
-        return battle[reverseSide(user.battleStats.side)];
+        insertNullBefore = user.battleStats.side === "side1" ? true : false;
+        toConcat = battle[reverseSide(user.battleStats.side)];
+        break;
       }
+    }
+
+    if (insertNullBefore)
+    {
+      return nullFleet.concat(toConcat);
+    }
+    else
+    {
+      return toConcat.concat(nullFleet);
     }
   }
   export function getPotentialTargetsByPosition(battle: Battle, user: Unit,

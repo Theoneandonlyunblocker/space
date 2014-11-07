@@ -4,6 +4,13 @@ module Rance
   {
     export var AbilityTooltip = React.createClass(
     {
+
+      handleAbilityUse: function(ability)
+      {
+        console.log(ability, this.props.targetUnit);
+        this.props.handleAbilityUse(ability, this.props.targetUnit)
+      },
+
       render: function()
       {
         var abilities = this.props.activeTargets[this.props.targetUnit.id];
@@ -46,6 +53,7 @@ module Rance
 
           data.className = "ability-tooltip-ability";
           data.key = i;
+          data.onClick = this.handleAbilityUse.bind(null, ability);
 
           abilityElements.push(
             React.DOM.div(data,
