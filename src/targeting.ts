@@ -86,6 +86,7 @@ module Rance
     var y = target[1];
     var allTargets = [];
 
+    allTargets.push([x, y]);
     allTargets.push([x, y-1]);
     allTargets.push([x, y+1]);
 

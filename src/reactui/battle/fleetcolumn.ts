@@ -23,6 +23,7 @@ module Rance
           data.activeTargets = this.props.activeTargets;
           data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
           data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
+          data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
           if (!column[i])
           {

@@ -205,6 +205,12 @@ var Rance;
                     wrapperProps.className += " active-unit-bg";
                 }
 
+                var isInPotentialTargetArea = (this.props.targetsInPotentialArea && this.props.targetsInPotentialArea.indexOf(unit) >= 0);
+
+                if (isInPotentialTargetArea) {
+                    wrapperProps.className += " target-unit-bg";
+                }
+
                 var infoProps = {
                     key: "info",
                     name: unit.name,
@@ -304,6 +310,7 @@ var Rance;
                     data.activeTargets = this.props.activeTargets;
                     data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
+                    data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
                     if (!column[i]) {
                         units.push(Rance.UIComponents.EmptyUnit(data));
@@ -336,7 +343,8 @@ var Rance;
                         facesLeft: this.props.facesLeft,
                         activeUnit: this.props.activeUnit,
                         handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-                        handleMouseLeaveUnit: this.props.handleMouseLeaveUnit
+                        handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
+                        targetsInPotentialArea: this.props.targetsInPotentialArea
                     }));
                 }
 
@@ -506,7 +514,10 @@ var Rance;
                     abilityTooltip: {
                         targetUnit: null,
                         parentElement: null
-                    }
+                    },
+                    hoveredAbility: null,
+                    potentialDelay: null,
+                    targetsInPotentialArea: []
                 });
             },
             handleMouseLeaveUnit: function (e) {
@@ -538,18 +549,22 @@ var Rance;
                 this.props.battle.endTurn();
             },
             handleMouseEnterAbility: function (ability) {
+                var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.abilityTooltip.targetUnit.battleStats.position);
+
                 this.setState({
                     hoveredAbility: ability,
                     potentialDelay: {
                         id: this.props.battle.activeUnit.id,
                         delay: this.props.battle.activeUnit.battleStats.moveDelay + ability.moveDelay
-                    }
+                    },
+                    targetsInPotentialArea: targetsInPotentialArea
                 });
             },
             handleMouseLeaveAbility: function () {
                 this.setState({
                     hoveredAbility: null,
-                    potentialDelay: null
+                    potentialDelay: null,
+                    targetsInPotentialArea: []
                 });
             },
             render: function () {
@@ -581,6 +596,7 @@ var Rance;
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
                     activeTargets: activeTargets,
+                    targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
                     handleMouseLeaveUnit: this.handleMouseLeaveUnit
                 }), Rance.UIComponents.TurnCounter({
@@ -591,6 +607,7 @@ var Rance;
                     facesLeft: true,
                     activeUnit: battle.activeUnit,
                     activeTargets: activeTargets,
+                    targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
                     handleMouseLeaveUnit: this.handleMouseLeaveUnit
                 }), abilityTooltip)));
@@ -760,6 +777,7 @@ var Rance;
         var y = target[1];
         var allTargets = [];
 
+        allTargets.push([x, y]);
         allTargets.push([x, y - 1]);
         allTargets.push([x, y + 1]);
 
@@ -809,7 +827,7 @@ var Rance;
                 moveDelay: 90,
                 actionsUse: 2,
                 targetFleets: "enemy",
-                targetingFunction: Rance.targetSingle,
+                targetingFunction: Rance.targetColumnNeighbors,
                 targetRange: "close",
                 effect: function (user, target) {
                     target.removeStrength(100);

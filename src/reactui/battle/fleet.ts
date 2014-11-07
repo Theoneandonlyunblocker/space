@@ -21,7 +21,8 @@ module Rance
             facesLeft: this.props.facesLeft,
             activeUnit: this.props.activeUnit,
             handleMouseEnterUnit: this.props.handleMouseEnterUnit,
-            handleMouseLeaveUnit: this.props.handleMouseLeaveUnit
+            handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
+            targetsInPotentialArea: this.props.targetsInPotentialArea
           }));
         }
 

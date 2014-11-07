@@ -101,6 +101,14 @@ module Rance
           wrapperProps.className += " active-unit-bg";
         }
 
+        var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&
+          this.props.targetsInPotentialArea.indexOf(unit) >= 0);
+
+        if (isInPotentialTargetArea)
+        {
+          wrapperProps.className += " target-unit-bg";
+        }
+
         var infoProps =
         {
           key: "info",

@@ -32,7 +32,10 @@ module Rance
           {
             targetUnit: null,
             parentElement: null
-          }
+          },
+          hoveredAbility: null,
+          potentialDelay: null,
+          targetsInPotentialArea: []
         });
       },
       handleMouseLeaveUnit: function(e)
@@ -77,6 +80,13 @@ module Rance
 
       handleMouseEnterAbility: function(ability)
       {
+        var targetsInPotentialArea = getUnitsInAbilityArea(
+          this.props.battle,
+          this.props.battle.activeUnit,
+          ability,
+          this.state.abilityTooltip.targetUnit.battleStats.position
+        )
+
         this.setState(
         {
           hoveredAbility: ability,
@@ -84,7 +94,8 @@ module Rance
           {
             id: this.props.battle.activeUnit.id,
             delay: this.props.battle.activeUnit.battleStats.moveDelay + ability.moveDelay
-          }
+          },
+          targetsInPotentialArea: targetsInPotentialArea
         });
       },
       handleMouseLeaveAbility: function()
@@ -92,7 +103,8 @@ module Rance
         this.setState(
         {
           hoveredAbility: null,
-          potentialDelay: null
+          potentialDelay: null,
+          targetsInPotentialArea: []
         });
       },
 
@@ -138,6 +150,7 @@ module Rance
                 fleet: battle.side1,
                 activeUnit: battle.activeUnit,
                 activeTargets: activeTargets,
+                targetsInPotentialArea: this.state.targetsInPotentialArea,
                 handleMouseEnterUnit: this.handleMouseEnterUnit,
                 handleMouseLeaveUnit: this.handleMouseLeaveUnit
               }),
@@ -152,6 +165,7 @@ module Rance
                 facesLeft: true,
                 activeUnit: battle.activeUnit,
                 activeTargets: activeTargets,
+                targetsInPotentialArea: this.state.targetsInPotentialArea,
                 handleMouseEnterUnit: this.handleMouseEnterUnit,
                 handleMouseLeaveUnit: this.handleMouseLeaveUnit
               }),

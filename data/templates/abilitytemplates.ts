@@ -38,7 +38,7 @@ module Rance
         moveDelay: 90,
         actionsUse: 2,
         targetFleets: "enemy",
-        targetingFunction: targetSingle,
+        targetingFunction: targetColumnNeighbors,
         targetRange: "close",
         effect: function(user: Unit, target: Unit)
         {
