@@ -4,12 +4,6 @@ module Rance
   {
     export var AbilityTooltip = React.createClass(
     {
-
-      handleAbilityUse: function(ability)
-      {
-        this.props.handleAbilityUse(ability, this.props.targetUnit)
-      },
-
       render: function()
       {
         var abilities = this.props.activeTargets[this.props.targetUnit.id];
@@ -52,7 +46,7 @@ module Rance
 
           data.className = "ability-tooltip-ability";
           data.key = i;
-          data.onClick = this.handleAbilityUse.bind(null, ability);
+          data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
 
           data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
           data.onMouseLeave = this.props.handleMouseLeaveAbility;

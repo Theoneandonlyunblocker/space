@@ -28,18 +28,14 @@ module Rance
         for (var i = 0; i < turnOrder.length; i++)
         {
           var unit = turnOrder[i];
-          
+
           if (unit.isFake)
           {
-            console.log(turnOrder)
-            console.log("potential delay", this.props.potentialDelay.delay)
-            console.log("unit delay", unit.battleStats.moveDelay)
-
             toRender.push(React.DOM.div(
             {
               className: "turn-order-arrow",
               key: "" + i
-            }, "lol"));
+            }, "next"));
             continue;
           }
 

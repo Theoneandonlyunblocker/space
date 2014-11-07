@@ -402,14 +402,10 @@ var Rance;
                     var unit = turnOrder[i];
 
                     if (unit.isFake) {
-                        console.log(turnOrder);
-                        console.log("potential delay", this.props.potentialDelay.delay);
-                        console.log("unit delay", unit.battleStats.moveDelay);
-
                         toRender.push(React.DOM.div({
                             className: "turn-order-arrow",
                             key: "" + i
-                        }, "lol"));
+                        }, "next"));
                         continue;
                     }
 
@@ -438,9 +434,6 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.AbilityTooltip = React.createClass({
-            handleAbilityUse: function (ability) {
-                this.props.handleAbilityUse(ability, this.props.targetUnit);
-            },
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
 
@@ -475,7 +468,7 @@ var Rance;
 
                     data.className = "ability-tooltip-ability";
                     data.key = i;
-                    data.onClick = this.handleAbilityUse.bind(null, ability);
+                    data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
 
                     data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
                     data.onMouseLeave = this.props.handleMouseLeaveAbility;
@@ -519,6 +512,11 @@ var Rance;
             handleMouseLeaveUnit: function (e) {
                 if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip)
                     return;
+
+                if (!e.nativeEvent.toElement) {
+                    this.clearAbilityTooltip();
+                    return;
+                }
 
                 if (e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement && e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode() && e.nativeEvent.toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
                     this.clearAbilityTooltip();
