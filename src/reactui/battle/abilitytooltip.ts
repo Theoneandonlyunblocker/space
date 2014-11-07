@@ -10,6 +10,11 @@ module Rance
         this.props.handleAbilityUse(ability, this.props.targetUnit)
       },
 
+      handleMouseEnterAbility: function(e, ability)
+      {
+        this.props.handleMouseEnterAbility(e, ability);
+      },
+
       render: function()
       {
         var abilities = this.props.activeTargets[this.props.targetUnit.id];
@@ -53,6 +58,12 @@ module Rance
           data.className = "ability-tooltip-ability";
           data.key = i;
           data.onClick = this.handleAbilityUse.bind(null, ability);
+
+          data.onMouseEnter = function(e)
+          {
+            this.handleMouseEnterAbility(e, ability);
+          }.bind(this);
+          data.onMouseLeave = this.props.handleMouseLeaveAbility;
 
           abilityElements.push(
             React.DOM.div(data,

@@ -92,18 +92,6 @@ module Rance
     }
     updateTurnOrder()
     {
-      function turnOrderSortFunction(a: Unit, b: Unit)
-      {
-        if (a.battleStats.moveDelay !== b.battleStats.moveDelay)
-        {
-          return a.battleStats.moveDelay - b.battleStats.moveDelay;
-        }
-        else
-        {
-          return a.id - b.id;
-        }
-      }
-
       this.turnOrder.sort(turnOrderSortFunction);
 
       function turnOrderFilterFunction(unit: Unit)

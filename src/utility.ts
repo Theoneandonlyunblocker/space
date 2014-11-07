@@ -62,4 +62,16 @@ module Rance
       }
     }
   }
+
+  export function turnOrderSortFunction(a: Unit, b: Unit)
+  {
+    if (a.battleStats.moveDelay !== b.battleStats.moveDelay)
+    {
+      return a.battleStats.moveDelay - b.battleStats.moveDelay;
+    }
+    else
+    {
+      return a.id - b.id;
+    }
+  }
 }

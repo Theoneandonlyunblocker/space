@@ -38,13 +38,27 @@ module Rance
         moveDelay: 90,
         actionsUse: 2,
         targetFleets: "enemy",
-        targetingFunction: targetNeighbors,
+        targetingFunction: targetSingle,
         targetRange: "close",
         effect: function(user: Unit, target: Unit)
         {
           target.removeStrength(100);
         }
       }
+      export var wholeRowAttack: AbilityTemplate =
+      {
+        name: "wholeRowAttack",
+        moveDelay: 90,
+        actionsUse: 1,
+        targetFleets: "all",
+        targetingFunction: targetRow,
+        targetRange: "all",
+        effect: function(user: Unit, target: Unit)
+        {
+          target.removeStrength(100);
+        }
+      }
+
       export var standBy: AbilityTemplate =
       {
         name: "standBy",

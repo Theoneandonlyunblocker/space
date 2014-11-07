@@ -78,6 +78,7 @@ declare module Rance {
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
+    function turnOrderSortFunction(a: Unit, b: Unit): number;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -105,6 +106,7 @@ declare module Rance {
         module Abilities {
             var rangedAttack: AbilityTemplate;
             var closeAttack: AbilityTemplate;
+            var wholeRowAttack: AbilityTemplate;
             var standBy: AbilityTemplate;
         }
     }

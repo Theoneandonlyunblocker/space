@@ -6,13 +6,38 @@ module Rance
     {
       render: function()
       {
-        var turnOrder = this.props.turnOrder;
+        var turnOrder = this.props.turnOrder.slice(0);
+
+        if (this.props.potentialDelay)
+        {
+          turnOrder.push(
+          {
+            isFake: true,
+            id: this.props.potentialDelay.id,
+            battleStats:
+            {
+              moveDelay: this.props.potentialDelay.delay
+            }
+          });
+
+          turnOrder.sort(turnOrderSortFunction);
+        }
 
         var toRender = [];
 
         for (var i = 0; i < turnOrder.length && i < 8; i++)
         {
           var unit = turnOrder[i];
+
+          if (unit.isFake)
+          {
+            toRender.push(React.DOM.div(
+            {
+              className: "turn-order-arrow",
+              key: "" + i
+            }));
+            continue;
+          }
 
           var data =
           {

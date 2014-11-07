@@ -18,7 +18,8 @@ module Rance
           {
             targetUnit: null,
             parentElement: null
-          }
+          },
+          hoveredAbility: null
         });
       },
 
@@ -68,6 +69,21 @@ module Rance
         this.props.battle.endTurn();
       },
 
+      handleMouseEnterAbility: function(e, ability)
+      {
+        this.setState(
+        {
+          hoveredAbility: ability
+        });
+      },
+      handleMouseLeaveAbility: function(e)
+      {
+        this.setState(
+        {
+          hoveredAbility: null
+        });
+      },
+
 
       render: function()
       {
@@ -86,6 +102,8 @@ module Rance
           {
             handleAbilityUse: this.handleAbilityUse,
             handleMouseLeave: this.handleMouseLeaveUnit,
+            handleMouseEnterAbility: this.handleMouseEnterAbility,
+            handleMouseLeaveAbility: this.handleMouseLeaveAbility,
             targetUnit: this.state.abilityTooltip.targetUnit,
             parentElement: this.state.abilityTooltip.parentElement,
             facesLeft: this.state.abilityTooltip.facesLeft,

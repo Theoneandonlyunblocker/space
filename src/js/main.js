@@ -382,12 +382,32 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
             render: function () {
-                var turnOrder = this.props.turnOrder;
+                var turnOrder = this.props.turnOrder.slice(0);
+
+                if (this.props.potentialDelay) {
+                    turnOrder.push({
+                        isFake: true,
+                        id: this.props.potentialDelay.id,
+                        battleStats: {
+                            moveDelay: this.props.potentialDelay.delay
+                        }
+                    });
+
+                    turnOrder.sort(Rance.turnOrderSortFunction);
+                }
 
                 var toRender = [];
 
                 for (var i = 0; i < turnOrder.length && i < 8; i++) {
                     var unit = turnOrder[i];
+
+                    if (unit.isFake) {
+                        toRender.push(React.DOM.div({
+                            className: "turn-order-arrow",
+                            key: "" + i
+                        }));
+                        continue;
+                    }
 
                     var data = {
                         key: "" + i,
@@ -416,6 +436,9 @@ var Rance;
         UIComponents.AbilityTooltip = React.createClass({
             handleAbilityUse: function (ability) {
                 this.props.handleAbilityUse(ability, this.props.targetUnit);
+            },
+            handleMouseEnterAbility: function (e, ability) {
+                this.props.handleMouseEnterAbility(e, ability);
             },
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
@@ -453,6 +476,11 @@ var Rance;
                     data.key = i;
                     data.onClick = this.handleAbilityUse.bind(null, ability);
 
+                    data.onMouseEnter = function (e) {
+                        this.handleMouseEnterAbility(e, ability);
+                    }.bind(this);
+                    data.onMouseLeave = this.props.handleMouseLeaveAbility;
+
                     abilityElements.push(React.DOM.div(data, ability.name));
                 }
 
@@ -476,7 +504,8 @@ var Rance;
                     abilityTooltip: {
                         targetUnit: null,
                         parentElement: null
-                    }
+                    },
+                    hoveredAbility: null
                 });
             },
             clearAbilityTooltip: function () {
@@ -511,6 +540,18 @@ var Rance;
                 this.clearAbilityTooltip();
                 this.props.battle.endTurn();
             },
+            handleMouseEnterAbility: function (e, ability) {
+                this.setState({
+                    hoveredAbility: ability
+                });
+                console.log("enter ", ability, this.state.hoveredAbility);
+            },
+            handleMouseLeaveAbility: function (e) {
+                this.setState({
+                    hoveredAbility: null
+                });
+                console.log("leave ", this.state.hoveredAbility);
+            },
             render: function () {
                 var battle = this.props.battle;
 
@@ -522,6 +563,8 @@ var Rance;
                     abilityTooltip = Rance.UIComponents.AbilityTooltip({
                         handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
+                        handleMouseEnterAbility: this.handleMouseEnterAbility,
+                        handleMouseLeaveAbility: this.handleMouseLeaveAbility,
                         targetUnit: this.state.abilityTooltip.targetUnit,
                         parentElement: this.state.abilityTooltip.parentElement,
                         facesLeft: this.state.abilityTooltip.facesLeft,
@@ -634,6 +677,15 @@ var Rance;
         }
     }
     Rance.reverseSide = reverseSide;
+
+    function turnOrderSortFunction(a, b) {
+        if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
+            return a.battleStats.moveDelay - b.battleStats.moveDelay;
+        } else {
+            return a.id - b.id;
+        }
+    }
+    Rance.turnOrderSortFunction = turnOrderSortFunction;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -756,12 +808,24 @@ var Rance;
                 moveDelay: 90,
                 actionsUse: 2,
                 targetFleets: "enemy",
-                targetingFunction: Rance.targetNeighbors,
+                targetingFunction: Rance.targetSingle,
                 targetRange: "close",
                 effect: function (user, target) {
                     target.removeStrength(100);
                 }
             };
+            Abilities.wholeRowAttack = {
+                name: "wholeRowAttack",
+                moveDelay: 90,
+                actionsUse: 1,
+                targetFleets: "all",
+                targetingFunction: Rance.targetRow,
+                targetRange: "all",
+                effect: function (user, target) {
+                    target.removeStrength(100);
+                }
+            };
+
             Abilities.standBy = {
                 name: "standBy",
                 moveDelay: 50,
@@ -812,7 +876,7 @@ var Rance;
                 },
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.closeAttack,
+                    Rance.Templates.Abilities.wholeRowAttack,
                     Rance.Templates.Abilities.standBy
                 ]
             };
@@ -884,15 +948,7 @@ var Rance;
             this.turnOrder.push(unit);
         };
         Battle.prototype.updateTurnOrder = function () {
-            function turnOrderSortFunction(a, b) {
-                if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
-                    return a.battleStats.moveDelay - b.battleStats.moveDelay;
-                } else {
-                    return a.id - b.id;
-                }
-            }
-
-            this.turnOrder.sort(turnOrderSortFunction);
+            this.turnOrder.sort(Rance.turnOrderSortFunction);
 
             function turnOrderFilterFunction(unit) {
                 if (unit.battleStats.currentActionPoints <= 0) {
