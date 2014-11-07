@@ -439,7 +439,8 @@ var Rance;
 
                 if (this.props.turnOrder.length > maxUnits) {
                     toRender.push(React.DOM.div({
-                        className: "turn-order-more"
+                        className: "turn-order-more",
+                        key: "more"
                     }, "..."));
                 }
 
@@ -535,12 +536,14 @@ var Rance;
                 if (!this.state.drawAbilityTooltip || !this.refs.abilityTooltip)
                     return;
 
-                if (!e.nativeEvent.toElement) {
+                var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
+
+                if (!toElement) {
                     this.clearAbilityTooltip();
                     return;
                 }
 
-                if (e.nativeEvent.toElement !== this.state.abilityTooltip.parentElement && e.nativeEvent.toElement !== this.refs.abilityTooltip.getDOMNode() && e.nativeEvent.toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
+                if (toElement !== this.state.abilityTooltip.parentElement && toElement !== this.refs.abilityTooltip.getDOMNode() && toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
                     this.clearAbilityTooltip();
                 }
             },

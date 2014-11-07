@@ -72,7 +72,8 @@ module Rance
         {
           toRender.push(React.DOM.div(
           {
-            className: "turn-order-more"
+            className: "turn-order-more",
+            key: "more"
           }, "..."));
         }
 
