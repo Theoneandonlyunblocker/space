@@ -391,23 +391,27 @@ var Rance;
         UIComponents.TurnOrder = React.createClass({
             render: function () {
                 var maxUnits = 7;
-                var turnOrder = this.props.turnOrder.slice(0, maxUnits);
+                var turnOrder = this.props.turnOrder.slice(0);
 
                 if (this.props.potentialDelay) {
-                    turnOrder.push({
+                    var fake = {
                         isFake: true,
                         id: this.props.potentialDelay.id,
                         battleStats: {
                             moveDelay: this.props.potentialDelay.delay
                         }
-                    });
+                    };
+
+                    turnOrder.push(fake);
 
                     turnOrder.sort(Rance.turnOrderSortFunction);
                 }
 
-                if (this.props.turnOrder.length !== maxUnits) {
-                    turnOrder = turnOrder.slice(0, maxUnits);
+                if (fake && turnOrder.indexOf(fake) <= maxUnits) {
+                    maxUnits++;
                 }
+
+                turnOrder = turnOrder.slice(0, maxUnits);
 
                 var toRender = [];
 
