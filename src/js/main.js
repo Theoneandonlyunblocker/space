@@ -175,10 +175,20 @@ var Rance;
                     key: "container"
                 };
                 var wrapperProps = {
-                    className: "unit-wrapper",
-                    onMouseEnter: this.handleMouseEnter,
-                    onMouseLeave: this.handleMouseLeave
+                    className: "unit-wrapper"
                 };
+
+                var targetable = true;
+
+                if (unit.currentStrength <= 0) {
+                    targetable = false;
+                    console.log(unit, targetable);
+                }
+
+                if (targetable) {
+                    wrapperProps.onMouseEnter = this.handleMouseEnter;
+                    wrapperProps.onMouseLeave = this.handleMouseLeave;
+                }
 
                 if (this.props.facesLeft) {
                     containerProps.className += " enemy-unit";
@@ -744,7 +754,7 @@ var Rance;
             Abilities.closeAttack = {
                 name: "closeAttack",
                 moveDelay: 90,
-                actionsUse: 1,
+                actionsUse: 2,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "close",
@@ -755,7 +765,7 @@ var Rance;
             Abilities.standBy = {
                 name: "standBy",
                 moveDelay: 50,
-                actionsUse: 0,
+                actionsUse: "all",
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
@@ -883,6 +893,20 @@ var Rance;
             }
 
             this.turnOrder.sort(turnOrderSortFunction);
+
+            function turnOrderFilterFunction(unit) {
+                if (unit.battleStats.currentActionPoints <= 0) {
+                    return false;
+                }
+
+                if (unit.currentStrength <= 0) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
         };
         Battle.prototype.setActiveUnit = function () {
             this.activeUnit = this.turnOrder[0];
@@ -1125,9 +1149,13 @@ var Rance;
             }
         };
         Unit.prototype.removeActionPoints = function (amount) {
-            this.battleStats.currentActionPoints -= amount;
-            if (this.battleStats.currentActionPoints < 0) {
+            if (amount === "all") {
                 this.battleStats.currentActionPoints = 0;
+            } else if (isFinite(amount)) {
+                this.battleStats.currentActionPoints -= amount;
+                if (this.battleStats.currentActionPoints < 0) {
+                    this.battleStats.currentActionPoints = 0;
+                }
             }
         };
         Unit.prototype.addMoveDelay = function (amount) {

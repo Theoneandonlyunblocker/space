@@ -96,7 +96,7 @@ declare module Rance {
             name: string;
             moveDelay: number;
             interruptsNeeded?: number;
-            actionsUse: number;
+            actionsUse: any;
             targetFleets: string;
             targetingFunction: Rance.TargetingFunction;
             targetRange: string;
@@ -202,7 +202,7 @@ declare module Rance {
         public resetBattleStats(): void;
         public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
         public removeStrength(amount: number): void;
-        public removeActionPoints(amount: number): void;
+        public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
     }
 }

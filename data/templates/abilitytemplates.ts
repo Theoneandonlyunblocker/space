@@ -10,7 +10,7 @@ module Rance
       name: string;
       moveDelay: number;
       interruptsNeeded?: number;
-      actionsUse: number;
+      actionsUse: any; // number or "all"
       targetFleets: string; // ally, enemy, all
       targetingFunction: TargetingFunction;
       targetRange: string; // self, close, all
@@ -36,7 +36,7 @@ module Rance
       {
         name: "closeAttack",
         moveDelay: 90,
-        actionsUse: 1,
+        actionsUse: 2,
         targetFleets: "enemy",
         targetingFunction: targetNeighbors,
         targetRange: "close",
@@ -49,7 +49,7 @@ module Rance
       {
         name: "standBy",
         moveDelay: 50,
-        actionsUse: 0,
+        actionsUse: "all",
         targetFleets: "all",
         targetingFunction: targetSingle,
         targetRange: "self",

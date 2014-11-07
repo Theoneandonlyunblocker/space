@@ -57,17 +57,29 @@ module Rance
       {
         var unit = this.props.unit;
 
-        var containerProps =
+        var containerProps: any =
         {
           className: "unit-container",
           key: "container"
         };
-        var wrapperProps =
+        var wrapperProps: any =
         {
-          className: "unit-wrapper",
-          onMouseEnter: this.handleMouseEnter,
-          onMouseLeave: this.handleMouseLeave
+          className: "unit-wrapper"
         };
+
+        var targetable = true;
+
+        if (unit.currentStrength <= 0)
+        {
+          targetable = false;
+          console.log(unit, targetable);
+        }
+
+        if (targetable)
+        {
+          wrapperProps.onMouseEnter = this.handleMouseEnter;
+          wrapperProps.onMouseLeave = this.handleMouseLeave;
+        }
 
         if (this.props.facesLeft)
         {

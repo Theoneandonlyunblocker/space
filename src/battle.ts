@@ -105,6 +105,23 @@ module Rance
       }
 
       this.turnOrder.sort(turnOrderSortFunction);
+
+      function turnOrderFilterFunction(unit: Unit)
+      {
+        if (unit.battleStats.currentActionPoints <= 0)
+        {
+          return false;
+        }
+
+        if (unit.currentStrength <= 0)
+        {
+          return false;
+        }
+
+        return true;
+      }
+
+      this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
     }
     setActiveUnit()
     {

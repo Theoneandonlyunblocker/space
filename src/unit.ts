@@ -132,18 +132,24 @@ module Rance
         this.currentStrength = 0;
       }
     }
-    removeActionPoints(amount: number)
+    removeActionPoints(amount: any)
     {
-      this.battleStats.currentActionPoints -= amount;
-      if (this.battleStats.currentActionPoints < 0)
+      if (amount === "all")
       {
         this.battleStats.currentActionPoints = 0;
+      }
+      else if (isFinite(amount))
+      {
+        this.battleStats.currentActionPoints -= amount;
+        if (this.battleStats.currentActionPoints < 0)
+        {
+          this.battleStats.currentActionPoints = 0;
+        }
       }
     }
     addMoveDelay(amount: number)
     {
       this.battleStats.moveDelay += amount;
     }
-
   }
 }
