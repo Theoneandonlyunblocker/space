@@ -17,6 +17,7 @@ body {
 .battle-container {
   display: flex;
   flex-flow: column;
+  position: relative;
 }
 .turn-order-container {
   display: flex;
@@ -36,6 +37,19 @@ body {
 }
 .turn-order-unit-enemy {
   background-color: red;
+}
+.turn-order-arrow {
+  position: relative;
+}
+.turn-order-arrow::before {
+  content: " ";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: -20px;
+  left: -10px;
+  background-color: black;
+  z-index: 101;
 }
 .ability-tooltip {
   position: absolute;

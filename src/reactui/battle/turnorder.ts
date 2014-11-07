@@ -6,7 +6,7 @@ module Rance
     {
       render: function()
       {
-        var turnOrder = this.props.turnOrder.slice(0, 7);
+        var turnOrder = this.props.turnOrder.slice(0);
 
         if (this.props.potentialDelay)
         {
@@ -22,6 +22,8 @@ module Rance
 
           turnOrder.sort(turnOrderSortFunction);
         }
+        
+        turnOrder = turnOrder.slice(0, 7);
 
         var toRender = [];
 
@@ -35,7 +37,7 @@ module Rance
             {
               className: "turn-order-arrow",
               key: "" + i
-            }, "next"));
+            }));
             continue;
           }
 

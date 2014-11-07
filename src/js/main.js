@@ -390,7 +390,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
             render: function () {
-                var turnOrder = this.props.turnOrder.slice(0, 7);
+                var turnOrder = this.props.turnOrder.slice(0);
 
                 if (this.props.potentialDelay) {
                     turnOrder.push({
@@ -404,6 +404,8 @@ var Rance;
                     turnOrder.sort(Rance.turnOrderSortFunction);
                 }
 
+                turnOrder = turnOrder.slice(0, 7);
+
                 var toRender = [];
 
                 for (var i = 0; i < turnOrder.length; i++) {
@@ -413,7 +415,7 @@ var Rance;
                         toRender.push(React.DOM.div({
                             className: "turn-order-arrow",
                             key: "" + i
-                        }, "next"));
+                        }));
                         continue;
                     }
 
@@ -1284,7 +1286,7 @@ var Rance;
 
         [fleet1, fleet2].forEach(function (fleet) {
             for (var i = 0; i < 2; i++) {
-                var emptySlot = 6;
+                var emptySlot = Rance.randInt(0, 3);
                 var row = [];
                 for (var j = 0; j < 4; j++) {
                     if (j === emptySlot) {
