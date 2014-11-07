@@ -93,22 +93,22 @@ body {
   border: 1px solid black;
   border-left: 0;
 }
-.friendly-unit-bg {
+.friendly-unit-bg > * {
   background-color: rgba(100, 120, 250, 0.5);
 }
-.enemy-unit-bg {
+.enemy-unit-bg > * {
   background-color: rgba(250, 100, 120, 0.5);
 }
 .active-unit {
   border-color: yellow !important;
 }
-.active-unit-bg {
+.active-unit-bg > * {
   background-color: rgba(200, 200, 20, 0.5) !important;
 }
 .active-border {
   border-color: yellow !important;
 }
-.target-unit-bg {
+.target-unit-bg > * {
   background-color: rgba(20, 200, 20, 0.5) !important;
 }
 .unit-empty {
