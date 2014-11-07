@@ -800,8 +800,6 @@ var Rance;
         allTargets.push([x, y - 1]);
         allTargets.push([x, y + 1]);
 
-        console.log(target, allTargets);
-
         return Rance.getFrom2dArray(fleets, allTargets);
     };
 })(Rance || (Rance = {}));
@@ -845,6 +843,18 @@ var Rance;
                 }
             };
 
+            Abilities.bombAttack = {
+                name: "bombAttack",
+                moveDelay: 120,
+                actionsUse: 1,
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetNeighbors,
+                targetRange: "all",
+                effect: function (user, target) {
+                    target.removeStrength(100);
+                }
+            };
+
             Abilities.standBy = {
                 name: "standBy",
                 moveDelay: 50,
@@ -879,6 +889,23 @@ var Rance;
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.closeAttack,
+                    Rance.Templates.Abilities.standBy
+                ]
+            };
+            ShipTypes.bomberSquadron = {
+                typeName: "Bomber Squadron",
+                isSquadron: true,
+                icon: "img\/icons\/f.png",
+                maxStrength: 0.5,
+                attributeLevels: {
+                    attack: 0.7,
+                    defence: 0.4,
+                    intelligence: 0.5,
+                    speed: 0.8
+                },
+                abilities: [
+                    Rance.Templates.Abilities.rangedAttack,
+                    Rance.Templates.Abilities.bombAttack,
                     Rance.Templates.Abilities.standBy
                 ]
             };
@@ -1257,13 +1284,13 @@ var Rance;
 
         [fleet1, fleet2].forEach(function (fleet) {
             for (var i = 0; i < 2; i++) {
-                var emptySlot = Rance.randInt(0, 3);
+                var emptySlot = 6;
                 var row = [];
                 for (var j = 0; j < 4; j++) {
                     if (j === emptySlot) {
                         row.push(null);
                     } else {
-                        var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
+                        var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser", "bomberSquadron"]);
                         row.push(new Rance.Unit(Rance.Templates.ShipTypes[type]));
                     }
                 }

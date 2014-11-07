@@ -59,6 +59,20 @@ module Rance
         }
       }
 
+      export var bombAttack: AbilityTemplate =
+      {
+        name: "bombAttack",
+        moveDelay: 120,
+        actionsUse: 1,
+        targetFleets: "enemy",
+        targetingFunction: targetNeighbors,
+        targetRange: "all",
+        effect: function(user: Unit, target: Unit)
+        {
+          target.removeStrength(100);
+        }
+      }
+
       export var standBy: AbilityTemplate =
       {
         name: "standBy",

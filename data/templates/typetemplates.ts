@@ -42,6 +42,26 @@ module Rance
           Abilities.standBy
         ]
       }
+      export var bomberSquadron: TypeTemplate =
+      {
+        typeName: "Bomber Squadron",
+        isSquadron: true,
+        icon: "img\/icons\/f.png",
+        maxStrength: 0.5,
+        attributeLevels:
+        {
+          attack: 0.7,
+          defence: 0.4,
+          intelligence: 0.5,
+          speed: 0.8
+        },
+        abilities:
+        [
+          Abilities.rangedAttack,
+          Abilities.bombAttack,
+          Abilities.standBy
+        ]
+      }
       export var battleCruiser: TypeTemplate =
       {
         typeName: "Battlecruiser",

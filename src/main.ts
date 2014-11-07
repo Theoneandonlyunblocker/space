@@ -15,7 +15,7 @@ module Rance
     {
       for (var i = 0; i < 2; i++)
       {
-        var emptySlot = randInt(0, 3);
+        var emptySlot = 6// randInt(0, 3);
         var row = [];
         for (var j = 0; j < 4; j++)
         {
@@ -25,7 +25,7 @@ module Rance
           }
           else
           {
-            var type = getRandomArrayItem(["fighterSquadron", "battleCruiser"]);
+            var type = getRandomArrayItem(["fighterSquadron", "battleCruiser", "bomberSquadron"]);
             row.push(new Unit(Templates.ShipTypes[type]));
           }
         }

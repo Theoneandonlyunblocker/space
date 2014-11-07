@@ -107,6 +107,7 @@ declare module Rance {
             var rangedAttack: AbilityTemplate;
             var closeAttack: AbilityTemplate;
             var wholeRowAttack: AbilityTemplate;
+            var bombAttack: AbilityTemplate;
             var standBy: AbilityTemplate;
         }
     }
@@ -128,6 +129,7 @@ declare module Rance {
         }
         module ShipTypes {
             var fighterSquadron: TypeTemplate;
+            var bomberSquadron: TypeTemplate;
             var battleCruiser: TypeTemplate;
         }
     }
