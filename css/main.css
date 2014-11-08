@@ -113,13 +113,22 @@ body {
   height: 100%;
   width: 100%;
 }*/
-.friendly-unit {
+.empty-unit > * {
+  background-color: transparent !important;
+}
+.friendly-unit .unit-container {
   border: 1px solid black;
   border-right: 0;
 }
-.enemy-unit {
+.friendly-unit > * {
+  background-color: rgba(100, 120, 250, 0.5);
+}
+.enemy-unit .unit-container {
   border: 1px solid black;
   border-left: 0;
+}
+.enemy-unit > * {
+  background-color: rgba(250, 100, 120, 0.5);
 }
 .friendly-unit-bg > * {
   background-color: rgba(100, 120, 250, 0.5);
@@ -127,8 +136,11 @@ body {
 .enemy-unit-bg > * {
   background-color: rgba(250, 100, 120, 0.5);
 }
-.active-unit {
+.active-unit .unit-container {
   border-color: yellow !important;
+}
+.active-unit > * {
+  background-color: rgba(200, 200, 20, 0.5) !important;
 }
 .active-unit-bg > * {
   background-color: rgba(200, 200, 20, 0.5) !important;
@@ -138,9 +150,6 @@ body {
 }
 .target-unit-bg > * {
   background-color: rgba(20, 200, 20, 0.5) !important;
-}
-.unit-empty {
-  border: 1px solid black;
 }
 .unit-image {
   min-width: 64px;

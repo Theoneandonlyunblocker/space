@@ -149,14 +149,30 @@ body {
   width: 100%;
 }*/
 
+.empty-unit
+{
+  >*
+  {
+    background-color: transparent !important;
+  }
+}
+
 .friendly-unit
 {
-  .unit-border-no-right;
+  .unit-container
+  {
+    .unit-border-no-right;
+  }
+  .friendly-unit-bg;
 }
 
 .enemy-unit
 {
-  .unit-border-no-left;
+  .unit-container
+  {
+    .unit-border-no-left;
+  }
+  .enemy-unit-bg;
 }
 
 .friendly-unit-bg
@@ -177,7 +193,11 @@ body {
 
 .active-unit
 {
-  .active-border;
+  .unit-container
+  {
+    .active-border;
+  }
+  .active-unit-bg
 }
 
 .active-unit-bg
@@ -199,11 +219,6 @@ body {
   {
     background-color: rgba(20,200,20,0.5) !important;
   }
-}
-
-.unit-empty
-{
-  border: 1px solid black;
 }
 
 .unit-image

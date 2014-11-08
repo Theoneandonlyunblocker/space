@@ -72,13 +72,11 @@ module Rance
 
         if (this.props.facesLeft)
         {
-          containerProps.className += " enemy-unit";
-          wrapperProps.className += " enemy-unit-bg";
+          wrapperProps.className += " enemy-unit";
         }
         else
         {
-          containerProps.className += " friendly-unit";
-          wrapperProps.className += " friendly-unit-bg";
+          wrapperProps.className += " friendly-unit";
         }
 
         var isActiveUnit = ( this.props.activeUnit &&
@@ -86,8 +84,7 @@ module Rance
 
         if (isActiveUnit)
         {
-          containerProps.className += " active-unit";
-          wrapperProps.className += " active-unit-bg";
+          wrapperProps.className += " active-unit";
         }
 
         var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&

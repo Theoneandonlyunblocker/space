@@ -182,18 +182,15 @@ var Rance;
                 wrapperProps.onMouseLeave = this.handleMouseLeave;
 
                 if (this.props.facesLeft) {
-                    containerProps.className += " enemy-unit";
-                    wrapperProps.className += " enemy-unit-bg";
+                    wrapperProps.className += " enemy-unit";
                 } else {
-                    containerProps.className += " friendly-unit";
-                    wrapperProps.className += " friendly-unit-bg";
+                    wrapperProps.className += " friendly-unit";
                 }
 
                 var isActiveUnit = (this.props.activeUnit && unit.id === this.props.activeUnit.id);
 
                 if (isActiveUnit) {
-                    containerProps.className += " active-unit";
-                    wrapperProps.className += " active-unit-bg";
+                    wrapperProps.className += " active-unit";
                 }
 
                 var isInPotentialTargetArea = (this.props.targetsInPotentialArea && this.props.targetsInPotentialArea.indexOf(unit) >= 0);
@@ -255,15 +252,19 @@ var Rance;
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
             render: function () {
+                var wrapperProps = {
+                    className: "unit-wrapper empty-unit"
+                };
+
                 var containerProps = {
                     className: "unit-container",
                     key: "container"
                 };
 
                 if (this.props.facesLeft) {
-                    containerProps.className += " enemy-unit";
+                    wrapperProps.className += " enemy-unit";
                 } else {
-                    containerProps.className += " friendly-unit";
+                    wrapperProps.className += " friendly-unit";
                 }
 
                 var allElements = [
@@ -279,7 +280,7 @@ var Rance;
                     allElements = allElements.reverse();
                 }
 
-                return (React.DOM.div({ className: "unit-wrapper" }, allElements));
+                return (React.DOM.div(wrapperProps, allElements));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

@@ -8,6 +8,11 @@ module Rance
     {
       render: function()
       {
+        var wrapperProps: any =
+        {
+          className: "unit-wrapper empty-unit"
+        };
+
         var containerProps =
         {
           className: "unit-container",
@@ -16,11 +21,11 @@ module Rance
 
         if (this.props.facesLeft)
         {
-          containerProps.className += " enemy-unit";
+          wrapperProps.className += " enemy-unit";
         }
         else
         {
-          containerProps.className += " friendly-unit";
+          wrapperProps.className += " friendly-unit";
         }
 
         var allElements =
@@ -42,7 +47,7 @@ module Rance
         }
         
         return(
-          React.DOM.div({className: "unit-wrapper"},
+          React.DOM.div(wrapperProps,
             allElements
           )
         );
