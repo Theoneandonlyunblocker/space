@@ -50,7 +50,11 @@ module Rance
           {
             label: "Strength",
             key: "strength",
-            defaultOrder: "desc"
+            defaultOrder: "desc",
+            sortingFunction: function(a, b)
+            {
+              return a.data.currentStrength - b.data.currentStrength;
+            }
           }
         ];
 
