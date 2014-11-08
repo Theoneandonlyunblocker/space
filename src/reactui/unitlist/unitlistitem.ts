@@ -1,9 +1,14 @@
+/// <reference path="../mixins/draggable.ts" />
+/// <reference path="../unit/unitstrength.ts" />
+
 module Rance
 {
   export module UIComponents
   {
     export var UnitListItem = React.createClass(
     {
+      mixins: [Draggable],
+
       makeCell: function(type: string)
       {
         var cellProps: any = {};
@@ -52,8 +57,28 @@ module Rance
           cells.push(cell);
         }
 
+        var rowProps: any =
+        {
+          className: "unit-list-item",
+          onClick : this.props.handleClick,
+          onTouchStart : this.props.handleClick,
+          onMouseDown: this.handleMouseDown
+        };
+
+        if (this.props.isSelected)
+        {
+          rowProps.className += " selected";
+        };
+
+
+        if (this.state.dragging)
+        {
+          rowProps.style = this.state.dragPos;
+          rowProps.className += " dragging";
+        }
+
         return(
-          React.DOM.tr({className: "unit-list-item"},
+          React.DOM.tr(rowProps,
             cells
           )
         );

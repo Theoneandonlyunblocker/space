@@ -1,4 +1,5 @@
 /// <reference path="../mixins/splitmultilinetext.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -108,6 +109,7 @@ module Rance
       handleSelectRow: function(row)
       {
         if (this.props.onRowChange) this.props.onRowChange.call(null, row);
+
         this.setState(
         {
           selected: row
@@ -233,10 +235,8 @@ module Rance
           item.data.key = item.key;
           item.data.activeColumns = self.state.columns;
           item.data.handleClick = self.handleSelectRow.bind(null, item);
-          if (self.state.selected && self.state.selected.key === item.key)
-          {
-            item.data.selected = true;
-          }
+          item.data.isSelected =
+            (self.state.selected && self.state.selected.key === item.key);
           var row = item.data.rowConstructor(item.data);
 
           rows.push(

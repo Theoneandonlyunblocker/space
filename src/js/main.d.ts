@@ -95,6 +95,39 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var Draggable: {
+            getDefaultProps: () => {
+                dragThreshhold: number;
+            };
+            getInitialState: () => {
+                mouseDown: boolean;
+                dragging: boolean;
+                dragOffset: {
+                    x: number;
+                    y: number;
+                };
+                mouseDownPosition: {
+                    x: number;
+                    y: number;
+                };
+                originPosition: {
+                    x: number;
+                    y: number;
+                };
+            };
+            handleMouseDown: (e: any) => void;
+            handleMouseMove: (e: any) => void;
+            handleDrag: (e: any) => void;
+            handleMouseUp: (e: any) => void;
+            handleDragEnd: (e: any) => void;
+            addEventListeners: () => void;
+            removeEventListeners: () => void;
+            componentDidMount: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

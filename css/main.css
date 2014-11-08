@@ -233,3 +233,9 @@ body {
 .available-turn {
   background-color: green;
 }
+.selected {
+  background-color: red;
+}
+.dragging {
+  position: absolute;
+}

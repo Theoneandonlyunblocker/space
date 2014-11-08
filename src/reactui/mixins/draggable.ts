@@ -39,9 +39,7 @@ module Rance
       },
       handleMouseDown: function(e)
       {
-        e.preventDefault();
-        e.stopPropagation();
-
+        console.log(e);
         var clientRect = this.DOMNode.getBoundingClientRect();
 
         if (this.onDragStart)
@@ -72,7 +70,6 @@ module Rance
       },
       handleMouseMove: function(e)
       {
-        e.stopPropagation();
         
         if (e.clientX === 0 && e.clientY === 0) return;
 
@@ -102,8 +99,8 @@ module Rance
         var domWidth = parseInt(this.DOMNode.offsetWidth);
         var domHeight = parseInt(this.DOMNode.offsetHeight);
 
-        var containerWidth = parseInt(this.props.containerElement.offsetWidth);
-        var containerHeight = parseInt(this.props.containerElement.offsetHeight);
+        var containerWidth = parseInt(this.containerElement.offsetWidth);
+        var containerHeight = parseInt(this.containerElement.offsetHeight);
 
 
         var x2 = x + domWidth;
@@ -200,17 +197,18 @@ module Rance
       addEventListeners: function()
       {
         var self = this;
-        this.props.containerElement.addEventListener("mousemove", self.handleMouseMove);
+        this.containerElement.addEventListener("mousemove", self.handleMouseMove);
         document.addEventListener("mouseup", self.handleMouseUp);
       },
       removeEventListeners: function()
       {
         var self = this;
-        this.props.containerElement.removeEventListener("mousemove", self.handleMouseMove);
+        this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
         document.removeEventListener("mouseup", self.handleMouseUp);
       },
       componentDidMount: function() {
         this.DOMNode = this.getDOMNode();
+        this.containerElement = this.props.containerElement || document.body;
       }
     }
   }
