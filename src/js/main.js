@@ -387,8 +387,33 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
+            getInitialState: function () {
+                return ({
+                    maxUnits: 7
+                });
+            },
+            componentDidMount: function () {
+                this.setMaxUnits();
+
+                window.addEventListener("resize", this.setMaxUnits.bind(this));
+            },
+            setMaxUnits: function () {
+                var minUnits = 7;
+
+                var containerElement = this.getDOMNode();
+
+                var containerWidth = containerElement.getBoundingClientRect().width;
+                containerWidth -= 30;
+                var unitElementWidth = 160;
+
+                var ceil = Math.ceil(containerWidth / unitElementWidth);
+
+                this.setState({
+                    maxUnits: Math.max(ceil, minUnits)
+                });
+            },
             render: function () {
-                var maxUnits = 7;
+                var maxUnits = this.state.maxUnits;
                 var turnOrder = this.props.turnOrder.slice(0);
 
                 if (this.props.potentialDelay) {
