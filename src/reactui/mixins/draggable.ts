@@ -39,7 +39,6 @@ module Rance
       },
       handleMouseDown: function(e)
       {
-        console.log(e);
         var clientRect = this.DOMNode.getBoundingClientRect();
 
         if (this.onDragStart)

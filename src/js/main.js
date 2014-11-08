@@ -404,11 +404,13 @@ var Rance;
                     turnOrder.sort(Rance.turnOrderSortFunction);
                 }
 
+                var maxUnitsWithFake = maxUnits;
+
                 if (fake && turnOrder.indexOf(fake) <= maxUnits) {
-                    maxUnits++;
+                    maxUnitsWithFake++;
                 }
 
-                turnOrder = turnOrder.slice(0, maxUnits);
+                turnOrder = turnOrder.slice(0, maxUnitsWithFake);
 
                 var toRender = [];
 
@@ -885,7 +887,6 @@ var Rance;
                 });
             },
             handleMouseDown: function (e) {
-                console.log(e);
                 var clientRect = this.DOMNode.getBoundingClientRect();
 
                 if (this.onDragStart) {

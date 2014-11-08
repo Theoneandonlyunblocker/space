@@ -26,12 +26,14 @@ module Rance
           turnOrder.sort(turnOrderSortFunction);
         }
 
+        var maxUnitsWithFake = maxUnits;
+
         if (fake && turnOrder.indexOf(fake) <= maxUnits)
         {
-          maxUnits++;
+          maxUnitsWithFake++;
         }
 
-        turnOrder = turnOrder.slice(0, maxUnits);
+        turnOrder = turnOrder.slice(0, maxUnitsWithFake);
 
         var toRender = [];
 
