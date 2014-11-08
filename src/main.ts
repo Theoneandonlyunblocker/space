@@ -42,5 +42,7 @@ module Rance
     battle.init();
 
     reactUI = new ReactUI(document.getElementById("react-container"), battle);
+
+    reactUI.switchScene("battle");
   });
 }

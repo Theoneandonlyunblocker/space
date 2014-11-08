@@ -61,6 +61,45 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var SplitMultilineText: {
+            splitMultilineText: (text: any) => any;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
+        /**
+        * props:
+        *   listItems
+        *   initialColumns
+        *
+        * state:
+        *   selected
+        *   columns
+        *   sortBy
+        *
+        * children:
+        *   listelement:
+        *     key
+        *     tr
+        *     getData()
+        *
+        *  columns:
+        *    props (classes etc)
+        *    label
+        *    sorting (alphabet, numeric, null)
+        *    title?
+        */
+        var List: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -68,7 +107,9 @@ declare module Rance {
     class ReactUI {
         public container: HTMLElement;
         public battle: any;
+        public currentScene: string;
         constructor(container: HTMLElement, battle: any);
+        public switchScene(newScene: string): void;
         public render(): void;
     }
 }

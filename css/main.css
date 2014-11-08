@@ -48,7 +48,7 @@ body {
   height: 20px;
   bottom: -20px;
   left: -10px;
-  background-color: black;
+  background-image: url("../img/icons/turnOrderArrow.png");
   z-index: 101;
 }
 .ability-tooltip {
@@ -103,14 +103,16 @@ body {
   flex: 1;
   padding: 1px;
 }
-.hovered-unit::before {
+/*
+.hovered-unit::before
+{
   content: "";
   pointer-events: none;
   position: absolute;
   border: 3px solid red;
   height: 100%;
   width: 100%;
-}
+}*/
 .friendly-unit {
   border: 1px solid black;
   border-right: 0;

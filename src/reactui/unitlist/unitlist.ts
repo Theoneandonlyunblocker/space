@@ -1,0 +1,65 @@
+/// <reference path="list.ts" />
+
+module Rance
+{
+  export module UIComponents
+  {
+    export var UnitList = React.createClass(
+    {
+      render: function()
+      {
+        var rows = [];
+
+        for (var id in this.props.units)
+        {
+          var unit = this.props.units[id];
+
+          var data: any =
+          {
+            unit: unit,
+
+            id: unit.id,
+            name: unit.name,
+            typeName: unit.template.typeName,
+            strength: "" + unit.currentStrength + " / " + unit.maxStrength,
+            currentStrength: unit.currentStrength,
+            maxStrength: unit.maxStrength
+          };
+
+          rows.push(
+          {
+            key: unit.id,
+            data: data
+          });
+        }
+
+        var columns: any =
+        [
+          {
+            label: "Id",
+            key: "id",
+            defaultOrder: "asc"
+          },
+          {
+            label: "Type",
+            key: "typeName",
+            defaultOrder: "asc"
+          },
+          {
+            label: "Strength",
+            key: "strength",
+            defaultOrder: "desc"
+          }
+        ];
+
+        return(
+          UIComponents.List(
+          {
+            listItems: rows,
+            initialColumns: columns
+          })
+        );
+      }
+    });
+  }
+}
