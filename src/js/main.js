@@ -836,32 +836,17 @@ var Rance;
                 var sortedItems = this.props.sortedItems;
 
                 var rows = [];
+
                 sortedItems.forEach(function (item) {
-                    var cells = [];
-                    for (var _column in self.state.columns) {
-                        var column = self.state.columns[_column];
-
-                        var cellProps = {
-                            key: "" + item.key + "_" + column.key
-                        };
-
-                        if (self.props.cellStylingFN) {
-                            cellProps = self.props.cellStylingFN(item, column, cellProps);
-                        }
-
-                        cells.push(React.DOM.td(cellProps, self.splitMultilineText(item.data[column.key])));
-                    }
-
-                    var rowProps = {};
-                    rowProps.key = item.key;
-                    rowProps.onClick = self.handleSelectRow.bind(null, item);
-                    rowProps.onTouchStart = self.handleSelectRow.bind(null, item);
+                    item.data.key = item.key;
+                    item.data.activeColumns = self.state.columns;
+                    item.data.handleClick = self.handleSelectRow.bind(null, item);
                     if (self.state.selected && self.state.selected.key === item.key) {
-                        rowProps.className = "selected";
+                        item.data.selected = true;
                     }
-                    if (self.props.rowStylingFN)
-                        rowProps = self.props.rowStylingFN(item, rowProps);
-                    rows.push(React.DOM.tr(rowProps, cells));
+                    var row = item.data.rowConstructor(item.data);
+
+                    rows.push(row);
                 });
 
                 return (React.DOM.div(null, React.DOM.table({
@@ -872,7 +857,56 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.UnitListItem = React.createClass({
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "unit-list-item-cell";
+
+                var cellContent;
+
+                switch (type) {
+                    case "strength": {
+                        cellContent = Rance.UIComponents.UnitStrength({
+                            maxStrength: this.props.maxStrength,
+                            currentStrength: this.props.currentStrength,
+                            isSquadron: true
+                        });
+
+                        break;
+                    }
+                    default: {
+                        cellContent = this.props[type];
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var unit = this.props.unit;
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                return (React.DOM.tr({ className: "unit-list-item" }, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="list.ts" />
+/// <reference path="unitlistitem.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -890,7 +924,8 @@ var Rance;
                         typeName: unit.template.typeName,
                         strength: "" + unit.currentStrength + " / " + unit.maxStrength,
                         currentStrength: unit.currentStrength,
-                        maxStrength: unit.maxStrength
+                        maxStrength: unit.maxStrength,
+                        rowConstructor: Rance.UIComponents.UnitListItem
                     };
 
                     rows.push({

@@ -227,40 +227,20 @@ module Rance
         var sortedItems = this.props.sortedItems;
         
         var rows = [];
+
         sortedItems.forEach(function(item)
         {
-          var cells = [];
-          for (var _column in self.state.columns)
-          {
-            var column = self.state.columns[_column];
-
-            var cellProps =
-            {
-              key: "" + item.key + "_" + column.key
-            };
-
-            if (self.props.cellStylingFN)
-            {
-              cellProps = self.props.cellStylingFN(item, column, cellProps);
-            }
-
-            cells.push(
-              React.DOM.td( cellProps,
-                self.splitMultilineText( item.data[column.key] ))
-            );
-          }
-
-          var rowProps: any = {};
-          rowProps.key = item.key;
-          rowProps.onClick = self.handleSelectRow.bind(null, item);
-          rowProps.onTouchStart = self.handleSelectRow.bind(null, item);
+          item.data.key = item.key;
+          item.data.activeColumns = self.state.columns;
+          item.data.handleClick = self.handleSelectRow.bind(null, item);
           if (self.state.selected && self.state.selected.key === item.key)
           {
-            rowProps.className = "selected";
+            item.data.selected = true;
           }
-          if (self.props.rowStylingFN) rowProps = self.props.rowStylingFN(item, rowProps);
+          var row = item.data.rowConstructor(item.data);
+
           rows.push(
-            React.DOM.tr(rowProps, cells)
+            row
           );
         });
 

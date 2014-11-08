@@ -1,4 +1,5 @@
 /// <reference path="list.ts" />
+/// <reference path="unitlistitem.ts" />
 
 module Rance
 {
@@ -23,7 +24,8 @@ module Rance
             typeName: unit.template.typeName,
             strength: "" + unit.currentStrength + " / " + unit.maxStrength,
             currentStrength: unit.currentStrength,
-            maxStrength: unit.maxStrength
+            maxStrength: unit.maxStrength,
+            rowConstructor: UIComponents.UnitListItem
           };
 
           rows.push(

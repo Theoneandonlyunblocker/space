@@ -95,6 +95,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UnitListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
