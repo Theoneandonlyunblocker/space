@@ -15,7 +15,11 @@ module Rance
       {
         this.setMaxUnits();
 
-        window.addEventListener("resize", this.setMaxUnits.bind(this));
+        window.addEventListener("resize", this.setMaxUnits);
+      },
+      componentWillUnmount: function()
+      {
+        window.removeEventListener("resize", this.setMaxUnits);
       },
 
       setMaxUnits: function()

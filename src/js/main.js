@@ -395,7 +395,10 @@ var Rance;
             componentDidMount: function () {
                 this.setMaxUnits();
 
-                window.addEventListener("resize", this.setMaxUnits.bind(this));
+                window.addEventListener("resize", this.setMaxUnits);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.setMaxUnits);
             },
             setMaxUnits: function () {
                 var minUnits = 7;
@@ -1164,7 +1167,10 @@ var Rance;
                     {
                         label: "Strength",
                         key: "strength",
-                        defaultOrder: "desc"
+                        defaultOrder: "desc",
+                        sortingFunction: function (a, b) {
+                            return a.data.currentStrength - b.data.currentStrength;
+                        }
                     }
                 ];
 
