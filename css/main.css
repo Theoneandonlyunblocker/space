@@ -273,7 +273,7 @@ body {
   background-color: green;
 }
 .dragging {
-  position: absolute;
+  position: fixed;
   pointer-events: none;
   z-index: 999;
 }

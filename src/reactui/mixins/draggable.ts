@@ -77,7 +77,15 @@ module Rance
 
           if (delta >= this.props.dragThreshhold)
           {
-            this.setState({dragging: true});
+            this.setState(
+              {
+                dragging: true,
+                dragPos:
+                {
+                  width: parseInt(this.DOMNode.offsetWidth),
+                  height: parseInt(this.DOMNode.offsetHeight)
+                }
+              });
 
             if (this.onDragStart)
             {
@@ -96,8 +104,8 @@ module Rance
         var x = e.pageX - this.state.dragOffset.x;
         var y = e.pageY - this.state.dragOffset.y;
 
-        var domWidth = parseInt(this.DOMNode.offsetWidth);
-        var domHeight = parseInt(this.DOMNode.offsetHeight);
+        var domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
+        var domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
 
         var containerWidth = parseInt(this.containerElement.offsetWidth);
         var containerHeight = parseInt(this.containerElement.offsetHeight);
@@ -130,7 +138,9 @@ module Rance
           dragPos:
           {
             top: y,
-            left: x
+            left: x,
+            width: this.state.dragPos.width,
+            height: this.state.dragPos.height
           }
         });
         //this.DOMNode.style.left = x+"px";
@@ -176,7 +186,7 @@ module Rance
             y: 0
           }
         });
-        
+
         if (this.onDragEnd)
         {
           var endSuccesful = this.onDragEnd(e);
