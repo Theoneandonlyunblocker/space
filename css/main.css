@@ -89,13 +89,13 @@ body {
   flex: 1 260px;
   max-width: 260px;
 }
-.unit-super-wrapper {
+.unit-wrapper {
   display: flex;
   position: relative;
   height: 64px;
   margin: 5px;
 }
-.unit-wrapper {
+.unit {
   display: flex;
   position: absolute;
   flex-flow: row;

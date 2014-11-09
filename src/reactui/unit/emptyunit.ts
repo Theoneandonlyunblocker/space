@@ -10,7 +10,7 @@ module Rance
       {
         var wrapperProps: any =
         {
-          className: "unit-wrapper empty-unit"
+          className: "unit empty-unit"
         };
 
         var containerProps =

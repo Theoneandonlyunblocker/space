@@ -64,7 +64,7 @@ module Rance
         };
         var wrapperProps: any =
         {
-          className: "unit-wrapper"
+          className: "unit"
         };
 
         wrapperProps.onMouseEnter = this.handleMouseEnter;

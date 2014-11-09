@@ -175,7 +175,7 @@ var Rance;
                     key: "container"
                 };
                 var wrapperProps = {
-                    className: "unit-wrapper"
+                    className: "unit"
                 };
 
                 wrapperProps.onMouseEnter = this.handleMouseEnter;
@@ -253,7 +253,7 @@ var Rance;
         UIComponents.EmptyUnit = React.createClass({
             render: function () {
                 var wrapperProps = {
-                    className: "unit-wrapper empty-unit"
+                    className: "unit empty-unit"
                 };
 
                 var containerProps = {
@@ -306,7 +306,7 @@ var Rance;
                     allElements.push(unit);
                 }
 
-                return (React.DOM.div({ className: "unit-super-wrapper" }, allElements));
+                return (React.DOM.div({ className: "unit-wrapper" }, allElements));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

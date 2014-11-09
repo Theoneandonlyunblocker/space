@@ -25,7 +25,7 @@ module Rance
         }
         
         return(
-          React.DOM.div({className: "unit-super-wrapper"},
+          React.DOM.div({className: "unit-wrapper"},
             allElements
           )
         );
