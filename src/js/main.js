@@ -340,11 +340,16 @@ var Rance;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
-                    if (!data.unit) {
-                        units.push(Rance.UIComponents.EmptyUnit(data));
-                    } else {
-                        units.push(Rance.UIComponents.Unit(data));
+                    /*
+                    if (!data.unit)
+                    {
+                    units.push(UIComponents.EmptyUnit(data));
                     }
+                    else
+                    {
+                    units.push(UIComponents.Unit(data));
+                    }*/
+                    units.push(Rance.UIComponents.UnitWrapper(data));
                 }
 
                 return (React.DOM.div({ className: "battle-fleet-column" }, units));

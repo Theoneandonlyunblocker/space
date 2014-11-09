@@ -89,12 +89,18 @@ body {
   flex: 1 260px;
   max-width: 260px;
 }
-.unit-wrapper {
+.unit-super-wrapper {
   display: flex;
   position: relative;
-  flex-flow: row;
   height: 64px;
   margin: 5px;
+}
+.unit-wrapper {
+  display: flex;
+  position: absolute;
+  flex-flow: row;
+  height: 100%;
+  width: 100%;
 }
 .unit-container {
   position: relative;
@@ -113,6 +119,9 @@ body {
   height: 100%;
   width: 100%;
 }*/
+.empty-unit {
+  z-index: -1;
+}
 .empty-unit > * {
   background-color: transparent !important;
 }

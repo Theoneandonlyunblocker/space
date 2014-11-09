@@ -32,6 +32,7 @@ module Rance
           data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
           data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
+          /*
           if (!data.unit)
           {
             units.push(UIComponents.EmptyUnit(data));
@@ -39,7 +40,9 @@ module Rance
           else
           {
             units.push(UIComponents.Unit(data));
-          }
+          }*/
+
+          units.push(UIComponents.UnitWrapper(data));
         }
 
         return(
