@@ -7,6 +7,8 @@ module Rance
   {
     export var Unit = React.createClass(
     {
+      mixins: [Draggable],
+      
       getInitialState: function()
       {
         return(
@@ -44,11 +46,15 @@ module Rance
       },
       handleMouseEnter: function(e)
       {
+        if (!this.props.handleMouseEnterUnit) return;
+
         this.props.handleMouseEnterUnit(e, this.props.unit,
           this.props.facesLeft, this.getDOMNode());
       },
       handleMouseLeave: function(e)
       {
+        if (!this.props.handleMouseLeaveUnit) return;
+
         this.props.handleMouseLeaveUnit(e, this.props.unit,
           this.props.facesLeft, this.getDOMNode());
       },
@@ -92,7 +98,7 @@ module Rance
 
         if (isInPotentialTargetArea)
         {
-          wrapperProps.className += " target-unit-bg";
+          wrapperProps.className += " target-unit";
         }
 
         if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id)

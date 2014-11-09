@@ -41,10 +41,6 @@ module Rance
       {
         var clientRect = this.DOMNode.getBoundingClientRect();
 
-        if (this.onDragStart)
-        {
-          this.onDragStart(e);
-        }
         this.addEventListeners();
 
         this.setState(
@@ -83,6 +79,11 @@ module Rance
           if (delta >= this.props.dragThreshhold)
           {
             this.setState({dragging: true});
+
+            if (this.onDragStart)
+            {
+              this.onDragStart(e);
+            }
           }
         }
 
@@ -93,8 +94,8 @@ module Rance
       },
       handleDrag: function(e)
       {
-        var x = e.pageX - this.state.dragOffset.x + document.body.scrollLeft;
-        var y = e.pageY - this.state.dragOffset.y + document.body.scrollTop;
+        var x = e.pageX - this.state.dragOffset.x;
+        var y = e.pageY - this.state.dragOffset.y;
         var domWidth = parseInt(this.DOMNode.offsetWidth);
         var domHeight = parseInt(this.DOMNode.offsetHeight);
 
@@ -142,8 +143,6 @@ module Rance
       },
       handleMouseUp: function(e)
       {
-        this.removeEventListeners();
-
         this.setState(
         {
           mouseDown: false,
@@ -158,14 +157,14 @@ module Rance
         {
           this.handleDragEnd(e);
         }
+
+        this.removeEventListeners();
       },
       handleDragEnd: function(e)
       {
         if (this.onDragEnd)
         {
-          var clientRect = this.DOMNode.getBoundingClientRect();
-
-          var endSuccesful = this.onDragEnd(clientRect);
+          var endSuccesful = this.onDragEnd(e);
 
           if (!endSuccesful)
           {

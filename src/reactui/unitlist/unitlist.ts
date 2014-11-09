@@ -25,7 +25,10 @@ module Rance
             strength: "" + unit.currentStrength + " / " + unit.maxStrength,
             currentStrength: unit.currentStrength,
             maxStrength: unit.maxStrength,
-            rowConstructor: UIComponents.UnitListItem
+            rowConstructor: UIComponents.UnitListItem,
+
+            onDragStart: this.props.onDragStart,
+            onDragEnd: this.props.onDragEnd
           };
 
           rows.push(

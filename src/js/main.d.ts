@@ -315,8 +315,13 @@ declare module Rance {
     class BattlePrep {
         public player: Rance.Player;
         public fleet: Rance.Unit[][];
+        public alreadyPlaced: {
+            [id: number]: number[];
+        };
         constructor(player: Rance.Player);
-        public setUnit(position: number[], unit: Rance.Unit): void;
+        public getUnitPosition(unit: Rance.Unit): number[];
+        public setUnit(unit: Rance.Unit, position: number[]): void;
+        public removeUnit(unit: Rance.Unit): void;
     }
 }
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any;

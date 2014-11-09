@@ -13,7 +13,10 @@ module Rance
         var empty = UIComponents.EmptyUnit(
         {
           facesLeft: this.props.facesLeft,
-          key: "empty_" + this.props.key
+          key: "empty_" + this.props.key,
+          position: this.props.position,
+          
+          onMouseUp: this.props.onMouseUp
         });
 
         allElements.push(empty);

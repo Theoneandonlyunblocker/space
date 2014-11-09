@@ -1,11 +1,23 @@
-/// <reference path="uniticon.ts"/>
-
 module Rance
 {
   export module UIComponents
   {
     export var EmptyUnit = React.createClass(
     {
+      handleMouseUp: function()
+      {
+        console.log("mouseup", this.props.position);
+        this.props.onMouseUp(this.props.position);
+      },
+
+      componentDidMount: function()
+      {
+        if (this.props.onMouseUp)
+        {
+          this.getDOMNode().addEventListener("mouseup", this.handleMouseUp)
+        }
+      },
+
       render: function()
       {
         var wrapperProps: any =

@@ -162,9 +162,15 @@ var Rance;
                 return React.DOM.div(null, elements);
             },
             handleMouseEnter: function (e) {
+                if (!this.props.handleMouseEnterUnit)
+                    return;
+
                 this.props.handleMouseEnterUnit(e, this.props.unit, this.props.facesLeft, this.getDOMNode());
             },
             handleMouseLeave: function (e) {
+                if (!this.props.handleMouseLeaveUnit)
+                    return;
+
                 this.props.handleMouseLeaveUnit(e, this.props.unit, this.props.facesLeft, this.getDOMNode());
             },
             render: function () {
@@ -196,7 +202,7 @@ var Rance;
                 var isInPotentialTargetArea = (this.props.targetsInPotentialArea && this.props.targetsInPotentialArea.indexOf(unit) >= 0);
 
                 if (isInPotentialTargetArea) {
-                    wrapperProps.className += " target-unit-bg";
+                    wrapperProps.className += " target-unit";
                 }
 
                 if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
@@ -246,11 +252,19 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="uniticon.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
+            handleMouseUp: function () {
+                console.log("mouseup", this.props.position);
+                this.props.onMouseUp(this.props.position);
+            },
+            componentDidMount: function () {
+                if (this.props.onMouseUp) {
+                    this.getDOMNode().addEventListener("mouseup", this.handleMouseUp);
+                }
+            },
             render: function () {
                 var wrapperProps = {
                     className: "unit empty-unit"
@@ -296,7 +310,9 @@ var Rance;
 
                 var empty = Rance.UIComponents.EmptyUnit({
                     facesLeft: this.props.facesLeft,
-                    key: "empty_" + this.props.key
+                    key: "empty_" + this.props.key,
+                    position: this.props.position,
+                    onMouseUp: this.props.onMouseUp
                 });
 
                 allElements.push(empty);
@@ -340,6 +356,8 @@ var Rance;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
+                    data.onMouseUp = this.props.onMouseUp;
+
                     /*
                     if (!data.unit)
                     {
@@ -378,7 +396,8 @@ var Rance;
                         hoveredUnit: this.props.hoveredUnit,
                         handleMouseEnterUnit: this.props.handleMouseEnterUnit,
                         handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-                        targetsInPotentialArea: this.props.targetsInPotentialArea
+                        targetsInPotentialArea: this.props.targetsInPotentialArea,
+                        onMouseUp: this.props.onMouseUp
                     }));
                 }
 
@@ -954,9 +973,6 @@ var Rance;
             handleMouseDown: function (e) {
                 var clientRect = this.DOMNode.getBoundingClientRect();
 
-                if (this.onDragStart) {
-                    this.onDragStart(e);
-                }
                 this.addEventListeners();
 
                 this.setState({
@@ -987,6 +1003,10 @@ var Rance;
 
                     if (delta >= this.props.dragThreshhold) {
                         this.setState({ dragging: true });
+
+                        if (this.onDragStart) {
+                            this.onDragStart(e);
+                        }
                     }
                 }
 
@@ -995,8 +1015,8 @@ var Rance;
                 }
             },
             handleDrag: function (e) {
-                var x = e.pageX - this.state.dragOffset.x + document.body.scrollLeft;
-                var y = e.pageY - this.state.dragOffset.y + document.body.scrollTop;
+                var x = e.pageX - this.state.dragOffset.x;
+                var y = e.pageY - this.state.dragOffset.y;
                 var domWidth = parseInt(this.DOMNode.offsetWidth);
                 var domHeight = parseInt(this.DOMNode.offsetHeight);
 
@@ -1034,8 +1054,6 @@ var Rance;
                 }
             },
             handleMouseUp: function (e) {
-                this.removeEventListeners();
-
                 this.setState({
                     mouseDown: false,
                     mouseDownPosition: {
@@ -1047,12 +1065,12 @@ var Rance;
                 if (this.state.dragging) {
                     this.handleDragEnd(e);
                 }
+
+                this.removeEventListeners();
             },
             handleDragEnd: function (e) {
                 if (this.onDragEnd) {
-                    var clientRect = this.DOMNode.getBoundingClientRect();
-
-                    var endSuccesful = this.onDragEnd(clientRect);
+                    var endSuccesful = this.onDragEnd(e);
 
                     if (!endSuccesful) {
                         this.DOMNode.style.left = this.state.originPosition.x + "px";
@@ -1099,6 +1117,12 @@ var Rance;
     (function (UIComponents) {
         UIComponents.UnitListItem = React.createClass({
             mixins: [Rance.UIComponents.Draggable],
+            onDragStart: function (e) {
+                this.props.onDragStart(this.props.unit);
+            },
+            onDragEnd: function (e) {
+                this.props.onDragEnd();
+            },
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
@@ -1180,7 +1204,9 @@ var Rance;
                         strength: "" + unit.currentStrength + " / " + unit.maxStrength,
                         currentStrength: unit.currentStrength,
                         maxStrength: unit.maxStrength,
-                        rowConstructor: Rance.UIComponents.UnitListItem
+                        rowConstructor: Rance.UIComponents.UnitListItem,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd
                     };
 
                     rows.push({
@@ -1219,18 +1245,43 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="../battle/fleet.ts"/>
-/// <reference path="../unitlist/unitlist.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BattlePrep = React.createClass({
+            getInitialState: function () {
+                return ({
+                    currentDragUnit: null
+                });
+            },
+            handleDragStart: function (unit) {
+                this.setState({
+                    currentDragUnit: unit
+                });
+            },
+            handleDragEnd: function () {
+                this.setState({
+                    currentDragUnit: null
+                });
+            },
+            handleDrop: function (position) {
+                if (this.state.currentDragUnit) {
+                    this.props.battlePrep.setUnit(this.state.currentDragUnit, position);
+                }
+
+                this.handleDragEnd();
+            },
             render: function () {
                 var fleet = Rance.UIComponents.Fleet({
-                    fleet: this.props.battlePrep.fleet
+                    fleet: this.props.battlePrep.fleet,
+                    onMouseUp: this.handleDrop
                 });
 
-                return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({ units: this.props.battlePrep.player.units })));
+                return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({
+                    units: this.props.battlePrep.player.units,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1949,14 +2000,32 @@ var Rance;
 (function (Rance) {
     var BattlePrep = (function () {
         function BattlePrep(player) {
+            this.alreadyPlaced = {};
             this.player = player;
             this.fleet = [
                 [null, null, null, null],
                 [null, null, null, null]
             ];
         }
-        BattlePrep.prototype.setUnit = function (position, unit) {
+        BattlePrep.prototype.getUnitPosition = function (unit) {
+            return this.alreadyPlaced[unit.id];
+        };
+        BattlePrep.prototype.setUnit = function (unit, position) {
+            this.removeUnit(unit);
+
             this.fleet[position[0]][position[1]] = unit;
+            this.alreadyPlaced[unit.id] = position;
+        };
+        BattlePrep.prototype.removeUnit = function (unit) {
+            var currentPosition = this.getUnitPosition(unit);
+
+            if (!currentPosition)
+                return;
+
+            this.fleet[currentPosition[0]][currentPosition[1]] = null;
+
+            this.alreadyPlaced[unit.id] = null;
+            delete this.alreadyPlaced[unit.id];
         };
         return BattlePrep;
     })();

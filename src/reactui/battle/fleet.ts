@@ -24,7 +24,9 @@ module Rance
             hoveredUnit: this.props.hoveredUnit,
             handleMouseEnterUnit: this.props.handleMouseEnterUnit,
             handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
-            targetsInPotentialArea: this.props.targetsInPotentialArea
+            targetsInPotentialArea: this.props.targetsInPotentialArea,
+
+            onMouseUp: this.props.onMouseUp
           }));
         }
 

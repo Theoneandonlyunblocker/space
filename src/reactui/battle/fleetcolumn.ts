@@ -32,6 +32,8 @@ module Rance
           data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
           data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
+          data.onMouseUp = this.props.onMouseUp;
+
           /*
           if (!data.unit)
           {

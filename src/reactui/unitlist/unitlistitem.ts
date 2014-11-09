@@ -9,6 +9,15 @@ module Rance
     {
       mixins: [Draggable],
 
+      onDragStart: function(e)
+      {
+        this.props.onDragStart(this.props.unit);
+      },
+      onDragEnd: function(e)
+      {
+        this.props.onDragEnd();
+      },
+
       makeCell: function(type: string)
       {
         var cellProps: any = {};

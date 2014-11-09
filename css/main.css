@@ -120,45 +120,67 @@ body {
   width: 100%;
 }*/
 .empty-unit {
-  z-index: -1;
+  animation-name: none !important;
 }
-.empty-unit > * {
+.empty-unit .unit-container {
   background-color: transparent !important;
+}
+.empty-unit .unit-icon {
+  background-color: transparent !important;
+}
+.friendly-unit .unit-container {
+  background-color: rgba(100, 120, 250, 0.5);
+}
+.friendly-unit .unit-icon {
+  background-color: rgba(100, 120, 250, 0.5);
 }
 .friendly-unit .unit-container {
   border: 1px solid black;
   border-right: 0;
 }
-.friendly-unit > * {
-  background-color: rgba(100, 120, 250, 0.5);
+.enemy-unit .unit-container {
+  background-color: rgba(250, 100, 120, 0.5);
+}
+.enemy-unit .unit-icon {
+  background-color: rgba(250, 100, 120, 0.5);
 }
 .enemy-unit .unit-container {
   border: 1px solid black;
   border-left: 0;
 }
-.enemy-unit > * {
-  background-color: rgba(250, 100, 120, 0.5);
-}
-.friendly-unit-bg > * {
-  background-color: rgba(100, 120, 250, 0.5);
-}
-.enemy-unit-bg > * {
-  background-color: rgba(250, 100, 120, 0.5);
-}
 .active-unit .unit-container {
+  background-color: rgba(200, 200, 20, 0.5);
+}
+.active-unit .unit-icon {
+  background-color: rgba(200, 200, 20, 0.5);
+}
+.active-unit * {
   border-color: yellow !important;
 }
-.active-unit > * {
-  background-color: rgba(200, 200, 20, 0.5) !important;
+.target-unit .unit-container {
+  background-color: rgba(20, 200, 20, 0.5);
 }
-.active-unit-bg > * {
-  background-color: rgba(200, 200, 20, 0.5) !important;
+.target-unit .unit-icon {
+  background-color: rgba(20, 200, 20, 0.5);
 }
-.active-border {
+.active-border * {
   border-color: yellow !important;
 }
-.target-unit-bg > * {
-  background-color: rgba(20, 200, 20, 0.5) !important;
+@keyframes friendly-unit-enter {
+  from {
+    right: 200%;
+  }
+  to {
+    right: 0%;
+  }
+}
+@keyframes enemy-unit-enter {
+  from {
+    margin-left: 200%;
+  }
+  to {
+    margin-right: 0%;
+  }
 }
 .unit-image {
   min-width: 64px;
@@ -216,7 +238,6 @@ body {
 }
 .unit-icon-filler {
   width: 100%;
-  background-color: white;
   flex: 1;
 }
 .unit-border-no-left {
@@ -256,4 +277,5 @@ body {
 }
 .dragging {
   position: absolute;
+  pointer-events: none;
 }
