@@ -1,6 +1,8 @@
 /// <reference path="../unit/unit.ts"/>
 /// <reference path="../unit/emptyunit.ts"/>
 
+/// <reference path="../unit/unitwrapper.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -20,6 +22,7 @@ module Rance
           var data: any = {};
 
           data.key = i;
+          data.unit = column[i];
           data.position = [absoluteColumnPosition, i];
           data.facesLeft = this.props.facesLeft;
           data.activeUnit = this.props.activeUnit;
@@ -29,13 +32,12 @@ module Rance
           data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
           data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
-          if (!column[i])
+          if (!data.unit)
           {
             units.push(UIComponents.EmptyUnit(data));
           }
           else
           {
-            data.unit = column[i];
             units.push(UIComponents.Unit(data));
           }
         }

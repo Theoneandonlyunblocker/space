@@ -286,8 +286,35 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="uniticon.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.UnitWrapper = React.createClass({
+            render: function () {
+                var allElements = [];
+
+                var empty = Rance.UIComponents.EmptyUnit({
+                    facesLeft: this.props.facesLeft,
+                    key: "empty_" + this.props.key
+                });
+
+                allElements.push(empty);
+
+                if (this.props.unit) {
+                    var unit = Rance.UIComponents.Unit(this.props);
+                    allElements.push(unit);
+                }
+
+                return (React.DOM.div({ className: "unit-super-wrapper" }, allElements));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../unit/unit.ts"/>
 /// <reference path="../unit/emptyunit.ts"/>
+/// <reference path="../unit/unitwrapper.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -303,6 +330,7 @@ var Rance;
                     var data = {};
 
                     data.key = i;
+                    data.unit = column[i];
                     data.position = [absoluteColumnPosition, i];
                     data.facesLeft = this.props.facesLeft;
                     data.activeUnit = this.props.activeUnit;
@@ -312,10 +340,9 @@ var Rance;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
 
-                    if (!column[i]) {
+                    if (!data.unit) {
                         units.push(Rance.UIComponents.EmptyUnit(data));
                     } else {
-                        data.unit = column[i];
                         units.push(Rance.UIComponents.Unit(data));
                     }
                 }
@@ -1187,29 +1214,8 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.MixedUnit = React.createClass({
-            render: function () {
-                var toRender = [
-                    Rance.UIComponents.EmptyUnit(this.props)
-                ];
-
-                if (this.props.unit) {
-                    this.props.key += "unit";
-                    toRender.push(Rance.UIComponents.Unit(this.props));
-                }
-
-                return (React.DOM.div({ className: "mixed-unit" }, toRender));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
 /// <reference path="../battle/fleet.ts"/>
 /// <reference path="../unitlist/unitlist.ts"/>
-/// <reference path="mixedunit.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {

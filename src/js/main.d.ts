@@ -31,6 +31,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UnitWrapper: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FleetColumn: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -134,11 +139,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var UnitList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var MixedUnit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
