@@ -1,5 +1,6 @@
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
+/// <reference path="../mixins/draggable.ts" />
 
 module Rance
 {
@@ -16,6 +17,15 @@ module Rance
           hasPopup: false,
           popupElement: null
         });
+      },
+
+      onDragStart: function(e)
+      {
+        this.props.onDragStart(this.props.unit);
+      },
+      onDragEnd: function(e)
+      {
+        this.props.onDragEnd();
       },
 
       tooltipContent: function()
@@ -75,6 +85,17 @@ module Rance
 
         wrapperProps.onMouseEnter = this.handleMouseEnter;
         wrapperProps.onMouseLeave = this.handleMouseLeave;
+
+        if (this.props.isDraggable)
+        {
+          wrapperProps.onMouseDown = this.handleMouseDown;
+        }
+
+        if (this.state.dragging)
+        {
+          wrapperProps.style = this.state.dragPos;
+          wrapperProps.className += " dragging";
+        }
 
         if (this.props.facesLeft)
         {

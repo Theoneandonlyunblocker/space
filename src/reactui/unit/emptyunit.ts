@@ -6,7 +6,6 @@ module Rance
     {
       handleMouseUp: function()
       {
-        console.log("mouseup", this.props.position);
         this.props.onMouseUp(this.props.position);
       },
 

@@ -65,7 +65,6 @@ module Rance
       },
       handleMouseMove: function(e)
       {
-        
         if (e.clientX === 0 && e.clientY === 0) return;
 
 
@@ -96,6 +95,7 @@ module Rance
       {
         var x = e.pageX - this.state.dragOffset.x;
         var y = e.pageY - this.state.dragOffset.y;
+
         var domWidth = parseInt(this.DOMNode.offsetWidth);
         var domHeight = parseInt(this.DOMNode.offsetHeight);
 
@@ -162,6 +162,21 @@ module Rance
       },
       handleDragEnd: function(e)
       {
+        this.setState(
+        {
+          dragging: false,
+          dragOffset:
+          {
+            x: 0,
+            y: 0
+          },
+          originPosition:
+          {
+            x: 0,
+            y: 0
+          }
+        });
+        
         if (this.onDragEnd)
         {
           var endSuccesful = this.onDragEnd(e);
@@ -177,20 +192,6 @@ module Rance
             this.DOMNode.style.top = this.props.position.top;
           }
         }
-        this.setState(
-        {
-          dragging: false,
-          dragOffset:
-          {
-            x: 0,
-            y: 0
-          },
-          originPosition:
-          {
-            x: 0,
-            y: 0
-          }
-        });
       },
       addEventListeners: function()
       {
@@ -207,6 +208,10 @@ module Rance
       componentDidMount: function() {
         this.DOMNode = this.getDOMNode();
         this.containerElement = this.props.containerElement || document.body;
+      },
+      componentWillUnmount: function()
+      {
+        this.removeEventListeners();
       }
     }
   }

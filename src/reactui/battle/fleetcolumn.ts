@@ -34,6 +34,9 @@ module Rance
 
           data.onMouseUp = this.props.onMouseUp;
 
+          data.isDraggable = this.props.isDraggable;
+          data.onDragStart = this.props.onDragStart;
+          data.onDragEnd = this.props.onDragEnd;
           /*
           if (!data.unit)
           {

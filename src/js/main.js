@@ -133,8 +133,182 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/react.d.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Draggable = {
+            getDefaultProps: function () {
+                return ({
+                    dragThreshhold: 5
+                });
+            },
+            getInitialState: function () {
+                return ({
+                    mouseDown: false,
+                    dragging: false,
+                    dragOffset: {
+                        x: 0,
+                        y: 0
+                    },
+                    mouseDownPosition: {
+                        x: 0,
+                        y: 0
+                    },
+                    originPosition: {
+                        x: 0,
+                        y: 0
+                    }
+                });
+            },
+            handleMouseDown: function (e) {
+                var clientRect = this.DOMNode.getBoundingClientRect();
+
+                this.addEventListeners();
+
+                this.setState({
+                    mouseDown: true,
+                    mouseDownPosition: {
+                        x: e.pageX,
+                        y: e.pageY
+                    },
+                    originPosition: {
+                        x: clientRect.left + document.body.scrollLeft,
+                        y: clientRect.top + document.body.scrollTop
+                    },
+                    dragOffset: {
+                        x: e.clientX - clientRect.left,
+                        y: e.clientY - clientRect.top
+                    }
+                });
+            },
+            handleMouseMove: function (e) {
+                if (e.clientX === 0 && e.clientY === 0)
+                    return;
+
+                if (!this.state.dragging) {
+                    var deltaX = Math.abs(e.pageX - this.state.mouseDownPosition.x);
+                    var deltaY = Math.abs(e.pageY - this.state.mouseDownPosition.y);
+
+                    var delta = deltaX + deltaY;
+
+                    if (delta >= this.props.dragThreshhold) {
+                        this.setState({ dragging: true });
+
+                        if (this.onDragStart) {
+                            this.onDragStart(e);
+                        }
+                    }
+                }
+
+                if (this.state.dragging) {
+                    this.handleDrag(e);
+                }
+            },
+            handleDrag: function (e) {
+                var x = e.pageX - this.state.dragOffset.x;
+                var y = e.pageY - this.state.dragOffset.y;
+
+                var domWidth = parseInt(this.DOMNode.offsetWidth);
+                var domHeight = parseInt(this.DOMNode.offsetHeight);
+
+                var containerWidth = parseInt(this.containerElement.offsetWidth);
+                var containerHeight = parseInt(this.containerElement.offsetHeight);
+
+                var x2 = x + domWidth;
+                var y2 = y + domHeight;
+
+                if (x < 0) {
+                    x = 0;
+                } else if (x2 > containerWidth) {
+                    x = containerWidth - domWidth;
+                }
+                ;
+
+                if (y < 0) {
+                    y = 0;
+                } else if (y2 > containerHeight) {
+                    y = containerHeight - domHeight;
+                }
+                ;
+
+                this.setState({
+                    dragPos: {
+                        top: y,
+                        left: x
+                    }
+                });
+
+                //this.DOMNode.style.left = x+"px";
+                //this.DOMNode.style.top = y+"px";
+                if (this.onDragMove) {
+                    this.onDragMove(x, y);
+                }
+            },
+            handleMouseUp: function (e) {
+                this.setState({
+                    mouseDown: false,
+                    mouseDownPosition: {
+                        x: 0,
+                        y: 0
+                    }
+                });
+
+                if (this.state.dragging) {
+                    this.handleDragEnd(e);
+                }
+
+                this.removeEventListeners();
+            },
+            handleDragEnd: function (e) {
+                this.setState({
+                    dragging: false,
+                    dragOffset: {
+                        x: 0,
+                        y: 0
+                    },
+                    originPosition: {
+                        x: 0,
+                        y: 0
+                    }
+                });
+
+                if (this.onDragEnd) {
+                    var endSuccesful = this.onDragEnd(e);
+
+                    if (!endSuccesful) {
+                        this.DOMNode.style.left = this.state.originPosition.x + "px";
+                        this.DOMNode.style.top = this.state.originPosition.y + "px";
+                    } else {
+                        this.DOMNode.style.left = this.props.position.left;
+                        this.DOMNode.style.top = this.props.position.top;
+                    }
+                }
+            },
+            addEventListeners: function () {
+                var self = this;
+                this.containerElement.addEventListener("mousemove", self.handleMouseMove);
+                document.addEventListener("mouseup", self.handleMouseUp);
+            },
+            removeEventListeners: function () {
+                var self = this;
+                this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
+                document.removeEventListener("mouseup", self.handleMouseUp);
+            },
+            componentDidMount: function () {
+                this.DOMNode = this.getDOMNode();
+                this.containerElement = this.props.containerElement || document.body;
+            },
+            componentWillUnmount: function () {
+                this.removeEventListeners();
+            }
+        };
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
+/// <reference path="../mixins/draggable.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -145,6 +319,12 @@ var Rance;
                     hasPopup: false,
                     popupElement: null
                 });
+            },
+            onDragStart: function (e) {
+                this.props.onDragStart(this.props.unit);
+            },
+            onDragEnd: function (e) {
+                this.props.onDragEnd();
             },
             tooltipContent: function () {
                 return React.DOM.div(null, "lol");
@@ -187,6 +367,15 @@ var Rance;
 
                 wrapperProps.onMouseEnter = this.handleMouseEnter;
                 wrapperProps.onMouseLeave = this.handleMouseLeave;
+
+                if (this.props.isDraggable) {
+                    wrapperProps.onMouseDown = this.handleMouseDown;
+                }
+
+                if (this.state.dragging) {
+                    wrapperProps.style = this.state.dragPos;
+                    wrapperProps.className += " dragging";
+                }
 
                 if (this.props.facesLeft) {
                     wrapperProps.className += " enemy-unit";
@@ -258,7 +447,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
             handleMouseUp: function () {
-                console.log("mouseup", this.props.position);
                 this.props.onMouseUp(this.props.position);
             },
             componentDidMount: function () {
@@ -359,6 +547,10 @@ var Rance;
 
                     data.onMouseUp = this.props.onMouseUp;
 
+                    data.isDraggable = this.props.isDraggable;
+                    data.onDragStart = this.props.onDragStart;
+                    data.onDragEnd = this.props.onDragEnd;
+
                     /*
                     if (!data.unit)
                     {
@@ -398,7 +590,10 @@ var Rance;
                         handleMouseEnterUnit: this.props.handleMouseEnterUnit,
                         handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
                         targetsInPotentialArea: this.props.targetsInPotentialArea,
-                        onMouseUp: this.props.onMouseUp
+                        onMouseUp: this.props.onMouseUp,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd
                     }));
                 }
 
@@ -943,174 +1138,6 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.Draggable = {
-            getDefaultProps: function () {
-                return ({
-                    dragThreshhold: 5
-                });
-            },
-            getInitialState: function () {
-                return ({
-                    mouseDown: false,
-                    dragging: false,
-                    dragOffset: {
-                        x: 0,
-                        y: 0
-                    },
-                    mouseDownPosition: {
-                        x: 0,
-                        y: 0
-                    },
-                    originPosition: {
-                        x: 0,
-                        y: 0
-                    }
-                });
-            },
-            handleMouseDown: function (e) {
-                var clientRect = this.DOMNode.getBoundingClientRect();
-
-                this.addEventListeners();
-
-                this.setState({
-                    mouseDown: true,
-                    mouseDownPosition: {
-                        x: e.pageX,
-                        y: e.pageY
-                    },
-                    originPosition: {
-                        x: clientRect.left + document.body.scrollLeft,
-                        y: clientRect.top + document.body.scrollTop
-                    },
-                    dragOffset: {
-                        x: e.clientX - clientRect.left,
-                        y: e.clientY - clientRect.top
-                    }
-                });
-            },
-            handleMouseMove: function (e) {
-                if (e.clientX === 0 && e.clientY === 0)
-                    return;
-
-                if (!this.state.dragging) {
-                    var deltaX = Math.abs(e.pageX - this.state.mouseDownPosition.x);
-                    var deltaY = Math.abs(e.pageY - this.state.mouseDownPosition.y);
-
-                    var delta = deltaX + deltaY;
-
-                    if (delta >= this.props.dragThreshhold) {
-                        this.setState({ dragging: true });
-
-                        if (this.onDragStart) {
-                            this.onDragStart(e);
-                        }
-                    }
-                }
-
-                if (this.state.dragging) {
-                    this.handleDrag(e);
-                }
-            },
-            handleDrag: function (e) {
-                var x = e.pageX - this.state.dragOffset.x;
-                var y = e.pageY - this.state.dragOffset.y;
-                var domWidth = parseInt(this.DOMNode.offsetWidth);
-                var domHeight = parseInt(this.DOMNode.offsetHeight);
-
-                var containerWidth = parseInt(this.containerElement.offsetWidth);
-                var containerHeight = parseInt(this.containerElement.offsetHeight);
-
-                var x2 = x + domWidth;
-                var y2 = y + domHeight;
-
-                if (x < 0) {
-                    x = 0;
-                } else if (x2 > containerWidth) {
-                    x = containerWidth - domWidth;
-                }
-                ;
-
-                if (y < 0) {
-                    y = 0;
-                } else if (y2 > containerHeight) {
-                    y = containerHeight - domHeight;
-                }
-                ;
-
-                this.setState({
-                    dragPos: {
-                        top: y,
-                        left: x
-                    }
-                });
-
-                //this.DOMNode.style.left = x+"px";
-                //this.DOMNode.style.top = y+"px";
-                if (this.onDragMove) {
-                    this.onDragMove(x, y);
-                }
-            },
-            handleMouseUp: function (e) {
-                this.setState({
-                    mouseDown: false,
-                    mouseDownPosition: {
-                        x: 0,
-                        y: 0
-                    }
-                });
-
-                if (this.state.dragging) {
-                    this.handleDragEnd(e);
-                }
-
-                this.removeEventListeners();
-            },
-            handleDragEnd: function (e) {
-                if (this.onDragEnd) {
-                    var endSuccesful = this.onDragEnd(e);
-
-                    if (!endSuccesful) {
-                        this.DOMNode.style.left = this.state.originPosition.x + "px";
-                        this.DOMNode.style.top = this.state.originPosition.y + "px";
-                    } else {
-                        this.DOMNode.style.left = this.props.position.left;
-                        this.DOMNode.style.top = this.props.position.top;
-                    }
-                }
-                this.setState({
-                    dragging: false,
-                    dragOffset: {
-                        x: 0,
-                        y: 0
-                    },
-                    originPosition: {
-                        x: 0,
-                        y: 0
-                    }
-                });
-            },
-            addEventListeners: function () {
-                var self = this;
-                this.containerElement.addEventListener("mousemove", self.handleMouseMove);
-                document.addEventListener("mouseup", self.handleMouseUp);
-            },
-            removeEventListeners: function () {
-                var self = this;
-                this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
-                document.removeEventListener("mouseup", self.handleMouseUp);
-            },
-            componentDidMount: function () {
-                this.DOMNode = this.getDOMNode();
-                this.containerElement = this.props.containerElement || document.body;
-            }
-        };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="../unit/unitstrength.ts" />
 var Rance;
@@ -1265,7 +1292,12 @@ var Rance;
                     currentDragUnit: unit
                 });
             },
-            handleDragEnd: function () {
+            handleDragEnd: function (dropSuccesful) {
+                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                if (!dropSuccesful && this.state.currentDragUnit) {
+                    this.props.battlePrep.removeUnit(this.state.currentDragUnit);
+                }
+
                 this.setState({
                     currentDragUnit: null
                 });
@@ -1275,12 +1307,15 @@ var Rance;
                     this.props.battlePrep.setUnit(this.state.currentDragUnit, position);
                 }
 
-                this.handleDragEnd();
+                this.handleDragEnd(true);
             },
             render: function () {
                 var fleet = Rance.UIComponents.Fleet({
                     fleet: this.props.battlePrep.fleet,
-                    onMouseUp: this.handleDrop
+                    onMouseUp: this.handleDrop,
+                    isDraggable: true,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd
                 });
 
                 return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({

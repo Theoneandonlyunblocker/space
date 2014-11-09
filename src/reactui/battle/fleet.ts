@@ -26,7 +26,11 @@ module Rance
             handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
             targetsInPotentialArea: this.props.targetsInPotentialArea,
 
-            onMouseUp: this.props.onMouseUp
+            onMouseUp: this.props.onMouseUp,
+
+            isDraggable: this.props.isDraggable,
+            onDragStart: this.props.onDragStart,
+            onDragEnd: this.props.onDragEnd
           }));
         }
 
