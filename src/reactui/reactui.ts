@@ -7,7 +7,7 @@ module Rance
   export class ReactUI
   {
     currentScene: string;
-    constructor(public container: HTMLElement, public battle)
+    constructor(public container: HTMLElement, public battle, public battlePrep)
     {
 
     }
@@ -22,7 +22,8 @@ module Rance
         UIComponents.Stage(
           {
             sceneToRender: this.currentScene,
-            battle: this.battle
+            battle: this.battle,
+            battlePrep: this.battlePrep
           }
         ),
         this.container

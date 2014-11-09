@@ -2,16 +2,20 @@
 /// <reference path="unit.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="ability.ts"/>
+/// <reference path="player.ts"/>
+/// <reference path="battleprep.ts"/>
 
-var fleet1, fleet2, battle, reactUI;
+var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI;
 module Rance
 {
   document.addEventListener('DOMContentLoaded', function()
   {
     fleet1 = [];
     fleet2 = [];
+    player1 = new Player();
+    player2 = new Player();
 
-    [fleet1, fleet2].forEach(function(fleet)
+    function setupFleetAndPlayer(fleet, player)
     {
       for (var i = 0; i < 2; i++)
       {
@@ -26,22 +30,29 @@ module Rance
           else
           {
             var type = getRandomArrayItem(["fighterSquadron", "battleCruiser", "bomberSquadron"]);
-            row.push(new Unit(Templates.ShipTypes[type]));
+            var unit = new Unit(Templates.ShipTypes[type]);
+            row.push(unit);
+            player.addUnit(unit);
           }
         }
         fleet.push(row);
       }
-    });
+    }
+
+    setupFleetAndPlayer(fleet1, player1);
+    setupFleetAndPlayer(fleet2, player2);
 
     battle = new Battle(
     {
       side1: fleet1,
       side2: fleet2
     });
-
     battle.init();
 
-    reactUI = new ReactUI(document.getElementById("react-container"), battle);
+    battlePrep = new BattlePrep(player1);
+
+
+    reactUI = new ReactUI(document.getElementById("react-container"), battle, battlePrep);
 
     reactUI.switchScene("battle");
   });

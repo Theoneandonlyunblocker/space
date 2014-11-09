@@ -295,12 +295,15 @@ var Rance;
             render: function () {
                 var column = this.props.column;
 
+                var absoluteColumnPosition = this.props.columnPosInOwnFleet + (this.props.facesLeft ? 2 : 0);
+
                 var units = [];
 
                 for (var i = 0; i < column.length; i++) {
                     var data = {};
 
                     data.key = i;
+                    data.position = [absoluteColumnPosition, i];
                     data.facesLeft = this.props.facesLeft;
                     data.activeUnit = this.props.activeUnit;
                     data.activeTargets = this.props.activeTargets;
@@ -337,6 +340,7 @@ var Rance;
                     columns.push(Rance.UIComponents.FleetColumn({
                         key: i,
                         column: fleet[i],
+                        columnPosInOwnFleet: i,
                         facesLeft: this.props.facesLeft,
                         activeUnit: this.props.activeUnit,
                         hoveredUnit: this.props.hoveredUnit,
@@ -1183,9 +1187,48 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MixedUnit = React.createClass({
+            render: function () {
+                var toRender = [
+                    Rance.UIComponents.EmptyUnit(this.props)
+                ];
+
+                if (this.props.unit) {
+                    this.props.key += "unit";
+                    toRender.push(Rance.UIComponents.Unit(this.props));
+                }
+
+                return (React.DOM.div({ className: "mixed-unit" }, toRender));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../battle/fleet.ts"/>
+/// <reference path="../unitlist/unitlist.ts"/>
+/// <reference path="mixedunit.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BattlePrep = React.createClass({
+            render: function () {
+                var fleet = Rance.UIComponents.Fleet({
+                    fleet: this.props.battlePrep.fleet
+                });
+
+                return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({ units: this.props.battlePrep.player.units })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
+/// <reference path="battleprep/battleprep.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1202,6 +1245,10 @@ var Rance;
                         elementsToRender.push(Rance.UIComponents.UnitList({ units: this.props.battle.unitsById, key: "unitList" }));
                         break;
                     }
+                    case "battlePrep": {
+                        elementsToRender.push(Rance.UIComponents.BattlePrep({ battlePrep: this.props.battlePrep, key: "battlePrep" }));
+                        break;
+                    }
                 }
                 return (React.DOM.div({ className: "react-stage" }, elementsToRender));
             }
@@ -1214,9 +1261,10 @@ var Rance;
 var Rance;
 (function (Rance) {
     var ReactUI = (function () {
-        function ReactUI(container, battle) {
+        function ReactUI(container, battle, battlePrep) {
             this.container = container;
             this.battle = battle;
+            this.battlePrep = battlePrep;
         }
         ReactUI.prototype.switchScene = function (newScene) {
             this.currentScene = newScene;
@@ -1225,7 +1273,8 @@ var Rance;
         ReactUI.prototype.render = function () {
             React.renderComponent(Rance.UIComponents.Stage({
                 sceneToRender: this.currentScene,
-                battle: this.battle
+                battle: this.battle,
+                battlePrep: this.battlePrep
             }), this.container);
         };
         return ReactUI;
@@ -1869,18 +1918,55 @@ var Rance;
     })();
     Rance.Unit = Unit;
 })(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    var Player = (function () {
+        function Player() {
+            this.units = {};
+        }
+        Player.prototype.addUnit = function (unit) {
+            this.units[unit.id] = unit;
+        };
+        return Player;
+    })();
+    Rance.Player = Player;
+})(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+/// <reference path="player.ts"/>
+var Rance;
+(function (Rance) {
+    var BattlePrep = (function () {
+        function BattlePrep(player) {
+            this.player = player;
+            this.fleet = [
+                [null, null, null, null],
+                [null, null, null, null]
+            ];
+        }
+        BattlePrep.prototype.setUnit = function (position, unit) {
+            this.fleet[position[0]][position[1]] = unit;
+        };
+        return BattlePrep;
+    })();
+    Rance.BattlePrep = BattlePrep;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="ability.ts"/>
-var fleet1, fleet2, battle, reactUI;
+/// <reference path="player.ts"/>
+/// <reference path="battleprep.ts"/>
+var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI;
 var Rance;
 (function (Rance) {
     document.addEventListener('DOMContentLoaded', function () {
         fleet1 = [];
         fleet2 = [];
+        player1 = new Rance.Player();
+        player2 = new Rance.Player();
 
-        [fleet1, fleet2].forEach(function (fleet) {
+        function setupFleetAndPlayer(fleet, player) {
             for (var i = 0; i < 2; i++) {
                 var emptySlot = Rance.randInt(0, 3);
                 var row = [];
@@ -1889,21 +1975,27 @@ var Rance;
                         row.push(null);
                     } else {
                         var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser", "bomberSquadron"]);
-                        row.push(new Rance.Unit(Rance.Templates.ShipTypes[type]));
+                        var unit = new Rance.Unit(Rance.Templates.ShipTypes[type]);
+                        row.push(unit);
+                        player.addUnit(unit);
                     }
                 }
                 fleet.push(row);
             }
-        });
+        }
+
+        setupFleetAndPlayer(fleet1, player1);
+        setupFleetAndPlayer(fleet2, player2);
 
         battle = new Rance.Battle({
             side1: fleet1,
             side2: fleet2
         });
-
         battle.init();
 
-        reactUI = new Rance.ReactUI(document.getElementById("react-container"), battle);
+        battlePrep = new Rance.BattlePrep(player1);
+
+        reactUI = new Rance.ReactUI(document.getElementById("react-container"), battle, battlePrep);
 
         reactUI.switchScene("battle");
     });

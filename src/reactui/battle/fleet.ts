@@ -18,6 +18,7 @@ module Rance
           {
             key: i,
             column: fleet[i],
+            columnPosInOwnFleet: i,
             facesLeft: this.props.facesLeft,
             activeUnit: this.props.activeUnit,
             hoveredUnit: this.props.hoveredUnit,

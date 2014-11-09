@@ -138,6 +138,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var MixedUnit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattlePrep: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -145,8 +155,9 @@ declare module Rance {
     class ReactUI {
         public container: HTMLElement;
         public battle: any;
+        public battlePrep: any;
         public currentScene: string;
-        constructor(container: HTMLElement, battle: any);
+        constructor(container: HTMLElement, battle: any, battlePrep: any);
         public switchScene(newScene: string): void;
         public render(): void;
     }
@@ -175,7 +186,11 @@ declare module Rance {
         interface AbilityTemplate {
             name: string;
             moveDelay: number;
-            interruptsNeeded?: number;
+            preparation?: {
+                turnsToPrep: number;
+                prepDelay: number;
+                interruptsNeeded: number;
+            };
             actionsUse: any;
             targetFleets: string;
             targetingFunction: Rance.TargetingFunction;
@@ -288,6 +303,22 @@ declare module Rance {
         public isTargetable(): boolean;
     }
 }
-declare var fleet1: any, fleet2: any, battle: any, reactUI: any;
+declare module Rance {
+    class Player {
+        public units: {
+            [id: number]: Rance.Unit;
+        };
+        public addUnit(unit: Rance.Unit): void;
+    }
+}
+declare module Rance {
+    class BattlePrep {
+        public player: Rance.Player;
+        public fleet: Rance.Unit[][];
+        constructor(player: Rance.Player);
+        public setUnit(position: number[], unit: Rance.Unit): void;
+    }
+}
+declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any;
 declare module Rance {
 }

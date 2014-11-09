@@ -11,6 +11,8 @@ module Rance
       {
         var column = this.props.column;
 
+        var absoluteColumnPosition = this.props.columnPosInOwnFleet + (this.props.facesLeft ? 2 : 0);
+
         var units = [];
 
         for (var i = 0; i < column.length; i++)
@@ -18,6 +20,7 @@ module Rance
           var data: any = {};
 
           data.key = i;
+          data.position = [absoluteColumnPosition, i];
           data.facesLeft = this.props.facesLeft;
           data.activeUnit = this.props.activeUnit;
           data.activeTargets = this.props.activeTargets;

@@ -9,7 +9,12 @@ module Rance
     {
       name: string;
       moveDelay: number;
-      interruptsNeeded?: number;
+      preparation?:
+      {
+        turnsToPrep: number;
+        prepDelay: number;
+        interruptsNeeded: number;
+      };
       actionsUse: any; // number or "all"
       targetFleets: string; // ally, enemy, all
       targetingFunction: TargetingFunction;

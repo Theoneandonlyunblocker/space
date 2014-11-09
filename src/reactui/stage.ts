@@ -2,6 +2,7 @@
 
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
+/// <reference path="battleprep/battleprep.ts"/>
 
 module Rance
 {
@@ -26,6 +27,13 @@ module Rance
           {
             elementsToRender.push(
               UIComponents.UnitList({units: this.props.battle.unitsById, key: "unitList"})
+            );
+            break;
+          }
+          case "battlePrep":
+          {
+            elementsToRender.push(
+              UIComponents.BattlePrep({battlePrep: this.props.battlePrep, key: "battlePrep"})
             );
             break;
           }
