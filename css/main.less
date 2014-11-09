@@ -377,11 +377,37 @@ body {
 
 .selected
 {
-  background-color: red;
+  //background-color: red;
 }
 
 .dragging
 {
   position: absolute;
   pointer-events: none;
+}
+
+.prevent-user-select
+{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+// BATTLE PREP
+
+.battle-prep
+{
+  display: flex;
+  flex-flow: row;
+
+  .prevent-user-select;
+}
+
+.reserved
+{
+  background-color: grey;
 }

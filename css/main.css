@@ -272,10 +272,30 @@ body {
 .available-turn {
   background-color: green;
 }
-.selected {
-  background-color: red;
-}
 .dragging {
   position: absolute;
   pointer-events: none;
+}
+.prevent-user-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.battle-prep {
+  display: flex;
+  flex-flow: row;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.reserved {
+  background-color: grey;
 }

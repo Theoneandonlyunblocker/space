@@ -139,6 +139,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Unit = React.createClass({
+            mixins: [Rance.UIComponents.Draggable],
             getInitialState: function () {
                 return ({
                     hasPopup: false,
@@ -1173,6 +1174,10 @@ var Rance;
                 }
                 ;
 
+                if (this.props.isReserved) {
+                    rowProps.className += " reserved";
+                }
+
                 if (this.state.dragging) {
                     rowProps.style = this.state.dragPos;
                     rowProps.className += " dragging";
@@ -1205,6 +1210,7 @@ var Rance;
                         currentStrength: unit.currentStrength,
                         maxStrength: unit.maxStrength,
                         rowConstructor: Rance.UIComponents.UnitListItem,
+                        isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
                     };
@@ -1279,9 +1285,19 @@ var Rance;
 
                 return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({
                     units: this.props.battlePrep.player.units,
+                    selectedUnits: this.props.battlePrep.alreadyPlaced,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd
-                })));
+                }), React.DOM.button({
+                    className: "start-battle",
+                    onClick: function () {
+                        var _ = window;
+
+                        _.battle = this.props.battlePrep.makeBattle(_.fleet2);
+                        _.reactUI.battle = _.battle;
+                        _.reactUI.switchScene("battle");
+                    }.bind(this)
+                }, "Start battle")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1323,10 +1339,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     var ReactUI = (function () {
-        function ReactUI(container, battle, battlePrep) {
+        function ReactUI(container) {
             this.container = container;
-            this.battle = battle;
-            this.battlePrep = battlePrep;
         }
         ReactUI.prototype.switchScene = function (newScene) {
             this.currentScene = newScene;
@@ -1897,6 +1911,7 @@ var Rance;
             this.setBaseHealth();
             this.setActionPoints();
             this.setAttributes();
+            this.resetBattleStats();
         };
         Unit.prototype.setBaseHealth = function () {
             var min = 500 * this.template.maxStrength;
@@ -2027,6 +2042,17 @@ var Rance;
             this.alreadyPlaced[unit.id] = null;
             delete this.alreadyPlaced[unit.id];
         };
+
+        BattlePrep.prototype.makeBattle = function (fleet2) {
+            var battle = new Rance.Battle({
+                side1: this.fleet,
+                side2: fleet2
+            });
+
+            battle.init();
+
+            return battle;
+        };
         return BattlePrep;
     })();
     Rance.BattlePrep = BattlePrep;
@@ -2067,17 +2093,12 @@ var Rance;
         setupFleetAndPlayer(fleet1, player1);
         setupFleetAndPlayer(fleet2, player2);
 
-        battle = new Rance.Battle({
-            side1: fleet1,
-            side2: fleet2
-        });
-        battle.init();
-
         battlePrep = new Rance.BattlePrep(player1);
 
-        reactUI = new Rance.ReactUI(document.getElementById("react-container"), battle, battlePrep);
+        reactUI = new Rance.ReactUI(document.getElementById("react-container"));
+        reactUI.battlePrep = battlePrep;
 
-        reactUI.switchScene("battle");
+        reactUI.switchScene("battlePrep");
     });
 })(Rance || (Rance = {}));
 //# sourceMappingURL=main.js.map

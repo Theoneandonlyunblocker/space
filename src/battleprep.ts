@@ -44,5 +44,18 @@ module Rance
       this.alreadyPlaced[unit.id] = null;
       delete this.alreadyPlaced[unit.id];
     }
+
+    makeBattle(fleet2: Unit[][])
+    {
+      var battle = new Battle(
+      {
+        side1: this.fleet,
+        side2: fleet2
+      });
+
+      battle.init();
+
+      return battle;
+    }
   }
 }

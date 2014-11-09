@@ -42,18 +42,12 @@ module Rance
     setupFleetAndPlayer(fleet1, player1);
     setupFleetAndPlayer(fleet2, player2);
 
-    battle = new Battle(
-    {
-      side1: fleet1,
-      side2: fleet2
-    });
-    battle.init();
-
     battlePrep = new BattlePrep(player1);
 
 
-    reactUI = new ReactUI(document.getElementById("react-container"), battle, battlePrep);
+    reactUI = new ReactUI(document.getElementById("react-container"));
+    reactUI.battlePrep = battlePrep;
 
-    reactUI.switchScene("battle");
+    reactUI.switchScene("battlePrep");
   });
 }

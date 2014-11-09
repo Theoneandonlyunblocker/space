@@ -27,6 +27,8 @@ module Rance
             maxStrength: unit.maxStrength,
             rowConstructor: UIComponents.UnitListItem,
 
+            isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
+
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd
           };

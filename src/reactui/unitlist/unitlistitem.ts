@@ -79,6 +79,11 @@ module Rance
           rowProps.className += " selected";
         };
 
+        if (this.props.isReserved)
+        {
+          rowProps.className += " reserved";
+        }
+
 
         if (this.state.dragging)
         {

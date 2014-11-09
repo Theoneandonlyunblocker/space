@@ -154,10 +154,10 @@ declare module Rance {
 declare module Rance {
     class ReactUI {
         public container: HTMLElement;
-        public battle: any;
-        public battlePrep: any;
         public currentScene: string;
-        constructor(container: HTMLElement, battle: any, battlePrep: any);
+        public battle: Rance.Battle;
+        public battlePrep: Rance.BattlePrep;
+        constructor(container: HTMLElement);
         public switchScene(newScene: string): void;
         public render(): void;
     }
@@ -322,6 +322,7 @@ declare module Rance {
         public getUnitPosition(unit: Rance.Unit): number[];
         public setUnit(unit: Rance.Unit, position: number[]): void;
         public removeUnit(unit: Rance.Unit): void;
+        public makeBattle(fleet2: Rance.Unit[][]): Rance.Battle;
     }
 }
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any;

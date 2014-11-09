@@ -49,9 +49,22 @@ module Rance
             UIComponents.UnitList(
             {
               units: this.props.battlePrep.player.units,
+              selectedUnits: this.props.battlePrep.alreadyPlaced,
               onDragStart: this.handleDragStart,
               onDragEnd: this.handleDragEnd
-            })
+            }),
+            React.DOM.button(
+            {
+              className: "start-battle",
+              onClick: function()
+              {
+                var _: any = window;
+
+                _.battle = this.props.battlePrep.makeBattle(_.fleet2);
+                _.reactUI.battle = _.battle;
+                _.reactUI.switchScene("battle");
+              }.bind(this)
+            }, "Start battle")
           )
         );
       }

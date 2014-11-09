@@ -7,7 +7,10 @@ module Rance
   export class ReactUI
   {
     currentScene: string;
-    constructor(public container: HTMLElement, public battle, public battlePrep)
+    battle: Battle;
+    battlePrep: BattlePrep;
+    
+    constructor(public container: HTMLElement)
     {
 
     }

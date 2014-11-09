@@ -58,6 +58,7 @@ module Rance
       this.setBaseHealth();
       this.setActionPoints();
       this.setAttributes();
+      this.resetBattleStats();
     }
     setBaseHealth()
     {
