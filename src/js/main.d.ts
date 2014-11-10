@@ -302,6 +302,8 @@ declare module Rance {
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
         public isTargetable(): boolean;
+        public getAttackDamageIncrease(damageType: string): number;
+        public getDamageReduction(damageType: string): number;
     }
 }
 declare module Rance {

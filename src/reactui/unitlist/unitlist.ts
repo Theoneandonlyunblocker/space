@@ -25,6 +25,13 @@ module Rance
             strength: "" + unit.currentStrength + " / " + unit.maxStrength,
             currentStrength: unit.currentStrength,
             maxStrength: unit.maxStrength,
+            maxActionPoints: unit.maxActionPoints,
+
+            attack: unit.attributes.attack,
+            defence: unit.attributes.defence,
+            intelligence: unit.attributes.intelligence,
+            speed: unit.attributes.speed,
+
             rowConstructor: UIComponents.UnitListItem,
 
             isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
@@ -60,7 +67,33 @@ module Rance
             {
               return a.data.currentStrength - b.data.currentStrength;
             }
+          },
+          {
+            label: "Actions",
+            key: "maxActionPoints",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Atk",
+            key: "attack",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Def",
+            key: "defence",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Int",
+            key: "intelligence",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Spd",
+            key: "speed",
+            defaultOrder: "desc"
           }
+
         ];
 
         return(

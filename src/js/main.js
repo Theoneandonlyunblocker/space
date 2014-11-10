@@ -1244,6 +1244,11 @@ var Rance;
                         strength: "" + unit.currentStrength + " / " + unit.maxStrength,
                         currentStrength: unit.currentStrength,
                         maxStrength: unit.maxStrength,
+                        maxActionPoints: unit.maxActionPoints,
+                        attack: unit.attributes.attack,
+                        defence: unit.attributes.defence,
+                        intelligence: unit.attributes.intelligence,
+                        speed: unit.attributes.speed,
                         rowConstructor: Rance.UIComponents.UnitListItem,
                         isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
                         onDragStart: this.props.onDragStart,
@@ -1274,6 +1279,31 @@ var Rance;
                         sortingFunction: function (a, b) {
                             return a.data.currentStrength - b.data.currentStrength;
                         }
+                    },
+                    {
+                        label: "Actions",
+                        key: "maxActionPoints",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Atk",
+                        key: "attack",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Def",
+                        key: "defence",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Int",
+                        key: "intelligence",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Spd",
+                        key: "speed",
+                        defaultOrder: "desc"
                     }
                 ];
 
@@ -1984,12 +2014,12 @@ var Rance;
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
 
-                var min = 8 * experience * attributeLevel + 1;
-                var max = 16 * experience * attributeLevel + 1 + variance;
+                var min = 4 * experience * attributeLevel + 1;
+                var max = 8 * experience * attributeLevel + 1 + variance;
 
                 attributes[attribute] = Rance.randInt(min, max);
-                if (attributes[attribute] > 20)
-                    attributes[attribute] = 20;
+                if (attributes[attribute] > 9)
+                    attributes[attribute] = 9;
             }
 
             this.attributes = attributes;
@@ -2033,6 +2063,42 @@ var Rance;
         };
         Unit.prototype.isTargetable = function () {
             return this.currentStrength > 0;
+        };
+        Unit.prototype.getAttackDamageIncrease = function (damageType) {
+            var attackStat, attackFactor;
+
+            switch (damageType) {
+                case "physical": {
+                    attackStat = this.attributes.attack;
+                    attackFactor = 0.1;
+                    break;
+                }
+                case "magical": {
+                    attackStat = this.attributes.intelligence;
+                    attackFactor = 0.1;
+                    break;
+                }
+            }
+
+            return attackStat * attackFactor;
+        };
+        Unit.prototype.getDamageReduction = function (damageType) {
+            var defensiveStat, defenceFactor;
+
+            switch (damageType) {
+                case "physical": {
+                    defensiveStat = this.attributes.defence;
+                    defenceFactor = 0.08;
+                    break;
+                }
+                case "magical": {
+                    defensiveStat = this.attributes.intelligence;
+                    defenceFactor = 0.07;
+                    break;
+                }
+            }
+
+            return defensiveStat * defenceFactor;
         };
         return Unit;
     })();

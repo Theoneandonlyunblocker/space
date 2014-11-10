@@ -94,11 +94,11 @@ module Rance
       {
         var attributeLevel = template.attributeLevels[attribute];
 
-        var min = 8 * experience * attributeLevel + 1;
-        var max = 16 * experience * attributeLevel + 1 + variance;
+        var min = 4 * experience * attributeLevel + 1;
+        var max = 8 * experience * attributeLevel + 1 + variance;
 
         attributes[attribute] = randInt(min, max);
-        if (attributes[attribute] > 20) attributes[attribute] = 20;
+        if (attributes[attribute] > 9) attributes[attribute] = 9;
       }
 
       this.attributes = attributes;
@@ -155,6 +155,50 @@ module Rance
     isTargetable()
     {
       return this.currentStrength > 0;
+    }
+    getAttackDamageIncrease(damageType: string)
+    {
+      var attackStat, attackFactor;
+
+      switch (damageType)
+      {
+        case "physical":
+        {
+          attackStat = this.attributes.attack;
+          attackFactor = 0.1;
+          break;
+        }
+        case "magical":
+        {
+          attackStat = this.attributes.intelligence;
+          attackFactor = 0.1;
+          break;
+        }
+      }
+
+      return attackStat * attackFactor;
+    }
+    getDamageReduction(damageType: string)
+    {
+      var defensiveStat, defenceFactor;
+
+      switch (damageType)
+      {
+        case "physical":
+        {
+          defensiveStat = this.attributes.defence;
+          defenceFactor = 0.08;
+          break;
+        }
+        case "magical":
+        {
+          defensiveStat = this.attributes.intelligence;
+          defenceFactor = 0.07;
+          break;
+        }
+      }
+
+      return defensiveStat * defenceFactor;
     }
   }
 }
