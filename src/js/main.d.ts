@@ -333,5 +333,3 @@ declare module Rance {
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any;
 declare module Rance {
 }
-declare var indexedFibonacciResults: {};
-declare function fibonacci(n: any): any;

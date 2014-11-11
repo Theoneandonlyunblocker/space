@@ -65,8 +65,11 @@ module Rance
           });
         }
       },
-      handleMouseEnterUnit: function(e, unit, facesLeft, parentElement)
+      handleMouseEnterUnit: function(unit)
       {
+        var facesLeft = unit.battleStats.side === "side2";
+        var parentElement = this.getUnitElement(unit);
+
         this.setState(
         {
           drawAbilityTooltip: true,
@@ -78,6 +81,11 @@ module Rance
           },
           hoveredUnit: unit
         });
+      },
+
+      getUnitElement: function(unit)
+      {
+        return document.getElementById("unit-id_" + unit.id);
       },
 
       handleAbilityUse: function(ability, target)
@@ -151,7 +159,10 @@ module Rance
             {
               turnOrder: battle.turnOrder,
               unitsBySide: battle.unitsBySide,
-              potentialDelay: this.state.potentialDelay
+              potentialDelay: this.state.potentialDelay,
+              hoveredUnit: this.state.hoveredUnit,
+              onMouseEnterUnit: this.handleMouseEnterUnit,
+              onMouseLeaveUnit: this.handleMouseLeaveUnit
             }),
             React.DOM.div({className: "fleets-container"},
               UIComponents.Fleet(

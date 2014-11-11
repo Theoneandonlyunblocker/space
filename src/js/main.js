@@ -354,13 +354,13 @@ var Rance;
                 if (!this.props.handleMouseEnterUnit)
                     return;
 
-                this.props.handleMouseEnterUnit(e, this.props.unit, this.props.facesLeft, this.getDOMNode());
+                this.props.handleMouseEnterUnit(this.props.unit);
             },
             handleMouseLeave: function (e) {
                 if (!this.props.handleMouseLeaveUnit)
                     return;
 
-                this.props.handleMouseLeaveUnit(e, this.props.unit, this.props.facesLeft, this.getDOMNode());
+                this.props.handleMouseLeaveUnit(e);
             },
             render: function () {
                 var unit = this.props.unit;
@@ -370,7 +370,8 @@ var Rance;
                     key: "container"
                 };
                 var wrapperProps = {
-                    className: "unit"
+                    className: "unit",
+                    id: "unit-id_" + unit.id
                 };
 
                 wrapperProps.onMouseEnter = this.handleMouseEnter;
@@ -720,13 +721,18 @@ var Rance;
                     var data = {
                         key: "" + i,
                         className: "turn-order-unit",
-                        title: "delay: " + unit.battleStats.moveDelay + "\n" + "speed: " + unit.attributes.speed
+                        title: "delay: " + unit.battleStats.moveDelay + "\n" + "speed: " + unit.attributes.speed,
+                        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit)
                     };
 
                     if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
                         data.className += " turn-order-unit-friendly";
                     } else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
                         data.className += " turn-order-unit-enemy";
+                    }
+
+                    if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id) {
+                        data.className += " turn-order-unit-hover";
                     }
 
                     toRender.push(React.DOM.div(data, unit.name));
@@ -846,7 +852,10 @@ var Rance;
                     });
                 }
             },
-            handleMouseEnterUnit: function (e, unit, facesLeft, parentElement) {
+            handleMouseEnterUnit: function (unit) {
+                var facesLeft = unit.battleStats.side === "side2";
+                var parentElement = this.getUnitElement(unit);
+
                 this.setState({
                     drawAbilityTooltip: true,
                     abilityTooltip: {
@@ -856,6 +865,9 @@ var Rance;
                     },
                     hoveredUnit: unit
                 });
+            },
+            getUnitElement: function (unit) {
+                return document.getElementById("unit-id_" + unit.id);
             },
             handleAbilityUse: function (ability, target) {
                 Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
@@ -905,7 +917,10 @@ var Rance;
                 return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
                     unitsBySide: battle.unitsBySide,
-                    potentialDelay: this.state.potentialDelay
+                    potentialDelay: this.state.potentialDelay,
+                    hoveredUnit: this.state.hoveredUnit,
+                    onMouseEnterUnit: this.handleMouseEnterUnit,
+                    onMouseLeaveUnit: this.handleMouseLeaveUnit
                 }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
@@ -2254,20 +2269,4 @@ var Rance;
         reactUI.switchScene("battlePrep");
     });
 })(Rance || (Rance = {}));
-
-var indexedFibonacciResults = {};
-
-function fibonacci(n) {
-    if (n <= 1)
-        return n;
-
-    if (!indexedFibonacciResults[n]) {
-        var a = fibonacci(n - 2);
-        var b = fibonacci(n - 1);
-
-        indexedFibonacciResults[n] = a + b;
-    }
-
-    return indexedFibonacciResults[n];
-}
 //# sourceMappingURL=main.js.map

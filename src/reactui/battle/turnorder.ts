@@ -92,7 +92,8 @@ module Rance
             key: "" + i,
             className: "turn-order-unit",
             title: "delay: " + unit.battleStats.moveDelay + "\n" +
-              "speed: " + unit.attributes.speed
+              "speed: " + unit.attributes.speed,
+            onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit)
           };
 
           if (this.props.unitsBySide.side1.indexOf(unit) > -1)
@@ -101,7 +102,12 @@ module Rance
           }
           else if (this.props.unitsBySide.side2.indexOf(unit) > -1)
           {
-            data.className += " turn-order-unit-enemy"
+            data.className += " turn-order-unit-enemy";
+          }
+
+          if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id)
+          {
+            data.className += " turn-order-unit-hover";
           }
 
           toRender.push(

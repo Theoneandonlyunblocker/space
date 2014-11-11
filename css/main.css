@@ -33,10 +33,10 @@ body {
   margin: 0 2px;
 }
 .turn-order-unit-friendly {
-  background-color: lime;
+  background-color: rgba(100, 120, 250, 0.5);
 }
 .turn-order-unit-enemy {
-  background-color: red;
+  background-color: rgba(250, 100, 120, 0.5);
 }
 .turn-order-arrow {
   position: relative;
@@ -53,6 +53,7 @@ body {
 }
 .ability-tooltip {
   position: absolute;
+  z-index: 101;
   display: flex;
   flex: none;
   flex-basis: 0px;
@@ -111,16 +112,18 @@ body {
   flex: 1;
   padding: 1px;
 }
-/*
-.hovered-unit::before
-{
+.hovered-unit .unit-container::before {
   content: "";
-  pointer-events: none;
   position: absolute;
-  border: 3px solid red;
-  height: 100%;
   width: 100%;
-}*/
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  box-sizing: border-box;
+  border: 30px solid transparent;
+  border-image: url("../img/borderTest2.png") 38% stretch;
+  border-image-outset: 4px;
+}
 .empty-unit {
   animation-name: none !important;
 }

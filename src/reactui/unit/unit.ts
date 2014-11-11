@@ -58,15 +58,13 @@ module Rance
       {
         if (!this.props.handleMouseEnterUnit) return;
 
-        this.props.handleMouseEnterUnit(e, this.props.unit,
-          this.props.facesLeft, this.getDOMNode());
+        this.props.handleMouseEnterUnit(this.props.unit);
       },
       handleMouseLeave: function(e)
       {
         if (!this.props.handleMouseLeaveUnit) return;
 
-        this.props.handleMouseLeaveUnit(e, this.props.unit,
-          this.props.facesLeft, this.getDOMNode());
+        this.props.handleMouseLeaveUnit(e);
       },
 
       render: function()
@@ -80,7 +78,8 @@ module Rance
         };
         var wrapperProps: any =
         {
-          className: "unit"
+          className: "unit",
+          id: "unit-id_" + unit.id
         };
 
         wrapperProps.onMouseEnter = this.handleMouseEnter;
