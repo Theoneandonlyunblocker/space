@@ -13,7 +13,6 @@ module Rance
       {
         return(
         {
-          drawAbilityTooltip: false,
           abilityTooltip:
           {
             targetUnit: null,
@@ -28,7 +27,7 @@ module Rance
       {
         this.setState(
         {
-          drawAbilityTooltip: false,
+          hoveredUnit: false,
           abilityTooltip:
           {
             targetUnit: null,
@@ -41,7 +40,7 @@ module Rance
       },
       handleMouseLeaveUnit: function(e)
       {
-        if (!this.state.drawAbilityTooltip && !this.state.hoveredUnit) return;
+        if (!this.state.hoveredUnit) return;
 
 
         var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -59,10 +58,6 @@ module Rance
         )
         {
           this.clearAbilityTooltip();
-          this.setState(
-          {
-            hoveredUnit: null
-          });
         }
       },
       handleMouseEnterUnit: function(unit)
@@ -72,7 +67,6 @@ module Rance
 
         this.setState(
         {
-          drawAbilityTooltip: true,
           abilityTooltip:
           {
             targetUnit: unit,
@@ -135,7 +129,7 @@ module Rance
         var abilityTooltip: any = null;
 
         if (
-          this.state.drawAbilityTooltip &&
+          this.state.hoveredUnit &&
           activeTargets[this.state.abilityTooltip.targetUnit.id]
         )
         {

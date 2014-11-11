@@ -813,7 +813,6 @@ var Rance;
         UIComponents.Battle = React.createClass({
             getInitialState: function () {
                 return ({
-                    drawAbilityTooltip: false,
                     abilityTooltip: {
                         targetUnit: null,
                         parentElement: null
@@ -824,7 +823,7 @@ var Rance;
             },
             clearAbilityTooltip: function () {
                 this.setState({
-                    drawAbilityTooltip: false,
+                    hoveredUnit: false,
                     abilityTooltip: {
                         targetUnit: null,
                         parentElement: null
@@ -835,7 +834,7 @@ var Rance;
                 });
             },
             handleMouseLeaveUnit: function (e) {
-                if (!this.state.drawAbilityTooltip && !this.state.hoveredUnit)
+                if (!this.state.hoveredUnit)
                     return;
 
                 var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -847,9 +846,6 @@ var Rance;
 
                 if (toElement !== this.state.abilityTooltip.parentElement && (this.refs.abilityTooltip && toElement !== this.refs.abilityTooltip.getDOMNode()) && toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
                     this.clearAbilityTooltip();
-                    this.setState({
-                        hoveredUnit: null
-                    });
                 }
             },
             handleMouseEnterUnit: function (unit) {
@@ -857,7 +853,6 @@ var Rance;
                 var parentElement = this.getUnitElement(unit);
 
                 this.setState({
-                    drawAbilityTooltip: true,
                     abilityTooltip: {
                         targetUnit: unit,
                         parentElement: parentElement,
@@ -900,7 +895,7 @@ var Rance;
 
                 var abilityTooltip = null;
 
-                if (this.state.drawAbilityTooltip && activeTargets[this.state.abilityTooltip.targetUnit.id]) {
+                if (this.state.hoveredUnit && activeTargets[this.state.abilityTooltip.targetUnit.id]) {
                     abilityTooltip = Rance.UIComponents.AbilityTooltip({
                         handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
