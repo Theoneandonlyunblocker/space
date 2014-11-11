@@ -722,7 +722,8 @@ var Rance;
                         key: "" + i,
                         className: "turn-order-unit",
                         title: "delay: " + unit.battleStats.moveDelay + "\n" + "speed: " + unit.attributes.speed,
-                        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit)
+                        onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
+                        onMouseLeave: this.props.onMouseLeaveUnit
                     };
 
                     if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
@@ -821,7 +822,7 @@ var Rance;
                     hoveredUnit: null
                 });
             },
-            clearAbilityTooltip: function () {
+            clearHoveredUnit: function () {
                 this.setState({
                     hoveredUnit: false,
                     abilityTooltip: {
@@ -839,12 +840,19 @@ var Rance;
                 var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
 
                 if (!toElement) {
-                    this.clearAbilityTooltip();
+                    this.clearHoveredUnit();
                     return;
                 }
 
-                if (toElement !== this.state.abilityTooltip.parentElement && (this.refs.abilityTooltip && toElement !== this.refs.abilityTooltip.getDOMNode()) && toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()) {
-                    this.clearAbilityTooltip();
+                if (!this.refs.abilityTooltip) {
+                    this.clearHoveredUnit();
+                    return;
+                }
+
+                var tooltipElement = this.refs.abilityTooltip.getDOMNode();
+
+                if (toElement !== this.state.abilityTooltip.parentElement && (this.refs.abilityTooltip && toElement !== tooltipElement) && toElement.parentElement !== tooltipElement) {
+                    this.clearHoveredUnit();
                 }
             },
             handleMouseEnterUnit: function (unit) {
@@ -864,7 +872,7 @@ var Rance;
             },
             handleAbilityUse: function (ability, target) {
                 Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
-                this.clearAbilityTooltip();
+                this.clearHoveredUnit();
                 this.props.battle.endTurn();
             },
             handleMouseEnterAbility: function (ability) {

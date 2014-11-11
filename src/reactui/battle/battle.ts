@@ -23,7 +23,7 @@ module Rance
         });
       },
 
-      clearAbilityTooltip: function()
+      clearHoveredUnit: function()
       {
         this.setState(
         {
@@ -41,22 +41,30 @@ module Rance
       {
         if (!this.state.hoveredUnit) return;
 
-
         var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
 
         if (!toElement)
         {
-          this.clearAbilityTooltip();
+          this.clearHoveredUnit();
           return;
         }
 
+        if (!this.refs.abilityTooltip)
+        {
+          this.clearHoveredUnit();
+          return;
+        }
+
+
+        var tooltipElement = this.refs.abilityTooltip.getDOMNode();
+
         if(
           toElement !== this.state.abilityTooltip.parentElement &&
-          (this.refs.abilityTooltip && toElement !== this.refs.abilityTooltip.getDOMNode()) &&
-          toElement.parentElement !== this.refs.abilityTooltip.getDOMNode()
+          (this.refs.abilityTooltip && toElement !== tooltipElement) &&
+          toElement.parentElement !== tooltipElement
         )
         {
-          this.clearAbilityTooltip();
+          this.clearHoveredUnit();
         }
       },
       handleMouseEnterUnit: function(unit)
@@ -83,7 +91,7 @@ module Rance
       handleAbilityUse: function(ability, target)
       {
         useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
-        this.clearAbilityTooltip();
+        this.clearHoveredUnit();
         this.props.battle.endTurn();
       },
 

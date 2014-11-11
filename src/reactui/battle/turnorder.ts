@@ -93,7 +93,8 @@ module Rance
             className: "turn-order-unit",
             title: "delay: " + unit.battleStats.moveDelay + "\n" +
               "speed: " + unit.attributes.speed,
-            onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit)
+            onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
+            onMouseLeave: this.props.onMouseLeaveUnit
           };
 
           if (this.props.unitsBySide.side1.indexOf(unit) > -1)
