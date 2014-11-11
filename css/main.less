@@ -19,6 +19,23 @@ body {
   text-decoration: inherit;
 }
 
+.hover-border(@border-width, @outset)
+{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  box-sizing: border-box;
+  border: @border-width solid transparent;
+  border-image-source: url("../img/borderTest2.png");
+  border-image-slice: 38%;
+  border-image-outset: @outset;
+}
+
 .tooltip
 {
   width: 60px;
@@ -43,6 +60,7 @@ body {
 {
   display: flex;
   flex: 1;
+  position: relative;
   max-width: 160px;
   overflow: hidden;
   white-space: nowrap;
@@ -60,9 +78,7 @@ body {
   background-color: @enemy-unit-bg;
 }
 
-.turn-order-unit-hover
-{
-}
+
 
 .turn-order-arrow
 {
@@ -167,16 +183,7 @@ body {
 {
   .unit-container::before
   {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 50;
-    box-sizing: border-box;
-    border: 30px solid transparent;
-    border-image: url("../img/borderTest2.png") 38% stretch;
-    border-image-outset: 4px;
+    .hover-border(30px, 4px);
   }
 }
 
