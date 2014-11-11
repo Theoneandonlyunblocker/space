@@ -212,10 +212,21 @@ module Rance
           columns.push(
             React.DOM.col(colProps)
           );
+
+          var sortStatus = null;
+
+          if (!column.notSortable) sortStatus = "sortable";
+
+          if (self.state.sortBy.column && self.state.sortBy.column.key === column.key)
+          {
+            sortStatus += " sorted-" + self.state.sortBy.order;
+          }
+          else if (!column.notSortable) sortStatus += " unsorted";
+
           headerLabels.push(
             React.DOM.th(
               {
-                className: !column.notSortable ? "sortable-column" : null,
+                className: sortStatus,
                 title: column.title || colProps.title || null,
                 onMouseDown: self.handleSelectColumn.bind(null, column),
                 onTouchStart: self.handleSelectColumn.bind(null, column),
@@ -245,27 +256,23 @@ module Rance
         });
 
         return(
-          React.DOM.div(null,
-
-            React.DOM.table(
+          React.DOM.table(
                 {
-                  tabIndex: 1
-                },
-              React.DOM.colgroup(null,
-                columns
-              ),
+                tabIndex: 1
+              },
+            React.DOM.colgroup(null,
+              columns
+            ),
 
-              React.DOM.thead(null,
-                React.DOM.tr(null,
-                  headerLabels
-                )
-              ),
-
-              React.DOM.tbody(null,
-                rows
+            React.DOM.thead(null,
+              React.DOM.tr(null,
+                headerLabels
               )
+            ),
+
+            React.DOM.tbody(null,
+              rows
             )
-            
           )
         );
       }

@@ -505,6 +505,10 @@ var Rance;
             render: function () {
                 var allElements = [];
 
+                var wrapperProps = {
+                    className: "unit-wrapper"
+                };
+
                 var empty = Rance.UIComponents.EmptyUnit({
                     facesLeft: this.props.facesLeft,
                     key: "empty_" + this.props.key,
@@ -519,7 +523,7 @@ var Rance;
                     allElements.push(unit);
                 }
 
-                return (React.DOM.div({ className: "unit-wrapper" }, allElements));
+                return (React.DOM.div(wrapperProps, allElements));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1113,8 +1117,19 @@ var Rance;
                     }
 
                     columns.push(React.DOM.col(colProps));
+
+                    var sortStatus = null;
+
+                    if (!column.notSortable)
+                        sortStatus = "sortable";
+
+                    if (self.state.sortBy.column && self.state.sortBy.column.key === column.key) {
+                        sortStatus += " sorted-" + self.state.sortBy.order;
+                    } else if (!column.notSortable)
+                        sortStatus += " unsorted";
+
                     headerLabels.push(React.DOM.th({
-                        className: !column.notSortable ? "sortable-column" : null,
+                        className: sortStatus,
                         title: column.title || colProps.title || null,
                         onMouseDown: self.handleSelectColumn.bind(null, column),
                         onTouchStart: self.handleSelectColumn.bind(null, column),
@@ -1138,9 +1153,9 @@ var Rance;
                     rows.push(row);
                 });
 
-                return (React.DOM.div(null, React.DOM.table({
+                return (React.DOM.table({
                     tabIndex: 1
-                }, React.DOM.colgroup(null, columns), React.DOM.thead(null, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows))));
+                }, React.DOM.colgroup(null, columns), React.DOM.thead(null, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1162,7 +1177,7 @@ var Rance;
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
-                cellProps.className = "unit-list-item-cell";
+                cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
 
                 var cellContent;
 
@@ -1281,7 +1296,7 @@ var Rance;
                         }
                     },
                     {
-                        label: "Actions",
+                        label: "Act",
                         key: "maxActionPoints",
                         defaultOrder: "desc"
                     },
@@ -1307,10 +1322,10 @@ var Rance;
                     }
                 ];
 
-                return (Rance.UIComponents.List({
+                return (React.DOM.div({ className: "unit-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns
-                }));
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2210,4 +2225,20 @@ var Rance;
         reactUI.switchScene("battlePrep");
     });
 })(Rance || (Rance = {}));
+
+var indexedFibonacciResults = {};
+
+function fibonacci(n) {
+    if (n <= 1)
+        return n;
+
+    if (!indexedFibonacciResults[n]) {
+        var a = fibonacci(n - 2);
+        var b = fibonacci(n - 1);
+
+        indexedFibonacciResults[n] = a + b;
+    }
+
+    return indexedFibonacciResults[n];
+}
 //# sourceMappingURL=main.js.map

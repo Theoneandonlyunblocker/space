@@ -10,6 +10,11 @@ module Rance
       {
         var allElements = [];
 
+        var wrapperProps: any =
+        {
+          className: "unit-wrapper"
+        };
+
         var empty = UIComponents.EmptyUnit(
         {
           facesLeft: this.props.facesLeft,
@@ -28,7 +33,7 @@ module Rance
         }
         
         return(
-          React.DOM.div({className: "unit-wrapper"},
+          React.DOM.div(wrapperProps,
             allElements
           )
         );

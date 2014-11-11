@@ -22,7 +22,7 @@ module Rance
       {
         var cellProps: any = {};
         cellProps.key = type;
-        cellProps.className = "unit-list-item-cell";
+        cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
 
         var cellContent: any;
 

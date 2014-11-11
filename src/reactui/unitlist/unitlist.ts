@@ -69,7 +69,7 @@ module Rance
             }
           },
           {
-            label: "Actions",
+            label: "Act",
             key: "maxActionPoints",
             defaultOrder: "desc"
           },
@@ -97,11 +97,13 @@ module Rance
         ];
 
         return(
-          UIComponents.List(
-          {
-            listItems: rows,
-            initialColumns: columns
-          })
+          React.DOM.div({className: "unit-list"},
+            UIComponents.List(
+            {
+              listItems: rows,
+              initialColumns: columns
+            })
+          )
         );
       }
     });

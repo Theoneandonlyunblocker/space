@@ -51,3 +51,22 @@ module Rance
     reactUI.switchScene("battlePrep");
   });
 }
+
+
+var indexedFibonacciResults = {};
+
+function fibonacci(n)
+{
+  if (n <= 1) return n;
+
+  
+  if (!indexedFibonacciResults[n])
+  {
+    var a = fibonacci(n - 2);
+    var b = fibonacci(n - 1);
+
+    indexedFibonacciResults[n] = a + b;
+  }
+
+  return indexedFibonacciResults[n];
+}
