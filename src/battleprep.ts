@@ -26,12 +26,38 @@ module Rance
     {
       return this.alreadyPlaced[unit.id];
     }
+    getUnitAtPosition(position: number[])
+    {
+      return this.fleet[position[0]][position[1]]
+    }
     setUnit(unit: Unit, position: number[])
     {
       this.removeUnit(unit);
 
+      if (!position)
+      {
+        return;
+      }
+
+      var oldUnitInPosition = this.getUnitAtPosition(position);
+
+      if (oldUnitInPosition)
+      {
+        this.removeUnit(oldUnitInPosition);
+      }
+
       this.fleet[position[0]][position[1]] = unit;
       this.alreadyPlaced[unit.id] = position;
+    }
+    swapUnits(unit1: Unit, unit2: Unit)
+    {
+      if (unit1 === unit2) return;
+
+      var new1Pos = this.getUnitPosition(unit2);
+      var new2Pos = this.getUnitPosition(unit1);
+
+      this.setUnit(unit1, new1Pos);
+      this.setUnit(unit2, new2Pos);
     }
     removeUnit(unit: Unit)
     {

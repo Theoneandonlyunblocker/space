@@ -32,9 +32,19 @@ module Rance
       },
       handleDrop: function(position)
       {
+        var battlePrep = this.props.battlePrep;
         if (this.state.currentDragUnit)
         {
-          this.props.battlePrep.setUnit(this.state.currentDragUnit, position);
+          var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
+          if (unitCurrentlyInPosition)
+          {
+            battlePrep.swapUnits(this.state.currentDragUnit, unitCurrentlyInPosition);
+          }
+          else
+          {
+            battlePrep.setUnit(this.state.currentDragUnit, position);
+          }
+
         }
 
         this.handleDragEnd(true);

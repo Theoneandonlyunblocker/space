@@ -455,14 +455,6 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
-            handleMouseUp: function () {
-                this.props.onMouseUp(this.props.position);
-            },
-            componentDidMount: function () {
-                if (this.props.onMouseUp) {
-                    this.getDOMNode().addEventListener("mouseup", this.handleMouseUp);
-                }
-            },
             render: function () {
                 var wrapperProps = {
                     className: "unit empty-unit"
@@ -503,6 +495,9 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
+            handleMouseUp: function () {
+                this.props.onMouseUp(this.props.position);
+            },
             render: function () {
                 var allElements = [];
 
@@ -510,11 +505,15 @@ var Rance;
                     className: "unit-wrapper"
                 };
 
+                if (this.props.onMouseUp) {
+                    wrapperProps.onMouseUp = this.handleMouseUp;
+                }
+                ;
+
                 var empty = Rance.UIComponents.EmptyUnit({
                     facesLeft: this.props.facesLeft,
                     key: "empty_" + this.props.key,
-                    position: this.props.position,
-                    onMouseUp: this.props.onMouseUp
+                    position: this.props.position
                 });
 
                 allElements.push(empty);
@@ -1357,8 +1356,14 @@ var Rance;
                 });
             },
             handleDrop: function (position) {
+                var battlePrep = this.props.battlePrep;
                 if (this.state.currentDragUnit) {
-                    this.props.battlePrep.setUnit(this.state.currentDragUnit, position);
+                    var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
+                    if (unitCurrentlyInPosition) {
+                        battlePrep.swapUnits(this.state.currentDragUnit, unitCurrentlyInPosition);
+                    } else {
+                        battlePrep.setUnit(this.state.currentDragUnit, position);
+                    }
                 }
 
                 this.handleDragEnd(true);
@@ -2150,11 +2155,34 @@ var Rance;
         BattlePrep.prototype.getUnitPosition = function (unit) {
             return this.alreadyPlaced[unit.id];
         };
+        BattlePrep.prototype.getUnitAtPosition = function (position) {
+            return this.fleet[position[0]][position[1]];
+        };
         BattlePrep.prototype.setUnit = function (unit, position) {
             this.removeUnit(unit);
 
+            if (!position) {
+                return;
+            }
+
+            var oldUnitInPosition = this.getUnitAtPosition(position);
+
+            if (oldUnitInPosition) {
+                this.removeUnit(oldUnitInPosition);
+            }
+
             this.fleet[position[0]][position[1]] = unit;
             this.alreadyPlaced[unit.id] = position;
+        };
+        BattlePrep.prototype.swapUnits = function (unit1, unit2) {
+            if (unit1 === unit2)
+                return;
+
+            var new1Pos = this.getUnitPosition(unit2);
+            var new2Pos = this.getUnitPosition(unit1);
+
+            this.setUnit(unit1, new1Pos);
+            this.setUnit(unit2, new2Pos);
         };
         BattlePrep.prototype.removeUnit = function (unit) {
             var currentPosition = this.getUnitPosition(unit);

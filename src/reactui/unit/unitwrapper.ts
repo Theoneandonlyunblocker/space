@@ -6,6 +6,11 @@ module Rance
   {
     export var UnitWrapper = React.createClass(
     {
+      handleMouseUp: function()
+      {
+        this.props.onMouseUp(this.props.position);
+      },
+
       render: function()
       {
         var allElements = [];
@@ -15,13 +20,16 @@ module Rance
           className: "unit-wrapper"
         };
 
+        if (this.props.onMouseUp)
+        {
+          wrapperProps.onMouseUp = this.handleMouseUp
+        };
+
         var empty = UIComponents.EmptyUnit(
         {
           facesLeft: this.props.facesLeft,
           key: "empty_" + this.props.key,
-          position: this.props.position,
-          
-          onMouseUp: this.props.onMouseUp
+          position: this.props.position
         });
 
         allElements.push(empty);

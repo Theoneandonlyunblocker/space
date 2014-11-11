@@ -4,19 +4,6 @@ module Rance
   {
     export var EmptyUnit = React.createClass(
     {
-      handleMouseUp: function()
-      {
-        this.props.onMouseUp(this.props.position);
-      },
-
-      componentDidMount: function()
-      {
-        if (this.props.onMouseUp)
-        {
-          this.getDOMNode().addEventListener("mouseup", this.handleMouseUp)
-        }
-      },
-
       render: function()
       {
         var wrapperProps: any =

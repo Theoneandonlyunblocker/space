@@ -323,7 +323,9 @@ declare module Rance {
         };
         constructor(player: Rance.Player);
         public getUnitPosition(unit: Rance.Unit): number[];
+        public getUnitAtPosition(position: number[]): Rance.Unit;
         public setUnit(unit: Rance.Unit, position: number[]): void;
+        public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public makeBattle(fleet2: Rance.Unit[][]): Rance.Battle;
     }

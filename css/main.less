@@ -117,7 +117,8 @@ body {
 {
   display: flex;
   flex-flow: row;
-  flex: 1 520px;
+  flex: 1;
+  min-width: 220px;
   max-width: 520px;
 }
 
@@ -125,7 +126,8 @@ body {
 {
   display: flex;
   flex-flow: column;
-  flex: 1 260px;
+  flex: 1;
+  min-width: 110px;
   max-width: 260px;
 }
 
@@ -404,7 +406,7 @@ body {
 
   @media(max-width: 1200px)
   {
-    padding-right: 5px;
+    padding-right: 2px;
   }
 }
 
@@ -426,9 +428,11 @@ body {
 
 .unit-list
 {
+  flex-shrink: 1;
+
   th
   {
-    padding-left: 5px;
+    padding-left: 2px;
   }
   td
   {
@@ -482,6 +486,11 @@ body {
   flex-flow: row;
 
   .prevent-user-select;
+
+  .battle-fleet
+  {
+    flex: 1 2 auto;
+  }
 }
 
 .reserved

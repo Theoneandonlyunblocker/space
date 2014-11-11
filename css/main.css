@@ -80,13 +80,15 @@ body {
 .battle-fleet {
   display: flex;
   flex-flow: row;
-  flex: 1 520px;
+  flex: 1;
+  min-width: 220px;
   max-width: 520px;
 }
 .battle-fleet-column {
   display: flex;
   flex-flow: column;
-  flex: 1 260px;
+  flex: 1;
+  min-width: 110px;
   max-width: 260px;
 }
 .unit-wrapper {
@@ -289,7 +291,7 @@ body {
 }
 @media (max-width: 1200px) {
   .sortable {
-    padding-right: 5px;
+    padding-right: 2px;
   }
 }
 .unsorted::after {
@@ -337,8 +339,11 @@ body {
     display: none;
   }
 }
+.unit-list {
+  flex-shrink: 1;
+}
 .unit-list th {
-  padding-left: 5px;
+  padding-left: 2px;
 }
 .unit-list td {
   text-align: center;
@@ -377,6 +382,9 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.battle-prep .battle-fleet {
+  flex: 1 2 auto;
 }
 .reserved {
   background-color: grey;
