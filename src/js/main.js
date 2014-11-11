@@ -814,8 +814,8 @@ var Rance;
             getInitialState: function () {
                 return ({
                     abilityTooltip: {
-                        targetUnit: null,
-                        parentElement: null
+                        parentElement: null,
+                        facesLeft: null
                     },
                     hoveredAbility: null,
                     hoveredUnit: null
@@ -825,7 +825,6 @@ var Rance;
                 this.setState({
                     hoveredUnit: false,
                     abilityTooltip: {
-                        targetUnit: null,
                         parentElement: null
                     },
                     hoveredAbility: null,
@@ -854,7 +853,6 @@ var Rance;
 
                 this.setState({
                     abilityTooltip: {
-                        targetUnit: unit,
                         parentElement: parentElement,
                         facesLeft: facesLeft
                     },
@@ -870,7 +868,7 @@ var Rance;
                 this.props.battle.endTurn();
             },
             handleMouseEnterAbility: function (ability) {
-                var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.abilityTooltip.targetUnit.battleStats.position);
+                var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.hoveredUnit.battleStats.position);
 
                 this.setState({
                     hoveredAbility: ability,
@@ -895,13 +893,13 @@ var Rance;
 
                 var abilityTooltip = null;
 
-                if (this.state.hoveredUnit && activeTargets[this.state.abilityTooltip.targetUnit.id]) {
+                if (this.state.hoveredUnit && activeTargets[this.state.hoveredUnit.id]) {
                     abilityTooltip = Rance.UIComponents.AbilityTooltip({
                         handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
                         handleMouseEnterAbility: this.handleMouseEnterAbility,
                         handleMouseLeaveAbility: this.handleMouseLeaveAbility,
-                        targetUnit: this.state.abilityTooltip.targetUnit,
+                        targetUnit: this.state.hoveredUnit,
                         parentElement: this.state.abilityTooltip.parentElement,
                         facesLeft: this.state.abilityTooltip.facesLeft,
                         activeTargets: activeTargets,

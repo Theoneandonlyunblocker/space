@@ -15,8 +15,8 @@ module Rance
         {
           abilityTooltip:
           {
-            targetUnit: null,
-            parentElement: null
+            parentElement: null,
+            facesLeft: null
           },
           hoveredAbility: null,
           hoveredUnit: null
@@ -30,7 +30,6 @@ module Rance
           hoveredUnit: false,
           abilityTooltip:
           {
-            targetUnit: null,
             parentElement: null
           },
           hoveredAbility: null,
@@ -69,7 +68,6 @@ module Rance
         {
           abilityTooltip:
           {
-            targetUnit: unit,
             parentElement: parentElement,
             facesLeft: facesLeft
           },
@@ -95,7 +93,7 @@ module Rance
           this.props.battle,
           this.props.battle.activeUnit,
           ability,
-          this.state.abilityTooltip.targetUnit.battleStats.position
+          this.state.hoveredUnit.battleStats.position
         )
 
         this.setState(
@@ -130,7 +128,7 @@ module Rance
 
         if (
           this.state.hoveredUnit &&
-          activeTargets[this.state.abilityTooltip.targetUnit.id]
+          activeTargets[this.state.hoveredUnit.id]
         )
         {
           abilityTooltip = UIComponents.AbilityTooltip(
@@ -139,7 +137,7 @@ module Rance
             handleMouseLeave: this.handleMouseLeaveUnit,
             handleMouseEnterAbility: this.handleMouseEnterAbility,
             handleMouseLeaveAbility: this.handleMouseLeaveAbility,
-            targetUnit: this.state.abilityTooltip.targetUnit,
+            targetUnit: this.state.hoveredUnit,
             parentElement: this.state.abilityTooltip.parentElement,
             facesLeft: this.state.abilityTooltip.facesLeft,
             activeTargets: activeTargets,
