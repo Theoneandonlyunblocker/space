@@ -272,6 +272,87 @@ body {
 .available-turn {
   background-color: green;
 }
+.sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+@media (max-width: 1200px) {
+  .sort-icon {
+    display: none;
+  }
+}
+.sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 1200px) {
+  .sortable {
+    padding-right: 5px;
+  }
+}
+.unsorted::after {
+  content: "\f0dc";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+@media (max-width: 1200px) {
+  .unsorted::after {
+    display: none;
+  }
+}
+.sorted-asc::after {
+  content: "\f0de";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+@media (max-width: 1200px) {
+  .sorted-asc::after {
+    display: none;
+  }
+}
+.sorted-desc::after {
+  content: "\f0dd";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+@media (max-width: 1200px) {
+  .sorted-desc::after {
+    display: none;
+  }
+}
+.unit-list th {
+  padding-left: 5px;
+}
+.unit-list td {
+  text-align: center;
+  padding: 0 5px;
+}
+.unit-list .unit-list-typeName {
+  text-align: left;
+}
+.unit-list .unit-list-strength {
+  text-align: right;
+}
+.draggable {
+  cursor: move;
+}
 .dragging {
   position: fixed;
   pointer-events: none;

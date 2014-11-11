@@ -377,6 +377,7 @@ var Rance;
                 wrapperProps.onMouseLeave = this.handleMouseLeave;
 
                 if (this.props.isDraggable) {
+                    wrapperProps.className += " draggable";
                     wrapperProps.onMouseDown = this.handleMouseDown;
                 }
 
@@ -1213,7 +1214,7 @@ var Rance;
                 }
 
                 var rowProps = {
-                    className: "unit-list-item",
+                    className: "unit-list-item draggable",
                     onClick: this.props.handleClick,
                     onTouchStart: this.props.handleClick,
                     onMouseDown: this.handleMouseDown

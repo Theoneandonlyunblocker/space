@@ -88,6 +88,7 @@ module Rance
 
         if (this.props.isDraggable)
         {
+          wrapperProps.className += " draggable";
           wrapperProps.onMouseDown = this.handleMouseDown;
         }
 

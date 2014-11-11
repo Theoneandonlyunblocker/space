@@ -386,14 +386,26 @@ body {
 
 .sort-icon
 {
-  float: right;
-  margin: 0 5px;
   font-weight: 100;
+  position: absolute;
+  right: 5px;
+
+  @media(max-width: 1200px)
+  {
+    display: none;
+  }
 }
 
 .sortable
 {
   cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+
+  @media(max-width: 1200px)
+  {
+    padding-right: 5px;
+  }
 }
 
 .unsorted::after
@@ -437,6 +449,11 @@ body {
 .selected
 {
   //background-color: red;
+}
+
+.draggable
+{
+  cursor: move;
 }
 
 .dragging
