@@ -4,6 +4,7 @@
 /// <reference path="ability.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="battleprep.ts"/>
+/// <reference path="mapgeneration.ts"/>
 
 var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI;
 module Rance

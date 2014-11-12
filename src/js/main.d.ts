@@ -1,4 +1,5 @@
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/pixi.d.ts" />
 declare module Rance {
     module UIComponents {
         var UnitStrength: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
@@ -329,6 +330,29 @@ declare module Rance {
         public removeUnit(unit: Rance.Unit): void;
         public makeBattle(fleet2: Rance.Unit[][]): Rance.Battle;
     }
+}
+declare module Rance {
+    class Triangle {
+        public a: number[];
+        public b: number[];
+        public c: number[];
+        public edges: number[][][];
+        public circumCenterX: number;
+        public circumCenterY: number;
+        public circumRadius: number;
+        constructor(a: number[], b: number[], c: number[]);
+        public getPoints(): number[][];
+        public calculateCircumCircle(tolerance?: number): void;
+        public circumCircleContainsPoint(point: number[]): boolean;
+        public getEdges(): number[][][];
+        public sharesVertexesWith(toCheckAgainst: Triangle): boolean;
+    }
+    function triangulate(vertices: number[][]): Triangle[];
+    function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number): Triangle;
+    function edgesEqual(e1: number[], e2: number[]): boolean;
+    function makeRandomPoints(count: number): number[][];
+    var points: any[];
+    function drawTriangles(triangles: Triangle[]): void;
 }
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any;
 declare module Rance {
