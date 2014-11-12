@@ -48,10 +48,11 @@ module Rance
 
       window.addEventListener("resize", function(e)
       {
-        var container = window.getComputedStyle(
-          document.getElementById("pixi-container"), null );
-        self.screenWidth = parseInt(container.width);
-        self.screenHeight = parseInt(container.height);
+        var container = document.getElementById("pixi-container");
+        if (!container) return;
+        var style = window.getComputedStyle(container, null);
+        self.screenWidth = parseInt(style.width);
+        self.screenHeight = parseInt(style.height);
       }, false);
     }
 

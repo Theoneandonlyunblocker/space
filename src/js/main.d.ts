@@ -162,6 +162,7 @@ declare module Rance {
     class ReactUI {
         public container: HTMLElement;
         public currentScene: string;
+        public stage: any;
         public battle: Rance.Battle;
         public battlePrep: Rance.BattlePrep;
         public renderer: Rance.Renderer;

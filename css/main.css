@@ -382,6 +382,7 @@ body {
 .dragging {
   position: fixed;
   pointer-events: none;
+  cursor: move;
   z-index: 999;
 }
 .prevent-user-select {

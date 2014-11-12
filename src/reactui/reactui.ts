@@ -7,6 +7,7 @@ module Rance
   export class ReactUI
   {
     currentScene: string;
+    stage: any;
     battle: Battle;
     battlePrep: BattlePrep;
     renderer: Renderer;
@@ -23,10 +24,11 @@ module Rance
     }
     render()
     {
-      React.renderComponent(
+      this.stage = React.renderComponent(
         UIComponents.Stage(
           {
             sceneToRender: this.currentScene,
+            changeSceneFunction: this.switchScene.bind(this),
             battle: this.battle,
             battlePrep: this.battlePrep,
             renderer: this.renderer,

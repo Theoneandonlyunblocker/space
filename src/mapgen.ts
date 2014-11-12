@@ -61,17 +61,16 @@ module Rance
       {
         var triangle = this.triangles[i];
         var vertices = triangle.getPoints();
-        var points = [];
-
 
         for (var j = 0; j < vertices.length; j++)
         {
-          points.push(vectorToPoint(vertices[j]));
+          var current = vertices[j];
+          var next = vertices[(j + 1) % vertices.length];
+
+          gfx.moveTo(current[0], current[1]);
+          gfx.lineTo(next[0], next[1]);
         }
 
-        points.push(vectorToPoint(vertices[0]));
-
-        gfx.drawPolygon(points);
       }
       return doc;
     }

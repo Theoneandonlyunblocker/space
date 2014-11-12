@@ -1426,7 +1426,7 @@ var Rance;
 
                 var doc = this.props.mapGen.drawMap();
 
-                doc.height;
+                var ababab = doc.height;
 
                 this.props.renderer.layers.main.removeChildren();
                 this.props.renderer.layers.main.addChild(doc);
@@ -1456,6 +1456,11 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Stage = React.createClass({
+            changeScene: function () {
+                var newScene = this.refs.sceneSelector.getDOMNode().value;
+
+                this.props.changeSceneFunction(newScene);
+            },
             render: function () {
                 var elementsToRender = [];
 
@@ -1483,7 +1488,12 @@ var Rance;
                         break;
                     }
                 }
-                return (React.DOM.div({ className: "react-stage" }, elementsToRender));
+                return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
+                    className: "reactui-selector",
+                    ref: "sceneSelector",
+                    value: this.props.sceneToRender,
+                    onChange: this.changeScene
+                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1502,8 +1512,9 @@ var Rance;
             this.render();
         };
         ReactUI.prototype.render = function () {
-            React.renderComponent(Rance.UIComponents.Stage({
+            this.stage = React.renderComponent(Rance.UIComponents.Stage({
                 sceneToRender: this.currentScene,
+                changeSceneFunction: this.switchScene.bind(this),
                 battle: this.battle,
                 battlePrep: this.battlePrep,
                 renderer: this.renderer,
@@ -2492,15 +2503,14 @@ var Rance;
             for (var i = 0; i < this.triangles.length; i++) {
                 var triangle = this.triangles[i];
                 var vertices = triangle.getPoints();
-                var points = [];
 
                 for (var j = 0; j < vertices.length; j++) {
-                    points.push(vectorToPoint(vertices[j]));
+                    var current = vertices[j];
+                    var next = vertices[(j + 1) % vertices.length];
+
+                    gfx.moveTo(current[0], current[1]);
+                    gfx.lineTo(next[0], next[1]);
                 }
-
-                points.push(vectorToPoint(vertices[0]));
-
-                gfx.drawPolygon(points);
             }
             return doc;
         };
@@ -2543,9 +2553,12 @@ var Rance;
             var self = this;
 
             window.addEventListener("resize", function (e) {
-                var container = window.getComputedStyle(document.getElementById("pixi-container"), null);
-                self.screenWidth = parseInt(container.width);
-                self.screenHeight = parseInt(container.height);
+                var container = document.getElementById("pixi-container");
+                if (!container)
+                    return;
+                var style = window.getComputedStyle(container, null);
+                self.screenWidth = parseInt(style.width);
+                self.screenHeight = parseInt(style.height);
             }, false);
         };
 
@@ -2910,7 +2923,8 @@ var Rance;
         mapGen = new Rance.MapGen();
         reactUI.mapGen = mapGen;
 
-        reactUI.switchScene("mapGen");
+        reactUI.currentScene = "mapGen";
+        reactUI.render();
     });
 })(Rance || (Rance = {}));
 //# sourceMappingURL=main.js.map

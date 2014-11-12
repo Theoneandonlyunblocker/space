@@ -56,6 +56,7 @@ module Rance
     mapGen = new MapGen();
     reactUI.mapGen = mapGen;
 
-    reactUI.switchScene("mapGen");
+    reactUI.currentScene = "mapGen";
+    reactUI.render();
   });
 }

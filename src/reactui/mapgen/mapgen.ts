@@ -13,7 +13,7 @@ module Rance
 
         var doc = this.props.mapGen.drawMap();
 
-        doc.height;
+        var ababab = doc.height;
 
         this.props.renderer.layers.main.removeChildren();
         this.props.renderer.layers.main.addChild(doc);

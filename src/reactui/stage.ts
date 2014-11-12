@@ -11,6 +11,13 @@ module Rance
   {
     export var Stage = React.createClass(
     {
+      changeScene: function()
+      {
+        var newScene = this.refs.sceneSelector.getDOMNode().value;
+
+        this.props.changeSceneFunction(newScene);
+      },
+
       render: function()
       {
         var elementsToRender = [];
@@ -54,7 +61,18 @@ module Rance
         }
         return(
           React.DOM.div({className: "react-stage"},
-            elementsToRender
+            elementsToRender,
+            React.DOM.select(
+              {
+                className: "reactui-selector",
+                ref: "sceneSelector",
+                value: this.props.sceneToRender,
+                onChange: this.changeScene
+              },
+              React.DOM.option({value: "mapGen"}, "map generation"),
+              React.DOM.option({value: "battlePrep"}, "battle setup"),
+              React.DOM.option({value: "battle"}, "battle")
+            )
           )
         );
       }
