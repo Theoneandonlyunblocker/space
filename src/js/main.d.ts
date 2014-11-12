@@ -350,14 +350,16 @@ declare module Rance {
         public circumRadius: number;
         constructor(a: number[], b: number[], c: number[]);
         public getPoints(): number[][];
+        public getCircumCenter(): number[];
         public calculateCircumCircle(tolerance?: number): void;
         public circumCircleContainsPoint(point: number[]): boolean;
         public getEdges(): number[][][];
-        public sharesVertexesWith(toCheckAgainst: Triangle): boolean;
+        public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
     }
 }
 declare module Rance {
     function triangulate(vertices: number[][]): Triangle[];
+    function voronoiFromTriangles(triangles: Triangle[]): any;
     function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number): Triangle;
     function edgesEqual(e1: number[], e2: number[]): boolean;
 }
@@ -368,6 +370,7 @@ declare module Rance {
         public pointsToGenerate: number;
         public points: number[][];
         public triangles: Rance.Triangle[];
+        public voronoi: any;
         constructor();
         public generatePoints(amount?: number): void;
         public makeRandomPoints(amount: number): number[][];

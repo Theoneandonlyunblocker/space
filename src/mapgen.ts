@@ -9,6 +9,7 @@ module Rance
     pointsToGenerate: number;
     points: number[][];
     triangles: Triangle[];
+    voronoi: any;
 
     constructor()
     {
@@ -63,6 +64,7 @@ module Rance
     {
       if (!this.points || this.points.length < 3) throw new Error();
       this.triangles = triangulate(this.points);
+      this.voronoi = voronoiFromTriangles(this.triangles);
     }
     drawMap()
     {
@@ -96,6 +98,22 @@ module Rance
         gfx.beginFill(0xFFFFFF);
         gfx.drawEllipse(this.points[i][0], this.points[i][1], 6, 6);
         gfx.endFill();
+      }
+
+      gfx.lineStyle(1, 0xFF0000, 1);
+
+      for (var point in this.voronoi)
+      {
+        var lines = this.voronoi[point];
+
+        for (var i = 0; i < lines.length; i++)
+        {
+          var line = lines[i];
+
+          gfx.moveTo(line[0][0], line[0][1]);
+          gfx.lineTo(line[1][0], line[1][1]);
+        }
+        
       }
 
 

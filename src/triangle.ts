@@ -21,6 +21,15 @@ module Rance
     {
       return [this.a, this.b, this.c];
     }
+    getCircumCenter()
+    {
+      if (!this.circumRadius)
+      {
+        this.calculateCircumCircle();
+      }
+      
+      return [this.circumCenterX, this.circumCenterY];
+    }
     calculateCircumCircle(tolerance: number = 0.00001)
     {
       var pA = this.a;
@@ -96,20 +105,21 @@ module Rance
 
       return this.edges;
     }
-    sharesVertexesWith(toCheckAgainst: Triangle)
+    getAmountOfSharedVerticesWith(toCheckAgainst: Triangle)
     {
       var ownPoints = this.getPoints();
       var otherPoints = toCheckAgainst.getPoints();
+      var shared = 0;
 
       for (var i = 0; i < ownPoints.length; i++)
       {
         if (otherPoints.indexOf(ownPoints[i]) >= 0)
         {
-          return true;
+          shared++;
         }
       }
 
-      return false;
+      return shared;
     }
   }
 }

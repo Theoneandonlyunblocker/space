@@ -2295,6 +2295,13 @@ var Rance;
         Triangle.prototype.getPoints = function () {
             return [this.a, this.b, this.c];
         };
+        Triangle.prototype.getCircumCenter = function () {
+            if (!this.circumRadius) {
+                this.calculateCircumCircle();
+            }
+
+            return [this.circumCenterX, this.circumCenterY];
+        };
         Triangle.prototype.calculateCircumCircle = function (tolerance) {
             if (typeof tolerance === "undefined") { tolerance = 0.00001; }
             var pA = this.a;
@@ -2358,17 +2365,18 @@ var Rance;
 
             return this.edges;
         };
-        Triangle.prototype.sharesVertexesWith = function (toCheckAgainst) {
+        Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
             var ownPoints = this.getPoints();
             var otherPoints = toCheckAgainst.getPoints();
+            var shared = 0;
 
             for (var i = 0; i < ownPoints.length; i++) {
                 if (otherPoints.indexOf(ownPoints[i]) >= 0) {
-                    return true;
+                    shared++;
                 }
             }
 
-            return false;
+            return shared;
         };
         return Triangle;
     })();
@@ -2418,13 +2426,64 @@ var Rance;
         }
 
         for (var i = triangles.length - 1; i >= 0; i--) {
-            if (triangles[i].sharesVertexesWith(superTriangle)) {
+            if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
                 triangles.splice(i, 1);
             }
         }
         return triangles;
     }
     Rance.triangulate = triangulate;
+
+    function voronoiFromTriangles(triangles) {
+        var trianglesPerPoint = {};
+        for (var i = 0; i < triangles.length; i++) {
+            var triangle = triangles[i];
+            var points = triangle.getPoints();
+
+            for (var j = 0; j < points.length; j++) {
+                if (!trianglesPerPoint[points[j]]) {
+                    trianglesPerPoint[points[j]] = [];
+                }
+
+                trianglesPerPoint[points[j]].push(triangle);
+            }
+        }
+        function makeTrianglePairs(triangles) {
+            var toMatch = triangles.slice(0);
+            var pairs = [];
+
+            for (var i = toMatch.length - 2; i >= 0; i--) {
+                for (var j = toMatch.length - 1; j >= i + 1; j--) {
+                    var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
+
+                    if (matchingVertices === 2) {
+                        pairs.push([toMatch[j], toMatch[i]]);
+                    }
+                }
+            }
+
+            return pairs;
+        }
+
+        var voronoiLinesPerPoint = {};
+
+        for (var point in trianglesPerPoint) {
+            var pointTriangles = trianglesPerPoint[point];
+
+            var trianglePairs = makeTrianglePairs(pointTriangles);
+            voronoiLinesPerPoint[point] = [];
+
+            for (var i = 0; i < trianglePairs.length; i++) {
+                voronoiLinesPerPoint[point].push([
+                    trianglePairs[i][0].getCircumCenter(),
+                    trianglePairs[i][1].getCircumCenter()
+                ]);
+            }
+        }
+
+        return voronoiLinesPerPoint;
+    }
+    Rance.voronoiFromTriangles = voronoiFromTriangles;
 
     function makeSuperTriangle(vertices, highestCoordinateValue) {
         var max;
@@ -2506,6 +2565,7 @@ var Rance;
             if (!this.points || this.points.length < 3)
                 throw new Error();
             this.triangles = Rance.triangulate(this.points);
+            this.voronoi = Rance.voronoiFromTriangles(this.triangles);
         };
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
@@ -2534,6 +2594,19 @@ var Rance;
                 gfx.beginFill(0xFFFFFF);
                 gfx.drawEllipse(this.points[i][0], this.points[i][1], 6, 6);
                 gfx.endFill();
+            }
+
+            gfx.lineStyle(1, 0xFF0000, 1);
+
+            for (var point in this.voronoi) {
+                var lines = this.voronoi[point];
+
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+
+                    gfx.moveTo(line[0][0], line[0][1]);
+                    gfx.lineTo(line[1][0], line[1][1]);
+                }
             }
 
             return doc;

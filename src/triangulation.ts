@@ -55,12 +55,74 @@ module Rance
 
     for (var i = triangles.length - 1; i >= 0; i--)
     {
-      if (triangles[i].sharesVertexesWith(superTriangle))
+      if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
       {
         triangles.splice(i, 1);
       }
     }
     return triangles;
+  }
+
+  export function voronoiFromTriangles(triangles: Triangle[])
+  {
+    var trianglesPerPoint: any = {};
+    for (var i = 0; i < triangles.length; i++)
+    {
+      var triangle = triangles[i];
+      var points = triangle.getPoints();
+
+      for (var j = 0; j < points.length; j++)
+      {
+        if (!trianglesPerPoint[points[j]])
+        {
+          trianglesPerPoint[points[j]] = [];
+        }
+
+        trianglesPerPoint[points[j]].push(triangle);
+      }
+    }
+    function makeTrianglePairs(triangles: Triangle[])
+    {
+      var toMatch = triangles.slice(0);
+      var pairs: Triangle[][] = [];
+
+      for (var i = toMatch.length - 2; i >= 0; i--)
+      {
+        for (var j = toMatch.length - 1; j >= i + 1; j--)
+        {
+          var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
+
+          if (matchingVertices === 2)
+          {
+            pairs.push([toMatch[j], toMatch[i]]);
+          }
+        }
+      }
+
+      return pairs;
+    }
+
+    var voronoiLinesPerPoint: any = {};
+
+    for (var point in trianglesPerPoint)
+    {
+      var pointTriangles = trianglesPerPoint[point];
+
+      var trianglePairs = makeTrianglePairs(pointTriangles);
+      voronoiLinesPerPoint[point] = [];
+
+      for (var i = 0; i < trianglePairs.length; i++)
+      {
+        voronoiLinesPerPoint[point].push(
+          [
+            trianglePairs[i][0].getCircumCenter(),
+            trianglePairs[i][1].getCircumCenter()
+          ]
+        ); 
+      }
+    }
+
+    return voronoiLinesPerPoint;
   }
 
   export function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number)
