@@ -4,9 +4,10 @@
 /// <reference path="ability.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="battleprep.ts"/>
-/// <reference path="mapgeneration.ts"/>
+/// <reference path="mapgen.ts"/>
+/// <reference path="renderer.ts"/>
 
-var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI;
+var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;
 module Rance
 {
   document.addEventListener('DOMContentLoaded', function()
@@ -49,6 +50,12 @@ module Rance
     reactUI = new ReactUI(document.getElementById("react-container"));
     reactUI.battlePrep = battlePrep;
 
-    reactUI.switchScene("battlePrep");
+    renderer = new Renderer();
+    reactUI.renderer = renderer;
+
+    mapGen = new MapGen();
+    reactUI.mapGen = mapGen;
+
+    reactUI.switchScene("mapGen");
   });
 }

@@ -1413,10 +1413,45 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MapGen = React.createClass({
+            generateMap: function (e) {
+                if (e.button !== 0)
+                    return;
+
+                this.props.mapGen.generatePoints(30);
+                this.props.mapGen.triangulate();
+
+                var doc = this.props.mapGen.drawMap();
+
+                doc.height;
+
+                this.props.renderer.layers.main.removeChildren();
+                this.props.renderer.layers.main.addChild(doc);
+            },
+            render: function () {
+                return (React.DOM.div({
+                    id: "pixi-container",
+                    onClick: this.generateMap
+                }));
+            },
+            componentDidMount: function () {
+                this.props.renderer.setContainer(this.getDOMNode());
+                this.props.renderer.init();
+                this.props.renderer.bindRendererView();
+                this.props.renderer.render();
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
+/// <reference path="mapgen/mapgen.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1426,15 +1461,25 @@ var Rance;
 
                 switch (this.props.sceneToRender) {
                     case "battle": {
-                        elementsToRender.push(Rance.UIComponents.Battle({ battle: this.props.battle, key: "battle" }));
+                        elementsToRender.push(Rance.UIComponents.Battle({
+                            battle: this.props.battle,
+                            key: "battle"
+                        }));
                         break;
                     }
-                    case "list": {
-                        elementsToRender.push(Rance.UIComponents.UnitList({ units: this.props.battle.unitsById, key: "unitList" }));
+                    case "mapGen": {
+                        elementsToRender.push(Rance.UIComponents.MapGen({
+                            renderer: this.props.renderer,
+                            mapGen: this.props.mapGen,
+                            key: "mapGen"
+                        }));
                         break;
                     }
                     case "battlePrep": {
-                        elementsToRender.push(Rance.UIComponents.BattlePrep({ battlePrep: this.props.battlePrep, key: "battlePrep" }));
+                        elementsToRender.push(Rance.UIComponents.BattlePrep({
+                            battlePrep: this.props.battlePrep,
+                            key: "battlePrep"
+                        }));
                         break;
                     }
                 }
@@ -1460,7 +1505,9 @@ var Rance;
             React.renderComponent(Rance.UIComponents.Stage({
                 sceneToRender: this.currentScene,
                 battle: this.battle,
-                battlePrep: this.battlePrep
+                battlePrep: this.battlePrep,
+                renderer: this.renderer,
+                mapGen: this.mapGen
             }), this.container);
         };
         return ReactUI;
@@ -2226,7 +2273,6 @@ var Rance;
     })();
     Rance.BattlePrep = BattlePrep;
 })(Rance || (Rance = {}));
-/// <reference path="..//lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
     var Triangle = (function () {
@@ -2316,6 +2362,10 @@ var Rance;
         return Triangle;
     })();
     Rance.Triangle = Triangle;
+})(Rance || (Rance = {}));
+/// <reference path="triangle.ts" />
+var Rance;
+(function (Rance) {
     function triangulate(vertices) {
         var triangles = [];
 
@@ -2342,7 +2392,6 @@ var Rance;
             for (var j = edgeBuffer.length - 2; j >= 0; j--) {
                 for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
                     if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
-                        console.log(edgeBuffer[j][0], edgeBuffer[j][1]);
                         edgeBuffer.splice(k, 1);
                         edgeBuffer.splice(j, 1);
                         k--;
@@ -2351,7 +2400,7 @@ var Rance;
                 }
             }
             for (var j = 0; j < edgeBuffer.length; j++) {
-                var newTriangle = new Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
+                var newTriangle = new Rance.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
 
                 triangles.push(newTriangle);
             }
@@ -2362,7 +2411,6 @@ var Rance;
                 triangles.splice(i, 1);
             }
         }
-
         return triangles;
     }
     Rance.triangulate = triangulate;
@@ -2385,7 +2433,7 @@ var Rance;
             }
         }
 
-        var triangle = new Triangle([10 * max, 0], [0, 10 * max], [-10 * max, -10 * max]);
+        var triangle = new Rance.Triangle([10 * max, 0], [0, 10 * max], [-10 * max, -10 * max]);
 
         return (triangle);
     }
@@ -2395,73 +2443,423 @@ var Rance;
         return (((e1[0] == e2[1]) && (e1[1] == e2[0])) || ((e1[0] == e2[0]) && (e1[1] == e2[1])));
     }
     Rance.edgesEqual = edgesEqual;
-
-    function makeRandomPoints(count) {
-        var points = [];
-
-        for (var i = 0; i < count; i++) {
-            points.push([
-                Math.random() * 800,
-                Math.random() * 600
-            ]);
+})(Rance || (Rance = {}));
+/// <reference path="triangulation.ts" />
+var Rance;
+(function (Rance) {
+    var MapGen = (function () {
+        function MapGen() {
+            this.maxWidth = 400;
+            this.maxHeight = 400;
         }
+        MapGen.prototype.generatePoints = function (amount) {
+            if (typeof amount === "undefined") { amount = this.pointsToGenerate; }
+            this.pointsToGenerate = amount;
 
-        return points;
-    }
-    Rance.makeRandomPoints = makeRandomPoints;
+            if (!amount)
+                throw new Error();
 
-    function arrayToPoints(points) {
-        var _points = [];
-        for (var i = 0; i < points.length; i++) {
-            _points.push(new PIXI.Point(points[i][0], points[i][1]));
-        }
-        return _points;
-    }
+            this.points = this.makeRandomPoints(amount);
+        };
+        MapGen.prototype.makeRandomPoints = function (amount) {
+            var points = [];
 
-    Rance.points = [];
-
-    function drawTriangles(triangles) {
-        var container = document.createElement("div");
-        document.body.appendChild(container);
-
-        var stage = new PIXI.Stage(0xFFFFCC);
-
-        var renderer = PIXI.autoDetectRenderer(800, 600, null, false, true);
-
-        container.appendChild(renderer.view);
-
-        renderer.render(stage);
-
-        stage.mousedown = function (e) {
-            Rance.points.push([e.global.x, e.global.y]);
-
-            var triangles = triangulate(Rance.points);
-
-            stage.removeChildren();
-
-            for (var i = 0; i < triangles.length; i++) {
-                var gfx = new PIXI.Graphics();
-                gfx.lineStyle(2, 0xFF0000, 1);
-
-                var vertices = triangles[i].getPoints();
-                var points = arrayToPoints(vertices);
-                points.push(points[0].clone());
-
-                gfx.drawPolygon(points);
-
-                for (var j = 0; j < vertices.length; j++) {
-                    gfx.beginFill(0x000000);
-                    gfx.drawEllipse(vertices[j][0], vertices[j][1], 3, 3);
-                    gfx.endFill();
-                }
-
-                stage.addChild(gfx);
+            for (var i = 0; i < amount; i++) {
+                points.push([
+                    Math.random() * this.maxWidth,
+                    Math.random() * this.maxHeight
+                ]);
             }
 
-            renderer.render(stage);
+            return points;
         };
-    }
-    Rance.drawTriangles = drawTriangles;
+        MapGen.prototype.triangulate = function () {
+            if (!this.points || this.points.length < 3)
+                throw new Error();
+            this.triangles = Rance.triangulate(this.points);
+        };
+        MapGen.prototype.drawMap = function () {
+            function vectorToPoint(vector) {
+                return new PIXI.Point(vector[0], vector[1]);
+            }
+
+            var doc = new PIXI.DisplayObjectContainer();
+            var gfx = new PIXI.Graphics();
+            gfx.lineStyle(2, 0x000000, 1);
+
+            doc.addChild(gfx);
+
+            for (var i = 0; i < this.triangles.length; i++) {
+                var triangle = this.triangles[i];
+                var vertices = triangle.getPoints();
+                var points = [];
+
+                for (var j = 0; j < vertices.length; j++) {
+                    points.push(vectorToPoint(vertices[j]));
+                }
+
+                points.push(vectorToPoint(vertices[0]));
+
+                gfx.drawPolygon(points);
+            }
+            return doc;
+        };
+        return MapGen;
+    })();
+    Rance.MapGen = MapGen;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+var Rance;
+(function (Rance) {
+    /**
+    * @class Camera
+    * @constructor
+    */
+    var Camera = (function () {
+        /**
+        * [constructor description]
+        * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+        * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
+        * 0.0 to 1.0]
+        */
+        function Camera(container, bound) {
+            this.bounds = {};
+            this.currZoom = 1;
+            this.container = container;
+            this.bounds.min = bound;
+            this.bounds.max = Number((1 - bound).toFixed(1));
+            var screenElement = window.getComputedStyle(document.getElementById("pixi-container"), null);
+            this.screenWidth = parseInt(screenElement.width);
+            this.screenHeight = parseInt(screenElement.height);
+
+            this.addEventListeners();
+            this.setBounds();
+        }
+        /**
+        * @method addEventListeners
+        * @private
+        */
+        Camera.prototype.addEventListeners = function () {
+            var self = this;
+
+            window.addEventListener("resize", function (e) {
+                var container = window.getComputedStyle(document.getElementById("pixi-container"), null);
+                self.screenWidth = parseInt(container.width);
+                self.screenHeight = parseInt(container.height);
+            }, false);
+        };
+
+        /**
+        * @method setBound
+        * @private
+        */
+        Camera.prototype.setBounds = function () {
+            var rect = this.container.getLocalBounds();
+            this.width = this.screenWidth;
+            this.height = this.screenHeight;
+            this.bounds = {
+                xMin: (this.width * this.bounds.min) - rect.width * this.container.scale.x,
+                xMax: (this.width * this.bounds.max),
+                yMin: (this.height * this.bounds.min) - rect.height * this.container.scale.y,
+                yMax: (this.height * this.bounds.max),
+                min: this.bounds.min,
+                max: this.bounds.max
+            };
+        };
+
+        /**
+        * @method startScroll
+        * @param {number[]} mousePos [description]
+        */
+        Camera.prototype.startScroll = function (mousePos) {
+            this.setBounds();
+            this.startClick = mousePos;
+            this.startPos = [this.container.position.x, this.container.position.y];
+        };
+
+        /**
+        * @method end
+        */
+        Camera.prototype.end = function () {
+            this.startPos = undefined;
+        };
+
+        /**
+        * @method getDelta
+        * @param {number[]} currPos [description]
+        */
+        Camera.prototype.getDelta = function (currPos) {
+            var x = this.startClick[0] - currPos[0];
+            var y = this.startClick[1] - currPos[1];
+            return [-x, -y];
+        };
+
+        /**
+        * @method move
+        * @param {number[]} currPos [description]
+        */
+        Camera.prototype.move = function (currPos) {
+            var delta = this.getDelta(currPos);
+            this.container.position.x = this.startPos[0] + delta[0];
+            this.container.position.y = this.startPos[1] + delta[1];
+            this.clampEdges();
+        };
+
+        /**
+        * @method zoom
+        * @param {number} zoomAmount [description]
+        */
+        Camera.prototype.zoom = function (zoomAmount) {
+            if (zoomAmount > 1) {
+                //zoomAmount = 1;
+            }
+
+            var container = this.container;
+            var oldZoom = this.currZoom;
+
+            var zoomDelta = oldZoom - zoomAmount;
+            var rect = container.getLocalBounds();
+
+            //these 2 get position of screen center in relation to the container
+            //0: far left 1: far right
+            var xRatio = 1 - ((container.x - this.screenWidth / 2) / rect.width / oldZoom + 1);
+            var yRatio = 1 - ((container.y - this.screenHeight / 2) / rect.height / oldZoom + 1);
+
+            var xDelta = rect.width * xRatio * zoomDelta;
+            var yDelta = rect.height * yRatio * zoomDelta;
+            container.position.x += xDelta;
+            container.position.y += yDelta;
+            container.scale.set(zoomAmount, zoomAmount);
+            this.currZoom = zoomAmount;
+        };
+
+        /**
+        * @method deltaZoom
+        * @param {number} delta [description]
+        * @param {number} scale [description]
+        */
+        Camera.prototype.deltaZoom = function (delta, scale) {
+            if (delta === 0) {
+                return;
+            }
+
+            //var scaledDelta = absDelta + scale / absDelta;
+            var direction = delta < 0 ? "out" : "in";
+            var adjDelta = 1 + Math.abs(delta) * scale;
+            if (direction === "out") {
+                this.zoom(this.currZoom / adjDelta);
+            } else {
+                this.zoom(this.currZoom * adjDelta);
+            }
+        };
+
+        /**
+        * @method clampEdges
+        * @private
+        */
+        Camera.prototype.clampEdges = function () {
+            var x = this.container.position.x;
+            var y = this.container.position.y;
+
+            //horizontal
+            //left edge
+            if (x < this.bounds.xMin) {
+                x = this.bounds.xMin;
+            } else if (x > this.bounds.xMax) {
+                x = this.bounds.xMax;
+            }
+
+            //vertical
+            //top
+            if (y < this.bounds.yMin) {
+                y = this.bounds.yMin;
+            } else if (y > this.bounds.yMax) {
+                y = this.bounds.yMax;
+            }
+
+            this.container.position.set(x, y);
+        };
+        return Camera;
+    })();
+    Rance.Camera = Camera;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var MouseEventHandler = (function () {
+        function MouseEventHandler(camera) {
+            this.preventingGhost = false;
+            var self = this;
+
+            this.camera = camera;
+            this.currAction = undefined;
+
+            window.oncontextmenu = function (event) {
+                var eventTarget = event.target;
+                if (eventTarget.localName !== "canvas")
+                    return;
+                event.preventDefault();
+                event.stopPropagation();
+            };
+
+            var _canvas = document.getElementById("pixi-container");
+            _canvas.addEventListener("DOMMouseScroll", function (e) {
+                if (e.target.localName !== "canvas")
+                    return;
+                self.camera.deltaZoom(-e.detail, 0.05);
+            });
+            _canvas.addEventListener("mousewheel", function (e) {
+                if (e.target.localName !== "canvas")
+                    return;
+                self.camera.deltaZoom(e.wheelDelta / 40, 0.05);
+            });
+            _canvas.addEventListener("mouseout", function (e) {
+                if (e.target.localName !== "canvas")
+                    return;
+            });
+        }
+        MouseEventHandler.prototype.preventGhost = function (delay) {
+            this.preventingGhost = true;
+            var self = this;
+            var timeout = window.setTimeout(function () {
+                self.preventingGhost = false;
+                window.clearTimeout(timeout);
+            }, delay);
+        };
+        MouseEventHandler.prototype.mouseDown = function (event, targetType) {
+            if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || (event.originalEvent.button === 1 || false)) {
+                this.startScroll(event);
+            }
+        };
+
+        MouseEventHandler.prototype.mouseMove = function (event, targetType) {
+            if (targetType === "stage") {
+                if (this.currAction === "zoom" || this.currAction === "scroll") {
+                    this.stageMove(event);
+                }
+            } else {
+                if (this.currAction === undefined) {
+                    this.hover(event);
+                }
+            }
+        };
+        MouseEventHandler.prototype.mouseUp = function (event, targetType) {
+            if (this.currAction === undefined)
+                return;
+            else if (targetType === "stage" && (this.currAction === "zoom" || this.currAction === "scroll")) {
+                this.stageEnd(event);
+                this.preventGhost(15);
+            }
+        };
+
+        MouseEventHandler.prototype.startScroll = function (event) {
+            if (this.currAction === "cellAction")
+                this.stashedAction = "cellAction";
+            this.currAction = "scroll";
+            this.startPoint = [event.global.x, event.global.y];
+            this.camera.startScroll(this.startPoint);
+        };
+        MouseEventHandler.prototype.startZoom = function (event) {
+            if (this.currAction === "cellAction")
+                this.stashedAction = "cellAction";
+            this.currAction = "zoom";
+            this.startPoint = this.currPoint = [event.global.x, event.global.y];
+        };
+
+        MouseEventHandler.prototype.stageMove = function (event) {
+            if (this.currAction === "scroll") {
+                this.camera.move([event.global.x, event.global.y]);
+            } else if (this.currAction === "zoom") {
+                var delta = event.global.x + this.currPoint[1] - this.currPoint[0] - event.global.y;
+                this.camera.deltaZoom(delta, 0.005);
+                this.currPoint = [event.global.x, event.global.y];
+            }
+        };
+        MouseEventHandler.prototype.stageEnd = function (event) {
+            if (this.currAction === "scroll") {
+                this.camera.end();
+                this.startPoint = undefined;
+                this.currAction = this.stashedAction;
+                this.stashedAction = undefined;
+            }
+            if (this.currAction === "zoom") {
+                this.startPoint = undefined;
+                this.currAction = this.stashedAction;
+                this.stashedAction = undefined;
+            }
+        };
+        MouseEventHandler.prototype.hover = function (event) {
+        };
+        return MouseEventHandler;
+    })();
+    Rance.MouseEventHandler = MouseEventHandler;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="camera.ts"/>
+/// <reference path="mouseeventhandler.ts"/>
+var Rance;
+(function (Rance) {
+    var Renderer = (function () {
+        function Renderer() {
+            this.layers = {};
+        }
+        Renderer.prototype.init = function () {
+            PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
+
+            this.stage = new PIXI.Stage(0xFFFF00);
+
+            var containerStyle = window.getComputedStyle(this.pixiContainer);
+            this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), null, false, true);
+
+            this.initLayers();
+            this.addCamera();
+
+            this.addEventListeners();
+        };
+        Renderer.prototype.setContainer = function (element) {
+            this.pixiContainer = element;
+        };
+        Renderer.prototype.bindRendererView = function () {
+            this.pixiContainer.appendChild(this.renderer.view);
+            this.renderer.view.setAttribute("id", "pixi-canvas");
+        };
+        Renderer.prototype.initLayers = function () {
+            var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
+            this.stage.addChild(_main);
+        };
+        Renderer.prototype.addCamera = function () {
+            this.camera = new Rance.Camera(this.layers["main"], 0.5);
+            this.mouseEventHandler = new Rance.MouseEventHandler(this.camera);
+        };
+        Renderer.prototype.addEventListeners = function () {
+            var self = this;
+            window.addEventListener("resize", this.resize.bind(this), false);
+
+            this.stage.mousedown = this.stage.touchstart = function (event) {
+                self.mouseEventHandler.mouseDown(event, "stage");
+            };
+            this.stage.mousemove = this.stage.touchmove = function (event) {
+                self.mouseEventHandler.mouseMove(event, "stage");
+            };
+            this.stage.mouseup = this.stage.touchend = function (event) {
+                self.mouseEventHandler.mouseUp(event, "stage");
+            };
+            this.stage.mouseupoutside = this.stage.touchendoutside = function (event) {
+                self.mouseEventHandler.mouseUp(event, "stage");
+            };
+        };
+        Renderer.prototype.resize = function () {
+            var containerStyle = window.getComputedStyle(this.pixiContainer);
+            if (this.renderer) {
+                this.renderer.resize(parseInt(containerStyle.width), parseInt(containerStyle.height));
+            }
+        };
+        Renderer.prototype.render = function () {
+            this.renderer.render(this.stage);
+            requestAnimFrame(this.render.bind(this));
+        };
+        return Renderer;
+    })();
+    Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
@@ -2469,8 +2867,9 @@ var Rance;
 /// <reference path="ability.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="battleprep.ts"/>
-/// <reference path="mapgeneration.ts"/>
-var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI;
+/// <reference path="mapgen.ts"/>
+/// <reference path="renderer.ts"/>
+var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;
 var Rance;
 (function (Rance) {
     document.addEventListener('DOMContentLoaded', function () {
@@ -2505,7 +2904,13 @@ var Rance;
         reactUI = new Rance.ReactUI(document.getElementById("react-container"));
         reactUI.battlePrep = battlePrep;
 
-        reactUI.switchScene("battlePrep");
+        renderer = new Rance.Renderer();
+        reactUI.renderer = renderer;
+
+        mapGen = new Rance.MapGen();
+        reactUI.mapGen = mapGen;
+
+        reactUI.switchScene("mapGen");
     });
 })(Rance || (Rance = {}));
 //# sourceMappingURL=main.js.map

@@ -3,6 +3,7 @@
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
+/// <reference path="mapgen/mapgen.ts"/>
 
 module Rance
 {
@@ -19,21 +20,34 @@ module Rance
           case "battle":
           {
             elementsToRender.push(
-              UIComponents.Battle({battle: this.props.battle, key: "battle"})
+              UIComponents.Battle(
+              {
+                battle: this.props.battle,
+                key: "battle"
+              })
             );
             break;
           }
-          case "list":
+          case "mapGen":
           {
             elementsToRender.push(
-              UIComponents.UnitList({units: this.props.battle.unitsById, key: "unitList"})
+              UIComponents.MapGen(
+              {
+                renderer: this.props.renderer,
+                mapGen: this.props.mapGen,
+                key: "mapGen"
+              })
             );
             break;
           }
           case "battlePrep":
           {
             elementsToRender.push(
-              UIComponents.BattlePrep({battlePrep: this.props.battlePrep, key: "battlePrep"})
+              UIComponents.BattlePrep(
+              {
+                battlePrep: this.props.battlePrep,
+                key: "battlePrep"
+              })
             );
             break;
           }

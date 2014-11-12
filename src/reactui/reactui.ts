@@ -9,6 +9,8 @@ module Rance
     currentScene: string;
     battle: Battle;
     battlePrep: BattlePrep;
+    renderer: Renderer;
+    mapGen: MapGen;
     
     constructor(public container: HTMLElement)
     {
@@ -26,7 +28,9 @@ module Rance
           {
             sceneToRender: this.currentScene,
             battle: this.battle,
-            battlePrep: this.battlePrep
+            battlePrep: this.battlePrep,
+            renderer: this.renderer,
+            mapGen: this.mapGen
           }
         ),
         this.container

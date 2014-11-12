@@ -150,6 +150,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var MapGen: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -159,6 +164,8 @@ declare module Rance {
         public currentScene: string;
         public battle: Rance.Battle;
         public battlePrep: Rance.BattlePrep;
+        public renderer: Rance.Renderer;
+        public mapGen: Rance.MapGen;
         constructor(container: HTMLElement);
         public switchScene(newScene: string): void;
         public render(): void;
@@ -347,13 +354,136 @@ declare module Rance {
         public getEdges(): number[][][];
         public sharesVertexesWith(toCheckAgainst: Triangle): boolean;
     }
+}
+declare module Rance {
     function triangulate(vertices: number[][]): Triangle[];
     function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number): Triangle;
     function edgesEqual(e1: number[], e2: number[]): boolean;
-    function makeRandomPoints(count: number): number[][];
-    var points: any[];
-    function drawTriangles(triangles: Triangle[]): void;
 }
-declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any;
+declare module Rance {
+    class MapGen {
+        public maxWidth: number;
+        public maxHeight: number;
+        public pointsToGenerate: number;
+        public points: number[][];
+        public triangles: Rance.Triangle[];
+        constructor();
+        public generatePoints(amount?: number): void;
+        public makeRandomPoints(amount: number): number[][];
+        public triangulate(): void;
+        public drawMap(): PIXI.DisplayObjectContainer;
+    }
+}
+declare module Rance {
+    /**
+    * @class Camera
+    * @constructor
+    */
+    class Camera {
+        public container: PIXI.DisplayObjectContainer;
+        public width: number;
+        public height: number;
+        public bounds: any;
+        public startPos: number[];
+        public startClick: number[];
+        public currZoom: number;
+        public screenWidth: number;
+        public screenHeight: number;
+        /**
+        * [constructor description]
+        * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+        * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
+        * 0.0 to 1.0]
+        */
+        constructor(container: PIXI.DisplayObjectContainer, bound: number);
+        /**
+        * @method addEventListeners
+        * @private
+        */
+        private addEventListeners();
+        /**
+        * @method setBound
+        * @private
+        */
+        private setBounds();
+        /**
+        * @method startScroll
+        * @param {number[]} mousePos [description]
+        */
+        public startScroll(mousePos: number[]): void;
+        /**
+        * @method end
+        */
+        public end(): void;
+        /**
+        * @method getDelta
+        * @param {number[]} currPos [description]
+        */
+        private getDelta(currPos);
+        /**
+        * @method move
+        * @param {number[]} currPos [description]
+        */
+        public move(currPos: number[]): void;
+        /**
+        * @method zoom
+        * @param {number} zoomAmount [description]
+        */
+        public zoom(zoomAmount: number): void;
+        /**
+        * @method deltaZoom
+        * @param {number} delta [description]
+        * @param {number} scale [description]
+        */
+        public deltaZoom(delta: number, scale: number): void;
+        /**
+        * @method clampEdges
+        * @private
+        */
+        private clampEdges();
+    }
+}
+declare module Rance {
+    class MouseEventHandler {
+        public camera: Rance.Camera;
+        public startPoint: number[];
+        public currPoint: number[];
+        public currAction: string;
+        public stashedAction: string;
+        public preventingGhost: boolean;
+        constructor(camera: Rance.Camera);
+        public preventGhost(delay: number): void;
+        public mouseDown(event: any, targetType: string): void;
+        public mouseMove(event: any, targetType: string): void;
+        public mouseUp(event: any, targetType: string): void;
+        public startScroll(event: any): void;
+        public startZoom(event: any): void;
+        public stageMove(event: any): void;
+        public stageEnd(event: any): void;
+        public hover(event: any): void;
+    }
+}
+declare module Rance {
+    class Renderer {
+        public stage: PIXI.Stage;
+        public renderer: any;
+        public pixiContainer: HTMLCanvasElement;
+        public layers: {
+            [name: string]: PIXI.DisplayObjectContainer;
+        };
+        public camera: Rance.Camera;
+        public mouseEventHandler: Rance.MouseEventHandler;
+        constructor();
+        public init(): void;
+        public setContainer(element: HTMLCanvasElement): void;
+        public bindRendererView(): void;
+        public initLayers(): void;
+        public addCamera(): void;
+        public addEventListeners(): void;
+        public resize(): void;
+        public render(): void;
+    }
+}
+declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any;
 declare module Rance {
 }
