@@ -18,6 +18,14 @@ body {
   display: flex;
   flex-flow: column;
   position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
 }
 .turn-order-container {
   display: flex;
@@ -34,10 +42,16 @@ body {
   margin: 0 2px;
 }
 .turn-order-unit-friendly {
-  background-color: rgba(100, 120, 250, 0.5);
+  background-color: #6c7ef2;
 }
 .turn-order-unit-enemy {
-  background-color: rgba(250, 100, 120, 0.5);
+  background-color: #f26c7e;
+}
+.turn-order-unit-hover.turn-order-unit-friendly {
+  background-color: #92a1ff;
+}
+.turn-order-unit-hover.turn-order-unit-enemy {
+  background-color: #ff92a1;
 }
 .turn-order-arrow {
   position: relative;

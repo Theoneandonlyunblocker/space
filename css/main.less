@@ -48,6 +48,8 @@ body {
   display: flex;
   flex-flow: column;
   position: relative;
+  .prevent-user-select;
+  cursor: default;
 }
 
 .turn-order-container
@@ -68,14 +70,25 @@ body {
   margin: 0 2px;
 }
 
+
 .turn-order-unit-friendly
 {
-  background-color: @friendly-unit-bg;
+  background-color: desaturate(@friendly-unit-color, 10%);
 }
 
 .turn-order-unit-enemy
 {
-  background-color: @enemy-unit-bg;
+  background-color: desaturate(@enemy-unit-color, 10%);
+}
+
+.turn-order-unit-hover.turn-order-unit-friendly
+{
+  background-color: lighten(saturate(@friendly-unit-color, 20%), 10%);
+}
+
+.turn-order-unit-hover.turn-order-unit-enemy
+{
+  background-color: lighten(saturate(@enemy-unit-color, 20%), 10%);
 }
 
 
@@ -188,10 +201,14 @@ body {
 }
 
 @empty-unit-bg: transparent;
-@friendly-unit-bg: rgba(100,120,250,0.5);
-@enemy-unit-bg: rgba(250,100,120,0.5);
-@active-unit-bg: rgba(200,200,20,0.5);
-@target-unit-bg: rgba(20,200,20,0.5);
+@friendly-unit-color: rgb(100,120,250);
+@enemy-unit-color: rgb(250,100,120);
+@active-unit-color: rgb(200,200,20);
+@target-unit-color: rgb(20,200,20);
+@friendly-unit-bg: fadeout(@friendly-unit-color, 50%);
+@enemy-unit-bg: fadeout(@enemy-unit-color, 50%);
+@active-unit-bg: fadeout(@active-unit-color, 50%);
+@target-unit-bg: fadeout(@target-unit-color, 50%);
 
 .unit-style(@bg-color)
 {
