@@ -55,11 +55,12 @@ module Rance
     }
     mouseDown(event, targetType: string)
     {
-      if (event.originalEvent.ctrlKey ||
-        event.originalEvent.metaKey ||
-        (event.originalEvent.button === 1 ||
-        false))
-        //event.originalEvent.button === 2) )
+      if (
+          event.originalEvent.ctrlKey ||
+          event.originalEvent.metaKey ||
+          event.originalEvent.button === 1 ||
+          event.originalEvent.button === 2
+        )
       {
         this.startScroll(event);
       }

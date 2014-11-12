@@ -1421,7 +1421,7 @@ var Rance;
                 if (e.button !== 0)
                     return;
 
-                this.props.mapGen.generatePoints(30);
+                this.props.mapGen.generatePoints(60);
                 this.props.mapGen.triangulate();
 
                 var doc = this.props.mapGen.drawMap();
@@ -2460,7 +2460,7 @@ var Rance;
 (function (Rance) {
     var MapGen = (function () {
         function MapGen() {
-            this.maxWidth = 400;
+            this.maxWidth = 800;
             this.maxHeight = 400;
         }
         MapGen.prototype.generatePoints = function (amount) {
@@ -2470,7 +2470,7 @@ var Rance;
             if (!amount)
                 throw new Error();
 
-            this.points = this.makeRandomPoints(amount);
+            this.points = this.makePolarPoints(amount);
         };
         MapGen.prototype.makeRandomPoints = function (amount) {
             var points = [];
@@ -2480,6 +2480,24 @@ var Rance;
                     Math.random() * this.maxWidth,
                     Math.random() * this.maxHeight
                 ]);
+            }
+
+            return points;
+        };
+        MapGen.prototype.makePolarPoints = function (amount) {
+            var points = [];
+            var minBound = Math.min(this.maxWidth, this.maxHeight);
+            var minBound2 = minBound / 2;
+
+            for (var i = 0; i < amount; i++) {
+                var distance = Math.random() * minBound;
+
+                var angle = Math.random() * 2 * Math.PI;
+
+                var x = Math.cos(angle) * distance + minBound2;
+                var y = Math.sin(angle) * distance + minBound2;
+
+                points.push([x, y]);
             }
 
             return points;
@@ -2512,6 +2530,12 @@ var Rance;
                     gfx.lineTo(next[0], next[1]);
                 }
             }
+            for (var i = 0; i < this.points.length; i++) {
+                gfx.beginFill(0xFFFFFF);
+                gfx.drawEllipse(this.points[i][0], this.points[i][1], 6, 6);
+                gfx.endFill();
+            }
+
             return doc;
         };
         return MapGen;
@@ -2739,7 +2763,7 @@ var Rance;
             }, delay);
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
-            if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || (event.originalEvent.button === 1 || false)) {
+            if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1 || event.originalEvent.button === 2) {
                 this.startScroll(event);
             }
         };
@@ -2847,16 +2871,17 @@ var Rance;
             var self = this;
             window.addEventListener("resize", this.resize.bind(this), false);
 
-            this.stage.mousedown = this.stage.touchstart = function (event) {
+            this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
+                console.log(event.originalEvent.button);
                 self.mouseEventHandler.mouseDown(event, "stage");
             };
             this.stage.mousemove = this.stage.touchmove = function (event) {
                 self.mouseEventHandler.mouseMove(event, "stage");
             };
-            this.stage.mouseup = this.stage.touchend = function (event) {
+            this.stage.mouseup = this.stage.rightup = this.stage.touchend = function (event) {
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
-            this.stage.mouseupoutside = this.stage.touchendoutside = function (event) {
+            this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function (event) {
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
         };

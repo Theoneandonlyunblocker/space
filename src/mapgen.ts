@@ -12,7 +12,7 @@ module Rance
 
     constructor()
     {
-      this.maxWidth = 400;
+      this.maxWidth = 800;
       this.maxHeight = 400;
     }
 
@@ -22,7 +22,7 @@ module Rance
 
       if (!amount) throw new Error();
 
-      this.points = this.makeRandomPoints(amount);
+      this.points = this.makePolarPoints(amount);
     }
     makeRandomPoints(amount: number)
     {
@@ -35,6 +35,26 @@ module Rance
           Math.random() * this.maxWidth,
           Math.random() * this.maxHeight
         ]);
+      }
+
+      return points;
+    }
+    makePolarPoints(amount: number)
+    {
+      var points = [];
+      var minBound = Math.min(this.maxWidth, this.maxHeight);
+      var minBound2 = minBound / 2;
+
+      for (var i = 0; i < amount; i++)
+      {
+        var distance = Math.random() * minBound;
+
+        var angle = Math.random() * 2 * Math.PI;
+
+        var x = Math.cos(angle) * distance + minBound2;
+        var y = Math.sin(angle) * distance + minBound2;
+
+        points.push([x, y]);
       }
 
       return points;
@@ -70,8 +90,15 @@ module Rance
           gfx.moveTo(current[0], current[1]);
           gfx.lineTo(next[0], next[1]);
         }
-
       }
+      for (var i = 0; i < this.points.length; i++)
+      {
+        gfx.beginFill(0xFFFFFF);
+        gfx.drawEllipse(this.points[i][0], this.points[i][1], 6, 6);
+        gfx.endFill();
+      }
+
+
       return doc;
     }
   }

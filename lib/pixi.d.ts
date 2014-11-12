@@ -174,10 +174,13 @@ declare module PIXI
 		static autoDetectRenderer(width: number, height: number, view?: HTMLCanvasElement, transparent?: boolean): IPixiRenderer;
 		click: IInteractionDataCallback;
 		mousedown: IInteractionDataCallback;
+		rightdown: IInteractionDataCallback;
 		mouseout: IInteractionDataCallback;
 		mouseover: IInteractionDataCallback;
 		mouseup: IInteractionDataCallback;
+		rightup: IInteractionDataCallback;
 		mouseupoutside: IInteractionDataCallback;
+		rightupoutside: IInteractionDataCallback;
 		mousemove: IInteractionDataCallback;
 		tap: IInteractionDataCallback;
 		touchend: IInteractionDataCallback;

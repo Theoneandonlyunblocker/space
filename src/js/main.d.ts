@@ -371,6 +371,7 @@ declare module Rance {
         constructor();
         public generatePoints(amount?: number): void;
         public makeRandomPoints(amount: number): number[][];
+        public makePolarPoints(amount: number): any[];
         public triangulate(): void;
         public drawMap(): PIXI.DisplayObjectContainer;
     }

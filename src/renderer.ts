@@ -66,19 +66,20 @@ module Rance
       window.addEventListener("resize", this.resize.bind(this), false);
 
 
-      this.stage.mousedown = this.stage.touchstart = function(event)
+      this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
       {
+        console.log(event.originalEvent.button)
         self.mouseEventHandler.mouseDown(event, "stage");
       }
       this.stage.mousemove = this.stage.touchmove = function(event)
       {
         self.mouseEventHandler.mouseMove(event, "stage");
       }
-      this.stage.mouseup = this.stage.touchend = function(event)
+      this.stage.mouseup = this.stage.rightup = this.stage.touchend = function(event)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
       }
-      this.stage.mouseupoutside = this.stage.touchendoutside = function(event)
+      this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function(event)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
       }
