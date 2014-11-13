@@ -1423,7 +1423,7 @@ var Rance;
 
                 var mapGen = this.props.mapGen;
 
-                if (!mapGen.points) {
+                if (mapGen.points && mapGen.points.length <= 0) {
                     mapGen.generatePoints(40);
                     mapGen.triangulate();
                     mapGen.makeVoronoi();
@@ -2590,6 +2590,9 @@ var Rance;
 (function (Rance) {
     var MapGen = (function () {
         function MapGen() {
+            this.points = [];
+            this.arms = {};
+            this.triangles = [];
             this.maxWidth = 800;
             this.maxHeight = 400;
         }
@@ -2600,26 +2603,53 @@ var Rance;
             if (!amount)
                 throw new Error();
 
-            this.points = this.makePolarPoints(amount);
+            this.points = this.makeSpiralPoints(amount);
         };
-        MapGen.prototype.makePolarPoints = function (amount) {
+        MapGen.prototype.setupArms = function (numberOfArms) {
+            for (var i = 0; i < numberOfArms; i++) {
+                this.arms[i] = [];
+            }
+        };
+        MapGen.prototype.makeSpiralPoints = function (amount, numberOfArms) {
+            if (typeof numberOfArms === "undefined") { numberOfArms = 5; }
+            this.setupArms(numberOfArms);
+
             var points = [];
+            var armDistance = Math.PI * 2 / numberOfArms;
+            var armOffsetMax = 0.5;
             var minBound = Math.min(this.maxWidth, this.maxHeight);
             var minBound2 = minBound / 2;
 
             for (var i = 0; i < amount; i++) {
-                var distance = Math.random() * minBound;
+                var distance = Math.random();
 
                 var angle = Math.random() * 2 * Math.PI;
+                var armOffset = Math.random() * armOffsetMax;
+                armOffset -= armOffsetMax / 2;
+                armOffset *= (1 / distance);
 
-                var x = Math.cos(angle) * distance + minBound;
-                var y = Math.sin(angle) * distance + minBound;
+                if (armOffset < 0)
+                    armOffset = Math.pow(armOffset, 2) * -1;
+                else
+                    armOffset = Math.pow(armOffset, 2);
 
-                points.push({
+                var arm = Math.round(angle / armDistance) % numberOfArms;
+                angle = arm * armDistance + armOffset;
+
+                var x = Math.cos(angle) * distance * minBound + minBound;
+                var y = Math.sin(angle) * distance * minBound + minBound;
+
+                var point = {
                     x: x,
-                    y: y
-                });
+                    y: y,
+                    distance: distance,
+                    arm: arm
+                };
+
+                points.push(point);
+                this.arms[arm].push(point);
             }
+            console.log(this.arms);
 
             return points;
         };
@@ -2657,25 +2687,37 @@ var Rance;
 
             return triangles;
         };
+        MapGen.prototype.getVerticesFromCell = function (cell) {
+            var vertices = [];
+
+            for (var i = 0; i < cell.halfedges.length; i++) {
+                vertices.push(cell.halfedges[i].getStartpoint());
+            }
+
+            return vertices;
+        };
         MapGen.prototype.relaxPoints = function () {
             var relaxedPoints = [];
 
-            function getVerticesFromCell(cell) {
-                var vertices = [];
-
-                for (var i = 0; i < cell.halfedges.length; i++) {
-                    vertices.push(cell.halfedges[i].getStartpoint());
-                }
-
-                return vertices;
-            }
             for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
                 var cell = this.voronoiDiagram.cells[i];
                 var point = cell.site;
-                var vertices = getVerticesFromCell(cell);
+                var vertices = this.getVerticesFromCell(cell);
                 var centroid = Rance.getCentroid(vertices);
 
-                relaxedPoints.push(centroid);
+                var adjusted = centroid;
+
+                adjusted.arm = point.arm;
+                adjusted.distance = point.distance;
+
+                var timesToDampen = point.distance * 4;
+
+                for (var j = 0; j < timesToDampen; j++) {
+                    adjusted.x = (adjusted.x + point.x) / 2;
+                    adjusted.y = (adjusted.y + point.y) / 2;
+                }
+
+                relaxedPoints.push(adjusted);
             }
 
             return relaxedPoints;
@@ -2706,8 +2748,31 @@ var Rance;
 
             var doc = new PIXI.DisplayObjectContainer();
 
+            if (this.voronoiDiagram) {
+                for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
+                    var cell = this.voronoiDiagram.cells[i];
+                    var cellVertices = this.getVerticesFromCell(cell);
+
+                    var poly = new PIXI.Polygon(cellVertices);
+                    var polyGfx = new PIXI.Graphics();
+                    polyGfx.interactive = true;
+                    polyGfx.lineStyle(6, 0xFF0000, 1);
+
+                    polyGfx.beginFill(0x0000FF, 0.3);
+                    polyGfx.drawShape(poly);
+                    polyGfx.endFill();
+
+                    polyGfx.rightclick = function (cell) {
+                        console.log();
+                        console.log(cell.site.x);
+                    }.bind(null, cell);
+
+                    doc.addChild(polyGfx);
+                }
+            }
+
             var gfx = new PIXI.Graphics();
-            gfx.lineStyle(2, 0x000000, 1);
+            gfx.lineStyle(3, 0x000000, 1);
 
             doc.addChild(gfx);
 
@@ -2727,13 +2792,6 @@ var Rance;
                 gfx.beginFill(0xFFFFFF);
                 gfx.drawEllipse(this.points[i].x, this.points[i].y, 6, 6);
                 gfx.endFill();
-            }
-
-            gfx.lineStyle(1, 0xFF0000, 1);
-            for (var i = 0; i < this.voronoiDiagram.edges.length; i++) {
-                var edge = this.voronoiDiagram.edges[i];
-                gfx.moveTo(edge.va.x, edge.va.y);
-                gfx.lineTo(edge.vb.x, edge.vb.y);
             }
 
             return doc;

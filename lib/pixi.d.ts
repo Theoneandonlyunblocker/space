@@ -173,6 +173,7 @@ declare module PIXI
 		constructor();
 		static autoDetectRenderer(width: number, height: number, view?: HTMLCanvasElement, transparent?: boolean): IPixiRenderer;
 		click: IInteractionDataCallback;
+		rightclick: IInteractionDataCallback;
 		mousedown: IInteractionDataCallback;
 		rightdown: IInteractionDataCallback;
 		mouseout: IInteractionDataCallback;
@@ -247,6 +248,7 @@ declare module PIXI
 		drawEllipse(x: number, y: number, width: number, height: number): void;
 		drawRect(x: number, y: number, width: number, height: number): void;
 		drawPolygon(any): any;
+		drawShape(any): any;
 		endFill(): void;
 		generateTexture(): Texture;
 		lineStyle(lineWidth?: number, color?: number, alpha?: number ): void;

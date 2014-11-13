@@ -134,7 +134,7 @@ module Rance
     return voronoiData;
   }
 
-  export function getCentroid(vertices: Point[])
+  export function getCentroid(vertices: Point[]): Point
   {
     var signedArea = 0;
     var x = 0;

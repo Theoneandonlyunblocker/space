@@ -10,7 +10,7 @@ module Rance
         
         var mapGen = this.props.mapGen;
 
-        if (!mapGen.points)
+        if (mapGen.points && mapGen.points.length <= 0)
         {
           mapGen.generatePoints(40);
           mapGen.triangulate();

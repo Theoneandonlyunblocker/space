@@ -4,6 +4,8 @@ module Rance
   {
     x: number;
     y: number;
+    distance?: number;
+    arm?: number;
   }
   export class Triangle
   {

@@ -343,6 +343,8 @@ declare module Rance {
     interface Point {
         x: number;
         y: number;
+        distance?: number;
+        arm?: number;
     }
     class Triangle {
         public a: Point;
@@ -366,10 +368,7 @@ declare module Rance {
         superTriangle: Triangle;
     };
     function voronoiFromTriangles(triangles: Triangle[]): any;
-    function getCentroid(vertices: Point[]): {
-        x: number;
-        y: number;
-    };
+    function getCentroid(vertices: Point[]): Point;
     function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
     function pointsEqual(p1: Point, p2: Point): boolean;
     function edgesEqual(e1: Point[], e2: Point[]): boolean;
@@ -380,14 +379,19 @@ declare module Rance {
         public maxHeight: number;
         public pointsToGenerate: number;
         public points: Rance.Point[];
+        public arms: {
+            [id: number]: Rance.Point[];
+        };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
         constructor();
         public generatePoints(amount?: number): void;
-        public makePolarPoints(amount: number): any[];
+        public setupArms(numberOfArms: number): void;
+        public makeSpiralPoints(amount: number, numberOfArms?: number): any[];
         public triangulate(): void;
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
+        public getVerticesFromCell(cell: any): any[];
         public relaxPoints(): any[];
         public relaxAndRecalculate(times?: number): void;
         public drawMap(): PIXI.DisplayObjectContainer;
