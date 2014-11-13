@@ -1,17 +1,20 @@
 module Rance
 {
+  export interface Point
+  {
+    x: number;
+    y: number;
+  }
   export class Triangle
   {
-    edges: number[][][];
-
     circumCenterX: number;
     circumCenterY: number;
     circumRadius: number;
 
     constructor(
-      public a: number[],
-      public b: number[],
-      public c: number[]
+      public a: Point,
+      public b: Point,
+      public c: Point
     )
     {
       
@@ -41,31 +44,31 @@ module Rance
       var my1, my2;
       var cX, cY;
 
-      if (Math.abs(pB[1] - pA[1]) < tolerance)
+      if (Math.abs(pB.y - pA.y) < tolerance)
       {
-        m2 = -(pC[0] - pB[0]) / (pC[1] - pB[1]);
-        mx2 = (pB[0] + pC[0]) * 0.5;
-        my2 = (pB[1] + pC[1]) * 0.5;
+        m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+        mx2 = (pB.x + pC.x) * 0.5;
+        my2 = (pB.y + pC.y) * 0.5;
 
-        cX = (pB[0] + pA[0]) * 0.5;
+        cX = (pB.x + pA.x) * 0.5;
         cY = m2 * (cX - mx2) + my2;
       }
       else
       {
-        m1 = -(pB[0] - pA[0]) / (pB[1] - pA[1]);
-        mx1 = (pA[0] + pB[0]) * 0.5;
-        my1 = (pA[1] + pB[1]) * 0.5;
+        m1 = -(pB.x - pA.x) / (pB.y - pA.y);
+        mx1 = (pA.x + pB.x) * 0.5;
+        my1 = (pA.y + pB.y) * 0.5;
 
-        if (Math.abs(pC[1] - pB[1]) < tolerance)
+        if (Math.abs(pC.y - pB.y) < tolerance)
         {
-          cX = (pC[0] + pB[0]) * 0.5;
+          cX = (pC.x + pB.x) * 0.5;
           cY = m1 * (cX - mx1) + my1;
         }
         else
         {
-          m2 = -(pC[0] - pB[0]) / (pC[1] - pB[1]);
-          mx2 = (pB[0] + pC[0]) * 0.5;
-          my2 = (pB[1] + pC[1]) * 0.5;
+          m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+          mx2 = (pB.x + pC.x) * 0.5;
+          my2 = (pB.y + pC.y) * 0.5;
 
           cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
           cY = m1 * (cX - mx1) + my1;
@@ -77,15 +80,15 @@ module Rance
 
 
 
-      mx1 = pB[0] - cX;
-      my1 = pB[1] - cY;
+      mx1 = pB.x - cX;
+      my1 = pB.y - cY;
       this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
     }
-    circumCircleContainsPoint(point: number[])
+    circumCircleContainsPoint(point: Point)
     {
       this.calculateCircumCircle();
-      var x = point[0] - this.circumCenterX;
-      var y = point[1] - this.circumCenterY;
+      var x = point.x - this.circumCenterX;
+      var y = point.y - this.circumCenterY;
 
       var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
 
@@ -93,17 +96,14 @@ module Rance
     }
     getEdges()
     {
-      if (!this.edges)
-      {
-        this.edges =
-        [
-          [this.a, this.b],
-          [this.b, this.c],
-          [this.c, this.a]
-        ];
-      }
+      var edges =
+      [
+        [this.a, this.b],
+        [this.b, this.c],
+        [this.c, this.a]
+      ];
 
-      return this.edges;
+      return edges;
     }
     getAmountOfSharedVerticesWith(toCheckAgainst: Triangle)
     {

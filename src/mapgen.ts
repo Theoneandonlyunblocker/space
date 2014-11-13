@@ -7,9 +7,9 @@ module Rance
     maxWidth: number;
     maxHeight: number;
     pointsToGenerate: number;
-    points: number[][];
+    points: Point[];
     triangles: Triangle[];
-    voronoi: any;
+    voronoiDiagram: any;
 
     constructor()
     {
@@ -25,21 +25,6 @@ module Rance
 
       this.points = this.makePolarPoints(amount);
     }
-    makeRandomPoints(amount: number)
-    {
-      var points: number[][] = [];
-
-      for (var i = 0; i < amount; i++)
-      {
-        points.push(
-        [
-          Math.random() * this.maxWidth,
-          Math.random() * this.maxHeight
-        ]);
-      }
-
-      return points;
-    }
     makePolarPoints(amount: number)
     {
       var points = [];
@@ -52,27 +37,17 @@ module Rance
 
         var angle = Math.random() * 2 * Math.PI;
 
-        var x = Math.cos(angle) * distance + minBound2;
-        var y = Math.sin(angle) * distance + minBound2;
+        var x = Math.cos(angle) * distance + minBound;
+        var y = Math.sin(angle) * distance + minBound;
 
-        points.push([x, y]);
+        points.push(
+        {
+          x: x,
+          y: y
+        });
       }
 
       return points;
-    }
-    makeMap(amountOfPoints: number, timesToRelax: number)
-    {
-      if (!this.points)
-      {
-        this.generatePoints(amountOfPoints);
-      }
-
-      this.triangulate();
-
-      for (var i = 0; i < timesToRelax; i++)
-      {
-        this.relaxVoronoi();
-      }
     }
     triangulate()
     {
@@ -80,8 +55,59 @@ module Rance
       var triangulationData = triangulate(this.points);
       this.triangles = this.cleanTriangles(triangulationData.triangles,
         triangulationData.superTriangle);
-      this.voronoi = voronoiFromTriangles(this.triangles);
+    }
+    convertPoints(points: any)
+    {
+      var converted = [];
 
+      if (points[0].x)
+      {
+        for (var i = 0; i < points.length; i++)
+        {
+          converted.push(
+          [
+            points[i].x,
+            points[i].y
+          ]);
+        }
+      }
+      else
+      {
+        for (var i = 0; i < points.length; i++)
+        {
+          converted.push(
+          {
+            x: points[i][0],
+            y: points[i][1]
+          });
+        }
+      }
+
+      return converted;
+    }
+    makeVoronoi()
+    {
+      if (!this.points || this.points.length < 3) throw new Error();
+
+      var convertedPoints = this.convertPoints(this.points);
+
+      var minBound = Math.min(this.maxWidth, this.maxHeight);
+
+      var boundingBox =
+      {
+        xl: -20,
+        xr: minBound * 3,
+        yt: -20,
+        yb: minBound * 3
+      };
+
+      debugger;
+
+      var voronoi = new Voronoi();
+
+      var diagram = voronoi.compute(convertedPoints, boundingBox);
+
+      this.voronoiDiagram = diagram;
     }
     cleanTriangles(triangles: Triangle[], superTriangle: Triangle)
     {
@@ -95,12 +121,14 @@ module Rance
 
       return triangles;
     }
+    /*
     relaxVoronoi()
     {
       var relaxedPoints = [];
-      for (var point in this.voronoi)
+      for (var _point in this.voronoi)
       {
-        var edges = this.voronoi[point].edges;
+        var edges = this.voronoi[_point].lines;
+        var point = this.voronoi[_point].point;
         var verticesIndex: any = {};
         var vertices = [];
 
@@ -116,21 +144,20 @@ module Rance
 
         if (vertices.length < 3)
         {
-          relaxedPoints.push()
+          relaxedPoints.push(point);
+        }
+        else
+        {
+          var centroid = getCentroid(vertices);
+  
+          relaxedPoints.push(centroid);
         }
 
-        var centroid = getCentroid(vertices);
-
-        if (!isFinite(centroid[0])) debugger;
-
-        relaxedPoints.push(centroid);
       }
-
-      debugger;
-
       this.points = relaxedPoints;
       this.triangulate();
     }
+    */
     drawMap()
     {
       function vectorToPoint(vector)
@@ -143,12 +170,6 @@ module Rance
 
 
       var doc = new PIXI.DisplayObjectContainer();
-      //var mask = new PIXI.Graphics();
-      //doc.addChild(mask);
-      //mask.beginFill();
-      //mask.drawRect(-minBound2, -minBound2, minBound * 2, minBound * 2);
-      //mask.endFill();
-      //doc.mask = mask;
 
       var gfx = new PIXI.Graphics();
       gfx.lineStyle(2, 0x000000, 1);
@@ -165,22 +186,23 @@ module Rance
           var current = vertices[j];
           var next = vertices[(j + 1) % vertices.length];
 
-          gfx.moveTo(current[0], current[1]);
-          gfx.lineTo(next[0], next[1]);
+          gfx.moveTo(current.x, current.y);
+          gfx.lineTo(next.x, next.y);
         }
       }
       for (var i = 0; i < this.points.length; i++)
       {
         gfx.beginFill(0xFFFFFF);
-        gfx.drawEllipse(this.points[i][0], this.points[i][1], 6, 6);
+        gfx.drawEllipse(this.points[i].x, this.points[i].y, 6, 6);
         gfx.endFill();
       }
 
-      gfx.lineStyle(1, 0xFF0000, 1);
+      /*
 
+      gfx.lineStyle(1, 0xFF0000, 1);
       for (var point in this.voronoi)
       {
-        var lines = this.voronoi[point];
+        var lines = this.voronoi[point].lines;
 
         for (var i = 0; i < lines.length; i++)
         {
@@ -188,10 +210,9 @@ module Rance
 
           gfx.moveTo(line[0][0], line[0][1]);
           gfx.lineTo(line[1][0], line[1][1]);
-        }
-        
+        } 
       }
-
+      */
 
       return doc;
     }

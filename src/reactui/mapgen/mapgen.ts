@@ -8,15 +8,8 @@ module Rance
       {
         if (e.button !== 0) return;
         
-        if (!this.props.mapGen.points)
-        {
-          this.props.mapGen.generatePoints(40);
-          this.props.mapGen.triangulate()
-        }
-        else
-        {
-          this.props.mapGen.relaxVoronoi()
-        }
+        this.props.mapGen.generatePoints(40);
+        this.props.mapGen.triangulate()
 
         var doc = this.props.mapGen.drawMap();
 

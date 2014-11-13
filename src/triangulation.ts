@@ -2,7 +2,7 @@
 
 module Rance
 {
-  export function triangulate(vertices: number[][])
+  export function triangulate(vertices: Point[])
   {
     var triangles: Triangle[] = [];
 
@@ -11,8 +11,8 @@ module Rance
 
     for (var i = 0; i < vertices.length; i++)
     {
-      var vertex = vertices[i];
-      var edgeBuffer = [];
+      var vertex: Point = vertices[i];
+      var edgeBuffer: Point[][] = [];
 
       for (var j = 0; j < triangles.length; j++)
       {
@@ -71,6 +71,8 @@ module Rance
   export function voronoiFromTriangles(triangles: Triangle[])
   {
     var trianglesPerPoint: any = {};
+    var voronoiData: any = {};
+
     for (var i = 0; i < triangles.length; i++)
     {
       var triangle = triangles[i];
@@ -81,6 +83,10 @@ module Rance
         if (!trianglesPerPoint[points[j]])
         {
           trianglesPerPoint[points[j]] = [];
+          voronoiData[points[j]] =
+          {
+            point: points[j]
+          }
         }
 
         trianglesPerPoint[points[j]].push(triangle);
@@ -107,18 +113,16 @@ module Rance
       return pairs;
     }
 
-    var voronoiLinesPerPoint: any = {};
-
     for (var point in trianglesPerPoint)
     {
       var pointTriangles = trianglesPerPoint[point];
 
       var trianglePairs = makeTrianglePairs(pointTriangles);
-      voronoiLinesPerPoint[point] = [];
+      voronoiData[point].lines = [];
 
       for (var i = 0; i < trianglePairs.length; i++)
       {
-        voronoiLinesPerPoint[point].push(
+        voronoiData[point].lines.push(
           [
             trianglePairs[i][0].getCircumCenter(),
             trianglePairs[i][1].getCircumCenter()
@@ -127,10 +131,10 @@ module Rance
       }
     }
 
-    return voronoiLinesPerPoint;
+    return voronoiData;
   }
 
-  export function getCentroid(vertices: number[][])
+  export function getCentroid(vertices: Point[])
   {
     var signedArea = 0;
     var x = 0;
@@ -145,20 +149,20 @@ module Rance
 
     for (i = 0; i < vertices.length - 1; i++)
     {
-      x0 = vertices[i][0];
-      y0 = vertices[i][1];
-      x1 = vertices[i+1][0];
-      y1 = vertices[i+1][1];
+      x0 = vertices[i].x;
+      y0 = vertices[i].y;
+      x1 = vertices[i+1].x;
+      y1 = vertices[i+1].y;
       a = x0*y1 - x1*y0;
       signedArea += a;
       x += (x0 + x1)*a;
       y += (y0 + y1)*a;
     }
 
-    x0 = vertices[i][0];
-    y0 = vertices[i][1];
-    x1 = vertices[0][0];
-    y1 = vertices[0][1];
+    x0 = vertices[i].x;
+    y0 = vertices[i].y;
+    x1 = vertices[0].x;
+    y1 = vertices[0].y;
     a = x0*y1 - x1*y0;
     signedArea += a;
     x += (x0 + x1)*a;
@@ -171,7 +175,7 @@ module Rance
     return [x, y];
   }
 
-  export function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number)
+  export function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)
   {
     var max;
 
@@ -181,35 +185,53 @@ module Rance
     }
     else
     {
-      max = vertices[0][0];
+      max = vertices[0].x;
 
       for (var i = 0; i < vertices.length; i++)
       {
-        if (vertices[i][0] > max)
+        if (vertices[i].x > max)
         {
-          max = vertices[i][0];
+          max = vertices[i].x;
         }
-        if (vertices[i][1] > max)
+        if (vertices[i].y > max)
         {
-          max = vertices[i][1];
+          max = vertices[i].y;
         }
       }
     }
 
     var triangle = new Triangle(
-      [3 * max, 0],
-      [0, 3 * max],
-      [-3 * max, -3 * max]
+      {
+        x: 3 * max,
+        y: 0
+      },
+      {
+        x: 0,
+        y: 3 * max
+      },
+      {
+        x: -3 * max,
+        y: -3 * max
+      }
     );
 
     return(triangle);
   }
 
-  export function edgesEqual(e1: number[], e2: number[])
+  export function pointsEqual(p1: Point, p2: Point)
+  {
+    return (p1.x === p2.x && p1.y === p2.y);
+  }
+
+  export function edgesEqual(e1: Point[], e2: Point[])
   {
     return(
-      ((e1[0] == e2[1]) && (e1[1] == e2[0])) ||
-      ((e1[0] == e2[0]) && (e1[1] == e2[1]))
+      (
+        pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])
+      ) ||
+      (
+        pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])
+      )
     );
   }
 }

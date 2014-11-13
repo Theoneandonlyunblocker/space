@@ -1421,12 +1421,8 @@ var Rance;
                 if (e.button !== 0)
                     return;
 
-                if (!this.props.mapGen.points) {
-                    this.props.mapGen.generatePoints(40);
-                    this.props.mapGen.triangulate();
-                } else {
-                    this.props.mapGen.relaxVoronoi();
-                }
+                this.props.mapGen.generatePoints(40);
+                this.props.mapGen.triangulate();
 
                 var doc = this.props.mapGen.drawMap();
 
@@ -2317,25 +2313,25 @@ var Rance;
             var my1, my2;
             var cX, cY;
 
-            if (Math.abs(pB[1] - pA[1]) < tolerance) {
-                m2 = -(pC[0] - pB[0]) / (pC[1] - pB[1]);
-                mx2 = (pB[0] + pC[0]) * 0.5;
-                my2 = (pB[1] + pC[1]) * 0.5;
+            if (Math.abs(pB.y - pA.y) < tolerance) {
+                m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                mx2 = (pB.x + pC.x) * 0.5;
+                my2 = (pB.y + pC.y) * 0.5;
 
-                cX = (pB[0] + pA[0]) * 0.5;
+                cX = (pB.x + pA.x) * 0.5;
                 cY = m2 * (cX - mx2) + my2;
             } else {
-                m1 = -(pB[0] - pA[0]) / (pB[1] - pA[1]);
-                mx1 = (pA[0] + pB[0]) * 0.5;
-                my1 = (pA[1] + pB[1]) * 0.5;
+                m1 = -(pB.x - pA.x) / (pB.y - pA.y);
+                mx1 = (pA.x + pB.x) * 0.5;
+                my1 = (pA.y + pB.y) * 0.5;
 
-                if (Math.abs(pC[1] - pB[1]) < tolerance) {
-                    cX = (pC[0] + pB[0]) * 0.5;
+                if (Math.abs(pC.y - pB.y) < tolerance) {
+                    cX = (pC.x + pB.x) * 0.5;
                     cY = m1 * (cX - mx1) + my1;
                 } else {
-                    m2 = -(pC[0] - pB[0]) / (pC[1] - pB[1]);
-                    mx2 = (pB[0] + pC[0]) * 0.5;
-                    my2 = (pB[1] + pC[1]) * 0.5;
+                    m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                    mx2 = (pB.x + pC.x) * 0.5;
+                    my2 = (pB.y + pC.y) * 0.5;
 
                     cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
                     cY = m1 * (cX - mx1) + my1;
@@ -2345,29 +2341,27 @@ var Rance;
             this.circumCenterX = cX;
             this.circumCenterY = cY;
 
-            mx1 = pB[0] - cX;
-            my1 = pB[1] - cY;
+            mx1 = pB.x - cX;
+            my1 = pB.y - cY;
             this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
         };
         Triangle.prototype.circumCircleContainsPoint = function (point) {
             this.calculateCircumCircle();
-            var x = point[0] - this.circumCenterX;
-            var y = point[1] - this.circumCenterY;
+            var x = point.x - this.circumCenterX;
+            var y = point.y - this.circumCenterY;
 
             var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
 
             return (contains);
         };
         Triangle.prototype.getEdges = function () {
-            if (!this.edges) {
-                this.edges = [
-                    [this.a, this.b],
-                    [this.b, this.c],
-                    [this.c, this.a]
-                ];
-            }
+            var edges = [
+                [this.a, this.b],
+                [this.b, this.c],
+                [this.c, this.a]
+            ];
 
-            return this.edges;
+            return edges;
         };
         Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
             var ownPoints = this.getPoints();
@@ -2446,6 +2440,8 @@ var Rance;
 
     function voronoiFromTriangles(triangles) {
         var trianglesPerPoint = {};
+        var voronoiData = {};
+
         for (var i = 0; i < triangles.length; i++) {
             var triangle = triangles[i];
             var points = triangle.getPoints();
@@ -2453,6 +2449,9 @@ var Rance;
             for (var j = 0; j < points.length; j++) {
                 if (!trianglesPerPoint[points[j]]) {
                     trianglesPerPoint[points[j]] = [];
+                    voronoiData[points[j]] = {
+                        point: points[j]
+                    };
                 }
 
                 trianglesPerPoint[points[j]].push(triangle);
@@ -2475,23 +2474,21 @@ var Rance;
             return pairs;
         }
 
-        var voronoiLinesPerPoint = {};
-
         for (var point in trianglesPerPoint) {
             var pointTriangles = trianglesPerPoint[point];
 
             var trianglePairs = makeTrianglePairs(pointTriangles);
-            voronoiLinesPerPoint[point] = [];
+            voronoiData[point].lines = [];
 
             for (var i = 0; i < trianglePairs.length; i++) {
-                voronoiLinesPerPoint[point].push([
+                voronoiData[point].lines.push([
                     trianglePairs[i][0].getCircumCenter(),
                     trianglePairs[i][1].getCircumCenter()
                 ]);
             }
         }
 
-        return voronoiLinesPerPoint;
+        return voronoiData;
     }
     Rance.voronoiFromTriangles = voronoiFromTriangles;
 
@@ -2508,20 +2505,20 @@ var Rance;
         var i = 0;
 
         for (i = 0; i < vertices.length - 1; i++) {
-            x0 = vertices[i][0];
-            y0 = vertices[i][1];
-            x1 = vertices[i + 1][0];
-            y1 = vertices[i + 1][1];
+            x0 = vertices[i].x;
+            y0 = vertices[i].y;
+            x1 = vertices[i + 1].x;
+            y1 = vertices[i + 1].y;
             a = x0 * y1 - x1 * y0;
             signedArea += a;
             x += (x0 + x1) * a;
             y += (y0 + y1) * a;
         }
 
-        x0 = vertices[i][0];
-        y0 = vertices[i][1];
-        x1 = vertices[0][0];
-        y1 = vertices[0][1];
+        x0 = vertices[i].x;
+        y0 = vertices[i].y;
+        x1 = vertices[0].x;
+        y1 = vertices[0].y;
         a = x0 * y1 - x1 * y0;
         signedArea += a;
         x += (x0 + x1) * a;
@@ -2541,26 +2538,40 @@ var Rance;
         if (highestCoordinateValue) {
             max = highestCoordinateValue;
         } else {
-            max = vertices[0][0];
+            max = vertices[0].x;
 
             for (var i = 0; i < vertices.length; i++) {
-                if (vertices[i][0] > max) {
-                    max = vertices[i][0];
+                if (vertices[i].x > max) {
+                    max = vertices[i].x;
                 }
-                if (vertices[i][1] > max) {
-                    max = vertices[i][1];
+                if (vertices[i].y > max) {
+                    max = vertices[i].y;
                 }
             }
         }
 
-        var triangle = new Rance.Triangle([3 * max, 0], [0, 3 * max], [-3 * max, -3 * max]);
+        var triangle = new Rance.Triangle({
+            x: 3 * max,
+            y: 0
+        }, {
+            x: 0,
+            y: 3 * max
+        }, {
+            x: -3 * max,
+            y: -3 * max
+        });
 
         return (triangle);
     }
     Rance.makeSuperTriangle = makeSuperTriangle;
 
+    function pointsEqual(p1, p2) {
+        return (p1.x === p2.x && p1.y === p2.y);
+    }
+    Rance.pointsEqual = pointsEqual;
+
     function edgesEqual(e1, e2) {
-        return (((e1[0] == e2[1]) && (e1[1] == e2[0])) || ((e1[0] == e2[0]) && (e1[1] == e2[1])));
+        return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
     }
     Rance.edgesEqual = edgesEqual;
 })(Rance || (Rance = {}));
@@ -2581,18 +2592,6 @@ var Rance;
 
             this.points = this.makePolarPoints(amount);
         };
-        MapGen.prototype.makeRandomPoints = function (amount) {
-            var points = [];
-
-            for (var i = 0; i < amount; i++) {
-                points.push([
-                    Math.random() * this.maxWidth,
-                    Math.random() * this.maxHeight
-                ]);
-            }
-
-            return points;
-        };
         MapGen.prototype.makePolarPoints = function (amount) {
             var points = [];
             var minBound = Math.min(this.maxWidth, this.maxHeight);
@@ -2603,31 +2602,66 @@ var Rance;
 
                 var angle = Math.random() * 2 * Math.PI;
 
-                var x = Math.cos(angle) * distance + minBound2;
-                var y = Math.sin(angle) * distance + minBound2;
+                var x = Math.cos(angle) * distance + minBound;
+                var y = Math.sin(angle) * distance + minBound;
 
-                points.push([x, y]);
+                points.push({
+                    x: x,
+                    y: y
+                });
             }
 
             return points;
-        };
-        MapGen.prototype.makeMap = function (amountOfPoints, timesToRelax) {
-            if (!this.points) {
-                this.generatePoints(amountOfPoints);
-            }
-
-            this.triangulate();
-
-            for (var i = 0; i < timesToRelax; i++) {
-                this.relaxVoronoi();
-            }
         };
         MapGen.prototype.triangulate = function () {
             if (!this.points || this.points.length < 3)
                 throw new Error();
             var triangulationData = Rance.triangulate(this.points);
             this.triangles = this.cleanTriangles(triangulationData.triangles, triangulationData.superTriangle);
-            this.voronoi = Rance.voronoiFromTriangles(this.triangles);
+        };
+        MapGen.prototype.convertPoints = function (points) {
+            var converted = [];
+
+            if (points[0].x) {
+                for (var i = 0; i < points.length; i++) {
+                    converted.push([
+                        points[i].x,
+                        points[i].y
+                    ]);
+                }
+            } else {
+                for (var i = 0; i < points.length; i++) {
+                    converted.push({
+                        x: points[i][0],
+                        y: points[i][1]
+                    });
+                }
+            }
+
+            return converted;
+        };
+        MapGen.prototype.makeVoronoi = function () {
+            if (!this.points || this.points.length < 3)
+                throw new Error();
+
+            var convertedPoints = this.convertPoints(this.points);
+
+            var minBound = Math.min(this.maxWidth, this.maxHeight);
+
+            var boundingBox = {
+                xl: -20,
+                xr: minBound * 3,
+                yt: -20,
+                yb: minBound * 3
+            };
+
+            debugger;
+
+            var voronoi = new Voronoi();
+
+            var diagram = voronoi.compute(convertedPoints, boundingBox);
+
+            this.voronoiDiagram = diagram;
         };
         MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
             for (var i = triangles.length - 1; i >= 0; i--) {
@@ -2638,38 +2672,44 @@ var Rance;
 
             return triangles;
         };
-        MapGen.prototype.relaxVoronoi = function () {
-            var relaxedPoints = [];
-            for (var point in this.voronoi) {
-                var edges = this.voronoi[point].edges;
-                var verticesIndex = {};
-                var vertices = [];
 
-                for (var i = 0; i < edges.length; i++) {
-                    verticesIndex[edges[i][0]] = edges[i][0];
-                    verticesIndex[edges[i][1]] = edges[i][1];
-                }
-                for (var _vertex in verticesIndex) {
-                    vertices.push(verticesIndex[_vertex]);
-                }
-
-                if (vertices.length < 3) {
-                    relaxedPoints.push();
-                }
-
-                var centroid = Rance.getCentroid(vertices);
-
-                if (!isFinite(centroid[0]))
-                    debugger;
-
-                relaxedPoints.push(centroid);
-            }
-
-            debugger;
-
-            this.points = relaxedPoints;
-            this.triangulate();
-        };
+        /*
+        relaxVoronoi()
+        {
+        var relaxedPoints = [];
+        for (var _point in this.voronoi)
+        {
+        var edges = this.voronoi[_point].lines;
+        var point = this.voronoi[_point].point;
+        var verticesIndex: any = {};
+        var vertices = [];
+        
+        for (var i = 0; i < edges.length; i++)
+        {
+        verticesIndex[edges[i][0]] = edges[i][0];
+        verticesIndex[edges[i][1]] = edges[i][1];
+        }
+        for (var _vertex in verticesIndex)
+        {
+        vertices.push(verticesIndex[_vertex]);
+        }
+        
+        if (vertices.length < 3)
+        {
+        relaxedPoints.push(point);
+        }
+        else
+        {
+        var centroid = getCentroid(vertices);
+        
+        relaxedPoints.push(centroid);
+        }
+        
+        }
+        this.points = relaxedPoints;
+        this.triangulate();
+        }
+        */
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
                 return new PIXI.Point(vector[0], vector[1]);
@@ -2680,12 +2720,6 @@ var Rance;
 
             var doc = new PIXI.DisplayObjectContainer();
 
-            //var mask = new PIXI.Graphics();
-            //doc.addChild(mask);
-            //mask.beginFill();
-            //mask.drawRect(-minBound2, -minBound2, minBound * 2, minBound * 2);
-            //mask.endFill();
-            //doc.mask = mask;
             var gfx = new PIXI.Graphics();
             gfx.lineStyle(2, 0x000000, 1);
 
@@ -2699,29 +2733,32 @@ var Rance;
                     var current = vertices[j];
                     var next = vertices[(j + 1) % vertices.length];
 
-                    gfx.moveTo(current[0], current[1]);
-                    gfx.lineTo(next[0], next[1]);
+                    gfx.moveTo(current.x, current.y);
+                    gfx.lineTo(next.x, next.y);
                 }
             }
             for (var i = 0; i < this.points.length; i++) {
                 gfx.beginFill(0xFFFFFF);
-                gfx.drawEllipse(this.points[i][0], this.points[i][1], 6, 6);
+                gfx.drawEllipse(this.points[i].x, this.points[i].y, 6, 6);
                 gfx.endFill();
             }
 
+            /*
+            
             gfx.lineStyle(1, 0xFF0000, 1);
-
-            for (var point in this.voronoi) {
-                var lines = this.voronoi[point];
-
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i];
-
-                    gfx.moveTo(line[0][0], line[0][1]);
-                    gfx.lineTo(line[1][0], line[1][1]);
-                }
+            for (var point in this.voronoi)
+            {
+            var lines = this.voronoi[point].lines;
+            
+            for (var i = 0; i < lines.length; i++)
+            {
+            var line = lines[i];
+            
+            gfx.moveTo(line[0][0], line[0][1]);
+            gfx.lineTo(line[1][0], line[1][1]);
             }
-
+            }
+            */
             return doc;
         };
         return MapGen;
@@ -3094,6 +3131,7 @@ var Rance;
 /// <reference path="mapgen.ts"/>
 /// <reference path="renderer.ts"/>
 var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;
+
 var Rance;
 (function (Rance) {
     document.addEventListener('DOMContentLoaded', function () {

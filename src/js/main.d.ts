@@ -340,49 +340,52 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface Point {
+        x: number;
+        y: number;
+    }
     class Triangle {
-        public a: number[];
-        public b: number[];
-        public c: number[];
-        public edges: number[][][];
+        public a: Point;
+        public b: Point;
+        public c: Point;
         public circumCenterX: number;
         public circumCenterY: number;
         public circumRadius: number;
-        constructor(a: number[], b: number[], c: number[]);
-        public getPoints(): number[][];
+        constructor(a: Point, b: Point, c: Point);
+        public getPoints(): Point[];
         public getCircumCenter(): number[];
         public calculateCircumCircle(tolerance?: number): void;
-        public circumCircleContainsPoint(point: number[]): boolean;
-        public getEdges(): number[][][];
+        public circumCircleContainsPoint(point: Point): boolean;
+        public getEdges(): Point[][];
         public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
     }
 }
 declare module Rance {
-    function triangulate(vertices: number[][]): {
+    function triangulate(vertices: Point[]): {
         triangles: Triangle[];
         superTriangle: Triangle;
     };
     function voronoiFromTriangles(triangles: Triangle[]): any;
-    function getCentroid(vertices: number[][]): number[];
-    function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number): Triangle;
-    function edgesEqual(e1: number[], e2: number[]): boolean;
+    function getCentroid(vertices: Point[]): number[];
+    function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
+    function pointsEqual(p1: Point, p2: Point): boolean;
+    function edgesEqual(e1: Point[], e2: Point[]): boolean;
 }
 declare module Rance {
     class MapGen {
         public maxWidth: number;
         public maxHeight: number;
         public pointsToGenerate: number;
-        public points: number[][];
+        public points: Rance.Point[];
         public triangles: Rance.Triangle[];
-        public voronoi: any;
+        public voronoiDiagram: any;
         constructor();
         public generatePoints(amount?: number): void;
-        public makeRandomPoints(amount: number): number[][];
         public makePolarPoints(amount: number): any[];
-        public makeMap(amountOfPoints: number, timesToRelax: number): void;
         public triangulate(): void;
+        public convertPoints(points: any): any[];
+        public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
-        public relaxVoronoi(): void;
         public drawMap(): PIXI.DisplayObjectContainer;
     }
 }
@@ -497,5 +500,6 @@ declare module Rance {
     }
 }
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any;
+declare var Voronoi: any;
 declare module Rance {
 }
