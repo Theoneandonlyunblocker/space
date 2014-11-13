@@ -366,7 +366,10 @@ declare module Rance {
         superTriangle: Triangle;
     };
     function voronoiFromTriangles(triangles: Triangle[]): any;
-    function getCentroid(vertices: Point[]): number[];
+    function getCentroid(vertices: Point[]): {
+        x: number;
+        y: number;
+    };
     function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
     function pointsEqual(p1: Point, p2: Point): boolean;
     function edgesEqual(e1: Point[], e2: Point[]): boolean;
@@ -385,6 +388,8 @@ declare module Rance {
         public triangulate(): void;
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
+        public relaxPoints(): any[];
+        public relaxAndRecalculate(times?: number): void;
         public drawMap(): PIXI.DisplayObjectContainer;
     }
 }

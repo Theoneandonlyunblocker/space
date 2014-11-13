@@ -1421,11 +1421,17 @@ var Rance;
                 if (e.button !== 0)
                     return;
 
-                this.props.mapGen.generatePoints(40);
-                this.props.mapGen.triangulate();
-                this.props.mapGen.makeVoronoi();
+                var mapGen = this.props.mapGen;
 
-                var doc = this.props.mapGen.drawMap();
+                if (!mapGen.points) {
+                    mapGen.generatePoints(40);
+                    mapGen.triangulate();
+                    mapGen.makeVoronoi();
+                } else {
+                    mapGen.relaxAndRecalculate();
+                }
+
+                var doc = mapGen.drawMap();
 
                 var ababab = doc.height;
 
@@ -2529,7 +2535,10 @@ var Rance;
         x /= (6.0 * signedArea);
         y /= (6.0 * signedArea);
 
-        return [x, y];
+        return ({
+            x: x,
+            y: y
+        });
     }
     Rance.getCentroid = getCentroid;
 
@@ -2648,44 +2657,45 @@ var Rance;
 
             return triangles;
         };
+        MapGen.prototype.relaxPoints = function () {
+            var relaxedPoints = [];
 
-        /*
-        relaxVoronoi()
-        {
-        var relaxedPoints = [];
-        for (var _point in this.voronoi)
-        {
-        var edges = this.voronoi[_point].lines;
-        var point = this.voronoi[_point].point;
-        var verticesIndex: any = {};
-        var vertices = [];
-        
-        for (var i = 0; i < edges.length; i++)
-        {
-        verticesIndex[edges[i][0]] = edges[i][0];
-        verticesIndex[edges[i][1]] = edges[i][1];
-        }
-        for (var _vertex in verticesIndex)
-        {
-        vertices.push(verticesIndex[_vertex]);
-        }
-        
-        if (vertices.length < 3)
-        {
-        relaxedPoints.push(point);
-        }
-        else
-        {
-        var centroid = getCentroid(vertices);
-        
-        relaxedPoints.push(centroid);
-        }
-        
-        }
-        this.points = relaxedPoints;
-        this.triangulate();
-        }
-        */
+            function getVerticesFromCell(cell) {
+                var vertices = [];
+
+                for (var i = 0; i < cell.halfedges.length; i++) {
+                    vertices.push(cell.halfedges[i].getStartpoint());
+                }
+
+                return vertices;
+            }
+            for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
+                var cell = this.voronoiDiagram.cells[i];
+                var point = cell.site;
+                var vertices = getVerticesFromCell(cell);
+                var centroid = Rance.getCentroid(vertices);
+
+                relaxedPoints.push(centroid);
+            }
+
+            return relaxedPoints;
+        };
+        MapGen.prototype.relaxAndRecalculate = function (times) {
+            if (typeof times === "undefined") { times = 1; }
+            if (!this.points)
+                throw new Error();
+
+            if (!this.voronoiDiagram)
+                this.makeVoronoi();
+
+            for (var i = 0; i < times; i++) {
+                var relaxed = this.relaxPoints();
+                this.points = relaxed;
+                this.makeVoronoi();
+            }
+
+            this.triangulate();
+        };
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
                 return new PIXI.Point(vector[0], vector[1]);

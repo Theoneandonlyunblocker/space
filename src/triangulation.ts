@@ -172,7 +172,11 @@ module Rance
     x /= (6.0*signedArea);
     y /= (6.0*signedArea);
 
-    return [x, y];
+    return(
+    {
+      x: x,
+      y: y
+    });
   }
 
   export function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)

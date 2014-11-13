@@ -8,11 +8,20 @@ module Rance
       {
         if (e.button !== 0) return;
         
-        this.props.mapGen.generatePoints(40);
-        this.props.mapGen.triangulate();
-        this.props.mapGen.makeVoronoi();
+        var mapGen = this.props.mapGen;
 
-        var doc = this.props.mapGen.drawMap();
+        if (!mapGen.points)
+        {
+          mapGen.generatePoints(40);
+          mapGen.triangulate();
+          mapGen.makeVoronoi();
+        }
+        else
+        {
+          mapGen.relaxAndRecalculate();
+        }
+
+        var doc = mapGen.drawMap();
 
         var ababab = doc.height;
 

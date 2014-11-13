@@ -88,43 +88,48 @@ module Rance
 
       return triangles;
     }
-    /*
-    relaxVoronoi()
+    relaxPoints()
     {
       var relaxedPoints = [];
-      for (var _point in this.voronoi)
+
+      function getVerticesFromCell(cell: any)
       {
-        var edges = this.voronoi[_point].lines;
-        var point = this.voronoi[_point].point;
-        var verticesIndex: any = {};
         var vertices = [];
 
-        for (var i = 0; i < edges.length; i++)
+        for (var i = 0; i < cell.halfedges.length; i++)
         {
-          verticesIndex[edges[i][0]] = edges[i][0];
-          verticesIndex[edges[i][1]] = edges[i][1];
-        }
-        for (var _vertex in verticesIndex)
-        {
-          vertices.push(verticesIndex[_vertex]);
+          vertices.push(cell.halfedges[i].getStartpoint());
         }
 
-        if (vertices.length < 3)
-        {
-          relaxedPoints.push(point);
-        }
-        else
-        {
-          var centroid = getCentroid(vertices);
-  
-          relaxedPoints.push(centroid);
-        }
-
+        return vertices;
       }
-      this.points = relaxedPoints;
+      for (var i = 0; i < this.voronoiDiagram.cells.length; i++)
+      {
+        var cell = this.voronoiDiagram.cells[i];
+        var point = cell.site;
+        var vertices = getVerticesFromCell(cell);
+        var centroid = getCentroid(vertices);
+
+        relaxedPoints.push(centroid);
+      }
+
+      return relaxedPoints;
+    }
+    relaxAndRecalculate(times: number = 1)
+    {
+      if (!this.points) throw new Error();
+
+      if (!this.voronoiDiagram) this.makeVoronoi();
+
+      for (var i = 0; i < times; i++)
+      {
+        var relaxed = this.relaxPoints();
+        this.points = relaxed;
+        this.makeVoronoi();
+      }
+
       this.triangulate();
     }
-    */
     drawMap()
     {
       function vectorToPoint(vector)
