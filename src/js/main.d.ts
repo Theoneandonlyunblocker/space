@@ -383,7 +383,6 @@ declare module Rance {
         public generatePoints(amount?: number): void;
         public makePolarPoints(amount: number): any[];
         public triangulate(): void;
-        public convertPoints(points: any): any[];
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
         public drawMap(): PIXI.DisplayObjectContainer;

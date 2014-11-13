@@ -1423,6 +1423,7 @@ var Rance;
 
                 this.props.mapGen.generatePoints(40);
                 this.props.mapGen.triangulate();
+                this.props.mapGen.makeVoronoi();
 
                 var doc = this.props.mapGen.drawMap();
 
@@ -2619,47 +2620,22 @@ var Rance;
             var triangulationData = Rance.triangulate(this.points);
             this.triangles = this.cleanTriangles(triangulationData.triangles, triangulationData.superTriangle);
         };
-        MapGen.prototype.convertPoints = function (points) {
-            var converted = [];
-
-            if (points[0].x) {
-                for (var i = 0; i < points.length; i++) {
-                    converted.push([
-                        points[i].x,
-                        points[i].y
-                    ]);
-                }
-            } else {
-                for (var i = 0; i < points.length; i++) {
-                    converted.push({
-                        x: points[i][0],
-                        y: points[i][1]
-                    });
-                }
-            }
-
-            return converted;
-        };
         MapGen.prototype.makeVoronoi = function () {
             if (!this.points || this.points.length < 3)
                 throw new Error();
 
-            var convertedPoints = this.convertPoints(this.points);
-
             var minBound = Math.min(this.maxWidth, this.maxHeight);
 
             var boundingBox = {
-                xl: -20,
-                xr: minBound * 3,
-                yt: -20,
-                yb: minBound * 3
+                xl: 0,
+                xr: minBound * 2,
+                yt: 0,
+                yb: minBound * 2
             };
-
-            debugger;
 
             var voronoi = new Voronoi();
 
-            var diagram = voronoi.compute(convertedPoints, boundingBox);
+            var diagram = voronoi.compute(this.points, boundingBox);
 
             this.voronoiDiagram = diagram;
         };
@@ -2743,22 +2719,13 @@ var Rance;
                 gfx.endFill();
             }
 
-            /*
-            
             gfx.lineStyle(1, 0xFF0000, 1);
-            for (var point in this.voronoi)
-            {
-            var lines = this.voronoi[point].lines;
-            
-            for (var i = 0; i < lines.length; i++)
-            {
-            var line = lines[i];
-            
-            gfx.moveTo(line[0][0], line[0][1]);
-            gfx.lineTo(line[1][0], line[1][1]);
+            for (var i = 0; i < this.voronoiDiagram.edges.length; i++) {
+                var edge = this.voronoiDiagram.edges[i];
+                gfx.moveTo(edge.va.x, edge.va.y);
+                gfx.lineTo(edge.vb.x, edge.vb.y);
             }
-            }
-            */
+
             return doc;
         };
         return MapGen;
