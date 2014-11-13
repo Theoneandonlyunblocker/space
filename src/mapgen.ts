@@ -60,11 +60,76 @@ module Rance
 
       return points;
     }
+    makeMap(amountOfPoints: number, timesToRelax: number)
+    {
+      if (!this.points)
+      {
+        this.generatePoints(amountOfPoints);
+      }
+
+      this.triangulate();
+
+      for (var i = 0; i < timesToRelax; i++)
+      {
+        this.relaxVoronoi();
+      }
+    }
     triangulate()
     {
       if (!this.points || this.points.length < 3) throw new Error();
-      this.triangles = triangulate(this.points);
+      var triangulationData = triangulate(this.points);
+      this.triangles = this.cleanTriangles(triangulationData.triangles,
+        triangulationData.superTriangle);
       this.voronoi = voronoiFromTriangles(this.triangles);
+
+    }
+    cleanTriangles(triangles: Triangle[], superTriangle: Triangle)
+    {
+      for (var i = triangles.length - 1; i >= 0; i--)
+      {
+        if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
+        {
+          triangles.splice(i, 1);
+        }
+      }
+
+      return triangles;
+    }
+    relaxVoronoi()
+    {
+      var relaxedPoints = [];
+      for (var point in this.voronoi)
+      {
+        var edges = this.voronoi[point].edges;
+        var verticesIndex: any = {};
+        var vertices = [];
+
+        for (var i = 0; i < edges.length; i++)
+        {
+          verticesIndex[edges[i][0]] = edges[i][0];
+          verticesIndex[edges[i][1]] = edges[i][1];
+        }
+        for (var _vertex in verticesIndex)
+        {
+          vertices.push(verticesIndex[_vertex]);
+        }
+
+        if (vertices.length < 3)
+        {
+          relaxedPoints.push()
+        }
+
+        var centroid = getCentroid(vertices);
+
+        if (!isFinite(centroid[0])) debugger;
+
+        relaxedPoints.push(centroid);
+      }
+
+      debugger;
+
+      this.points = relaxedPoints;
+      this.triangulate();
     }
     drawMap()
     {
@@ -73,7 +138,18 @@ module Rance
         return new PIXI.Point(vector[0], vector[1])
       }
 
+      var minBound = Math.min(this.maxWidth, this.maxHeight);
+      var minBound2 = minBound / 2;
+
+
       var doc = new PIXI.DisplayObjectContainer();
+      //var mask = new PIXI.Graphics();
+      //doc.addChild(mask);
+      //mask.beginFill();
+      //mask.drawRect(-minBound2, -minBound2, minBound * 2, minBound * 2);
+      //mask.endFill();
+      //doc.mask = mask;
+
       var gfx = new PIXI.Graphics();
       gfx.lineStyle(2, 0x000000, 1);
 

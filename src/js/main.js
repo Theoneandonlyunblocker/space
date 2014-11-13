@@ -1421,8 +1421,12 @@ var Rance;
                 if (e.button !== 0)
                     return;
 
-                this.props.mapGen.generatePoints(60);
-                this.props.mapGen.triangulate();
+                if (!this.props.mapGen.points) {
+                    this.props.mapGen.generatePoints(40);
+                    this.props.mapGen.triangulate();
+                } else {
+                    this.props.mapGen.relaxVoronoi();
+                }
 
                 var doc = this.props.mapGen.drawMap();
 
@@ -2425,12 +2429,18 @@ var Rance;
             }
         }
 
-        for (var i = triangles.length - 1; i >= 0; i--) {
-            if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
-                triangles.splice(i, 1);
-            }
+        /*
+        for (var i = triangles.length - 1; i >= 0; i--)
+        {
+        if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
+        {
+        triangles.splice(i, 1);
         }
-        return triangles;
+        }*/
+        return ({
+            triangles: triangles,
+            superTriangle: superTriangle
+        });
     }
     Rance.triangulate = triangulate;
 
@@ -2485,6 +2495,46 @@ var Rance;
     }
     Rance.voronoiFromTriangles = voronoiFromTriangles;
 
+    function getCentroid(vertices) {
+        var signedArea = 0;
+        var x = 0;
+        var y = 0;
+        var x0;
+        var y0;
+        var x1;
+        var y1;
+        var a;
+
+        var i = 0;
+
+        for (i = 0; i < vertices.length - 1; i++) {
+            x0 = vertices[i][0];
+            y0 = vertices[i][1];
+            x1 = vertices[i + 1][0];
+            y1 = vertices[i + 1][1];
+            a = x0 * y1 - x1 * y0;
+            signedArea += a;
+            x += (x0 + x1) * a;
+            y += (y0 + y1) * a;
+        }
+
+        x0 = vertices[i][0];
+        y0 = vertices[i][1];
+        x1 = vertices[0][0];
+        y1 = vertices[0][1];
+        a = x0 * y1 - x1 * y0;
+        signedArea += a;
+        x += (x0 + x1) * a;
+        y += (y0 + y1) * a;
+
+        signedArea *= 0.5;
+        x /= (6.0 * signedArea);
+        y /= (6.0 * signedArea);
+
+        return [x, y];
+    }
+    Rance.getCentroid = getCentroid;
+
     function makeSuperTriangle(vertices, highestCoordinateValue) {
         var max;
 
@@ -2503,7 +2553,7 @@ var Rance;
             }
         }
 
-        var triangle = new Rance.Triangle([10 * max, 0], [0, 10 * max], [-10 * max, -10 * max]);
+        var triangle = new Rance.Triangle([3 * max, 0], [0, 3 * max], [-3 * max, -3 * max]);
 
         return (triangle);
     }
@@ -2561,18 +2611,81 @@ var Rance;
 
             return points;
         };
+        MapGen.prototype.makeMap = function (amountOfPoints, timesToRelax) {
+            if (!this.points) {
+                this.generatePoints(amountOfPoints);
+            }
+
+            this.triangulate();
+
+            for (var i = 0; i < timesToRelax; i++) {
+                this.relaxVoronoi();
+            }
+        };
         MapGen.prototype.triangulate = function () {
             if (!this.points || this.points.length < 3)
                 throw new Error();
-            this.triangles = Rance.triangulate(this.points);
+            var triangulationData = Rance.triangulate(this.points);
+            this.triangles = this.cleanTriangles(triangulationData.triangles, triangulationData.superTriangle);
             this.voronoi = Rance.voronoiFromTriangles(this.triangles);
+        };
+        MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
+            for (var i = triangles.length - 1; i >= 0; i--) {
+                if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
+                    triangles.splice(i, 1);
+                }
+            }
+
+            return triangles;
+        };
+        MapGen.prototype.relaxVoronoi = function () {
+            var relaxedPoints = [];
+            for (var point in this.voronoi) {
+                var edges = this.voronoi[point].edges;
+                var verticesIndex = {};
+                var vertices = [];
+
+                for (var i = 0; i < edges.length; i++) {
+                    verticesIndex[edges[i][0]] = edges[i][0];
+                    verticesIndex[edges[i][1]] = edges[i][1];
+                }
+                for (var _vertex in verticesIndex) {
+                    vertices.push(verticesIndex[_vertex]);
+                }
+
+                if (vertices.length < 3) {
+                    relaxedPoints.push();
+                }
+
+                var centroid = Rance.getCentroid(vertices);
+
+                if (!isFinite(centroid[0]))
+                    debugger;
+
+                relaxedPoints.push(centroid);
+            }
+
+            debugger;
+
+            this.points = relaxedPoints;
+            this.triangulate();
         };
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
                 return new PIXI.Point(vector[0], vector[1]);
             }
 
+            var minBound = Math.min(this.maxWidth, this.maxHeight);
+            var minBound2 = minBound / 2;
+
             var doc = new PIXI.DisplayObjectContainer();
+
+            //var mask = new PIXI.Graphics();
+            //doc.addChild(mask);
+            //mask.beginFill();
+            //mask.drawRect(-minBound2, -minBound2, minBound * 2, minBound * 2);
+            //mask.endFill();
+            //doc.mask = mask;
             var gfx = new PIXI.Graphics();
             gfx.lineStyle(2, 0x000000, 1);
 
@@ -2937,7 +3050,7 @@ var Rance;
             this.stage.addChild(_main);
         };
         Renderer.prototype.addCamera = function () {
-            this.camera = new Rance.Camera(this.layers["main"], 0.5);
+            this.camera = new Rance.Camera(this.layers["main"], 0.2);
             this.mouseEventHandler = new Rance.MouseEventHandler(this.camera);
         };
         Renderer.prototype.addEventListeners = function () {

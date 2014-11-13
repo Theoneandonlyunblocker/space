@@ -53,14 +53,19 @@ module Rance
       }
     }
 
+    /*
     for (var i = triangles.length - 1; i >= 0; i--)
     {
       if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
       {
         triangles.splice(i, 1);
       }
-    }
-    return triangles;
+    }*/
+    return(
+    {
+      triangles: triangles,
+      superTriangle: superTriangle
+    });
   }
 
   export function voronoiFromTriangles(triangles: Triangle[])
@@ -125,6 +130,47 @@ module Rance
     return voronoiLinesPerPoint;
   }
 
+  export function getCentroid(vertices: number[][])
+  {
+    var signedArea = 0;
+    var x = 0;
+    var y = 0;
+    var x0; // Current vertex X
+    var y0; // Current vertex Y
+    var x1; // Next vertex X
+    var y1; // Next vertex Y
+    var a;  // Partial signed area
+
+    var i = 0;
+
+    for (i = 0; i < vertices.length - 1; i++)
+    {
+      x0 = vertices[i][0];
+      y0 = vertices[i][1];
+      x1 = vertices[i+1][0];
+      y1 = vertices[i+1][1];
+      a = x0*y1 - x1*y0;
+      signedArea += a;
+      x += (x0 + x1)*a;
+      y += (y0 + y1)*a;
+    }
+
+    x0 = vertices[i][0];
+    y0 = vertices[i][1];
+    x1 = vertices[0][0];
+    y1 = vertices[0][1];
+    a = x0*y1 - x1*y0;
+    signedArea += a;
+    x += (x0 + x1)*a;
+    y += (y0 + y1)*a;
+
+    signedArea *= 0.5;
+    x /= (6.0*signedArea);
+    y /= (6.0*signedArea);
+
+    return [x, y];
+  }
+
   export function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number)
   {
     var max;
@@ -151,9 +197,9 @@ module Rance
     }
 
     var triangle = new Triangle(
-      [10 * max, 0],
-      [0, 10 * max],
-      [-10 * max, -10 * max]
+      [3 * max, 0],
+      [0, 3 * max],
+      [-3 * max, -3 * max]
     );
 
     return(triangle);

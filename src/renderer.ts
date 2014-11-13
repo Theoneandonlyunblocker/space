@@ -56,7 +56,7 @@ module Rance
     }
     addCamera()
     {
-      this.camera = new Camera(this.layers["main"], 0.5);
+      this.camera = new Camera(this.layers["main"], 0.2);
       this.mouseEventHandler = new MouseEventHandler(this.camera);
     }
     addEventListeners()

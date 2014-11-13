@@ -358,8 +358,12 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function triangulate(vertices: number[][]): Triangle[];
+    function triangulate(vertices: number[][]): {
+        triangles: Triangle[];
+        superTriangle: Triangle;
+    };
     function voronoiFromTriangles(triangles: Triangle[]): any;
+    function getCentroid(vertices: number[][]): number[];
     function makeSuperTriangle(vertices: number[][], highestCoordinateValue?: number): Triangle;
     function edgesEqual(e1: number[], e2: number[]): boolean;
 }
@@ -375,7 +379,10 @@ declare module Rance {
         public generatePoints(amount?: number): void;
         public makeRandomPoints(amount: number): number[][];
         public makePolarPoints(amount: number): any[];
+        public makeMap(amountOfPoints: number, timesToRelax: number): void;
         public triangulate(): void;
+        public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
+        public relaxVoronoi(): void;
         public drawMap(): PIXI.DisplayObjectContainer;
     }
 }
