@@ -79,10 +79,10 @@ module Rance
 
       var amountInCenter = props.amountInCenter;
       var centerThreshhold = props.centerSize || 0.35;
-      console.log(amountInCenter);
 
       var points = [];
       var armDistance = Math.PI * 2 / totalArms;
+      var rotation = randRange(0, Math.PI * 2);
       var armOffsetMax = props.armOffsetMax || 0.5;
       var minBound = Math.min(this.maxWidth, this.maxHeight);
       var minBound2 = minBound / 2;
@@ -97,8 +97,7 @@ module Rance
         if (offset < 0) offset = Math.pow(offset, 2) * -1;
         else offset = Math.pow(offset, 2);
 
-        var angle = arm * armDistance + offset;
-        console.log(angle);
+        var angle = arm * armDistance + rotation + offset;
 
         var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
         var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;

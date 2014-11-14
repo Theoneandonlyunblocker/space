@@ -12,7 +12,7 @@ module Rance
 
         if (mapGen.points && mapGen.points.length <= 0)
         {
-          mapGen.generatePoints(40);
+          mapGen.generatePoints(60);
         }
         else if (!mapGen.triangles || !mapGen.triangles.length)
         {

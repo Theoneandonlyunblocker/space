@@ -1424,7 +1424,7 @@ var Rance;
                 var mapGen = this.props.mapGen;
 
                 if (mapGen.points && mapGen.points.length <= 0) {
-                    mapGen.generatePoints(40);
+                    mapGen.generatePoints(60);
                 } else if (!mapGen.triangles || !mapGen.triangles.length) {
                     mapGen.triangulate();
                     mapGen.makeVoronoi();
@@ -2756,10 +2756,10 @@ var Rance;
 
             var amountInCenter = props.amountInCenter;
             var centerThreshhold = props.centerSize || 0.35;
-            console.log(amountInCenter);
 
             var points = [];
             var armDistance = Math.PI * 2 / totalArms;
+            var rotation = Rance.randRange(0, Math.PI * 2);
             var armOffsetMax = props.armOffsetMax || 0.5;
             var minBound = Math.min(this.maxWidth, this.maxHeight);
             var minBound2 = minBound / 2;
@@ -2774,8 +2774,7 @@ var Rance;
                 else
                     offset = Math.pow(offset, 2);
 
-                var angle = arm * armDistance + offset;
-                console.log(angle);
+                var angle = arm * armDistance + rotation + offset;
 
                 var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
                 var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
