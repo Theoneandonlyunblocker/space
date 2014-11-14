@@ -1,12 +1,7 @@
+/// <reference path="point.ts"/>
+
 module Rance
 {
-  export interface Point
-  {
-    x: number;
-    y: number;
-    distance?: number;
-    arm?: number;
-  }
   export class Triangle
   {
     circumCenterX: number;

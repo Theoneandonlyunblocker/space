@@ -1,4 +1,5 @@
 /// <reference path="triangle.ts" />
+/// <reference path="point.ts" />
 
 module Rance
 {

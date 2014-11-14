@@ -13,6 +13,9 @@ module Rance
         if (mapGen.points && mapGen.points.length <= 0)
         {
           mapGen.generatePoints(40);
+        }
+        else if (!mapGen.triangles || !mapGen.triangles.length)
+        {
           mapGen.triangulate();
           mapGen.makeVoronoi();
         }
@@ -22,9 +25,23 @@ module Rance
         }
 
         var doc = mapGen.drawMap();
+        this.props.renderer.layers.main.removeChildren();
+        this.props.renderer.layers.main.addChild(doc);
+      },
+      clearMap: function()
+      {
+        this.props.mapGen.reset();
 
-        var ababab = doc.height;
+        var doc = mapGen.drawMap();
+        this.props.renderer.layers.main.removeChildren();
+        this.props.renderer.layers.main.addChild(doc);
+      },
+      severFiller: function(e)
+      {
+        var mapGen = this.props.mapGen;
 
+        mapGen.severArmLinks()
+        var doc = mapGen.drawMap();
         this.props.renderer.layers.main.removeChildren();
         this.props.renderer.layers.main.addChild(doc);
       },
@@ -32,17 +49,34 @@ module Rance
       render: function()
       {
         return(
-          React.DOM.div(
-          {
-            id: "pixi-container",
-            onClick: this.generateMap
-          })
+          React.DOM.div(null,
+            React.DOM.div(
+            {
+              ref: "pixiContainer",
+              id: "pixi-container",
+              onClick: this.generateMap
+            }),
+            React.DOM.div(
+            {
+              className: "map-gen-controls"
+            },
+              React.DOM.button(
+              {
+                onClick: this.clearMap
+              }, "clear"),
+              React.DOM.button(
+              {
+                onClick: this.severFiller
+              }, "sever")
+            )
+            
+          )
         );
       },
 
       componentDidMount: function()
       {
-        this.props.renderer.setContainer(this.getDOMNode());
+        this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
         this.props.renderer.init();
         this.props.renderer.bindRendererView();
         this.props.renderer.render();

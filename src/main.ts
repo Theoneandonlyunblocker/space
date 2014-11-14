@@ -9,8 +9,6 @@
 
 var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;
 
-declare var Voronoi: any;
-
 module Rance
 {
   document.addEventListener('DOMContentLoaded', function()

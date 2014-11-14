@@ -3,11 +3,12 @@
 
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
+/// <reference path="battle.ts"/>
 
 module Rance
 {
   var idGenerators = idGenerators || {};
-  idGenerators.unit = 0;
+  idGenerators.unit = idGenerators.unit || 0;
 
   export class Unit
   {

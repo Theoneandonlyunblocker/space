@@ -1,5 +1,6 @@
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
+/// <reference path="battle.ts"/>
 
 module Rance
 {

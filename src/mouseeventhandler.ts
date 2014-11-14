@@ -1,3 +1,5 @@
+/// <reference path="camera.ts"/>
+
 module Rance
 {
   export class MouseEventHandler

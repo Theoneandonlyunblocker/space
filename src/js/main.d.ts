@@ -1,4 +1,5 @@
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/pixi.d.ts" />
 declare module Rance {
     module UIComponents {
@@ -174,6 +175,7 @@ declare module Rance {
 }
 declare module Rance {
     function randInt(min: any, max: any): number;
+    function randRange(min: any, max: any): any;
     function getRandomArrayItem(target: any[]): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
@@ -343,22 +345,22 @@ declare module Rance {
     interface Point {
         x: number;
         y: number;
-        distance?: number;
-        arm?: number;
     }
+}
+declare module Rance {
     class Triangle {
-        public a: Point;
-        public b: Point;
-        public c: Point;
+        public a: Rance.Point;
+        public b: Rance.Point;
+        public c: Rance.Point;
         public circumCenterX: number;
         public circumCenterY: number;
         public circumRadius: number;
-        constructor(a: Point, b: Point, c: Point);
-        public getPoints(): Point[];
+        constructor(a: Rance.Point, b: Rance.Point, c: Rance.Point);
+        public getPoints(): Rance.Point[];
         public getCircumCenter(): number[];
         public calculateCircumCircle(tolerance?: number): void;
-        public circumCircleContainsPoint(point: Point): boolean;
-        public getEdges(): Point[][];
+        public circumCircleContainsPoint(point: Rance.Point): boolean;
+        public getEdges(): Rance.Point[][];
         public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
     }
 }
@@ -374,25 +376,63 @@ declare module Rance {
     function edgesEqual(e1: Point[], e2: Point[]): boolean;
 }
 declare module Rance {
+    class Star implements Rance.Point {
+        public id: number;
+        public x: number;
+        public y: number;
+        public isFiller: boolean;
+        public linksTo: Star[];
+        public linksFrom: Star[];
+        public distance: number;
+        public region: string;
+        constructor(x: number, y: number, id?: number);
+        public setPosition(x: number, y: number): void;
+        public hasLink(linkTo: Star): boolean;
+        public addLink(linkTo: Star): void;
+        public removeLink(linkTo: Star): void;
+        public getAllLinks(): Star[];
+        public clearLinks(): void;
+        public getLinksByRegion(): {
+            [regionId: string]: Star[];
+        };
+        public severLinksToRegion(regionToSever: string): void;
+        public severLinksToFiller(): void;
+    }
+}
+declare module Rance {
     class MapGen {
         public maxWidth: number;
         public maxHeight: number;
         public pointsToGenerate: number;
-        public points: Rance.Point[];
-        public arms: {
-            [id: number]: Rance.Point[];
+        public points: Rance.Star[];
+        public regions: {
+            [id: string]: {
+                id: string;
+                points: Rance.Star[];
+            };
         };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
+        public drawnMap: PIXI.DisplayObjectContainer;
         constructor();
+        public reset(): void;
         public generatePoints(amount?: number): void;
-        public setupArms(numberOfArms: number): void;
-        public makeSpiralPoints(amount: number, numberOfArms?: number): any[];
+        public makeRegion(name: string): void;
+        public makeSpiralPoints(props: {
+            amountPerArm: number;
+            arms: number;
+            amountInCenter: number;
+            centerSize?: number;
+            armOffsetMax?: number;
+        }): any[];
         public triangulate(): void;
+        public clearLinks(): void;
+        public makeLinks(): void;
+        public severArmLinks(): void;
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
         public getVerticesFromCell(cell: any): any[];
-        public relaxPoints(): any[];
+        public relaxPoints(): void;
         public relaxAndRecalculate(times?: number): void;
         public drawMap(): PIXI.DisplayObjectContainer;
     }
@@ -508,6 +548,5 @@ declare module Rance {
     }
 }
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any;
-declare var Voronoi: any;
 declare module Rance {
 }

@@ -1,4 +1,11 @@
+/// <reference path="../lib/voronoi.d.ts" />
+
+/// <reference path="../lib/pixi.d.ts" />
+
 /// <reference path="triangulation.ts" />
+/// <reference path="triangle.ts" />
+/// <reference path="star.ts" />
+/// <reference path="utility.ts" />
 
 module Rance
 {
@@ -7,18 +14,31 @@ module Rance
     maxWidth: number;
     maxHeight: number;
     pointsToGenerate: number;
-    points: Point[] = [];
-    arms:
+    points: Star[] = [];
+    regions:
     {
-      [id: number]: Point[]
+      [id: string]:
+      {
+        id: string;
+        points: Star[];
+      };
     } = {};
     triangles: Triangle[] = [];
     voronoiDiagram: any;
+
+    drawnMap: PIXI.DisplayObjectContainer;
 
     constructor()
     {
       this.maxWidth = 800;
       this.maxHeight = 400;
+    }
+    reset()
+    {
+      this.points = [];
+      this.regions = {};
+      this.triangles = [];
+      this.voronoiDiagram = null;
     }
 
     generatePoints(amount: number = this.pointsToGenerate)
@@ -27,61 +47,103 @@ module Rance
 
       if (!amount) throw new Error();
 
-      this.points = this.makeSpiralPoints(amount);
-    }
-    setupArms(numberOfArms: number)
-    {
-      for (var i = 0; i < numberOfArms; i++)
+      var pointGenerationProps =
       {
-        this.arms[i] = [];
+        amountPerArm: amount / 5 * 0.8,
+        arms: 5,
+        amountInCenter: amount * 0.2
+      }
+
+      this.points = this.makeSpiralPoints(pointGenerationProps);
+    }
+    makeRegion(name: string)
+    {
+      this.regions[name] =
+      {
+        id: name,
+        points: []
       }
     }
-    makeSpiralPoints(
-      amount: number,
-      numberOfArms: number = 5
-    )
+    makeSpiralPoints(props:
     {
-      this.setupArms(numberOfArms);
+      amountPerArm: number;
+      arms: number;
+      amountInCenter: number;
+      centerSize?: number;
+      armOffsetMax?: number;
+    })
+    {
+      var totalArms = props.arms * 2;
+      var amountPerArm = props.amountPerArm;
+      var amountPerFillerArm = amountPerArm / 2;
+
+      var amountInCenter = props.amountInCenter;
+      var centerThreshhold = props.centerSize || 0.35;
+      console.log(amountInCenter);
 
       var points = [];
-      var armDistance = Math.PI * 2 / numberOfArms;
-      var armOffsetMax = 0.5;
+      var armDistance = Math.PI * 2 / totalArms;
+      var armOffsetMax = props.armOffsetMax || 0.5;
       var minBound = Math.min(this.maxWidth, this.maxHeight);
       var minBound2 = minBound / 2;
 
-      for (var i = 0; i < amount; i++)
+
+      var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax)
       {
-        var distance = Math.random();
+        var distance = randRange(distanceMin, distanceMax);
+        var offset = Math.random() * armOffsetMax - armOffsetMax / 2;
+        offset *= (1 / distance);
 
-        var angle = Math.random() * 2 * Math.PI;
-        var armOffset = Math.random() * armOffsetMax;
-        armOffset -= armOffsetMax / 2;
-        armOffset *= (1 / distance);
+        if (offset < 0) offset = Math.pow(offset, 2) * -1;
+        else offset = Math.pow(offset, 2);
 
-        if (armOffset < 0) armOffset = Math.pow(armOffset, 2) * -1;
-        else armOffset = Math.pow(armOffset, 2);
+        var angle = arm * armDistance + offset;
 
-        var arm = Math.round(angle / armDistance) % numberOfArms;
-        angle = arm * armDistance + armOffset;
+        var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
+        var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
 
-        var x = Math.cos(angle) * distance * minBound + minBound;
-        var y = Math.sin(angle) * distance * minBound + minBound;
+        var point = new Star(x, y);
 
-        var point =
+        point.distance = distance;
+        point.region = region;
+
+        return point;
+      }.bind(this);
+
+
+      this.makeRegion("center");
+      
+
+      var currentArmIsFiller = false;
+      for (var i = 0; i < totalArms; i++)
+      {
+        var arm = i;
+        var region = (currentArmIsFiller ? "filler_" : "arm_") + arm;
+        var amountForThisArm = currentArmIsFiller ? amountPerFillerArm : amountPerArm;
+        var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
+        this.makeRegion(region);
+
+        var amountForThisCenter = amountInCenter / totalArms;
+
+        for (var j = 0; j < amountForThisArm; j++)
         {
-          x: x,
-          y: y,
-          distance: distance,
-          arm: arm
-        };
+          var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
 
-        points.push(point);
-        this.arms[arm].push(point);
+          points.push(point);
+          this.regions[region].points.push(point);
+        }
+
+        for (var j = 0; j < amountForThisCenter; j++)
+        {
+          var point = makePoint(0, centerThreshhold, "center", armOffsetMax);
+          points.push(point);
+          this.regions["center"].points.push(point);
+        }
+
+        currentArmIsFiller = !currentArmIsFiller;
       }
-      console.log(this.arms)
 
       return points;
-
     }
     triangulate()
     {
@@ -89,19 +151,48 @@ module Rance
       var triangulationData = triangulate(this.points);
       this.triangles = this.cleanTriangles(triangulationData.triangles,
         triangulationData.superTriangle);
+
+      this.makeLinks();
+    }
+    clearLinks()
+    {
+      for (var i = 0; i < this.points.length; i++)
+      {
+        this.points[i].clearLinks();
+      }
+    }
+    makeLinks()
+    {
+      if (!this.triangles || this.triangles.length < 1) throw new Error();
+
+      this.clearLinks();
+
+      for (var i = 0; i < this.triangles.length; i++)
+      {
+        var edges = <Star[][]> this.triangles[i].getEdges();
+        for (var j = 0; j < edges.length; j++)
+        {
+          edges[j][0].addLink(edges[j][1]);
+        }
+      }
+    }
+    severArmLinks()
+    {
+      for (var i = 0; i < this.points.length; i++)
+      {
+        this.points[i].severLinksToFiller();
+      }
     }
     makeVoronoi()
     {
       if (!this.points || this.points.length < 3) throw new Error();
 
-      var minBound = Math.min(this.maxWidth, this.maxHeight);
-
       var boundingBox =
       {
         xl: 0,
-        xr: minBound * 2,
+        xr: this.maxWidth * 2,
         yt: 0,
-        yb: minBound * 2
+        yb: this.maxHeight * 2
       };
 
       var voronoi = new Voronoi();
@@ -143,24 +234,16 @@ module Rance
         var point = cell.site;
         var vertices = this.getVerticesFromCell(cell);
         var centroid = getCentroid(vertices);
-
-        var adjusted = centroid;
-
-        adjusted.arm = point.arm;
-        adjusted.distance = point.distance;
-        
-        var timesToDampen = point.distance * 4;
+        var timesToDampen = point.distance * 2;
 
         for (var j = 0; j < timesToDampen; j++)
         {
-          adjusted.x = (adjusted.x + point.x) / 2;
-          adjusted.y = (adjusted.y + point.y) / 2;
+          centroid.x = (centroid.x + point.x) / 2;
+          centroid.y = (centroid.y + point.y) / 2;
         }
 
-        relaxedPoints.push(adjusted);
+        point.setPosition(centroid.x, centroid.y);
       }
-
-      return relaxedPoints;
     }
     relaxAndRecalculate(times: number = 1)
     {
@@ -170,8 +253,7 @@ module Rance
 
       for (var i = 0; i < times; i++)
       {
-        var relaxed = this.relaxPoints();
-        this.points = relaxed;
+        this.relaxPoints();
         this.makeVoronoi();
       }
 
@@ -208,8 +290,7 @@ module Rance
 
           polyGfx.rightclick = function(cell)
           {
-            console.log()
-            console.log(cell.site.x);
+            console.log(cell.site.linksTo);
           }.bind(null, cell);
 
           doc.addChild(polyGfx);
@@ -221,28 +302,63 @@ module Rance
 
       doc.addChild(gfx);
 
-      for (var i = 0; i < this.triangles.length; i++)
-      {
-        var triangle = this.triangles[i];
-        var vertices = triangle.getPoints();
-
-        for (var j = 0; j < vertices.length; j++)
-        {
-          var current = vertices[j];
-          var next = vertices[(j + 1) % vertices.length];
-
-          gfx.moveTo(current.x, current.y);
-          gfx.lineTo(next.x, next.y);
-        }
-      }
+      
       for (var i = 0; i < this.points.length; i++)
       {
-        gfx.beginFill(0xFFFFFF);
+        var star = this.points[i];
+        var links = star.linksTo;
+
+        for (var j = 0; j < links.length; j++)
+        {
+          gfx.moveTo(star.x, star.y);
+          gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+        }
+
+      }
+      
+      // for (var i = 0; i < this.points.length; i++)
+      // {
+      //   var star = this.points[i];
+
+      //   for (var j = 0; j < star.linksFrom.length; j++)
+      //   {
+      //     gfx.moveTo(star.x, star.y);
+      //     gfx.lineTo(star.linksFrom[j].x, star.linksFrom[j].y);
+      //   }
+      // }
+
+      // for (var i = 0; i < this.triangles.length; i++)
+      // {
+      //   var triangle = this.triangles[i];
+      //   var edges = triangle.getEdges();
+
+      //   for (var j = 0; j < edges.length; j++)
+      //   {
+
+      //     gfx.moveTo(edges[j][0].x, edges[j][0].y);
+      //     gfx.lineTo(edges[j][1].x, edges[j][1].y);
+      //   }
+      // }
+
+      for (var i = 0; i < this.points.length; i++)
+      {
+        var fillColor = 0xFF0000;
+        if (this.points[i].region == "center")
+        {
+          fillColor = 0x00FF00;
+        }
+        else if (this.points[i].region.indexOf("filler") >= 0)
+        {
+          fillColor = 0x0000FF;
+        };
+
+        gfx.beginFill(fillColor);
         gfx.drawEllipse(this.points[i].x, this.points[i].y, 6, 6);
         gfx.endFill();
       }
 
-      
+      doc.height;
+      this.drawnMap = doc;
       return doc;
     }
   }
