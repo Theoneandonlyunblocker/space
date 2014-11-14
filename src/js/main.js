@@ -2718,8 +2718,8 @@ var Rance;
             this.points = [];
             this.regions = {};
             this.triangles = [];
-            this.maxWidth = 800;
-            this.maxHeight = 400;
+            this.maxWidth = 600;
+            this.maxHeight = 600;
         }
         MapGen.prototype.reset = function () {
             this.points = [];
@@ -2775,6 +2775,7 @@ var Rance;
                     offset = Math.pow(offset, 2);
 
                 var angle = arm * armDistance + offset;
+                console.log(angle);
 
                 var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
                 var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
