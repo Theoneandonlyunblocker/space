@@ -52,7 +52,9 @@ module Rance
 
       componentDidMount: function()
       {
-        this.props.renderer.init(this.refs.pixiContainer.getDOMNode());
+        this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
+        this.props.renderer.init();
+        this.props.renderer.bindRendererView();
         this.props.renderer.render();
       }
     });

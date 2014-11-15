@@ -655,6 +655,7 @@ declare module Rance {
         public stashedAction: string;
         public preventingGhost: boolean;
         constructor(camera: Rance.Camera);
+        public addEventListeners(): void;
         public preventGhost(delay: number): void;
         public mouseDown(event: any, targetType: string): void;
         public mouseMove(event: any, targetType: string): void;
@@ -669,7 +670,6 @@ declare module Rance {
 declare module Rance {
     class Renderer {
         public stage: PIXI.Stage;
-        public dontRender: boolean;
         public renderer: any;
         public pixiContainer: HTMLCanvasElement;
         public layers: {
@@ -677,13 +677,16 @@ declare module Rance {
         };
         public camera: Rance.Camera;
         public mouseEventHandler: Rance.MouseEventHandler;
+        public animFrameId: any;
         constructor();
-        public init(element: HTMLCanvasElement): void;
+        public init(): void;
+        public setContainer(element: HTMLCanvasElement): void;
         public bindRendererView(): void;
         public initLayers(): void;
         public addCamera(): void;
         public addEventListeners(): void;
         public resize(): void;
+        public stopRender(): void;
         public render(): void;
     }
 }

@@ -1446,7 +1446,9 @@ var Rance;
                 }, "clear"))));
             },
             componentDidMount: function () {
-                this.props.renderer.init(this.refs.pixiContainer.getDOMNode());
+                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
+                this.props.renderer.init();
+                this.props.renderer.bindRendererView();
                 this.props.renderer.render();
             }
         });
@@ -3650,8 +3652,6 @@ var Rance;
     var MouseEventHandler = (function () {
         function MouseEventHandler(camera) {
             this.preventingGhost = false;
-            var self = this;
-
             this.camera = camera;
             this.currAction = undefined;
 
@@ -3662,6 +3662,11 @@ var Rance;
                 event.preventDefault();
                 event.stopPropagation();
             };
+
+            this.addEventListeners();
+        }
+        MouseEventHandler.prototype.addEventListeners = function () {
+            var self = this;
 
             var _canvas = document.getElementById("pixi-container");
             _canvas.addEventListener("DOMMouseScroll", function (e) {
@@ -3678,7 +3683,7 @@ var Rance;
                 if (e.target.localName !== "canvas")
                     return;
             });
-        }
+        };
         MouseEventHandler.prototype.preventGhost = function (delay) {
             this.preventingGhost = true;
             var self = this;
@@ -3762,28 +3767,27 @@ var Rance;
 (function (Rance) {
     var Renderer = (function () {
         function Renderer() {
-            this.dontRender = false;
             this.layers = {};
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0xFFFF00);
             this.initLayers();
         }
-        Renderer.prototype.init = function (element) {
-            this.pixiContainer = element;
-
+        Renderer.prototype.init = function () {
             var containerStyle = window.getComputedStyle(this.pixiContainer);
             this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
                 autoResize: false,
                 antialias: true
             });
 
-            this.bindRendererView();
-
             this.addCamera();
+            this.initLayers();
+
             this.addEventListeners();
         };
-
+        Renderer.prototype.setContainer = function (element) {
+            this.pixiContainer = element;
+        };
         Renderer.prototype.bindRendererView = function () {
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "pixi-canvas");
@@ -3804,7 +3808,6 @@ var Rance;
             window.addEventListener("resize", this.resize.bind(this), false);
 
             this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
-                console.log("a");
                 self.mouseEventHandler.mouseDown(event, "stage");
             };
             this.stage.mousemove = this.stage.touchmove = function (event) {
@@ -3822,12 +3825,15 @@ var Rance;
                 this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
             }
         };
-        Renderer.prototype.render = function () {
-            if (this.dontRender)
+        Renderer.prototype.stopRender = function () {
+            if (!this.animFrameId)
                 return;
 
+            window.cancelAnimationFrame(this.animFrameId);
+        };
+        Renderer.prototype.render = function () {
             this.renderer.render(this.stage);
-            requestAnimFrame(this.render.bind(this));
+            this.animFrameId = requestAnimFrame(this.render.bind(this));
         };
         return Renderer;
     })();

@@ -16,8 +16,6 @@ module Rance
 
     constructor(camera: Camera)
     {
-      var self = this;
-      
       this.camera = camera;
       this.currAction = undefined;
 
@@ -28,6 +26,12 @@ module Rance
         event.preventDefault();
         event.stopPropagation();
       };
+
+      this.addEventListeners();
+    }
+    addEventListeners()
+    {
+      var self = this;
 
       var _canvas = document.getElementById("pixi-container");
       _canvas.addEventListener("DOMMouseScroll", function(e: any)
