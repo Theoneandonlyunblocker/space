@@ -380,11 +380,12 @@ declare module Rance {
         public id: number;
         public x: number;
         public y: number;
-        public isFiller: boolean;
         public linksTo: Star[];
         public linksFrom: Star[];
         public distance: number;
         public region: string;
+        public voronoiId: number;
+        public voronoiCell: any;
         constructor(x: number, y: number, id?: number);
         public setPosition(x: number, y: number): void;
         public hasLink(linkTo: Star): boolean;
@@ -397,13 +398,13 @@ declare module Rance {
         };
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
+        public severLinksToNonAdjacent(): void;
     }
 }
 declare module Rance {
     class MapGen {
         public maxWidth: number;
         public maxHeight: number;
-        public pointsToGenerate: number;
         public points: Rance.Star[];
         public regions: {
             [id: string]: {
@@ -416,7 +417,7 @@ declare module Rance {
         public drawnMap: PIXI.DisplayObjectContainer;
         constructor();
         public reset(): void;
-        public generatePoints(amount?: number): void;
+        public generatePoints(amount: number): void;
         public makeRegion(name: string): void;
         public makeSpiralPoints(props: {
             amountPerArm: number;
@@ -432,7 +433,7 @@ declare module Rance {
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
         public getVerticesFromCell(cell: any): any[];
-        public relaxPoints(): void;
+        public relaxPoints(dampeningFactor?: number): void;
         public relaxAndRecalculate(times?: number): void;
         public drawMap(): PIXI.DisplayObjectContainer;
     }

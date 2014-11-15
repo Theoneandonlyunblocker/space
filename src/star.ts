@@ -10,11 +10,14 @@ module Rance
     id: number;
     x: number;
     y: number;
-    isFiller: boolean = false;
     linksTo: Star[] = [];
     linksFrom: Star[] = [];
     distance: number;
     region: string;
+
+    voronoiId: number;
+    voronoiCell: any;
+
     constructor(x: number, y: number, id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.star++;
@@ -110,6 +113,22 @@ module Rance
       for (var i = 0; i < fillerRegions.length; i++)
       {
         this.severLinksToRegion(fillerRegions[i]);      
+      }
+    }
+    severLinksToNonAdjacent()
+    {
+      var allLinks = this.getAllLinks();
+
+      var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+
+      for (var i = 0; i < allLinks.length; i++)
+      {
+        var star = allLinks[i];
+
+        if (neighborVoronoiIds.indexOf(star.voronoiId) < 0)
+        {
+          this.removeLink(star);
+        }
       }
     }
   }

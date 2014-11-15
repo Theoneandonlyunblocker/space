@@ -12,7 +12,7 @@ module Rance
 
         if (mapGen.points && mapGen.points.length <= 0)
         {
-          mapGen.generatePoints(60);
+          mapGen.generatePoints(40);
         }
         else if (!mapGen.triangles || !mapGen.triangles.length)
         {
@@ -25,16 +25,16 @@ module Rance
         }
 
         var doc = mapGen.drawMap();
-        this.props.renderer.layers.main.removeChildren();
-        this.props.renderer.layers.main.addChild(doc);
+        this.props.renderer.layers.map.removeChildren();
+        this.props.renderer.layers.map.addChild(doc);
       },
       clearMap: function()
       {
         this.props.mapGen.reset();
 
         var doc = mapGen.drawMap();
-        this.props.renderer.layers.main.removeChildren();
-        this.props.renderer.layers.main.addChild(doc);
+        this.props.renderer.layers.map.removeChildren();
+        this.props.renderer.layers.map.addChild(doc);
       },
       severFiller: function(e)
       {
@@ -42,8 +42,8 @@ module Rance
 
         mapGen.severArmLinks()
         var doc = mapGen.drawMap();
-        this.props.renderer.layers.main.removeChildren();
-        this.props.renderer.layers.main.addChild(doc);
+        this.props.renderer.layers.map.removeChildren();
+        this.props.renderer.layers.map.addChild(doc);
       },
     
       render: function()

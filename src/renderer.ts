@@ -30,9 +30,10 @@ module Rance
       this.renderer = PIXI.autoDetectRenderer(
         parseInt(containerStyle.width),
         parseInt(containerStyle.height),
-        null,  // view
-        false, // transparent
-        true   // antialias
+        {
+          autoResize: false,
+          antialias: true
+        }
       );
 
       this.initLayers();
@@ -53,10 +54,13 @@ module Rance
     {
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_main);
+
+      var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
+      _main.addChild(_map);
     }
     addCamera()
     {
-      this.camera = new Camera(this.layers["main"], 0.2);
+      this.camera = new Camera(this.layers["main"], 0.5);
       this.mouseEventHandler = new MouseEventHandler(this.camera);
     }
     addEventListeners()
@@ -68,7 +72,6 @@ module Rance
 
       this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
       {
-        console.log(event.originalEvent.button)
         self.mouseEventHandler.mouseDown(event, "stage");
       }
       this.stage.mousemove = this.stage.touchmove = function(event)
@@ -86,10 +89,9 @@ module Rance
     }
     resize()
     {
-      var containerStyle = window.getComputedStyle(this.pixiContainer);
       if (this.renderer)
       {
-        this.renderer.resize(parseInt(containerStyle.width), parseInt(containerStyle.height));
+        this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
       }
     }
     render()

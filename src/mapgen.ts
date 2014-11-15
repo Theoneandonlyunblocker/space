@@ -13,7 +13,6 @@ module Rance
   {
     maxWidth: number;
     maxHeight: number;
-    pointsToGenerate: number;
     points: Star[] = [];
     regions:
     {
@@ -41,17 +40,18 @@ module Rance
       this.voronoiDiagram = null;
     }
 
-    generatePoints(amount: number = this.pointsToGenerate)
+    generatePoints(amount: number)
     {
-      this.pointsToGenerate = amount;
-
       if (!amount) throw new Error();
+
+      var arms = 4;
 
       var pointGenerationProps =
       {
-        amountPerArm: amount / 5 * 0.8,
-        arms: 5,
-        amountInCenter: amount * 0.2
+        amountPerArm: amount / arms * 0.8,
+        arms: arms,
+        amountInCenter: amount * 0.2,
+        centerSize: 0.4
       }
 
       this.points = this.makeSpiralPoints(pointGenerationProps);
@@ -82,8 +82,9 @@ module Rance
 
       var points = [];
       var armDistance = Math.PI * 2 / totalArms;
-      var rotation = randRange(0, Math.PI * 2);
       var armOffsetMax = props.armOffsetMax || 0.5;
+      var armRotationFactor = props.arms / 3;
+      var galaxyRotation = randRange(0, Math.PI * 2);
       var minBound = Math.min(this.maxWidth, this.maxHeight);
       var minBound2 = minBound / 2;
 
@@ -97,7 +98,8 @@ module Rance
         if (offset < 0) offset = Math.pow(offset, 2) * -1;
         else offset = Math.pow(offset, 2);
 
-        var angle = arm * armDistance + rotation + offset;
+        var armRotation = distance * armRotationFactor;
+        var angle = arm * armDistance + galaxyRotation + offset + armRotation;
 
         var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
         var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
@@ -181,6 +183,7 @@ module Rance
       for (var i = 0; i < this.points.length; i++)
       {
         this.points[i].severLinksToFiller();
+        this.points[i].severLinksToNonAdjacent();
       }
     }
     makeVoronoi()
@@ -200,6 +203,11 @@ module Rance
       var diagram = voronoi.compute(this.points, boundingBox);
 
       this.voronoiDiagram = diagram;
+
+      for (var i = 0; i < diagram.cells.length; i++)
+      {
+        diagram.cells[i].site.voronoiCell = diagram.cells[i];
+      }
     }
     cleanTriangles(triangles: Triangle[], superTriangle: Triangle)
     {
@@ -224,7 +232,7 @@ module Rance
 
       return vertices;
     }
-    relaxPoints()
+    relaxPoints(dampeningFactor: number = 0)
     {
       var relaxedPoints = [];
 
@@ -234,7 +242,7 @@ module Rance
         var point = cell.site;
         var vertices = this.getVerticesFromCell(cell);
         var centroid = getCentroid(vertices);
-        var timesToDampen = point.distance * 2;
+        var timesToDampen = point.distance * dampeningFactor;
 
         for (var j = 0; j < timesToDampen; j++)
         {
@@ -253,7 +261,7 @@ module Rance
 
       for (var i = 0; i < times; i++)
       {
-        this.relaxPoints();
+        this.relaxPoints(2);
         this.makeVoronoi();
       }
 
@@ -280,7 +288,7 @@ module Rance
           var cellVertices = this.getVerticesFromCell(cell);
 
           var poly = new PIXI.Polygon(cellVertices);
-          var polyGfx = new PIXI.Graphics();
+          var polyGfx: any = new PIXI.Graphics();
           polyGfx.interactive = true;
           polyGfx.lineStyle(6, 0xFF0000, 1);
 
@@ -288,13 +296,28 @@ module Rance
           polyGfx.drawShape(poly);
           polyGfx.endFill();
 
-          polyGfx.rightclick = function(cell)
+          polyGfx.cell = cell;
+
+          polyGfx.rightclick = function()
           {
-            console.log(cell.site.linksTo);
-          }.bind(null, cell);
+            console.log(this.cell.site.x, this.cell.site.y);
+            console.log(this.worldTransform);
+          }
+          polyGfx.mouseover = function()
+          {
+            this.position.x += 10;
+            this.position.y -= 10
+          }
+          polyGfx.mouseout = function()
+          {
+            this.position.x -= 10;
+            this.position.y += 10
+          }
 
           doc.addChild(polyGfx);
         }
+
+
       }
 
       var gfx = new PIXI.Graphics();

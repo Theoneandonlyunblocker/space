@@ -20,7 +20,7 @@ declare module PIXI
 
 
 	/* MODULE FUNCTIONS */
-	export function autoDetectRenderer(width: number, height: number, view?: HTMLCanvasElement, transparent?: boolean, antialias?: boolean): IPixiRenderer;
+	export function autoDetectRenderer(width: number, height: number, options?: IRendererOptions): IPixiRenderer;
 	export function FilterBlock( mask:Graphics ):void;
 	export function MaskFilter( graphics:Graphics ):void;
 	export function rgb2hex( rgb:number[] ):number;
@@ -31,6 +31,16 @@ declare module PIXI
 	export function runList( x ):void;
 
 		/*INTERFACES*/
+
+	export interface IRendererOptions
+	{
+		view?: HTMLCanvasElement;
+		transparent?: boolean;
+		autoResize?: boolean;
+		antialias?: boolean;
+		preserveDrawingBuffer?: boolean;
+		resolution?: number;
+	}
 
 	export interface IBasicCallback
 	{

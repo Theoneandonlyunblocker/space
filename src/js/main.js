@@ -1424,7 +1424,7 @@ var Rance;
                 var mapGen = this.props.mapGen;
 
                 if (mapGen.points && mapGen.points.length <= 0) {
-                    mapGen.generatePoints(60);
+                    mapGen.generatePoints(40);
                 } else if (!mapGen.triangles || !mapGen.triangles.length) {
                     mapGen.triangulate();
                     mapGen.makeVoronoi();
@@ -1433,23 +1433,23 @@ var Rance;
                 }
 
                 var doc = mapGen.drawMap();
-                this.props.renderer.layers.main.removeChildren();
-                this.props.renderer.layers.main.addChild(doc);
+                this.props.renderer.layers.map.removeChildren();
+                this.props.renderer.layers.map.addChild(doc);
             },
             clearMap: function () {
                 this.props.mapGen.reset();
 
                 var doc = mapGen.drawMap();
-                this.props.renderer.layers.main.removeChildren();
-                this.props.renderer.layers.main.addChild(doc);
+                this.props.renderer.layers.map.removeChildren();
+                this.props.renderer.layers.map.addChild(doc);
             },
             severFiller: function (e) {
                 var mapGen = this.props.mapGen;
 
                 mapGen.severArmLinks();
                 var doc = mapGen.drawMap();
-                this.props.renderer.layers.main.removeChildren();
-                this.props.renderer.layers.main.addChild(doc);
+                this.props.renderer.layers.map.removeChildren();
+                this.props.renderer.layers.map.addChild(doc);
             },
             render: function () {
                 return (React.DOM.div(null, React.DOM.div({
@@ -2621,7 +2621,6 @@ var Rance;
 
     var Star = (function () {
         function Star(x, y, id) {
-            this.isFiller = false;
             this.linksTo = [];
             this.linksFrom = [];
             this.id = isFinite(id) ? id : idGenerators.star++;
@@ -2701,6 +2700,19 @@ var Rance;
                 this.severLinksToRegion(fillerRegions[i]);
             }
         };
+        Star.prototype.severLinksToNonAdjacent = function () {
+            var allLinks = this.getAllLinks();
+
+            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+
+                if (neighborVoronoiIds.indexOf(star.voronoiId) < 0) {
+                    this.removeLink(star);
+                }
+            }
+        };
         return Star;
     })();
     Rance.Star = Star;
@@ -2729,16 +2741,16 @@ var Rance;
         };
 
         MapGen.prototype.generatePoints = function (amount) {
-            if (typeof amount === "undefined") { amount = this.pointsToGenerate; }
-            this.pointsToGenerate = amount;
-
             if (!amount)
                 throw new Error();
 
+            var arms = 4;
+
             var pointGenerationProps = {
-                amountPerArm: amount / 5 * 0.8,
-                arms: 5,
-                amountInCenter: amount * 0.2
+                amountPerArm: amount / arms * 0.8,
+                arms: arms,
+                amountInCenter: amount * 0.2,
+                centerSize: 0.4
             };
 
             this.points = this.makeSpiralPoints(pointGenerationProps);
@@ -2759,8 +2771,9 @@ var Rance;
 
             var points = [];
             var armDistance = Math.PI * 2 / totalArms;
-            var rotation = Rance.randRange(0, Math.PI * 2);
             var armOffsetMax = props.armOffsetMax || 0.5;
+            var armRotationFactor = props.arms / 3;
+            var galaxyRotation = Rance.randRange(0, Math.PI * 2);
             var minBound = Math.min(this.maxWidth, this.maxHeight);
             var minBound2 = minBound / 2;
 
@@ -2774,7 +2787,8 @@ var Rance;
                 else
                     offset = Math.pow(offset, 2);
 
-                var angle = arm * armDistance + rotation + offset;
+                var armRotation = distance * armRotationFactor;
+                var angle = arm * armDistance + galaxyRotation + offset + armRotation;
 
                 var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
                 var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
@@ -2846,6 +2860,7 @@ var Rance;
         MapGen.prototype.severArmLinks = function () {
             for (var i = 0; i < this.points.length; i++) {
                 this.points[i].severLinksToFiller();
+                this.points[i].severLinksToNonAdjacent();
             }
         };
         MapGen.prototype.makeVoronoi = function () {
@@ -2864,6 +2879,10 @@ var Rance;
             var diagram = voronoi.compute(this.points, boundingBox);
 
             this.voronoiDiagram = diagram;
+
+            for (var i = 0; i < diagram.cells.length; i++) {
+                diagram.cells[i].site.voronoiCell = diagram.cells[i];
+            }
         };
         MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
             for (var i = triangles.length - 1; i >= 0; i--) {
@@ -2883,7 +2902,8 @@ var Rance;
 
             return vertices;
         };
-        MapGen.prototype.relaxPoints = function () {
+        MapGen.prototype.relaxPoints = function (dampeningFactor) {
+            if (typeof dampeningFactor === "undefined") { dampeningFactor = 0; }
             var relaxedPoints = [];
 
             for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
@@ -2891,7 +2911,7 @@ var Rance;
                 var point = cell.site;
                 var vertices = this.getVerticesFromCell(cell);
                 var centroid = Rance.getCentroid(vertices);
-                var timesToDampen = point.distance * 2;
+                var timesToDampen = point.distance * dampeningFactor;
 
                 for (var j = 0; j < timesToDampen; j++) {
                     centroid.x = (centroid.x + point.x) / 2;
@@ -2910,7 +2930,7 @@ var Rance;
                 this.makeVoronoi();
 
             for (var i = 0; i < times; i++) {
-                this.relaxPoints();
+                this.relaxPoints(2);
                 this.makeVoronoi();
             }
 
@@ -2940,9 +2960,20 @@ var Rance;
                     polyGfx.drawShape(poly);
                     polyGfx.endFill();
 
-                    polyGfx.rightclick = function (cell) {
-                        console.log(cell.site.linksTo);
-                    }.bind(null, cell);
+                    polyGfx.cell = cell;
+
+                    polyGfx.rightclick = function () {
+                        console.log(this.cell.site.x, this.cell.site.y);
+                        console.log(this.worldTransform);
+                    };
+                    polyGfx.mouseover = function () {
+                        this.position.x += 10;
+                        this.position.y -= 10;
+                    };
+                    polyGfx.mouseout = function () {
+                        this.position.x -= 10;
+                        this.position.y += 10;
+                    };
 
                     doc.addChild(polyGfx);
                 }
@@ -3207,7 +3238,7 @@ var Rance;
             }, delay);
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
-            if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1 || event.originalEvent.button === 2) {
+            if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1) {
                 this.startScroll(event);
             }
         };
@@ -3289,7 +3320,10 @@ var Rance;
             this.stage = new PIXI.Stage(0xFFFF00);
 
             var containerStyle = window.getComputedStyle(this.pixiContainer);
-            this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), null, false, true);
+            this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
+                autoResize: false,
+                antialias: true
+            });
 
             this.initLayers();
             this.addCamera();
@@ -3306,9 +3340,12 @@ var Rance;
         Renderer.prototype.initLayers = function () {
             var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
             this.stage.addChild(_main);
+
+            var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
+            _main.addChild(_map);
         };
         Renderer.prototype.addCamera = function () {
-            this.camera = new Rance.Camera(this.layers["main"], 0.2);
+            this.camera = new Rance.Camera(this.layers["main"], 0.5);
             this.mouseEventHandler = new Rance.MouseEventHandler(this.camera);
         };
         Renderer.prototype.addEventListeners = function () {
@@ -3316,7 +3353,6 @@ var Rance;
             window.addEventListener("resize", this.resize.bind(this), false);
 
             this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
-                console.log(event.originalEvent.button);
                 self.mouseEventHandler.mouseDown(event, "stage");
             };
             this.stage.mousemove = this.stage.touchmove = function (event) {
@@ -3330,9 +3366,8 @@ var Rance;
             };
         };
         Renderer.prototype.resize = function () {
-            var containerStyle = window.getComputedStyle(this.pixiContainer);
             if (this.renderer) {
-                this.renderer.resize(parseInt(containerStyle.width), parseInt(containerStyle.height));
+                this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
             }
         };
         Renderer.prototype.render = function () {
