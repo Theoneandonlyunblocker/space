@@ -5,6 +5,7 @@
 /// <reference path="player.ts"/>
 /// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
+/// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 
 var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;

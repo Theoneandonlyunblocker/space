@@ -2,12 +2,21 @@
 
 module Rance
 {
+  var idGenerators = idGenerators || {};
+  idGenerators.player = idGenerators.player || 0;
+
   export class Player
   {
+    id: number;
     units:
     {
       [id: number]: Unit;
     } = {};
+
+    constructor(id?: number)
+    {
+      this.id = isFinite(id) ? id : idGenerators.player++;
+    }
 
 
     addUnit(unit: Unit)

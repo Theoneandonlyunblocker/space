@@ -78,4 +78,14 @@ module Rance
       return a.id - b.id;
     }
   }
+
+  export function makeRandomShip()
+  {
+    var allTypes = Object.keys(Templates.ShipTypes);
+    var type = getRandomArrayItem(allTypes);
+
+    var unit = new Unit(Templates.ShipTypes[type]);
+
+    return unit;
+  }
 }

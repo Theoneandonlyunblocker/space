@@ -1,0 +1,85 @@
+/// <reference path="player.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="star.ts" />
+
+module Rance
+{
+  export class Fleet
+  {
+    owner: Player;
+    ships: Unit[];
+    location: Star;
+
+    constructor(owner: Player, ships: Unit[], location: Star)
+    {
+      this.owner = owner;
+      this.ships = ships;
+      this.location = location;
+
+      this.location.addFleet(this);
+    }
+    getShipIndex(ship: Unit)
+    {
+      return this.ships.indexOf(ship);
+    }
+    hasShip(ship: Unit)
+    {
+      return this.getShipIndex(ship) >= 0;
+    }
+    deleteFleet()
+    {
+      this.location.removeFleet(this);
+    }
+    addShip(ship: Unit)
+    {
+      if (this.hasShip(ship)) return false;
+
+      this.ships.push(ship);
+    }
+    addShips(ships: Unit[])
+    {
+      for (var i = 0; i < ships.length; i++)
+      {
+        this.addShip(ships[i]);
+      }
+    }
+    removeShip(ship: Unit)
+    {
+      var index = this.getShipIndex(ship);
+
+      if (index < 0) return false;
+
+      this.ships.splice(index, 1);
+
+      if (this.ships.length <= 0)
+      {
+        this.deleteFleet();
+      }
+    }
+    removeShips(ships: Unit[])
+    {
+      for (var i = 0; i < ships.length; i++)
+      {
+        this.removeShip(ships[i]);
+      }
+    }
+    split(newShips: Unit[])
+    {
+      this.removeShips(newShips);
+
+      var newFleet = new Fleet(this.owner, newShips, this.location);
+      this.location.addFleet(newFleet);
+
+
+      return newFleet;
+    }
+    move(newLocation: Star)
+    {
+      var oldLocation = this.location;
+      oldLocation.removeFleet(this);
+
+      this.location = newLocation;
+      newLocation.addFleet(this);
+    }
+  }
+}

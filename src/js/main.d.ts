@@ -181,6 +181,7 @@ declare module Rance {
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
+    function makeRandomShip(): Unit;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -319,9 +320,11 @@ declare module Rance {
 }
 declare module Rance {
     class Player {
+        public id: number;
         public units: {
             [id: number]: Rance.Unit;
         };
+        constructor(id?: number);
         public addUnit(unit: Rance.Unit): void;
     }
 }
@@ -339,6 +342,29 @@ declare module Rance {
         public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public makeBattle(fleet2: Rance.Unit[][]): Rance.Battle;
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
+            var defaultMap: {
+                mapOptions: {
+                    width: number;
+                    height: number;
+                };
+                starGeneration: {
+                    galaxyType: string;
+                    totalAmount: number;
+                    arms: number;
+                    centerSize: number;
+                    amountInCenter: number;
+                };
+                relaxation: {
+                    timesToRelax: number;
+                    dampeningFactor: number;
+                };
+            };
+        }
     }
 }
 declare module Rance {
@@ -376,6 +402,23 @@ declare module Rance {
     function edgesEqual(e1: Point[], e2: Point[]): boolean;
 }
 declare module Rance {
+    class Fleet {
+        public owner: Rance.Player;
+        public ships: Rance.Unit[];
+        public location: Rance.Star;
+        constructor(owner: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
+        public getShipIndex(ship: Rance.Unit): number;
+        public hasShip(ship: Rance.Unit): boolean;
+        public deleteFleet(): void;
+        public addShip(ship: Rance.Unit): boolean;
+        public addShips(ships: Rance.Unit[]): void;
+        public removeShip(ship: Rance.Unit): boolean;
+        public removeShips(ships: Rance.Unit[]): void;
+        public split(newShips: Rance.Unit[]): Fleet;
+        public move(newLocation: Rance.Star): void;
+    }
+}
+declare module Rance {
     class Star implements Rance.Point {
         public id: number;
         public x: number;
@@ -384,9 +427,19 @@ declare module Rance {
         public linksFrom: Star[];
         public distance: number;
         public region: string;
+        public owner: Rance.Player;
+        public fleets: {
+            [ownerId: string]: Rance.Fleet[];
+        };
         public voronoiId: number;
         public voronoiCell: any;
         constructor(x: number, y: number, id?: number);
+        public getFleetIndex(fleet: Rance.Fleet): number;
+        public hasFleet(fleet: Rance.Fleet): boolean;
+        public addFleet(fleet: Rance.Fleet): boolean;
+        public addFleets(fleets: Rance.Fleet[]): void;
+        public removeFleet(fleet: Rance.Fleet): boolean;
+        public removeFleets(fleets: Rance.Fleet[]): void;
         public setPosition(x: number, y: number): void;
         public hasLink(linkTo: Star): boolean;
         public addLink(linkTo: Star): void;
@@ -398,6 +451,7 @@ declare module Rance {
         };
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
+        public severLinksToNonCenter(): void;
         public severLinksToNonAdjacent(): void;
     }
 }
@@ -414,10 +468,36 @@ declare module Rance {
         };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
+        public galaxyConstructors: {
+            [type: string]: (any: any) => Rance.Star[];
+        };
         public drawnMap: PIXI.DisplayObjectContainer;
         constructor();
         public reset(): void;
-        public generatePoints(amount: number): void;
+        public makeMap(options: {
+            mapOptions: {
+                width: number;
+                height?: number;
+            };
+            starGeneration: {
+                galaxyType: string;
+                totalAmount: number;
+                arms: number;
+                centerSize: number;
+                amountInCenter: number;
+            };
+            relaxation: {
+                timesToRelax: number;
+                dampeningFactor: number;
+            };
+        }): MapGen;
+        public generatePoints(options: {
+            galaxyType: string;
+            totalAmount: number;
+            arms: number;
+            centerSize: number;
+            amountInCenter: number;
+        }): any;
         public makeRegion(name: string): void;
         public makeSpiralPoints(props: {
             amountPerArm: number;
@@ -433,9 +513,20 @@ declare module Rance {
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
         public getVerticesFromCell(cell: any): any[];
-        public relaxPoints(dampeningFactor?: number): void;
-        public relaxAndRecalculate(times?: number): void;
+        public relaxPointsOnce(dampeningFactor?: number): void;
+        public relaxPoints(options: {
+            timesToRelax: number;
+            dampeningFactor: number;
+        }): void;
         public drawMap(): PIXI.DisplayObjectContainer;
+    }
+}
+declare module Rance {
+    class GalaxyMap {
+        public stars: Rance.Star[];
+        public mapGen: Rance.MapGen;
+        constructor();
+        public addMapGen(mapGen: Rance.MapGen): void;
     }
 }
 declare module Rance {

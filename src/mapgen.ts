@@ -1,6 +1,7 @@
 /// <reference path="../lib/voronoi.d.ts" />
-
 /// <reference path="../lib/pixi.d.ts" />
+
+/// <reference path="../data/templates/mapgentemplates.ts" />
 
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
@@ -25,12 +26,19 @@ module Rance
     triangles: Triangle[] = [];
     voronoiDiagram: any;
 
+    galaxyConstructors:
+    {
+      [type: string]: (any) => Star[];
+    } = {};
+
     drawnMap: PIXI.DisplayObjectContainer;
 
     constructor()
     {
-      this.maxWidth = 600;
-      this.maxHeight = 600;
+      this.galaxyConstructors =
+      {
+        spiral: this.makeSpiralPoints
+      }
     }
     reset()
     {
@@ -39,22 +47,67 @@ module Rance
       this.triangles = [];
       this.voronoiDiagram = null;
     }
-
-    generatePoints(amount: number)
+    makeMap(options:
     {
-      if (!amount) throw new Error();
-
-      var arms = 4;
-
-      var pointGenerationProps =
+      mapOptions:
       {
-        amountPerArm: amount / arms * 0.8,
-        arms: arms,
-        amountInCenter: amount * 0.2,
-        centerSize: 0.4
+        width: number;
+        height?: number;
+      };
+      starGeneration:
+      {
+        galaxyType: string;
+        totalAmount: number;
+        arms: number;
+        centerSize: number;
+        amountInCenter: number;
+      };
+      relaxation:
+      {
+        timesToRelax: number;
+        dampeningFactor: number;
+      };
+    })
+    {
+      this.reset();
+
+      this.maxWidth = options.mapOptions.width;
+      this.maxHeight = options.mapOptions.height || this.maxWidth;
+
+      this.points = this.generatePoints(options.starGeneration);
+
+      this.makeVoronoi();
+      this.relaxPoints(options.relaxation);
+
+      this.triangulate();
+      this.severArmLinks();
+
+      return this;
+    }
+
+    generatePoints(options:
+    {
+      galaxyType: string;
+      totalAmount: number;
+      arms: number;
+      centerSize: number;
+      amountInCenter: number;
+    })
+    {
+      var amountInArms = 1 - options.amountInCenter;
+
+      var starGenerationProps =
+      {
+        amountPerArm: options.totalAmount / options.arms * amountInArms,
+        arms: options.arms,
+        amountInCenter: options.totalAmount * options.amountInCenter,
+        centerSize: options.centerSize
       }
 
-      this.points = this.makeSpiralPoints(pointGenerationProps);
+      var galaxyConstructor =
+        this.galaxyConstructors[options.galaxyType];
+
+      return galaxyConstructor.call(this, starGenerationProps);
     }
     makeRegion(name: string)
     {
@@ -111,7 +164,6 @@ module Rance
 
         return point;
       }.bind(this);
-
 
       this.makeRegion("center");
       
@@ -182,8 +234,14 @@ module Rance
     {
       for (var i = 0; i < this.points.length; i++)
       {
-        this.points[i].severLinksToFiller();
-        this.points[i].severLinksToNonAdjacent();
+        var star = this.points[i];
+        star.severLinksToFiller();
+        star.severLinksToNonAdjacent();
+
+        if (star.distance > 0.8)
+        {
+          star.severLinksToNonCenter();
+        }
       }
     }
     makeVoronoi()
@@ -232,7 +290,7 @@ module Rance
 
       return vertices;
     }
-    relaxPoints(dampeningFactor: number = 0)
+    relaxPointsOnce(dampeningFactor: number = 0)
     {
       var relaxedPoints = [];
 
@@ -253,19 +311,21 @@ module Rance
         point.setPosition(centroid.x, centroid.y);
       }
     }
-    relaxAndRecalculate(times: number = 1)
+    relaxPoints(options:
+      {
+        timesToRelax: number;
+        dampeningFactor: number;
+      })
     {
       if (!this.points) throw new Error();
 
       if (!this.voronoiDiagram) this.makeVoronoi();
 
-      for (var i = 0; i < times; i++)
+      for (var i = 0; i < options.timesToRelax; i++)
       {
-        this.relaxPoints(2);
+        this.relaxPointsOnce(options.dampeningFactor);
         this.makeVoronoi();
       }
-
-      this.triangulate();
     }
     drawMap()
     {
@@ -305,12 +365,10 @@ module Rance
           }
           polyGfx.mouseover = function()
           {
-            this.position.x += 10;
             this.position.y -= 10
           }
           polyGfx.mouseout = function()
           {
-            this.position.x -= 10;
             this.position.y += 10
           }
 

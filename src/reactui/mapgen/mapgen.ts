@@ -4,25 +4,11 @@ module Rance
   {
     export var MapGen = React.createClass({
 
-      generateMap: function(e)
+      makeMap: function()
       {
-        if (e.button !== 0) return;
-        
         var mapGen = this.props.mapGen;
 
-        if (mapGen.points && mapGen.points.length <= 0)
-        {
-          mapGen.generatePoints(40);
-        }
-        else if (!mapGen.triangles || !mapGen.triangles.length)
-        {
-          mapGen.triangulate();
-          mapGen.makeVoronoi();
-        }
-        else
-        {
-          mapGen.relaxAndRecalculate();
-        }
+        mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
 
         var doc = mapGen.drawMap();
         this.props.renderer.layers.map.removeChildren();
@@ -36,15 +22,6 @@ module Rance
         this.props.renderer.layers.map.removeChildren();
         this.props.renderer.layers.map.addChild(doc);
       },
-      severFiller: function(e)
-      {
-        var mapGen = this.props.mapGen;
-
-        mapGen.severArmLinks()
-        var doc = mapGen.drawMap();
-        this.props.renderer.layers.map.removeChildren();
-        this.props.renderer.layers.map.addChild(doc);
-      },
     
       render: function()
       {
@@ -53,8 +30,7 @@ module Rance
             React.DOM.div(
             {
               ref: "pixiContainer",
-              id: "pixi-container",
-              onClick: this.generateMap
+              id: "pixi-container"
             }),
             React.DOM.div(
             {
@@ -62,12 +38,12 @@ module Rance
             },
               React.DOM.button(
               {
-                onClick: this.clearMap
-              }, "clear"),
+                onClick: this.makeMap
+              }, "make"),
               React.DOM.button(
               {
-                onClick: this.severFiller
-              }, "sever")
+                onClick: this.clearMap
+              }, "clear")
             )
             
           )

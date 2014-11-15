@@ -1,4 +1,6 @@
 /// <reference path="point.ts" />
+/// <reference path="player.ts" />
+/// <reference path="fleet.ts" />
 
 module Rance
 {
@@ -15,6 +17,12 @@ module Rance
     distance: number;
     region: string;
 
+    owner: Player;
+    fleets:
+    {
+      [ownerId: string] : Fleet[]
+    } = {};
+
     voronoiId: number;
     voronoiCell: any;
 
@@ -25,6 +33,52 @@ module Rance
       this.x = x;
       this.y = y;
     }
+
+    getFleetIndex(fleet: Fleet)
+    {
+      if (!this.fleets[fleet.owner.id]) return -1;
+
+      return this.fleets[fleet.owner.id].indexOf(fleet);
+    }
+    hasFleet(fleet: Fleet)
+    {
+      return this.getFleetIndex(fleet) >= 0;
+    }
+    addFleet(fleet: Fleet)
+    {
+      if (!this.fleets[fleet.owner.id])
+      {
+        this.fleets[fleet.owner.id] = [];
+      }
+
+      if (this.hasFleet(fleet)) return false;
+
+      this.fleets[fleet.owner.id].push(fleet);
+    }
+    addFleets(fleets: Fleet[])
+    {
+      for (var i = 0; i < fleets.length; i++)
+      {
+        this.addFleet(fleets[i]);
+      }
+    }
+    removeFleet(fleet: Fleet)
+    {
+      var fleetIndex = this.getFleetIndex(fleet);
+
+      if (fleetIndex < 0) return false;
+
+      this.fleets[fleet.owner.id].splice(fleetIndex, 1);
+    }
+    removeFleets(fleets: Fleet[])
+    {
+      for (var i = 0; i < fleets.length; i++)
+      {
+        this.removeFleet(fleets[i]);
+      }
+    }
+
+    // MAP GEN
     setPosition(x: number, y: number)
     {
       this.x = x;
@@ -113,6 +167,21 @@ module Rance
       for (var i = 0; i < fillerRegions.length; i++)
       {
         this.severLinksToRegion(fillerRegions[i]);      
+      }
+    }
+    severLinksToNonCenter()
+    {
+      var self = this;
+
+      var linksByRegion = this.getLinksByRegion();
+      var nonCenterRegions = Object.keys(linksByRegion).filter(function(region)
+      {
+        return region !== self.region && region !== "center";
+      });
+
+      for (var i = 0; i < nonCenterRegions.length; i++)
+      {
+        this.severLinksToRegion(nonCenterRegions[i]);      
       }
     }
     severLinksToNonAdjacent()

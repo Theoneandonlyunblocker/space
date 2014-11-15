@@ -1417,20 +1417,10 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.MapGen = React.createClass({
-            generateMap: function (e) {
-                if (e.button !== 0)
-                    return;
-
+            makeMap: function () {
                 var mapGen = this.props.mapGen;
 
-                if (mapGen.points && mapGen.points.length <= 0) {
-                    mapGen.generatePoints(40);
-                } else if (!mapGen.triangles || !mapGen.triangles.length) {
-                    mapGen.triangulate();
-                    mapGen.makeVoronoi();
-                } else {
-                    mapGen.relaxAndRecalculate();
-                }
+                mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
 
                 var doc = mapGen.drawMap();
                 this.props.renderer.layers.map.removeChildren();
@@ -1443,26 +1433,17 @@ var Rance;
                 this.props.renderer.layers.map.removeChildren();
                 this.props.renderer.layers.map.addChild(doc);
             },
-            severFiller: function (e) {
-                var mapGen = this.props.mapGen;
-
-                mapGen.severArmLinks();
-                var doc = mapGen.drawMap();
-                this.props.renderer.layers.map.removeChildren();
-                this.props.renderer.layers.map.addChild(doc);
-            },
             render: function () {
                 return (React.DOM.div(null, React.DOM.div({
                     ref: "pixiContainer",
-                    id: "pixi-container",
-                    onClick: this.generateMap
+                    id: "pixi-container"
                 }), React.DOM.div({
                     className: "map-gen-controls"
                 }, React.DOM.button({
+                    onClick: this.makeMap
+                }, "make"), React.DOM.button({
                     onClick: this.clearMap
-                }, "clear"), React.DOM.button({
-                    onClick: this.severFiller
-                }, "sever"))));
+                }, "clear"))));
             },
             componentDidMount: function () {
                 this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
@@ -1614,6 +1595,16 @@ var Rance;
         }
     }
     Rance.turnOrderSortFunction = turnOrderSortFunction;
+
+    function makeRandomShip() {
+        var allTypes = Object.keys(Rance.Templates.ShipTypes);
+        var type = getRandomArrayItem(allTypes);
+
+        var unit = new Rance.Unit(Rance.Templates.ShipTypes[type]);
+
+        return unit;
+    }
+    Rance.makeRandomShip = makeRandomShip;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -2234,9 +2225,13 @@ var Rance;
 /// <reference path="unit.ts"/>
 var Rance;
 (function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.player = idGenerators.player || 0;
+
     var Player = (function () {
-        function Player() {
+        function Player(id) {
             this.units = {};
+            this.id = isFinite(id) ? id : idGenerators.player++;
         }
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -2316,6 +2311,32 @@ var Rance;
         return BattlePrep;
     })();
     Rance.BattlePrep = BattlePrep;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            MapGen.defaultMap = {
+                mapOptions: {
+                    width: 600,
+                    height: 600
+                },
+                starGeneration: {
+                    galaxyType: "spiral",
+                    totalAmount: 60,
+                    arms: 5,
+                    centerSize: 0.4,
+                    amountInCenter: 0.2
+                },
+                relaxation: {
+                    timesToRelax: 5,
+                    dampeningFactor: 2
+                }
+            };
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="point.ts"/>
 var Rance;
@@ -2613,7 +2634,76 @@ var Rance;
     }
     Rance.edgesEqual = edgesEqual;
 })(Rance || (Rance = {}));
+/// <reference path="player.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="star.ts" />
+var Rance;
+(function (Rance) {
+    var Fleet = (function () {
+        function Fleet(owner, ships, location) {
+            this.owner = owner;
+            this.ships = ships;
+            this.location = location;
+        }
+        Fleet.prototype.getShipIndex = function (ship) {
+            return this.ships.indexOf(ship);
+        };
+        Fleet.prototype.hasShip = function (ship) {
+            return this.getShipIndex(ship) >= 0;
+        };
+        Fleet.prototype.deleteFleet = function () {
+            this.location.removeFleet(this);
+        };
+        Fleet.prototype.addShip = function (ship) {
+            if (this.hasShip(ship))
+                return false;
+
+            this.ships.push(ship);
+        };
+        Fleet.prototype.addShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.addShip(ships[i]);
+            }
+        };
+        Fleet.prototype.removeShip = function (ship) {
+            var index = this.getShipIndex(ship);
+
+            if (index < 0)
+                return false;
+
+            this.ships.splice(index, 1);
+
+            if (this.ships.length <= 0) {
+                this.deleteFleet();
+            }
+        };
+        Fleet.prototype.removeShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.removeShip(ships[i]);
+            }
+        };
+        Fleet.prototype.split = function (newShips) {
+            this.removeShips(newShips);
+
+            var newFleet = new Fleet(this.owner, newShips, this.location);
+            this.location.addFleet(newFleet);
+
+            return newFleet;
+        };
+        Fleet.prototype.move = function (newLocation) {
+            var oldLocation = this.location;
+            oldLocation.removeFleet(this);
+
+            this.location = newLocation;
+            newLocation.addFleet(this);
+        };
+        return Fleet;
+    })();
+    Rance.Fleet = Fleet;
+})(Rance || (Rance = {}));
 /// <reference path="point.ts" />
+/// <reference path="player.ts" />
+/// <reference path="fleet.ts" />
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -2623,11 +2713,51 @@ var Rance;
         function Star(x, y, id) {
             this.linksTo = [];
             this.linksFrom = [];
+            this.fleets = {};
             this.id = isFinite(id) ? id : idGenerators.star++;
 
             this.x = x;
             this.y = y;
         }
+        Star.prototype.getFleetIndex = function (fleet) {
+            if (!this.fleets[fleet.owner.id])
+                return -1;
+
+            return this.fleets[fleet.owner.id].indexOf(fleet);
+        };
+        Star.prototype.hasFleet = function (fleet) {
+            return this.getFleetIndex(fleet) >= 0;
+        };
+        Star.prototype.addFleet = function (fleet) {
+            if (!this.fleets[fleet.owner.id]) {
+                this.fleets[fleet.owner.id] = [];
+            }
+
+            if (this.hasFleet(fleet))
+                return false;
+
+            this.fleets[fleet.owner.id].push(fleet);
+        };
+        Star.prototype.addFleets = function (fleets) {
+            for (var i = 0; i < fleets.length; i++) {
+                this.addFleet(fleets[i]);
+            }
+        };
+        Star.prototype.removeFleet = function (fleet) {
+            var fleetIndex = this.getFleetIndex(fleet);
+
+            if (fleetIndex < 0)
+                return false;
+
+            this.fleets[fleet.owner.id].splice(fleetIndex, 1);
+        };
+        Star.prototype.removeFleets = function (fleets) {
+            for (var i = 0; i < fleets.length; i++) {
+                this.removeFleet(fleets[i]);
+            }
+        };
+
+        // MAP GEN
         Star.prototype.setPosition = function (x, y) {
             this.x = x;
             this.y = y;
@@ -2700,6 +2830,18 @@ var Rance;
                 this.severLinksToRegion(fillerRegions[i]);
             }
         };
+        Star.prototype.severLinksToNonCenter = function () {
+            var self = this;
+
+            var linksByRegion = this.getLinksByRegion();
+            var nonCenterRegions = Object.keys(linksByRegion).filter(function (region) {
+                return region !== self.region && region !== "center";
+            });
+
+            for (var i = 0; i < nonCenterRegions.length; i++) {
+                this.severLinksToRegion(nonCenterRegions[i]);
+            }
+        };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
 
@@ -2719,6 +2861,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="../lib/pixi.d.ts" />
+/// <reference path="../data/templates/mapgentemplates.ts" />
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
@@ -2730,8 +2873,10 @@ var Rance;
             this.points = [];
             this.regions = {};
             this.triangles = [];
-            this.maxWidth = 600;
-            this.maxHeight = 600;
+            this.galaxyConstructors = {};
+            this.galaxyConstructors = {
+                spiral: this.makeSpiralPoints
+            };
         }
         MapGen.prototype.reset = function () {
             this.points = [];
@@ -2739,21 +2884,36 @@ var Rance;
             this.triangles = [];
             this.voronoiDiagram = null;
         };
+        MapGen.prototype.makeMap = function (options) {
+            this.reset();
 
-        MapGen.prototype.generatePoints = function (amount) {
-            if (!amount)
-                throw new Error();
+            this.maxWidth = options.mapOptions.width;
+            this.maxHeight = options.mapOptions.height || this.maxWidth;
 
-            var arms = 4;
+            this.points = this.generatePoints(options.starGeneration);
 
-            var pointGenerationProps = {
-                amountPerArm: amount / arms * 0.8,
-                arms: arms,
-                amountInCenter: amount * 0.2,
-                centerSize: 0.4
+            this.makeVoronoi();
+            this.relaxPoints(options.relaxation);
+
+            this.triangulate();
+            this.severArmLinks();
+
+            return this;
+        };
+
+        MapGen.prototype.generatePoints = function (options) {
+            var amountInArms = 1 - options.amountInCenter;
+
+            var starGenerationProps = {
+                amountPerArm: options.totalAmount / options.arms * amountInArms,
+                arms: options.arms,
+                amountInCenter: options.totalAmount * options.amountInCenter,
+                centerSize: options.centerSize
             };
 
-            this.points = this.makeSpiralPoints(pointGenerationProps);
+            var galaxyConstructor = this.galaxyConstructors[options.galaxyType];
+
+            return galaxyConstructor.call(this, starGenerationProps);
         };
         MapGen.prototype.makeRegion = function (name) {
             this.regions[name] = {
@@ -2859,8 +3019,13 @@ var Rance;
         };
         MapGen.prototype.severArmLinks = function () {
             for (var i = 0; i < this.points.length; i++) {
-                this.points[i].severLinksToFiller();
-                this.points[i].severLinksToNonAdjacent();
+                var star = this.points[i];
+                star.severLinksToFiller();
+                star.severLinksToNonAdjacent();
+
+                if (star.distance > 0.8) {
+                    star.severLinksToNonCenter();
+                }
             }
         };
         MapGen.prototype.makeVoronoi = function () {
@@ -2902,7 +3067,7 @@ var Rance;
 
             return vertices;
         };
-        MapGen.prototype.relaxPoints = function (dampeningFactor) {
+        MapGen.prototype.relaxPointsOnce = function (dampeningFactor) {
             if (typeof dampeningFactor === "undefined") { dampeningFactor = 0; }
             var relaxedPoints = [];
 
@@ -2921,20 +3086,17 @@ var Rance;
                 point.setPosition(centroid.x, centroid.y);
             }
         };
-        MapGen.prototype.relaxAndRecalculate = function (times) {
-            if (typeof times === "undefined") { times = 1; }
+        MapGen.prototype.relaxPoints = function (options) {
             if (!this.points)
                 throw new Error();
 
             if (!this.voronoiDiagram)
                 this.makeVoronoi();
 
-            for (var i = 0; i < times; i++) {
-                this.relaxPoints(2);
+            for (var i = 0; i < options.timesToRelax; i++) {
+                this.relaxPointsOnce(options.dampeningFactor);
                 this.makeVoronoi();
             }
-
-            this.triangulate();
         };
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
@@ -2967,11 +3129,9 @@ var Rance;
                         console.log(this.worldTransform);
                     };
                     polyGfx.mouseover = function () {
-                        this.position.x += 10;
                         this.position.y -= 10;
                     };
                     polyGfx.mouseout = function () {
-                        this.position.x -= 10;
                         this.position.y += 10;
                     };
 
@@ -3015,6 +3175,23 @@ var Rance;
         return MapGen;
     })();
     Rance.MapGen = MapGen;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/voronoi.d.ts" />
+/// <reference path="star.ts" />
+/// <reference path="mapgen.ts" />
+var Rance;
+(function (Rance) {
+    var GalaxyMap = (function () {
+        function GalaxyMap() {
+        }
+        GalaxyMap.prototype.addMapGen = function (mapGen) {
+            this.mapGen = mapGen;
+
+            this.stars = mapGen.points;
+        };
+        return GalaxyMap;
+    })();
+    Rance.GalaxyMap = GalaxyMap;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
@@ -3076,6 +3253,7 @@ var Rance;
                 min: this.bounds.min,
                 max: this.bounds.max
             };
+            console.log(this.bounds.xMin, this.bounds.xMax);
         };
 
         /**
@@ -3385,6 +3563,7 @@ var Rance;
 /// <reference path="player.ts"/>
 /// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
+/// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;
 
