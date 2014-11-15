@@ -468,6 +468,8 @@ declare module Rance {
         };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
+        public nonFillerVoronoiLines: any[];
+        public nonFillerPoints: Rance.Star[];
         public galaxyConstructors: {
             [type: string]: (any: any) => Rance.Star[];
         };
@@ -518,13 +520,41 @@ declare module Rance {
             timesToRelax: number;
             dampeningFactor: number;
         }): void;
+        public getNonFillerPoints(): Rance.Star[];
+        public getNonFillerVoronoiLines(): any[];
         public drawMap(): PIXI.DisplayObjectContainer;
+    }
+}
+declare module Rance {
+    class MapRenderer {
+        public container: PIXI.DisplayObjectContainer;
+        public parent: PIXI.DisplayObjectContainer;
+        public galaxyMap: Rance.GalaxyMap;
+        public layers: {
+            [name: string]: {
+                drawingFunction: (MapRenderer: any) => PIXI.DisplayObjectContainer;
+                container: PIXI.DisplayObjectContainer;
+            };
+        };
+        public mapModes: {
+            [name: string]: {
+                layer: string;
+            };
+        };
+        public currentMapMode: string;
+        constructor(parent: PIXI.DisplayObjectContainer);
+        public setParent(newParent: PIXI.DisplayObjectContainer): void;
+        public resetContainer(): void;
+        public removeLayerContainer(layerName: string): number;
+        public updateLayer(layerName: string): void;
+        public switchMapMode(newMapMode: string): void;
     }
 }
 declare module Rance {
     class GalaxyMap {
         public stars: Rance.Star[];
         public mapGen: Rance.MapGen;
+        public mapRenderer: Rance.MapRenderer;
         constructor();
         public addMapGen(mapGen: Rance.MapGen): void;
     }

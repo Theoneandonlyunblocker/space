@@ -2,6 +2,7 @@
 
 /// <reference path="star.ts" />
 /// <reference path="mapgen.ts" />
+/// <reference path="maprenderer.ts" />
 
 module Rance
 {
@@ -9,6 +10,7 @@ module Rance
   {
     stars: Star[];
     mapGen: MapGen;
+    mapRenderer: MapRenderer;
     constructor()
     {
 

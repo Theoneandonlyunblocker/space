@@ -1,5 +1,4 @@
 /// <reference path="../lib/voronoi.d.ts" />
-/// <reference path="../lib/pixi.d.ts" />
 
 /// <reference path="../data/templates/mapgentemplates.ts" />
 
@@ -26,6 +25,9 @@ module Rance
     triangles: Triangle[] = [];
     voronoiDiagram: any;
 
+    nonFillerVoronoiLines: any[];
+    nonFillerPoints: Star[];
+
     galaxyConstructors:
     {
       [type: string]: (any) => Star[];
@@ -46,6 +48,9 @@ module Rance
       this.regions = {};
       this.triangles = [];
       this.voronoiDiagram = null;
+
+      this.nonFillerPoints = [];
+      this.nonFillerVoronoiLines = [];
     }
     makeMap(options:
     {
@@ -327,6 +332,58 @@ module Rance
         this.makeVoronoi();
       }
     }
+    getNonFillerPoints()
+    {
+      if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0)
+      {
+        this.nonFillerPoints = this.points.filter(function(point)
+        {
+          return point.region.indexOf("filler") < 0;
+        });
+      }
+
+      return this.nonFillerPoints;
+    }
+    getNonFillerVoronoiLines()
+    {
+      if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0)
+      {
+        this.nonFillerVoronoiLines = this.voronoiDiagram.edges.filter(function(edge)
+        {
+          var adjacentSites = [edge.lSite, edge.rSite];
+          var adjacentFillerSites = 0;
+          var maxAllowedFillerSites = 2;
+
+          for (var i = 0; i < adjacentSites.length; i++)
+          {
+            var site = adjacentSites[i];
+
+            if (!site)
+            {
+              maxAllowedFillerSites--;
+              if (adjacentFillerSites >= maxAllowedFillerSites)
+              {
+                return false;
+              }
+              continue;
+            };
+
+            if (site.region.indexOf("filler") >= 0)
+            {
+              adjacentFillerSites++;
+              if (adjacentFillerSites >= maxAllowedFillerSites)
+              {
+                return false;
+              }
+            }
+          }
+
+          return true;
+        });
+      }
+
+      return this.nonFillerVoronoiLines;
+    }
     drawMap()
     {
       function vectorToPoint(vector)
@@ -340,50 +397,64 @@ module Rance
 
       var doc = new PIXI.DisplayObjectContainer();
 
-      if (this.voronoiDiagram)
-      {
-        for (var i = 0; i < this.voronoiDiagram.cells.length; i++)
-        {
-          var cell = this.voronoiDiagram.cells[i];
-          var cellVertices = this.getVerticesFromCell(cell);
+      // VORONOI POLYS
 
-          var poly = new PIXI.Polygon(cellVertices);
-          var polyGfx: any = new PIXI.Graphics();
-          polyGfx.interactive = true;
-          polyGfx.lineStyle(6, 0xFF0000, 1);
+      // if (this.voronoiDiagram)
+      // {
+      //   for (var i = 0; i < this.voronoiDiagram.cells.length; i++)
+      //   {
+      //     var cell = this.voronoiDiagram.cells[i];
+      //     var cellVertices = this.getVerticesFromCell(cell);
 
-          polyGfx.beginFill(0x0000FF, 0.3);
-          polyGfx.drawShape(poly);
-          polyGfx.endFill();
+      //     var poly = new PIXI.Polygon(cellVertices);
+      //     var polyGfx: any = new PIXI.Graphics();
+      //     polyGfx.interactive = true;
+      //     polyGfx.lineStyle(6, 0xFF0000, 1);
 
-          polyGfx.cell = cell;
+      //     polyGfx.beginFill(0x0000FF, 0.3);
+      //     polyGfx.drawShape(poly);
+      //     polyGfx.endFill();
 
-          polyGfx.rightclick = function()
-          {
-            console.log(this.cell.site.x, this.cell.site.y);
-            console.log(this.worldTransform);
-          }
-          polyGfx.mouseover = function()
-          {
-            this.position.y -= 10
-          }
-          polyGfx.mouseout = function()
-          {
-            this.position.y += 10
-          }
+      //     polyGfx.cell = cell;
 
-          doc.addChild(polyGfx);
-        }
+      //     polyGfx.rightclick = function()
+      //     {
+      //       console.log(this.cell)
+      //     }
+      //     polyGfx.mouseover = function()
+      //     {
+      //       this.position.y -= 10
+      //     }
+      //     polyGfx.mouseout = function()
+      //     {
+      //       this.position.y += 10
+      //     }
 
+      //     doc.addChild(polyGfx);
+      //   }
+      // }
+      
 
-      }
 
       var gfx = new PIXI.Graphics();
-      gfx.lineStyle(3, 0x000000, 1);
-
       doc.addChild(gfx);
 
+      // VORONOI LINES
+      gfx.lineStyle(1, 0xFF0000, 1);
+
+      var voronoiLines = this.getNonFillerVoronoiLines();
+
+      for (var i = 0; i < voronoiLines.length; i++)
+      {
+        var line = voronoiLines[i];
+        gfx.moveTo(line.va.x, line.va.y);
+        gfx.lineTo(line.vb.x, line.vb.y);
+      }
+
       
+      gfx.lineStyle(3, 0x000000, 1);
+      // STAR LINKS
+
       for (var i = 0; i < this.points.length; i++)
       {
         var star = this.points[i];
@@ -394,51 +465,33 @@ module Rance
           gfx.moveTo(star.x, star.y);
           gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
         }
-
       }
+
+      // STARS
       
-      // for (var i = 0; i < this.points.length; i++)
-      // {
-      //   var star = this.points[i];
+      var points = this.getNonFillerPoints();
 
-      //   for (var j = 0; j < star.linksFrom.length; j++)
-      //   {
-      //     gfx.moveTo(star.x, star.y);
-      //     gfx.lineTo(star.linksFrom[j].x, star.linksFrom[j].y);
-      //   }
-      // }
-
-      // for (var i = 0; i < this.triangles.length; i++)
-      // {
-      //   var triangle = this.triangles[i];
-      //   var edges = triangle.getEdges();
-
-      //   for (var j = 0; j < edges.length; j++)
-      //   {
-
-      //     gfx.moveTo(edges[j][0].x, edges[j][0].y);
-      //     gfx.lineTo(edges[j][1].x, edges[j][1].y);
-      //   }
-      // }
-
-      for (var i = 0; i < this.points.length; i++)
+      for (var i = 0; i < points.length; i++)
       {
         var fillColor = 0xFF0000;
-        if (this.points[i].region == "center")
+        if (points[i].region == "center")
         {
           fillColor = 0x00FF00;
         }
-        else if (this.points[i].region.indexOf("filler") >= 0)
+        else if (points[i].region.indexOf("filler") >= 0)
         {
           fillColor = 0x0000FF;
         };
 
         gfx.beginFill(fillColor);
-        gfx.drawEllipse(this.points[i].x, this.points[i].y, 6, 6);
+        gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
         gfx.endFill();
       }
 
+      // height is defined as a getter and somehow gets set to 0
+      // if its not uselessly referenced here
       doc.height;
+
       this.drawnMap = doc;
       return doc;
     }

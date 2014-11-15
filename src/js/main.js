@@ -2644,6 +2644,8 @@ var Rance;
             this.owner = owner;
             this.ships = ships;
             this.location = location;
+
+            this.location.addFleet(this);
         }
         Fleet.prototype.getShipIndex = function (ship) {
             return this.ships.indexOf(ship);
@@ -2860,7 +2862,6 @@ var Rance;
     Rance.Star = Star;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
-/// <reference path="../lib/pixi.d.ts" />
 /// <reference path="../data/templates/mapgentemplates.ts" />
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
@@ -2883,6 +2884,9 @@ var Rance;
             this.regions = {};
             this.triangles = [];
             this.voronoiDiagram = null;
+
+            this.nonFillerPoints = [];
+            this.nonFillerVoronoiLines = [];
         };
         MapGen.prototype.makeMap = function (options) {
             this.reset();
@@ -3098,6 +3102,48 @@ var Rance;
                 this.makeVoronoi();
             }
         };
+        MapGen.prototype.getNonFillerPoints = function () {
+            if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
+                this.nonFillerPoints = this.points.filter(function (point) {
+                    return point.region.indexOf("filler") < 0;
+                });
+            }
+
+            return this.nonFillerPoints;
+        };
+        MapGen.prototype.getNonFillerVoronoiLines = function () {
+            if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0) {
+                this.nonFillerVoronoiLines = this.voronoiDiagram.edges.filter(function (edge) {
+                    var adjacentSites = [edge.lSite, edge.rSite];
+                    var adjacentFillerSites = 0;
+                    var maxAllowedFillerSites = 2;
+
+                    for (var i = 0; i < adjacentSites.length; i++) {
+                        var site = adjacentSites[i];
+
+                        if (!site) {
+                            maxAllowedFillerSites--;
+                            if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                return false;
+                            }
+                            continue;
+                        }
+                        ;
+
+                        if (site.region.indexOf("filler") >= 0) {
+                            adjacentFillerSites++;
+                            if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                });
+            }
+
+            return this.nonFillerVoronoiLines;
+        };
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
                 return new PIXI.Point(vector[0], vector[1]);
@@ -3108,41 +3154,51 @@ var Rance;
 
             var doc = new PIXI.DisplayObjectContainer();
 
-            if (this.voronoiDiagram) {
-                for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
-                    var cell = this.voronoiDiagram.cells[i];
-                    var cellVertices = this.getVerticesFromCell(cell);
+            // VORONOI POLYS
+            // if (this.voronoiDiagram)
+            // {
+            //   for (var i = 0; i < this.voronoiDiagram.cells.length; i++)
+            //   {
+            //     var cell = this.voronoiDiagram.cells[i];
+            //     var cellVertices = this.getVerticesFromCell(cell);
+            //     var poly = new PIXI.Polygon(cellVertices);
+            //     var polyGfx: any = new PIXI.Graphics();
+            //     polyGfx.interactive = true;
+            //     polyGfx.lineStyle(6, 0xFF0000, 1);
+            //     polyGfx.beginFill(0x0000FF, 0.3);
+            //     polyGfx.drawShape(poly);
+            //     polyGfx.endFill();
+            //     polyGfx.cell = cell;
+            //     polyGfx.rightclick = function()
+            //     {
+            //       console.log(this.cell)
+            //     }
+            //     polyGfx.mouseover = function()
+            //     {
+            //       this.position.y -= 10
+            //     }
+            //     polyGfx.mouseout = function()
+            //     {
+            //       this.position.y += 10
+            //     }
+            //     doc.addChild(polyGfx);
+            //   }
+            // }
+            var gfx = new PIXI.Graphics();
+            doc.addChild(gfx);
 
-                    var poly = new PIXI.Polygon(cellVertices);
-                    var polyGfx = new PIXI.Graphics();
-                    polyGfx.interactive = true;
-                    polyGfx.lineStyle(6, 0xFF0000, 1);
+            // VORONOI LINES
+            gfx.lineStyle(1, 0xFF0000, 1);
 
-                    polyGfx.beginFill(0x0000FF, 0.3);
-                    polyGfx.drawShape(poly);
-                    polyGfx.endFill();
+            var voronoiLines = this.getNonFillerVoronoiLines();
 
-                    polyGfx.cell = cell;
-
-                    polyGfx.rightclick = function () {
-                        console.log(this.cell.site.x, this.cell.site.y);
-                        console.log(this.worldTransform);
-                    };
-                    polyGfx.mouseover = function () {
-                        this.position.y -= 10;
-                    };
-                    polyGfx.mouseout = function () {
-                        this.position.y += 10;
-                    };
-
-                    doc.addChild(polyGfx);
-                }
+            for (var i = 0; i < voronoiLines.length; i++) {
+                var line = voronoiLines[i];
+                gfx.moveTo(line.va.x, line.va.y);
+                gfx.lineTo(line.vb.x, line.vb.y);
             }
 
-            var gfx = new PIXI.Graphics();
             gfx.lineStyle(3, 0x000000, 1);
-
-            doc.addChild(gfx);
 
             for (var i = 0; i < this.points.length; i++) {
                 var star = this.points[i];
@@ -3154,21 +3210,27 @@ var Rance;
                 }
             }
 
-            for (var i = 0; i < this.points.length; i++) {
+            // STARS
+            var points = this.getNonFillerPoints();
+
+            for (var i = 0; i < points.length; i++) {
                 var fillColor = 0xFF0000;
-                if (this.points[i].region == "center") {
+                if (points[i].region == "center") {
                     fillColor = 0x00FF00;
-                } else if (this.points[i].region.indexOf("filler") >= 0) {
+                } else if (points[i].region.indexOf("filler") >= 0) {
                     fillColor = 0x0000FF;
                 }
                 ;
 
                 gfx.beginFill(fillColor);
-                gfx.drawEllipse(this.points[i].x, this.points[i].y, 6, 6);
+                gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
                 gfx.endFill();
             }
 
+            // height is defined as a getter and somehow gets set to 0
+            // if its not uselessly referenced here
             doc.height;
+
             this.drawnMap = doc;
             return doc;
         };
@@ -3176,9 +3238,66 @@ var Rance;
     })();
     Rance.MapGen = MapGen;
 })(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="galaxymap.ts" />
+/// <reference path="star.ts" />
+/// <reference path="fleet.ts" />
+var Rance;
+(function (Rance) {
+    var MapRenderer = (function () {
+        function MapRenderer(parent) {
+            this.layers = {};
+            this.mapModes = {};
+            this.container = new PIXI.DisplayObjectContainer();
+
+            this.setParent(parent);
+        }
+        MapRenderer.prototype.setParent = function (newParent) {
+            var oldParent = this.parent;
+            if (oldParent) {
+                oldParent.removeChild(this.container);
+            }
+
+            this.parent = newParent;
+            newParent.addChild(this.container);
+        };
+        MapRenderer.prototype.resetContainer = function () {
+            this.container.removeChildren();
+        };
+        MapRenderer.prototype.removeLayerContainer = function (layerName) {
+            var layer = this.layers[layerName];
+
+            if (!layer.container)
+                return -1;
+
+            this.container.removeChild(layer.container);
+        };
+        MapRenderer.prototype.updateLayer = function (layerName) {
+            var layer = this.layers[layerName];
+            this.removeLayerContainer(layerName);
+
+            var newLayer = layer.drawingFunction.call(null, this);
+            layer.container = newLayer;
+        };
+        MapRenderer.prototype.switchMapMode = function (newMapMode) {
+            if (!this.mapModes[newMapMode]) {
+                throw new Error("Invalid mapmode");
+                return;
+            }
+            if (this.currentMapMode === newMapMode) {
+                return;
+            }
+
+            this.currentMapMode = newMapMode;
+        };
+        return MapRenderer;
+    })();
+    Rance.MapRenderer = MapRenderer;
+})(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="star.ts" />
 /// <reference path="mapgen.ts" />
+/// <reference path="maprenderer.ts" />
 var Rance;
 (function (Rance) {
     var GalaxyMap = (function () {
@@ -3253,7 +3372,6 @@ var Rance;
                 min: this.bounds.min,
                 max: this.bounds.max
             };
-            console.log(this.bounds.xMin, this.bounds.xMax);
         };
 
         /**
