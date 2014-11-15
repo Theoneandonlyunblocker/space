@@ -38,8 +38,8 @@ module Rance
         }
       );
 
-      this.addCamera();
       this.initLayers();
+      this.addCamera();
 
       this.addEventListeners()
     }

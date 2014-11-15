@@ -3780,8 +3780,8 @@ var Rance;
                 antialias: true
             });
 
-            this.addCamera();
             this.initLayers();
+            this.addCamera();
 
             this.addEventListeners();
         };
