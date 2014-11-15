@@ -4,6 +4,7 @@
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="mapgen/mapgen.ts"/>
+/// <reference path="galaxymap/galaxymap.ts"/>
 
 module Rance
 {
@@ -58,6 +59,18 @@ module Rance
             );
             break;
           }
+          case "galaxyMap":
+          {
+            elementsToRender.push(
+              UIComponents.GalaxyMap(
+              {
+                renderer: this.props.renderer,
+                galaxyMap: this.props.galaxyMap,
+                key: "galaxyMap"
+              })
+            );
+            break;
+          }
         }
         return(
           React.DOM.div({className: "react-stage"},
@@ -70,6 +83,7 @@ module Rance
                 onChange: this.changeScene
               },
               React.DOM.option({value: "mapGen"}, "map generation"),
+              React.DOM.option({value: "galaxyMap"}, "map"),
               React.DOM.option({value: "battlePrep"}, "battle setup"),
               React.DOM.option({value: "battle"}, "battle")
             )

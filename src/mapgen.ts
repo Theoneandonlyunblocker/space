@@ -182,7 +182,7 @@ module Rance
         var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
         this.makeRegion(region);
 
-        var amountForThisCenter = amountInCenter / totalArms;
+        var amountForThisCenter = Math.round(amountInCenter / totalArms);
 
         for (var j = 0; j < amountForThisArm; j++)
         {
@@ -334,6 +334,7 @@ module Rance
     }
     getNonFillerPoints()
     {
+      if (!this.points) return [];
       if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0)
       {
         this.nonFillerPoints = this.points.filter(function(point)
@@ -346,6 +347,7 @@ module Rance
     }
     getNonFillerVoronoiLines()
     {
+      if (!this.voronoiDiagram) return [];
       if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0)
       {
         this.nonFillerVoronoiLines = this.voronoiDiagram.edges.filter(function(edge)

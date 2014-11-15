@@ -8,6 +8,7 @@ module Rance
   export class Renderer
   {
     stage: PIXI.Stage;
+    dontRender: boolean = false;
     renderer: any; //PIXI.Renderer
     pixiContainer: HTMLCanvasElement;
     layers:
@@ -19,12 +20,15 @@ module Rance
 
     constructor()
     {
-    }
-    init()
-    {
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
       this.stage = new PIXI.Stage(0xFFFF00);
+      this.initLayers();
+
+    }
+    init(element: HTMLCanvasElement)
+    {
+      this.pixiContainer = element;
 
       var containerStyle = window.getComputedStyle(this.pixiContainer);
       this.renderer = PIXI.autoDetectRenderer(
@@ -36,15 +40,12 @@ module Rance
         }
       );
 
-      this.initLayers();
-      this.addCamera();
+      this.bindRendererView();
 
+      this.addCamera();
       this.addEventListeners()
     }
-    setContainer(element: HTMLCanvasElement)
-    {
-      this.pixiContainer = element;
-    }
+
     bindRendererView()
     {
       this.pixiContainer.appendChild(this.renderer.view);
@@ -72,6 +73,7 @@ module Rance
 
       this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
       {
+        console.log("a")
         self.mouseEventHandler.mouseDown(event, "stage");
       }
       this.stage.mousemove = this.stage.touchmove = function(event)
@@ -96,6 +98,8 @@ module Rance
     }
     render()
     {
+      if (this.dontRender) return;
+
       this.renderer.render(this.stage);
       requestAnimFrame( this.render.bind(this) );
     }

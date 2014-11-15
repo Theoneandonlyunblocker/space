@@ -1446,10 +1446,63 @@ var Rance;
                 }, "clear"))));
             },
             componentDidMount: function () {
-                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
-                this.props.renderer.init();
-                this.props.renderer.bindRendererView();
+                this.props.renderer.init(this.refs.pixiContainer.getDOMNode());
                 this.props.renderer.render();
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MapGenControls = React.createClass({
+            makeMap: function () {
+                this.props.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+                this.props.renderMap();
+            },
+            clearMap: function () {
+                this.props.mapGen.reset();
+                this.props.renderMap();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "map-gen-controls"
+                }, React.DOM.button({
+                    onClick: this.makeMap
+                }, "make"), React.DOM.button({
+                    onClick: this.clearMap
+                }, "clear")));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../mapgen/mapgencontrols.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.GalaxyMap = React.createClass({
+            renderMap: function () {
+                this.props.galaxyMap.mapRenderer.render();
+            },
+            switchMapMode: function (newMode) {
+                this.props.galaxyMap.mapRenderer.switchMapMode(newMode);
+            },
+            render: function () {
+                return (React.DOM.div(null, React.DOM.div({
+                    ref: "pixiContainer",
+                    id: "pixi-container"
+                }), Rance.UIComponents.MapGenControls({
+                    mapGen: this.props.galaxyMap.mapGen,
+                    renderMap: this.renderMap
+                })));
+            },
+            componentDidMount: function () {
+                this.props.renderer.init(this.refs.pixiContainer.getDOMNode());
+                this.props.renderer.render();
+
+                this.props.galaxyMap.mapRenderer.setMapMode("default");
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1460,6 +1513,7 @@ var Rance;
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="mapgen/mapgen.ts"/>
+/// <reference path="galaxymap/galaxymap.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1495,13 +1549,21 @@ var Rance;
                         }));
                         break;
                     }
+                    case "galaxyMap": {
+                        elementsToRender.push(Rance.UIComponents.GalaxyMap({
+                            renderer: this.props.renderer,
+                            galaxyMap: this.props.galaxyMap,
+                            key: "galaxyMap"
+                        }));
+                        break;
+                    }
                 }
                 return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
                     className: "reactui-selector",
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
+                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1526,7 +1588,8 @@ var Rance;
                 battle: this.battle,
                 battlePrep: this.battlePrep,
                 renderer: this.renderer,
-                mapGen: this.mapGen
+                mapGen: this.mapGen,
+                galaxyMap: this.galaxyMap
             }), this.container);
         };
         return ReactUI;
@@ -2326,7 +2389,7 @@ var Rance;
                     totalAmount: 60,
                     arms: 5,
                     centerSize: 0.4,
-                    amountInCenter: 0.2
+                    amountInCenter: 0.3
                 },
                 relaxation: {
                     timesToRelax: 5,
@@ -2975,7 +3038,7 @@ var Rance;
                 var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
                 this.makeRegion(region);
 
-                var amountForThisCenter = amountInCenter / totalArms;
+                var amountForThisCenter = Math.round(amountInCenter / totalArms);
 
                 for (var j = 0; j < amountForThisArm; j++) {
                     var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
@@ -3103,6 +3166,8 @@ var Rance;
             }
         };
         MapGen.prototype.getNonFillerPoints = function () {
+            if (!this.points)
+                return [];
             if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
                 this.nonFillerPoints = this.points.filter(function (point) {
                     return point.region.indexOf("filler") < 0;
@@ -3112,6 +3177,8 @@ var Rance;
             return this.nonFillerPoints;
         };
         MapGen.prototype.getNonFillerVoronoiLines = function () {
+            if (!this.voronoiDiagram)
+                return [];
             if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0) {
                 this.nonFillerVoronoiLines = this.voronoiDiagram.edges.filter(function (edge) {
                     var adjacentSites = [edge.lSite, edge.rSite];
@@ -3251,7 +3318,91 @@ var Rance;
             this.container = new PIXI.DisplayObjectContainer();
 
             this.setParent(parent);
+
+            this.initLayers();
+            this.initMapModes();
         }
+        MapRenderer.prototype.initLayers = function () {
+            this.layers["nonFillerStars"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var gfx = new PIXI.Graphics();
+                    gfx.lineStyle(3, 0x00000, 1);
+                    gfx.beginFill(0xFFFFFF);
+                    gfx.drawEllipse(0, 0, 6, 6);
+                    gfx.endFill;
+                    var starTexture = gfx.generateTexture();
+
+                    var points = map.mapGen.getNonFillerPoints();
+                    for (var i = 0; i < points.length; i++) {
+                        var starSprite = new PIXI.Sprite(starTexture);
+                        starSprite.anchor.x = 0.5;
+                        starSprite.anchor.y = 0.5;
+                        starSprite.x = points[i].x;
+                        starSprite.y = points[i].y;
+                        doc.addChild(starSprite);
+                    }
+
+                    return doc;
+                }
+            };
+            this.layers["nonFillerVoronoiLines"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var gfx = new PIXI.Graphics();
+                    doc.addChild(gfx);
+                    gfx.lineStyle(1, 0xFF000, 1);
+
+                    var lines = map.mapGen.getNonFillerVoronoiLines();
+
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i];
+                        gfx.moveTo(line.va.x, line.va.y);
+                        gfx.lineTo(line.vb.x, line.vb.y);
+                    }
+
+                    return doc;
+                }
+            };
+            this.layers["starLinks"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var gfx = new PIXI.Graphics();
+                    doc.addChild(gfx);
+                    gfx.lineStyle(3, 0x00000, 1);
+
+                    var points = map.mapGen.getNonFillerPoints();
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var links = star.linksTo;
+
+                        for (var j = 0; j < links.length; j++) {
+                            gfx.moveTo(star.x, star.y);
+                            gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+                        }
+                    }
+
+                    return doc;
+                }
+            };
+        };
+        MapRenderer.prototype.initMapModes = function () {
+            this.mapModes["default"] = {
+                name: "default",
+                layers: [
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] }
+                ]
+            };
+        };
         MapRenderer.prototype.setParent = function (newParent) {
             var oldParent = this.parent;
             if (oldParent) {
@@ -3264,31 +3415,34 @@ var Rance;
         MapRenderer.prototype.resetContainer = function () {
             this.container.removeChildren();
         };
-        MapRenderer.prototype.removeLayerContainer = function (layerName) {
-            var layer = this.layers[layerName];
-
-            if (!layer.container)
-                return -1;
-
-            this.container.removeChild(layer.container);
+        MapRenderer.prototype.drawLayer = function (layer) {
+            layer.container.removeChildren();
+            layer.container.addChild(layer.drawingFunction(this.galaxyMap));
         };
-        MapRenderer.prototype.updateLayer = function (layerName) {
-            var layer = this.layers[layerName];
-            this.removeLayerContainer(layerName);
-
-            var newLayer = layer.drawingFunction.call(null, this);
-            layer.container = newLayer;
-        };
-        MapRenderer.prototype.switchMapMode = function (newMapMode) {
+        MapRenderer.prototype.setMapMode = function (newMapMode) {
             if (!this.mapModes[newMapMode]) {
                 throw new Error("Invalid mapmode");
                 return;
             }
-            if (this.currentMapMode === newMapMode) {
+
+            if (this.currentMapMode && this.currentMapMode.name === newMapMode) {
                 return;
             }
 
-            this.currentMapMode = newMapMode;
+            this.currentMapMode = this.mapModes[newMapMode];
+
+            this.resetContainer();
+            this.render();
+        };
+        MapRenderer.prototype.render = function () {
+            this.resetContainer();
+
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                var layer = this.currentMapMode.layers[i].layer;
+
+                this.drawLayer(layer);
+                this.container.addChild(layer.container);
+            }
         };
         return MapRenderer;
     })();
@@ -3608,12 +3762,15 @@ var Rance;
 (function (Rance) {
     var Renderer = (function () {
         function Renderer() {
+            this.dontRender = false;
             this.layers = {};
-        }
-        Renderer.prototype.init = function () {
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0xFFFF00);
+            this.initLayers();
+        }
+        Renderer.prototype.init = function (element) {
+            this.pixiContainer = element;
 
             var containerStyle = window.getComputedStyle(this.pixiContainer);
             this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
@@ -3621,14 +3778,12 @@ var Rance;
                 antialias: true
             });
 
-            this.initLayers();
-            this.addCamera();
+            this.bindRendererView();
 
+            this.addCamera();
             this.addEventListeners();
         };
-        Renderer.prototype.setContainer = function (element) {
-            this.pixiContainer = element;
-        };
+
         Renderer.prototype.bindRendererView = function () {
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "pixi-canvas");
@@ -3649,6 +3804,7 @@ var Rance;
             window.addEventListener("resize", this.resize.bind(this), false);
 
             this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
+                console.log("a");
                 self.mouseEventHandler.mouseDown(event, "stage");
             };
             this.stage.mousemove = this.stage.touchmove = function (event) {
@@ -3667,6 +3823,9 @@ var Rance;
             }
         };
         Renderer.prototype.render = function () {
+            if (this.dontRender)
+                return;
+
             this.renderer.render(this.stage);
             requestAnimFrame(this.render.bind(this));
         };
@@ -3683,7 +3842,7 @@ var Rance;
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
-var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen;
+var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer;
 
 var Rance;
 (function (Rance) {
@@ -3724,6 +3883,14 @@ var Rance;
 
         mapGen = new Rance.MapGen();
         reactUI.mapGen = mapGen;
+
+        galaxyMap = new Rance.GalaxyMap();
+        galaxyMap.mapGen = mapGen;
+        reactUI.galaxyMap = galaxyMap;
+
+        mapRenderer = new Rance.MapRenderer(renderer.layers["map"]);
+        galaxyMap.mapRenderer = mapRenderer;
+        mapRenderer.galaxyMap = galaxyMap;
 
         reactUI.currentScene = "mapGen";
         reactUI.render();

@@ -17,7 +17,7 @@ module Rance
           totalAmount: 60,
           arms: 5,
           centerSize: 0.4,
-          amountInCenter: 0.2
+          amountInCenter: 0.3
         },
         relaxation:
         {

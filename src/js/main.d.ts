@@ -156,6 +156,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var MapGenControls: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -168,6 +178,7 @@ declare module Rance {
         public battlePrep: Rance.BattlePrep;
         public renderer: Rance.Renderer;
         public mapGen: Rance.MapGen;
+        public galaxyMap: Rance.GalaxyMap;
         constructor(container: HTMLElement);
         public switchScene(newScene: string): void;
         public render(): void;
@@ -526,28 +537,35 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IMapRendererLayer {
+        drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
+        container: PIXI.DisplayObjectContainer;
+    }
+    interface IMapRendererLayerMapMode {
+        name: string;
+        layers: {
+            layer: IMapRendererLayer;
+        }[];
+    }
     class MapRenderer {
         public container: PIXI.DisplayObjectContainer;
         public parent: PIXI.DisplayObjectContainer;
         public galaxyMap: Rance.GalaxyMap;
         public layers: {
-            [name: string]: {
-                drawingFunction: (MapRenderer: any) => PIXI.DisplayObjectContainer;
-                container: PIXI.DisplayObjectContainer;
-            };
+            [name: string]: IMapRendererLayer;
         };
         public mapModes: {
-            [name: string]: {
-                layer: string;
-            };
+            [name: string]: IMapRendererLayerMapMode;
         };
-        public currentMapMode: string;
+        public currentMapMode: IMapRendererLayerMapMode;
         constructor(parent: PIXI.DisplayObjectContainer);
+        public initLayers(): void;
+        public initMapModes(): void;
         public setParent(newParent: PIXI.DisplayObjectContainer): void;
         public resetContainer(): void;
-        public removeLayerContainer(layerName: string): number;
-        public updateLayer(layerName: string): void;
-        public switchMapMode(newMapMode: string): void;
+        public drawLayer(layer: IMapRendererLayer): void;
+        public setMapMode(newMapMode: string): void;
+        public render(): void;
     }
 }
 declare module Rance {
@@ -651,6 +669,7 @@ declare module Rance {
 declare module Rance {
     class Renderer {
         public stage: PIXI.Stage;
+        public dontRender: boolean;
         public renderer: any;
         public pixiContainer: HTMLCanvasElement;
         public layers: {
@@ -659,8 +678,7 @@ declare module Rance {
         public camera: Rance.Camera;
         public mouseEventHandler: Rance.MouseEventHandler;
         constructor();
-        public init(): void;
-        public setContainer(element: HTMLCanvasElement): void;
+        public init(element: HTMLCanvasElement): void;
         public bindRendererView(): void;
         public initLayers(): void;
         public addCamera(): void;
@@ -669,6 +687,6 @@ declare module Rance {
         public render(): void;
     }
 }
-declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any;
+declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any;
 declare module Rance {
 }

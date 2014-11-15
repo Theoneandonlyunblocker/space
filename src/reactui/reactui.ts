@@ -12,6 +12,7 @@ module Rance
     battlePrep: BattlePrep;
     renderer: Renderer;
     mapGen: MapGen;
+    galaxyMap: GalaxyMap;
     
     constructor(public container: HTMLElement)
     {
@@ -32,7 +33,8 @@ module Rance
             battle: this.battle,
             battlePrep: this.battlePrep,
             renderer: this.renderer,
-            mapGen: this.mapGen
+            mapGen: this.mapGen,
+            galaxyMap: this.galaxyMap
           }
         ),
         this.container

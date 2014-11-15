@@ -6,6 +6,19 @@
 
 module Rance
 {
+  export interface IMapRendererLayer
+  {
+    drawingFunction: (map: GalaxyMap) => PIXI.DisplayObjectContainer;
+    container: PIXI.DisplayObjectContainer;
+  }
+  export interface IMapRendererLayerMapMode
+  {
+    name: string;
+    layers:
+    {
+      layer: IMapRendererLayer;
+    }[];
+  }
   export class MapRenderer
   {
     container: PIXI.DisplayObjectContainer;
@@ -14,27 +27,118 @@ module Rance
 
     layers:
     {
-      [name: string]:
-      {
-        drawingFunction: (MapRenderer) => PIXI.DisplayObjectContainer;
-        container: PIXI.DisplayObjectContainer;
-      }
+      [name: string]: IMapRendererLayer;
     } = {};
     mapModes:
     {
-      [name: string]:
-      {
-        layer: string
-      }
+      [name: string]: IMapRendererLayerMapMode;
     } = {};
 
-    currentMapMode: string;
+    currentMapMode: IMapRendererLayerMapMode;
 
     constructor(parent: PIXI.DisplayObjectContainer)
     {
       this.container = new PIXI.DisplayObjectContainer();
 
       this.setParent(parent);
+
+      this.initLayers();
+      this.initMapModes();
+    }
+    initLayers()
+    {
+      this.layers["nonFillerStars"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+
+          var gfx = new PIXI.Graphics();
+          gfx.lineStyle(3, 0x00000, 1);
+          gfx.beginFill(0xFFFFFF);
+          gfx.drawEllipse(0, 0, 6, 6);
+          gfx.endFill;
+          var starTexture = gfx.generateTexture();
+
+          var points = map.mapGen.getNonFillerPoints();
+          for (var i = 0; i < points.length; i++)
+          {
+            var starSprite = new PIXI.Sprite(starTexture);
+            starSprite.anchor.x = 0.5;
+            starSprite.anchor.y = 0.5;
+            starSprite.x = points[i].x;
+            starSprite.y = points[i].y;
+            doc.addChild(starSprite);
+          }
+
+          return doc;
+        }
+      }
+      this.layers["nonFillerVoronoiLines"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+
+          var gfx = new PIXI.Graphics();
+          doc.addChild(gfx);
+          gfx.lineStyle(1, 0xFF000, 1);
+
+          var lines = map.mapGen.getNonFillerVoronoiLines();
+
+          for (var i = 0; i < lines.length; i++)
+          {
+            var line = lines[i];
+            gfx.moveTo(line.va.x, line.va.y);
+            gfx.lineTo(line.vb.x, line.vb.y);
+          }
+
+          return doc;
+        }
+      }
+      this.layers["starLinks"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+
+          var gfx = new PIXI.Graphics();
+          doc.addChild(gfx);
+          gfx.lineStyle(3, 0x00000, 1);
+
+          var points = map.mapGen.getNonFillerPoints();
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            var links = star.linksTo;
+
+            for (var j = 0; j < links.length; j++)
+            {
+              gfx.moveTo(star.x, star.y);
+              gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+            }
+          }
+
+          return doc;
+        }
+      }
+    }
+    initMapModes()
+    {
+      this.mapModes["default"] =
+      {
+        name: "default",
+        layers:
+        [
+          {layer: this.layers["nonFillerVoronoiLines"]},
+          {layer: this.layers["starLinks"]},
+          {layer: this.layers["nonFillerStars"]}
+        ]
+      }
     }
     setParent(newParent: PIXI.DisplayObjectContainer)
     {
@@ -51,37 +155,40 @@ module Rance
     {
       this.container.removeChildren();
     }
-    removeLayerContainer(layerName: string)
+    drawLayer(layer: IMapRendererLayer)
     {
-      var layer = this.layers[layerName];
-
-      if (!layer.container) return -1;
-
-      this.container.removeChild(layer.container);
-
-
+      layer.container.removeChildren();
+      layer.container.addChild(layer.drawingFunction(this.galaxyMap));
     }
-    updateLayer(layerName: string)
-    {
-      var layer = this.layers[layerName];
-      this.removeLayerContainer(layerName);
-
-      var newLayer = layer.drawingFunction.call(null, this);
-      layer.container = newLayer;
-    }
-    switchMapMode(newMapMode: string)
+    setMapMode(newMapMode: string)
     {
       if (!this.mapModes[newMapMode])
       {
         throw new Error("Invalid mapmode");
         return;
       }
-      if (this.currentMapMode === newMapMode)
+
+      if (this.currentMapMode && this.currentMapMode.name === newMapMode)
       {
         return;
       }
 
-      this.currentMapMode = newMapMode;
+      this.currentMapMode = this.mapModes[newMapMode];
+
+      this.resetContainer();
+      this.render();
+    }
+    render()
+    {
+      this.resetContainer();
+
+      for (var i = 0; i < this.currentMapMode.layers.length; i++)
+      {
+        var layer = this.currentMapMode.layers[i].layer;
+
+        this.drawLayer(layer);
+        this.container.addChild(layer.container);
+      }
     }
   }
 }
