@@ -1,6 +1,6 @@
 /// <reference path="../../lib/react.d.ts" />
-/// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/pixi.d.ts" />
+/// <reference path="../../lib/voronoi.d.ts" />
 declare module Rance {
     module UIComponents {
         var UnitStrength: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
@@ -160,28 +160,13 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module UIComponents {
-        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
+    function EventManager(): void;
+    var eventManager: any;
 }
 declare module Rance {
-    module UIComponents {
-        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    class ReactUI {
-        public container: HTMLElement;
-        public currentScene: string;
-        public stage: any;
-        public battle: Rance.Battle;
-        public battlePrep: Rance.BattlePrep;
-        public renderer: Rance.Renderer;
-        public mapGen: Rance.MapGen;
-        public galaxyMap: Rance.GalaxyMap;
-        constructor(container: HTMLElement);
-        public switchScene(newScene: string): void;
-        public render(): void;
+    interface Point {
+        x: number;
+        y: number;
     }
 }
 declare module Rance {
@@ -335,8 +320,100 @@ declare module Rance {
         public units: {
             [id: number]: Rance.Unit;
         };
+        public color: string;
         constructor(id?: number);
         public addUnit(unit: Rance.Unit): void;
+        public getAllUnits(): any[];
+    }
+}
+declare module Rance {
+    class Fleet {
+        public owner: Rance.Player;
+        public ships: Rance.Unit[];
+        public location: Rance.Star;
+        constructor(owner: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
+        public getShipIndex(ship: Rance.Unit): number;
+        public hasShip(ship: Rance.Unit): boolean;
+        public deleteFleet(): void;
+        public addShip(ship: Rance.Unit): boolean;
+        public addShips(ships: Rance.Unit[]): void;
+        public removeShip(ship: Rance.Unit): boolean;
+        public removeShips(ships: Rance.Unit[]): void;
+        public split(newShips: Rance.Unit[]): Fleet;
+        public move(newLocation: Rance.Star): void;
+    }
+}
+declare module Rance {
+    class Star implements Rance.Point {
+        public id: number;
+        public x: number;
+        public y: number;
+        public linksTo: Star[];
+        public linksFrom: Star[];
+        public distance: number;
+        public region: string;
+        public owner: Rance.Player;
+        public fleets: {
+            [ownerId: string]: Rance.Fleet[];
+        };
+        public voronoiId: number;
+        public voronoiCell: any;
+        constructor(x: number, y: number, id?: number);
+        public getAllFleets(): any[];
+        public getFleetIndex(fleet: Rance.Fleet): number;
+        public hasFleet(fleet: Rance.Fleet): boolean;
+        public addFleet(fleet: Rance.Fleet): boolean;
+        public addFleets(fleets: Rance.Fleet[]): void;
+        public removeFleet(fleet: Rance.Fleet): boolean;
+        public removeFleets(fleets: Rance.Fleet[]): void;
+        public setPosition(x: number, y: number): void;
+        public hasLink(linkTo: Star): boolean;
+        public addLink(linkTo: Star): void;
+        public removeLink(linkTo: Star): void;
+        public getAllLinks(): Star[];
+        public clearLinks(): void;
+        public getLinksByRegion(): {
+            [regionId: string]: Star[];
+        };
+        public severLinksToRegion(regionToSever: string): void;
+        public severLinksToFiller(): void;
+        public severLinksToNonCenter(): void;
+        public severLinksToNonAdjacent(): void;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var StarInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    class ReactUI {
+        public container: HTMLElement;
+        public currentScene: string;
+        public stage: any;
+        public battle: Rance.Battle;
+        public battlePrep: Rance.BattlePrep;
+        public renderer: Rance.Renderer;
+        public mapGen: Rance.MapGen;
+        public galaxyMap: Rance.GalaxyMap;
+        constructor(container: HTMLElement);
+        public switchScene(newScene: string): void;
+        public render(): void;
     }
 }
 declare module Rance {
@@ -379,12 +456,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface Point {
-        x: number;
-        y: number;
-    }
-}
-declare module Rance {
     class Triangle {
         public a: Rance.Point;
         public b: Rance.Point;
@@ -411,60 +482,6 @@ declare module Rance {
     function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
     function pointsEqual(p1: Point, p2: Point): boolean;
     function edgesEqual(e1: Point[], e2: Point[]): boolean;
-}
-declare module Rance {
-    class Fleet {
-        public owner: Rance.Player;
-        public ships: Rance.Unit[];
-        public location: Rance.Star;
-        constructor(owner: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
-        public getShipIndex(ship: Rance.Unit): number;
-        public hasShip(ship: Rance.Unit): boolean;
-        public deleteFleet(): void;
-        public addShip(ship: Rance.Unit): boolean;
-        public addShips(ships: Rance.Unit[]): void;
-        public removeShip(ship: Rance.Unit): boolean;
-        public removeShips(ships: Rance.Unit[]): void;
-        public split(newShips: Rance.Unit[]): Fleet;
-        public move(newLocation: Rance.Star): void;
-    }
-}
-declare module Rance {
-    class Star implements Rance.Point {
-        public id: number;
-        public x: number;
-        public y: number;
-        public linksTo: Star[];
-        public linksFrom: Star[];
-        public distance: number;
-        public region: string;
-        public owner: Rance.Player;
-        public fleets: {
-            [ownerId: string]: Rance.Fleet[];
-        };
-        public voronoiId: number;
-        public voronoiCell: any;
-        constructor(x: number, y: number, id?: number);
-        public getFleetIndex(fleet: Rance.Fleet): number;
-        public hasFleet(fleet: Rance.Fleet): boolean;
-        public addFleet(fleet: Rance.Fleet): boolean;
-        public addFleets(fleets: Rance.Fleet[]): void;
-        public removeFleet(fleet: Rance.Fleet): boolean;
-        public removeFleets(fleets: Rance.Fleet[]): void;
-        public setPosition(x: number, y: number): void;
-        public hasLink(linkTo: Star): boolean;
-        public addLink(linkTo: Star): void;
-        public removeLink(linkTo: Star): void;
-        public getAllLinks(): Star[];
-        public clearLinks(): void;
-        public getLinksByRegion(): {
-            [regionId: string]: Star[];
-        };
-        public severLinksToRegion(regionToSever: string): void;
-        public severLinksToFiller(): void;
-        public severLinksToNonCenter(): void;
-        public severLinksToNonAdjacent(): void;
-    }
 }
 declare module Rance {
     class MapGen {

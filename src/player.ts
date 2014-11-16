@@ -12,6 +12,7 @@ module Rance
     {
       [id: number]: Unit;
     } = {};
+    color: string;
 
     constructor(id?: number)
     {
@@ -22,6 +23,16 @@ module Rance
     addUnit(unit: Unit)
     {
       this.units[unit.id] = unit;
+    }
+    getAllUnits()
+    {
+      var allUnits = [];
+      for (var unitId in this.units)
+      {
+        allUnits.push(this.units[unitId]);
+      }
+
+      return allUnits;
     }
   }  
 }

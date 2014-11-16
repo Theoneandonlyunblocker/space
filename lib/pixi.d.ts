@@ -79,7 +79,7 @@ declare module PIXI
 	{
 		font?: string;
 		stroke?: string;
-		fill?: string;
+		fill?: any;
 		align?: string;
 		strokeThickness?: number;
 		wordWrap?: boolean;
@@ -407,10 +407,10 @@ declare module PIXI
 
 	export class Text extends Sprite
 	{
-		constructor(text: string, style?: ITextStyle);
+		constructor(text: any, style?: ITextStyle);
 		canvas: HTMLCanvasElement;
 		destroy(destroyTexture:boolean):void;
-		setText(text: string): void;
+		setText(text: any): void;
 		setStyle(style: ITextStyle): void;
 	}
 

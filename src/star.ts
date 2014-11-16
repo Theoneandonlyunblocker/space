@@ -34,6 +34,17 @@ module Rance
       this.y = y;
     }
 
+    getAllFleets()
+    {
+      var allFleets = [];
+
+      for (var playerId in this.fleets)
+      {
+        allFleets = allFleets.concat(this.fleets[playerId]);
+      }
+
+      return allFleets;
+    }
     getFleetIndex(fleet: Fleet)
     {
       if (!this.fleets[fleet.owner.id]) return -1;

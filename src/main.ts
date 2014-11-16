@@ -7,6 +7,7 @@
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
+/// <reference path="renderer.ts"/>
 
 var fleet1, fleet2, player1, player2, battle, battlePrep,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer;
@@ -18,7 +19,9 @@ module Rance
     fleet1 = [];
     fleet2 = [];
     player1 = new Player();
+    player1.color = "#FF0000";
     player2 = new Player();
+    player2.color = "#0000FF";
 
     function setupFleetAndPlayer(fleet, player)
     {

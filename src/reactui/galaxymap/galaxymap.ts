@@ -1,4 +1,5 @@
 /// <reference path="../mapgen/mapgencontrols.ts"/>
+/// <reference path="starinfo.ts"/>
 
 module Rance
 {
@@ -10,9 +11,11 @@ module Rance
       {
         this.props.galaxyMap.mapRenderer.render();
       },
-      switchMapMode: function(newMode: string)
+      switchMapMode: function()
       {
-        this.props.galaxyMap.mapRenderer.switchMapMode(newMode);
+        var newMode = this.refs.mapModeSelector.getDOMNode().value;
+
+        this.props.galaxyMap.mapRenderer.setMapMode(newMode);
       },
     
       render: function()
@@ -28,7 +31,17 @@ module Rance
             {
               mapGen: this.props.galaxyMap.mapGen,
               renderMap: this.renderMap
-            })
+            }),
+            React.DOM.select(
+            {
+              className: "reactui-selector",
+              ref: "mapModeSelector",
+              onChange: this.switchMapMode
+            },
+              React.DOM.option({value: "default"}, "default"),
+              React.DOM.option({value: "noLines"}, "no borders")
+            ),
+            UIComponents.StarInfo()
           )
         );
       },

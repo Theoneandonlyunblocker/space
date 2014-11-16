@@ -1,5 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
+/// <reference path="eventmanager.ts"/>
+
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
 /// <reference path="fleet.ts" />
@@ -57,25 +59,31 @@ module Rance
         {
           var doc = new PIXI.DisplayObjectContainer();
 
-          var gfx = new PIXI.Graphics();
-          gfx.lineStyle(3, 0x00000, 1);
-          gfx.beginFill(0xFFFFFF);
-          gfx.drawEllipse(0, 0, 6, 6);
-          gfx.endFill;
-          var starTexture = gfx.generateTexture();
-          console.log(starTexture);
-
           var points = map.mapGen.getNonFillerPoints();
+
+          var onClickFN = function(star)
+          {
+            eventManager.dispatchEvent("starClick",
+            {
+              star: star
+            });
+          }
           for (var i = 0; i < points.length; i++)
           {
-            var starSprite = new PIXI.Sprite(starTexture);
-            starSprite.anchor.x = 0.5;
-            starSprite.anchor.y = 0.5;
-            starSprite.x = points[i].x;
-            starSprite.y = points[i].y;
-            doc.addChild(starSprite);
+            var gfx = new PIXI.Graphics();
+            gfx.lineStyle(3, 0x00000, 1);
+            gfx.beginFill(0xFFFFFF);
+            gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
+            gfx.endFill;
+
+            gfx.interactive = true;
+            gfx.click = onClickFN.bind(gfx, points[i]);
+
+            doc.addChild(gfx);
           }
 
+          // gets set to 0 without this reference. no idea
+          doc.height;
           return doc;
         }
       }
@@ -99,6 +107,7 @@ module Rance
             gfx.lineTo(line.vb.x, line.vb.y);
           }
 
+          doc.height;
           return doc;
         }
       }
@@ -127,6 +136,50 @@ module Rance
             }
           }
 
+          doc.height;
+          return doc;
+        }
+      }
+      this.layers["fleets"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+          var stars = map.mapGen.getNonFillerPoints();
+
+          function singleFleetDrawFN(fleet: Fleet)
+          {
+            var playerColor = fleet.owner.color;
+
+            var text = new PIXI.Text(fleet.ships.length,
+            {
+              fill: playerColor
+            });
+
+            return text;
+          }
+
+          for (var i = 0; i < stars.length; i++)
+          {
+            var star = stars[i];
+            var fleets = star.getAllFleets();
+            if (!fleets || fleets.length <= 0) continue;
+
+            var fleetsContainer = new PIXI.DisplayObjectContainer();
+            fleetsContainer.x = star.x;
+            fleetsContainer.y = star.y - 30;
+            doc.addChild(fleetsContainer);
+
+            for (var j = 0; j < fleets.length; j++)
+            {
+              var drawnFleet = singleFleetDrawFN(fleets[j]);
+              drawnFleet.position.x = fleetsContainer.width;
+              fleetsContainer.addChild(drawnFleet);
+            }
+          }
+
+          doc.height;
           return doc;
         }
       }
@@ -141,6 +194,16 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]}
+        ]
+      }
+      this.mapModes["noLines"] =
+      {
+        name: "noLines",
+        layers:
+        [
+          {layer: this.layers["starLinks"]},
+          {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fleets"]}
         ]
       }
     }
