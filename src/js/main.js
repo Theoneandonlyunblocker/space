@@ -1501,10 +1501,18 @@ var Rance;
                 })));
             },
             componentDidMount: function () {
-                this.props.renderer.init(this.refs.pixiContainer.getDOMNode());
-                this.props.renderer.render();
+                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
+                this.props.renderer.init();
+                this.props.renderer.bindRendererView();
+
+                var mapRenderer = new Rance.MapRenderer();
+                mapRenderer.setParent(renderer.layers["map"]);
+                this.props.galaxyMap.mapRenderer = mapRenderer;
+                mapRenderer.galaxyMap = galaxyMap;
 
                 this.props.galaxyMap.mapRenderer.setMapMode("default");
+
+                this.props.renderer.render();
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3314,12 +3322,11 @@ var Rance;
 var Rance;
 (function (Rance) {
     var MapRenderer = (function () {
-        function MapRenderer(parent) {
+        function MapRenderer() {
             this.layers = {};
             this.mapModes = {};
+            this.TextureCache = {};
             this.container = new PIXI.DisplayObjectContainer();
-
-            this.setParent(parent);
 
             this.initLayers();
             this.initMapModes();
@@ -3336,6 +3343,7 @@ var Rance;
                     gfx.drawEllipse(0, 0, 6, 6);
                     gfx.endFill;
                     var starTexture = gfx.generateTexture();
+                    console.log(starTexture);
 
                     var points = map.mapGen.getNonFillerPoints();
                     for (var i = 0; i < points.length; i++) {
@@ -3419,7 +3427,7 @@ var Rance;
         };
         MapRenderer.prototype.drawLayer = function (layer) {
             layer.container.removeChildren();
-            layer.container.addChild(layer.drawingFunction(this.galaxyMap));
+            layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
         };
         MapRenderer.prototype.setMapMode = function (newMapMode) {
             if (!this.mapModes[newMapMode]) {
@@ -3768,17 +3776,21 @@ var Rance;
     var Renderer = (function () {
         function Renderer() {
             this.layers = {};
+        }
+        Renderer.prototype.init = function () {
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0xFFFF00);
-            this.initLayers();
-        }
-        Renderer.prototype.init = function () {
-            var containerStyle = window.getComputedStyle(this.pixiContainer);
-            this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
-                autoResize: false,
-                antialias: true
-            });
+
+            if (!this.renderer) {
+                var containerStyle = window.getComputedStyle(this.pixiContainer);
+                this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
+                    autoResize: false,
+                    antialias: true
+                });
+            } else {
+                this.removeRendererView();
+            }
 
             this.initLayers();
             this.addCamera();
@@ -3787,6 +3799,9 @@ var Rance;
         };
         Renderer.prototype.setContainer = function (element) {
             this.pixiContainer = element;
+        };
+        Renderer.prototype.removeRendererView = function () {
+            this.renderer.view.parentNode.removeChild(this.renderer.view);
         };
         Renderer.prototype.bindRendererView = function () {
             this.pixiContainer.appendChild(this.renderer.view);
@@ -3825,15 +3840,9 @@ var Rance;
                 this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
             }
         };
-        Renderer.prototype.stopRender = function () {
-            if (!this.animFrameId)
-                return;
-
-            window.cancelAnimationFrame(this.animFrameId);
-        };
         Renderer.prototype.render = function () {
             this.renderer.render(this.stage);
-            this.animFrameId = requestAnimFrame(this.render.bind(this));
+            requestAnimFrame(this.render.bind(this));
         };
         return Renderer;
     })();
@@ -3894,11 +3903,7 @@ var Rance;
         galaxyMap.mapGen = mapGen;
         reactUI.galaxyMap = galaxyMap;
 
-        mapRenderer = new Rance.MapRenderer(renderer.layers["map"]);
-        galaxyMap.mapRenderer = mapRenderer;
-        mapRenderer.galaxyMap = galaxyMap;
-
-        reactUI.currentScene = "mapGen";
+        reactUI.currentScene = "galaxyMap";
         reactUI.render();
     });
 })(Rance || (Rance = {}));

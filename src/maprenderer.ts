@@ -34,13 +34,16 @@ module Rance
       [name: string]: IMapRendererLayerMapMode;
     } = {};
 
+    TextureCache:
+    {
+      [name: string]: PIXI.Texture;
+    } = {};
+
     currentMapMode: IMapRendererLayerMapMode;
 
-    constructor(parent: PIXI.DisplayObjectContainer)
+    constructor()
     {
       this.container = new PIXI.DisplayObjectContainer();
-
-      this.setParent(parent);
 
       this.initLayers();
       this.initMapModes();
@@ -60,6 +63,7 @@ module Rance
           gfx.drawEllipse(0, 0, 6, 6);
           gfx.endFill;
           var starTexture = gfx.generateTexture();
+          console.log(starTexture);
 
           var points = map.mapGen.getNonFillerPoints();
           for (var i = 0; i < points.length; i++)
@@ -158,7 +162,7 @@ module Rance
     drawLayer(layer: IMapRendererLayer)
     {
       layer.container.removeChildren();
-      layer.container.addChild(layer.drawingFunction(this.galaxyMap));
+      layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
     }
     setMapMode(newMapMode: string)
     {

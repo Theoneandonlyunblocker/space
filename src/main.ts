@@ -63,11 +63,7 @@ module Rance
     galaxyMap.mapGen = mapGen;
     reactUI.galaxyMap = galaxyMap;
 
-    mapRenderer = new MapRenderer(renderer.layers["map"]);
-    galaxyMap.mapRenderer = mapRenderer;
-    mapRenderer.galaxyMap = galaxyMap;
-
-    reactUI.currentScene = "mapGen";
+    reactUI.currentScene = "galaxyMap";
     reactUI.render();
   });
 }

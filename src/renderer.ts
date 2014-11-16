@@ -17,26 +17,32 @@ module Rance
     camera: Camera;
     mouseEventHandler: MouseEventHandler;
 
-    animFrameId: any;
-
     constructor()
+    {
+    }
+    init()
     {
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
       this.stage = new PIXI.Stage(0xFFFF00);
-      this.initLayers();
-    }
-    init()
-    {
-      var containerStyle = window.getComputedStyle(this.pixiContainer);
-      this.renderer = PIXI.autoDetectRenderer(
-        parseInt(containerStyle.width),
-        parseInt(containerStyle.height),
-        {
-          autoResize: false,
-          antialias: true
-        }
-      );
+
+      if (!this.renderer)
+      {
+        var containerStyle = window.getComputedStyle(this.pixiContainer);
+        this.renderer = PIXI.autoDetectRenderer(
+          parseInt(containerStyle.width),
+          parseInt(containerStyle.height),
+          {
+            autoResize: false,
+            antialias: true
+          }
+        );
+      }
+      else
+      {
+        this.removeRendererView();
+      }
+
 
       this.initLayers();
       this.addCamera();
@@ -46,6 +52,10 @@ module Rance
     setContainer(element: HTMLCanvasElement)
     {
       this.pixiContainer = element;
+    }
+    removeRendererView()
+    {
+      this.renderer.view.parentNode.removeChild(this.renderer.view);
     }
     bindRendererView()
     {
@@ -96,16 +106,10 @@ module Rance
         this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
       }
     }
-    stopRender()
-    {
-      if (!this.animFrameId) return;
-
-      window.cancelAnimationFrame(this.animFrameId);
-    }
     render()
     {
       this.renderer.render(this.stage);
-      this.animFrameId = requestAnimFrame( this.render.bind(this) );
+      requestAnimFrame( this.render.bind(this) );
     }
   }
 }

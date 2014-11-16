@@ -35,10 +35,18 @@ module Rance
 
       componentDidMount: function()
       {
-        this.props.renderer.init(this.refs.pixiContainer.getDOMNode());
-        this.props.renderer.render();
+        this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
+        this.props.renderer.init();
+        this.props.renderer.bindRendererView();
+
+        var mapRenderer = new MapRenderer();
+        mapRenderer.setParent(renderer.layers["map"]);
+        this.props.galaxyMap.mapRenderer = mapRenderer;
+        mapRenderer.galaxyMap = galaxyMap;
 
         this.props.galaxyMap.mapRenderer.setMapMode("default");
+        
+        this.props.renderer.render();
       }
     });
   }

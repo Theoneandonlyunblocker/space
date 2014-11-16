@@ -557,8 +557,11 @@ declare module Rance {
         public mapModes: {
             [name: string]: IMapRendererLayerMapMode;
         };
+        public TextureCache: {
+            [name: string]: PIXI.Texture;
+        };
         public currentMapMode: IMapRendererLayerMapMode;
-        constructor(parent: PIXI.DisplayObjectContainer);
+        constructor();
         public initLayers(): void;
         public initMapModes(): void;
         public setParent(newParent: PIXI.DisplayObjectContainer): void;
@@ -677,16 +680,15 @@ declare module Rance {
         };
         public camera: Rance.Camera;
         public mouseEventHandler: Rance.MouseEventHandler;
-        public animFrameId: any;
         constructor();
         public init(): void;
         public setContainer(element: HTMLCanvasElement): void;
+        public removeRendererView(): void;
         public bindRendererView(): void;
         public initLayers(): void;
         public addCamera(): void;
         public addEventListeners(): void;
         public resize(): void;
-        public stopRender(): void;
         public render(): void;
     }
 }
