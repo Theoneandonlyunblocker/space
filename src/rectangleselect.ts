@@ -23,9 +23,9 @@ module Rance
 
     startSelection(point: Point)
     {
-      console.log(point);
       this.selecting = true;
       this.start = point;
+      this.current = point;
     }
     moveSelection(point: Point)
     {
@@ -35,10 +35,16 @@ module Rance
     endSelection(point: Point)
     {
       this.selecting = false;
-      this.start = null;
-      this.current = null;
 
       this.graphics.clear();
+
+      this.toSelectFrom = mapGen.points;
+      var inSelection = this.getAllInSelection();
+
+      console.log(inSelection);
+
+      this.start = null;
+      this.current = null;
     }
 
     drawSelectionRectangle()

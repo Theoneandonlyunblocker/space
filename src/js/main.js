@@ -3895,9 +3895,9 @@ var Rance;
             parentContainer.addChild(this.graphics);
         }
         RectangleSelect.prototype.startSelection = function (point) {
-            console.log(point);
             this.selecting = true;
             this.start = point;
+            this.current = point;
         };
         RectangleSelect.prototype.moveSelection = function (point) {
             this.current = point;
@@ -3905,10 +3905,16 @@ var Rance;
         };
         RectangleSelect.prototype.endSelection = function (point) {
             this.selecting = false;
-            this.start = null;
-            this.current = null;
 
             this.graphics.clear();
+
+            this.toSelectFrom = mapGen.points;
+            var inSelection = this.getAllInSelection();
+
+            console.log(inSelection);
+
+            this.start = null;
+            this.current = null;
         };
 
         RectangleSelect.prototype.drawSelectionRectangle = function () {
@@ -4043,15 +4049,17 @@ var Rance;
                 return;
 
             if (targetType === "stage") {
-                this.preventGhost(15);
                 if (this.currAction === "scroll") {
                     this.endScroll(event);
+                    this.preventGhost(15);
                 } else if (this.currAction === "zoom") {
                     this.endZoom(event);
+                    this.preventGhost(15);
                 }
             } else {
                 if (this.currAction === "select") {
-                    this.endSelect(event);
+                    if (!this.preventingGhost)
+                        this.endSelect(event);
                 }
             }
         };

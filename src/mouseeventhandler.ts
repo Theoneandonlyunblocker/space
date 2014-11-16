@@ -116,21 +116,22 @@ module Rance
 
       if (targetType === "stage")
       {
-        this.preventGhost(15);
         if (this.currAction === "scroll")
         {
           this.endScroll(event);
+          this.preventGhost(15);
         }
         else if (this.currAction === "zoom")
         {
           this.endZoom(event);
+          this.preventGhost(15);
         }
       }
       else
       {
         if (this.currAction === "select")
         {
-          this.endSelect(event)
+          if (!this.preventingGhost) this.endSelect(event);
         }
       }
     }
