@@ -19,9 +19,9 @@ module Rance
     fleet1 = [];
     fleet2 = [];
     player1 = new Player();
-    player1.color = "#FF0000";
+    player1.color = 0xFF0000;
     player2 = new Player();
-    player2.color = "#0000FF";
+    player2.color = 0x0000FF;
 
     function setupFleetAndPlayer(fleet, player)
     {

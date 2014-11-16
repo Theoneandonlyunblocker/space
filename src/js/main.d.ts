@@ -178,6 +178,8 @@ declare module Rance {
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
     function makeRandomShip(): Unit;
+    function centerDisplayObjectContainer(toCenter: PIXI.DisplayObjectContainer): void;
+    function rectContains(rect: any, point: any): boolean;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -298,6 +300,7 @@ declare module Rance {
             currentActionPoints: number;
         };
         public abilities: Rance.Templates.AbilityTemplate[];
+        public fleet: Rance.Fleet;
         constructor(template: Rance.Templates.TypeTemplate);
         public setValues(): void;
         public setBaseHealth(): void;
@@ -312,26 +315,16 @@ declare module Rance {
         public isTargetable(): boolean;
         public getAttackDamageIncrease(damageType: string): number;
         public getDamageReduction(damageType: string): number;
-    }
-}
-declare module Rance {
-    class Player {
-        public id: number;
-        public units: {
-            [id: number]: Rance.Unit;
-        };
-        public color: string;
-        constructor(id?: number);
-        public addUnit(unit: Rance.Unit): void;
-        public getAllUnits(): any[];
+        public addToFleet(fleet: Rance.Fleet): void;
+        public removeFromFleet(): void;
     }
 }
 declare module Rance {
     class Fleet {
-        public owner: Rance.Player;
+        public player: Rance.Player;
         public ships: Rance.Unit[];
         public location: Rance.Star;
-        constructor(owner: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
+        constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
         public getShipIndex(ship: Rance.Unit): number;
         public hasShip(ship: Rance.Unit): boolean;
         public deleteFleet(): void;
@@ -341,6 +334,23 @@ declare module Rance {
         public removeShips(ships: Rance.Unit[]): void;
         public split(newShips: Rance.Unit[]): Fleet;
         public move(newLocation: Rance.Star): void;
+    }
+}
+declare module Rance {
+    class Player {
+        public id: number;
+        public units: {
+            [id: number]: Rance.Unit;
+        };
+        public fleets: Rance.Fleet[];
+        public color: number;
+        constructor(id?: number);
+        public addUnit(unit: Rance.Unit): void;
+        public getAllUnits(): any[];
+        public getFleetIndex(fleet: Rance.Fleet): number;
+        public addFleet(fleet: Rance.Fleet): void;
+        public removeFleet(fleet: Rance.Fleet): void;
+        public getAllFleets(): void;
     }
 }
 declare module Rance {
@@ -354,7 +364,7 @@ declare module Rance {
         public region: string;
         public owner: Rance.Player;
         public fleets: {
-            [ownerId: string]: Rance.Fleet[];
+            [playerId: string]: Rance.Fleet[];
         };
         public voronoiId: number;
         public voronoiCell: any;
@@ -667,23 +677,55 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class RectangleSelect {
+        public parentContainer: PIXI.DisplayObjectContainer;
+        public graphics: PIXI.Graphics;
+        public selecting: boolean;
+        public start: Rance.Point;
+        public current: Rance.Point;
+        public toSelectFrom: any[];
+        constructor(parentContainer: PIXI.DisplayObjectContainer);
+        public startSelection(point: Rance.Point): void;
+        public moveSelection(point: Rance.Point): void;
+        public endSelection(point: Rance.Point): void;
+        public drawSelectionRectangle(): void;
+        public getBounds(): {
+            x1: number;
+            x2: number;
+            y1: number;
+            y2: number;
+            width: number;
+            height: number;
+        };
+        public getAllInSelection(): any[];
+        public selectionContains(point: Rance.Point): boolean;
+    }
+}
+declare module Rance {
     class MouseEventHandler {
+        public renderer: Rance.Renderer;
         public camera: Rance.Camera;
+        public rectangleselect: Rance.RectangleSelect;
         public startPoint: number[];
         public currPoint: number[];
         public currAction: string;
         public stashedAction: string;
         public preventingGhost: boolean;
-        constructor(camera: Rance.Camera);
+        constructor(renderer: Rance.Renderer, camera: Rance.Camera);
         public addEventListeners(): void;
         public preventGhost(delay: number): void;
         public mouseDown(event: any, targetType: string): void;
         public mouseMove(event: any, targetType: string): void;
         public mouseUp(event: any, targetType: string): void;
         public startScroll(event: any): void;
+        public scrollMove(event: any): void;
+        public endScroll(event: any): void;
+        public zoomMove(event: any): void;
+        public endZoom(event: any): void;
         public startZoom(event: any): void;
-        public stageMove(event: any): void;
-        public stageEnd(event: any): void;
+        public startSelect(event: any): void;
+        public dragSelect(event: any): void;
+        public endSelect(event: any): void;
         public hover(event: any): void;
     }
 }

@@ -1,4 +1,6 @@
 /// <reference path="unit.ts"/>
+/// <reference path="fleet.ts"/>
+/// <reference path="utility.ts"/>
 
 module Rance
 {
@@ -12,7 +14,8 @@ module Rance
     {
       [id: number]: Unit;
     } = {};
-    color: string;
+    fleets: Fleet[] = [];
+    color: number;
 
     constructor(id?: number)
     {
@@ -31,8 +34,37 @@ module Rance
       {
         allUnits.push(this.units[unitId]);
       }
-
       return allUnits;
+    }
+    getFleetIndex(fleet: Fleet)
+    {
+      return this.fleets.indexOf(fleet);
+    }
+    addFleet(fleet: Fleet)
+    {
+      if (this.getFleetIndex(fleet) >= 0)
+      {
+        return;
+      }
+
+      this.fleets.push(fleet);
+    }
+    removeFleet(fleet: Fleet)
+    {
+      var fleetIndex = this.getFleetIndex(fleet);
+
+      if (fleetIndex <= 0)
+      {
+        return;
+      }
+
+      this.fleets.splice(fleetIndex, 1);
+    }
+    getAllFleets()
+    {
+      var allUnits = this.getAllUnits();
+
+      var fleets: any = {};
     }
   }  
 }

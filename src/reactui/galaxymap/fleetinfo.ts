@@ -10,15 +10,16 @@ module Rance
       render: function()
       {
         var fleet = this.props.fleet;
-        
-
-
         return(
           React.DOM.div(
           {
             className: "fleet-info"
           },
-            null
+            React.DOM.div(null, "owner: " + fleet.owner.id),
+            UIComponents.UnitList(
+            {
+              units: fleet.ships
+            })
           )
         );
       }

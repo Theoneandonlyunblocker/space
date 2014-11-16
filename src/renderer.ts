@@ -66,14 +66,19 @@ module Rance
     {
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_main);
-
+      
       var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_map);
+
+      var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
+      _main.addChild(_select);
+
+
     }
     addCamera()
     {
       this.camera = new Camera(this.layers["main"], 0.5);
-      this.mouseEventHandler = new MouseEventHandler(this.camera);
+      this.mouseEventHandler = new MouseEventHandler(this, this.camera);
     }
     addEventListeners()
     {
@@ -84,6 +89,7 @@ module Rance
 
       this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
       {
+
         self.mouseEventHandler.mouseDown(event, "stage");
       }
       this.stage.mousemove = this.stage.touchmove = function(event)

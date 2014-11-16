@@ -20,7 +20,7 @@ module Rance
     owner: Player;
     fleets:
     {
-      [ownerId: string] : Fleet[]
+      [playerId: string] : Fleet[]
     } = {};
 
     voronoiId: number;
@@ -47,9 +47,9 @@ module Rance
     }
     getFleetIndex(fleet: Fleet)
     {
-      if (!this.fleets[fleet.owner.id]) return -1;
+      if (!this.fleets[fleet.player.id]) return -1;
 
-      return this.fleets[fleet.owner.id].indexOf(fleet);
+      return this.fleets[fleet.player.id].indexOf(fleet);
     }
     hasFleet(fleet: Fleet)
     {
@@ -57,14 +57,14 @@ module Rance
     }
     addFleet(fleet: Fleet)
     {
-      if (!this.fleets[fleet.owner.id])
+      if (!this.fleets[fleet.player.id])
       {
-        this.fleets[fleet.owner.id] = [];
+        this.fleets[fleet.player.id] = [];
       }
 
       if (this.hasFleet(fleet)) return false;
 
-      this.fleets[fleet.owner.id].push(fleet);
+      this.fleets[fleet.player.id].push(fleet);
     }
     addFleets(fleets: Fleet[])
     {
@@ -79,7 +79,7 @@ module Rance
 
       if (fleetIndex < 0) return false;
 
-      this.fleets[fleet.owner.id].splice(fleetIndex, 1);
+      this.fleets[fleet.player.id].splice(fleetIndex, 1);
     }
     removeFleets(fleets: Fleet[])
     {

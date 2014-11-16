@@ -44,10 +44,23 @@ module Rance
               {
                 key: "id"  
               },
-              React.DOM.span(null, "id: " + star.id),
-              React.DOM.span(null, "pos: " + star.x.toFixed() + ", " + star.y.toFixed())
+              React.DOM.div(null, "id: " + star.id),
+              React.DOM.div(null, "pos: " + star.x.toFixed() + ", " + star.y.toFixed())
             )
           );
+
+          var fleets = star.getAllFleets();
+
+          if (fleets.length > 0)
+          {
+            toRender.push(
+              UIComponents.FleetInfo(
+              {
+                key: "fleetInfo",
+                fleet: fleets[0]
+              })
+            );
+          }
         }
 
         return(

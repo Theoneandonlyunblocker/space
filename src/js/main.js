@@ -1494,6 +1494,7 @@ var Rance;
 
     Rance.eventManager = new EventManager();
 })(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
     function randInt(min, max) {
@@ -1566,6 +1567,23 @@ var Rance;
         return unit;
     }
     Rance.makeRandomShip = makeRandomShip;
+
+    function centerDisplayObjectContainer(toCenter) {
+        toCenter.x -= toCenter.width / 2;
+    }
+    Rance.centerDisplayObjectContainer = centerDisplayObjectContainer;
+    function rectContains(rect, point) {
+        var x = point.x;
+        var y = point.y;
+
+        var x1 = Math.min(rect.x1, rect.x2);
+        var x2 = Math.max(rect.x1, rect.x2);
+        var y1 = Math.min(rect.y1, rect.y2);
+        var y2 = Math.max(rect.y1, rect.y2);
+
+        return ((x >= x1 && x <= x2) && (y >= y1 && y <= y2));
+    }
+    Rance.rectContains = rectContains;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -2044,6 +2062,7 @@ var Rance;
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
+/// <reference path="battle.ts"/>
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -2179,35 +2198,15 @@ var Rance;
 
             return defensiveStat * defenceFactor;
         };
+        Unit.prototype.addToFleet = function (fleet) {
+            this.fleet = fleet;
+        };
+        Unit.prototype.removeFromFleet = function () {
+            this.fleet = null;
+        };
         return Unit;
     })();
     Rance.Unit = Unit;
-})(Rance || (Rance = {}));
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.player = idGenerators.player || 0;
-
-    var Player = (function () {
-        function Player(id) {
-            this.units = {};
-            this.id = isFinite(id) ? id : idGenerators.player++;
-        }
-        Player.prototype.addUnit = function (unit) {
-            this.units[unit.id] = unit;
-        };
-        Player.prototype.getAllUnits = function () {
-            var allUnits = [];
-            for (var unitId in this.units) {
-                allUnits.push(this.units[unitId]);
-            }
-
-            return allUnits;
-        };
-        return Player;
-    })();
-    Rance.Player = Player;
 })(Rance || (Rance = {}));
 /// <reference path="player.ts" />
 /// <reference path="unit.ts" />
@@ -2215,12 +2214,13 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Fleet = (function () {
-        function Fleet(owner, ships, location) {
-            this.owner = owner;
+        function Fleet(player, ships, location) {
+            this.player = player;
             this.ships = ships;
             this.location = location;
 
             this.location.addFleet(this);
+            this.player.addFleet(this);
         }
         Fleet.prototype.getShipIndex = function (ship) {
             return this.ships.indexOf(ship);
@@ -2230,12 +2230,14 @@ var Rance;
         };
         Fleet.prototype.deleteFleet = function () {
             this.location.removeFleet(this);
+            this.player.removeFleet(this);
         };
         Fleet.prototype.addShip = function (ship) {
             if (this.hasShip(ship))
                 return false;
 
             this.ships.push(ship);
+            ship.addToFleet(this);
         };
         Fleet.prototype.addShips = function (ships) {
             for (var i = 0; i < ships.length; i++) {
@@ -2249,6 +2251,7 @@ var Rance;
                 return false;
 
             this.ships.splice(index, 1);
+            ship.removeFromFleet();
 
             if (this.ships.length <= 0) {
                 this.deleteFleet();
@@ -2262,7 +2265,7 @@ var Rance;
         Fleet.prototype.split = function (newShips) {
             this.removeShips(newShips);
 
-            var newFleet = new Fleet(this.owner, newShips, this.location);
+            var newFleet = new Fleet(this.player, newShips, this.location);
             this.location.addFleet(newFleet);
 
             return newFleet;
@@ -2277,6 +2280,58 @@ var Rance;
         return Fleet;
     })();
     Rance.Fleet = Fleet;
+})(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+/// <reference path="fleet.ts"/>
+/// <reference path="utility.ts"/>
+var Rance;
+(function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.player = idGenerators.player || 0;
+
+    var Player = (function () {
+        function Player(id) {
+            this.units = {};
+            this.fleets = [];
+            this.id = isFinite(id) ? id : idGenerators.player++;
+        }
+        Player.prototype.addUnit = function (unit) {
+            this.units[unit.id] = unit;
+        };
+        Player.prototype.getAllUnits = function () {
+            var allUnits = [];
+            for (var unitId in this.units) {
+                allUnits.push(this.units[unitId]);
+            }
+            return allUnits;
+        };
+        Player.prototype.getFleetIndex = function (fleet) {
+            return this.fleets.indexOf(fleet);
+        };
+        Player.prototype.addFleet = function (fleet) {
+            if (this.getFleetIndex(fleet) >= 0) {
+                return;
+            }
+
+            this.fleets.push(fleet);
+        };
+        Player.prototype.removeFleet = function (fleet) {
+            var fleetIndex = this.getFleetIndex(fleet);
+
+            if (fleetIndex <= 0) {
+                return;
+            }
+
+            this.fleets.splice(fleetIndex, 1);
+        };
+        Player.prototype.getAllFleets = function () {
+            var allUnits = this.getAllUnits();
+
+            var fleets = {};
+        };
+        return Player;
+    })();
+    Rance.Player = Player;
 })(Rance || (Rance = {}));
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
@@ -2306,23 +2361,23 @@ var Rance;
             return allFleets;
         };
         Star.prototype.getFleetIndex = function (fleet) {
-            if (!this.fleets[fleet.owner.id])
+            if (!this.fleets[fleet.player.id])
                 return -1;
 
-            return this.fleets[fleet.owner.id].indexOf(fleet);
+            return this.fleets[fleet.player.id].indexOf(fleet);
         };
         Star.prototype.hasFleet = function (fleet) {
             return this.getFleetIndex(fleet) >= 0;
         };
         Star.prototype.addFleet = function (fleet) {
-            if (!this.fleets[fleet.owner.id]) {
-                this.fleets[fleet.owner.id] = [];
+            if (!this.fleets[fleet.player.id]) {
+                this.fleets[fleet.player.id] = [];
             }
 
             if (this.hasFleet(fleet))
                 return false;
 
-            this.fleets[fleet.owner.id].push(fleet);
+            this.fleets[fleet.player.id].push(fleet);
         };
         Star.prototype.addFleets = function (fleets) {
             for (var i = 0; i < fleets.length; i++) {
@@ -2335,7 +2390,7 @@ var Rance;
             if (fleetIndex < 0)
                 return false;
 
-            this.fleets[fleet.owner.id].splice(fleetIndex, 1);
+            this.fleets[fleet.player.id].splice(fleetIndex, 1);
         };
         Star.prototype.removeFleets = function (fleets) {
             for (var i = 0; i < fleets.length; i++) {
@@ -2453,10 +2508,11 @@ var Rance;
         UIComponents.FleetInfo = React.createClass({
             render: function () {
                 var fleet = this.props.fleet;
-
                 return (React.DOM.div({
                     className: "fleet-info"
-                }, null));
+                }, React.DOM.div(null, "owner: " + fleet.owner.id), Rance.UIComponents.UnitList({
+                    units: fleet.ships
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2493,7 +2549,16 @@ var Rance;
                 if (star) {
                     toRender.push(React.DOM.div({
                         key: "id"
-                    }, React.DOM.span(null, "id: " + star.id), React.DOM.span(null, "pos: " + star.x.toFixed() + ", " + star.y.toFixed())));
+                    }, React.DOM.div(null, "id: " + star.id), React.DOM.div(null, "pos: " + star.x.toFixed() + ", " + star.y.toFixed())));
+
+                    var fleets = star.getAllFleets();
+
+                    if (fleets.length > 0) {
+                        toRender.push(Rance.UIComponents.FleetInfo({
+                            key: "fleetInfo",
+                            fleet: fleets[0]
+                        }));
+                    }
                 }
 
                 return (React.DOM.div({
@@ -3414,6 +3479,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 /// <reference path="eventmanager.ts"/>
+/// <reference path="utility.ts"/>
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
 /// <reference path="fleet.ts" />
@@ -3513,13 +3579,25 @@ var Rance;
                     var stars = map.mapGen.getNonFillerPoints();
 
                     function singleFleetDrawFN(fleet) {
-                        var playerColor = fleet.owner.color;
+                        var fleetContainer = new PIXI.DisplayObjectContainer();
+                        var playerColor = fleet.player.color;
 
                         var text = new PIXI.Text(fleet.ships.length, {
-                            fill: playerColor
+                            fill: "#" + playerColor.toString(16)
                         });
 
-                        return text;
+                        var containerGfx = new PIXI.Graphics();
+                        containerGfx.lineStyle(1, 0x00000, 1);
+                        containerGfx.beginFill(playerColor, 0.4);
+                        containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
+                        containerGfx.endFill();
+
+                        containerGfx.addChild(text);
+                        text.x += 2;
+                        text.y += 2;
+                        fleetContainer.addChild(containerGfx);
+
+                        return fleetContainer;
                     }
 
                     for (var i = 0; i < stars.length; i++) {
@@ -3538,6 +3616,8 @@ var Rance;
                             drawnFleet.position.x = fleetsContainer.width;
                             fleetsContainer.addChild(drawnFleet);
                         }
+
+                        fleetsContainer.x -= fleetsContainer.width / 2;
                     }
 
                     doc.height;
@@ -3804,13 +3884,96 @@ var Rance;
     })();
     Rance.Camera = Camera;
 })(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="point.ts" />
+var Rance;
+(function (Rance) {
+    var RectangleSelect = (function () {
+        function RectangleSelect(parentContainer) {
+            this.parentContainer = parentContainer;
+            this.graphics = new PIXI.Graphics();
+            parentContainer.addChild(this.graphics);
+        }
+        RectangleSelect.prototype.startSelection = function (point) {
+            this.selecting = true;
+            this.start = point;
+        };
+        RectangleSelect.prototype.moveSelection = function (point) {
+            this.current = point;
+            this.drawSelectionRectangle();
+        };
+        RectangleSelect.prototype.endSelection = function (point) {
+            this.selecting = false;
+            this.start = null;
+            this.current = null;
+
+            this.graphics.clear();
+        };
+
+        RectangleSelect.prototype.drawSelectionRectangle = function () {
+            if (!this.current)
+                return;
+
+            var gfx = this.graphics;
+            var bounds = this.getBounds();
+
+            gfx.clear();
+            gfx.beginFill(0x000000, 0.3);
+            gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
+            gfx.endFill();
+            console.log(this.start, this.current);
+        };
+        RectangleSelect.prototype.getBounds = function () {
+            var x1 = Math.min(this.start.x, this.current.x);
+            var x2 = Math.max(this.start.x, this.current.x);
+            var y1 = Math.min(this.start.y, this.current.y);
+            var y2 = Math.max(this.start.y, this.current.y);
+
+            return ({
+                x1: x1,
+                x2: x2,
+                y1: y1,
+                y2: y2,
+                width: x2 - x1,
+                height: y2 - y1
+            });
+        };
+
+        RectangleSelect.prototype.getAllInSelection = function () {
+            var toReturn = [];
+
+            for (var i = 0; i < this.toSelectFrom.length; i++) {
+                if (this.selectionContains(this.toSelectFrom[i])) {
+                    toReturn.push(this.toSelectFrom[i]);
+                }
+            }
+            return toReturn;
+        };
+
+        RectangleSelect.prototype.selectionContains = function (point) {
+            var x = point.x;
+            var y = point.y;
+
+            var bounds = this.getBounds();
+
+            return ((x >= bounds.x1 && x <= bounds.x2) && (y >= bounds.y1 && y <= bounds.y2));
+        };
+        return RectangleSelect;
+    })();
+    Rance.RectangleSelect = RectangleSelect;
+})(Rance || (Rance = {}));
+/// <reference path="fleet.ts"/>
 /// <reference path="camera.ts"/>
+/// <reference path="renderer.ts"/>
+/// <reference path="rectangleselect.ts"/>
 var Rance;
 (function (Rance) {
     var MouseEventHandler = (function () {
-        function MouseEventHandler(camera) {
+        function MouseEventHandler(renderer, camera) {
             this.preventingGhost = false;
+            this.renderer = renderer;
             this.camera = camera;
+            this.rectangleselect = new Rance.RectangleSelect(renderer.layers["select"]);
             this.currAction = undefined;
 
             window.oncontextmenu = function (event) {
@@ -3853,64 +4016,91 @@ var Rance;
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
             if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1) {
                 this.startScroll(event);
+            } else if (event.originalEvent.button === 0) {
+                this.startSelect(event);
             }
         };
 
         MouseEventHandler.prototype.mouseMove = function (event, targetType) {
             if (targetType === "stage") {
-                if (this.currAction === "zoom" || this.currAction === "scroll") {
-                    this.stageMove(event);
-                }
-            } else {
-                if (this.currAction === undefined) {
-                    this.hover(event);
+                if (this.currAction === "scroll") {
+                    this.scrollMove(event);
+                } else if (this.currAction === "zoom") {
+                    this.zoomMove(event);
+                } else if (this.currAction === "select") {
+                    this.dragSelect(event);
                 }
             }
         };
         MouseEventHandler.prototype.mouseUp = function (event, targetType) {
             if (this.currAction === undefined)
                 return;
-            else if (targetType === "stage" && (this.currAction === "zoom" || this.currAction === "scroll")) {
-                this.stageEnd(event);
+
+            if (targetType === "stage") {
                 this.preventGhost(15);
+                if (this.currAction === "scroll") {
+                    this.endScroll(event);
+                } else if (this.currAction === "zoom") {
+                    this.endZoom(event);
+                } else if (this.currAction === "select") {
+                    this.endSelect(event);
+                }
             }
         };
 
         MouseEventHandler.prototype.startScroll = function (event) {
-            if (this.currAction === "cellAction")
-                this.stashedAction = "cellAction";
+            if (this.currAction === "select")
+                this.stashedAction = "select";
             this.currAction = "scroll";
             this.startPoint = [event.global.x, event.global.y];
             this.camera.startScroll(this.startPoint);
         };
+        MouseEventHandler.prototype.scrollMove = function (event) {
+            this.camera.move([event.global.x, event.global.y]);
+        };
+        MouseEventHandler.prototype.endScroll = function (event) {
+            this.camera.end();
+            this.startPoint = undefined;
+            this.currAction = this.stashedAction;
+            this.stashedAction = undefined;
+        };
+        MouseEventHandler.prototype.zoomMove = function (event) {
+            var delta = event.global.x + this.currPoint[1] - this.currPoint[0] - event.global.y;
+            this.camera.deltaZoom(delta, 0.005);
+            this.currPoint = [event.global.x, event.global.y];
+        };
+        MouseEventHandler.prototype.endZoom = function (event) {
+            this.startPoint = undefined;
+            this.currAction = this.stashedAction;
+            this.stashedAction = undefined;
+        };
         MouseEventHandler.prototype.startZoom = function (event) {
-            if (this.currAction === "cellAction")
-                this.stashedAction = "cellAction";
+            if (this.currAction === "select")
+                this.stashedAction = "select";
             this.currAction = "zoom";
             this.startPoint = this.currPoint = [event.global.x, event.global.y];
         };
-
-        MouseEventHandler.prototype.stageMove = function (event) {
-            if (this.currAction === "scroll") {
-                this.camera.move([event.global.x, event.global.y]);
-            } else if (this.currAction === "zoom") {
-                var delta = event.global.x + this.currPoint[1] - this.currPoint[0] - event.global.y;
-                this.camera.deltaZoom(delta, 0.005);
-                this.currPoint = [event.global.x, event.global.y];
-            }
+        MouseEventHandler.prototype.startSelect = function (event) {
+            console.log("start", event.global);
+            this.currAction = "select";
+            this.rectangleselect.startSelection({
+                x: event.global.x,
+                y: event.global.y
+            });
         };
-        MouseEventHandler.prototype.stageEnd = function (event) {
-            if (this.currAction === "scroll") {
-                this.camera.end();
-                this.startPoint = undefined;
-                this.currAction = this.stashedAction;
-                this.stashedAction = undefined;
-            }
-            if (this.currAction === "zoom") {
-                this.startPoint = undefined;
-                this.currAction = this.stashedAction;
-                this.stashedAction = undefined;
-            }
+        MouseEventHandler.prototype.dragSelect = function (event) {
+            console.log("drag", event.global);
+            this.rectangleselect.moveSelection({
+                x: event.global.x,
+                y: event.global.y
+            });
+        };
+        MouseEventHandler.prototype.endSelect = function (event) {
+            this.rectangleselect.endSelection({
+                x: event.global.x,
+                y: event.global.y
+            });
+            this.currAction = undefined;
         };
         MouseEventHandler.prototype.hover = function (event) {
         };
@@ -3963,10 +4153,13 @@ var Rance;
 
             var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_map);
+
+            var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
+            _main.addChild(_select);
         };
         Renderer.prototype.addCamera = function () {
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
-            this.mouseEventHandler = new Rance.MouseEventHandler(this.camera);
+            this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
@@ -4016,9 +4209,9 @@ var Rance;
         fleet1 = [];
         fleet2 = [];
         player1 = new Rance.Player();
-        player1.color = "#FF0000";
+        player1.color = 0xFF0000;
         player2 = new Rance.Player();
-        player2.color = "#0000FF";
+        player2.color = 0x0000FF;
 
         function setupFleetAndPlayer(fleet, player) {
             for (var i = 0; i < 2; i++) {

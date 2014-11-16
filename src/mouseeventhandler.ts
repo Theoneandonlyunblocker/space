@@ -1,10 +1,15 @@
+/// <reference path="fleet.ts"/>
 /// <reference path="camera.ts"/>
+/// <reference path="renderer.ts"/>
+/// <reference path="rectangleselect.ts"/>
 
 module Rance
 {
   export class MouseEventHandler
   {
+    renderer: Renderer;
     camera: Camera;
+    rectangleselect: RectangleSelect;
 
     startPoint: number[];
     currPoint: number[];
@@ -14,9 +19,11 @@ module Rance
 
     preventingGhost: boolean = false;
 
-    constructor(camera: Camera)
+    constructor(renderer: Renderer, camera: Camera)
     {
+      this.renderer = renderer;
       this.camera = camera;
+      this.rectangleselect = new RectangleSelect(renderer.layers["select"]);
       this.currAction = undefined;
 
       window.oncontextmenu = function(event)
@@ -70,22 +77,27 @@ module Rance
       {
         this.startScroll(event);
       }
+      else if (event.originalEvent.button === 0)
+      {
+        this.startSelect(event);
+      }
     }
 
     mouseMove(event, targetType: string)
     {
       if (targetType === "stage")
       {
-        if (this.currAction === "zoom" || this.currAction === "scroll")
+        if (this.currAction === "scroll")
         {
-          this.stageMove(event);
+          this.scrollMove(event);
         }
-      }
-      else
-      {
-        if (this.currAction === undefined)
+        else if (this.currAction === "zoom")
         {
-          this.hover(event);
+          this.zoomMove(event);
+        }
+        else if (this.currAction === "select")
+        {
+          this.dragSelect(event);
         }
       }
     }
@@ -93,57 +105,88 @@ module Rance
     {
       if (this.currAction === undefined) return;
 
-      else if (targetType === "stage" &&
-        (this.currAction === "zoom" || this.currAction === "scroll"))
+      if (targetType === "stage")
       {
-        this.stageEnd(event);
         this.preventGhost(15);
+        if (this.currAction === "scroll")
+        {
+          this.endScroll(event);
+        }
+        else if (this.currAction === "zoom")
+        {
+          this.endZoom(event);
+        }
+        else if (this.currAction === "select")
+        {
+          this.endSelect(event)
+        }
       }
     }
 
     startScroll(event)
     {
-      if (this.currAction === "cellAction") this.stashedAction = "cellAction";
+      if (this.currAction === "select") this.stashedAction = "select";
       this.currAction = "scroll";
       this.startPoint = [event.global.x, event.global.y];
       this.camera.startScroll(this.startPoint);
     }
+    scrollMove(event)
+    {
+      this.camera.move([event.global.x, event.global.y]);
+    }
+    endScroll(event)
+    {
+      this.camera.end();
+      this.startPoint = undefined;
+      this.currAction = this.stashedAction;
+      this.stashedAction = undefined;
+    }
+    zoomMove(event)
+    {
+      var delta = event.global.x + this.currPoint[1] -
+        this.currPoint[0] - event.global.y;
+      this.camera.deltaZoom(delta, 0.005);
+      this.currPoint = [event.global.x, event.global.y];
+    }
+    endZoom(event)
+    {
+      this.startPoint = undefined;
+      this.currAction = this.stashedAction;
+      this.stashedAction = undefined;
+    }
     startZoom(event)
     {
-      if (this.currAction === "cellAction") this.stashedAction = "cellAction";
+      if (this.currAction === "select") this.stashedAction = "select";
       this.currAction = "zoom";
       this.startPoint = this.currPoint = [event.global.x, event.global.y];
     }
-
-    stageMove(event)
+    startSelect(event)
     {
-      if (this.currAction === "scroll")
+      console.log("start", event.global);
+      this.currAction = "select";
+      this.rectangleselect.startSelection(
       {
-        this.camera.move([event.global.x, event.global.y]);
-      }
-      else if (this.currAction === "zoom")
-      {
-        var delta = event.global.x + this.currPoint[1] -
-          this.currPoint[0] - event.global.y;
-        this.camera.deltaZoom(delta, 0.005);
-        this.currPoint = [event.global.x, event.global.y];
-      }
+        x: event.global.x,
+        y: event.global.y
+      });
     }
-    stageEnd(event)
+    dragSelect(event)
     {
-      if (this.currAction === "scroll")
+      console.log("drag", event.global);
+      this.rectangleselect.moveSelection(
       {
-        this.camera.end();
-        this.startPoint = undefined;
-        this.currAction = this.stashedAction;
-        this.stashedAction = undefined;
-      }
-      if (this.currAction === "zoom")
+        x: event.global.x,
+        y: event.global.y
+      });
+    }
+    endSelect(event)
+    {
+      this.rectangleselect.endSelection(
       {
-        this.startPoint = undefined;
-        this.currAction = this.stashedAction;
-        this.stashedAction = undefined;
-      }
+        x: event.global.x,
+        y: event.global.y
+      });
+      this.currAction = undefined;
     }
     hover(event)
     {

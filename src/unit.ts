@@ -5,6 +5,8 @@
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 
+/// <reference path="battle.ts"/>
+
 module Rance
 {
   var idGenerators = idGenerators || {};
@@ -23,7 +25,6 @@ module Rance
 
     maxActionPoints: number;    
     
-
     attributes:
     {
       attack: number;
@@ -43,6 +44,10 @@ module Rance
     };
 
     abilities: Templates.AbilityTemplate[];
+
+    // map
+    
+    fleet: Fleet;
 
     constructor(template: Templates.TypeTemplate)
     {
@@ -200,6 +205,14 @@ module Rance
       }
 
       return defensiveStat * defenceFactor;
+    }
+    addToFleet(fleet: Fleet)
+    {
+      this.fleet = fleet;
+    }
+    removeFromFleet()
+    {
+      this.fleet = null;
     }
   }
 }

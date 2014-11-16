@@ -6,17 +6,18 @@ module Rance
 {
   export class Fleet
   {
-    owner: Player;
+    player: Player;
     ships: Unit[];
     location: Star;
 
-    constructor(owner: Player, ships: Unit[], location: Star)
+    constructor(player: Player, ships: Unit[], location: Star)
     {
-      this.owner = owner;
+      this.player = player;
       this.ships = ships;
       this.location = location;
 
       this.location.addFleet(this);
+      this.player.addFleet(this);
     }
     getShipIndex(ship: Unit)
     {
@@ -29,12 +30,14 @@ module Rance
     deleteFleet()
     {
       this.location.removeFleet(this);
+      this.player.removeFleet(this);
     }
     addShip(ship: Unit)
     {
       if (this.hasShip(ship)) return false;
 
       this.ships.push(ship);
+      ship.addToFleet(this);
     }
     addShips(ships: Unit[])
     {
@@ -50,6 +53,7 @@ module Rance
       if (index < 0) return false;
 
       this.ships.splice(index, 1);
+      ship.removeFromFleet();
 
       if (this.ships.length <= 0)
       {
@@ -67,7 +71,7 @@ module Rance
     {
       this.removeShips(newShips);
 
-      var newFleet = new Fleet(this.owner, newShips, this.location);
+      var newFleet = new Fleet(this.player, newShips, this.location);
       this.location.addFleet(newFleet);
 
 

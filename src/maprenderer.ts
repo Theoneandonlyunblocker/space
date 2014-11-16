@@ -1,6 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
 
 /// <reference path="eventmanager.ts"/>
+/// <reference path="utility.ts"/>
 
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
@@ -150,14 +151,26 @@ module Rance
 
           function singleFleetDrawFN(fleet: Fleet)
           {
-            var playerColor = fleet.owner.color;
+            var fleetContainer = new PIXI.DisplayObjectContainer();
+            var playerColor = fleet.player.color;
 
             var text = new PIXI.Text(fleet.ships.length,
             {
-              fill: playerColor
+              fill: "#" + playerColor.toString(16)
             });
 
-            return text;
+            var containerGfx = new PIXI.Graphics();
+            containerGfx.lineStyle(1, 0x00000, 1);
+            containerGfx.beginFill(playerColor, 0.4);
+            containerGfx.drawRect(0, 0, text.width+4, text.height+4);
+            containerGfx.endFill();
+
+            containerGfx.addChild(text);
+            text.x += 2;
+            text.y += 2;
+            fleetContainer.addChild(containerGfx);
+
+            return fleetContainer;
           }
 
           for (var i = 0; i < stars.length; i++)
@@ -177,6 +190,8 @@ module Rance
               drawnFleet.position.x = fleetsContainer.width;
               fleetsContainer.addChild(drawnFleet);
             }
+
+            fleetsContainer.x -= fleetsContainer.width / 2;
           }
 
           doc.height;

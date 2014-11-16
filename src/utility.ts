@@ -1,3 +1,5 @@
+/// <reference path="../lib/pixi.d.ts" />
+
 module Rance
 {
   export function randInt(min, max)
@@ -87,5 +89,25 @@ module Rance
     var unit = new Unit(Templates.ShipTypes[type]);
 
     return unit;
+  }
+
+  export function centerDisplayObjectContainer(toCenter: PIXI.DisplayObjectContainer)
+  {
+    toCenter.x -= toCenter.width / 2;
+  }
+  export function rectContains(rect, point)
+  {
+    var x = point.x;
+    var y = point.y;
+
+    var x1 = Math.min(rect.x1, rect.x2);
+    var x2 = Math.max(rect.x1, rect.x2);
+    var y1 = Math.min(rect.y1, rect.y2);
+    var y2 = Math.max(rect.y1, rect.y2);
+
+    return(
+      (x >= x1 && x <= x2) &&
+      (y >= y1 && y <= y2)
+    );
   }
 }
