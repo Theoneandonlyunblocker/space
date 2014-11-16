@@ -23,6 +23,7 @@ module Rance
 
     startSelection(point: Point)
     {
+      console.log(point);
       this.selecting = true;
       this.start = point;
     }
@@ -51,7 +52,6 @@ module Rance
       gfx.beginFill(0x000000, 0.3);
       gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
       gfx.endFill();
-      console.log(this.start, this.current);
     }
     getBounds()
     {

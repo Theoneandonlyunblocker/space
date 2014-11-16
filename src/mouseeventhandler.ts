@@ -68,18 +68,24 @@ module Rance
     }
     mouseDown(event, targetType: string)
     {
-      if (
-          event.originalEvent.ctrlKey ||
-          event.originalEvent.metaKey ||
-          event.originalEvent.button === 1 //||
-          //event.originalEvent.button === 2
-        )
+      if (targetType === "stage")
       {
-        this.startScroll(event);
+        if (
+            event.originalEvent.ctrlKey ||
+            event.originalEvent.metaKey ||
+            event.originalEvent.button === 1 //||
+            //event.originalEvent.button === 2
+          )
+        {
+          this.startScroll(event);
+        }
       }
-      else if (event.originalEvent.button === 0)
+      else if (targetType === "world")
       {
-        this.startSelect(event);
+        if (event.originalEvent.button === 0)
+        {
+          this.startSelect(event);
+        }
       }
     }
 
@@ -95,7 +101,10 @@ module Rance
         {
           this.zoomMove(event);
         }
-        else if (this.currAction === "select")
+      }
+      else
+      {
+        if (this.currAction === "select")
         {
           this.dragSelect(event);
         }
@@ -116,7 +125,10 @@ module Rance
         {
           this.endZoom(event);
         }
-        else if (this.currAction === "select")
+      }
+      else
+      {
+        if (this.currAction === "select")
         {
           this.endSelect(event)
         }
@@ -162,30 +174,16 @@ module Rance
     }
     startSelect(event)
     {
-      console.log("start", event.global);
       this.currAction = "select";
-      this.rectangleselect.startSelection(
-      {
-        x: event.global.x,
-        y: event.global.y
-      });
+      this.rectangleselect.startSelection(event.getLocalPosition(event.target));
     }
     dragSelect(event)
     {
-      console.log("drag", event.global);
-      this.rectangleselect.moveSelection(
-      {
-        x: event.global.x,
-        y: event.global.y
-      });
+      this.rectangleselect.moveSelection(event.getLocalPosition(event.target));
     }
     endSelect(event)
     {
-      this.rectangleselect.endSelection(
-      {
-        x: event.global.x,
-        y: event.global.y
-      });
+      this.rectangleselect.endSelection(event.getLocalPosition(event.target));
       this.currAction = undefined;
     }
     hover(event)

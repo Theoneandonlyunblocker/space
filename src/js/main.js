@@ -3895,6 +3895,7 @@ var Rance;
             parentContainer.addChild(this.graphics);
         }
         RectangleSelect.prototype.startSelection = function (point) {
+            console.log(point);
             this.selecting = true;
             this.start = point;
         };
@@ -3921,7 +3922,6 @@ var Rance;
             gfx.beginFill(0x000000, 0.3);
             gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
             gfx.endFill();
-            console.log(this.start, this.current);
         };
         RectangleSelect.prototype.getBounds = function () {
             var x1 = Math.min(this.start.x, this.current.x);
@@ -4014,10 +4014,14 @@ var Rance;
             }, delay);
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
-            if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1) {
-                this.startScroll(event);
-            } else if (event.originalEvent.button === 0) {
-                this.startSelect(event);
+            if (targetType === "stage") {
+                if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1) {
+                    this.startScroll(event);
+                }
+            } else if (targetType === "world") {
+                if (event.originalEvent.button === 0) {
+                    this.startSelect(event);
+                }
             }
         };
 
@@ -4027,7 +4031,9 @@ var Rance;
                     this.scrollMove(event);
                 } else if (this.currAction === "zoom") {
                     this.zoomMove(event);
-                } else if (this.currAction === "select") {
+                }
+            } else {
+                if (this.currAction === "select") {
                     this.dragSelect(event);
                 }
             }
@@ -4042,7 +4048,9 @@ var Rance;
                     this.endScroll(event);
                 } else if (this.currAction === "zoom") {
                     this.endZoom(event);
-                } else if (this.currAction === "select") {
+                }
+            } else {
+                if (this.currAction === "select") {
                     this.endSelect(event);
                 }
             }
@@ -4081,25 +4089,14 @@ var Rance;
             this.startPoint = this.currPoint = [event.global.x, event.global.y];
         };
         MouseEventHandler.prototype.startSelect = function (event) {
-            console.log("start", event.global);
             this.currAction = "select";
-            this.rectangleselect.startSelection({
-                x: event.global.x,
-                y: event.global.y
-            });
+            this.rectangleselect.startSelection(event.getLocalPosition(event.target));
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
-            console.log("drag", event.global);
-            this.rectangleselect.moveSelection({
-                x: event.global.x,
-                y: event.global.y
-            });
+            this.rectangleselect.moveSelection(event.getLocalPosition(event.target));
         };
         MouseEventHandler.prototype.endSelect = function (event) {
-            this.rectangleselect.endSelection({
-                x: event.global.x,
-                y: event.global.y
-            });
+            this.rectangleselect.endSelection(event.getLocalPosition(event.target));
             this.currAction = undefined;
         };
         MouseEventHandler.prototype.hover = function (event) {
@@ -4176,6 +4173,24 @@ var Rance;
             };
             this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function (event) {
                 self.mouseEventHandler.mouseUp(event, "stage");
+            };
+
+            var main = this.layers["map"];
+            main.interactive = true;
+
+            main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
+
+            main.mousedown = main.rightdown = main.touchstart = function (event) {
+                self.mouseEventHandler.mouseDown(event, "world");
+            };
+            main.mousemove = main.touchmove = function (event) {
+                self.mouseEventHandler.mouseMove(event, "world");
+            };
+            main.mouseup = main.rightup = main.touchend = function (event) {
+                self.mouseEventHandler.mouseUp(event, "world");
+            };
+            main.mouseupoutside = main.rightupoutside = main.touchendoutside = function (event) {
+                self.mouseEventHandler.mouseUp(event, "world");
             };
         };
         Renderer.prototype.resize = function () {

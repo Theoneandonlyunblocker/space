@@ -66,7 +66,7 @@ module Rance
     {
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_main);
-      
+
       var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_map);
 
@@ -89,7 +89,6 @@ module Rance
 
       this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
       {
-
         self.mouseEventHandler.mouseDown(event, "stage");
       }
       this.stage.mousemove = this.stage.touchmove = function(event)
@@ -103,6 +102,28 @@ module Rance
       this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function(event)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
+      }
+
+      var main = this.layers["map"];
+      main.interactive = true;
+
+      main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
+
+      main.mousedown = main.rightdown = main.touchstart = function(event)
+      {
+        self.mouseEventHandler.mouseDown(event, "world");
+      }
+      main.mousemove = main.touchmove = function(event)
+      {
+        self.mouseEventHandler.mouseMove(event, "world");
+      }
+      main.mouseup = main.rightup = main.touchend = function(event)
+      {
+        self.mouseEventHandler.mouseUp(event, "world");
+      }
+      main.mouseupoutside = main.rightupoutside = main.touchendoutside = function(event)
+      {
+        self.mouseEventHandler.mouseUp(event, "world");
       }
     }
     resize()
