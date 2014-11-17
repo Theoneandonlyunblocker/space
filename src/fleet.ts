@@ -86,6 +86,8 @@ module Rance
 
       this.location = newLocation;
       newLocation.addFleet(this);
+
+      eventManager.dispatchEvent("renderMap", null);
     }
     getFriendlyFleetsAtOwnLocation()
     {

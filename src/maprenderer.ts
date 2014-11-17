@@ -50,6 +50,12 @@ module Rance
 
       this.initLayers();
       this.initMapModes();
+
+      this.addEventListeners();
+    }
+    addEventListeners()
+    {
+      eventManager.addEventListener("renderMap", this.render.bind(this));
     }
     initLayers()
     {

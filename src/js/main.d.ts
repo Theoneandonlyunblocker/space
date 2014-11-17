@@ -161,6 +161,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var FleetControls: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FleetInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -454,7 +459,9 @@ declare module Rance {
         public clearSelection(): void;
         public updateSelection(): void;
         public selectFleets(fleets: Rance.Fleet[]): void;
+        public deselectFleet(fleet: Rance.Fleet): void;
         public selectStar(star: Rance.Star): void;
+        public moveFleets(star: Rance.Star): void;
     }
 }
 declare module Rance {
@@ -620,6 +627,7 @@ declare module Rance {
         };
         public currentMapMode: IMapRendererLayerMapMode;
         constructor();
+        public addEventListeners(): void;
         public initLayers(): void;
         public initMapModes(): void;
         public setParent(newParent: PIXI.DisplayObjectContainer): void;

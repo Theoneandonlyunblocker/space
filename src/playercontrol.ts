@@ -25,9 +25,17 @@ module Rance
       {
         self.selectFleets(e.data);
       });
+      eventManager.addEventListener("deselectFleet", function(e)
+      {
+        self.deselectFleet(e.data);
+      });
       eventManager.addEventListener("starClick", function(e)
       {
         self.selectStar(e.data);
+      });
+      eventManager.addEventListener("starRightClick", function(e)
+      {
+        self.moveFleets(e.data);
       });
       
       eventManager.addEventListener("setRectangleSelectTargetFN", function(e)
@@ -52,6 +60,15 @@ module Rance
 
       this.updateSelection();
     }
+    deselectFleet(fleet: Fleet)
+    {
+      var fleetIndex = this.selectedFleets.indexOf(fleet);
+
+      if (fleetIndex < 0) return;
+
+      this.selectedFleets.splice(fleetIndex, 1);
+      this.updateSelection();
+    }
     selectStar(star: Star)
     {
       this.clearSelection();
@@ -59,6 +76,13 @@ module Rance
       this.selectedStar = star;
 
       this.updateSelection();
+    }
+    moveFleets(star: Star)
+    {
+      for (var i = 0; i < this.selectedFleets.length; i++)
+      {
+        this.selectedFleets[i].move(star);
+      }
     }
   }
 }

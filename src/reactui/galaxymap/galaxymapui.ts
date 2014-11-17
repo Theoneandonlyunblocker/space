@@ -27,7 +27,6 @@ module Rance
 
       render: function()
       {
-        console.log(this.state);
         return(
           React.DOM.div(
           {

@@ -1,3 +1,5 @@
+/// <reference path="fleetcontrols.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -30,7 +32,12 @@ module Rance
               React.DOM.div(
               {
                 className: "fleet-info-contols"
-              }, null)
+              },
+                UIComponents.FleetControls(
+                {
+                  fleet: fleet
+                })
+              )
             ),
             React.DOM.div(
             {

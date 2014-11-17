@@ -1483,6 +1483,28 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.FleetControls = React.createClass({
+            deselectFleet: function () {
+                Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "fleet-controls"
+                }, React.DOM.button({
+                    className: "fleet-controls-split"
+                }, "split"), React.DOM.button({
+                    className: "fleet-controls-deselect",
+                    onClick: this.deselectFleet
+                }, "deselect")));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetcontrols.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.FleetInfo = React.createClass({
             render: function () {
                 var fleet = this.props.fleet;
@@ -1500,7 +1522,9 @@ var Rance;
                     className: "fleet-info-strength"
                 }, totalStrength.current + " / " + totalStrength.max), React.DOM.div({
                     className: "fleet-info-contols"
-                }, null)), React.DOM.div({
+                }, Rance.UIComponents.FleetControls({
+                    fleet: fleet
+                }))), React.DOM.div({
                     className: "fleet-info-location"
                 }, fleet.location.name)));
             }
@@ -1573,7 +1597,6 @@ var Rance;
                 });
             },
             render: function () {
-                console.log(this.state);
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, Rance.UIComponents.FleetSelection({
@@ -2679,6 +2702,8 @@ var Rance;
 
             this.location = newLocation;
             newLocation.addFleet(this);
+
+            Rance.eventManager.dispatchEvent("renderMap", null);
         };
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
@@ -2793,8 +2818,14 @@ var Rance;
             Rance.eventManager.addEventListener("selectFleets", function (e) {
                 self.selectFleets(e.data);
             });
+            Rance.eventManager.addEventListener("deselectFleet", function (e) {
+                self.deselectFleet(e.data);
+            });
             Rance.eventManager.addEventListener("starClick", function (e) {
                 self.selectStar(e.data);
+            });
+            Rance.eventManager.addEventListener("starRightClick", function (e) {
+                self.moveFleets(e.data);
             });
 
             Rance.eventManager.addEventListener("setRectangleSelectTargetFN", function (e) {
@@ -2815,12 +2846,26 @@ var Rance;
 
             this.updateSelection();
         };
+        PlayerControl.prototype.deselectFleet = function (fleet) {
+            var fleetIndex = this.selectedFleets.indexOf(fleet);
+
+            if (fleetIndex < 0)
+                return;
+
+            this.selectedFleets.splice(fleetIndex, 1);
+            this.updateSelection();
+        };
         PlayerControl.prototype.selectStar = function (star) {
             this.clearSelection();
 
             this.selectedStar = star;
 
             this.updateSelection();
+        };
+        PlayerControl.prototype.moveFleets = function (star) {
+            for (var i = 0; i < this.selectedFleets.length; i++) {
+                this.selectedFleets[i].move(star);
+            }
         };
         return PlayerControl;
     })();
@@ -3625,7 +3670,12 @@ var Rance;
 
             this.initLayers();
             this.initMapModes();
+
+            this.addEventListeners();
         }
+        MapRenderer.prototype.addEventListeners = function () {
+            Rance.eventManager.addEventListener("renderMap", this.render.bind(this));
+        };
         MapRenderer.prototype.initLayers = function () {
             this.layers["nonFillerStars"] = {
                 container: new PIXI.DisplayObjectContainer(),
