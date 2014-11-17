@@ -324,6 +324,7 @@ declare module Rance {
         public player: Rance.Player;
         public ships: Rance.Unit[];
         public location: Rance.Star;
+        public name: string;
         constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
         public getShipIndex(ship: Rance.Unit): number;
         public hasShip(ship: Rance.Unit): boolean;
@@ -334,6 +335,10 @@ declare module Rance {
         public removeShips(ships: Rance.Unit[]): void;
         public split(newShips: Rance.Unit[]): Fleet;
         public move(newLocation: Rance.Star): void;
+        public getTotalStrength(): {
+            current: number;
+            max: number;
+        };
     }
 }
 declare module Rance {
@@ -403,6 +408,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -421,6 +436,7 @@ declare module Rance {
         public renderer: Rance.Renderer;
         public mapGen: Rance.MapGen;
         public galaxyMap: Rance.GalaxyMap;
+        public playerControl: Rance.PlayerControl;
         constructor(container: HTMLElement);
         public switchScene(newScene: string): void;
         public render(): void;

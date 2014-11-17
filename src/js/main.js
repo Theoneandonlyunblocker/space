@@ -2277,6 +2277,19 @@ var Rance;
             this.location = newLocation;
             newLocation.addFleet(this);
         };
+        Fleet.prototype.getTotalStrength = function () {
+            var total = {
+                current: 0,
+                max: 0
+            };
+
+            for (var i = 0; i < this.ships.length; i++) {
+                total.current += this.ships[i].currentStrength;
+                total.max += this.ships[i].maxStrength;
+            }
+
+            return total;
+        };
         return Fleet;
     })();
     Rance.Fleet = Fleet;
@@ -2509,19 +2522,29 @@ var Rance;
     })();
     Rance.Star = Star;
 })(Rance || (Rance = {}));
-/// <reference path="../../eventmanager.ts"/>
-/// <reference path="../../star.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetInfo = React.createClass({
             render: function () {
                 var fleet = this.props.fleet;
+                if (!fleet)
+                    return null;
+                var totalStrength = fleet.getTotalStrength();
+
                 return (React.DOM.div({
                     className: "fleet-info"
-                }, React.DOM.div(null, "owner: " + fleet.owner.id), Rance.UIComponents.UnitList({
-                    units: fleet.ships
-                })));
+                }, React.DOM.div({
+                    className: "fleet-info-header"
+                }, React.DOM.div({
+                    className: "fleet-info-name"
+                }, fleet.name), React.DOM.div({
+                    className: "fleet-info-strength"
+                }, totalStrength.current + " / " + totalStrength.max), React.DOM.div({
+                    className: "fleet-info-contols"
+                }, null)), React.DOM.div({
+                    className: "fleet-info-location"
+                }, "" + fleet.location.x.toFixed() + " " + fleet.location.y.toFixed())));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2578,8 +2601,65 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="fleetinfo.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FleetSelection = React.createClass({
+            render: function () {
+                var fleetInfos = [];
+
+                for (var i = 0; i < this.props.selectedFleets.length; i++) {
+                    fleetInfos.push(Rance.UIComponents.FleetInfo({
+                        key: i,
+                        fleet: this.props.selectedFleets[i]
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "fleet-selection"
+                }, fleetInfos));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetselection.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.GalaxyMapUI = React.createClass({
+            getInitialState: function () {
+                return ({
+                    selectedFleets: []
+                });
+            },
+            setSelectedFleets: function (e) {
+                this.setState({
+                    selectedFleets: e.data
+                });
+            },
+            render: function () {
+                console.log(this.state.selectedFleets);
+                return (React.DOM.div({
+                    className: "galaxy-map-ui"
+                }, Rance.UIComponents.FleetSelection({
+                    selectedFleets: this.state.selectedFleets
+                })));
+            },
+            componentWillMount: function () {
+                Rance.eventManager.addEventListener("selectFleets", this.setSelectedFleets);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("selectFleets", this.setSelectedFleets);
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../mapgen/mapgencontrols.ts"/>
 /// <reference path="starinfo.ts"/>
+/// <reference path="galaxymapui.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -2596,7 +2676,9 @@ var Rance;
                 return (React.DOM.div(null, React.DOM.div({
                     ref: "pixiContainer",
                     id: "pixi-container"
-                }), Rance.UIComponents.MapGenControls({
+                }, Rance.UIComponents.GalaxyMapUI({
+                    selectedFleets: this.props.playerControl.selectedFleets
+                })), Rance.UIComponents.MapGenControls({
                     mapGen: this.props.galaxyMap.mapGen,
                     renderMap: this.renderMap
                 }), React.DOM.select({
@@ -2668,6 +2750,7 @@ var Rance;
                         elementsToRender.push(Rance.UIComponents.GalaxyMap({
                             renderer: this.props.renderer,
                             galaxyMap: this.props.galaxyMap,
+                            playerControl: this.props.playerControl,
                             key: "galaxyMap"
                         }));
                         break;
@@ -2704,7 +2787,8 @@ var Rance;
                 battlePrep: this.battlePrep,
                 renderer: this.renderer,
                 mapGen: this.mapGen,
-                galaxyMap: this.galaxyMap
+                galaxyMap: this.galaxyMap,
+                playerControl: this.playerControl
             }), this.container);
         };
         return ReactUI;
@@ -2727,7 +2811,6 @@ var Rance;
 
             Rance.eventManager.addEventListener("selectFleets", function (e) {
                 self.selectedFleets = e.data;
-                console.log(self.selectedFleets);
             });
 
             Rance.eventManager.addEventListener("setRectangleSelectTargetFN", function (e) {
@@ -4325,6 +4408,7 @@ var Rance;
         reactUI.galaxyMap = galaxyMap;
 
         playerControl = new Rance.PlayerControl(player1);
+        reactUI.playerControl = playerControl;
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();

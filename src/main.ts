@@ -68,6 +68,7 @@ module Rance
     reactUI.galaxyMap = galaxyMap;
 
     playerControl = new PlayerControl(player1);
+    reactUI.playerControl = playerControl;
 
     reactUI.currentScene = "galaxyMap";
     reactUI.render();

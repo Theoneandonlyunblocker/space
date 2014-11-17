@@ -21,7 +21,6 @@ module Rance
       eventManager.addEventListener("selectFleets", function(e)
       {
         self.selectedFleets = e.data;
-        console.log(self.selectedFleets);
       });
       
       eventManager.addEventListener("setRectangleSelectTargetFN", function(e)

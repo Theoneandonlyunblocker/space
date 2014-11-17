@@ -413,4 +413,34 @@ body {
 }
 #pixi-container {
   height: 400px;
+  position: relative;
+}
+#pixi-container > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.galaxy-map-ui {
+  z-index: 100;
+  pointer-events: none;
+}
+.galaxy-map-ui > * {
+  pointer-events: auto;
+}
+.fleet-selection {
+  display: inline-flex;
+  flex-flow: column;
+}
+.fleet-info {
+  display: inline-flex;
+  flex-flow: column;
+  background-color: white;
+  border: 1px solid black;
+  margin-top: 2px;
+}
+.fleet-info-header {
+  display: flex;
+  flex-flow: row;
 }

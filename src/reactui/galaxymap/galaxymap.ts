@@ -1,5 +1,6 @@
 /// <reference path="../mapgen/mapgencontrols.ts"/>
 /// <reference path="starinfo.ts"/>
+/// <reference path="galaxymapui.ts"/>
 
 module Rance
 {
@@ -26,7 +27,12 @@ module Rance
             {
               ref: "pixiContainer",
               id: "pixi-container"
-            }),
+            },
+              UIComponents.GalaxyMapUI(
+              {
+                selectedFleets: this.props.playerControl.selectedFleets
+              })
+            ),
             UIComponents.MapGenControls(
             {
               mapGen: this.props.galaxyMap.mapGen,

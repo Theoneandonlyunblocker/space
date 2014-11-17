@@ -538,4 +538,44 @@ body {
 #pixi-container
 {
   height: 400px;
+  position: relative;
+  >*
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.galaxy-map-ui
+{
+  z-index: 100;
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
+}
+
+.fleet-selection
+{
+  display: inline-flex;
+  flex-flow: column;
+}
+
+.fleet-info
+{
+  display: inline-flex;
+  flex-flow: column;
+  background-color: white;
+  border: 1px solid black;
+  margin-top: 2px;
+}
+
+.fleet-info-header
+{
+  display: flex;
+  flex-flow: row;
 }

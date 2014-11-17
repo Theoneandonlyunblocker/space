@@ -10,6 +10,8 @@ module Rance
     ships: Unit[];
     location: Star;
 
+    name: string;
+
     constructor(player: Player, ships: Unit[], location: Star)
     {
       this.player = player;
@@ -84,6 +86,22 @@ module Rance
 
       this.location = newLocation;
       newLocation.addFleet(this);
+    }
+    getTotalStrength()
+    {
+      var total =
+      {
+        current: 0,
+        max: 0
+      }
+
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        total.current += this.ships[i].currentStrength;
+        total.max += this.ships[i].maxStrength;
+      }
+
+      return total;
     }
   }
 }
