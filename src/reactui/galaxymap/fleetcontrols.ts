@@ -9,6 +9,11 @@ module Rance
         eventManager.dispatchEvent("deselectFleet", this.props.fleet)
       },
 
+      selectFleet: function()
+      {
+        eventManager.dispatchEvent("selectFleets", [this.props.fleet])
+      },
+
       render: function()
       {
         return(
@@ -28,6 +33,13 @@ module Rance
               onClick: this.deselectFleet
             },
               "deselect"
+            ),
+            !this.props.hasMultipleSelected ? null : React.DOM.button(
+            {
+              className: "fleet-controls-select",
+              onClick: this.selectFleet
+            },
+              "select"
             )
           )
         );

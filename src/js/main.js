@@ -1487,6 +1487,9 @@ var Rance;
             deselectFleet: function () {
                 Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
             },
+            selectFleet: function () {
+                Rance.eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "fleet-controls"
@@ -1495,7 +1498,10 @@ var Rance;
                 }, "split"), React.DOM.button({
                     className: "fleet-controls-deselect",
                     onClick: this.deselectFleet
-                }, "deselect")));
+                }, "deselect"), !this.props.hasMultipleSelected ? null : React.DOM.button({
+                    className: "fleet-controls-select",
+                    onClick: this.selectFleet
+                }, "select")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1519,11 +1525,14 @@ var Rance;
                 }, React.DOM.div({
                     className: "fleet-info-name"
                 }, fleet.name), React.DOM.div({
+                    className: "fleet-info-shipcount"
+                }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
                 }, totalStrength.current + " / " + totalStrength.max), React.DOM.div({
                     className: "fleet-info-contols"
                 }, Rance.UIComponents.FleetControls({
-                    fleet: fleet
+                    fleet: fleet,
+                    hasMultipleSelected: this.props.hasMultipleSelected
                 }))), React.DOM.div({
                     className: "fleet-info-location"
                 }, fleet.location.name)));
@@ -1537,19 +1546,56 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetSelection = React.createClass({
+            mergeFleets: function () {
+                Rance.eventManager.dispatchEvent("mergeFleets", null);
+            },
             render: function () {
+                if (!this.props.selectedFleets || this.props.selectedFleets.length <= 0) {
+                    return null;
+                }
+
+                var allFleetsInSameLocation = true;
+                var hasMultipleSelected = this.props.selectedFleets.length >= 2;
+
+                for (var i = 1; i < this.props.selectedFleets.length; i++) {
+                    if (this.props.selectedFleets[i].location !== this.props.selectedFleets[i - 1].location) {
+                        allFleetsInSameLocation = false;
+                        break;
+                    }
+                }
                 var fleetInfos = [];
 
                 for (var i = 0; i < this.props.selectedFleets.length; i++) {
-                    fleetInfos.push(Rance.UIComponents.FleetInfo({
+                    var infoProps = {
                         key: i,
-                        fleet: this.props.selectedFleets[i]
-                    }));
+                        fleet: this.props.selectedFleets[i],
+                        hasMultipleSelected: hasMultipleSelected
+                    };
+
+                    fleetInfos.push(Rance.UIComponents.FleetInfo(infoProps));
+                }
+
+                var fleetSelectionControls = null;
+
+                if (hasMultipleSelected) {
+                    var mergeProps = {
+                        className: "fleet-selection-controls-merge"
+                    };
+                    if (allFleetsInSameLocation) {
+                        mergeProps.onClick = this.mergeFleets;
+                    } else {
+                        mergeProps.disabled = true;
+                        mergeProps.className += " disabled";
+                    }
+
+                    fleetSelectionControls = React.DOM.div({
+                        className: "fleet-selection-controls"
+                    }, React.DOM.button(mergeProps, "merge"));
                 }
 
                 return (React.DOM.div({
                     className: "fleet-selection"
-                }, fleetInfos));
+                }, fleetSelectionControls, fleetInfos));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2647,6 +2693,8 @@ var Rance;
 
             this.location.addFleet(this);
             this.player.addFleet(this);
+
+            Rance.eventManager.dispatchEvent("renderMap", null);
         }
         Fleet.prototype.getShipIndex = function (ship) {
             return this.ships.indexOf(ship);
@@ -2657,6 +2705,12 @@ var Rance;
         Fleet.prototype.deleteFleet = function () {
             this.location.removeFleet(this);
             this.player.removeFleet(this);
+
+            Rance.eventManager.dispatchEvent("renderMap", null);
+        };
+        Fleet.prototype.mergeWith = function (fleet) {
+            fleet.addShips(this.ships);
+            this.deleteFleet();
         };
         Fleet.prototype.addShip = function (ship) {
             if (this.hasShip(ship))
@@ -2702,8 +2756,6 @@ var Rance;
 
             this.location = newLocation;
             newLocation.addFleet(this);
-
-            Rance.eventManager.dispatchEvent("renderMap", null);
         };
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
@@ -2821,6 +2873,9 @@ var Rance;
             Rance.eventManager.addEventListener("deselectFleet", function (e) {
                 self.deselectFleet(e.data);
             });
+            Rance.eventManager.addEventListener("mergeFleets", function (e) {
+                self.mergeFleets();
+            });
             Rance.eventManager.addEventListener("starClick", function (e) {
                 self.selectStar(e.data);
             });
@@ -2855,6 +2910,24 @@ var Rance;
             this.selectedFleets.splice(fleetIndex, 1);
             this.updateSelection();
         };
+        PlayerControl.prototype.getMasterFleetForMerge = function () {
+            return this.selectedFleets[0];
+        };
+        PlayerControl.prototype.mergeFleets = function () {
+            var fleets = this.selectedFleets;
+            var master = this.getMasterFleetForMerge();
+
+            fleets.splice(fleets.indexOf(master), 1);
+            var slaves = fleets;
+
+            for (var i = 0; i < slaves.length; i++) {
+                slaves[i].mergeWith(master);
+            }
+
+            this.clearSelection();
+            this.selectedFleets = [master];
+            this.updateSelection();
+        };
         PlayerControl.prototype.selectStar = function (star) {
             this.clearSelection();
 
@@ -2866,6 +2939,9 @@ var Rance;
             for (var i = 0; i < this.selectedFleets.length; i++) {
                 this.selectedFleets[i].move(star);
             }
+            this.updateSelection();
+
+            Rance.eventManager.dispatchEvent("renderMap", null);
         };
         return PlayerControl;
     })();
@@ -3771,9 +3847,7 @@ var Rance;
                     var stars = map.mapGen.getNonFillerPoints();
 
                     function fleetClickFn(fleet) {
-                        var friendlyFleets = fleet.getFriendlyFleetsAtOwnLocation();
-
-                        Rance.eventManager.dispatchEvent("selectFleets", friendlyFleets);
+                        Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
                     }
 
                     function singleFleetDrawFN(fleet) {

@@ -170,9 +170,7 @@ module Rance
 
           function fleetClickFn(fleet: Fleet)
           {
-            var friendlyFleets = fleet.getFriendlyFleetsAtOwnLocation();
-
-            eventManager.dispatchEvent("selectFleets", friendlyFleets);
+            eventManager.dispatchEvent("selectFleets", [fleet]);
           }
 
           function singleFleetDrawFN(fleet: Fleet)

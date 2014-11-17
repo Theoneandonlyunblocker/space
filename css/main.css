@@ -447,8 +447,14 @@ body {
   display: flex;
   flex-flow: row;
 }
+.fleet-info-name {
+  margin-right: 5px;
+}
+.fleet-info-shipcount {
+  margin-right: 5px;
+}
 .fleet-info-strength {
-  margin: 0 5px;
+  margin-right: 5px;
 }
 .star-info {
   position: absolute;

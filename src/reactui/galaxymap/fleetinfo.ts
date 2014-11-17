@@ -27,6 +27,10 @@ module Rance
               }, fleet.name),
               React.DOM.div(
               {
+                className: "fleet-info-shipcount"
+              }, fleet.ships.length),
+              React.DOM.div(
+              {
                 className: "fleet-info-strength"
               }, totalStrength.current + " / " + totalStrength.max),
               React.DOM.div(
@@ -35,7 +39,8 @@ module Rance
               },
                 UIComponents.FleetControls(
                 {
-                  fleet: fleet
+                  fleet: fleet,
+                  hasMultipleSelected: this.props.hasMultipleSelected
                 })
               )
             ),

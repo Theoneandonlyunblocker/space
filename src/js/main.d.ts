@@ -415,6 +415,7 @@ declare module Rance {
         public getShipIndex(ship: Rance.Unit): number;
         public hasShip(ship: Rance.Unit): boolean;
         public deleteFleet(): void;
+        public mergeWith(fleet: Fleet): void;
         public addShip(ship: Rance.Unit): boolean;
         public addShips(ships: Rance.Unit[]): void;
         public removeShip(ship: Rance.Unit): boolean;
@@ -460,6 +461,8 @@ declare module Rance {
         public updateSelection(): void;
         public selectFleets(fleets: Rance.Fleet[]): void;
         public deselectFleet(fleet: Rance.Fleet): void;
+        public getMasterFleetForMerge(): Rance.Fleet;
+        public mergeFleets(): void;
         public selectStar(star: Rance.Star): void;
         public moveFleets(star: Rance.Star): void;
     }

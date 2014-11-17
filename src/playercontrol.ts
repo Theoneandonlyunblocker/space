@@ -29,6 +29,10 @@ module Rance
       {
         self.deselectFleet(e.data);
       });
+      eventManager.addEventListener("mergeFleets", function(e)
+      {
+        self.mergeFleets();
+      });
       eventManager.addEventListener("starClick", function(e)
       {
         self.selectStar(e.data);
@@ -69,6 +73,27 @@ module Rance
       this.selectedFleets.splice(fleetIndex, 1);
       this.updateSelection();
     }
+    getMasterFleetForMerge()
+    {
+      return this.selectedFleets[0];
+    }
+    mergeFleets()
+    {
+      var fleets = this.selectedFleets;
+      var master = this.getMasterFleetForMerge();
+
+      fleets.splice(fleets.indexOf(master), 1);
+      var slaves = fleets;
+
+      for (var i = 0; i < slaves.length; i++)
+      {
+        slaves[i].mergeWith(master);
+      }
+
+      this.clearSelection();
+      this.selectedFleets = [master];
+      this.updateSelection();
+    }
     selectStar(star: Star)
     {
       this.clearSelection();
@@ -83,6 +108,9 @@ module Rance
       {
         this.selectedFleets[i].move(star);
       }
+      this.updateSelection();
+
+      eventManager.dispatchEvent("renderMap", null);
     }
   }
 }
