@@ -3,6 +3,7 @@
 /// <reference path="battle.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="player.ts"/>
+/// <reference path="playercontrol.ts"/>
 /// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
@@ -10,7 +11,7 @@
 /// <reference path="renderer.ts"/>
 
 var fleet1, fleet2, player1, player2, battle, battlePrep,
-  reactUI, renderer, mapGen, galaxyMap, mapRenderer;
+  reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 
 module Rance
 {
@@ -65,6 +66,8 @@ module Rance
     galaxyMap = new GalaxyMap();
     galaxyMap.mapGen = mapGen;
     reactUI.galaxyMap = galaxyMap;
+
+    playerControl = new PlayerControl(player1);
 
     reactUI.currentScene = "galaxyMap";
     reactUI.render();

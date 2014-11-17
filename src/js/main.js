@@ -2324,10 +2324,19 @@ var Rance;
 
             this.fleets.splice(fleetIndex, 1);
         };
-        Player.prototype.getAllFleets = function () {
-            var allUnits = this.getAllUnits();
+        Player.prototype.getFleetsWithPositions = function () {
+            var positions = [];
 
-            var fleets = {};
+            for (var i = 0; i < this.fleets.length; i++) {
+                var fleet = this.fleets[i];
+
+                positions.push({
+                    position: fleet.location,
+                    data: fleet
+                });
+            }
+
+            return positions;
         };
         return Player;
     })();
@@ -2701,6 +2710,33 @@ var Rance;
         return ReactUI;
     })();
     Rance.ReactUI = ReactUI;
+})(Rance || (Rance = {}));
+/// <reference path="eventmanager.ts"/>
+/// <reference path="player.ts"/>
+/// <reference path="fleet.ts"/>
+var Rance;
+(function (Rance) {
+    var PlayerControl = (function () {
+        function PlayerControl(player) {
+            this.selectedFleets = [];
+            this.player = player;
+            this.addEventListeners();
+        }
+        PlayerControl.prototype.addEventListeners = function () {
+            var self = this;
+
+            Rance.eventManager.addEventListener("selectFleets", function (e) {
+                self.selectedFleets = e.data;
+                console.log(self.selectedFleets);
+            });
+
+            Rance.eventManager.addEventListener("setRectangleSelectTargetFN", function (e) {
+                e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
+            });
+        };
+        return PlayerControl;
+    })();
+    Rance.PlayerControl = PlayerControl;
 })(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
@@ -3885,6 +3921,7 @@ var Rance;
     Rance.Camera = Camera;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
+/// <reference path="eventmanager.ts"/>
 /// <reference path="point.ts" />
 var Rance;
 (function (Rance) {
@@ -3893,11 +3930,21 @@ var Rance;
             this.parentContainer = parentContainer;
             this.graphics = new PIXI.Graphics();
             parentContainer.addChild(this.graphics);
+
+            this.addEventListeners();
         }
+        RectangleSelect.prototype.addEventListeners = function () {
+            var self = this;
+
+            Rance.eventManager.dispatchEvent("setRectangleSelectTargetFN", this);
+        };
+
         RectangleSelect.prototype.startSelection = function (point) {
             this.selecting = true;
             this.start = point;
             this.current = point;
+
+            this.setSelectionTargets();
         };
         RectangleSelect.prototype.moveSelection = function (point) {
             this.current = point;
@@ -3908,10 +3955,8 @@ var Rance;
 
             this.graphics.clear();
 
-            this.toSelectFrom = mapGen.points;
             var inSelection = this.getAllInSelection();
-
-            console.log(inSelection);
+            Rance.eventManager.dispatchEvent("selectFleets", inSelection);
 
             this.start = null;
             this.current = null;
@@ -3928,6 +3973,12 @@ var Rance;
             gfx.beginFill(0x000000, 0.3);
             gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
             gfx.endFill();
+        };
+        RectangleSelect.prototype.setSelectionTargets = function () {
+            if (!this.getSelectionTargetsFN)
+                return;
+
+            this.toSelectFrom = this.getSelectionTargetsFN();
         };
         RectangleSelect.prototype.getBounds = function () {
             var x1 = Math.min(this.start.x, this.current.x);
@@ -3949,8 +4000,8 @@ var Rance;
             var toReturn = [];
 
             for (var i = 0; i < this.toSelectFrom.length; i++) {
-                if (this.selectionContains(this.toSelectFrom[i])) {
-                    toReturn.push(this.toSelectFrom[i]);
+                if (this.selectionContains(this.toSelectFrom[i].position)) {
+                    toReturn.push(this.toSelectFrom[i].data);
                 }
             }
             return toReturn;
@@ -4219,12 +4270,13 @@ var Rance;
 /// <reference path="battle.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="player.ts"/>
+/// <reference path="playercontrol.ts"/>
 /// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="renderer.ts"/>
-var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer;
+var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 
 var Rance;
 (function (Rance) {
@@ -4271,6 +4323,8 @@ var Rance;
         galaxyMap = new Rance.GalaxyMap();
         galaxyMap.mapGen = mapGen;
         reactUI.galaxyMap = galaxyMap;
+
+        playerControl = new Rance.PlayerControl(player1);
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();

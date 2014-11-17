@@ -60,11 +60,22 @@ module Rance
 
       this.fleets.splice(fleetIndex, 1);
     }
-    getAllFleets()
+    getFleetsWithPositions()
     {
-      var allUnits = this.getAllUnits();
+      var positions = [];
 
-      var fleets: any = {};
+      for (var i = 0; i < this.fleets.length; i++)
+      {
+        var fleet = this.fleets[i];
+
+        positions.push(
+        {
+          position: fleet.location,
+          data: fleet
+        });
+      }
+
+      return positions;
     }
   }  
 }

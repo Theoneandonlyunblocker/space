@@ -350,7 +350,7 @@ declare module Rance {
         public getFleetIndex(fleet: Rance.Fleet): number;
         public addFleet(fleet: Rance.Fleet): void;
         public removeFleet(fleet: Rance.Fleet): void;
-        public getAllFleets(): void;
+        public getFleetsWithPositions(): any[];
     }
 }
 declare module Rance {
@@ -424,6 +424,14 @@ declare module Rance {
         constructor(container: HTMLElement);
         public switchScene(newScene: string): void;
         public render(): void;
+    }
+}
+declare module Rance {
+    class PlayerControl {
+        public player: Rance.Player;
+        public selectedFleets: Rance.Fleet[];
+        constructor(player: Rance.Player);
+        public addEventListeners(): void;
     }
 }
 declare module Rance {
@@ -683,12 +691,21 @@ declare module Rance {
         public selecting: boolean;
         public start: Rance.Point;
         public current: Rance.Point;
-        public toSelectFrom: any[];
+        public toSelectFrom: {
+            position: Rance.Point;
+            data: any;
+        }[];
+        public getSelectionTargetsFN: () => {
+            position: Rance.Point;
+            data: any;
+        }[];
         constructor(parentContainer: PIXI.DisplayObjectContainer);
+        public addEventListeners(): void;
         public startSelection(point: Rance.Point): void;
         public moveSelection(point: Rance.Point): void;
         public endSelection(point: Rance.Point): void;
         public drawSelectionRectangle(): void;
+        public setSelectionTargets(): void;
         public getBounds(): {
             x1: number;
             x2: number;
@@ -751,6 +768,6 @@ declare module Rance {
         public render(): void;
     }
 }
-declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any;
+declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare module Rance {
 }

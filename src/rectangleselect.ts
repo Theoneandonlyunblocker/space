@@ -1,4 +1,7 @@
 /// <reference path="../lib/pixi.d.ts" />
+
+/// <reference path="eventmanager.ts"/>
+
 /// <reference path="point.ts" />
 
 module Rance
@@ -12,13 +15,22 @@ module Rance
     start: Point;
     current: Point;
 
-    toSelectFrom: any[];
+    toSelectFrom: {position: Point; data: any}[];
+    getSelectionTargetsFN: () => {position: Point; data: any}[];
 
     constructor(parentContainer: PIXI.DisplayObjectContainer)
     {
       this.parentContainer = parentContainer;
       this.graphics = new PIXI.Graphics();
       parentContainer.addChild(this.graphics);
+
+      this.addEventListeners();
+    }
+    addEventListeners()
+    {
+      var self = this;
+
+      eventManager.dispatchEvent("setRectangleSelectTargetFN", this);
     }
 
     startSelection(point: Point)
@@ -26,6 +38,8 @@ module Rance
       this.selecting = true;
       this.start = point;
       this.current = point;
+
+      this.setSelectionTargets();
     }
     moveSelection(point: Point)
     {
@@ -38,10 +52,8 @@ module Rance
 
       this.graphics.clear();
 
-      this.toSelectFrom = mapGen.points;
       var inSelection = this.getAllInSelection();
-
-      console.log(inSelection);
+      eventManager.dispatchEvent("selectFleets", inSelection);
 
       this.start = null;
       this.current = null;
@@ -58,6 +70,12 @@ module Rance
       gfx.beginFill(0x000000, 0.3);
       gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
       gfx.endFill();
+    }
+    setSelectionTargets()
+    {
+      if (!this.getSelectionTargetsFN) return;
+
+      this.toSelectFrom = this.getSelectionTargetsFN();
     }
     getBounds()
     {
@@ -84,9 +102,9 @@ module Rance
 
       for (var i = 0; i < this.toSelectFrom.length; i++)
       {
-        if (this.selectionContains(this.toSelectFrom[i]))
+        if (this.selectionContains(this.toSelectFrom[i].position))
         {
-          toReturn.push(this.toSelectFrom[i]);
+          toReturn.push(this.toSelectFrom[i].data);
         }
       }
       return toReturn;
