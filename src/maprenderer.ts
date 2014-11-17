@@ -149,6 +149,13 @@ module Rance
           var doc = new PIXI.DisplayObjectContainer();
           var stars = map.mapGen.getNonFillerPoints();
 
+          function fleetClickFn(fleet: Fleet)
+          {
+            var friendlyFleets = fleet.getFriendlyFleetsAtOwnLocation();
+
+            eventManager.dispatchEvent("selectFleets", friendlyFleets);
+          }
+
           function singleFleetDrawFN(fleet: Fleet)
           {
             var fleetContainer = new PIXI.DisplayObjectContainer();
@@ -164,6 +171,9 @@ module Rance
             containerGfx.beginFill(playerColor, 0.4);
             containerGfx.drawRect(0, 0, text.width+4, text.height+4);
             containerGfx.endFill();
+
+            containerGfx.interactive = true;
+            containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
 
             containerGfx.addChild(text);
             text.x += 2;
@@ -208,7 +218,8 @@ module Rance
         [
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
-          {layer: this.layers["nonFillerStars"]}
+          {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fleets"]}
         ]
       }
       this.mapModes["noLines"] =

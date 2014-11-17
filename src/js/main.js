@@ -2277,6 +2277,9 @@ var Rance;
             this.location = newLocation;
             newLocation.addFleet(this);
         };
+        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
+            return this.location.fleets[this.player.id];
+        };
         Fleet.prototype.getTotalStrength = function () {
             var total = {
                 current: 0,
@@ -2544,7 +2547,7 @@ var Rance;
                     className: "fleet-info-contols"
                 }, null)), React.DOM.div({
                     className: "fleet-info-location"
-                }, "" + fleet.location.x.toFixed() + " " + fleet.location.y.toFixed())));
+                }, "x: " + fleet.location.x.toFixed() + " y: " + fleet.location.y.toFixed())));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2640,7 +2643,6 @@ var Rance;
                 });
             },
             render: function () {
-                console.log(this.state.selectedFleets);
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, Rance.UIComponents.FleetSelection({
@@ -3256,6 +3258,11 @@ var Rance;
             this.triangulate();
             this.severArmLinks();
 
+            for (var i = 0; i < 4; i++) {
+                var fleet = new Rance.Fleet(player1, [player1.units[i]], this.points[i]);
+                fleet.name = "fleet" + i;
+            }
+
             return this;
         };
 
@@ -3697,6 +3704,12 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var stars = map.mapGen.getNonFillerPoints();
 
+                    function fleetClickFn(fleet) {
+                        var friendlyFleets = fleet.getFriendlyFleetsAtOwnLocation();
+
+                        Rance.eventManager.dispatchEvent("selectFleets", friendlyFleets);
+                    }
+
                     function singleFleetDrawFN(fleet) {
                         var fleetContainer = new PIXI.DisplayObjectContainer();
                         var playerColor = fleet.player.color;
@@ -3710,6 +3723,9 @@ var Rance;
                         containerGfx.beginFill(playerColor, 0.4);
                         containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
                         containerGfx.endFill();
+
+                        containerGfx.interactive = true;
+                        containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
 
                         containerGfx.addChild(text);
                         text.x += 2;
@@ -3750,7 +3766,8 @@ var Rance;
                 layers: [
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] }
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
                 ]
             };
             this.mapModes["noLines"] = {
@@ -4293,6 +4310,9 @@ var Rance;
             var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_map);
 
+            var _background = this.layers["background"] = new PIXI.DisplayObjectContainer();
+            _map.addChild(_background);
+
             var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_select);
         };
@@ -4317,21 +4337,29 @@ var Rance;
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
 
-            var main = this.layers["map"];
+            var main = this.layers["background"];
             main.interactive = true;
 
             main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
 
             main.mousedown = main.rightdown = main.touchstart = function (event) {
+                if (event.target !== main)
+                    return;
                 self.mouseEventHandler.mouseDown(event, "world");
             };
             main.mousemove = main.touchmove = function (event) {
+                if (event.target !== main)
+                    return;
                 self.mouseEventHandler.mouseMove(event, "world");
             };
             main.mouseup = main.rightup = main.touchend = function (event) {
+                if (event.target !== main)
+                    return;
                 self.mouseEventHandler.mouseUp(event, "world");
             };
             main.mouseupoutside = main.rightupoutside = main.touchendoutside = function (event) {
+                if (event.target !== main)
+                    return;
                 self.mouseEventHandler.mouseUp(event, "world");
             };
         };

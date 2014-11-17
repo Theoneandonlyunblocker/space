@@ -335,6 +335,7 @@ declare module Rance {
         public removeShips(ships: Rance.Unit[]): void;
         public split(newShips: Rance.Unit[]): Fleet;
         public move(newLocation: Rance.Star): void;
+        public getFriendlyFleetsAtOwnLocation(): Fleet[];
         public getTotalStrength(): {
             current: number;
             max: number;

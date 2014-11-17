@@ -444,3 +444,6 @@ body {
   display: flex;
   flex-flow: row;
 }
+.fleet-info-strength {
+  margin: 0 5px;
+}

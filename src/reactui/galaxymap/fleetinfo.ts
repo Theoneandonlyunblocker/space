@@ -35,7 +35,8 @@ module Rance
             React.DOM.div(
             {
               className: "fleet-info-location"
-            }, "" + fleet.location.x.toFixed() + " " + fleet.location.y.toFixed())
+            }, "x: " + fleet.location.x.toFixed() +
+            " y: " + fleet.location.y.toFixed())
             
           )
         );

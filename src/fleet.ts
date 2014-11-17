@@ -87,6 +87,10 @@ module Rance
       this.location = newLocation;
       newLocation.addFleet(this);
     }
+    getFriendlyFleetsAtOwnLocation()
+    {
+      return this.location.fleets[this.player.id];
+    }
     getTotalStrength()
     {
       var total =

@@ -24,7 +24,6 @@ module Rance
 
       render: function()
       {
-        console.log(this.state.selectedFleets);
         return(
           React.DOM.div(
           {

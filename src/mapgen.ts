@@ -87,6 +87,13 @@ module Rance
       this.triangulate();
       this.severArmLinks();
 
+      for (var i = 0; i < 4; i++)
+      {
+        var fleet = new Rance.Fleet(player1, [player1.units[i]],
+          this.points[i]);
+        fleet.name = "fleet" + i;
+      }
+
       return this;
     }
 
