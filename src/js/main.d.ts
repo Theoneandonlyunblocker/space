@@ -160,13 +160,44 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function EventManager(): void;
-    var eventManager: any;
+    module UIComponents {
+        var FleetInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
 }
 declare module Rance {
-    interface Point {
-        x: number;
-        y: number;
+    module UIComponents {
+        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    class ReactUI {
+        public container: HTMLElement;
+        public currentScene: string;
+        public stage: any;
+        public battle: Rance.Battle;
+        public battlePrep: Rance.BattlePrep;
+        public renderer: Rance.Renderer;
+        public mapGen: Rance.MapGen;
+        public galaxyMap: Rance.GalaxyMap;
+        public playerControl: Rance.PlayerControl;
+        constructor(container: HTMLElement);
+        public switchScene(newScene: string): void;
+        public render(): void;
     }
 }
 declare module Rance {
@@ -320,43 +351,9 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class Fleet {
-        public player: Rance.Player;
-        public ships: Rance.Unit[];
-        public location: Rance.Star;
-        public name: string;
-        constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
-        public getShipIndex(ship: Rance.Unit): number;
-        public hasShip(ship: Rance.Unit): boolean;
-        public deleteFleet(): void;
-        public addShip(ship: Rance.Unit): boolean;
-        public addShips(ships: Rance.Unit[]): void;
-        public removeShip(ship: Rance.Unit): boolean;
-        public removeShips(ships: Rance.Unit[]): void;
-        public split(newShips: Rance.Unit[]): Fleet;
-        public move(newLocation: Rance.Star): void;
-        public getFriendlyFleetsAtOwnLocation(): Fleet[];
-        public getTotalStrength(): {
-            current: number;
-            max: number;
-        };
-    }
-}
-declare module Rance {
-    class Player {
-        public id: number;
-        public units: {
-            [id: number]: Rance.Unit;
-        };
-        public fleets: Rance.Fleet[];
-        public color: number;
-        constructor(id?: number);
-        public addUnit(unit: Rance.Unit): void;
-        public getAllUnits(): any[];
-        public getFleetIndex(fleet: Rance.Fleet): number;
-        public addFleet(fleet: Rance.Fleet): void;
-        public removeFleet(fleet: Rance.Fleet): void;
-        public getFleetsWithPositions(): any[];
+    interface Point {
+        x: number;
+        y: number;
     }
 }
 declare module Rance {
@@ -398,57 +395,60 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module UIComponents {
-        var FleetInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    class Fleet {
+        public player: Rance.Player;
+        public ships: Rance.Unit[];
+        public location: Rance.Star;
+        public name: string;
+        constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
+        public getShipIndex(ship: Rance.Unit): number;
+        public hasShip(ship: Rance.Unit): boolean;
+        public deleteFleet(): void;
+        public addShip(ship: Rance.Unit): boolean;
+        public addShips(ships: Rance.Unit[]): void;
+        public removeShip(ship: Rance.Unit): boolean;
+        public removeShips(ships: Rance.Unit[]): void;
+        public split(newShips: Rance.Unit[]): Fleet;
+        public move(newLocation: Rance.Star): void;
+        public getFriendlyFleetsAtOwnLocation(): Fleet[];
+        public getTotalStrength(): {
+            current: number;
+            max: number;
+        };
     }
 }
 declare module Rance {
-    module UIComponents {
-        var StarInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    class Player {
+        public id: number;
+        public units: {
+            [id: number]: Rance.Unit;
+        };
+        public fleets: Rance.Fleet[];
+        public color: number;
+        constructor(id?: number);
+        public addUnit(unit: Rance.Unit): void;
+        public getAllUnits(): any[];
+        public getFleetIndex(fleet: Rance.Fleet): number;
+        public addFleet(fleet: Rance.Fleet): void;
+        public removeFleet(fleet: Rance.Fleet): void;
+        public getFleetsWithPositions(): any[];
     }
 }
 declare module Rance {
-    module UIComponents {
-        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    class ReactUI {
-        public container: HTMLElement;
-        public currentScene: string;
-        public stage: any;
-        public battle: Rance.Battle;
-        public battlePrep: Rance.BattlePrep;
-        public renderer: Rance.Renderer;
-        public mapGen: Rance.MapGen;
-        public galaxyMap: Rance.GalaxyMap;
-        public playerControl: Rance.PlayerControl;
-        constructor(container: HTMLElement);
-        public switchScene(newScene: string): void;
-        public render(): void;
-    }
+    function EventManager(): void;
+    var eventManager: any;
 }
 declare module Rance {
     class PlayerControl {
         public player: Rance.Player;
         public selectedFleets: Rance.Fleet[];
+        public selectedStar: Rance.Star;
         constructor(player: Rance.Player);
         public addEventListeners(): void;
+        public clearSelection(): void;
+        public updateSelection(): void;
+        public selectFleets(fleets: Rance.Fleet[]): void;
+        public selectStar(star: Rance.Star): void;
     }
 }
 declare module Rance {

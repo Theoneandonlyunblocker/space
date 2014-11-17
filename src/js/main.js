@@ -1480,19 +1480,228 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
-    function EventManager() {
-    }
-    Rance.EventManager = EventManager;
-    ;
+    (function (UIComponents) {
+        UIComponents.FleetInfo = React.createClass({
+            render: function () {
+                var fleet = this.props.fleet;
+                if (!fleet)
+                    return null;
+                var totalStrength = fleet.getTotalStrength();
 
-    var et = PIXI.EventTarget;
+                return (React.DOM.div({
+                    className: "fleet-info"
+                }, React.DOM.div({
+                    className: "fleet-info-header"
+                }, React.DOM.div({
+                    className: "fleet-info-name"
+                }, fleet.name), React.DOM.div({
+                    className: "fleet-info-strength"
+                }, totalStrength.current + " / " + totalStrength.max), React.DOM.div({
+                    className: "fleet-info-contols"
+                }, null)), React.DOM.div({
+                    className: "fleet-info-location"
+                }, "x: " + fleet.location.x.toFixed() + " y: " + fleet.location.y.toFixed())));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetinfo.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FleetSelection = React.createClass({
+            render: function () {
+                var fleetInfos = [];
 
-    et.mixin(EventManager.prototype);
+                for (var i = 0; i < this.props.selectedFleets.length; i++) {
+                    fleetInfos.push(Rance.UIComponents.FleetInfo({
+                        key: i,
+                        fleet: this.props.selectedFleets[i]
+                    }));
+                }
 
-    Rance.eventManager = new EventManager();
+                return (React.DOM.div({
+                    className: "fleet-selection"
+                }, fleetInfos));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetselection.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.GalaxyMapUI = React.createClass({
+            getInitialState: function () {
+                return ({
+                    selectedFleets: this.props.playerControl.selectedFleets,
+                    selectedStar: this.props.playerControl.selectedStar
+                });
+            },
+            updateSelection: function () {
+                this.setState({
+                    selectedFleets: this.props.playerControl.selectedFleets,
+                    selectedStar: this.props.playerControl.selectedStar
+                });
+            },
+            render: function () {
+                console.log(this.state);
+                return (React.DOM.div({
+                    className: "galaxy-map-ui"
+                }, Rance.UIComponents.FleetSelection({
+                    selectedFleets: this.state.selectedFleets
+                })));
+            },
+            componentWillMount: function () {
+                Rance.eventManager.addEventListener("updateSelection", this.updateSelection);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("updateSelection", this.updateSelection);
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../mapgen/mapgencontrols.ts"/>
+/// <reference path="galaxymapui.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.GalaxyMap = React.createClass({
+            renderMap: function () {
+                this.props.galaxyMap.mapRenderer.render();
+            },
+            switchMapMode: function () {
+                var newMode = this.refs.mapModeSelector.getDOMNode().value;
+
+                this.props.galaxyMap.mapRenderer.setMapMode(newMode);
+            },
+            render: function () {
+                return (React.DOM.div(null, React.DOM.div({
+                    ref: "pixiContainer",
+                    id: "pixi-container"
+                }, Rance.UIComponents.GalaxyMapUI({
+                    playerControl: this.props.playerControl
+                })), Rance.UIComponents.MapGenControls({
+                    mapGen: this.props.galaxyMap.mapGen,
+                    renderMap: this.renderMap
+                }), React.DOM.select({
+                    className: "reactui-selector",
+                    ref: "mapModeSelector",
+                    onChange: this.switchMapMode
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"))));
+            },
+            componentDidMount: function () {
+                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
+                this.props.renderer.init();
+                this.props.renderer.bindRendererView();
+
+                var mapRenderer = new Rance.MapRenderer();
+                mapRenderer.setParent(renderer.layers["map"]);
+                this.props.galaxyMap.mapRenderer = mapRenderer;
+                mapRenderer.galaxyMap = galaxyMap;
+
+                this.props.galaxyMap.mapRenderer.setMapMode("default");
+
+                this.props.renderer.render();
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../../lib/react.d.ts" />
+/// <reference path="battle/battle.ts"/>
+/// <reference path="unitlist/unitlist.ts"/>
+/// <reference path="battleprep/battleprep.ts"/>
+/// <reference path="mapgen/mapgen.ts"/>
+/// <reference path="galaxymap/galaxymap.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Stage = React.createClass({
+            changeScene: function () {
+                var newScene = this.refs.sceneSelector.getDOMNode().value;
+
+                this.props.changeSceneFunction(newScene);
+            },
+            render: function () {
+                var elementsToRender = [];
+
+                switch (this.props.sceneToRender) {
+                    case "battle": {
+                        elementsToRender.push(Rance.UIComponents.Battle({
+                            battle: this.props.battle,
+                            key: "battle"
+                        }));
+                        break;
+                    }
+                    case "mapGen": {
+                        elementsToRender.push(Rance.UIComponents.MapGen({
+                            renderer: this.props.renderer,
+                            mapGen: this.props.mapGen,
+                            key: "mapGen"
+                        }));
+                        break;
+                    }
+                    case "battlePrep": {
+                        elementsToRender.push(Rance.UIComponents.BattlePrep({
+                            battlePrep: this.props.battlePrep,
+                            key: "battlePrep"
+                        }));
+                        break;
+                    }
+                    case "galaxyMap": {
+                        elementsToRender.push(Rance.UIComponents.GalaxyMap({
+                            renderer: this.props.renderer,
+                            galaxyMap: this.props.galaxyMap,
+                            playerControl: this.props.playerControl,
+                            key: "galaxyMap"
+                        }));
+                        break;
+                    }
+                }
+                return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
+                    className: "reactui-selector",
+                    ref: "sceneSelector",
+                    value: this.props.sceneToRender,
+                    onChange: this.changeScene
+                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../../lib/react.d.ts" />
+/// <reference path="stage.ts"/>
+var Rance;
+(function (Rance) {
+    var ReactUI = (function () {
+        function ReactUI(container) {
+            this.container = container;
+        }
+        ReactUI.prototype.switchScene = function (newScene) {
+            this.currentScene = newScene;
+            this.render();
+        };
+        ReactUI.prototype.render = function () {
+            this.stage = React.renderComponent(Rance.UIComponents.Stage({
+                sceneToRender: this.currentScene,
+                changeSceneFunction: this.switchScene.bind(this),
+                battle: this.battle,
+                battlePrep: this.battlePrep,
+                renderer: this.renderer,
+                mapGen: this.mapGen,
+                galaxyMap: this.galaxyMap,
+                playerControl: this.playerControl
+            }), this.container);
+        };
+        return ReactUI;
+    })();
+    Rance.ReactUI = ReactUI;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
@@ -2208,156 +2417,6 @@ var Rance;
     })();
     Rance.Unit = Unit;
 })(Rance || (Rance = {}));
-/// <reference path="player.ts" />
-/// <reference path="unit.ts" />
-/// <reference path="star.ts" />
-var Rance;
-(function (Rance) {
-    var Fleet = (function () {
-        function Fleet(player, ships, location) {
-            this.player = player;
-            this.ships = ships;
-            this.location = location;
-
-            this.location.addFleet(this);
-            this.player.addFleet(this);
-        }
-        Fleet.prototype.getShipIndex = function (ship) {
-            return this.ships.indexOf(ship);
-        };
-        Fleet.prototype.hasShip = function (ship) {
-            return this.getShipIndex(ship) >= 0;
-        };
-        Fleet.prototype.deleteFleet = function () {
-            this.location.removeFleet(this);
-            this.player.removeFleet(this);
-        };
-        Fleet.prototype.addShip = function (ship) {
-            if (this.hasShip(ship))
-                return false;
-
-            this.ships.push(ship);
-            ship.addToFleet(this);
-        };
-        Fleet.prototype.addShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.addShip(ships[i]);
-            }
-        };
-        Fleet.prototype.removeShip = function (ship) {
-            var index = this.getShipIndex(ship);
-
-            if (index < 0)
-                return false;
-
-            this.ships.splice(index, 1);
-            ship.removeFromFleet();
-
-            if (this.ships.length <= 0) {
-                this.deleteFleet();
-            }
-        };
-        Fleet.prototype.removeShips = function (ships) {
-            for (var i = 0; i < ships.length; i++) {
-                this.removeShip(ships[i]);
-            }
-        };
-        Fleet.prototype.split = function (newShips) {
-            this.removeShips(newShips);
-
-            var newFleet = new Fleet(this.player, newShips, this.location);
-            this.location.addFleet(newFleet);
-
-            return newFleet;
-        };
-        Fleet.prototype.move = function (newLocation) {
-            var oldLocation = this.location;
-            oldLocation.removeFleet(this);
-
-            this.location = newLocation;
-            newLocation.addFleet(this);
-        };
-        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
-            return this.location.fleets[this.player.id];
-        };
-        Fleet.prototype.getTotalStrength = function () {
-            var total = {
-                current: 0,
-                max: 0
-            };
-
-            for (var i = 0; i < this.ships.length; i++) {
-                total.current += this.ships[i].currentStrength;
-                total.max += this.ships[i].maxStrength;
-            }
-
-            return total;
-        };
-        return Fleet;
-    })();
-    Rance.Fleet = Fleet;
-})(Rance || (Rance = {}));
-/// <reference path="unit.ts"/>
-/// <reference path="fleet.ts"/>
-/// <reference path="utility.ts"/>
-var Rance;
-(function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.player = idGenerators.player || 0;
-
-    var Player = (function () {
-        function Player(id) {
-            this.units = {};
-            this.fleets = [];
-            this.id = isFinite(id) ? id : idGenerators.player++;
-        }
-        Player.prototype.addUnit = function (unit) {
-            this.units[unit.id] = unit;
-        };
-        Player.prototype.getAllUnits = function () {
-            var allUnits = [];
-            for (var unitId in this.units) {
-                allUnits.push(this.units[unitId]);
-            }
-            return allUnits;
-        };
-        Player.prototype.getFleetIndex = function (fleet) {
-            return this.fleets.indexOf(fleet);
-        };
-        Player.prototype.addFleet = function (fleet) {
-            if (this.getFleetIndex(fleet) >= 0) {
-                return;
-            }
-
-            this.fleets.push(fleet);
-        };
-        Player.prototype.removeFleet = function (fleet) {
-            var fleetIndex = this.getFleetIndex(fleet);
-
-            if (fleetIndex <= 0) {
-                return;
-            }
-
-            this.fleets.splice(fleetIndex, 1);
-        };
-        Player.prototype.getFleetsWithPositions = function () {
-            var positions = [];
-
-            for (var i = 0; i < this.fleets.length; i++) {
-                var fleet = this.fleets[i];
-
-                positions.push({
-                    position: fleet.location,
-                    data: fleet
-                });
-            }
-
-            return positions;
-        };
-        return Player;
-    })();
-    Rance.Player = Player;
-})(Rance || (Rance = {}));
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
@@ -2525,281 +2584,174 @@ var Rance;
     })();
     Rance.Star = Star;
 })(Rance || (Rance = {}));
+/// <reference path="player.ts" />
+/// <reference path="unit.ts" />
+/// <reference path="star.ts" />
 var Rance;
 (function (Rance) {
-    (function (UIComponents) {
-        UIComponents.FleetInfo = React.createClass({
-            render: function () {
-                var fleet = this.props.fleet;
-                if (!fleet)
-                    return null;
-                var totalStrength = fleet.getTotalStrength();
+    var Fleet = (function () {
+        function Fleet(player, ships, location) {
+            this.player = player;
+            this.ships = ships;
+            this.location = location;
 
-                return (React.DOM.div({
-                    className: "fleet-info"
-                }, React.DOM.div({
-                    className: "fleet-info-header"
-                }, React.DOM.div({
-                    className: "fleet-info-name"
-                }, fleet.name), React.DOM.div({
-                    className: "fleet-info-strength"
-                }, totalStrength.current + " / " + totalStrength.max), React.DOM.div({
-                    className: "fleet-info-contols"
-                }, null)), React.DOM.div({
-                    className: "fleet-info-location"
-                }, "x: " + fleet.location.x.toFixed() + " y: " + fleet.location.y.toFixed())));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../../eventmanager.ts"/>
-/// <reference path="../../star.ts"/>
-/// <reference path="fleetinfo.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.StarInfo = React.createClass({
-            getInitialState: function () {
-                return ({
-                    currentStar: null
-                });
-            },
-            componentWillMount: function () {
-                var self = this;
-                Rance.eventManager.addEventListener("starClick", function (event) {
-                    self.setStar(event.data.star);
-                });
-            },
-            setStar: function (star) {
-                this.setState({
-                    currentStar: star
-                });
-            },
-            render: function () {
-                var star = this.state.currentStar;
-
-                var toRender = [];
-
-                if (star) {
-                    toRender.push(React.DOM.div({
-                        key: "id"
-                    }, React.DOM.div(null, "id: " + star.id), React.DOM.div(null, "pos: " + star.x.toFixed() + ", " + star.y.toFixed())));
-
-                    var fleets = star.getAllFleets();
-
-                    if (fleets.length > 0) {
-                        toRender.push(Rance.UIComponents.FleetInfo({
-                            key: "fleetInfo",
-                            fleet: fleets[0]
-                        }));
-                    }
-                }
-
-                return (React.DOM.div({
-                    className: "star-info"
-                }, toRender));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="fleetinfo.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.FleetSelection = React.createClass({
-            render: function () {
-                var fleetInfos = [];
-
-                for (var i = 0; i < this.props.selectedFleets.length; i++) {
-                    fleetInfos.push(Rance.UIComponents.FleetInfo({
-                        key: i,
-                        fleet: this.props.selectedFleets[i]
-                    }));
-                }
-
-                return (React.DOM.div({
-                    className: "fleet-selection"
-                }, fleetInfos));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="fleetselection.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.GalaxyMapUI = React.createClass({
-            getInitialState: function () {
-                return ({
-                    selectedFleets: []
-                });
-            },
-            setSelectedFleets: function (e) {
-                this.setState({
-                    selectedFleets: e.data
-                });
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "galaxy-map-ui"
-                }, Rance.UIComponents.FleetSelection({
-                    selectedFleets: this.state.selectedFleets
-                })));
-            },
-            componentWillMount: function () {
-                Rance.eventManager.addEventListener("selectFleets", this.setSelectedFleets);
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("selectFleets", this.setSelectedFleets);
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../mapgen/mapgencontrols.ts"/>
-/// <reference path="starinfo.ts"/>
-/// <reference path="galaxymapui.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.GalaxyMap = React.createClass({
-            renderMap: function () {
-                this.props.galaxyMap.mapRenderer.render();
-            },
-            switchMapMode: function () {
-                var newMode = this.refs.mapModeSelector.getDOMNode().value;
-
-                this.props.galaxyMap.mapRenderer.setMapMode(newMode);
-            },
-            render: function () {
-                return (React.DOM.div(null, React.DOM.div({
-                    ref: "pixiContainer",
-                    id: "pixi-container"
-                }, Rance.UIComponents.GalaxyMapUI({
-                    selectedFleets: this.props.playerControl.selectedFleets
-                })), Rance.UIComponents.MapGenControls({
-                    mapGen: this.props.galaxyMap.mapGen,
-                    renderMap: this.renderMap
-                }), React.DOM.select({
-                    className: "reactui-selector",
-                    ref: "mapModeSelector",
-                    onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders")), Rance.UIComponents.StarInfo()));
-            },
-            componentDidMount: function () {
-                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
-                this.props.renderer.init();
-                this.props.renderer.bindRendererView();
-
-                var mapRenderer = new Rance.MapRenderer();
-                mapRenderer.setParent(renderer.layers["map"]);
-                this.props.galaxyMap.mapRenderer = mapRenderer;
-                mapRenderer.galaxyMap = galaxyMap;
-
-                this.props.galaxyMap.mapRenderer.setMapMode("default");
-
-                this.props.renderer.render();
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../../lib/react.d.ts" />
-/// <reference path="battle/battle.ts"/>
-/// <reference path="unitlist/unitlist.ts"/>
-/// <reference path="battleprep/battleprep.ts"/>
-/// <reference path="mapgen/mapgen.ts"/>
-/// <reference path="galaxymap/galaxymap.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.Stage = React.createClass({
-            changeScene: function () {
-                var newScene = this.refs.sceneSelector.getDOMNode().value;
-
-                this.props.changeSceneFunction(newScene);
-            },
-            render: function () {
-                var elementsToRender = [];
-
-                switch (this.props.sceneToRender) {
-                    case "battle": {
-                        elementsToRender.push(Rance.UIComponents.Battle({
-                            battle: this.props.battle,
-                            key: "battle"
-                        }));
-                        break;
-                    }
-                    case "mapGen": {
-                        elementsToRender.push(Rance.UIComponents.MapGen({
-                            renderer: this.props.renderer,
-                            mapGen: this.props.mapGen,
-                            key: "mapGen"
-                        }));
-                        break;
-                    }
-                    case "battlePrep": {
-                        elementsToRender.push(Rance.UIComponents.BattlePrep({
-                            battlePrep: this.props.battlePrep,
-                            key: "battlePrep"
-                        }));
-                        break;
-                    }
-                    case "galaxyMap": {
-                        elementsToRender.push(Rance.UIComponents.GalaxyMap({
-                            renderer: this.props.renderer,
-                            galaxyMap: this.props.galaxyMap,
-                            playerControl: this.props.playerControl,
-                            key: "galaxyMap"
-                        }));
-                        break;
-                    }
-                }
-                return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
-                    className: "reactui-selector",
-                    ref: "sceneSelector",
-                    value: this.props.sceneToRender,
-                    onChange: this.changeScene
-                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../../lib/react.d.ts" />
-/// <reference path="stage.ts"/>
-var Rance;
-(function (Rance) {
-    var ReactUI = (function () {
-        function ReactUI(container) {
-            this.container = container;
+            this.location.addFleet(this);
+            this.player.addFleet(this);
         }
-        ReactUI.prototype.switchScene = function (newScene) {
-            this.currentScene = newScene;
-            this.render();
+        Fleet.prototype.getShipIndex = function (ship) {
+            return this.ships.indexOf(ship);
         };
-        ReactUI.prototype.render = function () {
-            this.stage = React.renderComponent(Rance.UIComponents.Stage({
-                sceneToRender: this.currentScene,
-                changeSceneFunction: this.switchScene.bind(this),
-                battle: this.battle,
-                battlePrep: this.battlePrep,
-                renderer: this.renderer,
-                mapGen: this.mapGen,
-                galaxyMap: this.galaxyMap,
-                playerControl: this.playerControl
-            }), this.container);
+        Fleet.prototype.hasShip = function (ship) {
+            return this.getShipIndex(ship) >= 0;
         };
-        return ReactUI;
+        Fleet.prototype.deleteFleet = function () {
+            this.location.removeFleet(this);
+            this.player.removeFleet(this);
+        };
+        Fleet.prototype.addShip = function (ship) {
+            if (this.hasShip(ship))
+                return false;
+
+            this.ships.push(ship);
+            ship.addToFleet(this);
+        };
+        Fleet.prototype.addShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.addShip(ships[i]);
+            }
+        };
+        Fleet.prototype.removeShip = function (ship) {
+            var index = this.getShipIndex(ship);
+
+            if (index < 0)
+                return false;
+
+            this.ships.splice(index, 1);
+            ship.removeFromFleet();
+
+            if (this.ships.length <= 0) {
+                this.deleteFleet();
+            }
+        };
+        Fleet.prototype.removeShips = function (ships) {
+            for (var i = 0; i < ships.length; i++) {
+                this.removeShip(ships[i]);
+            }
+        };
+        Fleet.prototype.split = function (newShips) {
+            this.removeShips(newShips);
+
+            var newFleet = new Fleet(this.player, newShips, this.location);
+            this.location.addFleet(newFleet);
+
+            return newFleet;
+        };
+        Fleet.prototype.move = function (newLocation) {
+            var oldLocation = this.location;
+            oldLocation.removeFleet(this);
+
+            this.location = newLocation;
+            newLocation.addFleet(this);
+        };
+        Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
+            return this.location.fleets[this.player.id];
+        };
+        Fleet.prototype.getTotalStrength = function () {
+            var total = {
+                current: 0,
+                max: 0
+            };
+
+            for (var i = 0; i < this.ships.length; i++) {
+                total.current += this.ships[i].currentStrength;
+                total.max += this.ships[i].maxStrength;
+            }
+
+            return total;
+        };
+        return Fleet;
     })();
-    Rance.ReactUI = ReactUI;
+    Rance.Fleet = Fleet;
+})(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+/// <reference path="fleet.ts"/>
+/// <reference path="utility.ts"/>
+var Rance;
+(function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.player = idGenerators.player || 0;
+
+    var Player = (function () {
+        function Player(id) {
+            this.units = {};
+            this.fleets = [];
+            this.id = isFinite(id) ? id : idGenerators.player++;
+        }
+        Player.prototype.addUnit = function (unit) {
+            this.units[unit.id] = unit;
+        };
+        Player.prototype.getAllUnits = function () {
+            var allUnits = [];
+            for (var unitId in this.units) {
+                allUnits.push(this.units[unitId]);
+            }
+            return allUnits;
+        };
+        Player.prototype.getFleetIndex = function (fleet) {
+            return this.fleets.indexOf(fleet);
+        };
+        Player.prototype.addFleet = function (fleet) {
+            if (this.getFleetIndex(fleet) >= 0) {
+                return;
+            }
+
+            this.fleets.push(fleet);
+        };
+        Player.prototype.removeFleet = function (fleet) {
+            var fleetIndex = this.getFleetIndex(fleet);
+
+            if (fleetIndex <= 0) {
+                return;
+            }
+
+            this.fleets.splice(fleetIndex, 1);
+        };
+        Player.prototype.getFleetsWithPositions = function () {
+            var positions = [];
+
+            for (var i = 0; i < this.fleets.length; i++) {
+                var fleet = this.fleets[i];
+
+                positions.push({
+                    position: fleet.location,
+                    data: fleet
+                });
+            }
+
+            return positions;
+        };
+        return Player;
+    })();
+    Rance.Player = Player;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+var Rance;
+(function (Rance) {
+    function EventManager() {
+    }
+    Rance.EventManager = EventManager;
+    ;
+
+    var et = PIXI.EventTarget;
+
+    et.mixin(EventManager.prototype);
+
+    Rance.eventManager = new EventManager();
 })(Rance || (Rance = {}));
 /// <reference path="eventmanager.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="fleet.ts"/>
+/// <reference path="star.ts"/>
 var Rance;
 (function (Rance) {
     var PlayerControl = (function () {
@@ -2812,12 +2764,36 @@ var Rance;
             var self = this;
 
             Rance.eventManager.addEventListener("selectFleets", function (e) {
-                self.selectedFleets = e.data;
+                self.selectFleets(e.data);
+            });
+            Rance.eventManager.addEventListener("starClick", function (e) {
+                self.selectStar(e.data);
             });
 
             Rance.eventManager.addEventListener("setRectangleSelectTargetFN", function (e) {
                 e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
             });
+        };
+        PlayerControl.prototype.clearSelection = function () {
+            this.selectedFleets = [];
+            this.selectedStar = null;
+        };
+        PlayerControl.prototype.updateSelection = function () {
+            Rance.eventManager.dispatchEvent("updateSelection", null);
+        };
+        PlayerControl.prototype.selectFleets = function (fleets) {
+            this.clearSelection();
+
+            this.selectedFleets = fleets;
+
+            this.updateSelection();
+        };
+        PlayerControl.prototype.selectStar = function (star) {
+            this.clearSelection();
+
+            this.selectedStar = star;
+
+            this.updateSelection();
         };
         return PlayerControl;
     })();
@@ -3411,7 +3387,9 @@ var Rance;
             this.voronoiDiagram = diagram;
 
             for (var i = 0; i < diagram.cells.length; i++) {
-                diagram.cells[i].site.voronoiCell = diagram.cells[i];
+                var cell = diagram.cells[i];
+                cell.site.voronoiCell = cell;
+                cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
             }
         };
         MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
@@ -3629,10 +3607,17 @@ var Rance;
 
                     var points = map.mapGen.getNonFillerPoints();
 
+                    var onMouseDownFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseDown", event);
+                    };
+                    var onMouseUpFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseUp", event);
+                    };
                     var onClickFN = function (star) {
-                        Rance.eventManager.dispatchEvent("starClick", {
-                            star: star
-                        });
+                        Rance.eventManager.dispatchEvent("starClick", star);
+                    };
+                    var rightClickFN = function (star) {
+                        Rance.eventManager.dispatchEvent("starRightClick", star);
                     };
                     for (var i = 0; i < points.length; i++) {
                         var gfx = new PIXI.Graphics();
@@ -3642,7 +3627,11 @@ var Rance;
                         gfx.endFill;
 
                         gfx.interactive = true;
+                        gfx.hitArea = new PIXI.Polygon(points[i].voronoiCell.vertices);
+                        gfx.mousedown = onMouseDownFN;
+                        gfx.mouseup = onMouseUpFN;
                         gfx.click = onClickFN.bind(gfx, points[i]);
+                        gfx.rightclick = rightClickFN.bind(gfx, points[i]);
 
                         doc.addChild(gfx);
                     }
@@ -4161,6 +4150,13 @@ var Rance;
                 if (e.target.localName !== "canvas")
                     return;
             });
+
+            Rance.eventManager.addEventListener("mouseDown", function (e) {
+                self.mouseDown(e.content, "world");
+            });
+            Rance.eventManager.addEventListener("mouseUp", function (e) {
+                self.mouseUp(e.content, "world");
+            });
         };
         MouseEventHandler.prototype.preventGhost = function (delay) {
             this.preventingGhost = true;
@@ -4249,13 +4245,13 @@ var Rance;
         };
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currAction = "select";
-            this.rectangleselect.startSelection(event.getLocalPosition(event.target));
+            this.rectangleselect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
-            this.rectangleselect.moveSelection(event.getLocalPosition(event.target));
+            this.rectangleselect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.endSelect = function (event) {
-            this.rectangleselect.endSelection(event.getLocalPosition(event.target));
+            this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
             this.currAction = undefined;
         };
         MouseEventHandler.prototype.hover = function (event) {

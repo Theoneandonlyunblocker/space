@@ -55,6 +55,15 @@ module Rance
       {
         if (e.target.localName !== "canvas") return;
       });
+
+      eventManager.addEventListener("mouseDown", function(e)
+      {
+        self.mouseDown(e.content, "world");
+      });
+      eventManager.addEventListener("mouseUp", function(e)
+      {
+        self.mouseUp(e.content, "world");
+      });
     }
     preventGhost(delay: number)
     {
@@ -176,15 +185,15 @@ module Rance
     startSelect(event)
     {
       this.currAction = "select";
-      this.rectangleselect.startSelection(event.getLocalPosition(event.target));
+      this.rectangleselect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
     }
     dragSelect(event)
     {
-      this.rectangleselect.moveSelection(event.getLocalPosition(event.target));
+      this.rectangleselect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
     }
     endSelect(event)
     {
-      this.rectangleselect.endSelection(event.getLocalPosition(event.target));
+      this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
       this.currAction = undefined;
     }
     hover(event)

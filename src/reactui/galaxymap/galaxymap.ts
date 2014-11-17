@@ -1,5 +1,4 @@
 /// <reference path="../mapgen/mapgencontrols.ts"/>
-/// <reference path="starinfo.ts"/>
 /// <reference path="galaxymapui.ts"/>
 
 module Rance
@@ -30,7 +29,7 @@ module Rance
             },
               UIComponents.GalaxyMapUI(
               {
-                selectedFleets: this.props.playerControl.selectedFleets
+                playerControl: this.props.playerControl
               })
             ),
             UIComponents.MapGenControls(
@@ -46,8 +45,7 @@ module Rance
             },
               React.DOM.option({value: "default"}, "default"),
               React.DOM.option({value: "noLines"}, "no borders")
-            ),
-            UIComponents.StarInfo()
+            )
           )
         );
       },

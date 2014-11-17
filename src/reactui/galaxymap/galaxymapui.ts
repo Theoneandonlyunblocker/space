@@ -10,20 +10,23 @@ module Rance
       {
         return(
         {
-          selectedFleets: []
+          selectedFleets: this.props.playerControl.selectedFleets,
+          selectedStar: this.props.playerControl.selectedStar
         });
       },
 
-      setSelectedFleets: function(e)
+      updateSelection: function()
       {
         this.setState(
         {
-          selectedFleets: e.data
+          selectedFleets: this.props.playerControl.selectedFleets,
+          selectedStar: this.props.playerControl.selectedStar
         });
       },
 
       render: function()
       {
+        console.log(this.state);
         return(
           React.DOM.div(
           {
@@ -39,11 +42,11 @@ module Rance
 
       componentWillMount: function()
       {
-        eventManager.addEventListener("selectFleets", this.setSelectedFleets);
+        eventManager.addEventListener("updateSelection", this.updateSelection);
       },
       componentWillUnmount: function()
       {
-        eventManager.removeEventListener("selectFleets", this.setSelectedFleets);
+        eventManager.removeEventListener("updateSelection", this.updateSelection);
       }
     });
   }

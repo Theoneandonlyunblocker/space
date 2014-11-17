@@ -276,7 +276,9 @@ module Rance
 
       for (var i = 0; i < diagram.cells.length; i++)
       {
-        diagram.cells[i].site.voronoiCell = diagram.cells[i];
+        var cell = diagram.cells[i];
+        cell.site.voronoiCell = cell;
+        cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell)
       }
     }
     cleanTriangles(triangles: Triangle[], superTriangle: Triangle)
