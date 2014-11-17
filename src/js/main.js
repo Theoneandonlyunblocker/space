@@ -1502,7 +1502,7 @@ var Rance;
                     className: "fleet-info-contols"
                 }, null)), React.DOM.div({
                     className: "fleet-info-location"
-                }, "x: " + fleet.location.x.toFixed() + " y: " + fleet.location.y.toFixed())));
+                }, fleet.location.name)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1531,7 +1531,31 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.StarInfo = React.createClass({
+            render: function () {
+                var star = this.props.selectedStar;
+                if (!star)
+                    return null;
+
+                return (React.DOM.div({
+                    className: "star-info"
+                }, React.DOM.div({
+                    className: "star-info-name"
+                }, star.name), React.DOM.div({
+                    className: "star-info-owner"
+                }, star.owner ? star.owner.name : null), React.DOM.div({
+                    className: "star-info-location"
+                }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed())));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleetselection.ts"/>
+/// <reference path="starinfo.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1554,6 +1578,8 @@ var Rance;
                     className: "galaxy-map-ui"
                 }, Rance.UIComponents.FleetSelection({
                     selectedFleets: this.state.selectedFleets
+                }), Rance.UIComponents.StarInfo({
+                    selectedStar: this.state.selectedStar
                 })));
             },
             componentWillMount: function () {
@@ -2431,6 +2457,7 @@ var Rance;
             this.linksFrom = [];
             this.fleets = {};
             this.id = isFinite(id) ? id : idGenerators.star++;
+            this.name = "Star " + this.id;
 
             this.x = x;
             this.y = y;

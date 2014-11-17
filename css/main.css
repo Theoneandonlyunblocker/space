@@ -430,6 +430,9 @@ body {
   pointer-events: auto;
 }
 .fleet-selection {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: inline-flex;
   flex-flow: column;
 }
@@ -446,4 +449,13 @@ body {
 }
 .fleet-info-strength {
   margin: 0 5px;
+}
+.star-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: inline-flex;
+  flex-flow: column;
+  background-color: white;
+  border: 1px solid black;
 }

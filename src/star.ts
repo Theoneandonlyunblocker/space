@@ -17,6 +17,7 @@ module Rance
     distance: number;
     region: string;
 
+    name: string;
     owner: Player;
     fleets:
     {
@@ -29,6 +30,7 @@ module Rance
     constructor(x: number, y: number, id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.star++;
+      this.name = "Star " + this.id;
 
       this.x = x;
       this.y = y;

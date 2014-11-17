@@ -1,4 +1,5 @@
 /// <reference path="fleetselection.ts"/>
+/// <reference path="starinfo.ts"/>
 
 module Rance
 {
@@ -35,6 +36,10 @@ module Rance
             UIComponents.FleetSelection(
             {
               selectedFleets: this.state.selectedFleets
+            }),
+            UIComponents.StarInfo(
+            {
+              selectedStar: this.state.selectedStar
             })
           )
         );

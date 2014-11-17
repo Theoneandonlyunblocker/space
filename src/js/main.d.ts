@@ -171,6 +171,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var StarInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -365,6 +370,7 @@ declare module Rance {
         public linksFrom: Star[];
         public distance: number;
         public region: string;
+        public name: string;
         public owner: Rance.Player;
         public fleets: {
             [playerId: string]: Rance.Fleet[];
