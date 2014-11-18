@@ -25,25 +25,25 @@ module Rance
     }
     export module Buildings
     {
-      export var fort: IBuildingTemplate =
+      export var sectorCommand: IBuildingTemplate =
       {
-        type: "fort",
+        type: "sectorCommand",
         category: "defence",
-        name: "Fort",
+        name: "Sector Command",
 
-        icon: "img\/buildings\/fort.png",
+        icon: "img\/buildings\/sectorCommand.png",
 
         maxPerType: 1,
 
         maxUpgradeLevel: 4
       }
-      export var base: IBuildingTemplate =
+      export var starBase: IBuildingTemplate =
       {
-        type: "base",
+        type: "starBase",
         category: "defence",
-        name: "Base",
+        name: "Starbase",
 
-        icon: "img\/buildings\/base.png",
+        icon: "img\/buildings\/starBase.png",
 
         maxPerType: 3,
 

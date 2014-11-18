@@ -405,8 +405,8 @@ declare module Rance {
             onTurnEnd?: () => void;
         }
         module Buildings {
-            var fort: IBuildingTemplate;
-            var base: IBuildingTemplate;
+            var sectorCommand: IBuildingTemplate;
+            var starBase: IBuildingTemplate;
         }
     }
 }
@@ -450,6 +450,7 @@ declare module Rance {
         constructor(x: number, y: number, id?: number);
         public addBuilding(building: Rance.Building): void;
         public removeBuilding(building: Rance.Building): void;
+        public getSecondaryController(): Rance.Player;
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;
