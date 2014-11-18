@@ -429,6 +429,12 @@ body {
 .galaxy-map-ui > * {
   pointer-events: auto;
 }
+.prevent-pointer-events {
+  pointer-events: none !important;
+}
+.prevent-pointer-events > * {
+  pointer-events: none !important;
+}
 .fleet-selection {
   position: absolute;
   top: 0;

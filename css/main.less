@@ -559,6 +559,15 @@ body {
   }
 }
 
+.prevent-pointer-events
+{
+  pointer-events: none !important;
+  >*
+  {
+    pointer-events: none !important;
+  }
+}
+
 .fleet-selection
 {
   position: absolute;

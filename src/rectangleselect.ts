@@ -39,6 +39,9 @@ module Rance
       this.start = point;
       this.current = point;
 
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) ui.classList.toggle("prevent-pointer-events");
+
       this.setSelectionTargets();
     }
     moveSelection(point: Point)
@@ -49,11 +52,14 @@ module Rance
     endSelection(point: Point)
     {
       this.selecting = false;
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) ui.classList.toggle("prevent-pointer-events");
 
       this.graphics.clear();
 
       var inSelection = this.getAllInSelection();
       eventManager.dispatchEvent("selectFleets", inSelection);
+
 
       this.start = null;
       this.current = null;
