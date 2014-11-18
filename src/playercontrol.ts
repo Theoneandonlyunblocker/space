@@ -8,9 +8,11 @@ module Rance
   export class PlayerControl
   {
     player: Player;
-    selectedFleets: Fleet[] = [];
 
+    selectedFleets: Fleet[] = [];
     selectedStar: Star;
+
+    preventingGhost: boolean = false;
 
     constructor(player: Player)
     {
@@ -47,6 +49,16 @@ module Rance
         e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
       });
     }
+    preventGhost(delay: number)
+    {
+      this.preventingGhost = true;
+      var self = this;
+      var timeout = window.setTimeout(function()
+      {
+        self.preventingGhost = false;
+        window.clearTimeout(timeout);
+      }, delay);
+    }
     clearSelection()
     {
       this.selectedFleets = [];
@@ -63,6 +75,10 @@ module Rance
       this.selectedFleets = fleets;
 
       this.updateSelection();
+      if (fleets.length > 0)
+      {
+        this.preventGhost(15);
+      }
     }
     deselectFleet(fleet: Fleet)
     {
@@ -96,6 +112,7 @@ module Rance
     }
     selectStar(star: Star)
     {
+      if (this.preventingGhost) return;
       this.clearSelection();
 
       this.selectedStar = star;

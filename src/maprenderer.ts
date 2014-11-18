@@ -68,11 +68,11 @@ module Rance
 
           var points = map.mapGen.getNonFillerPoints();
 
-          var onMouseDownFN = function(event)
+          var mouseDownFN = function(event)
           {
             eventManager.dispatchEvent("mouseDown", event);
           }
-          var onMouseUpFN = function(event)
+          var mouseUpFN = function(event)
           {
             eventManager.dispatchEvent("mouseUp", event);
           }
@@ -86,7 +86,8 @@ module Rance
           }
           for (var i = 0; i < points.length; i++)
           {
-            var gfx = new PIXI.Graphics();
+            var gfx: any = new PIXI.Graphics();
+            gfx.star = points[i];
             gfx.lineStyle(3, 0x00000, 1);
             gfx.beginFill(0xFFFFFF);
             gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
@@ -94,9 +95,14 @@ module Rance
 
             gfx.interactive = true;
             gfx.hitArea = new PIXI.Polygon(points[i].voronoiCell.vertices);
-            gfx.mousedown = onMouseDownFN;
-            gfx.mouseup = onMouseUpFN;
-            gfx.click = onClickFN.bind(gfx, points[i]);
+            gfx.mousedown = mouseDownFN;
+            gfx.mouseup = mouseUpFN;
+            gfx.click = function(event)
+            {
+              if (event.originalEvent.button !== 0) return;
+
+              onClickFN(this.star);
+            }.bind(gfx);
             gfx.rightclick = rightClickFN.bind(gfx, points[i]);
 
             doc.addChild(gfx);

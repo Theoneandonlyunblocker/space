@@ -58,7 +58,7 @@ module Rance
           React.DOM.div(containerProps,
             React.DOM.span(currentStyle, this.props.currentStrength),
             React.DOM.span({className: "unit-strength-max"},
-              " / " + this.props.maxStrength)
+              "/" + this.props.maxStrength)
           )
         )
       },

@@ -243,7 +243,7 @@ body {
   height: 10px;
 }
 .wounded {
-  color: yellow;
+  color: orange;
 }
 .critical {
   color: red;
@@ -449,12 +449,32 @@ body {
 }
 .fleet-info-name {
   margin-right: 5px;
+  flex: 1;
 }
 .fleet-info-shipcount {
   margin-right: 5px;
 }
 .fleet-info-strength {
   margin-right: 5px;
+}
+.fleet-contents {
+  display: flex;
+  flex-flow: column;
+}
+.ship-info {
+  display: inline-flex;
+  flex-flow: row;
+  background-color: white;
+  border: 1px solid black;
+}
+.ship-info-icon-container {
+  display: flex;
+}
+.ship-info-icon {
+  align-self: center;
+}
+.ship-info-info {
+  flex: 1;
 }
 .star-info {
   position: absolute;

@@ -91,7 +91,6 @@ module Rance
       {
         var fleet = new Rance.Fleet(player1, [player1.units[i]],
           this.points[i]);
-        fleet.name = "fleet" + i;
       }
 
       return this;

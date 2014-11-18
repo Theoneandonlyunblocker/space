@@ -1,4 +1,5 @@
 /// <reference path="fleetinfo.ts"/>
+/// <reference path="fleetcontents.ts"/>
 
 module Rance
 {
@@ -13,17 +14,18 @@ module Rance
 
       render: function()
       {
-        if (!this.props.selectedFleets || this.props.selectedFleets.length <= 0)
+        var selectedFleets: Fleet[] = this.props.selectedFleets;
+        if (!selectedFleets || selectedFleets.length <= 0)
         {
           return null;
         }
 
         var allFleetsInSameLocation = true;
-        var hasMultipleSelected = this.props.selectedFleets.length >= 2;
+        var hasMultipleSelected = selectedFleets.length >= 2;
 
-        for (var i = 1; i < this.props.selectedFleets.length; i++)
+        for (var i = 1; i < selectedFleets.length; i++)
         {
-          if (this.props.selectedFleets[i].location !== this.props.selectedFleets[i-1].location)
+          if (selectedFleets[i].location !== selectedFleets[i-1].location)
           {
             allFleetsInSameLocation = false;
             break;
@@ -31,12 +33,12 @@ module Rance
         }
         var fleetInfos = [];
 
-        for (var i = 0; i < this.props.selectedFleets.length; i++)
+        for (var i = 0; i < selectedFleets.length; i++)
         {
           var infoProps: any =
           {
-            key: i,
-            fleet: this.props.selectedFleets[i],
+            key: selectedFleets[i].id,
+            fleet: selectedFleets[i],
             hasMultipleSelected: hasMultipleSelected
           };
 
@@ -71,13 +73,24 @@ module Rance
           )
         }
 
+        var fleetContents = null;
+
+        if (!hasMultipleSelected)
+        {
+          fleetContents = UIComponents.FleetContents(
+          {
+            fleet: selectedFleets[0]
+          });
+        }
+
         return(
           React.DOM.div(
           {
             className: "fleet-selection"
           },
             fleetSelectionControls,
-            fleetInfos
+            fleetInfos,
+            fleetContents
           )
         );
       }

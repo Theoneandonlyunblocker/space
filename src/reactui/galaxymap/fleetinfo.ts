@@ -32,7 +32,7 @@ module Rance
               React.DOM.div(
               {
                 className: "fleet-info-strength"
-              }, totalStrength.current + " / " + totalStrength.max),
+              }, totalStrength.current + "/" + totalStrength.max),
               React.DOM.div(
               {
                 className: "fleet-info-contols"

@@ -171,6 +171,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ShipInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FleetContents: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -410,8 +420,9 @@ declare module Rance {
         public player: Rance.Player;
         public ships: Rance.Unit[];
         public location: Rance.Star;
+        public id: number;
         public name: string;
-        constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star);
+        constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star, id?: number);
         public getShipIndex(ship: Rance.Unit): number;
         public hasShip(ship: Rance.Unit): boolean;
         public deleteFleet(): void;
@@ -455,8 +466,10 @@ declare module Rance {
         public player: Rance.Player;
         public selectedFleets: Rance.Fleet[];
         public selectedStar: Rance.Star;
+        public preventingGhost: boolean;
         constructor(player: Rance.Player);
         public addEventListeners(): void;
+        public preventGhost(delay: number): void;
         public clearSelection(): void;
         public updateSelection(): void;
         public selectFleets(fleets: Rance.Fleet[]): void;

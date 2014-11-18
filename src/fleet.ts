@@ -4,19 +4,25 @@
 
 module Rance
 {
+  var idGenerators = idGenerators || {};
+  idGenerators.fleets = idGenerators.fleets || 0;
+
   export class Fleet
   {
     player: Player;
     ships: Unit[];
     location: Star;
 
+    id: number;
     name: string;
 
-    constructor(player: Player, ships: Unit[], location: Star)
+    constructor(player: Player, ships: Unit[], location: Star, id?: number)
     {
       this.player = player;
       this.ships = ships;
       this.location = location;
+      this.id = isFinite(id) ? id : idGenerators.fleets++;
+      this.name = "Fleet " + this.id;
 
       this.location.addFleet(this);
       this.player.addFleet(this);

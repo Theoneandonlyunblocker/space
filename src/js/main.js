@@ -33,7 +33,7 @@ var Rance;
                     className: (this.props.isSquadron ? "unit-strength-amount" : "unit-strength-amount-capital")
                 };
 
-                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, this.props.currentStrength), React.DOM.span({ className: "unit-strength-max" }, " / " + this.props.maxStrength)));
+                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, this.props.currentStrength), React.DOM.span({ className: "unit-strength-max" }, "/" + this.props.maxStrength)));
             },
             render: function () {
                 var toRender;
@@ -1528,7 +1528,7 @@ var Rance;
                     className: "fleet-info-shipcount"
                 }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
-                }, totalStrength.current + " / " + totalStrength.max), React.DOM.div({
+                }, totalStrength.current + "/" + totalStrength.max), React.DOM.div({
                     className: "fleet-info-contols"
                 }, Rance.UIComponents.FleetControls({
                     fleet: fleet,
@@ -1541,7 +1541,62 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../unit/unitstrength.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ShipInfo = React.createClass({
+            render: function () {
+                var ship = this.props.ship;
+
+                return (React.DOM.div({
+                    className: "ship-info"
+                }, React.DOM.div({
+                    className: "ship-info-icon-container"
+                }, React.DOM.img({
+                    className: "ship-info-icon",
+                    src: ship.template.icon
+                })), React.DOM.div({
+                    className: "ship-info-info"
+                }, React.DOM.div({
+                    className: "ship-info-name"
+                }, ship.name), React.DOM.div({
+                    className: "ship-info-type"
+                }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
+                    maxStrength: ship.maxStrength,
+                    currentStrength: ship.currentStrength,
+                    isSquadron: true
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="shipinfo.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FleetContents = React.createClass({
+            render: function () {
+                var shipInfos = [];
+
+                for (var i = 0; i < this.props.fleet.ships.length; i++) {
+                    shipInfos.push(Rance.UIComponents.ShipInfo({
+                        key: this.props.fleet.ships[i].id,
+                        ship: this.props.fleet.ships[i]
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "fleet-contents"
+                }, shipInfos));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleetinfo.ts"/>
+/// <reference path="fleetcontents.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1550,25 +1605,26 @@ var Rance;
                 Rance.eventManager.dispatchEvent("mergeFleets", null);
             },
             render: function () {
-                if (!this.props.selectedFleets || this.props.selectedFleets.length <= 0) {
+                var selectedFleets = this.props.selectedFleets;
+                if (!selectedFleets || selectedFleets.length <= 0) {
                     return null;
                 }
 
                 var allFleetsInSameLocation = true;
-                var hasMultipleSelected = this.props.selectedFleets.length >= 2;
+                var hasMultipleSelected = selectedFleets.length >= 2;
 
-                for (var i = 1; i < this.props.selectedFleets.length; i++) {
-                    if (this.props.selectedFleets[i].location !== this.props.selectedFleets[i - 1].location) {
+                for (var i = 1; i < selectedFleets.length; i++) {
+                    if (selectedFleets[i].location !== selectedFleets[i - 1].location) {
                         allFleetsInSameLocation = false;
                         break;
                     }
                 }
                 var fleetInfos = [];
 
-                for (var i = 0; i < this.props.selectedFleets.length; i++) {
+                for (var i = 0; i < selectedFleets.length; i++) {
                     var infoProps = {
-                        key: i,
-                        fleet: this.props.selectedFleets[i],
+                        key: selectedFleets[i].id,
+                        fleet: selectedFleets[i],
                         hasMultipleSelected: hasMultipleSelected
                     };
 
@@ -1593,9 +1649,17 @@ var Rance;
                     }, React.DOM.button(mergeProps, "merge"));
                 }
 
+                var fleetContents = null;
+
+                if (!hasMultipleSelected) {
+                    fleetContents = Rance.UIComponents.FleetContents({
+                        fleet: selectedFleets[0]
+                    });
+                }
+
                 return (React.DOM.div({
                     className: "fleet-selection"
-                }, fleetSelectionControls, fleetInfos));
+                }, fleetSelectionControls, fleetInfos, fleetContents));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2685,11 +2749,16 @@ var Rance;
 /// <reference path="star.ts" />
 var Rance;
 (function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.fleets = idGenerators.fleets || 0;
+
     var Fleet = (function () {
-        function Fleet(player, ships, location) {
+        function Fleet(player, ships, location, id) {
             this.player = player;
             this.ships = ships;
             this.location = location;
+            this.id = isFinite(id) ? id : idGenerators.fleets++;
+            this.name = "Fleet " + this.id;
 
             this.location.addFleet(this);
             this.player.addFleet(this);
@@ -2861,6 +2930,7 @@ var Rance;
     var PlayerControl = (function () {
         function PlayerControl(player) {
             this.selectedFleets = [];
+            this.preventingGhost = false;
             this.player = player;
             this.addEventListeners();
         }
@@ -2887,6 +2957,14 @@ var Rance;
                 e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
             });
         };
+        PlayerControl.prototype.preventGhost = function (delay) {
+            this.preventingGhost = true;
+            var self = this;
+            var timeout = window.setTimeout(function () {
+                self.preventingGhost = false;
+                window.clearTimeout(timeout);
+            }, delay);
+        };
         PlayerControl.prototype.clearSelection = function () {
             this.selectedFleets = [];
             this.selectedStar = null;
@@ -2900,6 +2978,9 @@ var Rance;
             this.selectedFleets = fleets;
 
             this.updateSelection();
+            if (fleets.length > 0) {
+                this.preventGhost(15);
+            }
         };
         PlayerControl.prototype.deselectFleet = function (fleet) {
             var fleetIndex = this.selectedFleets.indexOf(fleet);
@@ -2929,6 +3010,8 @@ var Rance;
             this.updateSelection();
         };
         PlayerControl.prototype.selectStar = function (star) {
+            if (this.preventingGhost)
+                return;
             this.clearSelection();
 
             this.selectedStar = star;
@@ -3384,7 +3467,6 @@ var Rance;
 
             for (var i = 0; i < 4; i++) {
                 var fleet = new Rance.Fleet(player1, [player1.units[i]], this.points[i]);
-                fleet.name = "fleet" + i;
             }
 
             return this;
@@ -3760,10 +3842,10 @@ var Rance;
 
                     var points = map.mapGen.getNonFillerPoints();
 
-                    var onMouseDownFN = function (event) {
+                    var mouseDownFN = function (event) {
                         Rance.eventManager.dispatchEvent("mouseDown", event);
                     };
-                    var onMouseUpFN = function (event) {
+                    var mouseUpFN = function (event) {
                         Rance.eventManager.dispatchEvent("mouseUp", event);
                     };
                     var onClickFN = function (star) {
@@ -3774,6 +3856,7 @@ var Rance;
                     };
                     for (var i = 0; i < points.length; i++) {
                         var gfx = new PIXI.Graphics();
+                        gfx.star = points[i];
                         gfx.lineStyle(3, 0x00000, 1);
                         gfx.beginFill(0xFFFFFF);
                         gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
@@ -3781,9 +3864,14 @@ var Rance;
 
                         gfx.interactive = true;
                         gfx.hitArea = new PIXI.Polygon(points[i].voronoiCell.vertices);
-                        gfx.mousedown = onMouseDownFN;
-                        gfx.mouseup = onMouseUpFN;
-                        gfx.click = onClickFN.bind(gfx, points[i]);
+                        gfx.mousedown = mouseDownFN;
+                        gfx.mouseup = mouseUpFN;
+                        gfx.click = function (event) {
+                            if (event.originalEvent.button !== 0)
+                                return;
+
+                            onClickFN(this.star);
+                        }.bind(gfx);
                         gfx.rightclick = rightClickFN.bind(gfx, points[i]);
 
                         doc.addChild(gfx);
