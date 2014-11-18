@@ -186,6 +186,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var DefenceBuilding: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DefenceBuildingList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var StarInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -231,6 +241,8 @@ declare module Rance {
     function makeRandomShip(): Unit;
     function centerDisplayObjectContainer(toCenter: PIXI.DisplayObjectContainer): void;
     function rectContains(rect: any, point: any): boolean;
+    function hexToString(hex: number): string;
+    function makeTempPlayerIcon(player: Player, size: number): string;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -377,6 +389,46 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        interface IBuildingTemplate {
+            type: string;
+            category: string;
+            name: string;
+            icon: string;
+            maxPerType: number;
+            maxUpgradeLevel: number;
+            upgradeInto?: {
+                type: string;
+                level: number;
+            }[];
+            onBuild?: () => void;
+            onTurnEnd?: () => void;
+        }
+        module Buildings {
+            var fort: IBuildingTemplate;
+            var base: IBuildingTemplate;
+        }
+    }
+}
+declare module Rance {
+    class Building {
+        public template: Rance.Templates.IBuildingTemplate;
+        public location: Rance.Star;
+        public controller: Rance.Player;
+        public upgradeLevel: number;
+        constructor(props: {
+            template: Rance.Templates.IBuildingTemplate;
+            location: Rance.Star;
+            controller?: Rance.Player;
+            upgradeLevel?: number;
+        });
+        public getPossibleUpgrades(): {
+            type: string;
+            level: number;
+        }[];
+    }
+}
+declare module Rance {
     class Star implements Rance.Point {
         public id: number;
         public x: number;
@@ -390,9 +442,14 @@ declare module Rance {
         public fleets: {
             [playerId: string]: Rance.Fleet[];
         };
+        public buildings: {
+            [category: string]: Rance.Building[];
+        };
         public voronoiId: number;
         public voronoiCell: any;
         constructor(x: number, y: number, id?: number);
+        public addBuilding(building: Rance.Building): void;
+        public removeBuilding(building: Rance.Building): void;
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;
@@ -444,6 +501,7 @@ declare module Rance {
     class Player {
         public id: number;
         public name: string;
+        public icon: string;
         public units: {
             [id: number]: Rance.Unit;
         };

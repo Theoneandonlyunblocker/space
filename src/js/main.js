@@ -1668,6 +1668,54 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.DefenceBuilding = React.createClass({
+            render: function () {
+                var building = this.props.building;
+
+                return (React.DOM.div({
+                    className: "defence-building"
+                }, React.DOM.img({
+                    className: "defence-building-icon",
+                    src: building.template.icon
+                }), React.DOM.img({
+                    className: "defence-building-controller",
+                    src: building.controller.icon
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="defencebuilding.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DefenceBuildingList = React.createClass({
+            render: function () {
+                if (!this.props.buildings)
+                    return null;
+
+                var buildings = [];
+
+                for (var i = 0; i < this.props.buildings.length; i++) {
+                    buildings.push(Rance.UIComponents.DefenceBuilding({
+                        key: i,
+                        building: this.props.buildings[i]
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "defence-building-list"
+                }, buildings));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="defencebuildinglist.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.StarInfo = React.createClass({
             render: function () {
                 var star = this.props.selectedStar;
@@ -1682,7 +1730,9 @@ var Rance;
                     className: "star-info-owner"
                 }, star.owner ? star.owner.name : null), React.DOM.div({
                     className: "star-info-location"
-                }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed())));
+                }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed()), Rance.UIComponents.DefenceBuildingList({
+                    buildings: star.buildings["defence"]
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1952,6 +2002,24 @@ var Rance;
         return ((x >= x1 && x <= x2) && (y >= y1 && y <= y2));
     }
     Rance.rectContains = rectContains;
+
+    function hexToString(hex) {
+        var converted = hex.toString(16);
+        return '000000'.substr(0, 6 - converted.length) + converted;
+    }
+    Rance.hexToString = hexToString;
+
+    function makeTempPlayerIcon(player, size) {
+        var canvas = document.createElement("canvas");
+        canvas.width = canvas.height = size;
+
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#" + hexToString(player.color);
+        ctx.fillRect(0, 0, size, size);
+
+        return canvas.toDataURL();
+    }
+    Rance.makeTempPlayerIcon = makeTempPlayerIcon;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -2576,9 +2644,66 @@ var Rance;
     })();
     Rance.Unit = Unit;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Buildings) {
+            Buildings.fort = {
+                type: "fort",
+                category: "defence",
+                name: "Fort",
+                icon: "img\/buildings\/fort.png",
+                maxPerType: 1,
+                maxUpgradeLevel: 4
+            };
+            Buildings.base = {
+                type: "base",
+                category: "defence",
+                name: "Base",
+                icon: "img\/buildings\/base.png",
+                maxPerType: 3,
+                maxUpgradeLevel: 1
+            };
+        })(Templates.Buildings || (Templates.Buildings = {}));
+        var Buildings = Templates.Buildings;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/buildingtemplates.ts" />
+/// <reference path="star.ts" />
+/// <reference path="player.ts" />
+var Rance;
+(function (Rance) {
+    var Building = (function () {
+        function Building(props) {
+            this.template = props.template;
+            this.location = props.location;
+            this.controller = props.controller || this.location.owner;
+            this.upgradeLevel = props.upgradeLevel || 1;
+        }
+        Building.prototype.getPossibleUpgrades = function () {
+            var upgrades = [];
+            if (this.template.upgradeInto) {
+                upgrades = upgrades.concat(this.template.upgradeInto);
+            }
+
+            if (this.upgradeLevel < this.template.maxUpgradeLevel) {
+                upgrades.push({
+                    type: this.template.type,
+                    level: this.upgradeLevel + 1
+                });
+            }
+
+            return upgrades;
+        };
+        return Building;
+    })();
+    Rance.Building = Building;
+})(Rance || (Rance = {}));
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
+/// <reference path="building.ts" />
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -2589,12 +2714,38 @@ var Rance;
             this.linksTo = [];
             this.linksFrom = [];
             this.fleets = {};
+            this.buildings = {};
             this.id = isFinite(id) ? id : idGenerators.star++;
             this.name = "Star " + this.id;
 
             this.x = x;
             this.y = y;
         }
+        // BUILDINGS
+        Star.prototype.addBuilding = function (building) {
+            if (!this.buildings[building.template.category]) {
+                this.buildings[building.template.category] = [];
+            }
+
+            var buildings = this.buildings[building.template.category];
+
+            if (buildings.indexOf(building) >= 0) {
+                throw new Error("Already has building");
+            }
+
+            buildings.push(building);
+        };
+        Star.prototype.removeBuilding = function (building) {
+            if (!this.buildings[building.template.category] || this.buildings[building.template.category].indexOf(building) < 0) {
+                throw new Error("Location doesn't have building");
+            }
+
+            var buildings = this.buildings[building.template.category];
+
+            this.buildings[building.template.category] = buildings.splice(buildings.indexOf(building), 1);
+        };
+
+        // FLEETS
         Star.prototype.getAllFleets = function () {
             var allFleets = [];
 
@@ -3469,6 +3620,19 @@ var Rance;
             for (var i = 0; i < 4; i++) {
                 var fleet = new Rance.Fleet(player1, [player1.units[i]], this.points[i]);
                 this.points[i].owner = player1;
+                var fort = new Rance.Building({
+                    template: Rance.Templates.Buildings.fort,
+                    location: this.points[i]
+                });
+                this.points[i].addBuilding(fort);
+                for (var j = 0; j < 2; j++) {
+                    var base = new Rance.Building({
+                        template: Rance.Templates.Buildings.base,
+                        location: this.points[i],
+                        controller: player2
+                    });
+                    this.points[i].addBuilding(base);
+                }
             }
 
             return this;
@@ -4663,8 +4827,10 @@ var Rance;
         fleet2 = [];
         player1 = new Rance.Player();
         player1.color = 0xFF0000;
+        player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();
         player2.color = 0x0000FF;
+        player2.icon = Rance.makeTempPlayerIcon(player2, 32);
 
         function setupFleetAndPlayer(fleet, player) {
             for (var i = 0; i < 2; i++) {

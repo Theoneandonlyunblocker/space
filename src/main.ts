@@ -21,8 +21,10 @@ module Rance
     fleet2 = [];
     player1 = new Player();
     player1.color = 0xFF0000;
+    player1.icon = makeTempPlayerIcon(player1, 32);
     player2 = new Player();
     player2.color = 0x0000FF;
+    player2.icon = makeTempPlayerIcon(player2, 32);
 
     function setupFleetAndPlayer(fleet, player)
     {

@@ -1,3 +1,5 @@
+/// <reference path="defencebuildinglist.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -6,7 +8,7 @@ module Rance
 
       render: function()
       {
-        var star = this.props.selectedStar;
+        var star: Star = this.props.selectedStar;
         if (!star) return null;
 
         
@@ -34,7 +36,11 @@ module Rance
             },
               "x: " + star.x.toFixed() +
               " y: " + star.y.toFixed()
-            )
+            ),
+            UIComponents.DefenceBuildingList(
+            {
+              buildings: star.buildings["defence"]
+            })
             
           )
         );

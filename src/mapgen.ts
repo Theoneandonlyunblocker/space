@@ -89,9 +89,25 @@ module Rance
 
       for (var i = 0; i < 4; i++)
       {
-        var fleet = new Rance.Fleet(player1, [player1.units[i]],
+        var fleet = new Fleet(player1, [player1.units[i]],
           this.points[i]);
         this.points[i].owner = player1;
+        var fort = new Building(
+        {
+          template: Templates.Buildings.fort,
+          location: this.points[i]
+        });
+        this.points[i].addBuilding(fort);
+        for (var j = 0; j < 2; j++)
+        {
+          var base = new Building(
+          {
+            template: Templates.Buildings.base,
+            location: this.points[i],
+            controller: player2
+          })
+          this.points[i].addBuilding(base);
+        }
       }
 
       return this;

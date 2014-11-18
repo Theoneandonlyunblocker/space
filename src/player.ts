@@ -11,6 +11,7 @@ module Rance
   {
     id: number;
     name: string;
+    icon: string;
     units:
     {
       [id: number]: Unit;

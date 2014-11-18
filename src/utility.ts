@@ -110,4 +110,22 @@ module Rance
       (y >= y1 && y <= y2)
     );
   }
+
+  export function hexToString(hex: number)
+  {
+    var converted = hex.toString(16);
+    return '000000'.substr(0, 6 - converted.length) + converted;
+  }
+
+  export function makeTempPlayerIcon(player: Player, size: number)
+  {
+    var canvas = document.createElement("canvas");
+    canvas.width = canvas.height = size;
+
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#" + hexToString(player.color);
+    ctx.fillRect(0, 0, size, size);
+
+    return canvas.toDataURL();
+  }
 }

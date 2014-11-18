@@ -1,6 +1,7 @@
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
+/// <reference path="building.ts" />
 
 module Rance
 {
@@ -21,7 +22,12 @@ module Rance
     owner: Player;
     fleets:
     {
-      [playerId: string] : Fleet[]
+      [playerId: string] : Fleet[];
+    } = {};
+
+    buildings:
+    {
+      [category: string] : Building[];
     } = {};
 
     voronoiId: number;
@@ -36,6 +42,40 @@ module Rance
       this.y = y;
     }
 
+    // BUILDINGS
+    addBuilding(building: Building)
+    {
+      if (!this.buildings[building.template.category])
+      {
+        this.buildings[building.template.category] = [];
+      }
+
+      var buildings = this.buildings[building.template.category];
+
+      if (buildings.indexOf(building) >= 0)
+      {
+        throw new Error("Already has building");
+      }
+
+      buildings.push(building);
+    }
+    removeBuilding(building: Building)
+    {
+      if (
+        !this.buildings[building.template.category] ||
+        this.buildings[building.template.category].indexOf(building) < 0
+      )
+      {
+        throw new Error("Location doesn't have building")
+      }
+
+      var buildings = this.buildings[building.template.category];
+
+      this.buildings[building.template.category] =
+        buildings.splice(buildings.indexOf(building), 1);
+    }
+
+    // FLEETS
     getAllFleets()
     {
       var allFleets = [];
