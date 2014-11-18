@@ -75,6 +75,22 @@ module Rance
         buildings.splice(buildings.indexOf(building), 1);
     }
 
+    getSecondaryController()
+    {
+      if (!this.buildings["defence"]) return null;
+
+      var defenceBuildings = this.buildings["defence"];
+      for (var i = 0; i < defenceBuildings.length; i++)
+      {
+        if (defenceBuildings[i].controller !== this.owner)
+        {
+          return defenceBuildings[i].controller;
+        }
+      }
+
+      return null;
+    }
+
     // FLEETS
     getAllFleets()
     {

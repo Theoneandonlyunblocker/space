@@ -92,21 +92,22 @@ module Rance
         var fleet = new Fleet(player1, [player1.units[i]],
           this.points[i]);
         this.points[i].owner = player1;
-        var fort = new Building(
+        var sectorCommand = new Building(
         {
-          template: Templates.Buildings.fort,
+          template: Templates.Buildings.sectorCommand,
           location: this.points[i]
         });
-        this.points[i].addBuilding(fort);
+        this.points[i].addBuilding(sectorCommand);
+        var player = i > 1 ? player2 : player1;
         for (var j = 0; j < 2; j++)
         {
-          var base = new Building(
+          var starBase = new Building(
           {
-            template: Templates.Buildings.base,
+            template: Templates.Buildings.starBase,
             location: this.points[i],
-            controller: player2
+            controller: player
           })
-          this.points[i].addBuilding(base);
+          this.points[i].addBuilding(starBase);
         }
       }
 

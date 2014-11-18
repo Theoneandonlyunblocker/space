@@ -61,9 +61,13 @@ module Rance
         this.props.galaxyMap.mapRenderer = mapRenderer;
         mapRenderer.galaxyMap = galaxyMap;
 
+
         this.props.galaxyMap.mapRenderer.setMapMode("default");
         
         this.props.renderer.render();
+
+        this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+        this.renderMap();
       }
     });
   }

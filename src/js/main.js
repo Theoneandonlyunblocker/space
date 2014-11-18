@@ -1817,6 +1817,9 @@ var Rance;
                 this.props.galaxyMap.mapRenderer.setMapMode("default");
 
                 this.props.renderer.render();
+
+                this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+                this.renderMap();
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2648,19 +2651,19 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (Buildings) {
-            Buildings.fort = {
-                type: "fort",
+            Buildings.sectorCommand = {
+                type: "sectorCommand",
                 category: "defence",
-                name: "Fort",
-                icon: "img\/buildings\/fort.png",
+                name: "Sector Command",
+                icon: "img\/buildings\/sectorCommand.png",
                 maxPerType: 1,
                 maxUpgradeLevel: 4
             };
-            Buildings.base = {
-                type: "base",
+            Buildings.starBase = {
+                type: "starBase",
                 category: "defence",
-                name: "Base",
-                icon: "img\/buildings\/base.png",
+                name: "Starbase",
+                icon: "img\/buildings\/starBase.png",
                 maxPerType: 3,
                 maxUpgradeLevel: 1
             };
@@ -2743,6 +2746,20 @@ var Rance;
             var buildings = this.buildings[building.template.category];
 
             this.buildings[building.template.category] = buildings.splice(buildings.indexOf(building), 1);
+        };
+
+        Star.prototype.getSecondaryController = function () {
+            if (!this.buildings["defence"])
+                return null;
+
+            var defenceBuildings = this.buildings["defence"];
+            for (var i = 0; i < defenceBuildings.length; i++) {
+                if (defenceBuildings[i].controller !== this.owner) {
+                    return defenceBuildings[i].controller;
+                }
+            }
+
+            return null;
         };
 
         // FLEETS
@@ -3620,18 +3637,19 @@ var Rance;
             for (var i = 0; i < 4; i++) {
                 var fleet = new Rance.Fleet(player1, [player1.units[i]], this.points[i]);
                 this.points[i].owner = player1;
-                var fort = new Rance.Building({
-                    template: Rance.Templates.Buildings.fort,
+                var sectorCommand = new Rance.Building({
+                    template: Rance.Templates.Buildings.sectorCommand,
                     location: this.points[i]
                 });
-                this.points[i].addBuilding(fort);
+                this.points[i].addBuilding(sectorCommand);
+                var player = i > 1 ? player2 : player1;
                 for (var j = 0; j < 2; j++) {
-                    var base = new Rance.Building({
-                        template: Rance.Templates.Buildings.base,
+                    var starBase = new Rance.Building({
+                        template: Rance.Templates.Buildings.starBase,
                         location: this.points[i],
-                        controller: player2
+                        controller: player
                     });
-                    this.points[i].addBuilding(base);
+                    this.points[i].addBuilding(starBase);
                 }
             }
 
@@ -4064,8 +4082,13 @@ var Rance;
                         gfx.beginFill(star.owner.color, 0.4);
                         gfx.drawShape(poly);
                         gfx.endFill;
-
                         doc.addChild(gfx);
+                        /* TODO
+                        var occupier = star.getSecondaryController();
+                        if (occupier)
+                        {
+                        
+                        }*/
                     }
                     doc.height;
                     return doc;

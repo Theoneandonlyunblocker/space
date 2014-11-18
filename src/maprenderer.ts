@@ -131,8 +131,14 @@ module Rance
             gfx.beginFill(star.owner.color, 0.4);
             gfx.drawShape(poly);
             gfx.endFill;
-
             doc.addChild(gfx);
+            
+            /* TODO
+            var occupier = star.getSecondaryController();
+            if (occupier)
+            {
+
+            }*/
           }
           doc.height;
           return doc;
