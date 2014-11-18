@@ -9,7 +9,7 @@ module Rance
         var star = this.props.selectedStar;
         if (!star) return null;
 
-
+        
         return(
           React.DOM.div(
           {

@@ -2859,6 +2859,7 @@ var Rance;
             this.units = {};
             this.fleets = [];
             this.id = isFinite(id) ? id : idGenerators.player++;
+            this.name = "Player " + this.id;
         }
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -3467,6 +3468,7 @@ var Rance;
 
             for (var i = 0; i < 4; i++) {
                 var fleet = new Rance.Fleet(player1, [player1.units[i]], this.points[i]);
+                this.points[i].owner = player1;
             }
 
             return this;
@@ -3882,6 +3884,29 @@ var Rance;
                     return doc;
                 }
             };
+            this.layers["starOwners"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points = map.mapGen.getNonFillerPoints();
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (!star.owner)
+                            continue;
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(star.owner.color, 0.4);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+
+                        doc.addChild(gfx);
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
             this.layers["nonFillerVoronoiLines"] = {
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
@@ -3923,7 +3948,6 @@ var Rance;
                             gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
                         }
                     }
-
                     doc.height;
                     return doc;
                 }
@@ -3992,6 +4016,7 @@ var Rance;
             this.mapModes["default"] = {
                 name: "default",
                 layers: [
+                    { layer: this.layers["starOwners"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
@@ -4272,6 +4297,10 @@ var Rance;
             this.start = point;
             this.current = point;
 
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui)
+                ui.classList.toggle("prevent-pointer-events");
+
             this.setSelectionTargets();
         };
         RectangleSelect.prototype.moveSelection = function (point) {
@@ -4280,6 +4309,9 @@ var Rance;
         };
         RectangleSelect.prototype.endSelection = function (point) {
             this.selecting = false;
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui)
+                ui.classList.toggle("prevent-pointer-events");
 
             this.graphics.clear();
 

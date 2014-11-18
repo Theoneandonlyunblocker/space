@@ -443,6 +443,7 @@ declare module Rance {
 declare module Rance {
     class Player {
         public id: number;
+        public name: string;
         public units: {
             [id: number]: Rance.Unit;
         };

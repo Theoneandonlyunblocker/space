@@ -113,6 +113,31 @@ module Rance
           return doc;
         }
       }
+      this.layers["starOwners"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+          var points = map.mapGen.getNonFillerPoints();
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            if (!star.owner) continue;
+
+            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+            var gfx = new PIXI.Graphics();
+            gfx.beginFill(star.owner.color, 0.4);
+            gfx.drawShape(poly);
+            gfx.endFill;
+
+            doc.addChild(gfx);
+          }
+          doc.height;
+          return doc;
+        }
+      }
       this.layers["nonFillerVoronoiLines"] =
       {
         container: new PIXI.DisplayObjectContainer(),
@@ -161,7 +186,6 @@ module Rance
               gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
             }
           }
-
           doc.height;
           return doc;
         }
@@ -239,6 +263,7 @@ module Rance
         name: "default",
         layers:
         [
+          {layer: this.layers["starOwners"]},
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},

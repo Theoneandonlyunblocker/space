@@ -10,6 +10,7 @@ module Rance
   export class Player
   {
     id: number;
+    name: string;
     units:
     {
       [id: number]: Unit;
@@ -20,6 +21,7 @@ module Rance
     constructor(id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.player++;
+      this.name = "Player " + this.id;
     }
 
 
