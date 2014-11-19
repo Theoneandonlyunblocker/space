@@ -110,6 +110,7 @@ module Rance
           this.points[i].addBuilding(starBase);
         }
       }
+      
 
       return this;
     }

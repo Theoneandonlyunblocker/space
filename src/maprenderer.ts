@@ -133,12 +133,18 @@ module Rance
             gfx.endFill;
             doc.addChild(gfx);
             
-            /* TODO
+
             var occupier = star.getSecondaryController();
             if (occupier)
             {
-
-            }*/
+              gfx.filters = [testFilter];
+              var mask = new PIXI.Graphics();
+              mask.beginFill();
+              mask.drawShape(poly);
+              mask.endFill();
+              gfx.mask = mask;
+              gfx.addChild(mask);
+            }
           }
           doc.height;
           return doc;

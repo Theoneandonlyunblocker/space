@@ -90,6 +90,10 @@ declare module PIXI
 
 	/* CLASES */
 
+	export class AbstractFilter
+	{
+		constructor(fragmentSrc: string[], uniforms?: any);
+	}
 	export class AssetLoader extends EventTarget
 	{
 		assetURLs: string[];

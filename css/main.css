@@ -439,7 +439,7 @@ body {
 .prevent-pointer-events {
   pointer-events: none !important;
 }
-.prevent-pointer-events > * {
+.prevent-pointer-events * {
   pointer-events: none !important;
 }
 .fleet-selection-container {
