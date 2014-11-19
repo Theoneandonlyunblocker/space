@@ -25,7 +25,7 @@ module Rance
 
         var divProps: any =
         {
-          className: "ship-info",
+          className: "ship-info draggable",
           onTouchStart: this.handleMouseDown,
           onMouseDown: this.handleMouseDown
         };

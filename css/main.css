@@ -424,6 +424,13 @@ body {
 }
 .galaxy-map-ui {
   z-index: 100;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   pointer-events: none;
 }
 .galaxy-map-ui > * {
@@ -447,7 +454,7 @@ body {
   flex-flow: column;
 }
 .fleet-selection-controls {
-  flex: 0;
+  flex: 0 auto;
 }
 .fleet-selection-selected {
   overflow-y: auto;
@@ -480,6 +487,9 @@ body {
 .fleet-contents {
   display: flex;
   flex-flow: column;
+}
+.fleet-contents-dummy-ship {
+  height: 36px;
 }
 .ship-info {
   display: inline-flex;

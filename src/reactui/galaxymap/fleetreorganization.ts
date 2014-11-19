@@ -36,10 +36,10 @@ module Rance
         var draggingUnit = this.state.currentDragUnit;
         if (draggingUnit)
         {
-          console.log(draggingUnit);
           var oldFleet = draggingUnit.fleet;
           
           oldFleet.transferShip(fleet, draggingUnit);
+          eventManager.dispatchEvent("updateSelection", null);
         }
 
         this.handleDragEnd(true);
@@ -107,6 +107,16 @@ module Rance
                 onDragStart: this.handleDragStart,
                 onDragEnd: this.handleDragEnd
               })
+            ),
+            React.DOM.div(
+            {
+              className: "fleet-reorganization-footer"
+            },
+              React.DOM.button(
+              {
+                className: "close-reorganization",
+                onClick: this.props.closeReorganization
+              }, "Close")
             )
           )
         );

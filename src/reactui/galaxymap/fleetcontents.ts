@@ -47,6 +47,15 @@ module Rance
           }
         }
 
+        if (draggableContent)
+        {
+          shipInfos.push(React.DOM.div(
+          {
+            className: "fleet-contents-dummy-ship",
+            key: "dummy"
+          }));
+        }
+
         return(
           React.DOM.div(
           {

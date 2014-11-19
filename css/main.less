@@ -552,6 +552,7 @@ body {
 .galaxy-map-ui
 {
   z-index: 100;
+  .prevent-user-select;
   pointer-events: none;
   >*
   {
@@ -585,7 +586,7 @@ body {
 
 .fleet-selection-controls
 {
-  flex: 0;
+  flex: 0 auto;
 }
 
 .fleet-selection-selected
@@ -632,6 +633,11 @@ body {
 {
   display: flex;
   flex-flow: column;
+}
+
+.fleet-contents-dummy-ship
+{
+  height: 36px;
 }
 
 .ship-info

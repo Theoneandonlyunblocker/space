@@ -1593,7 +1593,7 @@ var Rance;
                 var ship = this.props.ship;
 
                 var divProps = {
-                    className: "ship-info",
+                    className: "ship-info draggable",
                     onTouchStart: this.handleMouseDown,
                     onMouseDown: this.handleMouseDown
                 };
@@ -1656,6 +1656,13 @@ var Rance;
                             onDragEnd: this.props.onDragEnd
                         }));
                     }
+                }
+
+                if (draggableContent) {
+                    shipInfos.push(React.DOM.div({
+                        className: "fleet-contents-dummy-ship",
+                        key: "dummy"
+                    }));
                 }
 
                 return (React.DOM.div({
@@ -1777,10 +1784,10 @@ var Rance;
             handleDrop: function (fleet) {
                 var draggingUnit = this.state.currentDragUnit;
                 if (draggingUnit) {
-                    console.log(draggingUnit);
                     var oldFleet = draggingUnit.fleet;
 
                     oldFleet.transferShip(fleet, draggingUnit);
+                    Rance.eventManager.dispatchEvent("updateSelection", null);
                 }
 
                 this.handleDragEnd(true);
@@ -1817,7 +1824,12 @@ var Rance;
                     onMouseUp: this.handleDrop,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd
-                }))));
+                })), React.DOM.div({
+                    className: "fleet-reorganization-footer"
+                }, React.DOM.button({
+                    className: "close-reorganization",
+                    onClick: this.props.closeReorganization
+                }, "Close"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1917,6 +1929,10 @@ var Rance;
                     selectedStar: this.props.playerControl.selectedStar
                 });
             },
+            closeReorganization: function () {
+                Rance.eventManager.dispatchEvent("endReorganizingFleets");
+                this.updateSelection();
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
@@ -1925,7 +1941,8 @@ var Rance;
                 }, Rance.UIComponents.FleetSelection({
                     selectedFleets: this.state.selectedFleets
                 }), Rance.UIComponents.FleetReorganization({
-                    fleets: this.state.currentlyReorganizing
+                    fleets: this.state.currentlyReorganizing,
+                    closeReorganization: this.closeReorganization
                 })), Rance.UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
                 })));

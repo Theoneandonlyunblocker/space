@@ -28,6 +28,12 @@ module Rance
         });
       },
 
+      closeReorganization: function()
+      {
+        eventManager.dispatchEvent("endReorganizingFleets");
+        this.updateSelection();
+      },
+
       render: function()
       {
         return(
@@ -45,7 +51,8 @@ module Rance
               }),
               UIComponents.FleetReorganization(
               {
-                fleets: this.state.currentlyReorganizing
+                fleets: this.state.currentlyReorganizing,
+                closeReorganization: this.closeReorganization
               })
             ),
             
