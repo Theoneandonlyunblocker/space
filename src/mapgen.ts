@@ -89,7 +89,8 @@ module Rance
 
       for (var i = 0; i < 4; i++)
       {
-        var fleet = new Fleet(player1, [player1.units[i]],
+        var units = player1.getAllUnits();
+        var fleet = new Fleet(player1, [units[i]],
           this.points[i]);
         this.points[i].owner = player1;
         var sectorCommand = new Building(
@@ -99,6 +100,31 @@ module Rance
         });
         this.points[i].addBuilding(sectorCommand);
         var player = i > 1 ? player2 : player1;
+        for (var j = 0; j < 2; j++)
+        {
+          var starBase = new Building(
+          {
+            template: Templates.Buildings.starBase,
+            location: this.points[i],
+            controller: player
+          })
+          this.points[i].addBuilding(starBase);
+        }
+      }
+
+      for (var i = 4; i < 8; i++)
+      {
+        var units = player2.getAllUnits();
+        var fleet = new Fleet(player2, [units[i - 4]],
+          this.points[i]);
+        this.points[i].owner = player2;
+        var sectorCommand = new Building(
+        {
+          template: Templates.Buildings.sectorCommand,
+          location: this.points[i]
+        });
+        this.points[i].addBuilding(sectorCommand);
+        var player = i > 5 ? player1 : player2;
         for (var j = 0; j < 2; j++)
         {
           var starBase = new Building(

@@ -28,6 +28,14 @@ module Rance
     parent: PIXI.DisplayObjectContainer;
     galaxyMap: GalaxyMap;
 
+    occupationShaders:
+    {
+      [ownerId: string]:
+      {
+        [occupierId: string]: any; //shader
+      };
+    } = {};
+
     layers:
     {
       [name: string]: IMapRendererLayer;
@@ -56,6 +64,63 @@ module Rance
     addEventListeners()
     {
       eventManager.addEventListener("renderMap", this.render.bind(this));
+    }
+    getOccupationShader(owner: Player, occupier: Player)
+    {
+      if (!this.occupationShaders[owner.id])
+      {
+        this.occupationShaders[owner.id] = {};
+      }
+
+      if (!this.occupationShaders[owner.id][occupier.id])
+      {
+        var baseColor = PIXI.hex2rgb(owner.color);
+        baseColor.push(1.0);
+        var occupierColor = PIXI.hex2rgb(occupier.color);
+        occupierColor.push(1.0);
+
+        var uniforms =
+        {
+          baseColor: {type: "4fv", value: baseColor},
+          lineColor: {type: "4fv", value: occupierColor},
+          gapSize: {type: "2f", value: {x: 3.0, y: 3.0}}
+        };
+
+        var shaderSrc =
+        [
+          "precision mediump float;",
+
+          "uniform sampler2D uSampler;",
+
+          "varying vec2 vTextureCoord;",
+          "varying vec4 vColor;",
+
+          "uniform vec4 baseColor;",
+          "uniform vec4 lineColor;",
+          "uniform vec2 gapSize;",
+
+          "void main( void )",
+          "{",
+          "  vec2 position = gl_FragCoord.xy;",
+          "  position.x -= position.y;",
+          "  vec2 scaled = vec2(floor(position.x * 0.2), position.y);",
+          "  vec2 res = mod(scaled, gapSize);",
+          "  if(res.x>0.0)",
+          "  {",
+          "    gl_FragColor = mix(baseColor, gl_FragColor, 0.3);",
+          "  }",
+          "  else",
+          "  {",
+          "    gl_FragColor = mix(lineColor, gl_FragColor, 0.3);",
+          "  }",
+          "}"
+        ];
+
+        this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(
+          shaderSrc, uniforms);
+      }
+
+      return this.occupationShaders[owner.id][occupier.id]
     }
     initLayers()
     {
@@ -128,7 +193,7 @@ module Rance
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
-            gfx.beginFill(star.owner.color, 0.4);
+            gfx.beginFill(star.owner.color, 0.7);
             gfx.drawShape(poly);
             gfx.endFill;
             doc.addChild(gfx);
@@ -137,7 +202,9 @@ module Rance
             var occupier = star.getSecondaryController();
             if (occupier)
             {
-              gfx.filters = [testFilter];
+              gfx.filters = [this.getOccupationShader(star.owner, occupier)];
+              //gfx.filters = [testFilter];
+              console.log(gfx.filters);
               var mask = new PIXI.Graphics();
               mask.beginFill();
               mask.drawShape(poly);

@@ -75,13 +75,15 @@ module Rance
       "precision mediump float;",
 
       "uniform sampler2D uSampler;",
+      //"uniform vec4 baseColor;",
+      "uniform vec2 gapSize;",
 
       "varying vec2 vTextureCoord;",
       "varying vec4 vColor;",
 
-      "vec4 baseColor = vec4(1.0, 0.0, 0.0, 0.4);",
-      "vec4 lineColor = vec4(0.0, 0.0, 1.0, 0.4);",
-      "vec2 gapSize = vec2(3.0, 3.0);",
+      "vec4 baseColor = vec4(1.0, 0.0, 0.0, 0.7);",
+      "vec4 lineColor = vec4(0.0, 0.0, 1.0, 0.7);",
+      //"vec2 gapSize = vec2(3.0, 3.0);",
       "void main( void )",
       "{",
       "  vec2 position = gl_FragCoord.xy;",
@@ -97,7 +99,10 @@ module Rance
       "    gl_FragColor = lineColor;",
       "  }",
       "}"
-    ]);
+    ],
+    {
+      gapSize: {type: "2f", value: {x: 3.0, y: 3.0}}  
+    });
 
     setupFleetAndPlayer(fleet1, player1);
     setupFleetAndPlayer(fleet2, player2);

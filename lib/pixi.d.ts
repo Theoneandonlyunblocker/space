@@ -24,7 +24,7 @@ declare module PIXI
 	export function FilterBlock( mask:Graphics ):void;
 	export function MaskFilter( graphics:Graphics ):void;
 	export function rgb2hex( rgb:number[] ):number;
-
+	export function hex2rgb( hex: number): number[];
 
 	/* DEBUG METHODS */
 
@@ -254,6 +254,7 @@ declare module PIXI
 		lineColor:string;
 		boundsPadding: number;
 		bounds: any;
+		filters: any[];
 		constructor();
 
 		beginFill(color?: number, alpha?: number): void;

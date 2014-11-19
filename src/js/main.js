@@ -3894,7 +3894,8 @@ var Rance;
             this.severArmLinks();
 
             for (var i = 0; i < 4; i++) {
-                var fleet = new Rance.Fleet(player1, [player1.units[i]], this.points[i]);
+                var units = player1.getAllUnits();
+                var fleet = new Rance.Fleet(player1, [units[i]], this.points[i]);
                 this.points[i].owner = player1;
                 var sectorCommand = new Rance.Building({
                     template: Rance.Templates.Buildings.sectorCommand,
@@ -3902,6 +3903,26 @@ var Rance;
                 });
                 this.points[i].addBuilding(sectorCommand);
                 var player = i > 1 ? player2 : player1;
+                for (var j = 0; j < 2; j++) {
+                    var starBase = new Rance.Building({
+                        template: Rance.Templates.Buildings.starBase,
+                        location: this.points[i],
+                        controller: player
+                    });
+                    this.points[i].addBuilding(starBase);
+                }
+            }
+
+            for (var i = 4; i < 8; i++) {
+                var units = player2.getAllUnits();
+                var fleet = new Rance.Fleet(player2, [units[i - 4]], this.points[i]);
+                this.points[i].owner = player2;
+                var sectorCommand = new Rance.Building({
+                    template: Rance.Templates.Buildings.sectorCommand,
+                    location: this.points[i]
+                });
+                this.points[i].addBuilding(sectorCommand);
+                var player = i > 5 ? player1 : player2;
                 for (var j = 0; j < 2; j++) {
                     var starBase = new Rance.Building({
                         template: Rance.Templates.Buildings.starBase,
@@ -4264,6 +4285,7 @@ var Rance;
 (function (Rance) {
     var MapRenderer = (function () {
         function MapRenderer() {
+            this.occupationShaders = {};
             this.layers = {};
             this.mapModes = {};
             this.TextureCache = {};
@@ -4276,6 +4298,53 @@ var Rance;
         }
         MapRenderer.prototype.addEventListeners = function () {
             Rance.eventManager.addEventListener("renderMap", this.render.bind(this));
+        };
+        MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
+            if (!this.occupationShaders[owner.id]) {
+                this.occupationShaders[owner.id] = {};
+            }
+
+            if (!this.occupationShaders[owner.id][occupier.id]) {
+                var baseColor = PIXI.hex2rgb(owner.color);
+                baseColor.push(1.0);
+                var occupierColor = PIXI.hex2rgb(occupier.color);
+                occupierColor.push(1.0);
+
+                var uniforms = {
+                    baseColor: { type: "4fv", value: baseColor },
+                    lineColor: { type: "4fv", value: occupierColor },
+                    gapSize: { type: "2f", value: { x: 3.0, y: 3.0 } }
+                };
+
+                var shaderSrc = [
+                    "precision mediump float;",
+                    "uniform sampler2D uSampler;",
+                    "varying vec2 vTextureCoord;",
+                    "varying vec4 vColor;",
+                    "uniform vec4 baseColor;",
+                    "uniform vec4 lineColor;",
+                    "uniform vec2 gapSize;",
+                    "void main( void )",
+                    "{",
+                    "  vec2 position = gl_FragCoord.xy;",
+                    "  position.x -= position.y;",
+                    "  vec2 scaled = vec2(floor(position.x * 0.2), position.y);",
+                    "  vec2 res = mod(scaled, gapSize);",
+                    "  if(res.x>0.0)",
+                    "  {",
+                    "    gl_FragColor = mix(baseColor, gl_FragColor, 0.3);",
+                    "  }",
+                    "  else",
+                    "  {",
+                    "    gl_FragColor = mix(lineColor, gl_FragColor, 0.3);",
+                    "  }",
+                    "}"
+                ];
+
+                this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(shaderSrc, uniforms);
+            }
+
+            return this.occupationShaders[owner.id][occupier.id];
         };
         MapRenderer.prototype.initLayers = function () {
             this.layers["nonFillerStars"] = {
@@ -4338,14 +4407,17 @@ var Rance;
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
-                        gfx.beginFill(star.owner.color, 0.4);
+                        gfx.beginFill(star.owner.color, 0.7);
                         gfx.drawShape(poly);
                         gfx.endFill;
                         doc.addChild(gfx);
 
                         var occupier = star.getSecondaryController();
                         if (occupier) {
-                            gfx.filters = [testFilter];
+                            gfx.filters = [this.getOccupationShader(star.owner, occupier)];
+
+                            //gfx.filters = [testFilter];
+                            console.log(gfx.filters);
                             var mask = new PIXI.Graphics();
                             mask.beginFill();
                             mask.drawShape(poly);
@@ -5156,11 +5228,11 @@ var Rance;
         testFilter = new PIXI.AbstractFilter([
             "precision mediump float;",
             "uniform sampler2D uSampler;",
+            "uniform vec2 gapSize;",
             "varying vec2 vTextureCoord;",
             "varying vec4 vColor;",
-            "vec4 baseColor = vec4(1.0, 0.0, 0.0, 0.4);",
-            "vec4 lineColor = vec4(0.0, 0.0, 1.0, 0.4);",
-            "vec2 gapSize = vec2(3.0, 3.0);",
+            "vec4 baseColor = vec4(1.0, 0.0, 0.0, 0.7);",
+            "vec4 lineColor = vec4(0.0, 0.0, 1.0, 0.7);",
             "void main( void )",
             "{",
             "  vec2 position = gl_FragCoord.xy;",
@@ -5176,7 +5248,9 @@ var Rance;
             "    gl_FragColor = lineColor;",
             "  }",
             "}"
-        ]);
+        ], {
+            gapSize: { type: "2f", value: { x: 3.0, y: 3.0 } }
+        });
 
         setupFleetAndPlayer(fleet1, player1);
         setupFleetAndPlayer(fleet2, player2);

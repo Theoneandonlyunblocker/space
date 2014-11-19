@@ -708,6 +708,11 @@ declare module Rance {
         public container: PIXI.DisplayObjectContainer;
         public parent: PIXI.DisplayObjectContainer;
         public galaxyMap: Rance.GalaxyMap;
+        public occupationShaders: {
+            [ownerId: string]: {
+                [occupierId: string]: any;
+            };
+        };
         public layers: {
             [name: string]: IMapRendererLayer;
         };
@@ -720,6 +725,7 @@ declare module Rance {
         public currentMapMode: IMapRendererLayerMapMode;
         constructor();
         public addEventListeners(): void;
+        public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
         public initLayers(): void;
         public initMapModes(): void;
         public setParent(newParent: PIXI.DisplayObjectContainer): void;
