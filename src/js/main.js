@@ -3202,7 +3202,10 @@ var Rance;
             this.selectedFleets = [];
             this.selectedStar = null;
         };
-        PlayerControl.prototype.updateSelection = function () {
+        PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
+            if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
+            if (endReorganizingFleets)
+                this.endReorganizingFleets();
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
@@ -3270,23 +3273,35 @@ var Rance;
             Rance.eventManager.dispatchEvent("renderMap", null);
         };
         PlayerControl.prototype.splitFleet = function (fleet) {
-            console.log(fleet);
+            if (fleet.ships.length <= 0)
+                return;
+            this.endReorganizingFleets();
             var newFleet = fleet.split();
 
             this.currentlyReorganizing = [fleet, newFleet];
-            this.selectFleets([fleet, newFleet]);
+            this.selectedFleets = [fleet, newFleet];
+
+            this.updateSelection(false);
         };
         PlayerControl.prototype.startReorganizingFleets = function (fleets) {
             if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
                 throw new Error("cant reorganize fleets");
             }
 
+            this.endReorganizingFleets();
             this.currentlyReorganizing = fleets;
+
+            this.updateSelection(false);
         };
         PlayerControl.prototype.endReorganizingFleets = function () {
             for (var i = 0; i < this.currentlyReorganizing.length; i++) {
-                if (this.currentlyReorganizing[i].ships.length <= 0) {
-                    this.currentlyReorganizing[i].deleteFleet();
+                var fleet = this.currentlyReorganizing[i];
+                if (fleet.ships.length <= 0) {
+                    var selectedIndex = this.selectedFleets.indexOf(fleet);
+                    if (selectedIndex >= 0) {
+                        this.selectedFleets.splice(selectedIndex, 1);
+                    }
+                    fleet.deleteFleet();
                 }
             }
             this.currentlyReorganizing = [];

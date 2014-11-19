@@ -80,8 +80,9 @@ module Rance
       this.selectedFleets = [];
       this.selectedStar = null;
     }
-    updateSelection()
+    updateSelection(endReorganizingFleets: boolean = true)
     {
+      if (endReorganizingFleets) this.endReorganizingFleets();
       eventManager.dispatchEvent("updateSelection", null);
     }
     selectFleets(fleets: Fleet[])
@@ -158,10 +159,14 @@ module Rance
     }
     splitFleet(fleet: Fleet)
     {
+      if (fleet.ships.length <= 0) return;
+      this.endReorganizingFleets();
       var newFleet = fleet.split();
 
       this.currentlyReorganizing = [fleet, newFleet];
-      this.selectFleets([fleet, newFleet]);
+      this.selectedFleets = [fleet, newFleet];
+
+      this.updateSelection(false);
     }
     startReorganizingFleets(fleets: Fleet[])
     {
@@ -175,16 +180,23 @@ module Rance
       {
         throw new Error("cant reorganize fleets");
       }
-
       this.currentlyReorganizing = fleets;
+
+      this.updateSelection(false);
     }
     endReorganizingFleets()
     {
       for (var i = 0; i < this.currentlyReorganizing.length; i++)
       {
-        if (this.currentlyReorganizing[i].ships.length <= 0)
+        var fleet = this.currentlyReorganizing[i];
+        if (fleet.ships.length <= 0)
         {
-          this.currentlyReorganizing[i].deleteFleet();
+          var selectedIndex = this.selectedFleets.indexOf(fleet);
+          if (selectedIndex >= 0)
+          {
+            this.selectedFleets.splice(selectedIndex, 1);
+          }
+          fleet.deleteFleet();
         }
       }
       this.currentlyReorganizing = [];

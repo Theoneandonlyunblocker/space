@@ -537,7 +537,7 @@ declare module Rance {
         public addEventListeners(): void;
         public preventGhost(delay: number): void;
         public clearSelection(): void;
-        public updateSelection(): void;
+        public updateSelection(endReorganizingFleets?: boolean): void;
         public selectFleets(fleets: Rance.Fleet[]): void;
         public deselectFleet(fleet: Rance.Fleet): void;
         public getMasterFleetForMerge(): Rance.Fleet;
