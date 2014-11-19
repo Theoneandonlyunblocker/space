@@ -576,12 +576,22 @@ body {
   left: 0;
   display: inline-flex;
   flex-flow: row;
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
 }
 
 .fleet-selection
 {
   display: inline-flex;
   flex-flow: column;
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
 }
 
 .fleet-selection-controls

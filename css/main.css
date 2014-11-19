@@ -448,10 +448,18 @@ body {
   left: 0;
   display: inline-flex;
   flex-flow: row;
+  pointer-events: none;
+}
+.fleet-selection-container > * {
+  pointer-events: auto;
 }
 .fleet-selection {
   display: inline-flex;
   flex-flow: column;
+  pointer-events: none;
+}
+.fleet-selection > * {
+  pointer-events: auto;
 }
 .fleet-selection-controls {
   flex: 0 auto;
