@@ -1,7 +1,6 @@
 /// <reference path="fleetinfo.ts"/>
 /// <reference path="fleetcontents.ts"/>
-/// <reference path="reorganizefleet.ts"/>
-
+/// 
 module Rance
 {
   export module UIComponents
@@ -14,7 +13,7 @@ module Rance
       },
       reorganizeFleets: function()
       {
-        console.log("reorganize", this.props.selectedFleets);
+        eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
       },
 
       render: function()

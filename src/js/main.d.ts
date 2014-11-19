@@ -176,17 +176,22 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var DraggableShipInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FleetContents: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ReorganizeFleet: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetReorganization: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
@@ -248,6 +253,7 @@ declare module Rance {
     function rectContains(rect: any, point: any): boolean;
     function hexToString(hex: number): string;
     function makeTempPlayerIcon(player: Player, size: number): string;
+    function addFleet(player: Player, shipAmount: number): void;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -494,6 +500,7 @@ declare module Rance {
         public addShips(ships: Rance.Unit[]): void;
         public removeShip(ship: Rance.Unit): boolean;
         public removeShips(ships: Rance.Unit[]): void;
+        public transferShip(fleet: Fleet, ship: Rance.Unit): boolean;
         public split(): Fleet;
         public move(newLocation: Rance.Star): void;
         public getFriendlyFleetsAtOwnLocation(): Fleet[];

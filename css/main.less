@@ -568,11 +568,17 @@ body {
   }
 }
 
-.fleet-selection
+.fleet-selection-container
 {
   position: absolute;
   top: 0;
   left: 0;
+  display: inline-flex;
+  flex-flow: row;
+}
+
+.fleet-selection
+{
   display: inline-flex;
   flex-flow: column;
 }
@@ -632,6 +638,7 @@ body {
 {
   display: inline-flex;
   flex-flow: row;
+  flex-shrink: 0;
   background-color: white;
   border: 1px solid black;
 }
@@ -649,6 +656,60 @@ body {
 {
   flex: 1;
 }
+
+.fleet-reorganization
+{
+  display: inline-flex;
+  flex-flow: column;
+  background-color: white;
+}
+
+.fleet-reorganization-header
+{
+  text-align: center;
+}
+
+.fleet-reorganization-subheader
+{
+  display: inline-flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+.fleet-reorganization-subheader-fleet-name
+{
+  flex: 1;
+  border: 1px solid black;
+}
+.fleet-reorganization-subheader-fleet-name-left
+{
+  text-align: right;
+}
+.fleet-reorganization-subheader-center
+{
+  
+}
+.fleet-reorganization-subheader-fleet-name-right
+{
+  text-align: left;
+}
+
+.fleet-reorganization-contents
+{
+  display: inline-flex;
+  flex-flow: row;
+
+  .fleet-contents
+  {
+    border: 1px solid red;
+    display: inline-flex;
+    flex: 1;
+    min-width: 260px;
+    overflow-y: scroll;
+    max-height: 300px;
+  }
+}
+
 
 .star-info
 {

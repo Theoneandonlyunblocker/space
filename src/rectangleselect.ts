@@ -40,7 +40,7 @@ module Rance
       this.current = point;
 
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) ui.classList.toggle("prevent-pointer-events");
+      if (ui) ui.classList.add("prevent-pointer-events");
 
       this.setSelectionTargets();
     }
@@ -53,7 +53,7 @@ module Rance
     {
       this.selecting = false;
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) ui.classList.toggle("prevent-pointer-events");
+      if (ui) ui.classList.remove("prevent-pointer-events");
 
       this.graphics.clear();
 

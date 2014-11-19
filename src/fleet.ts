@@ -10,7 +10,7 @@ module Rance
   export class Fleet
   {
     player: Player;
-    ships: Unit[];
+    ships: Unit[] = [];
     location: Star;
 
     id: number;
@@ -19,13 +19,14 @@ module Rance
     constructor(player: Player, ships: Unit[], location: Star, id?: number)
     {
       this.player = player;
-      this.ships = ships;
       this.location = location;
       this.id = isFinite(id) ? id : idGenerators.fleets++;
       this.name = "Fleet " + this.id;
 
       this.location.addFleet(this);
       this.player.addFleet(this);
+
+      this.addShips(ships);
 
       eventManager.dispatchEvent("renderMap", null);
     }
@@ -83,6 +84,17 @@ module Rance
       {
         this.removeShip(ships[i]);
       }
+    }
+    transferShip(fleet: Fleet, ship: Unit)
+    {
+      if (fleet === this) return;
+      var index = this.getShipIndex(ship);
+
+      if (index < 0) return false;
+
+      fleet.addShip(ship);
+
+      this.ships.splice(index, 1);
     }
     split()
     {

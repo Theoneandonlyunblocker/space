@@ -1231,7 +1231,7 @@ var Rance;
                 var rowProps = {
                     className: "unit-list-item draggable",
                     onClick: this.props.handleClick,
-                    onTouchStart: this.props.handleClick,
+                    onTouchStart: this.handleMouseDown,
                     onMouseDown: this.handleMouseDown
                 };
 
@@ -1576,58 +1576,92 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="shipinfo.ts"/>
+/// <reference path="../mixins/draggable.ts" />
+/// <reference path="../unit/unitstrength.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
-        UIComponents.FleetContents = React.createClass({
+        UIComponents.DraggableShipInfo = React.createClass({
+            mixins: [Rance.UIComponents.Draggable],
+            onDragStart: function (e) {
+                this.props.onDragStart(this.props.ship);
+            },
+            onDragEnd: function (e) {
+                this.props.onDragEnd(e);
+            },
             render: function () {
-                var shipInfos = [];
+                var ship = this.props.ship;
 
-                for (var i = 0; i < this.props.fleet.ships.length; i++) {
-                    shipInfos.push(Rance.UIComponents.ShipInfo({
-                        key: this.props.fleet.ships[i].id,
-                        ship: this.props.fleet.ships[i]
-                    }));
+                var divProps = {
+                    className: "ship-info",
+                    onTouchStart: this.handleMouseDown,
+                    onMouseDown: this.handleMouseDown
+                };
+
+                if (this.state.dragging) {
+                    divProps.style = this.state.dragPos;
+                    divProps.className += " dragging";
                 }
 
-                return (React.DOM.div({
-                    className: "fleet-contents"
-                }, shipInfos));
+                return (React.DOM.div(divProps, React.DOM.div({
+                    className: "ship-info-icon-container"
+                }, React.DOM.img({
+                    className: "ship-info-icon",
+                    src: ship.template.icon
+                })), React.DOM.div({
+                    className: "ship-info-info"
+                }, React.DOM.div({
+                    className: "ship-info-name"
+                }, ship.name), React.DOM.div({
+                    className: "ship-info-type"
+                }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
+                    maxStrength: ship.maxStrength,
+                    currentStrength: ship.currentStrength,
+                    isSquadron: true
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="fleetcontents.ts"/>
+/// <reference path="shipinfo.ts"/>
+/// <reference path="draggableshipinfo.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
-        UIComponents.ReorganizeFleet = React.createClass({
+        UIComponents.FleetContents = React.createClass({
+            handleMouseUp: function () {
+                if (!this.props.onMouseUp)
+                    return;
+
+                this.props.onMouseUp(this.props.fleet);
+            },
             render: function () {
-                var selectedFleets = this.props.fleets;
+                var shipInfos = [];
+
+                var draggableContent = (this.props.onDragStart || this.props.onDragEnd);
+
+                for (var i = 0; i < this.props.fleet.ships.length; i++) {
+                    if (!draggableContent) {
+                        shipInfos.push(Rance.UIComponents.ShipInfo({
+                            key: this.props.fleet.ships[i].id,
+                            ship: this.props.fleet.ships[i]
+                        }));
+                    } else {
+                        shipInfos.push(Rance.UIComponents.DraggableShipInfo({
+                            key: this.props.fleet.ships[i].id,
+                            ship: this.props.fleet.ships[i],
+                            onDragStart: this.props.onDragStart,
+                            onDragMove: this.props.onDragMove,
+                            onDragEnd: this.props.onDragEnd
+                        }));
+                    }
+                }
 
                 return (React.DOM.div({
-                    className: "reorganize-fleet"
-                }, React.DOM.div({
-                    className: "reorganize-fleet-header"
-                }, null), React.DOM.div({
-                    className: "reorganize-fleet-subheader"
-                }, React.DOM.div({
-                    className: "reorganize-fleet-subheader-left-fleet-name"
-                }), React.DOM.div({
-                    className: "reorganize-fleet-subheader-center"
-                }), React.DOM.div({
-                    className: "reorganize-fleet-subheader-right-fleet-name"
-                })), React.DOM.div({
-                    className: "reorganize-fleet-contents"
-                }, Rance.UIComponents.FleetContents({
-                    fleet: selectedFleets[0]
-                }), React.DOM.div({
-                    className: "reorganize-fleet-contents-divider"
-                }), Rance.UIComponents.FleetContents({
-                    fleet: selectedFleets[1]
-                }))));
+                    className: "fleet-contents",
+                    onMouseUp: this.handleMouseUp
+                }, shipInfos));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1635,7 +1669,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="fleetinfo.ts"/>
 /// <reference path="fleetcontents.ts"/>
-/// <reference path="reorganizefleet.ts"/>
+///
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1644,7 +1678,7 @@ var Rance;
                 Rance.eventManager.dispatchEvent("mergeFleets", null);
             },
             reorganizeFleets: function () {
-                console.log("reorganize", this.props.selectedFleets);
+                Rance.eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
             },
             render: function () {
                 var selectedFleets = this.props.selectedFleets;
@@ -1714,6 +1748,76 @@ var Rance;
                 }, fleetSelectionControls, React.DOM.div({
                     className: "fleet-selection-selected"
                 }, fleetInfos, fleetContents)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetcontents.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FleetReorganization = React.createClass({
+            getInitialState: function () {
+                return ({
+                    currentDragUnit: null
+                });
+            },
+            handleDragStart: function (unit) {
+                this.setState({
+                    currentDragUnit: unit
+                });
+            },
+            handleDragEnd: function (dropSuccesful) {
+                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                this.setState({
+                    currentDragUnit: null
+                });
+            },
+            handleDrop: function (fleet) {
+                var draggingUnit = this.state.currentDragUnit;
+                if (draggingUnit) {
+                    console.log(draggingUnit);
+                    var oldFleet = draggingUnit.fleet;
+
+                    oldFleet.transferShip(fleet, draggingUnit);
+                }
+
+                this.handleDragEnd(true);
+            },
+            render: function () {
+                var selectedFleets = this.props.fleets;
+                if (!selectedFleets || selectedFleets.length < 1) {
+                    return null;
+                }
+
+                return (React.DOM.div({
+                    className: "fleet-reorganization"
+                }, React.DOM.div({
+                    className: "fleet-reorganization-header"
+                }, "Reorganize fleets"), React.DOM.div({
+                    className: "fleet-reorganization-subheader"
+                }, React.DOM.div({
+                    className: "fleet-reorganization-subheader-fleet-name" + " fleet-reorganization-subheader-fleet-name-left"
+                }, selectedFleets[0].name), React.DOM.div({
+                    className: "fleet-reorganization-subheader-center"
+                }, "<->"), React.DOM.div({
+                    className: "fleet-reorganization-subheader-fleet-name" + " fleet-reorganization-subheader-fleet-name-right"
+                }, selectedFleets[1].name)), React.DOM.div({
+                    className: "fleet-reorganization-contents"
+                }, Rance.UIComponents.FleetContents({
+                    fleet: selectedFleets[0],
+                    onMouseUp: this.handleDrop,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd
+                }), React.DOM.div({
+                    className: "fleet-reorganization-contents-divider"
+                }, "-"), Rance.UIComponents.FleetContents({
+                    fleet: selectedFleets[1],
+                    onMouseUp: this.handleDrop,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd
+                }))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1793,6 +1897,7 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="fleetselection.ts"/>
+/// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
 var Rance;
 (function (Rance) {
@@ -1801,21 +1906,27 @@ var Rance;
             getInitialState: function () {
                 return ({
                     selectedFleets: this.props.playerControl.selectedFleets,
+                    currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
                     selectedStar: this.props.playerControl.selectedStar
                 });
             },
             updateSelection: function () {
                 this.setState({
                     selectedFleets: this.props.playerControl.selectedFleets,
+                    currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
                     selectedStar: this.props.playerControl.selectedStar
                 });
             },
             render: function () {
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
+                }, React.DOM.div({
+                    className: "fleet-selection-container"
                 }, Rance.UIComponents.FleetSelection({
                     selectedFleets: this.state.selectedFleets
-                }), Rance.UIComponents.StarInfo({
+                }), Rance.UIComponents.FleetReorganization({
+                    fleets: this.state.currentlyReorganizing
+                })), Rance.UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
                 })));
             },
@@ -2077,6 +2188,14 @@ var Rance;
         return canvas.toDataURL();
     }
     Rance.makeTempPlayerIcon = makeTempPlayerIcon;
+    function addFleet(player, shipAmount) {
+        var ships = [];
+        for (var i = 0; i < shipAmount; i++) {
+            ships.push(makeRandomShip());
+        }
+        var fleet = new Rance.Fleet(player, ships, mapGen.points[0]);
+    }
+    Rance.addFleet = addFleet;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -2976,14 +3095,16 @@ var Rance;
 
     var Fleet = (function () {
         function Fleet(player, ships, location, id) {
+            this.ships = [];
             this.player = player;
-            this.ships = ships;
             this.location = location;
             this.id = isFinite(id) ? id : idGenerators.fleets++;
             this.name = "Fleet " + this.id;
 
             this.location.addFleet(this);
             this.player.addFleet(this);
+
+            this.addShips(ships);
 
             Rance.eventManager.dispatchEvent("renderMap", null);
         }
@@ -3032,6 +3153,18 @@ var Rance;
             for (var i = 0; i < ships.length; i++) {
                 this.removeShip(ships[i]);
             }
+        };
+        Fleet.prototype.transferShip = function (fleet, ship) {
+            if (fleet === this)
+                return;
+            var index = this.getShipIndex(ship);
+
+            if (index < 0)
+                return false;
+
+            fleet.addShip(ship);
+
+            this.ships.splice(index, 1);
         };
         Fleet.prototype.split = function () {
             var newFleet = new Fleet(this.player, [], this.location);
@@ -3287,8 +3420,6 @@ var Rance;
             if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
                 throw new Error("cant reorganize fleets");
             }
-
-            this.endReorganizingFleets();
             this.currentlyReorganizing = fleets;
 
             this.updateSelection(false);
@@ -4597,7 +4728,7 @@ var Rance;
 
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
-                ui.classList.toggle("prevent-pointer-events");
+                ui.classList.add("prevent-pointer-events");
 
             this.setSelectionTargets();
         };
@@ -4609,7 +4740,7 @@ var Rance;
             this.selecting = false;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
-                ui.classList.toggle("prevent-pointer-events");
+                ui.classList.remove("prevent-pointer-events");
 
             this.graphics.clear();
 

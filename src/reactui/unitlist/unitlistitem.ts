@@ -70,7 +70,7 @@ module Rance
         {
           className: "unit-list-item draggable",
           onClick : this.props.handleClick,
-          onTouchStart : this.props.handleClick,
+          onTouchStart : this.handleMouseDown,
           onMouseDown: this.handleMouseDown
         };
 

@@ -1,4 +1,5 @@
 /// <reference path="fleetselection.ts"/>
+/// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
 
 module Rance
@@ -12,6 +13,7 @@ module Rance
         return(
         {
           selectedFleets: this.props.playerControl.selectedFleets,
+          currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
           selectedStar: this.props.playerControl.selectedStar
         });
       },
@@ -21,6 +23,7 @@ module Rance
         this.setState(
         {
           selectedFleets: this.props.playerControl.selectedFleets,
+          currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
           selectedStar: this.props.playerControl.selectedStar
         });
       },
@@ -32,10 +35,20 @@ module Rance
           {
             className: "galaxy-map-ui"
           },
-            UIComponents.FleetSelection(
+            React.DOM.div(
             {
-              selectedFleets: this.state.selectedFleets
-            }),
+              className: "fleet-selection-container"
+            },
+              UIComponents.FleetSelection(
+              {
+                selectedFleets: this.state.selectedFleets
+              }),
+              UIComponents.FleetReorganization(
+              {
+                fleets: this.state.currentlyReorganizing
+              })
+            ),
+            
             UIComponents.StarInfo(
             {
               selectedStar: this.state.selectedStar
