@@ -577,10 +577,24 @@ body {
   flex-flow: column;
 }
 
+.fleet-selection-controls
+{
+  flex: 0;
+}
+
+.fleet-selection-selected
+{
+  overflow-y: auto;
+  display: inline-flex;
+  flex-flow: column;
+  max-height: 300px;
+}
+
 .fleet-info
 {
   display: inline-flex;
   flex-flow: column;
+  flex-shrink: 0;
   background-color: white;
   border: 1px solid black;
   margin-top: 2px;

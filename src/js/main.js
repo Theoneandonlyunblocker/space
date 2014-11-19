@@ -1490,11 +1490,15 @@ var Rance;
             selectFleet: function () {
                 Rance.eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
             },
+            splitFleet: function () {
+                Rance.eventManager.dispatchEvent("splitFleet", this.props.fleet);
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "fleet-controls"
                 }, React.DOM.button({
-                    className: "fleet-controls-split"
+                    className: "fleet-controls-split",
+                    onClick: this.splitFleet
                 }, "split"), React.DOM.button({
                     className: "fleet-controls-deselect",
                     onClick: this.deselectFleet
@@ -1595,14 +1599,52 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="fleetcontents.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ReorganizeFleet = React.createClass({
+            render: function () {
+                var selectedFleets = this.props.fleets;
+
+                return (React.DOM.div({
+                    className: "reorganize-fleet"
+                }, React.DOM.div({
+                    className: "reorganize-fleet-header"
+                }, null), React.DOM.div({
+                    className: "reorganize-fleet-subheader"
+                }, React.DOM.div({
+                    className: "reorganize-fleet-subheader-left-fleet-name"
+                }), React.DOM.div({
+                    className: "reorganize-fleet-subheader-center"
+                }), React.DOM.div({
+                    className: "reorganize-fleet-subheader-right-fleet-name"
+                })), React.DOM.div({
+                    className: "reorganize-fleet-contents"
+                }, Rance.UIComponents.FleetContents({
+                    fleet: selectedFleets[0]
+                }), React.DOM.div({
+                    className: "reorganize-fleet-contents-divider"
+                }), Rance.UIComponents.FleetContents({
+                    fleet: selectedFleets[1]
+                }))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleetinfo.ts"/>
 /// <reference path="fleetcontents.ts"/>
+/// <reference path="reorganizefleet.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetSelection = React.createClass({
             mergeFleets: function () {
                 Rance.eventManager.dispatchEvent("mergeFleets", null);
+            },
+            reorganizeFleets: function () {
+                console.log("reorganize", this.props.selectedFleets);
             },
             render: function () {
                 var selectedFleets = this.props.selectedFleets;
@@ -1644,9 +1686,19 @@ var Rance;
                         mergeProps.className += " disabled";
                     }
 
+                    var reorganizeProps = {
+                        className: "fleet-selection-controls-reorganize"
+                    };
+                    if (allFleetsInSameLocation && selectedFleets.length === 2) {
+                        reorganizeProps.onClick = this.reorganizeFleets;
+                    } else {
+                        reorganizeProps.disabled = true;
+                        reorganizeProps.className += " disabled";
+                    }
+
                     fleetSelectionControls = React.DOM.div({
                         className: "fleet-selection-controls"
-                    }, React.DOM.button(mergeProps, "merge"));
+                    }, React.DOM.button(reorganizeProps, "reorganize"), React.DOM.button(mergeProps, "merge"));
                 }
 
                 var fleetContents = null;
@@ -1659,7 +1711,9 @@ var Rance;
 
                 return (React.DOM.div({
                     className: "fleet-selection"
-                }, fleetSelectionControls, fleetInfos, fleetContents));
+                }, fleetSelectionControls, React.DOM.div({
+                    className: "fleet-selection-selected"
+                }, fleetInfos, fleetContents)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2979,10 +3033,8 @@ var Rance;
                 this.removeShip(ships[i]);
             }
         };
-        Fleet.prototype.split = function (newShips) {
-            this.removeShips(newShips);
-
-            var newFleet = new Fleet(this.player, newShips, this.location);
+        Fleet.prototype.split = function () {
+            var newFleet = new Fleet(this.player, [], this.location);
             this.location.addFleet(newFleet);
 
             return newFleet;
@@ -3099,6 +3151,7 @@ var Rance;
     var PlayerControl = (function () {
         function PlayerControl(player) {
             this.selectedFleets = [];
+            this.currentlyReorganizing = [];
             this.preventingGhost = false;
             this.player = player;
             this.addEventListeners();
@@ -3115,6 +3168,17 @@ var Rance;
             Rance.eventManager.addEventListener("mergeFleets", function (e) {
                 self.mergeFleets();
             });
+
+            Rance.eventManager.addEventListener("splitFleet", function (e) {
+                self.splitFleet(e.data);
+            });
+            Rance.eventManager.addEventListener("startReorganizingFleets", function (e) {
+                self.startReorganizingFleets(e.data);
+            });
+            Rance.eventManager.addEventListener("endReorganizingFleets", function (e) {
+                self.endReorganizingFleets();
+            });
+
             Rance.eventManager.addEventListener("starClick", function (e) {
                 self.selectStar(e.data);
             });
@@ -3144,6 +3208,15 @@ var Rance;
         PlayerControl.prototype.selectFleets = function (fleets) {
             this.clearSelection();
 
+            for (var i = 0; i < fleets.length; i++) {
+                if (fleets[i].ships.length < 1) {
+                    if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
+                        continue;
+                    fleets[i].deleteFleet();
+                    fleets.splice(i, 1);
+                }
+            }
+
             this.selectedFleets = fleets;
 
             this.updateSelection();
@@ -3158,6 +3231,7 @@ var Rance;
                 return;
 
             this.selectedFleets.splice(fleetIndex, 1);
+
             this.updateSelection();
         };
         PlayerControl.prototype.getMasterFleetForMerge = function () {
@@ -3194,6 +3268,28 @@ var Rance;
             this.updateSelection();
 
             Rance.eventManager.dispatchEvent("renderMap", null);
+        };
+        PlayerControl.prototype.splitFleet = function (fleet) {
+            console.log(fleet);
+            var newFleet = fleet.split();
+
+            this.currentlyReorganizing = [fleet, newFleet];
+            this.selectFleets([fleet, newFleet]);
+        };
+        PlayerControl.prototype.startReorganizingFleets = function (fleets) {
+            if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
+                throw new Error("cant reorganize fleets");
+            }
+
+            this.currentlyReorganizing = fleets;
+        };
+        PlayerControl.prototype.endReorganizingFleets = function () {
+            for (var i = 0; i < this.currentlyReorganizing.length; i++) {
+                if (this.currentlyReorganizing[i].ships.length <= 0) {
+                    this.currentlyReorganizing[i].deleteFleet();
+                }
+            }
+            this.currentlyReorganizing = [];
         };
         return PlayerControl;
     })();

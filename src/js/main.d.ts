@@ -181,6 +181,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ReorganizeFleet: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -489,7 +494,7 @@ declare module Rance {
         public addShips(ships: Rance.Unit[]): void;
         public removeShip(ship: Rance.Unit): boolean;
         public removeShips(ships: Rance.Unit[]): void;
-        public split(newShips: Rance.Unit[]): Fleet;
+        public split(): Fleet;
         public move(newLocation: Rance.Star): void;
         public getFriendlyFleetsAtOwnLocation(): Fleet[];
         public getTotalStrength(): {
@@ -525,6 +530,7 @@ declare module Rance {
     class PlayerControl {
         public player: Rance.Player;
         public selectedFleets: Rance.Fleet[];
+        public currentlyReorganizing: Rance.Fleet[];
         public selectedStar: Rance.Star;
         public preventingGhost: boolean;
         constructor(player: Rance.Player);
@@ -538,6 +544,9 @@ declare module Rance {
         public mergeFleets(): void;
         public selectStar(star: Rance.Star): void;
         public moveFleets(star: Rance.Star): void;
+        public splitFleet(fleet: Rance.Fleet): void;
+        public startReorganizingFleets(fleets: Rance.Fleet[]): void;
+        public endReorganizingFleets(): void;
     }
 }
 declare module Rance {

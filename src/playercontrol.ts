@@ -10,6 +10,8 @@ module Rance
     player: Player;
 
     selectedFleets: Fleet[] = [];
+    currentlyReorganizing: Fleet[] = [];
+
     selectedStar: Star;
 
     preventingGhost: boolean = false;
@@ -35,6 +37,20 @@ module Rance
       {
         self.mergeFleets();
       });
+
+      eventManager.addEventListener("splitFleet", function(e)
+      {
+        self.splitFleet(e.data);
+      });
+      eventManager.addEventListener("startReorganizingFleets", function(e)
+      {
+        self.startReorganizingFleets(e.data);
+      });
+      eventManager.addEventListener("endReorganizingFleets", function(e)
+      {
+        self.endReorganizingFleets();
+      });
+
       eventManager.addEventListener("starClick", function(e)
       {
         self.selectStar(e.data);
@@ -72,6 +88,16 @@ module Rance
     {
       this.clearSelection();
 
+      for (var i = 0; i < fleets.length; i++)
+      {
+        if (fleets[i].ships.length < 1)
+        {
+          if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0) continue;
+          fleets[i].deleteFleet();
+          fleets.splice(i, 1);
+        }
+      }
+
       this.selectedFleets = fleets;
 
       this.updateSelection();
@@ -87,6 +113,7 @@ module Rance
       if (fleetIndex < 0) return;
 
       this.selectedFleets.splice(fleetIndex, 1);
+
       this.updateSelection();
     }
     getMasterFleetForMerge()
@@ -128,6 +155,39 @@ module Rance
       this.updateSelection();
 
       eventManager.dispatchEvent("renderMap", null);
+    }
+    splitFleet(fleet: Fleet)
+    {
+      var newFleet = fleet.split();
+
+      this.currentlyReorganizing = [fleet, newFleet];
+      this.selectFleets([fleet, newFleet]);
+    }
+    startReorganizingFleets(fleets: Fleet[])
+    {
+      if (
+        fleets.length !== 2 ||
+        fleets[0].location !== fleets[1].location ||
+        this.selectedFleets.length !== 2 ||
+        this.selectedFleets.indexOf(fleets[0]) < 0 ||
+        this.selectedFleets.indexOf(fleets[1]) < 0 
+      )
+      {
+        throw new Error("cant reorganize fleets");
+      }
+
+      this.currentlyReorganizing = fleets;
+    }
+    endReorganizingFleets()
+    {
+      for (var i = 0; i < this.currentlyReorganizing.length; i++)
+      {
+        if (this.currentlyReorganizing[i].ships.length <= 0)
+        {
+          this.currentlyReorganizing[i].deleteFleet();
+        }
+      }
+      this.currentlyReorganizing = [];
     }
   }
 }

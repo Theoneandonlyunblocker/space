@@ -84,11 +84,9 @@ module Rance
         this.removeShip(ships[i]);
       }
     }
-    split(newShips: Unit[])
+    split()
     {
-      this.removeShips(newShips);
-
-      var newFleet = new Fleet(this.player, newShips, this.location);
+      var newFleet = new Fleet(this.player, [], this.location);
       this.location.addFleet(newFleet);
 
 

@@ -14,6 +14,11 @@ module Rance
         eventManager.dispatchEvent("selectFleets", [this.props.fleet])
       },
 
+      splitFleet: function()
+      {
+        eventManager.dispatchEvent("splitFleet", this.props.fleet)
+      },
+
       render: function()
       {
         return(
@@ -23,7 +28,8 @@ module Rance
           },
             React.DOM.button(
             {
-              className: "fleet-controls-split"
+              className: "fleet-controls-split",
+              onClick: this.splitFleet
             },
               "split"
             ),

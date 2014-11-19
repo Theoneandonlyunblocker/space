@@ -1,5 +1,6 @@
 /// <reference path="fleetinfo.ts"/>
 /// <reference path="fleetcontents.ts"/>
+/// <reference path="reorganizefleet.ts"/>
 
 module Rance
 {
@@ -10,6 +11,10 @@ module Rance
       mergeFleets: function()
       {
         eventManager.dispatchEvent("mergeFleets", null);
+      },
+      reorganizeFleets: function()
+      {
+        console.log("reorganize", this.props.selectedFleets);
       },
 
       render: function()
@@ -63,10 +68,27 @@ module Rance
             mergeProps.className += " disabled";
           }
 
+          var reorganizeProps: any =
+          {
+            className: "fleet-selection-controls-reorganize"
+          }
+          if (allFleetsInSameLocation && selectedFleets.length === 2)
+          {
+            reorganizeProps.onClick = this.reorganizeFleets;
+          }
+          else
+          {
+            reorganizeProps.disabled = true;
+            reorganizeProps.className += " disabled";
+          }
+
           fleetSelectionControls = React.DOM.div(
           {
             className: "fleet-selection-controls"
           },
+            React.DOM.button(reorganizeProps,
+              "reorganize"
+            ),
             React.DOM.button(mergeProps,
               "merge"
             )
@@ -89,8 +111,13 @@ module Rance
             className: "fleet-selection"
           },
             fleetSelectionControls,
-            fleetInfos,
-            fleetContents
+            React.DOM.div(
+            {
+              className: "fleet-selection-selected"
+            },
+              fleetInfos,
+              fleetContents
+            )
           )
         );
       }

@@ -257,9 +257,9 @@ module Rance
 
         return(
           React.DOM.table(
-                {
-                tabIndex: 1
-              },
+          {
+          tabIndex: 1
+          },
             React.DOM.colgroup(null,
               columns
             ),
