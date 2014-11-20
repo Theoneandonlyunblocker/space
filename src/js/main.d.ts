@@ -899,6 +899,27 @@ declare module Rance {
         public render(): void;
     }
 }
+declare module Rance {
+    class PriorityQueue {
+        public items: {
+            [priority: number]: any[];
+        };
+        constructor();
+        public isEmpty(): boolean;
+        public push(priority: number, data: any): void;
+        public pop(): any;
+        public peek(): any[];
+    }
+    function backTrace(graph: any, target: Star): {
+        star: Star;
+        cost: any;
+    }[];
+    function aStar(start: Star, target: Star): {
+        came: any;
+        cost: any;
+        queue: PriorityQueue;
+    };
+}
 declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare var uniforms: any, testFilter: any;
 declare module Rance {

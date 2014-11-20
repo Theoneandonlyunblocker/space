@@ -8,7 +8,7 @@
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
-/// <reference path="renderer.ts"/>
+/// <reference path="pathfinding.ts"/>
 
 var fleet1, fleet2, player1, player2, battle, battlePrep,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;

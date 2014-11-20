@@ -4382,7 +4382,7 @@ var Rance;
                     for (var i = 0; i < points.length; i++) {
                         var gfx = new PIXI.Graphics();
                         gfx.star = points[i];
-                        gfx.lineStyle(2, 0x444444, 1);
+                        gfx.lineStyle(2, 0x222222, 1);
                         gfx.beginFill(0xFFFF00);
                         gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
                         gfx.endFill;
@@ -4449,7 +4449,7 @@ var Rance;
 
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
-                    gfx.lineStyle(1, 0xFF000, 1);
+                    gfx.lineStyle(1, 0x00FF00, 1);
 
                     var lines = map.mapGen.getNonFillerVoronoiLines();
 
@@ -4520,6 +4520,7 @@ var Rance;
                         containerGfx.addChild(text);
                         text.x += 2;
                         text.y += 2;
+                        containerGfx.y -= 10;
                         fleetContainer.addChild(containerGfx);
 
                         return fleetContainer;
@@ -4872,7 +4873,8 @@ var Rance;
             var bounds = this.getBounds();
 
             gfx.clear();
-            gfx.beginFill(0x000000, 0.3);
+            gfx.lineStyle(1, 0xFFFFFF, 1);
+            gfx.beginFill(0x000000, 0);
             gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
             gfx.endFill();
         };
@@ -5185,6 +5187,122 @@ var Rance;
     })();
     Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+var Rance;
+(function (Rance) {
+    // todo: use a heap instead of this crap
+    var PriorityQueue = (function () {
+        function PriorityQueue() {
+            this.items = {};
+        }
+        PriorityQueue.prototype.isEmpty = function () {
+            if (Object.keys(this.items).length > 0)
+                return false;
+            else
+                return true;
+        };
+
+        PriorityQueue.prototype.push = function (priority, data) {
+            if (!this.items[priority]) {
+                this.items[priority] = [];
+            }
+
+            this.items[priority].push(data);
+        };
+        PriorityQueue.prototype.pop = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+
+            var toReturn = this.items[highestPriority].pop();
+            if (this.items[highestPriority].length < 1) {
+                delete this.items[highestPriority];
+            }
+            return toReturn;
+        };
+        PriorityQueue.prototype.peek = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority][0];
+
+            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+        };
+        return PriorityQueue;
+    })();
+    Rance.PriorityQueue = PriorityQueue;
+
+    function backTrace(graph, target) {
+        var parent = graph[target.id];
+
+        var path = [
+            {
+                star: target,
+                cost: parent.cost
+            }
+        ];
+
+        while (parent) {
+            path.push({
+                star: parent.star,
+                cost: parent.cost
+            });
+            parent = graph[parent.star.id];
+        }
+        path.reverse();
+        path[0].cost = null;
+
+        return path;
+    }
+    Rance.backTrace = backTrace;
+
+    function aStar(start, target) {
+        var frontier = new PriorityQueue();
+        frontier.push(0, start);
+
+        //var frontier = new EasyStar.PriorityQueue("p", 1);
+        //frontier.insert({p: 0, tile: start})
+        var cameFrom = {};
+        var costSoFar = {};
+        cameFrom[start.id] = null;
+        costSoFar[start.id] = 0;
+
+        while (!frontier.isEmpty()) {
+            var current = frontier.pop();
+
+            //var current = frontier.shiftHighestPriorityElement().tile;
+            if (current === target)
+                return { came: cameFrom, cost: costSoFar, queue: frontier };
+
+            var neighbors = current.getAllLinks();
+
+            for (var i = 0; i < neighbors.length; i++) {
+                var neigh = neighbors[i];
+                if (!neigh)
+                    continue;
+
+                var moveCost = 1;
+
+                var newCost = costSoFar[current.id] + moveCost;
+
+                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
+                    costSoFar[neigh.id] = newCost;
+
+                    // ^ done
+                    var dx = Math.abs(neigh.id[1] - target.id[1]);
+                    var dy = Math.abs(neigh.id[2] - target.id[2]);
+                    var priority = newCost;
+                    frontier.push(priority, neigh);
+
+                    //frontier.insert({p: priority, tile: neigh});
+                    cameFrom[neigh.id] = {
+                        star: current,
+                        cost: moveCost
+                    };
+                }
+            }
+        }
+
+        return null;
+    }
+    Rance.aStar = aStar;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="battle.ts"/>
@@ -5195,7 +5313,7 @@ var Rance;
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
-/// <reference path="renderer.ts"/>
+/// <reference path="pathfinding.ts"/>
 var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter;
 

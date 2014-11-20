@@ -168,7 +168,7 @@ module Rance
           {
             var gfx: any = new PIXI.Graphics();
             gfx.star = points[i];
-            gfx.lineStyle(2, 0x444444, 1);
+            gfx.lineStyle(2, 0x222222, 1);
             gfx.beginFill(0xFFFF00);
             gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
             gfx.endFill;
@@ -240,7 +240,7 @@ module Rance
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
-          gfx.lineStyle(1, 0xFF000, 1);
+          gfx.lineStyle(1, 0x00FF00, 1);
 
           var lines = map.mapGen.getNonFillerVoronoiLines();
 
@@ -321,6 +321,7 @@ module Rance
             containerGfx.addChild(text);
             text.x += 2;
             text.y += 2;
+            containerGfx.y -= 10;
             fleetContainer.addChild(containerGfx);
 
             return fleetContainer;

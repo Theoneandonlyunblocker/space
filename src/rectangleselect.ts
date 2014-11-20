@@ -73,7 +73,8 @@ module Rance
       var bounds = this.getBounds();
 
       gfx.clear();
-      gfx.beginFill(0x000000, 0.3);
+      gfx.lineStyle(1, 0xFFFFFF, 1);
+      gfx.beginFill(0x000000, 0);
       gfx.drawRect(bounds.x1, bounds.y1, bounds.width, bounds.height);
       gfx.endFill();
     }
