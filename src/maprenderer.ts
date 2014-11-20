@@ -219,7 +219,6 @@ module Rance
             {
               gfx.filters = [this.getOccupationShader(star.owner, occupier)];
               //gfx.filters = [testFilter];
-              console.log(gfx.filters);
               var mask = new PIXI.Graphics();
               mask.beginFill();
               mask.drawShape(poly);

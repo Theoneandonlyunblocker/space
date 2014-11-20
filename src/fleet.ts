@@ -95,6 +95,7 @@ module Rance
       fleet.addShip(ship);
 
       this.ships.splice(index, 1);
+      eventManager.dispatchEvent("renderMap", null);
     }
     split()
     {

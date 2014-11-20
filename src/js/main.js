@@ -3182,6 +3182,7 @@ var Rance;
             fleet.addShip(ship);
 
             this.ships.splice(index, 1);
+            Rance.eventManager.dispatchEvent("renderMap", null);
         };
         Fleet.prototype.split = function () {
             var newFleet = new Fleet(this.player, [], this.location);
@@ -4429,7 +4430,6 @@ var Rance;
                             gfx.filters = [this.getOccupationShader(star.owner, occupier)];
 
                             //gfx.filters = [testFilter];
-                            console.log(gfx.filters);
                             var mask = new PIXI.Graphics();
                             mask.beginFill();
                             mask.drawShape(poly);
