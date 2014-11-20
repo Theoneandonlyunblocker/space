@@ -4298,6 +4298,16 @@ var Rance;
         }
         MapRenderer.prototype.addEventListeners = function () {
             Rance.eventManager.addEventListener("renderMap", this.render.bind(this));
+
+            renderer.camera.onMove = this.updateShaderOffsets.bind(this);
+        };
+        MapRenderer.prototype.updateShaderOffsets = function (x, y) {
+            for (var owner in this.occupationShaders) {
+                for (var occupier in this.occupationShaders[owner]) {
+                    var shader = this.occupationShaders[owner][occupier];
+                    shader.uniforms.offset.value = { x: -x, y: y };
+                }
+            }
         };
         MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
             if (!this.occupationShaders[owner.id]) {
@@ -4313,7 +4323,8 @@ var Rance;
                 var uniforms = {
                     baseColor: { type: "4fv", value: baseColor },
                     lineColor: { type: "4fv", value: occupierColor },
-                    gapSize: { type: "1f", value: 3.0 }
+                    gapSize: { type: "1f", value: 3.0 },
+                    offset: { type: "2f", value: { x: 0.0, y: 0.0 } }
                 };
 
                 var shaderSrc = [
@@ -4324,9 +4335,10 @@ var Rance;
                     "uniform vec4 baseColor;",
                     "uniform vec4 lineColor;",
                     "uniform float gapSize;",
+                    "uniform vec2 offset;",
                     "void main( void )",
                     "{",
-                    "  vec2 position = gl_FragCoord.xy;",
+                    "  vec2 position = gl_FragCoord.xy + offset;",
                     "  position.x -= position.y;",
                     "  float scaled = floor(position.x * 0.2);",
                     "  float res = mod(scaled, gapSize);",
@@ -4716,6 +4728,10 @@ var Rance;
             this.container.position.x = this.startPos[0] + delta[0];
             this.container.position.y = this.startPos[1] + delta[1];
             this.clampEdges();
+
+            if (this.onMove) {
+                this.onMove(this.container.position.x, this.container.position.y);
+            }
         };
 
         /**

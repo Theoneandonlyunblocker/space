@@ -64,6 +64,19 @@ module Rance
     addEventListeners()
     {
       eventManager.addEventListener("renderMap", this.render.bind(this));
+
+      renderer.camera.onMove = this.updateShaderOffsets.bind(this);
+    }
+    updateShaderOffsets(x: number, y: number)
+    {
+      for (var owner in this.occupationShaders)
+      {
+        for (var occupier in this.occupationShaders[owner])
+        {
+          var shader = this.occupationShaders[owner][occupier];
+          shader.uniforms.offset.value = {x: -x, y: y};
+        }
+      }
     }
     getOccupationShader(owner: Player, occupier: Player)
     {
@@ -83,7 +96,8 @@ module Rance
         {
           baseColor: {type: "4fv", value: baseColor},
           lineColor: {type: "4fv", value: occupierColor},
-          gapSize: {type: "1f", value: 3.0}
+          gapSize: {type: "1f", value: 3.0},
+          offset: {type: "2f", value: {x: 0.0, y: 0.0}}
         };
 
         var shaderSrc =
@@ -98,10 +112,11 @@ module Rance
           "uniform vec4 baseColor;",
           "uniform vec4 lineColor;",
           "uniform float gapSize;",
+          "uniform vec2 offset;",
 
           "void main( void )",
           "{",
-          "  vec2 position = gl_FragCoord.xy;",
+          "  vec2 position = gl_FragCoord.xy + offset;",
           "  position.x -= position.y;",
           "  float scaled = floor(position.x * 0.2);",
           "  float res = mod(scaled, gapSize);",

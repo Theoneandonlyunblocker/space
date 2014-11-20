@@ -725,6 +725,7 @@ declare module Rance {
         public currentMapMode: IMapRendererLayerMapMode;
         constructor();
         public addEventListeners(): void;
+        public updateShaderOffsets(x: number, y: number): void;
         public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
         public initLayers(): void;
         public initMapModes(): void;
@@ -759,6 +760,7 @@ declare module Rance {
         public currZoom: number;
         public screenWidth: number;
         public screenHeight: number;
+        public onMove: (x: number, y: number) => void;
         /**
         * [constructor description]
         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]

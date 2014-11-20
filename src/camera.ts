@@ -18,6 +18,8 @@ module Rance
     screenWidth: number;
     screenHeight: number;
 
+    onMove: (x: number, y: number) => void;
+
     /**
      * [constructor description]
      * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
@@ -112,6 +114,11 @@ module Rance
       this.container.position.x = this.startPos[0] + delta[0];
       this.container.position.y = this.startPos[1] + delta[1];
       this.clampEdges();
+
+      if (this.onMove)
+      {
+        this.onMove(this.container.position.x, this.container.position.y);
+      }
     }
     /**
      * @method zoom
