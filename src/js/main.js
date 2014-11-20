@@ -3196,6 +3196,27 @@ var Rance;
 
             this.location = newLocation;
             newLocation.addFleet(this);
+
+            Rance.eventManager.dispatchEvent("renderMap", null);
+            Rance.eventManager.dispatchEvent("updateSelection", null);
+        };
+        Fleet.prototype.pathFind = function (newLocation) {
+            var a = Rance.aStar(this.location, newLocation);
+
+            if (!a)
+                return;
+
+            var path = Rance.backTrace(a.came, newLocation);
+
+            var interval = window.setInterval(function () {
+                if (path.length <= 0) {
+                    window.clearInterval(interval);
+                    return;
+                }
+
+                var move = path.shift();
+                this.move(move.star);
+            }.bind(this), 250);
         };
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
@@ -3417,11 +3438,9 @@ var Rance;
         };
         PlayerControl.prototype.moveFleets = function (star) {
             for (var i = 0; i < this.selectedFleets.length; i++) {
-                this.selectedFleets[i].move(star);
+                this.selectedFleets[i].pathFind(star);
             }
             this.updateSelection();
-
-            Rance.eventManager.dispatchEvent("renderMap", null);
         };
         PlayerControl.prototype.splitFleet = function (fleet) {
             if (fleet.ships.length <= 0)
@@ -5187,7 +5206,6 @@ var Rance;
     })();
     Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
-/// <reference path="star.ts" />
 var Rance;
 (function (Rance) {
     // todo: use a heap instead of this crap
@@ -5227,7 +5245,11 @@ var Rance;
         return PriorityQueue;
     })();
     Rance.PriorityQueue = PriorityQueue;
-
+})(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+/// <reference path="priorityqueue.ts" />
+var Rance;
+(function (Rance) {
     function backTrace(graph, target) {
         var parent = graph[target.id];
 
@@ -5253,7 +5275,7 @@ var Rance;
     Rance.backTrace = backTrace;
 
     function aStar(start, target) {
-        var frontier = new PriorityQueue();
+        var frontier = new Rance.PriorityQueue();
         frontier.push(0, start);
 
         //var frontier = new EasyStar.PriorityQueue("p", 1);

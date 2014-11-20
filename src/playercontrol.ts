@@ -149,13 +149,12 @@ module Rance
     }
     moveFleets(star: Star)
     {
+
       for (var i = 0; i < this.selectedFleets.length; i++)
       {
-        this.selectedFleets[i].move(star);
+        this.selectedFleets[i].pathFind(star);
       }
       this.updateSelection();
-
-      eventManager.dispatchEvent("renderMap", null);
     }
     splitFleet(fleet: Fleet)
     {

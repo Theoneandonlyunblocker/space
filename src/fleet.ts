@@ -112,6 +112,31 @@ module Rance
 
       this.location = newLocation;
       newLocation.addFleet(this);
+
+      eventManager.dispatchEvent("renderMap", null);
+      eventManager.dispatchEvent("updateSelection", null);
+    }
+    pathFind(newLocation: Star)
+    {
+      var a = aStar(this.location, newLocation);
+
+      if (!a) return;
+
+      var path = backTrace(a.came, newLocation);
+
+      var interval = window.setInterval(function()
+      {
+        if (path.length <= 0)
+        {
+          window.clearInterval(interval);
+          return;
+
+        }
+
+        var move = path.shift();
+        this.move(move.star);
+
+      }.bind(this), 250);
     }
     getFriendlyFleetsAtOwnLocation()
     {

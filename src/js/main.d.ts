@@ -503,6 +503,7 @@ declare module Rance {
         public transferShip(fleet: Fleet, ship: Rance.Unit): boolean;
         public split(): Fleet;
         public move(newLocation: Rance.Star): void;
+        public pathFind(newLocation: Rance.Star): void;
         public getFriendlyFleetsAtOwnLocation(): Fleet[];
         public getTotalStrength(): {
             current: number;
@@ -910,6 +911,8 @@ declare module Rance {
         public pop(): any;
         public peek(): any[];
     }
+}
+declare module Rance {
     function backTrace(graph: any, target: Star): {
         star: Star;
         cost: any;
