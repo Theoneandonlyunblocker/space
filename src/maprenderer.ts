@@ -168,8 +168,8 @@ module Rance
           {
             var gfx: any = new PIXI.Graphics();
             gfx.star = points[i];
-            gfx.lineStyle(3, 0x00000, 1);
-            gfx.beginFill(0xFFFFFF);
+            gfx.lineStyle(2, 0x444444, 1);
+            gfx.beginFill(0xFFFF00);
             gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
             gfx.endFill;
 
@@ -265,7 +265,7 @@ module Rance
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
-          gfx.lineStyle(3, 0x00000, 1);
+          gfx.lineStyle(2, 0xDDDDDD, 1);
 
           var points = map.mapGen.getNonFillerPoints();
 
@@ -304,12 +304,15 @@ module Rance
 
             var text = new PIXI.Text(fleet.ships.length,
             {
-              fill: "#" + playerColor.toString(16)
+              //fill: "#" + playerColor.toString(16)
+              fill: "#FFFFFF",
+              stroke: "#000000",
+              strokeThickness: 3
             });
 
             var containerGfx = new PIXI.Graphics();
             containerGfx.lineStyle(1, 0x00000, 1);
-            containerGfx.beginFill(playerColor, 0.4);
+            containerGfx.beginFill(playerColor, 0.7);
             containerGfx.drawRect(0, 0, text.width+4, text.height+4);
             containerGfx.endFill();
 

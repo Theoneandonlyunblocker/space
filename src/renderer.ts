@@ -24,7 +24,7 @@ module Rance
     {
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
-      this.stage = new PIXI.Stage(0xFFFF00);
+      this.stage = new PIXI.Stage(0x101060);
 
       if (!this.renderer)
       {

@@ -4381,8 +4381,8 @@ var Rance;
                     for (var i = 0; i < points.length; i++) {
                         var gfx = new PIXI.Graphics();
                         gfx.star = points[i];
-                        gfx.lineStyle(3, 0x00000, 1);
-                        gfx.beginFill(0xFFFFFF);
+                        gfx.lineStyle(2, 0x444444, 1);
+                        gfx.beginFill(0xFFFF00);
                         gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
                         gfx.endFill;
 
@@ -4470,7 +4470,7 @@ var Rance;
 
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
-                    gfx.lineStyle(3, 0x00000, 1);
+                    gfx.lineStyle(2, 0xDDDDDD, 1);
 
                     var points = map.mapGen.getNonFillerPoints();
 
@@ -4502,12 +4502,15 @@ var Rance;
                         var playerColor = fleet.player.color;
 
                         var text = new PIXI.Text(fleet.ships.length, {
-                            fill: "#" + playerColor.toString(16)
+                            //fill: "#" + playerColor.toString(16)
+                            fill: "#FFFFFF",
+                            stroke: "#000000",
+                            strokeThickness: 3
                         });
 
                         var containerGfx = new PIXI.Graphics();
                         containerGfx.lineStyle(1, 0x00000, 1);
-                        containerGfx.beginFill(playerColor, 0.4);
+                        containerGfx.beginFill(playerColor, 0.7);
                         containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
                         containerGfx.endFill();
 
@@ -5082,7 +5085,7 @@ var Rance;
         Renderer.prototype.init = function () {
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
-            this.stage = new PIXI.Stage(0xFFFF00);
+            this.stage = new PIXI.Stage(0x101060);
 
             if (!this.renderer) {
                 var containerStyle = window.getComputedStyle(this.pixiContainer);
@@ -5202,10 +5205,10 @@ var Rance;
         fleet1 = [];
         fleet2 = [];
         player1 = new Rance.Player();
-        player1.color = 0xFF0000;
+        player1.color = 0xC02020;
         player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();
-        player2.color = 0x0000FF;
+        player2.color = 0x2020C0;
         player2.icon = Rance.makeTempPlayerIcon(player2, 32);
 
         function setupFleetAndPlayer(fleet, player) {
