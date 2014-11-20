@@ -4313,7 +4313,7 @@ var Rance;
                 var uniforms = {
                     baseColor: { type: "4fv", value: baseColor },
                     lineColor: { type: "4fv", value: occupierColor },
-                    gapSize: { type: "2f", value: { x: 3.0, y: 3.0 } }
+                    gapSize: { type: "1f", value: 3.0 }
                 };
 
                 var shaderSrc = [
@@ -4323,14 +4323,14 @@ var Rance;
                     "varying vec4 vColor;",
                     "uniform vec4 baseColor;",
                     "uniform vec4 lineColor;",
-                    "uniform vec2 gapSize;",
+                    "uniform float gapSize;",
                     "void main( void )",
                     "{",
                     "  vec2 position = gl_FragCoord.xy;",
                     "  position.x -= position.y;",
-                    "  vec2 scaled = vec2(floor(position.x * 0.2), position.y);",
-                    "  vec2 res = mod(scaled, gapSize);",
-                    "  if(res.x>0.0)",
+                    "  float scaled = floor(position.x * 0.2);",
+                    "  float res = mod(scaled, gapSize);",
+                    "  if(res > 0.0)",
                     "  {",
                     "    gl_FragColor = mix(baseColor, gl_FragColor, 0.3);",
                     "  }",
@@ -5221,7 +5221,7 @@ var Rance;
             },
             gapSize: {
                 type: "2f",
-                value: [3.0, 3.0]
+                value: [1.5, 1.5]
             }
         };
 
@@ -5237,7 +5237,7 @@ var Rance;
             "{",
             "  vec2 position = gl_FragCoord.xy;",
             "  position.x -= position.y;",
-            "  vec2 scaled = vec2(floor(position.x * 0.2), position.y);",
+            "  vec2 scaled = vec2(floor(position.x), position.y);",
             "  vec2 res = mod(scaled, gapSize);",
             "  if(res.x>0.0)",
             "  {",

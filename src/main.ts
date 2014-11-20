@@ -66,7 +66,7 @@ module Rance
       gapSize:
       {
         type: "2f",
-        value: [3.0, 3.0]
+        value: [1.5, 1.5]
       }
     }
 
@@ -88,7 +88,7 @@ module Rance
       "{",
       "  vec2 position = gl_FragCoord.xy;",
       "  position.x -= position.y;",
-      "  vec2 scaled = vec2(floor(position.x * 0.2), position.y);",
+      "  vec2 scaled = vec2(floor(position.x), position.y);",
       "  vec2 res = mod(scaled, gapSize);",
       "  if(res.x>0.0)",
       "  {",
