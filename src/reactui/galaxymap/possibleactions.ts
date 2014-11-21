@@ -29,9 +29,15 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "possible-actions"
+            className: "possible-actions-container"
           },
-            attackTargetComponents
+            React.DOM.div(
+            {
+              className: "possible-action"
+            },
+              React.DOM.div({className: "possible-action-title"}, "attack"),
+              attackTargetComponents
+            )
           )
         );
       }

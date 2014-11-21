@@ -4,15 +4,20 @@ module Rance
   {
     export var AttackTarget = React.createClass({
 
+      handleAttack: function()
+      {
+        eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
+      },
+
       render: function()
       {
         var target = this.props.attackTarget;
 
-        console.log(target);
         return(
           React.DOM.div(
           {
-            className: "attack-target"
+            className: "attack-target",
+            onClick: this.handleAttack
           },
             React.DOM.div(
             {

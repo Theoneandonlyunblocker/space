@@ -69,7 +69,10 @@ module Rance
         
         this.props.renderer.render();
 
-        this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+        if (!this.props.galaxyMap.mapGen.points[0])
+        {
+          this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+        }
         this.renderMap();
       }
     });

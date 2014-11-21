@@ -174,6 +174,7 @@ module Rance
         {
           type: "building",
           enemy: buildingTarget.controller,
+          building: buildingTarget,
           ships: this.getAllShipsOfPlayer(buildingTarget.controller)
         });
       }
@@ -183,6 +184,7 @@ module Rance
         {
           type: "fleet",
           enemy: fleetOwners[i],
+          building: null,
           ships: this.getAllShipsOfPlayer(fleetOwners[i])
         });
       }

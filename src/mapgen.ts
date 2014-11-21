@@ -136,6 +136,10 @@ module Rance
           this.points[i].addBuilding(starBase);
         }
       }
+
+      var units = player2.getAllUnits();
+      var fleet = new Fleet(player2, [units[4]],
+        this.points[8]);
       
 
       return this;

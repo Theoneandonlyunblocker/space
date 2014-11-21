@@ -39,7 +39,7 @@ module Rance
           var oldFleet = draggingUnit.fleet;
           
           oldFleet.transferShip(fleet, draggingUnit);
-          eventManager.dispatchEvent("updateSelection", null);
+          eventManager.dispatchEvent("playerControlUpdated", null);
         }
 
         this.handleDragEnd(true);

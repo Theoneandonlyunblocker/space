@@ -107,6 +107,8 @@ module Rance
     }
     move(newLocation: Star)
     {
+      if (newLocation === this.location) return;
+      
       var oldLocation = this.location;
       oldLocation.removeFleet(this);
 

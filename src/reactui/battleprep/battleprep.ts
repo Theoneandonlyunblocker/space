@@ -67,7 +67,7 @@ module Rance
             fleet,
             UIComponents.UnitList(
             {
-              units: this.props.battlePrep.player.units,
+              units: this.props.battlePrep.availableUnits,
               selectedUnits: this.props.battlePrep.alreadyPlaced,
 
               onDragStart: this.handleDragStart,
@@ -80,7 +80,7 @@ module Rance
               {
                 var _: any = window;
 
-                _.battle = this.props.battlePrep.makeBattle(_.fleet2);
+                _.battle = this.props.battlePrep.makeBattle();
                 _.reactUI.battle = _.battle;
                 _.reactUI.switchScene("battle");
               }.bind(this)

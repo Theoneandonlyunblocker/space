@@ -324,86 +324,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class Battle {
-        public unitsById: {
-            [id: number]: Rance.Unit;
-        };
-        public unitsBySide: {
-            [side: string]: Rance.Unit[];
-        };
-        public side1: Rance.Unit[][];
-        public side2: Rance.Unit[][];
-        public turnOrder: Rance.Unit[];
-        public activeUnit: Rance.Unit;
-        public maxTurns: number;
-        public turnsLeft: number;
-        constructor(units: {
-            side1: Rance.Unit[][];
-            side2: Rance.Unit[][];
-        });
-        public init(): void;
-        public forEachUnit(operator: (Unit: any) => any): void;
-        public initUnit(unit: Rance.Unit, side: string, position: number[]): void;
-        public removeUnitFromTurnOrder(unit: Rance.Unit): boolean;
-        public addUnitToTurnOrder(unit: Rance.Unit): boolean;
-        public updateTurnOrder(): void;
-        public setActiveUnit(): void;
-        public endTurn(): void;
-        public getFleetsForSide(side: string): any;
-    }
-}
-declare module Rance {
-    function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): void;
-    function validateTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): boolean;
-    function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
-    function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
-    function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
-    function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
-    function getTargetsForAllAbilities(battle: Battle, user: Unit): {};
-}
-declare module Rance {
-    class Unit {
-        public template: Rance.Templates.TypeTemplate;
-        public id: number;
-        public name: string;
-        public maxStrength: number;
-        public currentStrength: number;
-        public isSquadron: boolean;
-        public maxActionPoints: number;
-        public attributes: {
-            attack: number;
-            defence: number;
-            intelligence: number;
-            speed: number;
-        };
-        public battleStats: {
-            battle: Rance.Battle;
-            moveDelay: number;
-            side: string;
-            position: number[];
-            currentActionPoints: number;
-        };
-        public abilities: Rance.Templates.AbilityTemplate[];
-        public fleet: Rance.Fleet;
-        constructor(template: Rance.Templates.TypeTemplate);
-        public setValues(): void;
-        public setBaseHealth(): void;
-        public setActionPoints(): void;
-        public setAttributes(experience?: number, variance?: number): void;
-        public getBaseMoveDelay(): number;
-        public resetBattleStats(): void;
-        public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
-        public removeStrength(amount: number): void;
-        public removeActionPoints(amount: any): void;
-        public addMoveDelay(amount: number): void;
-        public isTargetable(): boolean;
-        public getAttackDamageIncrease(damageType: string): number;
-        public getDamageReduction(damageType: string): number;
-        public addToFleet(fleet: Rance.Fleet): void;
-        public removeFromFleet(): void;
-    }
-}
-declare module Rance {
     interface Point {
         x: number;
         y: number;
@@ -549,6 +469,101 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IBattleData {
+        location: Rance.Star;
+        building: Rance.Building;
+        attacker: {
+            player: Rance.Player;
+            ships: Rance.Unit[];
+        };
+        defender: {
+            player: Rance.Player;
+            ships: Rance.Unit[];
+        };
+    }
+}
+declare module Rance {
+    class Battle {
+        public unitsById: {
+            [id: number]: Rance.Unit;
+        };
+        public unitsBySide: {
+            [side: string]: Rance.Unit[];
+        };
+        public side1: Rance.Unit[][];
+        public side2: Rance.Unit[][];
+        public turnOrder: Rance.Unit[];
+        public activeUnit: Rance.Unit;
+        public maxTurns: number;
+        public turnsLeft: number;
+        constructor(units: {
+            battleData: Rance.IBattleData;
+            side1: Rance.Unit[][];
+            side2: Rance.Unit[][];
+        });
+        public init(): void;
+        public forEachUnit(operator: (Unit: any) => any): void;
+        public initUnit(unit: Rance.Unit, side: string, position: number[]): void;
+        public removeUnitFromTurnOrder(unit: Rance.Unit): boolean;
+        public addUnitToTurnOrder(unit: Rance.Unit): boolean;
+        public updateTurnOrder(): void;
+        public setActiveUnit(): void;
+        public endTurn(): void;
+        public getFleetsForSide(side: string): any;
+    }
+}
+declare module Rance {
+    function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): void;
+    function validateTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): boolean;
+    function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
+    function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
+    function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
+    function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
+    function getTargetsForAllAbilities(battle: Battle, user: Unit): {};
+}
+declare module Rance {
+    class Unit {
+        public template: Rance.Templates.TypeTemplate;
+        public id: number;
+        public name: string;
+        public maxStrength: number;
+        public currentStrength: number;
+        public isSquadron: boolean;
+        public maxActionPoints: number;
+        public attributes: {
+            attack: number;
+            defence: number;
+            intelligence: number;
+            speed: number;
+        };
+        public battleStats: {
+            battle: Rance.Battle;
+            moveDelay: number;
+            side: string;
+            position: number[];
+            currentActionPoints: number;
+        };
+        public abilities: Rance.Templates.AbilityTemplate[];
+        public fleet: Rance.Fleet;
+        constructor(template: Rance.Templates.TypeTemplate);
+        public setValues(): void;
+        public setBaseHealth(): void;
+        public setActionPoints(): void;
+        public setAttributes(experience?: number, variance?: number): void;
+        public getBaseMoveDelay(): number;
+        public resetBattleStats(): void;
+        public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
+        public removeStrength(amount: number): void;
+        public removeActionPoints(amount: any): void;
+        public addMoveDelay(amount: number): void;
+        public isTargetable(): boolean;
+        public getAttackDamageIncrease(damageType: string): number;
+        public getDamageReduction(damageType: string): number;
+        public addToFleet(fleet: Rance.Fleet): void;
+        public removeFromFleet(): void;
+    }
+}
+declare module Rance {
     function EventManager(): void;
     var eventManager: any;
 }
@@ -576,22 +591,28 @@ declare module Rance {
         public startReorganizingFleets(fleets: Rance.Fleet[]): void;
         public endReorganizingFleets(): void;
         public getCurrentAttackTargets(): any[];
+        public attackTarget(target: any): boolean;
     }
 }
 declare module Rance {
     class BattlePrep {
         public player: Rance.Player;
+        public battleData: Rance.IBattleData;
+        public availableUnits: Rance.Unit[];
+        public enemyUnits: Rance.Unit[];
         public fleet: Rance.Unit[][];
         public alreadyPlaced: {
             [id: number]: number[];
         };
-        constructor(player: Rance.Player);
+        constructor(player: Rance.Player, battleData: Rance.IBattleData);
+        public setAvailableUnits(): void;
+        public makeEnemyFleet(): any[][];
         public getUnitPosition(unit: Rance.Unit): number[];
         public getUnitAtPosition(position: number[]): Rance.Unit;
         public setUnit(unit: Rance.Unit, position: number[]): void;
         public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
-        public makeBattle(fleet2: Rance.Unit[][]): Rance.Battle;
+        public makeBattle(): Rance.Battle;
     }
 }
 declare module Rance {

@@ -1,26 +1,74 @@
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="battle.ts"/>
+/// <reference path="battledata.ts"/>
 
 module Rance
 {
   export class BattlePrep
   {
     player: Player;
+    battleData: IBattleData;
+    availableUnits: Unit[];
+    enemyUnits: Unit[];
     fleet: Unit[][];
     alreadyPlaced:
     {
       [id: number]: number[];
     } = {};
 
-    constructor(player: Player)
+    constructor(player: Player, battleData: IBattleData)
     {
       this.player = player;
+      this.battleData = battleData;
+
       this.fleet =
       [
         [null, null, null, null],
         [null, null, null, null]
       ];
+
+      this.setAvailableUnits();
+    }
+    setAvailableUnits()
+    {
+      if (this.battleData.attacker.player === this.player)
+      {
+        this.availableUnits = this.battleData.attacker.ships;
+        this.enemyUnits = this.battleData.defender.ships;
+      }
+      else
+      {
+        this.availableUnits = this.battleData.defender.ships;
+        this.enemyUnits = this.battleData.attacker.ships;
+      }
+    }
+    // TODO
+    makeEnemyFleet()
+    {
+      var fleet =
+      [
+        [null, null, null, null],
+        [null, null, null, null]
+      ];
+
+      function divmod( x, y )
+      {
+        var a = Math.floor(x / y);
+        var b = x % y;
+        return [a, b];
+      }
+
+      for (var i = 0; i < this.enemyUnits.length; i++)
+      {
+        var d = divmod(i, 3);
+
+        if (d[0] > 1) break;
+
+        fleet[d[0]][d[1]] = this.enemyUnits[i];
+      }
+
+      return fleet;
     }
 
     getUnitPosition(unit: Unit)
@@ -72,12 +120,13 @@ module Rance
       delete this.alreadyPlaced[unit.id];
     }
 
-    makeBattle(fleet2: Unit[][])
+    makeBattle()
     {
       var battle = new Battle(
       {
+        battleData: this.battleData,
         side1: this.fleet,
-        side2: fleet2
+        side2: this.makeEnemyFleet()
       });
 
       battle.init();

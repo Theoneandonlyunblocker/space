@@ -1,3 +1,4 @@
+/// <reference path="battledata.ts"/>
 /// <reference path="unit.ts"/>
 
 module Rance
@@ -27,6 +28,7 @@ module Rance
 
     constructor(units:
     {
+      battleData: IBattleData;
       side1: Unit[][];
       side2: Unit[][];
     })

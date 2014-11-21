@@ -78,11 +78,13 @@ module Rance
 
       componentWillMount: function()
       {
-        eventManager.addEventListener("updateSelection", this.updateSelection);
+        eventManager.addEventListener("playerControlUpdated",
+          this.updateSelection);
       },
       componentWillUnmount: function()
       {
-        eventManager.removeEventListener("updateSelection", this.updateSelection);
+        eventManager.removeEventListener("playerControlUpdated",
+          this.updateSelection);
       }
     });
   }

@@ -54,11 +54,8 @@ module Rance
     setupFleetAndPlayer(fleet1, player1);
     setupFleetAndPlayer(fleet2, player2);
 
-    battlePrep = new BattlePrep(player1);
-
 
     reactUI = new ReactUI(document.getElementById("react-container"));
-    reactUI.battlePrep = battlePrep;
 
     renderer = new Renderer();
     reactUI.renderer = renderer;

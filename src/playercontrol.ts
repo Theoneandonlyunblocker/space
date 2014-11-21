@@ -2,6 +2,7 @@
 /// <reference path="player.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="star.ts"/>
+/// <reference path="battledata.ts"/>
 
 module Rance
 {
@@ -26,6 +27,11 @@ module Rance
     addEventListeners()
     {
       var self = this;
+
+      eventManager.addEventListener("updateSelection", function(e)
+      {
+        self.updateSelection();
+      });
 
       eventManager.addEventListener("selectFleets", function(e)
       {
@@ -66,6 +72,11 @@ module Rance
       {
         e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
       });
+
+      eventManager.addEventListener("attackTarget", function(e)
+      {
+        self.attackTarget(e.data);
+      });
     }
     preventGhost(delay: number)
     {
@@ -86,8 +97,10 @@ module Rance
     {
       if (endReorganizingFleets) this.endReorganizingFleets();
       this.currentAttackTargets = this.getCurrentAttackTargets();
-      eventManager.dispatchEvent("updateSelection", null);
+
+      eventManager.dispatchEvent("playerControlUpdated", null);
     }
+
     areAllFleetsInSameLocation()
     {
       for (var i = 1; i < this.selectedFleets.length; i++)
@@ -166,7 +179,7 @@ module Rance
     {
       for (var i = 0; i < this.selectedFleets.length; i++)
       {
-        this.selectedFleets[i].pathFind(star, this.updateSelection.bind(this));
+        this.selectedFleets[i].pathFind(star);
       }
     }
     splitFleet(fleet: Fleet)
@@ -222,6 +235,34 @@ module Rance
       var possibleTargets = location.getTargetsForPlayer(this.player);
 
       return possibleTargets;
+    }
+
+    attackTarget(target: any)
+    {
+      if (this.currentAttackTargets.indexOf(target) < 0) return false;
+
+      var currentLocation = this.selectedFleets[0].location;
+
+      var battleData: IBattleData =
+      {
+        location: currentLocation,
+        building: target.building,
+        attacker:
+        {
+          player: this.player,
+          ships: currentLocation.getAllShipsOfPlayer(this.player)
+        },
+        defender:
+        {
+          player: target.enemy,
+          ships: target.ships
+        }
+      }
+
+      // TODO
+      battlePrep = new BattlePrep(this.player, battleData);
+      reactUI.battlePrep = battlePrep;
+      reactUI.switchScene("battlePrep");
     }
   }
 }
