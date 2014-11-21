@@ -19,12 +19,12 @@ module Rance
 
     constructor()
     {
-    }
-    init()
-    {
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
       this.stage = new PIXI.Stage(0x101060);
+    }
+    init()
+    {
 
       if (!this.renderer)
       {
@@ -64,6 +64,8 @@ module Rance
     }
     initLayers()
     {
+      this.stage.removeChildren();
+
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_main);
 

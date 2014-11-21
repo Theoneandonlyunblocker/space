@@ -229,7 +229,7 @@ module Rance
     getCurrentAttackTargets()
     {
       if (this.selectedFleets.length < 1) return [];
-      if (!this.areAllFleetsInSameLocation) return [];
+      if (!this.areAllFleetsInSameLocation()) return [];
 
       var location = this.selectedFleets[0].location;
       var possibleTargets = location.getTargetsForPlayer(this.player);

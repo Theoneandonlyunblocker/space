@@ -55,11 +55,13 @@ module Rance
 
       componentDidMount: function()
       {
+        if (mapRenderer) mapRenderer.resetContainer();
+
         this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
         this.props.renderer.init();
         this.props.renderer.bindRendererView();
 
-        var mapRenderer = new MapRenderer();
+        mapRenderer = new MapRenderer();
         mapRenderer.setParent(renderer.layers["map"]);
         this.props.galaxyMap.mapRenderer = mapRenderer;
         mapRenderer.galaxyMap = galaxyMap;

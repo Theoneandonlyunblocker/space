@@ -2054,11 +2054,14 @@ var Rance;
                 }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"))));
             },
             componentDidMount: function () {
+                if (mapRenderer)
+                    mapRenderer.resetContainer();
+
                 this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
                 this.props.renderer.init();
                 this.props.renderer.bindRendererView();
 
-                var mapRenderer = new Rance.MapRenderer();
+                mapRenderer = new Rance.MapRenderer();
                 mapRenderer.setParent(renderer.layers["map"]);
                 this.props.galaxyMap.mapRenderer = mapRenderer;
                 mapRenderer.galaxyMap = galaxyMap;
@@ -3649,7 +3652,7 @@ var Rance;
         PlayerControl.prototype.getCurrentAttackTargets = function () {
             if (this.selectedFleets.length < 1)
                 return [];
-            if (!this.areAllFleetsInSameLocation)
+            if (!this.areAllFleetsInSameLocation())
                 return [];
 
             var location = this.selectedFleets[0].location;
@@ -5380,12 +5383,11 @@ var Rance;
     var Renderer = (function () {
         function Renderer() {
             this.layers = {};
-        }
-        Renderer.prototype.init = function () {
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0x101060);
-
+        }
+        Renderer.prototype.init = function () {
             if (!this.renderer) {
                 var containerStyle = window.getComputedStyle(this.pixiContainer);
                 this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
@@ -5412,6 +5414,8 @@ var Rance;
             this.renderer.view.setAttribute("id", "pixi-canvas");
         };
         Renderer.prototype.initLayers = function () {
+            this.stage.removeChildren();
+
             var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
             this.stage.addChild(_main);
 
