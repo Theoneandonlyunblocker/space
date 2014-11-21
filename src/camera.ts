@@ -19,6 +19,7 @@ module Rance
     screenHeight: number;
 
     onMove: (x: number, y: number) => void;
+    onZoom: (zoom: number) => void;
 
     /**
      * [constructor description]
@@ -86,6 +87,9 @@ module Rance
       this.setBounds();
       this.startClick = mousePos;
       this.startPos = [this.container.position.x, this.container.position.y];
+
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) ui.classList.add("prevent-pointer-events");
     }
     /**
      * @method end
@@ -93,6 +97,9 @@ module Rance
     end()
     {
       this.startPos = undefined;
+
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) ui.classList.remove("prevent-pointer-events");
     }
     /**
      * @method getDelta
@@ -148,6 +155,15 @@ module Rance
       container.position.y += yDelta;
       container.scale.set(zoomAmount, zoomAmount);
       this.currZoom = zoomAmount;
+
+      if (this.onMove)
+      {
+        this.onMove(this.container.position.x, this.container.position.y);
+      }
+      if (this.onZoom)
+      {
+        this.onZoom(this.currZoom);
+      }
     }
     /**
      * @method deltaZoom

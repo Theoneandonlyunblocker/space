@@ -51,59 +51,6 @@ module Rance
       }
     }
 
-    uniforms =
-    {
-      baseColor:
-      {
-        type: "4f",
-        value: [0.0, 0.0, 1.0, 1.0]
-      },
-      lineColor:
-      {
-        type: "4f",
-        value: [1.0, 0.0, 0.0, 1.0]
-      },
-      gapSize:
-      {
-        type: "2f",
-        value: [1.5, 1.5]
-      }
-    }
-
-    testFilter = new PIXI.AbstractFilter(
-    [
-      "precision mediump float;",
-
-      "uniform sampler2D uSampler;",
-      //"uniform vec4 baseColor;",
-      "uniform vec2 gapSize;",
-
-      "varying vec2 vTextureCoord;",
-      "varying vec4 vColor;",
-
-      "vec4 baseColor = vec4(1.0, 0.0, 0.0, 0.7);",
-      "vec4 lineColor = vec4(0.0, 0.0, 1.0, 0.7);",
-      //"vec2 gapSize = vec2(3.0, 3.0);",
-      "void main( void )",
-      "{",
-      "  vec2 position = gl_FragCoord.xy;",
-      "  position.x -= position.y;",
-      "  vec2 scaled = vec2(floor(position.x), position.y);",
-      "  vec2 res = mod(scaled, gapSize);",
-      "  if(res.x>0.0)",
-      "  {",
-      "    gl_FragColor = baseColor;",
-      "  }",
-      "  else",
-      "  {",
-      "    gl_FragColor = lineColor;",
-      "  }",
-      "}"
-    ],
-    {
-      gapSize: {type: "2f", value: {x: 3.0, y: 3.0}}  
-    });
-
     setupFleetAndPlayer(fleet1, player1);
     setupFleetAndPlayer(fleet2, player2);
 

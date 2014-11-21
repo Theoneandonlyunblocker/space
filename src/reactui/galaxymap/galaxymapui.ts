@@ -1,6 +1,7 @@
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
+/// <reference path="possibleactions.ts"/>
 
 module Rance
 {
@@ -10,21 +11,27 @@ module Rance
 
       getInitialState: function()
       {
+        var pc = this.props.playerControl;
+
         return(
         {
-          selectedFleets: this.props.playerControl.selectedFleets,
-          currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
-          selectedStar: this.props.playerControl.selectedStar
+          selectedFleets: pc.selectedFleets,
+          currentlyReorganizing: pc.currentlyReorganizing,
+          selectedStar: pc.selectedStar,
+          attackTargets: pc.currentAttackTargets
         });
       },
 
       updateSelection: function()
       {
+        var pc = this.props.playerControl;
+
         this.setState(
         {
-          selectedFleets: this.props.playerControl.selectedFleets,
-          currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
-          selectedStar: this.props.playerControl.selectedStar
+          selectedFleets: pc.selectedFleets,
+          currentlyReorganizing: pc.currentlyReorganizing,
+          selectedStar: pc.selectedStar,
+          attackTargets: pc.currentAttackTargets
         });
       },
 
@@ -55,6 +62,11 @@ module Rance
                 closeReorganization: this.closeReorganization
               })
             ),
+
+            UIComponents.PossibleActions(
+            {
+              attackTargets: this.state.attackTargets
+            }),
             
             UIComponents.StarInfo(
             {

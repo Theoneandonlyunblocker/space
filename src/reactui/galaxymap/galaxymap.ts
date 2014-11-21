@@ -21,7 +21,10 @@ module Rance
       render: function()
       {
         return(
-          React.DOM.div(null,
+          React.DOM.div(
+            {
+              className: "galaxy-map"  
+            },
             React.DOM.div(
             {
               ref: "pixiContainer",

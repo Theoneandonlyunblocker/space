@@ -12,6 +12,8 @@ module Rance
     selectedFleets: Fleet[] = [];
     currentlyReorganizing: Fleet[] = [];
 
+    currentAttackTargets: any[];
+
     selectedStar: Star;
 
     preventingGhost: boolean = false;
@@ -83,7 +85,20 @@ module Rance
     updateSelection(endReorganizingFleets: boolean = true)
     {
       if (endReorganizingFleets) this.endReorganizingFleets();
+      this.currentAttackTargets = this.getCurrentAttackTargets();
       eventManager.dispatchEvent("updateSelection", null);
+    }
+    areAllFleetsInSameLocation()
+    {
+      for (var i = 1; i < this.selectedFleets.length; i++)
+      {
+        if (this.selectedFleets[i].location !== this.selectedFleets[i-1].location)
+        {
+          return false;
+        }
+      }
+
+      return true;
     }
     selectFleets(fleets: Fleet[])
     {
@@ -149,12 +164,10 @@ module Rance
     }
     moveFleets(star: Star)
     {
-
       for (var i = 0; i < this.selectedFleets.length; i++)
       {
-        this.selectedFleets[i].pathFind(star);
+        this.selectedFleets[i].pathFind(star, this.updateSelection.bind(this));
       }
-      this.updateSelection();
     }
     splitFleet(fleet: Fleet)
     {
@@ -199,6 +212,16 @@ module Rance
         }
       }
       this.currentlyReorganizing = [];
+    }
+    getCurrentAttackTargets()
+    {
+      if (this.selectedFleets.length < 1) return [];
+      if (!this.areAllFleetsInSameLocation) return [];
+
+      var location = this.selectedFleets[0].location;
+      var possibleTargets = location.getTargetsForPlayer(this.player);
+
+      return possibleTargets;
     }
   }
 }

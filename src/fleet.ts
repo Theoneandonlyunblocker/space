@@ -116,7 +116,7 @@ module Rance
       eventManager.dispatchEvent("renderMap", null);
       eventManager.dispatchEvent("updateSelection", null);
     }
-    pathFind(newLocation: Star)
+    getPathTo(newLocation: Star)
     {
       var a = aStar(this.location, newLocation);
 
@@ -124,9 +124,15 @@ module Rance
 
       var path = backTrace(a.came, newLocation);
 
+      return path;
+    }
+    pathFind(newLocation: Star, onMove?: any)
+    {
+      var path = this.getPathTo(newLocation);
+
       var interval = window.setInterval(function()
       {
-        if (path.length <= 0)
+        if (!path || path.length <= 0)
         {
           window.clearInterval(interval);
           return;
@@ -135,6 +141,7 @@ module Rance
 
         var move = path.shift();
         this.move(move.star);
+        if (onMove) onMove();
 
       }.bind(this), 250);
     }

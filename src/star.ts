@@ -146,6 +146,79 @@ module Rance
         this.removeFleet(fleets[i]);
       }
     }
+    getAllShipsOfPlayer(player: Player)
+    {
+      var allShips: Unit[] = [];
+
+      var fleets = this.fleets[player.id];
+      if (!fleets) return null;
+
+      for (var i = 0; i < fleets.length; i++)
+      {
+        allShips = allShips.concat(fleets[i].ships);
+      }
+
+      return allShips;
+    }
+    getTargetsForPlayer(player: Player)
+    {
+      var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
+      var buildingController = buildingTarget ? buildingTarget.controller : null;
+      var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
+
+      var targets = [];
+
+      if (buildingTarget)
+      {
+        targets.push(
+        {
+          type: "building",
+          enemy: buildingTarget.controller,
+          ships: this.getAllShipsOfPlayer(buildingTarget.controller)
+        });
+      }
+      for (var i = 0; i < fleetOwners.length; i++)
+      {
+        targets.push(
+        {
+          type: "fleet",
+          enemy: fleetOwners[i],
+          ships: this.getAllShipsOfPlayer(fleetOwners[i])
+        });
+      }
+
+      return targets;
+    }
+    getFirstEnemyDefenceBuilding(player: Player)
+    {
+      var defenceBuildings = this.buildings["defence"];
+      if (!defenceBuildings) return null;
+
+      for (var i = defenceBuildings.length - 1; i >= 0; i--)
+      {
+        if (defenceBuildings[i].controller.id !== player.id)
+        {
+          return defenceBuildings[i];
+        }
+      }
+
+      return null;
+    }
+    getEnemyFleetOwners(player: Player, excludedTarget?: Player)
+    {
+      var fleetOwners: Player[] = [];
+
+      for (var playerId in this.fleets)
+      {
+        if (playerId == player.id) continue;
+        else if (excludedTarget && playerId == excludedTarget.id) continue;
+        else if (this.fleets[playerId].length < 1) continue;
+
+        fleetOwners.push(this.fleets[playerId][0].player);
+      }
+
+      return fleetOwners;
+    }
 
     // MAP GEN
     setPosition(x: number, y: number)

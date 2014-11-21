@@ -211,6 +211,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var AttackTarget: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PossibleActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -469,6 +479,10 @@ declare module Rance {
         public addFleets(fleets: Rance.Fleet[]): void;
         public removeFleet(fleet: Rance.Fleet): boolean;
         public removeFleets(fleets: Rance.Fleet[]): void;
+        public getAllShipsOfPlayer(player: Rance.Player): Rance.Unit[];
+        public getTargetsForPlayer(player: Rance.Player): any[];
+        public getFirstEnemyDefenceBuilding(player: Rance.Player): Rance.Building;
+        public getEnemyFleetOwners(player: Rance.Player, excludedTarget?: Rance.Player): Rance.Player[];
         public setPosition(x: number, y: number): void;
         public hasLink(linkTo: Star): boolean;
         public addLink(linkTo: Star): void;
@@ -503,7 +517,11 @@ declare module Rance {
         public transferShip(fleet: Fleet, ship: Rance.Unit): boolean;
         public split(): Fleet;
         public move(newLocation: Rance.Star): void;
-        public pathFind(newLocation: Rance.Star): void;
+        public getPathTo(newLocation: Rance.Star): {
+            star: Rance.Star;
+            cost: any;
+        }[];
+        public pathFind(newLocation: Rance.Star, onMove?: any): void;
         public getFriendlyFleetsAtOwnLocation(): Fleet[];
         public getTotalStrength(): {
             current: number;
@@ -539,6 +557,7 @@ declare module Rance {
         public player: Rance.Player;
         public selectedFleets: Rance.Fleet[];
         public currentlyReorganizing: Rance.Fleet[];
+        public currentAttackTargets: any[];
         public selectedStar: Rance.Star;
         public preventingGhost: boolean;
         constructor(player: Rance.Player);
@@ -546,6 +565,7 @@ declare module Rance {
         public preventGhost(delay: number): void;
         public clearSelection(): void;
         public updateSelection(endReorganizingFleets?: boolean): void;
+        public areAllFleetsInSameLocation(): boolean;
         public selectFleets(fleets: Rance.Fleet[]): void;
         public deselectFleet(fleet: Rance.Fleet): void;
         public getMasterFleetForMerge(): Rance.Fleet;
@@ -555,6 +575,7 @@ declare module Rance {
         public splitFleet(fleet: Rance.Fleet): void;
         public startReorganizingFleets(fleets: Rance.Fleet[]): void;
         public endReorganizingFleets(): void;
+        public getCurrentAttackTargets(): any[];
     }
 }
 declare module Rance {
@@ -727,6 +748,7 @@ declare module Rance {
         constructor();
         public addEventListeners(): void;
         public updateShaderOffsets(x: number, y: number): void;
+        public updateShaderZoom(zoom: number): void;
         public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
         public initLayers(): void;
         public initMapModes(): void;
@@ -762,6 +784,7 @@ declare module Rance {
         public screenWidth: number;
         public screenHeight: number;
         public onMove: (x: number, y: number) => void;
+        public onZoom: (zoom: number) => void;
         /**
         * [constructor description]
         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]

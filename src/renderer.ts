@@ -135,6 +135,7 @@ module Rance
     }
     resize()
     {
+      console.log(this.pixiContainer.offsetHeight)
       if (this.renderer)
       {
         this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);

@@ -1434,7 +1434,9 @@ var Rance;
                 this.props.renderer.layers.map.addChild(doc);
             },
             render: function () {
-                return (React.DOM.div(null, React.DOM.div({
+                return (React.DOM.div({
+                    className: "galaxy-map"
+                }, React.DOM.div({
                     ref: "pixiContainer",
                     id: "pixi-container"
                 }), React.DOM.div({
@@ -1908,25 +1910,81 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.AttackTarget = React.createClass({
+            render: function () {
+                var target = this.props.attackTarget;
+
+                console.log(target);
+                return (React.DOM.div({
+                    className: "attack-target"
+                }, React.DOM.div({
+                    className: "attack-target-type"
+                }, target.type), React.DOM.img({
+                    className: "attack-target-player-icon",
+                    src: target.enemy.icon
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="attacktarget.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.PossibleActions = React.createClass({
+            render: function () {
+                var attackTargets = this.props.attackTargets;
+                if (!attackTargets || attackTargets.length < 1)
+                    return null;
+
+                var attackTargetComponents = [];
+                for (var i = 0; i < attackTargets.length; i++) {
+                    var props = {
+                        key: i,
+                        attackTarget: attackTargets[i]
+                    };
+
+                    attackTargetComponents.push(Rance.UIComponents.AttackTarget(props));
+                }
+
+                return (React.DOM.div({
+                    className: "possible-actions"
+                }, attackTargetComponents));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
+/// <reference path="possibleactions.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.GalaxyMapUI = React.createClass({
             getInitialState: function () {
+                var pc = this.props.playerControl;
+
                 return ({
-                    selectedFleets: this.props.playerControl.selectedFleets,
-                    currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
-                    selectedStar: this.props.playerControl.selectedStar
+                    selectedFleets: pc.selectedFleets,
+                    currentlyReorganizing: pc.currentlyReorganizing,
+                    selectedStar: pc.selectedStar,
+                    attackTargets: pc.currentAttackTargets
                 });
             },
             updateSelection: function () {
+                var pc = this.props.playerControl;
+
                 this.setState({
-                    selectedFleets: this.props.playerControl.selectedFleets,
-                    currentlyReorganizing: this.props.playerControl.currentlyReorganizing,
-                    selectedStar: this.props.playerControl.selectedStar
+                    selectedFleets: pc.selectedFleets,
+                    currentlyReorganizing: pc.currentlyReorganizing,
+                    selectedStar: pc.selectedStar,
+                    attackTargets: pc.currentAttackTargets
                 });
             },
             closeReorganization: function () {
@@ -1943,7 +2001,9 @@ var Rance;
                 }), Rance.UIComponents.FleetReorganization({
                     fleets: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
-                })), Rance.UIComponents.StarInfo({
+                })), Rance.UIComponents.PossibleActions({
+                    attackTargets: this.state.attackTargets
+                }), Rance.UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
                 })));
             },
@@ -1972,7 +2032,9 @@ var Rance;
                 this.props.galaxyMap.mapRenderer.setMapMode(newMode);
             },
             render: function () {
-                return (React.DOM.div(null, React.DOM.div({
+                return (React.DOM.div({
+                    className: "galaxy-map"
+                }, React.DOM.div({
                     ref: "pixiContainer",
                     id: "pixi-container"
                 }, Rance.UIComponents.GalaxyMapUI({
@@ -2999,6 +3061,72 @@ var Rance;
                 this.removeFleet(fleets[i]);
             }
         };
+        Star.prototype.getAllShipsOfPlayer = function (player) {
+            var allShips = [];
+
+            var fleets = this.fleets[player.id];
+            if (!fleets)
+                return null;
+
+            for (var i = 0; i < fleets.length; i++) {
+                allShips = allShips.concat(fleets[i].ships);
+            }
+
+            return allShips;
+        };
+        Star.prototype.getTargetsForPlayer = function (player) {
+            var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
+            var buildingController = buildingTarget ? buildingTarget.controller : null;
+            var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
+
+            var targets = [];
+
+            if (buildingTarget) {
+                targets.push({
+                    type: "building",
+                    enemy: buildingTarget.controller,
+                    ships: this.getAllShipsOfPlayer(buildingTarget.controller)
+                });
+            }
+            for (var i = 0; i < fleetOwners.length; i++) {
+                targets.push({
+                    type: "fleet",
+                    enemy: fleetOwners[i],
+                    ships: this.getAllShipsOfPlayer(fleetOwners[i])
+                });
+            }
+
+            return targets;
+        };
+        Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
+            var defenceBuildings = this.buildings["defence"];
+            if (!defenceBuildings)
+                return null;
+
+            for (var i = defenceBuildings.length - 1; i >= 0; i--) {
+                if (defenceBuildings[i].controller.id !== player.id) {
+                    return defenceBuildings[i];
+                }
+            }
+
+            return null;
+        };
+        Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
+            var fleetOwners = [];
+
+            for (var playerId in this.fleets) {
+                if (playerId == player.id)
+                    continue;
+                else if (excludedTarget && playerId == excludedTarget.id)
+                    continue;
+                else if (this.fleets[playerId].length < 1)
+                    continue;
+
+                fleetOwners.push(this.fleets[playerId][0].player);
+            }
+
+            return fleetOwners;
+        };
 
         // MAP GEN
         Star.prototype.setPosition = function (x, y) {
@@ -3200,7 +3328,7 @@ var Rance;
             Rance.eventManager.dispatchEvent("renderMap", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
-        Fleet.prototype.pathFind = function (newLocation) {
+        Fleet.prototype.getPathTo = function (newLocation) {
             var a = Rance.aStar(this.location, newLocation);
 
             if (!a)
@@ -3208,14 +3336,21 @@ var Rance;
 
             var path = Rance.backTrace(a.came, newLocation);
 
+            return path;
+        };
+        Fleet.prototype.pathFind = function (newLocation, onMove) {
+            var path = this.getPathTo(newLocation);
+
             var interval = window.setInterval(function () {
-                if (path.length <= 0) {
+                if (!path || path.length <= 0) {
                     window.clearInterval(interval);
                     return;
                 }
 
                 var move = path.shift();
                 this.move(move.star);
+                if (onMove)
+                    onMove();
             }.bind(this), 250);
         };
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
@@ -3378,7 +3513,17 @@ var Rance;
             if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
             if (endReorganizingFleets)
                 this.endReorganizingFleets();
+            this.currentAttackTargets = this.getCurrentAttackTargets();
             Rance.eventManager.dispatchEvent("updateSelection", null);
+        };
+        PlayerControl.prototype.areAllFleetsInSameLocation = function () {
+            for (var i = 1; i < this.selectedFleets.length; i++) {
+                if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
+                    return false;
+                }
+            }
+
+            return true;
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
             this.clearSelection();
@@ -3438,9 +3583,8 @@ var Rance;
         };
         PlayerControl.prototype.moveFleets = function (star) {
             for (var i = 0; i < this.selectedFleets.length; i++) {
-                this.selectedFleets[i].pathFind(star);
+                this.selectedFleets[i].pathFind(star, this.updateSelection.bind(this));
             }
-            this.updateSelection();
         };
         PlayerControl.prototype.splitFleet = function (fleet) {
             if (fleet.ships.length <= 0)
@@ -3473,6 +3617,17 @@ var Rance;
                 }
             }
             this.currentlyReorganizing = [];
+        };
+        PlayerControl.prototype.getCurrentAttackTargets = function () {
+            if (this.selectedFleets.length < 1)
+                return [];
+            if (!this.areAllFleetsInSameLocation)
+                return [];
+
+            var location = this.selectedFleets[0].location;
+            var possibleTargets = location.getTargetsForPlayer(this.player);
+
+            return possibleTargets;
         };
         return PlayerControl;
     })();
@@ -4320,12 +4475,21 @@ var Rance;
             Rance.eventManager.addEventListener("renderMap", this.render.bind(this));
 
             renderer.camera.onMove = this.updateShaderOffsets.bind(this);
+            renderer.camera.onZoom = this.updateShaderZoom.bind(this);
         };
         MapRenderer.prototype.updateShaderOffsets = function (x, y) {
             for (var owner in this.occupationShaders) {
                 for (var occupier in this.occupationShaders[owner]) {
                     var shader = this.occupationShaders[owner][occupier];
                     shader.uniforms.offset.value = { x: -x, y: y };
+                }
+            }
+        };
+        MapRenderer.prototype.updateShaderZoom = function (zoom) {
+            for (var owner in this.occupationShaders) {
+                for (var occupier in this.occupationShaders[owner]) {
+                    var shader = this.occupationShaders[owner][occupier];
+                    shader.uniforms.zoom.value = zoom;
                 }
             }
         };
@@ -4344,7 +4508,8 @@ var Rance;
                     baseColor: { type: "4fv", value: baseColor },
                     lineColor: { type: "4fv", value: occupierColor },
                     gapSize: { type: "1f", value: 3.0 },
-                    offset: { type: "2f", value: { x: 0.0, y: 0.0 } }
+                    offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
+                    zoom: { type: "1f", value: 1.0 }
                 };
 
                 var shaderSrc = [
@@ -4356,11 +4521,12 @@ var Rance;
                     "uniform vec4 lineColor;",
                     "uniform float gapSize;",
                     "uniform vec2 offset;",
+                    "uniform float zoom;",
                     "void main( void )",
                     "{",
                     "  vec2 position = gl_FragCoord.xy + offset;",
-                    "  position.x -= position.y;",
-                    "  float scaled = floor(position.x * 0.2);",
+                    "  position.x += position.y;",
+                    "  float scaled = floor(position.x * 0.1 / zoom);",
                     "  float res = mod(scaled, gapSize);",
                     "  if(res > 0.0)",
                     "  {",
@@ -4723,6 +4889,10 @@ var Rance;
             this.setBounds();
             this.startClick = mousePos;
             this.startPos = [this.container.position.x, this.container.position.y];
+
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui)
+                ui.classList.add("prevent-pointer-events");
         };
 
         /**
@@ -4730,6 +4900,10 @@ var Rance;
         */
         Camera.prototype.end = function () {
             this.startPos = undefined;
+
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui)
+                ui.classList.remove("prevent-pointer-events");
         };
 
         /**
@@ -4783,6 +4957,13 @@ var Rance;
             container.position.y += yDelta;
             container.scale.set(zoomAmount, zoomAmount);
             this.currZoom = zoomAmount;
+
+            if (this.onMove) {
+                this.onMove(this.container.position.x, this.container.position.y);
+            }
+            if (this.onZoom) {
+                this.onZoom(this.currZoom);
+            }
         };
 
         /**
@@ -5194,6 +5375,7 @@ var Rance;
             };
         };
         Renderer.prototype.resize = function () {
+            console.log(this.pixiContainer.offsetHeight);
             if (this.renderer) {
                 this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
             }
@@ -5252,6 +5434,9 @@ var Rance;
 (function (Rance) {
     function backTrace(graph, target) {
         var parent = graph[target.id];
+
+        if (!parent)
+            return [];
 
         var path = [
             {
@@ -5368,48 +5553,6 @@ var Rance;
                 fleet.push(row);
             }
         }
-
-        uniforms = {
-            baseColor: {
-                type: "4f",
-                value: [0.0, 0.0, 1.0, 1.0]
-            },
-            lineColor: {
-                type: "4f",
-                value: [1.0, 0.0, 0.0, 1.0]
-            },
-            gapSize: {
-                type: "2f",
-                value: [1.5, 1.5]
-            }
-        };
-
-        testFilter = new PIXI.AbstractFilter([
-            "precision mediump float;",
-            "uniform sampler2D uSampler;",
-            "uniform vec2 gapSize;",
-            "varying vec2 vTextureCoord;",
-            "varying vec4 vColor;",
-            "vec4 baseColor = vec4(1.0, 0.0, 0.0, 0.7);",
-            "vec4 lineColor = vec4(0.0, 0.0, 1.0, 0.7);",
-            "void main( void )",
-            "{",
-            "  vec2 position = gl_FragCoord.xy;",
-            "  position.x -= position.y;",
-            "  vec2 scaled = vec2(floor(position.x), position.y);",
-            "  vec2 res = mod(scaled, gapSize);",
-            "  if(res.x>0.0)",
-            "  {",
-            "    gl_FragColor = baseColor;",
-            "  }",
-            "  else",
-            "  {",
-            "    gl_FragColor = lineColor;",
-            "  }",
-            "}"
-        ], {
-            gapSize: { type: "2f", value: { x: 3.0, y: 3.0 } }
-        });
 
         setupFleetAndPlayer(fleet1, player1);
         setupFleetAndPlayer(fleet2, player2);

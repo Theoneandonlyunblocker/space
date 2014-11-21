@@ -66,6 +66,7 @@ module Rance
       eventManager.addEventListener("renderMap", this.render.bind(this));
 
       renderer.camera.onMove = this.updateShaderOffsets.bind(this);
+      renderer.camera.onZoom = this.updateShaderZoom.bind(this);
     }
     updateShaderOffsets(x: number, y: number)
     {
@@ -75,6 +76,17 @@ module Rance
         {
           var shader = this.occupationShaders[owner][occupier];
           shader.uniforms.offset.value = {x: -x, y: y};
+        }
+      }
+    }
+    updateShaderZoom(zoom: number)
+    {
+      for (var owner in this.occupationShaders)
+      {
+        for (var occupier in this.occupationShaders[owner])
+        {
+          var shader = this.occupationShaders[owner][occupier];
+          shader.uniforms.zoom.value = zoom;
         }
       }
     }
@@ -97,7 +109,8 @@ module Rance
           baseColor: {type: "4fv", value: baseColor},
           lineColor: {type: "4fv", value: occupierColor},
           gapSize: {type: "1f", value: 3.0},
-          offset: {type: "2f", value: {x: 0.0, y: 0.0}}
+          offset: {type: "2f", value: {x: 0.0, y: 0.0}},
+          zoom: {type: "1f", value: 1.0}
         };
 
         var shaderSrc =
@@ -113,12 +126,13 @@ module Rance
           "uniform vec4 lineColor;",
           "uniform float gapSize;",
           "uniform vec2 offset;",
+          "uniform float zoom;",
 
           "void main( void )",
           "{",
           "  vec2 position = gl_FragCoord.xy + offset;",
-          "  position.x -= position.y;",
-          "  float scaled = floor(position.x * 0.2);",
+          "  position.x += position.y;",
+          "  float scaled = floor(position.x * 0.1 / zoom);",
           "  float res = mod(scaled, gapSize);",
           "  if(res > 0.0)",
           "  {",

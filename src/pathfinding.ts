@@ -8,6 +8,8 @@ module Rance
   {
     var parent = graph[target.id];
 
+    if (!parent) return [];
+
     var path =
     [
       {
