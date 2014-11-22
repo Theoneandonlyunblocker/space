@@ -151,7 +151,7 @@ module Rance
       var allShips: Unit[] = [];
 
       var fleets = this.fleets[player.id];
-      if (!fleets) return null;
+      if (!fleets) return [];
 
       for (var i = 0; i < fleets.length; i++)
       {

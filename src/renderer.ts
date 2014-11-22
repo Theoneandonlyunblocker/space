@@ -47,7 +47,7 @@ module Rance
       this.initLayers();
       this.addCamera();
 
-      this.addEventListeners()
+      this.addEventListeners();
     }
     setContainer(element: HTMLCanvasElement)
     {
@@ -61,6 +61,8 @@ module Rance
     {
       this.pixiContainer.appendChild(this.renderer.view);
       this.renderer.view.setAttribute("id", "pixi-canvas");
+
+      this.resize();
     }
     initLayers()
     {
@@ -137,8 +139,7 @@ module Rance
     }
     resize()
     {
-      console.log(this.pixiContainer.offsetHeight)
-      if (this.renderer)
+      if (this.renderer && document.body.contains(this.renderer.view))
       {
         this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
       }

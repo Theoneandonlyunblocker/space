@@ -1,5 +1,6 @@
 /// <reference path="battledata.ts"/>
 /// <reference path="unit.ts"/>
+/// <reference path="eventmanager.ts"/>
 
 module Rance
 {
@@ -25,6 +26,8 @@ module Rance
 
     maxTurns: number;
     turnsLeft: number;
+
+    ended: boolean;
 
     constructor(units:
     {
@@ -64,6 +67,11 @@ module Rance
       this.turnsLeft = this.maxTurns;
       this.updateTurnOrder();
       this.setActiveUnit();
+
+      if (this.checkBattleEnd())
+      {
+        this.endBattle();
+      }
     }
     forEachUnit(operator: (Unit) => any)
     {
@@ -122,6 +130,9 @@ module Rance
       this.turnsLeft--;
       this.updateTurnOrder();
       this.setActiveUnit();
+
+      var shouldEnd = this.checkBattleEnd();
+      if (shouldEnd) this.endBattle();
     }
     getFleetsForSide(side: string)
     {
@@ -137,6 +148,54 @@ module Rance
           return this[side];
         }
       }
+    }
+    endBattle()
+    {
+      this.ended = true;
+      
+      this.forEachUnit(function(unit)
+      {
+        if (unit.currentStrength <= 0)
+        {
+          unit.die();
+        }
+        unit.resetBattleStats();
+      });
+
+      eventManager.dispatchEvent("battleEnd", null);
+    }
+    getTotalHealthForSide(side: string)
+    {
+      var health =
+      {
+        current: 0,
+        max: 0
+      };
+
+      var units = this.unitsBySide[side];
+
+      for (var i = 0; i < units.length; i++)
+      {
+        var unit = units[i];
+        health.current += unit.currentStrength;
+        health.max += unit.maxStrength;
+      }
+
+      return health;
+    }
+    checkBattleEnd()
+    {
+      if (!this.activeUnit) return true;
+
+      if (this.turnsLeft <= 0) return true;
+
+      if (this.getTotalHealthForSide("side1").current <= 0 ||
+        this.getTotalHealthForSide("side2").current <= 0)
+      {
+        return true;
+      }
+
+      return false;
     }
   }
 }

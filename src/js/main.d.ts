@@ -1,6 +1,10 @@
-/// <reference path="../../lib/react.d.ts" />
 /// <reference path="../../lib/pixi.d.ts" />
+/// <reference path="../../lib/react.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
+declare module Rance {
+    function EventManager(): void;
+    var eventManager: any;
+}
 declare module Rance {
     module UIComponents {
         var UnitStrength: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
@@ -246,6 +250,7 @@ declare module Rance {
         public galaxyMap: Rance.GalaxyMap;
         public playerControl: Rance.PlayerControl;
         constructor(container: HTMLElement);
+        public addEventListeners(): void;
         public switchScene(newScene: string): void;
         public render(): void;
     }
@@ -461,6 +466,7 @@ declare module Rance {
         public color: number;
         constructor(id?: number);
         public addUnit(unit: Rance.Unit): void;
+        public removeUnit(unit: Rance.Unit): void;
         public getAllUnits(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public addFleet(fleet: Rance.Fleet): void;
@@ -496,6 +502,7 @@ declare module Rance {
         public activeUnit: Rance.Unit;
         public maxTurns: number;
         public turnsLeft: number;
+        public ended: boolean;
         constructor(units: {
             battleData: Rance.IBattleData;
             side1: Rance.Unit[][];
@@ -510,6 +517,12 @@ declare module Rance {
         public setActiveUnit(): void;
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
+        public endBattle(): void;
+        public getTotalHealthForSide(side: string): {
+            current: number;
+            max: number;
+        };
+        public checkBattleEnd(): boolean;
     }
 }
 declare module Rance {
@@ -520,6 +533,29 @@ declare module Rance {
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
     function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {};
+}
+declare module Rance {
+    class PriorityQueue {
+        public items: {
+            [priority: number]: any[];
+        };
+        constructor();
+        public isEmpty(): boolean;
+        public push(priority: number, data: any): void;
+        public pop(): any;
+        public peek(): any[];
+    }
+}
+declare module Rance {
+    function backTrace(graph: any, target: Star): {
+        star: Star;
+        cost: any;
+    }[];
+    function aStar(start: Star, target: Star): {
+        came: any;
+        cost: any;
+        queue: PriorityQueue;
+    };
 }
 declare module Rance {
     class Unit {
@@ -561,11 +597,8 @@ declare module Rance {
         public getDamageReduction(damageType: string): number;
         public addToFleet(fleet: Rance.Fleet): void;
         public removeFromFleet(): void;
+        public die(): void;
     }
-}
-declare module Rance {
-    function EventManager(): void;
-    var eventManager: any;
 }
 declare module Rance {
     class PlayerControl {
@@ -944,30 +977,7 @@ declare module Rance {
         public render(): void;
     }
 }
-declare module Rance {
-    class PriorityQueue {
-        public items: {
-            [priority: number]: any[];
-        };
-        constructor();
-        public isEmpty(): boolean;
-        public push(priority: number, data: any): void;
-        public pop(): any;
-        public peek(): any[];
-    }
-}
-declare module Rance {
-    function backTrace(graph: any, target: Star): {
-        star: Star;
-        cost: any;
-    }[];
-    function aStar(start: Star, target: Star): {
-        came: any;
-        cost: any;
-        queue: PriorityQueue;
-    };
-}
-declare var fleet1: any, fleet2: any, player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
+declare var player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare var uniforms: any, testFilter: any;
 declare module Rance {
 }

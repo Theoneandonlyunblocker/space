@@ -30,6 +30,11 @@ module Rance
     {
       this.units[unit.id] = unit;
     }
+    removeUnit(unit: Unit)
+    {
+      this.units[unit.id] = null;
+      delete this.units[unit.id];
+    }
     getAllUnits()
     {
       var allUnits = [];

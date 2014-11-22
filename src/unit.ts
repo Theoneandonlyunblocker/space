@@ -4,8 +4,7 @@
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
-
-/// <reference path="battle.ts"/>
+/// <reference path="pathfinding.ts"/>
 
 module Rance
 {
@@ -213,6 +212,13 @@ module Rance
     removeFromFleet()
     {
       this.fleet = null;
+    }
+    die()
+    {
+      var player = this.fleet.player;
+
+      player.removeUnit(this);
+      this.fleet.removeShip(this);
     }
   }
 }

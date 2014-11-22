@@ -130,6 +130,8 @@ module Rance
       {
         var battle = this.props.battle;
 
+        console.log(battle.ended)
+
         var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
 
         var abilityTooltip: any = null;

@@ -1,5 +1,6 @@
 /// <reference path="../../lib/react.d.ts" />
 
+/// <reference path="../eventmanager.ts"/>
 /// <reference path="stage.ts"/>
 
 module Rance
@@ -17,10 +18,19 @@ module Rance
     
     constructor(public container: HTMLElement)
     {
-
+      this.addEventListeners();
+    }
+    addEventListeners()
+    {
+      var self = this;
+      eventManager.addEventListener("switchScene", function(e)
+      {
+        self.switchScene(e.data);
+      });
     }
     switchScene(newScene: string)
     {
+      console.log(newScene);
       this.currentScene = newScene;
       this.render();
     }

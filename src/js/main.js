@@ -1,3 +1,17 @@
+/// <reference path="../lib/pixi.d.ts" />
+var Rance;
+(function (Rance) {
+    function EventManager() {
+    }
+    Rance.EventManager = EventManager;
+    ;
+
+    var et = PIXI.EventTarget;
+
+    et.mixin(EventManager.prototype);
+
+    Rance.eventManager = new EventManager();
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -896,6 +910,8 @@ var Rance;
             },
             render: function () {
                 var battle = this.props.battle;
+
+                console.log(battle.ended);
 
                 var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
 
@@ -2142,14 +2158,23 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../eventmanager.ts"/>
 /// <reference path="stage.ts"/>
 var Rance;
 (function (Rance) {
     var ReactUI = (function () {
         function ReactUI(container) {
             this.container = container;
+            this.addEventListeners();
         }
+        ReactUI.prototype.addEventListeners = function () {
+            var self = this;
+            Rance.eventManager.addEventListener("switchScene", function (e) {
+                self.switchScene(e.data);
+            });
+        };
         ReactUI.prototype.switchScene = function (newScene) {
+            console.log(newScene);
             this.currentScene = newScene;
             this.render();
         };
@@ -2678,7 +2703,7 @@ var Rance;
 
             var fleets = this.fleets[player.id];
             if (!fleets)
-                return null;
+                return [];
 
             for (var i = 0; i < fleets.length; i++) {
                 allShips = allShips.concat(fleets[i].ships);
@@ -3008,6 +3033,10 @@ var Rance;
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
         };
+        Player.prototype.removeUnit = function (unit) {
+            this.units[unit.id] = null;
+            delete this.units[unit.id];
+        };
         Player.prototype.getAllUnits = function () {
             var allUnits = [];
             for (var unitId in this.units) {
@@ -3058,6 +3087,7 @@ var Rance;
 /// <reference path="building.ts"/>
 /// <reference path="battledata.ts"/>
 /// <reference path="unit.ts"/>
+/// <reference path="eventmanager.ts"/>
 var Rance;
 (function (Rance) {
     var Battle = (function () {
@@ -3094,6 +3124,10 @@ var Rance;
             this.turnsLeft = this.maxTurns;
             this.updateTurnOrder();
             this.setActiveUnit();
+
+            if (this.checkBattleEnd()) {
+                this.endBattle();
+            }
         };
         Battle.prototype.forEachUnit = function (operator) {
             for (var id in this.unitsById) {
@@ -3143,6 +3177,10 @@ var Rance;
             this.turnsLeft--;
             this.updateTurnOrder();
             this.setActiveUnit();
+
+            var shouldEnd = this.checkBattleEnd();
+            if (shouldEnd)
+                this.endBattle();
         };
         Battle.prototype.getFleetsForSide = function (side) {
             switch (side) {
@@ -3154,6 +3192,47 @@ var Rance;
                     return this[side];
                 }
             }
+        };
+        Battle.prototype.endBattle = function () {
+            this.ended = true;
+
+            this.forEachUnit(function (unit) {
+                if (unit.currentStrength <= 0) {
+                    unit.die();
+                }
+                unit.resetBattleStats();
+            });
+
+            Rance.eventManager.dispatchEvent("battleEnd", null);
+        };
+        Battle.prototype.getTotalHealthForSide = function (side) {
+            var health = {
+                current: 0,
+                max: 0
+            };
+
+            var units = this.unitsBySide[side];
+
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+                health.current += unit.currentStrength;
+                health.max += unit.maxStrength;
+            }
+
+            return health;
+        };
+        Battle.prototype.checkBattleEnd = function () {
+            if (!this.activeUnit)
+                return true;
+
+            if (this.turnsLeft <= 0)
+                return true;
+
+            if (this.getTotalHealthForSide("side1").current <= 0 || this.getTotalHealthForSide("side2").current <= 0) {
+                return true;
+            }
+
+            return false;
         };
         return Battle;
     })();
@@ -3304,12 +3383,134 @@ var Rance;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    // todo: use a heap instead of this crap
+    var PriorityQueue = (function () {
+        function PriorityQueue() {
+            this.items = {};
+        }
+        PriorityQueue.prototype.isEmpty = function () {
+            if (Object.keys(this.items).length > 0)
+                return false;
+            else
+                return true;
+        };
+
+        PriorityQueue.prototype.push = function (priority, data) {
+            if (!this.items[priority]) {
+                this.items[priority] = [];
+            }
+
+            this.items[priority].push(data);
+        };
+        PriorityQueue.prototype.pop = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+
+            var toReturn = this.items[highestPriority].pop();
+            if (this.items[highestPriority].length < 1) {
+                delete this.items[highestPriority];
+            }
+            return toReturn;
+        };
+        PriorityQueue.prototype.peek = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority][0];
+
+            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+        };
+        return PriorityQueue;
+    })();
+    Rance.PriorityQueue = PriorityQueue;
+})(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+/// <reference path="priorityqueue.ts" />
+var Rance;
+(function (Rance) {
+    function backTrace(graph, target) {
+        var parent = graph[target.id];
+
+        if (!parent)
+            return [];
+
+        var path = [
+            {
+                star: target,
+                cost: parent.cost
+            }
+        ];
+
+        while (parent) {
+            path.push({
+                star: parent.star,
+                cost: parent.cost
+            });
+            parent = graph[parent.star.id];
+        }
+        path.reverse();
+        path[0].cost = null;
+
+        return path;
+    }
+    Rance.backTrace = backTrace;
+
+    function aStar(start, target) {
+        var frontier = new Rance.PriorityQueue();
+        frontier.push(0, start);
+
+        //var frontier = new EasyStar.PriorityQueue("p", 1);
+        //frontier.insert({p: 0, tile: start})
+        var cameFrom = {};
+        var costSoFar = {};
+        cameFrom[start.id] = null;
+        costSoFar[start.id] = 0;
+
+        while (!frontier.isEmpty()) {
+            var current = frontier.pop();
+
+            //var current = frontier.shiftHighestPriorityElement().tile;
+            if (current === target)
+                return { came: cameFrom, cost: costSoFar, queue: frontier };
+
+            var neighbors = current.getAllLinks();
+
+            for (var i = 0; i < neighbors.length; i++) {
+                var neigh = neighbors[i];
+                if (!neigh)
+                    continue;
+
+                var moveCost = 1;
+
+                var newCost = costSoFar[current.id] + moveCost;
+
+                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
+                    costSoFar[neigh.id] = newCost;
+
+                    // ^ done
+                    var dx = Math.abs(neigh.id[1] - target.id[1]);
+                    var dy = Math.abs(neigh.id[2] - target.id[2]);
+                    var priority = newCost;
+                    frontier.push(priority, neigh);
+
+                    //frontier.insert({p: priority, tile: neigh});
+                    cameFrom[neigh.id] = {
+                        star: current,
+                        cost: moveCost
+                    };
+                }
+            }
+        }
+
+        return null;
+    }
+    Rance.aStar = aStar;
+})(Rance || (Rance = {}));
 /// <reference path="../data/templates/typetemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="battle.ts"/>
+/// <reference path="pathfinding.ts"/>
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -3451,23 +3652,15 @@ var Rance;
         Unit.prototype.removeFromFleet = function () {
             this.fleet = null;
         };
+        Unit.prototype.die = function () {
+            var player = this.fleet.player;
+
+            player.removeUnit(this);
+            this.fleet.removeShip(this);
+        };
         return Unit;
     })();
     Rance.Unit = Unit;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-var Rance;
-(function (Rance) {
-    function EventManager() {
-    }
-    Rance.EventManager = EventManager;
-    ;
-
-    var et = PIXI.EventTarget;
-
-    et.mixin(EventManager.prototype);
-
-    Rance.eventManager = new EventManager();
 })(Rance || (Rance = {}));
 /// <reference path="eventmanager.ts"/>
 /// <reference path="player.ts"/>
@@ -5412,6 +5605,8 @@ var Rance;
         Renderer.prototype.bindRendererView = function () {
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "pixi-canvas");
+
+            this.resize();
         };
         Renderer.prototype.initLayers = function () {
             this.stage.removeChildren();
@@ -5476,8 +5671,7 @@ var Rance;
             };
         };
         Renderer.prototype.resize = function () {
-            console.log(this.pixiContainer.offsetHeight);
-            if (this.renderer) {
+            if (this.renderer && document.body.contains(this.renderer.view)) {
                 this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
             }
         };
@@ -5489,147 +5683,20 @@ var Rance;
     })();
     Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    // todo: use a heap instead of this crap
-    var PriorityQueue = (function () {
-        function PriorityQueue() {
-            this.items = {};
-        }
-        PriorityQueue.prototype.isEmpty = function () {
-            if (Object.keys(this.items).length > 0)
-                return false;
-            else
-                return true;
-        };
-
-        PriorityQueue.prototype.push = function (priority, data) {
-            if (!this.items[priority]) {
-                this.items[priority] = [];
-            }
-
-            this.items[priority].push(data);
-        };
-        PriorityQueue.prototype.pop = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-
-            var toReturn = this.items[highestPriority].pop();
-            if (this.items[highestPriority].length < 1) {
-                delete this.items[highestPriority];
-            }
-            return toReturn;
-        };
-        PriorityQueue.prototype.peek = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority][0];
-
-            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
-        };
-        return PriorityQueue;
-    })();
-    Rance.PriorityQueue = PriorityQueue;
-})(Rance || (Rance = {}));
-/// <reference path="star.ts" />
-/// <reference path="priorityqueue.ts" />
-var Rance;
-(function (Rance) {
-    function backTrace(graph, target) {
-        var parent = graph[target.id];
-
-        if (!parent)
-            return [];
-
-        var path = [
-            {
-                star: target,
-                cost: parent.cost
-            }
-        ];
-
-        while (parent) {
-            path.push({
-                star: parent.star,
-                cost: parent.cost
-            });
-            parent = graph[parent.star.id];
-        }
-        path.reverse();
-        path[0].cost = null;
-
-        return path;
-    }
-    Rance.backTrace = backTrace;
-
-    function aStar(start, target) {
-        var frontier = new Rance.PriorityQueue();
-        frontier.push(0, start);
-
-        //var frontier = new EasyStar.PriorityQueue("p", 1);
-        //frontier.insert({p: 0, tile: start})
-        var cameFrom = {};
-        var costSoFar = {};
-        cameFrom[start.id] = null;
-        costSoFar[start.id] = 0;
-
-        while (!frontier.isEmpty()) {
-            var current = frontier.pop();
-
-            //var current = frontier.shiftHighestPriorityElement().tile;
-            if (current === target)
-                return { came: cameFrom, cost: costSoFar, queue: frontier };
-
-            var neighbors = current.getAllLinks();
-
-            for (var i = 0; i < neighbors.length; i++) {
-                var neigh = neighbors[i];
-                if (!neigh)
-                    continue;
-
-                var moveCost = 1;
-
-                var newCost = costSoFar[current.id] + moveCost;
-
-                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
-                    costSoFar[neigh.id] = newCost;
-
-                    // ^ done
-                    var dx = Math.abs(neigh.id[1] - target.id[1]);
-                    var dy = Math.abs(neigh.id[2] - target.id[2]);
-                    var priority = newCost;
-                    frontier.push(priority, neigh);
-
-                    //frontier.insert({p: priority, tile: neigh});
-                    cameFrom[neigh.id] = {
-                        star: current,
-                        cost: moveCost
-                    };
-                }
-            }
-        }
-
-        return null;
-    }
-    Rance.aStar = aStar;
-})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
-/// <reference path="battle.ts"/>
-/// <reference path="ability.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
 /// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
-/// <reference path="pathfinding.ts"/>
-var fleet1, fleet2, player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
+var player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter;
 
 var Rance;
 (function (Rance) {
     document.addEventListener('DOMContentLoaded', function () {
-        fleet1 = [];
-        fleet2 = [];
         player1 = new Rance.Player();
         player1.color = 0xC02020;
         player1.icon = Rance.makeTempPlayerIcon(player1, 32);
@@ -5637,26 +5704,15 @@ var Rance;
         player2.color = 0x2020C0;
         player2.icon = Rance.makeTempPlayerIcon(player2, 32);
 
-        function setupFleetAndPlayer(fleet, player) {
-            for (var i = 0; i < 2; i++) {
-                var emptySlot = Rance.randInt(0, 3);
-                var row = [];
-                for (var j = 0; j < 4; j++) {
-                    if (j === emptySlot) {
-                        row.push(null);
-                    } else {
-                        var type = Rance.getRandomArrayItem(["fighterSquadron", "battleCruiser", "bomberSquadron"]);
-                        var unit = new Rance.Unit(Rance.Templates.ShipTypes[type]);
-                        row.push(unit);
-                        player.addUnit(unit);
-                    }
-                }
-                fleet.push(row);
+        function setupFleetAndPlayer(player) {
+            for (var i = 0; i < 8; i++) {
+                var unit = Rance.makeRandomShip();
+                player.addUnit(unit);
             }
         }
 
-        setupFleetAndPlayer(fleet1, player1);
-        setupFleetAndPlayer(fleet2, player2);
+        setupFleetAndPlayer(player1);
+        setupFleetAndPlayer(player2);
 
         reactUI = new Rance.ReactUI(document.getElementById("react-container"));
 
