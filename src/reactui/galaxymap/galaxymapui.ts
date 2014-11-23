@@ -26,11 +26,18 @@ module Rance
       {
         var pc = this.props.playerControl;
 
+        var star = null;
+        if (pc.selectedStar) star = pc.selectedStar;
+        else if (pc.areAllFleetsInSameLocation())
+        {
+          star = pc.selectedFleets[0].location;
+        };
+
         this.setState(
         {
           selectedFleets: pc.selectedFleets,
           currentlyReorganizing: pc.currentlyReorganizing,
-          selectedStar: pc.selectedStar,
+          selectedStar: star,
           attackTargets: pc.currentAttackTargets
         });
       },

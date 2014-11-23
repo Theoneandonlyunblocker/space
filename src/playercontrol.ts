@@ -103,6 +103,8 @@ module Rance
 
     areAllFleetsInSameLocation()
     {
+      if (this.selectedFleets.length <= 0) return false;
+      
       for (var i = 1; i < this.selectedFleets.length; i++)
       {
         if (this.selectedFleets[i].location !== this.selectedFleets[i-1].location)

@@ -127,6 +127,32 @@ module Rance
         this.onMove(this.container.position.x, this.container.position.y);
       }
     }
+    getScreenCenter()
+    {
+      return(
+      {
+        x: this.width / 2,
+        y: this.height / 2
+      });
+    }
+    centerOnPosition(pos: Point)
+    {
+      var wt = this.container.worldTransform;
+
+      var localPos = wt.apply(pos);
+      var center = this.getScreenCenter();
+
+      this.container.position.x += center.x - localPos.x;
+      this.container.position.y += center.y - localPos.y;
+
+      this.clampEdges();
+
+      if (this.onMove)
+      {
+        this.onMove(this.container.position.x, this.container.position.y);
+      }
+    }
+
     /**
      * @method zoom
      * @param {number} zoomAmount [description]

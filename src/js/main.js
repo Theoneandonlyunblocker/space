@@ -2000,10 +2000,18 @@ var Rance;
             updateSelection: function () {
                 var pc = this.props.playerControl;
 
+                var star = null;
+                if (pc.selectedStar)
+                    star = pc.selectedStar;
+                else if (pc.areAllFleetsInSameLocation()) {
+                    star = pc.selectedFleets[0].location;
+                }
+                ;
+
                 this.setState({
                     selectedFleets: pc.selectedFleets,
                     currentlyReorganizing: pc.currentlyReorganizing,
-                    selectedStar: pc.selectedStar,
+                    selectedStar: star,
                     attackTargets: pc.currentAttackTargets
                 });
             },
@@ -3778,6 +3786,9 @@ var Rance;
         };
 
         PlayerControl.prototype.areAllFleetsInSameLocation = function () {
+            if (this.selectedFleets.length <= 0)
+                return false;
+
             for (var i = 1; i < this.selectedFleets.length; i++) {
                 if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
                     return false;
@@ -5258,6 +5269,27 @@ var Rance;
             var delta = this.getDelta(currPos);
             this.container.position.x = this.startPos[0] + delta[0];
             this.container.position.y = this.startPos[1] + delta[1];
+            this.clampEdges();
+
+            if (this.onMove) {
+                this.onMove(this.container.position.x, this.container.position.y);
+            }
+        };
+        Camera.prototype.getScreenCenter = function () {
+            return ({
+                x: this.width / 2,
+                y: this.height / 2
+            });
+        };
+        Camera.prototype.centerOnPosition = function (pos) {
+            var wt = this.container.worldTransform;
+
+            var localPos = wt.apply(pos);
+            var center = this.getScreenCenter();
+
+            this.container.position.x += center.x - localPos.x;
+            this.container.position.y += center.y - localPos.y;
+
             this.clampEdges();
 
             if (this.onMove) {

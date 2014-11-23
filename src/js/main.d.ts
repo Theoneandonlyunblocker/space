@@ -885,6 +885,11 @@ declare module Rance {
         * @param {number[]} currPos [description]
         */
         public move(currPos: number[]): void;
+        public getScreenCenter(): {
+            x: number;
+            y: number;
+        };
+        public centerOnPosition(pos: Rance.Point): void;
         /**
         * @method zoom
         * @param {number} zoomAmount [description]
