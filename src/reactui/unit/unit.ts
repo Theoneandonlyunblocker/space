@@ -28,32 +28,6 @@ module Rance
         this.props.onDragEnd();
       },
 
-      tooltipContent: function()
-      {
-        return React.DOM.div(null, "lol");
-
-        if (!this.props.activeTargets ||
-          !this.props.activeTargets[this.props.unit.id])
-        {
-          return null;
-        }
-
-        var elements = [];
-        var targetableOnThis = this.props.activeTargets[this.props.unit.id];
-
-        for (var i = 0; i < targetableOnThis.length; i++)
-        {
-          elements.push(
-            React.DOM.div({key: ""+ i},
-              targetableOnThis[i].name
-            )
-          );
-        }
-
-        return React.DOM.div(null,
-          elements
-        )
-      },
       handleMouseEnter: function(e)
       {
         if (!this.props.handleMouseEnterUnit) return;

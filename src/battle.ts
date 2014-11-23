@@ -27,7 +27,7 @@ module Rance
     maxTurns: number;
     turnsLeft: number;
 
-    ended: boolean;
+    ended: boolean = false;
 
     constructor(units:
     {
@@ -152,7 +152,7 @@ module Rance
     endBattle()
     {
       this.ended = true;
-      
+
       this.forEachUnit(function(unit)
       {
         if (unit.currentStrength <= 0)
@@ -163,6 +163,10 @@ module Rance
       });
 
       eventManager.dispatchEvent("battleEnd", null);
+    }
+    finishBattle()
+    {
+      eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
     getTotalHealthForSide(side: string)
     {

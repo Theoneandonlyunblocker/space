@@ -69,10 +69,32 @@ body {
   cursor: default;
 }
 
+.battle-upper
+{
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  flex: 0 1 300px;
+  min-height: 20px;
+}
+
+.battle-upper-background
+{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: green;
+}
+
 .turn-order-container
 {
+  position: absolute;
+  left: 0;
+  bottom: 0;
   display: flex;
   flex-flow: row;
+  width: 100%;
+  min-height: 20px;
 }
 
 .turn-order-unit
@@ -162,6 +184,14 @@ body {
   flex-flow: row;
   justify-content: center;
   width: 100%;
+  flex: 1 0 auto;
+}
+
+.end-battle-button
+{
+  width: 80px;
+  align-self: center;
+  min-height: 30px;
 }
 
 .battle-fleet

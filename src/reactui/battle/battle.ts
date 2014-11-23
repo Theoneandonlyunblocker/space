@@ -69,6 +69,8 @@ module Rance
       },
       handleMouseEnterUnit: function(unit)
       {
+        if (this.props.battle.ended) return;
+
         var facesLeft = unit.battleStats.side === "side2";
         var parentElement = this.getUnitElement(unit);
 
@@ -93,6 +95,14 @@ module Rance
         useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
         this.clearHoveredUnit();
         this.props.battle.endTurn();
+      },
+
+      finishBattle: function()
+      {
+        var battle = this.props.battle;
+        if (!battle.ended) throw new Error();
+
+        battle.finishBattle();
       },
 
       handleMouseEnterAbility: function(ability)
@@ -130,13 +140,15 @@ module Rance
       {
         var battle = this.props.battle;
 
-        console.log(battle.ended)
-
-        var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
+        if (!battle.ended)
+        {
+          var activeTargets = getTargetsForAllAbilities(battle, battle.activeUnit);
+        }
 
         var abilityTooltip: any = null;
 
         if (
+          !battle.ended &&
           this.state.hoveredUnit &&
           activeTargets[this.state.hoveredUnit.id]
         )
@@ -157,15 +169,23 @@ module Rance
 
         return(
           React.DOM.div({className: "battle-container"},
-            UIComponents.TurnOrder(
+            React.DOM.div(
             {
-              turnOrder: battle.turnOrder,
-              unitsBySide: battle.unitsBySide,
-              potentialDelay: this.state.potentialDelay,
-              hoveredUnit: this.state.hoveredUnit,
-              onMouseEnterUnit: this.handleMouseEnterUnit,
-              onMouseLeaveUnit: this.handleMouseLeaveUnit
-            }),
+              className: "battle-upper"
+            },
+              React.DOM.div({className: "battle-upper-background"},
+                null
+              ),
+              UIComponents.TurnOrder(
+              {
+                turnOrder: battle.turnOrder,
+                unitsBySide: battle.unitsBySide,
+                potentialDelay: this.state.potentialDelay,
+                hoveredUnit: this.state.hoveredUnit,
+                onMouseEnterUnit: this.handleMouseEnterUnit,
+                onMouseLeaveUnit: this.handleMouseLeaveUnit
+              })
+            ),
             React.DOM.div({className: "fleets-container"},
               UIComponents.Fleet(
               {
@@ -194,7 +214,12 @@ module Rance
                 handleMouseLeaveUnit: this.handleMouseLeaveUnit
               }),
               abilityTooltip
-            )
+            ),
+            battle.ended ? React.DOM.button(
+            {
+              className: "end-battle-button",
+              onClick: this.finishBattle
+            }, "end") : null
           )
         );
       }
