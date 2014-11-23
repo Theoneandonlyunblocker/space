@@ -3240,6 +3240,9 @@ var Rance;
                 }
             }
             Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+            window.setTimeout(function () {
+                renderer.camera.centerOnPosition(this.battleData.location);
+            }.bind(this), 20);
         };
         Battle.prototype.getVictor = function () {
             if (this.getTotalHealthForSide("side1").current <= 0) {
@@ -5206,6 +5209,10 @@ var Rance;
                 self.screenWidth = parseInt(style.width);
                 self.screenHeight = parseInt(style.height);
             }, false);
+
+            Rance.eventManager.addEventListener("centerCameraAt", function (e) {
+                self.centerOnPosition(e.data);
+            });
         };
 
         /**
@@ -5282,6 +5289,7 @@ var Rance;
             });
         };
         Camera.prototype.centerOnPosition = function (pos) {
+            this.setBounds();
             var wt = this.container.worldTransform;
 
             var localPos = wt.apply(pos);

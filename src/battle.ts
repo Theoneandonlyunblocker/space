@@ -185,6 +185,10 @@ module Rance
         }
       }
       eventManager.dispatchEvent("switchScene", "galaxyMap");
+      window.setTimeout(function()
+      {
+        renderer.camera.centerOnPosition(this.battleData.location);
+      }.bind(this), 20);
     }
     getVictor()
     {

@@ -57,6 +57,11 @@ module Rance
         self.screenWidth = parseInt(style.width);
         self.screenHeight = parseInt(style.height);
       }, false);
+
+      eventManager.addEventListener("centerCameraAt", function(e)
+      {
+        self.centerOnPosition(e.data);
+      });
     }
 
     /**
@@ -137,6 +142,7 @@ module Rance
     }
     centerOnPosition(pos: Point)
     {
+      this.setBounds();
       var wt = this.container.worldTransform;
 
       var localPos = wt.apply(pos);
