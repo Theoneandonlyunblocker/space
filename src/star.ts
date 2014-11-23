@@ -90,6 +90,12 @@ module Rance
 
       return null;
     }
+    updateController()
+    {
+      if (!this.buildings["defence"]) return null;
+
+      this.owner = this.buildings["defence"][0].controller;
+    }
 
     // FLEETS
     getAllFleets()
@@ -193,8 +199,10 @@ module Rance
     }
     getFirstEnemyDefenceBuilding(player: Player)
     {
-      var defenceBuildings = this.buildings["defence"];
-      if (!defenceBuildings) return null;
+      if (!this.buildings["defence"]) return null;
+
+      var defenceBuildings = this.buildings["defence"].slice(0);
+      if (this.owner === player) defenceBuildings = defenceBuildings.reverse();
 
       for (var i = defenceBuildings.length - 1; i >= 0; i--)
       {

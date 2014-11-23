@@ -2587,6 +2587,13 @@ var Rance;
 
             return upgrades;
         };
+        Building.prototype.setController = function (newController) {
+            if (this.controller === newController)
+                return;
+
+            this.controller = newController;
+            this.location.updateController();
+        };
         return Building;
     })();
     Rance.Building = Building;
@@ -2648,6 +2655,12 @@ var Rance;
             }
 
             return null;
+        };
+        Star.prototype.updateController = function () {
+            if (!this.buildings["defence"])
+                return null;
+
+            this.owner = this.buildings["defence"][0].controller;
         };
 
         // FLEETS
@@ -2737,9 +2750,12 @@ var Rance;
             return targets;
         };
         Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
-            var defenceBuildings = this.buildings["defence"];
-            if (!defenceBuildings)
+            if (!this.buildings["defence"])
                 return null;
+
+            var defenceBuildings = this.buildings["defence"].slice(0);
+            if (this.owner === player)
+                defenceBuildings = defenceBuildings.reverse();
 
             for (var i = defenceBuildings.length - 1; i >= 0; i--) {
                 if (defenceBuildings[i].controller.id !== player.id) {
@@ -3090,7 +3106,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Battle = (function () {
-        function Battle(units) {
+        function Battle(props) {
             this.unitsById = {};
             this.unitsBySide = {
                 side1: [],
@@ -3098,8 +3114,11 @@ var Rance;
             };
             this.turnOrder = [];
             this.ended = false;
-            this.side1 = units.side1;
-            this.side2 = units.side2;
+            this.side1 = props.side1;
+            this.side1Player = props.side1Player;
+            this.side2 = props.side2;
+            this.side2Player = props.side2Player;
+            this.battleData = props.battleData;
         }
         Battle.prototype.init = function () {
             var self = this;
@@ -3206,7 +3225,22 @@ var Rance;
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.finishBattle = function () {
+            var victor = this.getVictor();
+            if (this.battleData.building) {
+                if (victor) {
+                    this.battleData.building.setController(victor);
+                }
+            }
             Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+        };
+        Battle.prototype.getVictor = function () {
+            if (this.getTotalHealthForSide("side1").current <= 0) {
+                return this.side2Player;
+            } else if (this.getTotalHealthForSide("side2").current <= 0) {
+                return this.side1Player;
+            }
+
+            return null;
         };
         Battle.prototype.getTotalHealthForSide = function (side) {
             var health = {
@@ -3907,9 +3941,11 @@ var Rance;
         BattlePrep.prototype.setAvailableUnits = function () {
             if (this.battleData.attacker.player === this.player) {
                 this.availableUnits = this.battleData.attacker.ships;
+                this.enemy = this.battleData.defender.player;
                 this.enemyUnits = this.battleData.defender.ships;
             } else {
                 this.availableUnits = this.battleData.defender.ships;
+                this.enemy = this.battleData.attacker.player;
                 this.enemyUnits = this.battleData.attacker.ships;
             }
         };
@@ -3987,7 +4023,9 @@ var Rance;
             var battle = new Rance.Battle({
                 battleData: this.battleData,
                 side1: this.fleet,
-                side2: this.makeEnemyFleet()
+                side2: this.makeEnemyFleet(),
+                side1Player: this.player,
+                side2Player: this.enemy
             });
 
             battle.init();

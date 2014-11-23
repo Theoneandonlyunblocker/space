@@ -372,6 +372,7 @@ declare module Rance {
             type: string;
             level: number;
         }[];
+        public setController(newController: Rance.Player): void;
     }
 }
 declare module Rance {
@@ -397,6 +398,7 @@ declare module Rance {
         public addBuilding(building: Rance.Building): void;
         public removeBuilding(building: Rance.Building): void;
         public getSecondaryController(): Rance.Player;
+        public updateController(): any;
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;
@@ -497,16 +499,21 @@ declare module Rance {
             [side: string]: Rance.Unit[];
         };
         public side1: Rance.Unit[][];
+        public side1Player: Rance.Player;
         public side2: Rance.Unit[][];
+        public side2Player: Rance.Player;
+        public battleData: Rance.IBattleData;
         public turnOrder: Rance.Unit[];
         public activeUnit: Rance.Unit;
         public maxTurns: number;
         public turnsLeft: number;
         public ended: boolean;
-        constructor(units: {
+        constructor(props: {
             battleData: Rance.IBattleData;
             side1: Rance.Unit[][];
             side2: Rance.Unit[][];
+            side1Player: Rance.Player;
+            side2Player: Rance.Player;
         });
         public init(): void;
         public forEachUnit(operator: (Unit: any) => any): void;
@@ -519,6 +526,7 @@ declare module Rance {
         public getFleetsForSide(side: string): any;
         public endBattle(): void;
         public finishBattle(): void;
+        public getVictor(): Rance.Player;
         public getTotalHealthForSide(side: string): {
             current: number;
             max: number;
@@ -631,6 +639,7 @@ declare module Rance {
 declare module Rance {
     class BattlePrep {
         public player: Rance.Player;
+        public enemy: Rance.Player;
         public battleData: Rance.IBattleData;
         public availableUnits: Rance.Unit[];
         public enemyUnits: Rance.Unit[];

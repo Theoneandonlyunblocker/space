@@ -8,6 +8,7 @@ module Rance
   export class BattlePrep
   {
     player: Player;
+    enemy: Player;
     battleData: IBattleData;
     availableUnits: Unit[];
     enemyUnits: Unit[];
@@ -35,11 +36,13 @@ module Rance
       if (this.battleData.attacker.player === this.player)
       {
         this.availableUnits = this.battleData.attacker.ships;
+        this.enemy = this.battleData.defender.player;
         this.enemyUnits = this.battleData.defender.ships;
       }
       else
       {
         this.availableUnits = this.battleData.defender.ships;
+        this.enemy = this.battleData.attacker.player;
         this.enemyUnits = this.battleData.attacker.ships;
       }
     }
@@ -126,7 +129,9 @@ module Rance
       {
         battleData: this.battleData,
         side1: this.fleet,
-        side2: this.makeEnemyFleet()
+        side2: this.makeEnemyFleet(),
+        side1Player: this.player,
+        side2Player: this.enemy
       });
 
       battle.init();

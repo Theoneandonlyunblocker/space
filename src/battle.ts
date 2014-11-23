@@ -19,7 +19,11 @@ module Rance
       side2: []
     };
     side1: Unit[][];
+    side1Player: Player;
     side2: Unit[][];
+    side2Player: Player;
+
+    battleData: IBattleData;
 
     turnOrder: Unit[] = [];
     activeUnit: Unit;
@@ -29,19 +33,25 @@ module Rance
 
     ended: boolean = false;
 
-    constructor(units:
+    constructor(props:
     {
       battleData: IBattleData;
       side1: Unit[][];
       side2: Unit[][];
+      side1Player: Player;
+      side2Player: Player;
     })
     {
-      this.side1 = units.side1;
-      this.side2 = units.side2;
+      this.side1 = props.side1;
+      this.side1Player = props.side1Player
+      this.side2 = props.side2;
+      this.side2Player = props.side2Player;
+      this.battleData = props.battleData;
     }
     init()
     {
       var self = this;
+
 
       ["side1", "side2"].forEach(function(sideId)
       {
@@ -166,7 +176,28 @@ module Rance
     }
     finishBattle()
     {
+      var victor = this.getVictor();
+      if (this.battleData.building)
+      {
+        if (victor)
+        {
+          this.battleData.building.setController(victor);
+        }
+      }
       eventManager.dispatchEvent("switchScene", "galaxyMap");
+    }
+    getVictor()
+    {
+      if (this.getTotalHealthForSide("side1").current <= 0)
+      {
+        return this.side2Player;
+      }
+      else if (this.getTotalHealthForSide("side2").current <= 0)
+      {
+        return this.side1Player;
+      }
+
+      return null;
     }
     getTotalHealthForSide(side: string)
     {

@@ -52,5 +52,13 @@ module Rance
 
       return upgrades;
     }
+    setController(newController: Player)
+    {
+      if (this.controller === newController) return;
+
+
+      this.controller = newController;
+      this.location.updateController();
+    }
   }
 }
