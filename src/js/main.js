@@ -348,22 +348,6 @@ var Rance;
             onDragEnd: function (e) {
                 this.props.onDragEnd();
             },
-            tooltipContent: function () {
-                return React.DOM.div(null, "lol");
-
-                if (!this.props.activeTargets || !this.props.activeTargets[this.props.unit.id]) {
-                    return null;
-                }
-
-                var elements = [];
-                var targetableOnThis = this.props.activeTargets[this.props.unit.id];
-
-                for (var i = 0; i < targetableOnThis.length; i++) {
-                    elements.push(React.DOM.div({ key: "" + i }, targetableOnThis[i].name));
-                }
-
-                return React.DOM.div(null, elements);
-            },
             handleMouseEnter: function (e) {
                 if (!this.props.handleMouseEnterUnit)
                     return;
@@ -870,6 +854,9 @@ var Rance;
                 }
             },
             handleMouseEnterUnit: function (unit) {
+                if (this.props.battle.ended)
+                    return;
+
                 var facesLeft = unit.battleStats.side === "side2";
                 var parentElement = this.getUnitElement(unit);
 
@@ -888,6 +875,13 @@ var Rance;
                 Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
                 this.clearHoveredUnit();
                 this.props.battle.endTurn();
+            },
+            finishBattle: function () {
+                var battle = this.props.battle;
+                if (!battle.ended)
+                    throw new Error();
+
+                battle.finishBattle();
             },
             handleMouseEnterAbility: function (ability) {
                 var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.hoveredUnit.battleStats.position);
@@ -911,13 +905,13 @@ var Rance;
             render: function () {
                 var battle = this.props.battle;
 
-                console.log(battle.ended);
-
-                var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+                if (!battle.ended) {
+                    var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+                }
 
                 var abilityTooltip = null;
 
-                if (this.state.hoveredUnit && activeTargets[this.state.hoveredUnit.id]) {
+                if (!battle.ended && this.state.hoveredUnit && activeTargets[this.state.hoveredUnit.id]) {
                     abilityTooltip = Rance.UIComponents.AbilityTooltip({
                         handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
@@ -931,14 +925,16 @@ var Rance;
                     });
                 }
 
-                return (React.DOM.div({ className: "battle-container" }, Rance.UIComponents.TurnOrder({
+                return (React.DOM.div({ className: "battle-container" }, React.DOM.div({
+                    className: "battle-upper"
+                }, React.DOM.div({ className: "battle-upper-background" }, null), Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
                     unitsBySide: battle.unitsBySide,
                     potentialDelay: this.state.potentialDelay,
                     hoveredUnit: this.state.hoveredUnit,
                     onMouseEnterUnit: this.handleMouseEnterUnit,
                     onMouseLeaveUnit: this.handleMouseLeaveUnit
-                }), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
+                })), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
@@ -958,7 +954,10 @@ var Rance;
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
                     handleMouseLeaveUnit: this.handleMouseLeaveUnit
-                }), abilityTooltip)));
+                }), abilityTooltip), battle.ended ? React.DOM.button({
+                    className: "end-battle-button",
+                    onClick: this.finishBattle
+                }, "end") : null));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3098,6 +3097,7 @@ var Rance;
                 side2: []
             };
             this.turnOrder = [];
+            this.ended = false;
             this.side1 = units.side1;
             this.side2 = units.side2;
         }
@@ -3204,6 +3204,9 @@ var Rance;
             });
 
             Rance.eventManager.dispatchEvent("battleEnd", null);
+        };
+        Battle.prototype.finishBattle = function () {
+            Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
         };
         Battle.prototype.getTotalHealthForSide = function (side) {
             var health = {
@@ -5620,6 +5623,8 @@ var Rance;
             var _background = this.layers["background"] = new PIXI.DisplayObjectContainer();
             _map.addChild(_background);
 
+            _background.filters = [testFilter];
+
             var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_select);
         };
@@ -5672,16 +5677,49 @@ var Rance;
         };
         Renderer.prototype.resize = function () {
             if (this.renderer && document.body.contains(this.renderer.view)) {
-                this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
+                var w = this.pixiContainer.offsetWidth;
+                var h = this.pixiContainer.offsetHeight;
+                this.renderer.resize(w, h);
+                this.layers["background"].filterArea = new PIXI.Rectangle(0, 0, w, h);
             }
         };
         Renderer.prototype.render = function () {
             this.renderer.render(this.stage);
+            uniformManager.updateTime();
             requestAnimFrame(this.render.bind(this));
         };
         return Renderer;
     })();
     Rance.Renderer = Renderer;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UniformManager = (function () {
+        function UniformManager() {
+            this.registeredObjects = {};
+            this.timeCount = 0;
+        }
+        UniformManager.prototype.registerObject = function (uniformType, shader) {
+            if (!this.registeredObjects[uniformType]) {
+                this.registeredObjects[uniformType] = [];
+            }
+
+            this.registeredObjects[uniformType].push(shader);
+        };
+
+        UniformManager.prototype.updateTime = function () {
+            this.timeCount += 0.01;
+
+            if (!this.registeredObjects["time"])
+                return;
+
+            for (var i = 0; i < this.registeredObjects["time"].length; i++) {
+                this.registeredObjects["time"][i].uniforms.time.value = this.timeCount;
+            }
+        };
+        return UniformManager;
+    })();
+    Rance.UniformManager = UniformManager;
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
@@ -5691,8 +5729,9 @@ var Rance;
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
+/// <reference path="shaders/uniformmanager.ts"/>
 var player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
-var uniforms, testFilter;
+var uniforms, testFilter, uniformManager;
 
 var Rance;
 (function (Rance) {
@@ -5713,6 +5752,50 @@ var Rance;
 
         setupFleetAndPlayer(player1);
         setupFleetAndPlayer(player2);
+
+        uniforms = {
+            baseColor: { type: "4fv", value: [1.0, 0.0, 0.0, 1.0] },
+            lineColor: { type: "4fv", value: [0.0, 1.0, 0.0, 1.0] },
+            gapSize: { type: "1f", value: 3.0 },
+            offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
+            zoom: { type: "1f", value: 1.0 },
+            bgColor: { type: "3fv", value: PIXI.hex2rgb(0x101040) },
+            time: { type: "1f", value: 3.0 }
+        };
+
+        var shaderSrc = [
+            "precision mediump float;",
+            "uniform vec3 bgColor;",
+            "uniform float time;",
+            "float density = 0.005;",
+            "float inverseDensity = 1.0 - density;",
+            "float rand(vec2 co)",
+            "{",
+            "    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);",
+            "}",
+            "void main(void)",
+            "{",
+            "  vec2 pos = floor(gl_FragCoord.xy);",
+            "  float color = 0.0;",
+            "  float starGenValue = rand(gl_FragCoord.xy);",
+            "  ",
+            "  if (starGenValue > inverseDensity)",
+            "  {",
+            "    float r = rand(gl_FragCoord.xy + vec2(4.20, 6.9));",
+            "    color = r * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",
+            "    gl_FragColor = vec4(vec3(color), 1.0);",
+            "  }",
+            "  else",
+            "  {",
+            "    gl_FragColor = vec4(bgColor, 1.0);",
+            "  }",
+            "}"
+        ];
+
+        testFilter = new PIXI.AbstractFilter(shaderSrc, uniforms);
+
+        uniformManager = new Rance.UniformManager();
+        uniformManager.registerObject("time", testFilter);
 
         reactUI = new Rance.ReactUI(document.getElementById("react-container"));
 

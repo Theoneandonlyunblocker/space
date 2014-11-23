@@ -77,6 +77,9 @@ module Rance
       var _background = this.layers["background"] = new PIXI.DisplayObjectContainer();
       _map.addChild(_background);
 
+      _background.filters = [testFilter];
+
+
       var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_select);
 
@@ -141,12 +144,16 @@ module Rance
     {
       if (this.renderer && document.body.contains(this.renderer.view))
       {
-        this.renderer.resize(this.pixiContainer.offsetWidth, this.pixiContainer.offsetHeight);
+        var w = this.pixiContainer.offsetWidth;
+        var h = this.pixiContainer.offsetHeight;
+        this.renderer.resize(w, h);
+        this.layers["background"].filterArea = new PIXI.Rectangle(0, 0, w, h);
       }
     }
     render()
     {
       this.renderer.render(this.stage);
+      uniformManager.updateTime();
       requestAnimFrame( this.render.bind(this) );
     }
   }

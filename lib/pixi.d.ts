@@ -202,6 +202,8 @@ declare module PIXI
 		touchendoutside: IInteractionDataCallback;
 		touchstart: IInteractionDataCallback;
 		touchmove: IInteractionDataCallback;
+		filters: any[];
+		filterArea: PIXI.Rectangle;
 
 		//deprecated
 		setInteractive(interactive: boolean): void;

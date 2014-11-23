@@ -518,6 +518,7 @@ declare module Rance {
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
         public endBattle(): void;
+        public finishBattle(): void;
         public getTotalHealthForSide(side: string): {
             current: number;
             max: number;
@@ -977,7 +978,18 @@ declare module Rance {
         public render(): void;
     }
 }
+declare module Rance {
+    class UniformManager {
+        public registeredObjects: {
+            [uniformType: string]: any[];
+        };
+        public timeCount: number;
+        constructor();
+        public registerObject(uniformType: string, shader: any): void;
+        public updateTime(): void;
+    }
+}
 declare var player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
-declare var uniforms: any, testFilter: any;
+declare var uniforms: any, testFilter: any, uniformManager: any;
 declare module Rance {
 }
