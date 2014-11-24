@@ -6,10 +6,11 @@
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
+/// <reference path="game.ts"/>
 
 /// <reference path="shaders/uniformmanager.ts"/>
 
-var player1, player2, battle, battlePrep,
+var player1, player2, battle, battlePrep, game,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter, uniformManager;
 
@@ -44,7 +45,7 @@ module Rance
       offset: {type: "2f", value: {x: 0.0, y: 0.0}},
       zoom: {type: "1f", value: 1.0},
       bgColor: {type: "3fv", value: PIXI.hex2rgb(0x101040)},
-      time: {type: "1f", value: 3.0}
+      time: {type: "1f", value: 0.0}
     };
 
 
@@ -56,9 +57,9 @@ module Rance
 
       "float density = 0.005;",
       "float inverseDensity = 1.0 - density;",
-      "float rand(vec2 co)",
+      "float rand(vec2 p)",
       "{",
-      "    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);",
+      "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
       "}",
       "void main(void)",
       "{",
@@ -99,6 +100,9 @@ module Rance
 
     playerControl = new PlayerControl(player1);
     reactUI.playerControl = playerControl;
+
+    game = new Game([player1, player2], player1);
+
 
     reactUI.currentScene = "galaxyMap";
     reactUI.render();

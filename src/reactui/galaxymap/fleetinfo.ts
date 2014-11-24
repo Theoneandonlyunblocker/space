@@ -46,9 +46,10 @@ module Rance
             ),
             React.DOM.div(
             {
-              className: "fleet-info-location"
+              className: "fleet-info-move-points"
             },
-              fleet.location.name
+              "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
+                fleet.getMinMaxMovePoints()
             )
             
           )

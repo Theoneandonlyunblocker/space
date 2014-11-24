@@ -22,6 +22,9 @@ module Rance
     currentStrength: number;
     isSquadron: boolean;
 
+    currentMovePoints: number;
+    maxMovePoints: number;
+
     maxActionPoints: number;    
     
     attributes:
@@ -64,6 +67,9 @@ module Rance
       this.setActionPoints();
       this.setAttributes();
       this.resetBattleStats();
+
+      this.maxMovePoints = this.template.maxMovePoints;
+      this.resetMovePoints();
     }
     setBaseHealth()
     {
@@ -111,6 +117,10 @@ module Rance
     getBaseMoveDelay()
     {
       return 30 - this.attributes.speed;
+    }
+    resetMovePoints()
+    {
+      this.currentMovePoints = this.maxMovePoints;
     }
     resetBattleStats()
     {

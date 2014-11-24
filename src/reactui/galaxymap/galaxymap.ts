@@ -76,6 +76,9 @@ module Rance
           this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
         }
         this.renderMap();
+
+        this.props.renderer.camera.centerOnPosition(
+          this.props.galaxyMap.mapGen.points[0]);
       }
     });
   }

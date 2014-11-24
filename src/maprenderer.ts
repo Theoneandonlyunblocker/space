@@ -305,6 +305,15 @@ module Rance
           var doc = new PIXI.DisplayObjectContainer();
           var stars = map.mapGen.getNonFillerPoints();
 
+          var mouseDownFN = function(event)
+          {
+            eventManager.dispatchEvent("mouseDown", event);
+          }
+          var mouseUpFN = function(event)
+          {
+            eventManager.dispatchEvent("mouseUp", event);
+          }
+
           function fleetClickFn(fleet: Fleet)
           {
             eventManager.dispatchEvent("selectFleets", [fleet]);
@@ -331,6 +340,8 @@ module Rance
 
             containerGfx.interactive = true;
             containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+            containerGfx.mousedown = mouseDownFN;
+            containerGfx.mouseup = mouseUpFN;
 
             containerGfx.addChild(text);
             text.x += 2;

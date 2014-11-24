@@ -1555,8 +1555,8 @@ var Rance;
                     fleet: fleet,
                     hasMultipleSelected: this.props.hasMultipleSelected
                 }))), React.DOM.div({
-                    className: "fleet-info-location"
-                }, fleet.location.name)));
+                    className: "fleet-info-move-points"
+                }, "Moves: " + fleet.getMinCurrentMovePoints() + "/" + fleet.getMinMaxMovePoints())));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1987,6 +1987,9 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.GalaxyMapUI = React.createClass({
+            endTurn: function () {
+                Rance.eventManager.dispatchEvent("endTurn", null);
+            },
             getInitialState: function () {
                 var pc = this.props.playerControl;
 
@@ -2029,9 +2032,13 @@ var Rance;
                 }), Rance.UIComponents.FleetReorganization({
                     fleets: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
-                })), Rance.UIComponents.PossibleActions({
+                })), React.DOM.div({
+                    className: "galaxy-map-ui-bottom-left"
+                }, Rance.UIComponents.PossibleActions({
                     attackTargets: this.state.attackTargets
-                }), Rance.UIComponents.StarInfo({
+                }), React.DOM.button({
+                    onClick: this.endTurn
+                }, "End turn")), Rance.UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
                 })));
             },
@@ -2097,6 +2104,8 @@ var Rance;
                     this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
                 }
                 this.renderMap();
+
+                this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.mapGen.points[0]);
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2493,6 +2502,7 @@ var Rance;
                 isSquadron: true,
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.7,
+                maxMovePoints: 2,
                 attributeLevels: {
                     attack: 0.8,
                     defence: 0.6,
@@ -2509,6 +2519,7 @@ var Rance;
                 isSquadron: true,
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.5,
+                maxMovePoints: 1,
                 attributeLevels: {
                     attack: 0.7,
                     defence: 0.4,
@@ -2526,6 +2537,7 @@ var Rance;
                 isSquadron: false,
                 icon: "img\/icons\/b.png",
                 maxStrength: 1,
+                maxMovePoints: 1,
                 attributeLevels: {
                     attack: 0.8,
                     defence: 0.8,
@@ -2980,8 +2992,50 @@ var Rance;
 
             return newFleet;
         };
+        Fleet.prototype.getMinCurrentMovePoints = function () {
+            if (!this.ships[0])
+                return 0;
+
+            var min = this.ships[0].currentMovePoints;
+
+            for (var i = 0; i < this.ships.length; i++) {
+                min = Math.min(this.ships[i].currentMovePoints, min);
+            }
+            return min;
+        };
+        Fleet.prototype.getMinMaxMovePoints = function () {
+            if (!this.ships[0])
+                return 0;
+
+            var min = this.ships[0].maxMovePoints;
+
+            for (var i = 0; i < this.ships.length; i++) {
+                min = Math.min(this.ships[i].maxMovePoints, min);
+            }
+            return min;
+        };
+        Fleet.prototype.canMove = function () {
+            for (var i = 0; i < this.ships.length; i++) {
+                if (this.ships[i].currentMovePoints <= 0) {
+                    return false;
+                }
+            }
+
+            if (this.getMinCurrentMovePoints() > 0) {
+                return true;
+            }
+
+            return false;
+        };
+        Fleet.prototype.subtractMovePoints = function () {
+            for (var i = 0; i < this.ships.length; i++) {
+                this.ships[i].currentMovePoints--;
+            }
+        };
         Fleet.prototype.move = function (newLocation) {
             if (newLocation === this.location)
+                return;
+            if (!this.canMove())
                 return;
 
             var oldLocation = this.location;
@@ -2989,6 +3043,8 @@ var Rance;
 
             this.location = newLocation;
             newLocation.addFleet(this);
+
+            this.subtractMovePoints();
 
             Rance.eventManager.dispatchEvent("renderMap", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
@@ -3066,6 +3122,11 @@ var Rance;
                 allUnits.push(this.units[unitId]);
             }
             return allUnits;
+        };
+        Player.prototype.forEachUnit = function (operator) {
+            for (var unitId in this.units) {
+                operator(this.units[unitId]);
+            }
         };
         Player.prototype.getFleetIndex = function (fleet) {
             return this.fleets.indexOf(fleet);
@@ -3579,6 +3640,9 @@ var Rance;
             this.setActionPoints();
             this.setAttributes();
             this.resetBattleStats();
+
+            this.maxMovePoints = this.template.maxMovePoints;
+            this.resetMovePoints();
         };
         Unit.prototype.setBaseHealth = function () {
             var min = 500 * this.template.maxStrength;
@@ -3620,6 +3684,9 @@ var Rance;
         };
         Unit.prototype.getBaseMoveDelay = function () {
             return 30 - this.attributes.speed;
+        };
+        Unit.prototype.resetMovePoints = function () {
+            this.currentMovePoints = this.maxMovePoints;
         };
         Unit.prototype.resetBattleStats = function () {
             this.battleStats = {
@@ -5026,6 +5093,13 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var stars = map.mapGen.getNonFillerPoints();
 
+                    var mouseDownFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseDown", event);
+                    };
+                    var mouseUpFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseUp", event);
+                    };
+
                     function fleetClickFn(fleet) {
                         Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
                     }
@@ -5049,6 +5123,8 @@ var Rance;
 
                         containerGfx.interactive = true;
                         containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+                        containerGfx.mousedown = mouseDownFN;
+                        containerGfx.mouseup = mouseUpFN;
 
                         containerGfx.addChild(text);
                         text.x += 2;
@@ -5770,6 +5846,55 @@ var Rance;
     })();
     Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
+/// <reference path="player.ts"/>
+/// <reference path="playercontrol.ts"/>
+/// <reference path="galaxymap.ts"/>
+/// <reference path="eventmanager.ts"/>
+var Rance;
+(function (Rance) {
+    var Game = (function () {
+        function Game(players, humanPlayer) {
+            this.playerOrder = players;
+            this.humanPlayer = humanPlayer;
+
+            this.addEventListeners();
+        }
+        Game.prototype.addEventListeners = function () {
+            var self = this;
+
+            Rance.eventManager.addEventListener("endTurn", function (e) {
+                self.endTurn();
+            });
+        };
+
+        Game.prototype.endTurn = function () {
+            this.setNextPlayer();
+            this.processPlayerStartTurn(this.activePlayer);
+
+            // TODO
+            if (this.activePlayer !== this.humanPlayer) {
+                this.endTurn();
+            }
+
+            Rance.eventManager.dispatchEvent("updateSelection", null);
+        };
+        Game.prototype.processPlayerStartTurn = function (player) {
+            var resetShipMovementFN = function (ship) {
+                ship.resetMovePoints();
+            };
+
+            player.forEachUnit(resetShipMovementFN);
+        };
+
+        Game.prototype.setNextPlayer = function () {
+            this.playerOrder.push(this.playerOrder.shift());
+
+            this.activePlayer = this.playerOrder[0];
+        };
+        return Game;
+    })();
+    Rance.Game = Game;
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UniformManager = (function () {
@@ -5807,8 +5932,9 @@ var Rance;
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
+/// <reference path="game.ts"/>
 /// <reference path="shaders/uniformmanager.ts"/>
-var player1, player2, battle, battlePrep, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
+var player1, player2, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter, uniformManager;
 
 var Rance;
@@ -5838,7 +5964,7 @@ var Rance;
             offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
             zoom: { type: "1f", value: 1.0 },
             bgColor: { type: "3fv", value: PIXI.hex2rgb(0x101040) },
-            time: { type: "1f", value: 3.0 }
+            time: { type: "1f", value: 0.0 }
         };
 
         var shaderSrc = [
@@ -5847,9 +5973,9 @@ var Rance;
             "uniform float time;",
             "float density = 0.005;",
             "float inverseDensity = 1.0 - density;",
-            "float rand(vec2 co)",
+            "float rand(vec2 p)",
             "{",
-            "    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);",
+            "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
             "}",
             "void main(void)",
             "{",
@@ -5889,6 +6015,8 @@ var Rance;
 
         playerControl = new Rance.PlayerControl(player1);
         reactUI.playerControl = playerControl;
+
+        game = new Rance.Game([player1, player2], player1);
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();

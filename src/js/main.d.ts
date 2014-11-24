@@ -313,6 +313,7 @@ declare module Rance {
             isSquadron: boolean;
             icon: string;
             maxStrength: number;
+            maxMovePoints: number;
             attributeLevels: {
                 attack: number;
                 defence: number;
@@ -443,6 +444,10 @@ declare module Rance {
         public removeShips(ships: Rance.Unit[]): void;
         public transferShip(fleet: Fleet, ship: Rance.Unit): boolean;
         public split(): Fleet;
+        public getMinCurrentMovePoints(): number;
+        public getMinMaxMovePoints(): number;
+        public canMove(): boolean;
+        public subtractMovePoints(): void;
         public move(newLocation: Rance.Star): void;
         public getPathTo(newLocation: Rance.Star): {
             star: Rance.Star;
@@ -470,6 +475,7 @@ declare module Rance {
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public getAllUnits(): any[];
+        public forEachUnit(operator: (Unit: any) => void): void;
         public getFleetIndex(fleet: Rance.Fleet): number;
         public addFleet(fleet: Rance.Fleet): void;
         public removeFleet(fleet: Rance.Fleet): void;
@@ -574,6 +580,8 @@ declare module Rance {
         public maxStrength: number;
         public currentStrength: number;
         public isSquadron: boolean;
+        public currentMovePoints: number;
+        public maxMovePoints: number;
         public maxActionPoints: number;
         public attributes: {
             attack: number;
@@ -596,6 +604,7 @@ declare module Rance {
         public setActionPoints(): void;
         public setAttributes(experience?: number, variance?: number): void;
         public getBaseMoveDelay(): number;
+        public resetMovePoints(): void;
         public resetBattleStats(): void;
         public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
         public removeStrength(amount: number): void;
@@ -993,6 +1002,20 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class Game {
+        public turnNumber: number;
+        public playerOrder: Rance.Player[];
+        public humanPlayer: Rance.Player;
+        public activePlayer: Rance.Player;
+        public playerControl: Rance.PlayerControl;
+        constructor(players: Rance.Player[], humanPlayer: Rance.Player);
+        public addEventListeners(): void;
+        public endTurn(): void;
+        public processPlayerStartTurn(player: Rance.Player): void;
+        public setNextPlayer(): void;
+    }
+}
+declare module Rance {
     class UniformManager {
         public registeredObjects: {
             [uniformType: string]: any[];
@@ -1003,7 +1026,7 @@ declare module Rance {
         public updateTime(): void;
     }
 }
-declare var player1: any, player2: any, battle: any, battlePrep: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
+declare var player1: any, player2: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare var uniforms: any, testFilter: any, uniformManager: any;
 declare module Rance {
 }

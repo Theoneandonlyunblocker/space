@@ -11,6 +11,7 @@ module Rance
       isSquadron: boolean;
       icon: string;
       maxStrength: number;
+      maxMovePoints: number;
       attributeLevels:
       {
         attack: number;
@@ -28,6 +29,7 @@ module Rance
         isSquadron: true,
         icon: "img\/icons\/f.png",
         maxStrength: 0.7,
+        maxMovePoints: 2,
         attributeLevels:
         {
           attack: 0.8,
@@ -47,6 +49,7 @@ module Rance
         isSquadron: true,
         icon: "img\/icons\/f.png",
         maxStrength: 0.5,
+        maxMovePoints: 1,
         attributeLevels:
         {
           attack: 0.7,
@@ -67,6 +70,7 @@ module Rance
         isSquadron: false,
         icon: "img\/icons\/b.png",
         maxStrength: 1,
+        maxMovePoints: 1,
         attributeLevels:
         {
           attack: 0.8,

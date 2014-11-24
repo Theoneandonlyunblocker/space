@@ -44,6 +44,13 @@ module Rance
       }
       return allUnits;
     }
+    forEachUnit(operator: (Unit) => void)
+    {
+      for (var unitId in this.units)
+      {
+        operator(this.units[unitId]);
+      }
+    }
     getFleetIndex(fleet: Fleet)
     {
       return this.fleets.indexOf(fleet);

@@ -105,15 +105,66 @@ module Rance
 
       return newFleet;
     }
+    getMinCurrentMovePoints()
+    {
+      if (!this.ships[0]) return 0;
+
+      var min = this.ships[0].currentMovePoints;
+
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        min = Math.min(this.ships[i].currentMovePoints, min);
+      }
+      return min;
+    }
+    getMinMaxMovePoints()
+    {
+      if (!this.ships[0]) return 0;
+
+      var min = this.ships[0].maxMovePoints;
+
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        min = Math.min(this.ships[i].maxMovePoints, min);
+      }
+      return min;
+    }
+    canMove()
+    {
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        if (this.ships[i].currentMovePoints <= 0)
+        {
+          return false;
+        }
+      }
+
+      if (this.getMinCurrentMovePoints() > 0)
+      {
+        return true;
+      }
+
+      return false;
+    }
+    subtractMovePoints()
+    {
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        this.ships[i].currentMovePoints--;
+      }
+    }
     move(newLocation: Star)
     {
       if (newLocation === this.location) return;
+      if (!this.canMove()) return;
       
       var oldLocation = this.location;
       oldLocation.removeFleet(this);
 
       this.location = newLocation;
       newLocation.addFleet(this);
+
+      this.subtractMovePoints();
 
       eventManager.dispatchEvent("renderMap", null);
       eventManager.dispatchEvent("updateSelection", null);

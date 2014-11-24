@@ -9,6 +9,11 @@ module Rance
   {
     export var GalaxyMapUI = React.createClass({
 
+      endTurn: function()
+      {
+        eventManager.dispatchEvent("endTurn", null);
+      },
+
       getInitialState: function()
       {
         var pc = this.props.playerControl;
@@ -69,11 +74,19 @@ module Rance
                 closeReorganization: this.closeReorganization
               })
             ),
-
-            UIComponents.PossibleActions(
+            React.DOM.div(
             {
-              attackTargets: this.state.attackTargets
-            }),
+              className: "galaxy-map-ui-bottom-left"
+            },
+              UIComponents.PossibleActions(
+              {
+                attackTargets: this.state.attackTargets
+              }),
+              React.DOM.button(
+              {
+                onClick: this.endTurn
+              }, "End turn")
+            ),
             
             UIComponents.StarInfo(
             {

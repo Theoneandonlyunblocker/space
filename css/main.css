@@ -594,7 +594,7 @@ body {
   display: flex;
   justify-content: center;
 }
-.possible-actions-container {
+.galaxy-map-ui-bottom-left {
   position: absolute;
   bottom: 0;
   left: 0;
