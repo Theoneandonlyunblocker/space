@@ -165,6 +165,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var TopBar: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FleetControls: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -249,6 +254,7 @@ declare module Rance {
         public mapGen: Rance.MapGen;
         public galaxyMap: Rance.GalaxyMap;
         public playerControl: Rance.PlayerControl;
+        public player: Rance.Player;
         constructor(container: HTMLElement);
         public addEventListeners(): void;
         public switchScene(newScene: string): void;
@@ -269,6 +275,21 @@ declare module Rance {
     function hexToString(hex: number): string;
     function makeTempPlayerIcon(player: Player, size: number): string;
     function addFleet(player: Player, shipAmount: number): void;
+    /**
+    * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+    *
+    * Converts an HSL color value to RGB. Conversion formula
+    * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+    * Assumes h, s, and l are contained in the set [0, 1] and
+    * returns r, g, and b in the set [0, 255].
+    *
+    * @param   Number  h       The hue
+    * @param   Number  s       The saturation
+    * @param   Number  l       The lightness
+    * @return  Array           The RGB representation
+    */
+    function hslToRgb(h: any, s: any, l: any): any[];
+    function hslToHex(h: any, s: any, l: any): number;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -393,6 +414,7 @@ declare module Rance {
         public buildings: {
             [category: string]: Rance.Building[];
         };
+        public baseIncome: number;
         public voronoiId: number;
         public voronoiCell: any;
         constructor(x: number, y: number, id?: number);
@@ -400,6 +422,7 @@ declare module Rance {
         public removeBuilding(building: Rance.Building): void;
         public getSecondaryController(): Rance.Player;
         public updateController(): any;
+        public getIncome(): number;
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;
@@ -465,12 +488,14 @@ declare module Rance {
     class Player {
         public id: number;
         public name: string;
+        public color: number;
         public icon: string;
         public units: {
             [id: number]: Rance.Unit;
         };
         public fleets: Rance.Fleet[];
-        public color: number;
+        public money: number;
+        public controlledLocations: Rance.Star[];
         constructor(id?: number);
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
@@ -480,6 +505,10 @@ declare module Rance {
         public addFleet(fleet: Rance.Fleet): void;
         public removeFleet(fleet: Rance.Fleet): void;
         public getFleetsWithPositions(): any[];
+        public hasStar(star: Rance.Star): boolean;
+        public addStar(star: Rance.Star): boolean;
+        public removeStar(star: Rance.Star): boolean;
+        public getIncome(): number;
     }
 }
 declare module Rance {
@@ -838,7 +867,11 @@ declare module Rance {
         public mapGen: Rance.MapGen;
         public mapRenderer: Rance.MapRenderer;
         constructor();
-        public addMapGen(mapGen: Rance.MapGen): void;
+        public setMapGen(mapGen: Rance.MapGen): void;
+        public getIncomeBounds(): {
+            min: any;
+            max: any;
+        };
     }
 }
 declare module Rance {

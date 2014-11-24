@@ -1,3 +1,4 @@
+/// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
@@ -62,18 +63,28 @@ module Rance
           },
             React.DOM.div(
             {
-              className: "fleet-selection-container"
+              className: "galaxy-map-ui-top"
             },
-              UIComponents.FleetSelection(
+              UIComponents.TopBar(
               {
-                selectedFleets: this.state.selectedFleets
+                player: this.props.player
               }),
-              UIComponents.FleetReorganization(
+              React.DOM.div(
               {
-                fleets: this.state.currentlyReorganizing,
-                closeReorganization: this.closeReorganization
-              })
+                className: "fleet-selection-container"
+              },
+                UIComponents.FleetSelection(
+                {
+                  selectedFleets: this.state.selectedFleets
+                }),
+                UIComponents.FleetReorganization(
+                {
+                  fleets: this.state.currentlyReorganizing,
+                  closeReorganization: this.closeReorganization
+                })
+              )
             ),
+            
             React.DOM.div(
             {
               className: "galaxy-map-ui-bottom-left"

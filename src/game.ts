@@ -52,6 +52,7 @@ module Rance
       }
 
       player.forEachUnit(resetShipMovementFN);
+      player.money += player.getIncome();
     }
 
     setNextPlayer()

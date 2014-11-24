@@ -1,6 +1,8 @@
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
+/// <reference path="building.ts" />
+/// <reference path="star.ts" />
 
 module Rance
 {
@@ -11,18 +13,22 @@ module Rance
   {
     id: number;
     name: string;
+    color: number;
     icon: string;
     units:
     {
       [id: number]: Unit;
     } = {};
     fleets: Fleet[] = [];
-    color: number;
+
+    money: number;
+    controlledLocations: Star[] = [];
 
     constructor(id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.player++;
       this.name = "Player " + this.id;
+      this.money = 1000;
     }
 
 
@@ -91,6 +97,36 @@ module Rance
       }
 
       return positions;
+    }
+
+    hasStar(star: Star)
+    {
+      return (this.controlledLocations.indexOf(star) >= 0);
+    }
+    addStar(star: Star)
+    {
+      if (this.hasStar(star)) return false;
+
+      this.controlledLocations.push(star);
+    }
+    removeStar(star: Star)
+    {
+      var index = this.controlledLocations.indexOf(star);
+
+      if (index < 0) return false;
+
+      this.controlledLocations.splice(index, 1);
+    }
+    getIncome()
+    {
+      var income = 0;
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
+      {
+        income += this.controlledLocations[i].getIncome();
+      }
+
+      return income;
     }
   }  
 }

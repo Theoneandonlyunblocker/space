@@ -88,6 +88,8 @@ module Rance
 
     reactUI = new ReactUI(document.getElementById("react-container"));
 
+    reactUI.player = player1;
+
     renderer = new Renderer();
     reactUI.renderer = renderer;
 
@@ -95,7 +97,7 @@ module Rance
     reactUI.mapGen = mapGen;
 
     galaxyMap = new GalaxyMap();
-    galaxyMap.mapGen = mapGen;
+    galaxyMap.setMapGen(mapGen);
     reactUI.galaxyMap = galaxyMap;
 
     playerControl = new PlayerControl(player1);

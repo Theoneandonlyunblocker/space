@@ -54,7 +54,8 @@ module Rance
     }
     setController(newController: Player)
     {
-      if (this.controller === newController) return;
+      var oldController = this.controller;
+      if (oldController === newController) return;
 
 
       this.controller = newController;

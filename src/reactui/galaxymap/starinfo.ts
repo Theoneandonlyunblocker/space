@@ -37,6 +37,12 @@ module Rance
               "x: " + star.x.toFixed() +
               " y: " + star.y.toFixed()
             ),
+            React.DOM.div(
+            {
+              className: "star-info-income"
+            },
+              "Income: " + star.getIncome()
+            ),
             UIComponents.DefenceBuildingList(
             {
               buildings: star.buildings["defence"]

@@ -15,6 +15,7 @@ module Rance
     mapGen: MapGen;
     galaxyMap: GalaxyMap;
     playerControl: PlayerControl;
+    player: Player;
     
     constructor(public container: HTMLElement)
     {
@@ -46,7 +47,8 @@ module Rance
             renderer: this.renderer,
             mapGen: this.mapGen,
             galaxyMap: this.galaxyMap,
-            playerControl: this.playerControl
+            playerControl: this.playerControl,
+            player: this.player
           }
         ),
         this.container

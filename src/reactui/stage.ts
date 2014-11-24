@@ -67,6 +67,7 @@ module Rance
                 renderer: this.props.renderer,
                 galaxyMap: this.props.galaxyMap,
                 playerControl: this.props.playerControl,
+                player: this.props.player,
                 key: "galaxyMap"
               })
             );

@@ -1500,6 +1500,29 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.TopBar = React.createClass({
+            render: function () {
+                var player = this.props.player;
+
+                return (React.DOM.div({
+                    className: "top-bar"
+                }, React.DOM.div({
+                    className: "top-bar-name"
+                }, player.name), React.DOM.div({
+                    className: "top-bar-money"
+                }, React.DOM.div({
+                    className: "top-bar-money-current"
+                }, "Money: " + player.money), React.DOM.div({
+                    className: "top-bar-money-income"
+                }, "+" + player.getIncome()))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.FleetControls = React.createClass({
             deselectFleet: function () {
                 Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
@@ -1917,7 +1940,9 @@ var Rance;
                     className: "star-info-owner"
                 }, star.owner ? star.owner.name : null), React.DOM.div({
                     className: "star-info-location"
-                }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed()), Rance.UIComponents.DefenceBuildingList({
+                }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed()), React.DOM.div({
+                    className: "star-info-income"
+                }, "Income: " + star.getIncome()), Rance.UIComponents.DefenceBuildingList({
                     buildings: star.buildings["defence"]
                 })));
             }
@@ -1979,6 +2004,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
@@ -2026,13 +2052,17 @@ var Rance;
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, React.DOM.div({
+                    className: "galaxy-map-ui-top"
+                }, Rance.UIComponents.TopBar({
+                    player: this.props.player
+                }), React.DOM.div({
                     className: "fleet-selection-container"
                 }, Rance.UIComponents.FleetSelection({
                     selectedFleets: this.state.selectedFleets
                 }), Rance.UIComponents.FleetReorganization({
                     fleets: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
-                })), React.DOM.div({
+                }))), React.DOM.div({
                     className: "galaxy-map-ui-bottom-left"
                 }, Rance.UIComponents.PossibleActions({
                     attackTargets: this.state.attackTargets
@@ -2073,7 +2103,8 @@ var Rance;
                     ref: "pixiContainer",
                     id: "pixi-container"
                 }, Rance.UIComponents.GalaxyMapUI({
-                    playerControl: this.props.playerControl
+                    playerControl: this.props.playerControl,
+                    player: this.props.player
                 })), Rance.UIComponents.MapGenControls({
                     mapGen: this.props.galaxyMap.mapGen,
                     renderMap: this.renderMap
@@ -2081,7 +2112,7 @@ var Rance;
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"))));
             },
             componentDidMount: function () {
                 if (mapRenderer)
@@ -2157,6 +2188,7 @@ var Rance;
                             renderer: this.props.renderer,
                             galaxyMap: this.props.galaxyMap,
                             playerControl: this.props.playerControl,
+                            player: this.props.player,
                             key: "galaxyMap"
                         }));
                         break;
@@ -2203,7 +2235,8 @@ var Rance;
                 renderer: this.renderer,
                 mapGen: this.mapGen,
                 galaxyMap: this.galaxyMap,
-                playerControl: this.playerControl
+                playerControl: this.playerControl,
+                player: this.player
             }), this.container);
         };
         return ReactUI;
@@ -2326,6 +2359,55 @@ var Rance;
         var fleet = new Rance.Fleet(player, ships, mapGen.points[0]);
     }
     Rance.addFleet = addFleet;
+
+    /**
+    * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+    *
+    * Converts an HSL color value to RGB. Conversion formula
+    * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+    * Assumes h, s, and l are contained in the set [0, 1] and
+    * returns r, g, and b in the set [0, 255].
+    *
+    * @param   Number  h       The hue
+    * @param   Number  s       The saturation
+    * @param   Number  l       The lightness
+    * @return  Array           The RGB representation
+    */
+    function hslToRgb(h, s, l) {
+        var r, g, b;
+
+        if (s == 0) {
+            r = g = b = l; // achromatic
+        } else {
+            function hue2rgb(p, q, t) {
+                if (t < 0)
+                    t += 1;
+                if (t > 1)
+                    t -= 1;
+                if (t < 1 / 6)
+                    return p + (q - p) * 6 * t;
+                if (t < 1 / 2)
+                    return q;
+                if (t < 2 / 3)
+                    return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
+
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [r, g, b];
+    }
+    Rance.hslToRgb = hslToRgb;
+
+    function hslToHex(h, s, l) {
+        return PIXI.rgb2hex(hslToRgb(h, s, l));
+    }
+    Rance.hslToHex = hslToHex;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -2608,7 +2690,8 @@ var Rance;
             return upgrades;
         };
         Building.prototype.setController = function (newController) {
-            if (this.controller === newController)
+            var oldController = this.controller;
+            if (oldController === newController)
                 return;
 
             this.controller = newController;
@@ -2680,7 +2763,18 @@ var Rance;
             if (!this.buildings["defence"])
                 return null;
 
-            this.owner = this.buildings["defence"][0].controller;
+            var oldOwner = this.owner;
+            if (oldOwner) {
+                oldOwner.removeStar(this);
+            }
+            var newOwner = this.buildings["defence"][0].controller;
+
+            newOwner.addStar(this);
+
+            this.owner = newOwner;
+        };
+        Star.prototype.getIncome = function () {
+            return this.baseIncome;
         };
 
         // FLEETS
@@ -3097,6 +3191,8 @@ var Rance;
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
+/// <reference path="building.ts" />
+/// <reference path="star.ts" />
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -3106,8 +3202,10 @@ var Rance;
         function Player(id) {
             this.units = {};
             this.fleets = [];
+            this.controlledLocations = [];
             this.id = isFinite(id) ? id : idGenerators.player++;
             this.name = "Player " + this.id;
+            this.money = 1000;
         }
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -3160,6 +3258,33 @@ var Rance;
             }
 
             return positions;
+        };
+
+        Player.prototype.hasStar = function (star) {
+            return (this.controlledLocations.indexOf(star) >= 0);
+        };
+        Player.prototype.addStar = function (star) {
+            if (this.hasStar(star))
+                return false;
+
+            this.controlledLocations.push(star);
+        };
+        Player.prototype.removeStar = function (star) {
+            var index = this.controlledLocations.indexOf(star);
+
+            if (index < 0)
+                return false;
+
+            this.controlledLocations.splice(index, 1);
+        };
+        Player.prototype.getIncome = function () {
+            var income = 0;
+
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                income += this.controlledLocations[i].getIncome();
+            }
+
+            return income;
         };
         return Player;
     })();
@@ -4484,6 +4609,7 @@ var Rance;
                 var units = player1.getAllUnits();
                 var fleet = new Rance.Fleet(player1, [units[i]], this.points[i]);
                 this.points[i].owner = player1;
+                player1.addStar(this.points[i]);
                 var sectorCommand = new Rance.Building({
                     template: Rance.Templates.Buildings.sectorCommand,
                     location: this.points[i]
@@ -4504,6 +4630,7 @@ var Rance;
                 var units = player2.getAllUnits();
                 var fleet = new Rance.Fleet(player2, [units[i - 4]], this.points[i]);
                 this.points[i].owner = player2;
+                player2.addStar(this.points[i]);
                 var sectorCommand = new Rance.Building({
                     template: Rance.Templates.Buildings.sectorCommand,
                     location: this.points[i]
@@ -4582,6 +4709,7 @@ var Rance;
 
                 point.distance = distance;
                 point.region = region;
+                point.baseIncome = Rance.randInt(2, 10) * 10;
 
                 return point;
             }.bind(this);
@@ -5042,6 +5170,63 @@ var Rance;
                     return doc;
                 }
             };
+            this.layers["starIncome"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points = map.mapGen.getNonFillerPoints();
+                    var incomeBounds = map.getIncomeBounds();
+
+                    function getRelativeValue(min, max, value) {
+                        var difference = max - min;
+                        if (difference < 1)
+                            difference = 1;
+
+                        // clamps to n different colors
+                        var threshhold = difference / 10;
+                        if (threshhold < 1)
+                            threshhold = 1;
+                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
+                        return relative;
+                    }
+
+                    var colorIndexes = {};
+
+                    function getRelativeColor(min, max, value) {
+                        if (!colorIndexes[value]) {
+                            if (value < 0)
+                                value = 0;
+                            else if (value > 1)
+                                value = 1;
+
+                            var deviation = Math.abs(0.5 - value) * 2;
+
+                            var hue = 110 * value;
+                            var saturation = 0.5 + 0.2 * deviation;
+                            var luminesence = 0.6 + 0.25 * deviation;
+
+                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, luminesence / 2);
+                        }
+                        return colorIndexes[value];
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var income = star.getIncome();
+                        var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
+                        var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
             this.layers["nonFillerVoronoiLines"] = {
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
@@ -5179,6 +5364,16 @@ var Rance;
                     { layer: this.layers["fleets"] }
                 ]
             };
+            this.mapModes["income"] = {
+                name: "income",
+                layers: [
+                    { layer: this.layers["starIncome"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
         };
         MapRenderer.prototype.setParent = function (newParent) {
             var oldParent = this.parent;
@@ -5234,10 +5429,31 @@ var Rance;
     var GalaxyMap = (function () {
         function GalaxyMap() {
         }
-        GalaxyMap.prototype.addMapGen = function (mapGen) {
+        GalaxyMap.prototype.setMapGen = function (mapGen) {
             this.mapGen = mapGen;
 
             this.stars = mapGen.points;
+        };
+        GalaxyMap.prototype.getIncomeBounds = function () {
+            var min, max;
+
+            for (var i = 0; i < this.mapGen.points.length; i++) {
+                var star = this.mapGen.points[i];
+                var income = star.getIncome();
+                if (!min)
+                    min = max = income;
+                else {
+                    if (income < min)
+                        min = income;
+                    else if (income > max)
+                        max = income;
+                }
+            }
+
+            return ({
+                min: min,
+                max: max
+            });
         };
         return GalaxyMap;
     })();
@@ -5884,6 +6100,7 @@ var Rance;
             };
 
             player.forEachUnit(resetShipMovementFN);
+            player.money += player.getIncome();
         };
 
         Game.prototype.setNextPlayer = function () {
@@ -6003,6 +6220,8 @@ var Rance;
 
         reactUI = new Rance.ReactUI(document.getElementById("react-container"));
 
+        reactUI.player = player1;
+
         renderer = new Rance.Renderer();
         reactUI.renderer = renderer;
 
@@ -6010,7 +6229,7 @@ var Rance;
         reactUI.mapGen = mapGen;
 
         galaxyMap = new Rance.GalaxyMap();
-        galaxyMap.mapGen = mapGen;
+        galaxyMap.setMapGen(mapGen);
         reactUI.galaxyMap = galaxyMap;
 
         playerControl = new Rance.PlayerControl(player1);

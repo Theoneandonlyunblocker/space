@@ -93,6 +93,7 @@ module Rance
         var fleet = new Fleet(player1, [units[i]],
           this.points[i]);
         this.points[i].owner = player1;
+        player1.addStar(this.points[i]);
         var sectorCommand = new Building(
         {
           template: Templates.Buildings.sectorCommand,
@@ -118,6 +119,7 @@ module Rance
         var fleet = new Fleet(player2, [units[i - 4]],
           this.points[i]);
         this.points[i].owner = player2;
+        player2.addStar(this.points[i]);
         var sectorCommand = new Building(
         {
           template: Templates.Buildings.sectorCommand,
@@ -221,6 +223,7 @@ module Rance
 
         point.distance = distance;
         point.region = region;
+        point.baseIncome = randInt(2, 10) * 10;
 
         return point;
       }.bind(this);

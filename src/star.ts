@@ -30,6 +30,8 @@ module Rance
       [category: string] : Building[];
     } = {};
 
+    baseIncome: number;
+
     voronoiId: number;
     voronoiCell: any;
 
@@ -94,7 +96,20 @@ module Rance
     {
       if (!this.buildings["defence"]) return null;
 
-      this.owner = this.buildings["defence"][0].controller;
+      var oldOwner = this.owner;
+      if (oldOwner)
+      {
+        oldOwner.removeStar(this);
+      }
+      var newOwner = this.buildings["defence"][0].controller;
+
+      newOwner.addStar(this);
+
+      this.owner = newOwner;
+    }
+    getIncome()
+    {
+      return this.baseIncome;
     }
 
     // FLEETS

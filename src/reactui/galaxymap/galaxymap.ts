@@ -32,7 +32,8 @@ module Rance
             },
               UIComponents.GalaxyMapUI(
               {
-                playerControl: this.props.playerControl
+                playerControl: this.props.playerControl,
+                player: this.props.player
               })
             ),
             UIComponents.MapGenControls(
@@ -47,7 +48,8 @@ module Rance
               onChange: this.switchMapMode
             },
               React.DOM.option({value: "default"}, "default"),
-              React.DOM.option({value: "noLines"}, "no borders")
+              React.DOM.option({value: "noLines"}, "no borders"),
+              React.DOM.option({value: "income"}, "income")
             )
           )
         );
