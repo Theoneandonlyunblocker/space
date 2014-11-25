@@ -235,6 +235,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BuildableBuilding: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildableBuildingList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var PossibleActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -374,6 +384,7 @@ declare module Rance {
             category: string;
             name: string;
             icon: string;
+            buildCost: number;
             maxPerType: number;
             maxUpgradeLevel: number;
             upgradeInto?: {

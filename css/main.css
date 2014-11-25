@@ -473,6 +473,9 @@ body {
 }
 .react-popup {
   position: absolute;
+  background-color: white;
+  border: 1px solid black;
+  padding: 20px;
 }
 .galaxy-map {
   display: flex;

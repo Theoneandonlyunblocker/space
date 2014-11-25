@@ -7,6 +7,30 @@ module Rance
     export var PopupManager = React.createClass(
     {
 
+      componentWillMount: function()
+      {
+        this.listeners = {};
+        var self = this;
+        this.listeners["makePopup"] =
+          eventManager.addEventListener("makePopup", function(e)
+          {
+            self.makePopup(e.data);
+          });
+        this.listeners["closePopup"] =
+          eventManager.addEventListener("closePopup", function(e)
+          {
+            self.closePopup(e.data);
+          });
+      },
+
+      componentWillUnmount: function()
+      {
+        for (var listenerId in this.listeners)
+        {
+          eventManager.removeEventListener(listenerId, this.listeners[listenerId]);
+        }
+      },
+
       getInitialState: function()
       {
         return(
@@ -15,7 +39,7 @@ module Rance
           [
             {
               content: React.DOM.div({style: {backgroundColor: "white"}}, "lol"),
-              id: 0
+              id: 9786
             }
           ]
         });
@@ -49,7 +73,7 @@ module Rance
         return false;
       },
 
-      removePopup: function(id: number)
+      closePopup: function(id: number)
       {
         if (!this.hasPopup) throw new Error("No such popup");
 
@@ -71,13 +95,15 @@ module Rance
         content: any;  
       })
       {
+        var popups = this.state.popups.concat(
+        {
+          content: props.content,
+          id: this.getPopupId()
+        });
+
         this.setState(
         {
-          popups: this.state.popups.push(
-          {
-            content: props.content,
-            id: this.getPopupId()
-          })
+          popups: popups
         });
       },
 
@@ -100,8 +126,7 @@ module Rance
             {
               content: popup.content,
               key: popup.id,
-              incrementZIndex: this.incrementZIndex,
-              containerElement: this.refs.containerDiv
+              incrementZIndex: this.incrementZIndex
             })
           );
         }
@@ -109,8 +134,7 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "popup-container",
-            ref: "containerDiv"
+            className: "popup-container"
           },
             toRender
           )

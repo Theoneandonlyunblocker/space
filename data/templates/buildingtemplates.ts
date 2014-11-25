@@ -9,6 +9,7 @@ module Rance
       name: string;
 
       icon: string;
+      buildCost: number;
 
       maxPerType: number;
 
@@ -32,6 +33,7 @@ module Rance
         name: "Sector Command",
 
         icon: "img\/buildings\/sectorCommand.png",
+        buildCost: 200,
 
         maxPerType: 1,
 
@@ -44,6 +46,7 @@ module Rance
         name: "Starbase",
 
         icon: "img\/buildings\/starBase.png",
+        buildCost: 200,
 
         maxPerType: 3,
 
@@ -56,6 +59,7 @@ module Rance
         name: "Commercial Spaceport",
 
         icon: "img\/buildings\/commercialPort.png",
+        buildCost: 200,
 
         maxPerType: 1,
 

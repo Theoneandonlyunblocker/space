@@ -217,7 +217,17 @@ module Rance
       },
       componentDidMount: function() {
         this.DOMNode = this.getDOMNode();
-        this.containerElement = this.props.containerElement || document.body;
+        this.containerElement = document.body;
+        if (this.props.containerElement)
+        {
+          if (this.props.containerElement.getDOMNode)
+          {
+            // React component
+            this.containerElement = this.props.containerElement.getDOMNode();
+          }
+          // DOM node
+          else this.containerElement = this.props.containerElement;
+        }
       },
       componentWillUnmount: function()
       {

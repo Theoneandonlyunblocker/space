@@ -1,5 +1,5 @@
 /// <reference path="attacktarget.ts"/>
-
+/// <reference path="../popups/buildablebuildinglist.ts"/>
 
 module Rance
 {
@@ -9,7 +9,15 @@ module Rance
 
       buildBuildings: function()
       {
+        var star = this.props.selectedStar;
 
+        eventManager.dispatchEvent("makePopup",
+        {
+          content: UIComponents.BuildableBuildingList(
+          {
+            buildingTemplates: star.getBuildableBuildings()
+          })
+        });
       },
 
       render: function()

@@ -319,7 +319,14 @@ var Rance;
             },
             componentDidMount: function () {
                 this.DOMNode = this.getDOMNode();
-                this.containerElement = this.props.containerElement || document.body;
+                this.containerElement = document.body;
+                if (this.props.containerElement) {
+                    if (this.props.containerElement.getDOMNode) {
+                        // React component
+                        this.containerElement = this.props.containerElement.getDOMNode();
+                    } else
+                        this.containerElement = this.props.containerElement;
+                }
             },
             componentWillUnmount: function () {
                 this.removeEventListeners();
@@ -1533,12 +1540,27 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.PopupManager = React.createClass({
+            componentWillMount: function () {
+                this.listeners = {};
+                var self = this;
+                this.listeners["makePopup"] = Rance.eventManager.addEventListener("makePopup", function (e) {
+                    self.makePopup(e.data);
+                });
+                this.listeners["closePopup"] = Rance.eventManager.addEventListener("closePopup", function (e) {
+                    self.closePopup(e.data);
+                });
+            },
+            componentWillUnmount: function () {
+                for (var listenerId in this.listeners) {
+                    Rance.eventManager.removeEventListener(listenerId, this.listeners[listenerId]);
+                }
+            },
             getInitialState: function () {
                 return ({
                     popups: [
                         {
                             content: React.DOM.div({ style: { backgroundColor: "white" } }, "lol"),
-                            id: 0
+                            id: 9786
                         }
                     ]
                 });
@@ -1566,7 +1588,7 @@ var Rance;
 
                 return false;
             },
-            removePopup: function (id) {
+            closePopup: function (id) {
                 if (!this.hasPopup)
                     throw new Error("No such popup");
 
@@ -1581,11 +1603,13 @@ var Rance;
                 this.setState({ popups: newPopups });
             },
             makePopup: function (props) {
+                var popups = this.state.popups.concat({
+                    content: props.content,
+                    id: this.getPopupId()
+                });
+
                 this.setState({
-                    popups: this.state.popups.push({
-                        content: props.content,
-                        id: this.getPopupId()
-                    })
+                    popups: popups
                 });
             },
             render: function () {
@@ -1599,14 +1623,12 @@ var Rance;
                     toRender.push(Rance.UIComponents.Popup({
                         content: popup.content,
                         key: popup.id,
-                        incrementZIndex: this.incrementZIndex,
-                        containerElement: this.refs.containerDiv
+                        incrementZIndex: this.incrementZIndex
                     }));
                 }
 
                 return (React.DOM.div({
-                    className: "popup-container",
-                    ref: "containerDiv"
+                    className: "popup-container"
                 }, toRender));
             }
         });
@@ -2090,12 +2112,104 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BuildableBuilding = React.createClass({
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "buildable-building-list-item-cell";
+
+                var cellContent;
+
+                switch (type) {
+                    default: {
+                        cellContent = this.props[type];
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var cells = [];
+                var columns = this.props.activeColumns;
+
+                for (var i = 0; i < columns.length; i++) {
+                    cells.push(this.makeCell(columns[i].key));
+                }
+
+                return (React.DOM.tr({
+                    className: "buildable-building"
+                }, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../unitlist/list.ts" />
+/// <reference path="buildablebuilding.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BuildableBuildingList = React.createClass({
+            render: function () {
+                var rows = [];
+
+                for (var i = 0; i < this.props.buildingTemplates.length; i++) {
+                    var template = this.props.buildingTemplates[i];
+
+                    var data = {
+                        template: template,
+                        typeName: template.type,
+                        buildCost: template.buildCost,
+                        rowConstructor: Rance.UIComponents.BuildableBuilding
+                    };
+
+                    rows.push({
+                        key: i,
+                        data: data
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Cost",
+                        key: "buildCost",
+                        defaultOrder: "desc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "buildable-building-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="attacktarget.ts"/>
+/// <reference path="../popups/buildablebuildinglist.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.PossibleActions = React.createClass({
             buildBuildings: function () {
+                var star = this.props.selectedStar;
+
+                Rance.eventManager.dispatchEvent("makePopup", {
+                    content: Rance.UIComponents.BuildableBuildingList({
+                        buildingTemplates: star.getBuildableBuildings()
+                    })
+                });
             },
             render: function () {
                 var allActions = [];
@@ -2787,6 +2901,7 @@ var Rance;
                 category: "defence",
                 name: "Sector Command",
                 icon: "img\/buildings\/sectorCommand.png",
+                buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 4
             };
@@ -2795,6 +2910,7 @@ var Rance;
                 category: "defence",
                 name: "Starbase",
                 icon: "img\/buildings\/starBase.png",
+                buildCost: 200,
                 maxPerType: 3,
                 maxUpgradeLevel: 1
             };
@@ -2803,6 +2919,7 @@ var Rance;
                 category: "economy",
                 name: "Commercial Spaceport",
                 icon: "img\/buildings\/commercialPort.png",
+                buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 4
             };
