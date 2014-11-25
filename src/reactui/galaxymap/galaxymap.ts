@@ -1,4 +1,5 @@
 /// <reference path="../mapgen/mapgencontrols.ts"/>
+/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="galaxymapui.ts"/>
 
 module Rance
@@ -34,6 +35,10 @@ module Rance
               {
                 playerControl: this.props.playerControl,
                 player: this.props.player
+              }),
+              UIComponents.PopupManager(
+              {
+                
               })
             ),
             UIComponents.MapGenControls(

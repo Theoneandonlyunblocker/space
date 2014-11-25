@@ -165,6 +165,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var Popup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PopupManager: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopBar: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -290,6 +300,7 @@ declare module Rance {
     */
     function hslToRgb(h: any, s: any, l: any): any[];
     function hslToHex(h: any, s: any, l: any): number;
+    function cloneObject(toClone: any): any;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -375,6 +386,7 @@ declare module Rance {
         module Buildings {
             var sectorCommand: IBuildingTemplate;
             var starBase: IBuildingTemplate;
+            var commercialPort: IBuildingTemplate;
         }
     }
 }
@@ -423,6 +435,8 @@ declare module Rance {
         public getSecondaryController(): Rance.Player;
         public updateController(): any;
         public getIncome(): number;
+        public getBuildingsByType(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
+        public getBuildableBuildings(): any[];
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;

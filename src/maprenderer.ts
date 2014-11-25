@@ -261,8 +261,7 @@ module Rance
             // clamps to n different colors
             var threshhold = difference / 10;
             if (threshhold < 1) threshhold = 1;
-            var relative = (Math.round(value/threshhold) * threshhold - min) /
-              (difference);
+            var relative = (Math.round(value/threshhold) * threshhold - min) / (difference);
             return relative;
           }
 

@@ -185,4 +185,14 @@ module Rance
   {
     return PIXI.rgb2hex ( hslToRgb(h, s, l) );
   }
+
+  export function cloneObject(toClone: any)
+  {
+    var result: any = {};
+    for (var prop in toClone)
+    {
+      result[prop] = toClone[prop];
+    }
+    return result;
+  }
 }

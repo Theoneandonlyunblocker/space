@@ -111,6 +111,41 @@ module Rance
     {
       return this.baseIncome;
     }
+    getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate)
+    {
+      var categoryBuildings = this.buildings[buildingTemplate.category];
+
+      var buildings = [];
+
+      if (categoryBuildings)
+      {
+        for (var i = 0; i < categoryBuildings.length; i++)
+        {
+          if (categoryBuildings[i].template.type === buildingTemplate.type)
+          {
+            buildings.push(categoryBuildings[i]);
+          }
+        }
+      }
+
+      return buildings;
+    }
+    getBuildableBuildings()
+    {
+      var canBuild = [];
+      for (var buildingType in Templates.Buildings)
+      {
+        var template: Templates.IBuildingTemplate = Templates.Buildings[buildingType];
+        var alreadyBuilt = this.getBuildingsByType(template);
+
+        if (alreadyBuilt.length < template.maxPerType)
+        {
+          canBuild.push(template);
+        }
+      }
+
+      return canBuild;
+    }
 
     // FLEETS
     getAllFleets()

@@ -7,37 +7,65 @@ module Rance
   {
     export var PossibleActions = React.createClass({
 
+      buildBuildings: function()
+      {
+
+      },
+
       render: function()
       {
+        var allActions = [];
+
         var attackTargets = this.props.attackTargets;
-        if (!attackTargets || attackTargets.length < 1) return null;
-
-        var attackTargetComponents = [];
-        for (var i = 0; i < attackTargets.length; i++)
+        if (attackTargets && attackTargets.length > 0)
         {
-          var props: any =
+          var attackTargetComponents = [];
+          for (var i = 0; i < attackTargets.length; i++)
           {
-            key: i,
-            attackTarget: attackTargets[i]
-          };
+            var props: any =
+            {
+              key: i,
+              attackTarget: attackTargets[i]
+            };
 
-          attackTargetComponents.push(UIComponents.AttackTarget(
-            props
-          ));
+            attackTargetComponents.push(UIComponents.AttackTarget(
+              props
+            ));
+          }
+          allActions.push(
+            React.DOM.div(
+            {
+              className: "possible-action",
+              key: "attackActions"
+            },
+              React.DOM.div({className: "possible-action-title"}, "attack"),
+              attackTargetComponents
+            )
+          );
         }
+
+        var star = this.props.selectedStar;
+        if (star)
+        {
+          allActions.push(
+            React.DOM.div(
+            {
+              className: "possible-action",
+              onClick: this.buildBuildings,
+              key: "buildActions"
+            },
+              "build"
+            )
+          );
+        }
+        
         
         return(
           React.DOM.div(
           {
             className: "possible-actions-container"
           },
-            React.DOM.div(
-            {
-              className: "possible-action"
-            },
-              React.DOM.div({className: "possible-action-title"}, "attack"),
-              attackTargetComponents
-            )
+            allActions
           )
         );
       }

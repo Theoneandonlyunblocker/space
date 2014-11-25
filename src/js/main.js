@@ -1497,6 +1497,122 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../mixins/draggable.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Popup = React.createClass({
+            mixins: [Rance.UIComponents.Draggable],
+            onDragStart: function () {
+                this.zIndex = this.props.incrementZIndex();
+            },
+            render: function () {
+                var divProps = {
+                    className: "react-popup draggable",
+                    onTouchStart: this.handleMouseDown,
+                    onMouseDown: this.handleMouseDown,
+                    style: {
+                        top: this.state.dragPos ? this.state.dragPos.top : 0,
+                        left: this.state.dragPos ? this.state.dragPos.left : 0,
+                        zIndex: this.zIndex
+                    }
+                };
+
+                if (this.state.dragging) {
+                    divProps.className += " dragging";
+                }
+
+                return (React.DOM.div(divProps, this.props.content));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="popup.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.PopupManager = React.createClass({
+            getInitialState: function () {
+                return ({
+                    popups: [
+                        {
+                            content: React.DOM.div({ style: { backgroundColor: "white" } }, "lol"),
+                            id: 0
+                        }
+                    ]
+                });
+                return ({
+                    popups: []
+                });
+            },
+            incrementZIndex: function () {
+                if (!this.currentZIndex)
+                    this.currentZIndex = 0;
+
+                return this.currentZIndex++;
+            },
+            getPopupId: function () {
+                if (!this.popupId)
+                    this.popupId = 0;
+
+                return this.popupId++;
+            },
+            hasPopup: function (id) {
+                for (var i = 0; i < this.state.popups.length; i++) {
+                    if (this.state.popups[i].id === id)
+                        return true;
+                }
+
+                return false;
+            },
+            removePopup: function (id) {
+                if (!this.hasPopup)
+                    throw new Error("No such popup");
+
+                var newPopups = [];
+
+                for (var i = 0; i < this.state.popups.length; i++) {
+                    if (this.state.popups[i].id !== id) {
+                        newPopups.push(this.state.popups[i]);
+                    }
+                }
+
+                this.setState({ popups: newPopups });
+            },
+            makePopup: function (props) {
+                this.setState({
+                    popups: this.state.popups.push({
+                        content: props.content,
+                        id: this.getPopupId()
+                    })
+                });
+            },
+            render: function () {
+                var popups = this.state.popups;
+
+                var toRender = [];
+
+                for (var i = 0; i < popups.length; i++) {
+                    var popup = popups[i];
+
+                    toRender.push(Rance.UIComponents.Popup({
+                        content: popup.content,
+                        key: popup.id,
+                        incrementZIndex: this.incrementZIndex,
+                        containerElement: this.refs.containerDiv
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "popup-container",
+                    ref: "containerDiv"
+                }, toRender));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1979,26 +2095,40 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.PossibleActions = React.createClass({
+            buildBuildings: function () {
+            },
             render: function () {
+                var allActions = [];
+
                 var attackTargets = this.props.attackTargets;
-                if (!attackTargets || attackTargets.length < 1)
-                    return null;
+                if (attackTargets && attackTargets.length > 0) {
+                    var attackTargetComponents = [];
+                    for (var i = 0; i < attackTargets.length; i++) {
+                        var props = {
+                            key: i,
+                            attackTarget: attackTargets[i]
+                        };
 
-                var attackTargetComponents = [];
-                for (var i = 0; i < attackTargets.length; i++) {
-                    var props = {
-                        key: i,
-                        attackTarget: attackTargets[i]
-                    };
+                        attackTargetComponents.push(Rance.UIComponents.AttackTarget(props));
+                    }
+                    allActions.push(React.DOM.div({
+                        className: "possible-action",
+                        key: "attackActions"
+                    }, React.DOM.div({ className: "possible-action-title" }, "attack"), attackTargetComponents));
+                }
 
-                    attackTargetComponents.push(Rance.UIComponents.AttackTarget(props));
+                var star = this.props.selectedStar;
+                if (star) {
+                    allActions.push(React.DOM.div({
+                        className: "possible-action",
+                        onClick: this.buildBuildings,
+                        key: "buildActions"
+                    }, "build"));
                 }
 
                 return (React.DOM.div({
                     className: "possible-actions-container"
-                }, React.DOM.div({
-                    className: "possible-action"
-                }, React.DOM.div({ className: "possible-action-title" }, "attack"), attackTargetComponents)));
+                }, allActions));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2065,7 +2195,8 @@ var Rance;
                 }))), React.DOM.div({
                     className: "galaxy-map-ui-bottom-left"
                 }, Rance.UIComponents.PossibleActions({
-                    attackTargets: this.state.attackTargets
+                    attackTargets: this.state.attackTargets,
+                    selectedStar: this.state.selectedStar
                 }), React.DOM.button({
                     onClick: this.endTurn
                 }, "End turn")), Rance.UIComponents.StarInfo({
@@ -2083,6 +2214,7 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="../mapgen/mapgencontrols.ts"/>
+/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="galaxymapui.ts"/>
 var Rance;
 (function (Rance) {
@@ -2105,7 +2237,7 @@ var Rance;
                 }, Rance.UIComponents.GalaxyMapUI({
                     playerControl: this.props.playerControl,
                     player: this.props.player
-                })), Rance.UIComponents.MapGenControls({
+                }), Rance.UIComponents.PopupManager({})), Rance.UIComponents.MapGenControls({
                     mapGen: this.props.galaxyMap.mapGen,
                     renderMap: this.renderMap
                 }), React.DOM.select({
@@ -2408,6 +2540,15 @@ var Rance;
         return PIXI.rgb2hex(hslToRgb(h, s, l));
     }
     Rance.hslToHex = hslToHex;
+
+    function cloneObject(toClone) {
+        var result = {};
+        for (var prop in toClone) {
+            result[prop] = toClone[prop];
+        }
+        return result;
+    }
+    Rance.cloneObject = cloneObject;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -2657,6 +2798,14 @@ var Rance;
                 maxPerType: 3,
                 maxUpgradeLevel: 1
             };
+            Buildings.commercialPort = {
+                type: "commercialPort",
+                category: "economy",
+                name: "Commercial Spaceport",
+                icon: "img\/buildings\/commercialPort.png",
+                maxPerType: 1,
+                maxUpgradeLevel: 4
+            };
         })(Templates.Buildings || (Templates.Buildings = {}));
         var Buildings = Templates.Buildings;
     })(Rance.Templates || (Rance.Templates = {}));
@@ -2775,6 +2924,34 @@ var Rance;
         };
         Star.prototype.getIncome = function () {
             return this.baseIncome;
+        };
+        Star.prototype.getBuildingsByType = function (buildingTemplate) {
+            var categoryBuildings = this.buildings[buildingTemplate.category];
+
+            var buildings = [];
+
+            if (categoryBuildings) {
+                for (var i = 0; i < categoryBuildings.length; i++) {
+                    if (categoryBuildings[i].template.type === buildingTemplate.type) {
+                        buildings.push(categoryBuildings[i]);
+                    }
+                }
+            }
+
+            return buildings;
+        };
+        Star.prototype.getBuildableBuildings = function () {
+            var canBuild = [];
+            for (var buildingType in Rance.Templates.Buildings) {
+                var template = Rance.Templates.Buildings[buildingType];
+                var alreadyBuilt = this.getBuildingsByType(template);
+
+                if (alreadyBuilt.length < template.maxPerType) {
+                    canBuild.push(template);
+                }
+            }
+
+            return canBuild;
         };
 
         // FLEETS
@@ -5710,6 +5887,10 @@ var Rance;
             if (ui)
                 ui.classList.add("prevent-pointer-events");
 
+            var popups = document.getElementsByClassName("popup-container")[0];
+            if (popups)
+                popups.classList.add("prevent-pointer-events");
+
             this.setSelectionTargets();
         };
         RectangleSelect.prototype.moveSelection = function (point) {
@@ -5721,6 +5902,9 @@ var Rance;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
                 ui.classList.remove("prevent-pointer-events");
+            var popups = document.getElementsByClassName("popup-container")[0];
+            if (popups)
+                popups.classList.remove("prevent-pointer-events");
 
             this.graphics.clear();
 
@@ -6189,7 +6373,6 @@ var Rance;
             "uniform vec3 bgColor;",
             "uniform float time;",
             "float density = 0.005;",
-            "float inverseDensity = 1.0 - density;",
             "float rand(vec2 p)",
             "{",
             "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
@@ -6200,7 +6383,7 @@ var Rance;
             "  float color = 0.0;",
             "  float starGenValue = rand(gl_FragCoord.xy);",
             "  ",
-            "  if (starGenValue > inverseDensity)",
+            "  if (starGenValue < density)",
             "  {",
             "    float r = rand(gl_FragCoord.xy + vec2(4.20, 6.9));",
             "    color = r * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",

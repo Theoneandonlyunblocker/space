@@ -49,6 +49,18 @@ module Rance
 
         maxUpgradeLevel: 1
       }
+      export var commercialPort: IBuildingTemplate =
+      {
+        type: "commercialPort",
+        category: "economy",
+        name: "Commercial Spaceport",
+
+        icon: "img\/buildings\/commercialPort.png",
+
+        maxPerType: 1,
+
+        maxUpgradeLevel: 4
+      }
     }
   }
 }

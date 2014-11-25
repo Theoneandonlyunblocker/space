@@ -91,7 +91,8 @@ module Rance
             },
               UIComponents.PossibleActions(
               {
-                attackTargets: this.state.attackTargets
+                attackTargets: this.state.attackTargets,
+                selectedStar: this.state.selectedStar
               }),
               React.DOM.button(
               {
