@@ -330,86 +330,70 @@ body {
 .available-turn {
   background-color: green;
 }
-.sort-icon {
-  font-weight: 100;
-  position: absolute;
-  right: 5px;
+.react-list th {
+  padding-left: 2px;
 }
-@media (max-width: 1200px) {
-  .sort-icon {
-    display: none;
-  }
-}
-.sortable {
-  cursor: pointer;
-  position: relative;
-  padding-right: 20px;
-}
-@media (max-width: 1200px) {
-  .sortable {
-    padding-right: 2px;
-  }
-}
-.unsorted::after {
-  content: "\f0dc";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  font-weight: 100;
-  position: absolute;
-  right: 5px;
-}
-@media (max-width: 1200px) {
-  .unsorted::after {
-    display: none;
-  }
-}
-.sorted-asc::after {
-  content: "\f0de";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  font-weight: 100;
-  position: absolute;
-  right: 5px;
-}
-@media (max-width: 1200px) {
-  .sorted-asc::after {
-    display: none;
-  }
-}
-.sorted-desc::after {
-  content: "\f0dd";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  font-weight: 100;
-  position: absolute;
-  right: 5px;
-}
-@media (max-width: 1200px) {
-  .sorted-desc::after {
-    display: none;
-  }
+.react-list td {
+  padding: 0 5px;
 }
 .unit-list {
   flex-shrink: 1;
 }
-.unit-list th {
-  padding-left: 2px;
-}
 .unit-list td {
   text-align: center;
-  padding: 0 5px;
 }
 .unit-list .unit-list-typeName {
   text-align: left;
 }
 .unit-list .unit-list-strength {
   text-align: right;
+}
+.unit-list .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.unit-list .sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 900px) {
+  .unit-list .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 900px) {
+  .unit-list .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .unit-list .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .unit-list .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
 }
 .draggable {
   cursor: move;
@@ -639,15 +623,32 @@ body {
   left: 0;
   display: inline-flex;
   flex-flow: column;
-  background-color: white;
   border: 1px solid black;
+}
+.possible-actions-container {
+  display: flex;
+  flex-flow: row;
+}
+.possible-actions-container > * {
+  justify-content: flex-end;
+  margin-top: auto;
+}
+.possible-actions {
+  border: 1px solid black;
+  background-color: white;
+  display: flex;
+  flex-flow: column;
 }
 .possible-action {
   display: flex;
   flex-flow: row;
+  flex: 0 auto;
 }
 .possible-action-title {
   align-self: center;
+}
+.expanded-action {
+  background-color: white;
 }
 .star-info {
   position: absolute;
@@ -669,4 +670,51 @@ body {
 }
 .defence-building-controller {
   margin-top: 5px;
+}
+.buildable-building-list .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.buildable-building-list .sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 500px) {
+  .buildable-building-list .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 500px) {
+  .buildable-building-list .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .buildable-building-list .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .buildable-building-list .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
 }

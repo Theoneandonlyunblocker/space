@@ -1036,8 +1036,7 @@ var Rance;
             componentDidMount: function () {
                 var self = this;
 
-                this.handleSelectRow(this.props.sortedItems[0]);
-
+                //this.handleSelectRow(this.props.sortedItems[0]);
                 this.getDOMNode().addEventListener("keydown", function (event) {
                     switch (event.keyCode) {
                         case 40: {
@@ -1192,7 +1191,8 @@ var Rance;
                 });
 
                 return (React.DOM.table({
-                    tabIndex: 1
+                    tabIndex: 1,
+                    className: "react-list"
                 }, React.DOM.colgroup(null, columns), React.DOM.thead(null, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)));
             }
         });
@@ -1557,14 +1557,6 @@ var Rance;
             },
             getInitialState: function () {
                 return ({
-                    popups: [
-                        {
-                            content: React.DOM.div({ style: { backgroundColor: "white" } }, "lol"),
-                            id: 9786
-                        }
-                    ]
-                });
-                return ({
                     popups: []
                 });
             },
@@ -1623,7 +1615,8 @@ var Rance;
                     toRender.push(Rance.UIComponents.Popup({
                         content: popup.content,
                         key: popup.id,
-                        incrementZIndex: this.incrementZIndex
+                        incrementZIndex: this.incrementZIndex,
+                        closePopup: this.closePopup
                     }));
                 }
 
@@ -2119,7 +2112,7 @@ var Rance;
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
-                cellProps.className = "buildable-building-list-item-cell";
+                cellProps.className = "buildable-building-list-item-cell " + type;
 
                 var cellContent;
 
@@ -2142,7 +2135,8 @@ var Rance;
                 }
 
                 return (React.DOM.tr({
-                    className: "buildable-building"
+                    className: "buildable-building",
+                    onClick: this.props.handleClick
                 }, cells));
             }
         });
@@ -2155,7 +2149,14 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BuildableBuildingList = React.createClass({
+            buildBuilding: function (rowItem) {
+                var template = rowItem.data.template;
+
+                console.log(template);
+            },
             render: function () {
+                if (this.props.buildingTemplates.length < 1)
+                    return null;
                 var rows = [];
 
                 for (var i = 0; i < this.props.buildingTemplates.length; i++) {
@@ -2163,7 +2164,7 @@ var Rance;
 
                     var data = {
                         template: template,
-                        typeName: template.type,
+                        typeName: template.name,
                         buildCost: template.buildCost,
                         rowConstructor: Rance.UIComponents.BuildableBuilding
                     };
@@ -2189,7 +2190,8 @@ var Rance;
 
                 return (React.DOM.div({ className: "buildable-building-list" }, Rance.UIComponents.List({
                     listItems: rows,
-                    initialColumns: columns
+                    initialColumns: columns,
+                    onRowChange: this.buildBuilding
                 })));
             }
         });
@@ -2202,14 +2204,40 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.PossibleActions = React.createClass({
+            getInitialState: function () {
+                return ({
+                    expandedAction: null
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (this.props.selectedStar !== newProps.selectedStar && this.state.expandedAction === "buildBuildings") {
+                    this.setState({
+                        expandedAction: null
+                    });
+                }
+            },
             buildBuildings: function () {
                 var star = this.props.selectedStar;
 
-                Rance.eventManager.dispatchEvent("makePopup", {
-                    content: Rance.UIComponents.BuildableBuildingList({
-                        buildingTemplates: star.getBuildableBuildings()
-                    })
+                this.setState({
+                    expandedAction: "buildBuildings"
                 });
+            },
+            makeExpandedAction: function () {
+                switch (this.state.expandedAction) {
+                    case "buildBuildings": {
+                        if (!this.props.selectedStar)
+                            return null;
+
+                        return (Rance.UIComponents.BuildableBuildingList({
+                            buildingTemplates: this.props.selectedStar.getBuildableBuildings(),
+                            star: this.props.selectedStar
+                        }));
+                    }
+                    default: {
+                        return null;
+                    }
+                }
             },
             render: function () {
                 var allActions = [];
@@ -2242,7 +2270,11 @@ var Rance;
 
                 return (React.DOM.div({
                     className: "possible-actions-container"
-                }, allActions));
+                }, React.DOM.div({
+                    className: "possible-actions"
+                }, allActions), React.DOM.div({
+                    className: "expanded-action"
+                }, this.makeExpandedAction())));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -5831,6 +5863,10 @@ var Rance;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
                 ui.classList.add("prevent-pointer-events");
+
+            var popups = document.getElementsByClassName("popup-container")[0];
+            if (popups)
+                popups.classList.add("prevent-pointer-events");
         };
 
         /**
@@ -5842,6 +5878,9 @@ var Rance;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
                 ui.classList.remove("prevent-pointer-events");
+            var popups = document.getElementsByClassName("popup-container")[0];
+            if (popups)
+                popups.classList.remove("prevent-pointer-events");
         };
 
         /**

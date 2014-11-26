@@ -469,59 +469,68 @@ body {
 
 // ITEM LIST
 
-.sort-icon
+.sort-icons(@maxWidth)
 {
-  font-weight: 100;
-  position: absolute;
-  right: 5px;
-
-  @media(max-width: 1200px)
+  .sort-icon
   {
-    display: none;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+
+  .sortable
+  {
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px;
+
+    @media(max-width: @maxWidth)
+    {
+      padding-right: 2px;
+    }
+  }
+
+  @media(min-width: @maxWidth)
+  {
+    .unsorted::after
+    {
+      .fa("\f0dc");
+      .sort-icon;
+    }
+    .sorted-asc::after
+    {
+      .fa("\f0de");
+      .sort-icon;
+    }
+    .sorted-desc::after
+    {
+      .fa("\f0dd");
+      .sort-icon;
+    }
   }
 }
 
-.sortable
+.react-list
 {
-  cursor: pointer;
-  position: relative;
-  padding-right: 20px;
-
-  @media(max-width: 1200px)
-  {
-    padding-right: 2px;
-  }
-}
-
-.unsorted::after
-{
-  .fa("\f0dc");
-  .sort-icon;
-}
-.sorted-asc::after
-{
-  .fa("\f0de");
-  .sort-icon;
-}
-.sorted-desc::after
-{
-  .fa("\f0dd");
-  .sort-icon;
-}
-
-.unit-list
-{
-  flex-shrink: 1;
-
   th
   {
     padding-left: 2px;
   }
   td
   {
-    text-align: center;
     padding: 0 5px;
   }
+}
+
+.unit-list
+{
+  flex-shrink: 1;
+
+  td
+  {
+    text-align: center;
+  }
+  
   .unit-list-typeName
   {
     text-align: left;
@@ -530,6 +539,7 @@ body {
   {
     text-align: right;
   }
+  .sort-icons(900px);
 }
 
 
@@ -839,24 +849,44 @@ body {
   left: 0;
   display: inline-flex;
   flex-flow: column;
-  background-color: white;
   border: 1px solid black;
 }
 
 .possible-actions-container
 {
-  
+  display: flex;
+  flex-flow: row;
+
+  >*
+  {
+    justify-content: flex-end;
+    margin-top: auto;
+  }
+}
+
+.possible-actions
+{
+  border: 1px solid black;
+  background-color: white;
+  display: flex;
+  flex-flow: column;
 }
 
 .possible-action
 {
   display: flex;
   flex-flow: row;
+  flex: 0 auto;
 }
 
 .possible-action-title
 {
   align-self: center;
+}
+
+.expanded-action
+{
+  background-color: white;
 }
 
 .star-info
@@ -886,4 +916,9 @@ body {
 .defence-building-controller
 {
   margin-top: 5px;
+}
+
+.buildable-building-list
+{
+  .sort-icons(500px);
 }

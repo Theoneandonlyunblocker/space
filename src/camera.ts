@@ -95,6 +95,9 @@ module Rance
 
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
       if (ui) ui.classList.add("prevent-pointer-events");
+
+      var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
+      if (popups) popups.classList.add("prevent-pointer-events");
     }
     /**
      * @method end
@@ -105,6 +108,8 @@ module Rance
 
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
       if (ui) ui.classList.remove("prevent-pointer-events");
+      var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
+      if (popups) popups.classList.remove("prevent-pointer-events");
     }
     /**
      * @method getDelta

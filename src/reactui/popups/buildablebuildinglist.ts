@@ -7,8 +7,15 @@ module Rance
   {
     export var BuildableBuildingList = React.createClass(
     {
+      buildBuilding: function(rowItem)
+      {
+        var template = rowItem.data.template;
+
+        console.log(template)
+      },
       render: function()
       {
+        if (this.props.buildingTemplates.length < 1) return null;
         var rows = [];
 
         for (var i = 0; i < this.props.buildingTemplates.length; i++)
@@ -19,7 +26,7 @@ module Rance
           {
             template: template,
 
-            typeName: template.type,
+            typeName: template.name,
             buildCost: template.buildCost,
 
             rowConstructor: UIComponents.BuildableBuilding
@@ -52,7 +59,8 @@ module Rance
             UIComponents.List(
             {
               listItems: rows,
-              initialColumns: columns
+              initialColumns: columns,
+              onRowChange: this.buildBuilding
             })
           )
         );

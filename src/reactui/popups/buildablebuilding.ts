@@ -8,7 +8,7 @@ module Rance
       {
         var cellProps: any = {};
         cellProps.key = type;
-        cellProps.className = "buildable-building-list-item-cell";
+        cellProps.className = "buildable-building-list-item-cell " + type;
 
         var cellContent: any;
 
@@ -42,7 +42,8 @@ module Rance
         return(
           React.DOM.tr(
           {
-            className: "buildable-building"
+            className: "buildable-building",
+            onClick: this.props.handleClick
           },
           cells
           )

@@ -35,16 +35,6 @@ module Rance
       {
         return(
         {
-          popups:
-          [
-            {
-              content: React.DOM.div({style: {backgroundColor: "white"}}, "lol"),
-              id: 9786
-            }
-          ]
-        });
-        return(
-        {
           popups: []
         });
       },
@@ -126,7 +116,8 @@ module Rance
             {
               content: popup.content,
               key: popup.id,
-              incrementZIndex: this.incrementZIndex
+              incrementZIndex: this.incrementZIndex,
+              closePopup: this.closePopup
             })
           );
         }

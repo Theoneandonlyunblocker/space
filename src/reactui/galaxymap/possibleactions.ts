@@ -7,17 +7,57 @@ module Rance
   {
     export var PossibleActions = React.createClass({
 
+      getInitialState: function()
+      {
+        return(
+        {
+          expandedAction: null
+        });
+      },
+
+      componentWillReceiveProps: function(newProps: any)
+      {
+        if (this.props.selectedStar !== newProps.selectedStar &&
+          this.state.expandedAction === "buildBuildings")
+        {
+          this.setState(
+          {
+            expandedAction: null
+          });
+        }
+      },
+
       buildBuildings: function()
       {
         var star = this.props.selectedStar;
 
-        eventManager.dispatchEvent("makePopup",
+        this.setState(
         {
-          content: UIComponents.BuildableBuildingList(
-          {
-            buildingTemplates: star.getBuildableBuildings()
-          })
+          expandedAction: "buildBuildings"
         });
+      },
+
+      makeExpandedAction: function()
+      {
+        switch (this.state.expandedAction)
+        {
+          case "buildBuildings":
+          {
+            if (!this.props.selectedStar) return null;
+
+            return(
+              UIComponents.BuildableBuildingList(
+              {
+                buildingTemplates: this.props.selectedStar.getBuildableBuildings(),
+                star: this.props.selectedStar
+              })
+            );
+          }
+          default:
+          {
+            return null;
+          }
+        }
       },
 
       render: function()
@@ -73,7 +113,18 @@ module Rance
           {
             className: "possible-actions-container"
           },
-            allActions
+            React.DOM.div(
+            {
+              className: "possible-actions"
+            },
+              allActions
+            ),
+            React.DOM.div(
+            {
+              className: "expanded-action"
+            },
+              this.makeExpandedAction()
+            )
           )
         );
       }

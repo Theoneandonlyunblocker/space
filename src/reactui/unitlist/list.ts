@@ -55,7 +55,7 @@ module Rance
       {
         var self = this;
 
-        this.handleSelectRow(this.props.sortedItems[0]);
+        //this.handleSelectRow(this.props.sortedItems[0]);
 
         this.getDOMNode().addEventListener("keydown", function(event)
         {
@@ -258,7 +258,8 @@ module Rance
         return(
           React.DOM.table(
           {
-          tabIndex: 1
+            tabIndex: 1,
+            className: "react-list"
           },
             React.DOM.colgroup(null,
               columns
