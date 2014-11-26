@@ -109,7 +109,9 @@ module Rance
     }
     getIncome()
     {
-      return this.baseIncome;
+      var tempBuildingIncome = 0;
+      if (this.buildings["economy"]) tempBuildingIncome = this.buildings["economy"].length * 20;
+      return this.baseIncome + tempBuildingIncome;
     }
     getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate)
     {

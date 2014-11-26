@@ -2149,18 +2149,35 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BuildableBuildingList = React.createClass({
+            getInitialState: function () {
+                return ({
+                    buildingTemplates: this.props.star.getBuildableBuildings()
+                });
+            },
+            updateBuildings: function () {
+                this.setState({
+                    buildingTemplates: this.props.star.getBuildableBuildings()
+                });
+            },
             buildBuilding: function (rowItem) {
                 var template = rowItem.data.template;
 
-                console.log(template);
+                var building = new Rance.Building({
+                    template: template,
+                    location: this.props.star
+                });
+
+                this.props.star.addBuilding(building);
+                building.controller.money -= template.buildCost;
+                this.updateBuildings();
             },
             render: function () {
-                if (this.props.buildingTemplates.length < 1)
+                if (this.state.buildingTemplates < 1)
                     return null;
                 var rows = [];
 
-                for (var i = 0; i < this.props.buildingTemplates.length; i++) {
-                    var template = this.props.buildingTemplates[i];
+                for (var i = 0; i < this.state.buildingTemplates.length; i++) {
+                    var template = this.state.buildingTemplates[i];
 
                     var data = {
                         template: template,
@@ -2230,7 +2247,6 @@ var Rance;
                             return null;
 
                         return (Rance.UIComponents.BuildableBuildingList({
-                            buildingTemplates: this.props.selectedStar.getBuildableBuildings(),
                             star: this.props.selectedStar
                         }));
                     }
@@ -2260,7 +2276,7 @@ var Rance;
                 }
 
                 var star = this.props.selectedStar;
-                if (star) {
+                if (star && star.getBuildableBuildings().length > 0) {
                     allActions.push(React.DOM.div({
                         className: "possible-action",
                         onClick: this.buildBuildings,
@@ -3072,7 +3088,10 @@ var Rance;
             this.owner = newOwner;
         };
         Star.prototype.getIncome = function () {
-            return this.baseIncome;
+            var tempBuildingIncome = 0;
+            if (this.buildings["economy"])
+                tempBuildingIncome = this.buildings["economy"].length * 20;
+            return this.baseIncome + tempBuildingIncome;
         };
         Star.prototype.getBuildingsByType = function (buildingTemplate) {
             var categoryBuildings = this.buildings[buildingTemplate.category];
@@ -5203,6 +5222,10 @@ var Rance;
                         var site = adjacentSites[i];
 
                         if (!site) {
+                            // draw all border edges
+                            return true;
+
+                            // draw all non filler border edges
                             maxAllowedFillerSites--;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;

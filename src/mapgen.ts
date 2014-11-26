@@ -422,6 +422,10 @@ module Rance
 
             if (!site)
             {
+              // draw all border edges
+              return true;
+
+              // draw all non filler border edges
               maxAllowedFillerSites--;
               if (adjacentFillerSites >= maxAllowedFillerSites)
               {

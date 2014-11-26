@@ -7,20 +7,45 @@ module Rance
   {
     export var BuildableBuildingList = React.createClass(
     {
+      getInitialState: function()
+      {
+        return(
+        {
+          buildingTemplates: this.props.star.getBuildableBuildings()
+        });
+      },
+
+      updateBuildings: function()
+      {
+        this.setState(
+        {
+          buildingTemplates: this.props.star.getBuildableBuildings()
+        });
+      },
+
       buildBuilding: function(rowItem)
       {
         var template = rowItem.data.template;
 
-        console.log(template)
+        var building = new Building(
+        {
+          template: template,
+          location: this.props.star
+        });
+
+        this.props.star.addBuilding(building);
+        building.controller.money -= template.buildCost;
+        this.updateBuildings();
       },
+
       render: function()
       {
-        if (this.props.buildingTemplates.length < 1) return null;
+        if (this.state.buildingTemplates < 1) return null;
         var rows = [];
 
-        for (var i = 0; i < this.props.buildingTemplates.length; i++)
+        for (var i = 0; i < this.state.buildingTemplates.length; i++)
         {
-          var template = this.props.buildingTemplates[i];
+          var template = this.state.buildingTemplates[i];
 
           var data: any =
           {

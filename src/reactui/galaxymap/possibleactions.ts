@@ -48,7 +48,6 @@ module Rance
             return(
               UIComponents.BuildableBuildingList(
               {
-                buildingTemplates: this.props.selectedStar.getBuildableBuildings(),
                 star: this.props.selectedStar
               })
             );
@@ -93,7 +92,7 @@ module Rance
         }
 
         var star = this.props.selectedStar;
-        if (star)
+        if (star && star.getBuildableBuildings().length > 0)
         {
           allActions.push(
             React.DOM.div(
