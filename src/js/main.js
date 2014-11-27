@@ -94,8 +94,39 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.UnitStatus = React.createClass({
+            render: function () {
+                var statusElement = null;
+
+                if (this.props.guard) {
+                    var guard = this.props.guard;
+                    statusElement = React.DOM.div({
+                        className: "guard-wrapper"
+                    }, React.DOM.progress({
+                        className: "guard-meter",
+                        max: 100,
+                        value: guard
+                    }), React.DOM.div({
+                        className: "guard-text-container"
+                    }, React.DOM.div({
+                        className: "guard-text"
+                    }, "Guard"), React.DOM.div({
+                        className: "guard-amount"
+                    }, "" + guard + "%")));
+                }
+
+                return (React.DOM.div({ className: "unit-status" }, statusElement));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="unitstrength.ts"/>
 /// <reference path="unitactions.ts"/>
+/// <reference path="unitstatus.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -103,7 +134,16 @@ var Rance;
             render: function () {
                 var unit = this.props.unit;
 
-                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), Rance.UIComponents.UnitStrength(this.props.strengthProps), Rance.UIComponents.UnitActions(this.props.actionProps)));
+                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, unit.name), Rance.UIComponents.UnitStatus({
+                    guard: unit.battleStats.guard
+                }), Rance.UIComponents.UnitStrength({
+                    maxStrength: unit.maxStrength,
+                    currentStrength: unit.currentStrength,
+                    isSquadron: unit.isSquadron
+                }), Rance.UIComponents.UnitActions({
+                    maxActionPoints: unit.maxActionPoints,
+                    currentActionPoints: unit.battleStats.currentActionPoints
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -416,16 +456,7 @@ var Rance;
 
                 var infoProps = {
                     key: "info",
-                    name: unit.name,
-                    strengthProps: {
-                        maxStrength: unit.maxStrength,
-                        currentStrength: unit.currentStrength,
-                        isSquadron: unit.isSquadron
-                    },
-                    actionProps: {
-                        maxActionPoints: unit.maxActionPoints,
-                        currentActionPoints: unit.battleStats.currentActionPoints
-                    }
+                    unit: unit
                 };
 
                 var containerElements = [
@@ -2861,6 +2892,17 @@ var Rance;
                     target.removeStrength(100);
                 }
             };
+            Abilities.guardSelf = {
+                name: "guardSelf",
+                moveDelay: 100,
+                actionsUse: 1,
+                targetFleets: "all",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "self",
+                effect: function (user, target) {
+                    target.addGuard(50);
+                }
+            };
 
             Abilities.standBy = {
                 name: "standBy",
@@ -2883,6 +2925,7 @@ var Rance;
     (function (Templates) {
         (function (ShipTypes) {
             ShipTypes.fighterSquadron = {
+                type: "fighterSquadron",
                 typeName: "Fighter Squadron",
                 isSquadron: true,
                 icon: "img\/icons\/f.png",
@@ -2900,6 +2943,7 @@ var Rance;
                 ]
             };
             ShipTypes.bomberSquadron = {
+                type: "bomberSquadron",
                 typeName: "Bomber Squadron",
                 isSquadron: true,
                 icon: "img\/icons\/f.png",
@@ -2918,6 +2962,7 @@ var Rance;
                 ]
             };
             ShipTypes.battleCruiser = {
+                type: "battleCruiser",
                 typeName: "Battlecruiser",
                 isSquadron: false,
                 icon: "img\/icons\/b.png",
@@ -2932,6 +2977,43 @@ var Rance;
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.wholeRowAttack,
+                    Rance.Templates.Abilities.standBy
+                ]
+            };
+            ShipTypes.scout = {
+                type: "scout",
+                typeName: "Scout",
+                isSquadron: true,
+                icon: "img\/icons\/f.png",
+                maxStrength: 0.6,
+                maxMovePoints: 2,
+                attributeLevels: {
+                    attack: 0.5,
+                    defence: 0.5,
+                    intelligence: 0.8,
+                    speed: 0.7
+                },
+                abilities: [
+                    Rance.Templates.Abilities.rangedAttack,
+                    Rance.Templates.Abilities.standBy
+                ]
+            };
+            ShipTypes.shieldBoat = {
+                type: "shieldBoat",
+                typeName: "Shield Boat",
+                isSquadron: false,
+                icon: "img\/icons\/b.png",
+                maxStrength: 0.9,
+                maxMovePoints: 1,
+                attributeLevels: {
+                    attack: 0.5,
+                    defence: 0.9,
+                    intelligence: 0.6,
+                    speed: 0.4
+                },
+                abilities: [
+                    Rance.Templates.Abilities.guardSelf,
+                    Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.standBy
                 ]
             };
@@ -4173,7 +4255,8 @@ var Rance;
                 currentActionPoints: this.maxActionPoints,
                 battle: null,
                 side: null,
-                position: null
+                position: null,
+                guard: 0
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
@@ -4251,6 +4334,9 @@ var Rance;
 
             player.removeUnit(this);
             this.fleet.removeShip(this);
+        };
+        Unit.prototype.addGuard = function (amount) {
+            this.battleStats.guard += amount;
         };
         return Unit;
     })();

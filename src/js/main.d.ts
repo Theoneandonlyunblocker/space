@@ -17,6 +17,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UnitStatus: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -344,6 +349,7 @@ declare module Rance {
             var closeAttack: AbilityTemplate;
             var wholeRowAttack: AbilityTemplate;
             var bombAttack: AbilityTemplate;
+            var guardSelf: AbilityTemplate;
             var standBy: AbilityTemplate;
         }
     }
@@ -351,6 +357,7 @@ declare module Rance {
 declare module Rance {
     module Templates {
         interface TypeTemplate {
+            type: string;
             typeName: string;
             isSquadron: boolean;
             icon: string;
@@ -368,6 +375,8 @@ declare module Rance {
             var fighterSquadron: TypeTemplate;
             var bomberSquadron: TypeTemplate;
             var battleCruiser: TypeTemplate;
+            var scout: TypeTemplate;
+            var shieldBoat: TypeTemplate;
         }
     }
 }
@@ -649,6 +658,7 @@ declare module Rance {
             side: string;
             position: number[];
             currentActionPoints: number;
+            guard: number;
         };
         public abilities: Rance.Templates.AbilityTemplate[];
         public fleet: Rance.Fleet;
@@ -670,6 +680,7 @@ declare module Rance {
         public addToFleet(fleet: Rance.Fleet): void;
         public removeFromFleet(): void;
         public die(): void;
+        public addGuard(amount: number): void;
     }
 }
 declare module Rance {

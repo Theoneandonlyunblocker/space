@@ -1,5 +1,6 @@
 /// <reference path="unitstrength.ts"/>
 /// <reference path="unitactions.ts"/>
+/// <reference path="unitstatus.ts"/>
 
 module Rance
 {
@@ -14,10 +15,23 @@ module Rance
         return(
           React.DOM.div({className: "unit-info"},
             React.DOM.div({className: "unit-info-name"},
-              this.props.name
+              unit.name
             ),
-            UIComponents.UnitStrength(this.props.strengthProps),
-            UIComponents.UnitActions(this.props.actionProps)
+            UIComponents.UnitStatus(
+            {
+              guard: unit.battleStats.guard
+            }),
+            UIComponents.UnitStrength(
+            {
+              maxStrength: unit.maxStrength,
+              currentStrength: unit.currentStrength,
+              isSquadron: unit.isSquadron
+            }),
+            UIComponents.UnitActions(
+            {
+              maxActionPoints: unit.maxActionPoints,
+              currentActionPoints: unit.battleStats.currentActionPoints
+            })
           )
         );
       }

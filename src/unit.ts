@@ -42,6 +42,7 @@ module Rance
       side: string;
       position: number[];
       currentActionPoints: number;
+      guard: number;
       //queuedAction: Action;
     };
 
@@ -130,7 +131,8 @@ module Rance
         currentActionPoints: this.maxActionPoints,
         battle: null,
         side: null,
-        position: null
+        position: null,
+        guard: 0
       }
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
@@ -229,6 +231,10 @@ module Rance
 
       player.removeUnit(this);
       this.fleet.removeShip(this);
+    }
+    addGuard(amount: number)
+    {
+      this.battleStats.guard += amount;
     }
   }
 }

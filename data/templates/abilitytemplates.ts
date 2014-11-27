@@ -77,6 +77,19 @@ module Rance
           target.removeStrength(100);
         }
       }
+      export var guardSelf: AbilityTemplate =
+      {
+        name: "guardSelf",
+        moveDelay: 100,
+        actionsUse: 1,
+        targetFleets: "all",
+        targetingFunction: targetSingle,
+        targetRange: "self",
+        effect: function(user: Unit, target: Unit)
+        {
+          target.addGuard(50);
+        }
+      }
 
       export var standBy: AbilityTemplate =
       {

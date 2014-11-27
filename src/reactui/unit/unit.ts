@@ -104,18 +104,7 @@ module Rance
         var infoProps =
         {
           key: "info",
-          name: unit.name,
-          strengthProps:
-          {
-            maxStrength: unit.maxStrength,
-            currentStrength: unit.currentStrength,
-            isSquadron: unit.isSquadron
-          },
-          actionProps:
-          {
-            maxActionPoints: unit.maxActionPoints,
-            currentActionPoints: unit.battleStats.currentActionPoints
-          }
+          unit: unit
         }
 
         var containerElements =

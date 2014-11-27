@@ -14,6 +14,23 @@ body {
   height: 60px;
   background-color: blue;
 }
+progress {
+  color: #080;
+  background: #888;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+}
+progress::-moz-progress-bar {
+  background: #080;
+}
+progress::-webkit-progress-bar {
+  background: #888;
+}
+progress::-webkit-progress-value {
+  background: #080;
+}
 #react-container {
   height: 100%;
 }
@@ -62,7 +79,7 @@ body {
 }
 .turn-order-unit {
   display: flex;
-  flex: 1;
+  flex: 1 0 auto;
   position: relative;
   max-width: 160px;
   overflow: hidden;
@@ -109,7 +126,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  flex: 1 0 auto;
   max-height: 50%;
   background-color: #DDD;
 }
@@ -131,21 +148,21 @@ body {
 .battle-fleet {
   display: flex;
   flex-flow: row;
-  flex: 1;
+  flex: 1 0 auto;
   min-width: 220px;
   max-width: 520px;
 }
 .battle-fleet-column {
   display: flex;
   flex-flow: column;
-  flex: 1;
+  flex: 1 0 auto;
   min-width: 110px;
   max-width: 260px;
 }
 .unit-wrapper {
   display: flex;
   position: relative;
-  height: 64px;
+  height: 78px;
   margin: 5px;
 }
 .unit {
@@ -159,7 +176,7 @@ body {
   position: relative;
   display: flex;
   flex-flow: row;
-  flex: 1;
+  flex: 1 0 auto;
   padding: 1px;
 }
 .hovered-unit .unit-container::before {
@@ -251,7 +268,7 @@ body {
 }
 .unit-info {
   display: flex;
-  flex: 1;
+  flex: 1 0 auto;
   flex-flow: column;
   justify-content: space-between;
   padding-left: 2px;
@@ -261,8 +278,30 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.unit-status {
+  height: 20px;
+  position: relative;
+}
+.guard-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.guard-wrapper > * {
+  position: absolute;
+  max-width: 100%;
+  height: 100%;
+}
+.guard-text-container {
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+  justify-content: space-between;
+}
+.guard-text-container > * {
+  margin-top: auto;
+}
 .unit-strength-container {
-  min-height: 20px;
   display: flex;
   flex-flow: column;
 }
@@ -273,7 +312,7 @@ body {
   font-size: 0.66em;
 }
 .unit-strength-bar {
-  flex: 1;
+  flex: 1 0 auto;
   width: 100%;
   height: 10px;
 }
@@ -296,7 +335,7 @@ body {
 }
 .unit-icon-filler {
   width: 100%;
-  flex: 1;
+  flex: 1 0 auto;
 }
 .unit-border-no-left {
   border: 1px solid black;
@@ -438,7 +477,7 @@ body {
   background-color: grey;
 }
 #pixi-container {
-  flex: 1;
+  flex: 1 0 auto;
   position: relative;
 }
 #pixi-container > * {
@@ -463,7 +502,7 @@ body {
 }
 .galaxy-map {
   display: flex;
-  flex: 1;
+  flex: 1 0 auto;
   flex-flow: column;
 }
 .galaxy-map-ui {
@@ -553,7 +592,7 @@ body {
 }
 .fleet-info-name {
   margin-right: 5px;
-  flex: 1;
+  flex: 1 0 auto;
 }
 .fleet-info-shipcount {
   margin-right: 5px;
@@ -582,7 +621,7 @@ body {
   align-self: center;
 }
 .ship-info-info {
-  flex: 1;
+  flex: 1 0 auto;
 }
 .fleet-reorganization {
   display: inline-flex;
@@ -598,7 +637,7 @@ body {
   justify-content: space-between;
 }
 .fleet-reorganization-subheader-fleet-name {
-  flex: 1;
+  flex: 1 0 auto;
   border: 1px solid black;
 }
 .fleet-reorganization-subheader-fleet-name-left {
@@ -614,7 +653,7 @@ body {
 .fleet-reorganization-contents .fleet-contents {
   border: 1px solid red;
   display: inline-flex;
-  flex: 1;
+  flex: 1 0 auto;
   min-width: 260px;
   overflow-y: scroll;
   max-height: 300px;
@@ -643,7 +682,7 @@ body {
   background-color: white;
   display: flex;
   flex-flow: column;
-  flex: 1;
+  flex: 1 0 auto;
   min-width: 64px;
 }
 .possible-action {

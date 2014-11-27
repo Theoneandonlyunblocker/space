@@ -7,6 +7,7 @@ module Rance
   {
     export interface TypeTemplate
     {
+      type: string;
       typeName: string;
       isSquadron: boolean;
       icon: string;
@@ -25,6 +26,7 @@ module Rance
     {
       export var fighterSquadron: TypeTemplate =
       {
+        type: "fighterSquadron",
         typeName: "Fighter Squadron",
         isSquadron: true,
         icon: "img\/icons\/f.png",
@@ -45,6 +47,7 @@ module Rance
       }
       export var bomberSquadron: TypeTemplate =
       {
+        type: "bomberSquadron",
         typeName: "Bomber Squadron",
         isSquadron: true,
         icon: "img\/icons\/f.png",
@@ -66,6 +69,7 @@ module Rance
       }
       export var battleCruiser: TypeTemplate =
       {
+        type: "battleCruiser",
         typeName: "Battlecruiser",
         isSquadron: false,
         icon: "img\/icons\/b.png",
@@ -82,6 +86,49 @@ module Rance
         [
           Abilities.rangedAttack,
           Abilities.wholeRowAttack,
+          Abilities.standBy
+        ]
+      }
+      export var scout: TypeTemplate =
+      {
+        type: "scout",
+        typeName: "Scout",
+        isSquadron: true,
+        icon: "img\/icons\/f.png",
+        maxStrength: 0.6,
+        maxMovePoints: 2,
+        attributeLevels:
+        {
+          attack: 0.5,
+          defence: 0.5,
+          intelligence: 0.8,
+          speed: 0.7
+        },
+        abilities:
+        [
+          Abilities.rangedAttack,
+          Abilities.standBy
+        ]
+      }
+      export var shieldBoat: TypeTemplate =
+      {
+        type: "shieldBoat",
+        typeName: "Shield Boat",
+        isSquadron: false,
+        icon: "img\/icons\/b.png",
+        maxStrength: 0.9,
+        maxMovePoints: 1,
+        attributeLevels:
+        {
+          attack: 0.5,
+          defence: 0.9,
+          intelligence: 0.6,
+          speed: 0.4
+        },
+        abilities:
+        [
+          Abilities.guardSelf,
+          Abilities.rangedAttack,
           Abilities.standBy
         ]
       }
