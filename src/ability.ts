@@ -8,6 +8,8 @@ module Rance
   export function useAbility(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate, target: Unit)
   {
+    target = getTargetOrGuard(battle, user, ability, target);
+
     var isValidTarget = validateTarget(battle, user, ability, target);
 
     if (!isValidTarget)
@@ -33,6 +35,48 @@ module Rance
     var potentialTargets = getPotentialTargets(battle, user, ability);
 
     return potentialTargets.indexOf(target) >= 0;
+  }
+  export function getTargetOrGuard(battle: Battle, user: Unit,
+    ability: Templates.AbilityTemplate, target: Unit)
+  {
+    var guarding = getGuardTargets(battle, user, ability);
+    guarding = guarding.filter(function(unit)
+    {
+      return unit !== target;
+    });
+
+    guarding = guarding.sort(function(a: Unit, b: Unit)
+    {
+      return a.battleStats.guard - b.battleStats.guard;
+    });
+
+    for (var i = 0; i < guarding.length; i++)
+    {
+      var guardRoll = Math.random() * 100;
+
+      if (guardRoll <= guarding[i].battleStats.guard)
+      {
+        return guarding[i];
+      }
+    }
+
+    return target;
+  }
+  export function getGuardTargets(battle: Battle, user: Unit,
+    ability: Templates.AbilityTemplate)
+  {
+    var enemyTargets = getPotentialTargets(battle, user, ability);
+
+    var guardTargets: Unit[] = [];
+    for (var i = 0; i < enemyTargets.length; i++)
+    {
+      if (enemyTargets[i].battleStats.guard > 0)
+      {
+        guardTargets.push(enemyTargets[i]);
+      }
+    }
+
+    return guardTargets;
   }
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate): Unit[]

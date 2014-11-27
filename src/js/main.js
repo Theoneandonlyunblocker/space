@@ -3915,6 +3915,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     function useAbility(battle, user, ability, target) {
+        target = getTargetOrGuard(battle, user, ability, target);
+
         var isValidTarget = validateTarget(battle, user, ability, target);
 
         if (!isValidTarget) {
@@ -3939,6 +3941,40 @@ var Rance;
         return potentialTargets.indexOf(target) >= 0;
     }
     Rance.validateTarget = validateTarget;
+    function getTargetOrGuard(battle, user, ability, target) {
+        var guarding = getGuardTargets(battle, user, ability);
+        guarding = guarding.filter(function (unit) {
+            return unit !== target;
+        });
+
+        guarding = guarding.sort(function (a, b) {
+            return a.battleStats.guard - b.battleStats.guard;
+        });
+
+        for (var i = 0; i < guarding.length; i++) {
+            var guardRoll = Math.random() * 100;
+
+            if (guardRoll <= guarding[i].battleStats.guard) {
+                return guarding[i];
+            }
+        }
+
+        return target;
+    }
+    Rance.getTargetOrGuard = getTargetOrGuard;
+    function getGuardTargets(battle, user, ability) {
+        var enemyTargets = getPotentialTargets(battle, user, ability);
+
+        var guardTargets = [];
+        for (var i = 0; i < enemyTargets.length; i++) {
+            if (enemyTargets[i].battleStats.guard > 0) {
+                guardTargets.push(enemyTargets[i]);
+            }
+        }
+
+        return guardTargets;
+    }
+    Rance.getGuardTargets = getGuardTargets;
     function getPotentialTargets(battle, user, ability) {
         if (ability.targetRange === "self") {
             return [user];
@@ -4270,6 +4306,8 @@ var Rance;
             if (this.currentStrength < 0) {
                 this.currentStrength = 0;
             }
+
+            this.addGuard(-50);
         };
         Unit.prototype.removeActionPoints = function (amount) {
             if (amount === "all") {
@@ -4337,6 +4375,9 @@ var Rance;
         };
         Unit.prototype.addGuard = function (amount) {
             this.battleStats.guard += amount;
+
+            if (this.battleStats.guard < 0)
+                this.battleStats.guard = 0;
         };
         return Unit;
     })();

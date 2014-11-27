@@ -149,6 +149,8 @@ module Rance
       {
         this.currentStrength = 0;
       }
+
+      this.addGuard(-50);
     }
     removeActionPoints(amount: any)
     {
@@ -235,6 +237,8 @@ module Rance
     addGuard(amount: number)
     {
       this.battleStats.guard += amount;
+
+      if (this.battleStats.guard < 0) this.battleStats.guard = 0;
     }
   }
 }

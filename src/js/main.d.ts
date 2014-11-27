@@ -606,6 +606,8 @@ declare module Rance {
 declare module Rance {
     function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): void;
     function validateTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): boolean;
+    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit;
+    function getGuardTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
     function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
