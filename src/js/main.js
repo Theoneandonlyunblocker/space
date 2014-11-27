@@ -2167,6 +2167,9 @@ var Rance;
                     location: this.props.star
                 });
 
+                if (!building.controller)
+                    building.controller = player1;
+
                 this.props.star.addBuilding(building);
                 building.controller.money -= template.buildCost;
                 this.updateBuildings();
@@ -2399,10 +2402,7 @@ var Rance;
                 }, Rance.UIComponents.GalaxyMapUI({
                     playerControl: this.props.playerControl,
                     player: this.props.player
-                }), Rance.UIComponents.PopupManager({})), Rance.UIComponents.MapGenControls({
-                    mapGen: this.props.galaxyMap.mapGen,
-                    renderMap: this.renderMap
-                }), React.DOM.select({
+                }), Rance.UIComponents.PopupManager({})), React.DOM.select({
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
@@ -3049,6 +3049,10 @@ var Rance;
             }
 
             buildings.push(building);
+
+            if (building.template.category === "defence") {
+                this.updateController();
+            }
         };
         Star.prototype.removeBuilding = function (building) {
             if (!this.buildings[building.template.category] || this.buildings[building.template.category].indexOf(building) < 0) {
@@ -3079,6 +3083,9 @@ var Rance;
 
             var oldOwner = this.owner;
             if (oldOwner) {
+                if (oldOwner === newOwner)
+                    return;
+
                 oldOwner.removeStar(this);
             }
             var newOwner = this.buildings["defence"][0].controller;
@@ -3086,6 +3093,8 @@ var Rance;
             newOwner.addStar(this);
 
             this.owner = newOwner;
+
+            Rance.eventManager.dispatchEvent("renderMap");
         };
         Star.prototype.getIncome = function () {
             var tempBuildingIncome = 0;

@@ -60,6 +60,11 @@ module Rance
       }
 
       buildings.push(building);
+
+      if (building.template.category === "defence")
+      {
+        this.updateController();
+      }
     }
     removeBuilding(building: Building)
     {
@@ -99,6 +104,8 @@ module Rance
       var oldOwner = this.owner;
       if (oldOwner)
       {
+        if (oldOwner === newOwner) return;
+
         oldOwner.removeStar(this);
       }
       var newOwner = this.buildings["defence"][0].controller;
@@ -106,6 +113,8 @@ module Rance
       newOwner.addStar(this);
 
       this.owner = newOwner;
+
+      eventManager.dispatchEvent("renderMap");
     }
     getIncome()
     {

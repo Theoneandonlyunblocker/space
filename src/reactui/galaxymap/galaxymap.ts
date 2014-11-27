@@ -41,11 +41,6 @@ module Rance
                 
               })
             ),
-            UIComponents.MapGenControls(
-            {
-              mapGen: this.props.galaxyMap.mapGen,
-              renderMap: this.renderMap
-            }),
             React.DOM.select(
             {
               className: "reactui-selector",

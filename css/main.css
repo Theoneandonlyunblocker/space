@@ -480,6 +480,12 @@ body {
 .galaxy-map-ui > * {
   pointer-events: auto;
 }
+.galaxy-map-ui-top {
+  pointer-events: none;
+}
+.galaxy-map-ui-top > * {
+  pointer-events: auto;
+}
 .prevent-pointer-events {
   pointer-events: none !important;
 }
@@ -623,7 +629,6 @@ body {
   left: 0;
   display: inline-flex;
   flex-flow: column;
-  border: 1px solid black;
 }
 .possible-actions-container {
   display: flex;
@@ -638,11 +643,14 @@ body {
   background-color: white;
   display: flex;
   flex-flow: column;
+  flex: 1;
+  min-width: 64px;
 }
 .possible-action {
   display: flex;
   flex-flow: row;
   flex: 0 auto;
+  cursor: pointer;
 }
 .possible-action-title {
   align-self: center;
@@ -717,4 +725,10 @@ body {
     position: absolute;
     right: 5px;
   }
+}
+.buildable-building {
+  cursor: pointer;
+}
+.buildable-building:hover {
+  background-color: grey;
 }
