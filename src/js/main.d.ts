@@ -630,9 +630,10 @@ declare module Rance {
     function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit;
     function getGuarders(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit[];
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
-    function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
+    function getFleetsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
     function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
+    function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {};
 }
 declare module Rance {

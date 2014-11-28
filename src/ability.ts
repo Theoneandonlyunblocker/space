@@ -1,3 +1,4 @@
+/// <reference path="../data/templates/effecttemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
@@ -17,19 +18,23 @@ module Rance
     target = getTargetOrGuard(battle, user, ability, target);
 
     var previousUserGuard = user.battleStats.guard.value;
-    var targetsInArea = getUnitsInAbilityArea(battle, user, ability, target.battleStats.position);
 
-    for (var i = 0; i < targetsInArea.length; i++)
+    var effectsToCall = [ability.mainEffect];
+    if (ability.secondaryEffects)
     {
-      var target = targetsInArea[i];
+      effectsToCall = effectsToCall.concat(ability.secondaryEffects);
+    }
 
-      ability.mainEffect.effect.call(null, user, target);
-      if (ability.secondaryEffects)
+    for (var i = 0; i < effectsToCall.length; i++)
+    {
+      var effect = effectsToCall[i];
+      var targetsInArea = getUnitsInEffectArea(battle, user, effect, target.battleStats.position);
+
+      for (var j = 0; j < targetsInArea.length; j++)
       {
-        for (var j = 0; j < ability.secondaryEffects.length; j++)
-        {
-          ability.secondaryEffects[i].effect.call(null, user, target);
-        }
+        var target = targetsInArea[j];
+
+        effect.effect.call(null, user, target);
       }
     }
 
@@ -99,7 +104,7 @@ module Rance
     {
       return [user];
     }
-    var fleetsToTarget = getFleetsToTarget(battle, user, ability);
+    var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect);
 
     if (ability.mainEffect.targetRange === "close")
     {
@@ -140,7 +145,7 @@ module Rance
     throw new Error();
   }
   export function getFleetsToTarget(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate): Unit[][]
+    effect: Templates.IEffectTemplate): Unit[][]
   {
     var nullFleet =
     [
@@ -150,7 +155,7 @@ module Rance
     var insertNullBefore;
     var toConcat;
 
-    switch (ability.mainEffect.targetFleets)
+    switch (effect.targetFleets)
     {
       case "all":
       {
@@ -195,9 +200,14 @@ module Rance
   export function getUnitsInAbilityArea(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate, target: number[]): Unit[]
   {
-    var targetFleets = getFleetsToTarget(battle, user, ability);
+    return getUnitsInEffectArea(battle, user, ability.mainEffect, target);
+  }
+  export function getUnitsInEffectArea(battle: Battle, user: Unit,
+    effect: Templates.IEffectTemplate, target: number[]): Unit[]
+  {
+    var targetFleets = getFleetsToTarget(battle, user, effect);
 
-    var inArea = ability.mainEffect.targetingFunction(targetFleets, target);
+    var inArea = effect.targetingFunction(targetFleets, target);
 
     return inArea.filter(Boolean);
   }

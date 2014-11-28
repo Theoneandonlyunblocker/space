@@ -3989,6 +3989,7 @@ var Rance;
     })();
     Rance.Battle = Battle;
 })(Rance || (Rance = {}));
+/// <reference path="../data/templates/effecttemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
@@ -4004,16 +4005,20 @@ var Rance;
         target = getTargetOrGuard(battle, user, ability, target);
 
         var previousUserGuard = user.battleStats.guard.value;
-        var targetsInArea = getUnitsInAbilityArea(battle, user, ability, target.battleStats.position);
 
-        for (var i = 0; i < targetsInArea.length; i++) {
-            var target = targetsInArea[i];
+        var effectsToCall = [ability.mainEffect];
+        if (ability.secondaryEffects) {
+            effectsToCall = effectsToCall.concat(ability.secondaryEffects);
+        }
 
-            ability.mainEffect.effect.call(null, user, target);
-            if (ability.secondaryEffects) {
-                for (var j = 0; j < ability.secondaryEffects.length; j++) {
-                    ability.secondaryEffects[i].effect.call(null, user, target);
-                }
+        for (var i = 0; i < effectsToCall.length; i++) {
+            var effect = effectsToCall[i];
+            var targetsInArea = getUnitsInEffectArea(battle, user, effect, target.battleStats.position);
+
+            for (var j = 0; j < targetsInArea.length; j++) {
+                var target = targetsInArea[j];
+
+                effect.effect.call(null, user, target);
             }
         }
 
@@ -4069,7 +4074,7 @@ var Rance;
         if (ability.mainEffect.targetRange === "self") {
             return [user];
         }
-        var fleetsToTarget = getFleetsToTarget(battle, user, ability);
+        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect);
 
         if (ability.mainEffect.targetRange === "close") {
             var farColumnForSide = {
@@ -4101,7 +4106,7 @@ var Rance;
         throw new Error();
     }
     Rance.getPotentialTargets = getPotentialTargets;
-    function getFleetsToTarget(battle, user, ability) {
+    function getFleetsToTarget(battle, user, effect) {
         var nullFleet = [
             [null, null, null, null],
             [null, null, null, null]
@@ -4109,7 +4114,7 @@ var Rance;
         var insertNullBefore;
         var toConcat;
 
-        switch (ability.mainEffect.targetFleets) {
+        switch (effect.targetFleets) {
             case "all": {
                 return battle.side1.concat(battle.side2);
             }
@@ -4144,13 +4149,17 @@ var Rance;
     }
     Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
     function getUnitsInAbilityArea(battle, user, ability, target) {
-        var targetFleets = getFleetsToTarget(battle, user, ability);
+        return getUnitsInEffectArea(battle, user, ability.mainEffect, target);
+    }
+    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
+    function getUnitsInEffectArea(battle, user, effect, target) {
+        var targetFleets = getFleetsToTarget(battle, user, effect);
 
-        var inArea = ability.mainEffect.targetingFunction(targetFleets, target);
+        var inArea = effect.targetingFunction(targetFleets, target);
 
         return inArea.filter(Boolean);
     }
-    Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
+    Rance.getUnitsInEffectArea = getUnitsInEffectArea;
 
     function getTargetsForAllAbilities(battle, user) {
         if (!user || !battle.activeUnit) {
