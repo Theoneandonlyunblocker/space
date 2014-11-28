@@ -42,7 +42,7 @@ module Rance
 
       render: function()
       {
-        if (this.state.buildingTemplates < 1) return null;
+        if (this.state.buildingTemplates.length < 1) return null;
         var rows = [];
 
         for (var i = 0; i < this.state.buildingTemplates.length; i++)

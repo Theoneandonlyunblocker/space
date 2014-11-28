@@ -1,5 +1,6 @@
 /// <reference path="attacktarget.ts"/>
-/// <reference path="../popups/buildablebuildinglist.ts"/>
+/// <reference path="buildablebuildinglist.ts"/>
+/// <reference path="buildableshipslist.ts"/>
 
 module Rance
 {
@@ -18,7 +19,7 @@ module Rance
       componentWillReceiveProps: function(newProps: any)
       {
         if (this.props.selectedStar !== newProps.selectedStar &&
-          this.state.expandedAction === "buildBuildings")
+          this.state.expandedAction)
         {
           this.setState(
           {
@@ -29,13 +30,20 @@ module Rance
 
       buildBuildings: function()
       {
-        var star = this.props.selectedStar;
-
         this.setState(
         {
           expandedAction: "buildBuildings"
         });
       },
+
+      buildShips: function()
+      {
+        this.setState(
+        {
+          expandedAction: "buildShips"
+        });
+      },
+
 
       makeExpandedAction: function()
       {
@@ -48,6 +56,18 @@ module Rance
             return(
               UIComponents.BuildableBuildingList(
               {
+                star: this.props.selectedStar
+              })
+            );
+          }
+          case "buildShips":
+          {
+            if (!this.props.selectedStar) return null;
+
+            return(
+              UIComponents.BuildableShipsList(
+              {
+                player: this.props.player,
                 star: this.props.selectedStar
               })
             );
@@ -92,20 +112,36 @@ module Rance
         }
 
         var star = this.props.selectedStar;
-        if (star && star.getBuildableBuildings().length > 0)
+        if (star)
         {
-          allActions.push(
-            React.DOM.div(
+          if (star.owner === this.props.player)
+          {
+            allActions.push(
+              React.DOM.div(
+              {
+                className: "possible-action",
+                onClick: this.buildShips,
+                key: "buildShipActions"
+              },
+                "build ship"
+              )
+            );
+
+            if (star.getBuildableBuildings().length > 0)
             {
-              className: "possible-action",
-              onClick: this.buildBuildings,
-              key: "buildActions"
-            },
-              "build"
-            )
-          );
+              allActions.push(
+                React.DOM.div(
+                {
+                  className: "possible-action",
+                  onClick: this.buildBuildings,
+                  key: "buildActions"
+                },
+                  "construct"
+                )
+              );
+            }
+          }
         }
-        
         
         return(
           React.DOM.div(

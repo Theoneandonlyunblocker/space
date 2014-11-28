@@ -2,7 +2,7 @@
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
-/// <reference path="possibleactions.ts"/>
+/// <reference path="../possibleactions/possibleactions.ts"/>
 
 module Rance
 {
@@ -92,7 +92,8 @@ module Rance
               UIComponents.PossibleActions(
               {
                 attackTargets: this.state.attackTargets,
-                selectedStar: this.state.selectedStar
+                selectedStar: this.state.selectedStar,
+                player: this.props.player
               }),
               React.DOM.button(
               {

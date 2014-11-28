@@ -1955,8 +1955,10 @@ var Rance;
                 return (React.DOM.div({
                     className: "fleet-selection"
                 }, fleetSelectionControls, React.DOM.div({
+                    className: "fleet-selection-selected-wrapper"
+                }, React.DOM.div({
                     className: "fleet-selection-selected"
-                }, fleetInfos, fleetContents)));
+                }, fleetInfos, fleetContents))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2206,7 +2208,7 @@ var Rance;
                 this.updateBuildings();
             },
             render: function () {
-                if (this.state.buildingTemplates < 1)
+                if (this.state.buildingTemplates.length < 1)
                     return null;
                 var rows = [];
 
@@ -2248,325 +2250,6 @@ var Rance;
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="attacktarget.ts"/>
-/// <reference path="../popups/buildablebuildinglist.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.PossibleActions = React.createClass({
-            getInitialState: function () {
-                return ({
-                    expandedAction: null
-                });
-            },
-            componentWillReceiveProps: function (newProps) {
-                if (this.props.selectedStar !== newProps.selectedStar && this.state.expandedAction === "buildBuildings") {
-                    this.setState({
-                        expandedAction: null
-                    });
-                }
-            },
-            buildBuildings: function () {
-                var star = this.props.selectedStar;
-
-                this.setState({
-                    expandedAction: "buildBuildings"
-                });
-            },
-            makeExpandedAction: function () {
-                switch (this.state.expandedAction) {
-                    case "buildBuildings": {
-                        if (!this.props.selectedStar)
-                            return null;
-
-                        return (Rance.UIComponents.BuildableBuildingList({
-                            star: this.props.selectedStar
-                        }));
-                    }
-                    default: {
-                        return null;
-                    }
-                }
-            },
-            render: function () {
-                var allActions = [];
-
-                var attackTargets = this.props.attackTargets;
-                if (attackTargets && attackTargets.length > 0) {
-                    var attackTargetComponents = [];
-                    for (var i = 0; i < attackTargets.length; i++) {
-                        var props = {
-                            key: i,
-                            attackTarget: attackTargets[i]
-                        };
-
-                        attackTargetComponents.push(Rance.UIComponents.AttackTarget(props));
-                    }
-                    allActions.push(React.DOM.div({
-                        className: "possible-action",
-                        key: "attackActions"
-                    }, React.DOM.div({ className: "possible-action-title" }, "attack"), attackTargetComponents));
-                }
-
-                var star = this.props.selectedStar;
-                if (star && star.getBuildableBuildings().length > 0) {
-                    allActions.push(React.DOM.div({
-                        className: "possible-action",
-                        onClick: this.buildBuildings,
-                        key: "buildActions"
-                    }, "build"));
-                }
-
-                return (React.DOM.div({
-                    className: "possible-actions-container"
-                }, React.DOM.div({
-                    className: "possible-actions"
-                }, allActions), React.DOM.div({
-                    className: "expanded-action"
-                }, this.makeExpandedAction())));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="topbar.ts"/>
-/// <reference path="fleetselection.ts"/>
-/// <reference path="fleetreorganization.ts"/>
-/// <reference path="starinfo.ts"/>
-/// <reference path="possibleactions.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.GalaxyMapUI = React.createClass({
-            endTurn: function () {
-                Rance.eventManager.dispatchEvent("endTurn", null);
-            },
-            getInitialState: function () {
-                var pc = this.props.playerControl;
-
-                return ({
-                    selectedFleets: pc.selectedFleets,
-                    currentlyReorganizing: pc.currentlyReorganizing,
-                    selectedStar: pc.selectedStar,
-                    attackTargets: pc.currentAttackTargets
-                });
-            },
-            updateSelection: function () {
-                var pc = this.props.playerControl;
-
-                var star = null;
-                if (pc.selectedStar)
-                    star = pc.selectedStar;
-                else if (pc.areAllFleetsInSameLocation()) {
-                    star = pc.selectedFleets[0].location;
-                }
-                ;
-
-                this.setState({
-                    selectedFleets: pc.selectedFleets,
-                    currentlyReorganizing: pc.currentlyReorganizing,
-                    selectedStar: star,
-                    attackTargets: pc.currentAttackTargets
-                });
-            },
-            closeReorganization: function () {
-                Rance.eventManager.dispatchEvent("endReorganizingFleets");
-                this.updateSelection();
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "galaxy-map-ui"
-                }, React.DOM.div({
-                    className: "galaxy-map-ui-top"
-                }, Rance.UIComponents.TopBar({
-                    player: this.props.player
-                }), React.DOM.div({
-                    className: "fleet-selection-container"
-                }, Rance.UIComponents.FleetSelection({
-                    selectedFleets: this.state.selectedFleets
-                }), Rance.UIComponents.FleetReorganization({
-                    fleets: this.state.currentlyReorganizing,
-                    closeReorganization: this.closeReorganization
-                }))), React.DOM.div({
-                    className: "galaxy-map-ui-bottom-left"
-                }, Rance.UIComponents.PossibleActions({
-                    attackTargets: this.state.attackTargets,
-                    selectedStar: this.state.selectedStar
-                }), React.DOM.button({
-                    onClick: this.endTurn
-                }, "End turn")), Rance.UIComponents.StarInfo({
-                    selectedStar: this.state.selectedStar
-                })));
-            },
-            componentWillMount: function () {
-                Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("playerControlUpdated", this.updateSelection);
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../mapgen/mapgencontrols.ts"/>
-/// <reference path="../popups/popupmanager.ts"/>
-/// <reference path="galaxymapui.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.GalaxyMap = React.createClass({
-            renderMap: function () {
-                this.props.galaxyMap.mapRenderer.render();
-            },
-            switchMapMode: function () {
-                var newMode = this.refs.mapModeSelector.getDOMNode().value;
-
-                this.props.galaxyMap.mapRenderer.setMapMode(newMode);
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "galaxy-map"
-                }, React.DOM.div({
-                    ref: "pixiContainer",
-                    id: "pixi-container"
-                }, Rance.UIComponents.GalaxyMapUI({
-                    playerControl: this.props.playerControl,
-                    player: this.props.player
-                }), Rance.UIComponents.PopupManager({})), React.DOM.select({
-                    className: "reactui-selector",
-                    ref: "mapModeSelector",
-                    onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"))));
-            },
-            componentDidMount: function () {
-                if (mapRenderer)
-                    mapRenderer.resetContainer();
-
-                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
-                this.props.renderer.init();
-                this.props.renderer.bindRendererView();
-
-                mapRenderer = new Rance.MapRenderer();
-                mapRenderer.setParent(renderer.layers["map"]);
-                this.props.galaxyMap.mapRenderer = mapRenderer;
-                mapRenderer.galaxyMap = galaxyMap;
-
-                this.props.galaxyMap.mapRenderer.setMapMode("default");
-
-                this.props.renderer.render();
-
-                if (!this.props.galaxyMap.mapGen.points[0]) {
-                    this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
-                }
-                this.renderMap();
-
-                this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.mapGen.points[0]);
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../../lib/react.d.ts" />
-/// <reference path="battle/battle.ts"/>
-/// <reference path="unitlist/unitlist.ts"/>
-/// <reference path="battleprep/battleprep.ts"/>
-/// <reference path="mapgen/mapgen.ts"/>
-/// <reference path="galaxymap/galaxymap.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.Stage = React.createClass({
-            changeScene: function () {
-                var newScene = this.refs.sceneSelector.getDOMNode().value;
-
-                this.props.changeSceneFunction(newScene);
-            },
-            render: function () {
-                var elementsToRender = [];
-
-                switch (this.props.sceneToRender) {
-                    case "battle": {
-                        elementsToRender.push(Rance.UIComponents.Battle({
-                            battle: this.props.battle,
-                            key: "battle"
-                        }));
-                        break;
-                    }
-                    case "mapGen": {
-                        elementsToRender.push(Rance.UIComponents.MapGen({
-                            renderer: this.props.renderer,
-                            mapGen: this.props.mapGen,
-                            key: "mapGen"
-                        }));
-                        break;
-                    }
-                    case "battlePrep": {
-                        elementsToRender.push(Rance.UIComponents.BattlePrep({
-                            battlePrep: this.props.battlePrep,
-                            key: "battlePrep"
-                        }));
-                        break;
-                    }
-                    case "galaxyMap": {
-                        elementsToRender.push(Rance.UIComponents.GalaxyMap({
-                            renderer: this.props.renderer,
-                            galaxyMap: this.props.galaxyMap,
-                            playerControl: this.props.playerControl,
-                            player: this.props.player,
-                            key: "galaxyMap"
-                        }));
-                        break;
-                    }
-                }
-                return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
-                    className: "reactui-selector",
-                    ref: "sceneSelector",
-                    value: this.props.sceneToRender,
-                    onChange: this.changeScene
-                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../../lib/react.d.ts" />
-/// <reference path="../eventmanager.ts"/>
-/// <reference path="stage.ts"/>
-var Rance;
-(function (Rance) {
-    var ReactUI = (function () {
-        function ReactUI(container) {
-            this.container = container;
-            this.addEventListeners();
-        }
-        ReactUI.prototype.addEventListeners = function () {
-            var self = this;
-            Rance.eventManager.addEventListener("switchScene", function (e) {
-                self.switchScene(e.data);
-            });
-        };
-        ReactUI.prototype.switchScene = function (newScene) {
-            console.log(newScene);
-            this.currentScene = newScene;
-            this.render();
-        };
-        ReactUI.prototype.render = function () {
-            this.stage = React.renderComponent(Rance.UIComponents.Stage({
-                sceneToRender: this.currentScene,
-                changeSceneFunction: this.switchScene.bind(this),
-                battle: this.battle,
-                battlePrep: this.battlePrep,
-                renderer: this.renderer,
-                mapGen: this.mapGen,
-                galaxyMap: this.galaxyMap,
-                playerControl: this.playerControl,
-                player: this.player
-            }), this.container);
-        };
-        return ReactUI;
-    })();
-    Rance.ReactUI = ReactUI;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
@@ -2920,7 +2603,7 @@ var Rance;
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
                 effect: function (user, target) {
-                    target.addGuard(50, "column");
+                    user.addGuard(50, "column");
                 }
             };
 
@@ -3006,6 +2689,7 @@ var Rance;
                 type: "fighterSquadron",
                 typeName: "Fighter Squadron",
                 isSquadron: true,
+                buildCost: 200,
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.7,
                 maxMovePoints: 2,
@@ -3024,6 +2708,7 @@ var Rance;
                 type: "bomberSquadron",
                 typeName: "Bomber Squadron",
                 isSquadron: true,
+                buildCost: 200,
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.5,
                 maxMovePoints: 1,
@@ -3043,6 +2728,7 @@ var Rance;
                 type: "battleCruiser",
                 typeName: "Battlecruiser",
                 isSquadron: false,
+                buildCost: 200,
                 icon: "img\/icons\/b.png",
                 maxStrength: 1,
                 maxMovePoints: 1,
@@ -3062,6 +2748,7 @@ var Rance;
                 type: "scout",
                 typeName: "Scout",
                 isSquadron: true,
+                buildCost: 200,
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.6,
                 maxMovePoints: 2,
@@ -3080,6 +2767,7 @@ var Rance;
                 type: "shieldBoat",
                 typeName: "Shield Boat",
                 isSquadron: false,
+                buildCost: 200,
                 icon: "img\/icons\/b.png",
                 maxStrength: 0.9,
                 maxMovePoints: 1,
@@ -3800,6 +3488,15 @@ var Rance;
 
             return income;
         };
+        Player.prototype.getBuildableShips = function () {
+            var templates = [];
+
+            for (var type in Rance.Templates.ShipTypes) {
+                templates.push(Rance.Templates.ShipTypes[type]);
+            }
+
+            return templates;
+        };
         return Player;
     })();
     Rance.Player = Player;
@@ -4499,6 +4196,451 @@ var Rance;
         return Unit;
     })();
     Rance.Unit = Unit;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BuildableShip = React.createClass({
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "buildable-ship-list-item-cell " + type;
+
+                var cellContent;
+
+                switch (type) {
+                    default: {
+                        cellContent = this.props[type];
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var cells = [];
+                var columns = this.props.activeColumns;
+
+                for (var i = 0; i < columns.length; i++) {
+                    cells.push(this.makeCell(columns[i].key));
+                }
+
+                return (React.DOM.tr({
+                    className: "buildable-ship",
+                    onClick: this.props.handleClick
+                }, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../../unit.ts" />
+/// <reference path="../../fleet.ts" />
+/// <reference path="../unitlist/list.ts" />
+/// <reference path="buildableship.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BuildableShipsList = React.createClass({
+            getInitialState: function () {
+                return ({
+                    shipTemplates: this.props.player.getBuildableShips()
+                });
+            },
+            buildShip: function (rowItem) {
+                var template = rowItem.data.template;
+
+                var ship = new Rance.Unit(template);
+                this.props.player.addUnit(ship);
+
+                var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
+            },
+            render: function () {
+                if (this.state.shipTemplates.length < 1)
+                    return null;
+                var rows = [];
+
+                for (var i = 0; i < this.state.shipTemplates.length; i++) {
+                    var template = this.state.shipTemplates[i];
+
+                    var data = {
+                        template: template,
+                        typeName: template.typeName,
+                        buildCost: template.buildCost,
+                        rowConstructor: Rance.UIComponents.BuildableShip
+                    };
+
+                    rows.push({
+                        key: i,
+                        data: data
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Cost",
+                        key: "buildCost",
+                        defaultOrder: "desc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "buildable-ship-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    onRowChange: this.buildShip
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="attacktarget.ts"/>
+/// <reference path="buildablebuildinglist.ts"/>
+/// <reference path="buildableshipslist.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.PossibleActions = React.createClass({
+            getInitialState: function () {
+                return ({
+                    expandedAction: null
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (this.props.selectedStar !== newProps.selectedStar && this.state.expandedAction) {
+                    this.setState({
+                        expandedAction: null
+                    });
+                }
+            },
+            buildBuildings: function () {
+                this.setState({
+                    expandedAction: "buildBuildings"
+                });
+            },
+            buildShips: function () {
+                this.setState({
+                    expandedAction: "buildShips"
+                });
+            },
+            makeExpandedAction: function () {
+                switch (this.state.expandedAction) {
+                    case "buildBuildings": {
+                        if (!this.props.selectedStar)
+                            return null;
+
+                        return (Rance.UIComponents.BuildableBuildingList({
+                            star: this.props.selectedStar
+                        }));
+                    }
+                    case "buildShips": {
+                        if (!this.props.selectedStar)
+                            return null;
+
+                        return (Rance.UIComponents.BuildableShipsList({
+                            player: this.props.player,
+                            star: this.props.selectedStar
+                        }));
+                    }
+                    default: {
+                        return null;
+                    }
+                }
+            },
+            render: function () {
+                var allActions = [];
+
+                var attackTargets = this.props.attackTargets;
+                if (attackTargets && attackTargets.length > 0) {
+                    var attackTargetComponents = [];
+                    for (var i = 0; i < attackTargets.length; i++) {
+                        var props = {
+                            key: i,
+                            attackTarget: attackTargets[i]
+                        };
+
+                        attackTargetComponents.push(Rance.UIComponents.AttackTarget(props));
+                    }
+                    allActions.push(React.DOM.div({
+                        className: "possible-action",
+                        key: "attackActions"
+                    }, React.DOM.div({ className: "possible-action-title" }, "attack"), attackTargetComponents));
+                }
+
+                var star = this.props.selectedStar;
+                if (star) {
+                    if (star.owner === this.props.player) {
+                        allActions.push(React.DOM.div({
+                            className: "possible-action",
+                            onClick: this.buildShips,
+                            key: "buildShipActions"
+                        }, "build ship"));
+
+                        if (star.getBuildableBuildings().length > 0) {
+                            allActions.push(React.DOM.div({
+                                className: "possible-action",
+                                onClick: this.buildBuildings,
+                                key: "buildActions"
+                            }, "construct"));
+                        }
+                    }
+                }
+
+                return (React.DOM.div({
+                    className: "possible-actions-container"
+                }, React.DOM.div({
+                    className: "possible-actions"
+                }, allActions), React.DOM.div({
+                    className: "expanded-action"
+                }, this.makeExpandedAction())));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="topbar.ts"/>
+/// <reference path="fleetselection.ts"/>
+/// <reference path="fleetreorganization.ts"/>
+/// <reference path="starinfo.ts"/>
+/// <reference path="../possibleactions/possibleactions.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.GalaxyMapUI = React.createClass({
+            endTurn: function () {
+                Rance.eventManager.dispatchEvent("endTurn", null);
+            },
+            getInitialState: function () {
+                var pc = this.props.playerControl;
+
+                return ({
+                    selectedFleets: pc.selectedFleets,
+                    currentlyReorganizing: pc.currentlyReorganizing,
+                    selectedStar: pc.selectedStar,
+                    attackTargets: pc.currentAttackTargets
+                });
+            },
+            updateSelection: function () {
+                var pc = this.props.playerControl;
+
+                var star = null;
+                if (pc.selectedStar)
+                    star = pc.selectedStar;
+                else if (pc.areAllFleetsInSameLocation()) {
+                    star = pc.selectedFleets[0].location;
+                }
+                ;
+
+                this.setState({
+                    selectedFleets: pc.selectedFleets,
+                    currentlyReorganizing: pc.currentlyReorganizing,
+                    selectedStar: star,
+                    attackTargets: pc.currentAttackTargets
+                });
+            },
+            closeReorganization: function () {
+                Rance.eventManager.dispatchEvent("endReorganizingFleets");
+                this.updateSelection();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "galaxy-map-ui"
+                }, React.DOM.div({
+                    className: "galaxy-map-ui-top"
+                }, Rance.UIComponents.TopBar({
+                    player: this.props.player
+                }), React.DOM.div({
+                    className: "fleet-selection-container"
+                }, Rance.UIComponents.FleetSelection({
+                    selectedFleets: this.state.selectedFleets
+                }), Rance.UIComponents.FleetReorganization({
+                    fleets: this.state.currentlyReorganizing,
+                    closeReorganization: this.closeReorganization
+                }))), React.DOM.div({
+                    className: "galaxy-map-ui-bottom-left"
+                }, Rance.UIComponents.PossibleActions({
+                    attackTargets: this.state.attackTargets,
+                    selectedStar: this.state.selectedStar,
+                    player: this.props.player
+                }), React.DOM.button({
+                    onClick: this.endTurn
+                }, "End turn")), Rance.UIComponents.StarInfo({
+                    selectedStar: this.state.selectedStar
+                })));
+            },
+            componentWillMount: function () {
+                Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("playerControlUpdated", this.updateSelection);
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../mapgen/mapgencontrols.ts"/>
+/// <reference path="../popups/popupmanager.ts"/>
+/// <reference path="galaxymapui.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.GalaxyMap = React.createClass({
+            renderMap: function () {
+                this.props.galaxyMap.mapRenderer.render();
+            },
+            switchMapMode: function () {
+                var newMode = this.refs.mapModeSelector.getDOMNode().value;
+
+                this.props.galaxyMap.mapRenderer.setMapMode(newMode);
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "galaxy-map"
+                }, React.DOM.div({
+                    ref: "pixiContainer",
+                    id: "pixi-container"
+                }, Rance.UIComponents.GalaxyMapUI({
+                    playerControl: this.props.playerControl,
+                    player: this.props.player
+                }), Rance.UIComponents.PopupManager({})), React.DOM.select({
+                    className: "reactui-selector",
+                    ref: "mapModeSelector",
+                    onChange: this.switchMapMode
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"))));
+            },
+            componentDidMount: function () {
+                if (mapRenderer)
+                    mapRenderer.resetContainer();
+
+                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
+                this.props.renderer.init();
+                this.props.renderer.bindRendererView();
+
+                mapRenderer = new Rance.MapRenderer();
+                mapRenderer.setParent(renderer.layers["map"]);
+                this.props.galaxyMap.mapRenderer = mapRenderer;
+                mapRenderer.galaxyMap = galaxyMap;
+
+                this.props.galaxyMap.mapRenderer.setMapMode("default");
+
+                this.props.renderer.render();
+
+                if (!this.props.galaxyMap.mapGen.points[0]) {
+                    this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+                }
+                this.renderMap();
+
+                this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.mapGen.points[0]);
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../../lib/react.d.ts" />
+/// <reference path="battle/battle.ts"/>
+/// <reference path="unitlist/unitlist.ts"/>
+/// <reference path="battleprep/battleprep.ts"/>
+/// <reference path="mapgen/mapgen.ts"/>
+/// <reference path="galaxymap/galaxymap.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Stage = React.createClass({
+            changeScene: function () {
+                var newScene = this.refs.sceneSelector.getDOMNode().value;
+
+                this.props.changeSceneFunction(newScene);
+            },
+            render: function () {
+                var elementsToRender = [];
+
+                switch (this.props.sceneToRender) {
+                    case "battle": {
+                        elementsToRender.push(Rance.UIComponents.Battle({
+                            battle: this.props.battle,
+                            key: "battle"
+                        }));
+                        break;
+                    }
+                    case "mapGen": {
+                        elementsToRender.push(Rance.UIComponents.MapGen({
+                            renderer: this.props.renderer,
+                            mapGen: this.props.mapGen,
+                            key: "mapGen"
+                        }));
+                        break;
+                    }
+                    case "battlePrep": {
+                        elementsToRender.push(Rance.UIComponents.BattlePrep({
+                            battlePrep: this.props.battlePrep,
+                            key: "battlePrep"
+                        }));
+                        break;
+                    }
+                    case "galaxyMap": {
+                        elementsToRender.push(Rance.UIComponents.GalaxyMap({
+                            renderer: this.props.renderer,
+                            galaxyMap: this.props.galaxyMap,
+                            playerControl: this.props.playerControl,
+                            player: this.props.player,
+                            key: "galaxyMap"
+                        }));
+                        break;
+                    }
+                }
+                return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
+                    className: "reactui-selector",
+                    ref: "sceneSelector",
+                    value: this.props.sceneToRender,
+                    onChange: this.changeScene
+                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../../lib/react.d.ts" />
+/// <reference path="../eventmanager.ts"/>
+/// <reference path="stage.ts"/>
+var Rance;
+(function (Rance) {
+    var ReactUI = (function () {
+        function ReactUI(container) {
+            this.container = container;
+            this.addEventListeners();
+        }
+        ReactUI.prototype.addEventListeners = function () {
+            var self = this;
+            Rance.eventManager.addEventListener("switchScene", function (e) {
+                self.switchScene(e.data);
+            });
+        };
+        ReactUI.prototype.switchScene = function (newScene) {
+            console.log(newScene);
+            this.currentScene = newScene;
+            this.render();
+        };
+        ReactUI.prototype.render = function () {
+            this.stage = React.renderComponent(Rance.UIComponents.Stage({
+                sceneToRender: this.currentScene,
+                changeSceneFunction: this.switchScene.bind(this),
+                battle: this.battle,
+                battlePrep: this.battlePrep,
+                renderer: this.renderer,
+                mapGen: this.mapGen,
+                galaxyMap: this.galaxyMap,
+                playerControl: this.playerControl,
+                player: this.player
+            }), this.container);
+        };
+        return ReactUI;
+    })();
+    Rance.ReactUI = ReactUI;
 })(Rance || (Rance = {}));
 /// <reference path="eventmanager.ts"/>
 /// <reference path="player.ts"/>
@@ -6791,11 +6933,6 @@ var Rance;
         setupFleetAndPlayer(player2);
 
         uniforms = {
-            baseColor: { type: "4fv", value: [1.0, 0.0, 0.0, 1.0] },
-            lineColor: { type: "4fv", value: [0.0, 1.0, 0.0, 1.0] },
-            gapSize: { type: "1f", value: 3.0 },
-            offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
-            zoom: { type: "1f", value: 1.0 },
             bgColor: { type: "3fv", value: PIXI.hex2rgb(0x101040) },
             time: { type: "1f", value: 0.0 }
         };

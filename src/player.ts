@@ -128,5 +128,16 @@ module Rance
 
       return income;
     }
+    getBuildableShips()
+    {
+      var templates = [];
+
+      for (var type in Templates.ShipTypes)
+      {
+        templates.push(Templates.ShipTypes[type]);
+      }
+
+      return templates;
+    }
   }  
 }

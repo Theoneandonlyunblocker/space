@@ -249,44 +249,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module UIComponents {
-        var PossibleActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    class ReactUI {
-        public container: HTMLElement;
-        public currentScene: string;
-        public stage: any;
-        public battle: Rance.Battle;
-        public battlePrep: Rance.BattlePrep;
-        public renderer: Rance.Renderer;
-        public mapGen: Rance.MapGen;
-        public galaxyMap: Rance.GalaxyMap;
-        public playerControl: Rance.PlayerControl;
-        public player: Rance.Player;
-        constructor(container: HTMLElement);
-        public addEventListeners(): void;
-        public switchScene(newScene: string): void;
-        public render(): void;
-    }
-}
-declare module Rance {
     function randInt(min: any, max: any): number;
     function randRange(min: any, max: any): any;
     function getRandomArrayItem(target: any[]): any;
@@ -381,6 +343,7 @@ declare module Rance {
             type: string;
             typeName: string;
             isSquadron: boolean;
+            buildCost: number;
             icon: string;
             maxStrength: number;
             maxMovePoints: number;
@@ -564,6 +527,7 @@ declare module Rance {
         public addStar(star: Rance.Star): boolean;
         public removeStar(star: Rance.Star): boolean;
         public getIncome(): number;
+        public getBuildableShips(): any[];
     }
 }
 declare module Rance {
@@ -711,6 +675,54 @@ declare module Rance {
         public removeGuard(amount: number): void;
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildableShip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildableShipsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PossibleActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    class ReactUI {
+        public container: HTMLElement;
+        public currentScene: string;
+        public stage: any;
+        public battle: Rance.Battle;
+        public battlePrep: Rance.BattlePrep;
+        public renderer: Rance.Renderer;
+        public mapGen: Rance.MapGen;
+        public galaxyMap: Rance.GalaxyMap;
+        public playerControl: Rance.PlayerControl;
+        public player: Rance.Player;
+        constructor(container: HTMLElement);
+        public addEventListeners(): void;
+        public switchScene(newScene: string): void;
+        public render(): void;
     }
 }
 declare module Rance {

@@ -39,11 +39,6 @@ module Rance
 
     uniforms =
     {
-      baseColor: {type: "4fv", value: [1.0, 0.0, 0.0, 1.0]},
-      lineColor: {type: "4fv", value: [0.0, 1.0, 0.0, 1.0]},
-      gapSize: {type: "1f", value: 3.0},
-      offset: {type: "2f", value: {x: 0.0, y: 0.0}},
-      zoom: {type: "1f", value: 1.0},
       bgColor: {type: "3fv", value: PIXI.hex2rgb(0x101040)},
       time: {type: "1f", value: 0.0}
     };

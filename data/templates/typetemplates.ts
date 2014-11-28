@@ -10,6 +10,7 @@ module Rance
       type: string;
       typeName: string;
       isSquadron: boolean;
+      buildCost: number;
       icon: string;
       maxStrength: number;
       maxMovePoints: number;
@@ -29,6 +30,7 @@ module Rance
         type: "fighterSquadron",
         typeName: "Fighter Squadron",
         isSquadron: true,
+        buildCost: 200,
         icon: "img\/icons\/f.png",
         maxStrength: 0.7,
         maxMovePoints: 2,
@@ -50,6 +52,7 @@ module Rance
         type: "bomberSquadron",
         typeName: "Bomber Squadron",
         isSquadron: true,
+        buildCost: 200,
         icon: "img\/icons\/f.png",
         maxStrength: 0.5,
         maxMovePoints: 1,
@@ -72,6 +75,7 @@ module Rance
         type: "battleCruiser",
         typeName: "Battlecruiser",
         isSquadron: false,
+        buildCost: 200,
         icon: "img\/icons\/b.png",
         maxStrength: 1,
         maxMovePoints: 1,
@@ -94,6 +98,7 @@ module Rance
         type: "scout",
         typeName: "Scout",
         isSquadron: true,
+        buildCost: 200,
         icon: "img\/icons\/f.png",
         maxStrength: 0.6,
         maxMovePoints: 2,
@@ -115,6 +120,7 @@ module Rance
         type: "shieldBoat",
         typeName: "Shield Boat",
         isSquadron: false,
+        buildCost: 200,
         icon: "img\/icons\/b.png",
         maxStrength: 0.9,
         maxMovePoints: 1,

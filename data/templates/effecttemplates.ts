@@ -100,7 +100,7 @@ module Rance
         targetRange: "self",
         effect: function(user: Unit, target: Unit)
         {
-          target.addGuard(50, "column");
+          user.addGuard(50, "column");
         }
       }
 
