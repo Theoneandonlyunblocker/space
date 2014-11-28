@@ -572,11 +572,16 @@ progress::-webkit-progress-value {
 .fleet-selection-controls {
   flex: 0 auto;
 }
-.fleet-selection-selected {
+.fleet-selection-selected-wrapper {
   overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 300px;
+}
+.fleet-selection-selected {
   display: inline-flex;
   flex-flow: column;
-  max-height: 300px;
+  width: 100%;
+  margin-right: 25px;
 }
 .fleet-info {
   display: inline-flex;

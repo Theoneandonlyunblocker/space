@@ -112,10 +112,15 @@ module Rance
             fleetSelectionControls,
             React.DOM.div(
             {
-              className: "fleet-selection-selected"
+              className: "fleet-selection-selected-wrapper"
             },
-              fleetInfos,
-              fleetContents
+              React.DOM.div(
+              {
+                className: "fleet-selection-selected"
+              },
+                fleetInfos,
+                fleetContents
+              )
             )
           )
         );
