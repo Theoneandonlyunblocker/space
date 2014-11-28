@@ -42,7 +42,11 @@ module Rance
       side: string;
       position: number[];
       currentActionPoints: number;
-      guard: number;
+      guard:
+      {
+        value: number;
+        coverage: string;
+      }
       //queuedAction: Action;
     };
 
@@ -132,7 +136,11 @@ module Rance
         battle: null,
         side: null,
         position: null,
-        guard: 0
+        guard:
+        {
+          coverage: null,
+          value: 0
+        }
       }
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
@@ -144,13 +152,13 @@ module Rance
 
     removeStrength(amount: number)
     {
-      this.currentStrength -= amount;
+      this.currentStrength -= Math.round(amount);
       if (this.currentStrength < 0)
       {
         this.currentStrength = 0;
       }
 
-      this.addGuard(-50);
+      this.removeGuard(50);
     }
     removeActionPoints(amount: any)
     {
@@ -175,6 +183,14 @@ module Rance
     {
       return this.currentStrength > 0;
     }
+    recieveDamage(amount: number, damageType: string)
+    {
+      var damageReduction = this.getDamageReduction(damageType);
+
+      var adjustedDamage = amount * damageReduction;
+
+      this.removeStrength(adjustedDamage);
+    }
     getAttackDamageIncrease(damageType: string)
     {
       var attackStat, attackFactor;
@@ -195,7 +211,7 @@ module Rance
         }
       }
 
-      return attackStat * attackFactor;
+      return 1 + attackStat * attackFactor;
     }
     getDamageReduction(damageType: string)
     {
@@ -206,6 +222,7 @@ module Rance
         case "physical":
         {
           defensiveStat = this.attributes.defence;
+          defensiveStat *= (1 + this.battleStats.guard.value / 100);
           defenceFactor = 0.08;
           break;
         }
@@ -217,7 +234,7 @@ module Rance
         }
       }
 
-      return defensiveStat * defenceFactor;
+      return 1 - defensiveStat * defenceFactor;
     }
     addToFleet(fleet: Fleet)
     {
@@ -234,11 +251,20 @@ module Rance
       player.removeUnit(this);
       this.fleet.removeShip(this);
     }
-    addGuard(amount: number)
+    removeGuard(amount: number)
     {
-      this.battleStats.guard += amount;
-
-      if (this.battleStats.guard < 0) this.battleStats.guard = 0;
+      this.battleStats.guard.value -= amount;
+      if (this.battleStats.guard.value < 0) this.removeAllGuard();
+    }
+    addGuard(amount: number, coverage: string)
+    {
+      this.battleStats.guard.value += amount;
+      this.battleStats.guard.coverage = coverage;
+    }
+    removeAllGuard()
+    {
+      this.battleStats.guard.value = 0;
+      this.battleStats.guard.coverage = null;
     }
   }
 }

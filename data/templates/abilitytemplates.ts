@@ -1,5 +1,4 @@
-/// <reference path="../../src/targeting.ts" />
-/// <reference path="../../src/unit.ts" />
+/// <reference path="effecttemplates.ts" />
 
 module Rance
 {
@@ -16,52 +15,47 @@ module Rance
         interruptsNeeded: number;
       };
       actionsUse: any; // number or "all"
-      targetFleets: string; // ally, enemy, all
-      targetingFunction: TargetingFunction;
-      targetRange: string; // self, close, all
-      effect: (user: Unit, target: Unit) => void;
+
+      mainEffect: IEffectTemplate;
+      secondaryEffects?: IEffectTemplate[];
     }
 
     export module Abilities
     {
+      export var dummyTargetColumn: AbilityTemplate =
+      {
+        name: "dummyTargetColumn",
+        moveDelay: 0,
+        actionsUse: 0,
+        mainEffect: Effects.dummyTargetColumn
+      }
+      export var dummyTargetAll: AbilityTemplate =
+      {
+        name: "dummyTargetAll",
+        moveDelay: 0,
+        actionsUse: 0,
+        mainEffect: Effects.dummyTargetAll
+      }
       export var rangedAttack: AbilityTemplate =
       {
         name: "rangedAttack",
         moveDelay: 100,
         actionsUse: 1,
-        targetFleets: "enemy",
-        targetingFunction: targetSingle,
-        targetRange: "all",
-        effect: function(user: Unit, target: Unit)
-        {
-          target.removeStrength(100);
-        }
+        mainEffect: Effects.rangedAttack
       }
       export var closeAttack: AbilityTemplate =
       {
         name: "closeAttack",
         moveDelay: 90,
         actionsUse: 2,
-        targetFleets: "enemy",
-        targetingFunction: targetColumnNeighbors,
-        targetRange: "close",
-        effect: function(user: Unit, target: Unit)
-        {
-          target.removeStrength(100);
-        }
+        mainEffect: Effects.closeAttack
       }
       export var wholeRowAttack: AbilityTemplate =
       {
         name: "wholeRowAttack",
         moveDelay: 300,
         actionsUse: 1,
-        targetFleets: "all",
-        targetingFunction: targetRow,
-        targetRange: "all",
-        effect: function(user: Unit, target: Unit)
-        {
-          target.removeStrength(100);
-        }
+        mainEffect: Effects.wholeRowAttack
       }
 
       export var bombAttack: AbilityTemplate =
@@ -69,26 +63,14 @@ module Rance
         name: "bombAttack",
         moveDelay: 120,
         actionsUse: 1,
-        targetFleets: "enemy",
-        targetingFunction: targetNeighbors,
-        targetRange: "all",
-        effect: function(user: Unit, target: Unit)
-        {
-          target.removeStrength(100);
-        }
+        mainEffect: Effects.bombAttack
       }
-      export var guardSelf: AbilityTemplate =
+      export var guardColumn: AbilityTemplate =
       {
-        name: "guardSelf",
+        name: "guardColumn",
         moveDelay: 100,
         actionsUse: 1,
-        targetFleets: "all",
-        targetingFunction: targetSingle,
-        targetRange: "self",
-        effect: function(user: Unit, target: Unit)
-        {
-          target.addGuard(50);
-        }
+        mainEffect: Effects.guardColumn
       }
 
       export var standBy: AbilityTemplate =
@@ -96,10 +78,7 @@ module Rance
         name: "standBy",
         moveDelay: 50,
         actionsUse: "all",
-        targetFleets: "all",
-        targetingFunction: targetSingle,
-        targetRange: "self",
-        effect: function(){}
+        mainEffect: Effects.standBy
       }
     }
   }

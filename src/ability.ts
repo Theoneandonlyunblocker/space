@@ -8,26 +8,38 @@ module Rance
   export function useAbility(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate, target: Unit)
   {
-    target = getTargetOrGuard(battle, user, ability, target);
-
     var isValidTarget = validateTarget(battle, user, ability, target);
-
     if (!isValidTarget)
     {
       console.warn("Invalid target");
     }
 
+    target = getTargetOrGuard(battle, user, ability, target);
+
+    var previousUserGuard = user.battleStats.guard.value;
     var targetsInArea = getUnitsInAbilityArea(battle, user, ability, target.battleStats.position);
 
     for (var i = 0; i < targetsInArea.length; i++)
     {
       var target = targetsInArea[i];
 
-      ability.effect.call(null, user, target);
+      ability.mainEffect.effect.call(null, user, target);
+      if (ability.secondaryEffects)
+      {
+        for (var j = 0; j < ability.secondaryEffects.length; j++)
+        {
+          ability.secondaryEffects[i].effect.call(null, user, target);
+        }
+      }
     }
 
     user.removeActionPoints(ability.actionsUse);
     user.addMoveDelay(ability.moveDelay);
+
+    if (user.battleStats.guard.value < previousUserGuard)
+    {
+      user.removeAllGuard();
+    }
   }
   export function validateTarget(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate, target: Unit)
@@ -39,22 +51,17 @@ module Rance
   export function getTargetOrGuard(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate, target: Unit)
   {
-    var guarding = getGuardTargets(battle, user, ability);
-    guarding = guarding.filter(function(unit)
-    {
-      return unit !== target;
-    });
+    var guarding = getGuarders(battle, user, ability, target);
 
     guarding = guarding.sort(function(a: Unit, b: Unit)
     {
-      return a.battleStats.guard - b.battleStats.guard;
+      return a.battleStats.guard.value - b.battleStats.guard.value;
     });
 
     for (var i = 0; i < guarding.length; i++)
     {
       var guardRoll = Math.random() * 100;
-
-      if (guardRoll <= guarding[i].battleStats.guard)
+      if (guardRoll <= guarding[i].battleStats.guard.value)
       {
         return guarding[i];
       }
@@ -62,32 +69,39 @@ module Rance
 
     return target;
   }
-  export function getGuardTargets(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate)
+  export function getGuarders(battle: Battle, user: Unit,
+    ability:Templates.AbilityTemplate, target: Unit)
   {
-    var enemyTargets = getPotentialTargets(battle, user, ability);
+    var allEnemies = getPotentialTargets(battle, user, Templates.Abilities.dummyTargetAll);
 
-    var guardTargets: Unit[] = [];
-    for (var i = 0; i < enemyTargets.length; i++)
+    var guarders = allEnemies.filter(function(unit: Unit)
     {
-      if (enemyTargets[i].battleStats.guard > 0)
+      if (unit.battleStats.guard.coverage === "all")
       {
-        guardTargets.push(enemyTargets[i]);
+        return unit.battleStats.guard.value > 0;
       }
-    }
+      else if (unit.battleStats.guard.coverage === "column")
+      {
+        // same column
+        if (unit.battleStats.position[0] === target.battleStats.position[0])
+        {
+          return unit.battleStats.guard.value > 0;
+        }
+      }
+    });
 
-    return guardTargets;
+    return guarders;
   }
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.AbilityTemplate): Unit[]
   {
-    if (ability.targetRange === "self")
+    if (ability.mainEffect.targetRange === "self")
     {
       return [user];
     }
     var fleetsToTarget = getFleetsToTarget(battle, user, ability);
 
-    if (ability.targetRange === "close")
+    if (ability.mainEffect.targetRange === "close")
     {
       var farColumnForSide =
       {
@@ -136,7 +150,7 @@ module Rance
     var insertNullBefore;
     var toConcat;
 
-    switch (ability.targetFleets)
+    switch (ability.mainEffect.targetFleets)
     {
       case "all":
       {
@@ -183,7 +197,7 @@ module Rance
   {
     var targetFleets = getFleetsToTarget(battle, user, ability);
 
-    var inArea = ability.targetingFunction(targetFleets, target);
+    var inArea = ability.mainEffect.targetingFunction(targetFleets, target);
 
     return inArea.filter(Boolean);
   }

@@ -101,21 +101,21 @@ var Rance;
             render: function () {
                 var statusElement = null;
 
-                if (this.props.guard) {
+                if (this.props.guard.value > 0) {
                     var guard = this.props.guard;
                     statusElement = React.DOM.div({
                         className: "guard-wrapper"
                     }, React.DOM.progress({
                         className: "guard-meter",
                         max: 100,
-                        value: guard
+                        value: guard.value
                     }), React.DOM.div({
                         className: "guard-text-container"
                     }, React.DOM.div({
                         className: "guard-text"
                     }, "Guard"), React.DOM.div({
                         className: "guard-amount"
-                    }, "" + guard + "%")));
+                    }, "" + guard.value + "%")));
                 }
 
                 return (React.DOM.div({ className: "unit-status" }, statusElement));
@@ -2846,33 +2846,57 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (Templates) {
-        (function (Abilities) {
-            Abilities.rangedAttack = {
+        (function (Effects) {
+            Effects.dummyTargetColumn = {
+                name: "dummyTargetColumn",
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetColumn,
+                targetRange: "all",
+                effect: function () {
+                }
+            };
+            Effects.dummyTargetAll = {
+                name: "dummyTargetAll",
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetAll,
+                targetRange: "all",
+                effect: function () {
+                }
+            };
+            Effects.rangedAttack = {
                 name: "rangedAttack",
-                moveDelay: 100,
-                actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
                 effect: function (user, target) {
-                    target.removeStrength(100);
+                    var baseDamage = 100;
+                    var damageType = "physical";
+
+                    var damageIncrease = user.getAttackDamageIncrease(damageType);
+                    var damage = baseDamage * damageIncrease;
+
+                    console.log(baseDamage, damageIncrease, damage);
+                    target.recieveDamage(damage, damageType);
                 }
             };
-            Abilities.closeAttack = {
+            Effects.closeAttack = {
                 name: "closeAttack",
-                moveDelay: 90,
-                actionsUse: 2,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetColumnNeighbors,
                 targetRange: "close",
                 effect: function (user, target) {
-                    target.removeStrength(100);
+                    var baseDamage = 100;
+                    var damageType = "physical";
+
+                    var damageIncrease = user.getAttackDamageIncrease(damageType);
+                    var damage = baseDamage * damageIncrease;
+
+                    console.log(baseDamage, damageIncrease, damage);
+                    target.recieveDamage(damage, damageType);
                 }
             };
-            Abilities.wholeRowAttack = {
+            Effects.wholeRowAttack = {
                 name: "wholeRowAttack",
-                moveDelay: 300,
-                actionsUse: 1,
                 targetFleets: "all",
                 targetingFunction: Rance.targetRow,
                 targetRange: "all",
@@ -2881,10 +2905,8 @@ var Rance;
                 }
             };
 
-            Abilities.bombAttack = {
+            Effects.bombAttack = {
                 name: "bombAttack",
-                moveDelay: 120,
-                actionsUse: 1,
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all",
@@ -2892,27 +2914,83 @@ var Rance;
                     target.removeStrength(100);
                 }
             };
-            Abilities.guardSelf = {
-                name: "guardSelf",
-                moveDelay: 100,
-                actionsUse: 1,
+            Effects.guardColumn = {
+                name: "guardColumn",
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
                 effect: function (user, target) {
-                    target.addGuard(50);
+                    target.addGuard(50, "column");
                 }
+            };
+
+            Effects.standBy = {
+                name: "standBy",
+                targetFleets: "all",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "self",
+                effect: function () {
+                }
+            };
+        })(Templates.Effects || (Templates.Effects = {}));
+        var Effects = Templates.Effects;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="effecttemplates.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Abilities) {
+            Abilities.dummyTargetColumn = {
+                name: "dummyTargetColumn",
+                moveDelay: 0,
+                actionsUse: 0,
+                mainEffect: Rance.Templates.Effects.dummyTargetColumn
+            };
+            Abilities.dummyTargetAll = {
+                name: "dummyTargetAll",
+                moveDelay: 0,
+                actionsUse: 0,
+                mainEffect: Rance.Templates.Effects.dummyTargetAll
+            };
+            Abilities.rangedAttack = {
+                name: "rangedAttack",
+                moveDelay: 100,
+                actionsUse: 1,
+                mainEffect: Rance.Templates.Effects.rangedAttack
+            };
+            Abilities.closeAttack = {
+                name: "closeAttack",
+                moveDelay: 90,
+                actionsUse: 2,
+                mainEffect: Rance.Templates.Effects.closeAttack
+            };
+            Abilities.wholeRowAttack = {
+                name: "wholeRowAttack",
+                moveDelay: 300,
+                actionsUse: 1,
+                mainEffect: Rance.Templates.Effects.wholeRowAttack
+            };
+
+            Abilities.bombAttack = {
+                name: "bombAttack",
+                moveDelay: 120,
+                actionsUse: 1,
+                mainEffect: Rance.Templates.Effects.bombAttack
+            };
+            Abilities.guardColumn = {
+                name: "guardColumn",
+                moveDelay: 100,
+                actionsUse: 1,
+                mainEffect: Rance.Templates.Effects.guardColumn
             };
 
             Abilities.standBy = {
                 name: "standBy",
                 moveDelay: 50,
                 actionsUse: "all",
-                targetFleets: "all",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "self",
-                effect: function () {
-                }
+                mainEffect: Rance.Templates.Effects.standBy
             };
         })(Templates.Abilities || (Templates.Abilities = {}));
         var Abilities = Templates.Abilities;
@@ -3012,7 +3090,7 @@ var Rance;
                     speed: 0.4
                 },
                 abilities: [
-                    Rance.Templates.Abilities.guardSelf,
+                    Rance.Templates.Abilities.guardColumn,
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.standBy
                 ]
@@ -3849,12 +3927,15 @@ var Rance;
                 if (unit.currentStrength <= 0) {
                     unit.die();
                 }
-                unit.resetBattleStats();
             });
 
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.finishBattle = function () {
+            this.forEachUnit(function (unit) {
+                unit.resetBattleStats();
+            });
+
             var victor = this.getVictor();
             if (this.battleData.building) {
                 if (victor) {
@@ -3915,24 +3996,33 @@ var Rance;
 var Rance;
 (function (Rance) {
     function useAbility(battle, user, ability, target) {
-        target = getTargetOrGuard(battle, user, ability, target);
-
         var isValidTarget = validateTarget(battle, user, ability, target);
-
         if (!isValidTarget) {
             console.warn("Invalid target");
         }
 
+        target = getTargetOrGuard(battle, user, ability, target);
+
+        var previousUserGuard = user.battleStats.guard.value;
         var targetsInArea = getUnitsInAbilityArea(battle, user, ability, target.battleStats.position);
 
         for (var i = 0; i < targetsInArea.length; i++) {
             var target = targetsInArea[i];
 
-            ability.effect.call(null, user, target);
+            ability.mainEffect.effect.call(null, user, target);
+            if (ability.secondaryEffects) {
+                for (var j = 0; j < ability.secondaryEffects.length; j++) {
+                    ability.secondaryEffects[i].effect.call(null, user, target);
+                }
+            }
         }
 
         user.removeActionPoints(ability.actionsUse);
         user.addMoveDelay(ability.moveDelay);
+
+        if (user.battleStats.guard.value < previousUserGuard) {
+            user.removeAllGuard();
+        }
     }
     Rance.useAbility = useAbility;
     function validateTarget(battle, user, ability, target) {
@@ -3942,19 +4032,15 @@ var Rance;
     }
     Rance.validateTarget = validateTarget;
     function getTargetOrGuard(battle, user, ability, target) {
-        var guarding = getGuardTargets(battle, user, ability);
-        guarding = guarding.filter(function (unit) {
-            return unit !== target;
-        });
+        var guarding = getGuarders(battle, user, ability, target);
 
         guarding = guarding.sort(function (a, b) {
-            return a.battleStats.guard - b.battleStats.guard;
+            return a.battleStats.guard.value - b.battleStats.guard.value;
         });
 
         for (var i = 0; i < guarding.length; i++) {
             var guardRoll = Math.random() * 100;
-
-            if (guardRoll <= guarding[i].battleStats.guard) {
+            if (guardRoll <= guarding[i].battleStats.guard.value) {
                 return guarding[i];
             }
         }
@@ -3962,26 +4048,30 @@ var Rance;
         return target;
     }
     Rance.getTargetOrGuard = getTargetOrGuard;
-    function getGuardTargets(battle, user, ability) {
-        var enemyTargets = getPotentialTargets(battle, user, ability);
+    function getGuarders(battle, user, ability, target) {
+        var allEnemies = getPotentialTargets(battle, user, Rance.Templates.Abilities.dummyTargetAll);
 
-        var guardTargets = [];
-        for (var i = 0; i < enemyTargets.length; i++) {
-            if (enemyTargets[i].battleStats.guard > 0) {
-                guardTargets.push(enemyTargets[i]);
+        var guarders = allEnemies.filter(function (unit) {
+            if (unit.battleStats.guard.coverage === "all") {
+                return unit.battleStats.guard.value > 0;
+            } else if (unit.battleStats.guard.coverage === "column") {
+                // same column
+                if (unit.battleStats.position[0] === target.battleStats.position[0]) {
+                    return unit.battleStats.guard.value > 0;
+                }
             }
-        }
+        });
 
-        return guardTargets;
+        return guarders;
     }
-    Rance.getGuardTargets = getGuardTargets;
+    Rance.getGuarders = getGuarders;
     function getPotentialTargets(battle, user, ability) {
-        if (ability.targetRange === "self") {
+        if (ability.mainEffect.targetRange === "self") {
             return [user];
         }
         var fleetsToTarget = getFleetsToTarget(battle, user, ability);
 
-        if (ability.targetRange === "close") {
+        if (ability.mainEffect.targetRange === "close") {
             var farColumnForSide = {
                 side1: 0,
                 side2: 3
@@ -4019,7 +4109,7 @@ var Rance;
         var insertNullBefore;
         var toConcat;
 
-        switch (ability.targetFleets) {
+        switch (ability.mainEffect.targetFleets) {
             case "all": {
                 return battle.side1.concat(battle.side2);
             }
@@ -4056,7 +4146,7 @@ var Rance;
     function getUnitsInAbilityArea(battle, user, ability, target) {
         var targetFleets = getFleetsToTarget(battle, user, ability);
 
-        var inArea = ability.targetingFunction(targetFleets, target);
+        var inArea = ability.mainEffect.targetingFunction(targetFleets, target);
 
         return inArea.filter(Boolean);
     }
@@ -4292,7 +4382,10 @@ var Rance;
                 battle: null,
                 side: null,
                 position: null,
-                guard: 0
+                guard: {
+                    coverage: null,
+                    value: 0
+                }
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
@@ -4302,12 +4395,12 @@ var Rance;
         };
 
         Unit.prototype.removeStrength = function (amount) {
-            this.currentStrength -= amount;
+            this.currentStrength -= Math.round(amount);
             if (this.currentStrength < 0) {
                 this.currentStrength = 0;
             }
 
-            this.addGuard(-50);
+            this.removeGuard(50);
         };
         Unit.prototype.removeActionPoints = function (amount) {
             if (amount === "all") {
@@ -4325,6 +4418,13 @@ var Rance;
         Unit.prototype.isTargetable = function () {
             return this.currentStrength > 0;
         };
+        Unit.prototype.recieveDamage = function (amount, damageType) {
+            var damageReduction = this.getDamageReduction(damageType);
+
+            var adjustedDamage = amount * damageReduction;
+
+            this.removeStrength(adjustedDamage);
+        };
         Unit.prototype.getAttackDamageIncrease = function (damageType) {
             var attackStat, attackFactor;
 
@@ -4341,7 +4441,7 @@ var Rance;
                 }
             }
 
-            return attackStat * attackFactor;
+            return 1 + attackStat * attackFactor;
         };
         Unit.prototype.getDamageReduction = function (damageType) {
             var defensiveStat, defenceFactor;
@@ -4349,6 +4449,7 @@ var Rance;
             switch (damageType) {
                 case "physical": {
                     defensiveStat = this.attributes.defence;
+                    defensiveStat *= (1 + this.battleStats.guard.value / 100);
                     defenceFactor = 0.08;
                     break;
                 }
@@ -4359,7 +4460,7 @@ var Rance;
                 }
             }
 
-            return defensiveStat * defenceFactor;
+            return 1 - defensiveStat * defenceFactor;
         };
         Unit.prototype.addToFleet = function (fleet) {
             this.fleet = fleet;
@@ -4373,11 +4474,18 @@ var Rance;
             player.removeUnit(this);
             this.fleet.removeShip(this);
         };
-        Unit.prototype.addGuard = function (amount) {
-            this.battleStats.guard += amount;
-
-            if (this.battleStats.guard < 0)
-                this.battleStats.guard = 0;
+        Unit.prototype.removeGuard = function (amount) {
+            this.battleStats.guard.value -= amount;
+            if (this.battleStats.guard.value < 0)
+                this.removeAllGuard();
+        };
+        Unit.prototype.addGuard = function (amount, coverage) {
+            this.battleStats.guard.value += amount;
+            this.battleStats.guard.coverage = coverage;
+        };
+        Unit.prototype.removeAllGuard = function () {
+            this.battleStats.guard.value = 0;
+            this.battleStats.guard.coverage = null;
         };
         return Unit;
     })();

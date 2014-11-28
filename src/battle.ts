@@ -169,13 +169,17 @@ module Rance
         {
           unit.die();
         }
-        unit.resetBattleStats();
       });
 
       eventManager.dispatchEvent("battleEnd", null);
     }
     finishBattle()
     {
+      this.forEachUnit(function(unit)
+      {
+        unit.resetBattleStats();
+      });
+      
       var victor = this.getVictor();
       if (this.battleData.building)
       {

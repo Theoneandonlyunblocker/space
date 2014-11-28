@@ -8,7 +8,7 @@ module Rance
       {
         var statusElement = null;
 
-        if (this.props.guard)
+        if (this.props.guard.value > 0)
         {
           var guard = this.props.guard;
           statusElement = React.DOM.div(
@@ -19,7 +19,7 @@ module Rance
             {
               className: "guard-meter",
               max: 100,
-              value: guard
+              value: guard.value
             }),
             React.DOM.div(
             {
@@ -32,7 +32,7 @@ module Rance
               React.DOM.div(
               {
                 className: "guard-amount"
-              }, "" + guard + "%")
+              }, "" + guard.value + "%")
             )
           );
         }

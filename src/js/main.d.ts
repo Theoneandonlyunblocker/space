@@ -330,6 +330,27 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IEffectTemplate {
+            name: string;
+            targetFleets: string;
+            targetingFunction: Rance.TargetingFunction;
+            targetRange: string;
+            effect: (user: Rance.Unit, target: Rance.Unit) => void;
+        }
+        module Effects {
+            var dummyTargetColumn: IEffectTemplate;
+            var dummyTargetAll: IEffectTemplate;
+            var rangedAttack: IEffectTemplate;
+            var closeAttack: IEffectTemplate;
+            var wholeRowAttack: IEffectTemplate;
+            var bombAttack: IEffectTemplate;
+            var guardColumn: IEffectTemplate;
+            var standBy: IEffectTemplate;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
         interface AbilityTemplate {
             name: string;
             moveDelay: number;
@@ -339,17 +360,17 @@ declare module Rance {
                 interruptsNeeded: number;
             };
             actionsUse: any;
-            targetFleets: string;
-            targetingFunction: Rance.TargetingFunction;
-            targetRange: string;
-            effect: (user: Rance.Unit, target: Rance.Unit) => void;
+            mainEffect: Templates.IEffectTemplate;
+            secondaryEffects?: Templates.IEffectTemplate[];
         }
         module Abilities {
+            var dummyTargetColumn: AbilityTemplate;
+            var dummyTargetAll: AbilityTemplate;
             var rangedAttack: AbilityTemplate;
             var closeAttack: AbilityTemplate;
             var wholeRowAttack: AbilityTemplate;
             var bombAttack: AbilityTemplate;
-            var guardSelf: AbilityTemplate;
+            var guardColumn: AbilityTemplate;
             var standBy: AbilityTemplate;
         }
     }
@@ -607,7 +628,7 @@ declare module Rance {
     function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): void;
     function validateTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): boolean;
     function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit;
-    function getGuardTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
+    function getGuarders(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit[];
     function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
     function getFleetsToTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[][];
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
@@ -660,7 +681,10 @@ declare module Rance {
             side: string;
             position: number[];
             currentActionPoints: number;
-            guard: number;
+            guard: {
+                value: number;
+                coverage: string;
+            };
         };
         public abilities: Rance.Templates.AbilityTemplate[];
         public fleet: Rance.Fleet;
@@ -677,12 +701,15 @@ declare module Rance {
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
         public isTargetable(): boolean;
+        public recieveDamage(amount: number, damageType: string): void;
         public getAttackDamageIncrease(damageType: string): number;
         public getDamageReduction(damageType: string): number;
         public addToFleet(fleet: Rance.Fleet): void;
         public removeFromFleet(): void;
         public die(): void;
-        public addGuard(amount: number): void;
+        public removeGuard(amount: number): void;
+        public addGuard(amount: number, coverage: string): void;
+        public removeAllGuard(): void;
     }
 }
 declare module Rance {

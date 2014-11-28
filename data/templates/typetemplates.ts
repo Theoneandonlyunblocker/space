@@ -127,7 +127,7 @@ module Rance
         },
         abilities:
         [
-          Abilities.guardSelf,
+          Abilities.guardColumn,
           Abilities.rangedAttack,
           Abilities.standBy
         ]
