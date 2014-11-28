@@ -110,6 +110,7 @@ module Rance
             className: "fleet-selection"
           },
             fleetSelectionControls,
+            hasMultipleSelected ? null : fleetInfos,
             React.DOM.div(
             {
               className: "fleet-selection-selected-wrapper"
@@ -118,7 +119,7 @@ module Rance
               {
                 className: "fleet-selection-selected"
               },
-                fleetInfos,
+                hasMultipleSelected ? fleetInfos : null,
                 fleetContents
               )
             )

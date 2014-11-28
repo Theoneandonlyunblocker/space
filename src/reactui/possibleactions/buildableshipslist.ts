@@ -26,6 +26,8 @@ module Rance
         this.props.player.addUnit(ship);
 
         var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
+
+        this.props.player.money -= template.buildCost;
       },
 
       render: function()

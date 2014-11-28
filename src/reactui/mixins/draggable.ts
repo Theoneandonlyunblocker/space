@@ -33,7 +33,8 @@ module Rance
           {
             x: 0,
             y: 0
-          }
+          },
+          clone: null
 
         });
       },
@@ -77,15 +78,27 @@ module Rance
 
           if (delta >= this.props.dragThreshhold)
           {
-            this.setState(
+
+            var stateObj: any =
+            {
+              dragging: true,
+              dragPos:
               {
-                dragging: true,
-                dragPos:
-                {
-                  width: parseInt(this.DOMNode.offsetWidth),
-                  height: parseInt(this.DOMNode.offsetHeight)
-                }
-              });
+                width: parseInt(this.DOMNode.offsetWidth),
+                height: parseInt(this.DOMNode.offsetHeight)
+              }
+            }
+
+            if (this.props.makeClone)
+            {
+              var clone = this.DOMNode.cloneNode(true);
+              recursiveRemoveAttribute(clone, "data-reactid");
+
+              this.DOMNode.parentNode.appendChild(clone);
+              stateObj.clone = clone;
+            }
+
+            this.setState(stateObj);
 
             if (this.onDragStart)
             {
@@ -172,6 +185,10 @@ module Rance
       },
       handleDragEnd: function(e)
       {
+        if (this.state.clone)
+        {
+          this.state.clone.parentNode.removeChild(this.state.clone);
+        }
         this.setState(
         {
           dragging: false,
@@ -184,7 +201,8 @@ module Rance
           {
             x: 0,
             y: 0
-          }
+          },
+          clone: null
         });
 
         if (this.onDragEnd)

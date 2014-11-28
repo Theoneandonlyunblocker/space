@@ -51,6 +51,7 @@ declare module Rance {
                     x: number;
                     y: number;
                 };
+                clone: any;
             };
             handleMouseDown: (e: any) => void;
             handleMouseMove: (e: any) => void;
@@ -278,6 +279,7 @@ declare module Rance {
     function hslToRgb(h: any, s: any, l: any): any[];
     function hslToHex(h: any, s: any, l: any): number;
     function cloneObject(toClone: any): any;
+    function recursiveRemoveAttribute(parent: any, attribute: string): void;
 }
 declare module Rance {
     interface TargetingFunction {

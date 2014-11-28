@@ -33,6 +33,7 @@ module Rance
             speed: unit.attributes.speed,
 
             rowConstructor: UIComponents.UnitListItem,
+            makeClone: true,
 
             isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
 

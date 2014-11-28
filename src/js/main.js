@@ -212,7 +212,8 @@ var Rance;
                     originPosition: {
                         x: 0,
                         y: 0
-                    }
+                    },
+                    clone: null
                 });
             },
             handleMouseDown: function (e) {
@@ -247,13 +248,23 @@ var Rance;
                     var delta = deltaX + deltaY;
 
                     if (delta >= this.props.dragThreshhold) {
-                        this.setState({
+                        var stateObj = {
                             dragging: true,
                             dragPos: {
                                 width: parseInt(this.DOMNode.offsetWidth),
                                 height: parseInt(this.DOMNode.offsetHeight)
                             }
-                        });
+                        };
+
+                        if (this.props.makeClone) {
+                            var clone = this.DOMNode.cloneNode(true);
+                            Rance.recursiveRemoveAttribute(clone, "data-reactid");
+
+                            this.DOMNode.parentNode.appendChild(clone);
+                            stateObj.clone = clone;
+                        }
+
+                        this.setState(stateObj);
 
                         if (this.onDragStart) {
                             this.onDragStart(e);
@@ -323,6 +334,9 @@ var Rance;
                 this.removeEventListeners();
             },
             handleDragEnd: function (e) {
+                if (this.state.clone) {
+                    this.state.clone.parentNode.removeChild(this.state.clone);
+                }
                 this.setState({
                     dragging: false,
                     dragOffset: {
@@ -332,7 +346,8 @@ var Rance;
                     originPosition: {
                         x: 0,
                         y: 0
-                    }
+                    },
+                    clone: null
                 });
 
                 if (this.onDragEnd) {
@@ -1334,6 +1349,7 @@ var Rance;
                         intelligence: unit.attributes.intelligence,
                         speed: unit.attributes.speed,
                         rowConstructor: Rance.UIComponents.UnitListItem,
+                        makeClone: true,
                         isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
@@ -1954,11 +1970,11 @@ var Rance;
 
                 return (React.DOM.div({
                     className: "fleet-selection"
-                }, fleetSelectionControls, React.DOM.div({
+                }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
                     className: "fleet-selection-selected-wrapper"
                 }, React.DOM.div({
                     className: "fleet-selection-selected"
-                }, fleetInfos, fleetContents))));
+                }, hasMultipleSelected ? fleetInfos : null, fleetContents))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2425,6 +2441,14 @@ var Rance;
         return result;
     }
     Rance.cloneObject = cloneObject;
+    function recursiveRemoveAttribute(parent, attribute) {
+        parent.removeAttribute(attribute);
+
+        for (var i = 0; i < parent.children.length; i++) {
+            recursiveRemoveAttribute(parent.children[i], attribute);
+        }
+    }
+    Rance.recursiveRemoveAttribute = recursiveRemoveAttribute;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -4254,6 +4278,8 @@ var Rance;
                 this.props.player.addUnit(ship);
 
                 var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
+
+                this.props.player.money -= template.buildCost;
             },
             render: function () {
                 if (this.state.shipTemplates.length < 1)

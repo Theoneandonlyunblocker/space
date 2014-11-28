@@ -195,4 +195,13 @@ module Rance
     }
     return result;
   }
+  export function recursiveRemoveAttribute(parent, attribute: string)
+  {
+    parent.removeAttribute(attribute);
+
+    for (var i = 0; i < parent.children.length; i++)
+    {
+      recursiveRemoveAttribute(parent.children[i], attribute);
+    }
+  }
 }
