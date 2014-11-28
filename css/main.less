@@ -66,6 +66,7 @@ progress::-webkit-progress-value { background: #080; }
 .reactui-selector
 {
   max-width: 200px;
+  flex: 0 0 auto;
 }
 
 .react-stage
@@ -498,8 +499,10 @@ progress::-webkit-progress-value { background: #080; }
 
 .turn-counter
 {
+  display: flex;
+  flex: 1 0 auto;
+  margin: 3px 0;
   width: 30px;
-  height: 5px;
   border: 1px solid black;
 }
 
@@ -982,16 +985,15 @@ progress::-webkit-progress-value { background: #080; }
   margin-top: 5px;
 }
 
-.buildable-building-list
+.buildable-item-list
 {
   .sort-icons(500px);
 }
-
-.buildable-building
+.buildable-item
 {
   cursor: pointer;
 }
-.buildable-building:hover
+.buildable-item:hover
 {
   background-color: grey;
 }

@@ -42,7 +42,7 @@ module Rance
         return(
           React.DOM.tr(
           {
-            className: "buildable-building",
+            className: "buildable-item buildable-building",
             onClick: this.props.handleClick
           },
           cells

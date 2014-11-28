@@ -41,7 +41,7 @@ module Rance
         return(
           React.DOM.tr(
           {
-            className: "buildable-ship",
+            className: "buildable-item buildable-ship",
             onClick: this.props.handleClick
           },
           cells

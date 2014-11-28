@@ -82,7 +82,7 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "buildable-building-list"},
+          React.DOM.div({className: "buildable-item-list buildable-building-list"},
             UIComponents.List(
             {
               listItems: rows,

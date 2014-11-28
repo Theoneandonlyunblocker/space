@@ -2168,7 +2168,7 @@ var Rance;
                 }
 
                 return (React.DOM.tr({
-                    className: "buildable-building",
+                    className: "buildable-item buildable-building",
                     onClick: this.props.handleClick
                 }, cells));
             }
@@ -2241,7 +2241,7 @@ var Rance;
                     }
                 ];
 
-                return (React.DOM.div({ className: "buildable-building-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "buildable-item-list buildable-building-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.buildBuilding
@@ -4226,7 +4226,7 @@ var Rance;
                 }
 
                 return (React.DOM.tr({
-                    className: "buildable-ship",
+                    className: "buildable-item buildable-ship",
                     onClick: this.props.handleClick
                 }, cells));
             }
@@ -4289,7 +4289,7 @@ var Rance;
                     }
                 ];
 
-                return (React.DOM.div({ className: "buildable-ship-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "buildable-item-list buildable-ship-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.buildShip

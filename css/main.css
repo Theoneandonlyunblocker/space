@@ -36,6 +36,7 @@ progress::-webkit-progress-value {
 }
 .reactui-selector {
   max-width: 200px;
+  flex: 0 0 auto;
 }
 .react-stage {
   height: 100%;
@@ -359,8 +360,10 @@ progress::-webkit-progress-value {
   margin-top: 5px;
 }
 .turn-counter {
+  display: flex;
+  flex: 1 0 auto;
+  margin: 3px 0;
   width: 30px;
-  height: 5px;
   border: 1px solid black;
 }
 .used-turn {
@@ -723,23 +726,23 @@ progress::-webkit-progress-value {
 .defence-building-controller {
   margin-top: 5px;
 }
-.buildable-building-list .sort-icon {
+.buildable-item-list .sort-icon {
   font-weight: 100;
   position: absolute;
   right: 5px;
 }
-.buildable-building-list .sortable {
+.buildable-item-list .sortable {
   cursor: pointer;
   position: relative;
   padding-right: 20px;
 }
 @media (max-width: 500px) {
-  .buildable-building-list .sortable {
+  .buildable-item-list .sortable {
     padding-right: 2px;
   }
 }
 @media (min-width: 500px) {
-  .buildable-building-list .unsorted::after {
+  .buildable-item-list .unsorted::after {
     content: "\f0dc";
     font-family: FontAwesome;
     font-style: normal;
@@ -749,7 +752,7 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
-  .buildable-building-list .sorted-asc::after {
+  .buildable-item-list .sorted-asc::after {
     content: "\f0de";
     font-family: FontAwesome;
     font-style: normal;
@@ -759,7 +762,7 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
-  .buildable-building-list .sorted-desc::after {
+  .buildable-item-list .sorted-desc::after {
     content: "\f0dd";
     font-family: FontAwesome;
     font-style: normal;
@@ -770,9 +773,9 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
-.buildable-building {
+.buildable-item {
   cursor: pointer;
 }
-.buildable-building:hover {
+.buildable-item:hover {
   background-color: grey;
 }
