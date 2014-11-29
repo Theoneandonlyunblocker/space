@@ -152,8 +152,8 @@ module Rance
           {
             top: y,
             left: x,
-            width: this.state.dragPos.width,
-            height: this.state.dragPos.height
+            width: this.props.makeClone ? null : this.state.dragPos.width,
+            height: this.props.makeClone ? null : this.state.dragPos.height
           }
         });
         //this.DOMNode.style.left = x+"px";
