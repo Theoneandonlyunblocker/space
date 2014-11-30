@@ -21,6 +21,8 @@ module Rance
         {
           buildingTemplates: this.props.star.getBuildableBuildings()
         });
+
+        eventManager.dispatchEvent("playerControlUpdated");
       },
 
       buildBuilding: function(rowItem)

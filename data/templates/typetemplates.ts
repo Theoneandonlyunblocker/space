@@ -30,7 +30,7 @@ module Rance
         type: "fighterSquadron",
         typeName: "Fighter Squadron",
         isSquadron: true,
-        buildCost: 200,
+        buildCost: 100,
         icon: "img\/icons\/f.png",
         maxStrength: 0.7,
         maxMovePoints: 2,

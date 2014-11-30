@@ -12,36 +12,62 @@ module Rance
       {
         return(
         {
-          expandedAction: null
+          expandedAction: null,
+          expandedActionElement: null
         });
       },
 
       componentWillReceiveProps: function(newProps: any)
       {
         if (this.props.selectedStar !== newProps.selectedStar &&
-          this.state.expandedAction)
+          this.state.expandedActionElement)
         {
           this.setState(
           {
-            expandedAction: null
+            expandedAction: null,
+            expandedActionElement: null
           });
         }
       },
 
       buildBuildings: function()
       {
-        this.setState(
+        if (this.state.expandedAction === "buildBuildings")
         {
-          expandedAction: this.makeExpandedAction("buildBuildings")
-        });
+          this.setState(
+          {
+            expandedAction: null,
+            expandedActionElement: null
+          });
+        }
+        else
+        {
+          this.setState(
+          {
+            expandedAction: "buildBuildings",
+            expandedActionElement: this.makeExpandedAction("buildBuildings")
+          });
+        }
       },
 
       buildShips: function()
       {
-        this.setState(
+        if (this.state.expandedAction === "buildShips")
         {
-          expandedAction: this.makeExpandedAction("buildShips")
-        });
+          this.setState(
+          {
+            expandedAction: null,
+            expandedActionElement: null
+          });
+        }
+        else
+        {
+          this.setState(
+          {
+            expandedAction: "buildShips",
+            expandedActionElement: this.makeExpandedAction("buildShips")
+          });
+        }
       },
 
 
@@ -169,7 +195,7 @@ module Rance
             allActions.length > 0 ?
               possibleActions :
               null,
-            this.state.expandedAction
+            this.state.expandedActionElement
           )
         );
       }

@@ -28,6 +28,8 @@ module Rance
         var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
 
         this.props.player.money -= template.buildCost;
+
+        eventManager.dispatchEvent("playerControlUpdated");
       },
 
       render: function()

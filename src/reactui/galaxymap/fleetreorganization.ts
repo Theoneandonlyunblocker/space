@@ -74,7 +74,7 @@ module Rance
               React.DOM.div(
               {
                 className: "fleet-reorganization-subheader-center"
-              }, "<->"),
+              }, null),
               React.DOM.div(
               {
                 className: "fleet-reorganization-subheader-fleet-name" +
@@ -97,7 +97,7 @@ module Rance
               React.DOM.div(
               {
                 className: "fleet-reorganization-contents-divider"
-              }, "-"),
+              }, null),
               UIComponents.FleetContents(
               {
                 fleet: selectedFleets[1],

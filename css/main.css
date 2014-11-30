@@ -224,7 +224,6 @@ progress::-webkit-progress-value {
   border-top: 5px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
-  align-items: center;
 }
 .end-battle-button {
   width: 80px;
@@ -701,7 +700,6 @@ progress::-webkit-progress-value {
   border-top: 0;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
-  align-items: center;
 }
 .top-bar > * {
   margin-top: 4px;
@@ -805,8 +803,9 @@ progress::-webkit-progress-value {
   flex-flow: column;
   flex-shrink: 0;
   background-color: #101c1b;
-  border: 1px solid #c4e5fb;
-  margin-bottom: 2px;
+  border: 3px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
 }
 .fleet-info > * {
   align-items: center;
@@ -830,8 +829,8 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: column;
 }
-.fleet-contents:first-child {
-  border-top: 1px solid #c4e5fb;
+.fleet-contents .ship-info + .ship-info {
+  border-top: 0;
 }
 .fleet-contents-dummy-ship {
   height: 36px;
@@ -841,8 +840,7 @@ progress::-webkit-progress-value {
   flex-flow: row;
   flex-shrink: 0;
   background-color: #101c1b;
-  border: 1px solid #c4e5fb;
-  border-top: 0;
+  border: 1px solid #666;
 }
 .ship-info .ship-info-name,
 .ship-info .unit-strength-amount {
@@ -860,7 +858,29 @@ progress::-webkit-progress-value {
 .fleet-reorganization {
   display: inline-flex;
   flex-flow: column;
-  background-color: #101c1b;
+  background-color: #0f283d;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+}
+.fleet-reorganization button {
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #fefefe;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.fleet-reorganization button:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.fleet-reorganization button:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.fleet-reorganization button:disabled,
+.fleet-reorganization button.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .fleet-reorganization-header {
   text-align: center;
@@ -872,9 +892,20 @@ progress::-webkit-progress-value {
 }
 .fleet-reorganization-subheader-fleet-name {
   flex: 1;
+  border: 1px solid #c4e5fb;
+  border-bottom: 0;
+  padding: 0 10px;
 }
 .fleet-reorganization-subheader-fleet-name-left {
   text-align: right;
+}
+.fleet-reorganization-subheader-center::after {
+  content: "\f07e";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin: 0 10px;
 }
 .fleet-reorganization-subheader-fleet-name-right {
   text-align: left;
@@ -882,6 +913,13 @@ progress::-webkit-progress-value {
 .fleet-reorganization-contents {
   display: inline-flex;
   flex-flow: row;
+  padding: 8px 0;
+  background-color: #101c1b;
+  border: 0px solid transparent;
+  border-bottom: 3px;
+  border-top: 3px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
 }
 .fleet-reorganization-contents .fleet-contents {
   display: inline-flex;
@@ -889,7 +927,11 @@ progress::-webkit-progress-value {
   min-width: 260px;
   overflow-y: scroll;
   max-height: 300px;
-  background-color: #0f283d;
+}
+.fleet-reorganization-contents-divider {
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  margin-right: 9px;
+  margin-left: 10px;
 }
 .fleet-reorganization-footer {
   display: flex;
@@ -1071,7 +1113,6 @@ progress::-webkit-progress-value {
   border-top: 3px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
-  align-items: center;
 }
 .buildable-item-list tbody :first-child::after {
   background-image: none;

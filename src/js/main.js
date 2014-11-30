@@ -2034,7 +2034,7 @@ var Rance;
                     className: "fleet-reorganization-subheader-fleet-name" + " fleet-reorganization-subheader-fleet-name-left"
                 }, selectedFleets[0].name), React.DOM.div({
                     className: "fleet-reorganization-subheader-center"
-                }, "<->"), React.DOM.div({
+                }, null), React.DOM.div({
                     className: "fleet-reorganization-subheader-fleet-name" + " fleet-reorganization-subheader-fleet-name-right"
                 }, selectedFleets[1].name)), React.DOM.div({
                     className: "fleet-reorganization-contents"
@@ -2045,7 +2045,7 @@ var Rance;
                     onDragEnd: this.handleDragEnd
                 }), React.DOM.div({
                     className: "fleet-reorganization-contents-divider"
-                }, "-"), Rance.UIComponents.FleetContents({
+                }, null), Rance.UIComponents.FleetContents({
                     fleet: selectedFleets[1],
                     onMouseUp: this.handleDrop,
                     onDragStart: this.handleDragStart,
@@ -2221,6 +2221,8 @@ var Rance;
                 this.setState({
                     buildingTemplates: this.props.star.getBuildableBuildings()
                 });
+
+                Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             buildBuilding: function (rowItem) {
                 var template = rowItem.data.template;
@@ -2729,7 +2731,7 @@ var Rance;
                 type: "fighterSquadron",
                 typeName: "Fighter Squadron",
                 isSquadron: true,
-                buildCost: 200,
+                buildCost: 100,
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.7,
                 maxMovePoints: 2,
@@ -4311,6 +4313,8 @@ var Rance;
                 var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
 
                 this.props.player.money -= template.buildCost;
+
+                Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             render: function () {
                 if (this.state.shipTemplates.length < 1)
@@ -4366,25 +4370,43 @@ var Rance;
         UIComponents.PossibleActions = React.createClass({
             getInitialState: function () {
                 return ({
-                    expandedAction: null
+                    expandedAction: null,
+                    expandedActionElement: null
                 });
             },
             componentWillReceiveProps: function (newProps) {
-                if (this.props.selectedStar !== newProps.selectedStar && this.state.expandedAction) {
+                if (this.props.selectedStar !== newProps.selectedStar && this.state.expandedActionElement) {
                     this.setState({
-                        expandedAction: null
+                        expandedAction: null,
+                        expandedActionElement: null
                     });
                 }
             },
             buildBuildings: function () {
-                this.setState({
-                    expandedAction: this.makeExpandedAction("buildBuildings")
-                });
+                if (this.state.expandedAction === "buildBuildings") {
+                    this.setState({
+                        expandedAction: null,
+                        expandedActionElement: null
+                    });
+                } else {
+                    this.setState({
+                        expandedAction: "buildBuildings",
+                        expandedActionElement: this.makeExpandedAction("buildBuildings")
+                    });
+                }
             },
             buildShips: function () {
-                this.setState({
-                    expandedAction: this.makeExpandedAction("buildShips")
-                });
+                if (this.state.expandedAction === "buildShips") {
+                    this.setState({
+                        expandedAction: null,
+                        expandedActionElement: null
+                    });
+                } else {
+                    this.setState({
+                        expandedAction: "buildShips",
+                        expandedActionElement: this.makeExpandedAction("buildShips")
+                    });
+                }
             },
             makeExpandedAction: function (action) {
                 switch (action) {
@@ -4460,7 +4482,7 @@ var Rance;
 
                 return (React.DOM.div({
                     className: "possible-actions-container"
-                }, allActions.length > 0 ? possibleActions : null, this.state.expandedAction));
+                }, allActions.length > 0 ? possibleActions : null, this.state.expandedActionElement));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

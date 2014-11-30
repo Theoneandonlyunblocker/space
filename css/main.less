@@ -41,7 +41,6 @@ table
   border-top: @top-width;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
-  align-items: center;
 }
 
 .full-border(@width)
@@ -1022,8 +1021,7 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: column;
   flex-shrink: 0;
   background-color: @bg-color;
-  border: 1px solid @ui-border-color1;
-  margin-bottom: 2px;
+  .full-border(3px);
 
   >*
   {
@@ -1058,11 +1056,11 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: flex;
   flex-flow: column;
-}
 
-.fleet-contents:first-child
-{
-  border-top: 1px solid @ui-border-color1;
+  .ship-info + .ship-info
+  {
+    border-top: 0;
+  }
 }
 
 .fleet-contents-dummy-ship
@@ -1076,8 +1074,7 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: row;
   flex-shrink: 0;
   background-color: @bg-color;
-  border: 1px solid @ui-border-color1;
-  border-top: 0;
+  border: 1px solid #666;
 
   .ship-info-name, .unit-strength-amount
   {
@@ -1104,7 +1101,14 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: inline-flex;
   flex-flow: column;
-  background-color: @bg-color;
+  background-color: @bg-color2;
+
+  .full-border(5px);
+
+  button
+  {
+    .button-style;
+  }
 }
 
 .fleet-reorganization-header
@@ -1122,14 +1126,18 @@ progress::-webkit-progress-value { background: #080; }
 .fleet-reorganization-subheader-fleet-name
 {
   flex: 1;
+  border: 1px solid @ui-border-color1;
+  border-bottom: 0;
+  padding: 0 10px;
 }
 .fleet-reorganization-subheader-fleet-name-left
 {
   text-align: right;
 }
-.fleet-reorganization-subheader-center
+.fleet-reorganization-subheader-center::after
 {
-  
+  .fa("\f07e");
+  margin: 0 10px;
 }
 .fleet-reorganization-subheader-fleet-name-right
 {
@@ -1140,6 +1148,10 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: inline-flex;
   flex-flow: row;
+  padding: 8px 0;
+  background-color: @bg-color;
+
+  .horizontal-border(3px, 3px);
 
   .fleet-contents
   {
@@ -1148,8 +1160,15 @@ progress::-webkit-progress-value { background: #080; }
     min-width: 260px;
     overflow-y: scroll;
     max-height: 300px;
-    background-color: @bg-color2;
   }
+}
+
+.fleet-reorganization-contents-divider
+{
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+
+  margin-right: 9px;
+  margin-left: 10px;
 }
 
 .fleet-reorganization-footer
