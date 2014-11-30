@@ -54,10 +54,15 @@ module Rance
             if (!this.props.selectedStar) return null;
 
             return(
-              UIComponents.BuildableBuildingList(
+              React.DOM.div(
               {
-                star: this.props.selectedStar
-              })
+                className: "expanded-action"
+              },
+                UIComponents.BuildableBuildingList(
+                {
+                  star: this.props.selectedStar
+                })
+              )
             );
           }
           case "buildShips":
@@ -65,11 +70,16 @@ module Rance
             if (!this.props.selectedStar) return null;
 
             return(
-              UIComponents.BuildableShipsList(
+              React.DOM.div(
               {
-                player: this.props.player,
-                star: this.props.selectedStar
-              })
+                className: "expanded-action"
+              },
+                UIComponents.BuildableShipsList(
+                {
+                  player: this.props.player,
+                  star: this.props.selectedStar
+                })
+              )
             );
           }
           default:
@@ -154,12 +164,7 @@ module Rance
             },
               allActions
             ),
-            React.DOM.div(
-            {
-              className: "expanded-action"
-            },
-              this.makeExpandedAction()
-            )
+            this.makeExpandedAction()
           )
         );
       }

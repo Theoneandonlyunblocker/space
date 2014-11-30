@@ -4363,18 +4363,22 @@ var Rance;
                         if (!this.props.selectedStar)
                             return null;
 
-                        return (Rance.UIComponents.BuildableBuildingList({
+                        return (React.DOM.div({
+                            className: "expanded-action"
+                        }, Rance.UIComponents.BuildableBuildingList({
                             star: this.props.selectedStar
-                        }));
+                        })));
                     }
                     case "buildShips": {
                         if (!this.props.selectedStar)
                             return null;
 
-                        return (Rance.UIComponents.BuildableShipsList({
+                        return (React.DOM.div({
+                            className: "expanded-action"
+                        }, Rance.UIComponents.BuildableShipsList({
                             player: this.props.player,
                             star: this.props.selectedStar
-                        }));
+                        })));
                     }
                     default: {
                         return null;
@@ -4424,9 +4428,7 @@ var Rance;
                     className: "possible-actions-container"
                 }, React.DOM.div({
                     className: "possible-actions"
-                }, allActions), React.DOM.div({
-                    className: "expanded-action"
-                }, this.makeExpandedAction())));
+                }, allActions), this.makeExpandedAction()));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

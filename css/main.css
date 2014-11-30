@@ -9,6 +9,9 @@ body {
   margin: 0;
   border: 0;
 }
+table {
+  border-collapse: separate;
+}
 progress {
   color: #080;
   background: #888;
@@ -777,8 +780,15 @@ progress::-webkit-progress-value {
   align-self: center;
 }
 .expanded-action {
-  background-color: #091e1d;
+  background-color: #0f283d;
+  padding: 0 8px;
   color: #fefefe;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+}
+.expanded-action > * {
+  background-color: #101c1b;
 }
 .star-info {
   position: absolute;
@@ -850,6 +860,17 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
+}
+.buildable-item-list thead {
+  /*
+    :first-child
+    {
+      border-left: 3px;
+    }
+    :last-child
+    {
+      border-right: 3px;
+    }*/
 }
 .buildable-item-list tbody :first-child::after {
   background-image: none;

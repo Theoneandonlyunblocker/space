@@ -10,7 +10,14 @@ body {
   border: 0;
 }
 
-@bg-color: #091E1D;
+table
+{
+  border-collapse: separate;
+}
+
+//@bg-color: #091E1D;
+@bg-color: #101C1B;
+@bg-color2: #0F283D;
 @text-color: #FEFEFE;
 @unit-border-color: #999;
 
@@ -1046,8 +1053,16 @@ progress::-webkit-progress-value { background: #080; }
 
 .expanded-action
 {
-  background-color: @bg-color;
+  background-color: @bg-color2;
+  padding: 0 8px;
   color: @text-color;
+  >*
+  {
+    background-color: @bg-color;
+  }
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
 }
 
 .star-info
@@ -1083,6 +1098,27 @@ progress::-webkit-progress-value { background: #080; }
 {
   .sort-icons(500px);
   position: relative;
+
+
+  thead
+  {
+    /*
+    :first-child
+    {
+      border-left: 3px;
+    }
+    :last-child
+    {
+      border-right: 3px;
+    }*/
+    th
+    {
+      // border: 3px solid transparent;
+      // border-image-source: url("../img/uiBorder.png");
+      // border-image-slice: 10%;
+      // border-width: 3px 0;
+    }
+  }
 
   tbody :first-child::after
   {
