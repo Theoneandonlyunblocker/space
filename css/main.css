@@ -17,6 +17,9 @@ progress {
   appearance: none;
   border: none;
 }
+progress::-ms-fill {
+  background: #080;
+}
 progress::-moz-progress-bar {
   background: #080;
 }
@@ -62,7 +65,7 @@ progress::-webkit-progress-value {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: green;
+  background-image: url("../img/bgTest.png");
 }
 .turn-order-container {
   position: absolute;
@@ -124,10 +127,15 @@ progress::-webkit-progress-value {
   justify-content: center;
   flex: 1;
   max-height: 50%;
-  background-color: #0A6209;
+}
+.ability-tooltip-faces-right .ability-tooltip-ability {
+  background: linear-gradient(to left, rgba(113, 113, 5, 0.9), rgba(113, 113, 5, 0.7));
+}
+.ability-tooltip-faces-left .ability-tooltip-ability {
+  background: linear-gradient(to right, rgba(113, 113, 5, 0.9), rgba(113, 113, 5, 0.7));
 }
 .ability-tooltip-ability:hover {
-  background-color: #AAF;
+  background-color: #c8c814;
 }
 .fleets-container {
   display: flex;
@@ -201,11 +209,19 @@ progress::-webkit-progress-value {
 .empty-unit .unit-icon {
   background-color: transparent !important;
 }
+.empty-unit .unit-info-name {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996)) !important;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.4) !important;
+}
 .friendly-unit .unit-container {
   background: linear-gradient(to left, rgba(100, 120, 250, 0.5), rgba(100, 120, 250, 0.3));
 }
 .friendly-unit .unit-icon {
   background-color: rgba(100, 120, 250, 0.5);
+}
+.friendly-unit .unit-info-name {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  border-bottom: 1px solid rgba(146, 161, 255, 0.9);
 }
 .friendly-unit .unit-container {
   border: 1px solid #999999;
@@ -217,6 +233,10 @@ progress::-webkit-progress-value {
 .enemy-unit .unit-icon {
   background-color: rgba(250, 100, 120, 0.5);
 }
+.enemy-unit .unit-info-name {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  border-bottom: 1px solid rgba(255, 146, 161, 0.9);
+}
 .enemy-unit .unit-container {
   border: 1px solid #999999;
   border-left: 0;
@@ -227,8 +247,12 @@ progress::-webkit-progress-value {
 .active-unit.friendly-unit .unit-icon {
   background-color: rgba(200, 200, 20, 0.5);
 }
+.active-unit.friendly-unit .unit-info-name {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  border-bottom: 1px solid rgba(146, 161, 255, 0.9);
+}
 .active-unit.friendly-unit * {
-  border-color: yellow !important;
+  border-color: yellow;
 }
 .active-unit.enemy-unit .unit-container {
   background: linear-gradient(to right, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
@@ -236,8 +260,12 @@ progress::-webkit-progress-value {
 .active-unit.enemy-unit .unit-icon {
   background-color: rgba(200, 200, 20, 0.5);
 }
+.active-unit.enemy-unit .unit-info-name {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  border-bottom: 1px solid rgba(255, 146, 161, 0.9);
+}
 .active-unit.enemy-unit * {
-  border-color: yellow !important;
+  border-color: yellow;
 }
 .target-unit.friendly-unit .unit-container {
   background: linear-gradient(to left, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
@@ -245,14 +273,22 @@ progress::-webkit-progress-value {
 .target-unit.friendly-unit .unit-icon {
   background-color: rgba(20, 200, 20, 0.5);
 }
+.target-unit.friendly-unit .unit-info-name {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  border-bottom: 1px solid rgba(146, 161, 255, 0.9);
+}
 .target-unit.enemy-unit .unit-container {
   background: linear-gradient(to right, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
 }
 .target-unit.enemy-unit .unit-icon {
   background-color: rgba(20, 200, 20, 0.5);
 }
+.target-unit.enemy-unit .unit-info-name {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  border-bottom: 1px solid rgba(255, 146, 161, 0.9);
+}
 .active-border * {
-  border-color: yellow !important;
+  border-color: yellow;
 }
 @keyframes friendly-unit-enter {
   from {
@@ -303,17 +339,21 @@ progress::-webkit-progress-value {
   position: absolute;
   max-width: 100%;
   height: 100%;
+  border-color: white !important;
 }
 .guard-wrapper progress {
   color: linear-gradient(to left, #0082e6, #032c9c);
   border-radius: 5px;
+  border: 1px solid white;
 }
 .guard-wrapper progress::-moz-progress-bar {
   background: linear-gradient(to left, #0082e6, #032c9c);
-}
-.guard-wrapper progress::-webkit-progress-bar {
-  border: 1px solid white;
   border-radius: 5px;
+}
+.guard-wrapper progress::-ms-fill {
+  background: linear-gradient(to left, #0082e6, #032c9c);
+  border-radius: 5px;
+  height: 100%;
 }
 .guard-wrapper progress::-webkit-progress-value {
   background: linear-gradient(to left, #0082e6, #032c9c);
@@ -323,10 +363,9 @@ progress::-webkit-progress-value {
   color: white;
   display: flex;
   flex-flow: row;
-  width: 98%;
-  left: 1%;
+  width: 96%;
   height: 16px;
-  top: 2px;
+  margin: 2px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   box-sizing: border-box;
@@ -395,17 +434,17 @@ progress::-webkit-progress-value {
   margin-top: 5px;
 }
 .turn-counter {
-  display: flex;
-  flex: 1 0 auto;
+  flex: 0 0 6px;
   margin: 3px 0;
   width: 30px;
-  border: 1px solid black;
 }
 .used-turn {
-  background-color: transparent;
+  border: 1px solid #999;
+  background-color: rgba(255, 255, 255, 0.19999999999999996);
 }
 .available-turn {
-  background-color: green;
+  border: 1px solid #0ac7b3;
+  background: linear-gradient(to right, #9efff5 0%, #dfffef 50%, #9efff5 100%);
 }
 .react-list th {
   padding-left: 2px;
@@ -510,8 +549,6 @@ progress::-webkit-progress-value {
 }
 .battle-prep .battle-fleet {
   flex: 1 2 auto;
-  background-color: #253f5a;
-  color: #fefefe;
 }
 .reserved {
   background-color: grey;
@@ -740,7 +777,8 @@ progress::-webkit-progress-value {
   align-self: center;
 }
 .expanded-action {
-  background-color: white;
+  background-color: #091e1d;
+  color: #fefefe;
 }
 .star-info {
   position: absolute;
@@ -762,6 +800,9 @@ progress::-webkit-progress-value {
 }
 .defence-building-controller {
   margin-top: 5px;
+}
+.buildable-item-list {
+  position: relative;
 }
 .buildable-item-list .sort-icon {
   font-weight: 100;
@@ -810,8 +851,40 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
+.buildable-item-list tbody :first-child::after {
+  background-image: none;
+}
 .buildable-item {
   cursor: pointer;
+  position: relative;
+}
+.buildable-item td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-width: 70px;
+}
+.buildable-item .buildCost {
+  text-align: right;
+}
+.buildable-item .buildCost::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #F3C620;
+}
+.buildable-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
 }
 .buildable-item:hover {
   background-color: grey;

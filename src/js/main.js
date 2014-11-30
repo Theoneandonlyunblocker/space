@@ -3569,7 +3569,7 @@ var Rance;
                 }
             });
 
-            this.maxTurns = 24;
+            this.maxTurns = 25;
             this.turnsLeft = this.maxTurns;
             this.updateTurnOrder();
             this.setActiveUnit();

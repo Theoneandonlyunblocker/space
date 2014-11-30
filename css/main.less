@@ -10,7 +10,7 @@ body {
   border: 0;
 }
 
-@bg-color: #253f5a;
+@bg-color: #091E1D;
 @text-color: #FEFEFE;
 @unit-border-color: #999;
 
@@ -49,6 +49,14 @@ body {
     @radius @radius 0 @color;
 }
 
+.double-gradient(@dir, @c1, @c2)
+{
+  background: linear-gradient(@dir,
+    @c1 0%,
+    @c2 50%,
+    @c1 100%)
+}
+
 
 progress 
 {
@@ -61,6 +69,7 @@ progress
   border: none;
 }
 
+progress::-ms-fill { background: #080; }
 progress::-moz-progress-bar { background: #080; }
 progress::-webkit-progress-bar { background: #888; }
 progress::-webkit-progress-value { background: #080; }
@@ -106,7 +115,7 @@ progress::-webkit-progress-value { background: #080; }
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: green;
+  background-image: url("../img/bgTest.png");
 }
 
 .turn-order-container
@@ -193,12 +202,26 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: center;
   flex: 1;
   max-height: 50%;
-  background-color: #0A6209;
+  //background-color: #0A6209;
+}
+
+@ability-color: fadeout(saturate(darken(
+  @active-unit-color, 20%), 10%), 10%);
+
+.ability-tooltip-faces-right .ability-tooltip-ability
+{
+  background: linear-gradient(to left, @ability-color,
+    fadeout(@ability-color, 20%));
+}
+.ability-tooltip-faces-left .ability-tooltip-ability
+{
+  background: linear-gradient(to right, @ability-color,
+    fadeout(@ability-color, 20%));
 }
 
 .ability-tooltip-ability:hover
 {
-  background-color: #AAF;
+  background-color: @active-unit-color;
 }
 
 .fleets-container
@@ -283,7 +306,7 @@ progress::-webkit-progress-value { background: #080; }
 @active-unit-bg: fadeout(@active-unit-color, 50%);
 @target-unit-bg: fadeout(@target-unit-color, 50%);
 
-.unit-style(@bg-color, @dir: to left)
+.unit-style(@bg-color, @dir: to left, @accent-color: @bg-color)
 {
   .unit-container
   {
@@ -293,6 +316,13 @@ progress::-webkit-progress-value { background: #080; }
   .unit-icon
   {
     background-color: @bg-color;
+  }
+  .unit-info-name
+  {
+    background: linear-gradient(@dir,
+      fadeout(black, 20%), fadeout(black, 80%));
+    border-bottom: 1px solid fadein(lighten(saturate(@accent-color,
+      40%), 10%), 40%);
   }
 }
 
@@ -322,29 +352,29 @@ progress::-webkit-progress-value { background: #080; }
 
 .active-unit.friendly-unit
 {
-  .unit-style(@active-unit-bg, to left);
+  .unit-style(@active-unit-bg, to left, @friendly-unit-bg);
   .active-border;
 }
 .active-unit.enemy-unit
 {
-  .unit-style(@active-unit-bg, to right);
+  .unit-style(@active-unit-bg, to right, @enemy-unit-bg);
   .active-border;
 }
 
 .target-unit.friendly-unit
 {
-  .unit-style(@target-unit-bg, to left);
+  .unit-style(@target-unit-bg, to left, @friendly-unit-bg);
 }
 .target-unit.enemy-unit
 {
-  .unit-style(@target-unit-bg, to right);
+  .unit-style(@target-unit-bg, to right, @enemy-unit-bg);
 }
 
 .active-border
 {
   *
   {
-    border-color: yellow !important;
+    border-color: yellow;
   }
 }
 
@@ -417,6 +447,7 @@ progress::-webkit-progress-value { background: #080; }
     position: absolute;
     max-width: 100%;
     height: 100%;
+    border-color: white !important;
   }
   
   @c1: #0082E6;
@@ -427,15 +458,22 @@ progress::-webkit-progress-value { background: #080; }
   {
     color: @value-gradient;
     border-radius: 5px;
+    border: 1px solid white;
   }
   progress::-moz-progress-bar
   {
     background: @value-gradient;
+    border-radius: 5px;
   }
   progress::-webkit-progress-bar
   {
-    border: 1px solid white;
+
+  }
+  progress::-ms-fill
+  {
+    background: @value-gradient;
     border-radius: 5px;
+    height: 100%;
   }
   progress::-webkit-progress-value
   {
@@ -451,10 +489,9 @@ progress::-webkit-progress-value { background: #080; }
   color: white;
   display: flex;
   flex-flow: row;
-  width: 98%;
-  left: 1%;
+  width: 96%;
   height: 16px;
-  top: 2px;
+  margin: 2px;
   border: 1px solid rgba(255,255,255,0.5);
   border-radius: 5px;
   box-sizing: border-box;
@@ -555,21 +592,21 @@ progress::-webkit-progress-value { background: #080; }
 
 .turn-counter
 {
-  display: flex;
-  flex: 1 0 auto;
+  flex: 0 0 6px;
   margin: 3px 0;
   width: 30px;
-  border: 1px solid black;
 }
 
 .used-turn
 {
-  background-color: transparent;
+  border: 1px solid #999;
+  background-color: fadeout(white, 80%);
 }
 
 .available-turn
 {
-  background-color: green;
+  border: 1px solid desaturate(darken(#9EFFF5, 40%), 10%);
+  .double-gradient(to right, #9EFFF5, #DFFFEF);
 }
 
 
@@ -691,8 +728,6 @@ progress::-webkit-progress-value { background: #080; }
   .battle-fleet
   {
     flex: 1 2 auto;
-    background-color: @bg-color;
-    color: @text-color;
   }
 }
 
@@ -1011,7 +1046,8 @@ progress::-webkit-progress-value { background: #080; }
 
 .expanded-action
 {
-  background-color: white;
+  background-color: @bg-color;
+  color: @text-color;
 }
 
 .star-info
@@ -1046,10 +1082,47 @@ progress::-webkit-progress-value { background: #080; }
 .buildable-item-list
 {
   .sort-icons(500px);
+  position: relative;
+
+  tbody :first-child::after
+  {
+    background-image: none;
+  }
 }
 .buildable-item
 {
   cursor: pointer;
+
+  position: relative;
+  td
+  {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    min-width: 70px;
+  }
+
+  .buildCost
+  {
+    text-align: right;
+  }
+  .buildCost::after
+  {
+    .fa("\f111");
+    margin-left: 0.25em;
+    color: #F3C620;
+  }
+}
+.buildable-item::after
+{
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
 }
 .buildable-item:hover
 {
