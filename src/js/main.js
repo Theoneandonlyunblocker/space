@@ -1686,7 +1686,7 @@ var Rance;
 
                 var incomeClass = "top-bar-money-income";
                 if (income < 0)
-                    incomeClass += " negative-income";
+                    incomeClass += " negative";
 
                 return (React.DOM.div({
                     className: "top-bar"
@@ -2182,6 +2182,7 @@ var Rance;
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
+                var player = this.props.player;
                 var cells = [];
                 var columns = this.props.activeColumns;
 
@@ -2189,10 +2190,17 @@ var Rance;
                     cells.push(this.makeCell(columns[i].key));
                 }
 
-                return (React.DOM.tr({
+                var props = {
                     className: "buildable-item buildable-building",
                     onClick: this.props.handleClick
-                }, cells));
+                };
+                if (player.money < this.props.buildCost) {
+                    props.onClick = null;
+                    props.disabled = true;
+                    props.className += " disabled";
+                }
+
+                return (React.DOM.tr(props, cells));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2241,6 +2249,7 @@ var Rance;
                         template: template,
                         typeName: template.name,
                         buildCost: template.buildCost,
+                        player: this.props.player,
                         rowConstructor: Rance.UIComponents.BuildableBuilding
                     };
 
@@ -4242,6 +4251,11 @@ var Rance;
                 var cellContent;
 
                 switch (type) {
+                    case ("buildCost"): {
+                        if (this.props.player.money < this.props.buildCost) {
+                            cellProps.className += " negative";
+                        }
+                    }
                     default: {
                         cellContent = this.props[type];
                         break;
@@ -4251,6 +4265,7 @@ var Rance;
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
+                var player = this.props.player;
                 var cells = [];
                 var columns = this.props.activeColumns;
 
@@ -4258,10 +4273,17 @@ var Rance;
                     cells.push(this.makeCell(columns[i].key));
                 }
 
-                return (React.DOM.tr({
+                var props = {
                     className: "buildable-item buildable-ship",
                     onClick: this.props.handleClick
-                }, cells));
+                };
+                if (player.money < this.props.buildCost) {
+                    props.onClick = null;
+                    props.disabled = true;
+                    props.className += " disabled";
+                }
+
+                return (React.DOM.tr(props, cells));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4302,6 +4324,7 @@ var Rance;
                         template: template,
                         typeName: template.typeName,
                         buildCost: template.buildCost,
+                        player: this.props.player,
                         rowConstructor: Rance.UIComponents.BuildableShip
                     };
 
@@ -4355,16 +4378,16 @@ var Rance;
             },
             buildBuildings: function () {
                 this.setState({
-                    expandedAction: "buildBuildings"
+                    expandedAction: this.makeExpandedAction("buildBuildings")
                 });
             },
             buildShips: function () {
                 this.setState({
-                    expandedAction: "buildShips"
+                    expandedAction: this.makeExpandedAction("buildShips")
                 });
             },
-            makeExpandedAction: function () {
-                switch (this.state.expandedAction) {
+            makeExpandedAction: function (action) {
+                switch (action) {
                     case "buildBuildings": {
                         if (!this.props.selectedStar)
                             return null;
@@ -4372,6 +4395,7 @@ var Rance;
                         return (React.DOM.div({
                             className: "expanded-action"
                         }, Rance.UIComponents.BuildableBuildingList({
+                            player: this.props.player,
                             star: this.props.selectedStar
                         })));
                     }
@@ -4436,7 +4460,7 @@ var Rance;
 
                 return (React.DOM.div({
                     className: "possible-actions-container"
-                }, allActions.length > 0 ? possibleActions : null, this.makeExpandedAction()));
+                }, allActions.length > 0 ? possibleActions : null, this.state.expandedAction));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

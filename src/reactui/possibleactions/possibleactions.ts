@@ -32,7 +32,7 @@ module Rance
       {
         this.setState(
         {
-          expandedAction: "buildBuildings"
+          expandedAction: this.makeExpandedAction("buildBuildings")
         });
       },
 
@@ -40,14 +40,14 @@ module Rance
       {
         this.setState(
         {
-          expandedAction: "buildShips"
+          expandedAction: this.makeExpandedAction("buildShips")
         });
       },
 
 
-      makeExpandedAction: function()
+      makeExpandedAction: function(action)
       {
-        switch (this.state.expandedAction)
+        switch (action)
         {
           case "buildBuildings":
           {
@@ -60,6 +60,7 @@ module Rance
               },
                 UIComponents.BuildableBuildingList(
                 {
+                  player: this.props.player,
                   star: this.props.selectedStar
                 })
               )
@@ -168,7 +169,7 @@ module Rance
             allActions.length > 0 ?
               possibleActions :
               null,
-            this.makeExpandedAction()
+            this.state.expandedAction
           )
         );
       }

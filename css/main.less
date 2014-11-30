@@ -84,7 +84,7 @@ table
     @c2 50%,
     @c1 100%)
 }
-
+/*
 .button-style-no-border
 {
   background: linear-gradient(to bottom, @bg-color2, @bg-color);
@@ -105,6 +105,54 @@ table
       to bottom,
       lighten(@bg-color, 7%),
       lighten(@bg-color2, 7%)
+    );
+  }
+  &:disabled
+  {
+    cursor: default;
+    color: darken(@text-color, 20%);
+    background: linear-gradient(
+      to bottom,
+      darken(@bg-color, 7%),
+      darken(@bg-color2, 7%)
+    );
+  }
+}
+*/
+.button-style-no-border
+{
+  .double-gradient(
+    to bottom,
+    lighten(@bg-color2, 4%),
+    lighten(@bg-color, 0%)
+  );
+  color: @text-color;
+  cursor: pointer;
+
+  &:hover
+  {
+    .double-gradient(
+      to bottom,
+      lighten(@bg-color2, 12%),
+      lighten(@bg-color, 8%)
+    );
+  }
+  &:active
+  {
+    .double-gradient(
+      to bottom,
+      lighten(@bg-color2, 8%),
+      lighten(@bg-color, 4%)
+    );
+  }
+  &:disabled, &.disabled
+  {
+    cursor: default;
+    color: darken(@text-color, 20%);
+    .double-gradient(
+      to bottom,
+      darken(@bg-color2, 8%),
+      darken(@bg-color, 16%)
     );
   }
 }
@@ -899,7 +947,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .negative
 {
-  color: @negative-color;
+  color: @negative-color !important;
 }
 
 .fleet-selection-container
@@ -914,6 +962,8 @@ progress::-webkit-progress-value { background: #080; }
   {
     pointer-events: auto;
   }
+
+  color: @text-color;
 }
 
 .fleet-selection
@@ -930,6 +980,17 @@ progress::-webkit-progress-value { background: #080; }
 .fleet-selection-controls
 {
   flex: 0 auto;
+
+  background-color: @bg-color;
+  display: inline-table;
+  padding: 5px;
+  .full-border(2px);
+
+  button
+  {
+    margin: 1px 2px;
+    .button-style;
+  }
 }
 
 .fleet-selection-selected-wrapper
@@ -946,20 +1007,35 @@ progress::-webkit-progress-value { background: #080; }
   margin-right: 25px;
 }
 
+.fleet-controls
+{
+  button
+  {
+    margin: 1px 2px;
+    .button-style;
+  }
+}
+
 .fleet-info
 {
   display: inline-flex;
   flex-flow: column;
   flex-shrink: 0;
-  background-color: white;
-  border: 1px solid black;
-  margin-top: 2px;
+  background-color: @bg-color;
+  border: 1px solid @ui-border-color1;
+  margin-bottom: 2px;
+
+  >*
+  {
+    align-items: center;
+  }
 }
 
 .fleet-info-header
 {
   display: flex;
   flex-flow: row;
+  background: linear-gradient(to bottom, @bg-color2, @bg-color);
 }
 
 .fleet-info-name
@@ -984,6 +1060,11 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: column;
 }
 
+.fleet-contents:first-child
+{
+  border-top: 1px solid @ui-border-color1;
+}
+
 .fleet-contents-dummy-ship
 {
   height: 36px;
@@ -994,8 +1075,14 @@ progress::-webkit-progress-value { background: #080; }
   display: inline-flex;
   flex-flow: row;
   flex-shrink: 0;
-  background-color: white;
-  border: 1px solid black;
+  background-color: @bg-color;
+  border: 1px solid @ui-border-color1;
+  border-top: 0;
+
+  .ship-info-name, .unit-strength-amount
+  {
+    background-color: @bg-color2;
+  }
 }
 
 .ship-info-icon-container
@@ -1012,11 +1099,12 @@ progress::-webkit-progress-value { background: #080; }
   flex: 1;
 }
 
+
 .fleet-reorganization
 {
   display: inline-flex;
   flex-flow: column;
-  background-color: white;
+  background-color: @bg-color;
 }
 
 .fleet-reorganization-header
@@ -1034,7 +1122,6 @@ progress::-webkit-progress-value { background: #080; }
 .fleet-reorganization-subheader-fleet-name
 {
   flex: 1;
-  border: 1px solid black;
 }
 .fleet-reorganization-subheader-fleet-name-left
 {
@@ -1056,12 +1143,12 @@ progress::-webkit-progress-value { background: #080; }
 
   .fleet-contents
   {
-    border: 1px solid red;
     display: inline-flex;
     flex: 1;
     min-width: 260px;
     overflow-y: scroll;
     max-height: 300px;
+    background-color: @bg-color2;
   }
 }
 

@@ -12,29 +12,76 @@ body {
 table {
   border-collapse: separate;
 }
+/*
+.button-style-no-border
+{
+  background: linear-gradient(to bottom, @bg-color2, @bg-color);
+  color: @text-color;
+  cursor: pointer;
+
+  &:hover
+  {
+    background: linear-gradient(
+      to bottom,
+      lighten(@bg-color2, 15%),
+      lighten(@bg-color, 15%)
+    );
+  }
+  &:active
+  {
+    background: linear-gradient(
+      to bottom,
+      lighten(@bg-color, 7%),
+      lighten(@bg-color2, 7%)
+    );
+  }
+  &:disabled
+  {
+    cursor: default;
+    color: darken(@text-color, 20%);
+    background: linear-gradient(
+      to bottom,
+      darken(@bg-color, 7%),
+      darken(@bg-color2, 7%)
+    );
+  }
+}
+*/
 .button-style-no-border {
-  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #fefefe;
   cursor: pointer;
 }
 .button-style-no-border:hover {
-  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
 }
 .button-style-no-border:active {
-  background: linear-gradient(to bottom, #1d3331, #163b5a);
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.button-style-no-border:disabled,
+.button-style-no-border.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .button-style {
-  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #fefefe;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .button-style:hover {
-  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
 }
 .button-style:active {
-  background: linear-gradient(to bottom, #1d3331, #163b5a);
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.button-style:disabled,
+.button-style.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 progress {
   color: #080;
@@ -671,7 +718,7 @@ progress::-webkit-progress-value {
   margin-left: 0.666em;
 }
 .negative {
-  color: #ff3c3c;
+  color: #ff3c3c !important;
 }
 .fleet-selection-container {
   position: relative;
@@ -680,6 +727,7 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: row;
   pointer-events: none;
+  color: #fefefe;
 }
 .fleet-selection-container > * {
   pointer-events: auto;
@@ -694,6 +742,32 @@ progress::-webkit-progress-value {
 }
 .fleet-selection-controls {
   flex: 0 auto;
+  background-color: #101c1b;
+  display: inline-table;
+  padding: 5px;
+  border: 2px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+}
+.fleet-selection-controls button {
+  margin: 1px 2px;
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #fefefe;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.fleet-selection-controls button:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.fleet-selection-controls button:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.fleet-selection-controls button:disabled,
+.fleet-selection-controls button.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .fleet-selection-selected-wrapper {
   overflow-y: auto;
@@ -706,17 +780,41 @@ progress::-webkit-progress-value {
   width: 100%;
   margin-right: 25px;
 }
+.fleet-controls button {
+  margin: 1px 2px;
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #fefefe;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.fleet-controls button:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.fleet-controls button:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.fleet-controls button:disabled,
+.fleet-controls button.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+}
 .fleet-info {
   display: inline-flex;
   flex-flow: column;
   flex-shrink: 0;
-  background-color: white;
-  border: 1px solid black;
-  margin-top: 2px;
+  background-color: #101c1b;
+  border: 1px solid #c4e5fb;
+  margin-bottom: 2px;
+}
+.fleet-info > * {
+  align-items: center;
 }
 .fleet-info-header {
   display: flex;
   flex-flow: row;
+  background: linear-gradient(to bottom, #0f283d, #101c1b);
 }
 .fleet-info-name {
   margin-right: 5px;
@@ -732,6 +830,9 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: column;
 }
+.fleet-contents:first-child {
+  border-top: 1px solid #c4e5fb;
+}
 .fleet-contents-dummy-ship {
   height: 36px;
 }
@@ -739,8 +840,13 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: row;
   flex-shrink: 0;
-  background-color: white;
-  border: 1px solid black;
+  background-color: #101c1b;
+  border: 1px solid #c4e5fb;
+  border-top: 0;
+}
+.ship-info .ship-info-name,
+.ship-info .unit-strength-amount {
+  background-color: #0f283d;
 }
 .ship-info-icon-container {
   display: flex;
@@ -754,7 +860,7 @@ progress::-webkit-progress-value {
 .fleet-reorganization {
   display: inline-flex;
   flex-flow: column;
-  background-color: white;
+  background-color: #101c1b;
 }
 .fleet-reorganization-header {
   text-align: center;
@@ -766,7 +872,6 @@ progress::-webkit-progress-value {
 }
 .fleet-reorganization-subheader-fleet-name {
   flex: 1;
-  border: 1px solid black;
 }
 .fleet-reorganization-subheader-fleet-name-left {
   text-align: right;
@@ -779,12 +884,12 @@ progress::-webkit-progress-value {
   flex-flow: row;
 }
 .fleet-reorganization-contents .fleet-contents {
-  border: 1px solid red;
   display: inline-flex;
   flex: 1;
   min-width: 260px;
   overflow-y: scroll;
   max-height: 300px;
+  background-color: #0f283d;
 }
 .fleet-reorganization-footer {
   display: flex;
@@ -802,17 +907,23 @@ progress::-webkit-progress-value {
   height: 40px;
   font-size: 1.5em;
   font-weight: bolder;
-  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #fefefe;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .end-turn-button:hover {
-  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
 }
 .end-turn-button:active {
-  background: linear-gradient(to bottom, #1d3331, #163b5a);
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.end-turn-button:disabled,
+.end-turn-button.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .possible-actions-container {
   display: flex;
@@ -837,7 +948,7 @@ progress::-webkit-progress-value {
 .possible-action {
   display: flex;
   flex-flow: row;
-  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #fefefe;
   cursor: pointer;
   border: 1px solid #c4e5fb;
@@ -846,10 +957,16 @@ progress::-webkit-progress-value {
   padding: 6px;
 }
 .possible-action:hover {
-  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
 }
 .possible-action:active {
-  background: linear-gradient(to bottom, #1d3331, #163b5a);
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.possible-action:disabled,
+.possible-action.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .possible-action-title {
   align-self: center;
@@ -960,16 +1077,22 @@ progress::-webkit-progress-value {
   background-image: none;
 }
 .buildable-item {
-  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #fefefe;
   cursor: pointer;
   position: relative;
 }
 .buildable-item:hover {
-  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
 }
 .buildable-item:active {
-  background: linear-gradient(to bottom, #1d3331, #163b5a);
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.buildable-item:disabled,
+.buildable-item.disabled {
+  cursor: default;
+  color: #cbcbcb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .buildable-item td {
   padding-top: 8px;

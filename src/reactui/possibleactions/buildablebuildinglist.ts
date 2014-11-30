@@ -55,6 +55,7 @@ module Rance
 
             typeName: template.name,
             buildCost: template.buildCost,
+            player: this.props.player,
 
             rowConstructor: UIComponents.BuildableBuilding
           };

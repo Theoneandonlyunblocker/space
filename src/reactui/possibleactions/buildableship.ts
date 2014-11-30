@@ -14,6 +14,13 @@ module Rance
 
         switch (type)
         {
+          case ("buildCost"):
+          {
+            if (this.props.player.money < this.props.buildCost)
+            {
+              cellProps.className += " negative";
+            }
+          }
           default:
           {
             cellContent = this.props[type];
@@ -28,6 +35,7 @@ module Rance
 
       render: function()
       {
+        var player = this.props.player;
         var cells = [];
         var columns = this.props.activeColumns;
 
@@ -38,12 +46,20 @@ module Rance
           );
         }
 
+        var props: any =
+        {
+          className: "buildable-item buildable-ship",
+          onClick: this.props.handleClick
+        }
+        if (player.money < this.props.buildCost)
+        {
+          props.onClick = null;
+          props.disabled = true;
+          props.className += " disabled";
+        }
+
         return(
-          React.DOM.tr(
-          {
-            className: "buildable-item buildable-ship",
-            onClick: this.props.handleClick
-          },
+          React.DOM.tr(props,
           cells
           )
         );
