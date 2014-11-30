@@ -220,8 +220,8 @@ progress::-webkit-progress-value {
   background-image: url("../img/bgTest.png");
   color: #fefefe;
   border: 0px solid transparent;
-  border-bottom: 0;
-  border-top: 5px;
+  border-bottom-width: 0;
+  border-top-width: 5px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -439,7 +439,7 @@ progress::-webkit-progress-value {
   border-radius: 5px;
 }
 .guard-text-container {
-  color: text-color;
+  color: #fefefe;
   display: flex;
   flex-flow: row;
   width: 96%;
@@ -696,8 +696,8 @@ progress::-webkit-progress-value {
   color: #fefefe;
   background-color: #101c1b;
   border: 0px solid transparent;
-  border-bottom: 5px;
-  border-top: 0;
+  border-bottom-width: 5px;
+  border-top-width: 0;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -916,8 +916,8 @@ progress::-webkit-progress-value {
   padding: 8px 0;
   background-color: #101c1b;
   border: 0px solid transparent;
-  border-bottom: 3px;
-  border-top: 3px;
+  border-bottom-width: 3px;
+  border-top-width: 3px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -1109,8 +1109,8 @@ progress::-webkit-progress-value {
 }
 .buildable-item-list thead th {
   border: 0px solid transparent;
-  border-bottom: 3px;
-  border-top: 3px;
+  border-bottom-width: 3px;
+  border-top-width: 3px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }

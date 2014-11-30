@@ -37,8 +37,8 @@ table
 .horizontal-border(@top-width, @bottom-width)
 {
   border: 0px solid transparent;
-  border-bottom: @bottom-width;
-  border-top: @top-width;
+  border-bottom-width: @bottom-width;
+  border-top-width: @top-width;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -594,7 +594,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .guard-text-container
 {
-  color: text-color;
+  color: @text-color;
   display: flex;
   flex-flow: row;
   width: 96%;
