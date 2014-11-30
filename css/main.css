@@ -14,21 +14,27 @@ table {
 }
 .button-style-no-border {
   background: linear-gradient(to bottom, #0f283d, #101c1b);
-  color: white;
+  color: #fefefe;
   cursor: pointer;
 }
 .button-style-no-border:hover {
-  background: linear-gradient(to bottom, #194366, #233c3a);
+  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+}
+.button-style-no-border:active {
+  background: linear-gradient(to bottom, #1d3331, #163b5a);
 }
 .button-style {
   background: linear-gradient(to bottom, #0f283d, #101c1b);
-  color: white;
+  color: #fefefe;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .button-style:hover {
-  background: linear-gradient(to bottom, #194366, #233c3a);
+  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+}
+.button-style:active {
+  background: linear-gradient(to bottom, #1d3331, #163b5a);
 }
 progress {
   color: #080;
@@ -166,6 +172,12 @@ progress::-webkit-progress-value {
   flex: 1 0 auto;
   background-image: url("../img/bgTest.png");
   color: #fefefe;
+  border: 0px solid transparent;
+  border-bottom: 0;
+  border-top: 5px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+  align-items: center;
 }
 .end-battle-button {
   width: 80px;
@@ -381,7 +393,7 @@ progress::-webkit-progress-value {
   border-radius: 5px;
 }
 .guard-text-container {
-  color: white;
+  color: text-color;
   display: flex;
   flex-flow: row;
   width: 96%;
@@ -635,18 +647,31 @@ progress::-webkit-progress-value {
   left: 0;
   display: flex;
   flex-flow: row;
-  background-color: white;
-  border: 1px solid black;
+  color: #fefefe;
+  background-color: #101c1b;
+  border: 0px solid transparent;
+  border-bottom: 5px;
+  border-top: 0;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+  align-items: center;
 }
 .top-bar > * {
-  margin-right: 15px;
+  margin-top: 4px;
+  margin-left: 10px;
+  margin-bottom: 2px;
+  margin-right: 10px;
 }
 .top-bar-money {
   display: flex;
   flex-flow: row;
+  color: #ffeb00;
 }
 .top-bar-money-income {
   margin-left: 0.666em;
+}
+.negative {
+  color: #ff3c3c;
 }
 .fleet-selection-container {
   position: relative;
@@ -778,13 +803,16 @@ progress::-webkit-progress-value {
   font-size: 1.5em;
   font-weight: bolder;
   background: linear-gradient(to bottom, #0f283d, #101c1b);
-  color: white;
+  color: #fefefe;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .end-turn-button:hover {
-  background: linear-gradient(to bottom, #194366, #233c3a);
+  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+}
+.end-turn-button:active {
+  background: linear-gradient(to bottom, #1d3331, #163b5a);
 }
 .possible-actions-container {
   display: flex;
@@ -810,7 +838,7 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: row;
   background: linear-gradient(to bottom, #0f283d, #101c1b);
-  color: white;
+  color: #fefefe;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -818,7 +846,10 @@ progress::-webkit-progress-value {
   padding: 6px;
 }
 .possible-action:hover {
-  background: linear-gradient(to bottom, #194366, #233c3a);
+  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+}
+.possible-action:active {
+  background: linear-gradient(to bottom, #1d3331, #163b5a);
 }
 .possible-action-title {
   align-self: center;
@@ -918,22 +949,27 @@ progress::-webkit-progress-value {
     */
 }
 .buildable-item-list thead th {
-  border: 3px solid transparent;
-  border-image-source: url("../img/uiBorder.png");
+  border: 0px solid transparent;
+  border-bottom: 3px;
+  border-top: 3px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
-  border-width: 3px 0;
+  align-items: center;
 }
 .buildable-item-list tbody :first-child::after {
   background-image: none;
 }
 .buildable-item {
   background: linear-gradient(to bottom, #0f283d, #101c1b);
-  color: white;
+  color: #fefefe;
   cursor: pointer;
   position: relative;
 }
 .buildable-item:hover {
-  background: linear-gradient(to bottom, #194366, #233c3a);
+  background: linear-gradient(to bottom, #1e507a, #2c4d4a);
+}
+.buildable-item:active {
+  background: linear-gradient(to bottom, #1d3331, #163b5a);
 }
 .buildable-item td {
   padding-top: 8px;
@@ -942,6 +978,7 @@ progress::-webkit-progress-value {
 }
 .buildable-item .buildCost {
   text-align: right;
+  color: #ffeb00;
 }
 .buildable-item .buildCost::after {
   content: "\f111";
@@ -950,7 +987,7 @@ progress::-webkit-progress-value {
   font-weight: normal;
   text-decoration: inherit;
   margin-left: 0.25em;
-  color: #F3C620;
+  color: #f3c620;
 }
 .buildable-item::after {
   content: "";

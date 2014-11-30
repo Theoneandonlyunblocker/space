@@ -8,6 +8,10 @@ module Rance
       {
         var player: Player = this.props.player;
 
+        var income = player.getIncome();
+
+        var incomeClass = "top-bar-money-income";
+        if (income < 0) incomeClass += " negative";
         
         return(
           React.DOM.div(
@@ -32,9 +36,9 @@ module Rance
               ),
               React.DOM.div(
               {
-                className: "top-bar-money-income"
+                className: incomeClass
               },
-                "+" + player.getIncome()
+                "(+" + player.getIncome() + ")"
               )
             )
             

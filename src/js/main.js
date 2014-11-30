@@ -1682,6 +1682,12 @@ var Rance;
             render: function () {
                 var player = this.props.player;
 
+                var income = player.getIncome();
+
+                var incomeClass = "top-bar-money-income";
+                if (income < 0)
+                    incomeClass += " negative-income";
+
                 return (React.DOM.div({
                     className: "top-bar"
                 }, React.DOM.div({
@@ -1691,8 +1697,8 @@ var Rance;
                 }, React.DOM.div({
                     className: "top-bar-money-current"
                 }, "Money: " + player.money), React.DOM.div({
-                    className: "top-bar-money-income"
-                }, "+" + player.getIncome()))));
+                    className: incomeClass
+                }, "(+" + player.getIncome() + ")"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
