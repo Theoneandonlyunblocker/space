@@ -9,11 +9,6 @@ body {
   margin: 0;
   border: 0;
 }
-.tooltip {
-  width: 60px;
-  height: 60px;
-  background-color: blue;
-}
 progress {
   color: #080;
   background: #888;
@@ -115,7 +110,7 @@ progress::-webkit-progress-value {
 }
 .ability-tooltip {
   position: absolute;
-  z-index: 101;
+  z-index: 201;
   display: flex;
   flex: none;
   flex-basis: 0px;
@@ -129,7 +124,7 @@ progress::-webkit-progress-value {
   justify-content: center;
   flex: 1;
   max-height: 50%;
-  background-color: #DDD;
+  background-color: #0A6209;
 }
 .ability-tooltip-ability:hover {
   background-color: #AAF;
@@ -140,6 +135,8 @@ progress::-webkit-progress-value {
   justify-content: center;
   width: 100%;
   flex: 1 0 auto;
+  background-image: url("../img/bgTest.png");
+  color: #fefefe;
 }
 .end-battle-button {
   width: 80px;
@@ -188,7 +185,7 @@ progress::-webkit-progress-value {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 50;
+  z-index: 150;
   box-sizing: border-box;
   border: 30px solid transparent;
   border-image-source: url("../img/borderTest2.png");
@@ -199,44 +196,59 @@ progress::-webkit-progress-value {
   animation-name: none !important;
 }
 .empty-unit .unit-container {
-  background-color: transparent !important;
+  background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0)) !important;
 }
 .empty-unit .unit-icon {
   background-color: transparent !important;
 }
 .friendly-unit .unit-container {
-  background-color: rgba(100, 120, 250, 0.5);
+  background: linear-gradient(to left, rgba(100, 120, 250, 0.5), rgba(100, 120, 250, 0.3));
 }
 .friendly-unit .unit-icon {
   background-color: rgba(100, 120, 250, 0.5);
 }
 .friendly-unit .unit-container {
-  border: 1px solid black;
+  border: 1px solid #999999;
   border-right: 0;
 }
 .enemy-unit .unit-container {
-  background-color: rgba(250, 100, 120, 0.5);
+  background: linear-gradient(to right, rgba(250, 100, 120, 0.5), rgba(250, 100, 120, 0.3));
 }
 .enemy-unit .unit-icon {
   background-color: rgba(250, 100, 120, 0.5);
 }
 .enemy-unit .unit-container {
-  border: 1px solid black;
+  border: 1px solid #999999;
   border-left: 0;
 }
-.active-unit .unit-container {
+.active-unit.friendly-unit .unit-container {
+  background: linear-gradient(to left, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
+}
+.active-unit.friendly-unit .unit-icon {
   background-color: rgba(200, 200, 20, 0.5);
 }
-.active-unit .unit-icon {
-  background-color: rgba(200, 200, 20, 0.5);
-}
-.active-unit * {
+.active-unit.friendly-unit * {
   border-color: yellow !important;
 }
-.target-unit .unit-container {
+.active-unit.enemy-unit .unit-container {
+  background: linear-gradient(to right, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
+}
+.active-unit.enemy-unit .unit-icon {
+  background-color: rgba(200, 200, 20, 0.5);
+}
+.active-unit.enemy-unit * {
+  border-color: yellow !important;
+}
+.target-unit.friendly-unit .unit-container {
+  background: linear-gradient(to left, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
+}
+.target-unit.friendly-unit .unit-icon {
   background-color: rgba(20, 200, 20, 0.5);
 }
-.target-unit .unit-icon {
+.target-unit.enemy-unit .unit-container {
+  background: linear-gradient(to right, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
+}
+.target-unit.enemy-unit .unit-icon {
   background-color: rgba(20, 200, 20, 0.5);
 }
 .active-border * {
@@ -315,7 +327,7 @@ progress::-webkit-progress-value {
   left: 1%;
   height: 16px;
   top: 2px;
-  border: 1px solid white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 0.85em;
@@ -362,18 +374,18 @@ progress::-webkit-progress-value {
   flex: 1;
 }
 .unit-border-no-left {
-  border: 1px solid black;
+  border: 1px solid #999999;
   border-left: 0;
 }
 .unit-border-no-right {
-  border: 1px solid black;
+  border: 1px solid #999999;
   border-right: 0;
 }
 .unit-border-left {
-  border-left: 1px solid black;
+  border-left: 1px solid #999999;
 }
 .unit-border-right {
-  border-right: 1px solid black;
+  border-right: 1px solid #999999;
 }
 .turns-container {
   display: flex;
@@ -498,6 +510,8 @@ progress::-webkit-progress-value {
 }
 .battle-prep .battle-fleet {
   flex: 1 2 auto;
+  background-color: #253f5a;
+  color: #fefefe;
 }
 .reserved {
   background-color: grey;

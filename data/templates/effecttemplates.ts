@@ -47,7 +47,6 @@ module Rance
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
 
-          console.log(baseDamage, damageIncrease, damage);
           target.recieveDamage(damage, damageType);
         }
       }
@@ -100,7 +99,9 @@ module Rance
         targetRange: "self",
         effect: function(user: Unit, target: Unit)
         {
-          user.addGuard(50, "column");
+          var guardPerInt = 20;
+          var guardAmount = guardPerInt * user.attributes.intelligence;
+          user.addGuard(guardAmount, "column");
         }
       }
 

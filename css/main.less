@@ -10,6 +10,10 @@ body {
   border: 0;
 }
 
+@bg-color: #253f5a;
+@text-color: #FEFEFE;
+@unit-border-color: #999;
+
 .fa(@content)
 {
   content: @content;
@@ -28,7 +32,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 50;
+  z-index: 150;
   box-sizing: border-box;
   border: @border-width solid transparent;
   border-image-source: url("../img/borderTest2.png");
@@ -36,11 +40,13 @@ body {
   border-image-outset: @outset;
 }
 
-.tooltip
+.text-stroke(@color, @radius)
 {
-  width: 60px;
-  height: 60px;
-  background-color: blue;
+  text-shadow:
+    -@radius -@radius 0 @color,  
+    @radius -@radius 0 @color,
+    -@radius @radius 0 @color,
+    @radius @radius 0 @color;
 }
 
 
@@ -169,7 +175,7 @@ progress::-webkit-progress-value { background: #080; }
 .ability-tooltip
 {
   position: absolute;
-  z-index: 101;
+  z-index: 201;
   display: flex;
   flex: none;
   flex-basis: 0px;
@@ -187,7 +193,7 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: center;
   flex: 1;
   max-height: 50%;
-  background-color: #DDD;
+  background-color: #0A6209;
 }
 
 .ability-tooltip-ability:hover
@@ -202,6 +208,9 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: center;
   width: 100%;
   flex: 1 0 auto;
+  //background-color: @bg-color;
+  background-image: url("../img/bgTest.png");
+  color: @text-color;
 }
 
 .end-battle-button
@@ -274,11 +283,12 @@ progress::-webkit-progress-value { background: #080; }
 @active-unit-bg: fadeout(@active-unit-color, 50%);
 @target-unit-bg: fadeout(@target-unit-color, 50%);
 
-.unit-style(@bg-color)
+.unit-style(@bg-color, @dir: to left)
 {
   .unit-container
   {
-    background-color: @bg-color;
+    background: linear-gradient(@dir,
+      @bg-color, fadeout(@bg-color, 20%));
   }
   .unit-icon
   {
@@ -294,7 +304,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .friendly-unit
 {
-  .unit-style(@friendly-unit-bg);
+  .unit-style(@friendly-unit-bg, to left);
   .unit-container
   {
     .unit-border-no-right;
@@ -303,22 +313,31 @@ progress::-webkit-progress-value { background: #080; }
 
 .enemy-unit
 {
-  .unit-style(@enemy-unit-bg);
+  .unit-style(@enemy-unit-bg, to right);
   .unit-container
   {
     .unit-border-no-left;
   }
 }
 
-.active-unit
+.active-unit.friendly-unit
 {
-  .unit-style(@active-unit-bg);
+  .unit-style(@active-unit-bg, to left);
+  .active-border;
+}
+.active-unit.enemy-unit
+{
+  .unit-style(@active-unit-bg, to right);
   .active-border;
 }
 
-.target-unit
+.target-unit.friendly-unit
 {
-  .unit-style(@target-unit-bg);
+  .unit-style(@target-unit-bg, to left);
+}
+.target-unit.enemy-unit
+{
+  .unit-style(@target-unit-bg, to right);
 }
 
 .active-border
@@ -422,6 +441,8 @@ progress::-webkit-progress-value { background: #080; }
   {
     background: @value-gradient;
     border-radius: 5px;
+    //border-top-left-radius: 5px;
+    //border-bottom-left-radius: 5px;
   }
 }
 
@@ -434,7 +455,7 @@ progress::-webkit-progress-value { background: #080; }
   left: 1%;
   height: 16px;
   top: 2px;
-  border: 1px solid white;
+  border: 1px solid rgba(255,255,255,0.5);
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 0.85em;
@@ -500,26 +521,27 @@ progress::-webkit-progress-value { background: #080; }
   flex: 1;
 }
 
+
 .unit-border-no-left
 {
-  border: 1px solid black;
+  border: 1px solid @unit-border-color;
   border-left: 0;
 }
 
 .unit-border-no-right
 {
-  border: 1px solid black;
+  border: 1px solid @unit-border-color;
   border-right: 0;
 }
 
 .unit-border-left
 {
-  border-left: 1px solid black;
+  border-left: 1px solid @unit-border-color;
 }
 
 .unit-border-right
 {
-  border-right: 1px solid black;
+  border-right: 1px solid @unit-border-color;
 }
 
 .turns-container
@@ -669,6 +691,8 @@ progress::-webkit-progress-value { background: #080; }
   .battle-fleet
   {
     flex: 1 2 auto;
+    background-color: @bg-color;
+    color: @text-color;
   }
 }
 

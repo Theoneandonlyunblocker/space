@@ -222,7 +222,8 @@ module Rance
         case "physical":
         {
           defensiveStat = this.attributes.defence;
-          defensiveStat *= (1 + this.battleStats.guard.value / 100);
+          var guardAmount = Math.min(this.battleStats.guard.value, 100);
+          defensiveStat *= (1 + guardAmount / 100);
           defenceFactor = 0.08;
           break;
         }
@@ -234,6 +235,7 @@ module Rance
         }
       }
 
+      console.log(1-defensiveStat * defenceFactor)
       return 1 - defensiveStat * defenceFactor;
     }
     addToFleet(fleet: Fleet)

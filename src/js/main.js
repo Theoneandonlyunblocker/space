@@ -2582,7 +2582,6 @@ var Rance;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
 
-                    console.log(baseDamage, damageIncrease, damage);
                     target.recieveDamage(damage, damageType);
                 }
             };
@@ -2627,7 +2626,9 @@ var Rance;
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
                 effect: function (user, target) {
-                    user.addGuard(50, "column");
+                    var guardPerInt = 20;
+                    var guardAmount = guardPerInt * user.attributes.intelligence;
+                    user.addGuard(guardAmount, "column");
                 }
             };
 
@@ -4179,7 +4180,8 @@ var Rance;
             switch (damageType) {
                 case "physical": {
                     defensiveStat = this.attributes.defence;
-                    defensiveStat *= (1 + this.battleStats.guard.value / 100);
+                    var guardAmount = Math.min(this.battleStats.guard.value, 100);
+                    defensiveStat *= (1 + guardAmount / 100);
                     defenceFactor = 0.08;
                     break;
                 }
@@ -4190,6 +4192,7 @@ var Rance;
                 }
             }
 
+            console.log(1 - defensiveStat * defenceFactor);
             return 1 - defensiveStat * defenceFactor;
         };
         Unit.prototype.addToFleet = function (fleet) {
