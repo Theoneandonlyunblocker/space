@@ -14,6 +14,13 @@ module Rance
 
         switch (type)
         {
+          case ("buildCost"):
+          {
+            if (this.props.player.money < this.props.buildCost)
+            {
+              cellProps.className += " negative";
+            }
+          }
           default:
           {
             cellContent = this.props[type];
