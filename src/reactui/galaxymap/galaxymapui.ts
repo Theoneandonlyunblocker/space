@@ -97,6 +97,7 @@ module Rance
               }),
               React.DOM.button(
               {
+                className: "end-turn-button",
                 onClick: this.endTurn
               }, "End turn")
             ),

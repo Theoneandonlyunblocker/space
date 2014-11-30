@@ -152,18 +152,22 @@ module Rance
             }
           }
         }
+
+        var possibleActions = React.DOM.div(
+        {
+          className: "possible-actions"
+        },
+          allActions
+        );
         
         return(
           React.DOM.div(
           {
             className: "possible-actions-container"
           },
-            React.DOM.div(
-            {
-              className: "possible-actions"
-            },
-              allActions
-            ),
+            allActions.length > 0 ?
+              possibleActions :
+              null,
             this.makeExpandedAction()
           )
         );

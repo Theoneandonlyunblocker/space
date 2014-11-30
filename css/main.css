@@ -12,6 +12,24 @@ body {
 table {
   border-collapse: separate;
 }
+.button-style-no-border {
+  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  color: white;
+  cursor: pointer;
+}
+.button-style-no-border:hover {
+  background: linear-gradient(to bottom, #194366, #233c3a);
+}
+.button-style {
+  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  color: white;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.button-style:hover {
+  background: linear-gradient(to bottom, #194366, #233c3a);
+}
 progress {
   color: #080;
   background: #888;
@@ -754,27 +772,53 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: column;
 }
+.end-turn-button {
+  width: 250px;
+  height: 40px;
+  font-size: 1.5em;
+  font-weight: bolder;
+  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  color: white;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+}
+.end-turn-button:hover {
+  background: linear-gradient(to bottom, #194366, #233c3a);
+}
 .possible-actions-container {
   display: flex;
   flex-flow: row;
+  margin-bottom: 40px;
 }
 .possible-actions-container > * {
   justify-content: flex-end;
   margin-top: auto;
 }
 .possible-actions {
-  border: 1px solid black;
-  background-color: white;
   display: flex;
   flex-flow: column;
-  flex: 1 0 auto;
-  min-width: 64px;
+  flex: 0 0 auto;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  border-left: 0;
+  background-color: #101c1b;
+  padding: 6px 10px;
 }
 .possible-action {
   display: flex;
   flex-flow: row;
-  flex: 0 auto;
+  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  color: white;
   cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  margin: 6px 0;
+  padding: 6px;
+}
+.possible-action:hover {
+  background: linear-gradient(to bottom, #194366, #233c3a);
 }
 .possible-action-title {
   align-self: center;
@@ -870,14 +914,26 @@ progress::-webkit-progress-value {
     :last-child
     {
       border-right: 3px;
-    }*/
+    }
+    */
+}
+.buildable-item-list thead th {
+  border: 3px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  border-width: 3px 0;
 }
 .buildable-item-list tbody :first-child::after {
   background-image: none;
 }
 .buildable-item {
+  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  color: white;
   cursor: pointer;
   position: relative;
+}
+.buildable-item:hover {
+  background: linear-gradient(to bottom, #194366, #233c3a);
 }
 .buildable-item td {
   padding-top: 8px;

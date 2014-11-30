@@ -18,6 +18,7 @@ table
 //@bg-color: #091E1D;
 @bg-color: #101C1B;
 @bg-color2: #0F283D;
+@ui-border-color1: #C4E5FB;
 @text-color: #FEFEFE;
 @unit-border-color: #999;
 
@@ -62,6 +63,29 @@ table
     @c1 0%,
     @c2 50%,
     @c1 100%)
+}
+
+.button-style-no-border
+{
+  background: linear-gradient(to bottom, @bg-color2, @bg-color);
+  color: white;
+  cursor: pointer;
+
+  &:hover
+  {
+    background: linear-gradient(
+      to bottom,
+      lighten(@bg-color2, 10%),
+      lighten(@bg-color, 10%)
+    );
+  }
+}
+
+.button-style
+{
+  .button-style-no-border;
+  border: 1px solid @ui-border-color1;
+  border-radius: 5px;
 }
 
 
@@ -1016,10 +1040,23 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: column;
 }
 
+.end-turn-button
+{
+  width: 250px;
+  height: 40px;
+
+  font-size: 1.5em;
+  font-weight: bolder;
+
+  .button-style;
+}
+
 .possible-actions-container
 {
   display: flex;
   flex-flow: row;
+  margin-bottom: 40px;
+
 
   >*
   {
@@ -1030,20 +1067,28 @@ progress::-webkit-progress-value { background: #080; }
 
 .possible-actions
 {
-  border: 1px solid black;
-  background-color: white;
   display: flex;
   flex-flow: column;
-  flex: 1 0 auto;
-  min-width: 64px;
+  flex: 0 0 auto;
+
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+
+  border-left: 0;
+  background-color: @bg-color;
+  padding: 6px 10px;
 }
 
 .possible-action
 {
   display: flex;
   flex-flow: row;
-  flex: 0 auto;
-  cursor: pointer;
+  
+  .button-style;
+
+  margin: 6px 0;
+  padding: 6px;
 }
 
 .possible-action-title
@@ -1110,13 +1155,14 @@ progress::-webkit-progress-value { background: #080; }
     :last-child
     {
       border-right: 3px;
-    }*/
+    }
+    */
     th
     {
-      // border: 3px solid transparent;
-      // border-image-source: url("../img/uiBorder.png");
-      // border-image-slice: 10%;
-      // border-width: 3px 0;
+      border: 3px solid transparent;
+      border-image-source: url("../img/uiBorder.png");
+      border-image-slice: 10%;
+      border-width: 3px 0;
     }
   }
 
@@ -1127,7 +1173,8 @@ progress::-webkit-progress-value { background: #080; }
 }
 .buildable-item
 {
-  cursor: pointer;
+
+  .button-style-no-border;
 
   position: relative;
   td

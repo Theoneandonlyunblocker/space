@@ -4424,11 +4424,13 @@ var Rance;
                     }
                 }
 
+                var possibleActions = React.DOM.div({
+                    className: "possible-actions"
+                }, allActions);
+
                 return (React.DOM.div({
                     className: "possible-actions-container"
-                }, React.DOM.div({
-                    className: "possible-actions"
-                }, allActions), this.makeExpandedAction()));
+                }, allActions.length > 0 ? possibleActions : null, this.makeExpandedAction()));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4499,6 +4501,7 @@ var Rance;
                     selectedStar: this.state.selectedStar,
                     player: this.props.player
                 }), React.DOM.button({
+                    className: "end-turn-button",
                     onClick: this.endTurn
                 }, "End turn")), Rance.UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
