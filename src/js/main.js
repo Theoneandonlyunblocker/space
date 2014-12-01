@@ -2426,6 +2426,46 @@ var Rance;
     }
     Rance.addFleet = addFleet;
 
+    //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+    /* accepts parameters
+    * h  Object = {h:x, s:y, v:z}
+    * OR
+    * h, s, v
+    */
+    function hsvToRgb(h, s, v) {
+        var r, g, b, i, f, p, q, t;
+        if (h && s === undefined && v === undefined) {
+            s = h.s, v = h.v, h = h.h;
+        }
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0:
+                r = v, g = t, b = p;
+                break;
+            case 1:
+                r = q, g = v, b = p;
+                break;
+            case 2:
+                r = p, g = v, b = t;
+                break;
+            case 3:
+                r = p, g = q, b = v;
+                break;
+            case 4:
+                r = t, g = p, b = v;
+                break;
+            case 5:
+                r = v, g = p, b = q;
+                break;
+        }
+        return [r, g, b];
+    }
+    Rance.hsvToRgb = hsvToRgb;
+
     /**
     * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
     *
@@ -2474,6 +2514,10 @@ var Rance;
         return PIXI.rgb2hex(hslToRgb(h, s, l));
     }
     Rance.hslToHex = hslToHex;
+    function hsvToHex(h, s, v) {
+        return PIXI.rgb2hex(hsvToRgb(h, s, v));
+    }
+    Rance.hsvToHex = hsvToHex;
 
     function cloneObject(toClone) {
         var result = {};
@@ -3463,7 +3507,7 @@ var Rance;
         (function (SubEmblems) {
             SubEmblems.comm3 = {
                 type: "both",
-                foregroundOnly: false,
+                foregroundOnly: true,
                 imageSrc: "../img/emblems/comm3.png"
             };
             SubEmblems.fasc8 = {
@@ -3496,11 +3540,11 @@ var Rance;
 
             this.alpha = rng.random(minAlpha, 100) / 100;
 
-            var hue = rng.random(0, 360);
+            var hue = rng.random(0, 360) / 360;
             var saturation = rng.random(0, 100) / 100;
-            var luminesence = rng.random(0, 100) / 100;
+            var value = rng.random(0, 100) / 100;
 
-            this.color = Rance.hslToHex(hue, saturation, luminesence);
+            this.color = Rance.hsvToHex(hue, saturation, value);
 
             this.generateSubEmblems(rng);
         };
@@ -3605,11 +3649,13 @@ var Rance;
 
             var rng = new RNG(this.seed);
 
-            var hue = rng.random(0, 360) / 360;
-            var saturation = rng.random(69, 100) / 100;
-            var luminesence = rng.random(69, 80) / 100;
+            if (!this.backgroundColor) {
+                var hue = rng.random(0, 360) / 360;
+                var saturation = rng.random(69, 100) / 100;
+                var value = rng.random(69, 100) / 100;
 
-            this.backgroundColor = Rance.hslToHex(hue, saturation, luminesence);
+                this.backgroundColor = Rance.hsvToHex(hue, saturation, value);
+            }
 
             this.foregroundEmblem = new Rance.Emblem();
             this.foregroundEmblem.generateRandom(100, rng);
@@ -3643,8 +3689,6 @@ var Rance;
             var y = (this.height - foreground.height) / 2;
             ctx.drawImage(foreground, x, y);
 
-            var aba = document.getElementById("ababa");
-            aba.appendChild(canvas);
             return canvas;
         };
         return Flag;
@@ -3671,6 +3715,19 @@ var Rance;
             this.name = "Player " + this.id;
             this.money = 1000;
         }
+        Player.prototype.makeFlag = function () {
+            this.flag = new Rance.Flag({ width: 46, backgroundColor: this.color });
+            this.flag.generateRandom();
+
+            this.flag.draw();
+
+            var self = this;
+
+            window.setTimeout(function (e) {
+                this.icon = this.flag.draw().toDataURL();
+                console.log(this.icon);
+            }.bind(this), 1000);
+        };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
         };
@@ -7223,9 +7280,11 @@ var Rance;
     document.addEventListener('DOMContentLoaded', function () {
         player1 = new Rance.Player();
         player1.color = 0xC02020;
+        player1.makeFlag();
         player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();
         player2.color = 0x2020C0;
+        player2.makeFlag();
         player2.icon = Rance.makeTempPlayerIcon(player2, 32);
 
         function setupFleetAndPlayer(player) {

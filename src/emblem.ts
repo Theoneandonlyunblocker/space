@@ -27,11 +27,11 @@ module Rance
 
       this.alpha = rng.random(minAlpha, 100) / 100;
 
-      var hue = rng.random(0, 360);
+      var hue = rng.random(0, 360) / 360;
       var saturation = rng.random(0, 100) / 100;
-      var luminesence = rng.random(0, 100) / 100;
+      var value = rng.random(0, 100) / 100;
 
-      this.color = hslToHex(hue, saturation, luminesence);
+      this.color = hsvToHex(hue, saturation, value);
 
       this.generateSubEmblems(rng);
     }

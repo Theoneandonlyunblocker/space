@@ -14,7 +14,7 @@ module Rance
       export var comm3 =
       {
         type: "both",
-        foregroundOnly: false,
+        foregroundOnly: true,
         imageSrc: "../img/emblems/comm3.png"
       }
       export var fasc8 =

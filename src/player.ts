@@ -15,6 +15,7 @@ module Rance
     id: number;
     name: string;
     color: number;
+    flag: Flag;
     icon: string;
     units:
     {
@@ -32,7 +33,21 @@ module Rance
       this.money = 1000;
     }
 
+    makeFlag()
+    {
+      this.flag = new Flag({width: 46, backgroundColor: this.color});
+      this.flag.generateRandom();
 
+      this.flag.draw();
+
+      var self = this;
+
+      window.setTimeout(function(e)
+      {
+        this.icon = this.flag.draw().toDataURL();
+        console.log(this.icon);
+      }.bind(this), 1000);
+    }
     addUnit(unit: Unit)
     {
       this.units[unit.id] = unit;

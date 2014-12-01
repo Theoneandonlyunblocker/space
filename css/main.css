@@ -1055,6 +1055,8 @@ progress::-webkit-progress-value {
 .defence-building-controller {
   margin-top: 5px;
   border: 1px solid transparent;
+  width: 36px;
+  height: 36px;
 }
 .buildable-item-list {
   position: relative;

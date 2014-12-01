@@ -265,6 +265,7 @@ declare module Rance {
     function makeTempPlayerIcon(player: Player, size: number): string;
     function colorImageInPlayerColor(imageSrc: string, player: Player): string;
     function addFleet(player: Player, shipAmount: number): void;
+    function hsvToRgb(h: any, s: any, v: any): any[];
     /**
     * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
     *
@@ -280,6 +281,7 @@ declare module Rance {
     */
     function hslToRgb(h: any, s: any, l: any): any[];
     function hslToHex(h: any, s: any, l: any): number;
+    function hsvToHex(h: any, s: any, v: any): number;
     function cloneObject(toClone: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
 }
@@ -565,6 +567,7 @@ declare module Rance {
         public id: number;
         public name: string;
         public color: number;
+        public flag: Rance.Flag;
         public icon: string;
         public units: {
             [id: number]: Rance.Unit;
@@ -573,6 +576,7 @@ declare module Rance {
         public money: number;
         public controlledLocations: Rance.Star[];
         constructor(id?: number);
+        public makeFlag(): void;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public getAllUnits(): any[];

@@ -20,9 +20,11 @@ module Rance
   {
     player1 = new Player();
     player1.color = 0xC02020;
+    player1.makeFlag();
     player1.icon = makeTempPlayerIcon(player1, 32);
     player2 = new Player();
     player2.color = 0x2020C0;
+    player2.makeFlag();
     player2.icon = makeTempPlayerIcon(player2, 32);
 
     function setupFleetAndPlayer(player)
