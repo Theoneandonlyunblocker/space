@@ -33,6 +33,8 @@ module Rance
 
       this.color = hsvToHex(hue, saturation, value);
 
+      console.log(hue, saturation, value, this.color)
+
       this.generateSubEmblems(rng);
     }
     generateSubEmblems(rng: any)

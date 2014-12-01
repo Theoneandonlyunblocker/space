@@ -3508,12 +3508,12 @@ var Rance;
             SubEmblems.comm3 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "../img/emblems/comm3.png"
+                imageSrc: "img\/emblems\/comm3.png"
             };
             SubEmblems.fasc8 = {
                 type: "inner-or-both",
                 foregroundOnly: true,
-                imageSrc: "../img/emblems/fasc8.png"
+                imageSrc: "img\/emblems\/fasc8.png"
             };
         })(Templates.SubEmblems || (Templates.SubEmblems = {}));
         var SubEmblems = Templates.SubEmblems;
@@ -3545,6 +3545,8 @@ var Rance;
             var value = rng.random(0, 100) / 100;
 
             this.color = Rance.hsvToHex(hue, saturation, value);
+
+            console.log(hue, saturation, value, this.color);
 
             this.generateSubEmblems(rng);
         };

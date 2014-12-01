@@ -15,13 +15,13 @@ module Rance
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "../img/emblems/comm3.png"
+        imageSrc: "img\/emblems\/comm3.png"
       }
       export var fasc8 =
       {
         type: "inner-or-both",
         foregroundOnly: true,
-        imageSrc: "../img/emblems/fasc8.png"
+        imageSrc: "img\/emblems\/fasc8.png"
       }
     }
   }
