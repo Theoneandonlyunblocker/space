@@ -516,12 +516,57 @@ declare module Rance {
             imageSrc: string;
         }
         module SubEmblems {
+            var comm: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
             var comm3: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
+            var fasc12: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var fasc2: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
             var fasc8: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var fasc9: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var mon13: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var mon16: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var mon18: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var mon26: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var mon9: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;

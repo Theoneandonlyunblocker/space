@@ -3505,15 +3505,60 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (SubEmblems) {
+            SubEmblems.comm = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/comm.png"
+            };
             SubEmblems.comm3 = {
                 type: "both",
                 foregroundOnly: true,
                 imageSrc: "img\/emblems\/comm3.png"
             };
+            SubEmblems.fasc12 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/fasc12.png"
+            };
+            SubEmblems.fasc2 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/fasc2.png"
+            };
             SubEmblems.fasc8 = {
-                type: "inner-or-both",
+                type: "both",
                 foregroundOnly: true,
                 imageSrc: "img\/emblems\/fasc8.png"
+            };
+            SubEmblems.fasc9 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/fasc9.png"
+            };
+            SubEmblems.mon13 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/mon13.png"
+            };
+            SubEmblems.mon16 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/mon16.png"
+            };
+            SubEmblems.mon18 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/mon18.png"
+            };
+            SubEmblems.mon26 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/mon26.png"
+            };
+            SubEmblems.mon9 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "img\/emblems\/mon9.png"
             };
         })(Templates.SubEmblems || (Templates.SubEmblems = {}));
         var SubEmblems = Templates.SubEmblems;

@@ -1,0 +1,21 @@
+ Asemalla C ei ole nimea.
+ Aseman sarjanumero on 4403-27D3
+
+ Kansio C:\Prog\dev\rance\img\emblems
+
+01/12/2014  16:43    <KANSIO>       .
+01/12/2014  16:43    <KANSIO>       ..
+12/10/2010  19:37             1,686 comm.png
+11/07/2011  21:47             4,519 comm3.png
+24/07/2011  04:52             6,786 fasc12.png
+11/07/2011  21:57             7,201 fasc2.png
+24/07/2011  04:34             5,432 fasc8.png
+24/07/2011  04:35             5,595 fasc9.png
+12/10/2010  20:17             4,051 mon13.png
+28/06/2011  00:02             1,970 mon16.png
+28/06/2011  00:11             4,562 mon18.png
+24/07/2011  02:12             3,774 mon26.png
+12/10/2010  20:14             1,973 mon9.png
+01/12/2014  16:43                 0 print.txt
+              12 tiedosto(a)         47,549 tavua
+               2 kansio(ta)  11,690,655,744 tavua vapaana
