@@ -113,6 +113,7 @@ module Rance
 
   export function hexToString(hex: number)
   {
+    hex = Math.round(hex);
     var converted = hex.toString(16);
     return '000000'.substr(0, 6 - converted.length) + converted;
   }
@@ -202,7 +203,7 @@ module Rance
 
   export function hslToHex(h, s, l)
   {
-    return PIXI.rgb2hex ( hslToRgb(h, s, l) );
+    return PIXI.rgb2hex( hslToRgb(h, s, l) );
   }
 
   export function cloneObject(toClone: any)

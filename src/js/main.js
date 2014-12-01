@@ -2381,6 +2381,7 @@ var Rance;
     Rance.rectContains = rectContains;
 
     function hexToString(hex) {
+        hex = Math.round(hex);
         var converted = hex.toString(16);
         return '000000'.substr(0, 6 - converted.length) + converted;
     }
@@ -3495,7 +3496,7 @@ var Rance;
 
             this.alpha = rng.random(minAlpha, 100) / 100;
 
-            var hue = rng.random(0, 255) / 255;
+            var hue = rng.random(0, 360);
             var saturation = rng.random(0, 100) / 100;
             var luminesence = rng.random(0, 100) / 100;
 
@@ -3546,10 +3547,11 @@ var Rance;
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
 
-            ctx.globalCompositeOperation = "source-over";
             ctx.globalAlpha = this.alpha;
 
             var inner = this.drawSubEmblem(this.inner);
+            canvas.width = inner.width;
+            canvas.height = inner.height;
             ctx.drawImage(inner, 0, 0);
 
             if (this.outer) {
@@ -3603,27 +3605,17 @@ var Rance;
 
             var rng = new RNG(this.seed);
 
-            var hue = rng.random(0, 255) / 255;
+            var hue = rng.random(0, 360) / 360;
             var saturation = rng.random(69, 100) / 100;
-            var luminesence = rng.random(69, 100) / 100;
+            var luminesence = rng.random(69, 80) / 100;
 
             this.backgroundColor = Rance.hslToHex(hue, saturation, luminesence);
 
             this.foregroundEmblem = new Rance.Emblem();
-
-            // {
-            // width: this.width,
-            // height: this.height
-            // });
             this.foregroundEmblem.generateRandom(100, rng);
 
             if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem();
-
-                // {
-                // width: this.width,
-                // height: this.height
-                // });
                 this.backgroundEmblem.generateRandom(40, rng);
             }
         };
@@ -3637,6 +3629,7 @@ var Rance;
 
             ctx.fillStyle = "#" + Rance.hexToString(this.backgroundColor);
             ctx.fillRect(0, 0, this.width, this.height);
+            ctx.fillStyle = "#00FF00";
 
             if (this.backgroundEmblem) {
                 var background = this.backgroundEmblem.draw();
@@ -3650,6 +3643,8 @@ var Rance;
             var y = (this.height - foreground.height) / 2;
             ctx.drawImage(foreground, x, y);
 
+            var aba = document.getElementById("ababa");
+            aba.appendChild(canvas);
             return canvas;
         };
         return Flag;

@@ -35,26 +35,19 @@ module Rance
 
       var rng = new RNG(this.seed);
 
-      var hue = rng.random(0, 255) / 255;
+      var hue = rng.random(0, 360) / 360;
       var saturation = rng.random(69, 100) / 100;
-      var luminesence = rng.random(69, 100) / 100;
+      var luminesence = rng.random(69, 80) / 100;
+
 
       this.backgroundColor = hslToHex(hue, saturation, luminesence);
 
-      this.foregroundEmblem = new Emblem()
-      // {
-        // width: this.width,
-        // height: this.height
-      // });
+      this.foregroundEmblem = new Emblem();
       this.foregroundEmblem.generateRandom(100, rng);
 
       if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5)
       {
-        this.backgroundEmblem = new Emblem()
-        // {
-          // width: this.width,
-          // height: this.height
-        // });
+        this.backgroundEmblem = new Emblem();
         this.backgroundEmblem.generateRandom(40, rng);
       }
 
@@ -70,6 +63,7 @@ module Rance
 
       ctx.fillStyle = "#" + hexToString(this.backgroundColor);
       ctx.fillRect(0, 0, this.width, this.height);
+      ctx.fillStyle = "#00FF00";
 
       if (this.backgroundEmblem)
       {
@@ -84,6 +78,8 @@ module Rance
       var y = (this.height - foreground.height) / 2;
       ctx.drawImage(foreground, x, y);
 
+      var aba = document.getElementById("ababa");
+      aba.appendChild(canvas);
       return canvas;
     }
   }

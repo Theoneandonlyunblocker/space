@@ -27,7 +27,7 @@ module Rance
 
       this.alpha = rng.random(minAlpha, 100) / 100;
 
-      var hue = rng.random(0, 255) / 255;
+      var hue = rng.random(0, 360);
       var saturation = rng.random(0, 100) / 100;
       var luminesence = rng.random(0, 100) / 100;
 
@@ -96,10 +96,11 @@ module Rance
       var canvas = document.createElement("canvas");
       var ctx = canvas.getContext("2d");
 
-      ctx.globalCompositeOperation = "source-over";
       ctx.globalAlpha = this.alpha;
 
       var inner = this.drawSubEmblem(this.inner);
+      canvas.width = inner.width;
+      canvas.height = inner.height;
       ctx.drawImage(inner, 0, 0);
 
       if (this.outer)
@@ -130,6 +131,7 @@ module Rance
 
       ctx.fillStyle = "#" + hexToString(this.color);
       ctx.fillRect(0, 0, width, height);
+
 
       return canvas;
     }
