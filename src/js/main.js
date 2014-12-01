@@ -2072,7 +2072,7 @@ var Rance;
                     className: "defence-building"
                 }, React.DOM.img({
                     className: "defence-building-icon",
-                    src: building.template.icon
+                    src: Rance.colorImageInPlayerColor(building.template.icon, building.controller)
                 }), React.DOM.img({
                     className: "defence-building-controller",
                     src: building.controller.icon
@@ -2397,6 +2397,25 @@ var Rance;
         return canvas.toDataURL();
     }
     Rance.makeTempPlayerIcon = makeTempPlayerIcon;
+    function colorImageInPlayerColor(imageSrc, player) {
+        var image = new Image();
+        image.src = imageSrc;
+        var canvas = document.createElement("canvas");
+
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, image.width, image.height);
+
+        ctx.globalCompositeOperation = "source-in";
+
+        ctx.fillStyle = "#" + hexToString(player.color);
+        ctx.fillRect(0, 0, image.width, image.height);
+
+        return canvas.toDataURL();
+    }
+    Rance.colorImageInPlayerColor = colorImageInPlayerColor;
     function addFleet(player, shipAmount) {
         var ships = [];
         for (var i = 0; i < shipAmount; i++) {

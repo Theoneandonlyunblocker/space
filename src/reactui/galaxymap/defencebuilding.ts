@@ -16,7 +16,8 @@ module Rance
             React.DOM.img(
             {
               className: "defence-building-icon",
-              src: building.template.icon
+              src: colorImageInPlayerColor( building.template.icon,
+                building.controller)
             }),
             React.DOM.img(
             {

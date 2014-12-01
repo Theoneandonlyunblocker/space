@@ -128,6 +128,25 @@ module Rance
 
     return canvas.toDataURL();
   }
+  export function colorImageInPlayerColor(imageSrc: string, player: Player)
+  {
+    var image = new Image();
+    image.src = imageSrc;
+    var canvas = document.createElement("canvas");
+
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+
+    ctx.globalCompositeOperation = "source-in";
+
+    ctx.fillStyle = "#" + hexToString(player.color);
+    ctx.fillRect(0, 0, image.width, image.height);
+
+    return canvas.toDataURL();
+  }
   export function addFleet(player: Player, shipAmount: number)
   {
     var ships = [];

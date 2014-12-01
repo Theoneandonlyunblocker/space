@@ -262,6 +262,7 @@ declare module Rance {
     function rectContains(rect: any, point: any): boolean;
     function hexToString(hex: number): string;
     function makeTempPlayerIcon(player: Player, size: number): string;
+    function colorImageInPlayerColor(imageSrc: string, player: Player): string;
     function addFleet(player: Player, shipAmount: number): void;
     /**
     * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c

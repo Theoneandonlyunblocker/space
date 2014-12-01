@@ -1020,6 +1020,7 @@ progress::-webkit-progress-value {
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
+  border-width: 5px 0 0 5px;
 }
 .expanded-action > * {
   background-color: #101c1b;
@@ -1030,20 +1031,30 @@ progress::-webkit-progress-value {
   right: 0;
   display: inline-flex;
   flex-flow: column;
-  background-color: white;
-  border: 1px solid black;
+  background-color: #101c1b;
+  color: #fefefe;
+  border: 5pxx solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
 }
 .defence-building-list {
   display: flex;
   flex-flow: row;
+  background-color: #0f283d;
 }
 .defence-building {
   display: flex;
   flex-flow: column;
   margin: 0 2px;
 }
+.defence-building-icon {
+  background: linear-gradient(to bottom, #1e507a, #0f283d);
+  border: 1px solid #77abce;
+  border-bottom-width: 0px;
+}
 .defence-building-controller {
   margin-top: 5px;
+  border: 1px solid transparent;
 }
 .buildable-item-list {
   position: relative;
