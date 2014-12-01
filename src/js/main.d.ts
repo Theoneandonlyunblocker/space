@@ -1,5 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 declare module Rance {
     function EventManager(): void;
@@ -503,6 +504,60 @@ declare module Rance {
             current: number;
             max: number;
         };
+    }
+}
+declare module Rance {
+    module Templates {
+        interface ISubEmblemTemplate {
+            type: string;
+            foregroundOnly: boolean;
+            imageSrc: string;
+        }
+        module SubEmblems {
+            var comm3: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var fasc8: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+        }
+    }
+}
+declare module Rance {
+    class Emblem {
+        public alpha: number;
+        public color: number;
+        public inner: Rance.Templates.ISubEmblemTemplate;
+        public outer: Rance.Templates.ISubEmblemTemplate;
+        constructor();
+        public isForegroundOnly(): boolean;
+        public generateRandom(minAlpha: number, rng?: any): void;
+        public generateSubEmblems(rng: any): void;
+        public draw(): HTMLCanvasElement;
+        public drawSubEmblem(toDraw: Rance.Templates.ISubEmblemTemplate): HTMLCanvasElement;
+    }
+}
+declare module Rance {
+    class Flag {
+        public width: number;
+        public height: number;
+        public backgroundColor: number;
+        public backgroundEmblem: Rance.Emblem;
+        public foregroundEmblem: Rance.Emblem;
+        public seed: any;
+        constructor(props: {
+            width: number;
+            height?: number;
+            backgroundColor?: number;
+            backgroundEmblem?: Rance.Emblem;
+            foregroundEmblem?: Rance.Emblem;
+        });
+        public generateRandom(seed?: any): void;
+        public draw(): HTMLCanvasElement;
     }
 }
 declare module Rance {

@@ -3456,11 +3456,212 @@ var Rance;
     })();
     Rance.Fleet = Fleet;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (SubEmblems) {
+            SubEmblems.comm3 = {
+                type: "both",
+                foregroundOnly: false,
+                imageSrc: "../img/emblems/comm3.png"
+            };
+            SubEmblems.fasc8 = {
+                type: "inner-or-both",
+                foregroundOnly: true,
+                imageSrc: "../img/emblems/fasc8.png"
+            };
+        })(Templates.SubEmblems || (Templates.SubEmblems = {}));
+        var SubEmblems = Templates.SubEmblems;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/rng.d.ts" />
+/// <reference path="../data/templates/subemblemtemplates.ts" />
+var Rance;
+(function (Rance) {
+    var Emblem = (function () {
+        function Emblem() {
+        }
+        Emblem.prototype.isForegroundOnly = function () {
+            if (this.inner.foregroundOnly)
+                return true;
+            if (this.outer && this.outer.foregroundOnly)
+                return true;
+
+            return false;
+        };
+        Emblem.prototype.generateRandom = function (minAlpha, rng) {
+            var rng = rng || new RNG(Math.random);
+
+            this.alpha = rng.random(minAlpha, 100) / 100;
+
+            var hue = rng.random(0, 255) / 255;
+            var saturation = rng.random(0, 100) / 100;
+            var luminesence = rng.random(0, 100) / 100;
+
+            this.color = Rance.hslToHex(hue, saturation, luminesence);
+
+            this.generateSubEmblems(rng);
+        };
+        Emblem.prototype.generateSubEmblems = function (rng) {
+            var allEmblems = [];
+
+            for (var subEmblem in Rance.Templates.SubEmblems) {
+                allEmblems.push(Rance.Templates.SubEmblems[subEmblem]);
+            }
+
+            var mainEmblem = Rance.getRandomArrayItem(allEmblems);
+
+            if (mainEmblem.type === "both") {
+                this.inner = mainEmblem;
+                return;
+            } else if (mainEmblem.type === "inner" || mainEmblem.type === "outer") {
+                this[mainEmblem.type] = mainEmblem;
+            } else {
+                if (rng.uniform() > 0.5) {
+                    this.inner = mainEmblem;
+                    return;
+                } else if (mainEmblem.type === "inner-or-both") {
+                    this.inner = mainEmblem;
+                } else {
+                    this.outer = mainEmblem;
+                }
+            }
+
+            if (mainEmblem.type === "inner" || mainEmblem.type === "inner-or-both") {
+                var subEmblem = Rance.getRandomArrayItem(allEmblems.filter(function (emblem) {
+                    return (emblem.type === "outer" || emblem.type === "outer-or-both");
+                }));
+
+                this.outer = subEmblem;
+            } else if (mainEmblem.type === "outer" || mainEmblem.type === "outer-or-both") {
+                var subEmblem = Rance.getRandomArrayItem(allEmblems.filter(function (emblem) {
+                    return (emblem.type === "inner" || emblem.type === "inner-or-both");
+                }));
+
+                this.inner = subEmblem;
+            }
+        };
+        Emblem.prototype.draw = function () {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+
+            ctx.globalCompositeOperation = "source-over";
+            ctx.globalAlpha = this.alpha;
+
+            var inner = this.drawSubEmblem(this.inner);
+            ctx.drawImage(inner, 0, 0);
+
+            if (this.outer) {
+                var outer = this.drawSubEmblem(this.outer);
+                ctx.drawImage(outer, 0, 0);
+            }
+
+            return canvas;
+        };
+
+        Emblem.prototype.drawSubEmblem = function (toDraw) {
+            var image = new Image();
+            image.src = toDraw.imageSrc;
+
+            var width = image.width;
+            var height = image.height;
+
+            var canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext("2d");
+
+            ctx.drawImage(image, 0, 0);
+
+            ctx.globalCompositeOperation = "source-in";
+
+            ctx.fillStyle = "#" + Rance.hexToString(this.color);
+            ctx.fillRect(0, 0, width, height);
+
+            return canvas;
+        };
+        return Emblem;
+    })();
+    Rance.Emblem = Emblem;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/rng.d.ts" />
+/// <reference path="emblem.ts" />
+var Rance;
+(function (Rance) {
+    var Flag = (function () {
+        function Flag(props) {
+            this.width = props.width;
+            this.height = props.height || props.width;
+
+            this.backgroundColor = props.backgroundColor;
+            this.backgroundEmblem = props.backgroundEmblem;
+            this.foregroundEmblem = props.foregroundEmblem;
+        }
+        Flag.prototype.generateRandom = function (seed) {
+            this.seed = seed || Math.random();
+
+            var rng = new RNG(this.seed);
+
+            var hue = rng.random(0, 255) / 255;
+            var saturation = rng.random(69, 100) / 100;
+            var luminesence = rng.random(69, 100) / 100;
+
+            this.backgroundColor = Rance.hslToHex(hue, saturation, luminesence);
+
+            this.foregroundEmblem = new Rance.Emblem();
+
+            // {
+            // width: this.width,
+            // height: this.height
+            // });
+            this.foregroundEmblem.generateRandom(100, rng);
+
+            if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
+                this.backgroundEmblem = new Rance.Emblem();
+
+                // {
+                // width: this.width,
+                // height: this.height
+                // });
+                this.backgroundEmblem.generateRandom(40, rng);
+            }
+        };
+        Flag.prototype.draw = function () {
+            var canvas = document.createElement("canvas");
+            canvas.width = this.width;
+            canvas.height = this.height;
+            var ctx = canvas.getContext("2d");
+
+            ctx.globalCompositeOperation = "source-over";
+
+            ctx.fillStyle = "#" + Rance.hexToString(this.backgroundColor);
+            ctx.fillRect(0, 0, this.width, this.height);
+
+            if (this.backgroundEmblem) {
+                var background = this.backgroundEmblem.draw();
+                var x = (this.width - background.width) / 2;
+                var y = (this.height - background.height) / 2;
+                ctx.drawImage(background, x, y);
+            }
+
+            var foreground = this.foregroundEmblem.draw();
+            var x = (this.width - foreground.width) / 2;
+            var y = (this.height - foreground.height) / 2;
+            ctx.drawImage(foreground, x, y);
+
+            return canvas;
+        };
+        return Flag;
+    })();
+    Rance.Flag = Flag;
+})(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="building.ts" />
 /// <reference path="star.ts" />
+/// <reference path="flag.ts" />
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};

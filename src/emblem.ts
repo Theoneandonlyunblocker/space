@@ -1,21 +1,96 @@
+/// <reference path="../lib/rng.d.ts" />
+/// <reference path="../data/templates/subemblemtemplates.ts" />
+
 module Rance
 {
-  export interface SubEmblem
-  {
-    type: string; //inner, outer, either, both
-    imageSrc: string;
-  }
   export class Emblem
   {
     alpha: number;
     color: number;
-    outer: SubEmblem;
-    inner?: SubEmblem;
+    inner: Templates.ISubEmblemTemplate;
+    outer: Templates.ISubEmblemTemplate;
     constructor()
     {
       
     }
 
+    isForegroundOnly()
+    {
+      if (this.inner.foregroundOnly) return true;
+      if (this.outer && this.outer.foregroundOnly) return true;
+
+      return false;
+    }
+    generateRandom(minAlpha: number, rng?: any)
+    {
+      var rng = rng || new RNG(Math.random);
+
+      this.alpha = rng.random(minAlpha, 100) / 100;
+
+      var hue = rng.random(0, 255) / 255;
+      var saturation = rng.random(0, 100) / 100;
+      var luminesence = rng.random(0, 100) / 100;
+
+      this.color = hslToHex(hue, saturation, luminesence);
+
+      this.generateSubEmblems(rng);
+    }
+    generateSubEmblems(rng: any)
+    {
+      var allEmblems = [];
+
+      for (var subEmblem in Templates.SubEmblems)
+      {
+        allEmblems.push(Templates.SubEmblems[subEmblem]);
+      }
+
+      var mainEmblem = getRandomArrayItem(allEmblems);
+
+      if (mainEmblem.type === "both")
+      {
+        this.inner = mainEmblem;
+        return;
+      }
+      else if (mainEmblem.type === "inner" || mainEmblem.type === "outer")
+      {
+        this[mainEmblem.type] = mainEmblem;
+      }
+      else // inner-or-both || outer-or-both
+      {
+        if (rng.uniform() > 0.5)
+        {
+          this.inner = mainEmblem;
+          return;
+        }
+        else if (mainEmblem.type === "inner-or-both")
+        {
+          this.inner = mainEmblem;
+        }
+        else
+        {
+          this.outer = mainEmblem;
+        }
+      }
+
+      if (mainEmblem.type === "inner" || mainEmblem.type === "inner-or-both")
+      {
+        var subEmblem = getRandomArrayItem(allEmblems.filter(function(emblem)
+        {
+          return (emblem.type === "outer" || emblem.type === "outer-or-both");
+        }));
+
+        this.outer = subEmblem;
+      }
+      else if (mainEmblem.type === "outer" || mainEmblem.type === "outer-or-both")
+      {
+        var subEmblem = getRandomArrayItem(allEmblems.filter(function(emblem)
+        {
+          return (emblem.type === "inner" || emblem.type === "inner-or-both");
+        }));
+
+        this.inner = subEmblem;
+      }
+    }
     draw()
     {
       var canvas = document.createElement("canvas");
@@ -24,16 +99,19 @@ module Rance
       ctx.globalCompositeOperation = "source-over";
       ctx.globalAlpha = this.alpha;
 
-      var outer = this.drawSubEmblem(this.outer);
       var inner = this.drawSubEmblem(this.inner);
+      ctx.drawImage(inner, 0, 0);
 
-      ctx.drawImage(outer);
-      ctx.drawImage(inner);
+      if (this.outer)
+      {
+        var outer = this.drawSubEmblem(this.outer);
+        ctx.drawImage(outer, 0, 0);
+      }
 
       return canvas;
     }
 
-    drawSubEmblem(toDraw: SubEmblem)
+    drawSubEmblem(toDraw: Templates.ISubEmblemTemplate)
     {
       var image = new Image();
       image.src = toDraw.imageSrc;

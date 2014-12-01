@@ -3,6 +3,7 @@
 /// <reference path="utility.ts"/>
 /// <reference path="building.ts" />
 /// <reference path="star.ts" />
+/// <reference path="flag.ts" />
 
 module Rance
 {
