@@ -14,7 +14,7 @@ module Rance
           var color = makeRandomColor(
           {
             s: [{min: 0.8, max: 1}],
-            l: [{min: 0.3, max: 0.6}]
+            l: [{min: 0.1, max: 1}]
           });
 
           var flag = new Flag(

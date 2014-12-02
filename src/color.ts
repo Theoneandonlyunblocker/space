@@ -175,7 +175,7 @@ module Rance
     else if (toExclude.max >= range.max)
     {
       return(
-        [{min: toExclude.min, max: range.max}]
+        [{min: range.min, max: toExclude.min}]
       );
     }
 
@@ -215,6 +215,7 @@ module Rance
     {
       var range = ranges[i];
       var relativeWeight = (range.max - range.min) / totalWeight;
+      if (totalWeight === 0) relativeWeight = 1;
       currentRelativeWeight += relativeWeight;
       rangesByRelativeWeight[currentRelativeWeight] = range;
     }
@@ -237,6 +238,7 @@ module Rance
         break;
       }
     }
+    if (!selectedRange) console.log(rangesByRelativeWeight);
 
     return randRange(selectedRange.min, selectedRange.max)
   }
@@ -309,6 +311,7 @@ module Rance
       s: excludeFromRange(sRange, {min: sMin, max: sMax}),
       l: excludeFromRange(lRange, {min: lMin, max: lMax})
     }
+    console.log(color[2], ranges.l);
 
     return makeRandomColor(ranges);
   }

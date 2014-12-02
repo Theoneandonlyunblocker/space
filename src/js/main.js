@@ -3664,7 +3664,7 @@ var Rance;
         if (toExclude.min <= range.min) {
             return ([{ min: toExclude.max, max: range.max }]);
         } else if (toExclude.max >= range.max) {
-            return ([{ min: toExclude.min, max: range.max }]);
+            return ([{ min: range.min, max: toExclude.min }]);
         }
 
         var a = {
@@ -3698,6 +3698,8 @@ var Rance;
         for (var i = 0; i < ranges.length; i++) {
             var range = ranges[i];
             var relativeWeight = (range.max - range.min) / totalWeight;
+            if (totalWeight === 0)
+                relativeWeight = 1;
             currentRelativeWeight += relativeWeight;
             rangesByRelativeWeight[currentRelativeWeight] = range;
         }
@@ -3717,6 +3719,8 @@ var Rance;
                 break;
             }
         }
+        if (!selectedRange)
+            console.log(rangesByRelativeWeight);
 
         return Rance.randRange(selectedRange.min, selectedRange.max);
     }
@@ -3780,6 +3784,7 @@ var Rance;
             s: excludeFromRange(sRange, { min: sMin, max: sMax }),
             l: excludeFromRange(lRange, { min: lMin, max: lMax })
         };
+        console.log(color[2], ranges.l);
 
         return makeRandomColor(ranges);
     }
@@ -5190,7 +5195,7 @@ var Rance;
                 for (var i = 0; i < 100; i++) {
                     var color = Rance.makeRandomColor({
                         s: [{ min: 0.8, max: 1 }],
-                        l: [{ min: 0.3, max: 0.6 }]
+                        l: [{ min: 0.1, max: 1 }]
                     });
 
                     var flag = new Rance.Flag({
