@@ -1,4 +1,5 @@
 /// <reference path="../lib/husl.d.ts" />
+/// <reference path="../data/templates/colorranges.ts" />
 
 module Rance
 {
@@ -192,6 +193,54 @@ module Rance
     return [a, b];
   }
 
+  export function randomSelectFromRanges(ranges: IRange[])
+  {
+    var totalWeight = 0;
+    var rangesByRelativeWeight:
+    {
+      [weight: number]: IRange;
+    } = {};
+    var currentRelativeWeight = 0;
+
+    for (var i = 0; i < ranges.length; i++)
+    {
+      var range = ranges[i];
+      if (!isFinite(range.max)) range.max = 1;
+      if (!isFinite(range.min)) range.min = 0;
+      var weight = range.max - range.min;
+
+      totalWeight += weight;
+    }
+    for (var i = 0; i < ranges.length; i++)
+    {
+      var range = ranges[i];
+      var relativeWeight = (range.max - range.min) / totalWeight;
+      currentRelativeWeight += relativeWeight;
+      rangesByRelativeWeight[currentRelativeWeight] = range;
+    }
+
+    var rand = Math.random();
+    var selectedRange;
+
+    var sortedWeights = Object.keys(rangesByRelativeWeight).map(function(w)
+    {
+      return parseFloat(w);
+    });
+
+    var sortedWeights = sortedWeights.sort();
+
+    for (var i = 0; i < sortedWeights.length; i++)
+    {
+      if (rand < sortedWeights[i])
+      {
+        selectedRange = rangesByRelativeWeight[sortedWeights[i]];
+        break;
+      }
+    }
+
+    return randRange(selectedRange.min, selectedRange.max)
+  }
+
   export function makeRandomColor(values:
   {
     h?: IRange[];
@@ -215,52 +264,7 @@ module Rance
         values[value] = [{min: 0, max: 1}];
       }
 
-      // roulette selection
-      var totalWeight = 0;
-      var rangesByRelativeWeight:
-      {
-        [weight: number]: IRange;
-      } = {};
-      var currentRelativeWeight = 0;
-
-      for (var i = 0; i < values[value].length; i++)
-      {
-        var range = values[value][i];
-        if (!isFinite(range.max)) range.max = 1;
-        if (!isFinite(range.min)) range.min = 0;
-        var weight = range.max - range.min;
-
-        totalWeight += weight;
-      }
-      for (var i = 0; i < values[value].length; i++)
-      {
-        var range = values[value][i];
-        var relativeWeight = (range.max - range.min) / totalWeight;
-        currentRelativeWeight += relativeWeight;
-        rangesByRelativeWeight[currentRelativeWeight] = range;
-      }
-
-      var rand = Math.random();
-      var selectedRange;
-
-      var sortedWeights = Object.keys(rangesByRelativeWeight).map(function(w)
-      {
-        return parseFloat(w);
-      });
-
-      var sortedWeights = sortedWeights.sort();
-
-      for (var i = 0; i < sortedWeights.length; i++)
-      {
-        if (rand < sortedWeights[i])
-        {
-          selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-          break;
-        }
-      }
-
-      if (value === "h") console.log(selectedRange);
-      color[value] = randRange(selectedRange.min, selectedRange.max)
+      color[value] = randomSelectFromRanges(values[value]);
     }
 
     return [color.h, color.s, color.l];
@@ -272,5 +276,44 @@ module Rance
   export function scalarsFromColor(scalars: number[])
   {
     return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
+  }
+
+  export function makeContrastingColor(color: number[]): number[]
+  {
+    var hRange = {min: 0, max: 360};
+    var sRange = {min: 0, max: 100};
+    var lRange = {min: 0, max: 100};
+
+    var hExclusion = 30;
+    var sExclusion = 0;
+    var lExclusion = 30;
+
+    var hMin = (color[0] - hExclusion) % 360;
+    var hMax = (color[0] + hExclusion) % 360;
+
+    var hRange2 = excludeFromRange(hRange, {min: hMin, max: hMax});
+
+    var h = randomSelectFromRanges(hRange2);
+    var hDistance = getAngleBetweenDegrees(h, color[0]);
+    var relativeHDistance = 180 / hDistance;
+
+    var sMin = clamp(color[1] - sExclusion, 50, 100);
+    var sMax = clamp(color[1] + sExclusion, sMin, 100);
+
+    var lMin = clamp(color[2] - lExclusion, 0, 100);
+    var lMax = clamp(color[2] + lExclusion, lMin, 100);
+
+    var ranges =
+    {
+      h: excludeFromRange(hRange, {min: hMin, max: hMax}),
+      s: excludeFromRange(sRange, {min: sMin, max: sMax}),
+      l: excludeFromRange(lRange, {min: lMin, max: lMax})
+    }
+
+    return makeRandomColor(ranges);
+  }
+  export function hexToHusl(hex: number): number[]
+  {
+    return HUSL.fromHex(hexToString(hex));
   }
 }

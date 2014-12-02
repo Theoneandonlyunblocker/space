@@ -2450,6 +2450,21 @@ var Rance;
         }
     }
     Rance.recursiveRemoveAttribute = recursiveRemoveAttribute;
+
+    function clamp(value, min, max) {
+        if (value < min)
+            return min;
+        else if (value > max)
+            return max;
+        else
+            return value;
+    }
+    Rance.clamp = clamp;
+    function getAngleBetweenDegrees(degA, degB) {
+        var angle = Math.abs(degB - degA) % 360;
+        return Math.min(360 - angle, angle);
+    }
+    Rance.getAngleBetweenDegrees = getAngleBetweenDegrees;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -3481,6 +3496,7 @@ var Rance;
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
+/// <reference path="../data/templates/colorranges.ts" />
 var Rance;
 (function (Rance) {
     function hex2rgb(hex) {
@@ -3664,6 +3680,48 @@ var Rance;
     }
     Rance.excludeFromRange = excludeFromRange;
 
+    function randomSelectFromRanges(ranges) {
+        var totalWeight = 0;
+        var rangesByRelativeWeight = {};
+        var currentRelativeWeight = 0;
+
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (!isFinite(range.max))
+                range.max = 1;
+            if (!isFinite(range.min))
+                range.min = 0;
+            var weight = range.max - range.min;
+
+            totalWeight += weight;
+        }
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            var relativeWeight = (range.max - range.min) / totalWeight;
+            currentRelativeWeight += relativeWeight;
+            rangesByRelativeWeight[currentRelativeWeight] = range;
+        }
+
+        var rand = Math.random();
+        var selectedRange;
+
+        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
+            return parseFloat(w);
+        });
+
+        var sortedWeights = sortedWeights.sort();
+
+        for (var i = 0; i < sortedWeights.length; i++) {
+            if (rand < sortedWeights[i]) {
+                selectedRange = rangesByRelativeWeight[sortedWeights[i]];
+                break;
+            }
+        }
+
+        return Rance.randRange(selectedRange.min, selectedRange.max);
+    }
+    Rance.randomSelectFromRanges = randomSelectFromRanges;
+
     function makeRandomColor(values) {
         values = values || {};
         var color = {};
@@ -3678,47 +3736,7 @@ var Rance;
                 values[value] = [{ min: 0, max: 1 }];
             }
 
-            // roulette selection
-            var totalWeight = 0;
-            var rangesByRelativeWeight = {};
-            var currentRelativeWeight = 0;
-
-            for (var i = 0; i < values[value].length; i++) {
-                var range = values[value][i];
-                if (!isFinite(range.max))
-                    range.max = 1;
-                if (!isFinite(range.min))
-                    range.min = 0;
-                var weight = range.max - range.min;
-
-                totalWeight += weight;
-            }
-            for (var i = 0; i < values[value].length; i++) {
-                var range = values[value][i];
-                var relativeWeight = (range.max - range.min) / totalWeight;
-                currentRelativeWeight += relativeWeight;
-                rangesByRelativeWeight[currentRelativeWeight] = range;
-            }
-
-            var rand = Math.random();
-            var selectedRange;
-
-            var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
-                return parseFloat(w);
-            });
-
-            var sortedWeights = sortedWeights.sort();
-
-            for (var i = 0; i < sortedWeights.length; i++) {
-                if (rand < sortedWeights[i]) {
-                    selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-                    break;
-                }
-            }
-
-            if (value === "h")
-                console.log(selectedRange);
-            color[value] = Rance.randRange(selectedRange.min, selectedRange.max);
+            color[value] = randomSelectFromRanges(values[value]);
         }
 
         return [color.h, color.s, color.l];
@@ -3732,6 +3750,45 @@ var Rance;
         return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
     }
     Rance.scalarsFromColor = scalarsFromColor;
+
+    function makeContrastingColor(color) {
+        var hRange = { min: 0, max: 360 };
+        var sRange = { min: 0, max: 100 };
+        var lRange = { min: 0, max: 100 };
+
+        var hExclusion = 30;
+        var sExclusion = 0;
+        var lExclusion = 30;
+
+        var hMin = (color[0] - hExclusion) % 360;
+        var hMax = (color[0] + hExclusion) % 360;
+
+        var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
+
+        var h = randomSelectFromRanges(hRange2);
+        var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
+
+        console.log(hDistance);
+
+        var sMin = Rance.clamp(color[1] - sExclusion, 50, 100);
+        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
+
+        var lMin = Rance.clamp(color[2] - lExclusion, 0, 100);
+        var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
+
+        var ranges = {
+            h: excludeFromRange(hRange, { min: hMin, max: hMax }),
+            s: excludeFromRange(sRange, { min: sMin, max: sMax }),
+            l: excludeFromRange(lRange, { min: lMin, max: lMax })
+        };
+
+        return makeRandomColor(ranges);
+    }
+    Rance.makeContrastingColor = makeContrastingColor;
+    function hexToHusl(hex) {
+        return HUSL.fromHex(Rance.hexToString(hex));
+    }
+    Rance.hexToHusl = hexToHusl;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="../data/templates/subemblemtemplates.ts" />
@@ -3874,6 +3931,10 @@ var Rance;
 
             this.foregroundEmblem = new Rance.Emblem();
             this.foregroundEmblem.generateRandom(100, rng);
+            var huslColor = Rance.hexToHusl(this.backgroundColor);
+            var complementaryColor = Rance.makeContrastingColor(huslColor);
+            var complementaryHex = Rance.stringToHex(HUSL.toHex.apply(null, complementaryColor));
+            this.foregroundEmblem.color = complementaryHex;
 
             if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem();
@@ -7499,18 +7560,17 @@ var Rance;
         player1 = new Rance.Player();
         player1.color = 0xC02020;
 
-        // var color = makeRandomColor(
-        // {
-        //   h:
-        //   [
-        //     {min: 0.0, max: 0.2},
-        //     {min: 0.3, max: 0.79},
-        //     {min: 0.93, max: 1}
-        //   ],
-        //   s: [{min: 0.8, max: 1}],
-        //   l: [{min: 0.3, max: 0.5}]
-        // });
-        // player1.color = stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
+        var color = Rance.makeRandomColor({
+            h: [
+                { min: 0.0, max: 0.2 },
+                { min: 0.3, max: 0.79 },
+                { min: 0.93, max: 1 }
+            ],
+            s: [{ min: 0.8, max: 1 }],
+            l: [{ min: 0.3, max: 0.5 }]
+        });
+
+        //player1.color = stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
         player1.makeFlag();
         player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();

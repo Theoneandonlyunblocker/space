@@ -186,4 +186,16 @@ module Rance
       recursiveRemoveAttribute(parent.children[i], attribute);
     }
   }
+
+  export function clamp(value: number, min: number, max: number)
+  {
+    if (value < min) return min;
+    else if (value > max) return max;
+    else return value;
+  }
+  export function getAngleBetweenDegrees(degA: number, degB: number)
+  {
+    var angle = Math.abs(degB - degA) % 360;
+    return Math.min(360 - angle, angle);
+  }
 }

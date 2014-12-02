@@ -269,6 +269,8 @@ declare module Rance {
     function addFleet(player: Player, shipAmount: number): void;
     function cloneObject(toClone: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
+    function clamp(value: number, min: number, max: number): number;
+    function getAngleBetweenDegrees(degA: number, degB: number): number;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -560,6 +562,14 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        interface IColorRangeTemplate {
+        }
+        module ColorRanges {
+        }
+    }
+}
+declare module Rance {
     function hex2rgb(hex: number): number[];
     function rgb2hex(rgb: number[]): number;
     function hsvToRgb(h: number, s: number, v: number): number[];
@@ -575,6 +585,7 @@ declare module Rance {
     function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[];
     function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
     function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
+    function randomSelectFromRanges(ranges: IRange[]): any;
     function makeRandomColor(values: {
         h?: IRange[];
         s?: IRange[];
@@ -582,6 +593,8 @@ declare module Rance {
     }): any[];
     function colorFromScalars(color: number[]): number[];
     function scalarsFromColor(scalars: number[]): number[];
+    function makeContrastingColor(color: number[]): number[];
+    function hexToHusl(hex: number): number[];
 }
 declare module Rance {
     class Emblem {

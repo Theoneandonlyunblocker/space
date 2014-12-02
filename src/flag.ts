@@ -47,6 +47,10 @@ module Rance
 
       this.foregroundEmblem = new Emblem();
       this.foregroundEmblem.generateRandom(100, rng);
+      var huslColor = hexToHusl(this.backgroundColor);
+      var complementaryColor = makeContrastingColor(huslColor);
+      var complementaryHex = stringToHex(HUSL.toHex.apply(null, complementaryColor));
+      this.foregroundEmblem.color = complementaryHex;
 
       if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5)
       {
