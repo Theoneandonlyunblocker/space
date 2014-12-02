@@ -1,5 +1,6 @@
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="emblem.ts" />
+/// <reference path="color.ts"/>
 
 module Rance
 {

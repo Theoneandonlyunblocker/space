@@ -1,6 +1,8 @@
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="../data/templates/subemblemtemplates.ts" />
 
+/// <reference path="color.ts"/>
+
 module Rance
 {
   export class Emblem
@@ -32,8 +34,6 @@ module Rance
       var value = rng.random(0, 100) / 100;
 
       this.color = hsvToHex(hue, saturation, value);
-
-      console.log(hue, saturation, value, this.color)
 
       this.generateSubEmblems(rng);
     }

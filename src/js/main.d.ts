@@ -1,5 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 declare module Rance {
@@ -262,26 +263,10 @@ declare module Rance {
     function centerDisplayObjectContainer(toCenter: PIXI.DisplayObjectContainer): void;
     function rectContains(rect: any, point: any): boolean;
     function hexToString(hex: number): string;
+    function stringToHex(text: string): number;
     function makeTempPlayerIcon(player: Player, size: number): string;
     function colorImageInPlayerColor(imageSrc: string, player: Player): string;
     function addFleet(player: Player, shipAmount: number): void;
-    function hsvToRgb(h: any, s: any, v: any): any[];
-    /**
-    * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-    *
-    * Converts an HSL color value to RGB. Conversion formula
-    * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-    * Assumes h, s, and l are contained in the set [0, 1] and
-    * returns r, g, and b in the set [0, 255].
-    *
-    * @param   Number  h       The hue
-    * @param   Number  s       The saturation
-    * @param   Number  l       The lightness
-    * @return  Array           The RGB representation
-    */
-    function hslToRgb(h: any, s: any, l: any): any[];
-    function hslToHex(h: any, s: any, l: any): number;
-    function hsvToHex(h: any, s: any, v: any): number;
     function cloneObject(toClone: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
 }
@@ -573,6 +558,30 @@ declare module Rance {
             };
         }
     }
+}
+declare module Rance {
+    function hex2rgb(hex: number): number[];
+    function rgb2hex(rgb: number[]): number;
+    function hsvToRgb(h: number, s: number, v: number): number[];
+    function hslToRgb(h: number, s: number, l: number): number[];
+    function rgbToHsl(r: number, g: number, b: number): number[];
+    function hslToHex(h: any, s: any, l: any): number;
+    function hsvToHex(h: any, s: any, v: any): number;
+    function hexToHsl(hex: number): number[];
+    interface IRange {
+        min?: number;
+        max?: number;
+    }
+    function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[];
+    function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
+    function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
+    function makeRandomColor(values: {
+        h?: IRange[];
+        s?: IRange[];
+        l?: IRange[];
+    }): any[];
+    function colorFromScalars(color: number[]): number[];
+    function scalarsFromColor(scalars: number[]): number[];
 }
 declare module Rance {
     class Emblem {

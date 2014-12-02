@@ -117,6 +117,15 @@ module Rance
     var converted = hex.toString(16);
     return '000000'.substr(0, 6 - converted.length) + converted;
   }
+  export function stringToHex(text: string)
+  {
+    if (text.charAt(0) === "#")
+    {
+      text = text.substring(1, 7);
+    }
+
+    return parseInt(text, 16);
+  }
 
   export function makeTempPlayerIcon(player: Player, size: number)
   {
@@ -158,87 +167,6 @@ module Rance
     var fleet = new Fleet(player, ships, mapGen.points[0]);
   }
 
-  //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-  /* accepts parameters
-   * h  Object = {h:x, s:y, v:z}
-   * OR 
-   * h, s, v
-  */
-  export function hsvToRgb(h, s, v)
-  {
-      var r, g, b, i, f, p, q, t;
-      if (h && s === undefined && v === undefined)
-      {
-        s = h.s, v = h.v, h = h.h;
-      }
-      i = Math.floor(h * 6);
-      f = h * 6 - i;
-      p = v * (1 - s);
-      q = v * (1 - f * s);
-      t = v * (1 - (1 - f) * s);
-      switch (i % 6)
-      {
-        case 0: r = v, g = t, b = p; break;
-        case 1: r = q, g = v, b = p; break;
-        case 2: r = p, g = v, b = t; break;
-        case 3: r = p, g = q, b = v; break;
-        case 4: r = t, g = p, b = v; break;
-        case 5: r = v, g = p, b = q; break;
-      }
-      return [r, g, b];
-  }
-
-  /**
-   * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-   * 
-   * Converts an HSL color value to RGB. Conversion formula
-   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-   * Assumes h, s, and l are contained in the set [0, 1] and
-   * returns r, g, and b in the set [0, 255].
-   *
-   * @param   Number  h       The hue
-   * @param   Number  s       The saturation
-   * @param   Number  l       The lightness
-   * @return  Array           The RGB representation
-   */
-  export function hslToRgb(h, s, l)
-  {
-    var r, g, b;
-
-    if (s == 0)
-    {
-      r = g = b = l; // achromatic
-    }
-    else
-    {
-      function hue2rgb(p, q, t)
-      {
-        if(t < 0) t += 1;
-        if(t > 1) t -= 1;
-        if(t < 1/6) return p + (q - p) * 6 * t;
-        if(t < 1/2) return q;
-        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-        return p;
-      }
-
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      var p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1/3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1/3);
-    }
-
-    return [r, g, b];
-  }
-
-  export function hslToHex(h, s, l)
-  {
-    return PIXI.rgb2hex( hslToRgb(h, s, l) );
-  }
-  export function hsvToHex(h, s, v)
-  {
-    return PIXI.rgb2hex( hsvToRgb(h, s, v) );
-  }
 
   export function cloneObject(toClone: any)
   {

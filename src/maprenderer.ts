@@ -2,6 +2,7 @@
 
 /// <reference path="eventmanager.ts"/>
 /// <reference path="utility.ts"/>
+/// <reference path="color.ts"/>
 
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
@@ -281,9 +282,9 @@ module Rance
 
               var hue = 110 * value;
               var saturation = 0.5 + 0.2 * deviation;
-              var luminesence = 0.6 + 0.25 * deviation;
+              var lightness = 0.6 + 0.25 * deviation;
 
-              colorIndexes[value] = hslToHex(hue / 360, saturation, luminesence / 2);
+              colorIndexes[value] = hslToHex(hue / 360, saturation, lightness / 2);
             }
             return colorIndexes[value];
           }
