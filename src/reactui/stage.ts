@@ -6,6 +6,8 @@
 /// <reference path="mapgen/mapgen.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
 
+/// <reference path="flagmaker.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -73,6 +75,13 @@ module Rance
             );
             break;
           }
+          case "flagMaker":
+          {
+            elementsToRender.push(
+              UIComponents.FlagMaker()
+            );
+            break;
+          }
         }
         return(
           React.DOM.div({className: "react-stage"},
@@ -87,7 +96,8 @@ module Rance
               React.DOM.option({value: "mapGen"}, "map generation"),
               React.DOM.option({value: "galaxyMap"}, "map"),
               React.DOM.option({value: "battlePrep"}, "battle setup"),
-              React.DOM.option({value: "battle"}, "battle")
+              React.DOM.option({value: "battle"}, "battle"),
+              React.DOM.option({value: "flagMaker"}, "make flags")
             )
           )
         );

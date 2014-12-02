@@ -833,6 +833,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var FlagMaker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

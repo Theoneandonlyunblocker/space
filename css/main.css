@@ -943,12 +943,14 @@ progress::-webkit-progress-value {
   left: 0;
   display: inline-flex;
   flex-flow: column;
+  pointer-events: none;
 }
 .end-turn-button {
   width: 250px;
   height: 40px;
   font-size: 1.5em;
   font-weight: bolder;
+  pointer-events: auto;
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #fefefe;
   cursor: pointer;
@@ -975,6 +977,7 @@ progress::-webkit-progress-value {
 .possible-actions-container > * {
   justify-content: flex-end;
   margin-top: auto;
+  pointer-events: auto;
 }
 .possible-actions {
   display: flex;

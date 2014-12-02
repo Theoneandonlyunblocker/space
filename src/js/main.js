@@ -3767,8 +3767,7 @@ var Rance;
 
         var h = randomSelectFromRanges(hRange2);
         var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
-
-        console.log(hDistance);
+        var relativeHDistance = 180 / hDistance;
 
         var sMin = Rance.clamp(color[1] - sExclusion, 50, 100);
         var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
@@ -5180,12 +5179,55 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FlagMaker = React.createClass({
+            componentDidMount: function () {
+                var flags = [];
+                var parent = this.refs.flags.getDOMNode();
+
+                for (var i = 0; i < 100; i++) {
+                    var color = Rance.makeRandomColor({
+                        s: [{ min: 0.8, max: 1 }],
+                        l: [{ min: 0.3, max: 0.6 }]
+                    });
+
+                    var flag = new Rance.Flag({
+                        width: 46,
+                        backgroundColor: Rance.stringToHex(HUSL.toHex.apply(null, Rance.colorFromScalars(color)))
+                    });
+
+                    flag.generateRandom();
+                    var canvas = flag.draw();
+
+                    flags.push(flag);
+                }
+
+                window.setTimeout(function (e) {
+                    for (var i = 0; i < flags.length; i++) {
+                        var canvas = flags[i].draw();
+                        parent.appendChild(canvas);
+                    }
+                }, 1000);
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "flags",
+                    ref: "flags"
+                }));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="mapgen/mapgen.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
+/// <reference path="flagmaker.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -5231,13 +5273,17 @@ var Rance;
                         }));
                         break;
                     }
+                    case "flagMaker": {
+                        elementsToRender.push(Rance.UIComponents.FlagMaker());
+                        break;
+                    }
                 }
                 return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
                     className: "reactui-selector",
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"))));
+                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"), React.DOM.option({ value: "flagMaker" }, "make flags"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
