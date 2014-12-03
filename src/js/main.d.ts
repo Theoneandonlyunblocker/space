@@ -590,6 +590,7 @@ declare module Rance {
     function randomSelectFromRanges(ranges: IRange[]): any;
     function makeRandomVibrantColor(): any[];
     function makeRandomDeepColor(): any[];
+    function makeRandomLightColor(): any[];
     function makeRandomColor(values: {
         h?: IRange[];
         s?: IRange[];

@@ -19,17 +19,23 @@ module Rance
           var genType;
           var color;
           var hexColor;
-          if (Math.random() < 0.6)
+          if (Math.random() < 0.4)
           {
             color = makeRandomDeepColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "deep"
           }
-          else if (Math.random() < 0.6)
+          else if (Math.random() < 0.4)
           {
             color = makeRandomVibrantColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "vibrant"
+          }
+          else if (Math.random() < 0.4)
+          {
+            color = makeRandomLightColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "light"
           }
           else
           {

@@ -3765,7 +3765,7 @@ var Rance;
             { min: 0, max: 150 / 360 },
             { min: 180 / 360, max: 1 }
         ];
-        return [randomSelectFromRanges(hRanges), 0.85, 0.90];
+        return [randomSelectFromRanges(hRanges), Rance.randRange(0.8, 0.9), Rance.randRange(0.88, 0.92)];
     }
     Rance.makeRandomVibrantColor = makeRandomVibrantColor;
     function makeRandomDeepColor() {
@@ -3773,9 +3773,13 @@ var Rance;
             { min: 0, max: 15 / 360 },
             { min: 80 / 360, max: 1 }
         ];
-        return [randomSelectFromRanges(hRanges), 1, 0.55];
+        return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
     }
     Rance.makeRandomDeepColor = makeRandomDeepColor;
+    function makeRandomLightColor() {
+        return [Rance.randRange(0, 360), Rance.randRange(0.55, 0.65), 1];
+    }
+    Rance.makeRandomLightColor = makeRandomLightColor;
 
     function makeRandomColor(values) {
         values = values || {};
@@ -3827,31 +3831,21 @@ var Rance;
         var relativeHDistance = 1 / (180 / hDistance);
 
         var lExclusion = exclusions.l || 30;
-        if (relativeHDistance > 0.2) {
-            lExclusion = lExclusion - 15 * (color[2] / 100);
+        if (relativeHDistance < 0.2) {
+            lExclusion /= 2;
             Rance.clamp(lExclusion, 0, 100);
         }
-        console.log(lExclusion);
-
         var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
         var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
 
-        var lRange2 = excludeFromRange(lRange, { min: lMin, max: lMax });
-        var l = randomSelectFromRanges(lRange2);
-        var lDistance = Math.abs(color[2] - l);
-        var relativeLDistance = 1 / (100 / lDistance);
-
         var sExclusion = exclusions.s || 0;
-
-        //sExclusion = sExclusion - 15 * relativeLDistance;
-        //clamp(sExclusion, 0, 100);
         var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
         var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
 
         var ranges = {
             h: [{ min: h, max: h }],
             s: excludeFromRange(sRange, { min: sMin, max: sMax }),
-            l: [{ min: l, max: l }]
+            l: excludeFromRange(lRange, { min: lMin, max: lMax })
         };
 
         return makeRandomColor(ranges);
@@ -3996,12 +3990,13 @@ var Rance;
             this.foregroundEmblem = new Rance.Emblem();
             this.foregroundEmblem.generateRandom(100, rng);
 
-            if (Math.random() < 0.99995) {
+            if (Math.random() < 0.5) {
                 this["emblemType"] = "husl";
                 var huslColor = Rance.hexToHusl(this.backgroundColor);
                 var contrastingColor = Rance.makeContrastingColor({
                     color: huslColor,
                     exclusions: {
+                        h: 15,
                         l: 30
                     }
                 });
@@ -4021,7 +4016,7 @@ var Rance;
                             l: { min: 60 * easing, max: 100 }
                         },
                         exclusions: {
-                            h: 60 * easing,
+                            h: 20 * easing,
                             s: 30 * easing
                         }
                     });
@@ -5306,14 +5301,18 @@ var Rance;
                     var genType;
                     var color;
                     var hexColor;
-                    if (Math.random() < 0.6) {
+                    if (Math.random() < 0.4) {
                         color = Rance.makeRandomDeepColor();
                         hexColor = Rance.hsvToHex.apply(null, color);
                         genType = "deep";
-                    } else if (Math.random() < 0.6) {
+                    } else if (Math.random() < 0.4) {
                         color = Rance.makeRandomVibrantColor();
                         hexColor = Rance.hsvToHex.apply(null, color);
                         genType = "vibrant";
+                    } else if (Math.random() < 0.4) {
+                        color = Rance.makeRandomLightColor();
+                        hexColor = Rance.hsvToHex.apply(null, color);
+                        genType = "light";
                     } else {
                         color = Rance.makeRandomColor({
                             s: [{ min: 1, max: 1 }],

@@ -40,7 +40,7 @@ module Rance
       this.foregroundEmblem = new Emblem();
       this.foregroundEmblem.generateRandom(100, rng);
 
-      if (Math.random() < 0.99995)
+      if (Math.random() < 0.5)
       {
         this["emblemType"] = "husl";
         var huslColor = hexToHusl(this.backgroundColor);
@@ -49,6 +49,7 @@ module Rance
           color: huslColor,
           exclusions:
           {
+            h: 15,
             l: 30
           }
         });
@@ -77,7 +78,7 @@ module Rance
             },
             exclusions:
             {
-              h: 60 * easing,
+              h: 20 * easing,
               s: 30 * easing
             }
           });

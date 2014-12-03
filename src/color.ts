@@ -279,7 +279,7 @@ module Rance
       {min: 0, max: 150 / 360},
       {min: 180 / 360, max: 1}
     ];
-    return [randomSelectFromRanges(hRanges), 0.85, 0.90];
+    return [randomSelectFromRanges(hRanges), randRange(0.8, 0.9), randRange(0.88, 0.92)];
   }
   export function makeRandomDeepColor()
   {
@@ -288,7 +288,11 @@ module Rance
       {min: 0, max: 15 / 360},
       {min: 80 / 360, max: 1}
     ];
-    return [randomSelectFromRanges(hRanges), 1, 0.55];
+    return [randomSelectFromRanges(hRanges), 1, randRange(0.55, 0.65)];
+  }
+  export function makeRandomLightColor()
+  {
+    return [randRange(0, 360), randRange(0.55, 0.65), 1]
   }
 
   export function makeRandomColor(values:
@@ -366,25 +370,15 @@ module Rance
     var relativeHDistance = 1 / (180 / hDistance);
 
     var lExclusion = exclusions.l || 30;
-    if (relativeHDistance > 0.2)
+    if (relativeHDistance < 0.2)
     {
-      lExclusion = lExclusion - 15 *  (color[2] / 100);
+      lExclusion /= 2;
       clamp(lExclusion, 0, 100);
     }
-    console.log(lExclusion)
-
     var lMin = clamp(color[2] - lExclusion, lRange.min, 100);
     var lMax = clamp(color[2] + lExclusion, lMin, 100);
 
-    var lRange2 = excludeFromRange(lRange, {min: lMin, max: lMax});
-    var l = randomSelectFromRanges(lRange2);
-    var lDistance = Math.abs(color[2] - l);
-    var relativeLDistance = 1 / (100 / lDistance);
-
     var sExclusion = exclusions.s || 0;
-    //sExclusion = sExclusion - 15 * relativeLDistance;
-    //clamp(sExclusion, 0, 100);
-
     var sMin = clamp(color[1] - sExclusion, sRange.min, 100);
     var sMax = clamp(color[1] + sExclusion, sMin, 100);
 
@@ -393,7 +387,7 @@ module Rance
     {
       h: [{min: h, max: h}],
       s: excludeFromRange(sRange, {min: sMin, max: sMax}),
-      l: [{min: l, max: l}]
+      l: excludeFromRange(lRange, {min: lMin, max: lMax}),
     }
 
     return makeRandomColor(ranges);
