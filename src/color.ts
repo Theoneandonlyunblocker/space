@@ -286,7 +286,8 @@ module Rance
     var hRanges =
     [
       {min: 0, max: 15 / 360},
-      {min: 80 / 360, max: 1}
+      {min: 80 / 360, max: 195 / 360},
+      {min: 210 / 360, max: 1}
     ];
     return [randomSelectFromRanges(hRanges), 1, randRange(0.55, 0.65)];
   }
@@ -388,6 +389,7 @@ module Rance
     //   lExclusion /= 2;
     //   clamp(lExclusion, 0, 100);
     // }
+    // 
     var lMin = clamp(color[2] - lExclusion, lRange.min, 100);
     var lMax = clamp(color[2] + lExclusion, lMin, 100);
 

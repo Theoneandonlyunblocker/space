@@ -3771,7 +3771,8 @@ var Rance;
     function makeRandomDeepColor() {
         var hRanges = [
             { min: 0, max: 15 / 360 },
-            { min: 80 / 360, max: 1 }
+            { min: 80 / 360, max: 195 / 360 },
+            { min: 210 / 360, max: 1 }
         ];
         return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
     }
@@ -3842,6 +3843,7 @@ var Rance;
         //   lExclusion /= 2;
         //   clamp(lExclusion, 0, 100);
         // }
+        //
         var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
         var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
 
@@ -3997,14 +3999,15 @@ var Rance;
             this.foregroundEmblem = new Rance.Emblem();
             this.foregroundEmblem.generateRandom(100, rng);
 
-            if (Math.random() < 0.5) {
+            var huslColor = Rance.hexToHusl(this.backgroundColor);
+
+            if (huslColor[2] < 0.4 || Math.random() < 0.4) {
                 this["emblemType"] = "husl";
-                var huslColor = Rance.hexToHusl(this.backgroundColor);
                 var contrastingColor = Rance.makeContrastingColor({
                     color: huslColor,
                     minDifference: {
                         h: 30,
-                        l: 30
+                        l: 40
                     },
                     maxDifference: {
                         h: 80,

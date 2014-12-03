@@ -40,17 +40,18 @@ module Rance
       this.foregroundEmblem = new Emblem();
       this.foregroundEmblem.generateRandom(100, rng);
 
-      if (Math.random() < 0.5)
+      var huslColor = hexToHusl(this.backgroundColor);
+
+      if (huslColor[2] < 0.4 || Math.random() < 0.4)
       {
         this["emblemType"] = "husl";
-        var huslColor = hexToHusl(this.backgroundColor);
         var contrastingColor = makeContrastingColor(
         {
           color: huslColor,
           minDifference:
           {
             h: 30,
-            l: 30
+            l: 40
           },
           maxDifference:
           {
