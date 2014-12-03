@@ -106,7 +106,7 @@ module Rance
     playerControl = new PlayerControl(player1);
     reactUI.playerControl = playerControl;
 
-    game = new Game([player1, player2], player1);
+    game = new Game(galaxyMap, [player1, player2], player1);
 
 
     reactUI.currentScene = "galaxyMap";

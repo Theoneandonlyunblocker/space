@@ -9,13 +9,16 @@ module Rance
   {
     turnNumber: number;
     playerOrder: Player[];
+    galaxyMap: GalaxyMap;
     humanPlayer: Player;
     activePlayer: Player;
 
     playerControl: PlayerControl;
 
-    constructor(players: Player[], humanPlayer: Player)
+    constructor(map: GalaxyMap,
+      players: Player[], humanPlayer: Player)
     {
+      this.galaxyMap = map;
       this.playerOrder = players;
       this.humanPlayer = humanPlayer;
 

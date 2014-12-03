@@ -167,5 +167,88 @@ module Rance
 
       return templates;
     }
+    getIsland(start: Star): Star[]
+    {
+      var self = this;
+      var connected:
+      {
+        [id: number]: Star;
+      } = {};
+
+      var toConnect: Star[] = [start];
+
+      while (toConnect.length > 0)
+      {
+        var current = toConnect.pop();
+        var neighbors = current.getNeighbors();
+        var newFriendlyNeighbors = neighbors.filter(function(s)
+        {
+          return (s.owner && !connected[s.id] && s.owner.id === self.id);
+        })
+
+        toConnect = toConnect.concat(newFriendlyNeighbors);
+
+        connected[current.id] = current;
+      }
+
+      var island: Star[] = [];
+      for (var id in connected)
+      {
+        island.push(connected[id]);
+      }
+
+      return island;
+    }
+    getAllIslands(): Star[][]
+    {
+      var unConnected: Star[] = this.controlledLocations.slice(0);
+      var islands: Star[][] = [];
+
+      while (unConnected.length > 0)
+      {
+        var current = unConnected.pop();
+
+        var currentIsland = this.getIsland(current);
+
+        islands.push(currentIsland);
+        unConnected = unConnected.filter(function(s)
+        {
+          return currentIsland.indexOf(s) < 0;
+        });
+      }
+
+      return islands;
+    }
+    getBorderPolygons()
+    {
+      var islands = this.getAllIslands();
+      var polys: Point[][] = [];
+
+      for (var i = 0; i < islands.length; i++)
+      {
+        var poly: Point[] = [];
+
+        for (var j = 0; j < islands[i].length; j++)
+        {
+          var star = islands[i][j];
+          var halfedges = star.voronoiCell.halfedges;
+
+          for (var k = 0; k < halfedges.length; k++)
+          {
+            var edge = halfedges[k].edge;
+
+            if (edge.lSite && edge.lSite.owner !== this ||
+              edge.rSite && edge.rSite.owner !== this)
+            {
+              poly.push(edge.va);
+            }
+          }
+        }
+
+        poly.push(poly[0]);
+        polys.push(poly);
+      }
+      return polys;
+    }
   }  
 }

@@ -271,6 +271,7 @@ declare module Rance {
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
+    function straightSkeleton(poly: any, spacing: any): any[];
 }
 declare module Rance {
     interface TargetingFunction {
@@ -457,6 +458,7 @@ declare module Rance {
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
         public severLinksToNonCenter(): void;
+        public getNeighbors(): any[];
         public severLinksToNonAdjacent(): void;
     }
 }
@@ -692,6 +694,9 @@ declare module Rance {
         public removeStar(star: Rance.Star): boolean;
         public getIncome(): number;
         public getBuildableShips(): any[];
+        public getIsland(start: Rance.Star): Rance.Star[];
+        public getAllIslands(): Rance.Star[][];
+        public getBorderPolygons(): Rance.Point[][];
     }
 }
 declare module Rance {
@@ -1285,10 +1290,11 @@ declare module Rance {
     class Game {
         public turnNumber: number;
         public playerOrder: Rance.Player[];
+        public galaxyMap: Rance.GalaxyMap;
         public humanPlayer: Rance.Player;
         public activePlayer: Rance.Player;
         public playerControl: Rance.PlayerControl;
-        constructor(players: Rance.Player[], humanPlayer: Rance.Player);
+        constructor(map: Rance.GalaxyMap, players: Rance.Player[], humanPlayer: Rance.Player);
         public addEventListeners(): void;
         public endTurn(): void;
         public processPlayerStartTurn(player: Rance.Player): void;

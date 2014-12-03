@@ -137,11 +137,11 @@ module Rance
           "  float res = mod(scaled, gapSize);",
           "  if(res > 0.0)",
           "  {",
-          "    gl_FragColor = mix(gl_FragColor, baseColor, 0.4);",
+          "    gl_FragColor = mix(gl_FragColor, baseColor, 0.5);",
           "  }",
           "  else",
           "  {",
-          "    gl_FragColor = mix(gl_FragColor, lineColor, 0.4);",
+          "    gl_FragColor = mix(gl_FragColor, lineColor, 0.5);",
           "  }",
           "}"
         ];
@@ -223,7 +223,7 @@ module Rance
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
-            gfx.beginFill(star.owner.color, 0.4);
+            gfx.beginFill(star.owner.color, 0.5);
             gfx.drawShape(poly);
             gfx.endFill;
             doc.addChild(gfx);
@@ -316,7 +316,7 @@ module Rance
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
-          gfx.lineStyle(1, 0x00FF00, 1);
+          gfx.lineStyle(1, 0xC0C0C0, 0.5);
 
           var lines = map.mapGen.getNonFillerVoronoiLines();
 
@@ -325,6 +325,40 @@ module Rance
             var line = lines[i];
             gfx.moveTo(line.va.x, line.va.y);
             gfx.lineTo(line.vb.x, line.vb.y);
+          }
+
+          doc.height;
+          return doc;
+        }
+      }
+      this.layers["ownerBorders"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+          var gfx = new PIXI.Graphics();
+          doc.addChild(gfx);
+
+          var players = game.playerOrder;
+
+          for (var i = 0; i < players.length; i++)
+          {
+            var player = players[i];
+            var polys = player.getBorderPolygons();
+
+            for (var j = 0; j < polys.length; j++)
+            {
+              var poly = polys[j];
+              var inset = poly;// straightSkeleton(poly, 2);
+
+              console.log(poly);
+
+              gfx.beginFill(0x000000, 1);
+              //gfx.lineStyle(2, 0x000000, 1);
+              gfx.drawShape(new PIXI.Polygon(inset));
+              gfx.endFill;
+            }
           }
 
           doc.height;
@@ -448,6 +482,7 @@ module Rance
         layers:
         [
           {layer: this.layers["starOwners"]},
+          {layer: this.layers["ownerBorders"]},
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},

@@ -2473,6 +2473,44 @@ var Rance;
         return distance;
     }
     Rance.getAngleBetweenDegrees = getAngleBetweenDegrees;
+
+    function straightSkeleton(poly, spacing) {
+        // http://stackoverflow.com/a/11970006/796832
+        // Accompanying Fiddle: http://jsfiddle.net/vqKvM/35/
+        var resulting_path = [];
+        var N = poly.length;
+        var mi, mi1, li, li1, ri, ri1, si, si1, Xi1, Yi1;
+        for (var i = 0; i < N; i++) {
+            mi = (poly[(i + 1) % N].y - poly[i].y) / (poly[(i + 1) % N].x - poly[i].x);
+            mi1 = (poly[(i + 2) % N].y - poly[(i + 1) % N].y) / (poly[(i + 2) % N].x - poly[(i + 1) % N].x);
+            li = Math.sqrt((poly[(i + 1) % N].x - poly[i].x) * (poly[(i + 1) % N].x - poly[i].x) + (poly[(i + 1) % N].y - poly[i].y) * (poly[(i + 1) % N].y - poly[i].y));
+            li1 = Math.sqrt((poly[(i + 2) % N].x - poly[(i + 1) % N].x) * (poly[(i + 2) % N].x - poly[(i + 1) % N].x) + (poly[(i + 2) % N].y - poly[(i + 1) % N].y) * (poly[(i + 2) % N].y - poly[(i + 1) % N].y));
+            ri = poly[i].x + spacing * (poly[(i + 1) % N].y - poly[i].y) / li;
+            ri1 = poly[(i + 1) % N].x + spacing * (poly[(i + 2) % N].y - poly[(i + 1) % N].y) / li1;
+            si = poly[i].y - spacing * (poly[(i + 1) % N].x - poly[i].x) / li;
+            si1 = poly[(i + 1) % N].y - spacing * (poly[(i + 2) % N].x - poly[(i + 1) % N].x) / li1;
+            Xi1 = (mi1 * ri1 - mi * ri + si - si1) / (mi1 - mi);
+            Yi1 = (mi * mi1 * (ri1 - ri) + mi1 * si - mi * si1) / (mi1 - mi);
+
+            // Correction for vertical lines
+            if (poly[(i + 1) % N].x - poly[i % N].x == 0) {
+                Xi1 = poly[(i + 1) % N].x + spacing * (poly[(i + 1) % N].y - poly[i % N].y) / Math.abs(poly[(i + 1) % N].y - poly[i % N].y);
+                Yi1 = mi1 * Xi1 - mi1 * ri1 + si1;
+            }
+            if (poly[(i + 2) % N].x - poly[(i + 1) % N].x == 0) {
+                Xi1 = poly[(i + 2) % N].x + spacing * (poly[(i + 2) % N].y - poly[(i + 1) % N].y) / Math.abs(poly[(i + 2) % N].y - poly[(i + 1) % N].y);
+                Yi1 = mi * Xi1 - mi * ri + si;
+            }
+
+            resulting_path.push({
+                x: Xi1,
+                y: Yi1
+            });
+        }
+
+        return resulting_path;
+    }
+    Rance.straightSkeleton = straightSkeleton;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -3231,6 +3269,21 @@ var Rance;
             for (var i = 0; i < nonCenterRegions.length; i++) {
                 this.severLinksToRegion(nonCenterRegions[i]);
             }
+        };
+        Star.prototype.getNeighbors = function () {
+            var neighbors = [];
+
+            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
+                var edge = this.voronoiCell.halfedges[i].edge;
+
+                if (edge.lSite !== null && edge.lSite.id !== this.id) {
+                    neighbors.push(edge.lSite);
+                } else if (edge.rSite !== null && edge.rSite.id !== this.id) {
+                    neighbors.push(edge.rSite);
+                }
+            }
+
+            return neighbors;
         };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
@@ -4330,6 +4383,73 @@ var Rance;
 
             return templates;
         };
+        Player.prototype.getIsland = function (start) {
+            var self = this;
+            var connected = {};
+
+            var toConnect = [start];
+
+            while (toConnect.length > 0) {
+                var current = toConnect.pop();
+                var neighbors = current.getNeighbors();
+                var newFriendlyNeighbors = neighbors.filter(function (s) {
+                    return (s.owner && !connected[s.id] && s.owner.id === self.id);
+                });
+
+                toConnect = toConnect.concat(newFriendlyNeighbors);
+
+                connected[current.id] = current;
+            }
+
+            var island = [];
+            for (var id in connected) {
+                island.push(connected[id]);
+            }
+
+            return island;
+        };
+        Player.prototype.getAllIslands = function () {
+            var unConnected = this.controlledLocations.slice(0);
+            var islands = [];
+
+            while (unConnected.length > 0) {
+                var current = unConnected.pop();
+
+                var currentIsland = this.getIsland(current);
+
+                islands.push(currentIsland);
+                unConnected = unConnected.filter(function (s) {
+                    return currentIsland.indexOf(s) < 0;
+                });
+            }
+
+            return islands;
+        };
+        Player.prototype.getBorderPolygons = function () {
+            var islands = this.getAllIslands();
+            var polys = [];
+
+            for (var i = 0; i < islands.length; i++) {
+                var poly = [];
+
+                for (var j = 0; j < islands[i].length; j++) {
+                    var star = islands[i][j];
+                    var halfedges = star.voronoiCell.halfedges;
+
+                    for (var k = 0; k < halfedges.length; k++) {
+                        var edge = halfedges[k].edge;
+
+                        if (edge.lSite && edge.lSite.owner !== this || edge.rSite && edge.rSite.owner !== this) {
+                            poly.push(edge.va);
+                        }
+                    }
+                }
+
+                poly.push(poly[0]);
+                polys.push(poly);
+            }
+            return polys;
+        };
         return Player;
     })();
     Rance.Player = Player;
@@ -5394,6 +5514,10 @@ var Rance;
                 if (mapRenderer)
                     mapRenderer.resetContainer();
 
+                if (!this.props.galaxyMap.mapGen.points[0]) {
+                    this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
+                }
+
                 this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
                 this.props.renderer.init();
                 this.props.renderer.bindRendererView();
@@ -5407,9 +5531,6 @@ var Rance;
 
                 this.props.renderer.render();
 
-                if (!this.props.galaxyMap.mapGen.points[0]) {
-                    this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
-                }
                 this.renderMap();
 
                 this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.mapGen.points[0]);
@@ -6769,11 +6890,11 @@ var Rance;
                     "  float res = mod(scaled, gapSize);",
                     "  if(res > 0.0)",
                     "  {",
-                    "    gl_FragColor = mix(gl_FragColor, baseColor, 0.4);",
+                    "    gl_FragColor = mix(gl_FragColor, baseColor, 0.5);",
                     "  }",
                     "  else",
                     "  {",
-                    "    gl_FragColor = mix(gl_FragColor, lineColor, 0.4);",
+                    "    gl_FragColor = mix(gl_FragColor, lineColor, 0.5);",
                     "  }",
                     "}"
                 ];
@@ -6844,7 +6965,7 @@ var Rance;
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
-                        gfx.beginFill(star.owner.color, 0.4);
+                        gfx.beginFill(star.owner.color, 0.5);
                         gfx.drawShape(poly);
                         gfx.endFill;
                         doc.addChild(gfx);
@@ -6930,7 +7051,7 @@ var Rance;
 
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
-                    gfx.lineStyle(1, 0x00FF00, 1);
+                    gfx.lineStyle(1, 0xC0C0C0, 0.5);
 
                     var lines = map.mapGen.getNonFillerVoronoiLines();
 
@@ -6938,6 +7059,37 @@ var Rance;
                         var line = lines[i];
                         gfx.moveTo(line.va.x, line.va.y);
                         gfx.lineTo(line.vb.x, line.vb.y);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["ownerBorders"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var gfx = new PIXI.Graphics();
+                    doc.addChild(gfx);
+
+                    var players = game.playerOrder;
+
+                    for (var i = 0; i < players.length; i++) {
+                        var player = players[i];
+                        var polys = player.getBorderPolygons();
+
+                        for (var j = 0; j < polys.length; j++) {
+                            var poly = polys[j];
+                            var inset = poly;
+
+                            console.log(poly);
+
+                            gfx.beginFill(0x000000, 1);
+
+                            //gfx.lineStyle(2, 0x000000, 1);
+                            gfx.drawShape(new PIXI.Polygon(inset));
+                            gfx.endFill;
+                        }
                     }
 
                     doc.height;
@@ -7046,6 +7198,7 @@ var Rance;
                 name: "default",
                 layers: [
                     { layer: this.layers["starOwners"] },
+                    { layer: this.layers["ownerBorders"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
@@ -7779,7 +7932,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Game = (function () {
-        function Game(players, humanPlayer) {
+        function Game(map, players, humanPlayer) {
+            this.galaxyMap = map;
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
 
@@ -8028,7 +8182,7 @@ var Rance;
         playerControl = new Rance.PlayerControl(player1);
         reactUI.playerControl = playerControl;
 
-        game = new Rance.Game([player1, player2], player1);
+        game = new Rance.Game(galaxyMap, [player1, player2], player1);
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();

@@ -397,6 +397,26 @@ module Rance
         this.severLinksToRegion(nonCenterRegions[i]);      
       }
     }
+    getNeighbors()
+    {
+      var neighbors = [];
+
+      for (var i = 0; i < this.voronoiCell.halfedges.length; i++)
+      {
+        var edge = this.voronoiCell.halfedges[i].edge;
+
+        if (edge.lSite !== null && edge.lSite.id !== this.id)
+        {
+          neighbors.push(edge.lSite);
+        }
+        else if (edge.rSite !== null && edge.rSite.id !== this.id)
+        {
+          neighbors.push(edge.rSite);
+        }
+      }
+
+      return neighbors;
+    }
     severLinksToNonAdjacent()
     {
       var allLinks = this.getAllLinks();
