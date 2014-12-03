@@ -578,6 +578,9 @@ module Rance
       max = Math.max(max, count);
     }
 
+    var args = [""];
+    var toPrint = "";
+
     for (var _hue in hues)
     {
       var hue = parseInt(_hue);
@@ -589,12 +592,17 @@ module Rance
       
       var chars = relative * maxBarSize;
 
-      var toPrint = "%c ";
+      var line = "\n%c ";
       for (var i = 0; i < chars; i++)
       {
-        toPrint += "#";
+        line += "#";
       }
-      console.log(toPrint, "color: #" + hexToString(color))
+      toPrint += line;
+      args.push("color: " + "#" + hexToString(color));
     }
+
+    args[0] = toPrint;
+
+    console.log.apply(console, args);
   }
 }

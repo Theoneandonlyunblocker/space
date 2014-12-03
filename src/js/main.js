@@ -4000,6 +4000,9 @@ var Rance;
             max = Math.max(max, count);
         }
 
+        var args = [""];
+        var toPrint = "";
+
         for (var _hue in hues) {
             var hue = parseInt(_hue);
             var color = hsvToHex(hue / 360, 1, 1);
@@ -4010,12 +4013,17 @@ var Rance;
 
             var chars = relative * maxBarSize;
 
-            var toPrint = "%c ";
+            var line = "\n%c ";
             for (var i = 0; i < chars; i++) {
-                toPrint += "#";
+                line += "#";
             }
-            console.log(toPrint, "color: #" + Rance.hexToString(color));
+            toPrint += line;
+            args.push("color: " + "#" + Rance.hexToString(color));
         }
+
+        args[0] = toPrint;
+
+        console.log.apply(console, args);
     }
     Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
@@ -6759,11 +6767,11 @@ var Rance;
                     "  float res = mod(scaled, gapSize);",
                     "  if(res > 0.0)",
                     "  {",
-                    "    gl_FragColor = mix(baseColor, gl_FragColor, 0.3);",
+                    "    gl_FragColor = mix(gl_FragColor, baseColor, 0.4);",
                     "  }",
                     "  else",
                     "  {",
-                    "    gl_FragColor = mix(lineColor, gl_FragColor, 0.3);",
+                    "    gl_FragColor = mix(gl_FragColor, lineColor, 0.4);",
                     "  }",
                     "}"
                 ];
@@ -6834,7 +6842,7 @@ var Rance;
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
-                        gfx.beginFill(star.owner.color, 0.7);
+                        gfx.beginFill(star.owner.color, 0.4);
                         gfx.drawShape(poly);
                         gfx.endFill;
                         doc.addChild(gfx);
@@ -7860,11 +7868,13 @@ var Rance;
         PIXI.dontSayHello = true;
 
         player1 = new Rance.Player();
-        player1.color = 0xC02020;
+
+        //player1.color = 0xC02020;
         player1.makeFlag();
         player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();
-        player2.color = 0x2020C0;
+
+        //player2.color = 0x2020C0;
         player2.makeFlag();
         player2.icon = Rance.makeTempPlayerIcon(player2, 32);
 

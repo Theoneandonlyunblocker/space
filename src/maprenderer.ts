@@ -137,11 +137,11 @@ module Rance
           "  float res = mod(scaled, gapSize);",
           "  if(res > 0.0)",
           "  {",
-          "    gl_FragColor = mix(baseColor, gl_FragColor, 0.3);",
+          "    gl_FragColor = mix(gl_FragColor, baseColor, 0.4);",
           "  }",
           "  else",
           "  {",
-          "    gl_FragColor = mix(lineColor, gl_FragColor, 0.3);",
+          "    gl_FragColor = mix(gl_FragColor, lineColor, 0.4);",
           "  }",
           "}"
         ];
@@ -223,7 +223,7 @@ module Rance
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
-            gfx.beginFill(star.owner.color, 0.7);
+            gfx.beginFill(star.owner.color, 0.4);
             gfx.drawShape(poly);
             gfx.endFill;
             doc.addChild(gfx);
