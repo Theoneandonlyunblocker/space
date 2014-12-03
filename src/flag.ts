@@ -16,9 +16,10 @@ module Rance
     constructor(props:
     {
       width: number;
+      backgroundColor: number;
+
       height?: number;
 
-      backgroundColor?: number;
       backgroundEmblem?: Emblem;
       foregroundEmblem?: Emblem;
     })
@@ -36,21 +37,70 @@ module Rance
 
       var rng = new RNG(this.seed);
 
-      if (!this.backgroundColor)
-      {
-        var hue = rng.random(0, 360) / 360;
-        var saturation = rng.random(69, 100) / 100;
-        var value = rng.random(69, 100) / 100;
-
-        this.backgroundColor = hsvToHex(hue, saturation, value);
-      }
-
       this.foregroundEmblem = new Emblem();
       this.foregroundEmblem.generateRandom(100, rng);
-      var huslColor = hexToHusl(this.backgroundColor);
-      var complementaryColor = makeContrastingColor(huslColor);
-      var complementaryHex = stringToHex(HUSL.toHex.apply(null, complementaryColor));
-      this.foregroundEmblem.color = complementaryHex;
+
+      if (Math.random() < 0.99995)
+      {
+        this["emblemType"] = "husl";
+        var huslColor = hexToHusl(this.backgroundColor);
+        var contrastingColor = makeContrastingColor(
+        {
+          color: huslColor,
+          exclusions:
+          {
+            l: 30
+          }
+        });
+        var contrastingHex = stringToHex(HUSL.toHex.apply(null, contrastingColor));
+      }
+      else
+      {
+        this["emblemType"] = "hsv";
+        function contrasts(c1, c2)
+        {
+          return(
+            (c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20)
+          );
+        }
+        function makeColor(c1, easing)
+        {
+          var hsvColor = hexToHsv(c1); // scalar
+
+          hsvColor = colorFromScalars(hsvColor);
+          var contrastingColor = makeContrastingColor(
+          {
+            color: hsvColor,
+            initialRanges:
+            {
+              l: {min: 60 * easing, max: 100}
+            },
+            exclusions:
+            {
+              h: 60 * easing,
+              s: 30 * easing
+            }
+          });
+
+          var contrastingHex = <number> hsvToHex.apply(null, scalarsFromColor( contrastingColor ));
+
+          return hexToHusl(contrastingHex);
+        }
+
+        var huslBg = hexToHusl(this.backgroundColor);
+        var easing = 1;
+        var candidateColor = makeColor(this.backgroundColor, easing);
+
+        while (!contrasts(huslBg, candidateColor))
+        {
+          easing -= 0.1;
+          candidateColor = makeColor(this.backgroundColor, easing);
+        }
+
+        var contrastingHex = stringToHex(HUSL.toHex.apply(null, candidateColor));
+      }
+
+      this.foregroundEmblem.color = contrastingHex;
 
       if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5)
       {

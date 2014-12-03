@@ -196,6 +196,8 @@ module Rance
   export function getAngleBetweenDegrees(degA: number, degB: number)
   {
     var angle = Math.abs(degB - degA) % 360;
-    return Math.min(360 - angle, angle);
+    var distance = Math.min(360 - angle, angle);
+    //console.log(degA, degB, distance);
+    return distance;
   }
 }

@@ -574,10 +574,12 @@ declare module Rance {
     function rgb2hex(rgb: number[]): number;
     function hsvToRgb(h: number, s: number, v: number): number[];
     function hslToRgb(h: number, s: number, l: number): number[];
+    function rgbToHsv(r: any, g: any, b: any): any[];
     function rgbToHsl(r: number, g: number, b: number): number[];
-    function hslToHex(h: any, s: any, l: any): number;
-    function hsvToHex(h: any, s: any, v: any): number;
+    function hslToHex(h: number, s: number, l: number): number;
+    function hsvToHex(h: number, s: number, v: number): number;
     function hexToHsl(hex: number): number[];
+    function hexToHsv(hex: number): number[];
     interface IRange {
         min?: number;
         max?: number;
@@ -586,6 +588,8 @@ declare module Rance {
     function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
     function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
     function randomSelectFromRanges(ranges: IRange[]): any;
+    function makeRandomVibrantColor(): any[];
+    function makeRandomDeepColor(): any[];
     function makeRandomColor(values: {
         h?: IRange[];
         s?: IRange[];
@@ -593,7 +597,19 @@ declare module Rance {
     }): any[];
     function colorFromScalars(color: number[]): number[];
     function scalarsFromColor(scalars: number[]): number[];
-    function makeContrastingColor(color: number[]): number[];
+    function makeContrastingColor(props: {
+        color: number[];
+        initialRanges?: {
+            h?: IRange;
+            s?: IRange;
+            l?: IRange;
+        };
+        exclusions?: {
+            h?: number;
+            s?: number;
+            l?: number;
+        };
+    }): number[];
     function hexToHusl(hex: number): number[];
 }
 declare module Rance {
@@ -620,8 +636,8 @@ declare module Rance {
         public seed: any;
         constructor(props: {
             width: number;
+            backgroundColor: number;
             height?: number;
-            backgroundColor?: number;
             backgroundEmblem?: Rance.Emblem;
             foregroundEmblem?: Rance.Emblem;
         });

@@ -73,6 +73,31 @@ module Rance
 
     return [r, g, b];
   }
+  export function rgbToHsv(r, g, b)
+  {
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, v = max;
+
+    var d = max - min;
+    s = max == 0 ? 0 : d / max;
+
+    if(max == min)
+    {
+      h = 0; // achromatic
+    }
+    else
+    {
+      switch(max)
+      {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    return [h, s, v];
+}
   export function rgbToHsl(r: number, g: number, b: number): number[]
   {
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -98,11 +123,11 @@ module Rance
     return [h, s, l];
   }
 
-  export function hslToHex(h, s, l)
+  export function hslToHex(h: number, s: number, l: number): number
   {
     return rgb2hex( hslToRgb(h, s, l) );
   }
-  export function hsvToHex(h, s, v)
+  export function hsvToHex(h: number, s: number, v: number): number
   {
     return rgb2hex( hsvToRgb(h, s, v) );
   }
@@ -110,6 +135,10 @@ module Rance
   export function hexToHsl(hex: number): number[]
   {
     return rgbToHsl.apply(null, hex2rgb(hex));
+  }
+  export function hexToHsv(hex: number): number[]
+  {
+    return rgbToHsv.apply(null, hex2rgb(hex));
   }
 
   export interface IRange
@@ -243,6 +272,25 @@ module Rance
     return randRange(selectedRange.min, selectedRange.max)
   }
 
+  export function makeRandomVibrantColor()
+  {
+    var hRanges =
+    [
+      {min: 0, max: 150 / 360},
+      {min: 180 / 360, max: 1}
+    ];
+    return [randomSelectFromRanges(hRanges), 0.85, 0.90];
+  }
+  export function makeRandomDeepColor()
+  {
+    var hRanges =
+    [
+      {min: 0, max: 15 / 360},
+      {min: 80 / 360, max: 1}
+    ];
+    return [randomSelectFromRanges(hRanges), 1, 0.55];
+  }
+
   export function makeRandomColor(values:
   {
     h?: IRange[];
@@ -280,15 +328,33 @@ module Rance
     return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
   }
 
-  export function makeContrastingColor(color: number[]): number[]
+  export function makeContrastingColor(props:
   {
-    var hRange = {min: 0, max: 360};
-    var sRange = {min: 0, max: 100};
-    var lRange = {min: 0, max: 100};
+    color: number[];
+    initialRanges?:
+    {
+      h?: IRange;
+      s?: IRange;
+      l?: IRange;
+    };
+    exclusions?:
+    {
+      h?: number;
+      s?: number;
+      l?: number;
+    };
+  }): number[]
+  {
+    var initialRanges = props.initialRanges || {};
+    var exclusions = props.exclusions || {};
+    var color = props.color;
 
-    var hExclusion = 30;
-    var sExclusion = 0;
-    var lExclusion = 30;
+
+    var hRange = initialRanges.h || {min: 0, max: 360};
+    var sRange = initialRanges.s || {min: 50, max: 100};
+    var lRange = initialRanges.l || {min: 0, max: 100};
+
+    var hExclusion = exclusions.h || 30;
 
     var hMin = (color[0] - hExclusion) % 360;
     var hMax = (color[0] + hExclusion) % 360;
@@ -297,21 +363,38 @@ module Rance
 
     var h = randomSelectFromRanges(hRange2);
     var hDistance = getAngleBetweenDegrees(h, color[0]);
-    var relativeHDistance = 180 / hDistance;
+    var relativeHDistance = 1 / (180 / hDistance);
 
-    var sMin = clamp(color[1] - sExclusion, 50, 100);
+    var lExclusion = exclusions.l || 30;
+    if (relativeHDistance > 0.2)
+    {
+      lExclusion = lExclusion - 15 *  (color[2] / 100);
+      clamp(lExclusion, 0, 100);
+    }
+    console.log(lExclusion)
+
+    var lMin = clamp(color[2] - lExclusion, lRange.min, 100);
+    var lMax = clamp(color[2] + lExclusion, lMin, 100);
+
+    var lRange2 = excludeFromRange(lRange, {min: lMin, max: lMax});
+    var l = randomSelectFromRanges(lRange2);
+    var lDistance = Math.abs(color[2] - l);
+    var relativeLDistance = 1 / (100 / lDistance);
+
+    var sExclusion = exclusions.s || 0;
+    //sExclusion = sExclusion - 15 * relativeLDistance;
+    //clamp(sExclusion, 0, 100);
+
+    var sMin = clamp(color[1] - sExclusion, sRange.min, 100);
     var sMax = clamp(color[1] + sExclusion, sMin, 100);
 
-    var lMin = clamp(color[2] - lExclusion, 0, 100);
-    var lMax = clamp(color[2] + lExclusion, lMin, 100);
 
     var ranges =
     {
-      h: excludeFromRange(hRange, {min: hMin, max: hMax}),
+      h: [{min: h, max: h}],
       s: excludeFromRange(sRange, {min: sMin, max: sMax}),
-      l: excludeFromRange(lRange, {min: lMin, max: lMax})
+      l: [{min: l, max: l}]
     }
-    console.log(color[2], ranges.l);
 
     return makeRandomColor(ranges);
   }

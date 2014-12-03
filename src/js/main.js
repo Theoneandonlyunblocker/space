@@ -2462,7 +2462,10 @@ var Rance;
     Rance.clamp = clamp;
     function getAngleBetweenDegrees(degA, degB) {
         var angle = Math.abs(degB - degA) % 360;
-        return Math.min(360 - angle, angle);
+        var distance = Math.min(360 - angle, angle);
+
+        //console.log(degA, degB, distance);
+        return distance;
     }
     Rance.getAngleBetweenDegrees = getAngleBetweenDegrees;
 })(Rance || (Rance = {}));
@@ -3580,6 +3583,33 @@ var Rance;
         return [r, g, b];
     }
     Rance.hslToRgb = hslToRgb;
+    function rgbToHsv(r, g, b) {
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max == 0 ? 0 : d / max;
+
+        if (max == min) {
+            h = 0; // achromatic
+        } else {
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, v];
+    }
+    Rance.rgbToHsv = rgbToHsv;
     function rgbToHsl(r, g, b) {
         var max = Math.max(r, g, b), min = Math.min(r, g, b);
         var h, s, l = (max + min) / 2;
@@ -3620,6 +3650,10 @@ var Rance;
         return rgbToHsl.apply(null, hex2rgb(hex));
     }
     Rance.hexToHsl = hexToHsl;
+    function hexToHsv(hex) {
+        return rgbToHsv.apply(null, hex2rgb(hex));
+    }
+    Rance.hexToHsv = hexToHsv;
 
     function excludeFromRanges(ranges, toExclude) {
         var intersecting = getIntersectingRanges(ranges, toExclude);
@@ -3726,6 +3760,23 @@ var Rance;
     }
     Rance.randomSelectFromRanges = randomSelectFromRanges;
 
+    function makeRandomVibrantColor() {
+        var hRanges = [
+            { min: 0, max: 150 / 360 },
+            { min: 180 / 360, max: 1 }
+        ];
+        return [randomSelectFromRanges(hRanges), 0.85, 0.90];
+    }
+    Rance.makeRandomVibrantColor = makeRandomVibrantColor;
+    function makeRandomDeepColor() {
+        var hRanges = [
+            { min: 0, max: 15 / 360 },
+            { min: 80 / 360, max: 1 }
+        ];
+        return [randomSelectFromRanges(hRanges), 1, 0.55];
+    }
+    Rance.makeRandomDeepColor = makeRandomDeepColor;
+
     function makeRandomColor(values) {
         values = values || {};
         var color = {};
@@ -3755,14 +3806,16 @@ var Rance;
     }
     Rance.scalarsFromColor = scalarsFromColor;
 
-    function makeContrastingColor(color) {
-        var hRange = { min: 0, max: 360 };
-        var sRange = { min: 0, max: 100 };
-        var lRange = { min: 0, max: 100 };
+    function makeContrastingColor(props) {
+        var initialRanges = props.initialRanges || {};
+        var exclusions = props.exclusions || {};
+        var color = props.color;
 
-        var hExclusion = 30;
-        var sExclusion = 0;
-        var lExclusion = 30;
+        var hRange = initialRanges.h || { min: 0, max: 360 };
+        var sRange = initialRanges.s || { min: 50, max: 100 };
+        var lRange = initialRanges.l || { min: 0, max: 100 };
+
+        var hExclusion = exclusions.h || 30;
 
         var hMin = (color[0] - hExclusion) % 360;
         var hMax = (color[0] + hExclusion) % 360;
@@ -3771,20 +3824,35 @@ var Rance;
 
         var h = randomSelectFromRanges(hRange2);
         var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
-        var relativeHDistance = 180 / hDistance;
+        var relativeHDistance = 1 / (180 / hDistance);
 
-        var sMin = Rance.clamp(color[1] - sExclusion, 50, 100);
-        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
+        var lExclusion = exclusions.l || 30;
+        if (relativeHDistance > 0.2) {
+            lExclusion = lExclusion - 15 * (color[2] / 100);
+            Rance.clamp(lExclusion, 0, 100);
+        }
+        console.log(lExclusion);
 
-        var lMin = Rance.clamp(color[2] - lExclusion, 0, 100);
+        var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
         var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
 
+        var lRange2 = excludeFromRange(lRange, { min: lMin, max: lMax });
+        var l = randomSelectFromRanges(lRange2);
+        var lDistance = Math.abs(color[2] - l);
+        var relativeLDistance = 1 / (100 / lDistance);
+
+        var sExclusion = exclusions.s || 0;
+
+        //sExclusion = sExclusion - 15 * relativeLDistance;
+        //clamp(sExclusion, 0, 100);
+        var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
+        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
+
         var ranges = {
-            h: excludeFromRange(hRange, { min: hMin, max: hMax }),
+            h: [{ min: h, max: h }],
             s: excludeFromRange(sRange, { min: sMin, max: sMax }),
-            l: excludeFromRange(lRange, { min: lMin, max: lMax })
+            l: [{ min: l, max: l }]
         };
-        console.log(color[2], ranges.l);
 
         return makeRandomColor(ranges);
     }
@@ -3925,20 +3993,57 @@ var Rance;
 
             var rng = new RNG(this.seed);
 
-            if (!this.backgroundColor) {
-                var hue = rng.random(0, 360) / 360;
-                var saturation = rng.random(69, 100) / 100;
-                var value = rng.random(69, 100) / 100;
-
-                this.backgroundColor = Rance.hsvToHex(hue, saturation, value);
-            }
-
             this.foregroundEmblem = new Rance.Emblem();
             this.foregroundEmblem.generateRandom(100, rng);
-            var huslColor = Rance.hexToHusl(this.backgroundColor);
-            var complementaryColor = Rance.makeContrastingColor(huslColor);
-            var complementaryHex = Rance.stringToHex(HUSL.toHex.apply(null, complementaryColor));
-            this.foregroundEmblem.color = complementaryHex;
+
+            if (Math.random() < 0.99995) {
+                this["emblemType"] = "husl";
+                var huslColor = Rance.hexToHusl(this.backgroundColor);
+                var contrastingColor = Rance.makeContrastingColor({
+                    color: huslColor,
+                    exclusions: {
+                        l: 30
+                    }
+                });
+                var contrastingHex = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
+            } else {
+                this["emblemType"] = "hsv";
+                function contrasts(c1, c2) {
+                    return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
+                }
+                function makeColor(c1, easing) {
+                    var hsvColor = Rance.hexToHsv(c1);
+
+                    hsvColor = Rance.colorFromScalars(hsvColor);
+                    var contrastingColor = Rance.makeContrastingColor({
+                        color: hsvColor,
+                        initialRanges: {
+                            l: { min: 60 * easing, max: 100 }
+                        },
+                        exclusions: {
+                            h: 60 * easing,
+                            s: 30 * easing
+                        }
+                    });
+
+                    var contrastingHex = Rance.hsvToHex.apply(null, Rance.scalarsFromColor(contrastingColor));
+
+                    return Rance.hexToHusl(contrastingHex);
+                }
+
+                var huslBg = Rance.hexToHusl(this.backgroundColor);
+                var easing = 1;
+                var candidateColor = makeColor(this.backgroundColor, easing);
+
+                while (!contrasts(huslBg, candidateColor)) {
+                    easing -= 0.1;
+                    candidateColor = makeColor(this.backgroundColor, easing);
+                }
+
+                var contrastingHex = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
+            }
+
+            this.foregroundEmblem.color = contrastingHex;
 
             if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem();
@@ -5188,39 +5293,85 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FlagMaker = React.createClass({
-            componentDidMount: function () {
+            makeFlags: function (delay) {
+                if (typeof delay === "undefined") { delay = 0; }
                 var flags = [];
                 var parent = this.refs.flags.getDOMNode();
 
+                while (parent.lastChild) {
+                    parent.removeChild(parent.lastChild);
+                }
+
                 for (var i = 0; i < 100; i++) {
-                    var color = Rance.makeRandomColor({
-                        s: [{ min: 0.8, max: 1 }],
-                        l: [{ min: 0.1, max: 1 }]
-                    });
+                    var genType;
+                    var color;
+                    var hexColor;
+                    if (Math.random() < 0.6) {
+                        color = Rance.makeRandomDeepColor();
+                        hexColor = Rance.hsvToHex.apply(null, color);
+                        genType = "deep";
+                    } else if (Math.random() < 0.6) {
+                        color = Rance.makeRandomVibrantColor();
+                        hexColor = Rance.hsvToHex.apply(null, color);
+                        genType = "vibrant";
+                    } else {
+                        color = Rance.makeRandomColor({
+                            s: [{ min: 1, max: 1 }],
+                            l: [{ min: 0.92, max: 1 }]
+                        });
+                        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, Rance.colorFromScalars(color)));
+
+                        genType = "husl";
+                    }
 
                     var flag = new Rance.Flag({
                         width: 46,
-                        backgroundColor: Rance.stringToHex(HUSL.toHex.apply(null, Rance.colorFromScalars(color)))
+                        backgroundColor: hexColor
                     });
 
                     flag.generateRandom();
+                    flag["genType"] = genType;
+
                     var canvas = flag.draw();
 
                     flags.push(flag);
+                }
+
+                function makeHslStringFromHex(hex) {
+                    var hsl = Rance.hexToHsv(hex);
+
+                    hsl = Rance.colorFromScalars(hsl);
+                    hsl = hsl.map(function (v) {
+                        return v.toFixed();
+                    });
+
+                    return hsl.join(", ");
                 }
 
                 window.setTimeout(function (e) {
                     for (var i = 0; i < flags.length; i++) {
                         var canvas = flags[i].draw();
                         parent.appendChild(canvas);
+
+                        canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].backgroundColor) + "\n" + "emblemColor: " + makeHslStringFromHex(flags[i].foregroundEmblem.color) + "\n" + "bgType: " + flags[i].genType + "\n" + "emblemType: " + flags[i].emblemType);
+
+                        canvas.onclick = function (e) {
+                            console.log(Rance.hexToHusl(this.backgroundColor));
+                            console.log(Rance.hexToHusl(this.foregroundEmblem.color));
+                        }.bind(flags[i]);
                     }
-                }, 1000);
+                }, delay);
+            },
+            componentDidMount: function () {
+                this.makeFlags(1000);
             },
             render: function () {
-                return (React.DOM.div({
+                return (React.DOM.div(null, React.DOM.div({
                     className: "flags",
                     ref: "flags"
-                }));
+                }), React.DOM.button({
+                    onClick: this.makeFlags
+                }, "make flags")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

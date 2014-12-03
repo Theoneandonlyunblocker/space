@@ -4,34 +4,68 @@ module Rance
   {
     export var FlagMaker = React.createClass(
     {
-      componentDidMount: function()
+      makeFlags: function(delay: number = 0)
       {
         var flags = [];
         var parent = this.refs.flags.getDOMNode();
 
+        while (parent.lastChild)
+        {
+          parent.removeChild(parent.lastChild);
+        }
+
         for (var i = 0; i < 100; i++)
         {
-          var color = makeRandomColor(
+          var genType;
+          var color;
+          var hexColor;
+          if (Math.random() < 0.6)
           {
-            s: [{min: 0.8, max: 1}],
-            l: [{min: 0.1, max: 1}]
-          });
+            color = makeRandomDeepColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "deep"
+          }
+          else if (Math.random() < 0.6)
+          {
+            color = makeRandomVibrantColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "vibrant"
+          }
+          else
+          {
+            color = makeRandomColor(
+            {
+              s: [{min: 1, max: 1}],
+              l: [{min: 0.92, max: 1}]
+            });
+            hexColor = stringToHex(
+              HUSL.toHex.apply(null, colorFromScalars(color)));
+
+            genType = "husl"
+          }
 
           var flag = new Flag(
           {
             width: 46,
-            backgroundColor: stringToHex(
-              HUSL.toHex.apply(
-                null, colorFromScalars(color)
-              )
-            )
+            backgroundColor: hexColor
           });
 
           flag.generateRandom();
+          flag["genType"] = genType;
+
           var canvas = flag.draw();
 
           flags.push(flag);
+        }
 
+        function makeHslStringFromHex(hex: number)
+        {
+          var hsl = hexToHsv(hex);
+
+          hsl = colorFromScalars(hsl);
+          hsl = hsl.map(function(v):number{return v.toFixed()});
+
+          return hsl.join(", ");
         }
 
         window.setTimeout(function(e)
@@ -40,19 +74,42 @@ module Rance
           {
             var canvas = flags[i].draw();
             parent.appendChild(canvas);
+
+            canvas.setAttribute("title",
+              "bgColor: " + makeHslStringFromHex(flags[i].backgroundColor) + "\n" +
+              "emblemColor: " + makeHslStringFromHex(flags[i].foregroundEmblem.color) + "\n" +
+              "bgType: " + flags[i].genType + "\n" +
+              "emblemType: " + flags[i].emblemType
+            );
+
+            canvas.onclick = function(e)
+            {
+              console.log(hexToHusl(this.backgroundColor));
+              console.log(hexToHusl(this.foregroundEmblem.color))
+            }.bind(flags[i]);
           }
-        }, 1000);
+        }, delay);
+      },
+      componentDidMount: function()
+      {
+        this.makeFlags(1000);
       },
 
       render: function()
       {
         
         return(
-          React.DOM.div(
-          {
-            className: "flags",
-            ref: "flags" 
-          })
+          React.DOM.div(null,
+            React.DOM.div(
+            {
+              className: "flags",
+              ref: "flags" 
+            }),
+            React.DOM.button(
+            {
+              onClick: this.makeFlags
+            }, "make flags")
+          )
         );
       }
     })
