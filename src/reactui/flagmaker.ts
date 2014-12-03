@@ -64,7 +64,7 @@ module Rance
       },
       componentDidMount: function()
       {
-        this.makeFlags(1000);
+        this.makeFlags();
       },
 
       render: function()

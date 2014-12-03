@@ -7,6 +7,7 @@
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
+/// <reference path="loader.ts"/>
 
 /// <reference path="shaders/uniformmanager.ts"/>
 
@@ -16,18 +17,22 @@ var uniforms, testFilter, uniformManager;
 
 module Rance
 {
-  document.addEventListener('DOMContentLoaded', function()
+  export var images: any;
+  export var loader = new Loader(function()
   {
-    PIXI.dontSayHello = true;
+    init()
+  });
+
+  function init()
+  {
+    Rance.images = loader.imageCache;
 
     player1 = new Player();
     //player1.color = 0xC02020;
     player1.makeFlag();
-    player1.icon = makeTempPlayerIcon(player1, 32);
     player2 = new Player();
     //player2.color = 0x2020C0;
     player2.makeFlag();
-    player2.icon = makeTempPlayerIcon(player2, 32);
 
     function setupFleetAndPlayer(player)
     {
@@ -106,5 +111,5 @@ module Rance
 
     reactUI.currentScene = "galaxyMap";
     reactUI.render();
-  });
+  };
 }

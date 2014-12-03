@@ -15,67 +15,67 @@ module Rance
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/comm.png"
+        imageSrc: "comm.png"
       }
       export var comm3 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/comm3.png"
+        imageSrc: "comm3.png"
       }
       export var fasc12 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/fasc12.png"
+        imageSrc: "fasc12.png"
       }
       export var fasc2 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/fasc2.png"
+        imageSrc: "fasc2.png"
       }
       export var fasc8 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/fasc8.png"
+        imageSrc: "fasc8.png"
       }
       export var fasc9 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/fasc9.png"
+        imageSrc: "fasc9.png"
       }
       export var mon13 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/mon13.png"
+        imageSrc: "mon13.png"
       }
       export var mon16 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/mon16.png"
+        imageSrc: "mon16.png"
       }
       export var mon18 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/mon18.png"
+        imageSrc: "mon18.png"
       }
       export var mon26 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/mon26.png"
+        imageSrc: "mon26.png"
       }
       export var mon9 =
       {
         type: "both",
         foregroundOnly: true,
-        imageSrc: "img\/emblems\/mon9.png"
+        imageSrc: "mon9.png"
       }
 
     }

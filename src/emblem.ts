@@ -111,7 +111,8 @@ module Rance
     drawSubEmblem(toDraw: Templates.ISubEmblemTemplate)
     {
       var image = new Image();
-      image.src = toDraw.imageSrc;
+      image.src = images["emblems"][toDraw.imageSrc].src;
+
 
       var width = image.width;
       var height = image.height;
@@ -127,7 +128,6 @@ module Rance
 
       ctx.fillStyle = "#" + hexToString(this.color);
       ctx.fillRect(0, 0, width, height);
-
 
       return canvas;
     }

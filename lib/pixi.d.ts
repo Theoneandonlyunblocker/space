@@ -51,6 +51,7 @@ declare module PIXI
 	{
 		type: string;
 		content: any;
+		target: any;
 	}
 
 	export interface IHitArea

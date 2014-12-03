@@ -20,9 +20,17 @@ module Rance
           },
             React.DOM.div(
             {
-              className: "top-bar-name"
+              className: "top-bar-player"
             },
-              player.name
+              React.DOM.img(
+              {
+                className: "top-bar-player-icon",
+                src: player.icon
+              }),
+              React.DOM.div(
+              {
+                className: "top-bar-player-name"
+              }, player.name)
             ),
             React.DOM.div(
             {

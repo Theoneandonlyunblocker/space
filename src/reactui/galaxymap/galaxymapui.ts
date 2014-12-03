@@ -95,17 +95,16 @@ module Rance
                 selectedStar: this.state.selectedStar,
                 player: this.props.player
               }),
-              React.DOM.button(
+              UIComponents.StarInfo(
               {
-                className: "end-turn-button",
-                onClick: this.endTurn
-              }, "End turn")
+                selectedStar: this.state.selectedStar
+              })
             ),
-            
-            UIComponents.StarInfo(
+            React.DOM.button(
             {
-              selectedStar: this.state.selectedStar
-            })
+              className: "end-turn-button",
+              onClick: this.endTurn
+            }, "End turn")
           )
         );
       },

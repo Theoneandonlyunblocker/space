@@ -51,17 +51,14 @@ module Rance
         mainColor: this.color,
         secondaryColor: this.secondaryColor
       });
-      this.flag.generateRandom();
 
-      this.flag.draw();
+      this.flag.generateRandom();
+      var canvas = this.flag.draw();
+      this.icon = canvas.toDataURL();
+      console.log(this.icon);
 
       var self = this;
 
-      window.setTimeout(function(e)
-      {
-        this.icon = this.flag.draw().toDataURL();
-        console.log(this.icon);
-      }.bind(this), 1000);
     }
     addUnit(unit: Unit)
     {

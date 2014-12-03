@@ -1296,6 +1296,41 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface ISpritesheetData {
+        frames: {
+            [id: string]: {
+                frame: {
+                    x: number;
+                    y: number;
+                    w: number;
+                    h: number;
+                };
+            };
+        };
+        meta: any;
+    }
+    class Loader {
+        public loaded: {
+            DOM: boolean;
+            emblems: boolean;
+        };
+        public startTime: number;
+        public onLoaded: any;
+        public imageCache: {
+            [type: string]: {
+                [id: string]: HTMLImageElement;
+            };
+        };
+        constructor(onLoaded: any);
+        public spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement): {
+            [id: string]: HTMLImageElement;
+        };
+        public loadDOM(): void;
+        public loadEmblems(): void;
+        public checkLoaded(): void;
+    }
+}
+declare module Rance {
     class UniformManager {
         public registeredObjects: {
             [uniformType: string]: any[];
@@ -1309,4 +1344,6 @@ declare module Rance {
 declare var player1: any, player2: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare var uniforms: any, testFilter: any, uniformManager: any;
 declare module Rance {
+    var images: any;
+    var loader: Loader;
 }

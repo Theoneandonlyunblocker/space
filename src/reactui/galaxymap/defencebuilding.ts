@@ -7,7 +7,7 @@ module Rance
       render: function()
       {
         var building = this.props.building;
-
+        console.log(building.controller.icon)
         return(
           React.DOM.div(
           {

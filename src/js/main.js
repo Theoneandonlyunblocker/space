@@ -1691,8 +1691,13 @@ var Rance;
                 return (React.DOM.div({
                     className: "top-bar"
                 }, React.DOM.div({
-                    className: "top-bar-name"
-                }, player.name), React.DOM.div({
+                    className: "top-bar-player"
+                }, React.DOM.img({
+                    className: "top-bar-player-icon",
+                    src: player.icon
+                }), React.DOM.div({
+                    className: "top-bar-player-name"
+                }, player.name)), React.DOM.div({
                     className: "top-bar-money"
                 }, React.DOM.div({
                     className: "top-bar-money-current"
@@ -2067,7 +2072,7 @@ var Rance;
         UIComponents.DefenceBuilding = React.createClass({
             render: function () {
                 var building = this.props.building;
-
+                console.log(building.controller.icon);
                 return (React.DOM.div({
                     className: "defence-building"
                 }, React.DOM.img({
@@ -3441,57 +3446,57 @@ var Rance;
             SubEmblems.comm = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/comm.png"
+                imageSrc: "comm.png"
             };
             SubEmblems.comm3 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/comm3.png"
+                imageSrc: "comm3.png"
             };
             SubEmblems.fasc12 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/fasc12.png"
+                imageSrc: "fasc12.png"
             };
             SubEmblems.fasc2 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/fasc2.png"
+                imageSrc: "fasc2.png"
             };
             SubEmblems.fasc8 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/fasc8.png"
+                imageSrc: "fasc8.png"
             };
             SubEmblems.fasc9 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/fasc9.png"
+                imageSrc: "fasc9.png"
             };
             SubEmblems.mon13 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/mon13.png"
+                imageSrc: "mon13.png"
             };
             SubEmblems.mon16 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/mon16.png"
+                imageSrc: "mon16.png"
             };
             SubEmblems.mon18 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/mon18.png"
+                imageSrc: "mon18.png"
             };
             SubEmblems.mon26 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/mon26.png"
+                imageSrc: "mon26.png"
             };
             SubEmblems.mon9 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "img\/emblems\/mon9.png"
+                imageSrc: "mon9.png"
             };
         })(Templates.SubEmblems || (Templates.SubEmblems = {}));
         var SubEmblems = Templates.SubEmblems;
@@ -4111,7 +4116,7 @@ var Rance;
 
         Emblem.prototype.drawSubEmblem = function (toDraw) {
             var image = new Image();
-            image.src = toDraw.imageSrc;
+            image.src = Rance.images["emblems"][toDraw.imageSrc].src;
 
             var width = image.width;
             var height = image.height;
@@ -4229,16 +4234,13 @@ var Rance;
                 mainColor: this.color,
                 secondaryColor: this.secondaryColor
             });
-            this.flag.generateRandom();
 
-            this.flag.draw();
+            this.flag.generateRandom();
+            var canvas = this.flag.draw();
+            this.icon = canvas.toDataURL();
+            console.log(this.icon);
 
             var self = this;
-
-            window.setTimeout(function (e) {
-                this.icon = this.flag.draw().toDataURL();
-                console.log(this.icon);
-            }.bind(this), 1000);
         };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -5341,12 +5343,12 @@ var Rance;
                     attackTargets: this.state.attackTargets,
                     selectedStar: this.state.selectedStar,
                     player: this.props.player
-                }), React.DOM.button({
+                }), Rance.UIComponents.StarInfo({
+                    selectedStar: this.state.selectedStar
+                })), React.DOM.button({
                     className: "end-turn-button",
                     onClick: this.endTurn
-                }, "End turn")), Rance.UIComponents.StarInfo({
-                    selectedStar: this.state.selectedStar
-                })));
+                }, "End turn")));
             },
             componentWillMount: function () {
                 Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
@@ -5471,7 +5473,7 @@ var Rance;
                 }, delay);
             },
             componentDidMount: function () {
-                this.makeFlags(1000);
+                this.makeFlags();
             },
             render: function () {
                 return (React.DOM.div(null, React.DOM.div({
@@ -7820,6 +7822,85 @@ var Rance;
     })();
     Rance.Game = Game;
 })(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+var Rance;
+(function (Rance) {
+    var Loader = (function () {
+        function Loader(onLoaded) {
+            this.loaded = {
+                DOM: false,
+                emblems: false
+            };
+            this.imageCache = {};
+            this.onLoaded = onLoaded;
+            PIXI.dontSayHello = true;
+            this.startTime = new Date().getTime();
+
+            this.loadDOM();
+            this.loadEmblems();
+        }
+        Loader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
+            var self = this;
+            var frames = {};
+
+            (function splitSpritesheetFN() {
+                for (var sprite in sheetData.frames) {
+                    var frame = sheetData.frames[sprite].frame;
+
+                    var canvas = document.createElement("canvas");
+                    canvas.width = frame.w;
+                    canvas.height = frame.h;
+                    var context = canvas.getContext("2d");
+
+                    context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
+
+                    var image = new Image();
+                    image.src = canvas.toDataURL();
+
+                    frames[sprite] = image;
+                }
+            }());
+
+            return frames;
+        };
+        Loader.prototype.loadDOM = function () {
+            var self = this;
+            if (document.readyState === "interactive" || document.readyState === "complete") {
+                self.loaded.DOM = true;
+                self.checkLoaded();
+            } else {
+                document.addEventListener('DOMContentLoaded', function () {
+                    self.loaded.DOM = true;
+                    self.checkLoaded();
+                });
+            }
+        };
+        Loader.prototype.loadEmblems = function () {
+            var self = this;
+            var loader = new PIXI.JsonLoader("..\/img\/emblems\/sprites.json");
+            loader.addEventListener("loaded", function (event) {
+                var spriteImages = self.spritesheetToDataURLs(event.target.json, event.target.texture.source);
+                self.imageCache["emblems"] = spriteImages;
+                self.loaded.emblems = true;
+                self.checkLoaded();
+            });
+
+            loader.load();
+        };
+        Loader.prototype.checkLoaded = function () {
+            for (var prop in this.loaded) {
+                if (!this.loaded[prop]) {
+                    return;
+                }
+            }
+            var elapsed = new Date().getTime() - this.startTime;
+            console.log("Loaded in " + elapsed + " ms");
+            this.onLoaded.call();
+        };
+        return Loader;
+    })();
+    Rance.Loader = Loader;
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UniformManager = (function () {
@@ -7858,25 +7939,29 @@ var Rance;
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
+/// <reference path="loader.ts"/>
 /// <reference path="shaders/uniformmanager.ts"/>
 var player1, player2, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter, uniformManager;
 
 var Rance;
 (function (Rance) {
-    document.addEventListener('DOMContentLoaded', function () {
-        PIXI.dontSayHello = true;
+    Rance.images;
+    Rance.loader = new Rance.Loader(function () {
+        init();
+    });
+
+    function init() {
+        Rance.images = Rance.loader.imageCache;
 
         player1 = new Rance.Player();
 
         //player1.color = 0xC02020;
         player1.makeFlag();
-        player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();
 
         //player2.color = 0x2020C0;
         player2.makeFlag();
-        player2.icon = Rance.makeTempPlayerIcon(player2, 32);
 
         function setupFleetAndPlayer(player) {
             for (var i = 0; i < 8; i++) {
@@ -7947,6 +8032,7 @@ var Rance;
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();
-    });
+    }
+    ;
 })(Rance || (Rance = {}));
 //# sourceMappingURL=main.js.map
