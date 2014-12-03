@@ -16,48 +16,16 @@ module Rance
 
         for (var i = 0; i < 100; i++)
         {
-          var genType;
-          var color;
-          var hexColor;
-          if (Math.random() < 0.4)
-          {
-            color = makeRandomDeepColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "deep"
-          }
-          else if (Math.random() < 0.4)
-          {
-            color = makeRandomVibrantColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "vibrant"
-          }
-          else if (Math.random() < 0.4)
-          {
-            color = makeRandomLightColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "light"
-          }
-          else
-          {
-            color = makeRandomColor(
-            {
-              s: [{min: 1, max: 1}],
-              l: [{min: 0.92, max: 1}]
-            });
-            hexColor = stringToHex(
-              HUSL.toHex.apply(null, colorFromScalars(color)));
-
-            genType = "husl"
-          }
+          var colorScheme = generateColorScheme();
 
           var flag = new Flag(
           {
             width: 46,
-            backgroundColor: hexColor
+            mainColor: colorScheme.main,
+            secondaryColor: colorScheme.secondary
           });
 
           flag.generateRandom();
-          flag["genType"] = genType;
 
           var canvas = flag.draw();
 
@@ -82,16 +50,14 @@ module Rance
             parent.appendChild(canvas);
 
             canvas.setAttribute("title",
-              "bgColor: " + makeHslStringFromHex(flags[i].backgroundColor) + "\n" +
-              "emblemColor: " + makeHslStringFromHex(flags[i].foregroundEmblem.color) + "\n" +
-              "bgType: " + flags[i].genType + "\n" +
-              "emblemType: " + flags[i].emblemType
+              "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" +
+              "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n"
             );
 
             canvas.onclick = function(e)
             {
-              console.log(hexToHusl(this.backgroundColor));
-              console.log(hexToHusl(this.foregroundEmblem.color))
+              console.log(hexToHusl(this.mainColor));
+              console.log(hexToHusl(this.secondaryColor))
             }.bind(flags[i]);
           }
         }, delay);

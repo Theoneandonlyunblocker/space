@@ -97,7 +97,7 @@ module Rance
     }
 
     return [h, s, v];
-}
+  }
   export function rgbToHsl(r: number, g: number, b: number): number[]
   {
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -277,7 +277,8 @@ module Rance
     var hRanges =
     [
       {min: 0, max: 150 / 360},
-      {min: 180 / 360, max: 1}
+      {min: 180 / 360, max: 290 / 360},
+      {min: 320 / 360, max: 1}
     ];
     return [randomSelectFromRanges(hRanges), randRange(0.8, 0.9), randRange(0.88, 0.92)];
   }
@@ -410,5 +411,131 @@ module Rance
   export function hexToHusl(hex: number): number[]
   {
     return HUSL.fromHex(hexToString(hex));
+  }
+  export function generateMainColor(): number
+  {
+    var color;
+    var hexColor;
+    var genType;
+    if (Math.random() < 0.4)
+    {
+      color = makeRandomDeepColor();
+      hexColor = hsvToHex.apply(null, color);
+      genType = "deep"
+    }
+    else if (Math.random() < 0.4)
+    {
+      color = makeRandomVibrantColor();
+      hexColor = hsvToHex.apply(null, color);
+      genType = "vibrant"
+    }
+    else if (Math.random() < 0.4)
+    {
+      color = makeRandomLightColor();
+      hexColor = hsvToHex.apply(null, color);
+      genType = "light"
+    }
+    else
+    {
+      color = makeRandomColor(
+      {
+        s: [{min: 1, max: 1}],
+        l: [{min: 0.92, max: 1}]
+      });
+      hexColor = stringToHex(
+        HUSL.toHex.apply(null, colorFromScalars(color)));
+      genType = "husl"
+    }
+
+
+    var huslColor = hexToHusl(hexColor);
+    huslColor[2] = clamp(huslColor[2], 30, 100);
+    hexColor = stringToHex(HUSL.toHex.apply(null, huslColor));
+    return hexColor;
+  }
+  export function generateSecondaryColor(mainColor: number): number
+  {
+    var huslColor = hexToHusl(mainColor);
+    var hexColor;
+
+    if (huslColor[2] < 0.4 || Math.random() < 0.4)
+    {
+      var contrastingColor = makeContrastingColor(
+      {
+        color: huslColor,
+        minDifference:
+        {
+          h: 30,
+          l: 40
+        },
+        maxDifference:
+        {
+          h: 80,
+          l: 60
+        }
+      });
+      hexColor = stringToHex(HUSL.toHex.apply(null, contrastingColor));
+    }
+    else
+    {
+      function contrasts(c1, c2)
+      {
+        return(
+          (c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20)
+        );
+      }
+      function makeColor(c1, easing)
+      {
+        var hsvColor = hexToHsv(c1); // scalar
+
+        hsvColor = colorFromScalars(hsvColor);
+        var contrastingColor = makeContrastingColor(
+        {
+          color: hsvColor,
+          initialRanges:
+          {
+            l: {min: 60 * easing, max: 100}
+          },
+          minDifference:
+          {
+            h: 20 * easing,
+            s: 30 * easing
+          },
+          maxDifference:
+          {
+            h: 100
+          }
+        });
+
+        var hex = <number> hsvToHex.apply(null, scalarsFromColor( contrastingColor ));
+
+        return hexToHusl(hex);
+      }
+
+      var huslBg = hexToHusl(mainColor);
+      var easing = 1;
+      var candidateColor = makeColor(mainColor, easing);
+
+      while (!contrasts(huslBg, candidateColor))
+      {
+        easing -= 0.1;
+        candidateColor = makeColor(mainColor, easing);
+      }
+
+      hexColor = stringToHex(HUSL.toHex.apply(null, candidateColor));
+    }
+
+    return hexColor;
+  }
+  export function generateColorScheme(mainColor?: number)
+  {
+    var mainColor = isFinite(mainColor) ? mainColor : generateMainColor();
+    var secondaryColor = generateSecondaryColor(mainColor);
+    
+    return(
+    {
+      main: mainColor,
+      secondary: secondaryColor
+    });
   }
 }

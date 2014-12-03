@@ -3763,7 +3763,8 @@ var Rance;
     function makeRandomVibrantColor() {
         var hRanges = [
             { min: 0, max: 150 / 360 },
-            { min: 180 / 360, max: 1 }
+            { min: 180 / 360, max: 290 / 360 },
+            { min: 320 / 360, max: 1 }
         ];
         return [randomSelectFromRanges(hRanges), Rance.randRange(0.8, 0.9), Rance.randRange(0.88, 0.92)];
     }
@@ -3864,6 +3865,106 @@ var Rance;
         return HUSL.fromHex(Rance.hexToString(hex));
     }
     Rance.hexToHusl = hexToHusl;
+    function generateMainColor() {
+        var color;
+        var hexColor;
+        var genType;
+        if (Math.random() < 0.4) {
+            color = makeRandomDeepColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "deep";
+        } else if (Math.random() < 0.4) {
+            color = makeRandomVibrantColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "vibrant";
+        } else if (Math.random() < 0.4) {
+            color = makeRandomLightColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "light";
+        } else {
+            color = makeRandomColor({
+                s: [{ min: 1, max: 1 }],
+                l: [{ min: 0.92, max: 1 }]
+            });
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
+            genType = "husl";
+        }
+
+        var huslColor = hexToHusl(hexColor);
+        huslColor[2] = Rance.clamp(huslColor[2], 30, 100);
+        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, huslColor));
+        return hexColor;
+    }
+    Rance.generateMainColor = generateMainColor;
+    function generateSecondaryColor(mainColor) {
+        var huslColor = hexToHusl(mainColor);
+        var hexColor;
+
+        if (huslColor[2] < 0.4 || Math.random() < 0.4) {
+            var contrastingColor = makeContrastingColor({
+                color: huslColor,
+                minDifference: {
+                    h: 30,
+                    l: 40
+                },
+                maxDifference: {
+                    h: 80,
+                    l: 60
+                }
+            });
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
+        } else {
+            function contrasts(c1, c2) {
+                return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
+            }
+            function makeColor(c1, easing) {
+                var hsvColor = hexToHsv(c1);
+
+                hsvColor = colorFromScalars(hsvColor);
+                var contrastingColor = makeContrastingColor({
+                    color: hsvColor,
+                    initialRanges: {
+                        l: { min: 60 * easing, max: 100 }
+                    },
+                    minDifference: {
+                        h: 20 * easing,
+                        s: 30 * easing
+                    },
+                    maxDifference: {
+                        h: 100
+                    }
+                });
+
+                var hex = hsvToHex.apply(null, scalarsFromColor(contrastingColor));
+
+                return hexToHusl(hex);
+            }
+
+            var huslBg = hexToHusl(mainColor);
+            var easing = 1;
+            var candidateColor = makeColor(mainColor, easing);
+
+            while (!contrasts(huslBg, candidateColor)) {
+                easing -= 0.1;
+                candidateColor = makeColor(mainColor, easing);
+            }
+
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
+        }
+
+        return hexColor;
+    }
+    Rance.generateSecondaryColor = generateSecondaryColor;
+    function generateColorScheme(mainColor) {
+        var mainColor = isFinite(mainColor) ? mainColor : generateMainColor();
+        var secondaryColor = generateSecondaryColor(mainColor);
+
+        return ({
+            main: mainColor,
+            secondary: secondaryColor
+        });
+    }
+    Rance.generateColorScheme = generateColorScheme;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="../data/templates/subemblemtemplates.ts" />
@@ -3871,7 +3972,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Emblem = (function () {
-        function Emblem() {
+        function Emblem(color) {
+            this.color = color;
         }
         Emblem.prototype.isForegroundOnly = function () {
             if (this.inner.foregroundOnly)
@@ -3883,14 +3985,8 @@ var Rance;
         };
         Emblem.prototype.generateRandom = function (minAlpha, rng) {
             var rng = rng || new RNG(Math.random);
-
-            this.alpha = rng.random(minAlpha, 100) / 100;
-
-            var hue = rng.random(0, 360) / 360;
-            var saturation = rng.random(0, 100) / 100;
-            var value = rng.random(0, 100) / 100;
-
-            this.color = Rance.hsvToHex(hue, saturation, value);
+            this.alpha = rng.uniform();
+            this.alpha = Rance.clamp(this.alpha, minAlpha, 1);
 
             this.generateSubEmblems(rng);
         };
@@ -3987,7 +4083,9 @@ var Rance;
             this.width = props.width;
             this.height = props.height || props.width;
 
-            this.backgroundColor = props.backgroundColor;
+            this.mainColor = props.mainColor;
+            this.secondaryColor = props.secondaryColor;
+            this.tetriaryColor = props.tetriaryColor;
             this.backgroundEmblem = props.backgroundEmblem;
             this.foregroundEmblem = props.foregroundEmblem;
         }
@@ -3996,69 +4094,11 @@ var Rance;
 
             var rng = new RNG(this.seed);
 
-            this.foregroundEmblem = new Rance.Emblem();
+            this.foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             this.foregroundEmblem.generateRandom(100, rng);
 
-            var huslColor = Rance.hexToHusl(this.backgroundColor);
-
-            if (huslColor[2] < 0.4 || Math.random() < 0.4) {
-                this["emblemType"] = "husl";
-                var contrastingColor = Rance.makeContrastingColor({
-                    color: huslColor,
-                    minDifference: {
-                        h: 30,
-                        l: 40
-                    },
-                    maxDifference: {
-                        h: 80,
-                        l: 60
-                    }
-                });
-                var contrastingHex = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
-            } else {
-                this["emblemType"] = "hsv";
-                function contrasts(c1, c2) {
-                    return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
-                }
-                function makeColor(c1, easing) {
-                    var hsvColor = Rance.hexToHsv(c1);
-
-                    hsvColor = Rance.colorFromScalars(hsvColor);
-                    var contrastingColor = Rance.makeContrastingColor({
-                        color: hsvColor,
-                        initialRanges: {
-                            l: { min: 60 * easing, max: 100 }
-                        },
-                        minDifference: {
-                            h: 20 * easing,
-                            s: 30 * easing
-                        },
-                        maxDifference: {
-                            h: 100
-                        }
-                    });
-
-                    var contrastingHex = Rance.hsvToHex.apply(null, Rance.scalarsFromColor(contrastingColor));
-
-                    return Rance.hexToHusl(contrastingHex);
-                }
-
-                var huslBg = Rance.hexToHusl(this.backgroundColor);
-                var easing = 1;
-                var candidateColor = makeColor(this.backgroundColor, easing);
-
-                while (!contrasts(huslBg, candidateColor)) {
-                    easing -= 0.1;
-                    candidateColor = makeColor(this.backgroundColor, easing);
-                }
-
-                var contrastingHex = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
-            }
-
-            this.foregroundEmblem.color = contrastingHex;
-
             if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
-                this.backgroundEmblem = new Rance.Emblem();
+                this.backgroundEmblem = new Rance.Emblem(this.tetriaryColor);
                 this.backgroundEmblem.generateRandom(40, rng);
             }
         };
@@ -4070,7 +4110,7 @@ var Rance;
 
             ctx.globalCompositeOperation = "source-over";
 
-            ctx.fillStyle = "#" + Rance.hexToString(this.backgroundColor);
+            ctx.fillStyle = "#" + Rance.hexToString(this.mainColor);
             ctx.fillRect(0, 0, this.width, this.height);
             ctx.fillStyle = "#00FF00";
 
@@ -4112,8 +4152,22 @@ var Rance;
             this.name = "Player " + this.id;
             this.money = 1000;
         }
+        Player.prototype.makeColorScheme = function () {
+            var scheme = Rance.generateColorScheme(this.color);
+
+            this.color = scheme.main;
+            this.secondaryColor = scheme.secondary;
+        };
+
         Player.prototype.makeFlag = function () {
-            this.flag = new Rance.Flag({ width: 46, backgroundColor: this.color });
+            if (!this.color || !this.secondaryColor)
+                this.makeColorScheme();
+
+            this.flag = new Rance.Flag({
+                width: 46,
+                mainColor: this.color,
+                secondaryColor: this.secondaryColor
+            });
             this.flag.generateRandom();
 
             this.flag.draw();
@@ -5315,38 +5369,15 @@ var Rance;
                 }
 
                 for (var i = 0; i < 100; i++) {
-                    var genType;
-                    var color;
-                    var hexColor;
-                    if (Math.random() < 0.4) {
-                        color = Rance.makeRandomDeepColor();
-                        hexColor = Rance.hsvToHex.apply(null, color);
-                        genType = "deep";
-                    } else if (Math.random() < 0.4) {
-                        color = Rance.makeRandomVibrantColor();
-                        hexColor = Rance.hsvToHex.apply(null, color);
-                        genType = "vibrant";
-                    } else if (Math.random() < 0.4) {
-                        color = Rance.makeRandomLightColor();
-                        hexColor = Rance.hsvToHex.apply(null, color);
-                        genType = "light";
-                    } else {
-                        color = Rance.makeRandomColor({
-                            s: [{ min: 1, max: 1 }],
-                            l: [{ min: 0.92, max: 1 }]
-                        });
-                        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, Rance.colorFromScalars(color)));
-
-                        genType = "husl";
-                    }
+                    var colorScheme = Rance.generateColorScheme();
 
                     var flag = new Rance.Flag({
                         width: 46,
-                        backgroundColor: hexColor
+                        mainColor: colorScheme.main,
+                        secondaryColor: colorScheme.secondary
                     });
 
                     flag.generateRandom();
-                    flag["genType"] = genType;
 
                     var canvas = flag.draw();
 
@@ -5369,11 +5400,11 @@ var Rance;
                         var canvas = flags[i].draw();
                         parent.appendChild(canvas);
 
-                        canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].backgroundColor) + "\n" + "emblemColor: " + makeHslStringFromHex(flags[i].foregroundEmblem.color) + "\n" + "bgType: " + flags[i].genType + "\n" + "emblemType: " + flags[i].emblemType);
+                        canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" + "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n");
 
                         canvas.onclick = function (e) {
-                            console.log(Rance.hexToHusl(this.backgroundColor));
-                            console.log(Rance.hexToHusl(this.foregroundEmblem.color));
+                            console.log(Rance.hexToHusl(this.mainColor));
+                            console.log(Rance.hexToHusl(this.secondaryColor));
                         }.bind(flags[i]);
                     }
                 }, delay);
@@ -7777,18 +7808,6 @@ var Rance;
 
         player1 = new Rance.Player();
         player1.color = 0xC02020;
-
-        var color = Rance.makeRandomColor({
-            h: [
-                { min: 0.0, max: 0.2 },
-                { min: 0.3, max: 0.79 },
-                { min: 0.93, max: 1 }
-            ],
-            s: [{ min: 0.8, max: 1 }],
-            l: [{ min: 0.3, max: 0.5 }]
-        });
-
-        //player1.color = stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
         player1.makeFlag();
         player1.icon = Rance.makeTempPlayerIcon(player1, 32);
         player2 = new Rance.Player();

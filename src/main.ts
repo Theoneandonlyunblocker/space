@@ -22,20 +22,6 @@ module Rance
 
     player1 = new Player();
     player1.color = 0xC02020;
-
-    var color = makeRandomColor(
-    {
-      h:
-      [
-        {min: 0.0, max: 0.2},
-        {min: 0.3, max: 0.79},
-        {min: 0.93, max: 1}
-      ],
-      s: [{min: 0.8, max: 1}],
-      l: [{min: 0.3, max: 0.5}]
-    });
-    //player1.color = stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
-
     player1.makeFlag();
     player1.icon = makeTempPlayerIcon(player1, 32);
     player2 = new Player();

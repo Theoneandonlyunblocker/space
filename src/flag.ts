@@ -8,7 +8,9 @@ module Rance
   {
     width: number;
     height: number;
-    backgroundColor: number;
+    mainColor: number;
+    secondaryColor: number;
+    tetriaryColor: number;
     backgroundEmblem: Emblem;
     foregroundEmblem: Emblem;
 
@@ -16,7 +18,9 @@ module Rance
     constructor(props:
     {
       width: number;
-      backgroundColor: number;
+      mainColor?: number;
+      secondaryColor?: number;
+      tetriaryColor?: number;
 
       height?: number;
 
@@ -27,7 +31,9 @@ module Rance
       this.width = props.width;
       this.height = props.height || props.width;
 
-      this.backgroundColor = props.backgroundColor;
+      this.mainColor = props.mainColor;
+      this.secondaryColor = props.secondaryColor;
+      this.tetriaryColor = props.tetriaryColor;
       this.backgroundEmblem = props.backgroundEmblem;
       this.foregroundEmblem = props.foregroundEmblem;
     }
@@ -37,85 +43,13 @@ module Rance
 
       var rng = new RNG(this.seed);
 
-      this.foregroundEmblem = new Emblem();
+      this.foregroundEmblem = new Emblem(this.secondaryColor);
       this.foregroundEmblem.generateRandom(100, rng);
 
-      var huslColor = hexToHusl(this.backgroundColor);
-
-      if (huslColor[2] < 0.4 || Math.random() < 0.4)
-      {
-        this["emblemType"] = "husl";
-        var contrastingColor = makeContrastingColor(
-        {
-          color: huslColor,
-          minDifference:
-          {
-            h: 30,
-            l: 40
-          },
-          maxDifference:
-          {
-            h: 80,
-            l: 60
-          }
-        });
-        var contrastingHex = stringToHex(HUSL.toHex.apply(null, contrastingColor));
-      }
-      else
-      {
-        this["emblemType"] = "hsv";
-        function contrasts(c1, c2)
-        {
-          return(
-            (c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20)
-          );
-        }
-        function makeColor(c1, easing)
-        {
-          var hsvColor = hexToHsv(c1); // scalar
-
-          hsvColor = colorFromScalars(hsvColor);
-          var contrastingColor = makeContrastingColor(
-          {
-            color: hsvColor,
-            initialRanges:
-            {
-              l: {min: 60 * easing, max: 100}
-            },
-            minDifference:
-            {
-              h: 20 * easing,
-              s: 30 * easing
-            },
-            maxDifference:
-            {
-              h: 100
-            }
-          });
-
-          var contrastingHex = <number> hsvToHex.apply(null, scalarsFromColor( contrastingColor ));
-
-          return hexToHusl(contrastingHex);
-        }
-
-        var huslBg = hexToHusl(this.backgroundColor);
-        var easing = 1;
-        var candidateColor = makeColor(this.backgroundColor, easing);
-
-        while (!contrasts(huslBg, candidateColor))
-        {
-          easing -= 0.1;
-          candidateColor = makeColor(this.backgroundColor, easing);
-        }
-
-        var contrastingHex = stringToHex(HUSL.toHex.apply(null, candidateColor));
-      }
-
-      this.foregroundEmblem.color = contrastingHex;
 
       if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5)
       {
-        this.backgroundEmblem = new Emblem();
+        this.backgroundEmblem = new Emblem(this.tetriaryColor);
         this.backgroundEmblem.generateRandom(40, rng);
       }
 
@@ -129,7 +63,7 @@ module Rance
 
       ctx.globalCompositeOperation = "source-over";
 
-      ctx.fillStyle = "#" + hexToString(this.backgroundColor);
+      ctx.fillStyle = "#" + hexToString(this.mainColor);
       ctx.fillRect(0, 0, this.width, this.height);
       ctx.fillStyle = "#00FF00";
 

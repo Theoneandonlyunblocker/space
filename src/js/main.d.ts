@@ -617,6 +617,12 @@ declare module Rance {
         };
     }): number[];
     function hexToHusl(hex: number): number[];
+    function generateMainColor(): number;
+    function generateSecondaryColor(mainColor: number): number;
+    function generateColorScheme(mainColor?: number): {
+        main: number;
+        secondary: number;
+    };
 }
 declare module Rance {
     class Emblem {
@@ -624,7 +630,7 @@ declare module Rance {
         public color: number;
         public inner: Rance.Templates.ISubEmblemTemplate;
         public outer: Rance.Templates.ISubEmblemTemplate;
-        constructor();
+        constructor(color: number);
         public isForegroundOnly(): boolean;
         public generateRandom(minAlpha: number, rng?: any): void;
         public generateSubEmblems(rng: any): void;
@@ -636,13 +642,17 @@ declare module Rance {
     class Flag {
         public width: number;
         public height: number;
-        public backgroundColor: number;
+        public mainColor: number;
+        public secondaryColor: number;
+        public tetriaryColor: number;
         public backgroundEmblem: Rance.Emblem;
         public foregroundEmblem: Rance.Emblem;
         public seed: any;
         constructor(props: {
             width: number;
-            backgroundColor: number;
+            mainColor?: number;
+            secondaryColor?: number;
+            tetriaryColor?: number;
             height?: number;
             backgroundEmblem?: Rance.Emblem;
             foregroundEmblem?: Rance.Emblem;
@@ -656,6 +666,7 @@ declare module Rance {
         public id: number;
         public name: string;
         public color: number;
+        public secondaryColor: number;
         public flag: Rance.Flag;
         public icon: string;
         public units: {
@@ -665,6 +676,7 @@ declare module Rance {
         public money: number;
         public controlledLocations: Rance.Star[];
         constructor(id?: number);
+        public makeColorScheme(): void;
         public makeFlag(): void;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;

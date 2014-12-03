@@ -15,6 +15,7 @@ module Rance
     id: number;
     name: string;
     color: number;
+    secondaryColor: number;
     flag: Flag;
     icon: string;
     units:
@@ -32,10 +33,24 @@ module Rance
       this.name = "Player " + this.id;
       this.money = 1000;
     }
+    makeColorScheme()
+    {
+      var scheme = generateColorScheme(this.color);
+
+      this.color = scheme.main;
+      this.secondaryColor = scheme.secondary;
+    }
 
     makeFlag()
     {
-      this.flag = new Flag({width: 46, backgroundColor: this.color});
+      if (!this.color || !this.secondaryColor) this.makeColorScheme();
+
+      this.flag = new Flag(
+      {
+        width: 46,
+        mainColor: this.color,
+        secondaryColor: this.secondaryColor
+      });
       this.flag.generateRandom();
 
       this.flag.draw();

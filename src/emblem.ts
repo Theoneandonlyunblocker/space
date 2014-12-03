@@ -11,9 +11,9 @@ module Rance
     color: number;
     inner: Templates.ISubEmblemTemplate;
     outer: Templates.ISubEmblemTemplate;
-    constructor()
+    constructor(color: number)
     {
-      
+      this.color = color;
     }
 
     isForegroundOnly()
@@ -26,14 +26,8 @@ module Rance
     generateRandom(minAlpha: number, rng?: any)
     {
       var rng = rng || new RNG(Math.random);
-
-      this.alpha = rng.random(minAlpha, 100) / 100;
-
-      var hue = rng.random(0, 360) / 360;
-      var saturation = rng.random(0, 100) / 100;
-      var value = rng.random(0, 100) / 100;
-
-      this.color = hsvToHex(hue, saturation, value);
+      this.alpha = rng.uniform();
+      this.alpha = clamp(this.alpha, minAlpha, 1);
 
       this.generateSubEmblems(rng);
     }
