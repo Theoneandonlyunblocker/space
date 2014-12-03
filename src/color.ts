@@ -284,6 +284,11 @@ module Rance
   }
   export function makeRandomDeepColor()
   {
+    // yellow
+    if (Math.random() < 0.1)
+    {
+      return [randRange(15 / 360, 80 / 360), randRange(0.92, 1), randRange(0.92, 1)];
+    }
     var hRanges =
     [
       {min: 0, max: 15 / 360},
@@ -537,5 +542,59 @@ module Rance
       main: mainColor,
       secondary: secondaryColor
     });
+  }
+
+  export function checkRandomGenHues(amt: number)
+  {
+    var maxBarSize = 80;
+    var hues: any = {};
+    for (var i = 0; i < amt; i++)
+    {
+      var color = generateMainColor();
+      var hue = colorFromScalars( hexToHsv(color))[0];
+      var roundedHue = Math.round(hue / 10) * 10;
+
+      if (!hues[roundedHue]) hues[roundedHue] = 0;
+      hues[roundedHue]++;
+    }
+
+    var min;
+    var max;
+
+    for (var _hue in hues)
+    {
+      var count = hues[_hue];
+
+      if (!min)
+      {
+        min = count;
+      }
+      if (!max)
+      {
+        max = count;
+      }
+
+      min = Math.min(min, count);
+      max = Math.max(max, count);
+    }
+
+    for (var _hue in hues)
+    {
+      var hue = parseInt(_hue);
+      var color = hsvToHex(hue / 360, 1, 1);
+      var count = hues[_hue];
+
+      var difference = max - min;
+      var relative = (count - min) / difference;
+      
+      var chars = relative * maxBarSize;
+
+      var toPrint = "%c ";
+      for (var i = 0; i < chars; i++)
+      {
+        toPrint += "#";
+      }
+      console.log(toPrint, "color: #" + hexToString(color))
+    }
   }
 }

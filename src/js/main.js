@@ -3770,6 +3770,10 @@ var Rance;
     }
     Rance.makeRandomVibrantColor = makeRandomVibrantColor;
     function makeRandomDeepColor() {
+        // yellow
+        if (Math.random() < 0.1) {
+            return [Rance.randRange(15 / 360, 80 / 360), Rance.randRange(0.92, 1), Rance.randRange(0.92, 1)];
+        }
         var hRanges = [
             { min: 0, max: 15 / 360 },
             { min: 80 / 360, max: 195 / 360 },
@@ -3965,6 +3969,55 @@ var Rance;
         });
     }
     Rance.generateColorScheme = generateColorScheme;
+
+    function checkRandomGenHues(amt) {
+        var maxBarSize = 80;
+        var hues = {};
+        for (var i = 0; i < amt; i++) {
+            var color = generateMainColor();
+            var hue = colorFromScalars(hexToHsv(color))[0];
+            var roundedHue = Math.round(hue / 10) * 10;
+
+            if (!hues[roundedHue])
+                hues[roundedHue] = 0;
+            hues[roundedHue]++;
+        }
+
+        var min;
+        var max;
+
+        for (var _hue in hues) {
+            var count = hues[_hue];
+
+            if (!min) {
+                min = count;
+            }
+            if (!max) {
+                max = count;
+            }
+
+            min = Math.min(min, count);
+            max = Math.max(max, count);
+        }
+
+        for (var _hue in hues) {
+            var hue = parseInt(_hue);
+            var color = hsvToHex(hue / 360, 1, 1);
+            var count = hues[_hue];
+
+            var difference = max - min;
+            var relative = (count - min) / difference;
+
+            var chars = relative * maxBarSize;
+
+            var toPrint = "%c ";
+            for (var i = 0; i < chars; i++) {
+                toPrint += "#";
+            }
+            console.log(toPrint, "color: #" + Rance.hexToString(color));
+        }
+    }
+    Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="../data/templates/subemblemtemplates.ts" />

@@ -623,6 +623,7 @@ declare module Rance {
         main: number;
         secondary: number;
     };
+    function checkRandomGenHues(amt: number): void;
 }
 declare module Rance {
     class Emblem {
