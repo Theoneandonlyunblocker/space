@@ -7877,7 +7877,7 @@ var Rance;
         };
         Loader.prototype.loadEmblems = function () {
             var self = this;
-            var loader = new PIXI.JsonLoader("..\/img\/emblems\/sprites.json");
+            var loader = new PIXI.JsonLoader("img\/emblems\/sprites.json");
             loader.addEventListener("loaded", function (event) {
                 var spriteImages = self.spritesheetToDataURLs(event.target.json, event.target.texture.source);
                 self.imageCache["emblems"] = spriteImages;
