@@ -341,18 +341,30 @@ module Rance
       s?: IRange;
       l?: IRange;
     };
-    exclusions?:
+    minDifference?:
     {
       h?: number;
       s?: number;
       l?: number;
     };
+    maxDifference?:
+    {
+      h?: number;
+      s?: number;
+      l?: number;
+    }
   }): number[]
   {
     var initialRanges = props.initialRanges || {};
-    var exclusions = props.exclusions || {};
+    var exclusions = props.minDifference || {};
+    var maxDifference = props.maxDifference || {};
     var color = props.color;
-
+    var hMaxDiffernece = isFinite(maxDifference.h) ?
+      maxDifference.h : 360;
+    var sMaxDiffernece = isFinite(maxDifference.s) ?
+      maxDifference.s : 100;
+    var lMaxDiffernece = isFinite(maxDifference.l) ?
+      maxDifference.l : 100;
 
     var hRange = initialRanges.h || {min: 0, max: 360};
     var sRange = initialRanges.s || {min: 50, max: 100};
@@ -366,15 +378,16 @@ module Rance
     var hRange2 = excludeFromRange(hRange, {min: hMin, max: hMax});
 
     var h = randomSelectFromRanges(hRange2);
+    h = clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
     var hDistance = getAngleBetweenDegrees(h, color[0]);
     var relativeHDistance = 1 / (180 / hDistance);
 
     var lExclusion = exclusions.l || 30;
-    if (relativeHDistance < 0.2)
-    {
-      lExclusion /= 2;
-      clamp(lExclusion, 0, 100);
-    }
+    // if (relativeHDistance < 0.2)
+    // {
+    //   lExclusion /= 2;
+    //   clamp(lExclusion, 0, 100);
+    // }
     var lMin = clamp(color[2] - lExclusion, lRange.min, 100);
     var lMax = clamp(color[2] + lExclusion, lMin, 100);
 

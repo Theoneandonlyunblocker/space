@@ -47,10 +47,15 @@ module Rance
         var contrastingColor = makeContrastingColor(
         {
           color: huslColor,
-          exclusions:
+          minDifference:
           {
-            h: 15,
+            h: 30,
             l: 30
+          },
+          maxDifference:
+          {
+            h: 80,
+            l: 60
           }
         });
         var contrastingHex = stringToHex(HUSL.toHex.apply(null, contrastingColor));
@@ -76,10 +81,14 @@ module Rance
             {
               l: {min: 60 * easing, max: 100}
             },
-            exclusions:
+            minDifference:
             {
               h: 20 * easing,
               s: 30 * easing
+            },
+            maxDifference:
+            {
+              h: 100
             }
           });
 

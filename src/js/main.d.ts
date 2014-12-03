@@ -605,7 +605,12 @@ declare module Rance {
             s?: IRange;
             l?: IRange;
         };
-        exclusions?: {
+        minDifference?: {
+            h?: number;
+            s?: number;
+            l?: number;
+        };
+        maxDifference?: {
             h?: number;
             s?: number;
             l?: number;

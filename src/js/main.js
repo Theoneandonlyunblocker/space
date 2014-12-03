@@ -3812,8 +3812,12 @@ var Rance;
 
     function makeContrastingColor(props) {
         var initialRanges = props.initialRanges || {};
-        var exclusions = props.exclusions || {};
+        var exclusions = props.minDifference || {};
+        var maxDifference = props.maxDifference || {};
         var color = props.color;
+        var hMaxDiffernece = isFinite(maxDifference.h) ? maxDifference.h : 360;
+        var sMaxDiffernece = isFinite(maxDifference.s) ? maxDifference.s : 100;
+        var lMaxDiffernece = isFinite(maxDifference.l) ? maxDifference.l : 100;
 
         var hRange = initialRanges.h || { min: 0, max: 360 };
         var sRange = initialRanges.s || { min: 50, max: 100 };
@@ -3827,14 +3831,17 @@ var Rance;
         var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
 
         var h = randomSelectFromRanges(hRange2);
+        h = Rance.clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
         var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
         var relativeHDistance = 1 / (180 / hDistance);
 
         var lExclusion = exclusions.l || 30;
-        if (relativeHDistance < 0.2) {
-            lExclusion /= 2;
-            Rance.clamp(lExclusion, 0, 100);
-        }
+
+        // if (relativeHDistance < 0.2)
+        // {
+        //   lExclusion /= 2;
+        //   clamp(lExclusion, 0, 100);
+        // }
         var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
         var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
 
@@ -3995,9 +4002,13 @@ var Rance;
                 var huslColor = Rance.hexToHusl(this.backgroundColor);
                 var contrastingColor = Rance.makeContrastingColor({
                     color: huslColor,
-                    exclusions: {
-                        h: 15,
+                    minDifference: {
+                        h: 30,
                         l: 30
+                    },
+                    maxDifference: {
+                        h: 80,
+                        l: 60
                     }
                 });
                 var contrastingHex = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
@@ -4015,9 +4026,12 @@ var Rance;
                         initialRanges: {
                             l: { min: 60 * easing, max: 100 }
                         },
-                        exclusions: {
+                        minDifference: {
                             h: 20 * easing,
                             s: 30 * easing
+                        },
+                        maxDifference: {
+                            h: 100
                         }
                     });
 
