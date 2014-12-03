@@ -339,8 +339,28 @@ module Rance
           var doc = new PIXI.DisplayObjectContainer();
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
+          gfx.lineStyle(4, player1.secondaryColor, 1);
 
-          var players = game.playerOrder;
+          var edges = player1.getBorderPolygons();
+
+          var interval = window.setInterval(function()
+          {
+            var edge = edges.shift();
+            gfx.moveTo(edge.va.x, edge.va.y);
+            gfx.lineTo(edge.vb.x, edge.vb.y);
+
+            if (edges.length < 1) window.clearInterval(interval);
+          }, 500);
+
+          // for (var i = 0; i < edges.length; i++)
+          // {
+          //   var edge = edges[i];
+          //   gfx.moveTo(edge.va.x, edge.va.y);
+          //   gfx.lineTo(edge.vb.x, edge.vb.y);
+          // }
+
+          /*
+          var players = [player1];
 
           for (var i = 0; i < players.length; i++)
           {
@@ -355,11 +375,11 @@ module Rance
               console.log(poly);
 
               gfx.beginFill(0x000000, 1);
-              //gfx.lineStyle(2, 0x000000, 1);
               gfx.drawShape(new PIXI.Polygon(inset));
               gfx.endFill;
             }
           }
+          */
 
           doc.height;
           return doc;

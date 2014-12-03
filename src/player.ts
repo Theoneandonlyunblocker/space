@@ -223,6 +223,7 @@ module Rance
     {
       var islands = this.getAllIslands();
       var polys: Point[][] = [];
+      var edges = [];
 
       for (var i = 0; i < islands.length; i++)
       {
@@ -236,10 +237,15 @@ module Rance
           for (var k = 0; k < halfedges.length; k++)
           {
             var edge = halfedges[k].edge;
-
-            if (edge.lSite && edge.lSite.owner !== this ||
-              edge.rSite && edge.rSite.owner !== this)
+            if (!edge.lSite || !edge.rSite)
             {
+              edges.push(edge);
+              poly.push(edge.va);
+            }
+            else if (edge.lSite.owner !== this ||
+              edge.rSite.owner !== this)
+            {
+              edges.push(edge);
               poly.push(edge.va);
             }
           }
@@ -248,7 +254,8 @@ module Rance
         poly.push(poly[0]);
         polys.push(poly);
       }
-      return polys;
+      return edges;
+      //return polys;
     }
   }  
 }

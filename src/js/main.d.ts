@@ -696,7 +696,7 @@ declare module Rance {
         public getBuildableShips(): any[];
         public getIsland(start: Rance.Star): Rance.Star[];
         public getAllIslands(): Rance.Star[][];
-        public getBorderPolygons(): Rance.Point[][];
+        public getBorderPolygons(): any[];
     }
 }
 declare module Rance {

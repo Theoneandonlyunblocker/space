@@ -4428,6 +4428,7 @@ var Rance;
         Player.prototype.getBorderPolygons = function () {
             var islands = this.getAllIslands();
             var polys = [];
+            var edges = [];
 
             for (var i = 0; i < islands.length; i++) {
                 var poly = [];
@@ -4438,8 +4439,11 @@ var Rance;
 
                     for (var k = 0; k < halfedges.length; k++) {
                         var edge = halfedges[k].edge;
-
-                        if (edge.lSite && edge.lSite.owner !== this || edge.rSite && edge.rSite.owner !== this) {
+                        if (!edge.lSite || !edge.rSite) {
+                            edges.push(edge);
+                            poly.push(edge.va);
+                        } else if (edge.lSite.owner !== this || edge.rSite.owner !== this) {
+                            edges.push(edge);
                             poly.push(edge.va);
                         }
                     }
@@ -4448,7 +4452,8 @@ var Rance;
                 poly.push(poly[0]);
                 polys.push(poly);
             }
-            return polys;
+            return edges;
+            //return polys;
         };
         return Player;
     })();
@@ -7071,27 +7076,46 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
+                    gfx.lineStyle(4, player1.secondaryColor, 1);
 
-                    var players = game.playerOrder;
+                    var edges = player1.getBorderPolygons();
 
-                    for (var i = 0; i < players.length; i++) {
-                        var player = players[i];
-                        var polys = player.getBorderPolygons();
+                    var interval = window.setInterval(function () {
+                        var edge = edges.shift();
+                        gfx.moveTo(edge.va.x, edge.va.y);
+                        gfx.lineTo(edge.vb.x, edge.vb.y);
 
-                        for (var j = 0; j < polys.length; j++) {
-                            var poly = polys[j];
-                            var inset = poly;
+                        if (edges.length < 1)
+                            window.clearInterval(interval);
+                    }, 500);
 
-                            console.log(poly);
-
-                            gfx.beginFill(0x000000, 1);
-
-                            //gfx.lineStyle(2, 0x000000, 1);
-                            gfx.drawShape(new PIXI.Polygon(inset));
-                            gfx.endFill;
-                        }
+                    // for (var i = 0; i < edges.length; i++)
+                    // {
+                    //   var edge = edges[i];
+                    //   gfx.moveTo(edge.va.x, edge.va.y);
+                    //   gfx.lineTo(edge.vb.x, edge.vb.y);
+                    // }
+                    /*
+                    var players = [player1];
+                    
+                    for (var i = 0; i < players.length; i++)
+                    {
+                    var player = players[i];
+                    var polys = player.getBorderPolygons();
+                    
+                    for (var j = 0; j < polys.length; j++)
+                    {
+                    var poly = polys[j];
+                    var inset = poly;// straightSkeleton(poly, 2);
+                    
+                    console.log(poly);
+                    
+                    gfx.beginFill(0x000000, 1);
+                    gfx.drawShape(new PIXI.Polygon(inset));
+                    gfx.endFill;
                     }
-
+                    }
+                    */
                     doc.height;
                     return doc;
                 }
