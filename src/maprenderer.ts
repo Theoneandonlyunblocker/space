@@ -382,7 +382,7 @@ module Rance
           }, 500);
           */
           
-          var players = [player1];// game.playerOrder;
+          var players = game.playerOrder;
 
           for (var i = 0; i < players.length; i++)
           {
@@ -394,14 +394,9 @@ module Rance
               var poly = polys[j];
               var inset = offsetPolygon(poly, -2);
 
-              gfx.lineStyle(4, player.secondaryColor, 1);
+              gfx.lineStyle(4, player.secondaryColor, 0.7);
               gfx.beginFill(0x000000, 0);
               gfx.drawShape(new PIXI.Polygon(inset));
-              gfx.endFill;
-
-              gfx.lineStyle(4, 0x0000FF, 1);
-              gfx.beginFill(0x000000, 0);
-              gfx.drawShape(new PIXI.Polygon(poly));
               gfx.endFill;
             }
           }

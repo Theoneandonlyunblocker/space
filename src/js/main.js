@@ -2484,6 +2484,8 @@ var Rance;
     }
     Rance.shiftPolygon = shiftPolygon;
     function convertCase(polygon) {
+        if (!polygon)
+            return;
         if (isFinite(polygon[0].x)) {
             return polygon.map(function (point) {
                 return ({
@@ -2506,7 +2508,7 @@ var Rance;
         var scale = 100;
         ClipperLib.JS.ScaleUpPath(polygon, scale);
 
-        var co = new ClipperLib.ClipperOffset(1, 0.25);
+        var co = new ClipperLib.ClipperOffset(0, 0.25);
         co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
         var offsetted = new ClipperLib.Path();
 
@@ -4179,8 +4181,7 @@ var Rance;
         };
 
         Emblem.prototype.drawSubEmblem = function (toDraw) {
-            var image = new Image();
-            image.src = Rance.images["emblems"][toDraw.imageSrc].src;
+            var image = Rance.images["emblems"][toDraw.imageSrc];
 
             var width = image.width;
             var height = image.height;
@@ -6521,7 +6522,7 @@ var Rance;
                     location: this.points[i]
                 });
                 this.points[i].addBuilding(sectorCommand);
-                var player = i > 1 ? player2 : player1;
+                var player = false ? player2 : player1;
                 for (var j = 0; j < 2; j++) {
                     var starBase = new Rance.Building({
                         template: Rance.Templates.Buildings.starBase,
@@ -6542,7 +6543,7 @@ var Rance;
                     location: this.points[i]
                 });
                 this.points[i].addBuilding(sectorCommand);
-                var player = i > 5 ? player1 : player2;
+                var player = false ? player1 : player2;
                 for (var j = 0; j < 2; j++) {
                     var starBase = new Rance.Building({
                         template: Rance.Templates.Buildings.starBase,
@@ -7205,7 +7206,7 @@ var Rance;
                     if (edges.length < 1) window.clearInterval(interval);
                     }, 500);
                     */
-                    var players = [player1];
+                    var players = game.playerOrder;
 
                     for (var i = 0; i < players.length; i++) {
                         var player = players[i];
@@ -7215,14 +7216,9 @@ var Rance;
                             var poly = polys[j];
                             var inset = Rance.offsetPolygon(poly, -2);
 
-                            gfx.lineStyle(4, player.secondaryColor, 1);
+                            gfx.lineStyle(4, player.secondaryColor, 0.7);
                             gfx.beginFill(0x000000, 0);
                             gfx.drawShape(new PIXI.Polygon(inset));
-                            gfx.endFill;
-
-                            gfx.lineStyle(4, 0x0000FF, 1);
-                            gfx.beginFill(0x000000, 0);
-                            gfx.drawShape(new PIXI.Polygon(poly));
                             gfx.endFill;
                         }
                     }

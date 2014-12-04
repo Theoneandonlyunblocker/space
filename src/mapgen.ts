@@ -100,7 +100,7 @@ module Rance
           location: this.points[i]
         });
         this.points[i].addBuilding(sectorCommand);
-        var player = i > 1 ? player2 : player1;
+        var player = false ? player2 : player1;
         for (var j = 0; j < 2; j++)
         {
           var starBase = new Building(
@@ -126,7 +126,7 @@ module Rance
           location: this.points[i]
         });
         this.points[i].addBuilding(sectorCommand);
-        var player = i > 5 ? player1 : player2;
+        var player = false ? player1 : player2;
         for (var j = 0; j < 2; j++)
         {
           var starBase = new Building(
