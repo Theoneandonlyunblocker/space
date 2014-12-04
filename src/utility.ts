@@ -214,7 +214,6 @@ module Rance
   }
   export function convertCase(polygon: any[]): any
   {
-    if (!polygon) return;
     if (isFinite(polygon[0].x))
     {
       return polygon.map(function(point)
@@ -247,15 +246,19 @@ module Rance
     ClipperLib.Clipper.SimplifyPolygon(polygon, ClipperLib.PolyFillType.pftNonZero);
     ClipperLib.Clipper.CleanPolygon(polygon, 0.1 * scale);
 
-    var co = new ClipperLib.ClipperOffset(2, 0.85);
+    var co = new ClipperLib.ClipperOffset(2, 0.01);
     co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
     var offsetted = new ClipperLib.Path();
 
     co.Execute(offsetted, amount * scale);
 
+    if (offsetted.length < 1)
+    {
+      console.warn("couldn't offset polygon");
+      return null;
+    }
+
     var converted = convertCase(offsetted[0]);
-
-
 
     return converted.map(function(point)
     {

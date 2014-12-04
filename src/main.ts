@@ -13,10 +13,12 @@
 
 var player1, player2, battle, battlePrep, game,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
-var uniforms, testFilter, uniformManager;
+var uniforms, testFilter, uniformManager, seed;
 
 module Rance
 {
+  seed = Math.random();
+  Math.random = RNG.prototype.uniform.bind(new RNG(seed));
   export var images: any;
   export var loader = new Loader(function()
   {

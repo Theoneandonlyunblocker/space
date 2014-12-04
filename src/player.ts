@@ -303,7 +303,7 @@ module Rance
         }
         function getOtherVertex(edge, vertex)
         {
-          if (edge.va === vertex) return edge.vb;
+          if (pointsEqual(edge.va, vertex)) return edge.vb;
           else return edge.va;
         }
         function getOtherEdgeAtVertex(vertex, edge)
@@ -349,6 +349,14 @@ module Rance
           currentEdge = next.edge;
           currentVertex = next.vertex;
 
+          if (poly[poly.length - 1] === next.vertex)
+          {
+            debugger;
+          }
+          else if (pointsEqual(poly[poly.length - 1], next.vertex))
+          {
+            debugger;
+          }
           poly.push(next.vertex);
         }
 

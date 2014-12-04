@@ -2484,8 +2484,6 @@ var Rance;
     }
     Rance.shiftPolygon = shiftPolygon;
     function convertCase(polygon) {
-        if (!polygon)
-            return;
         if (isFinite(polygon[0].x)) {
             return polygon.map(function (point) {
                 return ({
@@ -2511,11 +2509,16 @@ var Rance;
         ClipperLib.Clipper.SimplifyPolygon(polygon, ClipperLib.PolyFillType.pftNonZero);
         ClipperLib.Clipper.CleanPolygon(polygon, 0.1 * scale);
 
-        var co = new ClipperLib.ClipperOffset(2, 0.85);
+        var co = new ClipperLib.ClipperOffset(2, 0.01);
         co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
         var offsetted = new ClipperLib.Path();
 
         co.Execute(offsetted, amount * scale);
+
+        if (offsetted.length < 1) {
+            console.warn("couldn't offset polygon");
+            return null;
+        }
 
         var converted = convertCase(offsetted[0]);
 
@@ -4501,7 +4504,7 @@ var Rance;
                     return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
                 }
                 function getOtherVertex(edge, vertex) {
-                    if (edge.va === vertex)
+                    if (Rance.pointsEqual(edge.va, vertex))
                         return edge.vb;
                     else
                         return edge.va;
@@ -4542,6 +4545,11 @@ var Rance;
                     currentEdge = next.edge;
                     currentVertex = next.vertex;
 
+                    if (poly[poly.length - 1] === next.vertex) {
+                        debugger;
+                    } else if (Rance.pointsEqual(poly[poly.length - 1], next.vertex)) {
+                        debugger;
+                    }
                     poly.push(next.vertex);
                 }
 
@@ -7220,16 +7228,17 @@ var Rance;
                             var poly = polys[j];
                             var inset = Rance.offsetPolygon(poly, -2);
 
-                            gfx.lineStyle(4, player.secondaryColor, 0.7);
-                            gfx.beginFill(0x000000, 0);
-                            gfx.drawShape(new PIXI.Polygon(inset));
-                            gfx.endFill;
-                            /*
-                            gfx.lineStyle(4, 0x0000FF, 1);
-                            gfx.beginFill(0x000000, 0);
-                            gfx.drawShape(new PIXI.Polygon(poly));
-                            gfx.endFill;
-                            */
+                            if (!inset) {
+                                gfx.lineStyle(4, 0xFF0000, 1);
+                                gfx.beginFill(0x000000, 0);
+                                gfx.drawShape(new PIXI.Polygon(poly));
+                                gfx.endFill;
+                            } else {
+                                gfx.lineStyle(4, player.secondaryColor, 0.7);
+                                gfx.beginFill(0x000000, 0);
+                                gfx.drawShape(new PIXI.Polygon(inset));
+                                gfx.endFill;
+                            }
                         }
                     }
 
@@ -8238,10 +8247,12 @@ var Rance;
 /// <reference path="loader.ts"/>
 /// <reference path="shaders/uniformmanager.ts"/>
 var player1, player2, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
-var uniforms, testFilter, uniformManager;
+var uniforms, testFilter, uniformManager, seed;
 
 var Rance;
 (function (Rance) {
+    seed = Math.random();
+    Math.random = RNG.prototype.uniform.bind(new RNG(seed));
     Rance.images;
     Rance.loader = new Rance.Loader(function () {
         init();
