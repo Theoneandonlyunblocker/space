@@ -6,6 +6,62 @@ module Rance
   {
     export var UnitWrapper = React.createClass(
     {
+      shouldComponentUpdate: function(newProps: any)
+      {
+        if (!this.props.unit && !newProps.unit) return false;
+
+        var targetedProps =
+        {
+          activeUnit: true,
+          hoveredUnit: true,
+          targetsInPotentialArea: true
+        };
+
+        for (var prop in newProps)
+        {
+          if (!targetedProps[prop] && prop !== "position")
+          {
+            if (newProps[prop] !== this.props[prop])
+            {
+              console.log("" + prop + "update");
+              return true;
+            }
+          }
+        }
+        for (var prop in targetedProps)
+        {
+          var unit = newProps.unit;
+          var oldValue = this.props[prop];
+          var newValue = newProps[prop];
+
+          if (!newValue && !oldValue) continue;
+
+          if (prop === "targetsInPotentialArea")
+          {
+            if (!oldValue)
+            {
+              if (newValue.indexOf(unit) >= 0) return true;
+              else
+              {
+                continue;
+              }
+            }
+            if ((oldValue.indexOf(unit) >= 0) !==
+              (newValue.indexOf(unit) >= 0))
+            {
+              console.log("targetsupdate");
+              return true;
+            }
+          }
+          else if (newValue !== oldValue &&
+            (oldValue === unit || newValue === unit))
+          {
+            return true;
+          }
+        }
+        console.log("didntupdate")
+        return false;
+      },
       displayName: "UnitWrapper",
       handleMouseUp: function()
       {

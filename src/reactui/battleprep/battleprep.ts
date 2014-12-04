@@ -54,7 +54,7 @@ module Rance
       {
         var fleet = UIComponents.Fleet(
         {
-          fleet: this.props.battlePrep.fleet,
+          fleet: this.props.battlePrep.fleet.slice(0),
 
           onMouseUp: this.handleDrop,
 

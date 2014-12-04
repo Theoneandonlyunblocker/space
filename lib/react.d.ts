@@ -3,7 +3,7 @@ declare module 'react' {
 }
 
 declare module React {
-    
+    export var addons: any;
 	/**
 	 * Configure React's event system to handle touch events on mobile devices.
 	 * @param shouldUseTouch true if React should active touch events, false if it should not  

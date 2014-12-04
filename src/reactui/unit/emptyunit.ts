@@ -5,6 +5,10 @@ module Rance
     export var EmptyUnit = React.createClass(
     {
       displayName: "EmptyUnit",
+      shouldComponentUpdate: function()
+      {
+        return false;
+      },
       render: function()
       {
         var wrapperProps: any =

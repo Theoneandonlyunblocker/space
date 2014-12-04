@@ -514,6 +514,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
             displayName: "EmptyUnit",
+            shouldComponentUpdate: function () {
+                return false;
+            },
             render: function () {
                 var wrapperProps = {
                     className: "unit empty-unit"
@@ -554,6 +557,51 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
+            shouldComponentUpdate: function (newProps) {
+                if (!this.props.unit && !newProps.unit)
+                    return false;
+
+                var targetedProps = {
+                    activeUnit: true,
+                    hoveredUnit: true,
+                    targetsInPotentialArea: true
+                };
+
+                for (var prop in newProps) {
+                    if (!targetedProps[prop] && prop !== "position") {
+                        if (newProps[prop] !== this.props[prop]) {
+                            console.log("" + prop + "update");
+                            return true;
+                        }
+                    }
+                }
+                for (var prop in targetedProps) {
+                    var unit = newProps.unit;
+                    var oldValue = this.props[prop];
+                    var newValue = newProps[prop];
+
+                    if (!newValue && !oldValue)
+                        continue;
+
+                    if (prop === "targetsInPotentialArea") {
+                        if (!oldValue) {
+                            if (newValue.indexOf(unit) >= 0)
+                                return true;
+                            else {
+                                continue;
+                            }
+                        }
+                        if ((oldValue.indexOf(unit) >= 0) !== (newValue.indexOf(unit) >= 0)) {
+                            console.log("targetsupdate");
+                            return true;
+                        }
+                    } else if (newValue !== oldValue && (oldValue === unit || newValue === unit)) {
+                        return true;
+                    }
+                }
+                console.log("didntupdate");
+                return false;
+            },
             displayName: "UnitWrapper",
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.position);
@@ -648,6 +696,26 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Fleet = React.createClass({
             displayName: "Fleet",
+            shouldComponentUpdate: function (newProps) {
+                for (var prop in newProps) {
+                    if (newProps[prop] !== this.props[prop])
+                        return true;
+                }
+
+                var oldFleet = this.props.fleet;
+                var newFleet = newProps.fleet;
+
+                for (var i = 0; i < oldFleet.length; i++) {
+                    for (var j = 0; j < oldFleet[i].length; j++) {
+                        if (oldFleet[i][j] !== newFleet[i][j]) {
+                            console.log("updatefleet");
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            },
             render: function () {
                 var fleet = this.props.fleet;
 
@@ -1473,7 +1541,7 @@ var Rance;
             },
             render: function () {
                 var fleet = Rance.UIComponents.Fleet({
-                    fleet: this.props.battlePrep.fleet,
+                    fleet: this.props.battlePrep.fleet.slice(0),
                     onMouseUp: this.handleDrop,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
