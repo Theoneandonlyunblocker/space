@@ -8,6 +8,7 @@ module Rance
   {
     export var Unit = React.createClass(
     {
+      displayName: "Unit",
       mixins: [Draggable],
       
       getInitialState: function()

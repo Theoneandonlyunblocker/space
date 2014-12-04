@@ -4,6 +4,7 @@ module Rance
   {
     export var UnitStatus = React.createClass(
     {
+      displayName: "UnitStatus",
       render: function()
       {
         var statusElement = null;

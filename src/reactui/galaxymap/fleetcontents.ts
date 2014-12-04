@@ -5,8 +5,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetContents = React.createClass({
-
+    export var FleetContents = React.createClass(
+    {
+      displayName: "FleetContents",
       handleMouseUp: function()
       {
         if (!this.props.onMouseUp) return;

@@ -8,6 +8,7 @@ module Rance
   {
     export var UnitInfo = React.createClass(
     {
+      displayName: "UnitInfo",
       render: function()
       {
         var unit = this.props.unit;

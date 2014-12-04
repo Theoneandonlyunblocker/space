@@ -6,6 +6,7 @@ module Rance
   {
     export var UnitActions = React.createClass(
     {
+      displayName: "UnitActions",
       render: function()
       {
         var availableSrc = "img\/icons\/availableAction.png";

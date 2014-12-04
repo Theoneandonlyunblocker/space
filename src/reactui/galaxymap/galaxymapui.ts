@@ -8,8 +8,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var GalaxyMapUI = React.createClass({
-
+    export var GalaxyMapUI = React.createClass(
+    {
+      displayName: "GalaxyMapUI",
       endTurn: function()
       {
         eventManager.dispatchEvent("endTurn", null);

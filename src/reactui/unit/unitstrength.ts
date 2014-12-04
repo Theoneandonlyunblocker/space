@@ -4,6 +4,7 @@ module Rance
   {
     export var UnitStrength = React.createClass(
     {
+      displayName: "UnitStrength",
       makeSquadronInfo: function()
       {
         return(

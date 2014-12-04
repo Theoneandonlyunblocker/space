@@ -29,6 +29,7 @@ module Rance
      */
 
     export var List = React.createClass({
+      displayName: "List",
       mixins: [SplitMultilineText],
 
       getInitialState: function()

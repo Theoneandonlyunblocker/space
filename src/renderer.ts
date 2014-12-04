@@ -152,6 +152,7 @@ module Rance
     }
     render()
     {
+      if (!document.body.contains(this.pixiContainer)) return;
       this.renderer.render(this.stage);
       uniformManager.updateTime();
       requestAnimFrame( this.render.bind(this) );

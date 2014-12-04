@@ -2,12 +2,12 @@ module Rance
 {
   export module UIComponents
   {
-    export var DefenceBuilding = React.createClass({
-
+    export var DefenceBuilding = React.createClass(
+    {
+      displayName: "DefenceBuilding",
       render: function()
       {
         var building = this.props.building;
-        console.log(building.controller.icon)
         return(
           React.DOM.div(
           {

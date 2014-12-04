@@ -6,8 +6,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var GalaxyMap = React.createClass({
-
+    export var GalaxyMap = React.createClass(
+    {
+      displayName: "GalaxyMap",
       renderMap: function()
       {
         this.props.galaxyMap.mapRenderer.render();

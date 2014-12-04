@@ -4,6 +4,7 @@ module Rance
   {
     export var BattlePrep = React.createClass(
     {
+      displayName: "BattlePrep",
       getInitialState: function()
       {
         return(

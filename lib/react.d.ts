@@ -31,7 +31,7 @@ declare module React {
      * @param callback an optional callback that will be executed after the component is rendered or updated. 
      */
 	function renderComponent<C extends ReactComponent<any, any>>(component: C, container: Element, callback?: () => void): C;
-    
+    function render<C extends ReactComponent<any, any>>(component: C, container: Element, callback?: () => void): C;
     /**
      * Remove a mounted React component from the DOM and clean up its event handlers and state. 
      * If no component was mounted in the container, calling this function does nothing. 

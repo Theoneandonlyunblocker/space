@@ -7,6 +7,7 @@ module Rance
   {
     export var UnitListItem = React.createClass(
     {
+      displayName: "UnitListItem",
       mixins: [Draggable],
 
       onDragStart: function(e)

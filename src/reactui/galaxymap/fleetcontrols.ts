@@ -2,7 +2,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetControls = React.createClass({
+    export var FleetControls = React.createClass(
+    {
+      displayName: "FleetControls",
 
       deselectFleet: function()
       {

@@ -14,6 +14,7 @@ module Rance
   {
     export var Stage = React.createClass(
     {
+      displayName: "Stage",
       changeScene: function()
       {
         var newScene = this.refs.sceneSelector.getDOMNode().value;

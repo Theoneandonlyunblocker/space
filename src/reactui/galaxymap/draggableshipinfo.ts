@@ -8,6 +8,7 @@ module Rance
   {
     export var DraggableShipInfo = React.createClass(
     {
+      displayName: "DraggableShipInfo",
       mixins: [Draggable],
 
       onDragStart: function(e)

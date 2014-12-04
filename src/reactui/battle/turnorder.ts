@@ -4,6 +4,7 @@ module Rance
   {
     export var TurnOrder = React.createClass(
     {
+      displayName: "TurnOrder",
       getInitialState: function()
       {
         return(

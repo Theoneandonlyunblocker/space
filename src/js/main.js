@@ -16,6 +16,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitStrength = React.createClass({
+            displayName: "UnitStrength",
             makeSquadronInfo: function () {
                 return (React.DOM.div({ className: "unit-strength-container" }, this.makeStrengthText()));
             },
@@ -68,6 +69,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitActions = React.createClass({
+            displayName: "UnitActions",
             render: function () {
                 var availableSrc = "img\/icons\/availableAction.png";
                 var spentSrc = "img\/icons\/spentAction.png";
@@ -98,6 +100,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitStatus = React.createClass({
+            displayName: "UnitStatus",
             render: function () {
                 var statusElement = null;
 
@@ -131,6 +134,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitInfo = React.createClass({
+            displayName: "UnitInfo",
             render: function () {
                 var unit = this.props.unit;
 
@@ -154,6 +158,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitIcon = React.createClass({
+            displayName: "UnitIcon",
             render: function () {
                 var unit = this.props.unit;
 
@@ -397,6 +402,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Unit = React.createClass({
+            displayName: "Unit",
             mixins: [Rance.UIComponents.Draggable],
             getInitialState: function () {
                 return ({
@@ -507,6 +513,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
+            displayName: "EmptyUnit",
             render: function () {
                 var wrapperProps = {
                     className: "unit empty-unit"
@@ -547,6 +554,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
+            displayName: "UnitWrapper",
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.position);
             },
@@ -588,6 +596,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetColumn = React.createClass({
+            displayName: "FleetColumn",
             render: function () {
                 var column = this.props.column;
 
@@ -638,6 +647,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Fleet = React.createClass({
+            displayName: "Fleet",
             render: function () {
                 var fleet = this.props.fleet;
 
@@ -671,6 +681,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.TurnCounter = React.createClass({
+            displayName: "TurnCounter",
             render: function () {
                 var turnsLeft = this.props.turnsLeft;
 
@@ -702,6 +713,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
+            displayName: "TurnOrder",
             getInitialState: function () {
                 return ({
                     maxUnits: 7
@@ -807,6 +819,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.AbilityTooltip = React.createClass({
+            displayName: "AbilityTooltip",
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
 
@@ -863,6 +876,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Battle = React.createClass({
+            displayName: "Battle",
             getInitialState: function () {
                 return ({
                     abilityTooltip: {
@@ -1063,6 +1077,7 @@ var Rance;
         *    title?
         */
         UIComponents.List = React.createClass({
+            displayName: "List",
             mixins: [Rance.UIComponents.SplitMultilineText],
             getInitialState: function () {
                 var initialColumn = this.props.initialColumn || this.props.initialColumns[0];
@@ -1251,6 +1266,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitListItem = React.createClass({
+            displayName: "UnitListItem",
             mixins: [Rance.UIComponents.Draggable],
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.unit);
@@ -1329,6 +1345,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitList = React.createClass({
+            displayName: "UnitList",
             render: function () {
                 var rows = [];
 
@@ -1420,6 +1437,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BattlePrep = React.createClass({
+            displayName: "BattlePrep",
             getInitialState: function () {
                 return ({
                     currentDragUnit: null
@@ -1679,6 +1697,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.TopBar = React.createClass({
+            displayName: "TopBar",
             render: function () {
                 var player = this.props.player;
 
@@ -1713,6 +1732,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetControls = React.createClass({
+            displayName: "FleetControls",
             deselectFleet: function () {
                 Rance.eventManager.dispatchEvent("deselectFleet", this.props.fleet);
             },
@@ -1745,6 +1765,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetInfo = React.createClass({
+            displayName: "FleetInfo",
             render: function () {
                 var fleet = this.props.fleet;
                 if (!fleet)
@@ -1779,6 +1800,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.ShipInfo = React.createClass({
+            displayName: "ShipInfo",
             render: function () {
                 var ship = this.props.ship;
 
@@ -1811,6 +1833,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.DraggableShipInfo = React.createClass({
+            displayName: "DraggableShipInfo",
             mixins: [Rance.UIComponents.Draggable],
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.ship);
@@ -1859,6 +1882,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetContents = React.createClass({
+            displayName: "FleetContents",
             handleMouseUp: function () {
                 if (!this.props.onMouseUp)
                     return;
@@ -1910,6 +1934,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetSelection = React.createClass({
+            displayName: "FleetSelection",
             mergeFleets: function () {
                 Rance.eventManager.dispatchEvent("mergeFleets", null);
             },
@@ -1996,6 +2021,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FleetReorganization = React.createClass({
+            displayName: "FleetReorganization",
             getInitialState: function () {
                 return ({
                     currentDragUnit: null
@@ -2070,9 +2096,9 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.DefenceBuilding = React.createClass({
+            displayName: "DefenceBuilding",
             render: function () {
                 var building = this.props.building;
-                console.log(building.controller.icon);
                 return (React.DOM.div({
                     className: "defence-building"
                 }, React.DOM.img({
@@ -2092,6 +2118,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.DefenceBuildingList = React.createClass({
+            displayName: "DefenceBuildingList",
             render: function () {
                 if (!this.props.buildings)
                     return null;
@@ -2118,6 +2145,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.StarInfo = React.createClass({
+            displayName: "StarInfo",
             render: function () {
                 var star = this.props.selectedStar;
                 if (!star)
@@ -2145,6 +2173,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.AttackTarget = React.createClass({
+            displayName: "AttackTarget",
             handleAttack: function () {
                 Rance.eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
             },
@@ -2169,6 +2198,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BuildableBuilding = React.createClass({
+            displayName: "BuildableBuilding",
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
@@ -2222,6 +2252,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BuildableBuildingList = React.createClass({
+            displayName: "BuildableBuildingList",
             getInitialState: function () {
                 return ({
                     buildingTemplates: this.props.star.getBuildableBuildings()
@@ -5263,6 +5294,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BuildableShip = React.createClass({
+            displayName: "BuildableShip",
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
@@ -5317,6 +5349,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.BuildableShipsList = React.createClass({
+            displayName: "BuildableShipsList",
             getInitialState: function () {
                 return ({
                     shipTemplates: this.props.player.getBuildableShips()
@@ -5386,6 +5419,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.PossibleActions = React.createClass({
+            displayName: "PossibleActions",
             getInitialState: function () {
                 return ({
                     expandedAction: null,
@@ -5515,6 +5549,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.GalaxyMapUI = React.createClass({
+            displayName: "GalaxyMapUI",
             endTurn: function () {
                 Rance.eventManager.dispatchEvent("endTurn", null);
             },
@@ -5594,6 +5629,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.GalaxyMap = React.createClass({
+            displayName: "GalaxyMap",
             renderMap: function () {
                 this.props.galaxyMap.mapRenderer.render();
             },
@@ -5726,6 +5762,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Stage = React.createClass({
+            displayName: "Stage",
             changeScene: function () {
                 var newScene = this.refs.sceneSelector.getDOMNode().value;
 
@@ -8068,6 +8105,8 @@ var Rance;
             }
         };
         Renderer.prototype.render = function () {
+            if (!document.body.contains(this.pixiContainer))
+                return;
             this.renderer.render(this.stage);
             uniformManager.updateTime();
             requestAnimFrame(this.render.bind(this));

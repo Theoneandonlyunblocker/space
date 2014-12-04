@@ -9,6 +9,7 @@ module Rance
   {
     export var FleetColumn = React.createClass(
     {
+      displayName: "FleetColumn",
       render: function()
       {
         var column = this.props.column;

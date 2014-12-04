@@ -4,6 +4,7 @@ module Rance
   {
     export var EmptyUnit = React.createClass(
     {
+      displayName: "EmptyUnit",
       render: function()
       {
         var wrapperProps: any =

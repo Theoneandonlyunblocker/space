@@ -4,8 +4,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var DefenceBuildingList= React.createClass({
-
+    export var DefenceBuildingList= React.createClass(
+    {
+      displayName: "DefenceBuildingList",
       render: function()
       {
         if (!this.props.buildings) return null;

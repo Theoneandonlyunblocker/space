@@ -4,8 +4,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var ShipInfo = React.createClass({
-
+    export var ShipInfo = React.createClass(
+    {
+      displayName: "ShipInfo",
       render: function()
       {
         var ship = this.props.ship;

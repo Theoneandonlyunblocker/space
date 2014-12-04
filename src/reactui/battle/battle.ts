@@ -9,6 +9,7 @@ module Rance
   {
     export var Battle = React.createClass(
     {
+      displayName: "Battle",
       getInitialState: function()
       {
         return(

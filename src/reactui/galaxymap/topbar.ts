@@ -2,8 +2,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var TopBar = React.createClass({
-
+    export var TopBar = React.createClass(
+    {
+      displayName: "TopBar",
       render: function()
       {
         var player: Player = this.props.player;

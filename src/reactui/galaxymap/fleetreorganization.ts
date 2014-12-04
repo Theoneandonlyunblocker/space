@@ -6,7 +6,7 @@ module Rance
   {
     export var FleetReorganization = React.createClass(
     {
-
+      displayName: "FleetReorganization",
       getInitialState: function()
       {
         return(

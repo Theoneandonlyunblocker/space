@@ -4,6 +4,7 @@ module Rance
   {
     export var AbilityTooltip = React.createClass(
     {
+      displayName: "AbilityTooltip",
       render: function()
       {
         var abilities = this.props.activeTargets[this.props.targetUnit.id];

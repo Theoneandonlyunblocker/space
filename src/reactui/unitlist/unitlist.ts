@@ -7,6 +7,7 @@ module Rance
   {
     export var UnitList = React.createClass(
     {
+      displayName: "UnitList",
       render: function()
       {
         var rows = [];

@@ -6,8 +6,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var PossibleActions = React.createClass({
-
+    export var PossibleActions = React.createClass(
+    {
+      displayName: "PossibleActions",
       getInitialState: function()
       {
         return(

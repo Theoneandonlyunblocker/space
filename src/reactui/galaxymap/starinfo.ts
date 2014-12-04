@@ -4,8 +4,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var StarInfo = React.createClass({
-
+    export var StarInfo = React.createClass(
+    {
+      displayName: "StarInfo",
       render: function()
       {
         var star: Star = this.props.selectedStar;

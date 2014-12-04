@@ -4,6 +4,7 @@ module Rance
   {
     export var TurnCounter = React.createClass(
     {
+      displayName: "TurnCounter",
       render: function()
       {
         var turnsLeft = this.props.turnsLeft;

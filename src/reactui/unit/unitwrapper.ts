@@ -6,6 +6,7 @@ module Rance
   {
     export var UnitWrapper = React.createClass(
     {
+      displayName: "UnitWrapper",
       handleMouseUp: function()
       {
         this.props.onMouseUp(this.props.position);

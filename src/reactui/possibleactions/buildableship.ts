@@ -4,6 +4,7 @@ module Rance
   {
     export var BuildableShip = React.createClass(
     {
+      displayName: "BuildableShip",
       makeCell: function(type: string)
       {
         var cellProps: any = {};

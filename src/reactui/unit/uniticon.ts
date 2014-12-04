@@ -6,6 +6,7 @@ module Rance
   {
     export var UnitIcon = React.createClass(
     {
+      displayName: "UnitIcon",
       render: function()
       {
         var unit = this.props.unit;

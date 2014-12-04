@@ -6,6 +6,7 @@ module Rance
   {
     export var Fleet = React.createClass(
     {
+      displayName: "Fleet",
       render: function()
       {
         var fleet = this.props.fleet;

@@ -10,6 +10,7 @@ module Rance
   {
     export var BuildableShipsList = React.createClass(
     {
+      displayName: "BuildableShipsList",
       getInitialState: function()
       {
         return(

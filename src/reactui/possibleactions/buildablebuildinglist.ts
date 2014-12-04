@@ -7,6 +7,7 @@ module Rance
   {
     export var BuildableBuildingList = React.createClass(
     {
+      displayName: "BuildableBuildingList",
       getInitialState: function()
       {
         return(

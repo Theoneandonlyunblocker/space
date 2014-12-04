@@ -4,8 +4,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetInfo = React.createClass({
-
+    export var FleetInfo = React.createClass(
+    {
+      displayName: "FleetInfo",
       render: function()
       {
         var fleet = this.props.fleet;

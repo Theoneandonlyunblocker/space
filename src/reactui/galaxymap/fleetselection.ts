@@ -5,8 +5,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var FleetSelection = React.createClass({
-
+    export var FleetSelection = React.createClass(
+    {
+      displayName: "FleetSelection",
       mergeFleets: function()
       {
         eventManager.dispatchEvent("mergeFleets", null);

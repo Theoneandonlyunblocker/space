@@ -2,8 +2,9 @@ module Rance
 {
   export module UIComponents
   {
-    export var AttackTarget = React.createClass({
-
+    export var AttackTarget = React.createClass(
+    {
+      displayName: "AttackTarget",
       handleAttack: function()
       {
         eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
