@@ -2508,7 +2508,10 @@ var Rance;
         var scale = 100;
         ClipperLib.JS.ScaleUpPath(polygon, scale);
 
-        var co = new ClipperLib.ClipperOffset(0, 0.25);
+        ClipperLib.Clipper.SimplifyPolygon(polygon, ClipperLib.PolyFillType.pftNonZero);
+        ClipperLib.Clipper.CleanPolygon(polygon, 0.1 * scale);
+
+        var co = new ClipperLib.ClipperOffset(2, 0.85);
         co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
         var offsetted = new ClipperLib.Path();
 
@@ -4472,8 +4475,8 @@ var Rance;
                 var edgesByLocation = {};
 
                 function setVertex(vertex, edge) {
-                    var x = Math.round(vertex.x);
-                    var y = Math.round(vertex.y);
+                    var x = Math.round(vertex.x * 100);
+                    var y = Math.round(vertex.y * 100);
                     if (!edgesByLocation[x]) {
                         edgesByLocation[x] = {};
                     }
@@ -4495,7 +4498,7 @@ var Rance;
                     b.splice(b.indexOf(edge));
                 }
                 function getEdges(x, y) {
-                    return edgesByLocation[Math.round(x)][Math.round(y)];
+                    return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
                 }
                 function getOtherVertex(edge, vertex) {
                     if (edge.va === vertex)
@@ -4505,6 +4508,7 @@ var Rance;
                 }
                 function getOtherEdgeAtVertex(vertex, edge) {
                     var edges = getEdges(vertex.x, vertex.y);
+
                     return edges.filter(function (toFilter) {
                         return toFilter !== edge;
                     })[0];
@@ -4525,7 +4529,7 @@ var Rance;
                 var edgesDone = [];
 
                 var currentEdge = island[0];
-                var currentVertex = currentEdge.va;
+                var currentVertex = currentEdge.vb;
                 poly.push(currentVertex);
 
                 while (edgesDone.length !== island.length) {
@@ -7220,6 +7224,12 @@ var Rance;
                             gfx.beginFill(0x000000, 0);
                             gfx.drawShape(new PIXI.Polygon(inset));
                             gfx.endFill;
+                            /*
+                            gfx.lineStyle(4, 0x0000FF, 1);
+                            gfx.beginFill(0x000000, 0);
+                            gfx.drawShape(new PIXI.Polygon(poly));
+                            gfx.endFill;
+                            */
                         }
                     }
 
@@ -7339,6 +7349,7 @@ var Rance;
             this.mapModes["noLines"] = {
                 name: "noLines",
                 layers: [
+                    { layer: this.layers["starOwners"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
                     { layer: this.layers["fleets"] }

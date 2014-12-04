@@ -244,7 +244,10 @@ module Rance
     var scale = 100;
     ClipperLib.JS.ScaleUpPath(polygon, scale);
 
-    var co = new ClipperLib.ClipperOffset(0, 0.25);
+    ClipperLib.Clipper.SimplifyPolygon(polygon, ClipperLib.PolyFillType.pftNonZero);
+    ClipperLib.Clipper.CleanPolygon(polygon, 0.1 * scale);
+
+    var co = new ClipperLib.ClipperOffset(2, 0.85);
     co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
     var offsetted = new ClipperLib.Path();
 

@@ -398,6 +398,12 @@ module Rance
               gfx.beginFill(0x000000, 0);
               gfx.drawShape(new PIXI.Polygon(inset));
               gfx.endFill;
+              /*
+              gfx.lineStyle(4, 0x0000FF, 1);
+              gfx.beginFill(0x000000, 0);
+              gfx.drawShape(new PIXI.Polygon(poly));
+              gfx.endFill;
+              */
             }
           }
           
@@ -535,6 +541,7 @@ module Rance
         name: "noLines",
         layers:
         [
+          {layer: this.layers["starOwners"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
           {layer: this.layers["fleets"]}

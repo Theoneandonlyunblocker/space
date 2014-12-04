@@ -271,8 +271,8 @@ module Rance
 
         function setVertex(vertex, edge)
         {
-          var x = Math.round(vertex.x);
-          var y = Math.round(vertex.y);
+          var x = Math.round(vertex.x * 100);
+          var y = Math.round(vertex.y * 100);
           if (!edgesByLocation[x])
           {
             edgesByLocation[x] = {};
@@ -299,7 +299,7 @@ module Rance
         }
         function getEdges(x, y)
         {
-          return edgesByLocation[Math.round(x)][Math.round(y)];
+          return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
         }
         function getOtherVertex(edge, vertex)
         {
@@ -309,6 +309,7 @@ module Rance
         function getOtherEdgeAtVertex(vertex, edge)
         {
           var edges = getEdges(vertex.x, vertex.y);
+
           return edges.filter(function(toFilter)
           {
             return toFilter !== edge;
@@ -333,7 +334,7 @@ module Rance
         var edgesDone = [];
 
         var currentEdge = island[0];
-        var currentVertex = currentEdge.va;
+        var currentVertex = currentEdge.vb;
         poly.push(currentVertex);
 
 
