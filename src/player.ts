@@ -55,7 +55,6 @@ module Rance
       this.flag.generateRandom();
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
-      console.log(this.icon);
 
       var self = this;
 

@@ -278,6 +278,7 @@ declare module Rance {
     }[];
     function convertCase(polygon: any[]): any;
     function offsetPolygon(polygon: Point[], amount: number): any;
+    function arraysEqual(a1: any[], a2: any[]): boolean;
 }
 declare module Rance {
     interface TargetingFunction {

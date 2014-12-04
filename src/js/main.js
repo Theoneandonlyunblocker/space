@@ -733,6 +733,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TurnCounter = React.createClass({
             displayName: "TurnCounter",
+            mixins: [React.addons.PureRenderMixin],
             render: function () {
                 var turnsLeft = this.props.turnsLeft;
 
@@ -871,6 +872,19 @@ var Rance;
     (function (UIComponents) {
         UIComponents.AbilityTooltip = React.createClass({
             displayName: "AbilityTooltip",
+            shouldComponentUpdate: function (newProps) {
+                for (var prop in newProps) {
+                    if (prop !== "activeTargets") {
+                        if (this.props[prop] !== newProps[prop]) {
+                            console.log("" + prop + "update");
+                            return true;
+                        }
+                    }
+                }
+
+                //console.log("noupdate");
+                return false;
+            },
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
 
@@ -2612,6 +2626,27 @@ var Rance;
         });
     }
     Rance.offsetPolygon = offsetPolygon;
+
+    function arraysEqual(a1, a2) {
+        if (a1 === a2)
+            return true;
+        if (!a1 || !a2)
+            return false;
+        if (a1.length !== a2.length)
+            return false;
+
+        console.log(a1, a2);
+        a1.sort();
+        a2.sort();
+
+        for (var i = 0; i < a1.length; i++) {
+            if (a1[i] !== a2[i])
+                return false;
+        }
+
+        return true;
+    }
+    Rance.arraysEqual = arraysEqual;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -4391,7 +4426,6 @@ var Rance;
             this.flag.generateRandom();
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
-            console.log(this.icon);
 
             var self = this;
         };

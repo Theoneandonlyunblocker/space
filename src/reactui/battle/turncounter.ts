@@ -5,6 +5,7 @@ module Rance
     export var TurnCounter = React.createClass(
     {
       displayName: "TurnCounter",
+      mixins: [React.addons.PureRenderMixin],
       render: function()
       {
         var turnsLeft = this.props.turnsLeft;

@@ -269,4 +269,22 @@ module Rance
       });
     });
   }
+
+  export function arraysEqual(a1: any[], a2: any[])
+  {
+    if (a1 === a2) return true;
+    if (!a1 || !a2) return false;
+    if (a1.length !== a2.length) return false;
+
+    console.log(a1, a2);
+    a1.sort();
+    a2.sort();
+
+    for (var i = 0; i < a1.length; i++)
+    {
+      if (a1[i] !== a2[i]) return false;
+    }
+
+    return true;
+  }
 }

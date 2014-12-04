@@ -5,6 +5,23 @@ module Rance
     export var AbilityTooltip = React.createClass(
     {
       displayName: "AbilityTooltip",
+
+      shouldComponentUpdate: function(newProps: any)
+      {
+        for (var prop in newProps)
+        {
+          if (prop !== "activeTargets")
+          {
+            if (this.props[prop] !== newProps[prop])
+            {
+              console.log("" + prop + "update")
+              return true;
+            }
+          }
+        }
+        //console.log("noupdate");
+        return false;
+      },
       render: function()
       {
         var abilities = this.props.activeTargets[this.props.targetUnit.id];
@@ -58,6 +75,7 @@ module Rance
             )
           );
         }
+
 
         return(
           React.DOM.div(containerProps,
