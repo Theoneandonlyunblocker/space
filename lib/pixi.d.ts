@@ -343,6 +343,7 @@ declare module PIXI
 		points: Point[];
 
 		constructor(points: Point[]);
+		constructor(points: {x: number; y: number;}[]);
 		constructor(points: number[]);
 		constructor(...points: Point[]);
 		constructor(...points: number[]);

@@ -1,5 +1,6 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../lib/clipper.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
@@ -271,7 +272,12 @@ declare module Rance {
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
-    function straightSkeleton(poly: any, spacing: any): any[];
+    function shiftPolygon(polygon: Point[], amount: number): {
+        x: number;
+        y: number;
+    }[];
+    function convertCase(polygon: any[]): any;
+    function offsetPolygon(polygon: Point[], amount: number): any;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -696,6 +702,7 @@ declare module Rance {
         public getBuildableShips(): any[];
         public getIsland(start: Rance.Star): Rance.Star[];
         public getAllIslands(): Rance.Star[][];
+        public getBorderEdges(): any[];
         public getBorderPolygons(): any[];
     }
 }

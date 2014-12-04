@@ -2295,6 +2295,7 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
+/// <reference path="../lib/clipper.d.ts" />
 var Rance;
 (function (Rance) {
     function randInt(min, max) {
@@ -2473,44 +2474,54 @@ var Rance;
         return distance;
     }
     Rance.getAngleBetweenDegrees = getAngleBetweenDegrees;
-
-    function straightSkeleton(poly, spacing) {
-        // http://stackoverflow.com/a/11970006/796832
-        // Accompanying Fiddle: http://jsfiddle.net/vqKvM/35/
-        var resulting_path = [];
-        var N = poly.length;
-        var mi, mi1, li, li1, ri, ri1, si, si1, Xi1, Yi1;
-        for (var i = 0; i < N; i++) {
-            mi = (poly[(i + 1) % N].y - poly[i].y) / (poly[(i + 1) % N].x - poly[i].x);
-            mi1 = (poly[(i + 2) % N].y - poly[(i + 1) % N].y) / (poly[(i + 2) % N].x - poly[(i + 1) % N].x);
-            li = Math.sqrt((poly[(i + 1) % N].x - poly[i].x) * (poly[(i + 1) % N].x - poly[i].x) + (poly[(i + 1) % N].y - poly[i].y) * (poly[(i + 1) % N].y - poly[i].y));
-            li1 = Math.sqrt((poly[(i + 2) % N].x - poly[(i + 1) % N].x) * (poly[(i + 2) % N].x - poly[(i + 1) % N].x) + (poly[(i + 2) % N].y - poly[(i + 1) % N].y) * (poly[(i + 2) % N].y - poly[(i + 1) % N].y));
-            ri = poly[i].x + spacing * (poly[(i + 1) % N].y - poly[i].y) / li;
-            ri1 = poly[(i + 1) % N].x + spacing * (poly[(i + 2) % N].y - poly[(i + 1) % N].y) / li1;
-            si = poly[i].y - spacing * (poly[(i + 1) % N].x - poly[i].x) / li;
-            si1 = poly[(i + 1) % N].y - spacing * (poly[(i + 2) % N].x - poly[(i + 1) % N].x) / li1;
-            Xi1 = (mi1 * ri1 - mi * ri + si - si1) / (mi1 - mi);
-            Yi1 = (mi * mi1 * (ri1 - ri) + mi1 * si - mi * si1) / (mi1 - mi);
-
-            // Correction for vertical lines
-            if (poly[(i + 1) % N].x - poly[i % N].x == 0) {
-                Xi1 = poly[(i + 1) % N].x + spacing * (poly[(i + 1) % N].y - poly[i % N].y) / Math.abs(poly[(i + 1) % N].y - poly[i % N].y);
-                Yi1 = mi1 * Xi1 - mi1 * ri1 + si1;
-            }
-            if (poly[(i + 2) % N].x - poly[(i + 1) % N].x == 0) {
-                Xi1 = poly[(i + 2) % N].x + spacing * (poly[(i + 2) % N].y - poly[(i + 1) % N].y) / Math.abs(poly[(i + 2) % N].y - poly[(i + 1) % N].y);
-                Yi1 = mi * Xi1 - mi * ri + si;
-            }
-
-            resulting_path.push({
-                x: Xi1,
-                y: Yi1
+    function shiftPolygon(polygon, amount) {
+        return polygon.map(function (point) {
+            return ({
+                x: point.x + amount,
+                y: point.y + amount
+            });
+        });
+    }
+    Rance.shiftPolygon = shiftPolygon;
+    function convertCase(polygon) {
+        if (isFinite(polygon[0].x)) {
+            return polygon.map(function (point) {
+                return ({
+                    X: point.x,
+                    Y: point.y
+                });
+            });
+        } else {
+            return polygon.map(function (point) {
+                return ({
+                    x: point.X,
+                    y: point.Y
+                });
             });
         }
-
-        return resulting_path;
     }
-    Rance.straightSkeleton = straightSkeleton;
+    Rance.convertCase = convertCase;
+    function offsetPolygon(polygon, amount) {
+        polygon = convertCase(polygon);
+        var scale = 100;
+        ClipperLib.JS.ScaleUpPath(polygon, scale);
+
+        var co = new ClipperLib.ClipperOffset(1, 0.25);
+        co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
+        var offsetted = new ClipperLib.Path();
+
+        co.Execute(offsetted, amount * scale);
+
+        var converted = convertCase(offsetted[0]);
+
+        return converted.map(function (point) {
+            return ({
+                x: point.x / scale,
+                y: point.y / scale
+            });
+        });
+    }
+    Rance.offsetPolygon = offsetPolygon;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -4425,13 +4436,12 @@ var Rance;
 
             return islands;
         };
-        Player.prototype.getBorderPolygons = function () {
+        Player.prototype.getBorderEdges = function () {
             var islands = this.getAllIslands();
-            var polys = [];
             var edges = [];
 
             for (var i = 0; i < islands.length; i++) {
-                var poly = [];
+                var island = [];
 
                 for (var j = 0; j < islands[i].length; j++) {
                     var star = islands[i][j];
@@ -4440,20 +4450,99 @@ var Rance;
                     for (var k = 0; k < halfedges.length; k++) {
                         var edge = halfedges[k].edge;
                         if (!edge.lSite || !edge.rSite) {
-                            edges.push(edge);
-                            poly.push(edge.va);
+                            island.push(edge);
                         } else if (edge.lSite.owner !== this || edge.rSite.owner !== this) {
-                            edges.push(edge);
-                            poly.push(edge.va);
+                            island.push(edge);
                         }
                     }
                 }
-
-                poly.push(poly[0]);
-                polys.push(poly);
+                edges.push(island);
             }
             return edges;
-            //return polys;
+        };
+        Player.prototype.getBorderPolygons = function () {
+            var edgeGroups = this.getBorderEdges();
+            var polys = [];
+
+            for (var i = 0; i < edgeGroups.length; i++) {
+                var island = edgeGroups[i];
+                var poly = [];
+
+                var edgesByLocation = {};
+
+                function setVertex(vertex, edge) {
+                    var x = Math.round(vertex.x);
+                    var y = Math.round(vertex.y);
+                    if (!edgesByLocation[x]) {
+                        edgesByLocation[x] = {};
+                    }
+                    if (!edgesByLocation[x][y]) {
+                        edgesByLocation[x][y] = [];
+                    }
+
+                    edgesByLocation[x][y].push(edge);
+                }
+                function setEdge(edge) {
+                    setVertex(edge.va, edge);
+                    setVertex(edge.vb, edge);
+                }
+                function removeEdge(edge) {
+                    var a = edgesByLocation[edge.va.x][edge.va.y];
+                    var b = edgesByLocation[edge.vb.x][edge.vb.y];
+
+                    a.splice(a.indexOf(edge));
+                    b.splice(b.indexOf(edge));
+                }
+                function getEdges(x, y) {
+                    return edgesByLocation[Math.round(x)][Math.round(y)];
+                }
+                function getOtherVertex(edge, vertex) {
+                    if (edge.va === vertex)
+                        return edge.vb;
+                    else
+                        return edge.va;
+                }
+                function getOtherEdgeAtVertex(vertex, edge) {
+                    var edges = getEdges(vertex.x, vertex.y);
+                    return edges.filter(function (toFilter) {
+                        return toFilter !== edge;
+                    })[0];
+                }
+                function getNext(currentVertex, currentEdge) {
+                    var nextVertex = getOtherVertex(currentEdge, currentVertex);
+                    var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
+
+                    return ({
+                        vertex: nextVertex,
+                        edge: nextEdge
+                    });
+                }
+
+                for (var j = 0; j < island.length; j++) {
+                    setEdge(island[j]);
+                }
+                var edgesDone = [];
+
+                var currentEdge = island[0];
+                var currentVertex = currentEdge.va;
+                poly.push(currentVertex);
+
+                while (edgesDone.length !== island.length) {
+                    edgesDone.push(currentEdge);
+
+                    if (!getNext(currentVertex, currentEdge).edge)
+                        debugger;
+                    var next = getNext(currentVertex, currentEdge);
+
+                    currentEdge = next.edge;
+                    currentVertex = next.vertex;
+
+                    poly.push(next.vertex);
+                }
+
+                polys.push(poly);
+            }
+            return polys;
         };
         return Player;
     })();
@@ -7076,46 +7165,68 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
+
                     gfx.lineStyle(4, player1.secondaryColor, 1);
 
-                    var edges = player1.getBorderPolygons();
-
-                    var interval = window.setInterval(function () {
-                        var edge = edges.shift();
-                        gfx.moveTo(edge.va.x, edge.va.y);
-                        gfx.lineTo(edge.vb.x, edge.vb.y);
-
-                        if (edges.length < 1)
-                            window.clearInterval(interval);
-                    }, 500);
-
-                    // for (var i = 0; i < edges.length; i++)
-                    // {
-                    //   var edge = edges[i];
-                    //   gfx.moveTo(edge.va.x, edge.va.y);
-                    //   gfx.lineTo(edge.vb.x, edge.vb.y);
-                    // }
                     /*
-                    var players = [player1];
+                    var edges = player1.getBorderPolygons()[0];
                     
-                    for (var i = 0; i < players.length; i++)
+                    var i = 0;
+                    
+                    var interval = window.setInterval(function()
                     {
-                    var player = players[i];
-                    var polys = player.getBorderPolygons();
+                    var vertex = edges[i];
+                    gfx.moveTo(vertex.x, vertex.y);
+                    gfx.lineTo(edges[i + 1].x, edges[i + 1].y);
+                    i++;
                     
-                    for (var j = 0; j < polys.length; j++)
+                    if (i === edges.length - 2)
                     {
-                    var poly = polys[j];
-                    var inset = poly;// straightSkeleton(poly, 2);
-                    
-                    console.log(poly);
-                    
-                    gfx.beginFill(0x000000, 1);
-                    gfx.drawShape(new PIXI.Polygon(inset));
-                    gfx.endFill;
+                    console.log(edges, i, edges[i +1])
+                    gfx.beginFill(0xFF0000, 1);
+                    gfx.drawEllipse(edges[i+1].x, edges[i+1].y, 10, 10);
+                    gfx.endFill();
                     }
-                    }
+                    
+                    if (i >= edges.length - 1) window.clearInterval(interval);
+                    }, 500);
                     */
+                    /*
+                    var edges = player1.getBorderEdges()[0];
+                    
+                    var interval = window.setInterval(function()
+                    {
+                    var edge = edges.shift();
+                    gfx.moveTo(edge.va.x, edge.va.y);
+                    gfx.lineTo(edge.vb.x, edge.vb.y);
+                    gfx.beginFill(0xFF0000, 0.5);
+                    gfx.drawEllipse(edge.va.x, edge.va.y, 3, 3);
+                    gfx.endFill();
+                    if (edges.length < 1) window.clearInterval(interval);
+                    }, 500);
+                    */
+                    var players = [player1];
+
+                    for (var i = 0; i < players.length; i++) {
+                        var player = players[i];
+                        var polys = player.getBorderPolygons();
+
+                        for (var j = 0; j < polys.length; j++) {
+                            var poly = polys[j];
+                            var inset = Rance.offsetPolygon(poly, -2);
+
+                            gfx.lineStyle(4, player.secondaryColor, 1);
+                            gfx.beginFill(0x000000, 0);
+                            gfx.drawShape(new PIXI.Polygon(inset));
+                            gfx.endFill;
+
+                            gfx.lineStyle(4, 0x0000FF, 1);
+                            gfx.beginFill(0x000000, 0);
+                            gfx.drawShape(new PIXI.Polygon(poly));
+                            gfx.endFill;
+                        }
+                    }
+
                     doc.height;
                     return doc;
                 }

@@ -1,5 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
+
 /// <reference path="eventmanager.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="color.ts"/>
@@ -339,28 +340,49 @@ module Rance
           var doc = new PIXI.DisplayObjectContainer();
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
-          gfx.lineStyle(4, player1.secondaryColor, 1);
 
-          var edges = player1.getBorderPolygons();
+          gfx.lineStyle(4, player1.secondaryColor, 1);
+          
+          /*
+          var edges = player1.getBorderPolygons()[0];
+
+          var i = 0;
+
+          var interval = window.setInterval(function()
+          {
+            var vertex = edges[i];
+            gfx.moveTo(vertex.x, vertex.y);
+            gfx.lineTo(edges[i + 1].x, edges[i + 1].y);
+            i++;
+
+            if (i === edges.length - 2)
+            {
+              console.log(edges, i, edges[i +1])
+              gfx.beginFill(0xFF0000, 1);
+              gfx.drawEllipse(edges[i+1].x, edges[i+1].y, 10, 10);
+              gfx.endFill();
+            }
+
+            if (i >= edges.length - 1) window.clearInterval(interval);
+          }, 500);
+          */
+
+          /*
+          var edges = player1.getBorderEdges()[0];
 
           var interval = window.setInterval(function()
           {
             var edge = edges.shift();
             gfx.moveTo(edge.va.x, edge.va.y);
             gfx.lineTo(edge.vb.x, edge.vb.y);
-
+            gfx.beginFill(0xFF0000, 0.5);
+            gfx.drawEllipse(edge.va.x, edge.va.y, 3, 3);
+            gfx.endFill();
             if (edges.length < 1) window.clearInterval(interval);
           }, 500);
-
-          // for (var i = 0; i < edges.length; i++)
-          // {
-          //   var edge = edges[i];
-          //   gfx.moveTo(edge.va.x, edge.va.y);
-          //   gfx.lineTo(edge.vb.x, edge.vb.y);
-          // }
-
-          /*
-          var players = [player1];
+          */
+          
+          var players = [player1];// game.playerOrder;
 
           for (var i = 0; i < players.length; i++)
           {
@@ -370,16 +392,20 @@ module Rance
             for (var j = 0; j < polys.length; j++)
             {
               var poly = polys[j];
-              var inset = poly;// straightSkeleton(poly, 2);
+              var inset = offsetPolygon(poly, -2);
 
-              console.log(poly);
-
-              gfx.beginFill(0x000000, 1);
+              gfx.lineStyle(4, player.secondaryColor, 1);
+              gfx.beginFill(0x000000, 0);
               gfx.drawShape(new PIXI.Polygon(inset));
+              gfx.endFill;
+
+              gfx.lineStyle(4, 0x0000FF, 1);
+              gfx.beginFill(0x000000, 0);
+              gfx.drawShape(new PIXI.Polygon(poly));
               gfx.endFill;
             }
           }
-          */
+          
 
           doc.height;
           return doc;

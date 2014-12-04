@@ -219,15 +219,14 @@ module Rance
 
       return islands;
     }
-    getBorderPolygons()
+    getBorderEdges()
     {
       var islands = this.getAllIslands();
-      var polys: Point[][] = [];
       var edges = [];
 
       for (var i = 0; i < islands.length; i++)
       {
-        var poly: Point[] = [];
+        var island = [];
 
         for (var j = 0; j < islands[i].length; j++)
         {
@@ -239,23 +238,123 @@ module Rance
             var edge = halfedges[k].edge;
             if (!edge.lSite || !edge.rSite)
             {
-              edges.push(edge);
-              poly.push(edge.va);
+              island.push(edge);
             }
             else if (edge.lSite.owner !== this ||
               edge.rSite.owner !== this)
             {
-              edges.push(edge);
-              poly.push(edge.va);
+              island.push(edge);
             }
           }
         }
-
-        poly.push(poly[0]);
-        polys.push(poly);
+        edges.push(island);
       }
       return edges;
-      //return polys;
+    }
+    getBorderPolygons()
+    {
+      var edgeGroups = this.getBorderEdges();
+      var polys = [];
+
+      for (var i = 0; i < edgeGroups.length; i++)
+      {
+        var island = edgeGroups[i];
+        var poly = [];
+
+        var edgesByLocation:
+        {
+          [x:string]:
+          {
+            [y:string]: {va: number; vb: number}[];
+          }
+        } = {};
+
+        function setVertex(vertex, edge)
+        {
+          var x = Math.round(vertex.x);
+          var y = Math.round(vertex.y);
+          if (!edgesByLocation[x])
+          {
+            edgesByLocation[x] = {};
+          }
+          if (!edgesByLocation[x][y])
+          {
+            edgesByLocation[x][y] = [];
+          }
+
+          edgesByLocation[x][y].push(edge);
+        }
+        function setEdge(edge)
+        {
+          setVertex(edge.va, edge);
+          setVertex(edge.vb, edge);
+        }
+        function removeEdge(edge)
+        {
+          var a = edgesByLocation[edge.va.x][edge.va.y];
+          var b = edgesByLocation[edge.vb.x][edge.vb.y];
+
+          a.splice(a.indexOf(edge));
+          b.splice(b.indexOf(edge));
+        }
+        function getEdges(x, y)
+        {
+          return edgesByLocation[Math.round(x)][Math.round(y)];
+        }
+        function getOtherVertex(edge, vertex)
+        {
+          if (edge.va === vertex) return edge.vb;
+          else return edge.va;
+        }
+        function getOtherEdgeAtVertex(vertex, edge)
+        {
+          var edges = getEdges(vertex.x, vertex.y);
+          return edges.filter(function(toFilter)
+          {
+            return toFilter !== edge;
+          })[0];
+        }
+        function getNext(currentVertex, currentEdge)
+        {
+          var nextVertex = getOtherVertex(currentEdge, currentVertex);
+          var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
+
+          return(
+          {
+            vertex: nextVertex,
+            edge: nextEdge
+          });
+        }
+
+        for (var j = 0; j < island.length; j++)
+        {
+          setEdge(island[j]);
+        }
+        var edgesDone = [];
+
+        var currentEdge = island[0];
+        var currentVertex = currentEdge.va;
+        poly.push(currentVertex);
+
+
+        while (edgesDone.length !== island.length)
+        {
+          edgesDone.push(currentEdge);
+
+          if (!getNext(currentVertex, currentEdge).edge) debugger;
+          var next = getNext(currentVertex, currentEdge);
+
+
+          currentEdge = next.edge;
+          currentVertex = next.vertex;
+
+          poly.push(next.vertex);
+        }
+
+        
+        polys.push(poly);
+      }
+      return polys;
     }
   }  
 }

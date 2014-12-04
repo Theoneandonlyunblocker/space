@@ -1,4 +1,5 @@
 /// <reference path="../lib/pixi.d.ts" />
+/// <reference path="../lib/clipper.d.ts" />
 
 module Rance
 {
@@ -200,47 +201,65 @@ module Rance
     //console.log(degA, degB, distance);
     return distance;
   }
-
-  export function straightSkeleton(poly, spacing)
+  export function shiftPolygon(polygon: Point[], amount: number)
   {
-    // http://stackoverflow.com/a/11970006/796832
-    // Accompanying Fiddle: http://jsfiddle.net/vqKvM/35/
-
-    var resulting_path = [];
-    var N = poly.length;
-    var mi, mi1, li, li1, ri, ri1, si, si1, Xi1, Yi1;
-    for(var i = 0; i < N; i++)
+    return polygon.map(function(point)
     {
-      mi = (poly[(i+1) % N].y - poly[i].y)/(poly[(i+1) % N].x - poly[i].x);
-      mi1 = (poly[(i+2) % N].y - poly[(i+1) % N].y)/(poly[(i+2) % N].x - poly[(i+1) % N].x);
-      li = Math.sqrt((poly[(i+1) % N].x - poly[i].x)*(poly[(i+1) % N].x - poly[i].x)+(poly[(i+1) % N].y - poly[i].y)*(poly[(i+1) % N].y - poly[i].y));
-      li1 = Math.sqrt((poly[(i+2) % N].x - poly[(i+1) % N].x)*(poly[(i+2) % N].x - poly[(i+1) % N].x)+(poly[(i+2) % N].y - poly[(i+1) % N].y)*(poly[(i+2) % N].y - poly[(i+1) % N].y));
-      ri = poly[i].x+spacing*(poly[(i+1) % N].y - poly[i].y)/li;
-      ri1 = poly[(i+1) % N].x+spacing*(poly[(i+2) % N].y - poly[(i+1) % N].y)/li1;
-      si = poly[i].y-spacing*(poly[(i+1) % N].x - poly[i].x)/li;
-      si1 = poly[(i+1) % N].y-spacing*(poly[(i+2) % N].x - poly[(i+1) % N].x)/li1;
-      Xi1 = (mi1*ri1-mi*ri+si-si1)/(mi1-mi);
-      Yi1 = (mi*mi1*(ri1-ri)+mi1*si-mi*si1)/(mi1-mi);
-      // Correction for vertical lines
-      if(poly[(i+1) % N].x - poly[i % N].x==0)
+      return(
       {
-        Xi1 = poly[(i+1) % N].x + spacing*(poly[(i+1) % N].y - poly[i % N].y)/Math.abs(poly[(i+1) % N].y - poly[i % N].y);
-        Yi1 = mi1*Xi1 - mi1*ri1 + si1;
-      }
-      if(poly[(i+2) % N].x - poly[(i+1) % N].x==0 )
-      {
-        Xi1 = poly[(i+2) % N].x + spacing*(poly[(i+2) % N].y - poly[(i+1) % N].y)/Math.abs(poly[(i+2) % N].y - poly[(i+1) % N].y);
-        Yi1 = mi*Xi1 - mi*ri + si;
-      }
-
-
-      resulting_path.push(
-      {
-        x: Xi1,
-        y: Yi1
+        x: point.x + amount,
+        y: point.y + amount
       });
+    });
+  }
+  export function convertCase(polygon: any[]): any
+  {
+    if (isFinite(polygon[0].x))
+    {
+      return polygon.map(function(point)
+      {
+        return(
+        {
+          X: point.x,
+          Y: point.y
+        });
+      })
     }
+    else
+    {
+      return polygon.map(function(point)
+      {
+        return(
+        {
+          x: point.X,
+          y: point.Y
+        });
+      })
+    }
+  }
+  export function offsetPolygon(polygon: Point[], amount: number)
+  {
+    polygon = convertCase(polygon);
+    var scale = 100;
+    ClipperLib.JS.ScaleUpPath(polygon, scale);
 
-    return resulting_path;
+    var co = new ClipperLib.ClipperOffset(1, 0.25);
+    co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
+    var offsetted = new ClipperLib.Path();
+
+    co.Execute(offsetted, amount * scale);
+
+    var converted = convertCase(offsetted[0]);
+
+
+
+    return converted.map(function(point)
+    {
+      return(
+      {
+        x: point.x / scale,
+        y: point.y / scale
+      });
+    });
   }
 }
