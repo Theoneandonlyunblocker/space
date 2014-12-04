@@ -7,6 +7,7 @@ module Rance
     export var UnitIcon = React.createClass(
     {
       displayName: "UnitIcon",
+      mixins: [React.addons.PureRenderMixin],
       render: function()
       {
         var unit = this.props.unit;

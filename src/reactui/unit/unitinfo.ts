@@ -9,29 +9,28 @@ module Rance
     export var UnitInfo = React.createClass(
     {
       displayName: "UnitInfo",
+      mixins: [React.addons.PureRenderMixin],
       render: function()
       {
-        var unit = this.props.unit;
-
         return(
           React.DOM.div({className: "unit-info"},
             React.DOM.div({className: "unit-info-name"},
-              unit.name
+              this.props.name
             ),
             UIComponents.UnitStatus(
             {
-              guard: unit.battleStats.guard
+              guard: this.props.guard
             }),
             UIComponents.UnitStrength(
             {
-              maxStrength: unit.maxStrength,
-              currentStrength: unit.currentStrength,
-              isSquadron: unit.isSquadron
+              maxStrength: this.props.maxStrength,
+              currentStrength: this.props.currentStrength,
+              isSquadron: this.props.isSquadron
             }),
             UIComponents.UnitActions(
             {
-              maxActionPoints: unit.maxActionPoints,
-              currentActionPoints: unit.battleStats.currentActionPoints
+              maxActionPoints: this.props.maxActionPoints,
+              currentActionPoints: this.props.currentActionPoints
             })
           )
         );

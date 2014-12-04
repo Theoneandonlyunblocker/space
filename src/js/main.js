@@ -135,18 +135,17 @@ var Rance;
     (function (UIComponents) {
         UIComponents.UnitInfo = React.createClass({
             displayName: "UnitInfo",
+            mixins: [React.addons.PureRenderMixin],
             render: function () {
-                var unit = this.props.unit;
-
-                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, unit.name), Rance.UIComponents.UnitStatus({
-                    guard: unit.battleStats.guard
+                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), Rance.UIComponents.UnitStatus({
+                    guard: this.props.guard
                 }), Rance.UIComponents.UnitStrength({
-                    maxStrength: unit.maxStrength,
-                    currentStrength: unit.currentStrength,
-                    isSquadron: unit.isSquadron
+                    maxStrength: this.props.maxStrength,
+                    currentStrength: this.props.currentStrength,
+                    isSquadron: this.props.isSquadron
                 }), Rance.UIComponents.UnitActions({
-                    maxActionPoints: unit.maxActionPoints,
-                    currentActionPoints: unit.battleStats.currentActionPoints
+                    maxActionPoints: this.props.maxActionPoints,
+                    currentActionPoints: this.props.currentActionPoints
                 })));
             }
         });
@@ -159,6 +158,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.UnitIcon = React.createClass({
             displayName: "UnitIcon",
+            mixins: [React.addons.PureRenderMixin],
             render: function () {
                 var unit = this.props.unit;
 
@@ -477,7 +477,13 @@ var Rance;
 
                 var infoProps = {
                     key: "info",
-                    unit: unit
+                    name: unit.name,
+                    guard: unit.battleStats.guard,
+                    maxStrength: unit.maxStrength,
+                    currentStrength: unit.currentStrength,
+                    isSquadron: unit.isSquadron,
+                    maxActionPoints: unit.maxActionPoints,
+                    currentActionPoints: unit.battleStats.currentActionPoints
                 };
 
                 var containerElements = [
@@ -570,7 +576,6 @@ var Rance;
                 for (var prop in newProps) {
                     if (!targetedProps[prop] && prop !== "position") {
                         if (newProps[prop] !== this.props[prop]) {
-                            console.log("" + prop + "update");
                             return true;
                         }
                     }
@@ -592,14 +597,12 @@ var Rance;
                             }
                         }
                         if ((oldValue.indexOf(unit) >= 0) !== (newValue.indexOf(unit) >= 0)) {
-                            console.log("targetsupdate");
                             return true;
                         }
                     } else if (newValue !== oldValue && (oldValue === unit || newValue === unit)) {
                         return true;
                     }
                 }
-                console.log("didntupdate");
                 return false;
             },
             displayName: "UnitWrapper",
@@ -696,26 +699,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Fleet = React.createClass({
             displayName: "Fleet",
-            shouldComponentUpdate: function (newProps) {
-                for (var prop in newProps) {
-                    if (newProps[prop] !== this.props[prop])
-                        return true;
-                }
-
-                var oldFleet = this.props.fleet;
-                var newFleet = newProps.fleet;
-
-                for (var i = 0; i < oldFleet.length; i++) {
-                    for (var j = 0; j < oldFleet[i].length; j++) {
-                        if (oldFleet[i][j] !== newFleet[i][j]) {
-                            console.log("updatefleet");
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            },
             render: function () {
                 var fleet = this.props.fleet;
 

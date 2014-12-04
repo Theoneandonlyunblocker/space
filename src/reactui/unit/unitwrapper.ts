@@ -23,7 +23,6 @@ module Rance
           {
             if (newProps[prop] !== this.props[prop])
             {
-              console.log("" + prop + "update");
               return true;
             }
           }
@@ -49,7 +48,6 @@ module Rance
             if ((oldValue.indexOf(unit) >= 0) !==
               (newValue.indexOf(unit) >= 0))
             {
-              console.log("targetsupdate");
               return true;
             }
           }
@@ -59,7 +57,6 @@ module Rance
             return true;
           }
         }
-        console.log("didntupdate")
         return false;
       },
       displayName: "UnitWrapper",
