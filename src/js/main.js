@@ -876,13 +876,10 @@ var Rance;
                 for (var prop in newProps) {
                     if (prop !== "activeTargets") {
                         if (this.props[prop] !== newProps[prop]) {
-                            console.log("" + prop + "update");
                             return true;
                         }
                     }
                 }
-
-                //console.log("noupdate");
                 return false;
             },
             render: function () {
@@ -897,10 +894,12 @@ var Rance;
 
                 var parentRect = this.props.parentElement.getBoundingClientRect();
 
+                //var parentRect = {top: 0, left: 0, right: 500};
                 if (this.props.facesLeft) {
                     containerProps.className += " ability-tooltip-faces-left";
 
                     containerProps.style = {
+                        position: "absolute",
                         top: parentRect.top,
                         left: parentRect.right - 96 - 128
                     };
@@ -3632,60 +3631,155 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (SubEmblems) {
-            SubEmblems.comm = {
+            SubEmblems.emblem0 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "comm.png"
+                imageSrc: "emblem0.png"
             };
-            SubEmblems.comm3 = {
+            SubEmblems.emblem32 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "comm3.png"
+                imageSrc: "emblem32.png"
             };
-            SubEmblems.fasc12 = {
+            SubEmblems.emblem33 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "fasc12.png"
+                imageSrc: "emblem33.png"
             };
-            SubEmblems.fasc2 = {
+            SubEmblems.emblem34 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "fasc2.png"
+                imageSrc: "emblem34.png"
             };
-            SubEmblems.fasc8 = {
+            SubEmblems.emblem35 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "fasc8.png"
+                imageSrc: "emblem35.png"
             };
-            SubEmblems.fasc9 = {
+            SubEmblems.emblem36 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "fasc9.png"
+                imageSrc: "emblem36.png"
             };
-            SubEmblems.mon13 = {
+            SubEmblems.emblem37 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "mon13.png"
+                imageSrc: "emblem37.png"
             };
-            SubEmblems.mon16 = {
+            SubEmblems.emblem38 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "mon16.png"
+                imageSrc: "emblem38.png"
             };
-            SubEmblems.mon18 = {
+            SubEmblems.emblem39 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "mon18.png"
+                imageSrc: "emblem39.png"
             };
-            SubEmblems.mon26 = {
+            SubEmblems.emblem40 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "mon26.png"
+                imageSrc: "emblem40.png"
             };
-            SubEmblems.mon9 = {
+            SubEmblems.emblem41 = {
                 type: "both",
                 foregroundOnly: true,
-                imageSrc: "mon9.png"
+                imageSrc: "emblem41.png"
+            };
+            SubEmblems.emblem42 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem42.png"
+            };
+            SubEmblems.emblem43 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem43.png"
+            };
+            SubEmblems.emblem44 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem44.png"
+            };
+            SubEmblems.emblem45 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem45.png"
+            };
+            SubEmblems.emblem46 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem46.png"
+            };
+            SubEmblems.emblem47 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem47.png"
+            };
+            SubEmblems.emblem48 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem48.png"
+            };
+            SubEmblems.emblem49 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem49.png"
+            };
+            SubEmblems.emblem50 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem50.png"
+            };
+            SubEmblems.emblem51 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem51.png"
+            };
+            SubEmblems.emblem52 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem52.png"
+            };
+            SubEmblems.emblem53 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem53.png"
+            };
+            SubEmblems.emblem54 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem54.png"
+            };
+            SubEmblems.emblem55 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem55.png"
+            };
+            SubEmblems.emblem56 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem56.png"
+            };
+            SubEmblems.emblem57 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem57.png"
+            };
+            SubEmblems.emblem58 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem58.png"
+            };
+            SubEmblems.emblem59 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem59.png"
+            };
+            SubEmblems.emblem61 = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "emblem61.png"
             };
         })(Templates.SubEmblems || (Templates.SubEmblems = {}));
         var SubEmblems = Templates.SubEmblems;
@@ -4154,7 +4248,7 @@ var Rance;
     }
     Rance.generateSecondaryColor = generateSecondaryColor;
     function generateColorScheme(mainColor) {
-        var mainColor = isFinite(mainColor) ? mainColor : generateMainColor();
+        var mainColor = mainColor !== null && isFinite(mainColor) ? mainColor : generateMainColor();
         var secondaryColor = generateSecondaryColor(mainColor);
 
         return ({
@@ -4305,6 +4399,9 @@ var Rance;
 
         Emblem.prototype.drawSubEmblem = function (toDraw) {
             var image = Rance.images["emblems"][toDraw.imageSrc];
+
+            if (!image)
+                debugger;
 
             var width = image.width;
             var height = image.height;
@@ -5922,7 +6019,6 @@ var Rance;
             });
         };
         ReactUI.prototype.switchScene = function (newScene) {
-            console.log(newScene);
             this.currentScene = newScene;
             this.render();
         };
@@ -8306,7 +8402,7 @@ var Rance;
         };
         Loader.prototype.loadEmblems = function () {
             var self = this;
-            var loader = new PIXI.JsonLoader("img\/emblems\/sprites.json");
+            var loader = new PIXI.JsonLoader("img\/emblems.json");
             loader.addEventListener("loaded", function (event) {
                 var spriteImages = self.spritesheetToDataURLs(event.target.json, event.target.texture.source);
                 self.imageCache["emblems"] = spriteImages;

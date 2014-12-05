@@ -31,7 +31,6 @@ module Rance
     }
     switchScene(newScene: string)
     {
-      console.log(newScene);
       this.currentScene = newScene;
       this.render();
     }

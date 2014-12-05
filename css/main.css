@@ -49,7 +49,7 @@ table {
 */
 .button-style-no-border {
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
 }
 .button-style-no-border:hover {
@@ -61,12 +61,12 @@ table {
 .button-style-no-border:disabled,
 .button-style-no-border.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .button-style {
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -80,7 +80,7 @@ table {
 .button-style:disabled,
 .button-style.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 progress {
@@ -218,7 +218,7 @@ progress::-webkit-progress-value {
   width: 100%;
   flex: 1 0 auto;
   background-image: url("../img/bgTest.png");
-  color: #fefefe;
+  color: #eeeeee;
   border: 0px solid transparent;
   border-bottom-width: 0;
   border-top-width: 5px;
@@ -439,7 +439,7 @@ progress::-webkit-progress-value {
   border-radius: 5px;
 }
 .guard-text-container {
-  color: #fefefe;
+  color: #eeeeee;
   display: flex;
   flex-flow: row;
   width: 96%;
@@ -693,7 +693,7 @@ progress::-webkit-progress-value {
   left: 0;
   display: flex;
   flex-flow: row;
-  color: #fefefe;
+  color: #eeeeee;
   background-color: #101c1b;
   border: 0px solid transparent;
   border-bottom-width: 5px;
@@ -734,7 +734,7 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: row;
   pointer-events: none;
-  color: #fefefe;
+  color: #eeeeee;
 }
 .fleet-selection-container > * {
   pointer-events: auto;
@@ -759,7 +759,7 @@ progress::-webkit-progress-value {
 .fleet-selection-controls button {
   margin: 1px 2px;
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -773,7 +773,7 @@ progress::-webkit-progress-value {
 .fleet-selection-controls button:disabled,
 .fleet-selection-controls button.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .fleet-selection-selected-wrapper {
@@ -790,7 +790,7 @@ progress::-webkit-progress-value {
 .fleet-controls button {
   margin: 1px 2px;
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -804,7 +804,7 @@ progress::-webkit-progress-value {
 .fleet-controls button:disabled,
 .fleet-controls button.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .fleet-info {
@@ -874,7 +874,7 @@ progress::-webkit-progress-value {
 }
 .fleet-reorganization button {
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -888,7 +888,7 @@ progress::-webkit-progress-value {
 .fleet-reorganization button:disabled,
 .fleet-reorganization button.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .fleet-reorganization-header {
@@ -963,7 +963,7 @@ progress::-webkit-progress-value {
   font-weight: bolder;
   pointer-events: auto;
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -977,7 +977,7 @@ progress::-webkit-progress-value {
 .end-turn-button:disabled,
 .end-turn-button.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .possible-actions-container {
@@ -1006,7 +1006,7 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: row;
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -1022,7 +1022,7 @@ progress::-webkit-progress-value {
 .possible-action:disabled,
 .possible-action.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .possible-action-title {
@@ -1034,7 +1034,7 @@ progress::-webkit-progress-value {
   bottom: -3px;
   background-color: #0f283d;
   padding: 0 8px;
-  color: #fefefe;
+  color: #eeeeee;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1047,7 +1047,7 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: column;
   background-color: #101c1b;
-  color: #fefefe;
+  color: #eeeeee;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1148,7 +1148,7 @@ progress::-webkit-progress-value {
 }
 .buildable-item {
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #fefefe;
+  color: #eeeeee;
   cursor: pointer;
   position: relative;
 }
@@ -1161,7 +1161,7 @@ progress::-webkit-progress-value {
 .buildable-item:disabled,
 .buildable-item.disabled {
   cursor: default;
-  color: #cbcbcb;
+  color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
 .buildable-item td {

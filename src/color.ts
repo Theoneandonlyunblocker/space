@@ -534,7 +534,8 @@ module Rance
   }
   export function generateColorScheme(mainColor?: number)
   {
-    var mainColor = isFinite(mainColor) ? mainColor : generateMainColor();
+    var mainColor = mainColor !== null && isFinite(mainColor) ?
+    mainColor : generateMainColor();
     var secondaryColor = generateSecondaryColor(mainColor);
     
     return(

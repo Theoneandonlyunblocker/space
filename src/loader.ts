@@ -88,7 +88,7 @@ module Rance
     loadEmblems()
     {
       var self = this;
-      var loader = new PIXI.JsonLoader("img\/emblems\/sprites.json");
+      var loader = new PIXI.JsonLoader("img\/emblems.json");
       loader.addEventListener("loaded", function(event)
       {
         var spriteImages = self.spritesheetToDataURLs(event.target.json,

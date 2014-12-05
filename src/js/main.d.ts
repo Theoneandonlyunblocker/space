@@ -512,57 +512,152 @@ declare module Rance {
             imageSrc: string;
         }
         module SubEmblems {
-            var comm: {
+            var emblem0: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var comm3: {
+            var emblem32: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var fasc12: {
+            var emblem33: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var fasc2: {
+            var emblem34: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var fasc8: {
+            var emblem35: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var fasc9: {
+            var emblem36: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var mon13: {
+            var emblem37: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var mon16: {
+            var emblem38: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var mon18: {
+            var emblem39: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var mon26: {
+            var emblem40: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
-            var mon9: {
+            var emblem41: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem42: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem43: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem44: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem45: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem46: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem47: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem48: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem49: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem50: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem51: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem52: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem53: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem54: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem55: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem56: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem57: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem58: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem59: {
+                type: string;
+                foregroundOnly: boolean;
+                imageSrc: string;
+            };
+            var emblem61: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;

@@ -14,12 +14,10 @@ module Rance
           {
             if (this.props[prop] !== newProps[prop])
             {
-              console.log("" + prop + "update")
               return true;
             }
           }
         }
-        //console.log("noupdate");
         return false;
       },
       render: function()
@@ -35,6 +33,7 @@ module Rance
         };
 
         var parentRect = this.props.parentElement.getBoundingClientRect();
+        //var parentRect = {top: 0, left: 0, right: 500};
 
         if (this.props.facesLeft)
         {
@@ -42,6 +41,7 @@ module Rance
 
           containerProps.style =
           {
+            position: "absolute",
             top: parentRect.top,
             left: parentRect.right - 96 - 128
           }
