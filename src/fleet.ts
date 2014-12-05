@@ -13,6 +13,9 @@ module Rance
     ships: Unit[] = [];
     location: Star;
 
+    visionIsDirty: boolean = true;
+    visibleStars: Star[] = [];
+
     id: number;
     name: string;
 
@@ -166,6 +169,9 @@ module Rance
 
       this.subtractMovePoints();
 
+      this.visionIsDirty = true;
+      this.player.updateVisibleStars();
+
       eventManager.dispatchEvent("renderMap", null);
       eventManager.dispatchEvent("updateSelection", null);
     }
@@ -217,6 +223,32 @@ module Rance
       }
 
       return total;
+    }
+    updateVisibleStars()
+    {
+      var highestVisionRange = 0;
+
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        if (this.ships[i].template.visionRange > highestVisionRange)
+        {
+          highestVisionRange = this.ships[i].template.visionRange;
+        }
+      }
+
+      var inVision = this.location.getLinkedInRange(highestVisionRange);
+
+      this.visibleStars = inVision.all;
+      this.visionIsDirty = false;
+    }
+    getVision()
+    {
+      if (this.visionIsDirty)
+      {
+        this.updateVisibleStars();
+      }
+
+      return this.visibleStars;
     }
   }
 }

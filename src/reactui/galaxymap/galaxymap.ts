@@ -50,7 +50,8 @@ module Rance
             },
               React.DOM.option({value: "default"}, "default"),
               React.DOM.option({value: "noLines"}, "no borders"),
-              React.DOM.option({value: "income"}, "income")
+              React.DOM.option({value: "income"}, "income"),
+              React.DOM.option({value: "visible"}, "visible")
             )
           )
         );

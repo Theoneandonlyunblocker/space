@@ -405,7 +405,7 @@ module Rance
 
       return this.nonFillerPoints;
     }
-    getNonFillerVoronoiLines()
+    getNonFillerVoronoiLines(visibleStars?: Star[])
     {
       if (!this.voronoiDiagram) return [];
       if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0)
@@ -441,6 +441,11 @@ module Rance
               {
                 return false;
               }
+            }
+
+            if (visibleStars && visibleStars.indexOf(site) < 0)
+            {
+              return false;
             }
           }
 

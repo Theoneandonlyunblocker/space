@@ -397,9 +397,9 @@ module Rance
         this.severLinksToRegion(nonCenterRegions[i]);      
       }
     }
-    getNeighbors()
+    getNeighbors(): Star[]
     {
-      var neighbors = [];
+      var neighbors: Star[] = [];
 
       for (var i = 0; i < this.voronoiCell.halfedges.length; i++)
       {
@@ -416,6 +416,57 @@ module Rance
       }
 
       return neighbors;
+    }
+    getLinkedInRange(range: number)
+    {
+      var visited:
+      {
+        [id: number]: Star;
+      } = {};
+      var visitedByRange:
+      {
+        [range: number]: Star[];
+      } = {};
+
+      visited[this.id] = this;
+      visitedByRange[0] = [this];
+
+      var current = [];
+      var frontier: Star[] = [this];
+
+      for (var i = 0; i < range; i++)
+      {
+        current = frontier.slice(0);
+        frontier = [];
+        visitedByRange[i+1] = [];
+
+        for (var j = 0; j < current.length; j++)
+        {
+          var neighbors = current[j].getAllLinks();
+
+          for (var k = 0; k < neighbors.length; k++)
+          {
+            if (visited[neighbors[k].id]) continue;
+
+            visited[neighbors[k].id] = neighbors[k];
+            visitedByRange[i+1].push(neighbors[k]);
+            frontier.push(neighbors[k]);
+          }
+        }
+      }
+      var allVisited = [];
+
+      for (var id in visited)
+      {
+        allVisited.push(visited[id]);
+      }
+
+      return(
+      {
+        all: allVisited,
+        byRange: visitedByRange
+      });
+
     }
     severLinksToNonAdjacent()
     {

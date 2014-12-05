@@ -17,12 +17,6 @@ module Rance
         foregroundOnly: true,
         imageSrc: "emblem0.png"
       }
-      export var emblem32 =
-      {
-        type: "both",
-        foregroundOnly: true,
-        imageSrc: "emblem32.png"
-      }
       export var emblem33 =
       {
         type: "both",

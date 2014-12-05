@@ -14,6 +14,7 @@ module Rance
       icon: string;
       maxStrength: number;
       maxMovePoints: number;
+      visionRange: number;
       attributeLevels:
       {
         attack: number;
@@ -34,6 +35,7 @@ module Rance
         icon: "img\/icons\/f.png",
         maxStrength: 0.7,
         maxMovePoints: 2,
+        visionRange: 1,
         attributeLevels:
         {
           attack: 0.8,
@@ -56,6 +58,7 @@ module Rance
         icon: "img\/icons\/f.png",
         maxStrength: 0.5,
         maxMovePoints: 1,
+        visionRange: 1,
         attributeLevels:
         {
           attack: 0.7,
@@ -79,6 +82,7 @@ module Rance
         icon: "img\/icons\/b.png",
         maxStrength: 1,
         maxMovePoints: 1,
+        visionRange: 1,
         attributeLevels:
         {
           attack: 0.8,
@@ -102,6 +106,7 @@ module Rance
         icon: "img\/icons\/f.png",
         maxStrength: 0.6,
         maxMovePoints: 2,
+        visionRange: 2,
         attributeLevels:
         {
           attack: 0.5,
@@ -124,6 +129,7 @@ module Rance
         icon: "img\/icons\/b.png",
         maxStrength: 0.9,
         maxMovePoints: 1,
+        visionRange: 1,
         attributeLevels:
         {
           attack: 0.5,

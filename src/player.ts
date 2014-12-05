@@ -27,6 +27,9 @@ module Rance
     money: number;
     controlledLocations: Star[] = [];
 
+    visionIsDirty: boolean = true;
+    visibleStars: Star[] = [];
+
     constructor(id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.player++;
@@ -107,6 +110,7 @@ module Rance
       }
 
       this.fleets.splice(fleetIndex, 1);
+      this.visionIsDirty = true;
     }
     getFleetsWithPositions()
     {
@@ -135,6 +139,7 @@ module Rance
       if (this.hasStar(star)) return false;
 
       this.controlledLocations.push(star);
+      this.visionIsDirty = true;
     }
     removeStar(star: Star)
     {
@@ -143,6 +148,7 @@ module Rance
       if (index < 0) return false;
 
       this.controlledLocations.splice(index, 1);
+      this.visionIsDirty = true;
     }
     getIncome()
     {
@@ -363,6 +369,37 @@ module Rance
         polys.push(poly);
       }
       return polys;
+    }
+    updateVisibleStars()
+    {
+      var visible: Star[] = [];
+      var visibleById:
+      {
+        [id: number]: Star;
+      } = {};
+      for (var i = 0; i < this.fleets.length; i++)
+      {
+        var fleetVisible = this.fleets[i].getVision();
+
+        for (var j = 0; j < fleetVisible.length; j++)
+        {
+          var star = fleetVisible[j];
+          if (!visibleById[star.id])
+          {
+            visibleById[star.id] = star;
+            visible.push(star);
+          }
+        }
+      }
+
+      this.visionIsDirty = false;
+      this.visibleStars = visible;
+    }
+    getVisibleStars()
+    {
+      if (this.visionIsDirty) this.updateVisibleStars();
+
+      return this.visibleStars;
     }
   }  
 }

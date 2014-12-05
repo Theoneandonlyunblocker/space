@@ -2915,6 +2915,7 @@ var Rance;
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.7,
                 maxMovePoints: 2,
+                visionRange: 1,
                 attributeLevels: {
                     attack: 0.8,
                     defence: 0.6,
@@ -2934,6 +2935,7 @@ var Rance;
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.5,
                 maxMovePoints: 1,
+                visionRange: 1,
                 attributeLevels: {
                     attack: 0.7,
                     defence: 0.4,
@@ -2954,6 +2956,7 @@ var Rance;
                 icon: "img\/icons\/b.png",
                 maxStrength: 1,
                 maxMovePoints: 1,
+                visionRange: 1,
                 attributeLevels: {
                     attack: 0.8,
                     defence: 0.8,
@@ -2974,6 +2977,7 @@ var Rance;
                 icon: "img\/icons\/f.png",
                 maxStrength: 0.6,
                 maxMovePoints: 2,
+                visionRange: 2,
                 attributeLevels: {
                     attack: 0.5,
                     defence: 0.5,
@@ -2993,6 +2997,7 @@ var Rance;
                 icon: "img\/icons\/b.png",
                 maxStrength: 0.9,
                 maxMovePoints: 1,
+                visionRange: 1,
                 attributeLevels: {
                     attack: 0.5,
                     defence: 0.9,
@@ -3420,6 +3425,45 @@ var Rance;
 
             return neighbors;
         };
+        Star.prototype.getLinkedInRange = function (range) {
+            var visited = {};
+            var visitedByRange = {};
+
+            visited[this.id] = this;
+            visitedByRange[0] = [this];
+
+            var current = [];
+            var frontier = [this];
+
+            for (var i = 0; i < range; i++) {
+                current = frontier.slice(0);
+                frontier = [];
+                visitedByRange[i + 1] = [];
+
+                for (var j = 0; j < current.length; j++) {
+                    var neighbors = current[j].getAllLinks();
+
+                    for (var k = 0; k < neighbors.length; k++) {
+                        if (visited[neighbors[k].id])
+                            continue;
+
+                        visited[neighbors[k].id] = neighbors[k];
+                        visitedByRange[i + 1].push(neighbors[k]);
+                        frontier.push(neighbors[k]);
+                    }
+                }
+            }
+            var allVisited = [];
+
+            for (var id in visited) {
+                allVisited.push(visited[id]);
+            }
+
+            return ({
+                all: allVisited,
+                byRange: visitedByRange
+            });
+        };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
 
@@ -3448,6 +3492,8 @@ var Rance;
     var Fleet = (function () {
         function Fleet(player, ships, location, id) {
             this.ships = [];
+            this.visionIsDirty = true;
+            this.visibleStars = [];
             this.player = player;
             this.location = location;
             this.id = isFinite(id) ? id : idGenerators.fleets++;
@@ -3579,6 +3625,9 @@ var Rance;
 
             this.subtractMovePoints();
 
+            this.visionIsDirty = true;
+            this.player.updateVisibleStars();
+
             Rance.eventManager.dispatchEvent("renderMap", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
@@ -3623,6 +3672,27 @@ var Rance;
 
             return total;
         };
+        Fleet.prototype.updateVisibleStars = function () {
+            var highestVisionRange = 0;
+
+            for (var i = 0; i < this.ships.length; i++) {
+                if (this.ships[i].template.visionRange > highestVisionRange) {
+                    highestVisionRange = this.ships[i].template.visionRange;
+                }
+            }
+
+            var inVision = this.location.getLinkedInRange(highestVisionRange);
+
+            this.visibleStars = inVision.all;
+            this.visionIsDirty = false;
+        };
+        Fleet.prototype.getVision = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+
+            return this.visibleStars;
+        };
         return Fleet;
     })();
     Rance.Fleet = Fleet;
@@ -3635,11 +3705,6 @@ var Rance;
                 type: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem0.png"
-            };
-            SubEmblems.emblem32 = {
-                type: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem32.png"
             };
             SubEmblems.emblem33 = {
                 type: "both",
@@ -4400,9 +4465,6 @@ var Rance;
         Emblem.prototype.drawSubEmblem = function (toDraw) {
             var image = Rance.images["emblems"][toDraw.imageSrc];
 
-            if (!image)
-                debugger;
-
             var width = image.width;
             var height = image.height;
 
@@ -4499,6 +4561,8 @@ var Rance;
             this.units = {};
             this.fleets = [];
             this.controlledLocations = [];
+            this.visionIsDirty = true;
+            this.visibleStars = [];
             this.id = isFinite(id) ? id : idGenerators.player++;
             this.name = "Player " + this.id;
             this.money = 1000;
@@ -4563,6 +4627,7 @@ var Rance;
             }
 
             this.fleets.splice(fleetIndex, 1);
+            this.visionIsDirty = true;
         };
         Player.prototype.getFleetsWithPositions = function () {
             var positions = [];
@@ -4587,6 +4652,7 @@ var Rance;
                 return false;
 
             this.controlledLocations.push(star);
+            this.visionIsDirty = true;
         };
         Player.prototype.removeStar = function (star) {
             var index = this.controlledLocations.indexOf(star);
@@ -4595,6 +4661,7 @@ var Rance;
                 return false;
 
             this.controlledLocations.splice(index, 1);
+            this.visionIsDirty = true;
         };
         Player.prototype.getIncome = function () {
             var income = 0;
@@ -4769,6 +4836,30 @@ var Rance;
                 polys.push(poly);
             }
             return polys;
+        };
+        Player.prototype.updateVisibleStars = function () {
+            var visible = [];
+            var visibleById = {};
+            for (var i = 0; i < this.fleets.length; i++) {
+                var fleetVisible = this.fleets[i].getVision();
+
+                for (var j = 0; j < fleetVisible.length; j++) {
+                    var star = fleetVisible[j];
+                    if (!visibleById[star.id]) {
+                        visibleById[star.id] = star;
+                        visible.push(star);
+                    }
+                }
+            }
+
+            this.visionIsDirty = false;
+            this.visibleStars = visible;
+        };
+        Player.prototype.getVisibleStars = function () {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+
+            return this.visibleStars;
         };
         return Player;
     })();
@@ -5833,7 +5924,7 @@ var Rance;
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "visible" }, "visible"))));
             },
             componentDidMount: function () {
                 if (mapRenderer)
@@ -7001,7 +7092,7 @@ var Rance;
 
             return this.nonFillerPoints;
         };
-        MapGen.prototype.getNonFillerVoronoiLines = function () {
+        MapGen.prototype.getNonFillerVoronoiLines = function (visibleStars) {
             if (!this.voronoiDiagram)
                 return [];
             if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0) {
@@ -7031,6 +7122,10 @@ var Rance;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;
                             }
+                        }
+
+                        if (visibleStars && visibleStars.indexOf(site) < 0) {
+                            return false;
                         }
                     }
 
@@ -7141,6 +7236,7 @@ var Rance;
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
 /// <reference path="fleet.ts" />
+/// <reference path="player.ts" />
 var Rance;
 (function (Rance) {
     var MapRenderer = (function () {
@@ -7235,7 +7331,12 @@ var Rance;
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
 
-                    var points = map.mapGen.getNonFillerPoints();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
 
                     var mouseDownFN = function (event) {
                         Rance.eventManager.dispatchEvent("mouseDown", event);
@@ -7281,7 +7382,12 @@ var Rance;
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
-                    var points = map.mapGen.getNonFillerPoints();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
 
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
@@ -7316,7 +7422,12 @@ var Rance;
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
-                    var points = map.mapGen.getNonFillerPoints();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
                     var incomeBounds = map.getIncomeBounds();
 
                     function getRelativeValue(min, max, value) {
@@ -7378,7 +7489,8 @@ var Rance;
                     doc.addChild(gfx);
                     gfx.lineStyle(1, 0xC0C0C0, 0.5);
 
-                    var lines = map.mapGen.getNonFillerVoronoiLines();
+                    var visible = this.player ? this.player.getVisibleStars() : null;
+                    var lines = map.mapGen.getNonFillerVoronoiLines(visible);
 
                     for (var i = 0; i < lines.length; i++) {
                         var line = lines[i];
@@ -7473,7 +7585,12 @@ var Rance;
                     doc.addChild(gfx);
                     gfx.lineStyle(2, 0xDDDDDD, 1);
 
-                    var points = map.mapGen.getNonFillerPoints();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
 
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
@@ -7492,7 +7609,13 @@ var Rance;
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
-                    var stars = map.mapGen.getNonFillerPoints();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
 
                     var mouseDownFN = function (event) {
                         Rance.eventManager.dispatchEvent("mouseDown", event);
@@ -7536,8 +7659,8 @@ var Rance;
                         return fleetContainer;
                     }
 
-                    for (var i = 0; i < stars.length; i++) {
-                        var star = stars[i];
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
                         var fleets = star.getAllFleets();
                         if (!fleets || fleets.length <= 0)
                             continue;

@@ -8,6 +8,7 @@
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
 /// <reference path="fleet.ts" />
+/// <reference path="player.ts" />
 
 module Rance
 {
@@ -29,6 +30,7 @@ module Rance
     container: PIXI.DisplayObjectContainer;
     parent: PIXI.DisplayObjectContainer;
     galaxyMap: GalaxyMap;
+    player: Player;
 
     occupationShaders:
     {
@@ -162,7 +164,15 @@ module Rance
         {
           var doc = new PIXI.DisplayObjectContainer();
 
-          var points = map.mapGen.getNonFillerPoints();
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getVisibleStars();
+          }
 
           var mouseDownFN = function(event)
           {
@@ -215,7 +225,15 @@ module Rance
         drawingFunction: function(map: GalaxyMap)
         {
           var doc = new PIXI.DisplayObjectContainer();
-          var points = map.mapGen.getNonFillerPoints();
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getVisibleStars();
+          }
 
           for (var i = 0; i < points.length; i++)
           {
@@ -253,7 +271,15 @@ module Rance
         drawingFunction: function(map: GalaxyMap)
         {
           var doc = new PIXI.DisplayObjectContainer();
-          var points = map.mapGen.getNonFillerPoints();
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getVisibleStars();
+          }
           var incomeBounds = map.getIncomeBounds();
 
           function getRelativeValue(min: number, max: number, value: number)
@@ -319,7 +345,8 @@ module Rance
           doc.addChild(gfx);
           gfx.lineStyle(1, 0xC0C0C0, 0.5);
 
-          var lines = map.mapGen.getNonFillerVoronoiLines();
+          var visible = this.player ? this.player.getVisibleStars() : null;
+          var lines = map.mapGen.getNonFillerVoronoiLines(visible);
 
           for (var i = 0; i < lines.length; i++)
           {
@@ -428,7 +455,15 @@ module Rance
           doc.addChild(gfx);
           gfx.lineStyle(2, 0xDDDDDD, 1);
 
-          var points = map.mapGen.getNonFillerPoints();
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getVisibleStars();
+          }
 
           for (var i = 0; i < points.length; i++)
           {
@@ -451,7 +486,16 @@ module Rance
         drawingFunction: function(map: GalaxyMap)
         {
           var doc = new PIXI.DisplayObjectContainer();
-          var stars = map.mapGen.getNonFillerPoints();
+
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getVisibleStars();
+          }
 
           var mouseDownFN = function(event)
           {
@@ -500,9 +544,9 @@ module Rance
             return fleetContainer;
           }
 
-          for (var i = 0; i < stars.length; i++)
+          for (var i = 0; i < points.length; i++)
           {
-            var star = stars[i];
+            var star = points[i];
             var fleets = star.getAllFleets();
             if (!fleets || fleets.length <= 0) continue;
 

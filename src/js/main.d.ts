@@ -348,6 +348,7 @@ declare module Rance {
             icon: string;
             maxStrength: number;
             maxMovePoints: number;
+            visionRange: number;
             attributeLevels: {
                 attack: number;
                 defence: number;
@@ -465,7 +466,13 @@ declare module Rance {
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
         public severLinksToNonCenter(): void;
-        public getNeighbors(): any[];
+        public getNeighbors(): Star[];
+        public getLinkedInRange(range: number): {
+            all: any[];
+            byRange: {
+                [range: number]: Star[];
+            };
+        };
         public severLinksToNonAdjacent(): void;
     }
 }
@@ -474,6 +481,8 @@ declare module Rance {
         public player: Rance.Player;
         public ships: Rance.Unit[];
         public location: Rance.Star;
+        public visionIsDirty: boolean;
+        public visibleStars: Rance.Star[];
         public id: number;
         public name: string;
         constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star, id?: number);
@@ -502,6 +511,8 @@ declare module Rance {
             current: number;
             max: number;
         };
+        public updateVisibleStars(): void;
+        public getVision(): Rance.Star[];
     }
 }
 declare module Rance {
@@ -513,11 +524,6 @@ declare module Rance {
         }
         module SubEmblems {
             var emblem0: {
-                type: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem32: {
                 type: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
@@ -780,6 +786,8 @@ declare module Rance {
         public fleets: Rance.Fleet[];
         public money: number;
         public controlledLocations: Rance.Star[];
+        public visionIsDirty: boolean;
+        public visibleStars: Rance.Star[];
         constructor(id?: number);
         public makeColorScheme(): void;
         public makeFlag(): void;
@@ -800,6 +808,8 @@ declare module Rance {
         public getAllIslands(): Rance.Star[][];
         public getBorderEdges(): any[];
         public getBorderPolygons(): any[];
+        public updateVisibleStars(): void;
+        public getVisibleStars(): Rance.Star[];
     }
 }
 declare module Rance {
@@ -1168,7 +1178,7 @@ declare module Rance {
             dampeningFactor: number;
         }): void;
         public getNonFillerPoints(): Rance.Star[];
-        public getNonFillerVoronoiLines(): any[];
+        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
         public drawMap(): PIXI.DisplayObjectContainer;
     }
 }
@@ -1187,6 +1197,7 @@ declare module Rance {
         public container: PIXI.DisplayObjectContainer;
         public parent: PIXI.DisplayObjectContainer;
         public galaxyMap: Rance.GalaxyMap;
+        public player: Rance.Player;
         public occupationShaders: {
             [ownerId: string]: {
                 [occupierId: string]: any;
