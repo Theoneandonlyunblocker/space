@@ -287,4 +287,10 @@ module Rance
 
     return true;
   }
+  export function bitmapMask(base: PIXI.DisplayObjectContainer,
+    mask: PIXI.DisplayObjectContainer)
+  {
+    // var baseCanvas = base.generateTexture().getCanvas();
+    // var maskCanvas = base.generateTexture().getCanvas();
+  }
 }

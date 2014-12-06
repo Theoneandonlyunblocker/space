@@ -59,6 +59,8 @@ module Rance
 
       this.ships.push(ship);
       ship.addToFleet(this);
+
+      this.visionIsDirty = true;
     }
     addShips(ships: Unit[])
     {
@@ -75,6 +77,8 @@ module Rance
 
       this.ships.splice(index, 1);
       ship.removeFromFleet();
+
+      this.visionIsDirty = true;
 
       if (this.ships.length <= 0)
       {

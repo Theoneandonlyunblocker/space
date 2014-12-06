@@ -279,6 +279,7 @@ declare module Rance {
     function convertCase(polygon: any[]): any;
     function offsetPolygon(polygon: Point[], amount: number): any;
     function arraysEqual(a1: any[], a2: any[]): boolean;
+    function bitmapMask(base: PIXI.DisplayObjectContainer, mask: PIXI.DisplayObjectContainer): void;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -1229,14 +1230,16 @@ declare module Rance {
         public mapModes: {
             [name: string]: IMapRendererLayerMapMode;
         };
-        public TextureCache: {
-            [name: string]: PIXI.Texture;
+        public fowTilingSprite: PIXI.TilingSprite;
+        public fowSpriteCache: {
+            [starId: number]: PIXI.Sprite;
         };
         public currentMapMode: IMapRendererLayerMapMode;
         constructor();
         public addEventListeners(): void;
         public updateShaderOffsets(x: number, y: number): void;
         public updateShaderZoom(zoom: number): void;
+        public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
         public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
         public initLayers(): void;
         public initMapModes(): void;
@@ -1453,6 +1456,7 @@ declare module Rance {
         public loaded: {
             DOM: boolean;
             emblems: boolean;
+            other: boolean;
         };
         public startTime: number;
         public onLoaded: any;
@@ -1467,6 +1471,7 @@ declare module Rance {
         };
         public loadDOM(): void;
         public loadEmblems(): void;
+        public loadOther(): void;
         public checkLoaded(): void;
     }
 }

@@ -2646,6 +2646,11 @@ var Rance;
         return true;
     }
     Rance.arraysEqual = arraysEqual;
+    function bitmapMask(base, mask) {
+        // var baseCanvas = base.generateTexture().getCanvas();
+        // var maskCanvas = base.generateTexture().getCanvas();
+    }
+    Rance.bitmapMask = bitmapMask;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -3545,6 +3550,8 @@ var Rance;
 
             this.ships.push(ship);
             ship.addToFleet(this);
+
+            this.visionIsDirty = true;
         };
         Fleet.prototype.addShips = function (ships) {
             for (var i = 0; i < ships.length; i++) {
@@ -3559,6 +3566,8 @@ var Rance;
 
             this.ships.splice(index, 1);
             ship.removeFromFleet();
+
+            this.visionIsDirty = true;
 
             if (this.ships.length <= 0) {
                 this.deleteFleet();
@@ -4636,6 +4645,7 @@ var Rance;
             }
 
             this.fleets.push(fleet);
+            this.visionIsDirty = true;
         };
         Player.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
@@ -4889,6 +4899,7 @@ var Rance;
             }
 
             this.visionIsDirty = false;
+            Rance.eventManager.dispatchEvent("renderMap");
         };
         Player.prototype.getVisibleStars = function () {
             if (this.visionIsDirty)
@@ -7238,7 +7249,7 @@ var Rance;
             this.occupationShaders = {};
             this.layers = {};
             this.mapModes = {};
-            this.TextureCache = {};
+            this.fowSpriteCache = {};
             this.container = new PIXI.DisplayObjectContainer();
 
             this.initLayers();
@@ -7267,6 +7278,37 @@ var Rance;
                     shader.uniforms.zoom.value = zoom;
                 }
             }
+        };
+        MapRenderer.prototype.getFowSpriteForStar = function (star) {
+            if (!this.fowTilingSprite) {
+                var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
+                var w = this.galaxyMap.mapGen.maxWidth * 2;
+                var h = this.galaxyMap.mapGen.maxHeight * 2;
+
+                this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
+            }
+
+            if (!this.fowSpriteCache[star.id] || !this.fowSpriteCache[star.id].texture.baseTexture.source) {
+                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                var gfx = new PIXI.Graphics();
+                gfx.beginFill();
+                gfx.drawShape(poly);
+                gfx.endFill();
+
+                this.fowTilingSprite.removeChildren();
+
+                this.fowTilingSprite.mask = gfx;
+                this.fowTilingSprite.addChild(gfx);
+
+                var rendered = this.fowTilingSprite.generateTexture();
+
+                var sprite = new PIXI.Sprite(rendered);
+
+                this.fowSpriteCache[star.id] = sprite;
+                this.fowTilingSprite.mask = null;
+            }
+
+            return this.fowSpriteCache[star.id];
         };
         MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
             if (!this.occupationShaders[owner.id]) {
@@ -7408,6 +7450,28 @@ var Rance;
                             gfx.addChild(mask);
                         }
                     }
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["fogOfWar"] = {
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points = this.player.getRevealedButNotVisibleStars();
+
+                    if (!points || points.length < 1)
+                        return doc;
+
+                    doc.alpha = 0.15;
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var sprite = this.getFowSpriteForStar(star);
+
+                        doc.addChild(sprite);
+                    }
+
                     doc.height;
                     return doc;
                 }
@@ -7660,6 +7724,7 @@ var Rance;
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fogOfWar"] },
                     { layer: this.layers["fleets"] }
                 ]
             };
@@ -8444,7 +8509,8 @@ var Rance;
         function Loader(onLoaded) {
             this.loaded = {
                 DOM: false,
-                emblems: false
+                emblems: false,
+                other: false
             };
             this.imageCache = {};
             this.onLoaded = onLoaded;
@@ -8453,6 +8519,7 @@ var Rance;
 
             this.loadDOM();
             this.loadEmblems();
+            this.loadOther();
         }
         Loader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
             var self = this;
@@ -8497,6 +8564,17 @@ var Rance;
                 var spriteImages = self.spritesheetToDataURLs(event.target.json, event.target.texture.source);
                 self.imageCache["emblems"] = spriteImages;
                 self.loaded.emblems = true;
+                self.checkLoaded();
+            });
+
+            loader.load();
+        };
+        Loader.prototype.loadOther = function () {
+            var self = this;
+            var loader = new PIXI.ImageLoader("img\/fowTexture.png");
+
+            loader.addEventListener("loaded", function (event) {
+                self.loaded.other = true;
                 self.checkLoaded();
             });
 

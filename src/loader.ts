@@ -19,7 +19,8 @@ module Rance
     loaded =
     {
       DOM: false,
-      emblems: false
+      emblems: false,
+      other: false
     };
     startTime: number;
     onLoaded: any;
@@ -39,6 +40,7 @@ module Rance
 
       this.loadDOM();
       this.loadEmblems();
+      this.loadOther();
     }
     spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement)
     {
@@ -95,6 +97,19 @@ module Rance
           event.target.texture.source);
         self.imageCache["emblems"] = spriteImages;
         self.loaded.emblems = true;
+        self.checkLoaded();
+      });
+
+      loader.load();
+    }
+    loadOther()
+    {
+      var self = this;
+      var loader = new PIXI.ImageLoader("img\/fowTexture.png");
+
+      loader.addEventListener("loaded", function(event)
+      {
+        self.loaded.other = true;
         self.checkLoaded();
       });
 

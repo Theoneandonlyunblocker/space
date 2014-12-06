@@ -223,6 +223,7 @@ declare module PIXI
 
 		addChild(child: DisplayObject): void;
 		addChildAt(child: DisplayObject, index: number): void;
+		generateTexture(): Texture;
 		getBounds():Rectangle;
 		getLocalBounds():Rectangle;
 		getChildAt(index:number):DisplayObject;

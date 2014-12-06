@@ -106,6 +106,7 @@ module Rance
       }
 
       this.fleets.push(fleet);
+      this.visionIsDirty = true;
     }
     removeFleet(fleet: Fleet)
     {
@@ -420,6 +421,7 @@ module Rance
       }
 
       this.visionIsDirty = false;
+      eventManager.dispatchEvent("renderMap");
     }
     getVisibleStars()
     {

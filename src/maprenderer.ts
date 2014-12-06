@@ -49,9 +49,10 @@ module Rance
       [name: string]: IMapRendererLayerMapMode;
     } = {};
 
-    TextureCache:
+    fowTilingSprite: PIXI.TilingSprite;
+    fowSpriteCache:
     {
-      [name: string]: PIXI.Texture;
+      [starId: number]: PIXI.Sprite;
     } = {};
 
     currentMapMode: IMapRendererLayerMapMode;
@@ -93,6 +94,41 @@ module Rance
           shader.uniforms.zoom.value = zoom;
         }
       }
+    }
+    getFowSpriteForStar(star: Star)
+    {
+      if (!this.fowTilingSprite)
+      {
+        var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
+        var w = this.galaxyMap.mapGen.maxWidth * 2;
+        var h = this.galaxyMap.mapGen.maxHeight * 2;
+
+        this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
+      }
+
+      if (!this.fowSpriteCache[star.id] ||
+        !this.fowSpriteCache[star.id].texture.baseTexture.source)
+      {
+        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+        var gfx = new PIXI.Graphics();
+        gfx.beginFill();
+        gfx.drawShape(poly);
+        gfx.endFill();
+
+        this.fowTilingSprite.removeChildren();
+
+        this.fowTilingSprite.mask = gfx;
+        this.fowTilingSprite.addChild(gfx);
+
+        var rendered = this.fowTilingSprite.generateTexture();
+
+        var sprite = new PIXI.Sprite(rendered);
+
+        this.fowSpriteCache[star.id] = sprite;
+        this.fowTilingSprite.mask = null;
+      }
+
+      return this.fowSpriteCache[star.id];
     }
     getOccupationShader(owner: Player, occupier: Player)
     {
@@ -261,6 +297,30 @@ module Rance
               gfx.addChild(mask);
             }
           }
+          doc.height;
+          return doc;
+        }
+      }
+      this.layers["fogOfWar"] =
+      {
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+          var points: Star[] = this.player.getRevealedButNotVisibleStars();
+
+          if (!points || points.length < 1) return doc;
+
+          doc.alpha = 0.15;
+          
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            var sprite = this.getFowSpriteForStar(star);
+
+            doc.addChild(sprite);
+          }
+
           doc.height;
           return doc;
         }
@@ -557,6 +617,7 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fogOfWar"]},
           {layer: this.layers["fleets"]}
         ]
       }
