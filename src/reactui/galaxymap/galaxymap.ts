@@ -74,6 +74,7 @@ module Rance
         mapRenderer.setParent(renderer.layers["map"]);
         this.props.galaxyMap.mapRenderer = mapRenderer;
         mapRenderer.galaxyMap = galaxyMap;
+        mapRenderer.player = player1;
 
 
         this.props.galaxyMap.mapRenderer.setMapMode("default");

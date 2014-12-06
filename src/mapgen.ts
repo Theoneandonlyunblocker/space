@@ -25,7 +25,10 @@ module Rance
     triangles: Triangle[] = [];
     voronoiDiagram: any;
 
-    nonFillerVoronoiLines: any[];
+    nonFillerVoronoiLines:
+    {
+      [visibility: string]: any[];
+    } = {};
     nonFillerPoints: Star[];
 
     galaxyConstructors:
@@ -50,7 +53,7 @@ module Rance
       this.voronoiDiagram = null;
 
       this.nonFillerPoints = [];
-      this.nonFillerVoronoiLines = [];
+      this.nonFillerVoronoiLines = {};
     }
     makeMap(options:
     {
@@ -408,9 +411,25 @@ module Rance
     getNonFillerVoronoiLines(visibleStars?: Star[])
     {
       if (!this.voronoiDiagram) return [];
-      if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0)
+
+      var indexString = "";
+      if (!visibleStars) indexString = "all";
+      else
       {
-        this.nonFillerVoronoiLines = this.voronoiDiagram.edges.filter(function(edge)
+        var sorted = visibleStars.sort(function(a, b)
+        {
+          return a.id - b.id;
+        });
+
+        indexString = sorted.join();
+      }
+
+      if (!this.nonFillerVoronoiLines[indexString] ||
+        this.nonFillerVoronoiLines[indexString].length <= 0)
+      {
+        console.log("newEdgesIndex")
+        this.nonFillerVoronoiLines[indexString] =
+          this.voronoiDiagram.edges.filter(function(edge)
         {
           var adjacentSites = [edge.lSite, edge.rSite];
           var adjacentFillerSites = 0;
@@ -423,7 +442,7 @@ module Rance
             if (!site)
             {
               // draw all border edges
-              return true;
+              //return true;
 
               // draw all non filler border edges
               maxAllowedFillerSites--;
@@ -434,6 +453,18 @@ module Rance
               continue;
             };
 
+
+            if (visibleStars && visibleStars.indexOf(site) < 0)
+            {
+              maxAllowedFillerSites--;
+              if (adjacentFillerSites >= maxAllowedFillerSites)
+              {
+                return false;
+              }
+              continue;
+            };
+
+
             if (site.region.indexOf("filler") >= 0)
             {
               adjacentFillerSites++;
@@ -441,19 +472,14 @@ module Rance
               {
                 return false;
               }
-            }
-
-            if (visibleStars && visibleStars.indexOf(site) < 0)
-            {
-              return false;
-            }
+            };
           }
 
           return true;
         });
       }
 
-      return this.nonFillerVoronoiLines;
+      return this.nonFillerVoronoiLines[indexString];
     }
     drawMap()
     {

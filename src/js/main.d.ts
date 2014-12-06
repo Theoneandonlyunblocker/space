@@ -481,6 +481,8 @@ declare module Rance {
                 [range: number]: Star[];
             };
         };
+        public getVisionRange(): number;
+        public getVision(): Star[];
         public severLinksToNonAdjacent(): void;
     }
 }
@@ -795,7 +797,12 @@ declare module Rance {
         public money: number;
         public controlledLocations: Rance.Star[];
         public visionIsDirty: boolean;
-        public visibleStars: Rance.Star[];
+        public visibleStars: {
+            [id: number]: Rance.Star;
+        };
+        public revealedStars: {
+            [id: number]: Rance.Star;
+        };
         constructor(id?: number);
         public makeColorScheme(): void;
         public makeFlag(): void;
@@ -818,6 +825,8 @@ declare module Rance {
         public getBorderPolygons(): any[];
         public updateVisibleStars(): void;
         public getVisibleStars(): Rance.Star[];
+        public getRevealedStars(): Rance.Star[];
+        public getRevealedButNotVisibleStars(): Rance.Star[];
     }
 }
 declare module Rance {
@@ -1133,7 +1142,9 @@ declare module Rance {
         };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
-        public nonFillerVoronoiLines: any[];
+        public nonFillerVoronoiLines: {
+            [visibility: string]: any[];
+        };
         public nonFillerPoints: Rance.Star[];
         public galaxyConstructors: {
             [type: string]: (any: any) => Rance.Star[];

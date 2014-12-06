@@ -3474,6 +3474,13 @@ var Rance;
                 byRange: visitedByRange
             });
         };
+        Star.prototype.getVisionRange = function () {
+            // TODO
+            return 1;
+        };
+        Star.prototype.getVision = function () {
+            return this.getLinkedInRange(this.getVisionRange()).all;
+        };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
 
@@ -4572,7 +4579,8 @@ var Rance;
             this.fleets = [];
             this.controlledLocations = [];
             this.visionIsDirty = true;
-            this.visibleStars = [];
+            this.visibleStars = {};
+            this.revealedStars = {};
             this.id = isFinite(id) ? id : idGenerators.player++;
             this.name = "Player " + this.id;
             this.money = 1000;
@@ -4848,28 +4856,77 @@ var Rance;
             return polys;
         };
         Player.prototype.updateVisibleStars = function () {
-            var visible = [];
-            var visibleById = {};
+            this.visibleStars = {};
+
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                var starVisible = this.controlledLocations[i].getVision();
+
+                for (var j = 0; j < starVisible.length; j++) {
+                    var star = starVisible[j];
+                    if (!this.visibleStars[star.id]) {
+                        this.visibleStars[star.id] = star;
+
+                        if (!this.revealedStars[star.id]) {
+                            this.revealedStars[star.id] = star;
+                        }
+                    }
+                }
+            }
+
             for (var i = 0; i < this.fleets.length; i++) {
                 var fleetVisible = this.fleets[i].getVision();
 
                 for (var j = 0; j < fleetVisible.length; j++) {
                     var star = fleetVisible[j];
-                    if (!visibleById[star.id]) {
-                        visibleById[star.id] = star;
-                        visible.push(star);
+                    if (!this.visibleStars[star.id]) {
+                        this.visibleStars[star.id] = star;
+
+                        if (!this.revealedStars[star.id]) {
+                            this.revealedStars[star.id] = star;
+                        }
                     }
                 }
             }
 
             this.visionIsDirty = false;
-            this.visibleStars = visible;
         };
         Player.prototype.getVisibleStars = function () {
             if (this.visionIsDirty)
                 this.updateVisibleStars();
 
-            return this.visibleStars;
+            var visible = [];
+
+            for (var id in this.visibleStars) {
+                visible.push(this.visibleStars[id]);
+            }
+
+            return visible;
+        };
+        Player.prototype.getRevealedStars = function () {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+
+            var toReturn = [];
+
+            for (var id in this.revealedStars) {
+                toReturn.push(this.revealedStars[id]);
+            }
+
+            return toReturn;
+        };
+        Player.prototype.getRevealedButNotVisibleStars = function () {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+
+            var toReturn = [];
+
+            for (var id in this.revealedStars) {
+                if (!this.visibleStars[id]) {
+                    toReturn.push(this.revealedStars[id]);
+                }
+            }
+
+            return toReturn;
         };
         return Player;
     })();
@@ -5952,6 +6009,7 @@ var Rance;
                 mapRenderer.setParent(renderer.layers["map"]);
                 this.props.galaxyMap.mapRenderer = mapRenderer;
                 mapRenderer.galaxyMap = galaxyMap;
+                mapRenderer.player = player1;
 
                 this.props.galaxyMap.mapRenderer.setMapMode("default");
 
@@ -6815,6 +6873,7 @@ var Rance;
             this.points = [];
             this.regions = {};
             this.triangles = [];
+            this.nonFillerVoronoiLines = {};
             this.galaxyConstructors = {};
             this.galaxyConstructors = {
                 spiral: this.makeSpiralPoints
@@ -6827,7 +6886,7 @@ var Rance;
             this.voronoiDiagram = null;
 
             this.nonFillerPoints = [];
-            this.nonFillerVoronoiLines = [];
+            this.nonFillerVoronoiLines = {};
         };
         MapGen.prototype.makeMap = function (options) {
             this.reset();
@@ -7105,8 +7164,21 @@ var Rance;
         MapGen.prototype.getNonFillerVoronoiLines = function (visibleStars) {
             if (!this.voronoiDiagram)
                 return [];
-            if (!this.nonFillerVoronoiLines || this.nonFillerVoronoiLines.length <= 0) {
-                this.nonFillerVoronoiLines = this.voronoiDiagram.edges.filter(function (edge) {
+
+            var indexString = "";
+            if (!visibleStars)
+                indexString = "all";
+            else {
+                var sorted = visibleStars.sort(function (a, b) {
+                    return a.id - b.id;
+                });
+
+                indexString = sorted.join();
+            }
+
+            if (!this.nonFillerVoronoiLines[indexString] || this.nonFillerVoronoiLines[indexString].length <= 0) {
+                console.log("newEdgesIndex");
+                this.nonFillerVoronoiLines[indexString] = this.voronoiDiagram.edges.filter(function (edge) {
                     var adjacentSites = [edge.lSite, edge.rSite];
                     var adjacentFillerSites = 0;
                     var maxAllowedFillerSites = 2;
@@ -7116,9 +7188,17 @@ var Rance;
 
                         if (!site) {
                             // draw all border edges
-                            return true;
-
+                            //return true;
                             // draw all non filler border edges
+                            maxAllowedFillerSites--;
+                            if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                return false;
+                            }
+                            continue;
+                        }
+                        ;
+
+                        if (visibleStars && visibleStars.indexOf(site) < 0) {
                             maxAllowedFillerSites--;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;
@@ -7133,17 +7213,14 @@ var Rance;
                                 return false;
                             }
                         }
-
-                        if (visibleStars && visibleStars.indexOf(site) < 0) {
-                            return false;
-                        }
+                        ;
                     }
 
                     return true;
                 });
             }
 
-            return this.nonFillerVoronoiLines;
+            return this.nonFillerVoronoiLines[indexString];
         };
         MapGen.prototype.drawMap = function () {
             function vectorToPoint(vector) {
@@ -7345,7 +7422,7 @@ var Rance;
                     if (!this.player) {
                         points = map.mapGen.getNonFillerPoints();
                     } else {
-                        points = this.player.getVisibleStars();
+                        points = this.player.getRevealedStars();
                     }
 
                     var mouseDownFN = function (event) {
@@ -7396,7 +7473,7 @@ var Rance;
                     if (!this.player) {
                         points = map.mapGen.getNonFillerPoints();
                     } else {
-                        points = this.player.getVisibleStars();
+                        points = this.player.getRevealedStars();
                     }
 
                     for (var i = 0; i < points.length; i++) {
@@ -7436,7 +7513,7 @@ var Rance;
                     if (!this.player) {
                         points = map.mapGen.getNonFillerPoints();
                     } else {
-                        points = this.player.getVisibleStars();
+                        points = this.player.getRevealedStars();
                     }
                     var incomeBounds = map.getIncomeBounds();
 
@@ -7499,7 +7576,8 @@ var Rance;
                     doc.addChild(gfx);
                     gfx.lineStyle(1, 0xC0C0C0, 0.5);
 
-                    var visible = this.player ? this.player.getVisibleStars() : null;
+                    var visible = this.player ? this.player.getRevealedStars() : null;
+
                     var lines = map.mapGen.getNonFillerVoronoiLines(visible);
 
                     for (var i = 0; i < lines.length; i++) {
@@ -7521,43 +7599,6 @@ var Rance;
 
                     gfx.lineStyle(4, player1.secondaryColor, 1);
 
-                    /*
-                    var edges = player1.getBorderPolygons()[0];
-                    
-                    var i = 0;
-                    
-                    var interval = window.setInterval(function()
-                    {
-                    var vertex = edges[i];
-                    gfx.moveTo(vertex.x, vertex.y);
-                    gfx.lineTo(edges[i + 1].x, edges[i + 1].y);
-                    i++;
-                    
-                    if (i === edges.length - 2)
-                    {
-                    console.log(edges, i, edges[i +1])
-                    gfx.beginFill(0xFF0000, 1);
-                    gfx.drawEllipse(edges[i+1].x, edges[i+1].y, 10, 10);
-                    gfx.endFill();
-                    }
-                    
-                    if (i >= edges.length - 1) window.clearInterval(interval);
-                    }, 500);
-                    */
-                    /*
-                    var edges = player1.getBorderEdges()[0];
-                    
-                    var interval = window.setInterval(function()
-                    {
-                    var edge = edges.shift();
-                    gfx.moveTo(edge.va.x, edge.va.y);
-                    gfx.lineTo(edge.vb.x, edge.vb.y);
-                    gfx.beginFill(0xFF0000, 0.5);
-                    gfx.drawEllipse(edge.va.x, edge.va.y, 3, 3);
-                    gfx.endFill();
-                    if (edges.length < 1) window.clearInterval(interval);
-                    }, 500);
-                    */
                     var players = game.playerOrder;
 
                     for (var i = 0; i < players.length; i++) {
@@ -7599,7 +7640,7 @@ var Rance;
                     if (!this.player) {
                         points = map.mapGen.getNonFillerPoints();
                     } else {
-                        points = this.player.getVisibleStars();
+                        points = this.player.getRevealedStars();
                     }
 
                     var starsFullyConnected = {};
