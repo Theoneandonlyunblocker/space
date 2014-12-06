@@ -28,7 +28,14 @@ module Rance
     controlledLocations: Star[] = [];
 
     visionIsDirty: boolean = true;
-    visibleStars: Star[] = [];
+    visibleStars:
+    {
+      [id: number]: Star;
+    } = {};
+    revealedStars:
+    {
+      [id: number]: Star;
+    } = {};
 
     constructor(id?: number)
     {
@@ -372,11 +379,27 @@ module Rance
     }
     updateVisibleStars()
     {
-      var visible: Star[] = [];
-      var visibleById:
+      this.visibleStars = {};
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
       {
-        [id: number]: Star;
-      } = {};
+        var starVisible = this.controlledLocations[i].getVision();
+
+        for (var j = 0; j < starVisible.length; j++)
+        {
+          var star = starVisible[j];
+          if (!this.visibleStars[star.id])
+          {
+            this.visibleStars[star.id] = star;
+
+            if (!this.revealedStars[star.id])
+            {
+              this.revealedStars[star.id] = star;
+            }
+          }
+        }
+      }
+
       for (var i = 0; i < this.fleets.length; i++)
       {
         var fleetVisible = this.fleets[i].getVision();
@@ -384,22 +407,61 @@ module Rance
         for (var j = 0; j < fleetVisible.length; j++)
         {
           var star = fleetVisible[j];
-          if (!visibleById[star.id])
+          if (!this.visibleStars[star.id])
           {
-            visibleById[star.id] = star;
-            visible.push(star);
+            this.visibleStars[star.id] = star;
+
+            if (!this.revealedStars[star.id])
+            {
+              this.revealedStars[star.id] = star;
+            }
           }
         }
       }
 
       this.visionIsDirty = false;
-      this.visibleStars = visible;
     }
     getVisibleStars()
     {
       if (this.visionIsDirty) this.updateVisibleStars();
 
-      return this.visibleStars;
+      var visible: Star[] = [];
+
+      for (var id in this.visibleStars)
+      {
+        visible.push(this.visibleStars[id]);
+      }
+
+      return visible;
+    }
+    getRevealedStars()
+    {
+      if (this.visionIsDirty) this.updateVisibleStars();
+
+      var toReturn: Star[] = [];
+
+      for (var id in this.revealedStars)
+      {
+        toReturn.push(this.revealedStars[id]);
+      }
+
+      return toReturn;
+    }
+    getRevealedButNotVisibleStars()
+    {
+      if (this.visionIsDirty) this.updateVisibleStars();
+
+      var toReturn: Star[] = [];
+
+      for (var id in this.revealedStars)
+      {
+        if (!this.visibleStars[id])
+        {
+          toReturn.push(this.revealedStars[id]);
+        }
+      }
+
+      return toReturn;
     }
   }  
 }

@@ -491,6 +491,15 @@ module Rance
       });
 
     }
+    getVisionRange(): number
+    {
+      // TODO
+      return 1;
+    }
+    getVision(): Star[]
+    {
+      return this.getLinkedInRange(this.getVisionRange()).all;
+    }
     severLinksToNonAdjacent()
     {
       var allLinks = this.getAllLinks();

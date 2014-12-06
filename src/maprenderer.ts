@@ -171,7 +171,7 @@ module Rance
           }
           else
           {
-            points = this.player.getVisibleStars();
+            points = this.player.getRevealedStars();
           }
 
           var mouseDownFN = function(event)
@@ -232,7 +232,7 @@ module Rance
           }
           else
           {
-            points = this.player.getVisibleStars();
+            points = this.player.getRevealedStars();
           }
 
           for (var i = 0; i < points.length; i++)
@@ -278,7 +278,7 @@ module Rance
           }
           else
           {
-            points = this.player.getVisibleStars();
+            points = this.player.getRevealedStars();
           }
           var incomeBounds = map.getIncomeBounds();
 
@@ -345,7 +345,8 @@ module Rance
           doc.addChild(gfx);
           gfx.lineStyle(1, 0xC0C0C0, 0.5);
 
-          var visible = this.player ? this.player.getVisibleStars() : null;
+          var visible = this.player ? this.player.getRevealedStars() : null;
+
           var lines = map.mapGen.getNonFillerVoronoiLines(visible);
 
           for (var i = 0; i < lines.length; i++)
@@ -369,45 +370,7 @@ module Rance
           doc.addChild(gfx);
 
           gfx.lineStyle(4, player1.secondaryColor, 1);
-          
-          /*
-          var edges = player1.getBorderPolygons()[0];
 
-          var i = 0;
-
-          var interval = window.setInterval(function()
-          {
-            var vertex = edges[i];
-            gfx.moveTo(vertex.x, vertex.y);
-            gfx.lineTo(edges[i + 1].x, edges[i + 1].y);
-            i++;
-
-            if (i === edges.length - 2)
-            {
-              console.log(edges, i, edges[i +1])
-              gfx.beginFill(0xFF0000, 1);
-              gfx.drawEllipse(edges[i+1].x, edges[i+1].y, 10, 10);
-              gfx.endFill();
-            }
-
-            if (i >= edges.length - 1) window.clearInterval(interval);
-          }, 500);
-          */
-
-          /*
-          var edges = player1.getBorderEdges()[0];
-
-          var interval = window.setInterval(function()
-          {
-            var edge = edges.shift();
-            gfx.moveTo(edge.va.x, edge.va.y);
-            gfx.lineTo(edge.vb.x, edge.vb.y);
-            gfx.beginFill(0xFF0000, 0.5);
-            gfx.drawEllipse(edge.va.x, edge.va.y, 3, 3);
-            gfx.endFill();
-            if (edges.length < 1) window.clearInterval(interval);
-          }, 500);
-          */
           
           var players = game.playerOrder;
 
@@ -462,7 +425,7 @@ module Rance
           }
           else
           {
-            points = this.player.getVisibleStars();
+            points = this.player.getRevealedStars();
           }
 
           var starsFullyConnected:
