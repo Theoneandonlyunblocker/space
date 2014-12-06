@@ -90,64 +90,41 @@ module Rance
       this.triangulate();
       this.severArmLinks();
 
-      for (var i = 0; i < 4; i++)
-      {
-        var units = player1.getAllUnits();
-        var fleet = new Fleet(player1, [units[i]],
-          this.points[i]);
-        this.points[i].owner = player1;
-        player1.addStar(this.points[i]);
-        var sectorCommand = new Building(
-        {
-          template: Templates.Buildings.sectorCommand,
-          location: this.points[i]
-        });
-        this.points[i].addBuilding(sectorCommand);
-        var player = false ? player2 : player1;
-        for (var j = 0; j < 2; j++)
-        {
-          var starBase = new Building(
-          {
-            template: Templates.Buildings.starBase,
-            location: this.points[i],
-            controller: player
-          })
-          this.points[i].addBuilding(starBase);
-        }
-      }
-
-      for (var i = 4; i < 8; i++)
-      {
-        var units = player2.getAllUnits();
-        var fleet = new Fleet(player2, [units[i - 4]],
-          this.points[i]);
-        this.points[i].owner = player2;
-        player2.addStar(this.points[i]);
-        var sectorCommand = new Building(
-        {
-          template: Templates.Buildings.sectorCommand,
-          location: this.points[i]
-        });
-        this.points[i].addBuilding(sectorCommand);
-        var player = false ? player1 : player2;
-        for (var j = 0; j < 2; j++)
-        {
-          var starBase = new Building(
-          {
-            template: Templates.Buildings.starBase,
-            location: this.points[i],
-            controller: player
-          })
-          this.points[i].addBuilding(starBase);
-        }
-      }
-
-      var units = player2.getAllUnits();
-      var fleet = new Fleet(player2, [units[4]],
-        this.points[8]);
+      this.setPlayers();
       
 
       return this;
+    }
+    setPlayers()
+    {
+      var regionNames = Object.keys(this.regions);
+      var startRegions = regionNames.filter(function(name)
+      {
+        return name.indexOf("arm") !== -1;
+      });
+
+
+      for (var i = 0; i < players.length; i++)
+      {
+        var player = players[i];
+        var regionName = startRegions[i];
+
+        var location = this.getFurthestPointInRegion(this.regions[regionName]);
+
+        location.owner = player;
+        player.addStar(location);
+        var sectorCommand = new Building(
+        {
+          template: Templates.Buildings.sectorCommand,
+          location: location
+        });
+        location.addBuilding(sectorCommand);
+
+        var ship = new Unit(Templates.ShipTypes.battleCruiser);
+        player.addUnit(ship);
+
+        var fleet = new Fleet(player, [ship], location);
+      }
     }
 
     generatePoints(options:
@@ -479,116 +456,21 @@ module Rance
 
       return this.nonFillerVoronoiLines[indexString];
     }
-    drawMap()
+    getFurthestPointInRegion(region): Star
     {
-      function vectorToPoint(vector)
+      var furthestDistance = 0;
+      var furthestStar: Star = null;
+
+      for (var i = 0; i < region.points.length; i++)
       {
-        return new PIXI.Point(vector[0], vector[1])
-      }
-
-      var minBound = Math.min(this.maxWidth, this.maxHeight);
-      var minBound2 = minBound / 2;
-
-
-      var doc = new PIXI.DisplayObjectContainer();
-
-      // VORONOI POLYS
-
-      // if (this.voronoiDiagram)
-      // {
-      //   for (var i = 0; i < this.voronoiDiagram.cells.length; i++)
-      //   {
-      //     var cell = this.voronoiDiagram.cells[i];
-      //     var cellVertices = this.getVerticesFromCell(cell);
-
-      //     var poly = new PIXI.Polygon(cellVertices);
-      //     var polyGfx: any = new PIXI.Graphics();
-      //     polyGfx.interactive = true;
-      //     polyGfx.lineStyle(6, 0xFF0000, 1);
-
-      //     polyGfx.beginFill(0x0000FF, 0.3);
-      //     polyGfx.drawShape(poly);
-      //     polyGfx.endFill();
-
-      //     polyGfx.cell = cell;
-
-      //     polyGfx.rightclick = function()
-      //     {
-      //       console.log(this.cell)
-      //     }
-      //     polyGfx.mouseover = function()
-      //     {
-      //       this.position.y -= 10
-      //     }
-      //     polyGfx.mouseout = function()
-      //     {
-      //       this.position.y += 10
-      //     }
-
-      //     doc.addChild(polyGfx);
-      //   }
-      // }
-      
-
-
-      var gfx = new PIXI.Graphics();
-      doc.addChild(gfx);
-
-      // VORONOI LINES
-      gfx.lineStyle(1, 0xFF0000, 1);
-
-      var voronoiLines = this.getNonFillerVoronoiLines();
-
-      for (var i = 0; i < voronoiLines.length; i++)
-      {
-        var line = voronoiLines[i];
-        gfx.moveTo(line.va.x, line.va.y);
-        gfx.lineTo(line.vb.x, line.vb.y);
-      }
-
-      
-      gfx.lineStyle(3, 0x000000, 1);
-      // STAR LINKS
-
-      for (var i = 0; i < this.points.length; i++)
-      {
-        var star = this.points[i];
-        var links = star.linksTo;
-
-        for (var j = 0; j < links.length; j++)
+        if (region.points[i].distance > furthestDistance)
         {
-          gfx.moveTo(star.x, star.y);
-          gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+          furthestStar = region.points[i];
+          furthestDistance = region.points[i].distance;
         }
       }
 
-      // STARS
-      
-      var points = this.getNonFillerPoints();
-
-      for (var i = 0; i < points.length; i++)
-      {
-        var fillColor = 0xFF0000;
-        if (points[i].region == "center")
-        {
-          fillColor = 0x00FF00;
-        }
-        else if (points[i].region.indexOf("filler") >= 0)
-        {
-          fillColor = 0x0000FF;
-        };
-
-        gfx.beginFill(fillColor);
-        gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
-        gfx.endFill();
-      }
-
-      // height is defined as a getter and somehow gets set to 0
-      // if its not uselessly referenced here
-      doc.height;
-
-      this.drawnMap = doc;
-      return doc;
+      return furthestStar;
     }
   }
 }

@@ -11,7 +11,7 @@
 
 /// <reference path="shaders/uniformmanager.ts"/>
 
-var player1, player2, battle, battlePrep, game,
+var players, player1, battle, battlePrep, game,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter, uniformManager, seed;
 
@@ -29,24 +29,23 @@ module Rance
   {
     Rance.images = loader.imageCache;
 
-    player1 = new Player();
-    //player1.color = 0xC02020;
-    player1.makeFlag();
-    player2 = new Player();
-    //player2.color = 0x2020C0;
-    player2.makeFlag();
+    players = [];
 
-    function setupFleetAndPlayer(player)
+    for (var i = 0; i < 5; i++)
     {
-      for (var i = 0; i < 8; i++)
+      var player = new Player();
+      player.makeFlag();
+
+      for (var j = 0; j < 8; j++)
       {
         var unit = makeRandomShip();
         player.addUnit(unit);
       }
+
+      players.push(player);
     }
 
-    setupFleetAndPlayer(player1);
-    setupFleetAndPlayer(player2);
+    player1 = players[0];
 
     uniforms =
     {
@@ -108,7 +107,7 @@ module Rance
     playerControl = new PlayerControl(player1);
     reactUI.playerControl = playerControl;
 
-    game = new Game(galaxyMap, [player1, player2], player1);
+    game = new Game(galaxyMap, players, player1);
 
 
     reactUI.currentScene = "galaxyMap";

@@ -1169,6 +1169,7 @@ declare module Rance {
                 dampeningFactor: number;
             };
         }): MapGen;
+        public setPlayers(): void;
         public generatePoints(options: {
             galaxyType: string;
             totalAmount: number;
@@ -1198,7 +1199,7 @@ declare module Rance {
         }): void;
         public getNonFillerPoints(): Rance.Star[];
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
-        public drawMap(): PIXI.DisplayObjectContainer;
+        public getFurthestPointInRegion(region: any): Rance.Star;
     }
 }
 declare module Rance {
@@ -1480,7 +1481,7 @@ declare module Rance {
         public updateTime(): void;
     }
 }
-declare var player1: any, player2: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
+declare var players: any, player1: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare var uniforms: any, testFilter: any, uniformManager: any, seed: any;
 declare module Rance {
     var images: any;
