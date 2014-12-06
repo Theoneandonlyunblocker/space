@@ -424,6 +424,14 @@ declare module Rance {
         public linksFrom: Star[];
         public distance: number;
         public region: string;
+        public indexedNeighborsInRange: {
+            [range: number]: {
+                all: Star[];
+                byRange: {
+                    [range: number]: Star[];
+                };
+            };
+        };
         public name: string;
         public owner: Rance.Player;
         public fleets: {

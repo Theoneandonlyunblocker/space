@@ -3103,6 +3103,7 @@ var Rance;
         function Star(x, y, id) {
             this.linksTo = [];
             this.linksFrom = [];
+            this.indexedNeighborsInRange = {};
             this.fleets = {};
             this.buildings = {};
             this.id = isFinite(id) ? id : idGenerators.star++;
@@ -3426,6 +3427,10 @@ var Rance;
             return neighbors;
         };
         Star.prototype.getLinkedInRange = function (range) {
+            if (this.indexedNeighborsInRange[range]) {
+                return this.indexedNeighborsInRange[range];
+            }
+
             var visited = {};
             var visitedByRange = {};
 
@@ -3458,6 +3463,11 @@ var Rance;
             for (var id in visited) {
                 allVisited.push(visited[id]);
             }
+
+            this.indexedNeighborsInRange[range] = {
+                all: allVisited,
+                byRange: visitedByRange
+            };
 
             return ({
                 all: allVisited,
@@ -7592,13 +7602,22 @@ var Rance;
                         points = this.player.getVisibleStars();
                     }
 
+                    var starsFullyConnected = {};
+
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
-                        var links = star.linksTo;
+                        if (starsFullyConnected[star.id])
+                            continue;
 
-                        for (var j = 0; j < links.length; j++) {
+                        starsFullyConnected[star.id] = true;
+
+                        for (var j = 0; j < star.linksTo.length; j++) {
                             gfx.moveTo(star.x, star.y);
                             gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+                        }
+                        for (var j = 0; j < star.linksFrom.length; j++) {
+                            gfx.moveTo(star.linksFrom[j].x, star.linksFrom[j].y);
+                            gfx.lineTo(star.x, star.y);
                         }
                     }
                     doc.height;

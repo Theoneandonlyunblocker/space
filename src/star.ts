@@ -18,6 +18,18 @@ module Rance
     distance: number;
     region: string;
 
+    indexedNeighborsInRange:
+    {
+      [range: number]:
+      {
+        all: Star[];
+        byRange:
+        {
+          [range: number]: Star[];
+        };
+      };
+    } = {};
+
     name: string;
     owner: Player;
     fleets:
@@ -419,6 +431,11 @@ module Rance
     }
     getLinkedInRange(range: number)
     {
+      if (this.indexedNeighborsInRange[range])
+      {
+        return this.indexedNeighborsInRange[range];
+      }
+
       var visited:
       {
         [id: number]: Star;
@@ -459,6 +476,12 @@ module Rance
       for (var id in visited)
       {
         allVisited.push(visited[id]);
+      }
+
+      this.indexedNeighborsInRange[range] =
+      {
+        all: allVisited,
+        byRange: visitedByRange
       }
 
       return(

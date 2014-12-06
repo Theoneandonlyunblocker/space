@@ -465,15 +465,27 @@ module Rance
             points = this.player.getVisibleStars();
           }
 
+          var starsFullyConnected:
+          {
+            [id: number]: boolean;
+          } = {};
+
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
-            var links = star.linksTo;
+            if (starsFullyConnected[star.id]) continue;
 
-            for (var j = 0; j < links.length; j++)
+            starsFullyConnected[star.id] = true;
+
+            for (var j = 0; j < star.linksTo.length; j++)
             {
               gfx.moveTo(star.x, star.y);
               gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+            }
+            for (var j = 0; j < star.linksFrom.length; j++)
+            {
+              gfx.moveTo(star.linksFrom[j].x, star.linksFrom[j].y);
+              gfx.lineTo(star.x, star.y);
             }
           }
           doc.height;
