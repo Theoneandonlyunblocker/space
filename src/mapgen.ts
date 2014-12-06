@@ -416,12 +416,10 @@ module Rance
       if (!visibleStars) indexString = "all";
       else
       {
-        var sorted = visibleStars.sort(function(a, b)
-        {
-          return a.id - b.id;
-        });
+        var ids: number[] = visibleStars.map(function(star){return star.id});
+        ids = ids.sort();
 
-        indexString = sorted.join();
+        indexString = ids.join();
       }
 
       if (!this.nonFillerVoronoiLines[indexString] ||
