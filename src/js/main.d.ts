@@ -110,6 +110,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BattleScore: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Battle: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -359,6 +364,7 @@ declare module Rance {
             abilities: Templates.AbilityTemplate[];
         }
         module ShipTypes {
+            var cheatShip: TypeTemplate;
             var fighterSquadron: TypeTemplate;
             var bomberSquadron: TypeTemplate;
             var battleCruiser: TypeTemplate;
@@ -859,8 +865,16 @@ declare module Rance {
         public battleData: Rance.IBattleData;
         public turnOrder: Rance.Unit[];
         public activeUnit: Rance.Unit;
+        public currentTurn: number;
         public maxTurns: number;
         public turnsLeft: number;
+        public startHealth: {
+            side1: number;
+            side2: number;
+        };
+        public evaluation: {
+            [turnNumber: number]: number;
+        };
         public ended: boolean;
         constructor(props: {
             battleData: Rance.IBattleData;
@@ -885,6 +899,7 @@ declare module Rance {
             current: number;
             max: number;
         };
+        public getEvaluation(): number;
         public checkBattleEnd(): boolean;
     }
 }
@@ -1237,6 +1252,7 @@ declare module Rance {
         public currentMapMode: IMapRendererLayerMapMode;
         constructor();
         public addEventListeners(): void;
+        public changePlayer(player: Rance.Player): void;
         public updateShaderOffsets(x: number, y: number): void;
         public updateShaderZoom(zoom: number): void;
         public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
@@ -1245,6 +1261,7 @@ declare module Rance {
         public initMapModes(): void;
         public setParent(newParent: PIXI.DisplayObjectContainer): void;
         public resetContainer(): void;
+        public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
         public drawLayer(layer: IMapRendererLayer): void;
         public setMapMode(newMapMode: string): void;
         public render(): void;

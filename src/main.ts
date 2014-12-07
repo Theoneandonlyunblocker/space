@@ -36,12 +36,6 @@ module Rance
       var player = new Player();
       player.makeFlag();
 
-      for (var j = 0; j < 8; j++)
-      {
-        var unit = makeRandomShip();
-        player.addUnit(unit);
-      }
-
       players.push(player);
     }
 

@@ -932,10 +932,58 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BattleScore = React.createClass({
+            displayName: "BattleScore",
+            render: function () {
+                var battle = this.props.battle;
+                var evaluation = this.props.battle.getEvaluation();
+
+                var evaluationPercentage = ((1 + evaluation) * 50);
+
+                return (React.DOM.div({
+                    className: "battle-score-wrapper"
+                }, React.DOM.div({
+                    className: "battle-score-container"
+                }, React.DOM.div({
+                    className: "battle-score-flag-wrapper",
+                    style: {
+                        backgroundImage: "url(" + battle.side1Player.icon + ")"
+                    }
+                }), React.DOM.div({
+                    className: "battle-score-bar-container"
+                }, React.DOM.div({
+                    className: "battle-score-bar-value battle-score-bar-side1",
+                    style: {
+                        flex: 100 - evaluationPercentage,
+                        backgroundColor: "#" + Rance.hexToString(battle.side1Player.color),
+                        borderColor: "#" + Rance.hexToString(battle.side1Player.secondaryColor)
+                    }
+                }), React.DOM.div({
+                    className: "battle-score-bar-value battle-score-bar-side2",
+                    style: {
+                        flex: evaluationPercentage,
+                        backgroundColor: "#" + Rance.hexToString(battle.side2Player.color),
+                        borderColor: "#" + Rance.hexToString(battle.side2Player.secondaryColor)
+                    }
+                })), React.DOM.div({
+                    className: "battle-score-flag-wrapper",
+                    style: {
+                        backgroundImage: "url(" + battle.side2Player.icon + ")"
+                    }
+                }))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleet.ts"/>
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
+/// <reference path="battlescore.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1058,7 +1106,9 @@ var Rance;
 
                 return (React.DOM.div({ className: "battle-container" }, React.DOM.div({
                     className: "battle-upper"
-                }, React.DOM.div({ className: "battle-upper-background" }, null), Rance.UIComponents.TurnOrder({
+                }, React.DOM.div({ className: "battle-upper-background" }, null), Rance.UIComponents.BattleScore({
+                    battle: battle
+                }), Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
                     unitsBySide: battle.unitsBySide,
                     potentialDelay: this.state.potentialDelay,
@@ -2912,6 +2962,27 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (ShipTypes) {
+            ShipTypes.cheatShip = {
+                type: "cheatShip",
+                typeName: "Cheat Ship",
+                isSquadron: false,
+                buildCost: 0,
+                icon: "img\/icons\/f.png",
+                maxStrength: 0.5,
+                maxMovePoints: 999,
+                visionRange: 999,
+                attributeLevels: {
+                    attack: 0.7,
+                    defence: 0.4,
+                    intelligence: 0.5,
+                    speed: 0.8
+                },
+                abilities: [
+                    Rance.Templates.Abilities.rangedAttack,
+                    Rance.Templates.Abilities.bombAttack,
+                    Rance.Templates.Abilities.standBy
+                ]
+            };
             ShipTypes.fighterSquadron = {
                 type: "fighterSquadron",
                 typeName: "Fighter Squadron",
@@ -3526,7 +3597,7 @@ var Rance;
 
             this.addShips(ships);
 
-            Rance.eventManager.dispatchEvent("renderMap", null);
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets");
         }
         Fleet.prototype.getShipIndex = function (ship) {
             return this.ships.indexOf(ship);
@@ -3538,7 +3609,7 @@ var Rance;
             this.location.removeFleet(this);
             this.player.removeFleet(this);
 
-            Rance.eventManager.dispatchEvent("renderMap", null);
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets");
         };
         Fleet.prototype.mergeWith = function (fleet) {
             fleet.addShips(this.ships);
@@ -3589,7 +3660,7 @@ var Rance;
             fleet.addShip(ship);
 
             this.ships.splice(index, 1);
-            Rance.eventManager.dispatchEvent("renderMap", null);
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets");
         };
         Fleet.prototype.split = function () {
             var newFleet = new Fleet(this.player, [], this.location);
@@ -3680,7 +3751,7 @@ var Rance;
                 this.move(move.star);
                 if (onMove)
                     onMove();
-            }.bind(this), 250);
+            }.bind(this), 100);
         };
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
@@ -4899,7 +4970,7 @@ var Rance;
             }
 
             this.visionIsDirty = false;
-            Rance.eventManager.dispatchEvent("renderMap");
+            Rance.eventManager.dispatchEvent("renderLayer", "fogOfWar");
         };
         Player.prototype.getVisibleStars = function () {
             if (this.visionIsDirty)
@@ -4960,6 +5031,7 @@ var Rance;
                 side2: []
             };
             this.turnOrder = [];
+            this.evaluation = {};
             this.ended = false;
             this.side1 = props.side1;
             this.side1Player = props.side1Player;
@@ -4986,10 +5058,16 @@ var Rance;
                 }
             });
 
-            this.maxTurns = 25;
+            this.currentTurn = 0;
+            this.maxTurns = 24;
             this.turnsLeft = this.maxTurns;
             this.updateTurnOrder();
             this.setActiveUnit();
+
+            this.startHealth = {
+                side1: this.getTotalHealthForSide("side1").current,
+                side2: this.getTotalHealthForSide("side2").current
+            };
 
             if (this.checkBattleEnd()) {
                 this.endBattle();
@@ -5040,6 +5118,7 @@ var Rance;
             this.activeUnit = this.turnOrder[0];
         };
         Battle.prototype.endTurn = function () {
+            this.currentTurn++;
             this.turnsLeft--;
             this.updateTurnOrder();
             this.setActiveUnit();
@@ -5110,6 +5189,37 @@ var Rance;
             }
 
             return health;
+        };
+        Battle.prototype.getEvaluation = function () {
+            if (!this.evaluation[this.currentTurn]) {
+                var self = this;
+                var evaluation = 0;
+
+                ["side1", "side2"].forEach(function (side) {
+                    var sign = side === "side1" ? 1 : -1;
+                    var currentHealth = self.getTotalHealthForSide(side).current;
+                    if (currentHealth <= 0) {
+                        evaluation += 999 * sign;
+                        return;
+                    }
+                    var currentHealthFactor = currentHealth / self.startHealth[side];
+                    var lostHealthFactor = 1 - currentHealthFactor;
+
+                    for (var i = 0; i < self.unitsBySide[side].length; i++) {
+                        if (self.unitsBySide[side][i].currentStrength <= 0) {
+                            evaluation += 0.1 * sign;
+                        }
+                    }
+
+                    evaluation += (1 - currentHealthFactor) * sign;
+                });
+
+                evaluation = Rance.clamp(evaluation, -1, 1);
+
+                this.evaluation[this.currentTurn] = evaluation;
+            }
+
+            return this.evaluation[this.currentTurn];
         };
         Battle.prototype.checkBattleEnd = function () {
             if (!this.activeUnit)
@@ -5463,6 +5573,7 @@ var Rance;
     var Unit = (function () {
         function Unit(template) {
             this.id = idGenerators.unit++;
+            console.log(this.id);
 
             this.template = template;
             this.abilities = template.abilities;
@@ -7258,10 +7369,22 @@ var Rance;
             this.addEventListeners();
         }
         MapRenderer.prototype.addEventListeners = function () {
+            var self = this;
             Rance.eventManager.addEventListener("renderMap", this.render.bind(this));
+            Rance.eventManager.addEventListener("renderLayer", function (e) {
+                console.log("render layer: " + e.data);
+                var layer = self.layers[e.data];
+                if (self.hasLayerInMapMode(layer)) {
+                    self.drawLayer(layer);
+                }
+            });
 
             renderer.camera.onMove = this.updateShaderOffsets.bind(this);
             renderer.camera.onZoom = this.updateShaderZoom.bind(this);
+        };
+        MapRenderer.prototype.changePlayer = function (player) {
+            this.player = player;
+            this.render();
         };
         MapRenderer.prototype.updateShaderOffsets = function (x, y) {
             for (var owner in this.occupationShaders) {
@@ -7387,15 +7510,20 @@ var Rance;
                         Rance.eventManager.dispatchEvent("starRightClick", star);
                     };
                     for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var starSize = 6;
+                        if (star.buildings["defence"]) {
+                            starSize += star.buildings["defence"].length * 3;
+                        }
                         var gfx = new PIXI.Graphics();
-                        gfx.star = points[i];
+                        gfx.star = star;
                         gfx.lineStyle(2, 0x222222, 1);
                         gfx.beginFill(0xFFFF00);
-                        gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
+                        gfx.drawEllipse(star.x, star.y, starSize, starSize);
                         gfx.endFill;
 
                         gfx.interactive = true;
-                        gfx.hitArea = new PIXI.Polygon(points[i].voronoiCell.vertices);
+                        gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
                         gfx.mousedown = mouseDownFN;
                         gfx.mouseup = mouseUpFN;
                         gfx.click = function (event) {
@@ -7404,7 +7532,7 @@ var Rance;
 
                             onClickFN(this.star);
                         }.bind(gfx);
-                        gfx.rightclick = rightClickFN.bind(gfx, points[i]);
+                        gfx.rightclick = rightClickFN.bind(gfx, star);
 
                         doc.addChild(gfx);
                     }
@@ -7458,6 +7586,8 @@ var Rance;
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
+                    if (!this.player)
+                        return doc;
                     var points = this.player.getRevealedButNotVisibleStars();
 
                     if (!points || points.length < 1)
@@ -7760,6 +7890,15 @@ var Rance;
         MapRenderer.prototype.resetContainer = function () {
             this.container.removeChildren();
         };
+        MapRenderer.prototype.hasLayerInMapMode = function (layer) {
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                if (this.currentMapMode.layers[i].layer === layer) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
         MapRenderer.prototype.drawLayer = function (layer) {
             layer.container.removeChildren();
             layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
@@ -7780,6 +7919,7 @@ var Rance;
             this.render();
         };
         MapRenderer.prototype.render = function () {
+            console.log("full render");
             this.resetContainer();
 
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
@@ -8654,11 +8794,6 @@ var Rance;
         for (var i = 0; i < 5; i++) {
             var player = new Rance.Player();
             player.makeFlag();
-
-            for (var j = 0; j < 8; j++) {
-                var unit = Rance.makeRandomShip();
-                player.addUnit(unit);
-            }
 
             players.push(player);
         }
