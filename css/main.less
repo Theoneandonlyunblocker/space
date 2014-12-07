@@ -409,10 +409,10 @@ progress::-webkit-progress-value { background: #080; }
 
 .unit-wrapper
 {
-  display: flex;
+  display: block;
   position: relative;
-  flex: 1 1 4em;
-  max-height: 6em;
+  flex: 1 1 5em;
+  max-height: 5em;
   margin: 5px;
 }
 
@@ -563,7 +563,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .unit-info
 {
-  display: flex;
+  display: block;
   flex: 1;
   flex-flow: column;
   justify-content: space-between;
@@ -685,6 +685,15 @@ progress::-webkit-progress-value { background: #080; }
 .critical
 {
   color: red;
+}
+
+.unit-action-points
+{
+  height: 12px;
+  >*
+  {
+    vertical-align: super;
+  }
 }
 
 .unit-icon-container
