@@ -2,8 +2,6 @@ html,
 body {
   height: 100%;
   max-height: 100%;
-  display: flex;
-  flex-flow: column;
   overflow-x: hidden;
   padding: 0;
   margin: 0;
@@ -112,8 +110,6 @@ progress::-webkit-progress-value {
 }
 .react-stage {
   height: 100%;
-  display: flex;
-  flex-flow: column;
 }
 .battle-container {
   display: flex;
@@ -693,6 +689,7 @@ progress::-webkit-progress-value {
   display: flex;
   flex: 1;
   flex-flow: column;
+  height: calc(100% - 25px);
 }
 .galaxy-map-ui {
   z-index: 100;
