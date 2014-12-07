@@ -454,6 +454,7 @@ module Rance
       for (var i = 0; i < range; i++)
       {
         current = frontier.slice(0);
+        if (current.length <= 0) break;
         frontier = [];
         visitedByRange[i+1] = [];
 

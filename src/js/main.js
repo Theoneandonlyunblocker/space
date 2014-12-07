@@ -22,11 +22,17 @@ var Rance;
             },
             makeCapitalInfo: function () {
                 var text = this.makeStrengthText();
-                var bar = React.DOM.progress({
-                    className: "unit-strength-bar",
-                    max: this.props.maxStrength,
-                    value: this.props.currentStrength
-                });
+
+                var relativeHealth = this.props.currentStrength / this.props.maxStrength;
+
+                var bar = React.DOM.div({
+                    className: "unit-strength-bar"
+                }, React.DOM.div({
+                    className: "unit-strength-bar-value",
+                    style: {
+                        width: "" + relativeHealth * 100 + "%"
+                    }
+                }));
 
                 return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
             },
@@ -2980,6 +2986,7 @@ var Rance;
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.bombAttack,
+                    Rance.Templates.Abilities.guardColumn,
                     Rance.Templates.Abilities.standBy
                 ]
             };
@@ -3518,6 +3525,8 @@ var Rance;
 
             for (var i = 0; i < range; i++) {
                 current = frontier.slice(0);
+                if (current.length <= 0)
+                    break;
                 frontier = [];
                 visitedByRange[i + 1] = [];
 
@@ -6138,7 +6147,7 @@ var Rance;
 
                 this.renderMap();
 
-                this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.mapGen.points[0]);
+                this.props.renderer.camera.centerOnPosition(player1.controlledLocations[0]);
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

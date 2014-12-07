@@ -572,7 +572,8 @@ progress::-webkit-progress-value { background: #080; }
 .unit-info-name
 {
   white-space: nowrap;
-  text-overflow: ellipsis;
+  overflow-x: hidden;
+  min-height: 1.1em;
 }
 
 .unit-status
@@ -667,6 +668,12 @@ progress::-webkit-progress-value { background: #080; }
 {
   width: 100%;
   height: 10px;
+  background-color: red;
+}
+.unit-strength-bar-value
+{
+  height: 100%;
+  background-color: green;
 }
 
 .wounded

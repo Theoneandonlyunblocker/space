@@ -84,7 +84,7 @@ module Rance
         this.renderMap();
 
         this.props.renderer.camera.centerOnPosition(
-          this.props.galaxyMap.mapGen.points[0]);
+          player1.controlledLocations[0]);
       }
     });
   }

@@ -47,6 +47,7 @@ module Rance
         [
           Abilities.rangedAttack,
           Abilities.bombAttack,
+          Abilities.guardColumn,
           Abilities.standBy
         ]
       }
