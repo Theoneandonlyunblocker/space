@@ -68,10 +68,25 @@ module Rance
     }
     addEventListeners()
     {
+      var self = this;
       eventManager.addEventListener("renderMap", this.render.bind(this));
+      eventManager.addEventListener("renderLayer", function(e)
+      {
+        console.log("render layer: " + e.data);
+        var layer = self.layers[e.data];
+        if (self.hasLayerInMapMode(layer))
+        {
+          self.drawLayer(layer)
+        }
+      });
 
       renderer.camera.onMove = this.updateShaderOffsets.bind(this);
       renderer.camera.onZoom = this.updateShaderZoom.bind(this);
+    }
+    changePlayer(player: Player)
+    {
+      this.player = player;
+      this.render();
     }
     updateShaderOffsets(x: number, y: number)
     {
@@ -228,15 +243,21 @@ module Rance
           }
           for (var i = 0; i < points.length; i++)
           {
+            var star = points[i];
+            var starSize = 6;
+            if (star.buildings["defence"])
+            {
+              starSize += star.buildings["defence"].length * 3;
+            }
             var gfx: any = new PIXI.Graphics();
-            gfx.star = points[i];
+            gfx.star = star;
             gfx.lineStyle(2, 0x222222, 1);
             gfx.beginFill(0xFFFF00);
-            gfx.drawEllipse(points[i].x, points[i].y, 6, 6);
+            gfx.drawEllipse(star.x, star.y, starSize, starSize);
             gfx.endFill;
 
             gfx.interactive = true;
-            gfx.hitArea = new PIXI.Polygon(points[i].voronoiCell.vertices);
+            gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
             gfx.mousedown = mouseDownFN;
             gfx.mouseup = mouseUpFN;
             gfx.click = function(event)
@@ -245,7 +266,7 @@ module Rance
 
               onClickFN(this.star);
             }.bind(gfx);
-            gfx.rightclick = rightClickFN.bind(gfx, points[i]);
+            gfx.rightclick = rightClickFN.bind(gfx, star);
 
             doc.addChild(gfx);
           }
@@ -307,6 +328,7 @@ module Rance
         drawingFunction: function(map: GalaxyMap)
         {
           var doc = new PIXI.DisplayObjectContainer();
+          if (!this.player) return doc;
           var points: Star[] = this.player.getRevealedButNotVisibleStars();
 
           if (!points || points.length < 1) return doc;
@@ -660,6 +682,18 @@ module Rance
     {
       this.container.removeChildren();
     }
+    hasLayerInMapMode(layer: IMapRendererLayer)
+    {
+      for (var i = 0; i < this.currentMapMode.layers.length; i++)
+      {
+        if (this.currentMapMode.layers[i].layer === layer)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
     drawLayer(layer: IMapRendererLayer)
     {
       layer.container.removeChildren();
@@ -685,6 +719,7 @@ module Rance
     }
     render()
     {
+      console.log("full render")
       this.resetContainer();
 
       for (var i = 0; i < this.currentMapMode.layers.length; i++)

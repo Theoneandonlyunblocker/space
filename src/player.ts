@@ -421,7 +421,7 @@ module Rance
       }
 
       this.visionIsDirty = false;
-      eventManager.dispatchEvent("renderMap");
+      eventManager.dispatchEvent("renderLayer", "fogOfWar");
     }
     getVisibleStars()
     {

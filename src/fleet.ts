@@ -31,7 +31,7 @@ module Rance
 
       this.addShips(ships);
 
-      eventManager.dispatchEvent("renderMap", null);
+      eventManager.dispatchEvent("renderLayer", "fleets");
     }
     getShipIndex(ship: Unit)
     {
@@ -46,7 +46,7 @@ module Rance
       this.location.removeFleet(this);
       this.player.removeFleet(this);
 
-      eventManager.dispatchEvent("renderMap", null);
+      eventManager.dispatchEvent("renderLayer", "fleets");
     }
     mergeWith(fleet: Fleet)
     {
@@ -102,7 +102,7 @@ module Rance
       fleet.addShip(ship);
 
       this.ships.splice(index, 1);
-      eventManager.dispatchEvent("renderMap", null);
+      eventManager.dispatchEvent("renderLayer", "fleets");
     }
     split()
     {
@@ -206,7 +206,7 @@ module Rance
         this.move(move.star);
         if (onMove) onMove();
 
-      }.bind(this), 250);
+      }.bind(this), 100);
     }
     getFriendlyFleetsAtOwnLocation()
     {
