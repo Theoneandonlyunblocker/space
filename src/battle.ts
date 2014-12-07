@@ -28,8 +28,20 @@ module Rance
     turnOrder: Unit[] = [];
     activeUnit: Unit;
 
+    currentTurn: number;
     maxTurns: number;
     turnsLeft: number;
+
+    startHealth:
+    {
+      side1: number;
+      side2: number;
+    };
+
+    evaluation:
+    {
+      [turnNumber: number]: number;
+    } = {};
 
     ended: boolean = false;
 
@@ -73,10 +85,17 @@ module Rance
         }
       });
 
-      this.maxTurns = 25;
+      this.currentTurn = 0;
+      this.maxTurns = 24;
       this.turnsLeft = this.maxTurns;
       this.updateTurnOrder();
       this.setActiveUnit();
+
+      this.startHealth =
+      {
+        side1: this.getTotalHealthForSide("side1").current,
+        side2: this.getTotalHealthForSide("side2").current
+      }
 
       if (this.checkBattleEnd())
       {
@@ -137,6 +156,7 @@ module Rance
     }
     endTurn()
     {
+      this.currentTurn++;
       this.turnsLeft--;
       this.updateTurnOrder();
       this.setActiveUnit();
@@ -225,6 +245,43 @@ module Rance
       }
 
       return health;
+    }
+    getEvaluation()
+    {
+      if (!this.evaluation[this.currentTurn])
+      {
+        var self = this;
+        var evaluation = 0;
+
+        ["side1", "side2"].forEach(function(side)
+        {
+          var sign = side === "side1" ? 1 : -1;
+          var currentHealth = self.getTotalHealthForSide(side).current;
+          if (currentHealth <= 0)
+          {
+            evaluation += 999 * sign;
+            return;
+          }
+          var currentHealthFactor = currentHealth / self.startHealth[side];
+          var lostHealthFactor = 1 - currentHealthFactor;
+
+          for (var i = 0; i < self.unitsBySide[side].length; i++)
+          {
+            if (self.unitsBySide[side][i].currentStrength <= 0)
+            {
+              evaluation += 0.1 * sign;
+            }
+          }
+
+          evaluation += (1 - currentHealthFactor) * sign;
+        });
+
+        evaluation = clamp(evaluation, -1, 1);
+
+        this.evaluation[this.currentTurn] = evaluation;
+      }
+
+      return this.evaluation[this.currentTurn];
     }
     checkBattleEnd()
     {

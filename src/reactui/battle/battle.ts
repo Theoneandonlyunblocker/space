@@ -2,6 +2,7 @@
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
+/// <reference path="battlescore.ts"/>
 
 module Rance
 {
@@ -177,6 +178,10 @@ module Rance
               React.DOM.div({className: "battle-upper-background"},
                 null
               ),
+              UIComponents.BattleScore(
+              {
+                battle: battle
+              }),
               UIComponents.TurnOrder(
               {
                 turnOrder: battle.turnOrder,
