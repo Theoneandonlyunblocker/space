@@ -414,6 +414,7 @@ progress::-webkit-progress-value { background: #080; }
   flex: 1 1 5em;
   max-height: 5em;
   margin: 5px;
+  padding: 2px;
 }
 
 .unit
@@ -580,6 +581,7 @@ progress::-webkit-progress-value { background: #080; }
 .unit-status
 {
   height: 20px;
+  margin: 2px;
   position: relative;
 }
 
@@ -589,8 +591,6 @@ progress::-webkit-progress-value { background: #080; }
   height: 100%;
   width: 100%;
   overflow: hidden;
-  margin: 2px 0;
-  background-color: red;
 
   border: 1px solid rgba(255, 255, 255, 1) !important;
   border-radius: 5px;
@@ -605,6 +605,11 @@ progress::-webkit-progress-value { background: #080; }
   }
 }
 
+.guard-meter-container
+{
+  background-color: #032C9C;
+}
+
 .status-inner-wrapper
 {
   display: block;
@@ -616,7 +621,7 @@ progress::-webkit-progress-value { background: #080; }
   left: 0;
   right: 0;
   margin: 1px;
-  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
   border-radius: 5px;
   box-sizing: border-box;
 }
@@ -632,7 +637,10 @@ progress::-webkit-progress-value { background: #080; }
 
 .guard-meter-value
 {
-  background-color: green;
+  @c1: #0082E6;
+  @c2: #032C9C;
+  background: linear-gradient(to left, @c1, @c2);
+
 }
 
 .guard-text-container

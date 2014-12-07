@@ -11,7 +11,7 @@ module Rance
 
         if (this.props.guard.value > 0)
         {
-          var guard = clamp(this.props.guard.value, 0, 100);
+          var guard = this.props.guard.value;
           statusElement = React.DOM.div(
           {
             className: "status-container guard-meter-container"
@@ -21,7 +21,7 @@ module Rance
               className: "guard-meter-value",
               style:
               {
-                width: "" + guard + "%"
+                width: "" + clamp(guard, 0, 100) + "%"
               }
             }),
             React.DOM.div(

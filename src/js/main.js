@@ -111,13 +111,13 @@ var Rance;
                 var statusElement = null;
 
                 if (this.props.guard.value > 0) {
-                    var guard = Rance.clamp(this.props.guard.value, 0, 100);
+                    var guard = this.props.guard.value;
                     statusElement = React.DOM.div({
                         className: "status-container guard-meter-container"
                     }, React.DOM.div({
                         className: "guard-meter-value",
                         style: {
-                            width: "" + guard + "%"
+                            width: "" + Rance.clamp(guard, 0, 100) + "%"
                         }
                     }), React.DOM.div({
                         className: "status-inner-wrapper"
