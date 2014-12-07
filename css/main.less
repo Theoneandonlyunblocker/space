@@ -393,7 +393,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: flex;
   flex-flow: row;
-  flex: 1;
+  flex: 1 1 520px;
   min-width: 220px;
   max-width: 520px;
 }
@@ -411,7 +411,8 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: flex;
   position: relative;
-  height: 78px;
+  flex: 1 1 4em;
+  max-height: 6em;
   margin: 5px;
 }
 
@@ -572,7 +573,7 @@ progress::-webkit-progress-value { background: #080; }
 .unit-info-name
 {
   white-space: nowrap;
-  overflow-x: hidden;
+  overflow: hidden;
   min-height: 1.1em;
 }
 
@@ -871,6 +872,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: flex;
   flex-flow: row;
+  height: 100%;
 
   .prevent-user-select;
 
