@@ -437,51 +437,49 @@ progress::-webkit-progress-value {
   height: 20px;
   position: relative;
 }
-.guard-wrapper {
+.status-container {
   position: relative;
   height: 100%;
   width: 100%;
+  overflow: hidden;
+  margin: 2px 0;
+  background-color: red;
+  border: 1px solid #ffffff !important;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
-.guard-wrapper > * {
+.status-container > * {
   position: absolute;
-  max-width: 100%;
+  width: 100%;
   height: 100%;
   border-color: white !important;
 }
-.guard-wrapper progress {
-  color: linear-gradient(to left, #0082e6, #032c9c);
-  border-radius: 5px;
-  border: 1px solid white;
-}
-.guard-wrapper progress::-moz-progress-bar {
-  background: linear-gradient(to left, #0082e6, #032c9c);
-  border-radius: 5px;
-}
-.guard-wrapper progress::-ms-fill {
-  background: linear-gradient(to left, #0082e6, #032c9c);
-  border-radius: 5px;
-  height: 100%;
-}
-.guard-wrapper progress::-webkit-progress-value {
-  background: linear-gradient(to left, #0082e6, #032c9c);
-  border-radius: 5px;
-}
-.guard-text-container {
-  color: #eeeeee;
-  display: flex;
-  flex-flow: row;
-  width: 96%;
-  height: 16px;
-  margin: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+.status-inner-wrapper {
+  display: block;
+  position: absolute;
+  width: auto;
+  height: auto;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
   border-radius: 5px;
   box-sizing: border-box;
-  font-size: 0.85em;
-  justify-content: space-between;
 }
-.guard-text-container > * {
-  margin: 0 4px;
-  margin-top: auto;
+.status-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  font-size: 0.8em;
+  margin: 0 0.4em;
+}
+.guard-meter-value {
+  background-color: green;
+}
+.guard-text-container {
+  justify-content: space-between;
 }
 .unit-strength-amount {
   font-size: 1em;

@@ -111,20 +111,23 @@ var Rance;
                 var statusElement = null;
 
                 if (this.props.guard.value > 0) {
-                    var guard = this.props.guard;
+                    var guard = Rance.clamp(this.props.guard.value, 0, 100);
                     statusElement = React.DOM.div({
-                        className: "guard-wrapper"
-                    }, React.DOM.progress({
-                        className: "guard-meter",
-                        max: 100,
-                        value: guard.value
-                    }), React.DOM.div({
-                        className: "guard-text-container"
+                        className: "status-container guard-meter-container"
                     }, React.DOM.div({
-                        className: "guard-text"
+                        className: "guard-meter-value",
+                        style: {
+                            width: "" + guard + "%"
+                        }
+                    }), React.DOM.div({
+                        className: "status-inner-wrapper"
+                    }, React.DOM.div({
+                        className: "guard-text-container status-inner"
+                    }, React.DOM.div({
+                        className: "guard-text status-text"
                     }, "Guard"), React.DOM.div({
-                        className: "guard-amount"
-                    }, "" + guard.value + "%")));
+                        className: "guard-text-value status text"
+                    }, "" + guard + "%"))));
                 }
 
                 return (React.DOM.div({ className: "unit-status" }, statusElement));
