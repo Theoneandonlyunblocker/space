@@ -175,9 +175,6 @@ module Rance
             {
               className: "battle-upper"
             },
-              React.DOM.div({className: "battle-upper-background"},
-                null
-              ),
               UIComponents.BattleScore(
               {
                 battle: battle

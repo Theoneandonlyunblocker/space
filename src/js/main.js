@@ -1106,7 +1106,7 @@ var Rance;
 
                 return (React.DOM.div({ className: "battle-container" }, React.DOM.div({
                     className: "battle-upper"
-                }, React.DOM.div({ className: "battle-upper-background" }, null), Rance.UIComponents.BattleScore({
+                }, Rance.UIComponents.BattleScore({
                     battle: battle
                 }), Rance.UIComponents.TurnOrder({
                     turnOrder: battle.turnOrder,
@@ -5573,7 +5573,6 @@ var Rance;
     var Unit = (function () {
         function Unit(template) {
             this.id = idGenerators.unit++;
-            console.log(this.id);
 
             this.template = template;
             this.abilities = template.abilities;
