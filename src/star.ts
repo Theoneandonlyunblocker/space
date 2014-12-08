@@ -29,6 +29,10 @@ module Rance
         };
       };
     } = {};
+    indexedDistanceToStar:
+    {
+      [id: number]: number;
+    } = {};
 
     name: string;
     owner: Player;
@@ -41,6 +45,8 @@ module Rance
     {
       [category: string] : Building[];
     } = {};
+
+    distanceFromNearestStartLocation: number;
 
     baseIncome: number;
 
@@ -469,6 +475,7 @@ module Rance
             visited[neighbors[k].id] = neighbors[k];
             visitedByRange[i+1].push(neighbors[k]);
             frontier.push(neighbors[k]);
+            this.indexedDistanceToStar[neighbors[k].id] = i;
           }
         }
       }
@@ -492,6 +499,26 @@ module Rance
       });
 
     }
+    getDistanceToStar(target: Star)
+    {
+      if (!this.indexedDistanceToStar[target.id])
+      {
+        var a = aStar(this, target);
+        if (!a)
+        {
+          this.indexedDistanceToStar[target.id] = -1;
+        }
+        else
+        {
+          for (var id in a.cost)
+          {
+            this.indexedDistanceToStar[id] = a.cost[id];
+          }
+        }
+      }
+
+      return this.indexedDistanceToStar[target.id];
+    }
     getVisionRange(): number
     {
       // TODO
@@ -500,6 +527,17 @@ module Rance
     getVision(): Star[]
     {
       return this.getLinkedInRange(this.getVisionRange()).all;
+    }
+    getHealingFactor(player: Player): number
+    {
+      var factor = 0;
+
+      if (player === this.owner)
+      {
+        factor += 0.15;
+      }
+
+      return factor;
     }
     severLinksToNonAdjacent()
     {

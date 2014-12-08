@@ -150,6 +150,14 @@ module Rance
       this.battleStats.position = position;
     }
 
+    addStrength(amount: number)
+    {
+      this.currentStrength += Math.round(amount);
+      if (this.currentStrength > this.maxStrength)
+      {
+        this.currentStrength = this.maxStrength;
+      }
+    }
     removeStrength(amount: number)
     {
       this.currentStrength -= Math.round(amount);
@@ -267,6 +275,18 @@ module Rance
     {
       this.battleStats.guard.value = 0;
       this.battleStats.guard.coverage = null;
+    }
+    heal()
+    {
+      var location = this.fleet.location;
+
+      var baseHealFactor = 0.1;
+      var healingFactor =
+        baseHealFactor + location.getHealingFactor(this.fleet.player);
+
+      var healAmount = this.maxStrength * healingFactor;
+
+      this.addStrength(healAmount);
     }
   }
 }

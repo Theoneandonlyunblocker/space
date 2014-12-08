@@ -49,14 +49,16 @@ module Rance
     }
     processPlayerStartTurn(player: Player)
     {
-      var resetShipMovementFN = function(ship: Unit)
+      var shipStartTurnFN = function(ship: Unit)
       {
         ship.resetMovePoints();
+        ship.heal();
       }
 
-      player.forEachUnit(resetShipMovementFN);
+      player.forEachUnit(shipStartTurnFN);
       player.money += player.getIncome();
     }
+
 
     setNextPlayer()
     {
