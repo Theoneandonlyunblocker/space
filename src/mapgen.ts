@@ -36,6 +36,8 @@ module Rance
       [type: string]: (any) => Star[];
     } = {};
 
+    startLocations: Star[] = [];
+
     drawnMap: PIXI.DisplayObjectContainer;
 
     constructor()
@@ -91,7 +93,9 @@ module Rance
       this.severArmLinks();
 
       this.setPlayers();
-      
+      this.setDistanceFromStartLocations();
+
+      this.setupPirates();
 
       return this;
     }
@@ -120,10 +124,102 @@ module Rance
         });
         location.addBuilding(sectorCommand);
 
+        this.startLocations.push(location);
+
         var ship = new Unit(Templates.ShipTypes.battleCruiser);
         player.addUnit(ship);
 
         var fleet = new Fleet(player, [ship], location);
+        /*
+        if (i === 0)
+        {
+          var neighbors = location.getAllLinks();
+
+          for (var j = 0; j < neighbors.length; j++)
+          {
+            var _player = players[j+1];
+
+            var _ships = [];
+            for (var k = 0; k < 6; k++)
+            {
+              var _ship = makeRandomShip();
+              _player.addUnit(_ship);
+              _ships.push(_ship);
+            }
+            var _fleet = new Fleet(_player, _ships, neighbors[j]);
+          }
+        }
+        */
+      }
+    }
+    setDistanceFromStartLocations()
+    {
+      var nonFillerPoints = this.getNonFillerPoints();
+
+      for (var i = 0; i < this.startLocations.length; i++)
+      {
+        var startLocation = this.startLocations[i];
+        for (var j = 0; j < nonFillerPoints.length; j++)
+        {
+          var star = nonFillerPoints[j];
+
+          var distance = star.getDistanceToStar(startLocation);
+
+
+          if (!isFinite(star.distanceFromNearestStartLocation))
+          {
+            star.distanceFromNearestStartLocation = distance;
+          }
+          else
+          {
+            star.distanceFromNearestStartLocation =
+              Math.min(distance, star.distanceFromNearestStartLocation)
+          }
+        }
+      }
+    }
+
+    setupPirates()
+    {
+      var nonFillerPoints = this.getNonFillerPoints();
+      var minShips = 2;
+      var maxShips = 8;
+      var player = pirates;
+
+      for (var i = 0; i < nonFillerPoints.length; i++)
+      {
+        var star = nonFillerPoints[i];
+
+        if (!star.owner)
+        {
+          star.owner = player;
+          player.addStar(star);
+          var sectorCommand = new Building(
+          {
+            template: Templates.Buildings.sectorCommand,
+            location: star
+          });
+          star.addBuilding(sectorCommand);
+
+          var shipAmount = minShips;
+          var distance = star.distanceFromNearestStartLocation;
+
+          for (var j = 2; j < distance; j++)
+          {
+            if (shipAmount >= maxShips) break;
+
+            shipAmount += randInt(0, 1);
+          }
+
+          var ships = [];
+          for (var j = 0; j < shipAmount; j++)
+          {
+            var ship = makeRandomShip();
+            player.addUnit(ship);
+            ships.push(ship);
+          }
+          var fleet = new Fleet(player, ships, star);
+        }
       }
     }
 

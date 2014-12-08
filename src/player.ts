@@ -15,6 +15,7 @@ module Rance
     id: number;
     name: string;
     color: number;
+    colorAlpha: number;
     secondaryColor: number;
     flag: Flag;
     icon: string;
@@ -50,7 +51,31 @@ module Rance
       this.color = scheme.main;
       this.secondaryColor = scheme.secondary;
     }
+    setupPirates()
+    {
+      this.color = 0x000000;
+      this.colorAlpha = 0;
+      this.secondaryColor = 0xFFFFFF;
 
+      var foregroundEmblem = new Emblem(this.secondaryColor);
+      foregroundEmblem.inner = 
+      {
+        type: "both",
+        foregroundOnly: true,
+        imageSrc: "pirateEmblem.png"
+      };
+
+      this.flag = new Flag(
+      {
+        width: 46,
+        mainColor: this.color,
+        secondaryColor: this.secondaryColor,
+        foregroundEmblem: foregroundEmblem
+      });
+
+      var canvas = this.flag.draw();
+      this.icon = canvas.toDataURL();
+    }
     makeFlag()
     {
       if (!this.color || !this.secondaryColor) this.makeColorScheme();
@@ -65,9 +90,6 @@ module Rance
       this.flag.generateRandom();
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
-
-      var self = this;
-
     }
     addUnit(unit: Unit)
     {
