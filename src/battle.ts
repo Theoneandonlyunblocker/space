@@ -101,6 +101,11 @@ module Rance
       {
         this.endBattle();
       }
+      else
+      {
+        this.swapColumnsIfNeeded();
+      }
+
     }
     forEachUnit(operator: (Unit) => any)
     {
@@ -162,7 +167,14 @@ module Rance
       this.setActiveUnit();
 
       var shouldEnd = this.checkBattleEnd();
-      if (shouldEnd) this.endBattle();
+      if (shouldEnd)
+      {
+        this.endBattle();
+      }
+      else
+      {
+        this.swapColumnsIfNeeded();
+      }
     }
     getFleetsForSide(side: string)
     {
@@ -178,6 +190,13 @@ module Rance
           return this[side];
         }
       }
+    }
+    getColumnByPosition(position: number)
+    {
+      var side = position <= 1 ? "side1" : "side2";
+      var relativePosition = position % 2;
+
+      return this[side][relativePosition];
     }
     endBattle()
     {
@@ -226,6 +245,21 @@ module Rance
       }
 
       return null;
+    }
+    getTotalHealthForColumn(position: number)
+    {
+      var column = this.getColumnByPosition(position);
+      var total = 0;
+
+      for (var i = 0; i < column.length; i++)
+      {
+        if (column[i])
+        {
+          total += column[i].currentStrength;
+        }
+      }
+
+      return total;
     }
     getTotalHealthForSide(side: string)
     {
@@ -282,6 +316,37 @@ module Rance
       }
 
       return this.evaluation[this.currentTurn];
+    }
+    swapFleetColumnsForSide(side: string)
+    {
+      this[side] = this[side].reverse();
+
+      for (var i = 0; i < this[side].length; i++)
+      {
+        var column = this[side][i];
+        for (var j = 0; j < column.length; j++)
+        {
+          var pos = side === "side1" ? [i, j] : [i+2, j];
+
+          if (column[j])
+          {
+            column[j].setBattlePosition(this, side, pos);
+          }
+        }
+      }
+    }
+    swapColumnsIfNeeded()
+    {
+      var side1Front = this.getTotalHealthForColumn(1);
+      if (side1Front <= 0)
+      {
+        this.swapFleetColumnsForSide("side1");
+      }
+      var side2Front = this.getTotalHealthForColumn(2);
+      if (side2Front <= 0)
+      {
+        this.swapFleetColumnsForSide("side2");
+      }
     }
     checkBattleEnd()
     {
