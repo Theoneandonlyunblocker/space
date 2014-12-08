@@ -82,6 +82,16 @@ table
     @c2 50%,
     @c1 100%)
 }
+
+.line-gradient(@dir, @c1)
+{
+  background: linear-gradient(@dir,
+    @c1 0%,
+    lighten(@c1, 10%) 25%,
+    darken(@c1, 5%) 50%,
+    lighten(@c1, 0%) 100%,
+  );
+}
 /*
 .button-style-no-border
 {
@@ -255,6 +265,7 @@ progress::-webkit-progress-value { background: #080; }
   display: flex;
   border-style: solid;
   border-width: 0;
+  transition: flex 1s;
 }
 .battle-score-bar-side1
 {
@@ -664,14 +675,19 @@ progress::-webkit-progress-value { background: #080; }
 }
 .unit-strength-bar
 {
+  @ababa: #84000C;
   width: 100%;
   height: 10px;
-  background-color: red;
+  background-color: @ababa;
+  .line-gradient(to bottom, @ababa);
 }
 .unit-strength-bar-value
 {
+  @ababa: #168400;
   height: 100%;
-  background-color: green;
+  background-color: @ababa;
+  .line-gradient(to bottom, @ababa);
+  transition: width 1s;
 }
 
 .wounded
