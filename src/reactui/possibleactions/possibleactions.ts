@@ -31,6 +31,24 @@ module Rance
         }
       },
 
+      componentDidMount: function()
+      {
+        var self = this;
+        eventManager.addEventListener("clearPossibleActions", function()
+        {
+          self.setState(
+          {
+            expandedAction: null,
+            expandedActionElement: null
+          });
+        });
+      },
+
+      componentWillUnmount: function()
+      {
+        eventManager.removeAllListeners("clearPossibleActions");
+      },
+
       buildBuildings: function()
       {
         if (this.state.expandedAction === "buildBuildings")

@@ -439,6 +439,9 @@ declare module Rance {
                 };
             };
         };
+        public indexedDistanceToStar: {
+            [id: number]: number;
+        };
         public name: string;
         public owner: Rance.Player;
         public fleets: {
@@ -447,6 +450,7 @@ declare module Rance {
         public buildings: {
             [category: string]: Rance.Building[];
         };
+        public distanceFromNearestStartLocation: number;
         public baseIncome: number;
         public voronoiId: number;
         public voronoiCell: any;
@@ -488,8 +492,10 @@ declare module Rance {
                 [range: number]: Star[];
             };
         };
+        public getDistanceToStar(target: Star): number;
         public getVisionRange(): number;
         public getVision(): Star[];
+        public getHealingFactor(player: Rance.Player): number;
         public severLinksToNonAdjacent(): void;
     }
 }
@@ -794,6 +800,7 @@ declare module Rance {
         public id: number;
         public name: string;
         public color: number;
+        public colorAlpha: number;
         public secondaryColor: number;
         public flag: Rance.Flag;
         public icon: string;
@@ -812,6 +819,7 @@ declare module Rance {
         };
         constructor(id?: number);
         public makeColorScheme(): void;
+        public setupPirates(): void;
         public makeFlag(): void;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
@@ -892,14 +900,18 @@ declare module Rance {
         public setActiveUnit(): void;
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
+        public getColumnByPosition(position: number): any;
         public endBattle(): void;
         public finishBattle(): void;
         public getVictor(): Rance.Player;
+        public getTotalHealthForColumn(position: number): number;
         public getTotalHealthForSide(side: string): {
             current: number;
             max: number;
         };
         public getEvaluation(): number;
+        public swapFleetColumnsForSide(side: string): void;
+        public swapColumnsIfNeeded(): void;
         public checkBattleEnd(): boolean;
     }
 }
@@ -977,6 +989,7 @@ declare module Rance {
         public resetMovePoints(): void;
         public resetBattleStats(): void;
         public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
+        public addStrength(amount: number): void;
         public removeStrength(amount: number): void;
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
@@ -990,6 +1003,7 @@ declare module Rance {
         public removeGuard(amount: number): void;
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
+        public heal(): void;
     }
 }
 declare module Rance {
@@ -1165,6 +1179,7 @@ declare module Rance {
         public galaxyConstructors: {
             [type: string]: (any: any) => Rance.Star[];
         };
+        public startLocations: Rance.Star[];
         public drawnMap: PIXI.DisplayObjectContainer;
         constructor();
         public reset(): void;
@@ -1186,6 +1201,8 @@ declare module Rance {
             };
         }): MapGen;
         public setPlayers(): void;
+        public setDistanceFromStartLocations(): void;
+        public setupPirates(): void;
         public generatePoints(options: {
             galaxyType: string;
             totalAmount: number;
@@ -1222,6 +1239,7 @@ declare module Rance {
     interface IMapRendererLayer {
         drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
         container: PIXI.DisplayObjectContainer;
+        isDirty: boolean;
     }
     interface IMapRendererLayerMapMode {
         name: string;
@@ -1250,6 +1268,7 @@ declare module Rance {
             [starId: number]: PIXI.Sprite;
         };
         public currentMapMode: IMapRendererLayerMapMode;
+        public isDirty: boolean;
         constructor();
         public addEventListeners(): void;
         public changePlayer(player: Rance.Player): void;
@@ -1262,6 +1281,8 @@ declare module Rance {
         public setParent(newParent: PIXI.DisplayObjectContainer): void;
         public resetContainer(): void;
         public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
+        public setLayerAsDirty(layerName: string): void;
+        public setAllLayersAsDirty(): void;
         public drawLayer(layer: IMapRendererLayer): void;
         public setMapMode(newMapMode: string): void;
         public render(): void;
@@ -1503,7 +1524,7 @@ declare module Rance {
         public updateTime(): void;
     }
 }
-declare var players: any, player1: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
+declare var players: any, player1: any, pirates: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
 declare var uniforms: any, testFilter: any, uniformManager: any, seed: any;
 declare module Rance {
     var images: any;

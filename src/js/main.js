@@ -3190,6 +3190,7 @@ var Rance;
             this.linksTo = [];
             this.linksFrom = [];
             this.indexedNeighborsInRange = {};
+            this.indexedDistanceToStar = {};
             this.fleets = {};
             this.buildings = {};
             this.id = isFinite(id) ? id : idGenerators.star++;
@@ -3543,6 +3544,7 @@ var Rance;
                         visited[neighbors[k].id] = neighbors[k];
                         visitedByRange[i + 1].push(neighbors[k]);
                         frontier.push(neighbors[k]);
+                        this.indexedDistanceToStar[neighbors[k].id] = i;
                     }
                 }
             }
@@ -3562,12 +3564,35 @@ var Rance;
                 byRange: visitedByRange
             });
         };
+        Star.prototype.getDistanceToStar = function (target) {
+            if (!this.indexedDistanceToStar[target.id]) {
+                var a = Rance.aStar(this, target);
+                if (!a) {
+                    this.indexedDistanceToStar[target.id] = -1;
+                } else {
+                    for (var id in a.cost) {
+                        this.indexedDistanceToStar[id] = a.cost[id];
+                    }
+                }
+            }
+
+            return this.indexedDistanceToStar[target.id];
+        };
         Star.prototype.getVisionRange = function () {
             // TODO
             return 1;
         };
         Star.prototype.getVision = function () {
             return this.getLinkedInRange(this.getVisionRange()).all;
+        };
+        Star.prototype.getHealingFactor = function (player) {
+            var factor = 0;
+
+            if (player === this.owner) {
+                factor += 0.15;
+            }
+
+            return factor;
         };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
@@ -3745,6 +3770,8 @@ var Rance;
 
             if (!a)
                 return;
+
+            console.log(a);
 
             var path = Rance.backTrace(a.came, newLocation);
 
@@ -4683,7 +4710,28 @@ var Rance;
             this.color = scheme.main;
             this.secondaryColor = scheme.secondary;
         };
+        Player.prototype.setupPirates = function () {
+            this.color = 0x000000;
+            this.colorAlpha = 0;
+            this.secondaryColor = 0xFFFFFF;
 
+            var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
+            foregroundEmblem.inner = {
+                type: "both",
+                foregroundOnly: true,
+                imageSrc: "pirateEmblem.png"
+            };
+
+            this.flag = new Rance.Flag({
+                width: 46,
+                mainColor: this.color,
+                secondaryColor: this.secondaryColor,
+                foregroundEmblem: foregroundEmblem
+            });
+
+            var canvas = this.flag.draw();
+            this.icon = canvas.toDataURL();
+        };
         Player.prototype.makeFlag = function () {
             if (!this.color || !this.secondaryColor)
                 this.makeColorScheme();
@@ -4697,8 +4745,6 @@ var Rance;
             this.flag.generateRandom();
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
-
-            var self = this;
         };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -5083,6 +5129,8 @@ var Rance;
 
             if (this.checkBattleEnd()) {
                 this.endBattle();
+            } else {
+                this.swapColumnsIfNeeded();
             }
         };
         Battle.prototype.forEachUnit = function (operator) {
@@ -5136,8 +5184,11 @@ var Rance;
             this.setActiveUnit();
 
             var shouldEnd = this.checkBattleEnd();
-            if (shouldEnd)
+            if (shouldEnd) {
                 this.endBattle();
+            } else {
+                this.swapColumnsIfNeeded();
+            }
         };
         Battle.prototype.getFleetsForSide = function (side) {
             switch (side) {
@@ -5149,6 +5200,12 @@ var Rance;
                     return this[side];
                 }
             }
+        };
+        Battle.prototype.getColumnByPosition = function (position) {
+            var side = position <= 1 ? "side1" : "side2";
+            var relativePosition = position % 2;
+
+            return this[side][relativePosition];
         };
         Battle.prototype.endBattle = function () {
             this.ended = true;
@@ -5185,6 +5242,18 @@ var Rance;
             }
 
             return null;
+        };
+        Battle.prototype.getTotalHealthForColumn = function (position) {
+            var column = this.getColumnByPosition(position);
+            var total = 0;
+
+            for (var i = 0; i < column.length; i++) {
+                if (column[i]) {
+                    total += column[i].currentStrength;
+                }
+            }
+
+            return total;
         };
         Battle.prototype.getTotalHealthForSide = function (side) {
             var health = {
@@ -5232,6 +5301,30 @@ var Rance;
             }
 
             return this.evaluation[this.currentTurn];
+        };
+        Battle.prototype.swapFleetColumnsForSide = function (side) {
+            this[side] = this[side].reverse();
+
+            for (var i = 0; i < this[side].length; i++) {
+                var column = this[side][i];
+                for (var j = 0; j < column.length; j++) {
+                    var pos = side === "side1" ? [i, j] : [i + 2, j];
+
+                    if (column[j]) {
+                        column[j].setBattlePosition(this, side, pos);
+                    }
+                }
+            }
+        };
+        Battle.prototype.swapColumnsIfNeeded = function () {
+            var side1Front = this.getTotalHealthForColumn(1);
+            if (side1Front <= 0) {
+                this.swapFleetColumnsForSide("side1");
+            }
+            var side2Front = this.getTotalHealthForColumn(2);
+            if (side2Front <= 0) {
+                this.swapFleetColumnsForSide("side2");
+            }
         };
         Battle.prototype.checkBattleEnd = function () {
             if (!this.activeUnit)
@@ -5664,6 +5757,12 @@ var Rance;
             this.battleStats.position = position;
         };
 
+        Unit.prototype.addStrength = function (amount) {
+            this.currentStrength += Math.round(amount);
+            if (this.currentStrength > this.maxStrength) {
+                this.currentStrength = this.maxStrength;
+            }
+        };
         Unit.prototype.removeStrength = function (amount) {
             this.currentStrength -= Math.round(amount);
             if (this.currentStrength < 0) {
@@ -5758,6 +5857,16 @@ var Rance;
         Unit.prototype.removeAllGuard = function () {
             this.battleStats.guard.value = 0;
             this.battleStats.guard.coverage = null;
+        };
+        Unit.prototype.heal = function () {
+            var location = this.fleet.location;
+
+            var baseHealFactor = 0.1;
+            var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
+
+            var healAmount = this.maxStrength * healingFactor;
+
+            this.addStrength(healAmount);
         };
         return Unit;
     })();
@@ -5906,6 +6015,18 @@ var Rance;
                         expandedActionElement: null
                     });
                 }
+            },
+            componentDidMount: function () {
+                var self = this;
+                Rance.eventManager.addEventListener("clearPossibleActions", function () {
+                    self.setState({
+                        expandedAction: null,
+                        expandedActionElement: null
+                    });
+                });
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeAllListeners("clearPossibleActions");
             },
             buildBuildings: function () {
                 if (this.state.expandedAction === "buildBuildings") {
@@ -6103,9 +6224,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.GalaxyMap = React.createClass({
             displayName: "GalaxyMap",
-            renderMap: function () {
-                this.props.galaxyMap.mapRenderer.render();
-            },
             switchMapMode: function () {
                 var newMode = this.refs.mapModeSelector.getDOMNode().value;
 
@@ -6148,7 +6266,7 @@ var Rance;
 
                 this.props.renderer.render();
 
-                this.renderMap();
+                this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
                 this.props.renderer.camera.centerOnPosition(player1.controlledLocations[0]);
             }
@@ -6407,6 +6525,7 @@ var Rance;
             this.currentAttackTargets = this.getCurrentAttackTargets();
 
             Rance.eventManager.dispatchEvent("playerControlUpdated", null);
+            Rance.eventManager.dispatchEvent("clearPossibleActions", null);
         };
 
         PlayerControl.prototype.areAllFleetsInSameLocation = function () {
@@ -7008,6 +7127,7 @@ var Rance;
             this.triangles = [];
             this.nonFillerVoronoiLines = {};
             this.galaxyConstructors = {};
+            this.startLocations = [];
             this.galaxyConstructors = {
                 spiral: this.makeSpiralPoints
             };
@@ -7036,6 +7156,9 @@ var Rance;
             this.severArmLinks();
 
             this.setPlayers();
+            this.setDistanceFromStartLocations();
+
+            this.setupPirates();
 
             return this;
         };
@@ -7059,10 +7182,89 @@ var Rance;
                 });
                 location.addBuilding(sectorCommand);
 
+                this.startLocations.push(location);
+
                 var ship = new Rance.Unit(Rance.Templates.ShipTypes.battleCruiser);
                 player.addUnit(ship);
 
                 var fleet = new Rance.Fleet(player, [ship], location);
+                /*
+                if (i === 0)
+                {
+                var neighbors = location.getAllLinks();
+                
+                for (var j = 0; j < neighbors.length; j++)
+                {
+                var _player = players[j+1];
+                
+                var _ships = [];
+                for (var k = 0; k < 6; k++)
+                {
+                var _ship = makeRandomShip();
+                _player.addUnit(_ship);
+                _ships.push(_ship);
+                }
+                var _fleet = new Fleet(_player, _ships, neighbors[j]);
+                }
+                }
+                */
+            }
+        };
+        MapGen.prototype.setDistanceFromStartLocations = function () {
+            var nonFillerPoints = this.getNonFillerPoints();
+
+            for (var i = 0; i < this.startLocations.length; i++) {
+                var startLocation = this.startLocations[i];
+                for (var j = 0; j < nonFillerPoints.length; j++) {
+                    var star = nonFillerPoints[j];
+
+                    var distance = star.getDistanceToStar(startLocation);
+
+                    if (!isFinite(star.distanceFromNearestStartLocation)) {
+                        star.distanceFromNearestStartLocation = distance;
+                    } else {
+                        star.distanceFromNearestStartLocation = Math.min(distance, star.distanceFromNearestStartLocation);
+                    }
+                }
+            }
+        };
+
+        MapGen.prototype.setupPirates = function () {
+            var nonFillerPoints = this.getNonFillerPoints();
+            var minShips = 2;
+            var maxShips = 8;
+            var player = pirates;
+
+            for (var i = 0; i < nonFillerPoints.length; i++) {
+                var star = nonFillerPoints[i];
+
+                if (!star.owner) {
+                    star.owner = player;
+                    player.addStar(star);
+                    var sectorCommand = new Rance.Building({
+                        template: Rance.Templates.Buildings.sectorCommand,
+                        location: star
+                    });
+                    star.addBuilding(sectorCommand);
+
+                    var shipAmount = minShips;
+                    var distance = star.distanceFromNearestStartLocation;
+
+                    for (var j = 2; j < distance; j++) {
+                        if (shipAmount >= maxShips)
+                            break;
+
+                        shipAmount += Rance.randInt(0, 1);
+                    }
+
+                    var ships = [];
+                    for (var j = 0; j < shipAmount; j++) {
+                        var ship = Rance.makeRandomShip();
+                        player.addUnit(ship);
+                        ships.push(ship);
+                    }
+                    var fleet = new Rance.Fleet(player, ships, star);
+                }
             }
         };
 
@@ -7372,6 +7574,7 @@ var Rance;
             this.layers = {};
             this.mapModes = {};
             this.fowSpriteCache = {};
+            this.isDirty = true;
             this.container = new PIXI.DisplayObjectContainer();
 
             this.initLayers();
@@ -7381,13 +7584,9 @@ var Rance;
         }
         MapRenderer.prototype.addEventListeners = function () {
             var self = this;
-            Rance.eventManager.addEventListener("renderMap", this.render.bind(this));
+            Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
             Rance.eventManager.addEventListener("renderLayer", function (e) {
-                console.log("render layer: " + e.data);
-                var layer = self.layers[e.data];
-                if (self.hasLayerInMapMode(layer)) {
-                    self.drawLayer(layer);
-                }
+                self.setLayerAsDirty(e.data);
             });
 
             renderer.camera.onMove = this.updateShaderOffsets.bind(this);
@@ -7395,7 +7594,7 @@ var Rance;
         };
         MapRenderer.prototype.changePlayer = function (player) {
             this.player = player;
-            this.render();
+            this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.updateShaderOffsets = function (x, y) {
             for (var owner in this.occupationShaders) {
@@ -7497,6 +7696,7 @@ var Rance;
         };
         MapRenderer.prototype.initLayers = function () {
             this.layers["nonFillerStars"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7554,6 +7754,7 @@ var Rance;
                 }
             };
             this.layers["starOwners"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7571,7 +7772,10 @@ var Rance;
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
-                        gfx.beginFill(star.owner.color, 0.5);
+                        var alpha = 0.5;
+                        if (isFinite(star.owner.colorAlpha))
+                            alpha *= star.owner.colorAlpha;
+                        gfx.beginFill(star.owner.color, alpha);
                         gfx.drawShape(poly);
                         gfx.endFill;
                         doc.addChild(gfx);
@@ -7594,6 +7798,7 @@ var Rance;
                 }
             };
             this.layers["fogOfWar"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7618,6 +7823,7 @@ var Rance;
                 }
             };
             this.layers["starIncome"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7680,6 +7886,7 @@ var Rance;
                 }
             };
             this.layers["nonFillerVoronoiLines"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7703,6 +7910,7 @@ var Rance;
                 }
             };
             this.layers["ownerBorders"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7740,6 +7948,7 @@ var Rance;
                 }
             };
             this.layers["starLinks"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
@@ -7778,8 +7987,11 @@ var Rance;
                 }
             };
             this.layers["fleets"] = {
+                isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
+                    var self = this;
+
                     var doc = new PIXI.DisplayObjectContainer();
 
                     var points;
@@ -7818,7 +8030,10 @@ var Rance;
                         containerGfx.endFill();
 
                         containerGfx.interactive = true;
-                        containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+                        if (fleet.player.id === self.player.id) {
+                            containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+                        }
+
                         containerGfx.mousedown = mouseDownFN;
                         containerGfx.mouseup = mouseUpFN;
 
@@ -7910,9 +8125,33 @@ var Rance;
 
             return false;
         };
+        MapRenderer.prototype.setLayerAsDirty = function (layerName) {
+            console.log("dirty: " + layerName);
+            var layer = this.layers[layerName];
+            layer.isDirty = true;
+
+            this.isDirty = true;
+
+            // TODO
+            this.render();
+        };
+        MapRenderer.prototype.setAllLayersAsDirty = function () {
+            console.log("dirty: all");
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                this.currentMapMode.layers[i].layer.isDirty = true;
+            }
+
+            this.isDirty = true;
+
+            // TODO
+            this.render();
+        };
         MapRenderer.prototype.drawLayer = function (layer) {
+            if (!layer.isDirty)
+                return;
             layer.container.removeChildren();
             layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
+            layer.isDirty = false;
         };
         MapRenderer.prototype.setMapMode = function (newMapMode) {
             if (!this.mapModes[newMapMode]) {
@@ -7927,18 +8166,25 @@ var Rance;
             this.currentMapMode = this.mapModes[newMapMode];
 
             this.resetContainer();
-            this.render();
+
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                var layer = this.currentMapMode.layers[i].layer;
+                this.container.addChild(layer.container);
+            }
+
+            this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.render = function () {
-            console.log("full render");
-            this.resetContainer();
+            if (!this.isDirty)
+                return;
 
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 var layer = this.currentMapMode.layers[i].layer;
 
                 this.drawLayer(layer);
-                this.container.addChild(layer.container);
             }
+
+            this.isDirty = false;
         };
         return MapRenderer;
     })();
@@ -8636,11 +8882,12 @@ var Rance;
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         Game.prototype.processPlayerStartTurn = function (player) {
-            var resetShipMovementFN = function (ship) {
+            var shipStartTurnFN = function (ship) {
                 ship.resetMovePoints();
+                ship.heal();
             };
 
-            player.forEachUnit(resetShipMovementFN);
+            player.forEachUnit(shipStartTurnFN);
             player.money += player.getIncome();
         };
 
@@ -8785,12 +9032,14 @@ var Rance;
 /// <reference path="game.ts"/>
 /// <reference path="loader.ts"/>
 /// <reference path="shaders/uniformmanager.ts"/>
-var players, player1, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
+var players, player1, pirates, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter, uniformManager, seed;
 
 var Rance;
 (function (Rance) {
     seed = Math.random();
+
+    //seed = 0.4308639666996896;
     Math.random = RNG.prototype.uniform.bind(new RNG(seed));
     Rance.images;
     Rance.loader = new Rance.Loader(function () {
@@ -8810,6 +9059,9 @@ var Rance;
         }
 
         player1 = players[0];
+
+        pirates = new Rance.Player();
+        pirates.setupPirates();
 
         uniforms = {
             bgColor: { type: "3fv", value: PIXI.hex2rgb(0x101040) },

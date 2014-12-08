@@ -99,6 +99,7 @@ module Rance
       this.currentAttackTargets = this.getCurrentAttackTargets();
 
       eventManager.dispatchEvent("playerControlUpdated", null);
+      eventManager.dispatchEvent("clearPossibleActions", null);
     }
 
     areAllFleetsInSameLocation()

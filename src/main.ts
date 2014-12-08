@@ -11,13 +11,14 @@
 
 /// <reference path="shaders/uniformmanager.ts"/>
 
-var players, player1, battle, battlePrep, game,
+var players, player1, pirates, battle, battlePrep, game,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var uniforms, testFilter, uniformManager, seed;
 
 module Rance
 {
   seed = Math.random();
+  //seed = 0.4308639666996896;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
   export var images: any;
   export var loader = new Loader(function()
@@ -40,6 +41,9 @@ module Rance
     }
 
     player1 = players[0];
+
+    pirates = new Player();
+    pirates.setupPirates();
 
     uniforms =
     {
