@@ -16,6 +16,7 @@ module Rance
   {
     drawingFunction: (map: GalaxyMap) => PIXI.DisplayObjectContainer;
     container: PIXI.DisplayObjectContainer;
+    isDirty: boolean;
   }
   export interface IMapRendererLayerMapMode
   {
@@ -56,6 +57,7 @@ module Rance
     } = {};
 
     currentMapMode: IMapRendererLayerMapMode;
+    isDirty: boolean = true;
 
     constructor()
     {
@@ -69,15 +71,11 @@ module Rance
     addEventListeners()
     {
       var self = this;
-      eventManager.addEventListener("renderMap", this.render.bind(this));
+      eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
       eventManager.addEventListener("renderLayer", function(e)
       {
-        console.log("render layer: " + e.data);
-        var layer = self.layers[e.data];
-        if (self.hasLayerInMapMode(layer))
-        {
-          self.drawLayer(layer)
-        }
+        
+        self.setLayerAsDirty(e.data);
       });
 
       renderer.camera.onMove = this.updateShaderOffsets.bind(this);
@@ -86,7 +84,7 @@ module Rance
     changePlayer(player: Player)
     {
       this.player = player;
-      this.render();
+      this.setAllLayersAsDirty();
     }
     updateShaderOffsets(x: number, y: number)
     {
@@ -210,6 +208,7 @@ module Rance
     {
       this.layers["nonFillerStars"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -256,6 +255,7 @@ module Rance
             gfx.drawEllipse(star.x, star.y, starSize, starSize);
             gfx.endFill;
 
+
             gfx.interactive = true;
             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
             gfx.mousedown = mouseDownFN;
@@ -278,6 +278,7 @@ module Rance
       }
       this.layers["starOwners"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -299,7 +300,9 @@ module Rance
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
-            gfx.beginFill(star.owner.color, 0.5);
+            var alpha = 0.5;
+            if (isFinite(star.owner.colorAlpha)) alpha *= star.owner.colorAlpha;
+            gfx.beginFill(star.owner.color, alpha);
             gfx.drawShape(poly);
             gfx.endFill;
             doc.addChild(gfx);
@@ -324,6 +327,7 @@ module Rance
       }
       this.layers["fogOfWar"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -349,6 +353,7 @@ module Rance
       }
       this.layers["starIncome"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -418,6 +423,7 @@ module Rance
       }
       this.layers["nonFillerVoronoiLines"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -444,6 +450,7 @@ module Rance
       }
       this.layers["ownerBorders"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -491,6 +498,7 @@ module Rance
       }
       this.layers["starLinks"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -539,9 +547,12 @@ module Rance
       }
       this.layers["fleets"] =
       {
+        isDirty: true,
         container: new PIXI.DisplayObjectContainer(),
         drawingFunction: function(map: GalaxyMap)
         {
+          var self = this;
+
           var doc = new PIXI.DisplayObjectContainer();
 
           var points: Star[];
@@ -588,7 +599,11 @@ module Rance
             containerGfx.endFill();
 
             containerGfx.interactive = true;
-            containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+            if (fleet.player.id === self.player.id)
+            {
+              containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+            }
+
             containerGfx.mousedown = mouseDownFN;
             containerGfx.mouseup = mouseUpFN;
 
@@ -694,10 +709,36 @@ module Rance
 
       return false;
     }
+    setLayerAsDirty(layerName: string)
+    {
+      console.log("dirty: " + layerName)
+      var layer = this.layers[layerName];
+      layer.isDirty = true;
+
+      this.isDirty = true;
+
+      // TODO
+      this.render();
+    }
+    setAllLayersAsDirty()
+    {
+      console.log("dirty: all")
+      for (var i = 0; i < this.currentMapMode.layers.length; i++)
+      {
+        this.currentMapMode.layers[i].layer.isDirty = true;
+      }
+
+      this.isDirty = true;
+
+      // TODO
+      this.render();
+    }
     drawLayer(layer: IMapRendererLayer)
     {
+      if (!layer.isDirty) return;
       layer.container.removeChildren();
       layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
+      layer.isDirty = false;
     }
     setMapMode(newMapMode: string)
     {
@@ -715,20 +756,27 @@ module Rance
       this.currentMapMode = this.mapModes[newMapMode];
 
       this.resetContainer();
-      this.render();
+      
+      for (var i = 0; i < this.currentMapMode.layers.length; i++)
+      {
+        var layer = this.currentMapMode.layers[i].layer;
+        this.container.addChild(layer.container);
+      }
+
+      this.setAllLayersAsDirty();
     }
     render()
     {
-      console.log("full render")
-      this.resetContainer();
+      if (!this.isDirty) return;
 
       for (var i = 0; i < this.currentMapMode.layers.length; i++)
       {
         var layer = this.currentMapMode.layers[i].layer;
 
         this.drawLayer(layer);
-        this.container.addChild(layer.container);
       }
+
+      this.isDirty = false;
     }
   }
 }

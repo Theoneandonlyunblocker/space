@@ -9,10 +9,6 @@ module Rance
     export var GalaxyMap = React.createClass(
     {
       displayName: "GalaxyMap",
-      renderMap: function()
-      {
-        this.props.galaxyMap.mapRenderer.render();
-      },
       switchMapMode: function()
       {
         var newMode = this.refs.mapModeSelector.getDOMNode().value;
@@ -81,7 +77,7 @@ module Rance
         
         this.props.renderer.render();
 
-        this.renderMap();
+        this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
         this.props.renderer.camera.centerOnPosition(
           player1.controlledLocations[0]);
