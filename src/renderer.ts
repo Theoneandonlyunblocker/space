@@ -77,7 +77,7 @@ module Rance
       var _background = this.layers["background"] = new PIXI.DisplayObjectContainer();
       _map.addChild(_background);
 
-      _background.filters = [testFilter];
+      _background.filters = [testFilter, nebulaFilter];
 
 
       var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();

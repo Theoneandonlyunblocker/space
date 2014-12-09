@@ -1526,7 +1526,7 @@ declare module Rance {
     }
 }
 declare var players: any, player1: any, pirates: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
-declare var uniforms: any, testFilter: any, uniformManager: any, seed: any;
+declare var uniforms: any, testFilter: any, nebulaFilter: any, uniformManager: any, seed: any;
 declare module Rance {
     var images: any;
     var loader: Loader;
