@@ -1,8 +1,34 @@
-// https://www.shadertoy.com/view/4sBXzG
+/*
+uniform vec3 baseColor;
+uniform vec3 overlayColor;
+uniform vec3 highlightColor;
 
+uniform float coverage;
+uniform float highlightSize;
+uniform float highlightIntensity;
 
+uniform int sharpness;
+uniform float scale;
+*/
 
-const int NUM_OCTAVES = 6;
+const vec3 baseColor = vec3(1.0, 0.0, 0.0);
+const vec3 overlayColor = vec3(0.0, 0.0, 1.0);
+const vec3 highlightColor = vec3(1.0, 1.0, 1.0);
+
+const float coverage = 0.3;
+const float coverage2 = coverage / 2.0;
+
+const float scale = 2.0;
+const int sharpness = 6;
+
+const float streakLightness = 1.0;
+const float cloudLightness = 1.0;
+
+const float highlightA = 0.9;
+const float highlightB = 2.2;
+
+const vec2 seed = vec2(69.0, 42.0);
+
 float hash(vec2 p)
 {
   return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));
@@ -26,7 +52,7 @@ float fbm(vec2 x)
   float a = 0.5;
   vec2 shift = vec2(100);
   mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
-  for (int i = 0; i < NUM_OCTAVES; ++i)
+  for (int i = 0; i < sharpness; ++i)
   {
     v += a * noise(x);
     x = rot * x * 2.0 + shift;
@@ -44,7 +70,7 @@ float displace(vec2 pos, out vec2 q)
 {
   q = vec2(fbm(pos),
     fbm(pos + vec2(23.3, 46.7)));
-  return fbm(pos + 1.0 * q);
+  return fbm(pos + vec2(q.x * 2.0, q.y));
 }
 
 vec3 colorLayer(vec2 pos, vec3 color)
@@ -53,25 +79,30 @@ vec3 colorLayer(vec2 pos, vec3 color)
   return mix(vec3(0.0), color, v);
 }
 
-vec3 nebula(vec2 pos)
+vec3 nebula(vec2 pos, out float volume)
 {
   vec2 on = vec2(0.0);
 
-  float volume = displace(pos, on);
-  volume = relativeValue(volume, 0.5, 1.0);
-  volume += relativeValue(fbm(pos), 0.3, 1.0);
+  volume = displace(pos, on);
+  volume = relativeValue(volume, coverage, streakLightness);
+  volume += relativeValue(fbm(pos), coverage, cloudLightness);
 
-  vec3 c = colorLayer(pos + vec2(42.0, 6.9), vec3(1.0, 0.0, 0.0));
-  c = mix(c, vec3(0.0, 0.0, 1.0), dot(on.x, on.y));
+  vec3 c = colorLayer(pos + vec2(42.0, 6.9), baseColor);
+  c = mix(c, overlayColor, dot(on.x, on.y));
+  c = mix(c, highlightColor, volume *
+    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)) );
+
+  if (volume < coverage2) volume = 0.0;
 
   return c * volume;
 }
 
 void main(void)
 {
-  vec2 pos = gl_FragCoord.xy * 0.01;
-
-  vec3 c = nebula(pos);
+  vec2 pos = gl_FragCoord.xy / 50.0 / scale;
+  pos += seed;
+  float volume = 0.0;
+  vec3 c = nebula(pos + vec2(iGlobalTime, iGlobalTime), volume);
 
   gl_FragColor = vec4(c, 1.0);
 }
