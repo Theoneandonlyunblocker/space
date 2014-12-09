@@ -1276,6 +1276,7 @@ declare module Rance {
         public changePlayer(player: Rance.Player): void;
         public updateShaderOffsets(x: number, y: number): void;
         public updateShaderZoom(zoom: number): void;
+        public makeFowSprite(): void;
         public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
         public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
         public initLayers(): void;
@@ -1534,7 +1535,7 @@ declare module Rance {
     }
 }
 declare var players: any, player1: any, pirates: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
-declare var uniforms: any, testFilter: any, nebulaFilter: any, uniformManager: any, seed: any;
+declare var nebulaUniforms: any, nebulaFilter: any, uniformManager: any, seed: any;
 declare module Rance {
     var images: any;
     var loader: Loader;

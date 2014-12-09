@@ -193,6 +193,7 @@ module Rance
       {
         if (this.forceFrame)
         {
+          console.log("force")
           this.forceFrame = false;
         }
         else

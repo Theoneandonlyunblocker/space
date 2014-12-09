@@ -112,7 +112,7 @@ module Rance
         }
       }
     }
-    getFowSpriteForStar(star: Star)
+    makeFowSprite()
     {
       if (!this.fowTilingSprite)
       {
@@ -122,10 +122,12 @@ module Rance
 
         this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
       }
-
-      if (!this.fowSpriteCache[star.id] ||
-        !this.fowSpriteCache[star.id].texture.baseTexture.source)
+    }
+    getFowSpriteForStar(star: Star)
+    {
+      if (!this.fowSpriteCache[star.id])
       {
+        console.log("makefowsprite")
         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
         var gfx = new PIXI.Graphics();
         gfx.beginFill();

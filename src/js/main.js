@@ -6278,13 +6278,15 @@ var Rance;
                 this.props.galaxyMap.mapRenderer = mapRenderer;
                 mapRenderer.galaxyMap = galaxyMap;
                 mapRenderer.player = player1;
+                mapRenderer.makeFowSprite();
 
                 this.props.galaxyMap.mapRenderer.currentMapMode = null;
                 this.props.galaxyMap.mapRenderer.setMapMode("default");
                 this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
-                this.props.renderer.render();
+                this.props.renderer.resume();
 
+                //this.props.renderer.render();
                 this.props.renderer.camera.centerOnPosition(player1.controlledLocations[0]);
             }
         });
@@ -7635,7 +7637,7 @@ var Rance;
                 }
             }
         };
-        MapRenderer.prototype.getFowSpriteForStar = function (star) {
+        MapRenderer.prototype.makeFowSprite = function () {
             if (!this.fowTilingSprite) {
                 var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
                 var w = this.galaxyMap.mapGen.maxWidth * 2;
@@ -7643,8 +7645,10 @@ var Rance;
 
                 this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
             }
-
-            if (!this.fowSpriteCache[star.id] || !this.fowSpriteCache[star.id].texture.baseTexture.source) {
+        };
+        MapRenderer.prototype.getFowSpriteForStar = function (star) {
+            if (!this.fowSpriteCache[star.id]) {
+                console.log("makefowsprite");
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
                 gfx.beginFill();
@@ -8897,6 +8901,7 @@ var Rance;
             }
             if (this.isPaused) {
                 if (this.forceFrame) {
+                    console.log("force");
                     this.forceFrame = false;
                 } else {
                     return;
@@ -9118,7 +9123,7 @@ var Rance;
 /// <reference path="loader.ts"/>
 /// <reference path="shaders/uniformmanager.ts"/>
 var players, player1, pirates, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
-var uniforms, testFilter, nebulaFilter, uniformManager, seed;
+var nebulaUniforms, nebulaFilter, uniformManager, seed;
 
 var Rance;
 (function (Rance) {
@@ -9148,17 +9153,14 @@ var Rance;
         pirates = new Rance.Player();
         pirates.setupPirates();
 
-        uniforms = {
-            bgColor: { type: "3fv", value: PIXI.hex2rgb(0x101040) },
-            time: { type: "1f", value: 0.0 }
-        };
+        var nebulaColorScheme = Rance.generateColorScheme();
 
-        var nebulaUniforms = {
-            baseColor: { type: "3fv", value: [1.0, 0.0, 0.0] },
-            overlayColor: { type: "3fv", value: [0.0, 0.0, 1.0] },
+        nebulaUniforms = {
+            baseColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.main) },
+            overlayColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.secondary) },
             highlightColor: { type: "3fv", value: [1.0, 1.0, 1.0] },
             coverage: { type: "1f", value: 0.3 },
-            scale: { type: "1f", value: 4.0 },
+            scale: { type: "1f", value: Rance.randRange(4, 8) },
             diffusion: { type: "1f", value: 3.0 },
             streakiness: { type: "1f", value: 2.0 },
             streakLightness: { type: "1f", value: 1.0 },

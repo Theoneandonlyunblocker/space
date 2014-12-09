@@ -73,12 +73,14 @@ module Rance
         this.props.galaxyMap.mapRenderer = mapRenderer;
         mapRenderer.galaxyMap = galaxyMap;
         mapRenderer.player = player1;
+        mapRenderer.makeFowSprite();
 
         this.props.galaxyMap.mapRenderer.currentMapMode = null;
         this.props.galaxyMap.mapRenderer.setMapMode("default");
         this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
         
-        this.props.renderer.render();
+        this.props.renderer.resume();
+        //this.props.renderer.render();
 
 
         this.props.renderer.camera.centerOnPosition(

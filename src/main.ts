@@ -13,7 +13,7 @@
 
 var players, player1, pirates, battle, battlePrep, game,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
-var uniforms, testFilter, nebulaFilter, uniformManager, seed;
+var nebulaUniforms, nebulaFilter, uniformManager, seed;
 
 module Rance
 {
@@ -45,22 +45,18 @@ module Rance
     pirates = new Player();
     pirates.setupPirates();
 
-    uniforms =
-    {
-      bgColor: {type: "3fv", value: PIXI.hex2rgb(0x101040)},
-      time: {type: "1f", value: 0.0}
-    };
 
+    var nebulaColorScheme = generateColorScheme();
 
-    var nebulaUniforms =
+    nebulaUniforms =
     {
-      baseColor: {type: "3fv", value: [1.0, 0.0, 0.0]},
-      overlayColor: {type: "3fv", value: [0.0, 0.0, 1.0]},
+      baseColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.main)},
+      overlayColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.secondary)},
       highlightColor: {type: "3fv", value: [1.0, 1.0, 1.0]},
 
       coverage: {type: "1f", value: 0.3},
 
-      scale: {type: "1f", value: 4.0},
+      scale: {type: "1f", value: randRange(4, 8)},
 
       diffusion: {type: "1f", value: 3.0},
       streakiness: {type: "1f", value: 2.0},
