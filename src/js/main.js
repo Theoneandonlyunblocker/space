@@ -8839,7 +8839,7 @@ var Rance;
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
 
-            var main = this.layers["main"];
+            var main = this.layers["bgSprite"];
             main.interactive = true;
 
             main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);

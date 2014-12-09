@@ -79,8 +79,8 @@ module Rance
         this.layers[layerName] = null;
       }
 
-     var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
-     this.stage.addChild(_bgSprite);
+      var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
+      this.stage.addChild(_bgSprite);
 
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_main);
@@ -125,7 +125,7 @@ module Rance
         self.mouseEventHandler.mouseUp(event, "stage");
       }
 
-      var main = this.layers["main"];
+      var main = this.layers["bgSprite"];
       main.interactive = true;
 
       main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
