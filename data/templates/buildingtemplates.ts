@@ -65,6 +65,19 @@ module Rance
 
         maxUpgradeLevel: 4
       }
+      export var deepSpaceRadar: IBuildingTemplate =
+      {
+        type: "deepSpaceRadar",
+        category: "vision",
+        name: "Deep Space Radar",
+
+        icon: "img\/buildings\/commercialPort.png",
+        buildCost: 200,
+
+        maxPerType: 1,
+
+        maxUpgradeLevel: 2
+      }
     }
   }
 }

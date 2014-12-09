@@ -3132,6 +3132,15 @@ var Rance;
                 maxPerType: 1,
                 maxUpgradeLevel: 4
             };
+            Buildings.deepSpaceRadar = {
+                type: "deepSpaceRadar",
+                category: "vision",
+                name: "Deep Space Radar",
+                icon: "img\/buildings\/commercialPort.png",
+                buildCost: 200,
+                maxPerType: 1,
+                maxUpgradeLevel: 2
+            };
         })(Templates.Buildings || (Templates.Buildings = {}));
         var Buildings = Templates.Buildings;
     })(Rance.Templates || (Rance.Templates = {}));
@@ -3215,6 +3224,10 @@ var Rance;
 
             if (building.template.category === "defence") {
                 this.updateController();
+            }
+            if (building.template.category === "vision") {
+                this.owner.updateVisibleStars();
+                Rance.eventManager.dispatchEvent("renderMap", null);
             }
         };
         Star.prototype.removeBuilding = function (building) {
@@ -3579,8 +3592,12 @@ var Rance;
             return this.indexedDistanceToStar[target.id];
         };
         Star.prototype.getVisionRange = function () {
-            // TODO
-            return 1;
+            var baseVision = 1;
+
+            if (this.buildings["vision"])
+                baseVision += this.buildings["vision"].length;
+
+            return baseVision;
         };
         Star.prototype.getVision = function () {
             return this.getLinkedInRange(this.getVisionRange()).all;

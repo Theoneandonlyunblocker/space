@@ -400,6 +400,7 @@ declare module Rance {
             var sectorCommand: IBuildingTemplate;
             var starBase: IBuildingTemplate;
             var commercialPort: IBuildingTemplate;
+            var deepSpaceRadar: IBuildingTemplate;
         }
     }
 }

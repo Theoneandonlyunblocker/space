@@ -83,6 +83,11 @@ module Rance
       {
         this.updateController();
       }
+      if (building.template.category === "vision")
+      {
+        this.owner.updateVisibleStars();
+        eventManager.dispatchEvent("renderMap", null);
+      }
     }
     removeBuilding(building: Building)
     {
@@ -521,8 +526,11 @@ module Rance
     }
     getVisionRange(): number
     {
-      // TODO
-      return 1;
+      var baseVision = 1;
+
+      if (this.buildings["vision"]) baseVision += this.buildings["vision"].length;
+
+      return baseVision;
     }
     getVision(): Star[]
     {
