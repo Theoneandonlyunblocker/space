@@ -1271,6 +1271,7 @@ declare module Rance {
         public currentMapMode: IMapRendererLayerMapMode;
         public isDirty: boolean;
         constructor();
+        public init(): void;
         public addEventListeners(): void;
         public changePlayer(player: Rance.Player): void;
         public updateShaderOffsets(x: number, y: number): void;
@@ -1450,6 +1451,10 @@ declare module Rance {
         };
         public camera: Rance.Camera;
         public mouseEventHandler: Rance.MouseEventHandler;
+        public isPaused: boolean;
+        public forceFrame: boolean;
+        public bgFilterIsDirty: boolean;
+        public bgSpriteIsDirty: boolean;
         constructor();
         public init(): void;
         public setContainer(element: HTMLCanvasElement): void;
@@ -1459,6 +1464,9 @@ declare module Rance {
         public addCamera(): void;
         public addEventListeners(): void;
         public resize(): void;
+        public renderOnce(): void;
+        public pause(): void;
+        public resume(): void;
         public render(): void;
     }
 }

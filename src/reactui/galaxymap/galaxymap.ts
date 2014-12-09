@@ -66,18 +66,20 @@ module Rance
         this.props.renderer.init();
         this.props.renderer.bindRendererView();
 
-        mapRenderer = new MapRenderer();
+        if (!mapRenderer) mapRenderer = new MapRenderer();
+
+        mapRenderer.init();
         mapRenderer.setParent(renderer.layers["map"]);
         this.props.galaxyMap.mapRenderer = mapRenderer;
         mapRenderer.galaxyMap = galaxyMap;
         mapRenderer.player = player1;
 
-
+        this.props.galaxyMap.mapRenderer.currentMapMode = null;
         this.props.galaxyMap.mapRenderer.setMapMode("default");
+        this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
         
         this.props.renderer.render();
 
-        this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
         this.props.renderer.camera.centerOnPosition(
           player1.controlledLocations[0]);

@@ -63,10 +63,14 @@ module Rance
     {
       this.container = new PIXI.DisplayObjectContainer();
 
+    }
+    init()
+    {
       this.initLayers();
       this.initMapModes();
 
       this.addEventListeners();
+
     }
     addEventListeners()
     {
@@ -206,6 +210,7 @@ module Rance
     }
     initLayers()
     {
+      if (this.layers["nonFillerStars"]) return;
       this.layers["nonFillerStars"] =
       {
         isDirty: true,

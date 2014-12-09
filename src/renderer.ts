@@ -16,6 +16,10 @@ module Rance
     } = {};
     camera: Camera;
     mouseEventHandler: MouseEventHandler;
+    isPaused: boolean = false;
+    forceFrame: boolean = false;
+    bgFilterIsDirty: boolean = true;
+    bgSpriteIsDirty: boolean = true;
 
     constructor()
     {
@@ -68,17 +72,24 @@ module Rance
     {
       this.stage.removeChildren();
 
+      for (var layerName in this.layers)
+      {
+        this.layers[layerName].filters = null;
+        this.layers[layerName].removeChildren();
+        this.layers[layerName] = null;
+      }
+
+     var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
+     this.stage.addChild(_bgSprite);
+
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_main);
 
       var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_map);
 
-      var _background = this.layers["background"] = new PIXI.DisplayObjectContainer();
-      _map.addChild(_background);
-
-      _background.filters = [testFilter, nebulaFilter];
-
+      var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
+      _bgFilter.filters = [nebulaFilter];
 
       var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_select);
@@ -114,7 +125,7 @@ module Rance
         self.mouseEventHandler.mouseUp(event, "stage");
       }
 
-      var main = this.layers["background"];
+      var main = this.layers["main"];
       main.interactive = true;
 
       main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
@@ -147,14 +158,75 @@ module Rance
         var w = this.pixiContainer.offsetWidth;
         var h = this.pixiContainer.offsetHeight;
         this.renderer.resize(w, h);
-        this.layers["background"].filterArea = new PIXI.Rectangle(0, 0, w, h);
+        this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
+        this.bgFilterIsDirty = true;
+        if (this.isPaused)
+        {
+          this.renderOnce();
+        }
       }
+    }
+    renderOnce()
+    {
+      this.forceFrame = true;
+      this.render();
+    }
+    pause()
+    {
+      this.isPaused = true;
+      this.forceFrame = false;
+    }
+    resume()
+    {
+      this.isPaused = false;
+      this.forceFrame = false;
+      this.render();
     }
     render()
     {
-      if (!document.body.contains(this.pixiContainer)) return;
-      this.renderer.render(this.stage);
+      if (!document.body.contains(this.pixiContainer))
+      {
+        this.pause();
+        return;
+      }
+      if (this.isPaused)
+      {
+        if (this.forceFrame)
+        {
+          this.forceFrame = false;
+        }
+        else
+        {
+          return;
+        }
+      }
+
+      if (this.bgFilterIsDirty)
+      {
+        this.stage.addChild(this.layers["bgFilter"]);
+        this.layers["bgFilter"].filters = [nebulaFilter];
+        this.bgFilterIsDirty = false;
+        this.bgSpriteIsDirty = true;
+      }
+
       uniformManager.updateTime();
+
+      if (this.bgSpriteIsDirty)
+      {
+        var texture = this.layers["bgFilter"].generateTexture();
+        var sprite = new PIXI.Sprite(texture);
+
+        this.layers["bgSprite"].removeChildren();
+        this.layers["bgSprite"].addChild(sprite);
+
+        this.layers["bgFilter"].filters = null;
+        this.stage.removeChild(this.layers["bgFilter"]);
+
+        this.bgSpriteIsDirty = false;
+      }
+
+      this.renderer.render(this.stage);
+
       requestAnimFrame( this.render.bind(this) );
     }
   }

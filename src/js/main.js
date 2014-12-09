@@ -6270,17 +6270,20 @@ var Rance;
                 this.props.renderer.init();
                 this.props.renderer.bindRendererView();
 
-                mapRenderer = new Rance.MapRenderer();
+                if (!mapRenderer)
+                    mapRenderer = new Rance.MapRenderer();
+
+                mapRenderer.init();
                 mapRenderer.setParent(renderer.layers["map"]);
                 this.props.galaxyMap.mapRenderer = mapRenderer;
                 mapRenderer.galaxyMap = galaxyMap;
                 mapRenderer.player = player1;
 
+                this.props.galaxyMap.mapRenderer.currentMapMode = null;
                 this.props.galaxyMap.mapRenderer.setMapMode("default");
+                this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
                 this.props.renderer.render();
-
-                this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
                 this.props.renderer.camera.centerOnPosition(player1.controlledLocations[0]);
             }
@@ -7595,12 +7598,13 @@ var Rance;
             this.fowSpriteCache = {};
             this.isDirty = true;
             this.container = new PIXI.DisplayObjectContainer();
-
+        }
+        MapRenderer.prototype.init = function () {
             this.initLayers();
             this.initMapModes();
 
             this.addEventListeners();
-        }
+        };
         MapRenderer.prototype.addEventListeners = function () {
             var self = this;
             Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
@@ -7714,6 +7718,8 @@ var Rance;
             return this.occupationShaders[owner.id][occupier.id];
         };
         MapRenderer.prototype.initLayers = function () {
+            if (this.layers["nonFillerStars"])
+                return;
             this.layers["nonFillerStars"] = {
                 isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
@@ -8752,6 +8758,10 @@ var Rance;
     var Renderer = (function () {
         function Renderer() {
             this.layers = {};
+            this.isPaused = false;
+            this.forceFrame = false;
+            this.bgFilterIsDirty = true;
+            this.bgSpriteIsDirty = true;
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0x101060);
@@ -8787,16 +8797,23 @@ var Rance;
         Renderer.prototype.initLayers = function () {
             this.stage.removeChildren();
 
+            for (var layerName in this.layers) {
+                this.layers[layerName].filters = null;
+                this.layers[layerName].removeChildren();
+                this.layers[layerName] = null;
+            }
+
+            var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
+            this.stage.addChild(_bgSprite);
+
             var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
             this.stage.addChild(_main);
 
             var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_map);
 
-            var _background = this.layers["background"] = new PIXI.DisplayObjectContainer();
-            _map.addChild(_background);
-
-            _background.filters = [testFilter, nebulaFilter];
+            var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
+            _bgFilter.filters = [nebulaFilter];
 
             var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_select);
@@ -8822,7 +8839,7 @@ var Rance;
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
 
-            var main = this.layers["background"];
+            var main = this.layers["main"];
             main.interactive = true;
 
             main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
@@ -8853,14 +8870,63 @@ var Rance;
                 var w = this.pixiContainer.offsetWidth;
                 var h = this.pixiContainer.offsetHeight;
                 this.renderer.resize(w, h);
-                this.layers["background"].filterArea = new PIXI.Rectangle(0, 0, w, h);
+                this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
+                this.bgFilterIsDirty = true;
+                if (this.isPaused) {
+                    this.renderOnce();
+                }
             }
         };
+        Renderer.prototype.renderOnce = function () {
+            this.forceFrame = true;
+            this.render();
+        };
+        Renderer.prototype.pause = function () {
+            this.isPaused = true;
+            this.forceFrame = false;
+        };
+        Renderer.prototype.resume = function () {
+            this.isPaused = false;
+            this.forceFrame = false;
+            this.render();
+        };
         Renderer.prototype.render = function () {
-            if (!document.body.contains(this.pixiContainer))
+            if (!document.body.contains(this.pixiContainer)) {
+                this.pause();
                 return;
-            this.renderer.render(this.stage);
+            }
+            if (this.isPaused) {
+                if (this.forceFrame) {
+                    this.forceFrame = false;
+                } else {
+                    return;
+                }
+            }
+
+            if (this.bgFilterIsDirty) {
+                this.stage.addChild(this.layers["bgFilter"]);
+                this.layers["bgFilter"].filters = [nebulaFilter];
+                this.bgFilterIsDirty = false;
+                this.bgSpriteIsDirty = true;
+            }
+
             uniformManager.updateTime();
+
+            if (this.bgSpriteIsDirty) {
+                var texture = this.layers["bgFilter"].generateTexture();
+                var sprite = new PIXI.Sprite(texture);
+
+                this.layers["bgSprite"].removeChildren();
+                this.layers["bgSprite"].addChild(sprite);
+
+                this.layers["bgFilter"].filters = null;
+                this.stage.removeChild(this.layers["bgFilter"]);
+
+                this.bgSpriteIsDirty = false;
+            }
+
+            this.renderer.render(this.stage);
+
             requestAnimFrame(this.render.bind(this));
         };
         return Renderer;
@@ -9087,34 +9153,6 @@ var Rance;
             time: { type: "1f", value: 0.0 }
         };
 
-        var shaderSrc = [
-            "precision mediump float;",
-            "uniform vec3 bgColor;",
-            "uniform float time;",
-            "float density = 0.005;",
-            "float rand(vec2 p)",
-            "{",
-            "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
-            "}",
-            "void main(void)",
-            "{",
-            "  vec2 pos = floor(gl_FragCoord.xy);",
-            "  float color = 0.0;",
-            "  float starGenValue = rand(gl_FragCoord.xy);",
-            "  ",
-            "  if (starGenValue < density)",
-            "  {",
-            "    float r = rand(gl_FragCoord.xy + vec2(4.20, 6.9));",
-            "    color = r * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",
-            "    gl_FragColor = vec4(vec3(color), 1.0);",
-            "  }",
-            "  else",
-            "  {",
-            "    gl_FragColor = vec4(bgColor, 1.0);",
-            "  }",
-            "}"
-        ];
-
         var nebulaUniforms = {
             baseColor: { type: "3fv", value: [1.0, 0.0, 0.0] },
             overlayColor: { type: "3fv", value: [0.0, 0.0, 1.0] },
@@ -9275,10 +9313,7 @@ var Rance;
 
         nebulaFilter = new PIXI.AbstractFilter(nebulaShaderSrc, nebulaUniforms);
 
-        testFilter = new PIXI.AbstractFilter(shaderSrc, uniforms);
-
         uniformManager = new Rance.UniformManager();
-        uniformManager.registerObject("time", testFilter);
 
         reactUI = new Rance.ReactUI(document.getElementById("react-container"));
 
