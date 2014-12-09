@@ -579,7 +579,6 @@ progress::-webkit-progress-value { background: #080; }
   flex: 1;
   flex-flow: column;
   justify-content: space-between;
-  padding-left: 2px;
 }
 
 .unit-info-name
@@ -594,6 +593,7 @@ progress::-webkit-progress-value { background: #080; }
   height: 20px;
   margin: 2px;
   position: relative;
+  padding: 0 2px;
 }
 
 .status-container
@@ -661,7 +661,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .unit-strength-container
 {
-
+  padding: 0 2px;
 }
 
 .unit-strength-amount
@@ -680,6 +680,7 @@ progress::-webkit-progress-value { background: #080; }
   height: 10px;
   background-color: @ababa;
   .line-gradient(to bottom, @ababa);
+  border: 1px solid #222 !important;
 }
 .unit-strength-bar-value
 {
@@ -702,7 +703,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .unit-action-points
 {
-  height: 12px;
+  padding: 0 2px;
   >*
   {
     vertical-align: super;

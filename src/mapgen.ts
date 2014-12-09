@@ -124,6 +124,12 @@ module Rance
         });
         location.addBuilding(sectorCommand);
 
+        location.addBuilding(new Building(
+        {
+          template: Templates.Buildings.starBase,
+          location: location
+        }));
+
         this.startLocations.push(location);
 
         var ship = new Unit(Templates.ShipTypes.battleCruiser);

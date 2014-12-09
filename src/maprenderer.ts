@@ -243,7 +243,7 @@ module Rance
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
-            var starSize = 6;
+            var starSize = 4;
             if (star.buildings["defence"])
             {
               starSize += star.buildings["defence"].length * 3;

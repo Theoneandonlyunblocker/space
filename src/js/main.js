@@ -3771,8 +3771,6 @@ var Rance;
             if (!a)
                 return;
 
-            console.log(a);
-
             var path = Rance.backTrace(a.came, newLocation);
 
             return path;
@@ -4401,8 +4399,7 @@ var Rance;
                     l: 40
                 },
                 maxDifference: {
-                    h: 80,
-                    l: 60
+                    h: 80
                 }
             });
             hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
@@ -7182,6 +7179,11 @@ var Rance;
                 });
                 location.addBuilding(sectorCommand);
 
+                location.addBuilding(new Rance.Building({
+                    template: Rance.Templates.Buildings.starBase,
+                    location: location
+                }));
+
                 this.startLocations.push(location);
 
                 var ship = new Rance.Unit(Rance.Templates.ShipTypes.battleCruiser);
@@ -7722,7 +7724,7 @@ var Rance;
                     };
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
-                        var starSize = 6;
+                        var starSize = 4;
                         if (star.buildings["defence"]) {
                             starSize += star.buildings["defence"].length * 3;
                         }
