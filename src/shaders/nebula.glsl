@@ -2,7 +2,7 @@
 
 
 
-const int NUM_OCTAVES = 4;
+const int NUM_OCTAVES = 6;
 float hash(vec2 p)
 {
   return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));
@@ -20,7 +20,7 @@ float noise(vec2 x)
   return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
-float NOISE(vec2 x)
+float fbm(vec2 x)
 {
   float v = 0.0;
   float a = 0.5;
@@ -35,33 +35,43 @@ float NOISE(vec2 x)
   return v;
 }
 
-float square(float n)
+float relativeValue(float v, float min, float max)
 {
-  return n * n;
+  return (v - min) / (max - min);
 }
 
-vec3 cloudColor = vec3(1.0, 0.0, 0.0);
-vec3 streakColor = vec3(0.0, 0.0, 1.0);
+float displace(vec2 pos, out vec2 q)
+{
+  q = vec2(fbm(pos),
+    fbm(pos + vec2(23.3, 46.7)));
+  return fbm(pos + 1.0 * q);
+}
+
+vec3 colorLayer(vec2 pos, vec3 color)
+{
+  float v = fbm(pos);
+  return mix(vec3(0.0), color, v);
+}
+
+vec3 nebula(vec2 pos)
+{
+  vec2 on = vec2(0.0);
+
+  float volume = displace(pos, on);
+  volume = relativeValue(volume, 0.5, 1.0);
+  volume += relativeValue(fbm(pos), 0.3, 1.0);
+
+  vec3 c = colorLayer(pos + vec2(42.0, 6.9), vec3(1.0, 0.0, 0.0));
+  c = mix(c, vec3(0.0, 0.0, 1.0), dot(on.x, on.y));
+
+  return c * volume;
+}
 
 void main(void)
 {
-  vec2 pos = gl_FragCoord.xy;
-  float noisy = NOISE(pos);
-  float puffy = square(noisy);
-    
-  vec3 c = clamp(cloudColor * puffy, 0.0, 1.0);
+  vec2 pos = gl_FragCoord.xy * 0.01;
+
+  vec3 c = nebula(pos);
 
   gl_FragColor = vec4(c, 1.0);
-}
-
-vec3 nebula(vec3 dir) {
-    float purple = abs(dir.x);
-    float yellow = noise(dir.y);
-    vec3 streakyHue = vec3(purple + yellow, yellow * 0.7, purple);
-    vec3 puffyHue = vec3(0.8, 0.1, 1.0);
-
-    float streaky = min(1.0, 8.0 * pow(NOISE(dir.yz * square(dir.x) * 13.0 + dir.xy * square(dir.z) * 7.0 + vec2(150.0, 2.0)), 10.0));
-    float puffy = square(NOISE(dir.xz * 4.0 + vec2(30, 10)) * dir.y);
-
-    return clamp(puffyHue * puffy * (1.0 - streaky) + streaky * streakyHue, 0.0, 1.0);
 }
