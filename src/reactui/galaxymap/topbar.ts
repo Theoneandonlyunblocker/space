@@ -30,8 +30,8 @@ module Rance
               }),
               React.DOM.div(
               {
-                className: "top-bar-player-name"
-              }, player.name)
+                className: "top-bar-turn-number"
+              }, "Turn " + this.props.game.turnNumber)
             ),
             React.DOM.div(
             {

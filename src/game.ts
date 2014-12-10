@@ -21,6 +21,7 @@ module Rance
       this.galaxyMap = map;
       this.playerOrder = players;
       this.humanPlayer = humanPlayer;
+      this.turnNumber = 1;
 
       this.addEventListeners();
     }
@@ -43,6 +44,10 @@ module Rance
       if (this.activePlayer !== this.humanPlayer)
       {
         this.endTurn();
+      }
+      else
+      {
+        this.turnNumber++;
       }
 
       eventManager.dispatchEvent("updateSelection", null);

@@ -31,7 +31,8 @@ module Rance
               UIComponents.GalaxyMapUI(
               {
                 playerControl: this.props.playerControl,
-                player: this.props.player
+                player: this.props.player,
+                game: this.props.game
               }),
               UIComponents.PopupManager(
               {
@@ -85,6 +86,11 @@ module Rance
 
         this.props.renderer.camera.centerOnPosition(
           player1.controlledLocations[0]);
+      },
+      componentWillUnmount: function()
+      {
+        this.props.renderer.pause();
+        this.props.renderer.removeRendererView();
       }
     });
   }
