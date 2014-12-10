@@ -59,7 +59,19 @@ module Rance
     }
     removeRendererView()
     {
-      this.renderer.view.parentNode.removeChild(this.renderer.view);
+      if (this.renderer.view.parentNode)
+      {
+        this.renderer.view.parentNode.removeChild(this.renderer.view);
+      }
+      this.stage.removeChildren();
+
+      for (var layerName in this.layers)
+      {
+        if (!this.layers[layerName]) continue;
+        this.layers[layerName].filters = null;
+        this.layers[layerName].removeChildren();
+        this.layers[layerName] = null;
+      }
     }
     bindRendererView()
     {
@@ -70,14 +82,6 @@ module Rance
     }
     initLayers()
     {
-      this.stage.removeChildren();
-
-      for (var layerName in this.layers)
-      {
-        this.layers[layerName].filters = null;
-        this.layers[layerName].removeChildren();
-        this.layers[layerName] = null;
-      }
 
       var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
       this.stage.addChild(_bgSprite);
@@ -186,6 +190,7 @@ module Rance
     {
       if (!document.body.contains(this.pixiContainer))
       {
+        console.log("pause");
         this.pause();
         return;
       }
@@ -224,6 +229,7 @@ module Rance
         this.stage.removeChild(this.layers["bgFilter"]);
 
         this.bgSpriteIsDirty = false;
+        console.log("re-render shader")
       }
 
       this.renderer.render(this.stage);
