@@ -1054,6 +1054,7 @@ declare module Rance {
         public galaxyMap: Rance.GalaxyMap;
         public playerControl: Rance.PlayerControl;
         public player: Rance.Player;
+        public game: Rance.Game;
         constructor(container: HTMLElement);
         public addEventListeners(): void;
         public switchScene(newScene: string): void;

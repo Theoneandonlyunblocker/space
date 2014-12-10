@@ -1838,8 +1838,8 @@ var Rance;
                     className: "top-bar-player-icon",
                     src: player.icon
                 }), React.DOM.div({
-                    className: "top-bar-player-name"
-                }, player.name)), React.DOM.div({
+                    className: "top-bar-turn-number"
+                }, "Turn " + this.props.game.turnNumber)), React.DOM.div({
                     className: "top-bar-money"
                 }, React.DOM.div({
                     className: "top-bar-money-current"
@@ -3779,7 +3779,6 @@ var Rance;
             this.visionIsDirty = true;
             this.player.updateVisibleStars();
 
-            Rance.eventManager.dispatchEvent("renderMap", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         Fleet.prototype.getPathTo = function (newLocation) {
@@ -4725,6 +4724,7 @@ var Rance;
             this.secondaryColor = scheme.secondary;
         };
         Player.prototype.setupPirates = function () {
+            this.name = "Independent";
             this.color = 0x000000;
             this.colorAlpha = 0;
             this.secondaryColor = 0xFFFFFF;
@@ -5042,7 +5042,8 @@ var Rance;
             }
 
             this.visionIsDirty = false;
-            Rance.eventManager.dispatchEvent("renderLayer", "fogOfWar");
+
+            Rance.eventManager.dispatchEvent("renderMap");
         };
         Player.prototype.getVisibleStars = function () {
             if (this.visionIsDirty)
@@ -6199,7 +6200,8 @@ var Rance;
                 }, React.DOM.div({
                     className: "galaxy-map-ui-top"
                 }, Rance.UIComponents.TopBar({
-                    player: this.props.player
+                    player: this.props.player,
+                    game: this.props.game
                 }), React.DOM.div({
                     className: "fleet-selection-container"
                 }, Rance.UIComponents.FleetSelection({
@@ -6251,7 +6253,8 @@ var Rance;
                     id: "pixi-container"
                 }, Rance.UIComponents.GalaxyMapUI({
                     playerControl: this.props.playerControl,
-                    player: this.props.player
+                    player: this.props.player,
+                    game: this.props.game
                 }), Rance.UIComponents.PopupManager({})), React.DOM.select({
                     className: "reactui-selector",
                     ref: "mapModeSelector",
@@ -6288,6 +6291,10 @@ var Rance;
 
                 //this.props.renderer.render();
                 this.props.renderer.camera.centerOnPosition(player1.controlledLocations[0]);
+            },
+            componentWillUnmount: function () {
+                this.props.renderer.pause();
+                this.props.renderer.removeRendererView();
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6411,6 +6418,7 @@ var Rance;
                             galaxyMap: this.props.galaxyMap,
                             playerControl: this.props.playerControl,
                             player: this.props.player,
+                            game: this.props.game,
                             key: "galaxyMap"
                         }));
                         break;
@@ -6461,7 +6469,8 @@ var Rance;
                 mapGen: this.mapGen,
                 galaxyMap: this.galaxyMap,
                 playerControl: this.playerControl,
-                player: this.player
+                player: this.player,
+                game: this.game
             }), this.container);
         };
         return ReactUI;
@@ -7647,7 +7656,7 @@ var Rance;
             }
         };
         MapRenderer.prototype.getFowSpriteForStar = function (star) {
-            if (!this.fowSpriteCache[star.id]) {
+            if (!this.fowSpriteCache[star.id] || Object.keys(this.fowSpriteCache).length < 4) {
                 console.log("makefowsprite");
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
@@ -7838,7 +7847,7 @@ var Rance;
                     if (!points || points.length < 1)
                         return doc;
 
-                    doc.alpha = 0.15;
+                    doc.alpha = 0.35;
 
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
@@ -8790,7 +8799,18 @@ var Rance;
             this.pixiContainer = element;
         };
         Renderer.prototype.removeRendererView = function () {
-            this.renderer.view.parentNode.removeChild(this.renderer.view);
+            if (this.renderer.view.parentNode) {
+                this.renderer.view.parentNode.removeChild(this.renderer.view);
+            }
+            this.stage.removeChildren();
+
+            for (var layerName in this.layers) {
+                if (!this.layers[layerName])
+                    continue;
+                this.layers[layerName].filters = null;
+                this.layers[layerName].removeChildren();
+                this.layers[layerName] = null;
+            }
         };
         Renderer.prototype.bindRendererView = function () {
             this.pixiContainer.appendChild(this.renderer.view);
@@ -8799,14 +8819,6 @@ var Rance;
             this.resize();
         };
         Renderer.prototype.initLayers = function () {
-            this.stage.removeChildren();
-
-            for (var layerName in this.layers) {
-                this.layers[layerName].filters = null;
-                this.layers[layerName].removeChildren();
-                this.layers[layerName] = null;
-            }
-
             var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
             this.stage.addChild(_bgSprite);
 
@@ -8896,6 +8908,7 @@ var Rance;
         };
         Renderer.prototype.render = function () {
             if (!document.body.contains(this.pixiContainer)) {
+                console.log("pause");
                 this.pause();
                 return;
             }
@@ -8928,6 +8941,7 @@ var Rance;
                 this.stage.removeChild(this.layers["bgFilter"]);
 
                 this.bgSpriteIsDirty = false;
+                console.log("re-render shader");
             }
 
             this.renderer.render(this.stage);
@@ -8949,6 +8963,7 @@ var Rance;
             this.galaxyMap = map;
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
+            this.turnNumber = 1;
 
             this.addEventListeners();
         }
@@ -8967,6 +8982,8 @@ var Rance;
             // TODO
             if (this.activePlayer !== this.humanPlayer) {
                 this.endTurn();
+            } else {
+                this.turnNumber++;
             }
 
             Rance.eventManager.dispatchEvent("updateSelection", null);
@@ -9155,16 +9172,18 @@ var Rance;
 
         var nebulaColorScheme = Rance.generateColorScheme();
 
+        var lightness = Rance.randRange(1, 1.2);
+
         nebulaUniforms = {
             baseColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.main) },
             overlayColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.secondary) },
             highlightColor: { type: "3fv", value: [1.0, 1.0, 1.0] },
-            coverage: { type: "1f", value: 0.3 },
+            coverage: { type: "1f", value: Rance.randRange(0.2, 0.4) },
             scale: { type: "1f", value: Rance.randRange(4, 8) },
-            diffusion: { type: "1f", value: 3.0 },
-            streakiness: { type: "1f", value: 2.0 },
-            streakLightness: { type: "1f", value: 1.0 },
-            cloudLightness: { type: "1f", value: 1.0 },
+            diffusion: { type: "1f", value: Rance.randRange(2.3, 3.0) },
+            streakiness: { type: "1f", value: Rance.randRange(1.5, 2.5) },
+            streakLightness: { type: "1f", value: lightness },
+            cloudLightness: { type: "1f", value: lightness },
             highlightA: { type: "1f", value: 0.9 },
             highlightB: { type: "1f", value: 2.2 },
             seed: { type: "2fv", value: [Math.random() * 100, Math.random() * 100] }
@@ -9289,7 +9308,7 @@ var Rance;
             "",
             "  float color = 0.0;",
             "",
-            "  if (genValue < 0.005)",
+            "  if (genValue < 0.002)",
             "  {",
             "    float r = hash(pos + vec2(4.20, 6.9));",
             "    color = r;// * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",
@@ -9335,6 +9354,7 @@ var Rance;
         reactUI.playerControl = playerControl;
 
         game = new Rance.Game(galaxyMap, players, player1);
+        reactUI.game = game;
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();

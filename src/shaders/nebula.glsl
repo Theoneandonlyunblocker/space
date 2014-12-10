@@ -19,7 +19,6 @@ uniform float highlightB;
 
 uniform vec2 seed;
 
-const int sharpness = 6;
 /*
 const vec3 baseColor = vec3(1.0, 0.0, 0.0);
 const vec3 overlayColor = vec3(0.0, 0.0, 1.0);
@@ -41,6 +40,8 @@ const float highlightB = 2.2;
 
 const vec2 seed = vec2(69.0, 42.0);
 */
+
+const int sharpness = 6;
 
 float hash(vec2 p)
 {

@@ -53,6 +53,7 @@ module Rance
     }
     setupPirates()
     {
+      this.name = "Independent"
       this.color = 0x000000;
       this.colorAlpha = 0;
       this.secondaryColor = 0xFFFFFF;
@@ -443,7 +444,8 @@ module Rance
       }
 
       this.visionIsDirty = false;
-      eventManager.dispatchEvent("renderLayer", "fogOfWar");
+
+      eventManager.dispatchEvent("renderMap");
     }
     getVisibleStars()
     {

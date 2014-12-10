@@ -125,7 +125,9 @@ module Rance
     }
     getFowSpriteForStar(star: Star)
     {
-      if (!this.fowSpriteCache[star.id])
+      // silly hack to make sure first texture gets created properly
+      if (!this.fowSpriteCache[star.id] ||
+        Object.keys(this.fowSpriteCache).length < 4)
       {
         console.log("makefowsprite")
         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
@@ -344,7 +346,7 @@ module Rance
 
           if (!points || points.length < 1) return doc;
 
-          doc.alpha = 0.15;
+          doc.alpha = 0.35;
           
           for (var i = 0; i < points.length; i++)
           {

@@ -176,7 +176,6 @@ module Rance
       this.visionIsDirty = true;
       this.player.updateVisibleStars();
 
-      eventManager.dispatchEvent("renderMap", null);
       eventManager.dispatchEvent("updateSelection", null);
     }
     getPathTo(newLocation: Star)

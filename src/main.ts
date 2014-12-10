@@ -48,21 +48,23 @@ module Rance
 
     var nebulaColorScheme = generateColorScheme();
 
+    var lightness = randRange(1, 1.2);
+
     nebulaUniforms =
     {
       baseColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.main)},
       overlayColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.secondary)},
       highlightColor: {type: "3fv", value: [1.0, 1.0, 1.0]},
 
-      coverage: {type: "1f", value: 0.3},
+      coverage: {type: "1f", value: randRange(0.2, 0.4)},
 
       scale: {type: "1f", value: randRange(4, 8)},
 
-      diffusion: {type: "1f", value: 3.0},
-      streakiness: {type: "1f", value: 2.0},
+      diffusion: {type: "1f", value: randRange(2.3, 3.0)},
+      streakiness: {type: "1f", value: randRange(1.5, 2.5)},
 
-      streakLightness: {type: "1f", value: 1.0},
-      cloudLightness: {type: "1f", value: 1.0},
+      streakLightness: {type: "1f", value: lightness},
+      cloudLightness: {type: "1f", value: lightness},
 
       highlightA: {type: "1f", value: 0.9},
       highlightB: {type: "1f", value: 2.2},
@@ -190,7 +192,7 @@ module Rance
       "",
       "  float color = 0.0;",
       "",
-      "  if (genValue < 0.005)",
+      "  if (genValue < 0.002)",
       "  {",
       "    float r = hash(pos + vec2(4.20, 6.9));",
       "    color = r;// * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",
@@ -241,6 +243,7 @@ module Rance
     reactUI.playerControl = playerControl;
 
     game = new Game(galaxyMap, players, player1);
+    reactUI.game = game;
 
 
     reactUI.currentScene = "galaxyMap";
