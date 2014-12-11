@@ -421,6 +421,7 @@ declare module Rance {
             level: number;
         }[];
         public setController(newController: Rance.Player): void;
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -432,6 +433,18 @@ declare module Rance {
         public linksFrom: Star[];
         public distance: number;
         public region: string;
+        public baseIncome: number;
+        public name: string;
+        public owner: Rance.Player;
+        public fleets: {
+            [playerId: string]: Rance.Fleet[];
+        };
+        public buildings: {
+            [category: string]: Rance.Building[];
+        };
+        public distanceFromNearestStartLocation: number;
+        public voronoiId: number;
+        public voronoiCell: any;
         public indexedNeighborsInRange: {
             [range: number]: {
                 all: Star[];
@@ -443,18 +456,6 @@ declare module Rance {
         public indexedDistanceToStar: {
             [id: number]: number;
         };
-        public name: string;
-        public owner: Rance.Player;
-        public fleets: {
-            [playerId: string]: Rance.Fleet[];
-        };
-        public buildings: {
-            [category: string]: Rance.Building[];
-        };
-        public distanceFromNearestStartLocation: number;
-        public baseIncome: number;
-        public voronoiId: number;
-        public voronoiCell: any;
         constructor(x: number, y: number, id?: number);
         public addBuilding(building: Rance.Building): void;
         public removeBuilding(building: Rance.Building): void;
@@ -498,6 +499,7 @@ declare module Rance {
         public getVision(): Star[];
         public getHealingFactor(player: Rance.Player): number;
         public severLinksToNonAdjacent(): void;
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -537,6 +539,7 @@ declare module Rance {
         };
         public updateVisibleStars(): void;
         public getVision(): Rance.Star[];
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -794,6 +797,9 @@ declare module Rance {
         });
         public generateRandom(seed?: any): void;
         public draw(): HTMLCanvasElement;
+        public serialize(): {
+            seed: any;
+        };
     }
 }
 declare module Rance {
@@ -843,6 +849,7 @@ declare module Rance {
         public getVisibleStars(): Rance.Star[];
         public getRevealedStars(): Rance.Star[];
         public getRevealedButNotVisibleStars(): Rance.Star[];
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -1005,6 +1012,7 @@ declare module Rance {
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
         public heal(): void;
+        public serialize(): any;
     }
 }
 declare module Rance {

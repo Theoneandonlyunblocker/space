@@ -18,6 +18,27 @@ module Rance
     distance: number;
     region: string;
 
+    baseIncome: number;
+
+    name: string;
+    owner: Player;
+    
+    fleets:
+    {
+      [playerId: string] : Fleet[];
+    } = {};
+
+    buildings:
+    {
+      [category: string] : Building[];
+    } = {};
+
+    distanceFromNearestStartLocation: number;
+
+
+    voronoiId: number;
+    voronoiCell: any;
+
     indexedNeighborsInRange:
     {
       [range: number]:
@@ -33,25 +54,6 @@ module Rance
     {
       [id: number]: number;
     } = {};
-
-    name: string;
-    owner: Player;
-    fleets:
-    {
-      [playerId: string] : Fleet[];
-    } = {};
-
-    buildings:
-    {
-      [category: string] : Building[];
-    } = {};
-
-    distanceFromNearestStartLocation: number;
-
-    baseIncome: number;
-
-    voronoiId: number;
-    voronoiCell: any;
 
     constructor(x: number, y: number, id?: number)
     {
@@ -562,6 +564,35 @@ module Rance
           this.removeLink(star);
         }
       }
+    }
+    serialize()
+    {
+      var data: any = {};
+
+      data.id = this.id;
+      data.x = this.x;
+      data.y = this.y;
+
+      data.distance = this.distance;
+      data.region = this.region;
+
+      data.baseIncome = this.baseIncome;
+
+      data.name = this.name;
+      data.ownerId = this.owner.id;
+
+      data.buildings = {};
+
+      for (var category in this.buildings)
+      {
+        data.buildings[category] = [];
+        for (var i = 0; i < this.buildings[category].length; i++)
+        {
+          data.buildings[category].push(this.buildings[category][i].serialize())
+        }
+      }
+
+      return data;
     }
   }
 }

@@ -82,5 +82,12 @@ module Rance
       
       return canvas;
     }
+    serialize()
+    {
+      return(
+      {
+        seed: this.seed
+      });
+    }
   }
 }

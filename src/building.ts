@@ -61,5 +61,18 @@ module Rance
       this.controller = newController;
       this.location.updateController();
     }
+    serialize()
+    {
+      var data: any = {};
+
+      data.templateType = this.template.type;
+
+      data.locationId = this.location.id;
+      data.controllerId = this.controller.id;
+
+      data.upgradeLevel = this.upgradeLevel;
+
+      return data;
+    }
   }
 }

@@ -3180,6 +3180,18 @@ var Rance;
             this.controller = newController;
             this.location.updateController();
         };
+        Building.prototype.serialize = function () {
+            var data = {};
+
+            data.templateType = this.template.type;
+
+            data.locationId = this.location.id;
+            data.controllerId = this.controller.id;
+
+            data.upgradeLevel = this.upgradeLevel;
+
+            return data;
+        };
         return Building;
     })();
     Rance.Building = Building;
@@ -3197,10 +3209,10 @@ var Rance;
         function Star(x, y, id) {
             this.linksTo = [];
             this.linksFrom = [];
-            this.indexedNeighborsInRange = {};
-            this.indexedDistanceToStar = {};
             this.fleets = {};
             this.buildings = {};
+            this.indexedNeighborsInRange = {};
+            this.indexedDistanceToStar = {};
             this.id = isFinite(id) ? id : idGenerators.star++;
             this.name = "Star " + this.id;
 
@@ -3623,6 +3635,32 @@ var Rance;
                 }
             }
         };
+        Star.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.x = this.x;
+            data.y = this.y;
+
+            data.distance = this.distance;
+            data.region = this.region;
+
+            data.baseIncome = this.baseIncome;
+
+            data.name = this.name;
+            data.ownerId = this.owner.id;
+
+            data.buildings = {};
+
+            for (var category in this.buildings) {
+                data.buildings[category] = [];
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    data.buildings[category].push(this.buildings[category][i].serialize());
+                }
+            }
+
+            return data;
+        };
         return Star;
     })();
     Rance.Star = Star;
@@ -3841,6 +3879,20 @@ var Rance;
             }
 
             return this.visibleStars;
+        };
+        Fleet.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.name = this.name;
+
+            data.locationId = this.location.id;
+            data.playerId = this.player.id;
+            data.shipIds = this.ships.map(function (ship) {
+                return ship.id;
+            });
+
+            return data;
         };
         return Fleet;
     })();
@@ -4689,6 +4741,11 @@ var Rance;
 
             return canvas;
         };
+        Flag.prototype.serialize = function () {
+            return ({
+                seed: this.seed
+            });
+        };
         return Flag;
     })();
     Rance.Flag = Flag;
@@ -5081,6 +5138,36 @@ var Rance;
             }
 
             return toReturn;
+        };
+        Player.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.name = this.name;
+            data.color = this.color;
+            data.colorAlpha = this.colorAlpha;
+            data.secondaryColor = this.secondaryColor;
+
+            data.flag = this.flag.serialize();
+
+            data.unitIds = [];
+            for (var id in this.units) {
+                data.unitIds.push(id);
+            }
+            data.fleetIds = this.fleets.map(function (fleet) {
+                return fleet.id;
+            });
+            data.money = this.money;
+            data.controlledLocationIds = this.controlledLocations.map(function (star) {
+                return star.id;
+            });
+
+            data.revealedStarIds = [];
+            for (var id in this.revealedStars) {
+                data.revealedStarIds.push(id);
+            }
+
+            return data;
         };
         return Player;
     })();
@@ -5881,6 +5968,32 @@ var Rance;
             var healAmount = this.maxStrength * healingFactor;
 
             this.addStrength(healAmount);
+        };
+        Unit.prototype.serialize = function () {
+            var data = {};
+
+            data.templateType = this.template.type;
+            data.id = this.id;
+            data.name = this.name;
+
+            data.maxStrength = this.maxStrength;
+            data.currentStrength = this.currentStrength;
+
+            data.currentMovePoints = this.currentMovePoints;
+            data.maxMovePoints = this.maxMovePoints;
+
+            data.attributes = this.attributes;
+
+            data.battleStats = {};
+            data.battleStats.moveDelay = this.battleStats.moveDelay;
+            data.side = this.battleStats.side;
+            data.position = this.battleStats.position;
+            data.currentActionPoints = this.battleStats.currentActionPoints;
+            data.guard = this.battleStats.guard;
+
+            data.fleetId = this.fleet.id;
+
+            return data;
         };
         return Unit;
     })();

@@ -489,5 +489,35 @@ module Rance
 
       return toReturn;
     }
+    serialize()
+    {
+      var data: any = {};
+
+      data.id = this.id;
+      data.name = this.name;
+      data.color = this.color;
+      data.colorAlpha = this.colorAlpha;
+      data.secondaryColor = this.secondaryColor;
+
+      data.flag = this.flag.serialize();
+      
+      data.unitIds = [];
+      for (var id in this.units)
+      {
+        data.unitIds.push(id);
+      }
+      data.fleetIds = this.fleets.map(function(fleet){return fleet.id});
+      data.money = this.money;
+      data.controlledLocationIds =
+        this.controlledLocations.map(function(star){return star.id});
+
+      data.revealedStarIds = [];
+      for (var id in this.revealedStars)
+      {
+        data.revealedStarIds.push(id);
+      }
+
+      return data;
+    }
   }  
 }

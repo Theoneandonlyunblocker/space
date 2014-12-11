@@ -253,5 +253,18 @@ module Rance
 
       return this.visibleStars;
     }
+    serialize()
+    {
+      var data: any = {};
+
+      data.id = this.id;
+      data.name = this.name;
+
+      data.locationId = this.location.id;
+      data.playerId = this.player.id;
+      data.shipIds = this.ships.map(function(ship){return ship.id});
+
+      return data;
+    }
   }
 }

@@ -288,5 +288,32 @@ module Rance
 
       this.addStrength(healAmount);
     }
+    serialize()
+    {
+      var data: any = {};
+
+      data.templateType = this.template.type;
+      data.id = this.id;
+      data.name = this.name;
+
+      data.maxStrength = this.maxStrength;
+      data.currentStrength = this.currentStrength;
+
+      data.currentMovePoints = this.currentMovePoints;
+      data.maxMovePoints = this.maxMovePoints;
+
+      data.attributes = this.attributes;
+
+      data.battleStats = {};
+      data.battleStats.moveDelay = this.battleStats.moveDelay;
+      data.side = this.battleStats.side;
+      data.position = this.battleStats.position;
+      data.currentActionPoints = this.battleStats.currentActionPoints;
+      data.guard = this.battleStats.guard;
+
+      data.fleetId = this.fleet.id;
+
+      return data;
+    }
   }
 }
