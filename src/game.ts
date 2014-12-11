@@ -8,6 +8,7 @@ module Rance
   export class Game
   {
     turnNumber: number;
+    independents: Player[] = [];
     playerOrder: Player[];
     galaxyMap: GalaxyMap;
     humanPlayer: Player;
@@ -70,6 +71,21 @@ module Rance
       this.playerOrder.push(this.playerOrder.shift());
 
       this.activePlayer = this.playerOrder[0];
+    }
+    serialize()
+    {
+      var data: any = {};
+
+      data.galaxyMap = this.galaxyMap.serialize();
+      data.players = this.playerOrder.map(function(player)
+        {return player.serialize()})
+      data.players = data.players.concat(this.independents.map(function(player)
+      {
+        return player.serialize();
+      }));
+      data.humanPlayerId = this.humanPlayer.id;
+
+      return data;
     }
   }
 }

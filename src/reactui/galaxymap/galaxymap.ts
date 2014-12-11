@@ -58,10 +58,6 @@ module Rance
       {
         if (mapRenderer) mapRenderer.resetContainer();
 
-        if (!this.props.galaxyMap.mapGen.points[0])
-        {
-          this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
-        }
         
         this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
         this.props.renderer.init();

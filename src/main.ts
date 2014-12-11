@@ -45,6 +45,7 @@ module Rance
     pirates.setupPirates();
 
 
+
     var nebulaColorScheme = generateColorScheme();
 
     var lightness = randRange(1, 1.2);
@@ -221,7 +222,6 @@ module Rance
 
 
 
-
     uniformManager = new UniformManager();
 
     reactUI = new ReactUI(document.getElementById("react-container"));
@@ -232,6 +232,7 @@ module Rance
     reactUI.renderer = renderer;
 
     mapGen = new MapGen();
+    mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
     reactUI.mapGen = mapGen;
 
     galaxyMap = new GalaxyMap();
@@ -243,6 +244,7 @@ module Rance
 
     game = new Game(galaxyMap, players, player1);
     reactUI.game = game;
+    game.independents.push(pirates);
 
 
     reactUI.currentScene = "galaxyMap";

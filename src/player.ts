@@ -500,13 +500,13 @@ module Rance
       data.secondaryColor = this.secondaryColor;
 
       data.flag = this.flag.serialize();
-      
+
       data.unitIds = [];
       for (var id in this.units)
       {
         data.unitIds.push(id);
       }
-      data.fleetIds = this.fleets.map(function(fleet){return fleet.id});
+      data.fleets = this.fleets.map(function(fleet){return fleet.serialize()});
       data.money = this.money;
       data.controlledLocationIds =
         this.controlledLocations.map(function(star){return star.id});

@@ -3648,7 +3648,7 @@ var Rance;
             data.baseIncome = this.baseIncome;
 
             data.name = this.name;
-            data.ownerId = this.owner.id;
+            data.ownerId = this.owner ? this.owner.id : null;
 
             data.buildings = {};
 
@@ -3888,8 +3888,8 @@ var Rance;
 
             data.locationId = this.location.id;
             data.playerId = this.player.id;
-            data.shipIds = this.ships.map(function (ship) {
-                return ship.id;
+            data.ships = this.ships.map(function (ship) {
+                return ship.serialize();
             });
 
             return data;
@@ -5154,8 +5154,8 @@ var Rance;
             for (var id in this.units) {
                 data.unitIds.push(id);
             }
-            data.fleetIds = this.fleets.map(function (fleet) {
-                return fleet.id;
+            data.fleets = this.fleets.map(function (fleet) {
+                return fleet.serialize();
             });
             data.money = this.money;
             data.controlledLocationIds = this.controlledLocations.map(function (star) {
@@ -6376,10 +6376,6 @@ var Rance;
             componentDidMount: function () {
                 if (mapRenderer)
                     mapRenderer.resetContainer();
-
-                if (!this.props.galaxyMap.mapGen.points[0]) {
-                    this.props.galaxyMap.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
-                }
 
                 this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
                 this.props.renderer.init();
@@ -8353,13 +8349,14 @@ var Rance;
         GalaxyMap.prototype.setMapGen = function (mapGen) {
             this.mapGen = mapGen;
 
-            this.stars = mapGen.points;
+            this.allPoints = mapGen.points;
+            this.stars = mapGen.getNonFillerPoints();
         };
         GalaxyMap.prototype.getIncomeBounds = function () {
             var min, max;
 
-            for (var i = 0; i < this.mapGen.points.length; i++) {
-                var star = this.mapGen.points[i];
+            for (var i = 0; i < this.stars.length; i++) {
+                var star = this.stars[i];
                 var income = star.getIncome();
                 if (!min)
                     min = max = income;
@@ -8375,6 +8372,15 @@ var Rance;
                 min: min,
                 max: max
             });
+        };
+        GalaxyMap.prototype.serialize = function () {
+            var data = {};
+
+            data.allPoints = this.allPoints.map(function (star) {
+                return star.serialize();
+            });
+
+            return data;
         };
         return GalaxyMap;
     })();
@@ -9122,6 +9128,7 @@ var Rance;
 (function (Rance) {
     var Game = (function () {
         function Game(map, players, humanPlayer) {
+            this.independents = [];
             this.galaxyMap = map;
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
@@ -9164,6 +9171,20 @@ var Rance;
             this.playerOrder.push(this.playerOrder.shift());
 
             this.activePlayer = this.playerOrder[0];
+        };
+        Game.prototype.serialize = function () {
+            var data = {};
+
+            data.galaxyMap = this.galaxyMap.serialize();
+            data.players = this.playerOrder.map(function (player) {
+                return player.serialize();
+            });
+            data.players = data.players.concat(this.independents.map(function (player) {
+                return player.serialize();
+            }));
+            data.humanPlayerId = this.humanPlayer.id;
+
+            return data;
         };
         return Game;
     })();
@@ -9504,6 +9525,7 @@ var Rance;
         reactUI.renderer = renderer;
 
         mapGen = new Rance.MapGen();
+        mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
         reactUI.mapGen = mapGen;
 
         galaxyMap = new Rance.GalaxyMap();
@@ -9515,6 +9537,7 @@ var Rance;
 
         game = new Rance.Game(galaxyMap, players, player1);
         reactUI.game = game;
+        game.independents.push(pirates);
 
         reactUI.currentScene = "galaxyMap";
         reactUI.render();

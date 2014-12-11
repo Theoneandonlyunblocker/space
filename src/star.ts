@@ -579,7 +579,7 @@ module Rance
       data.baseIncome = this.baseIncome;
 
       data.name = this.name;
-      data.ownerId = this.owner.id;
+      data.ownerId = this.owner ? this.owner.id : null;
 
       data.buildings = {};
 

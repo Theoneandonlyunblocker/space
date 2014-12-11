@@ -262,7 +262,7 @@ module Rance
 
       data.locationId = this.location.id;
       data.playerId = this.player.id;
-      data.shipIds = this.ships.map(function(ship){return ship.id});
+      data.ships = this.ships.map(function(ship){return ship.serialize()});
 
       return data;
     }

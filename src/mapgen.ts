@@ -38,8 +38,6 @@ module Rance
 
     startLocations: Star[] = [];
 
-    drawnMap: PIXI.DisplayObjectContainer;
-
     constructor()
     {
       this.galaxyConstructors =

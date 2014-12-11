@@ -8,6 +8,7 @@ module Rance
 {
   export class GalaxyMap
   {
+    allPoints: Star[];
     stars: Star[];
     mapGen: MapGen;
     mapRenderer: MapRenderer;
@@ -20,15 +21,16 @@ module Rance
     {
       this.mapGen = mapGen;
 
-      this.stars = mapGen.points;
+      this.allPoints = mapGen.points;
+      this.stars = mapGen.getNonFillerPoints();
     }
     getIncomeBounds()
     {
       var min, max;
 
-      for (var i = 0; i < this.mapGen.points.length; i++)
+      for (var i = 0; i < this.stars.length; i++)
       {
-        var star = this.mapGen.points[i];
+        var star = this.stars[i];
         var income = star.getIncome();
         if (!min) min = max = income;
         else
@@ -43,6 +45,17 @@ module Rance
         min: min,
         max: max
       });
+    }
+    serialize()
+    {
+      var data: any = {};
+
+      data.allPoints = this.allPoints.map(function(star)
+      {
+        return star.serialize();
+      });
+
+      return data;
     }
   }
 }

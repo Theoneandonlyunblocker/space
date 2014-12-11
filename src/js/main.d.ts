@@ -1190,7 +1190,6 @@ declare module Rance {
             [type: string]: (any: any) => Rance.Star[];
         };
         public startLocations: Rance.Star[];
-        public drawnMap: PIXI.DisplayObjectContainer;
         constructor();
         public reset(): void;
         public makeMap(options: {
@@ -1302,6 +1301,7 @@ declare module Rance {
 }
 declare module Rance {
     class GalaxyMap {
+        public allPoints: Rance.Star[];
         public stars: Rance.Star[];
         public mapGen: Rance.MapGen;
         public mapRenderer: Rance.MapRenderer;
@@ -1311,6 +1311,7 @@ declare module Rance {
             min: any;
             max: any;
         };
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -1485,6 +1486,7 @@ declare module Rance {
 declare module Rance {
     class Game {
         public turnNumber: number;
+        public independents: Rance.Player[];
         public playerOrder: Rance.Player[];
         public galaxyMap: Rance.GalaxyMap;
         public humanPlayer: Rance.Player;
@@ -1495,6 +1497,7 @@ declare module Rance {
         public endTurn(): void;
         public processPlayerStartTurn(player: Rance.Player): void;
         public setNextPlayer(): void;
+        public serialize(): any;
     }
 }
 declare module Rance {
