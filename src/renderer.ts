@@ -18,8 +18,7 @@ module Rance
     mouseEventHandler: MouseEventHandler;
     isPaused: boolean = false;
     forceFrame: boolean = false;
-    bgFilterIsDirty: boolean = true;
-    bgSpriteIsDirty: boolean = true;
+    backgroundIsDirty: boolean = true;
 
     constructor()
     {
@@ -93,7 +92,7 @@ module Rance
       _main.addChild(_map);
 
       var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
-      _bgFilter.filters = [nebulaFilter];
+      //_bgFilter.filters = [nebulaFilter];
 
       var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_select);
@@ -163,12 +162,93 @@ module Rance
         var h = this.pixiContainer.offsetHeight;
         this.renderer.resize(w, h);
         this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
-        this.bgFilterIsDirty = true;
+        this.backgroundIsDirty = true;
         if (this.isPaused)
         {
           this.renderOnce();
         }
       }
+    }
+    makeBackgroundTexture(seed?: any)
+    {
+      function copyUniforms(uniformObj, target?)
+      {
+        if (!target) target = {};
+        for (var name in uniformObj)
+        {
+          if (!target[name])
+          {
+            target[name] = {type: uniformObj[name].type}; 
+          }
+
+          target[name].value = uniformObj[name].value;
+        }
+
+        return target;
+      }
+
+      var oldRng = Math.random;
+      var oldUniforms = copyUniforms(nebulaFilter.uniforms);
+      Math.random = RNG.prototype.uniform.bind(new RNG(seed));
+
+
+      var nebulaColorScheme = generateColorScheme();
+
+      var lightness = randRange(1, 1.2);
+
+      var newUniforms =
+      {
+        baseColor: {value: hex2rgb(nebulaColorScheme.main)},
+        overlayColor: {value: hex2rgb(nebulaColorScheme.secondary)},
+        highlightColor: {value: [1.0, 1.0, 1.0]},
+
+        coverage: {value: randRange(0.2, 0.4)},
+
+        scale: {value: randRange(4, 8)},
+
+        diffusion: {value: randRange(1.5, 3.0)},
+        streakiness: {value: randRange(1.5, 2.5)},
+
+        streakLightness: {value: lightness},
+        cloudLightness: {value: lightness},
+
+        highlightA: {value: 0.9},
+        highlightB: {value: 2.2},
+
+        seed: {value: [Math.random() * 100, Math.random() * 100]}
+      };
+
+
+      copyUniforms(newUniforms, nebulaFilter.uniforms);
+
+      var texture = this.renderNebula();
+
+      copyUniforms(oldUniforms, nebulaFilter.uniforms);
+      Math.random = oldRng;
+
+      return texture;
+    }
+    renderNebula()
+    {
+      this.layers["bgFilter"].filters = [nebulaFilter];
+
+      var texture = this.layers["bgFilter"].generateTexture();
+
+      this.layers["bgFilter"].filters = null;
+
+      return texture;
+    }
+    renderBackground()
+    {
+      var texture = this.renderNebula();
+      var sprite = new PIXI.Sprite(texture);
+
+      this.layers["bgSprite"].removeChildren();
+      this.layers["bgSprite"].addChild(sprite);
+
+      console.log("re-render shader")
+
+      this.backgroundIsDirty = false;
     }
     renderOnce()
     {
@@ -207,30 +287,12 @@ module Rance
         }
       }
 
-      if (this.bgFilterIsDirty)
+      if (this.backgroundIsDirty)
       {
-        this.stage.addChild(this.layers["bgFilter"]);
-        this.layers["bgFilter"].filters = [nebulaFilter];
-        this.bgFilterIsDirty = false;
-        this.bgSpriteIsDirty = true;
+        this.renderBackground();
       }
 
       uniformManager.updateTime();
-
-      if (this.bgSpriteIsDirty)
-      {
-        var texture = this.layers["bgFilter"].generateTexture();
-        var sprite = new PIXI.Sprite(texture);
-
-        this.layers["bgSprite"].removeChildren();
-        this.layers["bgSprite"].addChild(sprite);
-
-        this.layers["bgFilter"].filters = null;
-        this.stage.removeChild(this.layers["bgFilter"]);
-
-        this.bgSpriteIsDirty = false;
-        console.log("re-render shader")
-      }
 
       this.renderer.render(this.stage);
 

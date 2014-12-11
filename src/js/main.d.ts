@@ -1455,8 +1455,7 @@ declare module Rance {
         public mouseEventHandler: Rance.MouseEventHandler;
         public isPaused: boolean;
         public forceFrame: boolean;
-        public bgFilterIsDirty: boolean;
-        public bgSpriteIsDirty: boolean;
+        public backgroundIsDirty: boolean;
         constructor();
         public init(): void;
         public setContainer(element: HTMLCanvasElement): void;
@@ -1466,6 +1465,9 @@ declare module Rance {
         public addCamera(): void;
         public addEventListeners(): void;
         public resize(): void;
+        public makeBackgroundTexture(seed?: any): PIXI.Texture;
+        public renderNebula(): PIXI.Texture;
+        public renderBackground(): void;
         public renderOnce(): void;
         public pause(): void;
         public resume(): void;

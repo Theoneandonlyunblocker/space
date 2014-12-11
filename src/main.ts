@@ -9,7 +9,7 @@
 /// <reference path="game.ts"/>
 /// <reference path="loader.ts"/>
 
-/// <reference path="shaders/uniformmanager.ts"/>
+/// <reference path="uniformmanager.ts"/>
 
 var players, player1, pirates, battle, battlePrep, game,
   reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
@@ -18,7 +18,6 @@ var nebulaUniforms, nebulaFilter, uniformManager, seed;
 module Rance
 {
   seed = Math.random();
-  //seed = 0.4308639666996896;
   Math.random = RNG.prototype.uniform.bind(new RNG(seed));
   export var images: any;
   export var loader = new Loader(function()
@@ -60,7 +59,7 @@ module Rance
 
       scale: {type: "1f", value: randRange(4, 8)},
 
-      diffusion: {type: "1f", value: randRange(2.3, 3.0)},
+      diffusion: {type: "1f", value: randRange(1.5, 3.0)},
       streakiness: {type: "1f", value: randRange(1.5, 2.5)},
 
       streakLightness: {type: "1f", value: lightness},

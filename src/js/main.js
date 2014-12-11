@@ -2693,7 +2693,6 @@ var Rance;
         if (a1.length !== a2.length)
             return false;
 
-        console.log(a1, a2);
         a1.sort();
         a2.sort();
 
@@ -7656,6 +7655,7 @@ var Rance;
             }
         };
         MapRenderer.prototype.getFowSpriteForStar = function (star) {
+            // silly hack to make sure first texture gets created properly
             if (!this.fowSpriteCache[star.id] || Object.keys(this.fowSpriteCache).length < 4) {
                 console.log("makefowsprite");
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
@@ -8773,8 +8773,7 @@ var Rance;
             this.layers = {};
             this.isPaused = false;
             this.forceFrame = false;
-            this.bgFilterIsDirty = true;
-            this.bgSpriteIsDirty = true;
+            this.backgroundIsDirty = true;
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0x101060);
@@ -8829,8 +8828,8 @@ var Rance;
             _main.addChild(_map);
 
             var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
-            _bgFilter.filters = [nebulaFilter];
 
+            //_bgFilter.filters = [nebulaFilter];
             var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
             _main.addChild(_select);
         };
@@ -8887,11 +8886,78 @@ var Rance;
                 var h = this.pixiContainer.offsetHeight;
                 this.renderer.resize(w, h);
                 this.layers["bgFilter"].filterArea = new PIXI.Rectangle(0, 0, w, h);
-                this.bgFilterIsDirty = true;
+                this.backgroundIsDirty = true;
                 if (this.isPaused) {
                     this.renderOnce();
                 }
             }
+        };
+        Renderer.prototype.makeBackgroundTexture = function (seed) {
+            function copyUniforms(uniformObj, target) {
+                if (!target)
+                    target = {};
+                for (var name in uniformObj) {
+                    if (!target[name]) {
+                        target[name] = { type: uniformObj[name].type };
+                    }
+
+                    target[name].value = uniformObj[name].value;
+                }
+
+                return target;
+            }
+
+            var oldRng = Math.random;
+            var oldUniforms = copyUniforms(nebulaFilter.uniforms);
+            Math.random = RNG.prototype.uniform.bind(new RNG(seed));
+
+            var nebulaColorScheme = Rance.generateColorScheme();
+
+            var lightness = Rance.randRange(1, 1.2);
+
+            var newUniforms = {
+                baseColor: { value: Rance.hex2rgb(nebulaColorScheme.main) },
+                overlayColor: { value: Rance.hex2rgb(nebulaColorScheme.secondary) },
+                highlightColor: { value: [1.0, 1.0, 1.0] },
+                coverage: { value: Rance.randRange(0.2, 0.4) },
+                scale: { value: Rance.randRange(4, 8) },
+                diffusion: { value: Rance.randRange(1.5, 3.0) },
+                streakiness: { value: Rance.randRange(1.5, 2.5) },
+                streakLightness: { value: lightness },
+                cloudLightness: { value: lightness },
+                highlightA: { value: 0.9 },
+                highlightB: { value: 2.2 },
+                seed: { value: [Math.random() * 100, Math.random() * 100] }
+            };
+
+            copyUniforms(newUniforms, nebulaFilter.uniforms);
+
+            var texture = this.renderNebula();
+
+            copyUniforms(oldUniforms, nebulaFilter.uniforms);
+            Math.random = oldRng;
+
+            return texture;
+        };
+        Renderer.prototype.renderNebula = function () {
+            this.layers["bgFilter"].filters = [nebulaFilter];
+
+            var texture = this.layers["bgFilter"].generateTexture();
+
+            this.layers["bgFilter"].filters = null;
+
+            return texture;
+        };
+        Renderer.prototype.renderBackground = function () {
+            var texture = this.renderNebula();
+            var sprite = new PIXI.Sprite(texture);
+
+            this.layers["bgSprite"].removeChildren();
+            this.layers["bgSprite"].addChild(sprite);
+
+            console.log("re-render shader");
+
+            this.backgroundIsDirty = false;
         };
         Renderer.prototype.renderOnce = function () {
             this.forceFrame = true;
@@ -8921,28 +8987,11 @@ var Rance;
                 }
             }
 
-            if (this.bgFilterIsDirty) {
-                this.stage.addChild(this.layers["bgFilter"]);
-                this.layers["bgFilter"].filters = [nebulaFilter];
-                this.bgFilterIsDirty = false;
-                this.bgSpriteIsDirty = true;
+            if (this.backgroundIsDirty) {
+                this.renderBackground();
             }
 
             uniformManager.updateTime();
-
-            if (this.bgSpriteIsDirty) {
-                var texture = this.layers["bgFilter"].generateTexture();
-                var sprite = new PIXI.Sprite(texture);
-
-                this.layers["bgSprite"].removeChildren();
-                this.layers["bgSprite"].addChild(sprite);
-
-                this.layers["bgFilter"].filters = null;
-                this.stage.removeChild(this.layers["bgFilter"]);
-
-                this.bgSpriteIsDirty = false;
-                console.log("re-render shader");
-            }
 
             this.renderer.render(this.stage);
 
@@ -9138,15 +9187,13 @@ var Rance;
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
 /// <reference path="loader.ts"/>
-/// <reference path="shaders/uniformmanager.ts"/>
+/// <reference path="uniformmanager.ts"/>
 var players, player1, pirates, battle, battlePrep, game, reactUI, renderer, mapGen, galaxyMap, mapRenderer, playerControl;
 var nebulaUniforms, nebulaFilter, uniformManager, seed;
 
 var Rance;
 (function (Rance) {
     seed = Math.random();
-
-    //seed = 0.4308639666996896;
     Math.random = RNG.prototype.uniform.bind(new RNG(seed));
     Rance.images;
     Rance.loader = new Rance.Loader(function () {
@@ -9180,7 +9227,7 @@ var Rance;
             highlightColor: { type: "3fv", value: [1.0, 1.0, 1.0] },
             coverage: { type: "1f", value: Rance.randRange(0.2, 0.4) },
             scale: { type: "1f", value: Rance.randRange(4, 8) },
-            diffusion: { type: "1f", value: Rance.randRange(2.3, 3.0) },
+            diffusion: { type: "1f", value: Rance.randRange(1.5, 3.0) },
             streakiness: { type: "1f", value: Rance.randRange(1.5, 2.5) },
             streakLightness: { type: "1f", value: lightness },
             cloudLightness: { type: "1f", value: lightness },
