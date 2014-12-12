@@ -58,12 +58,7 @@ module Rance
       {
         var mapRenderer = this.props.galaxyMap.mapRenderer;
 
-        
-        this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
-        this.props.renderer.init();
-        this.props.renderer.bindRendererView();
-
-        mapRenderer.setParent(this.props.renderer.layers["map"]);
+        this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
         mapRenderer.setAllLayersAsDirty();
         
         this.props.renderer.resume();
@@ -74,6 +69,7 @@ module Rance
       componentWillUnmount: function()
       {
         this.props.renderer.pause();
+        this.props.renderer.removeRendererView();
       }
     });
   }

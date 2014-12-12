@@ -6325,11 +6325,7 @@ var Rance;
             componentDidMount: function () {
                 var mapRenderer = this.props.galaxyMap.mapRenderer;
 
-                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
-                this.props.renderer.init();
-                this.props.renderer.bindRendererView();
-
-                mapRenderer.setParent(this.props.renderer.layers["map"]);
+                this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
                 mapRenderer.setAllLayersAsDirty();
 
                 this.props.renderer.resume();
@@ -6338,6 +6334,7 @@ var Rance;
             },
             componentWillUnmount: function () {
                 this.props.renderer.pause();
+                this.props.renderer.removeRendererView();
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -9065,42 +9062,39 @@ var Rance;
             this.shaderManager = new Rance.ShaderManager();
         }
         Renderer.prototype.init = function () {
+            this.initLayers();
+
+            this.addEventListeners();
+        };
+        Renderer.prototype.initRenderer = function () {
+            var containerStyle = window.getComputedStyle(this.pixiContainer);
+            this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
+                autoResize: false,
+                antialias: true
+            });
+        };
+        Renderer.prototype.removeRendererView = function () {
+            if (this.renderer.view.parentNode) {
+                this.renderer.view.parentNode.removeChild(this.renderer.view);
+            }
+        };
+        Renderer.prototype.bindRendererView = function (container) {
+            this.pixiContainer = container;
+
             if (!this.renderer) {
                 var containerStyle = window.getComputedStyle(this.pixiContainer);
                 this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
                     autoResize: false,
                     antialias: true
                 });
-            } else {
-                this.removeRendererView();
             }
 
-            this.initLayers();
-            this.addCamera();
-
-            this.addEventListeners();
-        };
-        Renderer.prototype.setContainer = function (element) {
-            this.pixiContainer = element;
-        };
-        Renderer.prototype.removeRendererView = function () {
-            if (this.renderer.view.parentNode) {
-                this.renderer.view.parentNode.removeChild(this.renderer.view);
-            }
-            this.stage.removeChildren();
-
-            for (var layerName in this.layers) {
-                if (!this.layers[layerName])
-                    continue;
-                this.layers[layerName].filters = null;
-                this.layers[layerName].removeChildren();
-            }
-        };
-        Renderer.prototype.bindRendererView = function () {
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "pixi-canvas");
 
             this.resize();
+
+            this.addCamera();
         };
         Renderer.prototype.initLayers = function () {
             var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
@@ -9166,6 +9160,7 @@ var Rance;
             };
         };
         Renderer.prototype.resize = function () {
+            console.log("resize");
             if (this.renderer && document.body.contains(this.renderer.view)) {
                 var w = this.pixiContainer.offsetWidth;
                 var h = this.pixiContainer.offsetHeight;
@@ -9523,8 +9518,10 @@ var Rance;
         };
         App.prototype.initDisplay = function () {
             this.renderer = new Rance.Renderer();
+            this.renderer.init();
 
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap);
+            this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.init();
             this.mapRenderer.setMapMode("default");
         };

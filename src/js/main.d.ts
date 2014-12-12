@@ -1496,9 +1496,9 @@ declare module Rance {
         public backgroundIsDirty: boolean;
         constructor();
         public init(): void;
-        public setContainer(element: HTMLCanvasElement): void;
+        public initRenderer(): void;
         public removeRendererView(): void;
-        public bindRendererView(): void;
+        public bindRendererView(container: HTMLCanvasElement): void;
         public initLayers(): void;
         public addCamera(): void;
         public addEventListeners(): void;

@@ -31,6 +31,32 @@ module Rance
     }
     init()
     {
+      this.initLayers();
+
+      this.addEventListeners();
+    }
+    initRenderer()
+    {
+      var containerStyle = window.getComputedStyle(this.pixiContainer);
+      this.renderer = PIXI.autoDetectRenderer(
+        parseInt(containerStyle.width),
+        parseInt(containerStyle.height),
+        {
+          autoResize: false,
+          antialias: true
+        }
+      );
+    }
+    removeRendererView()
+    {
+      if (this.renderer.view.parentNode)
+      {
+        this.renderer.view.parentNode.removeChild(this.renderer.view);
+      }
+    }
+    bindRendererView(container: HTMLCanvasElement)
+    {
+      this.pixiContainer = container;
 
       if (!this.renderer)
       {
@@ -44,42 +70,13 @@ module Rance
           }
         );
       }
-      else
-      {
-        this.removeRendererView();
-      }
-
-
-      this.initLayers();
-      this.addCamera();
-
-      this.addEventListeners();
-    }
-    setContainer(element: HTMLCanvasElement)
-    {
-      this.pixiContainer = element;
-    }
-    removeRendererView()
-    {
-      if (this.renderer.view.parentNode)
-      {
-        this.renderer.view.parentNode.removeChild(this.renderer.view);
-      }
-      this.stage.removeChildren();
-
-      for (var layerName in this.layers)
-      {
-        if (!this.layers[layerName]) continue;
-        this.layers[layerName].filters = null;
-        this.layers[layerName].removeChildren();
-      }
-    }
-    bindRendererView()
-    {
+      
       this.pixiContainer.appendChild(this.renderer.view);
       this.renderer.view.setAttribute("id", "pixi-canvas");
 
       this.resize();
+      
+      this.addCamera();
     }
     initLayers()
     {
@@ -156,6 +153,7 @@ module Rance
     }
     resize()
     {
+      console.log("resize")
       if (this.renderer && document.body.contains(this.renderer.view))
       {
         var w = this.pixiContainer.offsetWidth;
