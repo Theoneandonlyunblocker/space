@@ -18,8 +18,8 @@ module Rance
     screenWidth: number;
     screenHeight: number;
 
-    onMove: (x: number, y: number) => void;
-    onZoom: (zoom: number) => void;
+    onMoveCallbacks: {(x: number, y: number): void;}[] = [];
+    onZoomCallbacks: {(zoom: number): void;}[] = [];
 
     /**
      * [constructor description]
@@ -61,6 +61,15 @@ module Rance
       eventManager.addEventListener("centerCameraAt", function(e)
       {
         self.centerOnPosition(e.data);
+      });
+
+      eventManager.addEventListener("registerOnMoveCallback", function(e)
+      {
+        self.onMoveCallbacks.push(e.data);
+      });
+      eventManager.addEventListener("registerOnZoomCallback", function(e)
+      {
+        self.onZoomCallbacks.push(e.data);
       });
     }
 
@@ -132,9 +141,13 @@ module Rance
       this.container.position.y = this.startPos[1] + delta[1];
       this.clampEdges();
 
-      if (this.onMove)
+      this.onMove();
+    }
+    private onMove()
+    {
+      for (var i = 0; i < this.onMoveCallbacks.length; i++)
       {
-        this.onMove(this.container.position.x, this.container.position.y);
+        this.onMoveCallbacks[i](this.container.position.x, this.container.position.y);
       }
     }
     getScreenCenter()
@@ -158,10 +171,7 @@ module Rance
 
       this.clampEdges();
 
-      if (this.onMove)
-      {
-        this.onMove(this.container.position.x, this.container.position.y);
-      }
+      this.onMove();
     }
 
     /**
@@ -193,13 +203,14 @@ module Rance
       container.scale.set(zoomAmount, zoomAmount);
       this.currZoom = zoomAmount;
 
-      if (this.onMove)
+      this.onMove();
+      this.onZoom();
+    }
+    private onZoom()
+    {
+      for (var i = 0; i < this.onZoomCallbacks.length; i++)
       {
-        this.onMove(this.container.position.x, this.container.position.y);
-      }
-      if (this.onZoom)
-      {
-        this.onZoom(this.currZoom);
+        this.onZoomCallbacks[i](this.currZoom);
       }
     }
     /**

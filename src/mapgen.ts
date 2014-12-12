@@ -14,6 +14,8 @@ module Rance
     maxWidth: number;
     maxHeight: number;
     points: Star[] = [];
+    players: Player[];
+    independents: Player;
     regions:
     {
       [id: string]:
@@ -106,9 +108,9 @@ module Rance
       });
 
 
-      for (var i = 0; i < players.length; i++)
+      for (var i = 0; i < this.players.length; i++)
       {
-        var player = players[i];
+        var player = this.players[i];
         var regionName = startRegions[i];
 
         var location = this.getFurthestPointInRegion(this.regions[regionName]);
@@ -134,26 +136,6 @@ module Rance
         player.addUnit(ship);
 
         var fleet = new Fleet(player, [ship], location);
-        /*
-        if (i === 0)
-        {
-          var neighbors = location.getAllLinks();
-
-          for (var j = 0; j < neighbors.length; j++)
-          {
-            var _player = players[j+1];
-
-            var _ships = [];
-            for (var k = 0; k < 6; k++)
-            {
-              var _ship = makeRandomShip();
-              _player.addUnit(_ship);
-              _ships.push(_ship);
-            }
-            var _fleet = new Fleet(_player, _ships, neighbors[j]);
-          }
-        }
-        */
       }
     }
     setDistanceFromStartLocations()
@@ -188,7 +170,7 @@ module Rance
       var nonFillerPoints = this.getNonFillerPoints();
       var minShips = 2;
       var maxShips = 8;
-      var player = pirates;
+      var player = this.independents;
 
       for (var i = 0; i < nonFillerPoints.length; i++)
       {

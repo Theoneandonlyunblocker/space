@@ -24,6 +24,16 @@ module Rance
           hoveredUnit: null
         });
       },
+      componentWillMount: function()
+      {
+        var location = this.props.battle.battleData.location;
+        this.backgroundImage = this.makeBackgroundImage(location.getBackgroundSeed());
+      },
+      makeBackgroundImage: function(seed: string)
+      {
+        console.log(seed)
+        return this.props.makeBackgroundFunction(seed).getBase64();
+      },
 
       clearHoveredUnit: function()
       {
@@ -189,7 +199,14 @@ module Rance
                 onMouseLeaveUnit: this.handleMouseLeaveUnit
               })
             ),
-            React.DOM.div({className: "fleets-container"},
+            React.DOM.div(
+            {
+              className: "fleets-container",
+              style:
+              {
+                backgroundImage: "url(" + this.backgroundImage + ");"
+              }
+            },
               UIComponents.Fleet(
               {
                 fleet: battle.side1,

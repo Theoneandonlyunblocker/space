@@ -36,7 +36,7 @@ module Rance
           location: this.props.star
         });
 
-        if (!building.controller) building.controller = player1;
+        if (!building.controller) building.controller = this.props.humanPlayer;
 
         this.props.star.addBuilding(building);
         building.controller.money -= template.buildCost;

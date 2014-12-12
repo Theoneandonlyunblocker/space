@@ -169,16 +169,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var MapGen: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var MapGenControls: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var Popup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -272,7 +262,6 @@ declare module Rance {
     function stringToHex(text: string): number;
     function makeTempPlayerIcon(player: Player, size: number): string;
     function colorImageInPlayerColor(imageSrc: string, player: Player): string;
-    function addFleet(player: Player, shipAmount: number): void;
     function cloneObject(toClone: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
@@ -433,6 +422,7 @@ declare module Rance {
         public linksFrom: Star[];
         public distance: number;
         public region: string;
+        public backgroundSeed: string;
         public baseIncome: number;
         public name: string;
         public owner: Rance.Player;
@@ -498,6 +488,7 @@ declare module Rance {
         public getVisionRange(): number;
         public getVision(): Star[];
         public getHealingFactor(player: Rance.Player): number;
+        public getBackgroundSeed(): string;
         public severLinksToNonAdjacent(): void;
         public serialize(): any;
     }
@@ -1058,7 +1049,6 @@ declare module Rance {
         public battle: Rance.Battle;
         public battlePrep: Rance.BattlePrep;
         public renderer: Rance.Renderer;
-        public mapGen: Rance.MapGen;
         public galaxyMap: Rance.GalaxyMap;
         public playerControl: Rance.PlayerControl;
         public player: Rance.Player;
@@ -1072,6 +1062,7 @@ declare module Rance {
 declare module Rance {
     class PlayerControl {
         public player: Rance.Player;
+        public reactUI: Rance.ReactUI;
         public selectedFleets: Rance.Fleet[];
         public currentlyReorganizing: Rance.Fleet[];
         public currentAttackTargets: any[];
@@ -1174,6 +1165,8 @@ declare module Rance {
         public maxWidth: number;
         public maxHeight: number;
         public points: Rance.Star[];
+        public players: Rance.Player[];
+        public independents: Rance.Player;
         public regions: {
             [id: string]: {
                 id: string;
@@ -1261,6 +1254,7 @@ declare module Rance {
         public parent: PIXI.DisplayObjectContainer;
         public galaxyMap: Rance.GalaxyMap;
         public player: Rance.Player;
+        public game: Rance.Game;
         public occupationShaders: {
             [ownerId: string]: {
                 [occupierId: string]: any;
@@ -1278,10 +1272,10 @@ declare module Rance {
         };
         public currentMapMode: IMapRendererLayerMapMode;
         public isDirty: boolean;
-        constructor();
+        constructor(map: Rance.GalaxyMap);
         public init(): void;
         public addEventListeners(): void;
-        public changePlayer(player: Rance.Player): void;
+        public setPlayer(player: Rance.Player): void;
         public updateShaderOffsets(x: number, y: number): void;
         public updateShaderZoom(zoom: number): void;
         public makeFowSprite(): void;
@@ -1305,6 +1299,7 @@ declare module Rance {
         public stars: Rance.Star[];
         public mapGen: Rance.MapGen;
         public mapRenderer: Rance.MapRenderer;
+        public game: Rance.Game;
         constructor();
         public setMapGen(mapGen: Rance.MapGen): void;
         public getIncomeBounds(): {
@@ -1329,8 +1324,12 @@ declare module Rance {
         public currZoom: number;
         public screenWidth: number;
         public screenHeight: number;
-        public onMove: (x: number, y: number) => void;
-        public onZoom: (zoom: number) => void;
+        public onMoveCallbacks: {
+            (x: number, y: number): void;
+        }[];
+        public onZoomCallbacks: {
+            (zoom: number): void;
+        }[];
         /**
         * [constructor description]
         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
@@ -1367,6 +1366,7 @@ declare module Rance {
         * @param {number[]} currPos [description]
         */
         public move(currPos: number[]): void;
+        private onMove();
         public getScreenCenter(): {
             x: number;
             y: number;
@@ -1377,6 +1377,7 @@ declare module Rance {
         * @param {number} zoomAmount [description]
         */
         public zoom(zoomAmount: number): void;
+        private onZoom();
         /**
         * @method deltaZoom
         * @param {number} delta [description]
@@ -1453,6 +1454,33 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class UniformManager {
+        public registeredObjects: {
+            [uniformType: string]: any[];
+        };
+        public timeCount: number;
+        constructor();
+        public registerObject(uniformType: string, shader: any): void;
+        public updateTime(): void;
+    }
+}
+declare module Rance {
+    module ShaderSources {
+        var nebula: string[];
+        var starfield: string[];
+    }
+}
+declare module Rance {
+    class ShaderManager {
+        public shaders: {
+            [name: string]: any;
+        };
+        public uniformManager: Rance.UniformManager;
+        constructor();
+        public initNebula(): void;
+    }
+}
+declare module Rance {
     class Renderer {
         public stage: PIXI.Stage;
         public renderer: any;
@@ -1462,6 +1490,7 @@ declare module Rance {
         };
         public camera: Rance.Camera;
         public mouseEventHandler: Rance.MouseEventHandler;
+        public shaderManager: Rance.ShaderManager;
         public isPaused: boolean;
         public forceFrame: boolean;
         public backgroundIsDirty: boolean;
@@ -1538,19 +1567,29 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class UniformManager {
-        public registeredObjects: {
-            [uniformType: string]: any[];
+    class App {
+        public seed: any;
+        public loader: Rance.Loader;
+        public renderer: Rance.Renderer;
+        public game: Rance.Game;
+        public mapRenderer: Rance.MapRenderer;
+        public reactUI: Rance.ReactUI;
+        public humanPlayer: Rance.Player;
+        public playerControl: Rance.PlayerControl;
+        public images: {
+            [type: string]: {
+                [id: string]: HTMLImageElement;
+            };
         };
-        public timeCount: number;
         constructor();
-        public registerObject(uniformType: string, shader: any): void;
-        public updateTime(): void;
+        public initGame(): Rance.Game;
+        public initPlayers(): {
+            players: any[];
+            independents: Rance.Player;
+        };
+        public initMap(playerData: any): Rance.GalaxyMap;
+        public initDisplay(): void;
+        public initUI(): void;
     }
 }
-declare var players: any, player1: any, pirates: any, battle: any, battlePrep: any, game: any, reactUI: any, renderer: any, mapGen: any, galaxyMap: any, mapRenderer: any, playerControl: any;
-declare var nebulaUniforms: any, nebulaFilter: any, uniformManager: any, seed: any;
-declare module Rance {
-    var images: any;
-    var loader: Loader;
-}
+declare var app: Rance.App;

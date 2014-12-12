@@ -1008,6 +1008,14 @@ var Rance;
                     hoveredUnit: null
                 });
             },
+            componentWillMount: function () {
+                var location = this.props.battle.battleData.location;
+                this.backgroundImage = this.makeBackgroundImage(location.getBackgroundSeed());
+            },
+            makeBackgroundImage: function (seed) {
+                console.log(seed);
+                return this.props.makeBackgroundFunction(seed).getBase64();
+            },
             clearHoveredUnit: function () {
                 this.setState({
                     hoveredUnit: false,
@@ -1124,7 +1132,12 @@ var Rance;
                     hoveredUnit: this.state.hoveredUnit,
                     onMouseEnterUnit: this.handleMouseEnterUnit,
                     onMouseLeaveUnit: this.handleMouseLeaveUnit
-                })), React.DOM.div({ className: "fleets-container" }, Rance.UIComponents.Fleet({
+                })), React.DOM.div({
+                    className: "fleets-container",
+                    style: {
+                        backgroundImage: "url(" + this.backgroundImage + ");"
+                    }
+                }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
@@ -1611,82 +1624,11 @@ var Rance;
                 }), React.DOM.button({
                     className: "start-battle",
                     onClick: function () {
-                        var _ = window;
-
-                        _.battle = this.props.battlePrep.makeBattle();
-                        _.reactUI.battle = _.battle;
-                        _.reactUI.switchScene("battle");
+                        var battle = this.props.battlePrep.makeBattle();
+                        app.reactUI.battle = battle;
+                        app.reactUI.switchScene("battle");
                     }.bind(this)
                 }, "Start battle")));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.MapGen = React.createClass({
-            makeMap: function () {
-                var mapGen = this.props.mapGen;
-
-                mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
-
-                var doc = mapGen.drawMap();
-                this.props.renderer.layers.map.removeChildren();
-                this.props.renderer.layers.map.addChild(doc);
-            },
-            clearMap: function () {
-                this.props.mapGen.reset();
-
-                var doc = mapGen.drawMap();
-                this.props.renderer.layers.map.removeChildren();
-                this.props.renderer.layers.map.addChild(doc);
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "galaxy-map"
-                }, React.DOM.div({
-                    ref: "pixiContainer",
-                    id: "pixi-container"
-                }), React.DOM.div({
-                    className: "map-gen-controls"
-                }, React.DOM.button({
-                    onClick: this.makeMap
-                }, "make"), React.DOM.button({
-                    onClick: this.clearMap
-                }, "clear"))));
-            },
-            componentDidMount: function () {
-                this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
-                this.props.renderer.init();
-                this.props.renderer.bindRendererView();
-                this.props.renderer.render();
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.MapGenControls = React.createClass({
-            makeMap: function () {
-                this.props.mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
-                this.props.renderMap();
-            },
-            clearMap: function () {
-                this.props.mapGen.reset();
-                this.props.renderMap();
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "map-gen-controls"
-                }, React.DOM.button({
-                    onClick: this.makeMap
-                }, "make"), React.DOM.button({
-                    onClick: this.clearMap
-                }, "clear")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2397,7 +2339,7 @@ var Rance;
                 });
 
                 if (!building.controller)
-                    building.controller = player1;
+                    building.controller = this.props.humanPlayer;
 
                 this.props.star.addBuilding(building);
                 building.controller.money -= template.buildCost;
@@ -2585,14 +2527,6 @@ var Rance;
         return canvas.toDataURL();
     }
     Rance.colorImageInPlayerColor = colorImageInPlayerColor;
-    function addFleet(player, shipAmount) {
-        var ships = [];
-        for (var i = 0; i < shipAmount; i++) {
-            ships.push(makeRandomShip());
-        }
-        var fleet = new Rance.Fleet(player, ships, mapGen.points[0]);
-    }
-    Rance.addFleet = addFleet;
 
     function cloneObject(toClone) {
         var result = {};
@@ -3621,6 +3555,17 @@ var Rance;
             }
 
             return factor;
+        };
+        Star.prototype.getBackgroundSeed = function () {
+            if (!this.backgroundSeed) {
+                var bgString = "";
+                bgString += this.x.toFixed(4);
+                bgString += this.y.toFixed(4);
+                bgString += new Date().getTime();
+                this.backgroundSeed = bgString;
+            }
+
+            return this.backgroundSeed;
         };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
@@ -4670,7 +4615,7 @@ var Rance;
         };
 
         Emblem.prototype.drawSubEmblem = function (toDraw) {
-            var image = images["emblems"][toDraw.imageSrc];
+            var image = app.images["emblems"][toDraw.imageSrc];
 
             var width = image.width;
             var height = image.height;
@@ -5338,9 +5283,7 @@ var Rance;
                 }
             }
             Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
-            window.setTimeout(function () {
-                renderer.camera.centerOnPosition(this.battleData.location);
-            }.bind(this), 20);
+            Rance.eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
         };
         Battle.prototype.getVictor = function () {
             if (this.getTotalHealthForSide("side1").current <= 0) {
@@ -6351,7 +6294,6 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="../mapgen/mapgencontrols.ts"/>
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="galaxymapui.ts"/>
 var Rance;
@@ -6381,35 +6323,21 @@ var Rance;
                 }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "visible" }, "visible"))));
             },
             componentDidMount: function () {
-                if (mapRenderer)
-                    mapRenderer.resetContainer();
+                var mapRenderer = this.props.galaxyMap.mapRenderer;
 
                 this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
                 this.props.renderer.init();
                 this.props.renderer.bindRendererView();
 
-                if (!mapRenderer)
-                    mapRenderer = new Rance.MapRenderer();
-
-                mapRenderer.init();
-                mapRenderer.setParent(renderer.layers["map"]);
-                this.props.galaxyMap.mapRenderer = mapRenderer;
-                mapRenderer.galaxyMap = galaxyMap;
-                mapRenderer.player = player1;
-                mapRenderer.makeFowSprite();
-
-                this.props.galaxyMap.mapRenderer.currentMapMode = null;
-                this.props.galaxyMap.mapRenderer.setMapMode("default");
-                this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
+                mapRenderer.setParent(this.props.renderer.layers["map"]);
+                mapRenderer.setAllLayersAsDirty();
 
                 this.props.renderer.resume();
 
-                //this.props.renderer.render();
-                this.props.renderer.camera.centerOnPosition(player1.controlledLocations[0]);
+                this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.game.humanPlayer.controlledLocations[0]);
             },
             componentWillUnmount: function () {
                 this.props.renderer.pause();
-                this.props.renderer.removeRendererView();
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6488,7 +6416,6 @@ var Rance;
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
-/// <reference path="mapgen/mapgen.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
 /// <reference path="flagmaker.ts"/>
 var Rance;
@@ -6508,6 +6435,7 @@ var Rance;
                     case "battle": {
                         elementsToRender.push(Rance.UIComponents.Battle({
                             battle: this.props.battle,
+                            makeBackgroundFunction: this.props.renderer.makeBackgroundTexture.bind(this.props.renderer),
                             key: "battle"
                         }));
                         break;
@@ -6799,9 +6727,9 @@ var Rance;
             };
 
             // TODO
-            battlePrep = new Rance.BattlePrep(this.player, battleData);
-            reactUI.battlePrep = battlePrep;
-            reactUI.switchScene("battlePrep");
+            var battlePrep = new Rance.BattlePrep(this.player, battleData);
+            this.reactUI.battlePrep = battlePrep;
+            this.reactUI.switchScene("battlePrep");
         };
         return PlayerControl;
     })();
@@ -7302,8 +7230,8 @@ var Rance;
                 return name.indexOf("arm") !== -1;
             });
 
-            for (var i = 0; i < players.length; i++) {
-                var player = players[i];
+            for (var i = 0; i < this.players.length; i++) {
+                var player = this.players[i];
                 var regionName = startRegions[i];
 
                 var location = this.getFurthestPointInRegion(this.regions[regionName]);
@@ -7327,26 +7255,6 @@ var Rance;
                 player.addUnit(ship);
 
                 var fleet = new Rance.Fleet(player, [ship], location);
-                /*
-                if (i === 0)
-                {
-                var neighbors = location.getAllLinks();
-                
-                for (var j = 0; j < neighbors.length; j++)
-                {
-                var _player = players[j+1];
-                
-                var _ships = [];
-                for (var k = 0; k < 6; k++)
-                {
-                var _ship = makeRandomShip();
-                _player.addUnit(_ship);
-                _ships.push(_ship);
-                }
-                var _fleet = new Fleet(_player, _ships, neighbors[j]);
-                }
-                }
-                */
             }
         };
         MapGen.prototype.setDistanceFromStartLocations = function () {
@@ -7372,7 +7280,7 @@ var Rance;
             var nonFillerPoints = this.getNonFillerPoints();
             var minShips = 2;
             var maxShips = 8;
-            var player = pirates;
+            var player = this.independents;
 
             for (var i = 0; i < nonFillerPoints.length; i++) {
                 var star = nonFillerPoints[i];
@@ -7708,15 +7616,22 @@ var Rance;
 var Rance;
 (function (Rance) {
     var MapRenderer = (function () {
-        function MapRenderer() {
+        function MapRenderer(map) {
             this.occupationShaders = {};
             this.layers = {};
             this.mapModes = {};
             this.fowSpriteCache = {};
             this.isDirty = true;
+            this.galaxyMap = map;
+            this.galaxyMap.mapRenderer = this;
+            this.game = map.game;
+            this.player = this.game.humanPlayer;
+
             this.container = new PIXI.DisplayObjectContainer();
         }
         MapRenderer.prototype.init = function () {
+            this.makeFowSprite();
+
             this.initLayers();
             this.initMapModes();
 
@@ -7729,10 +7644,10 @@ var Rance;
                 self.setLayerAsDirty(e.data);
             });
 
-            renderer.camera.onMove = this.updateShaderOffsets.bind(this);
-            renderer.camera.onZoom = this.updateShaderZoom.bind(this);
+            Rance.eventManager.dispatchEvent("registerOnMoveCallback", this.updateShaderOffsets.bind(this));
+            Rance.eventManager.dispatchEvent("registerOnZoomCallback", this.updateShaderZoom.bind(this));
         };
-        MapRenderer.prototype.changePlayer = function (player) {
+        MapRenderer.prototype.setPlayer = function (player) {
             this.player = player;
             this.setAllLayersAsDirty();
         };
@@ -7764,7 +7679,6 @@ var Rance;
         MapRenderer.prototype.getFowSpriteForStar = function (star) {
             // silly hack to make sure first texture gets created properly
             if (!this.fowSpriteCache[star.id] || Object.keys(this.fowSpriteCache).length < 4) {
-                console.log("makefowsprite");
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
                 gfx.beginFill();
@@ -8062,9 +7976,7 @@ var Rance;
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
 
-                    gfx.lineStyle(4, player1.secondaryColor, 1);
-
-                    var players = game.playerOrder;
+                    var players = this.game.playerOrder;
 
                     for (var i = 0; i < players.length; i++) {
                         var player = players[i];
@@ -8271,7 +8183,6 @@ var Rance;
             return false;
         };
         MapRenderer.prototype.setLayerAsDirty = function (layerName) {
-            console.log("dirty: " + layerName);
             var layer = this.layers[layerName];
             layer.isDirty = true;
 
@@ -8281,7 +8192,6 @@ var Rance;
             this.render();
         };
         MapRenderer.prototype.setAllLayersAsDirty = function () {
-            console.log("dirty: all");
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 this.currentMapMode.layers[i].layer.isDirty = true;
             }
@@ -8322,6 +8232,8 @@ var Rance;
         MapRenderer.prototype.render = function () {
             if (!this.isDirty)
                 return;
+
+            console.log("render map");
 
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 var layer = this.currentMapMode.layers[i].layer;
@@ -8401,6 +8313,8 @@ var Rance;
         function Camera(container, bound) {
             this.bounds = {};
             this.currZoom = 1;
+            this.onMoveCallbacks = [];
+            this.onZoomCallbacks = [];
             this.container = container;
             this.bounds.min = bound;
             this.bounds.max = Number((1 - bound).toFixed(1));
@@ -8429,6 +8343,13 @@ var Rance;
 
             Rance.eventManager.addEventListener("centerCameraAt", function (e) {
                 self.centerOnPosition(e.data);
+            });
+
+            Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
+                self.onMoveCallbacks.push(e.data);
+            });
+            Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
+                self.onZoomCallbacks.push(e.data);
             });
         };
 
@@ -8502,8 +8423,11 @@ var Rance;
             this.container.position.y = this.startPos[1] + delta[1];
             this.clampEdges();
 
-            if (this.onMove) {
-                this.onMove(this.container.position.x, this.container.position.y);
+            this.onMove();
+        };
+        Camera.prototype.onMove = function () {
+            for (var i = 0; i < this.onMoveCallbacks.length; i++) {
+                this.onMoveCallbacks[i](this.container.position.x, this.container.position.y);
             }
         };
         Camera.prototype.getScreenCenter = function () {
@@ -8524,9 +8448,7 @@ var Rance;
 
             this.clampEdges();
 
-            if (this.onMove) {
-                this.onMove(this.container.position.x, this.container.position.y);
-            }
+            this.onMove();
         };
 
         /**
@@ -8556,11 +8478,12 @@ var Rance;
             container.scale.set(zoomAmount, zoomAmount);
             this.currZoom = zoomAmount;
 
-            if (this.onMove) {
-                this.onMove(this.container.position.x, this.container.position.y);
-            }
-            if (this.onZoom) {
-                this.onZoom(this.currZoom);
+            this.onMove();
+            this.onZoom();
+        };
+        Camera.prototype.onZoom = function () {
+            for (var i = 0; i < this.onZoomCallbacks.length; i++) {
+                this.onZoomCallbacks[i](this.currZoom);
             }
         };
 
@@ -9171,7 +9094,6 @@ var Rance;
                     continue;
                 this.layers[layerName].filters = null;
                 this.layers[layerName].removeChildren();
-                this.layers[layerName] = null;
             }
         };
         Renderer.prototype.bindRendererView = function () {
@@ -9270,6 +9192,8 @@ var Rance;
                 return target;
             }
 
+            var nebulaFilter = this.shaderManager.shaders["nebula"];
+
             var oldRng = Math.random;
             var oldUniforms = copyUniforms(nebulaFilter.uniforms);
             Math.random = RNG.prototype.uniform.bind(new RNG(seed));
@@ -9303,7 +9227,7 @@ var Rance;
             return texture;
         };
         Renderer.prototype.renderNebula = function () {
-            this.layers["bgFilter"].filters = [nebulaFilter];
+            this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
 
             var texture = this.layers["bgFilter"].generateTexture();
 
@@ -9354,7 +9278,7 @@ var Rance;
                 this.renderBackground();
             }
 
-            uniformManager.updateTime();
+            this.shaderManager.uniformManager.updateTime();
 
             this.renderer.render(this.stage);
 
@@ -9541,29 +9465,33 @@ var Rance;
 (function (Rance) {
     var App = (function () {
         function App() {
+            var self = this;
             this.seed = Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.Loader(function () {
-                this.initGame();
-                this.initDisplay();
-                this.initUI();
-            }.bind(this));
+                self.images = self.loader.imageCache;
+                self.initGame();
+                self.initDisplay();
+                self.initUI();
+            });
         }
         App.prototype.initGame = function () {
             var playerData = this.initPlayers();
             var players = playerData.players;
             var independents = playerData.independents;
-            var map = this.initMap();
+            var map = this.initMap(playerData);
 
             this.humanPlayer = players[0];
 
             this.game = new Rance.Game(map, players, players[0]);
             this.game.independents.push(independents);
 
+            map.game = this.game;
+
             this.playerControl = new Rance.PlayerControl(this.humanPlayer);
 
-            return game;
+            return this.game;
         };
         App.prototype.initPlayers = function () {
             var players = [];
@@ -9583,8 +9511,10 @@ var Rance;
                 independents: pirates
             });
         };
-        App.prototype.initMap = function () {
+        App.prototype.initMap = function (playerData) {
             var mapGen = new Rance.MapGen();
+            mapGen.players = playerData.players;
+            mapGen.independents = playerData.independents;
             mapGen.makeMap(Rance.Templates.MapGen.defaultMap);
             var galaxyMap = new Rance.GalaxyMap();
             galaxyMap.setMapGen(mapGen);
@@ -9592,16 +9522,22 @@ var Rance;
             return galaxyMap;
         };
         App.prototype.initDisplay = function () {
-            this.images = loader.imageCache;
             this.renderer = new Rance.Renderer();
+
+            this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap);
+            this.mapRenderer.init();
+            this.mapRenderer.setMapMode("default");
         };
         App.prototype.initUI = function () {
             var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
+
+            this.playerControl.reactUI = reactUI;
 
             reactUI.player = this.humanPlayer;
             reactUI.galaxyMap = this.game.galaxyMap;
             reactUI.game = this.game;
             reactUI.renderer = this.renderer;
+            reactUI.playerControl = this.playerControl;
 
             reactUI.currentScene = "galaxyMap";
             reactUI.render();
@@ -9610,4 +9546,6 @@ var Rance;
     })();
     Rance.App = App;
 })(Rance || (Rance = {}));
+
+var app = new Rance.App();
 //# sourceMappingURL=main.js.map

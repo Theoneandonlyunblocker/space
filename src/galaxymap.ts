@@ -12,9 +12,9 @@ module Rance
     stars: Star[];
     mapGen: MapGen;
     mapRenderer: MapRenderer;
+    game: Game;
     constructor()
     {
-
     }
 
     setMapGen(mapGen: MapGen)

@@ -3,7 +3,6 @@
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
-/// <reference path="mapgen/mapgen.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
 
 /// <reference path="flagmaker.ts"/>
@@ -34,6 +33,8 @@ module Rance
               UIComponents.Battle(
               {
                 battle: this.props.battle,
+                makeBackgroundFunction:
+                  this.props.renderer.makeBackgroundTexture.bind(this.props.renderer),
                 key: "battle"
               })
             );

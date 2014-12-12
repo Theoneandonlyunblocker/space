@@ -18,6 +18,8 @@ module Rance
     distance: number;
     region: string;
 
+    backgroundSeed: string;
+
     baseIncome: number;
 
     name: string;
@@ -548,6 +550,19 @@ module Rance
       }
 
       return factor;
+    }
+    getBackgroundSeed()
+    {
+      if (!this.backgroundSeed)
+      {
+        var bgString = "";
+        bgString += this.x.toFixed(4);
+        bgString += this.y.toFixed(4);
+        bgString += new Date().getTime();
+        this.backgroundSeed = bgString;
+      }
+
+      return this.backgroundSeed;
     }
     severLinksToNonAdjacent()
     {

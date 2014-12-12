@@ -1,4 +1,3 @@
-/// <reference path="../mapgen/mapgencontrols.ts"/>
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="galaxymapui.ts"/>
 
@@ -54,39 +53,27 @@ module Rance
         );
       },
 
+      
       componentDidMount: function()
       {
-        if (mapRenderer) mapRenderer.resetContainer();
+        var mapRenderer = this.props.galaxyMap.mapRenderer;
 
         
         this.props.renderer.setContainer(this.refs.pixiContainer.getDOMNode());
         this.props.renderer.init();
         this.props.renderer.bindRendererView();
 
-        if (!mapRenderer) mapRenderer = new MapRenderer();
-
-        mapRenderer.init();
-        mapRenderer.setParent(renderer.layers["map"]);
-        this.props.galaxyMap.mapRenderer = mapRenderer;
-        mapRenderer.galaxyMap = galaxyMap;
-        mapRenderer.player = player1;
-        mapRenderer.makeFowSprite();
-
-        this.props.galaxyMap.mapRenderer.currentMapMode = null;
-        this.props.galaxyMap.mapRenderer.setMapMode("default");
-        this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
+        mapRenderer.setParent(this.props.renderer.layers["map"]);
+        mapRenderer.setAllLayersAsDirty();
         
         this.props.renderer.resume();
-        //this.props.renderer.render();
-
 
         this.props.renderer.camera.centerOnPosition(
-          player1.controlledLocations[0]);
+          this.props.galaxyMap.game.humanPlayer.controlledLocations[0]);
       },
       componentWillUnmount: function()
       {
         this.props.renderer.pause();
-        this.props.renderer.removeRendererView();
       }
     });
   }

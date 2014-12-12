@@ -33,6 +33,8 @@ module Rance
     galaxyMap: GalaxyMap;
     player: Player;
 
+    game: Game;
+
     occupationShaders:
     {
       [ownerId: string]:
@@ -59,18 +61,23 @@ module Rance
     currentMapMode: IMapRendererLayerMapMode;
     isDirty: boolean = true;
 
-    constructor()
+    constructor(map: GalaxyMap)
     {
-      this.container = new PIXI.DisplayObjectContainer();
+      this.galaxyMap = map;
+      this.galaxyMap.mapRenderer = this;
+      this.game = map.game;
+      this.player = this.game.humanPlayer;
 
+      this.container = new PIXI.DisplayObjectContainer();
     }
     init()
     {
+      this.makeFowSprite();
+
       this.initLayers();
       this.initMapModes();
 
       this.addEventListeners();
-
     }
     addEventListeners()
     {
@@ -82,10 +89,10 @@ module Rance
         self.setLayerAsDirty(e.data);
       });
 
-      renderer.camera.onMove = this.updateShaderOffsets.bind(this);
-      renderer.camera.onZoom = this.updateShaderZoom.bind(this);
+      eventManager.dispatchEvent( "registerOnMoveCallback", this.updateShaderOffsets.bind(this) );
+      eventManager.dispatchEvent( "registerOnZoomCallback", this.updateShaderZoom.bind(this) );
     }
-    changePlayer(player: Player)
+    setPlayer(player: Player)
     {
       this.player = player;
       this.setAllLayersAsDirty();
@@ -129,7 +136,6 @@ module Rance
       if (!this.fowSpriteCache[star.id] ||
         Object.keys(this.fowSpriteCache).length < 4)
       {
-        console.log("makefowsprite")
         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
         var gfx = new PIXI.Graphics();
         gfx.beginFill();
@@ -467,10 +473,8 @@ module Rance
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
 
-          gfx.lineStyle(4, player1.secondaryColor, 1);
-
           
-          var players = game.playerOrder;
+          var players = this.game.playerOrder;
 
           for (var i = 0; i < players.length; i++)
           {
@@ -720,7 +724,6 @@ module Rance
     }
     setLayerAsDirty(layerName: string)
     {
-      console.log("dirty: " + layerName)
       var layer = this.layers[layerName];
       layer.isDirty = true;
 
@@ -731,7 +734,6 @@ module Rance
     }
     setAllLayersAsDirty()
     {
-      console.log("dirty: all")
       for (var i = 0; i < this.currentMapMode.layers.length; i++)
       {
         this.currentMapMode.layers[i].layer.isDirty = true;
@@ -777,6 +779,8 @@ module Rance
     render()
     {
       if (!this.isDirty) return;
+
+      console.log("render map")
 
       for (var i = 0; i < this.currentMapMode.layers.length; i++)
       {

@@ -11,7 +11,6 @@
 
 /// <reference path="shadermanager.ts"/>
 
-
 module Rance
 {
   export class App
@@ -20,6 +19,7 @@ module Rance
     loader: Loader;
     renderer: Renderer;
     game: Game;
+    mapRenderer: MapRenderer;
     reactUI: ReactUI;
     humanPlayer: Player;
     playerControl: PlayerControl;
@@ -33,15 +33,17 @@ module Rance
 
     constructor()
     {
+      var self = this;
       this.seed = Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new Loader(function()
       {
-        this.initGame();
-        this.initDisplay();
-        this.initUI();
-      }.bind(this));
+        self.images = self.loader.imageCache;
+        self.initGame();
+        self.initDisplay();
+        self.initUI();
+      });
     }
 
     initGame()
@@ -49,16 +51,18 @@ module Rance
       var playerData = this.initPlayers();
       var players = playerData.players;
       var independents = playerData.independents;
-      var map = this.initMap();
+      var map = this.initMap(playerData);
 
       this.humanPlayer = players[0];
 
       this.game = new Game(map, players, players[0]);
       this.game.independents.push(independents);
 
+      map.game = this.game;
+
       this.playerControl = new PlayerControl(this.humanPlayer);
 
-      return game;
+      return this.game;
     }
     initPlayers()
     {
@@ -81,9 +85,11 @@ module Rance
         independents: pirates
       });
     }
-    initMap()
+    initMap(playerData)
     {
       var mapGen = new MapGen();
+      mapGen.players = playerData.players;
+      mapGen.independents = playerData.independents;
       mapGen.makeMap(Templates.MapGen.defaultMap);
       var galaxyMap = new GalaxyMap();
       galaxyMap.setMapGen(mapGen);
@@ -92,23 +98,29 @@ module Rance
     }
     initDisplay()
     {
-      this.images = loader.imageCache;
       this.renderer = new Renderer();
 
+      this.mapRenderer = new MapRenderer(this.game.galaxyMap);
+      this.mapRenderer.init();
+      this.mapRenderer.setMapMode("default");
     }
     initUI()
     {
       var reactUI = this.reactUI = new ReactUI(
         document.getElementById("react-container"));
 
+      this.playerControl.reactUI = reactUI;
+
       reactUI.player = this.humanPlayer;
       reactUI.galaxyMap = this.game.galaxyMap;
       reactUI.game = this.game;
       reactUI.renderer = this.renderer;
+      reactUI.playerControl = this.playerControl;
 
       reactUI.currentScene = "galaxyMap";
       reactUI.render();
     }
   }
-
 }
+
+var app = new Rance.App();

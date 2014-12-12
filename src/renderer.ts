@@ -72,7 +72,6 @@ module Rance
         if (!this.layers[layerName]) continue;
         this.layers[layerName].filters = null;
         this.layers[layerName].removeChildren();
-        this.layers[layerName] = null;
       }
     }
     bindRendererView()
@@ -99,8 +98,6 @@ module Rance
 
       var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
       _main.addChild(_select);
-
-
     }
     addCamera()
     {
@@ -190,6 +187,8 @@ module Rance
         return target;
       }
 
+      var nebulaFilter = this.shaderManager.shaders["nebula"];
+
       var oldRng = Math.random;
       var oldUniforms = copyUniforms(nebulaFilter.uniforms);
       Math.random = RNG.prototype.uniform.bind(new RNG(seed));
@@ -233,7 +232,7 @@ module Rance
     }
     renderNebula()
     {
-      this.layers["bgFilter"].filters = [nebulaFilter];
+      this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
 
       var texture = this.layers["bgFilter"].generateTexture();
 
@@ -295,7 +294,7 @@ module Rance
         this.renderBackground();
       }
 
-      uniformManager.updateTime();
+      this.shaderManager.uniformManager.updateTime();
 
       this.renderer.render(this.stage);
 

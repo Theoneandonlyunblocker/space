@@ -79,11 +79,9 @@ module Rance
               className: "start-battle",
               onClick: function()
               {
-                var _: any = window;
-
-                _.battle = this.props.battlePrep.makeBattle();
-                _.reactUI.battle = _.battle;
-                _.reactUI.switchScene("battle");
+                var battle = this.props.battlePrep.makeBattle();
+                app.reactUI.battle = battle;
+                app.reactUI.switchScene("battle");
               }.bind(this)
             }, "Start battle")
           )

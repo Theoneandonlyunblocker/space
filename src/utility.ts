@@ -158,15 +158,6 @@ module Rance
 
     return canvas.toDataURL();
   }
-  export function addFleet(player: Player, shipAmount: number)
-  {
-    var ships = [];
-    for (var i = 0; i < shipAmount; i++)
-    {
-      ships.push(makeRandomShip());
-    }
-    var fleet = new Fleet(player, ships, mapGen.points[0]);
-  }
 
 
   export function cloneObject(toClone: any)

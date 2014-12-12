@@ -9,6 +9,7 @@ module Rance
   export class PlayerControl
   {
     player: Player;
+    reactUI: ReactUI;
 
     selectedFleets: Fleet[] = [];
     currentlyReorganizing: Fleet[] = [];
@@ -263,9 +264,9 @@ module Rance
       }
 
       // TODO
-      battlePrep = new BattlePrep(this.player, battleData);
-      reactUI.battlePrep = battlePrep;
-      reactUI.switchScene("battlePrep");
+      var battlePrep = new BattlePrep(this.player, battleData);
+      this.reactUI.battlePrep = battlePrep;
+      this.reactUI.switchScene("battlePrep");
     }
   }
 }
