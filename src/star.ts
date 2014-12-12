@@ -581,6 +581,9 @@ module Rance
       data.name = this.name;
       data.ownerId = this.owner ? this.owner.id : null;
 
+      data.linksToIds = this.linksTo.map(function(star){return star.id});
+      data.linksFromIds = this.linksFrom.map(function(star){return star.id});
+
       data.buildings = {};
 
       for (var category in this.buildings)

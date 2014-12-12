@@ -12,7 +12,6 @@ module Rance
     battle: Battle;
     battlePrep: BattlePrep;
     renderer: Renderer;
-    mapGen: MapGen;
     galaxyMap: GalaxyMap;
     playerControl: PlayerControl;
     player: Player;
@@ -45,7 +44,6 @@ module Rance
             battle: this.battle,
             battlePrep: this.battlePrep,
             renderer: this.renderer,
-            mapGen: this.mapGen,
             galaxyMap: this.galaxyMap,
             playerControl: this.playerControl,
             player: this.player,

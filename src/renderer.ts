@@ -2,6 +2,7 @@
 
 /// <reference path="camera.ts"/>
 /// <reference path="mouseeventhandler.ts"/>
+/// <reference path="shadermanager.ts"/>
 
 module Rance
 {
@@ -16,6 +17,7 @@ module Rance
     } = {};
     camera: Camera;
     mouseEventHandler: MouseEventHandler;
+    shaderManager: ShaderManager;
     isPaused: boolean = false;
     forceFrame: boolean = false;
     backgroundIsDirty: boolean = true;
@@ -25,6 +27,7 @@ module Rance
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
       this.stage = new PIXI.Stage(0x101060);
+      this.shaderManager = new ShaderManager();
     }
     init()
     {

@@ -39,18 +39,6 @@ module Rance
             );
             break;
           }
-          case "mapGen":
-          {
-            elementsToRender.push(
-              UIComponents.MapGen(
-              {
-                renderer: this.props.renderer,
-                mapGen: this.props.mapGen,
-                key: "mapGen"
-              })
-            );
-            break;
-          }
           case "battlePrep":
           {
             elementsToRender.push(
