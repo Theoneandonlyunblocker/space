@@ -224,9 +224,10 @@ module Rance
       [id: number]: Templates.AbilityTemplate[];
     } = {};
 
-    for (var i = 0; i < user.abilities.length; i++)
+    var abilities = user.getAllAbilities();
+    for (var i = 0; i < abilities.length; i++)
     {
-      var ability = user.abilities[i];
+      var ability = abilities[i];
 
       var targets = getPotentialTargets(battle, user, ability);
 

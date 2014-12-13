@@ -5,6 +5,7 @@
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="pathfinding.ts"/>
+/// <reference path="item.ts"/>
 
 module Rance
 {
@@ -49,19 +50,21 @@ module Rance
       }
       //queuedAction: Action;
     };
-
-    abilities: Templates.AbilityTemplate[];
-
-    // map
     
     fleet: Fleet;
+
+    items:
+    {
+      low?: Item;
+      mid?: Item;
+      high?: Item;
+    } = {};
 
     constructor(template: Templates.TypeTemplate)
     {
       this.id = idGenerators.unit++;
 
       this.template = template;
-      this.abilities = template.abilities;
       this.name = this.id + " " + template.typeName;
       this.isSquadron = template.isSquadron;
       this.setValues();
@@ -190,6 +193,33 @@ module Rance
     isTargetable()
     {
       return this.currentStrength > 0;
+    }
+    addItem(item: Item)
+    {
+      var itemSlot = item.template.slot;
+
+      if (this.items[itemSlot]) return false;
+
+      this.items[itemSlot] = item;
+    }
+    getItemAbilities()
+    {
+      var itemAbilities = [];
+
+      for (var slot in this.items)
+      {
+        itemAbilities = itemAbilities.concat(this.items[slot].template.abilities);
+      }
+
+      return itemAbilities;
+    }
+    getAllAbilities()
+    {
+      var abilities = this.template.abilities;
+
+      abilities = abilities.concat(this.getItemAbilities());
+
+      return abilities;
     }
     recieveDamage(amount: number, damageType: string)
     {

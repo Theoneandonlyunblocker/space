@@ -21,8 +21,24 @@ module Rance
             facesLeft: null
           },
           hoveredAbility: null,
-          hoveredUnit: null
+          hoveredUnit: null,
+          backgroundImage: null
         });
+      },
+      resize: function()
+      {
+        var seed = this.props.battle.battleData.location.getBackgroundSeed();
+
+        var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+
+        this.props.renderer.blurProps =
+        [
+          blurArea.left,
+          0,
+          blurArea.width,
+          blurArea.height,
+          seed
+        ];
       },
 
       componentDidMount: function()
@@ -43,29 +59,13 @@ module Rance
         ];
 
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
+
+        this.resizeListener = window.addEventListener("resize", this.resize, false);
       },
       componentWillUnmount: function()
       {
+        window.removeEventListener("resize", this.resizeListener);
         this.props.renderer.removeRendererView();
-      },
-      setBackgroundImage: function()
-      {
-        var seed = this.props.battle.battleData.location.getBackgroundSeed();
-
-        var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-        console.log(blurArea)
-        var texture = this.props.makeBackgroundFunction(
-          blurArea.left,
-          blurArea.top,
-          blurArea.width,
-          blurArea.height,
-          seed
-        );
-
-        this.setState(
-        {
-          backgroundImage: texture.getBase64()
-        });
       },
 
       clearHoveredUnit: function()

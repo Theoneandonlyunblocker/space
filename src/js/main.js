@@ -1005,8 +1005,22 @@ var Rance;
                         facesLeft: null
                     },
                     hoveredAbility: null,
-                    hoveredUnit: null
+                    hoveredUnit: null,
+                    backgroundImage: null
                 });
+            },
+            resize: function () {
+                var seed = this.props.battle.battleData.location.getBackgroundSeed();
+
+                var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+
+                this.props.renderer.blurProps = [
+                    blurArea.left,
+                    0,
+                    blurArea.width,
+                    blurArea.height,
+                    seed
+                ];
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = true;
@@ -1024,20 +1038,12 @@ var Rance;
                 ];
 
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
+
+                this.resizeListener = window.addEventListener("resize", this.resize, false);
             },
             componentWillUnmount: function () {
+                window.removeEventListener("resize", this.resizeListener);
                 this.props.renderer.removeRendererView();
-            },
-            setBackgroundImage: function () {
-                var seed = this.props.battle.battleData.location.getBackgroundSeed();
-
-                var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-                console.log(blurArea);
-                var texture = this.props.makeBackgroundFunction(blurArea.left, blurArea.top, blurArea.width, blurArea.height, seed);
-
-                this.setState({
-                    backgroundImage: texture.getBase64()
-                });
             },
             clearHoveredUnit: function () {
                 this.setState({
@@ -5600,8 +5606,9 @@ var Rance;
 
         var allTargets = {};
 
-        for (var i = 0; i < user.abilities.length; i++) {
-            var ability = user.abilities[i];
+        var abilities = user.getAllAbilities();
+        for (var i = 0; i < abilities.length; i++) {
+            var ability = abilities[i];
 
             var targets = getPotentialTargets(battle, user, ability);
 
@@ -5742,12 +5749,38 @@ var Rance;
     }
     Rance.aStar = aStar;
 })(Rance || (Rance = {}));
+/// <reference path="abilitytemplates.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Items) {
+            Items.testItem = {
+                slot: "high",
+                abilities: [Rance.Templates.Abilities.bombAttack]
+            };
+        })(Templates.Items || (Templates.Items = {}));
+        var Items = Templates.Items;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/itemtemplates.ts" />
+var Rance;
+(function (Rance) {
+    var Item = (function () {
+        function Item(template) {
+            this.template = template;
+        }
+        return Item;
+    })();
+    Rance.Item = Item;
+})(Rance || (Rance = {}));
 /// <reference path="../data/templates/typetemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="pathfinding.ts"/>
+/// <reference path="item.ts"/>
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -5755,10 +5788,10 @@ var Rance;
 
     var Unit = (function () {
         function Unit(template) {
+            this.items = {};
             this.id = idGenerators.unit++;
 
             this.template = template;
-            this.abilities = template.abilities;
             this.name = this.id + " " + template.typeName;
             this.isSquadron = template.isSquadron;
             this.setValues();
@@ -5864,6 +5897,30 @@ var Rance;
         };
         Unit.prototype.isTargetable = function () {
             return this.currentStrength > 0;
+        };
+        Unit.prototype.addItem = function (item) {
+            var itemSlot = item.template.slot;
+
+            if (this.items[itemSlot])
+                return false;
+
+            this.items[itemSlot] = item;
+        };
+        Unit.prototype.getItemAbilities = function () {
+            var itemAbilities = [];
+
+            for (var slot in this.items) {
+                itemAbilities = itemAbilities.concat(this.items[slot].template.abilities);
+            }
+
+            return itemAbilities;
+        };
+        Unit.prototype.getAllAbilities = function () {
+            var abilities = this.template.abilities;
+
+            abilities = abilities.concat(this.getItemAbilities());
+
+            return abilities;
         };
         Unit.prototype.recieveDamage = function (amount, damageType) {
             var damageReduction = this.getDamageReduction(damageType);

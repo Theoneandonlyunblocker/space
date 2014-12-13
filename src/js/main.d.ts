@@ -950,6 +950,26 @@ declare module Rance {
     };
 }
 declare module Rance {
+    module Templates {
+        interface IItemTemplate {
+            slot: string;
+            abilities: Templates.AbilityTemplate[];
+        }
+        module Items {
+            var testItem: {
+                slot: string;
+                abilities: Templates.AbilityTemplate[];
+            };
+        }
+    }
+}
+declare module Rance {
+    class Item {
+        public template: Rance.Templates.IItemTemplate;
+        constructor(template: Rance.Templates.IItemTemplate);
+    }
+}
+declare module Rance {
     class Unit {
         public template: Rance.Templates.TypeTemplate;
         public id: number;
@@ -977,8 +997,12 @@ declare module Rance {
                 coverage: string;
             };
         };
-        public abilities: Rance.Templates.AbilityTemplate[];
         public fleet: Rance.Fleet;
+        public items: {
+            low?: Rance.Item;
+            mid?: Rance.Item;
+            high?: Rance.Item;
+        };
         constructor(template: Rance.Templates.TypeTemplate);
         public setValues(): void;
         public setBaseHealth(): void;
@@ -993,6 +1017,9 @@ declare module Rance {
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
         public isTargetable(): boolean;
+        public addItem(item: Rance.Item): boolean;
+        public getItemAbilities(): any[];
+        public getAllAbilities(): Rance.Templates.AbilityTemplate[];
         public recieveDamage(amount: number, damageType: string): void;
         public getAttackDamageIncrease(damageType: string): number;
         public getDamageReduction(damageType: string): number;
