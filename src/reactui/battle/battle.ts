@@ -24,15 +24,48 @@ module Rance
           hoveredUnit: null
         });
       },
-      componentWillMount: function()
+
+      componentDidMount: function()
       {
-        var location = this.props.battle.battleData.location;
-        this.backgroundImage = this.makeBackgroundImage(location.getBackgroundSeed());
+        this.props.renderer.isBattleBackground = true;
+
+        var seed = this.props.battle.battleData.location.getBackgroundSeed();
+
+        var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+
+        this.props.renderer.blurProps =
+        [
+          blurArea.left,
+          0,
+          blurArea.width,
+          blurArea.height,
+          seed
+        ];
+
+        this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
       },
-      makeBackgroundImage: function(seed: string)
+      componentWillUnmount: function()
       {
-        console.log(seed)
-        return this.props.makeBackgroundFunction(seed).getBase64();
+        this.props.renderer.removeRendererView();
+      },
+      setBackgroundImage: function()
+      {
+        var seed = this.props.battle.battleData.location.getBackgroundSeed();
+
+        var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+        console.log(blurArea)
+        var texture = this.props.makeBackgroundFunction(
+          blurArea.left,
+          blurArea.top,
+          blurArea.width,
+          blurArea.height,
+          seed
+        );
+
+        this.setState(
+        {
+          backgroundImage: texture.getBase64()
+        });
       },
 
       clearHoveredUnit: function()
@@ -180,66 +213,73 @@ module Rance
         }
 
         return(
-          React.DOM.div({className: "battle-container"},
+          React.DOM.div(
+          {
+            className: "battle-pixi-container",
+            ref: "pixiContainer"
+          },
             React.DOM.div(
             {
-              className: "battle-upper"
+              className: "battle-container",
+              ref: "battleContainer"
             },
-              UIComponents.BattleScore(
+              React.DOM.div(
               {
-                battle: battle
-              }),
-              UIComponents.TurnOrder(
+                className: "battle-upper"
+              },
+                UIComponents.BattleScore(
+                {
+                  battle: battle
+                }),
+                UIComponents.TurnOrder(
+                {
+                  turnOrder: battle.turnOrder,
+                  unitsBySide: battle.unitsBySide,
+                  potentialDelay: this.state.potentialDelay,
+                  hoveredUnit: this.state.hoveredUnit,
+                  onMouseEnterUnit: this.handleMouseEnterUnit,
+                  onMouseLeaveUnit: this.handleMouseLeaveUnit
+                })
+              ),
+              React.DOM.div(
               {
-                turnOrder: battle.turnOrder,
-                unitsBySide: battle.unitsBySide,
-                potentialDelay: this.state.potentialDelay,
-                hoveredUnit: this.state.hoveredUnit,
-                onMouseEnterUnit: this.handleMouseEnterUnit,
-                onMouseLeaveUnit: this.handleMouseLeaveUnit
-              })
-            ),
-            React.DOM.div(
-            {
-              className: "fleets-container",
-              style:
+                className: "fleets-container",
+                ref: "fleetsContainer"
+              },
+                UIComponents.Fleet(
+                {
+                  fleet: battle.side1,
+                  activeUnit: battle.activeUnit,
+                  hoveredUnit: this.state.hoveredUnit,
+                  activeTargets: activeTargets,
+                  targetsInPotentialArea: this.state.targetsInPotentialArea,
+                  handleMouseEnterUnit: this.handleMouseEnterUnit,
+                  handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                }),
+                UIComponents.TurnCounter(
+                {
+                  turnsLeft: battle.turnsLeft,
+                  maxTurns: battle.maxTurns
+                }),
+                UIComponents.Fleet(
+                {
+                  fleet: battle.side2,
+                  facesLeft: true,
+                  activeUnit: battle.activeUnit,
+                  hoveredUnit: this.state.hoveredUnit,
+                  activeTargets: activeTargets,
+                  targetsInPotentialArea: this.state.targetsInPotentialArea,
+                  handleMouseEnterUnit: this.handleMouseEnterUnit,
+                  handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                }),
+                abilityTooltip
+              ),
+              battle.ended ? React.DOM.button(
               {
-                backgroundImage: "url(" + this.backgroundImage + ");"
-              }
-            },
-              UIComponents.Fleet(
-              {
-                fleet: battle.side1,
-                activeUnit: battle.activeUnit,
-                hoveredUnit: this.state.hoveredUnit,
-                activeTargets: activeTargets,
-                targetsInPotentialArea: this.state.targetsInPotentialArea,
-                handleMouseEnterUnit: this.handleMouseEnterUnit,
-                handleMouseLeaveUnit: this.handleMouseLeaveUnit
-              }),
-              UIComponents.TurnCounter(
-              {
-                turnsLeft: battle.turnsLeft,
-                maxTurns: battle.maxTurns
-              }),
-              UIComponents.Fleet(
-              {
-                fleet: battle.side2,
-                facesLeft: true,
-                activeUnit: battle.activeUnit,
-                hoveredUnit: this.state.hoveredUnit,
-                activeTargets: activeTargets,
-                targetsInPotentialArea: this.state.targetsInPotentialArea,
-                handleMouseEnterUnit: this.handleMouseEnterUnit,
-                handleMouseLeaveUnit: this.handleMouseLeaveUnit
-              }),
-              abilityTooltip
-            ),
-            battle.ended ? React.DOM.button(
-            {
-              className: "end-battle-button",
-              onClick: this.finishBattle
-            }, "end") : null
+                className: "end-battle-button",
+                onClick: this.finishBattle
+              }, "end") : null
+            )
           )
         );
       }

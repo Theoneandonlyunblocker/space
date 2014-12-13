@@ -1008,13 +1008,36 @@ var Rance;
                     hoveredUnit: null
                 });
             },
-            componentWillMount: function () {
-                var location = this.props.battle.battleData.location;
-                this.backgroundImage = this.makeBackgroundImage(location.getBackgroundSeed());
+            componentDidMount: function () {
+                this.props.renderer.isBattleBackground = true;
+
+                var seed = this.props.battle.battleData.location.getBackgroundSeed();
+
+                var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+
+                this.props.renderer.blurProps = [
+                    blurArea.left,
+                    0,
+                    blurArea.width,
+                    blurArea.height,
+                    seed
+                ];
+
+                this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
             },
-            makeBackgroundImage: function (seed) {
-                console.log(seed);
-                return this.props.makeBackgroundFunction(seed).getBase64();
+            componentWillUnmount: function () {
+                this.props.renderer.removeRendererView();
+            },
+            setBackgroundImage: function () {
+                var seed = this.props.battle.battleData.location.getBackgroundSeed();
+
+                var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
+                console.log(blurArea);
+                var texture = this.props.makeBackgroundFunction(blurArea.left, blurArea.top, blurArea.width, blurArea.height, seed);
+
+                this.setState({
+                    backgroundImage: texture.getBase64()
+                });
             },
             clearHoveredUnit: function () {
                 this.setState({
@@ -1121,7 +1144,13 @@ var Rance;
                     });
                 }
 
-                return (React.DOM.div({ className: "battle-container" }, React.DOM.div({
+                return (React.DOM.div({
+                    className: "battle-pixi-container",
+                    ref: "pixiContainer"
+                }, React.DOM.div({
+                    className: "battle-container",
+                    ref: "battleContainer"
+                }, React.DOM.div({
                     className: "battle-upper"
                 }, Rance.UIComponents.BattleScore({
                     battle: battle
@@ -1134,9 +1163,7 @@ var Rance;
                     onMouseLeaveUnit: this.handleMouseLeaveUnit
                 })), React.DOM.div({
                     className: "fleets-container",
-                    style: {
-                        backgroundImage: "url(" + this.backgroundImage + ");"
-                    }
+                    ref: "fleetsContainer"
                 }, Rance.UIComponents.Fleet({
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
@@ -1160,7 +1187,7 @@ var Rance;
                 }), abilityTooltip), battle.ended ? React.DOM.button({
                     className: "end-battle-button",
                     onClick: this.finishBattle
-                }, "end") : null));
+                }, "end") : null)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6325,6 +6352,7 @@ var Rance;
             componentDidMount: function () {
                 var mapRenderer = this.props.galaxyMap.mapRenderer;
 
+                this.props.renderer.isBattleBackground = false;
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
                 mapRenderer.setAllLayersAsDirty();
 
@@ -6432,7 +6460,7 @@ var Rance;
                     case "battle": {
                         elementsToRender.push(Rance.UIComponents.Battle({
                             battle: this.props.battle,
-                            makeBackgroundFunction: this.props.renderer.makeBackgroundTexture.bind(this.props.renderer),
+                            renderer: this.props.renderer,
                             key: "battle"
                         }));
                         break;
@@ -9056,6 +9084,7 @@ var Rance;
             this.isPaused = false;
             this.forceFrame = false;
             this.backgroundIsDirty = true;
+            this.isBattleBackground = false;
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0x101060);
@@ -9094,23 +9123,37 @@ var Rance;
 
             this.resize();
 
-            this.addCamera();
+            if (!this.isBattleBackground) {
+                this.setupDefaultLayers();
+                this.addCamera();
+            } else {
+                this.setupBackgroundLayers();
+            }
         };
         Renderer.prototype.initLayers = function () {
             var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
-            this.stage.addChild(_bgSprite);
 
             var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
-            this.stage.addChild(_main);
 
             var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
-            _main.addChild(_map);
 
             var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
 
-            //_bgFilter.filters = [nebulaFilter];
             var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
+
+            _main.addChild(_map);
             _main.addChild(_select);
+        };
+        Renderer.prototype.setupDefaultLayers = function () {
+            this.stage.removeChildren();
+            this.stage.addChild(this.layers["bgSprite"]);
+            this.stage.addChild(this.layers["main"]);
+            this.renderOnce();
+        };
+        Renderer.prototype.setupBackgroundLayers = function () {
+            this.stage.removeChildren();
+            this.stage.addChild(this.layers["bgSprite"]);
+            this.renderOnce();
         };
         Renderer.prototype.addCamera = function () {
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
@@ -9160,7 +9203,6 @@ var Rance;
             };
         };
         Renderer.prototype.resize = function () {
-            console.log("resize");
             if (this.renderer && document.body.contains(this.renderer.view)) {
                 var w = this.pixiContainer.offsetWidth;
                 var h = this.pixiContainer.offsetHeight;
@@ -9231,7 +9273,7 @@ var Rance;
             return texture;
         };
         Renderer.prototype.renderBackground = function () {
-            var texture = this.renderNebula();
+            var texture = this.isBattleBackground ? this.renderBlurredNebula.apply(this, this.blurProps) : this.renderNebula();
             var sprite = new PIXI.Sprite(texture);
 
             this.layers["bgSprite"].removeChildren();
@@ -9240,6 +9282,22 @@ var Rance;
             console.log("re-render shader");
 
             this.backgroundIsDirty = false;
+        };
+        Renderer.prototype.renderBlurredNebula = function (x, y, width, height, seed) {
+            var seed = seed || Math.random();
+            var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
+            var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
+
+            var container = new PIXI.DisplayObjectContainer();
+            container.addChild(bg);
+            container.addChild(fg);
+
+            fg.filters = [new PIXI.BlurFilter()];
+            fg.filterArea = new PIXI.Rectangle(x, y, width, height);
+
+            var texture = container.generateTexture();
+
+            return texture;
         };
         Renderer.prototype.renderOnce = function () {
             this.forceFrame = true;

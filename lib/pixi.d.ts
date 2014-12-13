@@ -23,6 +23,7 @@ declare module PIXI
 	export function autoDetectRenderer(width: number, height: number, options?: IRendererOptions): IPixiRenderer;
 	export function FilterBlock( mask:Graphics ):void;
 	export function MaskFilter( graphics:Graphics ):void;
+	export function BlurFilter(): void;
 	export function rgb2hex( rgb:number[] ):number;
 	export function hex2rgb( hex: number): number[];
 

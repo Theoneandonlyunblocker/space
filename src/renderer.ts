@@ -21,6 +21,8 @@ module Rance
     isPaused: boolean = false;
     forceFrame: boolean = false;
     backgroundIsDirty: boolean = true;
+    isBattleBackground: boolean = false;
+    blurProps: number[];
 
     constructor()
     {
@@ -76,25 +78,43 @@ module Rance
 
       this.resize();
       
-      this.addCamera();
+      if (!this.isBattleBackground)
+      {
+        this.setupDefaultLayers();
+        this.addCamera();
+      }
+      else
+      {
+        this.setupBackgroundLayers();
+      }
     }
     initLayers()
     {
-
       var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
-      this.stage.addChild(_bgSprite);
 
       var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
-      this.stage.addChild(_main);
 
       var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
-      _main.addChild(_map);
 
       var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
-      //_bgFilter.filters = [nebulaFilter];
 
       var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
+
+      _main.addChild(_map);
       _main.addChild(_select);
+    }
+    setupDefaultLayers()
+    {
+      this.stage.removeChildren();
+      this.stage.addChild(this.layers["bgSprite"]);
+      this.stage.addChild(this.layers["main"]);
+      this.renderOnce();
+    }
+    setupBackgroundLayers()
+    {
+      this.stage.removeChildren();
+      this.stage.addChild(this.layers["bgSprite"]);
+      this.renderOnce();
     }
     addCamera()
     {
@@ -153,7 +173,6 @@ module Rance
     }
     resize()
     {
-      console.log("resize")
       if (this.renderer && document.body.contains(this.renderer.view))
       {
         var w = this.pixiContainer.offsetWidth;
@@ -240,7 +259,9 @@ module Rance
     }
     renderBackground()
     {
-      var texture = this.renderNebula();
+      var texture = this.isBattleBackground ?
+        this.renderBlurredNebula.apply(this, this.blurProps) :
+        this.renderNebula();
       var sprite = new PIXI.Sprite(texture);
 
       this.layers["bgSprite"].removeChildren();
@@ -249,6 +270,23 @@ module Rance
       console.log("re-render shader")
 
       this.backgroundIsDirty = false;
+    }
+    renderBlurredNebula(x: number, y: number, width: number, height: number, seed?: any)
+    {
+      var seed = seed || Math.random();
+      var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
+      var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
+
+      var container = new PIXI.DisplayObjectContainer();
+      container.addChild(bg);
+      container.addChild(fg);
+
+      fg.filters = [new PIXI.BlurFilter()];
+      fg.filterArea = new PIXI.Rectangle(x, y, width, height);
+
+      var texture = container.generateTexture();
+
+      return texture;
     }
     renderOnce()
     {

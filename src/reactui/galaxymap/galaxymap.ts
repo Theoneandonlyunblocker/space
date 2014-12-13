@@ -58,6 +58,7 @@ module Rance
       {
         var mapRenderer = this.props.galaxyMap.mapRenderer;
 
+        this.props.renderer.isBattleBackground = false;
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
         mapRenderer.setAllLayersAsDirty();
         

@@ -33,8 +33,7 @@ module Rance
               UIComponents.Battle(
               {
                 battle: this.props.battle,
-                makeBackgroundFunction:
-                  this.props.renderer.makeBackgroundTexture.bind(this.props.renderer),
+                renderer: this.props.renderer,
                 key: "battle"
               })
             );
