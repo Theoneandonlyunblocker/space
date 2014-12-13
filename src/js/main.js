@@ -1605,6 +1605,141 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.ItemListItem = React.createClass({
+            displayName: "ItemListItem",
+            mixins: [Rance.UIComponents.Draggable],
+            onDragStart: function (e) {
+                this.props.onDragStart(this.props.item);
+            },
+            onDragEnd: function (e) {
+                this.props.onDragEnd();
+            },
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "item-list-item-cell" + " item-list-" + type;
+
+                var cellContent;
+
+                switch (type) {
+                    default: {
+                        cellContent = this.props[type];
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var item = this.props.item;
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                var rowProps = {
+                    className: "item-list-item draggable",
+                    onClick: this.props.handleClick,
+                    onTouchStart: this.handleMouseDown,
+                    onMouseDown: this.handleMouseDown
+                };
+
+                if (this.props.isSelected) {
+                    rowProps.className += " selected";
+                }
+                ;
+
+                if (this.props.isReserved) {
+                    rowProps.className += " reserved";
+                }
+
+                if (this.state.dragging) {
+                    rowProps.style = this.state.dragPos;
+                    rowProps.className += " dragging";
+                }
+
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="list.ts" />
+/// <reference path="itemlistitem.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ItemList = React.createClass({
+            displayName: "ItemList",
+            render: function () {
+                var rows = [];
+
+                for (var i = 0; i < this.props.items.length; i++) {
+                    var item = this.props.items[i];
+
+                    var data = {
+                        item: item,
+                        typeName: item.template.type,
+                        slot: item.template.slot
+                    };
+
+                    rows.push({
+                        key: i,
+                        data: data
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Type",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Slot",
+                        key: "slot",
+                        defaultOrder: "asd"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="itemlist.ts" />
+/// <reference path="unitlist.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ItemEquip = React.createClass({
+            displayName: "ItemEquip",
+            render: function () {
+                var player = this.props.player;
+                return (React.DOM.div({ className: "unit-equip" }, Rance.UIComponents.UnitList({
+                    units: player.units,
+                    isDraggable: false
+                }), Rance.UIComponents.ItemList({
+                    items: player.items
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.BattlePrep = React.createClass({
             displayName: "BattlePrep",
             getInitialState: function () {
@@ -4735,12 +4870,40 @@ var Rance;
     })();
     Rance.Flag = Flag;
 })(Rance || (Rance = {}));
+/// <reference path="abilitytemplates.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Items) {
+            Items.testItem = {
+                type: "testItem",
+                displayName: "Test item",
+                slot: "high",
+                abilities: [Rance.Templates.Abilities.bombAttack]
+            };
+        })(Templates.Items || (Templates.Items = {}));
+        var Items = Templates.Items;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/itemtemplates.ts" />
+var Rance;
+(function (Rance) {
+    var Item = (function () {
+        function Item(template) {
+            this.template = template;
+        }
+        return Item;
+    })();
+    Rance.Item = Item;
+})(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="building.ts" />
 /// <reference path="star.ts" />
 /// <reference path="flag.ts" />
+/// <reference path="item.ts" />
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -4750,6 +4913,7 @@ var Rance;
         function Player(id) {
             this.units = {};
             this.fleets = [];
+            this.items = [];
             this.controlledLocations = [];
             this.visionIsDirty = true;
             this.visibleStars = {};
@@ -5749,31 +5913,6 @@ var Rance;
     }
     Rance.aStar = aStar;
 })(Rance || (Rance = {}));
-/// <reference path="abilitytemplates.ts" />
-var Rance;
-(function (Rance) {
-    (function (Templates) {
-        (function (Items) {
-            Items.testItem = {
-                slot: "high",
-                abilities: [Rance.Templates.Abilities.bombAttack]
-            };
-        })(Templates.Items || (Templates.Items = {}));
-        var Items = Templates.Items;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-/// <reference path="../data/templates/itemtemplates.ts" />
-var Rance;
-(function (Rance) {
-    var Item = (function () {
-        function Item(template) {
-            this.template = template;
-        }
-        return Item;
-    })();
-    Rance.Item = Item;
-})(Rance || (Rance = {}));
 /// <reference path="../data/templates/typetemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="utility.ts"/>
@@ -6497,6 +6636,7 @@ var Rance;
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
+/// <reference path="unitlist/itemequip.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
 /// <reference path="flagmaker.ts"/>
@@ -6519,6 +6659,13 @@ var Rance;
                             battle: this.props.battle,
                             renderer: this.props.renderer,
                             key: "battle"
+                        }));
+                        break;
+                    }
+                    case "itemEquip": {
+                        elementsToRender.push(Rance.UIComponents.ItemEquip({
+                            player: this.props.player,
+                            key: "itemEquip"
                         }));
                         break;
                     }
@@ -6550,7 +6697,7 @@ var Rance;
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "mapGen" }, "map generation"), React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"), React.DOM.option({ value: "flagMaker" }, "make flags"))));
+                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "itemEquip" }, "equip items"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"), React.DOM.option({ value: "flagMaker" }, "make flags"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

@@ -4,6 +4,7 @@
 /// <reference path="building.ts" />
 /// <reference path="star.ts" />
 /// <reference path="flag.ts" />
+/// <reference path="item.ts" />
 
 module Rance
 {
@@ -24,6 +25,7 @@ module Rance
       [id: number]: Unit;
     } = {};
     fleets: Fleet[] = [];
+    items: Item[] = [];
 
     money: number;
     controlledLocations: Star[] = [];

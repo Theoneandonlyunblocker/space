@@ -2,6 +2,7 @@
 
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
+/// <reference path="unitlist/itemequip.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
 
@@ -35,6 +36,17 @@ module Rance
                 battle: this.props.battle,
                 renderer: this.props.renderer,
                 key: "battle"
+              })
+            );
+            break;
+          }
+          case "itemEquip":
+          {
+            elementsToRender.push(
+              UIComponents.ItemEquip(
+              {
+                player: this.props.player,
+                key: "itemEquip"
               })
             );
             break;
@@ -83,8 +95,8 @@ module Rance
                 value: this.props.sceneToRender,
                 onChange: this.changeScene
               },
-              React.DOM.option({value: "mapGen"}, "map generation"),
               React.DOM.option({value: "galaxyMap"}, "map"),
+              React.DOM.option({value: "itemEquip"}, "equip items"),
               React.DOM.option({value: "battlePrep"}, "battle setup"),
               React.DOM.option({value: "battle"}, "battle"),
               React.DOM.option({value: "flagMaker"}, "make flags")

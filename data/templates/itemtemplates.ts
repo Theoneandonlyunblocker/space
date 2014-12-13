@@ -6,6 +6,9 @@ module Rance
   {
     export interface IItemTemplate
     {
+      type: string;
+      displayName: string;
+
       slot: string; // low, mid, high
       abilities: AbilityTemplate[];
     }
@@ -13,6 +16,9 @@ module Rance
     {
       export var testItem =
       {
+        type: "testItem",
+        displayName: "Test item",
+        
         slot: "high",
         abilities: [Abilities.bombAttack]
       }

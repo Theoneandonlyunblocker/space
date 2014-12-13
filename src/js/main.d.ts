@@ -164,6 +164,21 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ItemListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemEquip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BattlePrep: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -794,6 +809,30 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        interface IItemTemplate {
+            type: string;
+            displayName: string;
+            slot: string;
+            abilities: Templates.AbilityTemplate[];
+        }
+        module Items {
+            var testItem: {
+                type: string;
+                displayName: string;
+                slot: string;
+                abilities: Templates.AbilityTemplate[];
+            };
+        }
+    }
+}
+declare module Rance {
+    class Item {
+        public template: Rance.Templates.IItemTemplate;
+        constructor(template: Rance.Templates.IItemTemplate);
+    }
+}
+declare module Rance {
     class Player {
         public id: number;
         public name: string;
@@ -806,6 +845,7 @@ declare module Rance {
             [id: number]: Rance.Unit;
         };
         public fleets: Rance.Fleet[];
+        public items: Rance.Item[];
         public money: number;
         public controlledLocations: Rance.Star[];
         public visionIsDirty: boolean;
@@ -948,26 +988,6 @@ declare module Rance {
         cost: any;
         queue: PriorityQueue;
     };
-}
-declare module Rance {
-    module Templates {
-        interface IItemTemplate {
-            slot: string;
-            abilities: Templates.AbilityTemplate[];
-        }
-        module Items {
-            var testItem: {
-                slot: string;
-                abilities: Templates.AbilityTemplate[];
-            };
-        }
-    }
-}
-declare module Rance {
-    class Item {
-        public template: Rance.Templates.IItemTemplate;
-        constructor(template: Rance.Templates.IItemTemplate);
-    }
 }
 declare module Rance {
     class Unit {
