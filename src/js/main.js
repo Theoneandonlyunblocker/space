@@ -1695,7 +1695,9 @@ var Rance;
                         item: item,
                         typeName: item.template.type,
                         slot: item.template.slot,
+                        unitName: (item.unit ? item.unit.name : ""),
                         isReserved: Boolean(item.unit),
+                        makeClone: true,
                         rowConstructor: Rance.UIComponents.ItemListItem,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
@@ -1718,6 +1720,11 @@ var Rance;
                         label: "Slot",
                         key: "slot",
                         defaultOrder: "asd"
+                    },
+                    {
+                        label: "Unit",
+                        key: "unitName",
+                        defualtOrder: "asc"
                     }
                 ];
 
