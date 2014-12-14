@@ -33,7 +33,7 @@ module Rance
       },
       handleDragEnd: function(dropSuccesful: boolean = false)
       {
-        if (!dropSuccesful && this.state.currentDragItem)
+        if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
         {
           var item = this.state.currentDragItem;
           if (this.state.selectedUnit.items[item.template.slot] === item)

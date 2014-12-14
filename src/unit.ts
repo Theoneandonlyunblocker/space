@@ -205,7 +205,13 @@ module Rance
 
       if (this.items[itemSlot]) return false;
 
+      if (item.unit)
+      {
+        item.unit.removeItem(item);
+      }
+
       this.items[itemSlot] = item;
+      item.unit = this;
     }
     removeItem(item: Item)
     {
@@ -214,6 +220,7 @@ module Rance
       if (this.items[itemSlot] === item)
       {
         this.items[itemSlot] = null;
+        item.unit = null;
         return true;
       }
 

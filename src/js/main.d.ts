@@ -838,12 +838,25 @@ declare module Rance {
                 slot: string;
                 abilities: Templates.AbilityTemplate[];
             };
+            var testItem2: {
+                type: string;
+                displayName: string;
+                slot: string;
+                abilities: Templates.AbilityTemplate[];
+            };
+            var testItem3: {
+                type: string;
+                displayName: string;
+                slot: string;
+                abilities: Templates.AbilityTemplate[];
+            };
         }
     }
 }
 declare module Rance {
     class Item {
         public template: Rance.Templates.IItemTemplate;
+        public unit: Rance.Unit;
         constructor(template: Rance.Templates.IItemTemplate);
     }
 }

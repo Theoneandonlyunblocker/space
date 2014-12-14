@@ -1695,6 +1695,7 @@ var Rance;
                         item: item,
                         typeName: item.template.type,
                         slot: item.template.slot,
+                        isReserved: Boolean(item.unit),
                         rowConstructor: Rance.UIComponents.ItemListItem,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
@@ -1743,7 +1744,7 @@ var Rance;
             },
             render: function () {
                 if (!this.props.item)
-                    return null;
+                    return (React.DOM.div({ className: "empty-unit-item" }));
                 var divProps = {
                     className: "unit-item"
                 };
@@ -1867,7 +1868,7 @@ var Rance;
             },
             handleDragEnd: function (dropSuccesful) {
                 if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
-                if (!dropSuccesful && this.state.currentDragItem) {
+                if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
                     var item = this.state.currentDragItem;
                     if (this.state.selectedUnit.items[item.template.slot] === item) {
                         this.state.selectedUnit.removeItem(item);
@@ -5053,12 +5054,25 @@ var Rance;
                 slot: "high",
                 abilities: [Rance.Templates.Abilities.bombAttack]
             };
+            Items.testItem2 = {
+                type: "testItem2",
+                displayName: "Test item2",
+                slot: "mid",
+                abilities: [Rance.Templates.Abilities.bombAttack]
+            };
+            Items.testItem3 = {
+                type: "testItem3",
+                displayName: "Test item3",
+                slot: "low",
+                abilities: [Rance.Templates.Abilities.bombAttack]
+            };
         })(Templates.Items || (Templates.Items = {}));
         var Items = Templates.Items;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/itemtemplates.ts" />
+/// <reference path="unit.ts" />
 var Rance;
 (function (Rance) {
     var Item = (function () {
@@ -6222,13 +6236,19 @@ var Rance;
             if (this.items[itemSlot])
                 return false;
 
+            if (item.unit) {
+                item.unit.removeItem(item);
+            }
+
             this.items[itemSlot] = item;
+            item.unit = this;
         };
         Unit.prototype.removeItem = function (item) {
             var itemSlot = item.template.slot;
 
             if (this.items[itemSlot] === item) {
                 this.items[itemSlot] = null;
+                item.unit = null;
                 return true;
             }
 
@@ -9937,8 +9957,11 @@ var Rance;
 
             this.playerControl = new Rance.PlayerControl(this.humanPlayer);
 
-            var item = new Rance.Item(Rance.Templates.Items.testItem);
-            this.humanPlayer.addItem(item);
+            for (var item in Rance.Templates.Items) {
+                for (var i = 0; i < 2; i++) {
+                    this.humanPlayer.addItem(new Rance.Item(Rance.Templates.Items[item]));
+                }
+            }
 
             return this.game;
         };

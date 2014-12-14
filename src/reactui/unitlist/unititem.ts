@@ -18,7 +18,9 @@ module Rance
 
       render: function()
       {
-        if (!this.props.item) return null;
+        if (!this.props.item) return(
+          React.DOM.div({className: "empty-unit-item"})
+        );
         var divProps: any =
         {
           className: "unit-item"

@@ -22,6 +22,8 @@ module Rance
             typeName: item.template.type,
             slot: item.template.slot,
 
+            isReserved: Boolean(item.unit),
+
             rowConstructor: UIComponents.ItemListItem,
             isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,
