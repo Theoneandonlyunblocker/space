@@ -49,9 +49,15 @@ module Rance
       },
       handleDrop: function()
       {
-        if (this.state.selectedUnit && this.state.currentDragItem)
+        var item = this.state.currentDragItem;
+        var unit = this.state.selectedUnit;
+        if (unit && item)
         {
-          this.state.selectedUnit.addItem(this.state.currentDragItem);
+          if (unit.items[item.template.slot])
+          {
+            unit.removeItemAtSlot(item.template.slot);
+          }
+          unit.addItem(item);
         }
 
         this.handleDragEnd(true);

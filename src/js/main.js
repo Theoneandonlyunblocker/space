@@ -1706,7 +1706,7 @@ var Rance;
                     };
 
                     rows.push({
-                        key: i,
+                        key: item.id,
                         data: data
                     });
                 }
@@ -1892,8 +1892,13 @@ var Rance;
                 });
             },
             handleDrop: function () {
-                if (this.state.selectedUnit && this.state.currentDragItem) {
-                    this.state.selectedUnit.addItem(this.state.currentDragItem);
+                var item = this.state.currentDragItem;
+                var unit = this.state.selectedUnit;
+                if (unit && item) {
+                    if (unit.items[item.template.slot]) {
+                        unit.removeItemAtSlot(item.template.slot);
+                    }
+                    unit.addItem(item);
                 }
 
                 this.handleDragEnd(true);
@@ -5067,6 +5072,12 @@ var Rance;
                 slot: "high",
                 abilities: [Rance.Templates.Abilities.bombAttack]
             };
+            Items.testItemA = {
+                type: "testItemA",
+                displayName: "Test itemA",
+                slot: "high",
+                abilities: [Rance.Templates.Abilities.bombAttack]
+            };
             Items.testItem2 = {
                 type: "testItem2",
                 displayName: "Test item2",
@@ -5088,8 +5099,12 @@ var Rance;
 /// <reference path="unit.ts" />
 var Rance;
 (function (Rance) {
+    var idGenerators = idGenerators || {};
+    idGenerators.item = idGenerators.item || 0;
+
     var Item = (function () {
         function Item(template) {
+            this.id = idGenerators.item++;
             this.template = template;
         }
         return Item;
@@ -6262,6 +6277,14 @@ var Rance;
             if (this.items[itemSlot] === item) {
                 this.items[itemSlot] = null;
                 item.unit = null;
+                return true;
+            }
+
+            return false;
+        };
+        Unit.prototype.removeItemAtSlot = function (slot) {
+            if (this.items[slot]) {
+                this.removeItem(this.items[slot]);
                 return true;
             }
 

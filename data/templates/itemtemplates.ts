@@ -22,6 +22,14 @@ module Rance
         slot: "high",
         abilities: [Abilities.bombAttack]
       }
+      export var testItemA =
+      {
+        type: "testItemA",
+        displayName: "Test itemA",
+        
+        slot: "high",
+        abilities: [Abilities.bombAttack]
+      }
       export var testItem2 =
       {
         type: "testItem2",

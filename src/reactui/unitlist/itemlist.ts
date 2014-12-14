@@ -34,7 +34,7 @@ module Rance
 
           rows.push(
           {
-            key: i,
+            key: item.id,
             data: data
           });
         }

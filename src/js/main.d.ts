@@ -838,6 +838,12 @@ declare module Rance {
                 slot: string;
                 abilities: Templates.AbilityTemplate[];
             };
+            var testItemA: {
+                type: string;
+                displayName: string;
+                slot: string;
+                abilities: Templates.AbilityTemplate[];
+            };
             var testItem2: {
                 type: string;
                 displayName: string;
@@ -855,6 +861,7 @@ declare module Rance {
 }
 declare module Rance {
     class Item {
+        public id: number;
         public template: Rance.Templates.IItemTemplate;
         public unit: Rance.Unit;
         constructor(template: Rance.Templates.IItemTemplate);
@@ -1068,6 +1075,7 @@ declare module Rance {
         public isTargetable(): boolean;
         public addItem(item: Rance.Item): boolean;
         public removeItem(item: Rance.Item): boolean;
+        public removeItemAtSlot(slot: string): boolean;
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.AbilityTemplate[];
         public recieveDamage(amount: number, damageType: string): void;

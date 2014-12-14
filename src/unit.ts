@@ -226,6 +226,16 @@ module Rance
 
       return false;
     }
+    removeItemAtSlot(slot: string)
+    {
+      if (this.items[slot])
+      {
+        this.removeItem(this.items[slot]);
+        return true;
+      }
+
+      return false;
+    }
     getItemAbilities()
     {
       var itemAbilities = [];
