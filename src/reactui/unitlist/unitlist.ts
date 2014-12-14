@@ -38,6 +38,7 @@ module Rance
 
             isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
 
+            isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd
           };
@@ -103,7 +104,8 @@ module Rance
             UIComponents.List(
             {
               listItems: rows,
-              initialColumns: columns
+              initialColumns: columns,
+              onRowChange: this.props.onRowChange
             })
           )
         );

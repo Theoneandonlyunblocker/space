@@ -1482,11 +1482,14 @@ var Rance;
                 }
 
                 var rowProps = {
-                    className: "unit-list-item draggable",
-                    onClick: this.props.handleClick,
-                    onTouchStart: this.handleMouseDown,
-                    onMouseDown: this.handleMouseDown
+                    className: "unit-list-item",
+                    onClick: this.props.handleClick
                 };
+
+                if (this.props.isDraggable) {
+                    rowProps.className += " draggable";
+                    rowProps.onTouchStart = rowProps.onMouseDown = this.handleMouseDown;
+                }
 
                 if (this.props.isSelected) {
                     rowProps.className += " selected";
@@ -1537,6 +1540,7 @@ var Rance;
                         rowConstructor: Rance.UIComponents.UnitListItem,
                         makeClone: true,
                         isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
+                        isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
                     };
@@ -1595,7 +1599,8 @@ var Rance;
 
                 return (React.DOM.div({ className: "unit-list" }, Rance.UIComponents.List({
                     listItems: rows,
-                    initialColumns: columns
+                    initialColumns: columns,
+                    onRowChange: this.props.onRowChange
                 })));
             }
         });
@@ -1644,11 +1649,14 @@ var Rance;
                 }
 
                 var rowProps = {
-                    className: "item-list-item draggable",
-                    onClick: this.props.handleClick,
-                    onTouchStart: this.handleMouseDown,
-                    onMouseDown: this.handleMouseDown
+                    className: "item-list-item",
+                    onClick: this.props.handleClick
                 };
+
+                if (this.props.isDraggable) {
+                    rowProps.className += " draggable";
+                    rowProps.onTouchStart = rowProps.onMouseDown = this.handleMouseDown;
+                }
 
                 if (this.props.isSelected) {
                     rowProps.className += " selected";
@@ -1686,7 +1694,11 @@ var Rance;
                     var data = {
                         item: item,
                         typeName: item.template.type,
-                        slot: item.template.slot
+                        slot: item.template.slot,
+                        rowConstructor: Rance.UIComponents.ItemListItem,
+                        isDraggable: this.props.isDraggable,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd
                     };
 
                     rows.push({
@@ -1717,20 +1729,179 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.UnitItem = React.createClass({
+            displayName: "UnitItem",
+            mixins: [Rance.UIComponents.Draggable],
+            onDragStart: function (e) {
+                this.props.onDragStart(this.props.item);
+            },
+            onDragEnd: function (e) {
+                this.props.onDragEnd();
+            },
+            render: function () {
+                if (!this.props.item)
+                    return null;
+                var divProps = {
+                    className: "unit-item"
+                };
+
+                if (this.props.isDraggable) {
+                    divProps.className += " draggable";
+                    divProps.onMouseDown = divProps.onTouchStart = this.handleMouseDown;
+                }
+
+                if (this.state.dragging) {
+                    divProps.style = this.state.dragPos;
+                    divProps.className += " dragging";
+                }
+
+                return (React.DOM.div(divProps, this.props.item.template.displayName));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="unititem.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.UnitItemWrapper = React.createClass({
+            displayName: "UnitItemWrapper",
+            handleMouseUp: function () {
+                this.props.onMouseUp(this.props.slot);
+            },
+            render: function () {
+                var allElements = [];
+                var item = this.props.item;
+
+                var wrapperProps = {
+                    className: "unit-item-wrapper"
+                };
+
+                if (this.props.currentDragItem) {
+                    var dragItem = this.props.currentDragItem;
+                    if (dragItem.template.slot === this.props.slot) {
+                        if (this.props.onMouseUp) {
+                            wrapperProps.onMouseUp = this.handleMouseUp;
+                        }
+                        ;
+                    } else {
+                        wrapperProps.className += " invalid-drop-target";
+                    }
+                }
+
+                return (React.DOM.div(wrapperProps, Rance.UIComponents.UnitItem({
+                    item: this.props.item,
+                    key: "item",
+                    isDraggable: this.props.isDraggable,
+                    onDragStart: this.props.onDragStart,
+                    onDragEnd: this.props.onDragEnd
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="unititemwrapper.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MenuUnitInfo = React.createClass({
+            displayName: "MenuUnitInfo",
+            render: function () {
+                var unit = this.props.unit;
+                if (!unit)
+                    return (React.DOM.div({ className: "menu-unit-info" }));
+
+                var itemSlots = [];
+
+                for (var slot in unit.items) {
+                    itemSlots.push(Rance.UIComponents.UnitItemWrapper({
+                        key: slot,
+                        slot: slot,
+                        item: unit.items[slot],
+                        onMouseUp: this.props.onMouseUp,
+                        isDraggable: true,
+                        onDragStart: this.props.onDragStart,
+                        onDragEnd: this.props.onDragEnd,
+                        currentDragItem: this.props.currentDragItem
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "menu-unit-info"
+                }, React.DOM.div({
+                    className: "menu-unit-info-items-wrapper"
+                }, itemSlots)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="itemlist.ts" />
 /// <reference path="unitlist.ts" />
+/// <reference path="menuunitinfo.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.ItemEquip = React.createClass({
             displayName: "ItemEquip",
+            getInitialState: function () {
+                return ({
+                    selectedUnit: null,
+                    currentDragItem: null
+                });
+            },
+            handleSelectRow: function (row) {
+                this.setState({
+                    selectedUnit: row.data.unit
+                });
+            },
+            handleDragStart: function (item) {
+                this.setState({
+                    currentDragItem: item
+                });
+            },
+            handleDragEnd: function (dropSuccesful) {
+                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                if (!dropSuccesful && this.state.currentDragItem) {
+                    var item = this.state.currentDragItem;
+                    if (this.state.selectedUnit.items[item.template.slot] === item) {
+                        this.state.selectedUnit.removeItem(item);
+                    }
+                }
+
+                this.setState({
+                    currentDragItem: null
+                });
+            },
+            handleDrop: function () {
+                if (this.state.selectedUnit && this.state.currentDragItem) {
+                    this.state.selectedUnit.addItem(this.state.currentDragItem);
+                }
+
+                this.handleDragEnd(true);
+            },
             render: function () {
                 var player = this.props.player;
-                return (React.DOM.div({ className: "unit-equip" }, Rance.UIComponents.UnitList({
-                    units: player.units,
-                    isDraggable: false
+                return (React.DOM.div({ className: "item-equip" }, React.DOM.div({ className: "item-equip-left" }, Rance.UIComponents.MenuUnitInfo({
+                    unit: this.state.selectedUnit,
+                    onMouseUp: this.handleDrop,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd,
+                    currentDragItem: this.state.currentDragItem
                 }), Rance.UIComponents.ItemList({
-                    items: player.items
+                    items: player.items,
+                    isDraggable: true,
+                    onDragStart: this.handleDragStart,
+                    onDragEnd: this.handleDragEnd
+                })), Rance.UIComponents.UnitList({
+                    units: player.units,
+                    isDraggable: false,
+                    onRowChange: this.handleSelectRow
                 })));
             }
         });
@@ -1787,6 +1958,7 @@ var Rance;
                 return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({
                     units: this.props.battlePrep.availableUnits,
                     selectedUnits: this.props.battlePrep.alreadyPlaced,
+                    isDraggable: true,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd
                 }), React.DOM.button({
@@ -5288,6 +5460,9 @@ var Rance;
 
             return toReturn;
         };
+        Player.prototype.addItem = function (item) {
+            this.items.push(item);
+        };
         Player.prototype.serialize = function () {
             var data = {};
 
@@ -5927,7 +6102,11 @@ var Rance;
 
     var Unit = (function () {
         function Unit(template) {
-            this.items = {};
+            this.items = {
+                low: null,
+                mid: null,
+                high: null
+            };
             this.id = idGenerators.unit++;
 
             this.template = template;
@@ -6044,6 +6223,16 @@ var Rance;
                 return false;
 
             this.items[itemSlot] = item;
+        };
+        Unit.prototype.removeItem = function (item) {
+            var itemSlot = item.template.slot;
+
+            if (this.items[itemSlot] === item) {
+                this.items[itemSlot] = null;
+                return true;
+            }
+
+            return false;
         };
         Unit.prototype.getItemAbilities = function () {
             var itemAbilities = [];
@@ -9747,6 +9936,9 @@ var Rance;
             map.game = this.game;
 
             this.playerControl = new Rance.PlayerControl(this.humanPlayer);
+
+            var item = new Rance.Item(Rance.Templates.Items.testItem);
+            this.humanPlayer.addItem(item);
 
             return this.game;
         };

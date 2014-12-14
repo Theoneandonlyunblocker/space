@@ -71,6 +71,7 @@ module Rance
               units: this.props.battlePrep.availableUnits,
               selectedUnits: this.props.battlePrep.alreadyPlaced,
 
+              isDraggable: true,
               onDragStart: this.handleDragStart,
               onDragEnd: this.handleDragEnd
             }),

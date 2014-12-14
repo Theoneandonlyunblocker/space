@@ -491,6 +491,10 @@ module Rance
 
       return toReturn;
     }
+    addItem(item: Item)
+    {
+      this.items.push(item);
+    }
     serialize()
     {
       var data: any = {};

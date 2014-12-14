@@ -174,6 +174,21 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UnitItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var UnitItemWrapper: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MenuUnitInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var ItemEquip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -880,6 +895,7 @@ declare module Rance {
         public getVisibleStars(): Rance.Star[];
         public getRevealedStars(): Rance.Star[];
         public getRevealedButNotVisibleStars(): Rance.Star[];
+        public addItem(item: Rance.Item): void;
         public serialize(): any;
     }
 }
@@ -1019,9 +1035,9 @@ declare module Rance {
         };
         public fleet: Rance.Fleet;
         public items: {
-            low?: Rance.Item;
-            mid?: Rance.Item;
-            high?: Rance.Item;
+            low: Rance.Item;
+            mid: Rance.Item;
+            high: Rance.Item;
         };
         constructor(template: Rance.Templates.TypeTemplate);
         public setValues(): void;
@@ -1038,6 +1054,7 @@ declare module Rance {
         public addMoveDelay(amount: number): void;
         public isTargetable(): boolean;
         public addItem(item: Rance.Item): boolean;
+        public removeItem(item: Rance.Item): boolean;
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.AbilityTemplate[];
         public recieveDamage(amount: number, damageType: string): void;

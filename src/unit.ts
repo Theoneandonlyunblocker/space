@@ -55,10 +55,15 @@ module Rance
 
     items:
     {
-      low?: Item;
-      mid?: Item;
-      high?: Item;
-    } = {};
+      low: Item;
+      mid: Item;
+      high: Item;
+    } =
+    {
+      low: null,
+      mid: null,
+      high: null
+    };
 
     constructor(template: Templates.TypeTemplate)
     {
@@ -201,6 +206,18 @@ module Rance
       if (this.items[itemSlot]) return false;
 
       this.items[itemSlot] = item;
+    }
+    removeItem(item: Item)
+    {
+      var itemSlot = item.template.slot;
+
+      if (this.items[itemSlot] === item)
+      {
+        this.items[itemSlot] = null;
+        return true;
+      }
+
+      return false;
     }
     getItemAbilities()
     {

@@ -62,6 +62,9 @@ module Rance
 
       this.playerControl = new PlayerControl(this.humanPlayer);
 
+      var item = new Item(Templates.Items.testItem);
+      this.humanPlayer.addItem(item)
+
       return this.game;
     }
     initPlayers()

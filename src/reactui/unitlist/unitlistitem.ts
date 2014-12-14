@@ -69,11 +69,16 @@ module Rance
 
         var rowProps: any =
         {
-          className: "unit-list-item draggable",
-          onClick : this.props.handleClick,
-          onTouchStart : this.handleMouseDown,
-          onMouseDown: this.handleMouseDown
+          className: "unit-list-item",
+          onClick : this.props.handleClick
         };
+
+        if (this.props.isDraggable)
+        {
+          rowProps.className += " draggable";
+          rowProps.onTouchStart = rowProps.onMouseDown =
+            this.handleMouseDown;
+        }
 
         if (this.props.isSelected)
         {

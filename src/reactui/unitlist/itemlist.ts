@@ -20,7 +20,12 @@ module Rance
           {
             item: item,
             typeName: item.template.type,
-            slot: item.template.slot
+            slot: item.template.slot,
+
+            rowConstructor: UIComponents.ItemListItem,
+            isDraggable: this.props.isDraggable,
+            onDragStart: this.props.onDragStart,
+            onDragEnd: this.props.onDragEnd
           };
 
           rows.push(
