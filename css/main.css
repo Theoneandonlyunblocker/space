@@ -1283,6 +1283,53 @@ progress::-webkit-progress-value {
   display: flex;
   flex: 3;
 }
+.item-equip-left .item-list .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.item-equip-left .item-list .sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 700px) {
+  .item-equip-left .item-list .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 700px) {
+  .item-equip-left .item-list .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .item-equip-left .item-list .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .item-equip-left .item-list .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+}
 .menu-unit-info {
   display: flex;
   flex: 2;

@@ -1782,14 +1782,18 @@ var Rance;
                     className: "unit-item-wrapper"
                 };
 
+                // if this is declared inside the conditional block
+                // the component won't accept the first drop properly
+                if (this.props.onMouseUp) {
+                    wrapperProps.onMouseUp = this.handleMouseUp;
+                }
+                ;
+
                 if (this.props.currentDragItem) {
                     var dragItem = this.props.currentDragItem;
                     if (dragItem.template.slot === this.props.slot) {
-                        if (this.props.onMouseUp) {
-                            wrapperProps.onMouseUp = this.handleMouseUp;
-                        }
-                        ;
                     } else {
+                        wrapperProps.onMouseUp = null;
                         wrapperProps.className += " invalid-drop-target";
                     }
                 }
@@ -1888,6 +1892,7 @@ var Rance;
             },
             render: function () {
                 var player = this.props.player;
+
                 return (React.DOM.div({ className: "item-equip" }, React.DOM.div({ className: "item-equip-left" }, Rance.UIComponents.MenuUnitInfo({
                     unit: this.state.selectedUnit,
                     onMouseUp: this.handleDrop,

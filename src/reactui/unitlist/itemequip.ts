@@ -60,6 +60,7 @@ module Rance
       render: function()
       {
         var player = this.props.player;
+
         return(
           React.DOM.div({className: "item-equip"},
             React.DOM.div({className: "item-equip-left"},
