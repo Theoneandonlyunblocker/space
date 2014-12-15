@@ -1000,7 +1000,9 @@ declare module Rance {
     function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
     function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
     function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];
-    function getTargetsForAllAbilities(battle: Battle, user: Unit): {};
+    function getTargetsForAllAbilities(battle: Battle, user: Unit): {
+        [id: number]: Templates.AbilityTemplate[];
+    };
 }
 declare module Rance {
     class PriorityQueue {
@@ -1654,6 +1656,60 @@ declare module Rance {
         public loadEmblems(): void;
         public loadOther(): void;
         public checkLoaded(): void;
+    }
+}
+declare module Rance {
+    interface IMove {
+        ability: Rance.Templates.AbilityTemplate;
+        target: Rance.Unit;
+    }
+    class MCTreeNode {
+        public battle: Rance.Battle;
+        public move: IMove;
+        public parent: MCTreeNode;
+        public children: MCTreeNode[];
+        public visits: number;
+        public wins: number;
+        public possibleChildren: IMove[];
+        constructor(battle: Rance.Battle, move: IMove);
+        public setPossibleChildren(): any;
+        public addChild(): IMove;
+    }
+}
+declare module Rance {
+    class UnitState {
+        public id: number;
+        public maxStrength: number;
+        public currentStrength: number;
+        public maxActionPoints: number;
+        public currentActionPoints: number;
+        public attack: number;
+        public defence: number;
+        public intelligence: number;
+        public speed: number;
+        public moveDelay: number;
+        public side: string;
+        public position: number[];
+        public guardValue: number;
+        public guardCoverage: string;
+        public abilities: Rance.Templates.AbilityTemplate[];
+        public getAllAbilities: () => Rance.Templates.AbilityTemplate[];
+        constructor(unit: Rance.Unit);
+    }
+}
+declare module Rance {
+    class BattleState {
+        public side1: Rance.UnitState[][];
+        public side2: Rance.UnitState[][];
+        public activeUnit: Rance.UnitState;
+        public turnOrder: Rance.UnitState[];
+        public turnsLeft: number;
+        public side1StartHealth: number;
+        public side2StartHealth: number;
+        constructor(battle: Rance.Battle);
+        public initUnitStates(battle: Rance.Battle): {
+            [id: number]: Rance.UnitState;
+        };
     }
 }
 declare module Rance {

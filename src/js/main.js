@@ -5982,7 +5982,7 @@ var Rance;
 
     function getTargetsForAllAbilities(battle, user) {
         if (!user || !battle.activeUnit) {
-            return false;
+            return null;
         }
 
         var allTargets = {};
@@ -6294,6 +6294,8 @@ var Rance;
             var itemAbilities = [];
 
             for (var slot in this.items) {
+                if (!this.items[slot])
+                    continue;
                 itemAbilities = itemAbilities.concat(this.items[slot].template.abilities);
             }
 
@@ -9952,6 +9954,131 @@ var Rance;
     })();
     Rance.Loader = Loader;
 })(Rance || (Rance = {}));
+/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    var MCTreeNode = (function () {
+        function MCTreeNode(battle, move) {
+            this.children = [];
+            this.visits = 0;
+            this.wins = 0;
+            this.battle = battle;
+        }
+        MCTreeNode.prototype.setPossibleChildren = function () {
+            if (!this.battle.activeUnit) {
+                return null;
+            }
+            var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
+
+            var actions = [];
+
+            for (var id in targets) {
+                var unit = this.battle.unitsById[id];
+                var targetActions = targets[id];
+                for (var i = 0; i < targetActions.length; i++) {
+                    actions.push({
+                        target: unit,
+                        ability: targetActions[i]
+                    });
+                }
+            }
+
+            this.possibleChildren = actions;
+        };
+        MCTreeNode.prototype.addChild = function () {
+            if (!this.possibleChildren)
+                this.setPossibleChildren();
+
+            var child = this.possibleChildren.pop();
+            this.children.push();
+
+            return child;
+        };
+        return MCTreeNode;
+    })();
+    Rance.MCTreeNode = MCTreeNode;
+})(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    var UnitState = (function () {
+        function UnitState(unit) {
+            this.abilities = [];
+            this.id = unit.id;
+
+            this.maxStrength = unit.maxStrength;
+            this.currentStrength = unit.currentStrength;
+
+            this.maxActionPoints = unit.maxActionPoints;
+            this.currentActionPoints = unit.battleStats.currentActionPoints;
+
+            this.attack = unit.attributes.attack;
+            this.defence = unit.attributes.defence;
+            this.intelligence = unit.attributes.intelligence;
+            this.speed = unit.attributes.speed;
+
+            this.moveDelay = unit.battleStats.moveDelay;
+            this.side = unit.battleStats.side;
+            this.position = unit.battleStats.position;
+
+            this.guardValue = unit.battleStats.guard.value;
+            this.guardCoverage = unit.battleStats.guard.coverage;
+
+            this.getAllAbilities = unit.getAllAbilities.bind(unit);
+        }
+        return UnitState;
+    })();
+    Rance.UnitState = UnitState;
+})(Rance || (Rance = {}));
+/// <reference path="battle.ts"/>
+/// <reference path="unitstate.ts"/>
+var Rance;
+(function (Rance) {
+    var BattleState = (function () {
+        function BattleState(battle) {
+            var allUnits = this.initUnitStates(battle);
+
+            this.turnOrder = battle.turnOrder.map(function (unit) {
+                return allUnits[unit.id];
+            });
+            this.activeUnit = this.turnOrder[0];
+
+            this.turnsLeft = battle.turnsLeft;
+
+            this.side1StartHealth = battle.startHealth.side1;
+            this.side2StartHealth = battle.startHealth.side2;
+        }
+        BattleState.prototype.initUnitStates = function (battle) {
+            var self = this;
+            var allUnits = {};
+            ["side1", "side2"].forEach(function (side) {
+                self[side] = [];
+                for (var i = 0; i < battle[side].length; i++) {
+                    var battleColumn = battle[side][i];
+                    var selfColumn = [];
+
+                    for (var j = 0; j < battleColumn.length; j++) {
+                        if (!battleColumn[j]) {
+                            selfColumn.push(null);
+                            continue;
+                        }
+
+                        var unitState = new Rance.UnitState(battleColumn[j]);
+                        selfColumn.push(unitState);
+                        allUnits[unitState.id] = unitState;
+                    }
+
+                    self[side].push(selfColumn);
+                }
+            });
+
+            return allUnits;
+        };
+        return BattleState;
+    })();
+    Rance.BattleState = BattleState;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
@@ -9963,6 +10090,9 @@ var Rance;
 /// <reference path="game.ts"/>
 /// <reference path="loader.ts"/>
 /// <reference path="shadermanager.ts"/>
+/// <reference path="mctreenode.ts"/>
+/// <reference path="battlestate.ts"/>
+/// <reference path="unitstate.ts"/>
 var Rance;
 (function (Rance) {
     var App = (function () {

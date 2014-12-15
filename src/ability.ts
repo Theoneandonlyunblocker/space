@@ -216,7 +216,7 @@ module Rance
   {
     if (!user || !battle.activeUnit)
     {
-      return false;
+      return null;
     }
 
     var allTargets:

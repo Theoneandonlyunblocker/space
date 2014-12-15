@@ -11,6 +11,10 @@
 
 /// <reference path="shadermanager.ts"/>
 
+/// <reference path="mctreenode.ts"/>
+/// <reference path="battlestate.ts"/>
+/// <reference path="unitstate.ts"/>
+
 module Rance
 {
   export class App

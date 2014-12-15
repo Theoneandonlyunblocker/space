@@ -242,6 +242,7 @@ module Rance
 
       for (var slot in this.items)
       {
+        if (!this.items[slot]) continue;
         itemAbilities = itemAbilities.concat(this.items[slot].template.abilities);
       }
 
