@@ -6,7 +6,7 @@ module Rance
   export interface IMove
   {
     ability: Templates.AbilityTemplate;
-    target: Unit;
+    targetId: number;
   }
   export class MCTreeNode
   {
@@ -19,14 +19,15 @@ module Rance
     visits: number = 0;
     wins: number = 0;
 
-    possibleChildren: IMove[];
+    possibleMoves: IMove[];
 
-    constructor(battle: Battle, move: IMove)
+    constructor(battle: Battle, move?: IMove)
     {
       this.battle = battle;
+      this.move = move;
     }
 
-    setPossibleChildren()
+    getPossibleMoves()
     {
       if (!this.battle.activeUnit)
       {
@@ -44,20 +45,31 @@ module Rance
         {
           actions.push(
           {
-            target: unit,
+            targetId: id,
             ability: targetActions[i]
           });
         }
       }
 
-      this.possibleChildren = actions;
+      return actions;
     }
     addChild()
     {
-      if (!this.possibleChildren) this.setPossibleChildren();
+      if (!this.possibleMoves)
+      {
+        this.possibleMoves = this.getPossibleMoves();
+      }
 
-      var child = this.possibleChildren.pop();
-      this.children.push()
+      var move = this.possibleMoves.pop();
+
+      var battle = this.battle.makeVirtualClone();
+
+      useAbility(battle, battle.activeUnit, move.ability,
+        battle.unitsById[move.targetId]);
+      
+      var child = new MCTreeNode(battle, move);
+      child.parent = this;
+      this.children.push(child);
 
       return child;
     }

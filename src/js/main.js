@@ -5557,6 +5557,7 @@ var Rance;
             };
             this.turnOrder = [];
             this.evaluation = {};
+            this.isVirtual = false;
             this.ended = false;
             this.side1 = props.side1;
             this.side1Player = props.side1Player;
@@ -5676,6 +5677,9 @@ var Rance;
         };
         Battle.prototype.endBattle = function () {
             this.ended = true;
+
+            if (this.isVirtual)
+                return;
 
             this.forEachUnit(function (unit) {
                 if (unit.currentStrength <= 0) {
@@ -5803,6 +5807,74 @@ var Rance;
             }
 
             return false;
+        };
+        Battle.prototype.makeVirtualClone = function () {
+            var battleData = this.battleData;
+
+            function cloneUnits(units) {
+                var clones = [];
+                for (var i = 0; i < units.length; i++) {
+                    var column = [];
+
+                    for (var j = 0; j < units[i].length; j++) {
+                        var unit = units[i][j];
+                        if (!unit) {
+                            column.push(unit);
+                        } else {
+                            column.push(unit.makeVirtualClone());
+                        }
+                    }
+                    clones.push(column);
+                }
+
+                return clones;
+            }
+
+            var side1 = cloneUnits(this.side1);
+            var side2 = cloneUnits(this.side2);
+
+            var side1Player = this.side1Player;
+            var side2Player = this.side2Player;
+
+            var clone = new Battle({
+                battleData: battleData,
+                side1: side1,
+                side2: side2,
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+
+            [side1, side2].forEach(function (side) {
+                for (var i = 0; i < side.length; i++) {
+                    for (var j = 0; j < side[i].length; j++) {
+                        if (!side[i][j])
+                            continue;
+                        clone.addUnitToTurnOrder(side[i][j]);
+                        clone.unitsById[side[i][j].id] = side[i][j];
+                    }
+                }
+            });
+
+            clone.isVirtual = true;
+
+            clone.currentTurn = 0;
+            clone.maxTurns = 24;
+            clone.turnsLeft = clone.maxTurns;
+            clone.updateTurnOrder();
+            clone.setActiveUnit();
+
+            clone.startHealth = {
+                side1: clone.getTotalHealthForSide("side1").current,
+                side2: clone.getTotalHealthForSide("side2").current
+            };
+
+            if (clone.checkBattleEnd()) {
+                clone.endBattle();
+            } else {
+                clone.swapColumnsIfNeeded();
+            }
+
+            return clone;
         };
         return Battle;
     })();
@@ -6223,7 +6295,6 @@ var Rance;
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
-            this.battleStats.battle = battle;
             this.battleStats.side = side;
             this.battleStats.position = position;
         };
@@ -6414,6 +6485,37 @@ var Rance;
             data.fleetId = this.fleet.id;
 
             return data;
+        };
+        Unit.prototype.makeVirtualClone = function () {
+            var clone = new Unit(this.template);
+
+            clone.id = this.id;
+            clone.isSquadron = this.isSquadron;
+
+            clone.maxStrength = this.maxStrength;
+            clone.currentStrength = this.currentStrength;
+            clone.maxActionPoints = this.maxActionPoints;
+
+            clone.attributes = Rance.cloneObject(this.attributes);
+
+            clone.battleStats = {
+                moveDelay: this.battleStats.moveDelay,
+                side: this.battleStats.side,
+                position: this.battleStats.position.slice(0),
+                currentActionPoints: this.battleStats.currentActionPoints,
+                guard: {
+                    value: this.battleStats.guard.value,
+                    coverage: this.battleStats.guard.coverage
+                }
+            };
+
+            clone.items = {
+                low: this.items.low,
+                mid: this.items.mid,
+                high: this.items.high
+            };
+
+            return clone;
         };
         return Unit;
     })();
@@ -9964,8 +10066,9 @@ var Rance;
             this.visits = 0;
             this.wins = 0;
             this.battle = battle;
+            this.move = move;
         }
-        MCTreeNode.prototype.setPossibleChildren = function () {
+        MCTreeNode.prototype.getpossibleMoves = function () {
             if (!this.battle.activeUnit) {
                 return null;
             }
@@ -9978,20 +10081,28 @@ var Rance;
                 var targetActions = targets[id];
                 for (var i = 0; i < targetActions.length; i++) {
                     actions.push({
-                        target: unit,
+                        targetId: id,
                         ability: targetActions[i]
                     });
                 }
             }
 
-            this.possibleChildren = actions;
+            return actions;
         };
         MCTreeNode.prototype.addChild = function () {
-            if (!this.possibleChildren)
-                this.setPossibleChildren();
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getpossibleMoves();
+            }
 
-            var child = this.possibleChildren.pop();
-            this.children.push();
+            var move = this.possibleMoves.pop();
+
+            var battle = this.battle.makeVirtualClone();
+
+            Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
+
+            var child = new MCTreeNode(battle, move);
+            child.parent = this;
+            this.children.push(child);
 
             return child;
         };

@@ -43,6 +43,7 @@ module Rance
       [turnNumber: number]: number;
     } = {};
 
+    isVirtual: boolean = false; // true when a simulation clone for ai
     ended: boolean = false;
 
     constructor(props:
@@ -202,6 +203,8 @@ module Rance
     {
       this.ended = true;
 
+      if (this.isVirtual) return;
+
       this.forEachUnit(function(unit)
       {
         if (unit.currentStrength <= 0)
@@ -358,6 +361,89 @@ module Rance
       }
 
       return false;
+    }
+    makeVirtualClone(): Battle
+    {
+      var battleData = this.battleData;
+
+
+      function cloneUnits(units)
+      {
+        var clones = [];
+        for (var i = 0; i < units.length; i++)
+        {
+          var column: Unit[] = [];
+
+          for (var j = 0; j < units[i].length; j++)
+          {
+            var unit = units[i][j];
+            if (!unit)
+            {
+              column.push(unit);
+            }
+            else
+            {
+              column.push(unit.makeVirtualClone());
+            }
+          }
+          clones.push(column);
+        }
+
+        return clones;
+      }
+
+      var side1 = cloneUnits(this.side1);
+      var side2 = cloneUnits(this.side2);
+
+      var side1Player = this.side1Player;
+      var side2Player = this.side2Player;
+
+      var clone = new Battle(
+      {
+        battleData: battleData,
+        side1: side1,
+        side2: side2,
+        side1Player: side1Player,
+        side2Player: side2Player
+      });
+
+      [side1, side2].forEach(function(side)
+      {
+        for (var i = 0; i < side.length; i++)
+        {
+          for (var j = 0; j < side[i].length; j++)
+          {
+            if (!side[i][j]) continue;
+            clone.addUnitToTurnOrder(side[i][j]);
+            clone.unitsById[side[i][j].id] = side[i][j];
+          }
+        }
+      });
+
+      clone.isVirtual = true;
+
+      clone.currentTurn = 0;
+      clone.maxTurns = 24;
+      clone.turnsLeft = clone.maxTurns;
+      clone.updateTurnOrder();
+      clone.setActiveUnit();
+
+      clone.startHealth =
+      {
+        side1: clone.getTotalHealthForSide("side1").current,
+        side2: clone.getTotalHealthForSide("side2").current
+      }
+
+      if (clone.checkBattleEnd())
+      {
+        clone.endBattle();
+      }
+      else
+      {
+        clone.swapColumnsIfNeeded();
+      }
+
+      return clone;
     }
   }
 }

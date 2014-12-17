@@ -38,7 +38,6 @@ module Rance
 
     battleStats:
     {
-      battle: Battle;
       moveDelay: number;
       side: string;
       position: number[];
@@ -153,7 +152,6 @@ module Rance
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
     {
-      this.battleStats.battle = battle;
       this.battleStats.side = side;
       this.battleStats.position = position;
     }
@@ -379,6 +377,41 @@ module Rance
       data.fleetId = this.fleet.id;
 
       return data;
+    }
+    makeVirtualClone()
+    {
+      var clone = new Unit(this.template);
+
+      clone.id = this.id;
+      clone.isSquadron = this.isSquadron;
+
+      clone.maxStrength = this.maxStrength;
+      clone.currentStrength = this.currentStrength;
+      clone.maxActionPoints = this.maxActionPoints;
+
+      clone.attributes = cloneObject(this.attributes);
+
+      clone.battleStats =
+      {
+        moveDelay: this.battleStats.moveDelay,
+        side: this.battleStats.side,
+        position: this.battleStats.position.slice(0),
+        currentActionPoints: this.battleStats.currentActionPoints,
+        guard:
+        {
+          value: this.battleStats.guard.value,
+          coverage: this.battleStats.guard.coverage
+        }
+      };
+
+      clone.items =
+      {
+        low: this.items.low,
+        mid: this.items.mid,
+        high: this.items.high
+      }
+
+      return clone;
     }
   }
 }

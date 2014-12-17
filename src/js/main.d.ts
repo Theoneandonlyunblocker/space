@@ -958,6 +958,7 @@ declare module Rance {
         public evaluation: {
             [turnNumber: number]: number;
         };
+        public isVirtual: boolean;
         public ended: boolean;
         constructor(props: {
             battleData: Rance.IBattleData;
@@ -988,6 +989,7 @@ declare module Rance {
         public swapFleetColumnsForSide(side: string): void;
         public swapColumnsIfNeeded(): void;
         public checkBattleEnd(): boolean;
+        public makeVirtualClone(): Battle;
     }
 }
 declare module Rance {
@@ -1045,7 +1047,6 @@ declare module Rance {
             speed: number;
         };
         public battleStats: {
-            battle: Rance.Battle;
             moveDelay: number;
             side: string;
             position: number[];
@@ -1091,6 +1092,7 @@ declare module Rance {
         public removeAllGuard(): void;
         public heal(): void;
         public serialize(): any;
+        public makeVirtualClone(): Unit;
     }
 }
 declare module Rance {
@@ -1661,7 +1663,7 @@ declare module Rance {
 declare module Rance {
     interface IMove {
         ability: Rance.Templates.AbilityTemplate;
-        target: Rance.Unit;
+        targetId: number;
     }
     class MCTreeNode {
         public battle: Rance.Battle;
@@ -1670,10 +1672,10 @@ declare module Rance {
         public children: MCTreeNode[];
         public visits: number;
         public wins: number;
-        public possibleChildren: IMove[];
-        constructor(battle: Rance.Battle, move: IMove);
-        public setPossibleChildren(): any;
-        public addChild(): IMove;
+        public possibleMoves: IMove[];
+        constructor(battle: Rance.Battle, move?: IMove);
+        public getpossibleMoves(): any[];
+        public addChild(): MCTreeNode;
     }
 }
 declare module Rance {
