@@ -24,6 +24,9 @@ module Rance
 
     possibleMoves: IMove[];
 
+    uctEvaluation: number;
+    uctIsDirty: boolean = true;
+
     constructor(battle: Battle, sideId: string, move?: IMove)
     {
       this.battle = battle;
@@ -94,6 +97,7 @@ module Rance
       }
 
       this.averageScore = this.totalScore / this.visits;
+      this.uctIsDirty = true;
 
       if (this.parent) this.parent.updateResult(result);
     }
@@ -125,6 +129,31 @@ module Rance
       this.wins = 0;
       this.averageScore = 0;
       this.totalScore = 0;
+    }
+    setUctForChildren()
+    {
+      for (var i = 0; i < this.children.length; i++)
+      {
+        var child = this.children[i];
+        if (!child.uctIsDirty) continue;
+
+        child.uctEvaluation = child.wins / child.visits +
+          Math.sqrt(2 * Math.log(this.visits) / child.visits);
+
+        child.uctIsDirty = false;
+      }
+    }
+    sortByUctFN(a: MCTreeNode, b: MCTreeNode)
+    {
+      return a.uctEvaluation - b.uctEvaluation;
+    }
+    getBestUctChild()
+    {
+      debugger;
+      this.setUctForChildren();
+      var sorted = this.children.sort(this.sortByUctFN);
+
+      return sorted[0];
     }
   }
 }

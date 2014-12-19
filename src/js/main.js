@@ -10068,6 +10068,7 @@ var Rance;
             this.wins = 0;
             this.totalScore = 0;
             this.averageScore = 0;
+            this.uctIsDirty = true;
             this.battle = battle;
             this.sideId = sideId;
             this.move = move;
@@ -10126,6 +10127,7 @@ var Rance;
             }
 
             this.averageScore = this.totalScore / this.visits;
+            this.uctIsDirty = true;
 
             if (this.parent)
                 this.parent.updateResult(result);
@@ -10151,7 +10153,30 @@ var Rance;
         };
         MCTreeNode.prototype.clearResult = function () {
             this.visits = 0;
+            this.wins = 0;
+            this.averageScore = 0;
             this.totalScore = 0;
+        };
+        MCTreeNode.prototype.setUctForChildren = function () {
+            for (var i = 0; i < this.children.length; i++) {
+                var child = this.children[i];
+                if (!child.uctIsDirty)
+                    continue;
+
+                child.uctEvaluation = child.wins / child.visits + Math.sqrt(2 * Math.log(this.visits) / child.visits);
+
+                child.uctIsDirty = false;
+            }
+        };
+        MCTreeNode.prototype.sortByUctFN = function (a, b) {
+            return a.uctEvaluation - b.uctEvaluation;
+        };
+        MCTreeNode.prototype.getBestUctChild = function () {
+            debugger;
+            this.setUctForChildren();
+            var sorted = this.children.sort(this.sortByUctFN);
+
+            return sorted[0];
         };
         return MCTreeNode;
     })();

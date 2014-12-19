@@ -1678,6 +1678,8 @@ declare module Rance {
         public totalScore: number;
         public averageScore: number;
         public possibleMoves: IMove[];
+        public uctEvaluation: number;
+        public uctIsDirty: boolean;
         constructor(battle: Rance.Battle, sideId: string, move?: IMove);
         public getPossibleMoves(): any[];
         public addChild(): MCTreeNode;
@@ -1685,6 +1687,9 @@ declare module Rance {
         public simulateOnce(battle: Rance.Battle): void;
         public simulateToEnd(): void;
         public clearResult(): void;
+        public setUctForChildren(): void;
+        public sortByUctFN(a: MCTreeNode, b: MCTreeNode): number;
+        public getBestUctChild(): MCTreeNode;
     }
 }
 declare module Rance {

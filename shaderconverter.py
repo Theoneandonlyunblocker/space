@@ -1,5 +1,13 @@
 import os
 
+def convertShader(file, filename):
+  converted.write("      export var " + filename[:-5] + " =\n");
+  converted.write("      [\n")
+  for line in file:
+    converted.write('        "' + line.rstrip() + '",\n')
+  converted.write("      ]\n")
+
+
 os.chdir("src/shaders")
 
 if not os.path.exists("converted"):
@@ -13,16 +21,6 @@ converted.write(
 "  export module ShaderSources\n"
 "  {\n"
 )
-
-def convertShader(file, filename):
-
-  converted.write("      export var " + filename[:-5] + " =\n");
-  converted.write("      [\n")
-  for line in file:
-    converted.write('        "' + line.rstrip() + '",\n')
-  converted.write("      ]\n")
-
-
 
 for filename in os.listdir("."):
   if filename.endswith(".glsl"):
