@@ -11,19 +11,23 @@ module Rance
   export class MCTreeNode
   {
     battle: Battle;
+    sideId: string;
 
     move: IMove;
     parent: MCTreeNode;
     children: MCTreeNode[] = [];
 
     visits: number = 0;
+    wins: number = 0;
     totalScore: number = 0;
+    averageScore: number = 0;
 
     possibleMoves: IMove[];
 
-    constructor(battle: Battle, move?: IMove)
+    constructor(battle: Battle, sideId: string, move?: IMove)
     {
       this.battle = battle;
+      this.sideId = sideId;
       this.move = move;
     }
 
@@ -69,7 +73,7 @@ module Rance
 
       battle.endTurn();
       
-      var child = new MCTreeNode(battle, move);
+      var child = new MCTreeNode(battle, this.sideId, move);
       child.parent = this;
       this.children.push(child);
 
@@ -79,6 +83,17 @@ module Rance
     {
       this.visits++;
       this.totalScore += result;
+
+      if (this.sideId === "side1")
+      {
+        if (result < 0) this.wins++;
+      }
+      if (this.sideId === "side2")
+      {
+        if (result > 0) this.wins++;
+      }
+
+      this.averageScore = this.totalScore / this.visits;
 
       if (this.parent) this.parent.updateResult(result);
     }
@@ -104,9 +119,12 @@ module Rance
 
       this.updateResult(battle.getEvaluation());
     }
-    getAverageResult()
+    clearResult()
     {
-      return this.totalScore / this.visits;
+      this.visits = 0;
+      this.wins = 0;
+      this.averageScore = 0;
+      this.totalScore = 0;
     }
   }
 }
