@@ -47,8 +47,7 @@ module Rance
         [
           Abilities.rangedAttack,
           Abilities.bombAttack,
-          Abilities.guardColumn,
-          Abilities.standBy
+          Abilities.guardColumn
         ]
       }
       export var fighterSquadron: TypeTemplate =
@@ -70,8 +69,7 @@ module Rance
         },
         abilities:
         [
-          Abilities.closeAttack,
-          Abilities.standBy
+          Abilities.closeAttack
         ]
       }
       export var bomberSquadron: TypeTemplate =
@@ -94,8 +92,7 @@ module Rance
         abilities:
         [
           Abilities.rangedAttack,
-          Abilities.bombAttack,
-          Abilities.standBy
+          Abilities.bombAttack
         ]
       }
       export var battleCruiser: TypeTemplate =
@@ -118,8 +115,7 @@ module Rance
         abilities:
         [
           Abilities.rangedAttack,
-          Abilities.wholeRowAttack,
-          Abilities.standBy
+          Abilities.wholeRowAttack
         ]
       }
       export var scout: TypeTemplate =
@@ -141,8 +137,7 @@ module Rance
         },
         abilities:
         [
-          Abilities.rangedAttack,
-          Abilities.standBy
+          Abilities.rangedAttack
         ]
       }
       export var shieldBoat: TypeTemplate =
@@ -165,8 +160,7 @@ module Rance
         abilities:
         [
           Abilities.guardColumn,
-          Abilities.rangedAttack,
-          Abilities.standBy
+          Abilities.rangedAttack
         ]
       }
     }
