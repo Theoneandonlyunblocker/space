@@ -267,8 +267,6 @@ module Rance
       this.layers["bgSprite"].removeChildren();
       this.layers["bgSprite"].addChild(sprite);
 
-      console.log("re-render shader")
-
       this.backgroundIsDirty = false;
     }
     renderBlurredNebula(x: number, y: number, width: number, height: number, seed?: any)
@@ -308,7 +306,6 @@ module Rance
     {
       if (!document.body.contains(this.pixiContainer))
       {
-        console.log("pause");
         this.pause();
         return;
       }
@@ -316,7 +313,6 @@ module Rance
       {
         if (this.forceFrame)
         {
-          console.log("force")
           this.forceFrame = false;
         }
         else

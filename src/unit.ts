@@ -305,8 +305,6 @@ module Rance
           break;
         }
       }
-
-      console.log(1-defensiveStat * defenceFactor)
       return 1 - defensiveStat * defenceFactor;
     }
     addToFleet(fleet: Fleet)

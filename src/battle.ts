@@ -38,7 +38,7 @@ module Rance
       side2: number;
     };
 
-    evaluation: //1: side1 win, 0: even, -1: side2 win
+    evaluation: //-1: side1 win, 0: even, 1: side2 win
     {
       [turnNumber: number]: number;
     } = {};
@@ -235,16 +235,11 @@ module Rance
     }
     getVictor()
     {
-      if (this.getTotalHealthForSide("side1").current <= 0)
-      {
-        return this.side2Player;
-      }
-      else if (this.getTotalHealthForSide("side2").current <= 0)
-      {
-        return this.side1Player;
-      }
+      var evaluation = this.getEvaluation();
 
-      return null;
+      if (evaluation < 0) return this.side1Player;
+      else if (evaluation > 0) return this.side2Player;
+      else return null;
     }
     getTotalHealthForColumn(position: number)
     {

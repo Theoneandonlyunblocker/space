@@ -3162,7 +3162,6 @@ var Rance;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
 
-                    console.log(baseDamage, damageIncrease, damage);
                     target.recieveDamage(damage, damageType);
                 }
             };
@@ -5710,13 +5709,14 @@ var Rance;
             Rance.eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
         };
         Battle.prototype.getVictor = function () {
-            if (this.getTotalHealthForSide("side1").current <= 0) {
-                return this.side2Player;
-            } else if (this.getTotalHealthForSide("side2").current <= 0) {
-                return this.side1Player;
-            }
+            var evaluation = this.getEvaluation();
 
-            return null;
+            if (evaluation < 0)
+                return this.side1Player;
+            else if (evaluation > 0)
+                return this.side2Player;
+            else
+                return null;
         };
         Battle.prototype.getTotalHealthForColumn = function (position) {
             var column = this.getColumnByPosition(position);
@@ -6428,8 +6428,6 @@ var Rance;
                     break;
                 }
             }
-
-            console.log(1 - defensiveStat * defenceFactor);
             return 1 - defensiveStat * defenceFactor;
         };
         Unit.prototype.addToFleet = function (fleet) {
@@ -9839,8 +9837,6 @@ var Rance;
             this.layers["bgSprite"].removeChildren();
             this.layers["bgSprite"].addChild(sprite);
 
-            console.log("re-render shader");
-
             this.backgroundIsDirty = false;
         };
         Renderer.prototype.renderBlurredNebula = function (x, y, width, height, seed) {
@@ -9874,13 +9870,11 @@ var Rance;
         };
         Renderer.prototype.render = function () {
             if (!document.body.contains(this.pixiContainer)) {
-                console.log("pause");
                 this.pause();
                 return;
             }
             if (this.isPaused) {
                 if (this.forceFrame) {
-                    console.log("force");
                     this.forceFrame = false;
                 } else {
                     return;
@@ -10068,11 +10062,14 @@ var Rance;
 var Rance;
 (function (Rance) {
     var MCTreeNode = (function () {
-        function MCTreeNode(battle, move) {
+        function MCTreeNode(battle, sideId, move) {
             this.children = [];
             this.visits = 0;
+            this.wins = 0;
             this.totalScore = 0;
+            this.averageScore = 0;
             this.battle = battle;
+            this.sideId = sideId;
             this.move = move;
         }
         MCTreeNode.prototype.getPossibleMoves = function () {
@@ -10109,7 +10106,7 @@ var Rance;
 
             battle.endTurn();
 
-            var child = new MCTreeNode(battle, move);
+            var child = new MCTreeNode(battle, this.sideId, move);
             child.parent = this;
             this.children.push(child);
 
@@ -10118,6 +10115,17 @@ var Rance;
         MCTreeNode.prototype.updateResult = function (result) {
             this.visits++;
             this.totalScore += result;
+
+            if (this.sideId === "side1") {
+                if (result < 0)
+                    this.wins++;
+            }
+            if (this.sideId === "side2") {
+                if (result > 0)
+                    this.wins++;
+            }
+
+            this.averageScore = this.totalScore / this.visits;
 
             if (this.parent)
                 this.parent.updateResult(result);
@@ -10141,8 +10149,9 @@ var Rance;
 
             this.updateResult(battle.getEvaluation());
         };
-        MCTreeNode.prototype.getAverageResult = function () {
-            return this.totalScore / this.visits;
+        MCTreeNode.prototype.clearResult = function () {
+            this.visits = 0;
+            this.totalScore = 0;
         };
         return MCTreeNode;
     })();

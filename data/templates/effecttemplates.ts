@@ -64,7 +64,6 @@ module Rance
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
 
-          console.log(baseDamage, damageIncrease, damage);
           target.recieveDamage(damage, damageType);
         }
       }

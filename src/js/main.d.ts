@@ -1669,19 +1669,22 @@ declare module Rance {
     }
     class MCTreeNode {
         public battle: Rance.Battle;
+        public sideId: string;
         public move: IMove;
         public parent: MCTreeNode;
         public children: MCTreeNode[];
         public visits: number;
+        public wins: number;
         public totalScore: number;
+        public averageScore: number;
         public possibleMoves: IMove[];
-        constructor(battle: Rance.Battle, move?: IMove);
+        constructor(battle: Rance.Battle, sideId: string, move?: IMove);
         public getPossibleMoves(): any[];
         public addChild(): MCTreeNode;
         public updateResult(result: number): void;
         public simulateOnce(battle: Rance.Battle): void;
         public simulateToEnd(): void;
-        public getAverageResult(): number;
+        public clearResult(): void;
     }
 }
 declare module Rance {
