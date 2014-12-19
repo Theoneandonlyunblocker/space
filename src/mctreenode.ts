@@ -17,7 +17,7 @@ module Rance
     children: MCTreeNode[] = [];
 
     visits: number = 0;
-    wins: number = 0;
+    totalScore: number = 0;
 
     possibleMoves: IMove[];
 
@@ -66,12 +66,47 @@ module Rance
 
       useAbility(battle, battle.activeUnit, move.ability,
         battle.unitsById[move.targetId]);
+
+      battle.endTurn();
       
       var child = new MCTreeNode(battle, move);
       child.parent = this;
       this.children.push(child);
 
       return child;
+    }
+    updateResult(result: number)
+    {
+      this.visits++;
+      this.totalScore += result;
+
+      if (this.parent) this.parent.updateResult(result);
+    }
+    simulateOnce(battle: Battle)
+    {
+      var actions = getTargetsForAllAbilities(battle, battle.activeUnit);
+      var targetId = getRandomKey(actions);
+      var action = getRandomArrayItem(actions[targetId]);
+
+      var target = battle.unitsById[targetId];
+
+      useAbility(battle, battle.activeUnit, action, target);
+      battle.endTurn();
+    }
+    simulateToEnd()
+    {
+      var battle = this.battle.makeVirtualClone();
+
+      while (!battle.ended)
+      {
+        this.simulateOnce(battle);
+      }
+
+      this.updateResult(battle.getEvaluation());
+    }
+    getAverageResult()
+    {
+      return this.totalScore / this.visits;
     }
   }
 }

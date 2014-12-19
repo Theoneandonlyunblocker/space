@@ -38,7 +38,7 @@ module Rance
       side2: number;
     };
 
-    evaluation:
+    evaluation: //1: side1 win, 0: even, -1: side2 win
     {
       [turnNumber: number]: number;
     } = {};
@@ -416,6 +416,7 @@ module Rance
             if (!side[i][j]) continue;
             clone.addUnitToTurnOrder(side[i][j]);
             clone.unitsById[side[i][j].id] = side[i][j];
+            clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
           }
         }
       });

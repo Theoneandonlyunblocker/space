@@ -11,10 +11,22 @@ module Rance
   {
     return Math.random() * (max - min) + min;
   }
-  export function getRandomArrayItem( target: any[] )
+  export function getRandomArrayItem(target: any[])
   {
     var _rnd = Math.floor(Math.random() * (target.length));
     return target[_rnd];
+  }
+  export function getRandomKey(target)
+  {
+    var _targetKeys = Object.keys(target);
+    var _rnd = Math.floor(Math.random() * (_targetKeys.length));
+    return _targetKeys[_rnd];
+  }
+
+  export function getRandomProperty(target)
+  {
+    var _rndProp = target[getRandomKey(target)];
+    return _rndProp;
   }
   export function getFrom2dArray(target: any[][], arr: number[][]): any[]
   {

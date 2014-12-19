@@ -281,6 +281,8 @@ declare module Rance {
     function randInt(min: any, max: any): number;
     function randRange(min: any, max: any): any;
     function getRandomArrayItem(target: any[]): any;
+    function getRandomKey(target: any): string;
+    function getRandomProperty(target: any): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
@@ -1671,11 +1673,15 @@ declare module Rance {
         public parent: MCTreeNode;
         public children: MCTreeNode[];
         public visits: number;
-        public wins: number;
+        public totalScore: number;
         public possibleMoves: IMove[];
         constructor(battle: Rance.Battle, move?: IMove);
-        public getpossibleMoves(): any[];
+        public getPossibleMoves(): any[];
         public addChild(): MCTreeNode;
+        public updateResult(result: number): void;
+        public simulateOnce(battle: Rance.Battle): void;
+        public simulateToEnd(): void;
+        public getAverageResult(): number;
     }
 }
 declare module Rance {

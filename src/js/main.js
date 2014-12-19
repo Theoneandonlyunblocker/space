@@ -2766,6 +2766,18 @@ var Rance;
         return target[_rnd];
     }
     Rance.getRandomArrayItem = getRandomArrayItem;
+    function getRandomKey(target) {
+        var _targetKeys = Object.keys(target);
+        var _rnd = Math.floor(Math.random() * (_targetKeys.length));
+        return _targetKeys[_rnd];
+    }
+    Rance.getRandomKey = getRandomKey;
+
+    function getRandomProperty(target) {
+        var _rndProp = target[getRandomKey(target)];
+        return _rndProp;
+    }
+    Rance.getRandomProperty = getRandomProperty;
     function getFrom2dArray(target, arr) {
         var result = [];
         for (var i = 0; i < arr.length; i++) {
@@ -3281,8 +3293,7 @@ var Rance;
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.bombAttack,
-                    Rance.Templates.Abilities.guardColumn,
-                    Rance.Templates.Abilities.standBy
+                    Rance.Templates.Abilities.guardColumn
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -3301,8 +3312,7 @@ var Rance;
                     speed: 1
                 },
                 abilities: [
-                    Rance.Templates.Abilities.closeAttack,
-                    Rance.Templates.Abilities.standBy
+                    Rance.Templates.Abilities.closeAttack
                 ]
             };
             ShipTypes.bomberSquadron = {
@@ -3322,8 +3332,7 @@ var Rance;
                 },
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.bombAttack,
-                    Rance.Templates.Abilities.standBy
+                    Rance.Templates.Abilities.bombAttack
                 ]
             };
             ShipTypes.battleCruiser = {
@@ -3343,8 +3352,7 @@ var Rance;
                 },
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.wholeRowAttack,
-                    Rance.Templates.Abilities.standBy
+                    Rance.Templates.Abilities.wholeRowAttack
                 ]
             };
             ShipTypes.scout = {
@@ -3363,8 +3371,7 @@ var Rance;
                     speed: 0.7
                 },
                 abilities: [
-                    Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.standBy
+                    Rance.Templates.Abilities.rangedAttack
                 ]
             };
             ShipTypes.shieldBoat = {
@@ -3384,8 +3391,7 @@ var Rance;
                 },
                 abilities: [
                     Rance.Templates.Abilities.guardColumn,
-                    Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.standBy
+                    Rance.Templates.Abilities.rangedAttack
                 ]
             };
         })(Templates.ShipTypes || (Templates.ShipTypes = {}));
@@ -5851,6 +5857,7 @@ var Rance;
                             continue;
                         clone.addUnitToTurnOrder(side[i][j]);
                         clone.unitsById[side[i][j].id] = side[i][j];
+                        clone.unitsBySide[side[i][j].battleStats.side].push(side[i][j]);
                     }
                 }
             });
@@ -10064,11 +10071,11 @@ var Rance;
         function MCTreeNode(battle, move) {
             this.children = [];
             this.visits = 0;
-            this.wins = 0;
+            this.totalScore = 0;
             this.battle = battle;
             this.move = move;
         }
-        MCTreeNode.prototype.getpossibleMoves = function () {
+        MCTreeNode.prototype.getPossibleMoves = function () {
             if (!this.battle.activeUnit) {
                 return null;
             }
@@ -10091,7 +10098,7 @@ var Rance;
         };
         MCTreeNode.prototype.addChild = function () {
             if (!this.possibleMoves) {
-                this.possibleMoves = this.getpossibleMoves();
+                this.possibleMoves = this.getPossibleMoves();
             }
 
             var move = this.possibleMoves.pop();
@@ -10100,11 +10107,42 @@ var Rance;
 
             Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
 
+            battle.endTurn();
+
             var child = new MCTreeNode(battle, move);
             child.parent = this;
             this.children.push(child);
 
             return child;
+        };
+        MCTreeNode.prototype.updateResult = function (result) {
+            this.visits++;
+            this.totalScore += result;
+
+            if (this.parent)
+                this.parent.updateResult(result);
+        };
+        MCTreeNode.prototype.simulateOnce = function (battle) {
+            var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+            var targetId = Rance.getRandomKey(actions);
+            var action = Rance.getRandomArrayItem(actions[targetId]);
+
+            var target = battle.unitsById[targetId];
+
+            Rance.useAbility(battle, battle.activeUnit, action, target);
+            battle.endTurn();
+        };
+        MCTreeNode.prototype.simulateToEnd = function () {
+            var battle = this.battle.makeVirtualClone();
+
+            while (!battle.ended) {
+                this.simulateOnce(battle);
+            }
+
+            this.updateResult(battle.getEvaluation());
+        };
+        MCTreeNode.prototype.getAverageResult = function () {
+            return this.totalScore / this.visits;
         };
         return MCTreeNode;
     })();
