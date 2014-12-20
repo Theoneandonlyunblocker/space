@@ -34,6 +34,7 @@ module Rance
               UIComponents.Battle(
               {
                 battle: this.props.battle,
+                humanPlayer: this.props.player,
                 renderer: this.props.renderer,
                 key: "battle"
               })

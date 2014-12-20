@@ -978,6 +978,8 @@ declare module Rance {
         public setActiveUnit(): void;
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
+        public getPlayerForSide(side: string): Rance.Player;
+        public getActivePlayer(): Rance.Player;
         public getColumnByPosition(position: number): any;
         public endBattle(): void;
         public finishBattle(): void;
@@ -1064,7 +1066,7 @@ declare module Rance {
             mid: Rance.Item;
             high: Rance.Item;
         };
-        constructor(template: Rance.Templates.TypeTemplate);
+        constructor(template: Rance.Templates.TypeTemplate, id?: number);
         public setValues(): void;
         public setBaseHealth(): void;
         public setActionPoints(): void;
@@ -1700,7 +1702,7 @@ declare module Rance {
         constructor(battle: Rance.Battle, sideId: string);
         public sortByWinRateFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
         public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
-        public evaluate(iterations: number): void;
+        public evaluate(iterations: number): Rance.MCTreeNode;
         public printToConsole(): void;
     }
 }

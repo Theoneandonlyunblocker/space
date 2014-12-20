@@ -61,6 +61,11 @@ module Rance
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
         this.resizeListener = window.addEventListener("resize", this.resize, false);
+
+        if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+        {
+          this.useAIAbility();
+        }
       },
       componentWillUnmount: function()
       {
@@ -140,6 +145,25 @@ module Rance
         useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
         this.clearHoveredUnit();
         this.props.battle.endTurn();
+
+        if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+        {
+          this.useAIAbility();
+        }
+      },
+      useAIAbility: function()
+      {
+        if (!this.props.battle.activeUnit) return;
+        
+        var tree = new MCTree(this.props.battle,
+          this.props.battle.activeUnit.battleStats.side);
+
+        var move = tree.evaluate(1000).move;
+
+        var target = this.props.battle.unitsById[move.targetId];
+
+        this.handleAbilityUse(move.ability, target);
+        console.log("used ability", move.ability.name, move.targetId)
       },
 
       finishBattle: function()

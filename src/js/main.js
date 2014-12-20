@@ -1041,6 +1041,10 @@ var Rance;
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
                 this.resizeListener = window.addEventListener("resize", this.resize, false);
+
+                if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
+                    this.useAIAbility();
+                }
             },
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.resizeListener);
@@ -1101,6 +1105,23 @@ var Rance;
                 Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
                 this.clearHoveredUnit();
                 this.props.battle.endTurn();
+
+                if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
+                    this.useAIAbility();
+                }
+            },
+            useAIAbility: function () {
+                if (!this.props.battle.activeUnit)
+                    return;
+
+                var tree = new Rance.MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
+
+                var move = tree.evaluate(1000).move;
+
+                var target = this.props.battle.unitsById[move.targetId];
+
+                this.handleAbilityUse(move.ability, target);
+                console.log("used ability", move.ability.name, move.targetId);
             },
             finishBattle: function () {
                 var battle = this.props.battle;
@@ -5674,6 +5695,22 @@ var Rance;
                 }
             }
         };
+        Battle.prototype.getPlayerForSide = function (side) {
+            if (side === "side1")
+                return this.side1Player;
+            else if (side === "side2")
+                return this.side2Player;
+            else
+                throw new Error("invalid side");
+        };
+        Battle.prototype.getActivePlayer = function () {
+            if (!this.activeUnit)
+                return null;
+
+            var side = this.activeUnit.battleStats.side;
+
+            return this.getPlayerForSide(side);
+        };
         Battle.prototype.getColumnByPosition = function (position) {
             var side = position <= 1 ? "side1" : "side2";
             var relativePosition = position % 2;
@@ -5763,7 +5800,7 @@ var Rance;
 
                     for (var i = 0; i < self.unitsBySide[side].length; i++) {
                         if (self.unitsBySide[side][i].currentStrength <= 0) {
-                            evaluation += 0.1 * sign;
+                            evaluation += 0.2 * sign;
                         }
                     }
 
@@ -6222,13 +6259,13 @@ var Rance;
     idGenerators.unit = idGenerators.unit || 0;
 
     var Unit = (function () {
-        function Unit(template) {
+        function Unit(template, id) {
             this.items = {
                 low: null,
                 mid: null,
                 high: null
             };
-            this.id = idGenerators.unit++;
+            this.id = isFinite(id) ? id : idGenerators.unit++;
 
             this.template = template;
             this.name = this.id + " " + template.typeName;
@@ -6492,9 +6529,8 @@ var Rance;
             return data;
         };
         Unit.prototype.makeVirtualClone = function () {
-            var clone = new Unit(this.template);
+            var clone = new Unit(this.template, this.id);
 
-            clone.id = this.id;
             clone.isSquadron = this.isSquadron;
 
             clone.maxStrength = this.maxStrength;
@@ -7011,6 +7047,7 @@ var Rance;
                     case "battle": {
                         elementsToRender.push(Rance.UIComponents.Battle({
                             battle: this.props.battle,
+                            humanPlayer: this.props.player,
                             renderer: this.props.renderer,
                             key: "battle"
                         }));
@@ -10248,9 +10285,13 @@ var Rance;
                 };
                 consoleRows.push(row);
             }
-            console.table(consoleRows);
+            var _ = window;
+
+            _.console.table(consoleRows);
 
             console.log(sortedMoves);
+
+            return best;
         };
         MCTree.prototype.printToConsole = function () {
         };

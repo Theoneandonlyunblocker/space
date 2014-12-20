@@ -54,9 +54,13 @@ module Rance
         }
         consoleRows.push(row);
       }
-      console.table(consoleRows);
+      var _ : any = window;
+
+      _.console.table(consoleRows);
 
       console.log(sortedMoves);
+
+      return best;
     }
     printToConsole()
     {

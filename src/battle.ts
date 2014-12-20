@@ -192,6 +192,20 @@ module Rance
         }
       }
     }
+    getPlayerForSide(side: string)
+    {
+      if (side === "side1") return this.side1Player;
+      else if (side === "side2") return this.side2Player;
+      else throw new Error("invalid side");
+    }
+    getActivePlayer()
+    {
+      if (!this.activeUnit) return null;
+
+      var side = this.activeUnit.battleStats.side;
+
+      return this.getPlayerForSide(side);
+    }
     getColumnByPosition(position: number)
     {
       var side = position <= 1 ? "side1" : "side2";
@@ -298,7 +312,7 @@ module Rance
           {
             if (self.unitsBySide[side][i].currentStrength <= 0)
             {
-              evaluation += 0.1 * sign;
+              evaluation += 0.2 * sign;
             }
           }
 

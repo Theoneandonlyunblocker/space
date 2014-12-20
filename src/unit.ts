@@ -64,9 +64,9 @@ module Rance
       high: null
     };
 
-    constructor(template: Templates.TypeTemplate)
+    constructor(template: Templates.TypeTemplate, id?: number)
     {
-      this.id = idGenerators.unit++;
+      this.id = isFinite(id) ? id : idGenerators.unit++;
 
       this.template = template;
       this.name = this.id + " " + template.typeName;
@@ -378,9 +378,8 @@ module Rance
     }
     makeVirtualClone()
     {
-      var clone = new Unit(this.template);
+      var clone = new Unit(this.template, this.id);
 
-      clone.id = this.id;
       clone.isSquadron = this.isSquadron;
 
       clone.maxStrength = this.maxStrength;
