@@ -1671,6 +1671,7 @@ declare module Rance {
         public battle: Rance.Battle;
         public sideId: string;
         public move: IMove;
+        public depth: number;
         public parent: MCTreeNode;
         public children: MCTreeNode[];
         public visits: number;
@@ -1687,45 +1688,18 @@ declare module Rance {
         public simulateOnce(battle: Rance.Battle): void;
         public simulateToEnd(): void;
         public clearResult(): void;
-        public setUctForChildren(): void;
+        public setUct(): void;
+        public getRecursiveChildren(): any[];
         public sortByUctFN(a: MCTreeNode, b: MCTreeNode): number;
-        public getBestUctChild(): MCTreeNode;
+        public getRecursiveBestUctChild(): any;
     }
 }
 declare module Rance {
-    class UnitState {
-        public id: number;
-        public maxStrength: number;
-        public currentStrength: number;
-        public maxActionPoints: number;
-        public currentActionPoints: number;
-        public attack: number;
-        public defence: number;
-        public intelligence: number;
-        public speed: number;
-        public moveDelay: number;
-        public side: string;
-        public position: number[];
-        public guardValue: number;
-        public guardCoverage: string;
-        public abilities: Rance.Templates.AbilityTemplate[];
-        public getAllAbilities: () => Rance.Templates.AbilityTemplate[];
-        constructor(unit: Rance.Unit);
-    }
-}
-declare module Rance {
-    class BattleState {
-        public side1: Rance.UnitState[][];
-        public side2: Rance.UnitState[][];
-        public activeUnit: Rance.UnitState;
-        public turnOrder: Rance.UnitState[];
-        public turnsLeft: number;
-        public side1StartHealth: number;
-        public side2StartHealth: number;
-        constructor(battle: Rance.Battle);
-        public initUnitStates(battle: Rance.Battle): {
-            [id: number]: Rance.UnitState;
-        };
+    class MCTree {
+        public rootNode: Rance.MCTreeNode;
+        constructor(battle: Rance.Battle, sideId: string);
+        public evaluate(iterations: number): void;
+        public printToConsole(): void;
     }
 }
 declare module Rance {

@@ -14,6 +14,7 @@ module Rance
     sideId: string;
 
     move: IMove;
+    depth: number = 0;
     parent: MCTreeNode;
     children: MCTreeNode[] = [];
 
@@ -78,6 +79,7 @@ module Rance
       
       var child = new MCTreeNode(battle, this.sideId, move);
       child.parent = this;
+      child.depth = this.depth + 1;
       this.children.push(child);
 
       return child;
@@ -130,28 +132,47 @@ module Rance
       this.averageScore = 0;
       this.totalScore = 0;
     }
-    setUctForChildren()
+    setUct()
     {
+      if (!parent)
+      {
+        this.uctEvaluation = -1;
+        this.uctIsDirty = false;
+        return;
+      }
+
+      this.uctEvaluation = this.wins / this.visits +
+        Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+
+      this.uctIsDirty = false;
+    }
+    getRecursiveChildren()
+    {
+      var children = [];
+
       for (var i = 0; i < this.children.length; i++)
       {
-        var child = this.children[i];
-        if (!child.uctIsDirty) continue;
-
-        child.uctEvaluation = child.wins / child.visits +
-          Math.sqrt(2 * Math.log(this.visits) / child.visits);
-
-        child.uctIsDirty = false;
+        children.push(this.children[i]);
+        children = children.concat(this.children[i].getRecursiveChildren());
       }
+
+      return children;
     }
     sortByUctFN(a: MCTreeNode, b: MCTreeNode)
     {
       return a.uctEvaluation - b.uctEvaluation;
     }
-    getBestUctChild()
+    getRecursiveBestUctChild()
     {
-      debugger;
-      this.setUctForChildren();
-      var sorted = this.children.sort(this.sortByUctFN);
+      if (!this.children || this.children.length < 1) return this;
+
+      var children = this.getRecursiveChildren();
+      for (var i = 0; i < children.length; i++)
+      {
+        children[i].setUct();
+      }
+
+      var sorted = children.sort(this.sortByUctFN);
 
       return sorted[0];
     }

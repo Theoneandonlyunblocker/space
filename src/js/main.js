@@ -10063,6 +10063,7 @@ var Rance;
 (function (Rance) {
     var MCTreeNode = (function () {
         function MCTreeNode(battle, sideId, move) {
+            this.depth = 0;
             this.children = [];
             this.visits = 0;
             this.wins = 0;
@@ -10109,6 +10110,7 @@ var Rance;
 
             var child = new MCTreeNode(battle, this.sideId, move);
             child.parent = this;
+            child.depth = this.depth + 1;
             this.children.push(child);
 
             return child;
@@ -10157,24 +10159,40 @@ var Rance;
             this.averageScore = 0;
             this.totalScore = 0;
         };
-        MCTreeNode.prototype.setUctForChildren = function () {
-            for (var i = 0; i < this.children.length; i++) {
-                var child = this.children[i];
-                if (!child.uctIsDirty)
-                    continue;
-
-                child.uctEvaluation = child.wins / child.visits + Math.sqrt(2 * Math.log(this.visits) / child.visits);
-
-                child.uctIsDirty = false;
+        MCTreeNode.prototype.setUct = function () {
+            if (!parent) {
+                this.uctEvaluation = -1;
+                this.uctIsDirty = false;
+                return;
             }
+
+            this.uctEvaluation = this.wins / this.visits + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+
+            this.uctIsDirty = false;
+        };
+        MCTreeNode.prototype.getRecursiveChildren = function () {
+            var children = [];
+
+            for (var i = 0; i < this.children.length; i++) {
+                children.push(this.children[i]);
+                children = children.concat(this.children[i].getRecursiveChildren());
+            }
+
+            return children;
         };
         MCTreeNode.prototype.sortByUctFN = function (a, b) {
             return a.uctEvaluation - b.uctEvaluation;
         };
-        MCTreeNode.prototype.getBestUctChild = function () {
-            debugger;
-            this.setUctForChildren();
-            var sorted = this.children.sort(this.sortByUctFN);
+        MCTreeNode.prototype.getRecursiveBestUctChild = function () {
+            if (!this.children || this.children.length < 1)
+                return this;
+
+            var children = this.getRecursiveChildren();
+            for (var i = 0; i < children.length; i++) {
+                children[i].setUct();
+            }
+
+            var sorted = children.sort(this.sortByUctFN);
 
             return sorted[0];
         };
@@ -10182,85 +10200,47 @@ var Rance;
     })();
     Rance.MCTreeNode = MCTreeNode;
 })(Rance || (Rance = {}));
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    var UnitState = (function () {
-        function UnitState(unit) {
-            this.abilities = [];
-            this.id = unit.id;
-
-            this.maxStrength = unit.maxStrength;
-            this.currentStrength = unit.currentStrength;
-
-            this.maxActionPoints = unit.maxActionPoints;
-            this.currentActionPoints = unit.battleStats.currentActionPoints;
-
-            this.attack = unit.attributes.attack;
-            this.defence = unit.attributes.defence;
-            this.intelligence = unit.attributes.intelligence;
-            this.speed = unit.attributes.speed;
-
-            this.moveDelay = unit.battleStats.moveDelay;
-            this.side = unit.battleStats.side;
-            this.position = unit.battleStats.position;
-
-            this.guardValue = unit.battleStats.guard.value;
-            this.guardCoverage = unit.battleStats.guard.coverage;
-
-            this.getAllAbilities = unit.getAllAbilities.bind(unit);
-        }
-        return UnitState;
-    })();
-    Rance.UnitState = UnitState;
-})(Rance || (Rance = {}));
+/// <reference path="mctreenode.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="unitstate.ts"/>
 var Rance;
 (function (Rance) {
-    var BattleState = (function () {
-        function BattleState(battle) {
-            var allUnits = this.initUnitStates(battle);
-
-            this.turnOrder = battle.turnOrder.map(function (unit) {
-                return allUnits[unit.id];
-            });
-            this.activeUnit = this.turnOrder[0];
-
-            this.turnsLeft = battle.turnsLeft;
-
-            this.side1StartHealth = battle.startHealth.side1;
-            this.side2StartHealth = battle.startHealth.side2;
+    var MCTree = (function () {
+        function MCTree(battle, sideId) {
+            var cloned = battle.makeVirtualClone();
+            this.rootNode = new Rance.MCTreeNode(cloned, sideId);
         }
-        BattleState.prototype.initUnitStates = function (battle) {
-            var self = this;
-            var allUnits = {};
-            ["side1", "side2"].forEach(function (side) {
-                self[side] = [];
-                for (var i = 0; i < battle[side].length; i++) {
-                    var battleColumn = battle[side][i];
-                    var selfColumn = [];
+        MCTree.prototype.evaluate = function (iterations) {
+            var root = this.rootNode;
+            for (var i = 0; i < iterations; i++) {
+                // select
+                var bestUct = root.getRecursiveBestUctChild();
 
-                    for (var j = 0; j < battleColumn.length; j++) {
-                        if (!battleColumn[j]) {
-                            selfColumn.push(null);
-                            continue;
-                        }
+                // expand if possible, else use selected
+                var toSimulateFrom;
 
-                        var unitState = new Rance.UnitState(battleColumn[j]);
-                        selfColumn.push(unitState);
-                        allUnits[unitState.id] = unitState;
-                    }
-
-                    self[side].push(selfColumn);
+                if (!bestUct.possibleMoves) {
+                    bestUct.possibleMoves = bestUct.getPossibleMoves();
                 }
-            });
 
-            return allUnits;
+                if (bestUct.possibleMoves.length > 0) {
+                    toSimulateFrom = bestUct.addChild();
+                } else {
+                    toSimulateFrom = bestUct;
+                }
+
+                // simulate & backpropagate
+                toSimulateFrom.simulateToEnd();
+            }
+
+            var sortedMoves = root.children.sort(root.sortByUctFN);
+
+            debugger;
         };
-        return BattleState;
+        MCTree.prototype.printToConsole = function () {
+        };
+        return MCTree;
     })();
-    Rance.BattleState = BattleState;
+    Rance.MCTree = MCTree;
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
@@ -10273,9 +10253,7 @@ var Rance;
 /// <reference path="game.ts"/>
 /// <reference path="loader.ts"/>
 /// <reference path="shadermanager.ts"/>
-/// <reference path="mctreenode.ts"/>
-/// <reference path="battlestate.ts"/>
-/// <reference path="unitstate.ts"/>
+/// <reference path="mctree.ts"/>
 var Rance;
 (function (Rance) {
     var App = (function () {

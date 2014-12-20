@@ -11,9 +11,7 @@
 
 /// <reference path="shadermanager.ts"/>
 
-/// <reference path="mctreenode.ts"/>
-/// <reference path="battlestate.ts"/>
-/// <reference path="unitstate.ts"/>
+/// <reference path="mctree.ts"/>
 
 module Rance
 {
