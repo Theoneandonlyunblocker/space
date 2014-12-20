@@ -10181,7 +10181,7 @@ var Rance;
             return children;
         };
         MCTreeNode.prototype.sortByUctFN = function (a, b) {
-            return a.uctEvaluation - b.uctEvaluation;
+            return b.uctEvaluation - a.uctEvaluation;
         };
         MCTreeNode.prototype.getRecursiveBestUctChild = function () {
             if (!this.children || this.children.length < 1)
@@ -10211,9 +10211,16 @@ var Rance;
         }
         MCTree.prototype.evaluate = function (iterations) {
             var root = this.rootNode;
+            root.possibleMoves = root.getPossibleMoves();
             for (var i = 0; i < iterations; i++) {
+                var bestUct;
+
                 // select
-                var bestUct = root.getRecursiveBestUctChild();
+                if (root.possibleMoves.length > 0) {
+                    bestUct = root;
+                } else {
+                    bestUct = root.getRecursiveBestUctChild();
+                }
 
                 // expand if possible, else use selected
                 var toSimulateFrom;
@@ -10234,7 +10241,9 @@ var Rance;
 
             var sortedMoves = root.children.sort(root.sortByUctFN);
 
-            debugger;
+            var best = sortedMoves[0];
+
+            console.log(best.move.ability.name, best.move.targetId);
         };
         MCTree.prototype.printToConsole = function () {
         };

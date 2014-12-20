@@ -160,7 +160,7 @@ module Rance
     }
     sortByUctFN(a: MCTreeNode, b: MCTreeNode)
     {
-      return a.uctEvaluation - b.uctEvaluation;
+      return b.uctEvaluation - a.uctEvaluation;
     }
     getRecursiveBestUctChild()
     {

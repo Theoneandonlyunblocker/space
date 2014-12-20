@@ -15,10 +15,19 @@ module Rance
     evaluate(iterations: number)
     {
       var root = this.rootNode;
+      root.possibleMoves = root.getPossibleMoves();
       for (var i = 0; i < iterations; i++)
       {
+        var bestUct: MCTreeNode;
         // select
-        var bestUct = root.getRecursiveBestUctChild();
+        if (root.possibleMoves.length > 0)
+        {
+          bestUct = root;
+        }
+        else
+        {
+          bestUct = root.getRecursiveBestUctChild();
+        }
 
         // expand if possible, else use selected
         var toSimulateFrom: MCTreeNode;
@@ -43,7 +52,9 @@ module Rance
 
       var sortedMoves = root.children.sort(root.sortByUctFN);
 
-      debugger;
+      var best = sortedMoves[0];
+
+      console.log(best.move.ability.name, best.move.targetId);
     }
     printToConsole()
     {
