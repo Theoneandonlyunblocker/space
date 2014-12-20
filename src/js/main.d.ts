@@ -1676,6 +1676,7 @@ declare module Rance {
         public children: MCTreeNode[];
         public visits: number;
         public wins: number;
+        public winRate: number;
         public totalScore: number;
         public averageScore: number;
         public possibleMoves: IMove[];
@@ -1689,8 +1690,7 @@ declare module Rance {
         public simulateToEnd(): void;
         public clearResult(): void;
         public setUct(): void;
-        public getRecursiveChildren(): any[];
-        public sortByUctFN(a: MCTreeNode, b: MCTreeNode): number;
+        public getHighestUctChild(): MCTreeNode;
         public getRecursiveBestUctChild(): any;
     }
 }
@@ -1698,6 +1698,8 @@ declare module Rance {
     class MCTree {
         public rootNode: Rance.MCTreeNode;
         constructor(battle: Rance.Battle, sideId: string);
+        public sortByWinRateFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
+        public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
         public evaluate(iterations: number): void;
         public printToConsole(): void;
     }

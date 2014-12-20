@@ -12,49 +12,51 @@ module Rance
       var cloned = battle.makeVirtualClone();
       this.rootNode = new MCTreeNode(cloned, sideId);
     }
+    sortByWinRateFN(a: MCTreeNode, b: MCTreeNode)
+    {
+      return b.winRate - a.winRate;
+    }
+    sortByScoreFN(a: MCTreeNode, b: MCTreeNode)
+    {
+      return b.averageScore - a.averageScore;
+    }
     evaluate(iterations: number)
     {
       var root = this.rootNode;
       root.possibleMoves = root.getPossibleMoves();
       for (var i = 0; i < iterations; i++)
       {
-        var bestUct: MCTreeNode;
-        // select
-        if (root.possibleMoves.length > 0)
-        {
-          bestUct = root;
-        }
-        else
-        {
-          bestUct = root.getRecursiveBestUctChild();
-        }
 
-        // expand if possible, else use selected
-        var toSimulateFrom: MCTreeNode;
+        // select & expand
+        var toSimulateFrom = root.getRecursiveBestUctChild();
 
-        if (!bestUct.possibleMoves)
-        {
-          bestUct.possibleMoves = bestUct.getPossibleMoves();
-        }
-
-        if (bestUct.possibleMoves.length > 0)
-        {
-          toSimulateFrom = bestUct.addChild();
-        }
-        else
-        {
-          toSimulateFrom = bestUct;
-        }
 
         // simulate & backpropagate
         toSimulateFrom.simulateToEnd();
       }
 
-      var sortedMoves = root.children.sort(root.sortByUctFN);
+      var sortedMoves = root.children.sort(this.sortByWinRateFN);
 
       var best = sortedMoves[0];
 
-      console.log(best.move.ability.name, best.move.targetId);
+      var consoleRows = [];
+      for (var i = 0; i < sortedMoves.length; i++)
+      {
+        var node = sortedMoves[i];
+        var row =
+        {
+          visits: node.visits,
+          uctEvaluation: node.uctEvaluation,
+          winRate: node.winRate,
+          averageScore: node.averageScore,
+          abilityName: node.move.ability.name,
+          targetId: node.move.targetId
+        }
+        consoleRows.push(row);
+      }
+      console.table(consoleRows);
+
+      console.log(sortedMoves);
     }
     printToConsole()
     {

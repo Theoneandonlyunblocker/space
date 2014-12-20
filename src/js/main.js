@@ -10067,6 +10067,7 @@ var Rance;
             this.children = [];
             this.visits = 0;
             this.wins = 0;
+            this.winRate = 0;
             this.totalScore = 0;
             this.averageScore = 0;
             this.uctIsDirty = true;
@@ -10129,6 +10130,7 @@ var Rance;
             }
 
             this.averageScore = this.totalScore / this.visits;
+            this.winRate = this.wins / this.visits;
             this.uctIsDirty = true;
 
             if (this.parent)
@@ -10170,31 +10172,34 @@ var Rance;
 
             this.uctIsDirty = false;
         };
-        MCTreeNode.prototype.getRecursiveChildren = function () {
-            var children = [];
-
+        MCTreeNode.prototype.getHighestUctChild = function () {
+            var highest = this.children[0];
             for (var i = 0; i < this.children.length; i++) {
-                children.push(this.children[i]);
-                children = children.concat(this.children[i].getRecursiveChildren());
+                var child = this.children[i];
+                if (child.uctIsDirty) {
+                    child.setUct();
+                }
+
+                if (child.uctEvaluation > highest.uctEvaluation) {
+                    highest = child;
+                }
             }
 
-            return children;
-        };
-        MCTreeNode.prototype.sortByUctFN = function (a, b) {
-            return b.uctEvaluation - a.uctEvaluation;
+            return highest;
         };
         MCTreeNode.prototype.getRecursiveBestUctChild = function () {
-            if (!this.children || this.children.length < 1)
-                return this;
-
-            var children = this.getRecursiveChildren();
-            for (var i = 0; i < children.length; i++) {
-                children[i].setUct();
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
             }
 
-            var sorted = children.sort(this.sortByUctFN);
-
-            return sorted[0];
+            // not fully expanded
+            if (this.possibleMoves && this.possibleMoves.length > 0) {
+                return this.addChild();
+            } else if (this.children.length > 0) {
+                return this.getHighestUctChild().getRecursiveBestUctChild();
+            } else {
+                return this;
+            }
         };
         return MCTreeNode;
     })();
@@ -10209,41 +10214,43 @@ var Rance;
             var cloned = battle.makeVirtualClone();
             this.rootNode = new Rance.MCTreeNode(cloned, sideId);
         }
+        MCTree.prototype.sortByWinRateFN = function (a, b) {
+            return b.winRate - a.winRate;
+        };
+        MCTree.prototype.sortByScoreFN = function (a, b) {
+            return b.averageScore - a.averageScore;
+        };
         MCTree.prototype.evaluate = function (iterations) {
             var root = this.rootNode;
             root.possibleMoves = root.getPossibleMoves();
             for (var i = 0; i < iterations; i++) {
-                var bestUct;
-
-                // select
-                if (root.possibleMoves.length > 0) {
-                    bestUct = root;
-                } else {
-                    bestUct = root.getRecursiveBestUctChild();
-                }
-
-                // expand if possible, else use selected
-                var toSimulateFrom;
-
-                if (!bestUct.possibleMoves) {
-                    bestUct.possibleMoves = bestUct.getPossibleMoves();
-                }
-
-                if (bestUct.possibleMoves.length > 0) {
-                    toSimulateFrom = bestUct.addChild();
-                } else {
-                    toSimulateFrom = bestUct;
-                }
+                // select & expand
+                var toSimulateFrom = root.getRecursiveBestUctChild();
 
                 // simulate & backpropagate
                 toSimulateFrom.simulateToEnd();
             }
 
-            var sortedMoves = root.children.sort(root.sortByUctFN);
+            var sortedMoves = root.children.sort(this.sortByWinRateFN);
 
             var best = sortedMoves[0];
 
-            console.log(best.move.ability.name, best.move.targetId);
+            var consoleRows = [];
+            for (var i = 0; i < sortedMoves.length; i++) {
+                var node = sortedMoves[i];
+                var row = {
+                    visits: node.visits,
+                    uctEvaluation: node.uctEvaluation,
+                    winRate: node.winRate,
+                    averageScore: node.averageScore,
+                    abilityName: node.move.ability.name,
+                    targetId: node.move.targetId
+                };
+                consoleRows.push(row);
+            }
+            console.table(consoleRows);
+
+            console.log(sortedMoves);
         };
         MCTree.prototype.printToConsole = function () {
         };

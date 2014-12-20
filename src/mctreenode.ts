@@ -20,6 +20,7 @@ module Rance
 
     visits: number = 0;
     wins: number = 0;
+    winRate: number = 0;
     totalScore: number = 0;
     averageScore: number = 0;
 
@@ -99,6 +100,7 @@ module Rance
       }
 
       this.averageScore = this.totalScore / this.visits;
+      this.winRate = this.wins / this.visits;
       this.uctIsDirty = true;
 
       if (this.parent) this.parent.updateResult(result);
@@ -146,35 +148,47 @@ module Rance
 
       this.uctIsDirty = false;
     }
-    getRecursiveChildren()
+    getHighestUctChild()
     {
-      var children = [];
-
+      var highest = this.children[0];
       for (var i = 0; i < this.children.length; i++)
       {
-        children.push(this.children[i]);
-        children = children.concat(this.children[i].getRecursiveChildren());
+        var child = this.children[i];
+        if (child.uctIsDirty)
+        {
+          child.setUct();
+        }
+
+        if (child.uctEvaluation > highest.uctEvaluation)
+        {
+          highest = child;
+        }
       }
 
-      return children;
-    }
-    sortByUctFN(a: MCTreeNode, b: MCTreeNode)
-    {
-      return b.uctEvaluation - a.uctEvaluation;
+      return highest;
     }
     getRecursiveBestUctChild()
     {
-      if (!this.children || this.children.length < 1) return this;
-
-      var children = this.getRecursiveChildren();
-      for (var i = 0; i < children.length; i++)
+      if (!this.possibleMoves)
       {
-        children[i].setUct();
+        this.possibleMoves = this.getPossibleMoves();
       }
 
-      var sorted = children.sort(this.sortByUctFN);
-
-      return sorted[0];
+      // not fully expanded
+      if (this.possibleMoves && this.possibleMoves.length > 0)
+      {
+        return this.addChild();
+      }
+      // expanded and not terminal
+      else if (this.children.length > 0)
+      {
+        return this.getHighestUctChild().getRecursiveBestUctChild();
+      }
+      // terminal
+      else
+      {
+        return this;
+      }
     }
   }
 }
