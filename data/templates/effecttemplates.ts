@@ -75,7 +75,13 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          target.removeStrength(100);
+          var baseDamage = 100;
+          var damageType = "magical";
+
+          var damageIncrease = user.getAttackDamageIncrease(damageType);
+          var damage = baseDamage * damageIncrease;
+
+          target.recieveDamage(damage, damageType);
         }
       }
 
@@ -87,7 +93,13 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          target.removeStrength(100);
+          var baseDamage = 100;
+          var damageType = "physical";
+
+          var damageIncrease = user.getAttackDamageIncrease(damageType);
+          var damage = baseDamage * damageIncrease;
+
+          target.recieveDamage(damage, damageType);
         }
       }
       export var guardColumn: IEffectTemplate =

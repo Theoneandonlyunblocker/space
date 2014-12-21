@@ -1087,7 +1087,7 @@ declare module Rance {
         public getAllAbilities(): Rance.Templates.AbilityTemplate[];
         public recieveDamage(amount: number, damageType: string): void;
         public getAttackDamageIncrease(damageType: string): number;
-        public getDamageReduction(damageType: string): number;
+        public getReducedDamageFactor(damageType: string): number;
         public addToFleet(fleet: Rance.Fleet): void;
         public removeFromFleet(): void;
         public die(): void;

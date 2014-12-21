@@ -256,7 +256,7 @@ module Rance
     }
     recieveDamage(amount: number, damageType: string)
     {
-      var damageReduction = this.getDamageReduction(damageType);
+      var damageReduction = this.getReducedDamageFactor(damageType);
 
       var adjustedDamage = amount * damageReduction;
 
@@ -284,18 +284,20 @@ module Rance
 
       return 1 + attackStat * attackFactor;
     }
-    getDamageReduction(damageType: string)
+    getReducedDamageFactor(damageType: string)
     {
       var defensiveStat, defenceFactor;
+      var finalDamageMultiplier = 1;
 
       switch (damageType)
       {
         case "physical":
         {
           defensiveStat = this.attributes.defence;
-          var guardAmount = Math.min(this.battleStats.guard.value, 100);
-          defensiveStat *= (1 + guardAmount / 100);
           defenceFactor = 0.08;
+
+          var guardAmount = Math.min(this.battleStats.guard.value, 100);
+          finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
           break;
         }
         case "magical":
@@ -305,7 +307,12 @@ module Rance
           break;
         }
       }
-      return 1 - defensiveStat * defenceFactor;
+
+      var damageReduction = defensiveStat * defenceFactor;
+      var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
+
+      if (this.fleet) console.log(finalDamageFactor)
+      return finalDamageFactor;
     }
     addToFleet(fleet: Fleet)
     {
@@ -341,7 +348,7 @@ module Rance
     {
       var location = this.fleet.location;
 
-      var baseHealFactor = 0.1;
+      var baseHealFactor = 0.05;
       var healingFactor =
         baseHealFactor + location.getHealingFactor(this.fleet.player);
 

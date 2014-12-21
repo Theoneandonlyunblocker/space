@@ -3192,7 +3192,13 @@ var Rance;
                 targetingFunction: Rance.targetRow,
                 targetRange: "all",
                 effect: function (user, target) {
-                    target.removeStrength(100);
+                    var baseDamage = 100;
+                    var damageType = "magical";
+
+                    var damageIncrease = user.getAttackDamageIncrease(damageType);
+                    var damage = baseDamage * damageIncrease;
+
+                    target.recieveDamage(damage, damageType);
                 }
             };
 
@@ -3202,7 +3208,13 @@ var Rance;
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all",
                 effect: function (user, target) {
-                    target.removeStrength(100);
+                    var baseDamage = 100;
+                    var damageType = "physical";
+
+                    var damageIncrease = user.getAttackDamageIncrease(damageType);
+                    var damage = baseDamage * damageIncrease;
+
+                    target.recieveDamage(damage, damageType);
                 }
             };
             Effects.guardColumn = {
@@ -3332,6 +3344,7 @@ var Rance;
                     speed: 1
                 },
                 abilities: [
+                    Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.closeAttack
                 ]
             };
@@ -6424,7 +6437,7 @@ var Rance;
             return abilities;
         };
         Unit.prototype.recieveDamage = function (amount, damageType) {
-            var damageReduction = this.getDamageReduction(damageType);
+            var damageReduction = this.getReducedDamageFactor(damageType);
 
             var adjustedDamage = amount * damageReduction;
 
@@ -6448,15 +6461,17 @@ var Rance;
 
             return 1 + attackStat * attackFactor;
         };
-        Unit.prototype.getDamageReduction = function (damageType) {
+        Unit.prototype.getReducedDamageFactor = function (damageType) {
             var defensiveStat, defenceFactor;
+            var finalDamageMultiplier = 1;
 
             switch (damageType) {
                 case "physical": {
                     defensiveStat = this.attributes.defence;
-                    var guardAmount = Math.min(this.battleStats.guard.value, 100);
-                    defensiveStat *= (1 + guardAmount / 100);
                     defenceFactor = 0.08;
+
+                    var guardAmount = Math.min(this.battleStats.guard.value, 100);
+                    finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
                     break;
                 }
                 case "magical": {
@@ -6465,7 +6480,13 @@ var Rance;
                     break;
                 }
             }
-            return 1 - defensiveStat * defenceFactor;
+
+            var damageReduction = defensiveStat * defenceFactor;
+            var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
+
+            if (this.fleet)
+                console.log(finalDamageFactor);
+            return finalDamageFactor;
         };
         Unit.prototype.addToFleet = function (fleet) {
             this.fleet = fleet;
@@ -6495,7 +6516,7 @@ var Rance;
         Unit.prototype.heal = function () {
             var location = this.fleet.location;
 
-            var baseHealFactor = 0.1;
+            var baseHealFactor = 0.05;
             var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
 
             var healAmount = this.maxStrength * healingFactor;
