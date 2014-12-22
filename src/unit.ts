@@ -311,7 +311,6 @@ module Rance
       var damageReduction = defensiveStat * defenceFactor;
       var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
 
-      if (this.fleet) console.log(finalDamageFactor)
       return finalDamageFactor;
     }
     addToFleet(fleet: Fleet)

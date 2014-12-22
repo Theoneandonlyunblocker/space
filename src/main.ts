@@ -115,7 +115,6 @@ module Rance
       this.mapRenderer = new MapRenderer(this.game.galaxyMap);
       this.mapRenderer.setParent(this.renderer.layers["map"]);
       this.mapRenderer.init();
-      this.mapRenderer.setMapMode("default");
     }
     initUI()
     {

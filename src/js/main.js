@@ -6484,8 +6484,6 @@ var Rance;
             var damageReduction = defensiveStat * defenceFactor;
             var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
 
-            if (this.fleet)
-                console.log(finalDamageFactor);
             return finalDamageFactor;
         };
         Unit.prototype.addToFleet = function (fleet) {
@@ -6954,14 +6952,12 @@ var Rance;
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noLines" }, "no borders"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "visible" }, "visible"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "visible" }, "visible"))));
             },
             componentDidMount: function () {
-                var mapRenderer = this.props.galaxyMap.mapRenderer;
-
                 this.props.renderer.isBattleBackground = false;
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
-                mapRenderer.setAllLayersAsDirty();
+                this.props.galaxyMap.mapRenderer.setMapMode("default");
 
                 this.props.renderer.resume();
 
@@ -8782,12 +8778,13 @@ var Rance;
                     { layer: this.layers["fleets"] }
                 ]
             };
-            this.mapModes["noLines"] = {
-                name: "noLines",
+            this.mapModes["noStatic"] = {
+                name: "noStatic",
                 layers: [
                     { layer: this.layers["starOwners"] },
-                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["ownerBorders"] },
                     { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fogOfWar"] },
                     { layer: this.layers["fleets"] }
                 ]
             };
@@ -10405,7 +10402,6 @@ var Rance;
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap);
             this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.init();
-            this.mapRenderer.setMapMode("default");
         };
         App.prototype.initUI = function () {
             var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));

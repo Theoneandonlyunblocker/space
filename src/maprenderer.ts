@@ -671,14 +671,15 @@ module Rance
           {layer: this.layers["fleets"]}
         ]
       }
-      this.mapModes["noLines"] =
+      this.mapModes["noStatic"] =
       {
-        name: "noLines",
+        name: "noStatic",
         layers:
         [
           {layer: this.layers["starOwners"]},
-          {layer: this.layers["starLinks"]},
+          {layer: this.layers["ownerBorders"]},
           {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fogOfWar"]},
           {layer: this.layers["fleets"]}
         ]
       }
