@@ -220,6 +220,7 @@ declare module PIXI
 		children: DisplayObject[];
 		width: number;
 		height: number;
+		cacheAsBitmap: any;
 		constructor();
 
 		addChild(child: DisplayObject): void;

@@ -518,7 +518,6 @@ progress::-webkit-progress-value {
   height: 100%;
   background-color: #168400;
   background: linear-gradient(to bottom, #168400 0%, #1fb700 25%, #126b00 50%, #168400 100%);
-  transition: width 1s;
 }
 .wounded {
   color: orange;
@@ -1331,8 +1330,6 @@ progress::-webkit-progress-value {
   }
 }
 .menu-unit-info {
-  display: flex;
-  flex: 2;
   border: 1px solid red;
 }
 .menu-unit-info-items-wrapper {
