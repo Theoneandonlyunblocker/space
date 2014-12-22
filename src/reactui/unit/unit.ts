@@ -45,6 +45,7 @@ module Rance
       render: function()
       {
         var unit = this.props.unit;
+        unit.uiDisplayIsDirty = false;
 
         var containerProps: any =
         {

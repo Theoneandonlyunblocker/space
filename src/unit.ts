@@ -64,6 +64,8 @@ module Rance
       high: null
     };
 
+    uiDisplayIsDirty: boolean = true;
+
     constructor(template: Templates.TypeTemplate, id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.unit++;
@@ -163,6 +165,8 @@ module Rance
       {
         this.currentStrength = this.maxStrength;
       }
+
+      this.uiDisplayIsDirty = true;
     }
     removeStrength(amount: number)
     {
@@ -173,6 +177,8 @@ module Rance
       }
 
       this.removeGuard(50);
+
+      this.uiDisplayIsDirty = true;
     }
     removeActionPoints(amount: any)
     {
@@ -188,6 +194,8 @@ module Rance
           this.battleStats.currentActionPoints = 0;
         }
       }
+
+      this.uiDisplayIsDirty = true;
     }
     addMoveDelay(amount: number)
     {
@@ -327,21 +335,29 @@ module Rance
 
       player.removeUnit(this);
       this.fleet.removeShip(this);
+
+      this.uiDisplayIsDirty = true;
     }
     removeGuard(amount: number)
     {
       this.battleStats.guard.value -= amount;
       if (this.battleStats.guard.value < 0) this.removeAllGuard();
+
+      this.uiDisplayIsDirty = true;
     }
     addGuard(amount: number, coverage: string)
     {
       this.battleStats.guard.value += amount;
       this.battleStats.guard.coverage = coverage;
+
+      this.uiDisplayIsDirty = true;
     }
     removeAllGuard()
     {
       this.battleStats.guard.value = 0;
       this.battleStats.guard.coverage = null;
+
+      this.uiDisplayIsDirty = true;
     }
     heal()
     {

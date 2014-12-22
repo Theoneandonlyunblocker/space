@@ -23,6 +23,7 @@ declare module TWEEN {
     onStart(callback: (object?: any) => void): Tween;
     onUpdate(callback: (object?: any) => void): Tween;
     onComplete(callback: (object?: any) => void): Tween;
+    onStop(callback: (object?: any) => void): Tween;
     update(time: number): boolean;
     repeat(times: number): Tween;
     yoyo(enable: boolean): Tween;

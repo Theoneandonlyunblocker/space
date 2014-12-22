@@ -1067,6 +1067,7 @@ declare module Rance {
             mid: Rance.Item;
             high: Rance.Item;
         };
+        public uiDisplayIsDirty: boolean;
         constructor(template: Rance.Templates.TypeTemplate, id?: number);
         public setValues(): void;
         public setBaseHealth(): void;

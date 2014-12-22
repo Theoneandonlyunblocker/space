@@ -10,12 +10,15 @@ module Rance
       {
         if (!this.props.unit && !newProps.unit) return false;
 
+        if (newProps.unit.uiDisplayIsDirty) return true;
+
         var targetedProps =
         {
           activeUnit: true,
           hoveredUnit: true,
           targetsInPotentialArea: true
         };
+
 
         for (var prop in newProps)
         {

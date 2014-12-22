@@ -25,7 +25,7 @@ var Rance;
             },
             componentWillReceiveProps: function (newProps) {
                 if (newProps.currentStrength !== this.props.currentStrength) {
-                    this.animateDisplayedStrength(newProps.currentStrength, 500);
+                    this.animateDisplayedStrength(newProps.currentStrength, 2000);
                 }
             },
             updateDisplayStrength: function (newAmount) {
@@ -50,13 +50,12 @@ var Rance;
                 }).to({
                     health: newAmount
                 }, time).onUpdate(function () {
-                    console.log(this.health);
                     self.setState({
                         displayedStrength: this.health
                     });
-                });
+                }).easing(TWEEN.Easing.Sinusoidal.Out);
 
-                tween.onComplete(function () {
+                tween.onStop(function () {
                     stopped = true;
                     TWEEN.remove(tween);
                 });
@@ -487,6 +486,7 @@ var Rance;
             },
             render: function () {
                 var unit = this.props.unit;
+                unit.uiDisplayIsDirty = false;
 
                 var containerProps = {
                     className: "unit-container",
@@ -623,6 +623,9 @@ var Rance;
             shouldComponentUpdate: function (newProps) {
                 if (!this.props.unit && !newProps.unit)
                     return false;
+
+                if (newProps.unit.uiDisplayIsDirty)
+                    return true;
 
                 var targetedProps = {
                     activeUnit: true,
@@ -1158,7 +1161,6 @@ var Rance;
                 }
             },
             useAIAbility: function () {
-                return;
                 if (!this.props.battle.activeUnit)
                     return;
 
@@ -6326,6 +6328,7 @@ var Rance;
                 mid: null,
                 high: null
             };
+            this.uiDisplayIsDirty = true;
             this.id = isFinite(id) ? id : idGenerators.unit++;
 
             this.template = template;
@@ -6409,6 +6412,8 @@ var Rance;
             if (this.currentStrength > this.maxStrength) {
                 this.currentStrength = this.maxStrength;
             }
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentStrength -= Math.round(amount);
@@ -6417,6 +6422,8 @@ var Rance;
             }
 
             this.removeGuard(50);
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeActionPoints = function (amount) {
             if (amount === "all") {
@@ -6427,6 +6434,8 @@ var Rance;
                     this.battleStats.currentActionPoints = 0;
                 }
             }
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.addMoveDelay = function (amount) {
             this.battleStats.moveDelay += amount;
@@ -6545,19 +6554,27 @@ var Rance;
 
             player.removeUnit(this);
             this.fleet.removeShip(this);
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeGuard = function (amount) {
             this.battleStats.guard.value -= amount;
             if (this.battleStats.guard.value < 0)
                 this.removeAllGuard();
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.addGuard = function (amount, coverage) {
             this.battleStats.guard.value += amount;
             this.battleStats.guard.coverage = coverage;
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeAllGuard = function () {
             this.battleStats.guard.value = 0;
             this.battleStats.guard.coverage = null;
+
+            this.uiDisplayIsDirty = true;
         };
         Unit.prototype.heal = function () {
             var location = this.fleet.location;

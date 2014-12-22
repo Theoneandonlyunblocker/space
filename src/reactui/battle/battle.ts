@@ -153,7 +153,6 @@ module Rance
       },
       useAIAbility: function()
       {
-        return;
         if (!this.props.battle.activeUnit) return;
         
         var tree = new MCTree(this.props.battle,
@@ -164,7 +163,7 @@ module Rance
         var target = this.props.battle.unitsById[move.targetId];
 
         this.handleAbilityUse(move.ability, target);
-        console.log("used ability", move.ability.name, move.targetId);
+        console.log("used ability", move.ability.name, move.targetId)
       },
 
       finishBattle: function()

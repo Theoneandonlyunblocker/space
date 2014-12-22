@@ -18,7 +18,7 @@ module Rance
       {
         if (newProps.currentStrength !== this.props.currentStrength)
         {
-          this.animateDisplayedStrength(newProps.currentStrength, 500);
+          this.animateDisplayedStrength(newProps.currentStrength, 2000);
         }
       },
       updateDisplayStrength: function(newAmount: number)
@@ -49,14 +49,13 @@ module Rance
           health: newAmount
         }, time).onUpdate(function()
         {
-          console.log(this.health);
           self.setState(
           {
             displayedStrength: this.health
           });
-        });
+        }).easing(TWEEN.Easing.Sinusoidal.Out);
 
-        tween.onComplete(function()
+        tween.onStop(function()
         {
           stopped = true;
           TWEEN.remove(tween);
