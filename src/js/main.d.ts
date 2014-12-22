@@ -1,4 +1,5 @@
 /// <reference path="../../lib/pixi.d.ts" />
+/// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="../../lib/clipper.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />

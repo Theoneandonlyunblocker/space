@@ -1,3 +1,5 @@
+/// <reference path="../../../lib/tween.js.d.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -29,28 +31,39 @@ module Rance
       animateDisplayedStrength: function(newAmount: number, time: number)
       {
         var self = this;
+        var stopped = false;
 
-        var animationDelay = 10;
-        var ticks = Math.round(time / animationDelay);
-        var difference = this.state.displayedStrength - newAmount;
-        var singleTick = difference / ticks;
-
-        this.animateDisplayedStrengthInterval = window.setInterval(function()
+        var animateTween = function()
         {
-          if (ticks <= 0)
-          {
-            window.clearInterval(self.animateDisplayedStrengthInterval);
-            return;
-          }
+          if (stopped) return;
 
-          var amountToSubstract = Math.min(difference, singleTick);
+          TWEEN.update();
+          requestAnimFrame(animateTween);
+        }
 
-          ticks--;
+        var tween = new TWEEN.Tween(
+        {
+          health: self.state.displayedStrength
+        }).to(
+        {
+          health: newAmount
+        }, time).onUpdate(function()
+        {
+          console.log(this.health);
           self.setState(
           {
-            displayedStrength: self.state.displayedStrength - amountToSubstract
+            displayedStrength: this.health
           });
-        }, animationDelay)
+        });
+
+        tween.onComplete(function()
+        {
+          stopped = true;
+          TWEEN.remove(tween);
+        });
+
+        tween.start();
+        animateTween();
 
       },
       makeSquadronInfo: function()
@@ -66,8 +79,6 @@ module Rance
         var text = this.makeStrengthText();
 
         var relativeHealth = this.state.displayedStrength / this.props.maxStrength;
-
-        console.log(relativeHealth)
 
         var bar = React.DOM.div(
         {
