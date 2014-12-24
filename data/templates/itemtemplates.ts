@@ -11,7 +11,7 @@ module Rance
 
       slot: string; // low, mid, high
 
-      abilities?: AbilityTemplate[];
+      ability?: AbilityTemplate;
       attributes?:
       {
         attack?: number;
@@ -28,7 +28,7 @@ module Rance
         displayName: "Test item",
         
         slot: "high",
-        abilities: [Abilities.bombAttack]
+        ability: Abilities.bombAttack
       }
       export var testItem2 =
       {
@@ -38,17 +38,9 @@ module Rance
         slot: "mid",
         attributes:
         {
-          attack: 1,
+          defence: -1,
           speed: 2
         }
-      }
-      export var testItem3 =
-      {
-        type: "testItem3",
-        displayName: "Test item3",
-        
-        slot: "low",
-        abilities: [Abilities.bombAttack]
       }
     }
   }

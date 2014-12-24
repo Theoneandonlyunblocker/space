@@ -21,6 +21,7 @@ module Rance
 
       makeCell: function(type: string)
       {
+        var unit = this.props.unit;
         var cellProps: any = {};
         cellProps.key = type;
         cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
@@ -37,6 +38,24 @@ module Rance
               currentStrength: this.props.currentStrength,
               isSquadron: true
             });
+
+            break;
+          }
+          case "attack":
+          case "defence":
+          case "intelligence":
+          case "speed":
+          {
+            cellContent = this.props[type];
+            
+            if (unit.attributes[type] < unit.baseAttributes[type])
+            {
+              cellProps.className += " lowered-stat"
+            }
+            else if (unit.attributes[type] > unit.baseAttributes[type])
+            {
+              cellProps.className += " raised-stat"
+            }
 
             break;
           }

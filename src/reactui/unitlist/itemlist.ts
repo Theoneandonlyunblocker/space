@@ -23,6 +23,8 @@ module Rance
             slot: item.template.slot,
             unitName: (item.unit ? item.unit.name : ""),
 
+            ability: item.template.ability ? item.template.ability.name : null,
+
             isReserved: Boolean(item.unit),
 
             makeClone: true,
@@ -31,6 +33,12 @@ module Rance
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd
           };
+
+          ["attack", "defence", "intelligence", "speed"].forEach(function(stat)
+          {
+            if (!item.template.attributes) data[stat] = null;
+            else data[stat] = item.template.attributes[stat] || null;
+          });
 
           rows.push(
           {
@@ -55,6 +63,31 @@ module Rance
             label: "Unit",
             key: "unitName",
             defualtOrder: "asc"
+          },
+          {
+            label: "Atk",
+            key: "attack",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Def",
+            key: "defence",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Int",
+            key: "intelligence",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Spd",
+            key: "speed",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Ability",
+            key: "ability",
+            defaultOrder: "desc"
           }
         ];
 

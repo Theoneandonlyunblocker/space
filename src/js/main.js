@@ -1338,7 +1338,8 @@ var Rance;
             componentDidMount: function () {
                 var self = this;
 
-                //this.handleSelectRow(this.props.sortedItems[0]);
+                this.handleSelectRow(this.props.sortedItems[0]);
+
                 this.getDOMNode().addEventListener("keydown", function (event) {
                     switch (event.keyCode) {
                         case 40: {
@@ -1437,9 +1438,8 @@ var Rance;
                 if (nextIndex < 0) {
                     nextIndex += this.props.sortedItems.length;
                 }
-                this.setState({
-                    selected: this.props.sortedItems[nextIndex]
-                });
+
+                this.handleSelectRow(this.props.sortedItems[nextIndex]);
             },
             render: function () {
                 var self = this;
@@ -1516,6 +1516,7 @@ var Rance;
                 this.props.onDragEnd();
             },
             makeCell: function (type) {
+                var unit = this.props.unit;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
@@ -1529,6 +1530,20 @@ var Rance;
                             currentStrength: this.props.currentStrength,
                             isSquadron: true
                         });
+
+                        break;
+                    }
+                    case "attack":
+                    case "defence":
+                    case "intelligence":
+                    case "speed": {
+                        cellContent = this.props[type];
+
+                        if (unit.attributes[type] < unit.baseAttributes[type]) {
+                            cellProps.className += " lowered-stat";
+                        } else if (unit.attributes[type] > unit.baseAttributes[type]) {
+                            cellProps.className += " raised-stat";
+                        }
 
                         break;
                     }
@@ -1768,6 +1783,7 @@ var Rance;
                         typeName: item.template.type,
                         slot: item.template.slot,
                         unitName: (item.unit ? item.unit.name : ""),
+                        ability: item.template.ability ? item.template.ability.name : null,
                         isReserved: Boolean(item.unit),
                         makeClone: true,
                         rowConstructor: Rance.UIComponents.ItemListItem,
@@ -1775,6 +1791,13 @@ var Rance;
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
                     };
+
+                    ["attack", "defence", "intelligence", "speed"].forEach(function (stat) {
+                        if (!item.template.attributes)
+                            data[stat] = null;
+                        else
+                            data[stat] = item.template.attributes[stat] || null;
+                    });
 
                     rows.push({
                         key: item.id,
@@ -1797,6 +1820,31 @@ var Rance;
                         label: "Unit",
                         key: "unitName",
                         defualtOrder: "asc"
+                    },
+                    {
+                        label: "Atk",
+                        key: "attack",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Def",
+                        key: "defence",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Int",
+                        key: "intelligence",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Spd",
+                        key: "speed",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Ability",
+                        key: "ability",
+                        defaultOrder: "desc"
                     }
                 ];
 
@@ -5283,22 +5331,16 @@ var Rance;
                 type: "testItem",
                 displayName: "Test item",
                 slot: "high",
-                abilities: [Rance.Templates.Abilities.bombAttack]
+                ability: Rance.Templates.Abilities.bombAttack
             };
             Items.testItem2 = {
                 type: "testItem2",
                 displayName: "Test item2",
                 slot: "mid",
                 attributes: {
-                    attack: 1,
+                    defence: -1,
                     speed: 2
                 }
-            };
-            Items.testItem3 = {
-                type: "testItem3",
-                displayName: "Test item3",
-                slot: "low",
-                abilities: [Rance.Templates.Abilities.bombAttack]
             };
         })(Templates.Items || (Templates.Items = {}));
         var Items = Templates.Items;
@@ -6387,7 +6429,7 @@ var Rance;
                     attributes[attribute] = 9;
             }
 
-            this.baseAttributes = attributes;
+            this.baseAttributes = Rance.cloneObject(attributes);
             this.attributes = attributes;
         };
         Unit.prototype.getBaseMoveDelay = function () {
@@ -6462,6 +6504,12 @@ var Rance;
 
             this.items[itemSlot] = item;
             item.unit = this;
+
+            if (item.template.attributes) {
+                for (var attribute in item.template.attributes) {
+                    this.attributes[attribute] += item.template.attributes[attribute];
+                }
+            }
         };
         Unit.prototype.removeItem = function (item) {
             var itemSlot = item.template.slot;
@@ -6469,6 +6517,13 @@ var Rance;
             if (this.items[itemSlot] === item) {
                 this.items[itemSlot] = null;
                 item.unit = null;
+
+                if (item.template.attributes) {
+                    for (var attribute in item.template.attributes) {
+                        this.attributes[attribute] -= item.template.attributes[attribute];
+                    }
+                }
+
                 return true;
             }
 
@@ -6486,9 +6541,9 @@ var Rance;
             var itemAbilities = [];
 
             for (var slot in this.items) {
-                if (!this.items[slot])
+                if (!this.items[slot] || !this.items[slot].template.ability)
                     continue;
-                itemAbilities = itemAbilities.concat(this.items[slot].template.abilities);
+                itemAbilities.push(this.items[slot].template.ability);
             }
 
             return itemAbilities;

@@ -133,7 +133,7 @@ module Rance
         if (attributes[attribute] > 9) attributes[attribute] = 9;
       }
 
-      this.baseAttributes = attributes;
+      this.baseAttributes = cloneObject(attributes);
       this.attributes = attributes;
     }
     getBaseMoveDelay()
@@ -226,6 +226,14 @@ module Rance
 
       this.items[itemSlot] = item;
       item.unit = this;
+
+      if (item.template.attributes)
+      {
+        for (var attribute in item.template.attributes)
+        {
+          this.attributes[attribute] += item.template.attributes[attribute];
+        }
+      }
     }
     removeItem(item: Item)
     {
@@ -235,6 +243,15 @@ module Rance
       {
         this.items[itemSlot] = null;
         item.unit = null;
+
+        if (item.template.attributes)
+        {
+          for (var attribute in item.template.attributes)
+          {
+            this.attributes[attribute] -= item.template.attributes[attribute];
+          }
+        }
+
         return true;
       }
 
@@ -256,8 +273,8 @@ module Rance
 
       for (var slot in this.items)
       {
-        if (!this.items[slot]) continue;
-        itemAbilities = itemAbilities.concat(this.items[slot].template.abilities);
+        if (!this.items[slot] || !this.items[slot].template.ability) continue;
+        itemAbilities.push(this.items[slot].template.ability);
       }
 
       return itemAbilities;

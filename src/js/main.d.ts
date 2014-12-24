@@ -855,7 +855,7 @@ declare module Rance {
             type: string;
             displayName: string;
             slot: string;
-            abilities?: Templates.AbilityTemplate[];
+            ability?: Templates.AbilityTemplate;
             attributes?: {
                 attack?: number;
                 defence?: number;
@@ -868,22 +868,16 @@ declare module Rance {
                 type: string;
                 displayName: string;
                 slot: string;
-                abilities: Templates.AbilityTemplate[];
+                ability: Templates.AbilityTemplate;
             };
             var testItem2: {
                 type: string;
                 displayName: string;
                 slot: string;
                 attributes: {
-                    attack: number;
+                    defence: number;
                     speed: number;
                 };
-            };
-            var testItem3: {
-                type: string;
-                displayName: string;
-                slot: string;
-                abilities: Templates.AbilityTemplate[];
             };
         }
     }

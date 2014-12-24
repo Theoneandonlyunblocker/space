@@ -598,6 +598,12 @@ progress::-webkit-progress-value {
 .unit-list .unit-list-strength {
   text-align: right;
 }
+.unit-list .lowered-stat {
+  color: red;
+}
+.unit-list .raised-stat {
+  color: green;
+}
 .unit-list .sort-icon {
   font-weight: 100;
   position: absolute;
