@@ -56,7 +56,7 @@ module Rance
       {
         var self = this;
 
-        //this.handleSelectRow(this.props.sortedItems[0]);
+        this.handleSelectRow(this.props.sortedItems[0]);
 
         this.getDOMNode().addEventListener("keydown", function(event)
         {
@@ -187,10 +187,8 @@ module Rance
         {
           nextIndex += this.props.sortedItems.length;
         }
-        this.setState(
-        {
-          selected: this.props.sortedItems[nextIndex]
-        });
+
+        this.handleSelectRow(this.props.sortedItems[nextIndex]);
       },
       render: function()
       {
