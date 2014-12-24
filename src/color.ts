@@ -276,7 +276,8 @@ module Rance
   {
     var hRanges =
     [
-      {min: 0, max: 150 / 360},
+      {min: 0, max: 90 / 360},
+      {min: 120 / 360, max: 150 / 360},
       {min: 180 / 360, max: 290 / 360},
       {min: 320 / 360, max: 1}
     ];
@@ -292,7 +293,7 @@ module Rance
     var hRanges =
     [
       {min: 0, max: 15 / 360},
-      {min: 80 / 360, max: 195 / 360},
+      {min: 100 / 360, max: 195 / 360},
       {min: 210 / 360, max: 1}
     ];
     return [randomSelectFromRanges(hRanges), 1, randRange(0.55, 0.65)];
@@ -422,30 +423,30 @@ module Rance
     var color;
     var hexColor;
     var genType;
-    if (Math.random() < 0.4)
+    if (Math.random() < 0.6)
     {
       color = makeRandomDeepColor();
       hexColor = hsvToHex.apply(null, color);
       genType = "deep"
     }
-    else if (Math.random() < 0.4)
-    {
-      color = makeRandomVibrantColor();
-      hexColor = hsvToHex.apply(null, color);
-      genType = "vibrant"
-    }
-    else if (Math.random() < 0.4)
+    else if (Math.random() < 0.25)
     {
       color = makeRandomLightColor();
       hexColor = hsvToHex.apply(null, color);
       genType = "light"
+    }
+    else if (Math.random() < 0.3)
+    {
+      color = makeRandomVibrantColor();
+      hexColor = hsvToHex.apply(null, color);
+      genType = "vibrant"
     }
     else
     {
       color = makeRandomColor(
       {
         s: [{min: 1, max: 1}],
-        l: [{min: 0.92, max: 1}]
+        l: [{min: 0.88, max: 1}]
       });
       hexColor = stringToHex(
         HUSL.toHex.apply(null, colorFromScalars(color)));
@@ -463,7 +464,7 @@ module Rance
     var huslColor = hexToHusl(mainColor);
     var hexColor;
 
-    if (huslColor[2] < 0.4 || Math.random() < 0.4)
+    if (huslColor[2] < 0.3 || Math.random() < 0.4)
     {
       var contrastingColor = makeContrastingColor(
       {
@@ -471,7 +472,7 @@ module Rance
         minDifference:
         {
           h: 30,
-          l: 40
+          l: 30
         },
         maxDifference:
         {

@@ -19,7 +19,7 @@ module Rance
     {
       var nebulaColorScheme = generateColorScheme();
 
-      var lightness = randRange(1, 1.2);
+      var lightness = randRange(1.1, 1.3);
 
       var nebulaUniforms =
       {

@@ -10,7 +10,7 @@ module Rance
       {
         if (!this.props.unit && !newProps.unit) return false;
 
-        if (newProps.unit.uiDisplayIsDirty) return true;
+        if (newProps.unit && newProps.unit.uiDisplayIsDirty) return true;
 
         var targetedProps =
         {

@@ -624,7 +624,7 @@ var Rance;
                 if (!this.props.unit && !newProps.unit)
                     return false;
 
-                if (newProps.unit.uiDisplayIsDirty)
+                if (newProps.unit && newProps.unit.uiDisplayIsDirty)
                     return true;
 
                 var targetedProps = {
@@ -4065,9 +4065,132 @@ var Rance;
     })();
     Rance.Star = Star;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    // todo: use a heap instead of this crap
+    var PriorityQueue = (function () {
+        function PriorityQueue() {
+            this.items = {};
+        }
+        PriorityQueue.prototype.isEmpty = function () {
+            if (Object.keys(this.items).length > 0)
+                return false;
+            else
+                return true;
+        };
+
+        PriorityQueue.prototype.push = function (priority, data) {
+            if (!this.items[priority]) {
+                this.items[priority] = [];
+            }
+
+            this.items[priority].push(data);
+        };
+        PriorityQueue.prototype.pop = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+
+            var toReturn = this.items[highestPriority].pop();
+            if (this.items[highestPriority].length < 1) {
+                delete this.items[highestPriority];
+            }
+            return toReturn;
+        };
+        PriorityQueue.prototype.peek = function () {
+            var highestPriority = Math.min.apply(null, Object.keys(this.items));
+            var toReturn = this.items[highestPriority][0];
+
+            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
+        };
+        return PriorityQueue;
+    })();
+    Rance.PriorityQueue = PriorityQueue;
+})(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+/// <reference path="priorityqueue.ts" />
+var Rance;
+(function (Rance) {
+    function backTrace(graph, target) {
+        var parent = graph[target.id];
+
+        if (!parent)
+            return [];
+
+        var path = [
+            {
+                star: target,
+                cost: parent.cost
+            }
+        ];
+
+        while (parent) {
+            path.push({
+                star: parent.star,
+                cost: parent.cost
+            });
+            parent = graph[parent.star.id];
+        }
+        path.reverse();
+        path[0].cost = null;
+
+        return path;
+    }
+    Rance.backTrace = backTrace;
+
+    function aStar(start, target) {
+        var frontier = new Rance.PriorityQueue();
+        frontier.push(0, start);
+
+        //var frontier = new EasyStar.PriorityQueue("p", 1);
+        //frontier.insert({p: 0, tile: start})
+        var cameFrom = {};
+        var costSoFar = {};
+        cameFrom[start.id] = null;
+        costSoFar[start.id] = 0;
+
+        while (!frontier.isEmpty()) {
+            var current = frontier.pop();
+
+            //var current = frontier.shiftHighestPriorityElement().tile;
+            if (current === target)
+                return { came: cameFrom, cost: costSoFar, queue: frontier };
+
+            var neighbors = current.getAllLinks();
+
+            for (var i = 0; i < neighbors.length; i++) {
+                var neigh = neighbors[i];
+                if (!neigh)
+                    continue;
+
+                var moveCost = 1;
+
+                var newCost = costSoFar[current.id] + moveCost;
+
+                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
+                    costSoFar[neigh.id] = newCost;
+
+                    // ^ done
+                    var dx = Math.abs(neigh.id[1] - target.id[1]);
+                    var dy = Math.abs(neigh.id[2] - target.id[2]);
+                    var priority = newCost;
+                    frontier.push(priority, neigh);
+
+                    //frontier.insert({p: priority, tile: neigh});
+                    cameFrom[neigh.id] = {
+                        star: current,
+                        cost: moveCost
+                    };
+                }
+            }
+        }
+
+        return null;
+    }
+    Rance.aStar = aStar;
+})(Rance || (Rance = {}));
 /// <reference path="player.ts" />
 /// <reference path="unit.ts" />
 /// <reference path="star.ts" />
+/// <reference path="pathfinding.ts"/>
 var Rance;
 (function (Rance) {
     var idGenerators = idGenerators || {};
@@ -4716,7 +4839,8 @@ var Rance;
 
     function makeRandomVibrantColor() {
         var hRanges = [
-            { min: 0, max: 150 / 360 },
+            { min: 0, max: 90 / 360 },
+            { min: 120 / 360, max: 150 / 360 },
             { min: 180 / 360, max: 290 / 360 },
             { min: 320 / 360, max: 1 }
         ];
@@ -4730,7 +4854,7 @@ var Rance;
         }
         var hRanges = [
             { min: 0, max: 15 / 360 },
-            { min: 80 / 360, max: 195 / 360 },
+            { min: 100 / 360, max: 195 / 360 },
             { min: 210 / 360, max: 1 }
         ];
         return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
@@ -4827,22 +4951,22 @@ var Rance;
         var color;
         var hexColor;
         var genType;
-        if (Math.random() < 0.4) {
+        if (Math.random() < 0.6) {
             color = makeRandomDeepColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "deep";
-        } else if (Math.random() < 0.4) {
-            color = makeRandomVibrantColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "vibrant";
-        } else if (Math.random() < 0.4) {
+        } else if (Math.random() < 0.25) {
             color = makeRandomLightColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "light";
+        } else if (Math.random() < 0.3) {
+            color = makeRandomVibrantColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "vibrant";
         } else {
             color = makeRandomColor({
                 s: [{ min: 1, max: 1 }],
-                l: [{ min: 0.92, max: 1 }]
+                l: [{ min: 0.88, max: 1 }]
             });
             hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
             genType = "husl";
@@ -4858,12 +4982,12 @@ var Rance;
         var huslColor = hexToHusl(mainColor);
         var hexColor;
 
-        if (huslColor[2] < 0.4 || Math.random() < 0.4) {
+        if (huslColor[2] < 0.3 || Math.random() < 0.4) {
             var contrastingColor = makeContrastingColor({
                 color: huslColor,
                 minDifference: {
                     h: 30,
-                    l: 40
+                    l: 30
                 },
                 maxDifference: {
                     h: 80
@@ -6187,134 +6311,11 @@ var Rance;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    // todo: use a heap instead of this crap
-    var PriorityQueue = (function () {
-        function PriorityQueue() {
-            this.items = {};
-        }
-        PriorityQueue.prototype.isEmpty = function () {
-            if (Object.keys(this.items).length > 0)
-                return false;
-            else
-                return true;
-        };
-
-        PriorityQueue.prototype.push = function (priority, data) {
-            if (!this.items[priority]) {
-                this.items[priority] = [];
-            }
-
-            this.items[priority].push(data);
-        };
-        PriorityQueue.prototype.pop = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-
-            var toReturn = this.items[highestPriority].pop();
-            if (this.items[highestPriority].length < 1) {
-                delete this.items[highestPriority];
-            }
-            return toReturn;
-        };
-        PriorityQueue.prototype.peek = function () {
-            var highestPriority = Math.min.apply(null, Object.keys(this.items));
-            var toReturn = this.items[highestPriority][0];
-
-            return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
-        };
-        return PriorityQueue;
-    })();
-    Rance.PriorityQueue = PriorityQueue;
-})(Rance || (Rance = {}));
-/// <reference path="star.ts" />
-/// <reference path="priorityqueue.ts" />
-var Rance;
-(function (Rance) {
-    function backTrace(graph, target) {
-        var parent = graph[target.id];
-
-        if (!parent)
-            return [];
-
-        var path = [
-            {
-                star: target,
-                cost: parent.cost
-            }
-        ];
-
-        while (parent) {
-            path.push({
-                star: parent.star,
-                cost: parent.cost
-            });
-            parent = graph[parent.star.id];
-        }
-        path.reverse();
-        path[0].cost = null;
-
-        return path;
-    }
-    Rance.backTrace = backTrace;
-
-    function aStar(start, target) {
-        var frontier = new Rance.PriorityQueue();
-        frontier.push(0, start);
-
-        //var frontier = new EasyStar.PriorityQueue("p", 1);
-        //frontier.insert({p: 0, tile: start})
-        var cameFrom = {};
-        var costSoFar = {};
-        cameFrom[start.id] = null;
-        costSoFar[start.id] = 0;
-
-        while (!frontier.isEmpty()) {
-            var current = frontier.pop();
-
-            //var current = frontier.shiftHighestPriorityElement().tile;
-            if (current === target)
-                return { came: cameFrom, cost: costSoFar, queue: frontier };
-
-            var neighbors = current.getAllLinks();
-
-            for (var i = 0; i < neighbors.length; i++) {
-                var neigh = neighbors[i];
-                if (!neigh)
-                    continue;
-
-                var moveCost = 1;
-
-                var newCost = costSoFar[current.id] + moveCost;
-
-                if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
-                    costSoFar[neigh.id] = newCost;
-
-                    // ^ done
-                    var dx = Math.abs(neigh.id[1] - target.id[1]);
-                    var dy = Math.abs(neigh.id[2] - target.id[2]);
-                    var priority = newCost;
-                    frontier.push(priority, neigh);
-
-                    //frontier.insert({p: priority, tile: neigh});
-                    cameFrom[neigh.id] = {
-                        star: current,
-                        cost: moveCost
-                    };
-                }
-            }
-        }
-
-        return null;
-    }
-    Rance.aStar = aStar;
-})(Rance || (Rance = {}));
 /// <reference path="../data/templates/typetemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="pathfinding.ts"/>
 /// <reference path="item.ts"/>
 var Rance;
 (function (Rance) {
@@ -7882,6 +7883,7 @@ var Rance;
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
 /// <reference path="utility.ts" />
+/// <reference path="pathfinding.ts"/>
 var Rance;
 (function (Rance) {
     var MapGen = (function () {
@@ -7918,6 +7920,7 @@ var Rance;
 
             this.triangulate();
             this.severArmLinks();
+            this.partiallyCutConnections(4);
 
             this.setPlayers();
             this.setDistanceFromStartLocations();
@@ -8302,6 +8305,51 @@ var Rance;
             }
 
             return furthestStar;
+        };
+        MapGen.prototype.partiallyCutConnections = function (minConnections) {
+            var points = this.getNonFillerPoints();
+            var cuts = 0;
+            var noCuts = 0;
+            var reverts = 0;
+
+            for (var i = 0; i < points.length; i++) {
+                var point = points[i];
+
+                var neighbors = point.getAllLinks();
+
+                if (neighbors.length < minConnections)
+                    continue;
+
+                for (var j = 0; j < neighbors.length; j++) {
+                    var neighbor = neighbors[j];
+                    var neighborLinks = neighbor.getAllLinks();
+
+                    //if (neighborLinks.length < minConnections) continue;
+                    var totalLinks = neighbors.length + neighborLinks.length;
+
+                    var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - point.distance);
+                    var minMultipleCutThreshhold = 0.15;
+                    while (cutThreshhold > 0) {
+                        if (Math.random() < cutThreshhold) {
+                            point.removeLink(neighbor);
+                            cuts++;
+
+                            var path = Rance.aStar(point, neighbor);
+
+                            if (!path) {
+                                point.addLink(neighbor);
+                                cuts--;
+                                reverts++;
+                            }
+                        } else
+                            noCuts++;
+
+                        cutThreshhold -= minMultipleCutThreshhold;
+                    }
+                }
+            }
+
+            console.log(cuts, noCuts, reverts);
         };
         return MapGen;
     })();
@@ -9727,7 +9775,7 @@ var Rance;
         ShaderManager.prototype.initNebula = function () {
             var nebulaColorScheme = Rance.generateColorScheme();
 
-            var lightness = Rance.randRange(1, 1.2);
+            var lightness = Rance.randRange(1.1, 1.3);
 
             var nebulaUniforms = {
                 baseColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.main) },
@@ -10194,6 +10242,8 @@ var Rance;
             this.battle = battle;
             this.sideId = sideId;
             this.move = move;
+
+            this.currentScore = battle.getEvaluation();
         }
         MCTreeNode.prototype.getPossibleMoves = function () {
             if (!this.battle.activeUnit) {
@@ -10362,6 +10412,7 @@ var Rance;
                     visits: node.visits,
                     uctEvaluation: node.uctEvaluation,
                     winRate: node.winRate,
+                    currentScore: node.currentScore,
                     averageScore: node.averageScore,
                     abilityName: node.move.ability.name,
                     targetId: node.move.targetId

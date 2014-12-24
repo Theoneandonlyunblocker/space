@@ -527,6 +527,29 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class PriorityQueue {
+        public items: {
+            [priority: number]: any[];
+        };
+        constructor();
+        public isEmpty(): boolean;
+        public push(priority: number, data: any): void;
+        public pop(): any;
+        public peek(): any[];
+    }
+}
+declare module Rance {
+    function backTrace(graph: any, target: Star): {
+        star: Star;
+        cost: any;
+    }[];
+    function aStar(start: Star, target: Star): {
+        came: any;
+        cost: any;
+        queue: PriorityQueue;
+    };
+}
+declare module Rance {
     class Fleet {
         public player: Rance.Player;
         public ships: Rance.Unit[];
@@ -1012,29 +1035,6 @@ declare module Rance {
     };
 }
 declare module Rance {
-    class PriorityQueue {
-        public items: {
-            [priority: number]: any[];
-        };
-        constructor();
-        public isEmpty(): boolean;
-        public push(priority: number, data: any): void;
-        public pop(): any;
-        public peek(): any[];
-    }
-}
-declare module Rance {
-    function backTrace(graph: any, target: Star): {
-        star: Star;
-        cost: any;
-    }[];
-    function aStar(start: Star, target: Star): {
-        came: any;
-        cost: any;
-        queue: PriorityQueue;
-    };
-}
-declare module Rance {
     class Unit {
         public template: Rance.Templates.TypeTemplate;
         public id: number;
@@ -1330,6 +1330,7 @@ declare module Rance {
         public getNonFillerPoints(): Rance.Star[];
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
         public getFurthestPointInRegion(region: any): Rance.Star;
+        public partiallyCutConnections(minConnections: number): void;
     }
 }
 declare module Rance {
@@ -1683,6 +1684,7 @@ declare module Rance {
         public winRate: number;
         public totalScore: number;
         public averageScore: number;
+        public currentScore: number;
         public possibleMoves: IMove[];
         public uctEvaluation: number;
         public uctIsDirty: boolean;
