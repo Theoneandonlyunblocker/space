@@ -17,5 +17,15 @@ module Rance
       this.id = idGenerators.item++;
       this.template = template;
     }
+
+    serialize()
+    {
+      var data: any = {};
+
+      data.id = this.id;
+      data.templateType = this.template.type;
+
+      return data;
+    }
   }
 }

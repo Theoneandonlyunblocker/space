@@ -5285,17 +5285,14 @@ var Rance;
                 slot: "high",
                 abilities: [Rance.Templates.Abilities.bombAttack]
             };
-            Items.testItemA = {
-                type: "testItemA",
-                displayName: "Test itemA",
-                slot: "high",
-                abilities: [Rance.Templates.Abilities.bombAttack]
-            };
             Items.testItem2 = {
                 type: "testItem2",
                 displayName: "Test item2",
                 slot: "mid",
-                abilities: [Rance.Templates.Abilities.bombAttack]
+                attributes: {
+                    attack: 1,
+                    speed: 2
+                }
             };
             Items.testItem3 = {
                 type: "testItem3",
@@ -5320,6 +5317,14 @@ var Rance;
             this.id = idGenerators.item++;
             this.template = template;
         }
+        Item.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.templateType = this.template.type;
+
+            return data;
+        };
         return Item;
     })();
     Rance.Item = Item;
@@ -6382,6 +6387,7 @@ var Rance;
                     attributes[attribute] = 9;
             }
 
+            this.baseAttributes = attributes;
             this.attributes = attributes;
         };
         Unit.prototype.getBaseMoveDelay = function () {
@@ -6600,7 +6606,7 @@ var Rance;
             data.currentMovePoints = this.currentMovePoints;
             data.maxMovePoints = this.maxMovePoints;
 
-            data.attributes = this.attributes;
+            data.baseAttributes = this.baseAttributes;
 
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;
@@ -6610,6 +6616,12 @@ var Rance;
             data.guard = this.battleStats.guard;
 
             data.fleetId = this.fleet.id;
+
+            data.items = {};
+            for (var slot in this.items) {
+                if (this.items[slot])
+                    data.items[slot] = this.items[slot].serialize();
+            }
 
             return data;
         };

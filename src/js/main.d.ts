@@ -855,16 +855,16 @@ declare module Rance {
             type: string;
             displayName: string;
             slot: string;
-            abilities: Templates.AbilityTemplate[];
+            abilities?: Templates.AbilityTemplate[];
+            attributes?: {
+                attack?: number;
+                defence?: number;
+                intelligence?: number;
+                speed?: number;
+            };
         }
         module Items {
             var testItem: {
-                type: string;
-                displayName: string;
-                slot: string;
-                abilities: Templates.AbilityTemplate[];
-            };
-            var testItemA: {
                 type: string;
                 displayName: string;
                 slot: string;
@@ -874,7 +874,10 @@ declare module Rance {
                 type: string;
                 displayName: string;
                 slot: string;
-                abilities: Templates.AbilityTemplate[];
+                attributes: {
+                    attack: number;
+                    speed: number;
+                };
             };
             var testItem3: {
                 type: string;
@@ -891,6 +894,7 @@ declare module Rance {
         public template: Rance.Templates.IItemTemplate;
         public unit: Rance.Unit;
         constructor(template: Rance.Templates.IItemTemplate);
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -1045,6 +1049,12 @@ declare module Rance {
         public currentMovePoints: number;
         public maxMovePoints: number;
         public maxActionPoints: number;
+        public baseAttributes: {
+            attack: number;
+            defence: number;
+            intelligence: number;
+            speed: number;
+        };
         public attributes: {
             attack: number;
             defence: number;

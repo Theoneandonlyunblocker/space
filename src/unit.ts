@@ -25,7 +25,15 @@ module Rance
     currentMovePoints: number;
     maxMovePoints: number;
 
-    maxActionPoints: number;    
+    maxActionPoints: number;
+
+    baseAttributes:
+    {
+      attack: number;
+      defence: number;
+      intelligence: number;
+      speed: number;
+    };
     
     attributes:
     {
@@ -125,6 +133,7 @@ module Rance
         if (attributes[attribute] > 9) attributes[attribute] = 9;
       }
 
+      this.baseAttributes = attributes;
       this.attributes = attributes;
     }
     getBaseMoveDelay()
@@ -384,7 +393,7 @@ module Rance
       data.currentMovePoints = this.currentMovePoints;
       data.maxMovePoints = this.maxMovePoints;
 
-      data.attributes = this.attributes;
+      data.baseAttributes = this.baseAttributes;
 
       data.battleStats = {};
       data.battleStats.moveDelay = this.battleStats.moveDelay;
@@ -394,6 +403,12 @@ module Rance
       data.guard = this.battleStats.guard;
 
       data.fleetId = this.fleet.id;
+
+      data.items = {};
+      for (var slot in this.items)
+      {
+        if (this.items[slot]) data.items[slot] = this.items[slot].serialize();
+      }
 
       return data;
     }
