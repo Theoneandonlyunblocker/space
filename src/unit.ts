@@ -4,7 +4,6 @@
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
-/// <reference path="pathfinding.ts"/>
 /// <reference path="item.ts"/>
 
 module Rance

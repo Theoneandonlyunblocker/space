@@ -1,6 +1,7 @@
 /// <reference path="player.ts" />
 /// <reference path="unit.ts" />
 /// <reference path="star.ts" />
+/// <reference path="pathfinding.ts"/>
 
 module Rance
 {

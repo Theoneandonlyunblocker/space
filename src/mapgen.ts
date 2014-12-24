@@ -6,6 +6,7 @@
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
 /// <reference path="utility.ts" />
+/// <reference path="pathfinding.ts"/>
 
 module Rance
 {
@@ -91,6 +92,7 @@ module Rance
 
       this.triangulate();
       this.severArmLinks();
+      this.partiallyCutConnections(4);
 
       this.setPlayers();
       this.setDistanceFromStartLocations();
@@ -553,6 +555,57 @@ module Rance
       }
 
       return furthestStar;
+    }
+    partiallyCutConnections(minConnections: number)
+    {
+      var points = this.getNonFillerPoints();
+      var cuts = 0;
+      var noCuts = 0;
+      var reverts = 0;
+
+      for (var i = 0; i < points.length; i++)
+      {
+        var point = points[i];
+
+        var neighbors = point.getAllLinks();
+
+        if (neighbors.length < minConnections) continue;
+
+        for (var j = 0; j < neighbors.length; j++)
+        {
+          var neighbor = neighbors[j];
+          var neighborLinks = neighbor.getAllLinks();
+
+          //if (neighborLinks.length < minConnections) continue;
+
+          var totalLinks = neighbors.length + neighborLinks.length;
+
+          var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - point.distance);
+          var minMultipleCutThreshhold = 0.15;
+          while (cutThreshhold > 0)
+          {
+            if (Math.random() < cutThreshhold)
+            {
+              point.removeLink(neighbor);
+              cuts++;
+
+              var path = aStar(point, neighbor);
+
+              if (!path) // left point inaccesible
+              {
+                point.addLink(neighbor);
+                cuts--;
+                reverts++;
+              }
+            }
+            else noCuts++;
+
+            cutThreshhold -= minMultipleCutThreshhold;
+          }
+        }
+      }
+
+      console.log(cuts, noCuts, reverts)
     }
   }
 }
