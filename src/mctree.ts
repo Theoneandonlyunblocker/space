@@ -48,6 +48,7 @@ module Rance
           visits: node.visits,
           uctEvaluation: node.uctEvaluation,
           winRate: node.winRate,
+          currentScore: node.currentScore,
           averageScore: node.averageScore,
           abilityName: node.move.ability.name,
           targetId: node.move.targetId

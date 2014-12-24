@@ -23,6 +23,7 @@ module Rance
     winRate: number = 0;
     totalScore: number = 0;
     averageScore: number = 0;
+    currentScore: number;
 
     possibleMoves: IMove[];
 
@@ -34,6 +35,8 @@ module Rance
       this.battle = battle;
       this.sideId = sideId;
       this.move = move;
+
+      this.currentScore = battle.getEvaluation();
     }
 
     getPossibleMoves()
