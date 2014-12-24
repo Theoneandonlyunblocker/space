@@ -69,7 +69,7 @@ module Rance
             UIComponents.UnitList(
             {
               units: this.props.battlePrep.availableUnits,
-              selectedUnits: this.props.battlePrep.alreadyPlaced,
+              reservedUnits: this.props.battlePrep.alreadyPlaced,
 
               isDraggable: true,
               onDragStart: this.handleDragStart,

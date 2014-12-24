@@ -36,7 +36,8 @@ module Rance
             rowConstructor: UIComponents.UnitListItem,
             makeClone: true,
 
-            isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
+            isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+            isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
 
             isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,

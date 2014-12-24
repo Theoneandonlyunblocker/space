@@ -245,8 +245,6 @@ module Rance
           item.data.key = item.key;
           item.data.activeColumns = self.state.columns;
           item.data.handleClick = self.handleSelectRow.bind(null, item);
-          item.data.isSelected =
-            (self.state.selected && self.state.selected.key === item.key);
           var row = item.data.rowConstructor(item.data);
 
           rows.push(

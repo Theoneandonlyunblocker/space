@@ -1486,7 +1486,6 @@ var Rance;
                     item.data.key = item.key;
                     item.data.activeColumns = self.state.columns;
                     item.data.handleClick = self.handleSelectRow.bind(null, item);
-                    item.data.isSelected = (self.state.selected && self.state.selected.key === item.key);
                     var row = item.data.rowConstructor(item.data);
 
                     rows.push(row);
@@ -1626,7 +1625,8 @@ var Rance;
                         speed: unit.attributes.speed,
                         rowConstructor: Rance.UIComponents.UnitListItem,
                         makeClone: true,
-                        isReserved: (this.props.selectedUnits && this.props.selectedUnits[unit.id]),
+                        isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+                        isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
@@ -1782,6 +1782,7 @@ var Rance;
                         item: item,
                         typeName: item.template.type,
                         slot: item.template.slot,
+                        unit: (item.unit ? item.unit : null),
                         unitName: (item.unit ? item.unit.name : ""),
                         ability: item.template.ability ? item.template.ability.name : null,
                         isReserved: Boolean(item.unit),
@@ -1850,7 +1851,8 @@ var Rance;
 
                 return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
                     listItems: rows,
-                    initialColumns: columns
+                    initialColumns: columns,
+                    onRowChange: this.props.onRowChange
                 })));
             }
         });
@@ -1988,6 +1990,9 @@ var Rance;
                 });
             },
             handleSelectRow: function (row) {
+                if (!row.data.unit)
+                    return;
+
                 this.setState({
                     selectedUnit: row.data.unit
                 });
@@ -2035,9 +2040,11 @@ var Rance;
                     items: player.items,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd
+                    onDragEnd: this.handleDragEnd,
+                    onRowChange: this.handleSelectRow
                 })), Rance.UIComponents.UnitList({
                     units: player.units,
+                    selectedUnit: this.state.selectedUnit,
                     isDraggable: false,
                     onRowChange: this.handleSelectRow
                 })));
@@ -2095,7 +2102,7 @@ var Rance;
 
                 return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({
                     units: this.props.battlePrep.availableUnits,
-                    selectedUnits: this.props.battlePrep.alreadyPlaced,
+                    reservedUnits: this.props.battlePrep.alreadyPlaced,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd

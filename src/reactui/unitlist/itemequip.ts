@@ -19,6 +19,8 @@ module Rance
       },
       handleSelectRow: function(row)
       {
+        if (!row.data.unit) return;
+
         this.setState(
         {
           selectedUnit: row.data.unit
@@ -85,13 +87,15 @@ module Rance
                 items: player.items,
                 isDraggable: true,
                 onDragStart: this.handleDragStart,
-                onDragEnd: this.handleDragEnd
+                onDragEnd: this.handleDragEnd,
+                onRowChange: this.handleSelectRow
               })
             ),
 
             UIComponents.UnitList(
             {
               units: player.units,
+              selectedUnit: this.state.selectedUnit,
               isDraggable: false,
               onRowChange: this.handleSelectRow
             })
