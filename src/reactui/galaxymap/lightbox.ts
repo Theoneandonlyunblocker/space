@@ -22,7 +22,12 @@ module Rance
                 className: "light-box-close",
                 onClick: this.props.handleClose
               }, "X"),
-              this.props.content
+              React.DOM.div(
+              {
+                className: "light-box-content"
+              },
+                this.props.content
+              )
             )
           )
         );

@@ -881,7 +881,6 @@ progress::-webkit-progress-value { background: #080; }
   {
     color: green;
   }
-  .sort-icons(900px);
 }
 
 
@@ -928,6 +927,11 @@ progress::-webkit-progress-value { background: #080; }
   .battle-fleet
   {
     flex: 1 2 auto;
+  }
+
+  .unit-list
+  {
+    .sort-icons(900px);
   }
 }
 
@@ -1053,6 +1057,75 @@ progress::-webkit-progress-value { background: #080; }
 .negative
 {
   color: @negative-color !important;
+}
+
+.top-menu
+{
+  position: absolute;
+  z-index: 1001;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
+}
+
+.top-menu-items
+{
+  display: inline-flex;
+  flex-flow: row;
+}
+
+.top-menu-items-button
+{
+  .button-style;
+  margin: 5px;
+}
+
+.light-box-wrapper
+{
+  position: fixed;
+  display: flex;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.light-box-container
+{
+  position: relative;
+  background-color: white;
+  max-width: 95%;
+  max-height: 95%;
+}
+
+.light-box-content
+{
+  overflow-y: auto;
+  padding: 0 25px;
+  margin: 25px 0;
+}
+
+.light-box-close
+{
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #444;
+  text-decoration: none;
+}
+.light-box-close:hover
+{
+  text-decoration: underline;
 }
 
 .fleet-selection-container
@@ -1503,6 +1576,7 @@ progress::-webkit-progress-value { background: #080; }
   .unit-list
   {
     border: 1px solid blue;
+    .sort-icons(1100px);
 
     .selected
     {
@@ -1523,7 +1597,7 @@ progress::-webkit-progress-value { background: #080; }
     display: flex;
     flex: 3;
 
-    .sort-icons(700px);
+    .sort-icons(1100px);
   }
 }
 

@@ -2260,7 +2260,9 @@ var Rance;
                 }, React.DOM.button({
                     className: "light-box-close",
                     onClick: this.props.handleClose
-                }, "X"), this.props.content)));
+                }, "X"), React.DOM.div({
+                    className: "light-box-content"
+                }, this.props.content))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
