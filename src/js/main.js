@@ -1338,7 +1338,9 @@ var Rance;
             componentDidMount: function () {
                 var self = this;
 
-                this.handleSelectRow(this.props.sortedItems[0]);
+                if (this.props.autoSelect) {
+                    this.handleSelectRow(this.props.sortedItems[0]);
+                }
 
                 this.getDOMNode().addEventListener("keydown", function (event) {
                     switch (event.keyCode) {
@@ -1687,7 +1689,8 @@ var Rance;
                 return (React.DOM.div({ className: "unit-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    onRowChange: this.props.onRowChange
+                    onRowChange: this.props.onRowChange,
+                    autoSelect: this.props.autoSelect
                 })));
             }
         });
@@ -2046,7 +2049,8 @@ var Rance;
                     units: player.units,
                     selectedUnit: this.state.selectedUnit,
                     isDraggable: false,
-                    onRowChange: this.handleSelectRow
+                    onRowChange: this.handleSelectRow,
+                    autoSelect: true
                 })));
             }
         });
@@ -2238,6 +2242,82 @@ var Rance;
                 return (React.DOM.div({
                     className: "popup-container"
                 }, toRender));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.LightBox = React.createClass({
+            displayName: "LightBox",
+            render: function () {
+                return (React.DOM.div({
+                    className: "light-box-wrapper"
+                }, React.DOM.div({
+                    className: "light-box-container"
+                }, React.DOM.button({
+                    className: "light-box-close",
+                    onClick: this.props.handleClose
+                }, "X"), this.props.content)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="lightbox.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.TopMenu = React.createClass({
+            displayName: "TopMenu",
+            getInitialState: function () {
+                return ({
+                    opened: null,
+                    lightBoxElement: null
+                });
+            },
+            handleEquipItems: function () {
+                if (this.state.opened === "equipItems") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "equipItems",
+                        lightBoxElement: this.makeLightBox("equipItems")
+                    });
+                }
+            },
+            closeLightBox: function () {
+                this.setState({
+                    opened: null,
+                    lightBoxElement: null
+                });
+            },
+            makeLightBox: function (type) {
+                switch (type) {
+                    case "equipItems": {
+                        return (Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.ItemEquip({
+                                player: this.props.player
+                            })
+                        }));
+                    }
+                    default: {
+                        return null;
+                    }
+                }
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "top-menu"
+                }, React.DOM.div({
+                    className: "top-menu-items"
+                }, React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleEquipItems
+                }, "Equip Items")), this.state.lightBoxElement));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -2816,6 +2896,7 @@ var Rance;
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             buildBuilding: function (rowItem) {
+                debugger;
                 var template = rowItem.data.template;
 
                 var building = new Rance.Building({
@@ -6983,6 +7064,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
@@ -7036,6 +7118,8 @@ var Rance;
                 }, Rance.UIComponents.TopBar({
                     player: this.props.player,
                     game: this.props.game
+                }), Rance.UIComponents.TopMenu({
+                    player: this.props.player
                 }), React.DOM.div({
                     className: "fleet-selection-container"
                 }, Rance.UIComponents.FleetSelection({

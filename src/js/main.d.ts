@@ -210,6 +210,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var LightBox: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopMenu: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopBar: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

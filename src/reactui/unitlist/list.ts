@@ -56,7 +56,10 @@ module Rance
       {
         var self = this;
 
-        this.handleSelectRow(this.props.sortedItems[0]);
+        if (this.props.autoSelect)
+        {
+          this.handleSelectRow(this.props.sortedItems[0]);
+        }
 
         this.getDOMNode().addEventListener("keydown", function(event)
         {

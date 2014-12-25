@@ -106,7 +106,8 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              onRowChange: this.props.onRowChange
+              onRowChange: this.props.onRowChange,
+              autoSelect: this.props.autoSelect
             })
           )
         );

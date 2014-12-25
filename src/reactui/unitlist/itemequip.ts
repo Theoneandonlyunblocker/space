@@ -97,7 +97,8 @@ module Rance
               units: player.units,
               selectedUnit: this.state.selectedUnit,
               isDraggable: false,
-              onRowChange: this.handleSelectRow
+              onRowChange: this.handleSelectRow,
+              autoSelect: true
             })
           )
         );

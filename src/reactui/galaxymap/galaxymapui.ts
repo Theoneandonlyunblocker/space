@@ -1,3 +1,4 @@
+/// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="fleetreorganization.ts"/>
@@ -70,6 +71,10 @@ module Rance
               {
                 player: this.props.player,
                 game: this.props.game
+              }),
+              UIComponents.TopMenu(
+              {
+                player: this.props.player
               }),
               React.DOM.div(
               {

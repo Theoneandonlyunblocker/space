@@ -28,6 +28,7 @@ module Rance
 
       buildBuilding: function(rowItem)
       {
+        debugger;
         var template = rowItem.data.template;
 
         var building = new Building(
