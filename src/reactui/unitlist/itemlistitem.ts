@@ -29,6 +29,10 @@ module Rance
           default:
           {
             cellContent = this.props[type];
+            if (isFinite(cellContent))
+            {
+              cellProps.className += " center-text"
+            }
 
             break;
           }

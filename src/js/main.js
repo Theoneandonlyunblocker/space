@@ -1751,6 +1751,9 @@ var Rance;
                 switch (type) {
                     default: {
                         cellContent = this.props[type];
+                        if (isFinite(cellContent)) {
+                            cellProps.className += " center-text";
+                        }
 
                         break;
                     }
@@ -5449,12 +5452,6 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (Items) {
-            Items.testItem = {
-                type: "testItem",
-                displayName: "Test item",
-                slot: "high",
-                ability: Rance.Templates.Abilities.bombAttack
-            };
             Items.testItem1 = {
                 type: "testItem1",
                 displayName: "Test item1",

@@ -1588,6 +1588,8 @@ progress::-webkit-progress-value { background: #080; }
 
   .unit-list
   {
+    flex: 1;
+    overflow-x: auto;
     border: 1px solid @ui-border-color1;
     .sort-icons(1100px);
 
@@ -1602,7 +1604,6 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: flex;
   flex-flow: column;
-  flex: 1;
   border: 1px solid @ui-border-color1;
 
   margin-right: 5px;
@@ -1611,7 +1612,6 @@ progress::-webkit-progress-value { background: #080; }
   {
     display: flex;
     flex: 3;
-    overflow-x: auto;
 
     .sort-icons(1100px);
 
@@ -1665,4 +1665,9 @@ progress::-webkit-progress-value { background: #080; }
   height: 100%;
   z-index: 400;
   background-color: rgba(0.2, 0.2, 0.2, 0.5);
+}
+
+.center-text
+{
+  text-align: center;
 }
