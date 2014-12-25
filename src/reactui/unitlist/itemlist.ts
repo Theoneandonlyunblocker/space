@@ -8,6 +8,20 @@ module Rance
     export var ItemList = React.createClass(
     {
       displayName: "ItemList",
+
+      getSlotIndex: function(slot: string)
+      {
+        if (slot === "high")
+        {
+          return 2;
+        }
+        else if (slot === "mid")
+        {
+          return 1;
+        }
+        else return 0;
+      },
+
       render: function()
       {
         var rows = [];
@@ -21,6 +35,7 @@ module Rance
             item: item,
             typeName: item.template.type,
             slot: item.template.slot,
+            slotIndex: this.getSlotIndex(item.template.slot),
             unit: item.unit ? item.unit : null,
             unitName: item.unit ? item.unit.name : "",
 
@@ -58,12 +73,13 @@ module Rance
           {
             label: "Slot",
             key: "slot",
-            defaultOrder: "asd"
+            propToSortBy: "slotIndex",
+            defaultOrder: "desc"
           },
           {
             label: "Unit",
             key: "unitName",
-            defualtOrder: "asc"
+            defaultOrder: "desc"
           },
           {
             label: "Atk",

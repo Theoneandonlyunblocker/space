@@ -1810,6 +1810,14 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ItemList = React.createClass({
             displayName: "ItemList",
+            getSlotIndex: function (slot) {
+                if (slot === "high") {
+                    return 2;
+                } else if (slot === "mid") {
+                    return 1;
+                } else
+                    return 0;
+            },
             render: function () {
                 var rows = [];
 
@@ -1820,6 +1828,7 @@ var Rance;
                         item: item,
                         typeName: item.template.type,
                         slot: item.template.slot,
+                        slotIndex: this.getSlotIndex(item.template.slot),
                         unit: item.unit ? item.unit : null,
                         unitName: item.unit ? item.unit.name : "",
                         ability: item.template.ability ? item.template.ability.name : "",
@@ -1853,12 +1862,13 @@ var Rance;
                     {
                         label: "Slot",
                         key: "slot",
-                        defaultOrder: "asd"
+                        propToSortBy: "slotIndex",
+                        defaultOrder: "desc"
                     },
                     {
                         label: "Unit",
                         key: "unitName",
-                        defualtOrder: "asc"
+                        defaultOrder: "desc"
                     },
                     {
                         label: "Atk",
