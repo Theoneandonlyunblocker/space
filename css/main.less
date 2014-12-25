@@ -33,6 +33,18 @@ table
   text-decoration: inherit;
 }
 
+.money-style
+{
+  color: @money-color;
+  
+  &::after
+  {
+    .fa("\f111");
+    margin-left: 0.25em;
+    color: @money-icon-color;
+  }
+}
+
 .horizontal-border(@top-width, @bottom-width)
 {
   border: 0px solid transparent;
@@ -172,6 +184,18 @@ table
   border-radius: 5px;
 }
 
+.civ-splitter-horizontal
+{
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+}
 
 progress 
 {
@@ -1552,26 +1576,12 @@ progress::-webkit-progress-value { background: #080; }
   .buildCost
   {
     text-align: right;
-    color: @money-color;
-  }
-  .buildCost::after
-  {
-    .fa("\f111");
-    margin-left: 0.25em;
-    color: @money-icon-color;
+    .money-style;
   }
 }
 .buildable-item::after
 {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-image: url("../img/listSeparator.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: 100% 2px;
+  .civ-splitter-horizontal;
 }
 .buildable-item:hover
 {
@@ -1586,7 +1596,7 @@ progress::-webkit-progress-value { background: #080; }
   height: 100%;
 
   color: @text-color;
-  background-color: darken(@bg-color, 0%);
+  background-color: @bg-color;
 
   .prevent-user-select;
 
@@ -1683,4 +1693,43 @@ progress::-webkit-progress-value { background: #080; }
 .center-text
 {
   text-align: center;
+}
+
+.economy-summary-list
+{
+  position: relative;
+  padding: 8px;
+  color: @text-color;
+  background-color: @bg-color;
+
+  .sort-icons(400px);
+
+  th
+  {
+    .horizontal-border(3px, 3px);
+  }
+
+  tbody :first-child::after
+  {
+    background-image: none;
+  }
+}
+
+.economy-summary-item::after
+{
+  .civ-splitter-horizontal;
+}
+
+.economy-summary-item
+{
+  td
+  {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+.economy-summary-income
+{
+  .money-style;
 }

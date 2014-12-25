@@ -1090,14 +1090,14 @@ var Rance;
 
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
-                this.resizeListener = window.addEventListener("resize", this.resize, false);
+                window.addEventListener("resize", this.resize, false);
 
                 if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                     this.useAIAbility();
                 }
             },
             componentWillUnmount: function () {
-                window.removeEventListener("resize", this.resizeListener);
+                window.removeEventListener("resize", this.resize);
                 this.props.renderer.removeRendererView();
             },
             clearHoveredUnit: function () {
@@ -2313,7 +2313,113 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.EconomySummaryItem = React.createClass({
+            displayName: "EconomySummaryItem",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "economy-summary-item-cell" + " economy-summary-" + type;
+
+                var cellContent;
+
+                switch (type) {
+                    default: {
+                        cellContent = this.props[type];
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                var rowProps = {
+                    className: "economy-summary-item",
+                    onClick: this.props.handleClick
+                };
+
+                if (this.props.isSelected) {
+                    rowProps.className += " selected";
+                }
+                ;
+
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../unitlist/list.ts"/>
+/// <reference path="economysummaryitem.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.EconomySummary = React.createClass({
+            displayName: "EconomySummary",
+            render: function () {
+                var rows = [];
+                var player = this.props.player;
+
+                for (var i = 0; i < player.controlledLocations.length; i++) {
+                    var star = player.controlledLocations[i];
+
+                    var data = {
+                        star: star,
+                        id: star.id,
+                        name: star.name,
+                        income: star.getIncome(),
+                        rowConstructor: Rance.UIComponents.EconomySummaryItem
+                    };
+
+                    rows.push({
+                        key: star.id,
+                        data: data
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Id",
+                        key: "id",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Income",
+                        key: "income",
+                        defaultOrder: "asc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "economy-summary-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
+/// <reference path="../unitlist/itemequip.ts"/>
+/// <reference path="economysummary.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -2335,6 +2441,16 @@ var Rance;
                     });
                 }
             },
+            handleEconomySummary: function () {
+                if (this.state.opened === "economySummary") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "economySummary",
+                        lightBoxElement: this.makeLightBox("economySummary")
+                    });
+                }
+            },
             closeLightBox: function () {
                 this.setState({
                     opened: null,
@@ -2351,6 +2467,14 @@ var Rance;
                             })
                         }));
                     }
+                    case "economySummary": {
+                        return (Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.EconomySummary({
+                                player: this.props.player
+                            })
+                        }));
+                    }
                     default: {
                         return null;
                     }
@@ -2362,6 +2486,9 @@ var Rance;
                 }, React.DOM.div({
                     className: "top-menu-items"
                 }, React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleEconomySummary
+                }, "Economy"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleEquipItems
                 }, "Equip")), this.state.lightBoxElement));
@@ -2943,7 +3070,6 @@ var Rance;
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             buildBuilding: function (rowItem) {
-                debugger;
                 var template = rowItem.data.template;
 
                 var building = new Rance.Building({

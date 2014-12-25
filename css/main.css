@@ -10,6 +10,18 @@ body {
 table {
   border-collapse: separate;
 }
+.money-style {
+  color: #ffeb00;
+}
+.money-style::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #f3c620;
+}
 /*
 .button-style-no-border
 {
@@ -80,6 +92,17 @@ table {
   cursor: default;
   color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+}
+.civ-splitter-horizontal {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
 }
 progress {
   color: #080;
@@ -1511,4 +1534,94 @@ progress::-webkit-progress-value {
 }
 .center-text {
   text-align: center;
+}
+.economy-summary-list {
+  position: relative;
+  padding: 8px;
+  color: #eeeeee;
+  background-color: #101c1b;
+}
+.economy-summary-list .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.economy-summary-list .sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 400px) {
+  .economy-summary-list .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 400px) {
+  .economy-summary-list .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .economy-summary-list .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .economy-summary-list .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+}
+.economy-summary-list th {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 3px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
+.economy-summary-list tbody :first-child::after {
+  background-image: none;
+}
+.economy-summary-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+}
+.economy-summary-item td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.economy-summary-income {
+  color: #ffeb00;
+}
+.economy-summary-income::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #f3c620;
 }

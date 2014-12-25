@@ -215,6 +215,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var EconomySummaryItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var EconomySummary: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopMenu: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

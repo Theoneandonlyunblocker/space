@@ -1,5 +1,9 @@
 /// <reference path="lightbox.ts"/>
 
+/// <reference path="../unitlist/itemequip.ts"/>
+/// <reference path="economysummary.ts"/>
+
+
 module Rance
 {
   export module UIComponents
@@ -32,6 +36,22 @@ module Rance
         }
       },
 
+      handleEconomySummary: function()
+      {
+        if (this.state.opened === "economySummary")
+        {
+          this.closeLightBox();
+        }
+        else
+        {
+          this.setState(
+          {
+            opened: "economySummary",
+            lightBoxElement: this.makeLightBox("economySummary")
+          });
+        }
+      },
+
       closeLightBox: function()
       {
         this.setState(
@@ -59,6 +79,19 @@ module Rance
               })
             );
           }
+          case "economySummary":
+          {
+            return(
+              UIComponents.LightBox(
+              {
+                handleClose: this.closeLightBox,
+                content: UIComponents.EconomySummary(
+                {
+                  player: this.props.player
+                })
+              })
+            );
+          }
           default:
           {
             return null;
@@ -77,6 +110,11 @@ module Rance
             {
               className: "top-menu-items"
             },
+              React.DOM.button(
+              {
+                className: "top-menu-items-button",
+                onClick: this.handleEconomySummary
+              }, "Economy"),
               React.DOM.button(
               {
                 className: "top-menu-items-button",
