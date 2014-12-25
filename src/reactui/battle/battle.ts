@@ -60,7 +60,7 @@ module Rance
 
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
-        this.resizeListener = window.addEventListener("resize", this.resize, false);
+        window.addEventListener("resize", this.resize, false);
 
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
@@ -69,7 +69,7 @@ module Rance
       },
       componentWillUnmount: function()
       {
-        window.removeEventListener("resize", this.resizeListener);
+        window.removeEventListener("resize", this.resize);
         this.props.renderer.removeRendererView();
       },
 
