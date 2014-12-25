@@ -937,7 +937,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .reserved
 {
-  background-color: average(@bg-color, #555);
+  background-color: grey;
 }
 
 .galaxy-map #pixi-container
@@ -1611,8 +1611,14 @@ progress::-webkit-progress-value { background: #080; }
   {
     display: flex;
     flex: 3;
+    overflow-x: auto;
 
     .sort-icons(1100px);
+
+    .reserved
+    {
+      background-color: average(@bg-color, green);
+    }
   }
 }
 

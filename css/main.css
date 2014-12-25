@@ -692,7 +692,7 @@ progress::-webkit-progress-value {
   }
 }
 .reserved {
-  background-color: #333938;
+  background-color: grey;
 }
 .galaxy-map #pixi-container {
   flex: 1;
@@ -1414,6 +1414,7 @@ progress::-webkit-progress-value {
 .item-equip-left .item-list {
   display: flex;
   flex: 3;
+  overflow-x: auto;
 }
 .item-equip-left .item-list .sort-icon {
   font-weight: 100;
@@ -1461,6 +1462,9 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
+}
+.item-equip-left .item-list .reserved {
+  background-color: #084e0e;
 }
 .menu-unit-info {
   border: 1px solid #c4e5fb;

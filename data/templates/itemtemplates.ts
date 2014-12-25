@@ -30,6 +30,19 @@ module Rance
         slot: "high",
         ability: Abilities.bombAttack
       }
+      export var testItem1 =
+      {
+        type: "testItem1",
+        displayName: "Test item1",
+        
+        slot: "high",
+        attributes:
+        {
+          defence: -1,
+          speed: 1
+        },
+        ability: Abilities.bombAttack
+      }
       export var testItem2 =
       {
         type: "testItem2",
@@ -40,6 +53,18 @@ module Rance
         {
           defence: -1,
           speed: 2
+        }
+      }
+      export var testItem3 =
+      {
+        type: "testItem3",
+        displayName: "Test item3",
+        
+        slot: "low",
+        attributes:
+        {
+          defence: 3,
+          speed: -2
         }
       }
     }

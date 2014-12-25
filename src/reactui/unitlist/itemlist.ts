@@ -24,7 +24,7 @@ module Rance
             unit: (item.unit ? item.unit : null),
             unitName: (item.unit ? item.unit.name : ""),
 
-            ability: item.template.ability ? item.template.ability.name : null,
+            ability: item.template.ability ? item.template.ability.name : "",
 
             isReserved: Boolean(item.unit),
 

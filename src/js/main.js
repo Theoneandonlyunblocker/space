@@ -1328,11 +1328,8 @@ var Rance;
                 return ({
                     columns: this.props.initialColumns,
                     selected: initialSelected,
-                    sortBy: {
-                        column: initialColumn,
-                        order: initialColumn.defaultOrder || "desc",
-                        currColumnIndex: this.props.initialColumns.indexOf(initialColumn)
-                    }
+                    selectedColumn: initialColumn,
+                    sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
                 });
             },
             componentDidMount: function () {
@@ -1358,24 +1355,53 @@ var Rance;
                     }
                 });
             },
+            makeInitialSortingOrder: function (columns, initialColumn) {
+                var initialIndex = columns.indexOf(initialColumn);
+                if (initialIndex < 0)
+                    throw new Error("Invalid column index");
+
+                var order = [initialColumn];
+
+                for (var i = 0; i < columns.length; i++) {
+                    if (!columns[i].order) {
+                        columns[i].order = columns[i].defaultOrder;
+                    }
+                    if (i !== initialIndex) {
+                        order.push(columns[i]);
+                    }
+                }
+
+                return order;
+            },
+            getNewSortingOrder: function (newColumn) {
+                var order = this.state.sortingOrder.slice(0);
+                var current = order.indexOf(newColumn);
+
+                if (current >= 0) {
+                    order.splice(current);
+                }
+
+                order.unshift(newColumn);
+
+                return order;
+            },
             handleSelectColumn: function (column) {
                 if (column.notSortable)
                     return;
-                var order;
-                if (this.state.sortBy.column.key === column.key) {
-                    // flips order
-                    order = this.state.sortBy.order === "desc" ? "asc" : "desc";
-                } else {
-                    order = column.defaultOrder;
+                function getReverseOrder(order) {
+                    return order === "desc" ? "asc" : "desc";
                 }
 
-                this.setState({
-                    sortBy: {
-                        column: column,
-                        order: order,
-                        currColumnIndex: this.state.columns.indexOf(column)
-                    }
-                });
+                if (this.state.selectedColumn.key === column.key) {
+                    column.order = getReverseOrder(column.order);
+                    this.forceUpdate();
+                } else {
+                    column.order = column.defaultOrder;
+                    this.setState({
+                        selectedColumn: column,
+                        sortingOrder: this.getNewSortingOrder(column)
+                    });
+                }
             },
             handleSelectRow: function (row) {
                 if (this.props.onRowChange)
@@ -1386,47 +1412,53 @@ var Rance;
                 });
             },
             sort: function () {
-                var self = this;
-                var selectedColumn = this.state.sortBy.column;
-
-                var initialPropToSortBy = selectedColumn.propToSortBy || selectedColumn.key;
-
                 var itemsToSort = this.props.listItems;
+                var columnsToTry = this.state.columns;
+                var sortOrder = this.state.sortingOrder;
+                var sortFunctions = {};
 
-                var defaultSortFN = function (a, b) {
-                    var propToSortBy = initialPropToSortBy;
-                    var nextIndex = self.state.sortBy.currColumnIndex;
+                function makeSortingFunction(column) {
+                    if (column.sortingFunction)
+                        return column.sortingFunction;
 
-                    for (var i = 0; i < self.state.columns.length; i++) {
-                        if (a.data[propToSortBy] === b.data[propToSortBy]) {
-                            nextIndex = (nextIndex + 1) % self.state.columns.length;
-                            var nextColumn = self.state.columns[nextIndex];
-                            propToSortBy = nextColumn.propToSortBy || nextColumn.key;
-                        } else {
-                            break;
+                    var propToSortBy = column.propToSortBy || column.key;
+
+                    return (function (a, b) {
+                        var a1 = a.data[propToSortBy];
+                        var b1 = b.data[propToSortBy];
+
+                        if (a1 > b1)
+                            return 1;
+                        else if (a1 < b1)
+                            return -1;
+                        else
+                            return 0;
+                    });
+                }
+
+                itemsToSort.sort(function (a, b) {
+                    var result = 0;
+                    for (var i = 0; i < sortOrder.length; i++) {
+                        var columnToSortBy = sortOrder[i];
+
+                        if (!sortFunctions[columnToSortBy.key]) {
+                            sortFunctions[columnToSortBy.key] = makeSortingFunction(columnToSortBy);
                         }
+                        var sortFunction = sortFunctions[columnToSortBy.key];
+
+                        result = sortFunction(a, b);
+
+                        if (columnToSortBy.order === "desc") {
+                            result *= -1;
+                        }
+
+                        if (result)
+                            return result;
                     }
 
-                    return a.data[propToSortBy] > b.data[propToSortBy] ? 1 : -1;
-                };
+                    return 0;
+                });
 
-                if (selectedColumn.sortingFunction) {
-                    itemsToSort.sort(function (a, b) {
-                        var sortFNResult = selectedColumn.sortingFunction(a, b);
-                        if (sortFNResult === 0) {
-                            sortFNResult = defaultSortFN(a, b);
-                        }
-                        return sortFNResult;
-                    });
-                } else {
-                    itemsToSort.sort(defaultSortFN);
-                }
-
-                if (this.state.sortBy.order === "desc") {
-                    itemsToSort.reverse();
-                }
-
-                //else if (this.state.sortBy.order !== "desc") throw new Error("Invalid sort parameter");
                 this.props.sortedItems = itemsToSort;
             },
             shiftSelection: function (amountToShift) {
@@ -1464,8 +1496,8 @@ var Rance;
                     if (!column.notSortable)
                         sortStatus = "sortable";
 
-                    if (self.state.sortBy.column && self.state.sortBy.column.key === column.key) {
-                        sortStatus += " sorted-" + self.state.sortBy.order;
+                    if (self.state.selectedColumn.key === column.key) {
+                        sortStatus += " sorted-" + column.order;
                     } else if (!column.notSortable)
                         sortStatus += " unsorted";
 
@@ -1787,7 +1819,7 @@ var Rance;
                         slot: item.template.slot,
                         unit: (item.unit ? item.unit : null),
                         unitName: (item.unit ? item.unit.name : ""),
-                        ability: item.template.ability ? item.template.ability.name : null,
+                        ability: item.template.ability ? item.template.ability.name : "",
                         isReserved: Boolean(item.unit),
                         makeClone: true,
                         rowConstructor: Rance.UIComponents.ItemListItem,
@@ -2319,7 +2351,7 @@ var Rance;
                 }, React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleEquipItems
-                }, "Equip Items")), this.state.lightBoxElement));
+                }, "Equip")), this.state.lightBoxElement));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -5423,6 +5455,16 @@ var Rance;
                 slot: "high",
                 ability: Rance.Templates.Abilities.bombAttack
             };
+            Items.testItem1 = {
+                type: "testItem1",
+                displayName: "Test item1",
+                slot: "high",
+                attributes: {
+                    defence: -1,
+                    speed: 1
+                },
+                ability: Rance.Templates.Abilities.bombAttack
+            };
             Items.testItem2 = {
                 type: "testItem2",
                 displayName: "Test item2",
@@ -5430,6 +5472,15 @@ var Rance;
                 attributes: {
                     defence: -1,
                     speed: 2
+                }
+            };
+            Items.testItem3 = {
+                type: "testItem3",
+                displayName: "Test item3",
+                slot: "low",
+                attributes: {
+                    defence: 3,
+                    speed: -2
                 }
             };
         })(Templates.Items || (Templates.Items = {}));

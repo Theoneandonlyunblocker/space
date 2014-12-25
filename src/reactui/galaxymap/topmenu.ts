@@ -81,7 +81,7 @@ module Rance
               {
                 className: "top-menu-items-button",
                 onClick: this.handleEquipItems
-              }, "Equip Items")
+              }, "Equip")
             ),
             this.state.lightBoxElement
           )
