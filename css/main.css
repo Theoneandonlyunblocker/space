@@ -692,7 +692,7 @@ progress::-webkit-progress-value {
   }
 }
 .reserved {
-  background-color: grey;
+  background-color: #333938;
 }
 .galaxy-map #pixi-container {
   flex: 1;
@@ -795,6 +795,12 @@ progress::-webkit-progress-value {
   z-index: 1001;
   top: 0;
   right: 0;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  border-width: 0 0 5px 5px;
+  background-color: #101c1b;
+  padding: 6px 10px;
   pointer-events: none;
 }
 .top-menu > * {
@@ -838,9 +844,12 @@ progress::-webkit-progress-value {
 }
 .light-box-container {
   position: relative;
-  background-color: white;
+  background-color: #0f283d;
   max-width: 95%;
   max-height: 95%;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
 }
 .light-box-content {
   overflow-y: auto;
@@ -997,7 +1006,7 @@ progress::-webkit-progress-value {
 .fleet-reorganization {
   display: inline-flex;
   flex-flow: column;
-  background-color: #0f283d;
+  background-color: #101c1b;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1034,6 +1043,7 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   border-bottom: 0;
   padding: 0 10px;
+  background-color: #0f283d;
 }
 .fleet-reorganization-subheader-fleet-name-left {
   text-align: right;
@@ -1064,7 +1074,7 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex: 1;
   min-width: 260px;
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 300px;
 }
 .fleet-reorganization-contents-divider {
@@ -1331,6 +1341,8 @@ progress::-webkit-progress-value {
   flex-flow: row;
   width: 100%;
   height: 100%;
+  color: #eeeeee;
+  background-color: #101c1b;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -1340,7 +1352,7 @@ progress::-webkit-progress-value {
   user-select: none;
 }
 .item-equip .unit-list {
-  border: 1px solid blue;
+  border: 1px solid #c4e5fb;
 }
 .item-equip .unit-list .sort-icon {
   font-weight: 100;
@@ -1390,13 +1402,14 @@ progress::-webkit-progress-value {
   }
 }
 .item-equip .unit-list .selected {
-  background-color: yellow;
+  background-color: #888e0e;
 }
 .item-equip-left {
   display: flex;
   flex-flow: column;
   flex: 1;
-  border: 1px solid black;
+  border: 1px solid #c4e5fb;
+  margin-right: 5px;
 }
 .item-equip-left .item-list {
   display: flex;
@@ -1450,18 +1463,18 @@ progress::-webkit-progress-value {
   }
 }
 .menu-unit-info {
-  border: 1px solid red;
+  border: 1px solid #c4e5fb;
+  margin-bottom: 5px;
 }
 .menu-unit-info-items-wrapper {
   display: flex;
   flex-flow: row;
-  border: 1px solid blue;
 }
 .unit-item-wrapper {
   position: relative;
   width: 50px;
   height: 50px;
-  border: 1px solid black;
+  border: 1px solid #77abce;
   margin: 5px;
 }
 .unit-item-wrapper > * {

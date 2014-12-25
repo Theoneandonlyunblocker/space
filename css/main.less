@@ -937,7 +937,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .reserved
 {
-  background-color: grey;
+  background-color: average(@bg-color, #555);
 }
 
 .galaxy-map #pixi-container
@@ -1065,6 +1065,13 @@ progress::-webkit-progress-value { background: #080; }
   z-index: 1001;
   top: 0;
   right: 0;
+
+  .full-border(5px);
+
+  border-width: 0 0 5px 5px;
+  background-color: @bg-color;
+  padding: 6px 10px;
+
   pointer-events: none;
   >*
   {
@@ -1103,9 +1110,11 @@ progress::-webkit-progress-value { background: #080; }
 .light-box-container
 {
   position: relative;
-  background-color: white;
+  background-color: @bg-color2;
   max-width: 95%;
   max-height: 95%;
+
+  .full-border(5px);
 }
 
 .light-box-content
@@ -1284,7 +1293,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: inline-flex;
   flex-flow: column;
-  background-color: @bg-color2;
+  background-color: @bg-color;
 
   .full-border(5px);
 
@@ -1312,6 +1321,7 @@ progress::-webkit-progress-value { background: #080; }
   border: 1px solid @ui-border-color1;
   border-bottom: 0;
   padding: 0 10px;
+  background-color: @bg-color2;
 }
 .fleet-reorganization-subheader-fleet-name-left
 {
@@ -1341,7 +1351,7 @@ progress::-webkit-progress-value { background: #080; }
     display: inline-flex;
     flex: 1;
     min-width: 260px;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 300px;
   }
 }
@@ -1571,16 +1581,19 @@ progress::-webkit-progress-value { background: #080; }
   width: 100%;
   height: 100%;
 
+  color: @text-color;
+  background-color: darken(@bg-color, 0%);
+
   .prevent-user-select;
 
   .unit-list
   {
-    border: 1px solid blue;
+    border: 1px solid @ui-border-color1;
     .sort-icons(1100px);
 
     .selected
     {
-      background-color: yellow;
+      background-color: average(@bg-color, yellow);
     }
   }
 }
@@ -1590,7 +1603,9 @@ progress::-webkit-progress-value { background: #080; }
   display: flex;
   flex-flow: column;
   flex: 1;
-  border: 1px solid black;
+  border: 1px solid @ui-border-color1;
+
+  margin-right: 5px;
 
   .item-list
   {
@@ -1605,14 +1620,14 @@ progress::-webkit-progress-value { background: #080; }
 {
   //display: flex;
   //flex: 2;
-  border: 1px solid red;
+  border: 1px solid @ui-border-color1;
+  margin-bottom: 5px;
 }
 
 .menu-unit-info-items-wrapper
 {
   display: flex;
   flex-flow: row;
-  border: 1px solid blue;
 }
 
 .unit-item-wrapper
@@ -1621,7 +1636,7 @@ progress::-webkit-progress-value { background: #080; }
   width: 50px;
   height: 50px;
 
-  border: 1px solid black;
+  border: 1px solid @ui-border-color2;
   margin: 5px;
 
   >*
