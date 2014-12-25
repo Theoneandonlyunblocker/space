@@ -868,6 +868,10 @@ progress::-webkit-progress-value { background: #080; }
   .unit-list-typeName
   {
     text-align: left;
+    overflow: hidden;
+    max-width: 90px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .unit-list-strength
   {
@@ -879,7 +883,7 @@ progress::-webkit-progress-value { background: #080; }
   }
   .raised-stat
   {
-    color: green;
+    color: limegreen;
   }
 }
 
@@ -1591,6 +1595,7 @@ progress::-webkit-progress-value { background: #080; }
     flex: 1;
     overflow-x: auto;
     border: 1px solid @ui-border-color1;
+    cursor: pointer;
     .sort-icons(1100px);
 
     .selected
@@ -1620,6 +1625,14 @@ progress::-webkit-progress-value { background: #080; }
       background-color: average(@bg-color, green);
     }
   }
+}
+
+.item-list-unitName
+{
+  overflow: hidden;
+  max-width: 110px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .menu-unit-info

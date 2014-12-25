@@ -21,8 +21,8 @@ module Rance
             item: item,
             typeName: item.template.type,
             slot: item.template.slot,
-            unit: (item.unit ? item.unit : null),
-            unitName: (item.unit ? item.unit.name : ""),
+            unit: item.unit ? item.unit : null,
+            unitName: item.unit ? item.unit.name : "",
 
             ability: item.template.ability ? item.template.ability.name : "",
 
