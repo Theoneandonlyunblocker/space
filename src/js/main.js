@@ -1295,28 +1295,6 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
-        /**
-        * props:
-        *   listItems
-        *   initialColumns
-        *
-        * state:
-        *   selected
-        *   columns
-        *   sortBy
-        *
-        * children:
-        *   listelement:
-        *     key
-        *     tr
-        *     getData()
-        *
-        *  columns:
-        *    props (classes etc)
-        *    label
-        *    sorting (alphabet, numeric, null)
-        *    title?
-        */
         UIComponents.List = React.createClass({
             displayName: "List",
             mixins: [Rance.UIComponents.SplitMultilineText],
@@ -2399,18 +2377,19 @@ var Rance;
                     {
                         label: "Name",
                         key: "name",
-                        defaultOrder: "desc"
+                        defaultOrder: "asc"
                     },
                     {
                         label: "Income",
                         key: "income",
-                        defaultOrder: "asc"
+                        defaultOrder: "desc"
                     }
                 ];
 
                 return (React.DOM.div({ className: "economy-summary-list" }, Rance.UIComponents.List({
                     listItems: rows,
-                    initialColumns: columns
+                    initialColumns: columns,
+                    initialColumn: columns[2]
                 })));
             }
         });

@@ -1431,6 +1431,13 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
+.item-equip .unit-list th {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
 .item-equip .unit-list .selected {
   background-color: #888e0e;
 }

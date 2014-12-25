@@ -4,30 +4,6 @@ module Rance
 {
   export module UIComponents
   {
-    
-    /**
-     * props:
-     *   listItems
-     *   initialColumns
-     * 
-     * state:
-     *   selected
-     *   columns
-     *   sortBy
-     *
-     * children:
-     *   listelement:
-     *     key
-     *     tr
-     *     getData()
-     *
-     *  columns:
-     *    props (classes etc)
-     *    label
-     *    sorting (alphabet, numeric, null)
-     *    title?
-     */
-
     export var List = React.createClass({
       displayName: "List",
       mixins: [SplitMultilineText],

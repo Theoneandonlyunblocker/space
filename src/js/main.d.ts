@@ -128,28 +128,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        /**
-        * props:
-        *   listItems
-        *   initialColumns
-        *
-        * state:
-        *   selected
-        *   columns
-        *   sortBy
-        *
-        * children:
-        *   listelement:
-        *     key
-        *     tr
-        *     getData()
-        *
-        *  columns:
-        *    props (classes etc)
-        *    label
-        *    sorting (alphabet, numeric, null)
-        *    title?
-        */
         var List: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

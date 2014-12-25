@@ -46,12 +46,12 @@ module Rance
           {
             label: "Name",
             key: "name",
-            defaultOrder: "desc"
+            defaultOrder: "asc"
           },
           {
             label: "Income",
             key: "income",
-            defaultOrder: "asc"
+            defaultOrder: "desc"
           }
 
         ];
@@ -61,7 +61,8 @@ module Rance
             UIComponents.List(
             {
               listItems: rows,
-              initialColumns: columns
+              initialColumns: columns,
+              initialColumn: columns[2]
             })
           )
         );
