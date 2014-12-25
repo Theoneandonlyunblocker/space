@@ -43,12 +43,8 @@ module Rance
         {
           columns: this.props.initialColumns,
           selected: initialSelected,
-          sortBy:
-          {
-            column: initialColumn,
-            order: initialColumn.defaultOrder || "desc",
-            currColumnIndex: this.props.initialColumns.indexOf(initialColumn)
-          }
+          selectedColumn: initialColumn,
+          sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
         });
       },
 
@@ -83,31 +79,65 @@ module Rance
         });
       },
 
+      makeInitialSortingOrder: function(columns, initialColumn)
+      {
+        var initialIndex = columns.indexOf(initialColumn);
+        if (initialIndex < 0) throw new Error("Invalid column index");
+
+        var order = [initialColumn];
+
+        for (var i = 0; i < columns.length; i++)
+        {
+          if (!columns[i].order)
+          {
+            columns[i].order = columns[i].defaultOrder;
+          }
+          if (i !== initialIndex)
+          {
+            order.push(columns[i]);
+          }
+        }
+
+        return order;
+      },
+
+      getNewSortingOrder: function(newColumn)
+      {
+        var order = this.state.sortingOrder.slice(0);
+        var current = order.indexOf(newColumn);
+
+        if (current >= 0)
+        {
+          order.splice(current);
+        }
+
+        order.unshift(newColumn);
+
+        return order;
+      },
+
       handleSelectColumn: function(column)
       {
         if (column.notSortable) return;
-        var order;
-        if (this.state.sortBy.column.key === column.key)
+        function getReverseOrder(order)
         {
-          // flips order
-          order = this.state.sortBy.order === "desc" ?
-            "asc" :
-            "desc";
+          return order === "desc" ? "asc" : "desc";
+        }
+
+        if (this.state.selectedColumn.key === column.key)
+        {
+          column.order = getReverseOrder(column.order);
+          this.forceUpdate();
         }
         else
         {
-          order = column.defaultOrder;
-        }
-
-        this.setState(
-        {
-          sortBy:
+          column.order = column.defaultOrder;
+          this.setState(
           {
-            column: column,
-            order: order,
-            currColumnIndex: this.state.columns.indexOf(column)
-          }
-        });
+            selectedColumn: column,
+            sortingOrder: this.getNewSortingOrder(column)
+          })
+        }
       },
 
       handleSelectRow: function(row)
@@ -122,57 +152,57 @@ module Rance
 
       sort: function()
       {
-        var self = this;
-        var selectedColumn = this.state.sortBy.column;
-
-        var initialPropToSortBy = selectedColumn.propToSortBy || selectedColumn.key;
-
         var itemsToSort = this.props.listItems;
-
-        var defaultSortFN = function(a, b)
+        var columnsToTry = this.state.columns;
+        var sortOrder = this.state.sortingOrder;
+        var sortFunctions:
         {
-          var propToSortBy = initialPropToSortBy;
-          var nextIndex = self.state.sortBy.currColumnIndex;
+          [key: string]: any;
+        } = {};
 
-          for (var i = 0; i < self.state.columns.length; i++)
-          {
-            if (a.data[propToSortBy] === b.data[propToSortBy])
-            {
-              nextIndex = (nextIndex + 1) % self.state.columns.length;
-              var nextColumn = self.state.columns[nextIndex];
-              propToSortBy = nextColumn.propToSortBy || nextColumn.key;
-            }
-            else
-            {
-              break;
-            }
-          }
 
-          return a.data[propToSortBy] > b.data[propToSortBy] ? 1 : -1;
-        }
-
-        if (selectedColumn.sortingFunction)
+        function makeSortingFunction(column)
         {
-          itemsToSort.sort(function(a, b)
+          if (column.sortingFunction) return column.sortingFunction;
+
+          var propToSortBy = column.propToSortBy || column.key;
+
+          return (function(a, b)
           {
-            var sortFNResult = selectedColumn.sortingFunction(a, b);
-            if (sortFNResult === 0)
-            {
-              sortFNResult = defaultSortFN(a, b);
-            }
-            return sortFNResult;
+            var a1 = a.data[propToSortBy];
+            var b1 = b.data[propToSortBy];
+
+            if (a1 > b1) return 1;
+            else if (a1 < b1) return -1;
+            else return 0;
           })
         }
-        else
-        {
-          itemsToSort.sort(defaultSortFN);
-        }
 
-        if (this.state.sortBy.order === "desc")
+        itemsToSort.sort(function(a, b)
         {
-          itemsToSort.reverse();
-        }
-        //else if (this.state.sortBy.order !== "desc") throw new Error("Invalid sort parameter");
+          var result = 0;
+          for (var i = 0; i < sortOrder.length; i++)
+          {
+            var columnToSortBy = sortOrder[i];
+
+            if (!sortFunctions[columnToSortBy.key])
+            {
+              sortFunctions[columnToSortBy.key] = makeSortingFunction(columnToSortBy);
+            }
+            var sortFunction = sortFunctions[columnToSortBy.key];
+
+            result = sortFunction(a, b);
+
+            if (columnToSortBy.order === "desc")
+            {
+              result *= -1;
+            }
+
+            if (result) return result;
+          }
+
+          return 0; // couldnt sort
+        });
 
         this.props.sortedItems = itemsToSort;
       },
@@ -219,9 +249,9 @@ module Rance
 
           if (!column.notSortable) sortStatus = "sortable";
 
-          if (self.state.sortBy.column && self.state.sortBy.column.key === column.key)
+          if (self.state.selectedColumn.key === column.key)
           {
-            sortStatus += " sorted-" + self.state.sortBy.order;
+            sortStatus += " sorted-" + column.order;
           }
           else if (!column.notSortable) sortStatus += " unsorted";
 
