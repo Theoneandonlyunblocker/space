@@ -71,10 +71,7 @@ module Rance
       {
         for (var i = 0; i < 2; i++)
         {
-          var item = new Item(
-          {
-            template: Templates.Items[itemType]
-          });
+          var item = new Item(Templates.Items[itemType]);
           players[0].addItem(item);
         }
       }

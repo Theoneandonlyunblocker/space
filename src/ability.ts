@@ -139,10 +139,9 @@ module Rance
       return true;
     }
 
-    return flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
+    var targets = flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
 
-
-    throw new Error();
+    return targets;
   }
   export function getFleetsToTarget(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate): Unit[][]

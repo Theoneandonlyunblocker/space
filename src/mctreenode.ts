@@ -112,6 +112,7 @@ module Rance
     {
       var actions = getTargetsForAllAbilities(battle, battle.activeUnit);
       var targetId = getRandomKey(actions);
+
       var action = getRandomArrayItem(actions[targetId]);
 
       var target = battle.unitsById[targetId];

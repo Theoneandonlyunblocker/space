@@ -156,8 +156,8 @@ var Rance;
             render: function () {
                 var statusElement = null;
 
-                if (this.props.guard.value > 0) {
-                    var guard = this.props.guard.value;
+                if (this.props.guardAmount > 0) {
+                    var guard = this.props.guardAmount;
                     statusElement = React.DOM.div({
                         className: "status-container guard-meter-container"
                     }, React.DOM.div({
@@ -193,7 +193,7 @@ var Rance;
             mixins: [React.addons.PureRenderMixin],
             render: function () {
                 return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), Rance.UIComponents.UnitStatus({
-                    guard: this.props.guard
+                    guardAmount: this.props.guardAmount
                 }), Rance.UIComponents.UnitStrength({
                     maxStrength: this.props.maxStrength,
                     currentStrength: this.props.currentStrength,
@@ -5614,9 +5614,9 @@ var Rance;
     idGenerators.item = idGenerators.item || 0;
 
     var Item = (function () {
-        function Item(props) {
-            this.id = isFinite(props.id) ? props.id : idGenerators.item++;
-            this.template = props.template;
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : idGenerators.item++;
+            this.template = template;
         }
         Item.prototype.serialize = function () {
             var data = {};
@@ -6529,9 +6529,9 @@ var Rance;
             return true;
         };
 
-        return Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
+        var targets = Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
 
-        throw new Error();
+        return targets;
     }
     Rance.getPotentialTargets = getPotentialTargets;
     function getFleetsToTarget(battle, user, effect) {
@@ -6674,15 +6674,18 @@ var Rance;
             this.maxMovePoints = data.maxMovePoints;
 
             this.baseAttributes = Rance.cloneObject(data.baseAttributes);
+            this.attributes = Rance.cloneObject(this.baseAttributes);
 
-            this.battleStats = {};
-            this.battleStats.moveDelay = data.battleStats.moveDelay;
-            this.battleStats.side = data.battleStats.side;
-            this.battleStats.position = data.battleStats.position;
-            this.battleStats.currentActionPoints = data.battleStats.currentActionPoints;
-            this.battleStats.guard = cloneOjbect(data.battleStats.guard);
+            var battleStats = {};
 
-            this.fleetId = data.fleet.id;
+            battleStats.moveDelay = data.battleStats.moveDelay;
+            battleStats.side = data.battleStats.side;
+            battleStats.position = data.battleStats.position;
+            battleStats.currentActionPoints = data.battleStats.currentActionPoints;
+            battleStats.guardAmount = data.battleStats.guardAmount;
+            battleStats.guardCoverage = data.battleStats.guardCoverage;
+
+            this.battleStats = battleStats;
 
             this.items = {
                 low: null,
@@ -6755,10 +6758,8 @@ var Rance;
                 battle: null,
                 side: null,
                 position: null,
-                guard: {
-                    coverage: null,
-                    value: 0
-                }
+                guardAmount: 0,
+                guardCoverage: null
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
@@ -6976,12 +6977,15 @@ var Rance;
 
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;
-            data.side = this.battleStats.side;
-            data.position = this.battleStats.position;
-            data.currentActionPoints = this.battleStats.currentActionPoints;
-            data.guard = this.battleStats.guard;
+            data.battleStats.side = this.battleStats.side;
+            data.battleStats.position = this.battleStats.position;
+            data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
+            data.battleStats.guardAmount = this.battleStats.guardAmount;
+            data.battleStats.guardCoverage = this.battleStats.guardCoverage;
 
-            data.fleetId = this.fleet.id;
+            if (this.fleet) {
+                data.fleetId = this.fleet.id;
+            }
 
             data.items = {};
             for (var slot in this.items) {
@@ -6994,25 +6998,6 @@ var Rance;
         Unit.prototype.makeVirtualClone = function () {
             var data = this.serialize();
             var clone = new Unit(this.template, this.id, data);
-
-            clone.attributes = Rance.cloneObject(this.attributes);
-
-            clone.battleStats = {
-                moveDelay: this.battleStats.moveDelay,
-                side: this.battleStats.side,
-                position: this.battleStats.position.slice(0),
-                currentActionPoints: this.battleStats.currentActionPoints,
-                guard: {
-                    value: this.battleStats.guardAmount,
-                    coverage: this.battleStats.guardCoverage
-                }
-            };
-
-            clone.items = {
-                low: this.items.low,
-                mid: this.items.mid,
-                high: this.items.high
-            };
 
             return clone;
         };
@@ -8290,7 +8275,7 @@ var Rance;
             this.maxHeight = options.mapOptions.height || this.maxWidth;
 
             this.points = this.generatePoints(options.starGeneration);
-            debugger;
+
             this.makeVoronoi();
             this.relaxPoints(options.relaxation);
 
@@ -10803,6 +10788,7 @@ var Rance;
         MCTreeNode.prototype.simulateOnce = function (battle) {
             var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
             var targetId = Rance.getRandomKey(actions);
+
             var action = Rance.getRandomArrayItem(actions[targetId]);
 
             var target = battle.unitsById[targetId];
@@ -10974,9 +10960,7 @@ var Rance;
 
             for (var itemType in Rance.Templates.Items) {
                 for (var i = 0; i < 2; i++) {
-                    var item = new Rance.Item({
-                        template: Rance.Templates.Items[itemType]
-                    });
+                    var item = new Rance.Item(Rance.Templates.Items[itemType]);
                     players[0].addItem(item);
                 }
             }

@@ -9,9 +9,9 @@ module Rance
       {
         var statusElement = null;
 
-        if (this.props.guard.value > 0)
+        if (this.props.guardAmount > 0)
         {
-          var guard = this.props.guard.value;
+          var guard = this.props.guardAmount;
           statusElement = React.DOM.div(
           {
             className: "status-container guard-meter-container"

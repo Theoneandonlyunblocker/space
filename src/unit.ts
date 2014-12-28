@@ -118,15 +118,19 @@ module Rance
       this.maxMovePoints = data.maxMovePoints;
 
       this.baseAttributes = cloneObject(data.baseAttributes);
+      this.attributes = cloneObject(this.baseAttributes);
 
-      this.battleStats = {};
-      this.battleStats.moveDelay = data.battleStats.moveDelay;
-      this.battleStats.side = data.battleStats.side;
-      this.battleStats.position = data.battleStats.position;
-      this.battleStats.currentActionPoints = data.battleStats.currentActionPoints;
-      this.battleStats.guard = cloneOjbect(data.battleStats.guard);
+      var battleStats: any = {};
 
-      this.fleetId = data.fleet.id;
+      battleStats.moveDelay = data.battleStats.moveDelay;
+      battleStats.side = data.battleStats.side;
+      battleStats.position = data.battleStats.position;
+      battleStats.currentActionPoints = data.battleStats.currentActionPoints;
+      battleStats.guardAmount = data.battleStats.guardAmount;
+      battleStats.guardCoverage = data.battleStats.guardCoverage;
+
+      this.battleStats = battleStats;
+
 
       this.items =
       {
@@ -211,11 +215,8 @@ module Rance
         battle: null,
         side: null,
         position: null,
-        guard:
-        {
-          coverage: null,
-          value: 0
-        }
+        guardAmount: 0,
+        guardCoverage: null
       }
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
@@ -351,6 +352,7 @@ module Rance
 
       var adjustedDamage = amount * damageReduction;
 
+
       this.removeStrength(adjustedDamage);
     }
     getAttackDamageIncrease(damageType: string)
@@ -473,12 +475,16 @@ module Rance
 
       data.battleStats = {};
       data.battleStats.moveDelay = this.battleStats.moveDelay;
-      data.side = this.battleStats.side;
-      data.position = this.battleStats.position;
-      data.currentActionPoints = this.battleStats.currentActionPoints;
-      data.guard = this.battleStats.guard;
+      data.battleStats.side = this.battleStats.side;
+      data.battleStats.position = this.battleStats.position;
+      data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
+      data.battleStats.guardAmount = this.battleStats.guardAmount;
+      data.battleStats.guardCoverage = this.battleStats.guardCoverage;
 
-      data.fleetId = this.fleet.id;
+      if (this.fleet)
+      {
+        data.fleetId = this.fleet.id;
+      }
 
       data.items = {};
       for (var slot in this.items)
@@ -492,28 +498,6 @@ module Rance
     {
       var data = this.serialize();
       var clone = new Unit(this.template, this.id, data);
-
-      clone.attributes = cloneObject(this.attributes);
-
-      clone.battleStats =
-      {
-        moveDelay: this.battleStats.moveDelay,
-        side: this.battleStats.side,
-        position: this.battleStats.position.slice(0),
-        currentActionPoints: this.battleStats.currentActionPoints,
-        guard:
-        {
-          value: this.battleStats.guardAmount,
-          coverage: this.battleStats.guardCoverage
-        }
-      };
-
-      clone.items =
-      {
-        low: this.items.low,
-        mid: this.items.mid,
-        high: this.items.high
-      }
 
       return clone;
     }

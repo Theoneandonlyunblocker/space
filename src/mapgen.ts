@@ -86,7 +86,7 @@ module Rance
       this.maxHeight = options.mapOptions.height || this.maxWidth;
 
       this.points = this.generatePoints(options.starGeneration);
-      debugger;
+
       this.makeVoronoi();
       this.relaxPoints(options.relaxation);
 

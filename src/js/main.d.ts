@@ -904,10 +904,7 @@ declare module Rance {
         public id: number;
         public template: Rance.Templates.IItemTemplate;
         public unit: Rance.Unit;
-        constructor(props: {
-            template: Rance.Templates.IItemTemplate;
-            id?: number;
-        });
+        constructor(template: Rance.Templates.IItemTemplate, id?: number);
         public serialize(): any;
     }
 }
@@ -1080,10 +1077,8 @@ declare module Rance {
             side: string;
             position: number[];
             currentActionPoints: number;
-            guard: {
-                value: number;
-                coverage: string;
-            };
+            guardAmount: number;
+            guardCoverage: string;
         };
         public fleet: Rance.Fleet;
         public items: {
@@ -1092,8 +1087,9 @@ declare module Rance {
             high: Rance.Item;
         };
         public uiDisplayIsDirty: boolean;
-        constructor(template: Rance.Templates.TypeTemplate, id?: number);
-        public setValues(): void;
+        constructor(template: Rance.Templates.TypeTemplate, id?: number, data?: any);
+        public makeFromData(data: any): void;
+        public setInitialValues(): void;
         public setBaseHealth(): void;
         public setActionPoints(): void;
         public setAttributes(experience?: number, variance?: number): void;
@@ -1689,6 +1685,26 @@ declare module Rance {
         public loadEmblems(): void;
         public loadOther(): void;
         public checkLoaded(): void;
+    }
+}
+declare module Rance {
+    class GameLoader {
+        public map: Rance.GalaxyMap;
+        public humanPlayer: Rance.Player;
+        public players: Rance.Player[];
+        public playersById: {
+            [id: number]: Rance.Player;
+        };
+        public pointsById: {
+            [id: number]: Rance.Star;
+        };
+        constructor();
+        public deSerializeGame(data: any): Rance.Game;
+        public deSerializeMap(data: any): Rance.GalaxyMap;
+        public deSerializePoint(data: any): Rance.Star;
+        public deSerializePlayer(data: any): Rance.Player;
+        public deSerializeFleet(player: any, data: any): Rance.Fleet;
+        public deSerializeShip(data: any): void;
     }
 }
 declare module Rance {

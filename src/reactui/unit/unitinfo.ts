@@ -19,7 +19,7 @@ module Rance
             ),
             UIComponents.UnitStatus(
             {
-              guard: this.props.guard
+              guardAmount: this.props.guardAmount
             }),
             UIComponents.UnitStrength(
             {
