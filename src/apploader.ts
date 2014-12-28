@@ -14,7 +14,7 @@ module Rance
     meta: any;
   }
   
-  export class Loader
+  export class AppLoader
   {
     loaded =
     {

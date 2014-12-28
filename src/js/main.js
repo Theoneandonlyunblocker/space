@@ -5614,9 +5614,9 @@ var Rance;
     idGenerators.item = idGenerators.item || 0;
 
     var Item = (function () {
-        function Item(template) {
-            this.id = idGenerators.item++;
-            this.template = template;
+        function Item(props) {
+            this.id = isFinite(props.id) ? props.id : idGenerators.item++;
+            this.template = props.template;
         }
         Item.prototype.serialize = function () {
             var data = {};
@@ -5684,7 +5684,7 @@ var Rance;
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
         };
-        Player.prototype.makeFlag = function () {
+        Player.prototype.makeFlag = function (seed) {
             if (!this.color || !this.secondaryColor)
                 this.makeColorScheme();
 
@@ -5694,7 +5694,7 @@ var Rance;
                 secondaryColor: this.secondaryColor
             });
 
-            this.flag.generateRandom();
+            this.flag.generateRandom(seed);
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
         };
@@ -6432,7 +6432,7 @@ var Rance;
 
         target = getTargetOrGuard(battle, user, ability, target);
 
-        var previousUserGuard = user.battleStats.guard.value;
+        var previousUserGuard = user.battleStats.guardAmount;
 
         var effectsToCall = [ability.mainEffect];
         if (ability.secondaryEffects) {
@@ -6453,7 +6453,7 @@ var Rance;
         user.removeActionPoints(ability.actionsUse);
         user.addMoveDelay(ability.moveDelay);
 
-        if (user.battleStats.guard.value < previousUserGuard) {
+        if (user.battleStats.guardAmount < previousUserGuard) {
             user.removeAllGuard();
         }
     }
@@ -6468,12 +6468,12 @@ var Rance;
         var guarding = getGuarders(battle, user, ability, target);
 
         guarding = guarding.sort(function (a, b) {
-            return a.battleStats.guard.value - b.battleStats.guard.value;
+            return a.battleStats.guardAmount - b.battleStats.guardAmount;
         });
 
         for (var i = 0; i < guarding.length; i++) {
             var guardRoll = Math.random() * 100;
-            if (guardRoll <= guarding[i].battleStats.guard.value) {
+            if (guardRoll <= guarding[i].battleStats.guardAmount) {
                 return guarding[i];
             }
         }
@@ -6485,12 +6485,12 @@ var Rance;
         var allEnemies = getPotentialTargets(battle, user, Rance.Templates.Abilities.dummyTargetAll);
 
         var guarders = allEnemies.filter(function (unit) {
-            if (unit.battleStats.guard.coverage === "all") {
-                return unit.battleStats.guard.value > 0;
-            } else if (unit.battleStats.guard.coverage === "column") {
+            if (unit.battleStats.guardCoverage === "all") {
+                return unit.battleStats.guardAmount > 0;
+            } else if (unit.battleStats.guardCoverage === "column") {
                 // same column
                 if (unit.battleStats.position[0] === target.battleStats.position[0]) {
-                    return unit.battleStats.guard.value > 0;
+                    return unit.battleStats.guardAmount > 0;
                 }
             }
         });
@@ -6629,7 +6629,7 @@ var Rance;
     idGenerators.unit = idGenerators.unit || 0;
 
     var Unit = (function () {
-        function Unit(template, id) {
+        function Unit(template, id, data) {
             this.items = {
                 low: null,
                 mid: null,
@@ -6641,9 +6641,60 @@ var Rance;
             this.template = template;
             this.name = this.id + " " + template.typeName;
             this.isSquadron = template.isSquadron;
-            this.setValues();
+            if (data) {
+                this.makeFromData(data);
+            } else {
+                this.setInitialValues();
+            }
         }
-        Unit.prototype.setValues = function () {
+        Unit.prototype.makeFromData = function (data) {
+            var items = {};
+
+            ["low", "mid", "high"].forEach(function (slot) {
+                if (data[slot]) {
+                    var item = data[slot];
+                    if (!item)
+                        return;
+
+                    if (item.templateType) {
+                        items[slot] = new Rance.Item(item.templateType, item.id);
+                    } else {
+                        items[slot] = item;
+                    }
+                }
+            });
+
+            this.name = data.name;
+
+            this.maxStrength = data.maxStrength;
+            this.currentStrength = data.currentStrength;
+            this.maxActionPoints = data.maxActionPoints;
+
+            this.currentMovePoints = data.currentMovePoints;
+            this.maxMovePoints = data.maxMovePoints;
+
+            this.baseAttributes = Rance.cloneObject(data.baseAttributes);
+
+            this.battleStats = {};
+            this.battleStats.moveDelay = data.battleStats.moveDelay;
+            this.battleStats.side = data.battleStats.side;
+            this.battleStats.position = data.battleStats.position;
+            this.battleStats.currentActionPoints = data.battleStats.currentActionPoints;
+            this.battleStats.guard = cloneOjbect(data.battleStats.guard);
+
+            this.fleetId = data.fleet.id;
+
+            this.items = {
+                low: null,
+                mid: null,
+                high: null
+            };
+
+            for (var slot in items) {
+                this.addItem(items[slot]);
+            }
+        };
+        Unit.prototype.setInitialValues = function () {
             this.setBaseHealth();
             this.setActionPoints();
             this.setAttributes();
@@ -6848,7 +6899,7 @@ var Rance;
                     defensiveStat = this.attributes.defence;
                     defenceFactor = 0.08;
 
-                    var guardAmount = Math.min(this.battleStats.guard.value, 100);
+                    var guardAmount = Math.min(this.battleStats.guardAmount, 100);
                     finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
                     break;
                 }
@@ -6879,21 +6930,21 @@ var Rance;
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeGuard = function (amount) {
-            this.battleStats.guard.value -= amount;
-            if (this.battleStats.guard.value < 0)
+            this.battleStats.guardAmount -= amount;
+            if (this.battleStats.guardAmount < 0)
                 this.removeAllGuard();
 
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.addGuard = function (amount, coverage) {
-            this.battleStats.guard.value += amount;
-            this.battleStats.guard.coverage = coverage;
+            this.battleStats.guardAmount += amount;
+            this.battleStats.guardCoverage = coverage;
 
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeAllGuard = function () {
-            this.battleStats.guard.value = 0;
-            this.battleStats.guard.coverage = null;
+            this.battleStats.guardAmount = 0;
+            this.battleStats.guardCoverage = null;
 
             this.uiDisplayIsDirty = true;
         };
@@ -6916,6 +6967,7 @@ var Rance;
 
             data.maxStrength = this.maxStrength;
             data.currentStrength = this.currentStrength;
+            data.maxActionPoints = this.maxActionPoints;
 
             data.currentMovePoints = this.currentMovePoints;
             data.maxMovePoints = this.maxMovePoints;
@@ -6940,13 +6992,8 @@ var Rance;
             return data;
         };
         Unit.prototype.makeVirtualClone = function () {
-            var clone = new Unit(this.template, this.id);
-
-            clone.isSquadron = this.isSquadron;
-
-            clone.maxStrength = this.maxStrength;
-            clone.currentStrength = this.currentStrength;
-            clone.maxActionPoints = this.maxActionPoints;
+            var data = this.serialize();
+            var clone = new Unit(this.template, this.id, data);
 
             clone.attributes = Rance.cloneObject(this.attributes);
 
@@ -6956,8 +7003,8 @@ var Rance;
                 position: this.battleStats.position.slice(0),
                 currentActionPoints: this.battleStats.currentActionPoints,
                 guard: {
-                    value: this.battleStats.guard.value,
-                    coverage: this.battleStats.guard.coverage
+                    value: this.battleStats.guardAmount,
+                    coverage: this.battleStats.guardCoverage
                 }
             };
 
@@ -8243,7 +8290,7 @@ var Rance;
             this.maxHeight = options.mapOptions.height || this.maxWidth;
 
             this.points = this.generatePoints(options.starGeneration);
-
+            debugger;
             this.makeVoronoi();
             this.relaxPoints(options.relaxation);
 
@@ -9370,6 +9417,12 @@ var Rance;
                 return star.serialize();
             });
 
+            data.regionNames = [];
+
+            for (var name in this.mapGen.regions) {
+                data.regionNames.push(name);
+            }
+
             return data;
         };
         return GalaxyMap;
@@ -10402,6 +10455,8 @@ var Rance;
         function Game(map, players, humanPlayer) {
             this.independents = [];
             this.galaxyMap = map;
+            map.game = this;
+
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
             this.turnNumber = 1;
@@ -10465,8 +10520,8 @@ var Rance;
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
-    var Loader = (function () {
-        function Loader(onLoaded) {
+    var AppLoader = (function () {
+        function AppLoader(onLoaded) {
             this.loaded = {
                 DOM: false,
                 emblems: false,
@@ -10481,7 +10536,7 @@ var Rance;
             this.loadEmblems();
             this.loadOther();
         }
-        Loader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
+        AppLoader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
             var self = this;
             var frames = {};
 
@@ -10505,7 +10560,7 @@ var Rance;
 
             return frames;
         };
-        Loader.prototype.loadDOM = function () {
+        AppLoader.prototype.loadDOM = function () {
             var self = this;
             if (document.readyState === "interactive" || document.readyState === "complete") {
                 self.loaded.DOM = true;
@@ -10517,7 +10572,7 @@ var Rance;
                 });
             }
         };
-        Loader.prototype.loadEmblems = function () {
+        AppLoader.prototype.loadEmblems = function () {
             var self = this;
             var loader = new PIXI.JsonLoader("img\/emblems.json");
             loader.addEventListener("loaded", function (event) {
@@ -10529,7 +10584,7 @@ var Rance;
 
             loader.load();
         };
-        Loader.prototype.loadOther = function () {
+        AppLoader.prototype.loadOther = function () {
             var self = this;
             var loader = new PIXI.ImageLoader("img\/fowTexture.png");
 
@@ -10540,7 +10595,7 @@ var Rance;
 
             loader.load();
         };
-        Loader.prototype.checkLoaded = function () {
+        AppLoader.prototype.checkLoaded = function () {
             for (var prop in this.loaded) {
                 if (!this.loaded[prop]) {
                     return;
@@ -10550,9 +10605,119 @@ var Rance;
             console.log("Loaded in " + elapsed + " ms");
             this.onLoaded.call();
         };
-        return Loader;
+        return AppLoader;
     })();
-    Rance.Loader = Loader;
+    Rance.AppLoader = AppLoader;
+})(Rance || (Rance = {}));
+/// <reference path="game.ts"/>
+/// <reference path="mapgen.ts"/>
+/// <reference path="player.ts"/>
+/// <reference path="galaxymap.ts"/>
+var Rance;
+(function (Rance) {
+    var GameLoader = (function () {
+        function GameLoader() {
+            this.players = [];
+            this.playersById = {};
+            this.pointsById = {};
+        }
+        GameLoader.prototype.deSerializeGame = function (data) {
+            this.map = this.deSerializeMap(data.galaxyMap);
+
+            for (var i = 0; i < data.players.length; i++) {
+                var player = data.players[id];
+                var id = player;
+                this.playersById[id] = this.deSerializePlayer(player);
+                this.players.push(player);
+            }
+
+            this.humanPlayer = this.playersById[data.humanPlayerId];
+
+            return new Rance.Game(this.map, this.players, this.humanPlayer);
+        };
+        GameLoader.prototype.deSerializeMap = function (data) {
+            var mapGen = new Rance.MapGen();
+
+            for (var i = 0; i < data.regionNames; i++) {
+                mapGen.makeRegion(data.regionNames[i]);
+            }
+
+            var allPoints = [];
+
+            for (var i = 0; i < data.allPoints.length; i++) {
+                var point = this.deSerializePoint(data.allPoints[i]);
+                allPoints.push(point);
+                this.pointsById[point.id] = point;
+            }
+
+            for (var i = 0; i < allPoints.length; i++) {
+                for (var j = 0; j < allPoints[i].linksToIds.length; j++) {
+                    allPoints[i].addLink(allPoints[i].linksToIds[j]);
+                }
+            }
+
+            mapGen.points = allPoints;
+            mapGen.makeVoronoi();
+
+            var galaxyMap = new Rance.GalaxyMap();
+            galaxyMap.setMapGen(mapGen);
+
+            return this.map;
+        };
+        GameLoader.prototype.deSerializePoint = function (data) {
+            var star = new Rance.Star(data.x, data.y, data.id);
+            star.name = data.name;
+            star.distance = data.distance;
+            star.region = data.region;
+            star.baseIncome = data.baseIncome;
+
+            return star;
+        };
+
+        GameLoader.prototype.deSerializePlayer = function (data) {
+            var player = new Rance.Player(data.id);
+
+            player.money = data.money;
+
+            // color scheme & flag
+            if (data.name === "Independent") {
+                player.setupPirates();
+            } else {
+                player.color = data.color;
+                player.secondaryColor = data.secondaryColor;
+                player.colorAlpha = data.colorAlpha;
+
+                player.makeFlag(data.flag.seed);
+            }
+
+            for (var i = 0; i < data.fleets.length; i++) {
+                var fleet = data.fleets[i];
+                player.addFleet(this.deSerializeFleet(player, fleet));
+            }
+
+            return player;
+        };
+        GameLoader.prototype.deSerializeFleet = function (player, data) {
+            var ships = [];
+
+            for (var i = 0; i < data.ships.length; i++) {
+                var ship = this.deSerializeShip(data.ships[i]);
+                player.addUnit(ship);
+                ships.push(ship);
+            }
+
+            return new Rance.Fleet(player, ships, this.pointsById[data.locationId], data.id);
+        };
+        GameLoader.prototype.deSerializeShip = function (data) {
+            var template = Rance.Templates.ShipTypes[data.templateType];
+
+            var cData = {};
+            var ship = new Rance.Unit(template, data.id);
+            ship.name = data.name;
+        };
+        return GameLoader;
+    })();
+    Rance.GameLoader = GameLoader;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="unit.ts"/>
@@ -10771,48 +10936,53 @@ var Rance;
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
-/// <reference path="loader.ts"/>
+/// <reference path="apploader.ts"/>
+/// <reference path="gameloader.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
 var Rance;
 (function (Rance) {
     var App = (function () {
-        function App() {
+        function App(savedGame) {
             var self = this;
+
+            this.game = savedGame;
             this.seed = Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
-            this.loader = new Rance.Loader(function () {
-                self.images = self.loader.imageCache;
-                self.initGame();
-                self.initDisplay();
-                self.initUI();
+            this.loader = new Rance.AppLoader(function () {
+                self.makeApp();
             });
         }
-        App.prototype.initGame = function () {
-            var playerData = this.initPlayers();
+        App.prototype.makeApp = function () {
+            this.images = this.loader.imageCache;
+            if (!this.game)
+                this.makeGame();
+            this.initGame();
+            this.initDisplay();
+            this.initUI();
+        };
+
+        App.prototype.makeGame = function () {
+            var playerData = this.makePlayers();
             var players = playerData.players;
             var independents = playerData.independents;
-            var map = this.initMap(playerData);
-
-            this.humanPlayer = players[0];
+            var map = this.makeMap(playerData);
 
             this.game = new Rance.Game(map, players, players[0]);
             this.game.independents.push(independents);
 
-            map.game = this.game;
-
-            this.playerControl = new Rance.PlayerControl(this.humanPlayer);
-
-            for (var item in Rance.Templates.Items) {
+            for (var itemType in Rance.Templates.Items) {
                 for (var i = 0; i < 2; i++) {
-                    this.humanPlayer.addItem(new Rance.Item(Rance.Templates.Items[item]));
+                    var item = new Rance.Item({
+                        template: Rance.Templates.Items[itemType]
+                    });
+                    players[0].addItem(item);
                 }
             }
-
-            return this.game;
         };
-        App.prototype.initPlayers = function () {
+
+        App.prototype.makePlayers = function () {
             var players = [];
 
             for (var i = 0; i < 5; i++) {
@@ -10830,7 +11000,7 @@ var Rance;
                 independents: pirates
             });
         };
-        App.prototype.initMap = function (playerData) {
+        App.prototype.makeMap = function (playerData) {
             var mapGen = new Rance.MapGen();
             mapGen.players = playerData.players;
             mapGen.independents = playerData.independents;
@@ -10840,6 +11010,12 @@ var Rance;
 
             return galaxyMap;
         };
+        App.prototype.initGame = function () {
+            this.humanPlayer = this.game.humanPlayer;
+            this.playerControl = new Rance.PlayerControl(this.humanPlayer);
+
+            return this.game;
+        };
         App.prototype.initDisplay = function () {
             this.renderer = new Rance.Renderer();
             this.renderer.init();
@@ -10847,6 +11023,8 @@ var Rance;
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap);
             this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.init();
+            // some initialization is done when the react component owning the
+            // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
         };
         App.prototype.initUI = function () {
             var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));

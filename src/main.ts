@@ -7,7 +7,9 @@
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
-/// <reference path="loader.ts"/>
+
+/// <reference path="apploader.ts"/>
+/// <reference path="gameloader.ts"/>
 
 /// <reference path="shadermanager.ts"/>
 
@@ -18,7 +20,7 @@ module Rance
   export class App
   {
     seed: any;
-    loader: Loader;
+    loader: AppLoader;
     renderer: Renderer;
     game: Game;
     mapRenderer: MapRenderer;
@@ -33,49 +35,52 @@ module Rance
       }
     };
 
-    constructor()
+    constructor(savedGame?: Game)
     {
       var self = this;
+
+      this.game = savedGame;
       this.seed = Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
-      this.loader = new Loader(function()
+      this.loader = new AppLoader(function()
       {
-        self.images = self.loader.imageCache;
-        self.initGame();
-        self.initDisplay();
-        self.initUI();
+        self.makeApp();
       });
     }
-
-    initGame()
+    makeApp()
     {
-      var playerData = this.initPlayers();
+      this.images = this.loader.imageCache;
+      if (!this.game) this.makeGame();
+      this.initGame();
+      this.initDisplay();
+      this.initUI();
+    }
+
+    makeGame()
+    {
+      var playerData = this.makePlayers();
       var players = playerData.players;
       var independents = playerData.independents;
-      var map = this.initMap(playerData);
-
-      this.humanPlayer = players[0];
+      var map = this.makeMap(playerData);
 
       this.game = new Game(map, players, players[0]);
       this.game.independents.push(independents);
 
-      map.game = this.game;
-
-      this.playerControl = new PlayerControl(this.humanPlayer);
-
-      for (var item in Templates.Items)
+      for (var itemType in Templates.Items)
       {
         for (var i = 0; i < 2; i++)
         {
-          this.humanPlayer.addItem(new Item(Templates.Items[item]));
+          var item = new Item(
+          {
+            template: Templates.Items[itemType]
+          });
+          players[0].addItem(item);
         }
       }
-      
-
-      return this.game;
     }
-    initPlayers()
+
+    makePlayers()
     {
       var players = [];
 
@@ -96,7 +101,7 @@ module Rance
         independents: pirates
       });
     }
-    initMap(playerData)
+    makeMap(playerData)
     {
       var mapGen = new MapGen();
       mapGen.players = playerData.players;
@@ -107,6 +112,13 @@ module Rance
 
       return galaxyMap;
     }
+    initGame()
+    {
+      this.humanPlayer = this.game.humanPlayer;
+      this.playerControl = new PlayerControl(this.humanPlayer);
+
+      return this.game;
+    }
     initDisplay()
     {
       this.renderer = new Renderer();
@@ -115,6 +127,8 @@ module Rance
       this.mapRenderer = new MapRenderer(this.game.galaxyMap);
       this.mapRenderer.setParent(this.renderer.layers["map"]);
       this.mapRenderer.init();
+      // some initialization is done when the react component owning the
+      // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
     }
     initUI()
     {

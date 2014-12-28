@@ -904,7 +904,10 @@ declare module Rance {
         public id: number;
         public template: Rance.Templates.IItemTemplate;
         public unit: Rance.Unit;
-        constructor(template: Rance.Templates.IItemTemplate);
+        constructor(props: {
+            template: Rance.Templates.IItemTemplate;
+            id?: number;
+        });
         public serialize(): any;
     }
 }
@@ -934,7 +937,7 @@ declare module Rance {
         constructor(id?: number);
         public makeColorScheme(): void;
         public setupPirates(): void;
-        public makeFlag(): void;
+        public makeFlag(seed?: any): void;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public getAllUnits(): any[];
@@ -1665,7 +1668,7 @@ declare module Rance {
         };
         meta: any;
     }
-    class Loader {
+    class AppLoader {
         public loaded: {
             DOM: boolean;
             emblems: boolean;
@@ -1734,7 +1737,7 @@ declare module Rance {
 declare module Rance {
     class App {
         public seed: any;
-        public loader: Rance.Loader;
+        public loader: Rance.AppLoader;
         public renderer: Rance.Renderer;
         public game: Rance.Game;
         public mapRenderer: Rance.MapRenderer;
@@ -1746,13 +1749,15 @@ declare module Rance {
                 [id: string]: HTMLImageElement;
             };
         };
-        constructor();
-        public initGame(): Rance.Game;
-        public initPlayers(): {
+        constructor(savedGame?: Rance.Game);
+        public makeApp(): void;
+        public makeGame(): void;
+        public makePlayers(): {
             players: any[];
             independents: Rance.Player;
         };
-        public initMap(playerData: any): Rance.GalaxyMap;
+        public makeMap(playerData: any): Rance.GalaxyMap;
+        public initGame(): Rance.Game;
         public initDisplay(): void;
         public initUI(): void;
     }

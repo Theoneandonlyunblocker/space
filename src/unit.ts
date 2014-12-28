@@ -49,11 +49,8 @@ module Rance
       side: string;
       position: number[];
       currentActionPoints: number;
-      guard:
-      {
-        value: number;
-        coverage: string;
-      }
+      guardAmount: number;
+      guardCoverage: string;
       //queuedAction: Action;
     };
     
@@ -73,16 +70,77 @@ module Rance
 
     uiDisplayIsDirty: boolean = true;
 
-    constructor(template: Templates.TypeTemplate, id?: number)
+    constructor(template: Templates.TypeTemplate, id?: number, data?)
     {
       this.id = isFinite(id) ? id : idGenerators.unit++;
 
       this.template = template;
       this.name = this.id + " " + template.typeName;
       this.isSquadron = template.isSquadron;
-      this.setValues();
+      if (data)
+      {
+        this.makeFromData(data);
+      }
+      else
+      {
+        this.setInitialValues();
+      }
     }
-    setValues()
+    makeFromData(data)
+    {
+      var items: any = {};
+
+      ["low", "mid", "high"].forEach(function(slot)
+      {
+        if (data[slot])
+        {
+          var item = data[slot];
+          if (!item) return;
+
+          if (item.templateType)
+          {
+            items[slot] = new Item(item.templateType, item.id);
+          }
+          else
+          {
+            items[slot] = item;
+          }
+        }
+      });
+
+      this.name = data.name;
+
+      this.maxStrength = data.maxStrength;
+      this.currentStrength = data.currentStrength;
+      this.maxActionPoints = data.maxActionPoints;
+
+      this.currentMovePoints = data.currentMovePoints;
+      this.maxMovePoints = data.maxMovePoints;
+
+      this.baseAttributes = cloneObject(data.baseAttributes);
+
+      this.battleStats = {};
+      this.battleStats.moveDelay = data.battleStats.moveDelay;
+      this.battleStats.side = data.battleStats.side;
+      this.battleStats.position = data.battleStats.position;
+      this.battleStats.currentActionPoints = data.battleStats.currentActionPoints;
+      this.battleStats.guard = cloneOjbect(data.battleStats.guard);
+
+      this.fleetId = data.fleet.id;
+
+      this.items =
+      {
+        low: null,
+        mid: null,
+        high: null
+      };
+
+      for (var slot in items)
+      {
+        this.addItem(items[slot]);
+      }
+    }
+    setInitialValues()
     {
       this.setBaseHealth();
       this.setActionPoints();
@@ -329,7 +387,7 @@ module Rance
           defensiveStat = this.attributes.defence;
           defenceFactor = 0.08;
 
-          var guardAmount = Math.min(this.battleStats.guard.value, 100);
+          var guardAmount = Math.min(this.battleStats.guardAmount, 100);
           finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
           break;
         }
@@ -365,22 +423,22 @@ module Rance
     }
     removeGuard(amount: number)
     {
-      this.battleStats.guard.value -= amount;
-      if (this.battleStats.guard.value < 0) this.removeAllGuard();
+      this.battleStats.guardAmount -= amount;
+      if (this.battleStats.guardAmount < 0) this.removeAllGuard();
 
       this.uiDisplayIsDirty = true;
     }
     addGuard(amount: number, coverage: string)
     {
-      this.battleStats.guard.value += amount;
-      this.battleStats.guard.coverage = coverage;
+      this.battleStats.guardAmount += amount;
+      this.battleStats.guardCoverage = coverage;
 
       this.uiDisplayIsDirty = true;
     }
     removeAllGuard()
     {
-      this.battleStats.guard.value = 0;
-      this.battleStats.guard.coverage = null;
+      this.battleStats.guardAmount = 0;
+      this.battleStats.guardCoverage = null;
 
       this.uiDisplayIsDirty = true;
     }
@@ -406,6 +464,7 @@ module Rance
 
       data.maxStrength = this.maxStrength;
       data.currentStrength = this.currentStrength;
+      data.maxActionPoints = this.maxActionPoints;
 
       data.currentMovePoints = this.currentMovePoints;
       data.maxMovePoints = this.maxMovePoints;
@@ -431,13 +490,8 @@ module Rance
     }
     makeVirtualClone()
     {
-      var clone = new Unit(this.template, this.id);
-
-      clone.isSquadron = this.isSquadron;
-
-      clone.maxStrength = this.maxStrength;
-      clone.currentStrength = this.currentStrength;
-      clone.maxActionPoints = this.maxActionPoints;
+      var data = this.serialize();
+      var clone = new Unit(this.template, this.id, data);
 
       clone.attributes = cloneObject(this.attributes);
 
@@ -449,8 +503,8 @@ module Rance
         currentActionPoints: this.battleStats.currentActionPoints,
         guard:
         {
-          value: this.battleStats.guard.value,
-          coverage: this.battleStats.guard.coverage
+          value: this.battleStats.guardAmount,
+          coverage: this.battleStats.guardCoverage
         }
       };
 

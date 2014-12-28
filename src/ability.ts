@@ -17,7 +17,7 @@ module Rance
 
     target = getTargetOrGuard(battle, user, ability, target);
 
-    var previousUserGuard = user.battleStats.guard.value;
+    var previousUserGuard = user.battleStats.guardAmount;
 
     var effectsToCall = [ability.mainEffect];
     if (ability.secondaryEffects)
@@ -41,7 +41,7 @@ module Rance
     user.removeActionPoints(ability.actionsUse);
     user.addMoveDelay(ability.moveDelay);
 
-    if (user.battleStats.guard.value < previousUserGuard)
+    if (user.battleStats.guardAmount < previousUserGuard)
     {
       user.removeAllGuard();
     }
@@ -60,13 +60,13 @@ module Rance
 
     guarding = guarding.sort(function(a: Unit, b: Unit)
     {
-      return a.battleStats.guard.value - b.battleStats.guard.value;
+      return a.battleStats.guardAmount - b.battleStats.guardAmount;
     });
 
     for (var i = 0; i < guarding.length; i++)
     {
       var guardRoll = Math.random() * 100;
-      if (guardRoll <= guarding[i].battleStats.guard.value)
+      if (guardRoll <= guarding[i].battleStats.guardAmount)
       {
         return guarding[i];
       }
@@ -81,16 +81,16 @@ module Rance
 
     var guarders = allEnemies.filter(function(unit: Unit)
     {
-      if (unit.battleStats.guard.coverage === "all")
+      if (unit.battleStats.guardCoverage === "all")
       {
-        return unit.battleStats.guard.value > 0;
+        return unit.battleStats.guardAmount > 0;
       }
-      else if (unit.battleStats.guard.coverage === "column")
+      else if (unit.battleStats.guardCoverage === "column")
       {
         // same column
         if (unit.battleStats.position[0] === target.battleStats.position[0])
         {
-          return unit.battleStats.guard.value > 0;
+          return unit.battleStats.guardAmount > 0;
         }
       }
     });

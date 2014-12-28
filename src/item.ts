@@ -12,10 +12,14 @@ module Rance
     template: Templates.IItemTemplate;
     unit: Unit;
 
-    constructor(template: Templates.IItemTemplate)
+    constructor(props:
     {
-      this.id = idGenerators.item++;
-      this.template = template;
+      template: Templates.IItemTemplate;
+      id?: number;
+    })
+    {
+      this.id = isFinite(props.id) ? props.id : idGenerators.item++;
+      this.template = props.template;
     }
 
     serialize()

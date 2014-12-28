@@ -79,7 +79,7 @@ module Rance
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
     }
-    makeFlag()
+    makeFlag(seed?: any)
     {
       if (!this.color || !this.secondaryColor) this.makeColorScheme();
 
@@ -90,7 +90,7 @@ module Rance
         secondaryColor: this.secondaryColor
       });
 
-      this.flag.generateRandom();
+      this.flag.generateRandom(seed);
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
     }

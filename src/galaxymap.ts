@@ -55,6 +55,13 @@ module Rance
         return star.serialize();
       });
 
+      data.regionNames = [];
+
+      for (var name in this.mapGen.regions)
+      {
+        data.regionNames.push(name);
+      }
+
       return data;
     }
   }

@@ -20,6 +20,8 @@ module Rance
       players: Player[], humanPlayer: Player)
     {
       this.galaxyMap = map;
+      map.game = this;
+      
       this.playerOrder = players;
       this.humanPlayer = humanPlayer;
       this.turnNumber = 1;
