@@ -62,6 +62,9 @@ module Rance
         data.regionNames.push(name);
       }
 
+      data.maxWidth = this.mapGen.maxWidth;
+      data.maxHeight = this.mapGen.maxHeight;
+
       return data;
     }
   }

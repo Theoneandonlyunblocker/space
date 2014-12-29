@@ -18,22 +18,26 @@ module Rance
     {
       [id: number]: Star;
     } = {};
+    buildingsByControllerId:
+    {
+      [id: number]: Building;
+    } = {};
 
     constructor()
     {
 
     }
 
-    deSerializeGame(data)
+    deserializeGame(data)
     {
 
-      this.map = this.deSerializeMap(data.galaxyMap);
+      this.map = this.deserializeMap(data.galaxyMap);
 
       for (var i = 0; i < data.players.length; i++)
       {
-        var player = data.players[id];
-        var id = player;
-        this.playersById[id] = this.deSerializePlayer(player);
+        var player = data.players[i];
+        var id = player.id;
+        this.playersById[id] = this.deserializePlayer(player);
         this.players.push(player);
       }
 
@@ -42,9 +46,11 @@ module Rance
 
       return new Game(this.map, this.players, this.humanPlayer);
     }
-    deSerializeMap(data)
+    deserializeMap(data)
     {
       var mapGen = new MapGen();
+      mapGen.maxWidth = data.maxWidth;
+      mapGen.maxHeight = data.maxHeight;
 
       for (var i = 0; i < data.regionNames; i++)
       {
@@ -55,16 +61,21 @@ module Rance
 
       for (var i = 0; i < data.allPoints.length; i++)
       {
-        var point = this.deSerializePoint(data.allPoints[i]);
+        var point = this.deserializePoint(data.allPoints[i]);
         allPoints.push(point);
         this.pointsById[point.id] = point;
       }
 
-      for (var i = 0; i < allPoints.length; i++)
+      for (var i = 0; i < data.allPoints.length; i++)
       {
-        for (var j = 0; j < allPoints[i].linksToIds.length; j++)
+        var dataPoint = data.allPoints[i];
+        var realPoint = this.pointsById[dataPoint.id];
+
+        for (var j = 0; j < dataPoint.linksToIds.length; j++)
         {
-          allPoints[i].addLink(allPoints[i].linksToIds[j]);
+          var linkId = dataPoint.linksToIds[j];
+          var linkPoint = this.pointsById[linkId]
+          realPoint.addLink(linkPoint);
         }
       }
 
@@ -74,9 +85,9 @@ module Rance
       var galaxyMap = new GalaxyMap();
       galaxyMap.setMapGen(mapGen);
 
-      return this.map;
+      return galaxyMap;
     }
-    deSerializePoint(data)
+    deserializePoint(data)
     {
       var star = new Star(data.x, data.y, data.id);
       star.name = data.name;
@@ -84,10 +95,19 @@ module Rance
       star.region = data.region;
       star.baseIncome = data.baseIncome;
 
+      for (var category in data.buildings)
+      {
+        for (var i = 0; i < data.buildings[category]; i++)
+        {
+          var buildingData = data.buildings[category][i];
+          var building = this.deserializeBuilding(buildingData);
+        }
+      }
+
       return star;
     }
 
-    deSerializePlayer(data)
+    deserializePlayer(data)
     {
       var player = new Player(data.id);
 
@@ -111,33 +131,33 @@ module Rance
       for (var i = 0; i < data.fleets.length; i++)
       {
         var fleet = data.fleets[i];
-        player.addFleet(this.deSerializeFleet(player, fleet));
+        player.addFleet(this.deserializeFleet(player, fleet));
       }
+
+
 
       return player;
     }
-    deSerializeFleet(player, data)
+    deserializeFleet(player, data)
     {
       var ships = [];
 
       for (var i = 0; i < data.ships.length; i++)
       {
-        var ship = this.deSerializeShip(data.ships[i]);
+        var ship = this.deserializeShip(data.ships[i]);
         player.addUnit(ship);
         ships.push(ship);
       }
 
       return new Fleet(player, ships, this.pointsById[data.locationId], data.id);
     }
-    deSerializeShip(data)
+    deserializeShip(data)
     {
       var template = Templates.ShipTypes[data.templateType];
 
-      var cData: any = {};
-      var ship = new Unit(template, data.id);
-      ship.name = data.name;
+      var ship = new Unit(template, data.id, data);
 
-
+      return ship;
     }
   }
   

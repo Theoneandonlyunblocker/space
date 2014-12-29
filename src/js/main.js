@@ -9408,6 +9408,9 @@ var Rance;
                 data.regionNames.push(name);
             }
 
+            data.maxWidth = this.mapGen.maxWidth;
+            data.maxHeight = this.mapGen.maxHeight;
+
             return data;
         };
         return GalaxyMap;
@@ -10606,13 +10609,13 @@ var Rance;
             this.playersById = {};
             this.pointsById = {};
         }
-        GameLoader.prototype.deSerializeGame = function (data) {
-            this.map = this.deSerializeMap(data.galaxyMap);
+        GameLoader.prototype.deserializeGame = function (data) {
+            this.map = this.deserializeMap(data.galaxyMap);
 
             for (var i = 0; i < data.players.length; i++) {
-                var player = data.players[id];
-                var id = player;
-                this.playersById[id] = this.deSerializePlayer(player);
+                var player = data.players[i];
+                var id = player.id;
+                this.playersById[id] = this.deserializePlayer(player);
                 this.players.push(player);
             }
 
@@ -10620,8 +10623,10 @@ var Rance;
 
             return new Rance.Game(this.map, this.players, this.humanPlayer);
         };
-        GameLoader.prototype.deSerializeMap = function (data) {
+        GameLoader.prototype.deserializeMap = function (data) {
             var mapGen = new Rance.MapGen();
+            mapGen.maxWidth = data.maxWidth;
+            mapGen.maxHeight = data.maxHeight;
 
             for (var i = 0; i < data.regionNames; i++) {
                 mapGen.makeRegion(data.regionNames[i]);
@@ -10630,14 +10635,19 @@ var Rance;
             var allPoints = [];
 
             for (var i = 0; i < data.allPoints.length; i++) {
-                var point = this.deSerializePoint(data.allPoints[i]);
+                var point = this.deserializePoint(data.allPoints[i]);
                 allPoints.push(point);
                 this.pointsById[point.id] = point;
             }
 
-            for (var i = 0; i < allPoints.length; i++) {
-                for (var j = 0; j < allPoints[i].linksToIds.length; j++) {
-                    allPoints[i].addLink(allPoints[i].linksToIds[j]);
+            for (var i = 0; i < data.allPoints.length; i++) {
+                var dataPoint = data.allPoints[i];
+                var realPoint = this.pointsById[dataPoint.id];
+
+                for (var j = 0; j < dataPoint.linksToIds.length; j++) {
+                    var linkId = dataPoint.linksToIds[j];
+                    var linkPoint = this.pointsById[linkId];
+                    realPoint.addLink(linkPoint);
                 }
             }
 
@@ -10647,9 +10657,9 @@ var Rance;
             var galaxyMap = new Rance.GalaxyMap();
             galaxyMap.setMapGen(mapGen);
 
-            return this.map;
+            return galaxyMap;
         };
-        GameLoader.prototype.deSerializePoint = function (data) {
+        GameLoader.prototype.deserializePoint = function (data) {
             var star = new Rance.Star(data.x, data.y, data.id);
             star.name = data.name;
             star.distance = data.distance;
@@ -10659,7 +10669,7 @@ var Rance;
             return star;
         };
 
-        GameLoader.prototype.deSerializePlayer = function (data) {
+        GameLoader.prototype.deserializePlayer = function (data) {
             var player = new Rance.Player(data.id);
 
             player.money = data.money;
@@ -10677,28 +10687,28 @@ var Rance;
 
             for (var i = 0; i < data.fleets.length; i++) {
                 var fleet = data.fleets[i];
-                player.addFleet(this.deSerializeFleet(player, fleet));
+                player.addFleet(this.deserializeFleet(player, fleet));
             }
 
             return player;
         };
-        GameLoader.prototype.deSerializeFleet = function (player, data) {
+        GameLoader.prototype.deserializeFleet = function (player, data) {
             var ships = [];
 
             for (var i = 0; i < data.ships.length; i++) {
-                var ship = this.deSerializeShip(data.ships[i]);
+                var ship = this.deserializeShip(data.ships[i]);
                 player.addUnit(ship);
                 ships.push(ship);
             }
 
             return new Rance.Fleet(player, ships, this.pointsById[data.locationId], data.id);
         };
-        GameLoader.prototype.deSerializeShip = function (data) {
+        GameLoader.prototype.deserializeShip = function (data) {
             var template = Rance.Templates.ShipTypes[data.templateType];
 
-            var cData = {};
-            var ship = new Rance.Unit(template, data.id);
-            ship.name = data.name;
+            var ship = new Rance.Unit(template, data.id, data);
+
+            return ship;
         };
         return GameLoader;
     })();
@@ -10926,24 +10936,34 @@ var Rance;
 /// <reference path="gameloader.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
+var a, b;
 var Rance;
 (function (Rance) {
     var App = (function () {
-        function App(savedGame) {
+        function App() {
             var self = this;
 
-            this.game = savedGame;
             this.seed = Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
-                self.makeApp();
+                var gameData;
+
+                if (false && localStorage && localStorage.length > 0) {
+                    for (var key in localStorage) {
+                        if (key.indexOf("Rance.Save") > -1) {
+                            var gameData = JSON.parse(localStorage[Object.keys(localStorage)[0]]);
+                            break;
+                        }
+                    }
+                }
+
+                self.makeApp(gameData);
             });
         }
-        App.prototype.makeApp = function () {
+        App.prototype.makeApp = function (savedGame) {
             this.images = this.loader.imageCache;
-            if (!this.game)
-                this.makeGame();
+            this.game = savedGame ? new Rance.GameLoader().deserializeGame(savedGame) : this.makeGame();
             this.initGame();
             this.initDisplay();
             this.initUI();
@@ -10955,8 +10975,8 @@ var Rance;
             var independents = playerData.independents;
             var map = this.makeMap(playerData);
 
-            this.game = new Rance.Game(map, players, players[0]);
-            this.game.independents.push(independents);
+            var game = new Rance.Game(map, players, players[0]);
+            game.independents.push(independents);
 
             for (var itemType in Rance.Templates.Items) {
                 for (var i = 0; i < 2; i++) {
@@ -10964,6 +10984,8 @@ var Rance;
                     players[0].addItem(item);
                 }
             }
+
+            return game;
         };
 
         App.prototype.makePlayers = function () {

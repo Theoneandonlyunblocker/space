@@ -15,6 +15,7 @@
 
 /// <reference path="mctree.ts"/>
 
+var a, b;
 module Rance
 {
   export class App
@@ -35,23 +36,36 @@ module Rance
       }
     };
 
-    constructor(savedGame?: Game)
+    constructor()
     {
       var self = this;
 
-      this.game = savedGame;
       this.seed = Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
       {
-        self.makeApp();
+        var gameData;
+
+        if (false && localStorage && localStorage.length > 0)
+        {
+          for (var key in localStorage)
+          {
+            if (key.indexOf("Rance.Save") > -1)
+            {
+              var gameData = JSON.parse(localStorage[Object.keys(localStorage)[0]]);
+              break;
+            }
+          }
+        }
+
+        self.makeApp(gameData);
       });
     }
-    makeApp()
+    makeApp(savedGame?)
     {
       this.images = this.loader.imageCache;
-      if (!this.game) this.makeGame();
+      this.game = savedGame ? new GameLoader().deserializeGame(savedGame) : this.makeGame();
       this.initGame();
       this.initDisplay();
       this.initUI();
@@ -64,8 +78,8 @@ module Rance
       var independents = playerData.independents;
       var map = this.makeMap(playerData);
 
-      this.game = new Game(map, players, players[0]);
-      this.game.independents.push(independents);
+      var game = new Game(map, players, players[0]);
+      game.independents.push(independents);
 
       for (var itemType in Templates.Items)
       {
@@ -75,6 +89,8 @@ module Rance
           players[0].addItem(item);
         }
       }
+
+      return game;
     }
 
     makePlayers()

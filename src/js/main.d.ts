@@ -1699,12 +1699,12 @@ declare module Rance {
             [id: number]: Rance.Star;
         };
         constructor();
-        public deSerializeGame(data: any): Rance.Game;
-        public deSerializeMap(data: any): Rance.GalaxyMap;
-        public deSerializePoint(data: any): Rance.Star;
-        public deSerializePlayer(data: any): Rance.Player;
-        public deSerializeFleet(player: any, data: any): Rance.Fleet;
-        public deSerializeShip(data: any): void;
+        public deserializeGame(data: any): Rance.Game;
+        public deserializeMap(data: any): Rance.GalaxyMap;
+        public deserializePoint(data: any): Rance.Star;
+        public deserializePlayer(data: any): Rance.Player;
+        public deserializeFleet(player: any, data: any): Rance.Fleet;
+        public deserializeShip(data: any): Rance.Unit;
     }
 }
 declare module Rance {
@@ -1750,6 +1750,7 @@ declare module Rance {
         public printToConsole(): void;
     }
 }
+declare var a: any, b: any;
 declare module Rance {
     class App {
         public seed: any;
@@ -1765,9 +1766,9 @@ declare module Rance {
                 [id: string]: HTMLImageElement;
             };
         };
-        constructor(savedGame?: Rance.Game);
-        public makeApp(): void;
-        public makeGame(): void;
+        constructor();
+        public makeApp(savedGame?: any): void;
+        public makeGame(): Rance.Game;
         public makePlayers(): {
             players: any[];
             independents: Rance.Player;
