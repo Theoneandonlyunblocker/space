@@ -523,6 +523,9 @@ module Rance
         data.revealedStarIds.push(id);
       }
 
+      data.buildings = [];
+      
+
       return data;
     }
   }  

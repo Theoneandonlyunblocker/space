@@ -1692,16 +1692,22 @@ declare module Rance {
         public map: Rance.GalaxyMap;
         public humanPlayer: Rance.Player;
         public players: Rance.Player[];
+        public independents: Rance.Player[];
         public playersById: {
             [id: number]: Rance.Player;
         };
         public pointsById: {
             [id: number]: Rance.Star;
         };
+        public buildingsByControllerId: {
+            [id: number]: Rance.Building;
+        };
         constructor();
         public deserializeGame(data: any): Rance.Game;
         public deserializeMap(data: any): Rance.GalaxyMap;
         public deserializePoint(data: any): Rance.Star;
+        public deserializeBuildings(data: any): void;
+        public deserializeBuilding(data: any): Rance.Building;
         public deserializePlayer(data: any): Rance.Player;
         public deserializeFleet(player: any, data: any): Rance.Fleet;
         public deserializeShip(data: any): Rance.Unit;

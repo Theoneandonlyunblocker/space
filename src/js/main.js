@@ -6052,6 +6052,8 @@ var Rance;
                 data.revealedStarIds.push(id);
             }
 
+            data.buildings = [];
+
             return data;
         };
         return Player;
@@ -10606,22 +10608,33 @@ var Rance;
     var GameLoader = (function () {
         function GameLoader() {
             this.players = [];
+            this.independents = [];
             this.playersById = {};
             this.pointsById = {};
+            this.buildingsByControllerId = {};
         }
         GameLoader.prototype.deserializeGame = function (data) {
             this.map = this.deserializeMap(data.galaxyMap);
 
             for (var i = 0; i < data.players.length; i++) {
-                var player = data.players[i];
-                var id = player.id;
-                this.playersById[id] = this.deserializePlayer(player);
-                this.players.push(player);
+                var playerData = data.players[i];
+                var id = playerData.id;
+                var player = this.playersById[id] = this.deserializePlayer(playerData);
+                if (player.name === "Independent") {
+                    this.independents.push(player);
+                } else {
+                    this.players.push(player);
+                }
             }
 
             this.humanPlayer = this.playersById[data.humanPlayerId];
 
-            return new Rance.Game(this.map, this.players, this.humanPlayer);
+            this.deserializeBuildings(data.galaxyMap);
+
+            var game = new Rance.Game(this.map, this.players, this.humanPlayer);
+            game.independents = game.independents.concat(this.independents);
+
+            return game;
         };
         GameLoader.prototype.deserializeMap = function (data) {
             var mapGen = new Rance.MapGen();
@@ -10668,7 +10681,32 @@ var Rance;
 
             return star;
         };
+        GameLoader.prototype.deserializeBuildings = function (data) {
+            for (var i = 0; i < data.allPoints.length; i++) {
+                var starData = data.allPoints[i];
+                var star = this.pointsById[starData.id];
 
+                for (var category in starData.buildings) {
+                    for (var j = 0; j < starData.buildings[category].length; j++) {
+                        var buildingData = starData.buildings[category][j];
+                        var building = this.deserializeBuilding(buildingData);
+
+                        star.addBuilding(building);
+                    }
+                }
+            }
+        };
+        GameLoader.prototype.deserializeBuilding = function (data) {
+            var template = Rance.Templates.Buildings[data.templateType];
+            var building = new Rance.Building({
+                template: template,
+                location: this.pointsById[data.locationId],
+                controller: this.playersById[data.controllerId],
+                upgradeLevel: data.upgradeLevel
+            });
+
+            return building;
+        };
         GameLoader.prototype.deserializePlayer = function (data) {
             var player = new Rance.Player(data.id);
 
@@ -10682,12 +10720,18 @@ var Rance;
                 player.secondaryColor = data.secondaryColor;
                 player.colorAlpha = data.colorAlpha;
 
+                debugger;
+
                 player.makeFlag(data.flag.seed);
             }
 
             for (var i = 0; i < data.fleets.length; i++) {
                 var fleet = data.fleets[i];
                 player.addFleet(this.deserializeFleet(player, fleet));
+            }
+
+            for (var i = 0; i < data.controlledLocationIds.length; i++) {
+                player.addStar(this.pointsById[data.controlledLocationIds[i]]);
             }
 
             return player;
@@ -10949,7 +10993,7 @@ var Rance;
             this.loader = new Rance.AppLoader(function () {
                 var gameData;
 
-                if (false && localStorage && localStorage.length > 0) {
+                if (localStorage && localStorage.length > 0) {
                     for (var key in localStorage) {
                         if (key.indexOf("Rance.Save") > -1) {
                             var gameData = JSON.parse(localStorage[Object.keys(localStorage)[0]]);
