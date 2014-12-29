@@ -35,12 +35,18 @@ module Rance
     {
       var allEmblems = [];
 
+      function getSeededRandomArrayItem(array)
+      {
+        var _rnd = Math.floor(rng.uniform() * array.length);
+        return array[_rnd];
+      }
+
       for (var subEmblem in Templates.SubEmblems)
       {
         allEmblems.push(Templates.SubEmblems[subEmblem]);
       }
 
-      var mainEmblem = getRandomArrayItem(allEmblems);
+      var mainEmblem = getSeededRandomArrayItem(allEmblems);
 
       if (mainEmblem.type === "both")
       {
@@ -68,9 +74,10 @@ module Rance
         }
       }
 
+
       if (mainEmblem.type === "inner" || mainEmblem.type === "inner-or-both")
       {
-        var subEmblem = getRandomArrayItem(allEmblems.filter(function(emblem)
+        var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function(emblem)
         {
           return (emblem.type === "outer" || emblem.type === "outer-or-both");
         }));
@@ -79,7 +86,7 @@ module Rance
       }
       else if (mainEmblem.type === "outer" || mainEmblem.type === "outer-or-both")
       {
-        var subEmblem = getRandomArrayItem(allEmblems.filter(function(emblem)
+        var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function(emblem)
         {
           return (emblem.type === "inner" || emblem.type === "inner-or-both");
         }));

@@ -47,7 +47,7 @@ module Rance
       {
         var gameData;
 
-        if (localStorage && localStorage.length > 0)
+        if (false && localStorage && localStorage.length > 0)
         {
           for (var key in localStorage)
           {

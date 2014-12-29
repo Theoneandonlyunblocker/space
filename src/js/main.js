@@ -5419,11 +5419,16 @@ var Rance;
         Emblem.prototype.generateSubEmblems = function (rng) {
             var allEmblems = [];
 
+            function getSeededRandomArrayItem(array) {
+                var _rnd = Math.floor(rng.uniform() * array.length);
+                return array[_rnd];
+            }
+
             for (var subEmblem in Rance.Templates.SubEmblems) {
                 allEmblems.push(Rance.Templates.SubEmblems[subEmblem]);
             }
 
-            var mainEmblem = Rance.getRandomArrayItem(allEmblems);
+            var mainEmblem = getSeededRandomArrayItem(allEmblems);
 
             if (mainEmblem.type === "both") {
                 this.inner = mainEmblem;
@@ -5442,13 +5447,13 @@ var Rance;
             }
 
             if (mainEmblem.type === "inner" || mainEmblem.type === "inner-or-both") {
-                var subEmblem = Rance.getRandomArrayItem(allEmblems.filter(function (emblem) {
+                var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
                     return (emblem.type === "outer" || emblem.type === "outer-or-both");
                 }));
 
                 this.outer = subEmblem;
             } else if (mainEmblem.type === "outer" || mainEmblem.type === "outer-or-both") {
-                var subEmblem = Rance.getRandomArrayItem(allEmblems.filter(function (emblem) {
+                var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
                     return (emblem.type === "inner" || emblem.type === "inner-or-both");
                 }));
 
@@ -10720,8 +10725,6 @@ var Rance;
                 player.secondaryColor = data.secondaryColor;
                 player.colorAlpha = data.colorAlpha;
 
-                debugger;
-
                 player.makeFlag(data.flag.seed);
             }
 
@@ -10993,7 +10996,7 @@ var Rance;
             this.loader = new Rance.AppLoader(function () {
                 var gameData;
 
-                if (localStorage && localStorage.length > 0) {
+                if (false && localStorage && localStorage.length > 0) {
                     for (var key in localStorage) {
                         if (key.indexOf("Rance.Save") > -1) {
                             var gameData = JSON.parse(localStorage[Object.keys(localStorage)[0]]);

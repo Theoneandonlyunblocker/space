@@ -162,8 +162,7 @@ module Rance
         player.secondaryColor = data.secondaryColor;
         player.colorAlpha = data.colorAlpha;
 
-        debugger;
-        
+
         player.makeFlag(data.flag.seed);
       }
 
