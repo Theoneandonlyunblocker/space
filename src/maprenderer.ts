@@ -60,6 +60,7 @@ module Rance
 
     currentMapMode: IMapRendererLayerMapMode;
     isDirty: boolean = true;
+    preventRender: boolean = false;
 
     constructor(map: GalaxyMap)
     {
@@ -779,7 +780,7 @@ module Rance
     }
     render()
     {
-      if (!this.isDirty) return;
+      if (this.preventRender || !this.isDirty) return;
 
       console.log("render map")
 

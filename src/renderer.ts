@@ -49,6 +49,13 @@ module Rance
         }
       );
     }
+    destroy()
+    {
+      this.pause();
+      this.stage.removeChildren();
+      this.removeRendererView();
+
+    }
     removeRendererView()
     {
       if (this.renderer.view.parentNode)

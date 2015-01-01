@@ -20,8 +20,11 @@ module Rance
 
       handleLoad: function()
       {
-        app.load(this.refs.saveName.getDOMNode().value);
+        var saveName = this.refs.saveName.getDOMNode().value
+
         this.handleClose();
+
+        app.load(saveName);
       },
       handleClose: function()
       {

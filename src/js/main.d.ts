@@ -1188,9 +1188,11 @@ declare module Rance {
         public playerControl: Rance.PlayerControl;
         public player: Rance.Player;
         public game: Rance.Game;
+        public switchSceneFN: any;
         constructor(container: HTMLElement);
         public addEventListeners(): void;
         public switchScene(newScene: string): void;
+        public destroy(): void;
         public render(): void;
     }
 }
@@ -1408,6 +1410,7 @@ declare module Rance {
         };
         public currentMapMode: IMapRendererLayerMapMode;
         public isDirty: boolean;
+        public preventRender: boolean;
         constructor(map: Rance.GalaxyMap);
         public init(): void;
         public addEventListeners(): void;
@@ -1635,6 +1638,7 @@ declare module Rance {
         constructor();
         public init(): void;
         public initRenderer(): void;
+        public destroy(): void;
         public removeRendererView(): void;
         public bindRendererView(container: HTMLCanvasElement): void;
         public initLayers(): void;
@@ -1795,6 +1799,7 @@ declare module Rance {
         };
         constructor();
         public makeApp(savedGame?: any): void;
+        public destroy(): void;
         public load(saveName: string): void;
         public makeGame(): Rance.Game;
         public makePlayers(): {

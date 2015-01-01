@@ -70,11 +70,20 @@ module Rance
       this.initDisplay();
       this.initUI();
     }
+    destroy()
+    {
+      this.renderer.destroy();
+      this.reactUI.destroy();
+    }
     load(saveName: string)
     {
-      var data = localStorage.getItem(saveName);
+      var itemName = "Rance.Save." + saveName;
+      var data = localStorage.getItem(itemName);
       var parsed = JSON.parse(data);
-      this.makeApp(parsed);
+
+      this.destroy();
+
+      this.makeApp(parsed.gameData);
     }
 
     makeGame()

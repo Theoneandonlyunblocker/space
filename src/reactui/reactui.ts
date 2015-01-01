@@ -16,6 +16,8 @@ module Rance
     playerControl: PlayerControl;
     player: Player;
     game: Game;
+
+    switchSceneFN: any;
     
     constructor(public container: HTMLElement)
     {
@@ -23,16 +25,22 @@ module Rance
     }
     addEventListeners()
     {
-      var self = this;
-      eventManager.addEventListener("switchScene", function(e)
+      this.switchSceneFN = function(e)
       {
-        self.switchScene(e.data);
-      });
+        this.switchScene(e.data);
+      }.bind(this);
+
+      eventManager.addEventListener("switchScene", this.switchSceneFN);
     }
     switchScene(newScene: string)
     {
       this.currentScene = newScene;
       this.render();
+    }
+    destroy()
+    {
+      eventManager.removeEventListener("switchScene", this.switchSceneFN);
+      React.unmountComponentAtNode(this.container);
     }
     render()
     {

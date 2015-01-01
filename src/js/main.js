@@ -2444,8 +2444,11 @@ var Rance;
                 this.setInputText(row.data.name);
             },
             handleLoad: function () {
-                app.load(this.refs.saveName.getDOMNode().value);
+                var saveName = this.refs.saveName.getDOMNode().value;
+
                 this.handleClose();
+
+                app.load(saveName);
             },
             handleClose: function () {
                 this.props.handleClose();
@@ -7772,14 +7775,19 @@ var Rance;
             this.addEventListeners();
         }
         ReactUI.prototype.addEventListeners = function () {
-            var self = this;
-            Rance.eventManager.addEventListener("switchScene", function (e) {
-                self.switchScene(e.data);
-            });
+            this.switchSceneFN = function (e) {
+                this.switchScene(e.data);
+            }.bind(this);
+
+            Rance.eventManager.addEventListener("switchScene", this.switchSceneFN);
         };
         ReactUI.prototype.switchScene = function (newScene) {
             this.currentScene = newScene;
             this.render();
+        };
+        ReactUI.prototype.destroy = function () {
+            Rance.eventManager.removeEventListener("switchScene", this.switchSceneFN);
+            React.unmountComponentAtNode(this.container);
         };
         ReactUI.prototype.render = function () {
             this.stage = React.renderComponent(Rance.UIComponents.Stage({
@@ -8956,6 +8964,7 @@ var Rance;
             this.mapModes = {};
             this.fowSpriteCache = {};
             this.isDirty = true;
+            this.preventRender = false;
             this.galaxyMap = map;
             this.galaxyMap.mapRenderer = this;
             this.game = map.game;
@@ -9565,7 +9574,7 @@ var Rance;
             this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.render = function () {
-            if (!this.isDirty)
+            if (this.preventRender || !this.isDirty)
                 return;
 
             console.log("render map");
@@ -10421,6 +10430,11 @@ var Rance;
                 antialias: true
             });
         };
+        Renderer.prototype.destroy = function () {
+            this.pause();
+            this.stage.removeChildren();
+            this.removeRendererView();
+        };
         Renderer.prototype.removeRendererView = function () {
             if (this.renderer.view.parentNode) {
                 this.renderer.view.parentNode.removeChild(this.renderer.view);
@@ -11246,10 +11260,18 @@ var Rance;
             this.initDisplay();
             this.initUI();
         };
+        App.prototype.destroy = function () {
+            this.renderer.destroy();
+            this.reactUI.destroy();
+        };
         App.prototype.load = function (saveName) {
-            var data = localStorage.getItem(saveName);
+            var itemName = "Rance.Save." + saveName;
+            var data = localStorage.getItem(itemName);
             var parsed = JSON.parse(data);
-            this.makeApp(parsed);
+
+            this.destroy();
+
+            this.makeApp(parsed.gameData);
         };
 
         App.prototype.makeGame = function () {
