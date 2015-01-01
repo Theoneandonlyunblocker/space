@@ -70,6 +70,12 @@ module Rance
       this.initDisplay();
       this.initUI();
     }
+    load(saveName: string)
+    {
+      var data = localStorage.getItem(saveName);
+      var parsed = JSON.parse(data);
+      this.makeApp(parsed);
+    }
 
     makeGame()
     {

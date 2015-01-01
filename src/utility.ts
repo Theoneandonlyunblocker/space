@@ -289,10 +289,20 @@ module Rance
 
     return true;
   }
-  export function bitmapMask(base: PIXI.DisplayObjectContainer,
-    mask: PIXI.DisplayObjectContainer)
+  export function prettifyDate(date: Date)
   {
-    // var baseCanvas = base.generateTexture().getCanvas();
-    // var maskCanvas = base.generateTexture().getCanvas();
+    return(
+      [
+        [
+          date.getDate(),
+          date.getMonth() + 1,
+          date.getFullYear().toString().slice(2,4)
+        ].join("/"),
+        [
+          date.getHours(),
+          date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
+        ].join(":")
+      ].join(" ")
+    );
   }
 }

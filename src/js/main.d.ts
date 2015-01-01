@@ -193,6 +193,26 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var SaveListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SaveList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var SaveGame: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var LoadGame: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var EconomySummaryItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -304,7 +324,7 @@ declare module Rance {
     function convertCase(polygon: any[]): any;
     function offsetPolygon(polygon: Point[], amount: number): any;
     function arraysEqual(a1: any[], a2: any[]): boolean;
-    function bitmapMask(base: PIXI.DisplayObjectContainer, mask: PIXI.DisplayObjectContainer): void;
+    function prettifyDate(date: Date): string;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -1648,6 +1668,7 @@ declare module Rance {
         public processPlayerStartTurn(player: Rance.Player): void;
         public setNextPlayer(): void;
         public serialize(): any;
+        public save(name: string): void;
     }
 }
 declare module Rance {
@@ -1774,6 +1795,7 @@ declare module Rance {
         };
         constructor();
         public makeApp(savedGame?: any): void;
+        public load(saveName: string): void;
         public makeGame(): Rance.Game;
         public makePlayers(): {
             players: any[];

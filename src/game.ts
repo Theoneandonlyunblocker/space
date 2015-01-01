@@ -89,5 +89,22 @@ module Rance
 
       return data;
     }
+    save(name: string)
+    {
+      var saveString = "Rance.Save." + name;
+
+      var date = new Date();
+
+      var gameData = this.serialize();
+
+      var stringified = JSON.stringify(
+      {
+        name: name,
+        date: date,
+        gameData: gameData
+      });
+
+      localStorage.setItem(saveString, stringified);
+    }
   }
 }

@@ -1,5 +1,7 @@
 /// <reference path="lightbox.ts"/>
 
+/// <reference path="../saves/savegame.ts"/>
+/// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
 /// <reference path="economysummary.ts"/>
 
@@ -31,7 +33,14 @@ module Rance
           this.setState(
           {
             opened: "equipItems",
-            lightBoxElement: this.makeLightBox("equipItems")
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.ItemEquip(
+              {
+                player: this.props.player
+              })
+            })
           });
         }
       },
@@ -47,7 +56,60 @@ module Rance
           this.setState(
           {
             opened: "economySummary",
-            lightBoxElement: this.makeLightBox("economySummary")
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.EconomySummary(
+              {
+                player: this.props.player
+              })
+            })
+          });
+        }
+      },
+
+      handleSaveGame: function()
+      {
+        if (this.state.opened === "saveGame")
+        {
+          this.closeLightBox();
+        }
+        else
+        {
+          this.setState(
+          {
+            opened: "saveGame",
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.SaveGame(
+              {
+                handleClose: this.closeLightBox
+              })
+            })
+          });
+        }
+      },
+
+      handleLoadGame: function()
+      {
+        if (this.state.opened === "loadGame")
+        {
+          this.closeLightBox();
+        }
+        else
+        {
+          this.setState(
+          {
+            opened: "loadGame",
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.LoadGame(
+              {
+                handleClose: this.closeLightBox
+              })
+            })
           });
         }
       },
@@ -62,43 +124,6 @@ module Rance
       },
 
 
-      makeLightBox: function(type)
-      {
-        switch (type)
-        {
-          case "equipItems":
-          {
-            return(
-              UIComponents.LightBox(
-              {
-                handleClose: this.closeLightBox,
-                content: UIComponents.ItemEquip(
-                {
-                  player: this.props.player
-                })
-              })
-            );
-          }
-          case "economySummary":
-          {
-            return(
-              UIComponents.LightBox(
-              {
-                handleClose: this.closeLightBox,
-                content: UIComponents.EconomySummary(
-                {
-                  player: this.props.player
-                })
-              })
-            );
-          }
-          default:
-          {
-            return null;
-          }
-        }
-      },
-
       render: function()
       {
         return(
@@ -110,6 +135,16 @@ module Rance
             {
               className: "top-menu-items"
             },
+              React.DOM.button(
+              {
+                className: "top-menu-items-button",
+                onClick: this.handleSaveGame
+              }, "Save"),
+              React.DOM.button(
+              {
+                className: "top-menu-items-button",
+                onClick: this.handleLoadGame
+              }, "Load"),
               React.DOM.button(
               {
                 className: "top-menu-items-button",

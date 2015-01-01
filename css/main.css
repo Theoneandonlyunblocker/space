@@ -1632,3 +1632,83 @@ progress::-webkit-progress-value {
   margin-left: 0.25em;
   color: #f3c620;
 }
+.save-game {
+  position: relative;
+  padding: 8px;
+  color: #eeeeee;
+  background-color: #101c1b;
+}
+.save-game .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.save-game .sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 400px) {
+  .save-game .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 400px) {
+  .save-game .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .save-game .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .save-game .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+}
+.save-game-buttons-container {
+  display: flex;
+  justify-content: center;
+}
+.save-game-name {
+  margin: 5px 0;
+}
+.save-game-button {
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #eeeeee;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  margin: 5px 20px;
+}
+.save-game-button:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.save-game-button:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.save-game-button:disabled,
+.save-game-button.disabled {
+  cursor: default;
+  color: #bbbbbb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+}

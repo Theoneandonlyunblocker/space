@@ -2294,6 +2294,188 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.SaveListItem = React.createClass({
+            displayName: "SaveListItem",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "save-list-item-cell" + " save-list-" + type;
+
+                var cellContent;
+
+                switch (type) {
+                    default: {
+                        cellContent = this.props[type];
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                var rowProps = {
+                    className: "save-list-item",
+                    onClick: this.props.handleClick
+                };
+
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="savelistitem.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.SaveList = React.createClass({
+            displayName: "SaveList",
+            render: function () {
+                var rows = [];
+
+                var allKeys = Object.keys(localStorage);
+
+                var saveKeys = allKeys.filter(function (key) {
+                    return (key.indexOf("Rance.Save") > -1);
+                });
+
+                for (var i = 0; i < saveKeys.length; i++) {
+                    var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
+                    var date = new Date(saveData.date);
+
+                    rows.push({
+                        key: saveKeys[i],
+                        data: {
+                            name: saveData.name,
+                            date: Rance.prettifyDate(date),
+                            accurateDate: saveData.date,
+                            rowConstructor: Rance.UIComponents.SaveListItem
+                        }
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Date",
+                        key: "date",
+                        defaultOrder: "desc",
+                        propToSortBy: "accurateDate"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "save-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    onRowChange: this.props.onRowChange,
+                    autoSelect: this.props.autoSelect
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="savelist.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.SaveGame = React.createClass({
+            displayName: "SaveGame",
+            setInputText: function (newText) {
+                this.refs.saveName.getDOMNode().value = newText;
+            },
+            handleRowChange: function (row) {
+                this.setInputText(row.data.name);
+            },
+            handleSave: function () {
+                app.game.save(this.refs.saveName.getDOMNode().value);
+                this.handleClose();
+            },
+            handleClose: function () {
+                this.props.handleClose();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "save-game"
+                }, Rance.UIComponents.SaveList({
+                    onRowChange: this.handleRowChange
+                }), React.DOM.input({
+                    className: "save-game-name",
+                    ref: "saveName",
+                    type: "text"
+                }), React.DOM.div({
+                    className: "save-game-buttons-container"
+                }, React.DOM.button({
+                    className: "save-game-button",
+                    onClick: this.handleSave
+                }, "Save"), React.DOM.button({
+                    className: "save-game-button",
+                    onClick: this.handleClose
+                }, "Cancel"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="savelist.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.LoadGame = React.createClass({
+            displayName: "LoadGame",
+            setInputText: function (newText) {
+                this.refs.saveName.getDOMNode().value = newText;
+            },
+            handleRowChange: function (row) {
+                this.setInputText(row.data.name);
+            },
+            handleLoad: function () {
+                app.load(this.refs.saveName.getDOMNode().value);
+                this.handleClose();
+            },
+            handleClose: function () {
+                this.props.handleClose();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "save-game"
+                }, Rance.UIComponents.SaveList({
+                    onRowChange: this.handleRowChange
+                }), React.DOM.input({
+                    className: "save-game-name",
+                    ref: "saveName",
+                    type: "text"
+                }), React.DOM.div({
+                    className: "save-game-buttons-container"
+                }, React.DOM.button({
+                    className: "save-game-button",
+                    onClick: this.handleLoad
+                }, "Load"), React.DOM.button({
+                    className: "save-game-button",
+                    onClick: this.handleClose
+                }, "Cancel"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.EconomySummaryItem = React.createClass({
             displayName: "EconomySummaryItem",
             makeCell: function (type) {
@@ -2397,6 +2579,8 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
+/// <reference path="../saves/savegame.ts"/>
+/// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
 /// <reference path="economysummary.ts"/>
 var Rance;
@@ -2416,7 +2600,12 @@ var Rance;
                 } else {
                     this.setState({
                         opened: "equipItems",
-                        lightBoxElement: this.makeLightBox("equipItems")
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.ItemEquip({
+                                player: this.props.player
+                            })
+                        })
                     });
                 }
             },
@@ -2426,7 +2615,42 @@ var Rance;
                 } else {
                     this.setState({
                         opened: "economySummary",
-                        lightBoxElement: this.makeLightBox("economySummary")
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.EconomySummary({
+                                player: this.props.player
+                            })
+                        })
+                    });
+                }
+            },
+            handleSaveGame: function () {
+                if (this.state.opened === "saveGame") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "saveGame",
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.SaveGame({
+                                handleClose: this.closeLightBox
+                            })
+                        })
+                    });
+                }
+            },
+            handleLoadGame: function () {
+                if (this.state.opened === "loadGame") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "loadGame",
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.LoadGame({
+                                handleClose: this.closeLightBox
+                            })
+                        })
                     });
                 }
             },
@@ -2436,35 +2660,18 @@ var Rance;
                     lightBoxElement: null
                 });
             },
-            makeLightBox: function (type) {
-                switch (type) {
-                    case "equipItems": {
-                        return (Rance.UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.ItemEquip({
-                                player: this.props.player
-                            })
-                        }));
-                    }
-                    case "economySummary": {
-                        return (Rance.UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.EconomySummary({
-                                player: this.props.player
-                            })
-                        }));
-                    }
-                    default: {
-                        return null;
-                    }
-                }
-            },
             render: function () {
                 return (React.DOM.div({
                     className: "top-menu"
                 }, React.DOM.div({
                     className: "top-menu-items"
                 }, React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleSaveGame
+                }, "Save"), React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleLoadGame
+                }, "Load"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleEconomySummary
                 }, "Economy"), React.DOM.button({
@@ -3368,11 +3575,20 @@ var Rance;
         return true;
     }
     Rance.arraysEqual = arraysEqual;
-    function bitmapMask(base, mask) {
-        // var baseCanvas = base.generateTexture().getCanvas();
-        // var maskCanvas = base.generateTexture().getCanvas();
+    function prettifyDate(date) {
+        return ([
+            [
+                date.getDate(),
+                date.getMonth() + 1,
+                date.getFullYear().toString().slice(2, 4)
+            ].join("/"),
+            [
+                date.getHours(),
+                date.getMinutes().toString().length < 2 ? "0" + date.getMinutes() : date.getMinutes().toString()
+            ].join(":")
+        ].join(" "));
     }
-    Rance.bitmapMask = bitmapMask;
+    Rance.prettifyDate = prettifyDate;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -10508,6 +10724,21 @@ var Rance;
 
             return data;
         };
+        Game.prototype.save = function (name) {
+            var saveString = "Rance.Save." + name;
+
+            var date = new Date();
+
+            var gameData = this.serialize();
+
+            var stringified = JSON.stringify({
+                name: name,
+                date: date,
+                gameData: gameData
+            });
+
+            localStorage.setItem(saveString, stringified);
+        };
         return Game;
     })();
     Rance.Game = Game;
@@ -11014,6 +11245,11 @@ var Rance;
             this.initGame();
             this.initDisplay();
             this.initUI();
+        };
+        App.prototype.load = function (saveName) {
+            var data = localStorage.getItem(saveName);
+            var parsed = JSON.parse(data);
+            this.makeApp(parsed);
         };
 
         App.prototype.makeGame = function () {
