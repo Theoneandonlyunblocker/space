@@ -65,15 +65,10 @@ module Rance
     makeApp(savedGame?)
     {
       this.images = this.loader.imageCache;
-      this.game = savedGame ? new GameLoader().deserializeGame(savedGame) : this.makeGame();
+      this.game = this.makeGame();
       this.initGame();
       this.initDisplay();
       this.initUI();
-    }
-    destroy()
-    {
-      this.renderer.destroy();
-      this.reactUI.destroy();
     }
     load(saveName: string)
     {
@@ -81,9 +76,22 @@ module Rance
       var data = localStorage.getItem(itemName);
       var parsed = JSON.parse(data);
 
-      this.destroy();
+      this.mapRenderer.preventRender = true;
 
-      this.makeApp(parsed.gameData);
+      this.game = new GameLoader().deserializeGame(parsed.gameData);
+
+      this.initGame();
+
+      this.mapRenderer.preventRender = false;
+
+      this.mapRenderer.setMap(this.game.galaxyMap);
+      this.mapRenderer.setAllLayersAsDirty();
+
+
+      this.reactUI.destroy();
+      this.initUI();
+
+      //this.renderer.camera.centerOnPosition(this.humanPlayer.controlledLocations[0]);
     }
 
     makeGame()
@@ -143,6 +151,9 @@ module Rance
     initGame()
     {
       this.humanPlayer = this.game.humanPlayer;
+
+      if (this.playerControl) this.playerControl.removeEventListeners();
+
       this.playerControl = new PlayerControl(this.humanPlayer);
 
       return this.game;

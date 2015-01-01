@@ -52,9 +52,9 @@ module Rance
     destroy()
     {
       this.pause();
+      this.layers["bgFilter"].filters = null;
       this.stage.removeChildren();
       this.removeRendererView();
-
     }
     removeRendererView()
     {

@@ -2412,7 +2412,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "save-game"
                 }, Rance.UIComponents.SaveList({
-                    onRowChange: this.handleRowChange
+                    onRowChange: this.handleRowChange,
+                    autoSelect: true
                 }), React.DOM.input({
                     className: "save-game-name",
                     ref: "saveName",
@@ -2457,7 +2458,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "save-game"
                 }, Rance.UIComponents.SaveList({
-                    onRowChange: this.handleRowChange
+                    onRowChange: this.handleRowChange,
+                    autoSelect: true
                 }), React.DOM.input({
                     className: "save-game-name",
                     ref: "saveName",
@@ -7818,48 +7820,62 @@ var Rance;
             this.selectedFleets = [];
             this.currentlyReorganizing = [];
             this.preventingGhost = false;
+            this.listeners = {};
             this.player = player;
             this.addEventListeners();
         }
+        PlayerControl.prototype.removeEventListener = function (name) {
+            Rance.eventManager.removeEventListener(name, this.listeners[name]);
+        };
+        PlayerControl.prototype.removeEventListeners = function () {
+            for (var name in this.listeners) {
+                this.removeEventListener(name);
+            }
+        };
+        PlayerControl.prototype.addEventListener = function (name, handler) {
+            this.listeners[name] = handler;
+
+            Rance.eventManager.addEventListener(name, handler);
+        };
         PlayerControl.prototype.addEventListeners = function () {
             var self = this;
 
-            Rance.eventManager.addEventListener("updateSelection", function (e) {
+            this.addEventListener("updateSelection", function (e) {
                 self.updateSelection();
             });
 
-            Rance.eventManager.addEventListener("selectFleets", function (e) {
+            this.addEventListener("selectFleets", function (e) {
                 self.selectFleets(e.data);
             });
-            Rance.eventManager.addEventListener("deselectFleet", function (e) {
+            this.addEventListener("deselectFleet", function (e) {
                 self.deselectFleet(e.data);
             });
-            Rance.eventManager.addEventListener("mergeFleets", function (e) {
+            this.addEventListener("mergeFleets", function (e) {
                 self.mergeFleets();
             });
 
-            Rance.eventManager.addEventListener("splitFleet", function (e) {
+            this.addEventListener("splitFleet", function (e) {
                 self.splitFleet(e.data);
             });
-            Rance.eventManager.addEventListener("startReorganizingFleets", function (e) {
+            this.addEventListener("startReorganizingFleets", function (e) {
                 self.startReorganizingFleets(e.data);
             });
-            Rance.eventManager.addEventListener("endReorganizingFleets", function (e) {
+            this.addEventListener("endReorganizingFleets", function (e) {
                 self.endReorganizingFleets();
             });
 
-            Rance.eventManager.addEventListener("starClick", function (e) {
+            this.addEventListener("starClick", function (e) {
                 self.selectStar(e.data);
             });
-            Rance.eventManager.addEventListener("starRightClick", function (e) {
+            this.addEventListener("starRightClick", function (e) {
                 self.moveFleets(e.data);
             });
 
-            Rance.eventManager.addEventListener("setRectangleSelectTargetFN", function (e) {
+            this.addEventListener("setRectangleSelectTargetFN", function (e) {
                 e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
             });
 
-            Rance.eventManager.addEventListener("attackTarget", function (e) {
+            this.addEventListener("attackTarget", function (e) {
                 self.attackTarget(e.data);
             });
         };
@@ -8965,13 +8981,16 @@ var Rance;
             this.fowSpriteCache = {};
             this.isDirty = true;
             this.preventRender = false;
+            this.container = new PIXI.DisplayObjectContainer();
+
+            this.setMap(map);
+        }
+        MapRenderer.prototype.setMap = function (map) {
             this.galaxyMap = map;
             this.galaxyMap.mapRenderer = this;
             this.game = map.game;
             this.player = this.game.humanPlayer;
-
-            this.container = new PIXI.DisplayObjectContainer();
-        }
+        };
         MapRenderer.prototype.init = function () {
             this.makeFowSprite();
 
@@ -10432,6 +10451,7 @@ var Rance;
         };
         Renderer.prototype.destroy = function () {
             this.pause();
+            this.layers["bgFilter"].filters = null;
             this.stage.removeChildren();
             this.removeRendererView();
         };
@@ -11255,23 +11275,30 @@ var Rance;
         }
         App.prototype.makeApp = function (savedGame) {
             this.images = this.loader.imageCache;
-            this.game = savedGame ? new Rance.GameLoader().deserializeGame(savedGame) : this.makeGame();
+            this.game = this.makeGame();
             this.initGame();
             this.initDisplay();
             this.initUI();
-        };
-        App.prototype.destroy = function () {
-            this.renderer.destroy();
-            this.reactUI.destroy();
         };
         App.prototype.load = function (saveName) {
             var itemName = "Rance.Save." + saveName;
             var data = localStorage.getItem(itemName);
             var parsed = JSON.parse(data);
 
-            this.destroy();
+            this.mapRenderer.preventRender = true;
 
-            this.makeApp(parsed.gameData);
+            this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
+
+            this.initGame();
+
+            this.mapRenderer.preventRender = false;
+
+            this.mapRenderer.setMap(this.game.galaxyMap);
+            this.mapRenderer.setAllLayersAsDirty();
+
+            this.reactUI.destroy();
+            this.initUI();
+            //this.renderer.camera.centerOnPosition(this.humanPlayer.controlledLocations[0]);
         };
 
         App.prototype.makeGame = function () {
@@ -11323,6 +11350,10 @@ var Rance;
         };
         App.prototype.initGame = function () {
             this.humanPlayer = this.game.humanPlayer;
+
+            if (this.playerControl)
+                this.playerControl.removeEventListeners();
+
             this.playerControl = new Rance.PlayerControl(this.humanPlayer);
 
             return this.game;

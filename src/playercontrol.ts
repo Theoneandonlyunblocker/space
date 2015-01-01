@@ -19,62 +19,83 @@ module Rance
     selectedStar: Star;
 
     preventingGhost: boolean = false;
+    listeners:
+    {
+      [listenerName: string]: any;
+    } = {};
 
     constructor(player: Player)
     {
       this.player = player;
       this.addEventListeners();
     }
+    removeEventListener(name: string)
+    {
+      eventManager.removeEventListener(name, this.listeners[name]);
+    }
+    removeEventListeners()
+    {
+      for (var name in this.listeners)
+      {
+        this.removeEventListener(name);
+      }
+    }
+    addEventListener(name: string, handler)
+    {
+      this.listeners[name] = handler;
+
+      eventManager.addEventListener(name, handler);
+    }
     addEventListeners()
     {
       var self = this;
 
-      eventManager.addEventListener("updateSelection", function(e)
+      this.addEventListener("updateSelection", function(e)
       {
         self.updateSelection();
       });
 
-      eventManager.addEventListener("selectFleets", function(e)
+      this.addEventListener("selectFleets", function(e)
       {
         self.selectFleets(e.data);
       });
-      eventManager.addEventListener("deselectFleet", function(e)
+      this.addEventListener("deselectFleet", function(e)
       {
         self.deselectFleet(e.data);
       });
-      eventManager.addEventListener("mergeFleets", function(e)
+      this.addEventListener("mergeFleets", function(e)
       {
         self.mergeFleets();
       });
 
-      eventManager.addEventListener("splitFleet", function(e)
+      this.addEventListener("splitFleet", function(e)
       {
         self.splitFleet(e.data);
       });
-      eventManager.addEventListener("startReorganizingFleets", function(e)
+      this.addEventListener("startReorganizingFleets", function(e)
       {
         self.startReorganizingFleets(e.data);
       });
-      eventManager.addEventListener("endReorganizingFleets", function(e)
+      this.addEventListener("endReorganizingFleets", function(e)
       {
         self.endReorganizingFleets();
       });
 
-      eventManager.addEventListener("starClick", function(e)
+      this.addEventListener("starClick", function(e)
       {
         self.selectStar(e.data);
       });
-      eventManager.addEventListener("starRightClick", function(e)
+      this.addEventListener("starRightClick", function(e)
       {
         self.moveFleets(e.data);
       });
       
-      eventManager.addEventListener("setRectangleSelectTargetFN", function(e)
+      this.addEventListener("setRectangleSelectTargetFN", function(e)
       {
         e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
       });
 
-      eventManager.addEventListener("attackTarget", function(e)
+      this.addEventListener("attackTarget", function(e)
       {
         self.attackTarget(e.data);
       });

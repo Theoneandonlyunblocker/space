@@ -64,12 +64,16 @@ module Rance
 
     constructor(map: GalaxyMap)
     {
+      this.container = new PIXI.DisplayObjectContainer();
+
+      this.setMap(map);
+    }
+    setMap(map: GalaxyMap)
+    {
       this.galaxyMap = map;
       this.galaxyMap.mapRenderer = this;
       this.game = map.game;
       this.player = this.game.humanPlayer;
-
-      this.container = new PIXI.DisplayObjectContainer();
     }
     init()
     {

@@ -40,7 +40,8 @@ module Rance
           },
             UIComponents.SaveList(
             {
-              onRowChange: this.handleRowChange
+              onRowChange: this.handleRowChange,
+              autoSelect: true
             }),
             React.DOM.input(
             {

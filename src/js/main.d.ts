@@ -1205,7 +1205,13 @@ declare module Rance {
         public currentAttackTargets: any[];
         public selectedStar: Rance.Star;
         public preventingGhost: boolean;
+        public listeners: {
+            [listenerName: string]: any;
+        };
         constructor(player: Rance.Player);
+        public removeEventListener(name: string): void;
+        public removeEventListeners(): void;
+        public addEventListener(name: string, handler: any): void;
         public addEventListeners(): void;
         public preventGhost(delay: number): void;
         public clearSelection(): void;
@@ -1412,6 +1418,7 @@ declare module Rance {
         public isDirty: boolean;
         public preventRender: boolean;
         constructor(map: Rance.GalaxyMap);
+        public setMap(map: Rance.GalaxyMap): void;
         public init(): void;
         public addEventListeners(): void;
         public setPlayer(player: Rance.Player): void;
@@ -1799,7 +1806,6 @@ declare module Rance {
         };
         constructor();
         public makeApp(savedGame?: any): void;
-        public destroy(): void;
         public load(saveName: string): void;
         public makeGame(): Rance.Game;
         public makePlayers(): {
