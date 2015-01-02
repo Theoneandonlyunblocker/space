@@ -21,6 +21,13 @@ module Rance
     onMoveCallbacks: {(x: number, y: number): void;}[] = [];
     onZoomCallbacks: {(zoom: number): void;}[] = [];
 
+    listeners:
+    {
+      [name: string]: any;
+    } = {};
+
+    resizeListener: any;
+
     /**
      * [constructor description]
      * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
@@ -40,6 +47,17 @@ module Rance
       this.addEventListeners();
       this.setBounds();
     }
+    destroy()
+    {
+      for (var name in this.listeners)
+      {
+        eventManager.removeEventListener(name, this.listeners[name]);
+      }
+      this.onMoveCallbacks = [];
+      this.onZoomCallbacks = [];
+
+      window.removeEventListener("resize", this.resizeListener);
+    }
 
     /**
      * @method addEventListeners
@@ -49,25 +67,30 @@ module Rance
     {
       var self = this;
 
-      window.addEventListener("resize", function(e)
+      this.resizeListener = function(e)
       {
         var container = document.getElementById("pixi-container");
         if (!container) return;
         var style = window.getComputedStyle(container, null);
         self.screenWidth = parseInt(style.width);
         self.screenHeight = parseInt(style.height);
-      }, false);
+      }
 
-      eventManager.addEventListener("centerCameraAt", function(e)
+      window.addEventListener("resize", this.resizeListener, false);
+
+      this.listeners["centerCameraAt"] =
+        eventManager.addEventListener("centerCameraAt", function(e)
       {
         self.centerOnPosition(e.data);
       });
 
-      eventManager.addEventListener("registerOnMoveCallback", function(e)
+      this.listeners["registerOnMoveCallback"] =
+        eventManager.addEventListener("registerOnMoveCallback", function(e)
       {
         self.onMoveCallbacks.push(e.data);
       });
-      eventManager.addEventListener("registerOnZoomCallback", function(e)
+      this.listeners["registerOnZoomCallback"] =
+        eventManager.addEventListener("registerOnZoomCallback", function(e)
       {
         self.onZoomCallbacks.push(e.data);
       });

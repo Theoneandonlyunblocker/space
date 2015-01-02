@@ -18,6 +18,10 @@ module Rance
     stashedAction: string;
 
     preventingGhost: boolean = false;
+    listeners:
+    {
+      [name: string]: any;
+    } = {};
 
     constructor(renderer: Renderer, camera: Camera)
     {
@@ -56,14 +60,21 @@ module Rance
         if (e.target.localName !== "canvas") return;
       });
 
-      eventManager.addEventListener("mouseDown", function(e)
+      this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown", function(e)
       {
         self.mouseDown(e.content, "world");
       });
-      eventManager.addEventListener("mouseUp", function(e)
+      this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp", function(e)
       {
         self.mouseUp(e.content, "world");
       });
+    }
+    destroy()
+    {
+      for (var name in this.listeners)
+      {
+        eventManager.removeEventListener(name, this.listeners[name]);
+      }
     }
     preventGhost(delay: number)
     {

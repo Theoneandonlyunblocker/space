@@ -9692,6 +9692,7 @@ var Rance;
             this.currZoom = 1;
             this.onMoveCallbacks = [];
             this.onZoomCallbacks = [];
+            this.listeners = {};
             this.container = container;
             this.bounds.min = bound;
             this.bounds.max = Number((1 - bound).toFixed(1));
@@ -9702,6 +9703,16 @@ var Rance;
             this.addEventListeners();
             this.setBounds();
         }
+        Camera.prototype.destroy = function () {
+            for (var name in this.listeners) {
+                Rance.eventManager.removeEventListener(name, this.listeners[name]);
+            }
+            this.onMoveCallbacks = [];
+            this.onZoomCallbacks = [];
+
+            window.removeEventListener("resize", this.resizeListener);
+        };
+
         /**
         * @method addEventListeners
         * @private
@@ -9709,23 +9720,25 @@ var Rance;
         Camera.prototype.addEventListeners = function () {
             var self = this;
 
-            window.addEventListener("resize", function (e) {
+            this.resizeListener = function (e) {
                 var container = document.getElementById("pixi-container");
                 if (!container)
                     return;
                 var style = window.getComputedStyle(container, null);
                 self.screenWidth = parseInt(style.width);
                 self.screenHeight = parseInt(style.height);
-            }, false);
+            };
 
-            Rance.eventManager.addEventListener("centerCameraAt", function (e) {
+            window.addEventListener("resize", this.resizeListener, false);
+
+            this.listeners["centerCameraAt"] = Rance.eventManager.addEventListener("centerCameraAt", function (e) {
                 self.centerOnPosition(e.data);
             });
 
-            Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
+            this.listeners["registerOnMoveCallback"] = Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
                 self.onMoveCallbacks.push(e.data);
             });
-            Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
+            this.listeners["registerOnZoomCallback"] = Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
                 self.onZoomCallbacks.push(e.data);
             });
         };
@@ -10037,6 +10050,7 @@ var Rance;
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
             this.preventingGhost = false;
+            this.listeners = {};
             this.renderer = renderer;
             this.camera = camera;
             this.rectangleselect = new Rance.RectangleSelect(renderer.layers["select"]);
@@ -10071,12 +10085,17 @@ var Rance;
                     return;
             });
 
-            Rance.eventManager.addEventListener("mouseDown", function (e) {
+            this.listeners["mouseDown"] = Rance.eventManager.addEventListener("mouseDown", function (e) {
                 self.mouseDown(e.content, "world");
             });
-            Rance.eventManager.addEventListener("mouseUp", function (e) {
+            this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
                 self.mouseUp(e.content, "world");
             });
+        };
+        MouseEventHandler.prototype.destroy = function () {
+            for (var name in this.listeners) {
+                Rance.eventManager.removeEventListener(name, this.listeners[name]);
+            }
         };
         MouseEventHandler.prototype.preventGhost = function (delay) {
             this.preventingGhost = true;
@@ -10464,7 +10483,12 @@ var Rance;
         };
         Renderer.prototype.destroy = function () {
             this.pause();
+
+            this.mouseEventHandler.destroy();
+            this.camera.destroy();
+
             this.layers["bgFilter"].filters = null;
+
             this.stage.removeChildren();
             this.removeRendererView();
             //this.renderer.destroy();
@@ -10523,6 +10547,10 @@ var Rance;
             this.renderOnce();
         };
         Renderer.prototype.addCamera = function () {
+            if (this.mouseEventHandler)
+                this.mouseEventHandler.destroy();
+            if (this.camera)
+                this.camera.destroy();
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
         };

@@ -52,7 +52,12 @@ module Rance
     destroy()
     {
       this.pause();
+
+      this.mouseEventHandler.destroy();
+      this.camera.destroy();
+
       this.layers["bgFilter"].filters = null;
+      
       this.stage.removeChildren();
       this.removeRendererView();
       //this.renderer.destroy();
@@ -126,6 +131,8 @@ module Rance
     }
     addCamera()
     {
+      if (this.mouseEventHandler) this.mouseEventHandler.destroy();
+      if (this.camera) this.camera.destroy();
       this.camera = new Camera(this.layers["main"], 0.5);
       this.mouseEventHandler = new MouseEventHandler(this, this.camera);
     }

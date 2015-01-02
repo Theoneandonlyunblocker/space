@@ -1477,6 +1477,10 @@ declare module Rance {
         public onZoomCallbacks: {
             (zoom: number): void;
         }[];
+        public listeners: {
+            [name: string]: any;
+        };
+        public resizeListener: any;
         /**
         * [constructor description]
         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
@@ -1484,6 +1488,7 @@ declare module Rance {
         * 0.0 to 1.0]
         */
         constructor(container: PIXI.DisplayObjectContainer, bound: number);
+        public destroy(): void;
         /**
         * @method addEventListeners
         * @private
@@ -1582,8 +1587,12 @@ declare module Rance {
         public currAction: string;
         public stashedAction: string;
         public preventingGhost: boolean;
+        public listeners: {
+            [name: string]: any;
+        };
         constructor(renderer: Rance.Renderer, camera: Rance.Camera);
         public addEventListeners(): void;
+        public destroy(): void;
         public preventGhost(delay: number): void;
         public mouseDown(event: any, targetType: string): void;
         public mouseMove(event: any, targetType: string): void;
