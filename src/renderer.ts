@@ -55,6 +55,7 @@ module Rance
       this.layers["bgFilter"].filters = null;
       this.stage.removeChildren();
       this.removeRendererView();
+      //this.renderer.destroy();
     }
     removeRendererView()
     {

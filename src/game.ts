@@ -25,17 +25,6 @@ module Rance
       this.playerOrder = players;
       this.humanPlayer = humanPlayer;
       this.turnNumber = 1;
-
-      this.addEventListeners();
-    }
-    addEventListeners()
-    {
-      var self = this;
-
-      eventManager.addEventListener("endTurn", function(e)
-      {
-        self.endTurn();
-      });
     }
 
     endTurn()

@@ -7507,7 +7507,7 @@ var Rance;
         UIComponents.GalaxyMapUI = React.createClass({
             displayName: "GalaxyMapUI",
             endTurn: function () {
-                Rance.eventManager.dispatchEvent("endTurn", null);
+                this.props.game.endTurn();
             },
             getInitialState: function () {
                 var pc = this.props.playerControl;
@@ -7790,6 +7790,8 @@ var Rance;
         ReactUI.prototype.destroy = function () {
             Rance.eventManager.removeEventListener("switchScene", this.switchSceneFN);
             React.unmountComponentAtNode(this.container);
+            this.stage = null;
+            this.container = null;
         };
         ReactUI.prototype.render = function () {
             this.stage = React.renderComponent(Rance.UIComponents.Stage({
@@ -8985,6 +8987,9 @@ var Rance;
 
             this.setMap(map);
         }
+        MapRenderer.prototype.destroy = function () {
+            this.preventRender = true;
+        };
         MapRenderer.prototype.setMap = function (map) {
             this.galaxyMap = map;
             this.galaxyMap.mapRenderer = this;
@@ -10393,6 +10398,14 @@ var Rance;
             this.uniformManager = new Rance.UniformManager();
             this.initNebula();
         }
+        ShaderManager.prototype.destroy = function () {
+            for (var name in this.shaders) {
+                var filter = this.shaders[name];
+                for (var i = 0; i < filter.shaders.length; i++) {
+                    filter.shaders[i].destroy();
+                }
+            }
+        };
         ShaderManager.prototype.initNebula = function () {
             var nebulaColorScheme = Rance.generateColorScheme();
 
@@ -10454,6 +10467,7 @@ var Rance;
             this.layers["bgFilter"].filters = null;
             this.stage.removeChildren();
             this.removeRendererView();
+            //this.renderer.destroy();
         };
         Renderer.prototype.removeRendererView = function () {
             if (this.renderer.view.parentNode) {
@@ -10705,17 +10719,7 @@ var Rance;
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
             this.turnNumber = 1;
-
-            this.addEventListeners();
         }
-        Game.prototype.addEventListeners = function () {
-            var self = this;
-
-            Rance.eventManager.addEventListener("endTurn", function (e) {
-                self.endTurn();
-            });
-        };
-
         Game.prototype.endTurn = function () {
             this.setNextPlayer();
             this.processPlayerStartTurn(this.activePlayer);
@@ -11280,10 +11284,17 @@ var Rance;
             this.initDisplay();
             this.initUI();
         };
+        App.prototype.destroy = function () {
+            this.renderer.destroy();
+            this.reactUI.destroy();
+            this.reactUI = null;
+        };
         App.prototype.load = function (saveName) {
             var itemName = "Rance.Save." + saveName;
             var data = localStorage.getItem(itemName);
             var parsed = JSON.parse(data);
+
+            this.destroy();
 
             this.mapRenderer.preventRender = true;
 
@@ -11296,7 +11307,6 @@ var Rance;
             this.mapRenderer.setMap(this.game.galaxyMap);
             this.mapRenderer.setAllLayersAsDirty();
 
-            this.reactUI.destroy();
             this.initUI();
             //this.renderer.camera.centerOnPosition(this.humanPlayer.controlledLocations[0]);
         };

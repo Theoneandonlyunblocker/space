@@ -15,6 +15,17 @@ module Rance
       this.uniformManager = new UniformManager();
       this.initNebula();
     }
+    destroy()
+    {
+      for (var name in this.shaders)
+      {
+        var filter = this.shaders[name];
+        for (var i = 0; i < filter.shaders.length; i++)
+        {
+          filter.shaders[i].destroy();
+        }
+      }
+    }
     initNebula()
     {
       var nebulaColorScheme = generateColorScheme();

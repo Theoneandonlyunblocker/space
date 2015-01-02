@@ -70,11 +70,19 @@ module Rance
       this.initDisplay();
       this.initUI();
     }
+    destroy()
+    {
+      this.renderer.destroy();
+      this.reactUI.destroy();
+      this.reactUI = null;
+    }
     load(saveName: string)
     {
       var itemName = "Rance.Save." + saveName;
       var data = localStorage.getItem(itemName);
       var parsed = JSON.parse(data);
+
+      this.destroy();
 
       this.mapRenderer.preventRender = true;
 
@@ -88,7 +96,6 @@ module Rance
       this.mapRenderer.setAllLayersAsDirty();
 
 
-      this.reactUI.destroy();
       this.initUI();
 
       //this.renderer.camera.centerOnPosition(this.humanPlayer.controlledLocations[0]);

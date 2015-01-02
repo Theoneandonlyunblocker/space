@@ -68,6 +68,10 @@ module Rance
 
       this.setMap(map);
     }
+    destroy()
+    {
+      this.preventRender = true;
+    }
     setMap(map: GalaxyMap)
     {
       this.galaxyMap = map;

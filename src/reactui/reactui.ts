@@ -41,6 +41,8 @@ module Rance
     {
       eventManager.removeEventListener("switchScene", this.switchSceneFN);
       React.unmountComponentAtNode(this.container);
+      this.stage = null;
+      this.container = null;
     }
     render()
     {

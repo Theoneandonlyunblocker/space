@@ -14,7 +14,7 @@ module Rance
       displayName: "GalaxyMapUI",
       endTurn: function()
       {
-        eventManager.dispatchEvent("endTurn", null);
+        this.props.game.endTurn();
       },
 
       getInitialState: function()

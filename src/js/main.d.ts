@@ -1418,6 +1418,7 @@ declare module Rance {
         public isDirty: boolean;
         public preventRender: boolean;
         constructor(map: Rance.GalaxyMap);
+        public destroy(): void;
         public setMap(map: Rance.GalaxyMap): void;
         public init(): void;
         public addEventListeners(): void;
@@ -1623,6 +1624,7 @@ declare module Rance {
         };
         public uniformManager: Rance.UniformManager;
         constructor();
+        public destroy(): void;
         public initNebula(): void;
     }
 }
@@ -1674,7 +1676,6 @@ declare module Rance {
         public activePlayer: Rance.Player;
         public playerControl: Rance.PlayerControl;
         constructor(map: Rance.GalaxyMap, players: Rance.Player[], humanPlayer: Rance.Player);
-        public addEventListeners(): void;
         public endTurn(): void;
         public processPlayerStartTurn(player: Rance.Player): void;
         public setNextPlayer(): void;
@@ -1806,6 +1807,7 @@ declare module Rance {
         };
         constructor();
         public makeApp(savedGame?: any): void;
+        public destroy(): void;
         public load(saveName: string): void;
         public makeGame(): Rance.Game;
         public makePlayers(): {
