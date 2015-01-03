@@ -62,6 +62,11 @@ module Rance
     isDirty: boolean = true;
     preventRender: boolean = false;
 
+    listeners:
+    {
+      [name: string]: any;
+    } = {};
+
     constructor(map: GalaxyMap)
     {
       this.container = new PIXI.DisplayObjectContainer();
@@ -71,6 +76,12 @@ module Rance
     destroy()
     {
       this.preventRender = true;
+
+      for (var name in this.listeners)
+      {
+        eventManager.removeEventListener(name, this.listeners[name]);
+      }
+
     }
     setMap(map: GalaxyMap)
     {
@@ -91,8 +102,10 @@ module Rance
     addEventListeners()
     {
       var self = this;
-      eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
-      eventManager.addEventListener("renderLayer", function(e)
+      this.listeners["renderMap"] =
+        eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
+      this.listeners["renderLayer"] =
+        eventManager.addEventListener("renderLayer", function(e)
       {
         
         self.setLayerAsDirty(e.data);

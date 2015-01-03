@@ -8983,12 +8983,17 @@ var Rance;
             this.fowSpriteCache = {};
             this.isDirty = true;
             this.preventRender = false;
+            this.listeners = {};
             this.container = new PIXI.DisplayObjectContainer();
 
             this.setMap(map);
         }
         MapRenderer.prototype.destroy = function () {
             this.preventRender = true;
+
+            for (var name in this.listeners) {
+                Rance.eventManager.removeEventListener(name, this.listeners[name]);
+            }
         };
         MapRenderer.prototype.setMap = function (map) {
             this.galaxyMap = map;
@@ -9006,8 +9011,8 @@ var Rance;
         };
         MapRenderer.prototype.addEventListeners = function () {
             var self = this;
-            Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
-            Rance.eventManager.addEventListener("renderLayer", function (e) {
+            this.listeners["renderMap"] = Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
+            this.listeners["renderLayer"] = Rance.eventManager.addEventListener("renderLayer", function (e) {
                 self.setLayerAsDirty(e.data);
             });
 
@@ -10484,6 +10489,8 @@ var Rance;
         Renderer.prototype.destroy = function () {
             this.pause();
 
+            window.removeEventListener("resize", this.resizeListener);
+
             this.mouseEventHandler.destroy();
             this.camera.destroy();
 
@@ -10491,7 +10498,6 @@ var Rance;
 
             this.stage.removeChildren();
             this.removeRendererView();
-            //this.renderer.destroy();
         };
         Renderer.prototype.removeRendererView = function () {
             if (this.renderer.view.parentNode) {
@@ -10556,7 +10562,8 @@ var Rance;
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
-            window.addEventListener("resize", this.resize.bind(this), false);
+            this.resizeListener = this.resize.bind(this);
+            window.addEventListener("resize", this.resizeListener, false);
 
             this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
                 self.mouseEventHandler.mouseDown(event, "stage");
@@ -11321,10 +11328,9 @@ var Rance;
             var itemName = "Rance.Save." + saveName;
             var data = localStorage.getItem(itemName);
             var parsed = JSON.parse(data);
+            this.mapRenderer.preventRender = true;
 
             this.destroy();
-
-            this.mapRenderer.preventRender = true;
 
             this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
 
@@ -11332,11 +11338,11 @@ var Rance;
 
             this.mapRenderer.preventRender = false;
 
+            this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.setMap(this.game.galaxyMap);
             this.mapRenderer.setAllLayersAsDirty();
 
             this.initUI();
-            //this.renderer.camera.centerOnPosition(this.humanPlayer.controlledLocations[0]);
         };
 
         App.prototype.makeGame = function () {

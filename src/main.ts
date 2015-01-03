@@ -81,10 +81,9 @@ module Rance
       var itemName = "Rance.Save." + saveName;
       var data = localStorage.getItem(itemName);
       var parsed = JSON.parse(data);
+      this.mapRenderer.preventRender = true;
 
       this.destroy();
-
-      this.mapRenderer.preventRender = true;
 
       this.game = new GameLoader().deserializeGame(parsed.gameData);
 
@@ -92,13 +91,12 @@ module Rance
 
       this.mapRenderer.preventRender = false;
 
+      this.mapRenderer.setParent(this.renderer.layers["map"]);
       this.mapRenderer.setMap(this.game.galaxyMap);
       this.mapRenderer.setAllLayersAsDirty();
 
 
       this.initUI();
-
-      //this.renderer.camera.centerOnPosition(this.humanPlayer.controlledLocations[0]);
     }
 
     makeGame()

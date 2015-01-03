@@ -24,6 +24,8 @@ module Rance
     isBattleBackground: boolean = false;
     blurProps: number[];
 
+    resizeListener: any;
+
     constructor()
     {
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
@@ -53,14 +55,15 @@ module Rance
     {
       this.pause();
 
+      window.removeEventListener("resize", this.resizeListener);
+
       this.mouseEventHandler.destroy();
       this.camera.destroy();
 
       this.layers["bgFilter"].filters = null;
-      
+
       this.stage.removeChildren();
       this.removeRendererView();
-      //this.renderer.destroy();
     }
     removeRendererView()
     {
@@ -138,9 +141,9 @@ module Rance
     }
     addEventListeners()
     {
-      
       var self = this;
-      window.addEventListener("resize", this.resize.bind(this), false);
+      this.resizeListener = this.resize.bind(this);
+      window.addEventListener("resize", this.resizeListener, false);
 
 
       this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)

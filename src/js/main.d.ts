@@ -1417,6 +1417,9 @@ declare module Rance {
         public currentMapMode: IMapRendererLayerMapMode;
         public isDirty: boolean;
         public preventRender: boolean;
+        public listeners: {
+            [name: string]: any;
+        };
         constructor(map: Rance.GalaxyMap);
         public destroy(): void;
         public setMap(map: Rance.GalaxyMap): void;
@@ -1653,6 +1656,7 @@ declare module Rance {
         public backgroundIsDirty: boolean;
         public isBattleBackground: boolean;
         public blurProps: number[];
+        public resizeListener: any;
         constructor();
         public init(): void;
         public initRenderer(): void;
