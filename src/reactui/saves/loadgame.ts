@@ -32,10 +32,17 @@ module Rance
       },
       makeConfirmDeletionPopup: function(saveName: string)
       {
+        var deleteFN = function(saveName: string)
+        {
+          localStorage.removeItem(saveName);
+          this.forceUpdate();
+        }.bind(this, saveName);
+
         var confirmProps =
         {
-          handleOk: localStorage.removeItem(saveName),
-          contentText: "test"
+          handleOk: deleteFN,
+          contentText: "Are you sure you want to delete the save " +
+            saveName.replace("Rance.Save.", "") + "?"
         }
 
         this.refs.popupManager.makePopup(

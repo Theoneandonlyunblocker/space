@@ -36,16 +36,16 @@ module Rance
             ),
             React.DOM.div(
             {
-              className: "confirm-popup-buttons"
+              className: "popup-buttons"
             },
               React.DOM.button(
               {
-                className: "confirm-popup-button",
+                className: "popup-button",
                 onClick: this.handleOk
               }, this.props.okText || "Confirm"),
               React.DOM.button(
               {
-                className: "confirm-popup-button",
+                className: "popup-button",
                 onClick: this.handleClose
               }, this.props.cancelText || "Cancel")
             )

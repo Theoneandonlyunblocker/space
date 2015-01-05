@@ -32,7 +32,9 @@ module Rance
               date: prettifyDate(date),
               accurateDate: saveData.date,
               rowConstructor: UIComponents.SaveListItem,
-              handleDelete: this.props.onDelete
+              handleDelete: this.props.onDelete ?
+                this.props.onDelete.bind(null, saveKeys[i]) :
+                null
             }
           });
         }
@@ -56,7 +58,7 @@ module Rance
         {
           columns.push(
           {
-            label: "Delete",
+            label: "Del",
             key: "delete",
             notSortable: true
           });
@@ -68,6 +70,7 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
+              initialColumn: columns[1], //date
               onRowChange: this.props.onRowChange,
               autoSelect: this.props.autoSelect
             })

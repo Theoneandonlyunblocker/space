@@ -118,7 +118,7 @@ module Rance
 
       handleSelectRow: function(row)
       {
-        if (this.props.onRowChange) this.props.onRowChange.call(null, row);
+        if (this.props.onRowChange && row) this.props.onRowChange.call(null, row);
 
         this.setState(
         {

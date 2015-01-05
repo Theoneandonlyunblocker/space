@@ -22,41 +22,6 @@ table {
   margin-left: 0.25em;
   color: #f3c620;
 }
-/*
-.button-style-no-border
-{
-  background: linear-gradient(to bottom, @bg-color2, @bg-color);
-  color: @text-color;
-  cursor: pointer;
-
-  &:hover
-  {
-    background: linear-gradient(
-      to bottom,
-      lighten(@bg-color2, 15%),
-      lighten(@bg-color, 15%)
-    );
-  }
-  &:active
-  {
-    background: linear-gradient(
-      to bottom,
-      lighten(@bg-color, 7%),
-      lighten(@bg-color2, 7%)
-    );
-  }
-  &:disabled
-  {
-    cursor: default;
-    color: darken(@text-color, 20%);
-    background: linear-gradient(
-      to bottom,
-      darken(@bg-color, 7%),
-      darken(@bg-color2, 7%)
-    );
-  }
-}
-*/
 .button-style-no-border {
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #eeeeee;
@@ -744,12 +709,6 @@ progress::-webkit-progress-value {
 .popup-container > * {
   pointer-events: auto;
 }
-.react-popup {
-  position: absolute;
-  background-color: white;
-  border: 1px solid black;
-  padding: 20px;
-}
 .galaxy-map {
   display: flex;
   flex: 1;
@@ -1296,19 +1255,7 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
-.buildable-item-list thead {
-  /*
-    :first-child
-    {
-      border-left: 3px;
-    }
-    :last-child
-    {
-      border-right: 3px;
-    }
-    */
-}
-.buildable-item-list thead th {
+.buildable-item-list th {
   border: 0px solid transparent;
   border-bottom-width: 3px;
   border-top-width: 3px;
@@ -1318,28 +1265,42 @@ progress::-webkit-progress-value {
 .buildable-item-list tbody :first-child::after {
   background-image: none;
 }
-.buildable-item {
+.buildable-item-list tbody tr {
   background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
   color: #eeeeee;
   cursor: pointer;
   position: relative;
 }
-.buildable-item:hover {
+.buildable-item-list tbody tr:hover {
   background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
 }
-.buildable-item:active {
+.buildable-item-list tbody tr:active {
   background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
 }
-.buildable-item:disabled,
-.buildable-item.disabled {
+.buildable-item-list tbody tr:disabled,
+.buildable-item-list tbody tr.disabled {
   cursor: default;
   color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
 }
-.buildable-item td {
+.buildable-item-list tbody tr td {
   padding-top: 8px;
   padding-bottom: 8px;
   min-width: 70px;
+}
+.buildable-item-list tbody tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+}
+.buildable-item-list tbody tr:hover {
+  background-color: grey;
 }
 .buildable-item .buildCost {
   text-align: right;
@@ -1353,20 +1314,6 @@ progress::-webkit-progress-value {
   text-decoration: inherit;
   margin-left: 0.25em;
   color: #f3c620;
-}
-.buildable-item::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-image: url("../img/listSeparator.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: 100% 2px;
-}
-.buildable-item:hover {
-  background-color: grey;
 }
 .item-equip {
   display: flex;
@@ -1713,6 +1660,111 @@ progress::-webkit-progress-value {
 }
 .save-game-button:disabled,
 .save-game-button.disabled {
+  cursor: default;
+  color: #bbbbbb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+}
+.save-list th {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 3px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
+.save-list tbody :first-child::after {
+  background-image: none;
+}
+.save-list tbody tr {
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #eeeeee;
+  cursor: pointer;
+  position: relative;
+}
+.save-list tbody tr:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.save-list tbody tr:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.save-list tbody tr:disabled,
+.save-list tbody tr.disabled {
+  cursor: default;
+  color: #bbbbbb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+}
+.save-list tbody tr td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-width: auto;
+}
+.save-list tbody tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+}
+.save-list tbody tr:hover {
+  background-color: grey;
+}
+.save-list-name {
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.save-list-delete {
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #eeeeee;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  text-align: center;
+}
+.save-list-delete:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.save-list-delete:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.save-list-delete:disabled,
+.save-list-delete.disabled {
+  cursor: default;
+  color: #bbbbbb;
+  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+}
+.popup {
+  position: absolute;
+  padding: 8px;
+  color: #eeeeee;
+  background-color: #101c1b;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+}
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+}
+.popup-button {
+  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
+  color: #eeeeee;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  margin: 5px 20px;
+}
+.popup-button:hover {
+  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+}
+.popup-button:active {
+  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+}
+.popup-button:disabled,
+.popup-button.disabled {
   cursor: default;
   color: #bbbbbb;
   background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);

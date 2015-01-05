@@ -104,41 +104,6 @@ table
     lighten(@c1, 0%) 100%,
   );
 }
-/*
-.button-style-no-border
-{
-  background: linear-gradient(to bottom, @bg-color2, @bg-color);
-  color: @text-color;
-  cursor: pointer;
-
-  &:hover
-  {
-    background: linear-gradient(
-      to bottom,
-      lighten(@bg-color2, 15%),
-      lighten(@bg-color, 15%)
-    );
-  }
-  &:active
-  {
-    background: linear-gradient(
-      to bottom,
-      lighten(@bg-color, 7%),
-      lighten(@bg-color2, 7%)
-    );
-  }
-  &:disabled
-  {
-    cursor: default;
-    color: darken(@text-color, 20%);
-    background: linear-gradient(
-      to bottom,
-      darken(@bg-color, 7%),
-      darken(@bg-color2, 7%)
-    );
-  }
-}
-*/
 .button-style-no-border
 {
   .double-gradient(
@@ -195,6 +160,49 @@ table
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+}
+
+.fancy-table-style(@padding, @min-width)
+{
+  th
+  {
+    .horizontal-border(3px, 3px);
+  }
+
+  tbody :first-child::after
+  {
+    background-image: none;
+  }
+
+  tbody
+  {
+    tr
+    {
+      .button-style-no-border;
+
+      position: relative;
+      td
+      {
+        padding-top: @padding;
+        padding-bottom: @padding;
+        min-width: @min-width;
+      }
+
+      &::after
+      {
+        .civ-splitter-horizontal;
+      }
+      &:hover
+      {
+        background-color: grey;
+      }
+    }
+  }
+  
+}
+.fancy-table-gradient
+{
+
 }
 
 progress 
@@ -997,13 +1005,7 @@ progress::-webkit-progress-value { background: #080; }
   }
 }
 
-.react-popup
-{
-  position: absolute;
-  background-color: white;
-  border: 1px solid black;
-  padding: 20px;
-}
+
 
 .galaxy-map
 {
@@ -1540,57 +1542,15 @@ progress::-webkit-progress-value { background: #080; }
 {
   .sort-icons(500px);
   position: relative;
-
-
-  thead
-  {
-    /*
-    :first-child
-    {
-      border-left: 3px;
-    }
-    :last-child
-    {
-      border-right: 3px;
-    }
-    */
-    th
-    {
-      .horizontal-border(3px, 3px);
-    }
-  }
-
-  tbody :first-child::after
-  {
-    background-image: none;
-  }
+  .fancy-table-style(8px, 70px);
 }
 .buildable-item
 {
-
-  .button-style-no-border;
-
-  position: relative;
-  td
-  {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    min-width: 70px;
-  }
-
   .buildCost
   {
     text-align: right;
     .money-style;
   }
-}
-.buildable-item::after
-{
-  .civ-splitter-horizontal;
-}
-.buildable-item:hover
-{
-  background-color: grey;
 }
 
 .item-equip
@@ -1766,6 +1726,46 @@ progress::-webkit-progress-value { background: #080; }
 }
 
 .save-game-button
+{
+  .button-style;
+  margin: 5px 20px;
+}
+
+.save-list
+{
+  .fancy-table-style(2px, auto);
+}
+
+.save-list-name
+{
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.save-list-delete
+{
+  .button-style;
+  text-align: center;
+}
+
+.popup
+{
+  position: absolute;
+  padding: 8px;
+  color: @text-color;
+  background-color: @bg-color;
+
+  .full-border(5px);
+}
+
+.popup-buttons
+{
+  display: flex;
+  justify-content: center;
+}
+
+.popup-button
 {
   .button-style;
   margin: 5px 20px;

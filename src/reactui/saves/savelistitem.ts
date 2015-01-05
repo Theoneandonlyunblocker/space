@@ -20,7 +20,6 @@ module Rance
           {
             cellContent = "X";
             
-            cellProps.className += " delete-save";
             cellProps.onClick = this.props.handleDelete;
             break;
           }

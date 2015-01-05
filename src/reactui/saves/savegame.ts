@@ -48,7 +48,8 @@ module Rance
             {
               className: "save-game-name",
               ref: "saveName",
-              type: "text"
+              type: "text",
+              maxLength: 64
             }),
             React.DOM.div(
             {

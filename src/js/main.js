@@ -1382,7 +1382,7 @@ var Rance;
                 }
             },
             handleSelectRow: function (row) {
-                if (this.props.onRowChange)
+                if (this.props.onRowChange && row)
                     this.props.onRowChange.call(null, row);
 
                 this.setState({
@@ -2165,7 +2165,7 @@ var Rance;
             },
             render: function () {
                 var divProps = {
-                    className: "react-popup draggable",
+                    className: "popup draggable",
                     onTouchStart: this.handleMouseDown,
                     onMouseDown: this.handleMouseDown,
                     style: {
@@ -2211,12 +2211,12 @@ var Rance;
                 }, React.DOM.div({
                     className: "confirm-popup-content"
                 }, this.props.contentText), React.DOM.div({
-                    className: "confirm-popup-buttons"
+                    className: "popup-buttons"
                 }, React.DOM.button({
-                    className: "confirm-popup-button",
+                    className: "popup-button",
                     onClick: this.handleOk
                 }, this.props.okText || "Confirm"), React.DOM.button({
-                    className: "confirm-popup-button",
+                    className: "popup-button",
                     onClick: this.handleClose
                 }, this.props.cancelText || "Cancel"))));
             }
@@ -2362,7 +2362,6 @@ var Rance;
                     case "delete": {
                         cellContent = "X";
 
-                        cellProps.className += " delete-save";
                         cellProps.onClick = this.props.handleDelete;
                         break;
                     }
@@ -2422,7 +2421,7 @@ var Rance;
                             date: Rance.prettifyDate(date),
                             accurateDate: saveData.date,
                             rowConstructor: Rance.UIComponents.SaveListItem,
-                            handleDelete: this.props.onDelete
+                            handleDelete: this.props.onDelete ? this.props.onDelete.bind(null, saveKeys[i]) : null
                         }
                     });
                 }
@@ -2443,7 +2442,7 @@ var Rance;
 
                 if (this.props.allowDelete) {
                     columns.push({
-                        label: "Delete",
+                        label: "Del",
                         key: "delete",
                         notSortable: true
                     });
@@ -2452,6 +2451,7 @@ var Rance;
                 return (React.DOM.div({ className: "save-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
+                    initialColumn: columns[1],
                     onRowChange: this.props.onRowChange,
                     autoSelect: this.props.autoSelect
                 })));
@@ -2490,7 +2490,8 @@ var Rance;
                 }), React.DOM.input({
                     className: "save-game-name",
                     ref: "saveName",
-                    type: "text"
+                    type: "text",
+                    maxLength: 64
                 }), React.DOM.div({
                     className: "save-game-buttons-container"
                 }, React.DOM.button({
@@ -2528,9 +2529,14 @@ var Rance;
                 this.props.handleClose();
             },
             makeConfirmDeletionPopup: function (saveName) {
+                var deleteFN = function (saveName) {
+                    localStorage.removeItem(saveName);
+                    this.forceUpdate();
+                }.bind(this, saveName);
+
                 var confirmProps = {
-                    handleOk: localStorage.removeItem(saveName),
-                    contentText: "test"
+                    handleOk: deleteFN,
+                    contentText: "Are you sure you want to delete the save " + saveName.replace("Rance.Save.", "") + "?"
                 };
 
                 this.refs.popupManager.makePopup({
