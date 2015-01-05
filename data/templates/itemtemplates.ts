@@ -9,6 +9,8 @@ module Rance
       type: string;
       displayName: string;
 
+      techLevel: number;
+
       slot: string; // low, mid, high
 
       ability?: AbilityTemplate;
@@ -19,6 +21,7 @@ module Rance
         intelligence?: number;
         speed?: number;
       };
+
     }
     export module Items
     {
@@ -27,6 +30,8 @@ module Rance
         type: "testItem",
         displayName: "Test item",
         
+        techLevel: 1,
+
         slot: "high",
         ability: Abilities.bombAttack
       }
@@ -35,6 +40,8 @@ module Rance
         type: "testItem1",
         displayName: "Test item1",
         
+        techLevel: 1,
+
         slot: "high",
         attributes:
         {
@@ -48,6 +55,8 @@ module Rance
         type: "testItem2",
         displayName: "Test item2",
         
+        techLevel: 1,
+
         slot: "mid",
         attributes:
         {
@@ -60,6 +69,8 @@ module Rance
         type: "testItem3",
         displayName: "Test item3",
         
+        techLevel: 1,
+
         slot: "low",
         attributes:
         {
