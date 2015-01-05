@@ -15,9 +15,18 @@
 
 /// <reference path="mctree.ts"/>
 
-var a, b;
 module Rance
 {
+
+  export var idGenerators =
+  {
+    fleet: 0,
+    item: 0,
+    player: 0,
+    star: 0,
+    unit: 0
+  }
+
   export class App
   {
     seed: any;
@@ -95,6 +104,7 @@ module Rance
       this.mapRenderer.setMap(this.game.galaxyMap);
       this.mapRenderer.setAllLayersAsDirty();
 
+      idGenerators = cloneObject(parsed.idGenerators);
 
       this.initUI();
     }

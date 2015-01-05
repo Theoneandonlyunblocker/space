@@ -2151,9 +2151,17 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.Popup = React.createClass({
+            displayName: "Popup",
             mixins: [Rance.UIComponents.Draggable],
+            getInitialState: function () {
+                return ({
+                    zIndex: this.props.incrementZIndex()
+                });
+            },
             onDragStart: function () {
-                this.zIndex = this.props.incrementZIndex();
+                this.setState({
+                    zIndex: this.props.incrementZIndex()
+                });
             },
             render: function () {
                 var divProps = {
@@ -2163,7 +2171,7 @@ var Rance;
                     style: {
                         top: this.state.dragPos ? this.state.dragPos.top : 0,
                         left: this.state.dragPos ? this.state.dragPos.left : 0,
-                        zIndex: this.zIndex
+                        zIndex: this.state.zIndex
                     }
                 };
 
@@ -2171,17 +2179,58 @@ var Rance;
                     divProps.className += " dragging";
                 }
 
-                return (React.DOM.div(divProps, this.props.content));
+                var contentProps = this.props.contentProps;
+
+                contentProps.closePopup = this.props.closePopup;
+
+                return (React.DOM.div(divProps, this.props.contentConstructor(contentProps)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ConfirmPopup = React.createClass({
+            displayName: "ConfirmPopup",
+            handleOk: function () {
+                debugger;
+                var callbackSuccesful = this.props.handleOk();
+
+                if (callbackSuccesful !== false) {
+                    this.handleClose();
+                }
+            },
+            handleClose: function () {
+                this.props.closePopup();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "confirm-popup"
+                }, React.DOM.div({
+                    className: "confirm-popup-content"
+                }, this.props.contentText), React.DOM.div({
+                    className: "confirm-popup-buttons"
+                }, React.DOM.button({
+                    className: "confirm-popup-button",
+                    onClick: this.handleOk
+                }, this.props.okText || "Confirm"), React.DOM.button({
+                    className: "confirm-popup-button",
+                    onClick: this.handleClose
+                }, this.props.cancelText || "Cancel"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="popup.ts"/>
+/// <reference path="confirmpopup.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.PopupManager = React.createClass({
+            displayName: "PopupManager",
             componentWillMount: function () {
                 this.listeners = {};
                 var self = this;
@@ -2238,7 +2287,8 @@ var Rance;
             },
             makePopup: function (props) {
                 var popups = this.state.popups.concat({
-                    content: props.content,
+                    contentConstructor: props.contentConstructor,
+                    contentProps: props.contentProps,
                     id: this.getPopupId()
                 });
 
@@ -2255,11 +2305,16 @@ var Rance;
                     var popup = popups[i];
 
                     toRender.push(Rance.UIComponents.Popup({
-                        content: popup.content,
+                        contentConstructor: popup.contentConstructor,
+                        contentProps: popup.contentProps,
                         key: popup.id,
                         incrementZIndex: this.incrementZIndex,
-                        closePopup: this.closePopup
+                        closePopup: this.closePopup.bind(this, popup.id)
                     }));
+                }
+
+                if (toRender.length < 1) {
+                    return null;
                 }
 
                 return (React.DOM.div({
@@ -2304,6 +2359,13 @@ var Rance;
                 var cellContent;
 
                 switch (type) {
+                    case "delete": {
+                        cellContent = "X";
+
+                        cellProps.className += " delete-save";
+                        cellProps.onClick = this.props.handleDelete;
+                        break;
+                    }
                     default: {
                         cellContent = this.props[type];
                         break;
@@ -2359,7 +2421,8 @@ var Rance;
                             name: saveData.name,
                             date: Rance.prettifyDate(date),
                             accurateDate: saveData.date,
-                            rowConstructor: Rance.UIComponents.SaveListItem
+                            rowConstructor: Rance.UIComponents.SaveListItem,
+                            handleDelete: this.props.onDelete
                         }
                     });
                 }
@@ -2377,6 +2440,14 @@ var Rance;
                         propToSortBy: "accurateDate"
                     }
                 ];
+
+                if (this.props.allowDelete) {
+                    columns.push({
+                        label: "Delete",
+                        key: "delete",
+                        notSortable: true
+                    });
+                }
 
                 return (React.DOM.div({ className: "save-list" }, Rance.UIComponents.List({
                     listItems: rows,
@@ -2411,7 +2482,9 @@ var Rance;
             render: function () {
                 return (React.DOM.div({
                     className: "save-game"
-                }, Rance.UIComponents.SaveList({
+                }, Rance.UIComponents.PopupManager({
+                    ref: "popupManager"
+                }), Rance.UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
                     autoSelect: true
                 }), React.DOM.input({
@@ -2454,12 +2527,27 @@ var Rance;
             handleClose: function () {
                 this.props.handleClose();
             },
+            makeConfirmDeletionPopup: function (saveName) {
+                var confirmProps = {
+                    handleOk: localStorage.removeItem(saveName),
+                    contentText: "test"
+                };
+
+                this.refs.popupManager.makePopup({
+                    contentConstructor: Rance.UIComponents.ConfirmPopup,
+                    contentProps: confirmProps
+                });
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "save-game"
-                }, Rance.UIComponents.SaveList({
+                }, Rance.UIComponents.PopupManager({
+                    ref: "popupManager"
+                }), Rance.UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
-                    autoSelect: true
+                    autoSelect: true,
+                    allowDelete: true,
+                    onDelete: this.makeConfirmDeletionPopup
                 }), React.DOM.input({
                     className: "save-game-name",
                     ref: "saveName",
@@ -4093,9 +4181,6 @@ var Rance;
 /// <reference path="building.ts" />
 var Rance;
 (function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.star = idGenerators.star || 0;
-
     var Star = (function () {
         function Star(x, y, id) {
             this.linksTo = [];
@@ -4104,7 +4189,7 @@ var Rance;
             this.buildings = {};
             this.indexedNeighborsInRange = {};
             this.indexedDistanceToStar = {};
-            this.id = isFinite(id) ? id : idGenerators.star++;
+            this.id = isFinite(id) ? id : Rance.idGenerators.star++;
             this.name = "Star " + this.id;
 
             this.x = x;
@@ -4702,9 +4787,6 @@ var Rance;
 /// <reference path="pathfinding.ts"/>
 var Rance;
 (function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.fleets = idGenerators.fleets || 0;
-
     var Fleet = (function () {
         function Fleet(player, ships, location, id) {
             this.ships = [];
@@ -4712,7 +4794,7 @@ var Rance;
             this.visibleStars = [];
             this.player = player;
             this.location = location;
-            this.id = isFinite(id) ? id : idGenerators.fleets++;
+            this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
             this.name = "Fleet " + this.id;
 
             this.location.addFleet(this);
@@ -5796,12 +5878,14 @@ var Rance;
             Items.testItem = {
                 type: "testItem",
                 displayName: "Test item",
+                techLevel: 1,
                 slot: "high",
                 ability: Rance.Templates.Abilities.bombAttack
             };
             Items.testItem1 = {
                 type: "testItem1",
                 displayName: "Test item1",
+                techLevel: 1,
                 slot: "high",
                 attributes: {
                     defence: -1,
@@ -5812,6 +5896,7 @@ var Rance;
             Items.testItem2 = {
                 type: "testItem2",
                 displayName: "Test item2",
+                techLevel: 1,
                 slot: "mid",
                 attributes: {
                     defence: -1,
@@ -5821,6 +5906,7 @@ var Rance;
             Items.testItem3 = {
                 type: "testItem3",
                 displayName: "Test item3",
+                techLevel: 1,
                 slot: "low",
                 attributes: {
                     defence: 3,
@@ -5836,12 +5922,9 @@ var Rance;
 /// <reference path="unit.ts" />
 var Rance;
 (function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.item = idGenerators.item || 0;
-
     var Item = (function () {
         function Item(template, id) {
-            this.id = isFinite(id) ? id : idGenerators.item++;
+            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
             this.template = template;
         }
         Item.prototype.serialize = function () {
@@ -5865,9 +5948,6 @@ var Rance;
 /// <reference path="item.ts" />
 var Rance;
 (function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.player = idGenerators.player || 0;
-
     var Player = (function () {
         function Player(id) {
             this.units = {};
@@ -5877,7 +5957,7 @@ var Rance;
             this.visionIsDirty = true;
             this.visibleStars = {};
             this.revealedStars = {};
-            this.id = isFinite(id) ? id : idGenerators.player++;
+            this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
             this.money = 1000;
         }
@@ -6853,9 +6933,6 @@ var Rance;
 /// <reference path="item.ts"/>
 var Rance;
 (function (Rance) {
-    var idGenerators = idGenerators || {};
-    idGenerators.unit = idGenerators.unit || 0;
-
     var Unit = (function () {
         function Unit(template, id, data) {
             this.items = {
@@ -6864,7 +6941,7 @@ var Rance;
                 high: null
             };
             this.uiDisplayIsDirty = true;
-            this.id = isFinite(id) ? id : idGenerators.unit++;
+            this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
 
             this.template = template;
             this.name = this.id + " " + template.typeName;
@@ -10807,7 +10884,8 @@ var Rance;
             var stringified = JSON.stringify({
                 name: name,
                 date: date,
-                gameData: gameData
+                gameData: gameData,
+                idGenerators: Rance.cloneObject(Rance.idGenerators)
             });
 
             localStorage.setItem(saveString, stringified);
@@ -11287,9 +11365,16 @@ var Rance;
 /// <reference path="gameloader.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
-var a, b;
 var Rance;
 (function (Rance) {
+    Rance.idGenerators = {
+        fleet: 0,
+        item: 0,
+        player: 0,
+        star: 0,
+        unit: 0
+    };
+
     var App = (function () {
         function App() {
             var self = this;
@@ -11341,6 +11426,8 @@ var Rance;
             this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.setMap(this.game.galaxyMap);
             this.mapRenderer.setAllLayersAsDirty();
+
+            Rance.idGenerators = Rance.cloneObject(parsed.idGenerators);
 
             this.initUI();
         };

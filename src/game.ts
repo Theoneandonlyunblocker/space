@@ -90,7 +90,8 @@ module Rance
       {
         name: name,
         date: date,
-        gameData: gameData
+        gameData: gameData,
+        idGenerators: cloneObject(idGenerators)
       });
 
       localStorage.setItem(saveString, stringified);

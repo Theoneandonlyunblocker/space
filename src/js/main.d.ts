@@ -183,6 +183,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ConfirmPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var PopupManager: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -872,6 +877,7 @@ declare module Rance {
         interface IItemTemplate {
             type: string;
             displayName: string;
+            techLevel: number;
             slot: string;
             ability?: Templates.AbilityTemplate;
             attributes?: {
@@ -885,12 +891,14 @@ declare module Rance {
             var testItem: {
                 type: string;
                 displayName: string;
+                techLevel: number;
                 slot: string;
                 ability: Templates.AbilityTemplate;
             };
             var testItem1: {
                 type: string;
                 displayName: string;
+                techLevel: number;
                 slot: string;
                 attributes: {
                     defence: number;
@@ -901,6 +909,7 @@ declare module Rance {
             var testItem2: {
                 type: string;
                 displayName: string;
+                techLevel: number;
                 slot: string;
                 attributes: {
                     defence: number;
@@ -910,6 +919,7 @@ declare module Rance {
             var testItem3: {
                 type: string;
                 displayName: string;
+                techLevel: number;
                 slot: string;
                 attributes: {
                     defence: number;
@@ -1802,8 +1812,14 @@ declare module Rance {
         public printToConsole(): void;
     }
 }
-declare var a: any, b: any;
 declare module Rance {
+    var idGenerators: {
+        fleet: number;
+        item: number;
+        player: number;
+        star: number;
+        unit: number;
+    };
     class App {
         public seed: any;
         public loader: Rance.AppLoader;

@@ -5,8 +5,6 @@
 
 module Rance
 {
-  var idGenerators = idGenerators || {};
-  idGenerators.fleets = idGenerators.fleets || 0;
 
   export class Fleet
   {
@@ -24,7 +22,7 @@ module Rance
     {
       this.player = player;
       this.location = location;
-      this.id = isFinite(id) ? id : idGenerators.fleets++;
+      this.id = isFinite(id) ? id : idGenerators.fleet++;
       this.name = "Fleet " + this.id;
 
       this.location.addFleet(this);

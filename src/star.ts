@@ -5,8 +5,6 @@
 
 module Rance
 {
-  var idGenerators = idGenerators || {};
-  idGenerators.star = idGenerators.star || 0;
 
   export class Star implements Point
   {

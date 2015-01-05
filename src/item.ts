@@ -3,8 +3,6 @@
 
 module Rance
 {
-  var idGenerators = idGenerators || {};
-  idGenerators.item = idGenerators.item || 0;
 
   export class Item
   {

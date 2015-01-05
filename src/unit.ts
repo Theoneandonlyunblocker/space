@@ -8,9 +8,6 @@
 
 module Rance
 {
-  var idGenerators = idGenerators || {};
-  idGenerators.unit = idGenerators.unit || 0;
-
   export class Unit
   {
     template: Templates.TypeTemplate;

@@ -8,8 +8,6 @@
 
 module Rance
 {
-  var idGenerators = idGenerators || {};
-  idGenerators.player = idGenerators.player || 0;
 
   export class Player
   {
