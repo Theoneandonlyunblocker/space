@@ -46,9 +46,7 @@ module Rance
             },
               React.DOM.option({value: "default"}, "default"),
               React.DOM.option({value: "noStatic"}, "no static layers"),
-              React.DOM.option({value: "income"}, "income"),
-              React.DOM.option({value: "visible"}, "visible")
-            )
+              React.DOM.option({value: "income"}, "income")
           )
         );
       },

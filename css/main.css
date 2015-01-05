@@ -23,40 +23,40 @@ table {
   color: #f3c620;
 }
 .button-style-no-border {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
 }
 .button-style-no-border:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .button-style-no-border:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .button-style-no-border:disabled,
 .button-style-no-border.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .button-style {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .button-style:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .button-style:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .button-style:disabled,
 .button-style.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .civ-splitter-horizontal {
   content: "";
@@ -247,7 +247,7 @@ progress::-webkit-progress-value {
   justify-content: center;
   width: 100%;
   flex: 0 0 auto;
-  color: #eeeeee;
+  color: #eeeeec;
   border: 0px solid transparent;
   border-bottom-width: 0;
   border-top-width: 5px;
@@ -747,8 +747,8 @@ progress::-webkit-progress-value {
   left: 0;
   display: flex;
   flex-flow: row;
-  color: #eeeeee;
-  background-color: #101c1b;
+  color: #eeeeec;
+  background-color: #0c1615;
   border: 0px solid transparent;
   border-bottom-width: 5px;
   border-top-width: 0;
@@ -790,7 +790,7 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
   border-width: 0 0 5px 5px;
-  background-color: #101c1b;
+  background-color: #0c1615;
   padding: 6px 10px;
   pointer-events: none;
 }
@@ -802,24 +802,24 @@ progress::-webkit-progress-value {
   flex-flow: row;
 }
 .top-menu-items-button {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
   margin: 5px;
 }
 .top-menu-items-button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .top-menu-items-button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .top-menu-items-button:disabled,
 .top-menu-items-button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .light-box-wrapper {
   position: fixed;
@@ -835,7 +835,7 @@ progress::-webkit-progress-value {
 }
 .light-box-container {
   position: relative;
-  background-color: #0f283d;
+  background-color: #0d2335;
   max-width: 95%;
   max-height: 95%;
   border: 5px solid transparent;
@@ -844,8 +844,7 @@ progress::-webkit-progress-value {
 }
 .light-box-content {
   overflow-y: auto;
-  padding: 0 25px;
-  margin: 25px 0;
+  margin: 25px;
 }
 .light-box-close {
   position: absolute;
@@ -864,7 +863,7 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: row;
   pointer-events: none;
-  color: #eeeeee;
+  color: #eeeeec;
 }
 .fleet-selection-container > * {
   pointer-events: auto;
@@ -879,7 +878,7 @@ progress::-webkit-progress-value {
 }
 .fleet-selection-controls {
   flex: 0 auto;
-  background-color: #101c1b;
+  background-color: #0c1615;
   display: inline-table;
   padding: 5px;
   border: 2px solid transparent;
@@ -888,23 +887,23 @@ progress::-webkit-progress-value {
 }
 .fleet-selection-controls button {
   margin: 1px 2px;
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .fleet-selection-controls button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .fleet-selection-controls button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .fleet-selection-controls button:disabled,
 .fleet-selection-controls button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .fleet-selection-selected-wrapper {
   overflow-y: auto;
@@ -919,29 +918,29 @@ progress::-webkit-progress-value {
 }
 .fleet-controls button {
   margin: 1px 2px;
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .fleet-controls button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .fleet-controls button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .fleet-controls button:disabled,
 .fleet-controls button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .fleet-info {
   display: inline-flex;
   flex-flow: column;
   flex-shrink: 0;
-  background-color: #101c1b;
+  background-color: #0c1615;
   border: 3px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -952,7 +951,7 @@ progress::-webkit-progress-value {
 .fleet-info-header {
   display: flex;
   flex-flow: row;
-  background: linear-gradient(to bottom, #0f283d, #101c1b);
+  background: linear-gradient(to bottom, #0d2335, #0c1615);
 }
 .fleet-info-name {
   margin-right: 5px;
@@ -978,12 +977,12 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: row;
   flex-shrink: 0;
-  background-color: #101c1b;
+  background-color: #0c1615;
   border: 1px solid #666;
 }
 .ship-info .ship-info-name,
 .ship-info .unit-strength-amount {
-  background-color: #0f283d;
+  background-color: #0d2335;
 }
 .ship-info-icon-container {
   display: flex;
@@ -997,29 +996,29 @@ progress::-webkit-progress-value {
 .fleet-reorganization {
   display: inline-flex;
   flex-flow: column;
-  background-color: #101c1b;
+  background-color: #0c1615;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
 }
 .fleet-reorganization button {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .fleet-reorganization button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .fleet-reorganization button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .fleet-reorganization button:disabled,
 .fleet-reorganization button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .fleet-reorganization-header {
   text-align: center;
@@ -1034,7 +1033,7 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   border-bottom: 0;
   padding: 0 10px;
-  background-color: #0f283d;
+  background-color: #0d2335;
 }
 .fleet-reorganization-subheader-fleet-name-left {
   text-align: right;
@@ -1054,7 +1053,7 @@ progress::-webkit-progress-value {
   display: inline-flex;
   flex-flow: row;
   padding: 8px 0;
-  background-color: #101c1b;
+  background-color: #0c1615;
   border: 0px solid transparent;
   border-bottom-width: 3px;
   border-top-width: 3px;
@@ -1093,23 +1092,23 @@ progress::-webkit-progress-value {
   font-size: 1.5em;
   font-weight: bolder;
   pointer-events: auto;
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
 .end-turn-button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .end-turn-button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .end-turn-button:disabled,
 .end-turn-button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .possible-actions-container {
   display: flex;
@@ -1130,14 +1129,14 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
   border-width: 5px 5px 5px 0;
-  background-color: #101c1b;
+  background-color: #0c1615;
   padding: 6px 10px;
 }
 .possible-action {
   display: flex;
   flex-flow: row;
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
@@ -1145,16 +1144,16 @@ progress::-webkit-progress-value {
   padding: 6px;
 }
 .possible-action:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .possible-action:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .possible-action:disabled,
 .possible-action.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .possible-action-title {
   align-self: center;
@@ -1163,22 +1162,22 @@ progress::-webkit-progress-value {
   position: relative;
   left: -3px;
   bottom: -3px;
-  background-color: #0f283d;
+  background-color: #0d2335;
   padding: 0 8px;
-  color: #eeeeee;
+  color: #eeeeec;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
   border-width: 5px;
 }
 .expanded-action > * {
-  background-color: #101c1b;
+  background-color: #0c1615;
 }
 .star-info {
   display: inline-flex;
   flex-flow: column;
-  background-color: #101c1b;
-  color: #eeeeee;
+  background-color: #0c1615;
+  color: #eeeeec;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1187,7 +1186,7 @@ progress::-webkit-progress-value {
 .defence-building-list {
   display: flex;
   flex-flow: row;
-  background-color: #0f283d;
+  background-color: #0d2335;
 }
 .defence-building {
   display: flex;
@@ -1195,7 +1194,7 @@ progress::-webkit-progress-value {
   margin: 0 2px;
 }
 .defence-building-icon {
-  background: linear-gradient(to bottom, #1e507a, #0f283d);
+  background: linear-gradient(to bottom, #1c4b72, #0d2335);
   border: 1px solid #77abce;
   border-bottom-width: 0px;
 }
@@ -1266,22 +1265,22 @@ progress::-webkit-progress-value {
   background-image: none;
 }
 .buildable-item-list tbody tr {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   position: relative;
 }
 .buildable-item-list tbody tr:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .buildable-item-list tbody tr:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .buildable-item-list tbody tr:disabled,
 .buildable-item-list tbody tr.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .buildable-item-list tbody tr td {
   padding-top: 8px;
@@ -1320,8 +1319,8 @@ progress::-webkit-progress-value {
   flex-flow: row;
   width: 100%;
   height: 100%;
-  color: #eeeeee;
-  background-color: #101c1b;
+  color: #eeeeec;
+  background-color: #0c1615;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -1391,7 +1390,7 @@ progress::-webkit-progress-value {
   border-image-slice: 10%;
 }
 .item-equip .unit-list .selected {
-  background-color: #888e0e;
+  background-color: #868a0a;
 }
 .item-equip-left {
   display: flex;
@@ -1451,7 +1450,7 @@ progress::-webkit-progress-value {
   }
 }
 .item-equip-left .item-list .reserved {
-  background-color: #084e0e;
+  background-color: #064b0a;
 }
 .item-list-unitName {
   overflow: hidden;
@@ -1497,8 +1496,8 @@ progress::-webkit-progress-value {
 .economy-summary-list {
   position: relative;
   padding: 8px;
-  color: #eeeeee;
-  background-color: #101c1b;
+  color: #eeeeec;
+  background-color: #0c1615;
 }
 .economy-summary-list .sort-icon {
   font-weight: 100;
@@ -1587,8 +1586,8 @@ progress::-webkit-progress-value {
 .save-game {
   position: relative;
   padding: 8px;
-  color: #eeeeee;
-  background-color: #101c1b;
+  color: #eeeeec;
+  background-color: #0c1615;
 }
 .save-game .sort-icon {
   font-weight: 100;
@@ -1645,24 +1644,30 @@ progress::-webkit-progress-value {
   margin: 5px 0;
 }
 .save-game-button {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
   margin: 5px 20px;
 }
 .save-game-button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .save-game-button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .save-game-button:disabled,
 .save-game-button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.save-list {
+  position: relative;
+  border: 3px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
 }
 .save-list th {
   border: 0px solid transparent;
@@ -1675,27 +1680,13 @@ progress::-webkit-progress-value {
   background-image: none;
 }
 .save-list tbody tr {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
-  cursor: pointer;
   position: relative;
-}
-.save-list tbody tr:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
-}
-.save-list tbody tr:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
-}
-.save-list tbody tr:disabled,
-.save-list tbody tr.disabled {
-  cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  cursor: pointer;
 }
 .save-list tbody tr td {
   padding-top: 2px;
   padding-bottom: 2px;
-  min-width: auto;
+  min-width: 0;
 }
 .save-list tbody tr::after {
   content: "";
@@ -1709,7 +1700,21 @@ progress::-webkit-progress-value {
   background-size: 100% 2px;
 }
 .save-list tbody tr:hover {
-  background-color: grey;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+}
+.save-list tbody tr:hover:hover {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.save-list tbody tr:hover:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.save-list tbody tr:hover:disabled,
+.save-list tbody tr:hover.disabled {
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .save-list-name {
   max-width: 400px;
@@ -1717,30 +1722,30 @@ progress::-webkit-progress-value {
   text-overflow: ellipsis;
 }
 .save-list-delete {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
   text-align: center;
 }
 .save-list-delete:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .save-list-delete:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .save-list-delete:disabled,
 .save-list-delete.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .popup {
   position: absolute;
   padding: 8px;
-  color: #eeeeee;
-  background-color: #101c1b;
+  color: #eeeeec;
+  background-color: #0c1615;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1750,22 +1755,22 @@ progress::-webkit-progress-value {
   justify-content: center;
 }
 .popup-button {
-  background: linear-gradient(to bottom, #13334d 0%, #101c1b 50%, #13334d 100%);
-  color: #eeeeee;
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
   margin: 5px 20px;
 }
 .popup-button:hover {
-  background: linear-gradient(to bottom, #1b486e 0%, #1f3634 50%, #1b486e 100%);
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .popup-button:active {
-  background: linear-gradient(to bottom, #173d5e 0%, #172928 50%, #173d5e 100%);
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .popup-button:disabled,
 .popup-button.disabled {
   cursor: default;
-  color: #bbbbbb;
-  background: linear-gradient(to bottom, #07131c 0%, #000000 50%, #07131c 100%);
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
