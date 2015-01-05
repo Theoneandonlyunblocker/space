@@ -16,6 +16,14 @@ module Rance
 
         switch (type)
         {
+          case "delete":
+          {
+            cellContent = "X";
+            
+            cellProps.className += " delete-save";
+            cellProps.onClick = this.props.handleDelete;
+            break;
+          }
           default:
           {
             cellContent = this.props[type];

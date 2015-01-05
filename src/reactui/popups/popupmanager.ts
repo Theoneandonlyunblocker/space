@@ -1,11 +1,13 @@
 /// <reference path="popup.ts"/>
 
+/// <reference path="confirmpopup.ts"/>
 module Rance
 {
   export module UIComponents
   {
     export var PopupManager = React.createClass(
     {
+      displayName: "PopupManager",
 
       componentWillMount: function()
       {
@@ -82,12 +84,14 @@ module Rance
 
       makePopup: function(props:
       {
-        content: any;  
+        contentConstructor: any;
+        contentProps: any;
       })
       {
         var popups = this.state.popups.concat(
         {
-          content: props.content,
+          contentConstructor: props.contentConstructor,
+          contentProps: props.contentProps,
           id: this.getPopupId()
         });
 
@@ -99,11 +103,7 @@ module Rance
 
       render: function()
       {
-        var popups:
-        {
-          id: number;
-          content: any;
-        }[] = this.state.popups;
+        var popups = this.state.popups;
 
         var toRender = [];
 
@@ -114,12 +114,18 @@ module Rance
           toRender.push(
             UIComponents.Popup(
             {
-              content: popup.content,
+              contentConstructor: popup.contentConstructor,
+              contentProps: popup.contentProps,
               key: popup.id,
               incrementZIndex: this.incrementZIndex,
-              closePopup: this.closePopup
+              closePopup: this.closePopup.bind(this, popup.id)
             })
           );
+        }
+
+        if (toRender.length < 1)
+        {
+          return null;
         }
 
         return(

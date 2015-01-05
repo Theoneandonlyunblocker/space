@@ -30,6 +30,20 @@ module Rance
       {
         this.props.handleClose();
       },
+      makeConfirmDeletionPopup: function(saveName: string)
+      {
+        var confirmProps =
+        {
+          handleOk: localStorage.removeItem(saveName),
+          contentText: "test"
+        }
+
+        this.refs.popupManager.makePopup(
+        {
+          contentConstructor: UIComponents.ConfirmPopup,
+          contentProps: confirmProps
+        });
+      },
 
       render: function()
       {
@@ -38,10 +52,16 @@ module Rance
           {
             className: "save-game"
           },
+            UIComponents.PopupManager(
+            {
+              ref: "popupManager"
+            }),
             UIComponents.SaveList(
             {
               onRowChange: this.handleRowChange,
-              autoSelect: true
+              autoSelect: true,
+              allowDelete: true,
+              onDelete: this.makeConfirmDeletionPopup
             }),
             React.DOM.input(
             {

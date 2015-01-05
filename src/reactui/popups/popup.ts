@@ -6,11 +6,23 @@ module Rance
   {
     export var Popup = React.createClass(
     {
+      displayName: "Popup",
       mixins: [Draggable],
+
+      getInitialState: function()
+      {
+        return(
+        {
+          zIndex: this.props.incrementZIndex()
+        });
+      },
 
       onDragStart: function()
       {
-        this.zIndex = this.props.incrementZIndex();
+        this.setState(
+        {
+          zIndex: this.props.incrementZIndex()
+        });
       },
 
       render: function()
@@ -24,7 +36,7 @@ module Rance
           {
             top: this.state.dragPos ? this.state.dragPos.top : 0,
             left: this.state.dragPos ? this.state.dragPos.left : 0,
-            zIndex: this.zIndex
+            zIndex: this.state.zIndex
           }
         };
 
@@ -33,9 +45,13 @@ module Rance
           divProps.className += " dragging";
         }
 
+        var contentProps = this.props.contentProps;
+
+        contentProps.closePopup = this.props.closePopup
+
         return(
           React.DOM.div(divProps,
-            this.props.content
+            this.props.contentConstructor(contentProps)
           )
         );
       }

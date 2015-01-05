@@ -32,6 +32,7 @@ module Rance
               date: prettifyDate(date),
               accurateDate: saveData.date,
               rowConstructor: UIComponents.SaveListItem,
+              handleDelete: this.props.onDelete
             }
           });
         }
@@ -49,8 +50,17 @@ module Rance
             defaultOrder: "desc",
             propToSortBy: "accurateDate"
           }
-
         ];
+
+        if (this.props.allowDelete)
+        {
+          columns.push(
+          {
+            label: "Delete",
+            key: "delete",
+            notSortable: true
+          });
+        }
 
         return(
           React.DOM.div({className: "save-list"},

@@ -35,6 +35,10 @@ module Rance
           {
             className: "save-game"
           },
+            UIComponents.PopupManager(
+            {
+              ref: "popupManager"
+            }),
             UIComponents.SaveList(
             {
               onRowChange: this.handleRowChange,
