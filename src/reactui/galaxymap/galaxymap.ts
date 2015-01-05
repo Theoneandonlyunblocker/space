@@ -32,10 +32,6 @@ module Rance
                 playerControl: this.props.playerControl,
                 player: this.props.player,
                 game: this.props.game
-              }),
-              UIComponents.PopupManager(
-              {
-                
               })
             ),
             React.DOM.select(
@@ -47,6 +43,7 @@ module Rance
               React.DOM.option({value: "default"}, "default"),
               React.DOM.option({value: "noStatic"}, "no static layers"),
               React.DOM.option({value: "income"}, "income")
+            )
           )
         );
       },

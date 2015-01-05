@@ -2195,7 +2195,6 @@ var Rance;
         UIComponents.ConfirmPopup = React.createClass({
             displayName: "ConfirmPopup",
             handleOk: function () {
-                debugger;
                 var callbackSuccesful = this.props.handleOk();
 
                 if (callbackSuccesful !== false) {
@@ -2473,11 +2472,31 @@ var Rance;
                 this.setInputText(row.data.name);
             },
             handleSave: function () {
+                var saveName = this.refs.saveName.getDOMNode().value;
+                var saveKey = "Rance.Save." + saveName;
+                if (localStorage[saveKey]) {
+                    this.makeConfirmOverWritePopup(saveName);
+                } else {
+                    this.saveGame();
+                }
+            },
+            saveGame: function () {
                 app.game.save(this.refs.saveName.getDOMNode().value);
                 this.handleClose();
             },
             handleClose: function () {
                 this.props.handleClose();
+            },
+            makeConfirmOverWritePopup: function (saveName) {
+                var confirmProps = {
+                    handleOk: this.saveGame,
+                    contentText: "Are you sure you want to overwrite " + saveName.replace("Rance.Save.", "") + "?"
+                };
+
+                this.refs.popupManager.makePopup({
+                    contentConstructor: Rance.UIComponents.ConfirmPopup,
+                    contentProps: confirmProps
+                });
             },
             render: function () {
                 return (React.DOM.div({
@@ -7686,11 +7705,11 @@ var Rance;
                     playerControl: this.props.playerControl,
                     player: this.props.player,
                     game: this.props.game
-                }), Rance.UIComponents.PopupManager({})), React.DOM.select({
+                })), React.DOM.select({
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "visible" }, "visible"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"))));
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = false;

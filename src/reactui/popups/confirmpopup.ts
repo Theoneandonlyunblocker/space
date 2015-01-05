@@ -8,7 +8,6 @@ module Rance
 
       handleOk: function()
       {
-        debugger;
         var callbackSuccesful = this.props.handleOk();
 
         if (callbackSuccesful !== false)
