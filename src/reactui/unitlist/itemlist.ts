@@ -50,7 +50,8 @@ module Rance
             onDragEnd: this.props.onDragEnd
           };
 
-          ["attack", "defence", "intelligence", "speed"].forEach(function(stat)
+          ["maxActionPoints", "attack", "defence",
+            "intelligence", "speed"].forEach(function(stat)
           {
             if (!item.template.attributes) data[stat] = null;
             else data[stat] = item.template.attributes[stat] || null;
@@ -79,6 +80,11 @@ module Rance
           {
             label: "Unit",
             key: "unitName",
+            defaultOrder: "desc"
+          },
+          {
+            label: "Act",
+            key: "maxActionPoints",
             defaultOrder: "desc"
           },
           {
@@ -114,6 +120,7 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
+              initialColumn: columns[1], // slot
               onRowChange: this.props.onRowChange
             })
           )

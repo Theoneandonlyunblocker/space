@@ -26,8 +26,8 @@ module Rance
             strength: "" + unit.currentStrength + " / " + unit.maxStrength,
             currentStrength: unit.currentStrength,
             maxStrength: unit.maxStrength,
-            maxActionPoints: unit.maxActionPoints,
 
+            maxActionPoints: unit.attributes.maxActionPoints,
             attack: unit.attributes.attack,
             defence: unit.attributes.defence,
             intelligence: unit.attributes.intelligence,

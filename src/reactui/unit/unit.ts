@@ -111,7 +111,7 @@ module Rance
           maxStrength: unit.maxStrength,
           currentStrength: unit.currentStrength,
           isSquadron: unit.isSquadron,
-          maxActionPoints: unit.maxActionPoints,
+          maxActionPoints: unit.attributes.maxActionPoints,
           currentActionPoints: unit.battleStats.currentActionPoints,
         }
 

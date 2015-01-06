@@ -41,7 +41,10 @@ module Rance
 
         return(
           React.DOM.div(divProps,
-            this.props.item.template.displayName
+            React.DOM.img(
+            {
+              src: this.props.item.template.icon
+            })
           )
         );
       }

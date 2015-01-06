@@ -22,10 +22,10 @@ module Rance
     currentMovePoints: number;
     maxMovePoints: number;
 
-    maxActionPoints: number;
 
     baseAttributes:
     {
+      maxActionPoints: number;
       attack: number;
       defence: number;
       intelligence: number;
@@ -34,6 +34,7 @@ module Rance
     
     attributes:
     {
+      maxActionPoints: number;
       attack: number;
       defence: number;
       intelligence: number;
@@ -109,7 +110,6 @@ module Rance
 
       this.maxStrength = data.maxStrength;
       this.currentStrength = data.currentStrength;
-      this.maxActionPoints = data.maxActionPoints;
 
       this.currentMovePoints = data.currentMovePoints;
       this.maxMovePoints = data.maxMovePoints;
@@ -144,7 +144,6 @@ module Rance
     setInitialValues()
     {
       this.setBaseHealth();
-      this.setActionPoints();
       this.setAttributes();
       this.resetBattleStats();
 
@@ -165,10 +164,6 @@ module Rance
         this.currentStrength = randInt(this.maxStrength / 10, this.maxStrength);
       }
     }
-    setActionPoints()
-    {
-      this.maxActionPoints = randInt(3, 6);
-    }
     setAttributes(experience: number = 1, variance: number = 1)
     {
       var template = this.template;
@@ -178,7 +173,8 @@ module Rance
         attack: 1,
         defence: 1,
         intelligence: 1,
-        speed: 1
+        speed: 1,
+        maxActionPoints: randInt(3, 6)
       }
 
       for (var attribute in template.attributeLevels)
@@ -208,7 +204,7 @@ module Rance
       this.battleStats =
       {
         moveDelay: this.getBaseMoveDelay(),
-        currentActionPoints: this.maxActionPoints,
+        currentActionPoints: this.attributes.maxActionPoints,
         battle: null,
         side: null,
         position: null,
@@ -469,12 +465,11 @@ module Rance
 
       data.maxStrength = this.maxStrength;
       data.currentStrength = this.currentStrength;
-      data.maxActionPoints = this.maxActionPoints;
 
       data.currentMovePoints = this.currentMovePoints;
       data.maxMovePoints = this.maxMovePoints;
 
-      data.baseAttributes = this.baseAttributes;
+      data.baseAttributes = cloneObject(this.baseAttributes);
 
       data.battleStats = {};
       data.battleStats.moveDelay = this.battleStats.moveDelay;
