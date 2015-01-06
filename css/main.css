@@ -1257,7 +1257,7 @@ progress::-webkit-progress-value {
 .buildable-item-list th {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 3px;
+  border-top-width: 0;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -1549,7 +1549,7 @@ progress::-webkit-progress-value {
 .economy-summary-list th {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 3px;
+  border-top-width: 0;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -1672,7 +1672,7 @@ progress::-webkit-progress-value {
 .save-list th {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 3px;
+  border-top-width: 0;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }

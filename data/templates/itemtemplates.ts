@@ -25,58 +25,132 @@ module Rance
     }
     export module Items
     {
-      export var testItem =
+      export var bombLauncher1 =
       {
-        type: "testItem",
-        displayName: "Test item",
+        type: "bombLauncher1",
+        displayName: "Bomb Launcher 1",
         
         techLevel: 1,
 
         slot: "high",
         ability: Abilities.bombAttack
       }
-      export var testItem1 =
+      export var bombLauncher2 =
       {
-        type: "testItem1",
-        displayName: "Test item1",
+        type: "bombLauncher2",
+        displayName: "Bomb Launcher 2",
+        
+        techLevel: 2,
+
+        attributes:
+        {
+          attack: 1
+        },
+
+        slot: "high",
+        ability: Abilities.bombAttack
+      }
+      export var bombLauncher3 =
+      {
+        type: "bombLauncher3",
+        displayName: "Bomb Launcher 3",
+        
+        techLevel: 3,
+
+        attributes:
+        {
+          attack: 3
+        },
+
+        slot: "high",
+        ability: Abilities.bombAttack
+      }
+
+      export var afterBurner1 =
+      {
+        type: "afterBurner1",
+        displayName: "Afterburner 1",
         
         techLevel: 1,
 
-        slot: "high",
         attributes:
         {
-          defence: -1,
           speed: 1
         },
-        ability: Abilities.bombAttack
-      }
-      export var testItem2 =
-      {
-        type: "testItem2",
-        displayName: "Test item2",
-        
-        techLevel: 1,
 
-        slot: "mid",
+        slot: "mid"
+      }
+      export var afterBurner2 =
+      {
+        type: "afterBurner2",
+        displayName: "Afterburner 2",
+        
+        techLevel: 2,
+
         attributes:
         {
-          defence: -1,
           speed: 2
-        }
+        },
+
+        slot: "mid"
       }
-      export var testItem3 =
+      export var afterBurner3 =
       {
-        type: "testItem3",
-        displayName: "Test item3",
+        type: "afterBurner3",
+        displayName: "Afterburner 3",
+        
+        techLevel: 3,
+
+        attributes:
+        {
+          speed: 3
+        },
+
+        slot: "mid"
+      }
+      export var shieldPlating1 =
+      {
+        type: "shieldPlating1",
+        displayName: "Shield Plating 1",
         
         techLevel: 1,
 
-        slot: "low",
+        attributes:
+        {
+          defence: 1
+        },
+
+        slot: "low"
+      }
+      export var shieldPlating2 =
+      {
+        type: "shieldPlating2",
+        displayName: "Shield Plating 2",
+        
+        techLevel: 2,
+
+        attributes:
+        {
+          defence: 2
+        },
+
+        slot: "low"
+      }
+      export var shieldPlating3 =
+      {
+        type: "shieldPlating3",
+        displayName: "Shield Plating 3",
+        
+        techLevel: 3,
+
         attributes:
         {
           defence: 3,
-          speed: -2
-        }
+          speed: -1
+        },
+
+        slot: "low",
+        ability: Abilities.guardColumn
       }
     }
   }

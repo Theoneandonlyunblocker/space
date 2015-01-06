@@ -1804,7 +1804,7 @@ var Rance;
 
                     var data = {
                         item: item,
-                        typeName: item.template.type,
+                        typeName: item.template.displayName,
                         slot: item.template.slot,
                         slotIndex: this.getSlotIndex(item.template.slot),
                         unit: item.unit ? item.unit : null,
@@ -2194,6 +2194,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ConfirmPopup = React.createClass({
             displayName: "ConfirmPopup",
+            componentDidMount: function () {
+                this.refs.okButton.getDOMNode().focus();
+            },
             handleOk: function () {
                 var callbackSuccesful = this.props.handleOk();
 
@@ -2213,7 +2216,8 @@ var Rance;
                     className: "popup-buttons"
                 }, React.DOM.button({
                     className: "popup-button",
-                    onClick: this.handleOk
+                    onClick: this.handleOk,
+                    ref: "okButton"
                 }, this.props.okText || "Confirm"), React.DOM.button({
                     className: "popup-button",
                     onClick: this.handleClose
@@ -2465,6 +2469,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.SaveGame = React.createClass({
             displayName: "SaveGame",
+            componentDidMount: function () {
+                this.refs.okButton.getDOMNode().focus();
+            },
             setInputText: function (newText) {
                 this.refs.saveName.getDOMNode().value = newText;
             },
@@ -2515,7 +2522,8 @@ var Rance;
                     className: "save-game-buttons-container"
                 }, React.DOM.button({
                     className: "save-game-button",
-                    onClick: this.handleSave
+                    onClick: this.handleSave,
+                    ref: "okButton"
                 }, "Save"), React.DOM.button({
                     className: "save-game-button",
                     onClick: this.handleClose
@@ -2531,6 +2539,9 @@ var Rance;
     (function (UIComponents) {
         UIComponents.LoadGame = React.createClass({
             displayName: "LoadGame",
+            componentDidMount: function () {
+                this.refs.okButton.getDOMNode().focus();
+            },
             setInputText: function (newText) {
                 this.refs.saveName.getDOMNode().value = newText;
             },
@@ -2550,6 +2561,7 @@ var Rance;
             makeConfirmDeletionPopup: function (saveName) {
                 var deleteFN = function (saveName) {
                     localStorage.removeItem(saveName);
+                    this.refs.saveName.getDOMNode().value = "";
                     this.forceUpdate();
                 }.bind(this, saveName);
 
@@ -2581,7 +2593,8 @@ var Rance;
                     className: "save-game-buttons-container"
                 }, React.DOM.button({
                     className: "save-game-button",
-                    onClick: this.handleLoad
+                    onClick: this.handleLoad,
+                    ref: "okButton"
                 }, "Load"), React.DOM.button({
                     className: "save-game-button",
                     onClick: this.handleClose
@@ -3707,6 +3720,20 @@ var Rance;
         ].join(" "));
     }
     Rance.prettifyDate = prettifyDate;
+    function shuffleArray(toShuffle) {
+        var resultArray = toShuffle.slice(0);
+
+        for (var i = resultArray.length - 1; i > 0; i--) {
+            var n = randInt(0, i + 1);
+
+            var temp = resultArray[i];
+            resultArray[i] = resultArray[n];
+            resultArray[n] = temp;
+        }
+
+        return resultArray;
+    }
+    Rance.shuffleArray = shuffleArray;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -4200,10 +4227,155 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
+/// <reference path="abilitytemplates.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Items) {
+            Items.bombLauncher1 = {
+                type: "bombLauncher1",
+                displayName: "Bomb Launcher 1",
+                techLevel: 1,
+                slot: "high",
+                ability: Rance.Templates.Abilities.bombAttack
+            };
+            Items.bombLauncher2 = {
+                type: "bombLauncher2",
+                displayName: "Bomb Launcher 2",
+                techLevel: 2,
+                attributes: {
+                    attack: 1
+                },
+                slot: "high",
+                ability: Rance.Templates.Abilities.bombAttack
+            };
+            Items.bombLauncher3 = {
+                type: "bombLauncher3",
+                displayName: "Bomb Launcher 3",
+                techLevel: 3,
+                attributes: {
+                    attack: 3
+                },
+                slot: "high",
+                ability: Rance.Templates.Abilities.bombAttack
+            };
+
+            Items.afterBurner1 = {
+                type: "afterBurner1",
+                displayName: "Afterburner 1",
+                techLevel: 1,
+                attributes: {
+                    speed: 1
+                },
+                slot: "mid"
+            };
+            Items.afterBurner2 = {
+                type: "afterBurner2",
+                displayName: "Afterburner 2",
+                techLevel: 2,
+                attributes: {
+                    speed: 2
+                },
+                slot: "mid"
+            };
+            Items.afterBurner3 = {
+                type: "afterBurner3",
+                displayName: "Afterburner 3",
+                techLevel: 3,
+                attributes: {
+                    speed: 3
+                },
+                slot: "mid"
+            };
+            Items.shieldPlating1 = {
+                type: "shieldPlating1",
+                displayName: "Shield Plating 1",
+                techLevel: 1,
+                attributes: {
+                    defence: 1
+                },
+                slot: "low"
+            };
+            Items.shieldPlating2 = {
+                type: "shieldPlating2",
+                displayName: "Shield Plating 2",
+                techLevel: 2,
+                attributes: {
+                    defence: 2
+                },
+                slot: "low"
+            };
+            Items.shieldPlating3 = {
+                type: "shieldPlating3",
+                displayName: "Shield Plating 3",
+                techLevel: 3,
+                attributes: {
+                    defence: 3,
+                    speed: -1
+                },
+                slot: "low",
+                ability: Rance.Templates.Abilities.guardColumn
+            };
+        })(Templates.Items || (Templates.Items = {}));
+        var Items = Templates.Items;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/itemtemplates.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.templateType = this.template.type;
+
+            return data;
+        };
+        return Item;
+    })();
+    Rance.Item = Item;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/itemtemplates.ts" />
+/// <reference path="item.ts" />
+/// <reference path="utility.ts" />
+var Rance;
+(function (Rance) {
+    var ItemGenerator = (function () {
+        function ItemGenerator() {
+            this.itemsByTechLevel = {};
+            this.indexItemsByTechLevel();
+        }
+        ItemGenerator.prototype.indexItemsByTechLevel = function () {
+            for (var itemName in Rance.Templates.Items) {
+                var item = Rance.Templates.Items[itemName];
+
+                if (!this.itemsByTechLevel[item.techLevel]) {
+                    this.itemsByTechLevel[item.techLevel] = [];
+                }
+
+                this.itemsByTechLevel[item.techLevel].push(item);
+            }
+        };
+
+        ItemGenerator.prototype.getRandomItemOfTechLevel = function (techLevel) {
+            return Rance.getRandomArrayItem(this.itemsByTechLevel[techLevel]);
+        };
+        return ItemGenerator;
+    })();
+    Rance.ItemGenerator = ItemGenerator;
+})(Rance || (Rance = {}));
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="itemgenerator.ts" />
 var Rance;
 (function (Rance) {
     var Star = (function () {
@@ -4214,6 +4386,11 @@ var Rance;
             this.buildings = {};
             this.indexedNeighborsInRange = {};
             this.indexedDistanceToStar = {};
+            this.buildableItems = {
+                1: [],
+                2: [],
+                3: []
+            };
             this.id = isFinite(id) ? id : Rance.idGenerators.star++;
             this.name = "Star " + this.id;
 
@@ -4645,6 +4822,52 @@ var Rance;
                 if (neighborVoronoiIds.indexOf(star.voronoiId) < 0) {
                     this.removeLink(star);
                 }
+            }
+        };
+        Star.prototype.seedBuildableItems = function () {
+            for (var techLevel in this.buildableItems) {
+                var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
+
+                if (!itemsByTechLevel)
+                    continue;
+
+                var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
+
+                itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel);
+
+                for (var i = 0; i < maxItemsForTechLevel; i++) {
+                    this.buildableItems[techLevel].push(itemsByTechLevel.pop());
+                }
+            }
+        };
+        Star.prototype.getItemManufactoryLevel = function () {
+            var level = 0;
+            if (this.buildings["items"]) {
+                level += this.buildings["items"].length;
+            }
+
+            return level;
+        };
+        Star.prototype.getItemAmountForTechLevel = function (techLevel, manufactoryLevel) {
+            var maxManufactoryLevel = 3;
+
+            manufactoryLevel = Rance.clamp(manufactoryLevel, 0, maxManufactoryLevel);
+
+            return (1 + manufactoryLevel) - techLevel;
+        };
+        Star.prototype.getBuildableItems = function () {
+            if (!this.buildableItems[1] || this.buildableItems[1].length < 1) {
+                this.seedBuildableItems();
+            }
+            ;
+
+            var manufactoryLevel = this.getItemManufactoryLevel();
+
+            var buildableItems = {};
+
+            for (var techLevel in this.buildableItems) {
+                var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel);
+                buildableItems[techLevel] = this.buildableItems[techLevel].slice(0, amountBuildable);
             }
         };
         Star.prototype.serialize = function () {
@@ -5895,75 +6118,6 @@ var Rance;
     })();
     Rance.Flag = Flag;
 })(Rance || (Rance = {}));
-/// <reference path="abilitytemplates.ts" />
-var Rance;
-(function (Rance) {
-    (function (Templates) {
-        (function (Items) {
-            Items.testItem = {
-                type: "testItem",
-                displayName: "Test item",
-                techLevel: 1,
-                slot: "high",
-                ability: Rance.Templates.Abilities.bombAttack
-            };
-            Items.testItem1 = {
-                type: "testItem1",
-                displayName: "Test item1",
-                techLevel: 1,
-                slot: "high",
-                attributes: {
-                    defence: -1,
-                    speed: 1
-                },
-                ability: Rance.Templates.Abilities.bombAttack
-            };
-            Items.testItem2 = {
-                type: "testItem2",
-                displayName: "Test item2",
-                techLevel: 1,
-                slot: "mid",
-                attributes: {
-                    defence: -1,
-                    speed: 2
-                }
-            };
-            Items.testItem3 = {
-                type: "testItem3",
-                displayName: "Test item3",
-                techLevel: 1,
-                slot: "low",
-                attributes: {
-                    defence: 3,
-                    speed: -2
-                }
-            };
-        })(Templates.Items || (Templates.Items = {}));
-        var Items = Templates.Items;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-/// <reference path="../data/templates/itemtemplates.ts" />
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {};
-
-            data.id = this.id;
-            data.templateType = this.template.type;
-
-            return data;
-        };
-        return Item;
-    })();
-    Rance.Item = Item;
-})(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
@@ -7148,7 +7302,7 @@ var Rance;
 
             if (item.template.attributes) {
                 for (var attribute in item.template.attributes) {
-                    this.attributes[attribute] += item.template.attributes[attribute];
+                    this.adjustAttribute(attribute, item.template.attributes[attribute]);
                 }
             }
         };
@@ -7161,7 +7315,7 @@ var Rance;
 
                 if (item.template.attributes) {
                     for (var attribute in item.template.attributes) {
-                        this.attributes[attribute] -= item.template.attributes[attribute];
+                        this.adjustAttribute(attribute, -item.template.attributes[attribute]);
                     }
                 }
 
@@ -7169,6 +7323,12 @@ var Rance;
             }
 
             return false;
+        };
+        Unit.prototype.adjustAttribute = function (attribute, amount) {
+            if (!this.attributes[attribute])
+                throw new Error("Invalid attribute");
+
+            this.attributes[attribute] = Rance.clamp(this.attributes[attribute] + amount, 0, 9);
         };
         Unit.prototype.removeItemAtSlot = function (slot) {
             if (this.items[slot]) {
@@ -10591,8 +10751,7 @@ var Rance;
         Renderer.prototype.destroy = function () {
             this.pause();
 
-            window.removeEventListener("resize", this.resizeListener);
-
+            //window.removeEventListener("resize", this.resizeListener);
             this.mouseEventHandler.destroy();
             this.camera.destroy();
 
@@ -11386,6 +11545,7 @@ var Rance;
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
+/// <reference path="itemgenerator.ts" />
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="shadermanager.ts"/>
@@ -11424,6 +11584,7 @@ var Rance;
         }
         App.prototype.makeApp = function (savedGame) {
             this.images = this.loader.imageCache;
+            this.itemGenerator = new Rance.ItemGenerator();
             this.game = this.makeGame();
             this.initGame();
             this.initDisplay();
@@ -11467,7 +11628,7 @@ var Rance;
             game.independents.push(independents);
 
             for (var itemType in Rance.Templates.Items) {
-                for (var i = 0; i < 2; i++) {
+                for (var i = 0; i < 1; i++) {
                     var item = new Rance.Item(Rance.Templates.Items[itemType]);
                     players[0].addItem(item);
                 }

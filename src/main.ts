@@ -7,6 +7,7 @@
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
+/// <reference path="itemgenerator.ts" />
 
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
@@ -44,6 +45,7 @@ module Rance
         [id: string]: HTMLImageElement;
       }
     };
+    itemGenerator: ItemGenerator;
 
     constructor()
     {
@@ -74,6 +76,7 @@ module Rance
     makeApp(savedGame?)
     {
       this.images = this.loader.imageCache;
+      this.itemGenerator = new ItemGenerator();
       this.game = this.makeGame();
       this.initGame();
       this.initDisplay();
@@ -121,7 +124,7 @@ module Rance
 
       for (var itemType in Templates.Items)
       {
-        for (var i = 0; i < 2; i++)
+        for (var i = 0; i < 1; i++)
         {
           var item = new Item(Templates.Items[itemType]);
           players[0].addItem(item);

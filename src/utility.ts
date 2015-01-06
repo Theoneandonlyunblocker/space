@@ -305,4 +305,19 @@ module Rance
       ].join(" ")
     );
   }
+  export function shuffleArray(toShuffle: any[])
+  {
+    var resultArray = toShuffle.slice(0);
+
+    for (var i = resultArray.length - 1; i > 0; i--)
+    {
+      var n = randInt(0, i + 1);
+      
+      var temp = resultArray[i];
+      resultArray[i] = resultArray[n];
+      resultArray[n] = temp;
+    }
+
+    return resultArray;
+  }
 }

@@ -55,7 +55,7 @@ module Rance
     {
       this.pause();
 
-      window.removeEventListener("resize", this.resizeListener);
+      //window.removeEventListener("resize", this.resizeListener);
 
       this.mouseEventHandler.destroy();
       this.camera.destroy();

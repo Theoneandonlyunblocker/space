@@ -287,7 +287,7 @@ module Rance
       {
         for (var attribute in item.template.attributes)
         {
-          this.attributes[attribute] += item.template.attributes[attribute];
+          this.adjustAttribute(attribute, item.template.attributes[attribute]);
         }
       }
     }
@@ -304,7 +304,7 @@ module Rance
         {
           for (var attribute in item.template.attributes)
           {
-            this.attributes[attribute] -= item.template.attributes[attribute];
+            this.adjustAttribute(attribute, -item.template.attributes[attribute]);
           }
         }
 
@@ -312,6 +312,12 @@ module Rance
       }
 
       return false;
+    }
+    adjustAttribute(attribute: string, amount: number)
+    {
+      if (!this.attributes[attribute]) throw new Error("Invalid attribute");
+
+      this.attributes[attribute] = clamp(this.attributes[attribute] + amount, 0, 9);
     }
     removeItemAtSlot(slot: string)
     {

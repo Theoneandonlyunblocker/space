@@ -330,6 +330,7 @@ declare module Rance {
     function offsetPolygon(polygon: Point[], amount: number): any;
     function arraysEqual(a1: any[], a2: any[]): boolean;
     function prettifyDate(date: Date): string;
+    function shuffleArray(toShuffle: any[]): any[];
 }
 declare module Rance {
     interface TargetingFunction {
@@ -470,6 +471,127 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        interface IItemTemplate {
+            type: string;
+            displayName: string;
+            techLevel: number;
+            slot: string;
+            ability?: Templates.AbilityTemplate;
+            attributes?: {
+                attack?: number;
+                defence?: number;
+                intelligence?: number;
+                speed?: number;
+            };
+        }
+        module Items {
+            var bombLauncher1: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                slot: string;
+                ability: Templates.AbilityTemplate;
+            };
+            var bombLauncher2: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    attack: number;
+                };
+                slot: string;
+                ability: Templates.AbilityTemplate;
+            };
+            var bombLauncher3: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    attack: number;
+                };
+                slot: string;
+                ability: Templates.AbilityTemplate;
+            };
+            var afterBurner1: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    speed: number;
+                };
+                slot: string;
+            };
+            var afterBurner2: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    speed: number;
+                };
+                slot: string;
+            };
+            var afterBurner3: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    speed: number;
+                };
+                slot: string;
+            };
+            var shieldPlating1: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    defence: number;
+                };
+                slot: string;
+            };
+            var shieldPlating2: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    defence: number;
+                };
+                slot: string;
+            };
+            var shieldPlating3: {
+                type: string;
+                displayName: string;
+                techLevel: number;
+                attributes: {
+                    defence: number;
+                    speed: number;
+                };
+                slot: string;
+                ability: Templates.AbilityTemplate;
+            };
+        }
+    }
+}
+declare module Rance {
+    class Item {
+        public id: number;
+        public template: Rance.Templates.IItemTemplate;
+        public unit: Rance.Unit;
+        constructor(template: Rance.Templates.IItemTemplate, id?: number);
+        public serialize(): any;
+    }
+}
+declare module Rance {
+    class ItemGenerator {
+        public itemsByTechLevel: {
+            [techLevel: number]: Rance.Templates.IItemTemplate[];
+        };
+        constructor();
+        public indexItemsByTechLevel(): void;
+        public getRandomItemOfTechLevel(techLevel: number): any;
+    }
+}
+declare module Rance {
     class Star implements Rance.Point {
         public id: number;
         public x: number;
@@ -501,6 +623,11 @@ declare module Rance {
         };
         public indexedDistanceToStar: {
             [id: number]: number;
+        };
+        public buildableItems: {
+            1: Rance.Templates.IItemTemplate[];
+            2: Rance.Templates.IItemTemplate[];
+            3: Rance.Templates.IItemTemplate[];
         };
         constructor(x: number, y: number, id?: number);
         public addBuilding(building: Rance.Building): void;
@@ -546,6 +673,10 @@ declare module Rance {
         public getHealingFactor(player: Rance.Player): number;
         public getBackgroundSeed(): string;
         public severLinksToNonAdjacent(): void;
+        public seedBuildableItems(): void;
+        public getItemManufactoryLevel(): number;
+        public getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
+        public getBuildableItems(): void;
         public serialize(): any;
     }
 }
@@ -873,72 +1004,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        interface IItemTemplate {
-            type: string;
-            displayName: string;
-            techLevel: number;
-            slot: string;
-            ability?: Templates.AbilityTemplate;
-            attributes?: {
-                attack?: number;
-                defence?: number;
-                intelligence?: number;
-                speed?: number;
-            };
-        }
-        module Items {
-            var testItem: {
-                type: string;
-                displayName: string;
-                techLevel: number;
-                slot: string;
-                ability: Templates.AbilityTemplate;
-            };
-            var testItem1: {
-                type: string;
-                displayName: string;
-                techLevel: number;
-                slot: string;
-                attributes: {
-                    defence: number;
-                    speed: number;
-                };
-                ability: Templates.AbilityTemplate;
-            };
-            var testItem2: {
-                type: string;
-                displayName: string;
-                techLevel: number;
-                slot: string;
-                attributes: {
-                    defence: number;
-                    speed: number;
-                };
-            };
-            var testItem3: {
-                type: string;
-                displayName: string;
-                techLevel: number;
-                slot: string;
-                attributes: {
-                    defence: number;
-                    speed: number;
-                };
-            };
-        }
-    }
-}
-declare module Rance {
-    class Item {
-        public id: number;
-        public template: Rance.Templates.IItemTemplate;
-        public unit: Rance.Unit;
-        constructor(template: Rance.Templates.IItemTemplate, id?: number);
-        public serialize(): any;
-    }
-}
-declare module Rance {
     class Player {
         public id: number;
         public name: string;
@@ -1134,6 +1199,7 @@ declare module Rance {
         public isTargetable(): boolean;
         public addItem(item: Rance.Item): boolean;
         public removeItem(item: Rance.Item): boolean;
+        public adjustAttribute(attribute: string, amount: number): void;
         public removeItemAtSlot(slot: string): boolean;
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.AbilityTemplate[];
@@ -1834,6 +1900,7 @@ declare module Rance {
                 [id: string]: HTMLImageElement;
             };
         };
+        public itemGenerator: Rance.ItemGenerator;
         constructor();
         public makeApp(savedGame?: any): void;
         public destroy(): void;

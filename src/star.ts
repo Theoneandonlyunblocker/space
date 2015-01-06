@@ -3,6 +3,8 @@
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
 
+/// <reference path="itemgenerator.ts" />
+
 module Rance
 {
 
@@ -54,6 +56,18 @@ module Rance
     {
       [id: number]: number;
     } = {};
+
+    buildableItems:
+    {
+      1: Templates.IItemTemplate[];
+      2: Templates.IItemTemplate[];
+      3: Templates.IItemTemplate[];
+    } =
+    {
+      1: [],
+      2: [],
+      3: []
+    };
 
     constructor(x: number, y: number, id?: number)
     {
@@ -576,6 +590,59 @@ module Rance
         {
           this.removeLink(star);
         }
+      }
+    }
+    seedBuildableItems()
+    {
+      for (var techLevel in this.buildableItems)
+      {
+        var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
+
+        if (!itemsByTechLevel) continue; // temporary until more items are added
+
+        var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
+
+        itemsByTechLevel = shuffleArray(itemsByTechLevel);
+
+        for (var i = 0; i < maxItemsForTechLevel; i++)
+        {
+          this.buildableItems[techLevel].push(itemsByTechLevel.pop());
+        }
+      }
+    }
+    getItemManufactoryLevel()
+    {
+      var level = 0;
+      if (this.buildings["items"])
+      {
+        level += this.buildings["items"].length;
+      }
+
+      return level;
+    }
+    getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number)
+    {
+      var maxManufactoryLevel = 3; // MANUFACTORY_MAX
+
+      manufactoryLevel = clamp(manufactoryLevel, 0, maxManufactoryLevel);
+
+      return (1 + manufactoryLevel) - techLevel;
+    }
+    getBuildableItems()
+    {
+      if (!this.buildableItems[1] || this.buildableItems[1].length < 1)
+      {
+        this.seedBuildableItems();
+      };
+
+      var manufactoryLevel = this.getItemManufactoryLevel();
+
+      var buildableItems = {};
+
+      for (var techLevel in this.buildableItems)
+      {
+        var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel)
+        buildableItems[techLevel] = this.buildableItems[techLevel].slice(0, amountBuildable);
       }
     }
     serialize()
