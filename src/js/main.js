@@ -539,7 +539,7 @@ var Rance;
                     maxStrength: unit.maxStrength,
                     currentStrength: unit.currentStrength,
                     isSquadron: unit.isSquadron,
-                    maxActionPoints: unit.maxActionPoints,
+                    maxActionPoints: unit.attributes.maxActionPoints,
                     currentActionPoints: unit.battleStats.currentActionPoints
                 };
 
@@ -1630,7 +1630,7 @@ var Rance;
                         strength: "" + unit.currentStrength + " / " + unit.maxStrength,
                         currentStrength: unit.currentStrength,
                         maxStrength: unit.maxStrength,
-                        maxActionPoints: unit.maxActionPoints,
+                        maxActionPoints: unit.attributes.maxActionPoints,
                         attack: unit.attributes.attack,
                         defence: unit.attributes.defence,
                         intelligence: unit.attributes.intelligence,
@@ -1818,7 +1818,9 @@ var Rance;
                         onDragEnd: this.props.onDragEnd
                     };
 
-                    ["attack", "defence", "intelligence", "speed"].forEach(function (stat) {
+                    [
+                        "maxActionPoints", "attack", "defence",
+                        "intelligence", "speed"].forEach(function (stat) {
                         if (!item.template.attributes)
                             data[stat] = null;
                         else
@@ -1846,6 +1848,11 @@ var Rance;
                     {
                         label: "Unit",
                         key: "unitName",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Act",
+                        key: "maxActionPoints",
                         defaultOrder: "desc"
                     },
                     {
@@ -1878,6 +1885,7 @@ var Rance;
                 return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
+                    initialColumn: columns[1],
                     onRowChange: this.props.onRowChange
                 })));
             }
@@ -1914,7 +1922,9 @@ var Rance;
                     divProps.className += " dragging";
                 }
 
-                return (React.DOM.div(divProps, this.props.item.template.displayName));
+                return (React.DOM.div(divProps, React.DOM.img({
+                    src: this.props.item.template.icon
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4235,6 +4245,7 @@ var Rance;
             Items.bombLauncher1 = {
                 type: "bombLauncher1",
                 displayName: "Bomb Launcher 1",
+                icon: "img\/items\/25711_64.png",
                 techLevel: 1,
                 slot: "high",
                 ability: Rance.Templates.Abilities.bombAttack
@@ -4242,6 +4253,7 @@ var Rance;
             Items.bombLauncher2 = {
                 type: "bombLauncher2",
                 displayName: "Bomb Launcher 2",
+                icon: "img\/items\/25711_64.png",
                 techLevel: 2,
                 attributes: {
                     attack: 1
@@ -4252,6 +4264,7 @@ var Rance;
             Items.bombLauncher3 = {
                 type: "bombLauncher3",
                 displayName: "Bomb Launcher 3",
+                icon: "img\/items\/25711_64.png",
                 techLevel: 3,
                 attributes: {
                     attack: 3
@@ -4263,6 +4276,7 @@ var Rance;
             Items.afterBurner1 = {
                 type: "afterBurner1",
                 displayName: "Afterburner 1",
+                icon: "img\/items\/12066_64.png",
                 techLevel: 1,
                 attributes: {
                     speed: 1
@@ -4272,6 +4286,7 @@ var Rance;
             Items.afterBurner2 = {
                 type: "afterBurner2",
                 displayName: "Afterburner 2",
+                icon: "img\/items\/12066_64.png",
                 techLevel: 2,
                 attributes: {
                     speed: 2
@@ -4281,8 +4296,10 @@ var Rance;
             Items.afterBurner3 = {
                 type: "afterBurner3",
                 displayName: "Afterburner 3",
+                icon: "img\/items\/12066_64.png",
                 techLevel: 3,
                 attributes: {
+                    maxActionPoints: 1,
                     speed: 3
                 },
                 slot: "mid"
@@ -4290,6 +4307,7 @@ var Rance;
             Items.shieldPlating1 = {
                 type: "shieldPlating1",
                 displayName: "Shield Plating 1",
+                icon: "img\/items\/578_64.png",
                 techLevel: 1,
                 attributes: {
                     defence: 1
@@ -4299,6 +4317,7 @@ var Rance;
             Items.shieldPlating2 = {
                 type: "shieldPlating2",
                 displayName: "Shield Plating 2",
+                icon: "img\/items\/578_64.png",
                 techLevel: 2,
                 attributes: {
                     defence: 2
@@ -4308,6 +4327,7 @@ var Rance;
             Items.shieldPlating3 = {
                 type: "shieldPlating3",
                 displayName: "Shield Plating 3",
+                icon: "img\/items\/578_64.png",
                 techLevel: 3,
                 attributes: {
                     defence: 3,
@@ -7152,7 +7172,6 @@ var Rance;
 
             this.maxStrength = data.maxStrength;
             this.currentStrength = data.currentStrength;
-            this.maxActionPoints = data.maxActionPoints;
 
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
@@ -7183,7 +7202,6 @@ var Rance;
         };
         Unit.prototype.setInitialValues = function () {
             this.setBaseHealth();
-            this.setActionPoints();
             this.setAttributes();
             this.resetBattleStats();
 
@@ -7200,9 +7218,6 @@ var Rance;
                 this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
             }
         };
-        Unit.prototype.setActionPoints = function () {
-            this.maxActionPoints = Rance.randInt(3, 6);
-        };
         Unit.prototype.setAttributes = function (experience, variance) {
             if (typeof experience === "undefined") { experience = 1; }
             if (typeof variance === "undefined") { variance = 1; }
@@ -7212,7 +7227,8 @@ var Rance;
                 attack: 1,
                 defence: 1,
                 intelligence: 1,
-                speed: 1
+                speed: 1,
+                maxActionPoints: Rance.randInt(3, 6)
             };
 
             for (var attribute in template.attributeLevels) {
@@ -7238,7 +7254,7 @@ var Rance;
         Unit.prototype.resetBattleStats = function () {
             this.battleStats = {
                 moveDelay: this.getBaseMoveDelay(),
-                currentActionPoints: this.maxActionPoints,
+                currentActionPoints: this.attributes.maxActionPoints,
                 battle: null,
                 side: null,
                 position: null,
@@ -7458,12 +7474,11 @@ var Rance;
 
             data.maxStrength = this.maxStrength;
             data.currentStrength = this.currentStrength;
-            data.maxActionPoints = this.maxActionPoints;
 
             data.currentMovePoints = this.currentMovePoints;
             data.maxMovePoints = this.maxMovePoints;
 
-            data.baseAttributes = this.baseAttributes;
+            data.baseAttributes = Rance.cloneObject(this.baseAttributes);
 
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;

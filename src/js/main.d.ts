@@ -475,6 +475,7 @@ declare module Rance {
         interface IItemTemplate {
             type: string;
             displayName: string;
+            icon: string;
             techLevel: number;
             slot: string;
             ability?: Templates.AbilityTemplate;
@@ -489,6 +490,7 @@ declare module Rance {
             var bombLauncher1: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 slot: string;
                 ability: Templates.AbilityTemplate;
@@ -496,6 +498,7 @@ declare module Rance {
             var bombLauncher2: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     attack: number;
@@ -506,6 +509,7 @@ declare module Rance {
             var bombLauncher3: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     attack: number;
@@ -516,6 +520,7 @@ declare module Rance {
             var afterBurner1: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     speed: number;
@@ -525,6 +530,7 @@ declare module Rance {
             var afterBurner2: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     speed: number;
@@ -534,8 +540,10 @@ declare module Rance {
             var afterBurner3: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
+                    maxActionPoints: number;
                     speed: number;
                 };
                 slot: string;
@@ -543,6 +551,7 @@ declare module Rance {
             var shieldPlating1: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     defence: number;
@@ -552,6 +561,7 @@ declare module Rance {
             var shieldPlating2: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     defence: number;
@@ -561,6 +571,7 @@ declare module Rance {
             var shieldPlating3: {
                 type: string;
                 displayName: string;
+                icon: string;
                 techLevel: number;
                 attributes: {
                     defence: number;
@@ -1154,14 +1165,15 @@ declare module Rance {
         public isSquadron: boolean;
         public currentMovePoints: number;
         public maxMovePoints: number;
-        public maxActionPoints: number;
         public baseAttributes: {
+            maxActionPoints: number;
             attack: number;
             defence: number;
             intelligence: number;
             speed: number;
         };
         public attributes: {
+            maxActionPoints: number;
             attack: number;
             defence: number;
             intelligence: number;
@@ -1186,7 +1198,6 @@ declare module Rance {
         public makeFromData(data: any): void;
         public setInitialValues(): void;
         public setBaseHealth(): void;
-        public setActionPoints(): void;
         public setAttributes(experience?: number, variance?: number): void;
         public getBaseMoveDelay(): number;
         public resetMovePoints(): void;
