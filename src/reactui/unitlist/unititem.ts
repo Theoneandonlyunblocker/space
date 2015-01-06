@@ -15,12 +15,29 @@ module Rance
       {
         this.props.onDragEnd();
       },
+      // todo
+      getTechIcon: function(techLevel: number)
+      {
+        switch (techLevel)
+        {
+          case 2:
+          {
+            return "img\/items\/t2icon.png"
+          }
+          case 3:
+          {
+            return "img\/items\/t3icon.png"
+          }
+        }
+      },
 
       render: function()
       {
         if (!this.props.item) return(
           React.DOM.div({className: "empty-unit-item"})
         );
+        var item = this.props.item;
+
         var divProps: any =
         {
           className: "unit-item"
@@ -41,10 +58,21 @@ module Rance
 
         return(
           React.DOM.div(divProps,
-            React.DOM.img(
+            React.DOM.div(
             {
-              src: this.props.item.template.icon
-            })
+              className: "item-icon-container"
+            },
+              React.DOM.img(
+              {
+                className: "item-icon-base",
+                src: item.template.icon
+              }),
+              item.template.techLevel > 1 ? React.DOM.img(
+              {
+                className: "item-icon-tech-level",
+                src: this.getTechIcon(item.template.techLevel)
+              }) : null
+            )
           )
         );
       }

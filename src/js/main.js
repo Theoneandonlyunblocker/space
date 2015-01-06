@@ -1905,9 +1905,22 @@ var Rance;
             onDragEnd: function (e) {
                 this.props.onDragEnd();
             },
+            // todo
+            getTechIcon: function (techLevel) {
+                switch (techLevel) {
+                    case 2: {
+                        return "img\/items\/t2icon.png";
+                    }
+                    case 3: {
+                        return "img\/items\/t3icon.png";
+                    }
+                }
+            },
             render: function () {
                 if (!this.props.item)
                     return (React.DOM.div({ className: "empty-unit-item" }));
+                var item = this.props.item;
+
                 var divProps = {
                     className: "unit-item"
                 };
@@ -1922,9 +1935,15 @@ var Rance;
                     divProps.className += " dragging";
                 }
 
-                return (React.DOM.div(divProps, React.DOM.img({
-                    src: this.props.item.template.icon
-                })));
+                return (React.DOM.div(divProps, React.DOM.div({
+                    className: "item-icon-container"
+                }, React.DOM.img({
+                    className: "item-icon-base",
+                    src: item.template.icon
+                }), item.template.techLevel > 1 ? React.DOM.img({
+                    className: "item-icon-tech-level",
+                    src: this.getTechIcon(item.template.techLevel)
+                }) : null)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
