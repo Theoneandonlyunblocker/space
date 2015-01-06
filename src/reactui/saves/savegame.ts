@@ -8,6 +8,11 @@ module Rance
     {
       displayName: "SaveGame",
 
+      componentDidMount: function()
+      {
+        this.refs.okButton.getDOMNode().focus();
+      },
+
       setInputText: function(newText)
       {
         this.refs.saveName.getDOMNode().value = newText;
@@ -86,7 +91,8 @@ module Rance
               React.DOM.button(
               {
                 className: "save-game-button",
-                onClick: this.handleSave
+                onClick: this.handleSave,
+                ref: "okButton"
               }, "Save"),
               React.DOM.button(
               {

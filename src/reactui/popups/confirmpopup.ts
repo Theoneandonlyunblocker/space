@@ -6,6 +6,11 @@ module Rance
     {
       displayName: "ConfirmPopup",
 
+      componentDidMount: function()
+      {
+        this.refs.okButton.getDOMNode().focus();
+      },
+
       handleOk: function()
       {
         var callbackSuccesful = this.props.handleOk();
@@ -40,7 +45,8 @@ module Rance
               React.DOM.button(
               {
                 className: "popup-button",
-                onClick: this.handleOk
+                onClick: this.handleOk,
+                ref: "okButton"
               }, this.props.okText || "Confirm"),
               React.DOM.button(
               {

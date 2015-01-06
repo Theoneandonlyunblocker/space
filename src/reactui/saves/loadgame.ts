@@ -8,6 +8,11 @@ module Rance
     {
       displayName: "LoadGame",
 
+      componentDidMount: function()
+      {
+        this.refs.okButton.getDOMNode().focus();
+      },
+
       setInputText: function(newText)
       {
         this.refs.saveName.getDOMNode().value = newText;
@@ -35,6 +40,7 @@ module Rance
         var deleteFN = function(saveName: string)
         {
           localStorage.removeItem(saveName);
+          this.refs.saveName.getDOMNode().value = "";
           this.forceUpdate();
         }.bind(this, saveName);
 
@@ -83,7 +89,8 @@ module Rance
               React.DOM.button(
               {
                 className: "save-game-button",
-                onClick: this.handleLoad
+                onClick: this.handleLoad,
+                ref: "okButton"
               }, "Load"),
               React.DOM.button(
               {
