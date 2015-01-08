@@ -78,6 +78,19 @@ module Rance
 
         maxUpgradeLevel: 2
       }
+      export var itemManufactory: IBuildingTemplate =
+      {
+        type: "itemManufactory",
+        category: "manufactory",
+        name: "Item Manufactory",
+
+        icon: "img\/buildings\/commercialPort.png",
+        buildCost: 200,
+
+        maxPerType: 1,
+
+        maxUpgradeLevel: 3 // MANUFACTORY_MAX
+      }
     }
   }
 }

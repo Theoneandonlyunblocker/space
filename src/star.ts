@@ -613,9 +613,9 @@ module Rance
     getItemManufactoryLevel()
     {
       var level = 0;
-      if (this.buildings["items"])
+      if (this.buildings["manufactory"])
       {
-        level += this.buildings["items"].length;
+        level += this.buildings["manufactory"].length;
       }
 
       return level;
@@ -626,7 +626,11 @@ module Rance
 
       manufactoryLevel = clamp(manufactoryLevel, 0, maxManufactoryLevel);
 
-      return (1 + manufactoryLevel) - techLevel;
+      var amount = (1 + manufactoryLevel) - techLevel;
+
+      if (amount < 0) amount = 0;
+
+      return amount;
     }
     getBuildableItems()
     {
@@ -637,13 +641,23 @@ module Rance
 
       var manufactoryLevel = this.getItemManufactoryLevel();
 
-      var buildableItems = {};
+      var byTechLevel = {};
+      var allBuildable = [];
 
       for (var techLevel in this.buildableItems)
       {
         var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel)
-        buildableItems[techLevel] = this.buildableItems[techLevel].slice(0, amountBuildable);
+        var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
+
+        byTechLevel[techLevel] = forThisTechLevel;
+        allBuildable = allBuildable.concat(forThisTechLevel);
       }
+
+      return(
+      {
+        byTechLevel: byTechLevel,
+        all: allBuildable
+      })
     }
     serialize()
     {

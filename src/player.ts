@@ -493,6 +493,38 @@ module Rance
     {
       this.items.push(item);
     }
+    getAllBuildableItems()
+    {
+      var alreadyAdded: any = {};
+      var allBuildable = [];
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
+      {
+        var star = this.controlledLocations[i];
+
+        var buildableItems = star.getBuildableItems().all;
+        for (var j = 0; j < buildableItems.length; j++)
+        {
+          var item = buildableItems[i];
+
+          if (alreadyAdded[item.type])
+          {
+            continue;
+          }
+          else
+          {
+            alreadyAdded[item.type] = true;
+            allBuildable.push(
+            {
+              star: star,
+              template: buildableItems[i]
+            });
+          }
+        }
+      }
+
+      return allBuildable;
+    }
     serialize()
     {
       var data: any = {};
