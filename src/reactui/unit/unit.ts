@@ -107,7 +107,7 @@ module Rance
         {
           key: "info",
           name: unit.name,
-          guard: unit.battleStats.guard,
+          guardAmount: unit.battleStats.guardAmount,
           maxStrength: unit.maxStrength,
           currentStrength: unit.currentStrength,
           isSquadron: unit.isSquadron,
