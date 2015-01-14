@@ -505,7 +505,7 @@ module Rance
         var buildableItems = star.getBuildableItems().all;
         for (var j = 0; j < buildableItems.length; j++)
         {
-          var item = buildableItems[i];
+          var item = buildableItems[j];
 
           if (alreadyAdded[item.type])
           {
@@ -517,7 +517,7 @@ module Rance
             allBuildable.push(
             {
               star: star,
-              template: buildableItems[i]
+              template: item
             });
           }
         }

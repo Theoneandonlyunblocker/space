@@ -14,6 +14,8 @@ module Rance
 
       slot: string; // low, mid, high
 
+      cost: number;
+
       ability?: AbilityTemplate;
       attributes?:
       {
@@ -34,6 +36,7 @@ module Rance
         icon: "img\/items\/25711_64.png",
         
         techLevel: 1,
+        cost: 100,
 
         slot: "high",
         ability: Abilities.bombAttack
@@ -46,6 +49,7 @@ module Rance
         icon: "img\/items\/25711_64.png",
         
         techLevel: 2,
+        cost: 200,
 
         attributes:
         {
@@ -63,6 +67,7 @@ module Rance
         icon: "img\/items\/25711_64.png",
         
         techLevel: 3,
+        cost: 300,
 
         attributes:
         {
@@ -81,6 +86,7 @@ module Rance
         icon: "img\/items\/12066_64.png",
         
         techLevel: 1,
+        cost: 100,
 
         attributes:
         {
@@ -97,6 +103,7 @@ module Rance
         icon: "img\/items\/12066_64.png",
         
         techLevel: 2,
+        cost: 200,
 
         attributes:
         {
@@ -113,6 +120,7 @@ module Rance
         icon: "img\/items\/12066_64.png",
         
         techLevel: 3,
+        cost: 300,
 
         attributes:
         {
@@ -130,6 +138,7 @@ module Rance
         icon: "img\/items\/578_64.png",
         
         techLevel: 1,
+        cost: 100,
 
         attributes:
         {
@@ -146,6 +155,7 @@ module Rance
         icon: "img\/items\/578_64.png",
         
         techLevel: 2,
+        cost: 200,
 
         attributes:
         {
@@ -162,6 +172,7 @@ module Rance
         icon: "img\/items\/578_64.png",
         
         techLevel: 3,
+        cost: 300,
 
         attributes:
         {

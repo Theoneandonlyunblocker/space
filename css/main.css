@@ -35,9 +35,14 @@ table {
 }
 .button-style-no-border:disabled,
 .button-style-no-border.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.button-style-no-border:disabled *,
+.button-style-no-border.disabled * {
+  pointer-events: none !important;
 }
 .button-style {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
@@ -54,9 +59,14 @@ table {
 }
 .button-style:disabled,
 .button-style.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.button-style:disabled *,
+.button-style.disabled * {
+  pointer-events: none !important;
 }
 .civ-splitter-horizontal {
   content: "";
@@ -817,9 +827,14 @@ progress::-webkit-progress-value {
 }
 .top-menu-items-button:disabled,
 .top-menu-items-button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.top-menu-items-button:disabled *,
+.top-menu-items-button.disabled * {
+  pointer-events: none !important;
 }
 .light-box-wrapper {
   position: fixed;
@@ -901,9 +916,14 @@ progress::-webkit-progress-value {
 }
 .fleet-selection-controls button:disabled,
 .fleet-selection-controls button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.fleet-selection-controls button:disabled *,
+.fleet-selection-controls button.disabled * {
+  pointer-events: none !important;
 }
 .fleet-selection-selected-wrapper {
   overflow-y: auto;
@@ -932,9 +952,14 @@ progress::-webkit-progress-value {
 }
 .fleet-controls button:disabled,
 .fleet-controls button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.fleet-controls button:disabled *,
+.fleet-controls button.disabled * {
+  pointer-events: none !important;
 }
 .fleet-info {
   display: inline-flex;
@@ -1016,9 +1041,14 @@ progress::-webkit-progress-value {
 }
 .fleet-reorganization button:disabled,
 .fleet-reorganization button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.fleet-reorganization button:disabled *,
+.fleet-reorganization button.disabled * {
+  pointer-events: none !important;
 }
 .fleet-reorganization-header {
   text-align: center;
@@ -1106,9 +1136,14 @@ progress::-webkit-progress-value {
 }
 .end-turn-button:disabled,
 .end-turn-button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.end-turn-button:disabled *,
+.end-turn-button.disabled * {
+  pointer-events: none !important;
 }
 .possible-actions-container {
   display: flex;
@@ -1151,9 +1186,14 @@ progress::-webkit-progress-value {
 }
 .possible-action:disabled,
 .possible-action.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.possible-action:disabled *,
+.possible-action.disabled * {
+  pointer-events: none !important;
 }
 .possible-action-title {
   align-self: center;
@@ -1278,9 +1318,14 @@ progress::-webkit-progress-value {
 }
 .buildable-item-list tbody tr:disabled,
 .buildable-item-list tbody tr.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.buildable-item-list tbody tr:disabled *,
+.buildable-item-list tbody tr.disabled * {
+  pointer-events: none !important;
 }
 .buildable-item-list tbody tr td {
   padding-top: 8px;
@@ -1455,6 +1500,13 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
+.item-equip-left .item-list th {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
 .item-equip-left .item-list .reserved {
   background-color: #064b0a;
 }
@@ -1465,7 +1517,6 @@ progress::-webkit-progress-value {
   white-space: nowrap;
 }
 .menu-unit-info {
-  border: 1px solid #c4e5fb;
   margin-bottom: 5px;
 }
 .menu-unit-info-items-wrapper {
@@ -1670,9 +1721,14 @@ progress::-webkit-progress-value {
 }
 .save-game-button:disabled,
 .save-game-button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.save-game-button:disabled *,
+.save-game-button.disabled * {
+  pointer-events: none !important;
 }
 .save-list {
   position: relative;
@@ -1723,9 +1779,14 @@ progress::-webkit-progress-value {
 }
 .save-list tbody tr:hover:disabled,
 .save-list tbody tr:hover.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.save-list tbody tr:hover:disabled *,
+.save-list tbody tr:hover.disabled * {
+  pointer-events: none !important;
 }
 .save-list-name {
   max-width: 400px;
@@ -1748,9 +1809,14 @@ progress::-webkit-progress-value {
 }
 .save-list-delete:disabled,
 .save-list-delete.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.save-list-delete:disabled *,
+.save-list-delete.disabled * {
+  pointer-events: none !important;
 }
 .popup {
   position: absolute;
@@ -1781,7 +1847,123 @@ progress::-webkit-progress-value {
 }
 .popup-button:disabled,
 .popup-button.disabled {
+  pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.popup-button:disabled *,
+.popup-button.disabled * {
+  pointer-events: none !important;
+}
+.buy-items {
+  color: #eeeeec;
+  background-color: #0c1615;
+  position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.buy-items th {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
+.buy-items tbody :first-child::after {
+  background-image: none;
+}
+.buy-items tbody tr {
+  position: relative;
+  cursor: pointer;
+}
+.buy-items tbody tr td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-width: 0;
+}
+.buy-items tbody tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+}
+.buy-items tbody tr:hover {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+}
+.buy-items tbody tr:hover:hover {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.buy-items tbody tr:hover:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.buy-items tbody tr:hover:disabled,
+.buy-items tbody tr:hover.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.buy-items tbody tr:hover:disabled *,
+.buy-items tbody tr:hover.disabled * {
+  pointer-events: none !important;
+}
+.buy-items .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.buy-items .sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+}
+@media (max-width: 700px) {
+  .buy-items .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 700px) {
+  .buy-items .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .buy-items .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .buy-items .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
 }

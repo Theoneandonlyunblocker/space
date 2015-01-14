@@ -484,6 +484,7 @@ declare module Rance {
             icon: string;
             techLevel: number;
             slot: string;
+            cost: number;
             ability?: Templates.AbilityTemplate;
             attributes?: {
                 attack?: number;
@@ -498,6 +499,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 slot: string;
                 ability: Templates.AbilityTemplate;
             };
@@ -506,6 +508,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     attack: number;
                 };
@@ -517,6 +520,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     attack: number;
                 };
@@ -528,6 +532,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     speed: number;
                 };
@@ -538,6 +543,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     speed: number;
                 };
@@ -548,6 +554,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     maxActionPoints: number;
                     speed: number;
@@ -559,6 +566,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     defence: number;
                 };
@@ -569,6 +577,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     defence: number;
                 };
@@ -579,6 +588,7 @@ declare module Rance {
                 displayName: string;
                 icon: string;
                 techLevel: number;
+                cost: number;
                 attributes: {
                     defence: number;
                     speed: number;

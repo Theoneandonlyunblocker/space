@@ -38,6 +38,8 @@ module Rance
             slotIndex: this.getSlotIndex(item.template.slot),
             unit: item.unit ? item.unit : null,
             unitName: item.unit ? item.unit.name : "",
+            techLevel: item.template.techLevel,
+            cost: item.template.cost,
 
             ability: item.template.ability ? item.template.ability.name : "",
 
@@ -64,55 +66,89 @@ module Rance
           });
         }
 
-        var columns: any =
-        [
-          {
-            label: "Type",
-            key: "typeName",
-            defaultOrder: "asc"
-          },
-          {
-            label: "Slot",
-            key: "slot",
-            propToSortBy: "slotIndex",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Unit",
-            key: "unitName",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Act",
-            key: "maxActionPoints",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Atk",
-            key: "attack",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Def",
-            key: "defence",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Int",
-            key: "intelligence",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Spd",
-            key: "speed",
-            defaultOrder: "desc"
-          },
-          {
-            label: "Ability",
-            key: "ability",
-            defaultOrder: "desc"
-          }
-        ];
+        var columns: any;
+
+        if (this.props.isItemPurchaseList)
+        {
+          columns =
+          [
+            {
+              label: "Type",
+              key: "typeName",
+              defaultOrder: "asc"
+            },
+            {
+              label: "Slot",
+              key: "slot",
+              propToSortBy: "slotIndex",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Tech",
+              key: "techLevel",
+              defaultOrder: "asc"
+            },
+            {
+              label: "Cost",
+              key: "cost",
+              defaultOrder: "asc"
+            }
+          ]
+        }
+        else
+        {
+          columns =
+          [
+            {
+              label: "Type",
+              key: "typeName",
+              defaultOrder: "asc"
+            },
+            {
+              label: "Slot",
+              key: "slot",
+              propToSortBy: "slotIndex",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Unit",
+              key: "unitName",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Act",
+              key: "maxActionPoints",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Atk",
+              key: "attack",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Def",
+              key: "defence",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Int",
+              key: "intelligence",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Spd",
+              key: "speed",
+              defaultOrder: "desc"
+            },
+            {
+              label: "Ability",
+              key: "ability",
+              defaultOrder: "desc"
+            }
+          ];
+        }
+
+       
 
         return(
           React.DOM.div({className: "item-list"},

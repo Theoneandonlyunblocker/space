@@ -16,14 +16,25 @@ module Rance
       render: function()
       {
         var player = this.props.player;
+        var items = player.getAllBuildableItems();
+
+        if (items.length < 1)
+        {
+          return(
+            React.DOM.div({className: "buy-items"},
+              "You need to construct an item manufactory first"
+            )
+          );
+        }
 
         return(
           React.DOM.div({className: "buy-items"},
             UIComponents.ItemList(
             {
-              items: player.getAllBuildableItems(),
+              items: items,
               isDraggable: false,
-              onRowChange: this.handleSelectRow
+              onRowChange: this.handleSelectRow,
+              isItemPurchaseList: true
             })
           )
         );

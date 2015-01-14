@@ -131,6 +131,7 @@ table
   }
   &:disabled, &.disabled
   {
+    .prevent-pointer-events;
     cursor: default;
     color: darken(@text-color, 20%);
     .double-gradient(
@@ -1648,6 +1649,11 @@ progress::-webkit-progress-value { background: #080; }
 
     .sort-icons(1100px);
 
+    th
+    {
+      .horizontal-border(0px, 3px);
+    }
+
     .reserved
     {
       background-color: average(@bg-color, green);
@@ -1667,7 +1673,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   //display: flex;
   //flex: 2;
-  border: 1px solid @ui-border-color1;
+  //border: 1px solid @ui-border-color1;
   margin-bottom: 5px;
 }
 
@@ -1828,4 +1834,15 @@ progress::-webkit-progress-value { background: #080; }
 {
   .button-style;
   margin: 5px 20px;
+}
+
+.buy-items
+{
+  color: @text-color;
+  background-color: @bg-color;
+
+  .hover-only-fancy-table-style(2px, 0);
+
+  .sort-icons(700px);
+  .prevent-user-select;
 }

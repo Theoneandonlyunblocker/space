@@ -1809,6 +1809,8 @@ var Rance;
                         slotIndex: this.getSlotIndex(item.template.slot),
                         unit: item.unit ? item.unit : null,
                         unitName: item.unit ? item.unit.name : "",
+                        techLevel: item.template.techLevel,
+                        cost: item.template.cost,
                         ability: item.template.ability ? item.template.ability.name : "",
                         isReserved: Boolean(item.unit),
                         makeClone: true,
@@ -1833,54 +1835,82 @@ var Rance;
                     });
                 }
 
-                var columns = [
-                    {
-                        label: "Type",
-                        key: "typeName",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Slot",
-                        key: "slot",
-                        propToSortBy: "slotIndex",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Unit",
-                        key: "unitName",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Act",
-                        key: "maxActionPoints",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Atk",
-                        key: "attack",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Def",
-                        key: "defence",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Int",
-                        key: "intelligence",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Spd",
-                        key: "speed",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Ability",
-                        key: "ability",
-                        defaultOrder: "desc"
-                    }
-                ];
+                var columns;
+
+                if (this.props.isItemPurchaseList) {
+                    columns = [
+                        {
+                            label: "Type",
+                            key: "typeName",
+                            defaultOrder: "asc"
+                        },
+                        {
+                            label: "Slot",
+                            key: "slot",
+                            propToSortBy: "slotIndex",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Tech",
+                            key: "techLevel",
+                            defaultOrder: "asc"
+                        },
+                        {
+                            label: "Cost",
+                            key: "cost",
+                            defaultOrder: "asc"
+                        }
+                    ];
+                } else {
+                    columns = [
+                        {
+                            label: "Type",
+                            key: "typeName",
+                            defaultOrder: "asc"
+                        },
+                        {
+                            label: "Slot",
+                            key: "slot",
+                            propToSortBy: "slotIndex",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Unit",
+                            key: "unitName",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Act",
+                            key: "maxActionPoints",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Atk",
+                            key: "attack",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Def",
+                            key: "defence",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Int",
+                            key: "intelligence",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Spd",
+                            key: "speed",
+                            defaultOrder: "desc"
+                        },
+                        {
+                            label: "Ability",
+                            key: "ability",
+                            defaultOrder: "desc"
+                        }
+                    ];
+                }
 
                 return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
                     listItems: rows,
@@ -2390,11 +2420,17 @@ var Rance;
             },
             render: function () {
                 var player = this.props.player;
+                var items = player.getAllBuildableItems();
+
+                if (items.length < 1) {
+                    return (React.DOM.div({ className: "buy-items" }, "You need to construct an item manufactory first"));
+                }
 
                 return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemList({
-                    items: player.getAllBuildableItems(),
+                    items: items,
                     isDraggable: false,
-                    onRowChange: this.handleSelectRow
+                    onRowChange: this.handleSelectRow,
+                    isItemPurchaseList: true
                 })));
             }
         });
@@ -4317,6 +4353,7 @@ var Rance;
                 displayName: "Bomb Launcher 1",
                 icon: "img\/items\/25711_64.png",
                 techLevel: 1,
+                cost: 100,
                 slot: "high",
                 ability: Rance.Templates.Abilities.bombAttack
             };
@@ -4325,6 +4362,7 @@ var Rance;
                 displayName: "Bomb Launcher 2",
                 icon: "img\/items\/25711_64.png",
                 techLevel: 2,
+                cost: 200,
                 attributes: {
                     attack: 1
                 },
@@ -4336,6 +4374,7 @@ var Rance;
                 displayName: "Bomb Launcher 3",
                 icon: "img\/items\/25711_64.png",
                 techLevel: 3,
+                cost: 300,
                 attributes: {
                     attack: 3
                 },
@@ -4348,6 +4387,7 @@ var Rance;
                 displayName: "Afterburner 1",
                 icon: "img\/items\/12066_64.png",
                 techLevel: 1,
+                cost: 100,
                 attributes: {
                     speed: 1
                 },
@@ -4358,6 +4398,7 @@ var Rance;
                 displayName: "Afterburner 2",
                 icon: "img\/items\/12066_64.png",
                 techLevel: 2,
+                cost: 200,
                 attributes: {
                     speed: 2
                 },
@@ -4368,6 +4409,7 @@ var Rance;
                 displayName: "Afterburner 3",
                 icon: "img\/items\/12066_64.png",
                 techLevel: 3,
+                cost: 300,
                 attributes: {
                     maxActionPoints: 1,
                     speed: 3
@@ -4379,6 +4421,7 @@ var Rance;
                 displayName: "Shield Plating 1",
                 icon: "img\/items\/578_64.png",
                 techLevel: 1,
+                cost: 100,
                 attributes: {
                     defence: 1
                 },
@@ -4389,6 +4432,7 @@ var Rance;
                 displayName: "Shield Plating 2",
                 icon: "img\/items\/578_64.png",
                 techLevel: 2,
+                cost: 200,
                 attributes: {
                     defence: 2
                 },
@@ -4399,6 +4443,7 @@ var Rance;
                 displayName: "Shield Plating 3",
                 icon: "img\/items\/578_64.png",
                 techLevel: 3,
+                cost: 300,
                 attributes: {
                     defence: 3,
                     speed: -1
@@ -6622,7 +6667,7 @@ var Rance;
 
                 var buildableItems = star.getBuildableItems().all;
                 for (var j = 0; j < buildableItems.length; j++) {
-                    var item = buildableItems[i];
+                    var item = buildableItems[j];
 
                     if (alreadyAdded[item.type]) {
                         continue;
@@ -6630,7 +6675,7 @@ var Rance;
                         alreadyAdded[item.type] = true;
                         allBuildable.push({
                             star: star,
-                            template: buildableItems[i]
+                            template: item
                         });
                     }
                 }
