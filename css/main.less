@@ -1605,7 +1605,7 @@ progress::-webkit-progress-value { background: #080; }
   {
     overflow-x: auto;
     border: 1px solid @ui-border-color1;
-    .sort-icons(1100px);
+    .sort-icons(1200px);
 
     th
     {
@@ -1636,6 +1636,11 @@ progress::-webkit-progress-value { background: #080; }
   }
 }
 
+.item-list td
+{
+  white-space: nowrap;
+}
+
 .item-equip-left
 {
   border: 1px solid @ui-border-color1;
@@ -1647,7 +1652,7 @@ progress::-webkit-progress-value { background: #080; }
     display: flex;
     flex: 3;
 
-    .sort-icons(1100px);
+    .sort-icons(1200px);
 
     th
     {
@@ -1845,4 +1850,9 @@ progress::-webkit-progress-value { background: #080; }
 
   .sort-icons(700px);
   .prevent-user-select;
+}
+
+.item-purchase-list-buildCost
+{
+  .money-style;
 }

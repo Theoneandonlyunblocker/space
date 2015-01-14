@@ -1387,12 +1387,12 @@ progress::-webkit-progress-value {
   position: relative;
   padding-right: 20px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .item-equip .unit-list .sortable {
     padding-right: 2px;
   }
 }
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .item-equip .unit-list .unsorted::after {
     content: "\f0dc";
     font-family: FontAwesome;
@@ -1445,6 +1445,9 @@ progress::-webkit-progress-value {
 .item-equip table {
   margin-right: 25px;
 }
+.item-list td {
+  white-space: nowrap;
+}
 .item-equip-left {
   border: 1px solid #c4e5fb;
   margin-right: 5px;
@@ -1463,12 +1466,12 @@ progress::-webkit-progress-value {
   position: relative;
   padding-right: 20px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .item-equip-left .item-list .sortable {
     padding-right: 2px;
   }
 }
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .item-equip-left .item-list .unsorted::after {
     content: "\f0dc";
     font-family: FontAwesome;
@@ -1966,4 +1969,16 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
+}
+.item-purchase-list-buildCost {
+  color: #ffeb00;
+}
+.item-purchase-list-buildCost::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #f3c620;
 }

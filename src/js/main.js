@@ -2411,12 +2411,143 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.ItemPurchaseListItem = React.createClass({
+            displayName: "ItemPurchaseListItem",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "item-purchase-list-item-cell " + "item-purchase-list-" + type;
+
+                var cellContent;
+
+                switch (type) {
+                    case ("buildCost"): {
+                        if (this.props.playerMoney < this.props.buildCost) {
+                            cellProps.className += " negative";
+                        }
+                    }
+                    default: {
+                        cellContent = this.props[type];
+                        if (isFinite(cellContent)) {
+                            cellProps.className += " center-text";
+                        }
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var cells = [];
+                var columns = this.props.activeColumns;
+
+                for (var i = 0; i < columns.length; i++) {
+                    cells.push(this.makeCell(columns[i].key));
+                }
+
+                var props = {
+                    className: "item-purchase-list-item",
+                    onClick: this.props.handleClick
+                };
+                if (this.props.playerMoney < this.props.buildCost) {
+                    props.onClick = null;
+                    props.disabled = true;
+                    props.className += " disabled";
+                }
+
+                return (React.DOM.tr(props, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="itempurchaselistitem.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ItemPurchaseList = React.createClass({
+            displayName: "ItemPurchaseList",
+            getSlotIndex: function (slot) {
+                if (slot === "high") {
+                    return 2;
+                } else if (slot === "mid") {
+                    return 1;
+                } else
+                    return 0;
+            },
+            render: function () {
+                var rows = [];
+
+                for (var i = 0; i < this.props.items.length; i++) {
+                    var item = this.props.items[i];
+
+                    var data = {
+                        item: item,
+                        typeName: item.template.displayName,
+                        slot: item.template.slot,
+                        slotIndex: this.getSlotIndex(item.template.slot),
+                        techLevel: item.template.techLevel,
+                        buildCost: item.template.cost,
+                        playerMoney: this.props.playerMoney,
+                        rowConstructor: Rance.UIComponents.ItemPurchaseListItem
+                    };
+
+                    rows.push({
+                        key: item.id,
+                        data: data
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Type",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Slot",
+                        key: "slot",
+                        propToSortBy: "slotIndex",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Tech",
+                        key: "techLevel",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Cost",
+                        key: "buildCost",
+                        defaultOrder: "asc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "item-purchase-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialColumn: columns[1],
+                    onRowChange: this.props.onRowChange
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="itempurchaselist.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.BuyItems = React.createClass({
             displayName: "BuyItems",
             handleSelectRow: function (row) {
-                var item = row.data.item;
+                var template = row.data.item.template;
+                var item = new Rance.Item(template);
 
                 this.props.player.addItem(item);
+                this.props.player.money -= template.cost;
+
+                Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             render: function () {
                 var player = this.props.player;
@@ -2426,11 +2557,10 @@ var Rance;
                     return (React.DOM.div({ className: "buy-items" }, "You need to construct an item manufactory first"));
                 }
 
-                return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemList({
+                return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemPurchaseList({
                     items: items,
-                    isDraggable: false,
                     onRowChange: this.handleSelectRow,
-                    isItemPurchaseList: true
+                    playerMoney: this.props.player.money
                 })));
             }
         });
@@ -3830,14 +3960,16 @@ var Rance;
     function shuffleArray(toShuffle) {
         var resultArray = toShuffle.slice(0);
 
-        for (var i = resultArray.length - 1; i > 0; i--) {
-            var n = randInt(0, i + 1);
+        var i = resultArray.length;
+
+        while (i > 0) {
+            i--;
+            var n = randInt(0, i);
 
             var temp = resultArray[i];
             resultArray[i] = resultArray[n];
             resultArray[n] = temp;
         }
-
         return resultArray;
     }
     Rance.shuffleArray = shuffleArray;
@@ -4971,7 +5103,10 @@ var Rance;
                 itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel);
 
                 for (var i = 0; i < maxItemsForTechLevel; i++) {
-                    this.buildableItems[techLevel].push(itemsByTechLevel.pop());
+                    var item = itemsByTechLevel.pop();
+                    if (!item)
+                        debugger;
+                    this.buildableItems[techLevel].push(item);
                 }
             }
         };

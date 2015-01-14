@@ -309,15 +309,17 @@ module Rance
   {
     var resultArray = toShuffle.slice(0);
 
-    for (var i = resultArray.length - 1; i > 0; i--)
+    var i = resultArray.length;
+
+    while (i > 0)
     {
-      var n = randInt(0, i + 1);
-      
+      i--;
+      var n = randInt(0, i);
+
       var temp = resultArray[i];
       resultArray[i] = resultArray[n];
       resultArray[n] = temp;
     }
-
     return resultArray;
   }
 }

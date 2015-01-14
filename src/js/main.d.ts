@@ -198,6 +198,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ItemPurchaseListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ItemPurchaseList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BuyItems: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

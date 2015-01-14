@@ -1,3 +1,5 @@
+/// <reference path="itempurchaselist.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -8,9 +10,13 @@ module Rance
 
       handleSelectRow: function(row)
       {
-        var item = row.data.item;
+        var template = row.data.item.template;
+        var item = new Item(template);
         
         this.props.player.addItem(item);
+        this.props.player.money -= template.cost;
+
+        eventManager.dispatchEvent("playerControlUpdated");
       },
 
       render: function()
@@ -29,12 +35,11 @@ module Rance
 
         return(
           React.DOM.div({className: "buy-items"},
-            UIComponents.ItemList(
+            UIComponents.ItemPurchaseList(
             {
               items: items,
-              isDraggable: false,
               onRowChange: this.handleSelectRow,
-              isItemPurchaseList: true
+              playerMoney: this.props.player.money
             })
           )
         );
