@@ -280,15 +280,14 @@ module Rance
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
-            var starSize = 4;
+            var starSize = 1;
             if (star.buildings["defence"])
             {
-              starSize += star.buildings["defence"].length * 3;
+              starSize += star.buildings["defence"].length * 2;
             }
             var gfx: any = new PIXI.Graphics();
             gfx.star = star;
-            gfx.lineStyle(2, 0x222222, 1);
-            gfx.beginFill(0xFFFF00);
+            gfx.beginFill(0xFFFFF0);
             gfx.drawEllipse(star.x, star.y, starSize, starSize);
             gfx.endFill;
 
@@ -468,7 +467,7 @@ module Rance
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
-          gfx.lineStyle(1, 0xC0C0C0, 0.5);
+          gfx.lineStyle(1, 0xA0A0A0, 0.5);
 
           var visible = this.player ? this.player.getRevealedStars() : null;
 
@@ -541,7 +540,7 @@ module Rance
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
-          gfx.lineStyle(2, 0xDDDDDD, 1);
+          gfx.lineStyle(1, 0xCCCCCC, 0.6);
 
           var points: Star[];
           if (!this.player)

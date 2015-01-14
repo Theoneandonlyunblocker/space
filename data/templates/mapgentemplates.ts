@@ -14,7 +14,7 @@ module Rance
         starGeneration:
         {
           galaxyType: "spiral",
-          totalAmount: 60,
+          totalAmount: 40,
           arms: 5,
           centerSize: 0.4,
           amountInCenter: 0.3

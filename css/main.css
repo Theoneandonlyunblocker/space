@@ -1320,7 +1320,6 @@ progress::-webkit-progress-value {
   width: 100%;
   height: 100%;
   color: #eeeeec;
-  background-color: #0c1615;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -1330,10 +1329,8 @@ progress::-webkit-progress-value {
   user-select: none;
 }
 .item-equip .unit-list {
-  flex: 1;
   overflow-x: auto;
   border: 1px solid #c4e5fb;
-  cursor: pointer;
 }
 .item-equip .unit-list .sort-icon {
   font-weight: 100;
@@ -1389,12 +1386,21 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
+.item-equip .unit-list tr {
+  cursor: pointer;
+}
 .item-equip .unit-list .selected {
   background-color: #868a0a;
 }
+.item-equip > * {
+  overflow-y: auto;
+  background-color: #0c1615;
+  max-height: 400px;
+}
+.item-equip table {
+  margin-right: 25px;
+}
 .item-equip-left {
-  display: flex;
-  flex-flow: column;
   border: 1px solid #c4e5fb;
   margin-right: 5px;
 }

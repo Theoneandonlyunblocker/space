@@ -1,5 +1,7 @@
 /// <reference path="lightbox.ts"/>
 
+/// <reference path="../items/buyitems.ts"/>
+
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
@@ -37,6 +39,29 @@ module Rance
             {
               handleClose: this.closeLightBox,
               content: UIComponents.ItemEquip(
+              {
+                player: this.props.player
+              })
+            })
+          });
+        }
+      },
+
+      handleBuyItems: function()
+      {
+        if (this.state.opened === "buyItems")
+        {
+          this.closeLightBox();
+        }
+        else
+        {
+          this.setState(
+          {
+            opened: "buyItems",
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.BuyItems(
               {
                 player: this.props.player
               })
@@ -150,6 +175,11 @@ module Rance
                 className: "top-menu-items-button",
                 onClick: this.handleEconomySummary
               }, "Economy"),
+              React.DOM.button(
+              {
+                className: "top-menu-items-button",
+                onClick: this.handleBuyItems
+              }, "Buy items"),
               React.DOM.button(
               {
                 className: "top-menu-items-button",

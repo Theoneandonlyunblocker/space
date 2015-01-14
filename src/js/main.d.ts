@@ -198,6 +198,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BuyItems: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var SaveListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -447,6 +452,7 @@ declare module Rance {
             var starBase: IBuildingTemplate;
             var commercialPort: IBuildingTemplate;
             var deepSpaceRadar: IBuildingTemplate;
+            var itemManufactory: IBuildingTemplate;
         }
     }
 }
@@ -687,7 +693,10 @@ declare module Rance {
         public seedBuildableItems(): void;
         public getItemManufactoryLevel(): number;
         public getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
-        public getBuildableItems(): void;
+        public getBuildableItems(): {
+            byTechLevel: {};
+            all: any[];
+        };
         public serialize(): any;
     }
 }
@@ -1063,6 +1072,7 @@ declare module Rance {
         public getRevealedStars(): Rance.Star[];
         public getRevealedButNotVisibleStars(): Rance.Star[];
         public addItem(item: Rance.Item): void;
+        public getAllBuildableItems(): any[];
         public serialize(): any;
     }
 }

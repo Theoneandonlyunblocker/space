@@ -535,7 +535,7 @@ var Rance;
                 var infoProps = {
                     key: "info",
                     name: unit.name,
-                    guard: unit.battleStats.guard,
+                    guardAmount: unit.battleStats.guardAmount,
                     maxStrength: unit.maxStrength,
                     currentStrength: unit.currentStrength,
                     isSquadron: unit.isSquadron,
@@ -2381,6 +2381,29 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.BuyItems = React.createClass({
+            displayName: "BuyItems",
+            handleSelectRow: function (row) {
+                var item = row.data.item;
+
+                this.props.player.addItem(item);
+            },
+            render: function () {
+                var player = this.props.player;
+
+                return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemList({
+                    items: player.getAllBuildableItems(),
+                    isDraggable: false,
+                    onRowChange: this.handleSelectRow
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.SaveListItem = React.createClass({
             displayName: "SaveListItem",
             makeCell: function (type) {
@@ -2739,6 +2762,7 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
+/// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
@@ -2763,6 +2787,21 @@ var Rance;
                         lightBoxElement: Rance.UIComponents.LightBox({
                             handleClose: this.closeLightBox,
                             content: Rance.UIComponents.ItemEquip({
+                                player: this.props.player
+                            })
+                        })
+                    });
+                }
+            },
+            handleBuyItems: function () {
+                if (this.state.opened === "buyItems") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "buyItems",
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.BuyItems({
                                 player: this.props.player
                             })
                         })
@@ -2835,6 +2874,9 @@ var Rance;
                     className: "top-menu-items-button",
                     onClick: this.handleEconomySummary
                 }, "Economy"), React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleBuyItems
+                }, "Buy items"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleEquipItems
                 }, "Equip")), this.state.lightBoxElement));
@@ -4200,6 +4242,15 @@ var Rance;
                 maxPerType: 1,
                 maxUpgradeLevel: 2
             };
+            Buildings.itemManufactory = {
+                type: "itemManufactory",
+                category: "manufactory",
+                name: "Item Manufactory",
+                icon: "img\/buildings\/commercialPort.png",
+                buildCost: 200,
+                maxPerType: 1,
+                maxUpgradeLevel: 3
+            };
         })(Templates.Buildings || (Templates.Buildings = {}));
         var Buildings = Templates.Buildings;
     })(Rance.Templates || (Rance.Templates = {}));
@@ -4881,8 +4932,8 @@ var Rance;
         };
         Star.prototype.getItemManufactoryLevel = function () {
             var level = 0;
-            if (this.buildings["items"]) {
-                level += this.buildings["items"].length;
+            if (this.buildings["manufactory"]) {
+                level += this.buildings["manufactory"].length;
             }
 
             return level;
@@ -4892,7 +4943,12 @@ var Rance;
 
             manufactoryLevel = Rance.clamp(manufactoryLevel, 0, maxManufactoryLevel);
 
-            return (1 + manufactoryLevel) - techLevel;
+            var amount = (1 + manufactoryLevel) - techLevel;
+
+            if (amount < 0)
+                amount = 0;
+
+            return amount;
         };
         Star.prototype.getBuildableItems = function () {
             if (!this.buildableItems[1] || this.buildableItems[1].length < 1) {
@@ -4902,12 +4958,21 @@ var Rance;
 
             var manufactoryLevel = this.getItemManufactoryLevel();
 
-            var buildableItems = {};
+            var byTechLevel = {};
+            var allBuildable = [];
 
             for (var techLevel in this.buildableItems) {
                 var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel);
-                buildableItems[techLevel] = this.buildableItems[techLevel].slice(0, amountBuildable);
+                var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
+
+                byTechLevel[techLevel] = forThisTechLevel;
+                allBuildable = allBuildable.concat(forThisTechLevel);
             }
+
+            return ({
+                byTechLevel: byTechLevel,
+                all: allBuildable
+            });
         };
         Star.prototype.serialize = function () {
             var data = {};
@@ -6547,6 +6612,31 @@ var Rance;
         };
         Player.prototype.addItem = function (item) {
             this.items.push(item);
+        };
+        Player.prototype.getAllBuildableItems = function () {
+            var alreadyAdded = {};
+            var allBuildable = [];
+
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                var star = this.controlledLocations[i];
+
+                var buildableItems = star.getBuildableItems().all;
+                for (var j = 0; j < buildableItems.length; j++) {
+                    var item = buildableItems[i];
+
+                    if (alreadyAdded[item.type]) {
+                        continue;
+                    } else {
+                        alreadyAdded[item.type] = true;
+                        allBuildable.push({
+                            star: star,
+                            template: buildableItems[i]
+                        });
+                    }
+                }
+            }
+
+            return allBuildable;
         };
         Player.prototype.serialize = function () {
             var data = {};
@@ -8472,7 +8562,7 @@ var Rance;
                 },
                 starGeneration: {
                     galaxyType: "spiral",
-                    totalAmount: 60,
+                    totalAmount: 40,
                     arms: 5,
                     centerSize: 0.4,
                     amountInCenter: 0.3
@@ -9449,14 +9539,13 @@ var Rance;
                     };
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
-                        var starSize = 4;
+                        var starSize = 1;
                         if (star.buildings["defence"]) {
-                            starSize += star.buildings["defence"].length * 3;
+                            starSize += star.buildings["defence"].length * 2;
                         }
                         var gfx = new PIXI.Graphics();
                         gfx.star = star;
-                        gfx.lineStyle(2, 0x222222, 1);
-                        gfx.beginFill(0xFFFF00);
+                        gfx.beginFill(0xFFFFF0);
                         gfx.drawEllipse(star.x, star.y, starSize, starSize);
                         gfx.endFill;
 
@@ -9620,7 +9709,7 @@ var Rance;
 
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
-                    gfx.lineStyle(1, 0xC0C0C0, 0.5);
+                    gfx.lineStyle(1, 0xA0A0A0, 0.5);
 
                     var visible = this.player ? this.player.getRevealedStars() : null;
 
@@ -9680,7 +9769,7 @@ var Rance;
 
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
-                    gfx.lineStyle(2, 0xDDDDDD, 1);
+                    gfx.lineStyle(1, 0xCCCCCC, 0.6);
 
                     var points;
                     if (!this.player) {
