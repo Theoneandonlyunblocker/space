@@ -4432,21 +4432,21 @@ var Rance;
     var Building = (function () {
         function Building(props) {
             this.template = props.template;
+            this.id = (props.id && isFinite(props.id)) ? props.id : Rance.idGenerators.building++;
             this.location = props.location;
             this.controller = props.controller || this.location.owner;
             this.upgradeLevel = props.upgradeLevel || 1;
         }
         Building.prototype.getPossibleUpgrades = function () {
             var upgrades = [];
-            if (this.template.upgradeInto) {
-                upgrades = upgrades.concat(this.template.upgradeInto);
-            }
 
             if (this.upgradeLevel < this.template.maxUpgradeLevel) {
                 upgrades.push({
                     type: this.template.type,
                     level: this.upgradeLevel + 1
                 });
+            } else if (this.template.upgradeInto) {
+                upgrades = upgrades.concat(this.template.upgradeInto);
             }
 
             return upgrades;
@@ -4463,6 +4463,7 @@ var Rance;
             var data = {};
 
             data.templateType = this.template.type;
+            data.id = this.id;
 
             data.locationId = this.location.id;
             data.controllerId = this.controller.id;
@@ -4734,6 +4735,22 @@ var Rance;
                 tempBuildingIncome = this.buildings["economy"].length * 20;
             return this.baseIncome + tempBuildingIncome;
         };
+        Star.prototype.getAllBuildings = function () {
+            var buildings = [];
+
+            for (var category in this.buildings) {
+                buildings = buildings.concat(this.buildings[category]);
+            }
+
+            return buildings;
+        };
+        Star.prototype.getBuildingsForPlayer = function (player) {
+            var allBuildings = this.getAllBuildings();
+
+            return allBuildings.filter(function (building) {
+                return building.controller.id === player.id;
+            });
+        };
         Star.prototype.getBuildingsByType = function (buildingTemplate) {
             var categoryBuildings = this.buildings[buildingTemplate.category];
 
@@ -4761,6 +4778,22 @@ var Rance;
             }
 
             return canBuild;
+        };
+        Star.prototype.getBuildingUpgrades = function () {
+            var allUpgrades = {};
+
+            var ownerBuildings = this.getBuildingsForPlayer(this.owner);
+
+            for (var i = 0; i < ownerBuildings.length; i++) {
+                var building = ownerBuildings[i];
+                var upgrades = building.getPossibleUpgrades();
+
+                if (upgrades && upgrades.length > 0) {
+                    allUpgrades[building.id] = upgrades;
+                }
+            }
+
+            return allUpgrades;
         };
 
         // FLEETS
@@ -5103,10 +5136,7 @@ var Rance;
                 itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel);
 
                 for (var i = 0; i < maxItemsForTechLevel; i++) {
-                    var item = itemsByTechLevel.pop();
-                    if (!item)
-                        debugger;
-                    this.buildableItems[techLevel].push(item);
+                    this.buildableItems[techLevel].push(itemsByTechLevel.pop());
                 }
             }
         };
@@ -7956,58 +7986,43 @@ var Rance;
                 Rance.eventManager.removeAllListeners("clearPossibleActions");
             },
             buildBuildings: function () {
-                if (this.state.expandedAction === "buildBuildings") {
+                if (!this.props.selectedStar || this.state.expandedAction === "buildBuildings") {
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
                     });
                 } else {
+                    var element = React.DOM.div({
+                        className: "expanded-action"
+                    }, Rance.UIComponents.BuildableBuildingList({
+                        player: this.props.player,
+                        star: this.props.selectedStar
+                    }));
+
                     this.setState({
                         expandedAction: "buildBuildings",
-                        expandedActionElement: this.makeExpandedAction("buildBuildings")
+                        expandedActionElement: element
                     });
                 }
             },
             buildShips: function () {
-                if (this.state.expandedAction === "buildShips") {
+                if (!this.props.selectedStar || this.state.expandedAction === "buildShips") {
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
                     });
                 } else {
+                    var element = React.DOM.div({
+                        className: "expanded-action"
+                    }, Rance.UIComponents.BuildableShipsList({
+                        player: this.props.player,
+                        star: this.props.selectedStar
+                    }));
+
                     this.setState({
                         expandedAction: "buildShips",
-                        expandedActionElement: this.makeExpandedAction("buildShips")
+                        expandedActionElement: element
                     });
-                }
-            },
-            makeExpandedAction: function (action) {
-                switch (action) {
-                    case "buildBuildings": {
-                        if (!this.props.selectedStar)
-                            return null;
-
-                        return (React.DOM.div({
-                            className: "expanded-action"
-                        }, Rance.UIComponents.BuildableBuildingList({
-                            player: this.props.player,
-                            star: this.props.selectedStar
-                        })));
-                    }
-                    case "buildShips": {
-                        if (!this.props.selectedStar)
-                            return null;
-
-                        return (React.DOM.div({
-                            className: "expanded-action"
-                        }, Rance.UIComponents.BuildableShipsList({
-                            player: this.props.player,
-                            star: this.props.selectedStar
-                        })));
-                    }
-                    default: {
-                        return null;
-                    }
                 }
             },
             render: function () {
@@ -11576,7 +11591,8 @@ var Rance;
                 template: template,
                 location: this.pointsById[data.locationId],
                 controller: this.playersById[data.controllerId],
-                upgradeLevel: data.upgradeLevel
+                upgradeLevel: data.upgradeLevel,
+                id: data.id
             });
 
             return building;
@@ -11860,7 +11876,8 @@ var Rance;
         item: 0,
         player: 0,
         star: 0,
-        unit: 0
+        unit: 0,
+        building: 0
     };
 
     var App = (function () {

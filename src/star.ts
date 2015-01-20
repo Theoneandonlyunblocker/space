@@ -161,6 +161,26 @@ module Rance
       if (this.buildings["economy"]) tempBuildingIncome = this.buildings["economy"].length * 20;
       return this.baseIncome + tempBuildingIncome;
     }
+    getAllBuildings()
+    {
+      var buildings = [];
+
+      for (var category in this.buildings)
+      {
+        buildings = buildings.concat(this.buildings[category]);
+      }
+
+      return buildings;
+    }
+    getBuildingsForPlayer(player: Player)
+    {
+      var allBuildings = this.getAllBuildings();
+
+      return allBuildings.filter(function(building)
+      {
+        return building.controller.id === player.id;
+      });
+    }
     getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate)
     {
       var categoryBuildings = this.buildings[buildingTemplate.category];
@@ -195,6 +215,33 @@ module Rance
       }
 
       return canBuild;
+    }
+    getBuildingUpgrades()
+    {
+      var allUpgrades:
+      {
+        [buildingId: number]:
+        {
+          type: string;
+          level: number;
+        }[];
+      } = {};
+
+      var ownerBuildings = this.getBuildingsForPlayer(this.owner);
+
+      for (var i = 0; i < ownerBuildings.length; i++)
+      {
+        var building = ownerBuildings[i];
+        var upgrades = building.getPossibleUpgrades();
+
+        if (upgrades && upgrades.length > 0)
+        {
+          allUpgrades[building.id] = upgrades;
+        }
+
+      }
+
+      return allUpgrades;
     }
 
     // FLEETS

@@ -469,6 +469,7 @@ declare module Rance {
 declare module Rance {
     class Building {
         public template: Rance.Templates.IBuildingTemplate;
+        public id: number;
         public location: Rance.Star;
         public controller: Rance.Player;
         public upgradeLevel: number;
@@ -477,6 +478,7 @@ declare module Rance {
             location: Rance.Star;
             controller?: Rance.Player;
             upgradeLevel?: number;
+            id?: number;
         });
         public getPossibleUpgrades(): {
             type: string;
@@ -672,8 +674,16 @@ declare module Rance {
         public getSecondaryController(): Rance.Player;
         public updateController(): any;
         public getIncome(): number;
+        public getAllBuildings(): any[];
+        public getBuildingsForPlayer(player: Rance.Player): any[];
         public getBuildingsByType(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
         public getBuildableBuildings(): any[];
+        public getBuildingUpgrades(): {
+            [buildingId: number]: {
+                type: string;
+                level: number;
+            }[];
+        };
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;
@@ -1926,6 +1936,7 @@ declare module Rance {
         player: number;
         star: number;
         unit: number;
+        building: number;
     };
     class App {
         public seed: any;

@@ -51,7 +51,8 @@ module Rance
 
       buildBuildings: function()
       {
-        if (this.state.expandedAction === "buildBuildings")
+        if (!this.props.selectedStar ||
+          this.state.expandedAction === "buildBuildings")
         {
           this.setState(
           {
@@ -61,17 +62,29 @@ module Rance
         }
         else
         {
+          var element = React.DOM.div(
+          {
+            className: "expanded-action"
+          },
+            UIComponents.BuildableBuildingList(
+            {
+              player: this.props.player,
+              star: this.props.selectedStar
+            })
+          );
+
           this.setState(
           {
             expandedAction: "buildBuildings",
-            expandedActionElement: this.makeExpandedAction("buildBuildings")
+            expandedActionElement: element
           });
         }
       },
 
       buildShips: function()
       {
-        if (this.state.expandedAction === "buildShips")
+        if (!this.props.selectedStar ||
+          this.state.expandedAction === "buildShips")
         {
           this.setState(
           {
@@ -81,57 +94,22 @@ module Rance
         }
         else
         {
+          var element = React.DOM.div(
+          {
+            className: "expanded-action"
+          },
+            UIComponents.BuildableShipsList(
+            {
+              player: this.props.player,
+              star: this.props.selectedStar
+            })
+          );
+          
           this.setState(
           {
             expandedAction: "buildShips",
-            expandedActionElement: this.makeExpandedAction("buildShips")
+            expandedActionElement: element
           });
-        }
-      },
-
-
-      makeExpandedAction: function(action)
-      {
-        switch (action)
-        {
-          case "buildBuildings":
-          {
-            if (!this.props.selectedStar) return null;
-
-            return(
-              React.DOM.div(
-              {
-                className: "expanded-action"
-              },
-                UIComponents.BuildableBuildingList(
-                {
-                  player: this.props.player,
-                  star: this.props.selectedStar
-                })
-              )
-            );
-          }
-          case "buildShips":
-          {
-            if (!this.props.selectedStar) return null;
-
-            return(
-              React.DOM.div(
-              {
-                className: "expanded-action"
-              },
-                UIComponents.BuildableShipsList(
-                {
-                  player: this.props.player,
-                  star: this.props.selectedStar
-                })
-              )
-            );
-          }
-          default:
-          {
-            return null;
-          }
         }
       },
 

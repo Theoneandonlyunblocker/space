@@ -25,7 +25,8 @@ module Rance
     item: 0,
     player: 0,
     star: 0,
-    unit: 0
+    unit: 0,
+    building: 0
   }
 
   export class App
