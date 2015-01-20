@@ -140,7 +140,8 @@ module Rance
         location: this.pointsById[data.locationId],
         controller: this.playersById[data.controllerId],
 
-        upgradeLevel: data.upgradeLevel
+        upgradeLevel: data.upgradeLevel,
+        id: data.id
       });
 
       return building;
