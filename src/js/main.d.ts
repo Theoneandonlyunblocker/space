@@ -450,6 +450,7 @@ declare module Rance {
             buildCost: number;
             maxPerType: number;
             maxUpgradeLevel: number;
+            upgradeOnly?: boolean;
             upgradeInto?: {
                 type: string;
                 level: number;
@@ -459,6 +460,8 @@ declare module Rance {
         }
         module Buildings {
             var sectorCommand: IBuildingTemplate;
+            var sectorCommand1: IBuildingTemplate;
+            var sectorCommand2: IBuildingTemplate;
             var starBase: IBuildingTemplate;
             var commercialPort: IBuildingTemplate;
             var deepSpaceRadar: IBuildingTemplate;
@@ -481,8 +484,9 @@ declare module Rance {
             id?: number;
         });
         public getPossibleUpgrades(): {
-            type: string;
+            template: Rance.Templates.IBuildingTemplate;
             level: number;
+            cost: number;
         }[];
         public setController(newController: Rance.Player): void;
         public serialize(): any;
@@ -680,8 +684,10 @@ declare module Rance {
         public getBuildableBuildings(): any[];
         public getBuildingUpgrades(): {
             [buildingId: number]: {
-                type: string;
+                template: Rance.Templates.IBuildingTemplate;
                 level: number;
+                cost: number;
+                parentBuilding: Rance.Building;
             }[];
         };
         public getAllFleets(): any[];
@@ -1276,6 +1282,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var BuildableShipsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BuildingUpgradeList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {

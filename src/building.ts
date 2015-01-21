@@ -37,21 +37,34 @@ module Rance
     {
       var upgrades:
       {
-        type: string;
+        template: Templates.IBuildingTemplate;
         level: number;
+        cost: number;
       }[] = [];
 
       if (this.upgradeLevel < this.template.maxUpgradeLevel)
       {
         upgrades.push(
         {
-          type: this.template.type,
-          level: this.upgradeLevel + 1
+          template: this.template,
+          level: this.upgradeLevel + 1,
+          cost: this.template.buildCost * (this.upgradeLevel + 1)
         });
       }
-      else if (this.template.upgradeInto)
+      else if (this.template.upgradeInto && this.template.upgradeInto.length > 0)
       {
-        upgrades = upgrades.concat(this.template.upgradeInto);
+        var templatedUpgrades = this.template.upgradeInto.map(function(upgradeData)
+        {
+          var template = Templates.Buildings[upgradeData.type];
+          return(
+          {
+            level: upgradeData.level,
+            template: template,
+            cost: template.buildCost
+          });
+        });
+
+        upgrades = upgrades.concat(templatedUpgrades);
       }
 
       return upgrades;

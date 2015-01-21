@@ -4381,7 +4381,37 @@ var Rance;
                 icon: "img\/buildings\/sectorCommand.png",
                 buildCost: 200,
                 maxPerType: 1,
-                maxUpgradeLevel: 4
+                maxUpgradeLevel: 1,
+                upgradeInto: [
+                    {
+                        type: "sectorCommand1",
+                        level: 1
+                    },
+                    {
+                        type: "sectorCommand2",
+                        level: 1
+                    }
+                ]
+            };
+            Buildings.sectorCommand1 = {
+                type: "sectorCommand1",
+                category: "defence",
+                name: "Sector Command1",
+                icon: "img\/buildings\/sectorCommand.png",
+                buildCost: 100,
+                maxPerType: 1,
+                maxUpgradeLevel: 1,
+                upgradeOnly: true
+            };
+            Buildings.sectorCommand2 = {
+                type: "sectorCommand2",
+                category: "defence",
+                name: "Sector Command2",
+                icon: "img\/buildings\/sectorCommand2.png",
+                buildCost: 200,
+                maxPerType: 1,
+                maxUpgradeLevel: 1,
+                upgradeOnly: true
             };
             Buildings.starBase = {
                 type: "starBase",
@@ -4442,11 +4472,21 @@ var Rance;
 
             if (this.upgradeLevel < this.template.maxUpgradeLevel) {
                 upgrades.push({
-                    type: this.template.type,
-                    level: this.upgradeLevel + 1
+                    template: this.template,
+                    level: this.upgradeLevel + 1,
+                    cost: this.template.buildCost * (this.upgradeLevel + 1)
                 });
-            } else if (this.template.upgradeInto) {
-                upgrades = upgrades.concat(this.template.upgradeInto);
+            } else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
+                var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
+                    var template = Rance.Templates.Buildings[upgradeData.type];
+                    return ({
+                        level: upgradeData.level,
+                        template: template,
+                        cost: template.buildCost
+                    });
+                });
+
+                upgrades = upgrades.concat(templatedUpgrades);
             }
 
             return upgrades;
@@ -4772,7 +4812,7 @@ var Rance;
                 var template = Rance.Templates.Buildings[buildingType];
                 var alreadyBuilt = this.getBuildingsByType(template);
 
-                if (alreadyBuilt.length < template.maxPerType) {
+                if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
                     canBuild.push(template);
                 }
             }
@@ -4789,6 +4829,10 @@ var Rance;
                 var upgrades = building.getPossibleUpgrades();
 
                 if (upgrades && upgrades.length > 0) {
+                    for (var j = 0; j < upgrades.length; j++) {
+                        upgrades[j].parentBuilding = building;
+                    }
+
                     allUpgrades[building.id] = upgrades;
                 }
             }
@@ -7951,9 +7995,57 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+// /// <reference path="buildingupgradelistitem.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BuildingUpgradeList = React.createClass({
+            displayName: "BuildingUpgradeList",
+            upgradeBuilding: function (rowItem) {
+                var upgradeData = rowItem.data.upgradeData;
+            },
+            render: function () {
+                var possibleUpgrades = this.props.star.getBuildingUpgrades();
+                if (Object.keys(possibleUpgrades).length < 1)
+                    return null;
+
+                var upgradeGroups = [];
+
+                for (var parentBuildingId in possibleUpgrades) {
+                    var upgrades = possibleUpgrades[parentBuildingId];
+                    var parentBuilding = upgrades[0].parentBuilding;
+
+                    var upgradeElements = [];
+
+                    for (var i = 0; i < upgrades.length; i++) {
+                        var upgrade = upgrades[i];
+
+                        upgradeElements.push(React.DOM.tr({
+                            key: upgrade.template.type
+                        }, React.DOM.td({
+                            key: "name"
+                        }, upgrade.template.name + " " + upgrade.level), React.DOM.td({
+                            key: "cost"
+                        }, upgrade.cost)));
+                    }
+
+                    var parentElement = React.DOM.div({
+                        key: parentBuilding.id
+                    }, React.DOM.div({}, parentBuilding.template.name), React.DOM.table({}, React.DOM.tbody({}, upgradeElements)));
+
+                    upgradeGroups.push(parentElement);
+                }
+
+                return (React.DOM.ul({}, upgradeGroups));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="attacktarget.ts"/>
 /// <reference path="buildablebuildinglist.ts"/>
 /// <reference path="buildableshipslist.ts"/>
+/// <reference path="buildingupgradelist.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -8025,6 +8117,26 @@ var Rance;
                     });
                 }
             },
+            upgradeBuildings: function () {
+                if (!this.props.selectedStar || this.state.expandedAction === "upgradeBuildings") {
+                    this.setState({
+                        expandedAction: null,
+                        expandedActionElement: null
+                    });
+                } else {
+                    var element = React.DOM.div({
+                        className: "expanded-action"
+                    }, Rance.UIComponents.BuildingUpgradeList({
+                        player: this.props.player,
+                        star: this.props.selectedStar
+                    }));
+
+                    this.setState({
+                        expandedAction: "upgradeBuildings",
+                        expandedActionElement: element
+                    });
+                }
+            },
             render: function () {
                 var allActions = [];
 
@@ -8060,6 +8172,14 @@ var Rance;
                                 onClick: this.buildBuildings,
                                 key: "buildActions"
                             }, "construct"));
+                        }
+
+                        if (Object.keys(star.getBuildingUpgrades()).length > 0) {
+                            allActions.push(React.DOM.div({
+                                className: "possible-action",
+                                onClick: this.upgradeBuildings,
+                                key: "upgradeActions"
+                            }, "upgrade"));
                         }
                     }
                 }

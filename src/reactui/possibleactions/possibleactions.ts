@@ -1,6 +1,7 @@
 /// <reference path="attacktarget.ts"/>
 /// <reference path="buildablebuildinglist.ts"/>
 /// <reference path="buildableshipslist.ts"/>
+/// <reference path="buildingupgradelist.ts"/>
 
 module Rance
 {
@@ -104,10 +105,42 @@ module Rance
               star: this.props.selectedStar
             })
           );
-          
+
           this.setState(
           {
             expandedAction: "buildShips",
+            expandedActionElement: element
+          });
+        }
+      },
+
+      upgradeBuildings: function()
+      {
+        if (!this.props.selectedStar ||
+          this.state.expandedAction === "upgradeBuildings")
+        {
+          this.setState(
+          {
+            expandedAction: null,
+            expandedActionElement: null
+          });
+        }
+        else
+        {
+          var element = React.DOM.div(
+          {
+            className: "expanded-action"
+          },
+            UIComponents.BuildingUpgradeList(
+            {
+              player: this.props.player,
+              star: this.props.selectedStar
+            })
+          );
+          
+          this.setState(
+          {
+            expandedAction: "upgradeBuildings",
             expandedActionElement: element
           });
         }
@@ -171,6 +204,20 @@ module Rance
                   key: "buildActions"
                 },
                   "construct"
+                )
+              );
+            }
+
+            if (Object.keys(star.getBuildingUpgrades()).length > 0)
+            {
+              allActions.push(
+                React.DOM.div(
+                {
+                  className: "possible-action",
+                  onClick: this.upgradeBuildings,
+                  key: "upgradeActions"
+                },
+                  "upgrade"
                 )
               );
             }
