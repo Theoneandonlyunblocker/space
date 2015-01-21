@@ -15,6 +15,7 @@ module Rance
 
       maxUpgradeLevel: number;
 
+      upgradeOnly?: boolean;
       upgradeInto?:
       {
         type: string;
@@ -37,7 +38,47 @@ module Rance
 
         maxPerType: 1,
 
-        maxUpgradeLevel: 4
+        maxUpgradeLevel: 1,
+
+        upgradeInto:
+        [
+          {
+            type: "sectorCommand1",
+            level: 1
+          },
+          {
+            type: "sectorCommand2",
+            level: 1
+          }
+        ]
+      }
+      export var sectorCommand1: IBuildingTemplate =
+      {
+        type: "sectorCommand1",
+        category: "defence",
+        name: "Sector Command1",
+
+        icon: "img\/buildings\/sectorCommand.png",
+        buildCost: 100,
+
+        maxPerType: 1,
+
+        maxUpgradeLevel: 1,
+        upgradeOnly: true
+      }
+      export var sectorCommand2: IBuildingTemplate =
+      {
+        type: "sectorCommand2",
+        category: "defence",
+        name: "Sector Command2",
+
+        icon: "img\/buildings\/sectorCommand2.png",
+        buildCost: 200,
+
+        maxPerType: 1,
+
+        maxUpgradeLevel: 1,
+        upgradeOnly: true
       }
       export var starBase: IBuildingTemplate =
       {

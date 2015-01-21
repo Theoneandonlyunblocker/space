@@ -208,7 +208,7 @@ module Rance
         var template: Templates.IBuildingTemplate = Templates.Buildings[buildingType];
         var alreadyBuilt = this.getBuildingsByType(template);
 
-        if (alreadyBuilt.length < template.maxPerType)
+        if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
         {
           canBuild.push(template);
         }
@@ -222,8 +222,10 @@ module Rance
       {
         [buildingId: number]:
         {
-          type: string;
+          template: Templates.IBuildingTemplate;
           level: number;
+          cost: number;
+          parentBuilding: Building;
         }[];
       } = {};
 
@@ -236,6 +238,11 @@ module Rance
 
         if (upgrades && upgrades.length > 0)
         {
+          for (var j = 0; j < upgrades.length; j++)
+          {
+            upgrades[j].parentBuilding = building;
+          }
+
           allUpgrades[building.id] = upgrades;
         }
 
