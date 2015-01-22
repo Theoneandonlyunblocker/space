@@ -488,6 +488,7 @@ declare module Rance {
             level: number;
             cost: number;
         }[];
+        public upgrade(): void;
         public setController(newController: Rance.Player): void;
         public serialize(): any;
     }
@@ -675,6 +676,7 @@ declare module Rance {
         constructor(x: number, y: number, id?: number);
         public addBuilding(building: Rance.Building): void;
         public removeBuilding(building: Rance.Building): void;
+        public sortDefenceBuildings(): void;
         public getSecondaryController(): Rance.Player;
         public updateController(): any;
         public getIncome(): number;

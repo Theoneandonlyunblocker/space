@@ -4407,7 +4407,7 @@ var Rance;
                 type: "sectorCommand2",
                 category: "defence",
                 name: "Sector Command2",
-                icon: "img\/buildings\/sectorCommand2.png",
+                icon: "img\/buildings\/sectorCommand.png",
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 1,
@@ -4490,6 +4490,8 @@ var Rance;
             }
 
             return upgrades;
+        };
+        Building.prototype.upgrade = function () {
         };
         Building.prototype.setController = function (newController) {
             var oldController = this.controller;
@@ -4720,6 +4722,7 @@ var Rance;
             buildings.push(building);
 
             if (building.template.category === "defence") {
+                this.sortDefenceBuildings();
                 this.updateController();
             }
             if (building.template.category === "vision") {
@@ -4734,7 +4737,22 @@ var Rance;
 
             var buildings = this.buildings[building.template.category];
 
-            this.buildings[building.template.category] = buildings.splice(buildings.indexOf(building), 1);
+            this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
+        };
+        Star.prototype.sortDefenceBuildings = function () {
+            this.buildings["defence"].sort(function (a, b) {
+                if (a.template.maxPerType === 1) {
+                    return -1;
+                } else if (b.template.maxPerType === 1) {
+                    return 1;
+                }
+
+                if (a.upgradeLevel !== b.upgradeLevel) {
+                    return b.upgradeLevel - a.upgradeLevel;
+                }
+
+                return a.id - b.id;
+            });
         };
 
         Star.prototype.getSecondaryController = function () {
@@ -8001,8 +8019,23 @@ var Rance;
     (function (UIComponents) {
         UIComponents.BuildingUpgradeList = React.createClass({
             displayName: "BuildingUpgradeList",
-            upgradeBuilding: function (rowItem) {
-                var upgradeData = rowItem.data.upgradeData;
+            upgradeBuilding: function (upgradeData) {
+                var star = upgradeData.parentBuilding.location;
+
+                console.log(upgradeData);
+                var newBuilding = new Rance.Building({
+                    template: upgradeData.template,
+                    location: star,
+                    controller: upgradeData.parentBuilding.controller,
+                    upgradeLevel: upgradeData.level
+                });
+
+                star.removeBuilding(upgradeData.parentBuilding);
+                star.addBuilding(newBuilding);
+
+                upgradeData.parentBuilding.controller.money -= upgradeData.cost;
+
+                Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             render: function () {
                 var possibleUpgrades = this.props.star.getBuildingUpgrades();
@@ -8021,22 +8054,33 @@ var Rance;
                         var upgrade = upgrades[i];
 
                         upgradeElements.push(React.DOM.tr({
-                            key: upgrade.template.type
+                            key: upgrade.template.type,
+                            className: "building-upgrade-list-item",
+                            onClick: this.upgradeBuilding.bind(this, upgrade)
                         }, React.DOM.td({
-                            key: "name"
+                            key: "name",
+                            className: "building-upgrade-list-item-name"
                         }, upgrade.template.name + " " + upgrade.level), React.DOM.td({
-                            key: "cost"
+                            key: "cost",
+                            className: "building-upgrade-list-item-cost"
                         }, upgrade.cost)));
                     }
 
                     var parentElement = React.DOM.div({
-                        key: parentBuilding.id
-                    }, React.DOM.div({}, parentBuilding.template.name), React.DOM.table({}, React.DOM.tbody({}, upgradeElements)));
+                        key: parentBuilding.id,
+                        className: "building-upgrade-group"
+                    }, React.DOM.div({
+                        className: "building-upgrade-group-header"
+                    }, parentBuilding.template.name), React.DOM.table({
+                        className: "buildable-item-list"
+                    }, React.DOM.tbody({}, upgradeElements)));
 
                     upgradeGroups.push(parentElement);
                 }
 
-                return (React.DOM.ul({}, upgradeGroups));
+                return (React.DOM.ul({
+                    className: "building-upgrade-list"
+                }, upgradeGroups));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

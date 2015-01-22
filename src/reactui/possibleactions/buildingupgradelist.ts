@@ -8,9 +8,25 @@ module Rance
     {
       displayName: "BuildingUpgradeList",
 
-      upgradeBuilding: function(rowItem)
+      upgradeBuilding: function(upgradeData)
       {
-        var upgradeData = rowItem.data.upgradeData;
+        var star = upgradeData.parentBuilding.location
+
+        console.log(upgradeData);
+        var newBuilding = new Building(
+        {
+          template: upgradeData.template,
+          location: star,
+          controller: upgradeData.parentBuilding.controller,
+          upgradeLevel: upgradeData.level
+        });
+
+        star.removeBuilding(upgradeData.parentBuilding);
+        star.addBuilding(newBuilding);
+
+        upgradeData.parentBuilding.controller.money -= upgradeData.cost;
+
+        eventManager.dispatchEvent("playerControlUpdated");
       },
 
       render: function()
@@ -34,15 +50,19 @@ module Rance
             upgradeElements.push(
               React.DOM.tr(
               {
-                key: upgrade.template.type
+                key: upgrade.template.type,
+                className: "building-upgrade-list-item",
+                onClick: this.upgradeBuilding.bind(this, upgrade)
               },
                 React.DOM.td(
                 {
-                  key: "name"
+                  key: "name",
+                  className: "building-upgrade-list-item-name"
                 }, upgrade.template.name + " " + upgrade.level),
                 React.DOM.td(
                 {
-                  key: "cost"
+                  key: "cost",
+                  className: "building-upgrade-list-item-cost"
                 }, upgrade.cost)
               )
             );
@@ -50,15 +70,16 @@ module Rance
 
           var parentElement = React.DOM.div(
           {
-            key: parentBuilding.id
+            key: parentBuilding.id,
+            className: "building-upgrade-group"
           },
             React.DOM.div(
             {
-
+              className: "building-upgrade-group-header"
             }, parentBuilding.template.name),
             React.DOM.table(
             {
-
+              className: "buildable-item-list"
             },
               React.DOM.tbody(
               {
@@ -75,7 +96,7 @@ module Rance
         return(
           React.DOM.ul(
           {
-
+            className: "building-upgrade-list"
           },
             upgradeGroups
           )

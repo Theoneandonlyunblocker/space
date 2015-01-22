@@ -97,6 +97,7 @@ module Rance
 
       if (building.template.category === "defence")
       {
+        this.sortDefenceBuildings();
         this.updateController();
       }
       if (building.template.category === "vision")
@@ -117,8 +118,29 @@ module Rance
 
       var buildings = this.buildings[building.template.category];
 
-      this.buildings[building.template.category] =
-        buildings.splice(buildings.indexOf(building), 1);
+      this.buildings[building.template.category].splice(
+        buildings.indexOf(building), 1);
+    }
+    sortDefenceBuildings()
+    {
+      this.buildings["defence"].sort(function(a, b)
+      {
+        if (a.template.maxPerType === 1) //hq
+        {
+          return -1;
+        }
+        else if (b.template.maxPerType === 1)
+        {
+          return 1;
+        }
+
+        if (a.upgradeLevel !== b.upgradeLevel)
+        {
+          return b.upgradeLevel - a.upgradeLevel;
+        }
+
+        return a.id - b.id;
+      });
     }
 
     getSecondaryController()

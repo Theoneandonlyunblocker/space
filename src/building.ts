@@ -69,6 +69,10 @@ module Rance
 
       return upgrades;
     }
+    upgrade()
+    {
+      
+    }
     setController(newController: Player)
     {
       var oldController = this.controller;

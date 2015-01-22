@@ -72,7 +72,7 @@ module Rance
         category: "defence",
         name: "Sector Command2",
 
-        icon: "img\/buildings\/sectorCommand2.png",
+        icon: "img\/buildings\/sectorCommand.png",
         buildCost: 200,
 
         maxPerType: 1,
