@@ -1299,7 +1299,7 @@ var Rance;
             displayName: "List",
             mixins: [Rance.UIComponents.SplitMultilineText],
             getInitialState: function () {
-                var initialColumn = this.props.initialColumn || this.props.initialColumns[0];
+                var initialColumn = this.props.initialSortOrder ? this.props.initialSortOrder[0] : this.props.initialColumns[0];
 
                 var initialSelected = this.props.listItems[0];
 
@@ -1334,17 +1334,18 @@ var Rance;
                 });
             },
             makeInitialSortingOrder: function (columns, initialColumn) {
-                var initialIndex = columns.indexOf(initialColumn);
-                if (initialIndex < 0)
-                    throw new Error("Invalid column index");
+                var initialSortOrder = this.props.initialSortOrder;
+                if (!initialSortOrder || initialSortOrder.length < 1) {
+                    initialSortOrder = [initialColumn];
+                }
 
-                var order = [initialColumn];
+                var order = initialSortOrder;
 
                 for (var i = 0; i < columns.length; i++) {
                     if (!columns[i].order) {
                         columns[i].order = columns[i].defaultOrder;
                     }
-                    if (i !== initialIndex) {
+                    if (initialSortOrder.indexOf(columns[i]) < 0) {
                         order.push(columns[i]);
                     }
                 }
@@ -1915,7 +1916,7 @@ var Rance;
                 return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialColumn: columns[1],
+                    initialSortOrder: [columns[1], columns[2]],
                     onRowChange: this.props.onRowChange
                 })));
             }
@@ -2494,7 +2495,7 @@ var Rance;
                     };
 
                     rows.push({
-                        key: item.id,
+                        key: item.template.type,
                         data: data
                     });
                 }
@@ -2514,7 +2515,7 @@ var Rance;
                     {
                         label: "Tech",
                         key: "techLevel",
-                        defaultOrder: "asc"
+                        defaultOrder: "desc"
                     },
                     {
                         label: "Cost",
@@ -2526,7 +2527,7 @@ var Rance;
                 return (React.DOM.div({ className: "item-purchase-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialColumn: columns[1],
+                    initialSortOrder: [columns[1], columns[2]],
                     onRowChange: this.props.onRowChange
                 })));
             }
@@ -2672,7 +2673,7 @@ var Rance;
                 return (React.DOM.div({ className: "save-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialColumn: columns[1],
+                    initialSortOrder: [columns[1]],
                     onRowChange: this.props.onRowChange,
                     autoSelect: this.props.autoSelect
                 })));
@@ -2920,7 +2921,7 @@ var Rance;
                 return (React.DOM.div({ className: "economy-summary-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialColumn: columns[2]
+                    initialSortOrder: [columns[2]]
                 })));
             }
         });
@@ -4789,8 +4790,12 @@ var Rance;
         };
         Star.prototype.getIncome = function () {
             var tempBuildingIncome = 0;
-            if (this.buildings["economy"])
-                tempBuildingIncome = this.buildings["economy"].length * 20;
+            if (this.buildings["economy"]) {
+                for (var i = 0; i < this.buildings["economy"].length; i++) {
+                    var building = this.buildings["economy"][i];
+                    tempBuildingIncome += building.upgradeLevel * 20;
+                }
+            }
             return this.baseIncome + tempBuildingIncome;
         };
         Star.prototype.getAllBuildings = function () {
@@ -5205,7 +5210,9 @@ var Rance;
         Star.prototype.getItemManufactoryLevel = function () {
             var level = 0;
             if (this.buildings["manufactory"]) {
-                level += this.buildings["manufactory"].length;
+                for (var i = 0; i < this.buildings["manufactory"].length; i++) {
+                    level += this.buildings["manufactory"][i].upgradeLevel;
+                }
             }
 
             return level;
@@ -8053,17 +8060,29 @@ var Rance;
                     for (var i = 0; i < upgrades.length; i++) {
                         var upgrade = upgrades[i];
 
-                        upgradeElements.push(React.DOM.tr({
+                        var rowProps = {
                             key: upgrade.template.type,
                             className: "building-upgrade-list-item",
                             onClick: this.upgradeBuilding.bind(this, upgrade)
-                        }, React.DOM.td({
-                            key: "name",
-                            className: "building-upgrade-list-item-name"
-                        }, upgrade.template.name + " " + upgrade.level), React.DOM.td({
+                        };
+
+                        var costProps = {
                             key: "cost",
                             className: "building-upgrade-list-item-cost"
-                        }, upgrade.cost)));
+                        };
+
+                        if (this.props.player.money < upgrade.cost) {
+                            rowProps.onClick = null;
+                            rowProps.disabled = true;
+                            rowProps.className += " disabled";
+
+                            costProps.className += " negative";
+                        }
+
+                        upgradeElements.push(React.DOM.tr(rowProps, React.DOM.td({
+                            key: "name",
+                            className: "building-upgrade-list-item-name"
+                        }, upgrade.template.name + " " + upgrade.level), React.DOM.td(costProps, upgrade.cost)));
                     }
 
                     var parentElement = React.DOM.div({
@@ -12110,13 +12129,6 @@ var Rance;
 
             var game = new Rance.Game(map, players, players[0]);
             game.independents.push(independents);
-
-            for (var itemType in Rance.Templates.Items) {
-                for (var i = 0; i < 1; i++) {
-                    var item = new Rance.Item(Rance.Templates.Items[itemType]);
-                    players[0].addItem(item);
-                }
-            }
 
             return game;
         };

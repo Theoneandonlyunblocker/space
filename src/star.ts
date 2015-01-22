@@ -180,7 +180,14 @@ module Rance
     getIncome()
     {
       var tempBuildingIncome = 0;
-      if (this.buildings["economy"]) tempBuildingIncome = this.buildings["economy"].length * 20;
+      if (this.buildings["economy"])
+      {
+        for (var i = 0; i < this.buildings["economy"].length; i++)
+        {
+          var building = this.buildings["economy"][i];
+          tempBuildingIncome += building.upgradeLevel * 20;
+        }
+      }
       return this.baseIncome + tempBuildingIncome;
     }
     getAllBuildings()
@@ -691,7 +698,10 @@ module Rance
       var level = 0;
       if (this.buildings["manufactory"])
       {
-        level += this.buildings["manufactory"].length;
+        for (var i = 0; i < this.buildings["manufactory"].length; i++)
+        {
+          level += this.buildings["manufactory"][i].upgradeLevel;
+        }
       }
 
       return level;

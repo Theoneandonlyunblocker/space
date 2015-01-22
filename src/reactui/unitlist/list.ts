@@ -10,7 +10,8 @@ module Rance
 
       getInitialState: function()
       {
-        var initialColumn = this.props.initialColumn ||
+        var initialColumn = this.props.initialSortOrder ?
+          this.props.initialSortOrder[0] :
           this.props.initialColumns[0];
 
         var initialSelected = this.props.listItems[0];
@@ -57,10 +58,15 @@ module Rance
 
       makeInitialSortingOrder: function(columns, initialColumn)
       {
-        var initialIndex = columns.indexOf(initialColumn);
-        if (initialIndex < 0) throw new Error("Invalid column index");
+        var initialSortOrder = this.props.initialSortOrder;
+        if (!initialSortOrder || initialSortOrder.length < 1)
+        {
+          initialSortOrder = [initialColumn];
+        }
 
-        var order = [initialColumn];
+
+        var order = initialSortOrder;
+
 
         for (var i = 0; i < columns.length; i++)
         {
@@ -68,7 +74,7 @@ module Rance
           {
             columns[i].order = columns[i].defaultOrder;
           }
-          if (i !== initialIndex)
+          if (initialSortOrder.indexOf(columns[i]) < 0)
           {
             order.push(columns[i]);
           }

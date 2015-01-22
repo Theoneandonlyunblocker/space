@@ -47,23 +47,36 @@ module Rance
           {
             var upgrade = upgrades[i];
 
+            var rowProps: any =
+            {
+              key: upgrade.template.type,
+              className: "building-upgrade-list-item",
+              onClick: this.upgradeBuilding.bind(this, upgrade)
+            };
+
+            var costProps: any = 
+            {
+              key: "cost",
+              className: "building-upgrade-list-item-cost"
+            };
+
+            if (this.props.player.money < upgrade.cost)
+            {
+              rowProps.onClick = null;
+              rowProps.disabled = true;
+              rowProps.className += " disabled";
+
+              costProps.className += " negative";
+            }
+
             upgradeElements.push(
-              React.DOM.tr(
-              {
-                key: upgrade.template.type,
-                className: "building-upgrade-list-item",
-                onClick: this.upgradeBuilding.bind(this, upgrade)
-              },
+              React.DOM.tr(rowProps,
                 React.DOM.td(
                 {
                   key: "name",
                   className: "building-upgrade-list-item-name"
                 }, upgrade.template.name + " " + upgrade.level),
-                React.DOM.td(
-                {
-                  key: "cost",
-                  className: "building-upgrade-list-item-cost"
-                }, upgrade.cost)
+                React.DOM.td(costProps, upgrade.cost)
               )
             );
           }

@@ -62,7 +62,7 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              initialColumn: columns[2]
+              initialSortOrder: [columns[2]]
             })
           )
         );

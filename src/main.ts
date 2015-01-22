@@ -123,15 +123,6 @@ module Rance
       var game = new Game(map, players, players[0]);
       game.independents.push(independents);
 
-      for (var itemType in Templates.Items)
-      {
-        for (var i = 0; i < 1; i++)
-        {
-          var item = new Item(Templates.Items[itemType]);
-          players[0].addItem(item);
-        }
-      }
-
       return game;
     }
 

@@ -70,7 +70,7 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              initialColumn: columns[1], //date
+              initialSortOrder: [columns[1]], //date
               onRowChange: this.props.onRowChange,
               autoSelect: this.props.autoSelect
             })

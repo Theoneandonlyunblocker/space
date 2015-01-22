@@ -44,7 +44,7 @@ module Rance
 
           rows.push(
           {
-            key: item.id,
+            key: item.template.type,
             data: data
           });
         }
@@ -65,7 +65,7 @@ module Rance
           {
             label: "Tech",
             key: "techLevel",
-            defaultOrder: "asc"
+            defaultOrder: "desc"
           },
           {
             label: "Cost",
@@ -81,7 +81,7 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              initialColumn: columns[1], // slot
+              initialSortOrder: [columns[1], columns[2]], // slot, tech
               onRowChange: this.props.onRowChange
             })
           )
