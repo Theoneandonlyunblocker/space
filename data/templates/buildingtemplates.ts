@@ -6,6 +6,7 @@ module Rance
     {
       type: string;
       category: string;
+      family?: string; // all count towards maxPerType
       name: string;
 
       icon: string;
@@ -31,6 +32,7 @@ module Rance
       {
         type: "sectorCommand",
         category: "defence",
+        family: "sectorCommand",
         name: "Sector Command",
 
         icon: "img\/buildings\/sectorCommand.png",
@@ -56,6 +58,7 @@ module Rance
       {
         type: "sectorCommand1",
         category: "defence",
+        family: "sectorCommand",
         name: "Sector Command1",
 
         icon: "img\/buildings\/sectorCommand.png",
@@ -70,6 +73,7 @@ module Rance
       {
         type: "sectorCommand2",
         category: "defence",
+        family: "sectorCommand",
         name: "Sector Command2",
 
         icon: "img\/buildings\/sectorCommand.png",

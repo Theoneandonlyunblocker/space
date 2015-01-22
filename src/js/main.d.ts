@@ -445,6 +445,7 @@ declare module Rance {
         interface IBuildingTemplate {
             type: string;
             category: string;
+            family?: string;
             name: string;
             icon: string;
             buildCost: number;
@@ -683,6 +684,7 @@ declare module Rance {
         public getAllBuildings(): any[];
         public getBuildingsForPlayer(player: Rance.Player): any[];
         public getBuildingsByType(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
+        public getBuildingsByFamily(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
         public getBuildableBuildings(): any[];
         public getBuildingUpgrades(): {
             [buildingId: number]: {

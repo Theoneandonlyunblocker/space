@@ -4378,6 +4378,7 @@ var Rance;
             Buildings.sectorCommand = {
                 type: "sectorCommand",
                 category: "defence",
+                family: "sectorCommand",
                 name: "Sector Command",
                 icon: "img\/buildings\/sectorCommand.png",
                 buildCost: 200,
@@ -4397,6 +4398,7 @@ var Rance;
             Buildings.sectorCommand1 = {
                 type: "sectorCommand1",
                 category: "defence",
+                family: "sectorCommand",
                 name: "Sector Command1",
                 icon: "img\/buildings\/sectorCommand.png",
                 buildCost: 100,
@@ -4407,6 +4409,7 @@ var Rance;
             Buildings.sectorCommand2 = {
                 type: "sectorCommand2",
                 category: "defence",
+                family: "sectorCommand",
                 name: "Sector Command2",
                 icon: "img\/buildings\/sectorCommand.png",
                 buildCost: 200,
@@ -4829,11 +4832,33 @@ var Rance;
 
             return buildings;
         };
+        Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
+            if (!buildingTemplate.family)
+                throw new Error("Building has no family");
+            var categoryBuildings = this.buildings[buildingTemplate.category];
+
+            var buildings = [];
+
+            if (categoryBuildings) {
+                for (var i = 0; i < categoryBuildings.length; i++) {
+                    if (categoryBuildings[i].template.family === buildingTemplate.family) {
+                        buildings.push(categoryBuildings[i]);
+                    }
+                }
+            }
+
+            return buildings;
+        };
         Star.prototype.getBuildableBuildings = function () {
             var canBuild = [];
             for (var buildingType in Rance.Templates.Buildings) {
                 var template = Rance.Templates.Buildings[buildingType];
-                var alreadyBuilt = this.getBuildingsByType(template);
+                var alreadyBuilt;
+                if (template.family) {
+                    alreadyBuilt = this.getBuildingsByFamily(template);
+                } else {
+                    alreadyBuilt = this.getBuildingsByType(template);
+                }
 
                 if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
                     canBuild.push(template);

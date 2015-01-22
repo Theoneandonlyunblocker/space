@@ -229,13 +229,41 @@ module Rance
 
       return buildings;
     }
+    getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate)
+    {
+      if (!buildingTemplate.family) throw new Error("Building has no family");
+      var categoryBuildings = this.buildings[buildingTemplate.category];
+
+      var buildings = [];
+
+      if (categoryBuildings)
+      {
+        for (var i = 0; i < categoryBuildings.length; i++)
+        {
+          if (categoryBuildings[i].template.family === buildingTemplate.family)
+          {
+            buildings.push(categoryBuildings[i]);
+          }
+        }
+      }
+
+      return buildings;
+    }
     getBuildableBuildings()
     {
       var canBuild = [];
       for (var buildingType in Templates.Buildings)
       {
         var template: Templates.IBuildingTemplate = Templates.Buildings[buildingType];
-        var alreadyBuilt = this.getBuildingsByType(template);
+        var alreadyBuilt;
+        if (template.family) 
+        {
+          alreadyBuilt = this.getBuildingsByFamily(template);
+        }
+        else
+        {
+          alreadyBuilt = this.getBuildingsByType(template);
+        }
 
         if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
         {
