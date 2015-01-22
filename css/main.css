@@ -10,6 +10,10 @@ body {
 table {
   border-collapse: separate;
 }
+ul {
+  padding: 0;
+  margin: 0;
+}
 .money-style {
   color: #ffeb00;
 }
@@ -1246,6 +1250,7 @@ progress::-webkit-progress-value {
 }
 .buildable-item-list {
   position: relative;
+  width: 100%;
 }
 .buildable-item-list .sort-icon {
   font-weight: 100;
@@ -1974,6 +1979,22 @@ progress::-webkit-progress-value {
   color: #ffeb00;
 }
 .item-purchase-list-buildCost::after {
+  content: "\f111";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  margin-left: 0.25em;
+  color: #f3c620;
+}
+.building-upgrade-group-header {
+  font-size: 0.82em;
+}
+.building-upgrade-list-item-cost {
+  color: #ffeb00;
+  text-align: right;
+}
+.building-upgrade-list-item-cost::after {
   content: "\f111";
   font-family: FontAwesome;
   font-style: normal;

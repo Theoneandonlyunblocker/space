@@ -13,6 +13,12 @@ table
   border-collapse: separate;
 }
 
+ul
+{
+  padding: 0;
+  margin: 0;
+}
+
 @bg-color: darken(#101C1B, 2%);
 @bg-color2: darken(#0F283D, 2%);
 @ui-border-color1: #C4E5FB;
@@ -1578,6 +1584,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   .sort-icons(500px);
   .fancy-table-style(8px, 70px);
+  width: 100%;
 }
 .buildable-item
 {
@@ -1855,4 +1862,15 @@ progress::-webkit-progress-value { background: #080; }
 .item-purchase-list-buildCost
 {
   .money-style;
+}
+
+.building-upgrade-group-header
+{
+  font-size: 0.82em;
+}
+
+.building-upgrade-list-item-cost
+{
+  .money-style;
+  text-align: right;
 }
