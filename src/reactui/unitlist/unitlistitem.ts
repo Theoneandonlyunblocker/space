@@ -92,7 +92,7 @@ module Rance
           onClick : this.props.handleClick
         };
 
-        if (this.props.isDraggable)
+        if (this.props.isDraggable && !this.props.noActionsLeft)
         {
           rowProps.className += " draggable";
           rowProps.onTouchStart = rowProps.onMouseDown =
@@ -107,6 +107,11 @@ module Rance
         if (this.props.isReserved)
         {
           rowProps.className += " reserved";
+        }
+
+        if (this.props.noActionsLeft)
+        {
+          rowProps.className += " no-actions-left";
         }
 
 

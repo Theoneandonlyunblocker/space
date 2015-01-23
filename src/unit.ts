@@ -22,6 +22,7 @@ module Rance
     currentMovePoints: number;
     maxMovePoints: number;
 
+    timesActedThisTurn: number;
 
     baseAttributes:
     {
@@ -114,6 +115,8 @@ module Rance
       this.currentMovePoints = data.currentMovePoints;
       this.maxMovePoints = data.maxMovePoints;
 
+      this.timesActedThisTurn = data.timesActedThisTurn;
+
       this.baseAttributes = cloneObject(data.baseAttributes);
       this.attributes = cloneObject(this.baseAttributes);
 
@@ -149,6 +152,8 @@ module Rance
 
       this.maxMovePoints = this.template.maxMovePoints;
       this.resetMovePoints();
+
+      this.timesActedThisTurn = 0;
     }
     setBaseHealth()
     {
@@ -468,6 +473,8 @@ module Rance
 
       data.currentMovePoints = this.currentMovePoints;
       data.maxMovePoints = this.maxMovePoints;
+
+      data.timesActedThisTurn = this.timesActedThisTurn;
 
       data.baseAttributes = cloneObject(this.baseAttributes);
 

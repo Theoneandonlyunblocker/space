@@ -152,9 +152,15 @@ module Rance
         }
       }
 
+      var oldFleets = this.selectedFleets.slice(0);
+
       this.selectedFleets = fleets;
 
-      this.updateSelection();
+      if (true || !arraysEqual(fleets, oldFleets)) //todo
+      {
+        this.updateSelection();
+      }
+
       if (fleets.length > 0)
       {
         this.preventGhost(15);

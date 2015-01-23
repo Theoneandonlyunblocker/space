@@ -50,6 +50,7 @@ module Rance
       {
         ship.resetMovePoints();
         ship.heal();
+        ship.timesActedThisTurn = 0;
       }
 
       player.forEachUnit(shipStartTurnFN);

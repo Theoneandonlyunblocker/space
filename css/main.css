@@ -610,6 +610,9 @@ progress::-webkit-progress-value {
 .unit-list .raised-stat {
   color: limegreen;
 }
+.no-actions-left {
+  background-color: red;
+}
 .draggable {
   cursor: move;
   -webkit-touch-callout: none;

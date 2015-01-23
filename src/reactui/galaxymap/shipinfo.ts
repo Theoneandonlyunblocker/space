@@ -7,6 +7,7 @@ module Rance
     export var ShipInfo = React.createClass(
     {
       displayName: "ShipInfo",
+
       render: function()
       {
         var ship = this.props.ship;

@@ -52,26 +52,34 @@ module Rance
     {
       var self = this;
 
+      /*
+      mapOptions:
+      {
+        width: 600,
+        height: 600
+      },
+      starGeneration:
+      {
+        galaxyType: "spiral",
+        totalAmount: 40,
+        arms: 5,
+        centerSize: 0.4,
+        amountInCenter: 0.3
+      },
+      relaxation:
+      {
+        timesToRelax: 5,
+        dampeningFactor: 2
+      }
+      following map parameters break map gen with this seed
+       */
+      //this.seed = 0.5727128006983548;
       this.seed = Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
       {
-        var gameData;
-
-        if (false && localStorage && localStorage.length > 0)
-        {
-          for (var key in localStorage)
-          {
-            if (key.indexOf("Rance.Save") > -1)
-            {
-              var gameData = JSON.parse(localStorage[Object.keys(localStorage)[0]]);
-              break;
-            }
-          }
-        }
-
-        self.makeApp(gameData);
+        self.makeApp();
       });
     }
     makeApp(savedGame?)

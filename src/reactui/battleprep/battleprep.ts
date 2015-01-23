@@ -71,6 +71,8 @@ module Rance
               units: this.props.battlePrep.availableUnits,
               reservedUnits: this.props.battlePrep.alreadyPlaced,
 
+              checkTimesActed: true,
+
               isDraggable: true,
               onDragStart: this.handleDragStart,
               onDragEnd: this.handleDragEnd

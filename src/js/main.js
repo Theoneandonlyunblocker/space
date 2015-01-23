@@ -25,7 +25,11 @@ var Rance;
             },
             componentWillReceiveProps: function (newProps) {
                 if (newProps.currentStrength !== this.props.currentStrength) {
-                    this.animateDisplayedStrength(newProps.currentStrength, 2000);
+                    if (this.props.animateStrength) {
+                        this.animateDisplayedStrength(newProps.currentStrength, 2000);
+                    } else {
+                        this.updateDisplayStrength(newProps.currentStrength);
+                    }
                 }
             },
             updateDisplayStrength: function (newAmount) {
@@ -197,7 +201,8 @@ var Rance;
                 }), Rance.UIComponents.UnitStrength({
                     maxStrength: this.props.maxStrength,
                     currentStrength: this.props.currentStrength,
-                    isSquadron: this.props.isSquadron
+                    isSquadron: this.props.isSquadron,
+                    animateStrength: true
                 }), Rance.UIComponents.UnitActions({
                     maxActionPoints: this.props.maxActionPoints,
                     currentActionPoints: this.props.currentActionPoints
@@ -207,7 +212,6 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="unitstrength.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1585,7 +1589,7 @@ var Rance;
                     onClick: this.props.handleClick
                 };
 
-                if (this.props.isDraggable) {
+                if (this.props.isDraggable && !this.props.noActionsLeft) {
                     rowProps.className += " draggable";
                     rowProps.onTouchStart = rowProps.onMouseDown = this.handleMouseDown;
                 }
@@ -1597,6 +1601,10 @@ var Rance;
 
                 if (this.props.isReserved) {
                     rowProps.className += " reserved";
+                }
+
+                if (this.props.noActionsLeft) {
+                    rowProps.className += " no-actions-left";
                 }
 
                 if (this.state.dragging) {
@@ -1639,6 +1647,7 @@ var Rance;
                         rowConstructor: Rance.UIComponents.UnitListItem,
                         makeClone: true,
                         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+                        noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
                         isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
@@ -2190,6 +2199,7 @@ var Rance;
                 return (React.DOM.div({ className: "battle-prep" }, fleet, Rance.UIComponents.UnitList({
                     units: this.props.battlePrep.availableUnits,
                     reservedUnits: this.props.battlePrep.alreadyPlaced,
+                    checkTimesActed: true,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd
@@ -5175,8 +5185,11 @@ var Rance;
         Star.prototype.getVisionRange = function () {
             var baseVision = 1;
 
-            if (this.buildings["vision"])
-                baseVision += this.buildings["vision"].length;
+            if (this.buildings["vision"]) {
+                for (var i = 0; i < this.buildings["vision"].length; i++) {
+                    baseVision += this.buildings["vision"][i].upgradeLevel;
+                }
+            }
 
             return baseVision;
         };
@@ -7049,6 +7062,7 @@ var Rance;
             unit.resetBattleStats();
             unit.setBattlePosition(this, side, position);
             this.addUnitToTurnOrder(unit);
+            unit.timesActedThisTurn++;
         };
         Battle.prototype.removeUnitFromTurnOrder = function (unit) {
             var unitIndex = this.turnOrder.indexOf(unit);
@@ -7589,6 +7603,8 @@ var Rance;
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
 
+            this.timesActedThisTurn = data.timesActedThisTurn;
+
             this.baseAttributes = Rance.cloneObject(data.baseAttributes);
             this.attributes = Rance.cloneObject(this.baseAttributes);
 
@@ -7620,6 +7636,8 @@ var Rance;
 
             this.maxMovePoints = this.template.maxMovePoints;
             this.resetMovePoints();
+
+            this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
             var min = 500 * this.template.maxStrength;
@@ -7890,6 +7908,8 @@ var Rance;
 
             data.currentMovePoints = this.currentMovePoints;
             data.maxMovePoints = this.maxMovePoints;
+
+            data.timesActedThisTurn = this.timesActedThisTurn;
 
             data.baseAttributes = Rance.cloneObject(this.baseAttributes);
 
@@ -8716,9 +8736,14 @@ var Rance;
                 }
             }
 
+            var oldFleets = this.selectedFleets.slice(0);
+
             this.selectedFleets = fleets;
 
-            this.updateSelection();
+            if (true || !Rance.arraysEqual(fleets, oldFleets)) {
+                this.updateSelection();
+            }
+
             if (fleets.length > 0) {
                 this.preventGhost(15);
             }
@@ -11559,6 +11584,7 @@ var Rance;
             var shipStartTurnFN = function (ship) {
                 ship.resetMovePoints();
                 ship.heal();
+                ship.timesActedThisTurn = 0;
             };
 
             player.forEachUnit(shipStartTurnFN);
@@ -12092,22 +12118,33 @@ var Rance;
         function App() {
             var self = this;
 
+            /*
+            mapOptions:
+            {
+            width: 600,
+            height: 600
+            },
+            starGeneration:
+            {
+            galaxyType: "spiral",
+            totalAmount: 40,
+            arms: 5,
+            centerSize: 0.4,
+            amountInCenter: 0.3
+            },
+            relaxation:
+            {
+            timesToRelax: 5,
+            dampeningFactor: 2
+            }
+            following map parameters break map gen with this seed
+            */
+            //this.seed = 0.5727128006983548;
             this.seed = Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
-                var gameData;
-
-                if (false && localStorage && localStorage.length > 0) {
-                    for (var key in localStorage) {
-                        if (key.indexOf("Rance.Save") > -1) {
-                            var gameData = JSON.parse(localStorage[Object.keys(localStorage)[0]]);
-                            break;
-                        }
-                    }
-                }
-
-                self.makeApp(gameData);
+                self.makeApp();
             });
         }
         App.prototype.makeApp = function (savedGame) {

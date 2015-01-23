@@ -37,6 +37,7 @@ module Rance
             makeClone: true,
 
             isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
+            noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
             isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
 
             isDraggable: this.props.isDraggable,

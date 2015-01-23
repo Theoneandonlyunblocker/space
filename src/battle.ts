@@ -120,6 +120,7 @@ module Rance
       unit.resetBattleStats();
       unit.setBattlePosition(this, side, position);
       this.addUnitToTurnOrder(unit);
+      unit.timesActedThisTurn++;
     }
     removeUnitFromTurnOrder(unit: Unit)
     {

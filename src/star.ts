@@ -655,7 +655,13 @@ module Rance
     {
       var baseVision = 1;
 
-      if (this.buildings["vision"]) baseVision += this.buildings["vision"].length;
+      if (this.buildings["vision"])
+      {
+        for (var i = 0; i < this.buildings["vision"].length; i++)
+        {
+          baseVision += this.buildings["vision"][i].upgradeLevel;
+        }
+      }
 
       return baseVision;
     }

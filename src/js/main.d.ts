@@ -1215,6 +1215,7 @@ declare module Rance {
         public isSquadron: boolean;
         public currentMovePoints: number;
         public maxMovePoints: number;
+        public timesActedThisTurn: number;
         public baseAttributes: {
             maxActionPoints: number;
             attack: number;

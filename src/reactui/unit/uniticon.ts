@@ -1,5 +1,3 @@
-/// <reference path="unitstrength.ts"/>
-
 module Rance
 {
   export module UIComponents
