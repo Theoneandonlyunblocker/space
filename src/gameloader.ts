@@ -110,7 +110,17 @@ module Rance
       star.distance = data.distance;
       star.region = data.region;
       star.baseIncome = data.baseIncome;
+      star.backgroundSeed = data.backgroundSeed;
 
+      star.buildableItems = <any> {};
+
+      for (var techLevel in data.buildableItems)
+      {
+        star.buildableItems[techLevel] = data.buildableItems[techLevel].map(function(templateType)
+        {
+          return Templates.Items[templateType];
+        });
+      }
 
       return star;
     }

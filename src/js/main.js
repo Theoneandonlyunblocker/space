@@ -5316,12 +5316,24 @@ var Rance;
                 return star.id;
             });
 
+            data.backgroundSeed = this.backgroundSeed;
+
             data.buildings = {};
 
             for (var category in this.buildings) {
                 data.buildings[category] = [];
                 for (var i = 0; i < this.buildings[category].length; i++) {
                     data.buildings[category].push(this.buildings[category][i].serialize());
+                }
+            }
+
+            data.buildableItems = {};
+
+            for (var techLevel in this.buildableItems) {
+                for (var i = 0; i < this.buildableItems[techLevel].length; i++) {
+                    data.buildableItems[techLevel] = this.buildableItems[techLevel].map(function (template) {
+                        return template.type;
+                    });
                 }
             }
 
@@ -11813,6 +11825,15 @@ var Rance;
             star.distance = data.distance;
             star.region = data.region;
             star.baseIncome = data.baseIncome;
+            star.backgroundSeed = data.backgroundSeed;
+
+            star.buildableItems = {};
+
+            for (var techLevel in data.buildableItems) {
+                star.buildableItems[techLevel] = data.buildableItems[techLevel].map(function (templateType) {
+                    return Rance.Templates.Items[templateType];
+                });
+            }
 
             return star;
         };

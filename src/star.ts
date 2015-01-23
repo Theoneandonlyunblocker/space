@@ -798,6 +798,8 @@ module Rance
       data.linksToIds = this.linksTo.map(function(star){return star.id});
       data.linksFromIds = this.linksFrom.map(function(star){return star.id});
 
+      data.backgroundSeed = this.backgroundSeed;
+
       data.buildings = {};
 
       for (var category in this.buildings)
@@ -806,6 +808,19 @@ module Rance
         for (var i = 0; i < this.buildings[category].length; i++)
         {
           data.buildings[category].push(this.buildings[category][i].serialize())
+        }
+      }
+
+      data.buildableItems = {};
+
+      for (var techLevel in this.buildableItems)
+      {
+        for (var i = 0; i < this.buildableItems[techLevel].length; i++)
+        {
+          data.buildableItems[techLevel] = this.buildableItems[techLevel].map(function(template)
+          {
+            return template.type;
+          });
         }
       }
 
