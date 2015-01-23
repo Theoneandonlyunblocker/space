@@ -18,7 +18,14 @@ module Rance
       {
         if (newProps.currentStrength !== this.props.currentStrength)
         {
-          this.animateDisplayedStrength(newProps.currentStrength, 2000);
+          if (this.props.animateStrength)
+          {
+            this.animateDisplayedStrength(newProps.currentStrength, 2000);
+          }
+          else
+          {
+            this.updateDisplayStrength(newProps.currentStrength);
+          }
         }
       },
       updateDisplayStrength: function(newAmount: number)

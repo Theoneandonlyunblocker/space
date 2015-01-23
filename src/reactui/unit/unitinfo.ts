@@ -25,7 +25,8 @@ module Rance
             {
               maxStrength: this.props.maxStrength,
               currentStrength: this.props.currentStrength,
-              isSquadron: this.props.isSquadron
+              isSquadron: this.props.isSquadron,
+              animateStrength: true
             }),
             UIComponents.UnitActions(
             {
