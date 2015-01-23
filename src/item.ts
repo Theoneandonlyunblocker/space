@@ -24,6 +24,10 @@ module Rance
 
       data.id = this.id;
       data.templateType = this.template.type;
+      if (this.unit)
+      {
+        data.unitId = this.unit.id;
+      }
 
       return data;
     }

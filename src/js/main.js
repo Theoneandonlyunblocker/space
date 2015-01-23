@@ -4659,6 +4659,9 @@ var Rance;
 
             data.id = this.id;
             data.templateType = this.template.type;
+            if (this.unit) {
+                data.unitId = this.unit.id;
+            }
 
             return data;
         };
@@ -5672,7 +5675,7 @@ var Rance;
             data.locationId = this.location.id;
             data.playerId = this.player.id;
             data.ships = this.ships.map(function (ship) {
-                return ship.serialize();
+                return ship.serialize(false);
             });
 
             return data;
@@ -6978,6 +6981,10 @@ var Rance;
                 return star.id;
             });
 
+            data.items = this.items.map(function (item) {
+                return item.serialize();
+            });
+
             data.revealedStarIds = [];
             for (var id in this.revealedStars) {
                 data.revealedStarIds.push(id);
@@ -7582,13 +7589,13 @@ var Rance;
             var items = {};
 
             ["low", "mid", "high"].forEach(function (slot) {
-                if (data[slot]) {
-                    var item = data[slot];
+                if (data.items[slot]) {
+                    var item = data.items[slot];
                     if (!item)
                         return;
 
                     if (item.templateType) {
-                        items[slot] = new Rance.Item(item.templateType, item.id);
+                        items[slot] = new Rance.Item(Rance.Templates.Items[item.templateType], item.id);
                     } else {
                         items[slot] = item;
                     }
@@ -7896,7 +7903,8 @@ var Rance;
 
             this.addStrength(healAmount);
         };
-        Unit.prototype.serialize = function () {
+        Unit.prototype.serialize = function (includeItems) {
+            if (typeof includeItems === "undefined") { includeItems = true; }
             var data = {};
 
             data.templateType = this.template.type;
@@ -7926,9 +7934,12 @@ var Rance;
             }
 
             data.items = {};
-            for (var slot in this.items) {
-                if (this.items[slot])
-                    data.items[slot] = this.items[slot].serialize();
+
+            if (includeItems) {
+                for (var slot in this.items) {
+                    if (this.items[slot])
+                        data.items[slot] = this.items[slot].serialize();
+                }
             }
 
             return data;
@@ -11734,6 +11745,7 @@ var Rance;
             this.independents = [];
             this.playersById = {};
             this.pointsById = {};
+            this.unitsById = {};
             this.buildingsByControllerId = {};
         }
         GameLoader.prototype.deserializeGame = function (data) {
@@ -11856,6 +11868,10 @@ var Rance;
                 player.addStar(this.pointsById[data.controlledLocationIds[i]]);
             }
 
+            for (var i = 0; i < data.items.length; i++) {
+                this.deserializeItem(data.items[i], player);
+            }
+
             return player;
         };
         GameLoader.prototype.deserializeFleet = function (player, data) {
@@ -11874,7 +11890,19 @@ var Rance;
 
             var ship = new Rance.Unit(template, data.id, data);
 
+            this.unitsById[ship.id] = ship;
+
             return ship;
+        };
+        GameLoader.prototype.deserializeItem = function (data, player) {
+            var template = Rance.Templates.Items[data.templateType];
+
+            var item = new Rance.Item(template, data.id);
+
+            player.addItem(item);
+            if (isFinite(data.unitId)) {
+                this.unitsById[data.unitId].addItem(item);
+            }
         };
         return GameLoader;
     })();
@@ -12137,7 +12165,7 @@ var Rance;
             timesToRelax: 5,
             dampeningFactor: 2
             }
-            following map parameters break map gen with this seed
+            these map parameters break map gen with following seed as per 23.01.2015
             */
             //this.seed = 0.5727128006983548;
             this.seed = Math.random();

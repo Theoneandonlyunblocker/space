@@ -19,6 +19,10 @@ module Rance
     {
       [id: number]: Star;
     } = {};
+    unitsById:
+    {
+      [id: number]: Unit;
+    } = {};
     buildingsByControllerId:
     {
       [id: number]: Building;
@@ -180,6 +184,11 @@ module Rance
         player.addStar(this.pointsById[data.controlledLocationIds[i]]);
       }
 
+      for (var i = 0; i < data.items.length; i++)
+      {
+        this.deserializeItem(data.items[i], player);
+      }
+
 
       return player;
     }
@@ -202,7 +211,21 @@ module Rance
 
       var ship = new Unit(template, data.id, data);
 
+      this.unitsById[ship.id] = ship;
+
       return ship;
+    }
+    deserializeItem(data, player: Player)
+    {
+      var template = Templates.Items[data.templateType];
+
+      var item = new Item(template, data.id);
+
+      player.addItem(item);
+      if (isFinite(data.unitId))
+      {
+        this.unitsById[data.unitId].addItem(item);
+      }
     }
   }
   

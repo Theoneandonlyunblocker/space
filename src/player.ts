@@ -547,6 +547,8 @@ module Rance
       data.controlledLocationIds =
         this.controlledLocations.map(function(star){return star.id});
 
+      data.items = this.items.map(function(item){return item.serialize()});
+
       data.revealedStarIds = [];
       for (var id in this.revealedStars)
       {

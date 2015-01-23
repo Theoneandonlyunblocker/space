@@ -460,7 +460,7 @@ module Rance
 
       this.addStrength(healAmount);
     }
-    serialize()
+    serialize(includeItems: boolean = true)
     {
       var data: any = {};
 
@@ -492,9 +492,13 @@ module Rance
       }
 
       data.items = {};
-      for (var slot in this.items)
+
+      if (includeItems)
       {
-        if (this.items[slot]) data.items[slot] = this.items[slot].serialize();
+        for (var slot in this.items)
+        {
+          if (this.items[slot]) data.items[slot] = this.items[slot].serialize();
+        }
       }
 
       return data;

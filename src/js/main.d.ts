@@ -1275,7 +1275,7 @@ declare module Rance {
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
         public heal(): void;
-        public serialize(): any;
+        public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;
     }
 }
@@ -1888,6 +1888,9 @@ declare module Rance {
         public pointsById: {
             [id: number]: Rance.Star;
         };
+        public unitsById: {
+            [id: number]: Rance.Unit;
+        };
         public buildingsByControllerId: {
             [id: number]: Rance.Building;
         };
@@ -1900,6 +1903,7 @@ declare module Rance {
         public deserializePlayer(data: any): Rance.Player;
         public deserializeFleet(player: any, data: any): Rance.Fleet;
         public deserializeShip(data: any): Rance.Unit;
+        public deserializeItem(data: any, player: Rance.Player): void;
     }
 }
 declare module Rance {

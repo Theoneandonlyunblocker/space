@@ -71,7 +71,7 @@ module Rance
         timesToRelax: 5,
         dampeningFactor: 2
       }
-      following map parameters break map gen with this seed
+      these map parameters break map gen with following seed as per 23.01.2015
        */
       //this.seed = 0.5727128006983548;
       this.seed = Math.random();
