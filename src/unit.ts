@@ -91,14 +91,14 @@ module Rance
 
       ["low", "mid", "high"].forEach(function(slot)
       {
-        if (data[slot])
+        if (data.items[slot])
         {
-          var item = data[slot];
+          var item = data.items[slot];
           if (!item) return;
 
           if (item.templateType)
           {
-            items[slot] = new Item(item.templateType, item.id);
+            items[slot] = new Item(Templates.Items[item.templateType], item.id);
           }
           else
           {
