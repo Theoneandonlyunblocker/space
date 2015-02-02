@@ -50,7 +50,7 @@ module Rance
           winRate: node.winRate,
           currentScore: node.currentScore,
           averageScore: node.averageScore,
-          abilityName: node.move.ability.name,
+          abilityName: node.move.ability.displayName,
           targetId: node.move.targetId
         }
         consoleRows.push(row);

@@ -5,7 +5,7 @@ module Rance
 {
   export interface IMove
   {
-    ability: Templates.AbilityTemplate;
+    ability: Templates.IAbilityTemplate;
     targetId: number;
   }
   export class MCTreeNode

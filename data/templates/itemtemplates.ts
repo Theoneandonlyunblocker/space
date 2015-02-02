@@ -16,7 +16,7 @@ module Rance
 
       cost: number;
 
-      ability?: AbilityTemplate;
+      ability?: IAbilityTemplate;
       attributes?:
       {
         attack?: number;

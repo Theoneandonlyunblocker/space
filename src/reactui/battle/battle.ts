@@ -163,7 +163,7 @@ module Rance
         var target = this.props.battle.unitsById[move.targetId];
 
         this.handleAbilityUse(move.ability, target);
-        console.log("used ability", move.ability.name, move.targetId)
+        console.log("used ability", move.ability.type, move.targetId)
       },
 
       finishBattle: function()

@@ -71,7 +71,7 @@ module Rance
 
           abilityElements.push(
             React.DOM.div(data,
-              ability.name
+              ability.displayName
             )
           );
         }

@@ -7,7 +7,7 @@
 module Rance
 {
   export function useAbility(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate, target: Unit)
+    ability: Templates.IAbilityTemplate, target: Unit)
   {
     var isValidTarget = validateTarget(battle, user, ability, target);
     if (!isValidTarget)
@@ -47,14 +47,14 @@ module Rance
     }
   }
   export function validateTarget(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate, target: Unit)
+    ability: Templates.IAbilityTemplate, target: Unit)
   {
     var potentialTargets = getPotentialTargets(battle, user, ability);
 
     return potentialTargets.indexOf(target) >= 0;
   }
   export function getTargetOrGuard(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate, target: Unit)
+    ability: Templates.IAbilityTemplate, target: Unit)
   {
     var guarding = getGuarders(battle, user, ability, target);
 
@@ -75,7 +75,7 @@ module Rance
     return target;
   }
   export function getGuarders(battle: Battle, user: Unit,
-    ability:Templates.AbilityTemplate, target: Unit)
+    ability:Templates.IAbilityTemplate, target: Unit)
   {
     var allEnemies = getPotentialTargets(battle, user, Templates.Abilities.dummyTargetAll);
 
@@ -98,7 +98,7 @@ module Rance
     return guarders;
   }
   export function getPotentialTargets(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate): Unit[]
+    ability: Templates.IAbilityTemplate): Unit[]
   {
     if (ability.mainEffect.targetRange === "self")
     {
@@ -184,7 +184,7 @@ module Rance
     }
   }
   export function getPotentialTargetsByPosition(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate): number[][]
+    ability: Templates.IAbilityTemplate): number[][]
   {
     var targets = getPotentialTargets(battle, user, ability);
     var targetPositions = [];
@@ -197,7 +197,7 @@ module Rance
     return targetPositions;
   }
   export function getUnitsInAbilityArea(battle: Battle, user: Unit,
-    ability: Templates.AbilityTemplate, target: number[]): Unit[]
+    ability: Templates.IAbilityTemplate, target: number[]): Unit[]
   {
     return getUnitsInEffectArea(battle, user, ability.mainEffect, target);
   }
@@ -220,7 +220,7 @@ module Rance
 
     var allTargets:
     {
-      [id: number]: Templates.AbilityTemplate[];
+      [id: number]: Templates.IAbilityTemplate[];
     } = {};
 
     var abilities = user.getAllAbilities();

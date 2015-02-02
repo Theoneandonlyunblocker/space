@@ -22,7 +22,7 @@ module Rance
         intelligence: number;
         speed: number;
       };
-      abilities: AbilityTemplate[];
+      abilities: IAbilityTemplate[];
     }
     export module ShipTypes
     {

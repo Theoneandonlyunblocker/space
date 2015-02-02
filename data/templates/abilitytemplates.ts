@@ -4,9 +4,10 @@ module Rance
 {
   export module Templates
   {
-    export interface AbilityTemplate
+    export interface IAbilityTemplate
     {
-      name: string;
+      type: string;
+      displayName: string;
       moveDelay: number;
       preparation?:
       {
@@ -22,60 +23,68 @@ module Rance
 
     export module Abilities
     {
-      export var dummyTargetColumn: AbilityTemplate =
+      export var dummyTargetColumn: IAbilityTemplate =
       {
-        name: "dummyTargetColumn",
+        type: "dummyTargetColumn",
+        displayName: "dummyTargetColumn",
         moveDelay: 0,
         actionsUse: 0,
         mainEffect: Effects.dummyTargetColumn
       }
-      export var dummyTargetAll: AbilityTemplate =
+      export var dummyTargetAll: IAbilityTemplate =
       {
-        name: "dummyTargetAll",
+        type: "dummyTargetAll",
+        displayName: "dummyTargetAll",
         moveDelay: 0,
         actionsUse: 0,
         mainEffect: Effects.dummyTargetAll
       }
-      export var rangedAttack: AbilityTemplate =
+      export var rangedAttack: IAbilityTemplate =
       {
-        name: "rangedAttack",
+        type: "rangedAttack",
+        displayName: "Ranged Attack",
         moveDelay: 100,
         actionsUse: 1,
         mainEffect: Effects.rangedAttack
       }
-      export var closeAttack: AbilityTemplate =
+      export var closeAttack: IAbilityTemplate =
       {
-        name: "closeAttack",
+        type: "closeAttack",
+        displayName: "Close Attack",
         moveDelay: 90,
         actionsUse: 2,
         mainEffect: Effects.closeAttack
       }
-      export var wholeRowAttack: AbilityTemplate =
+      export var wholeRowAttack: IAbilityTemplate =
       {
-        name: "wholeRowAttack",
+        type: "wholeRowAttack",
+        displayName: "Row Attack",
         moveDelay: 300,
         actionsUse: 1,
         mainEffect: Effects.wholeRowAttack
       }
 
-      export var bombAttack: AbilityTemplate =
+      export var bombAttack: IAbilityTemplate =
       {
-        name: "bombAttack",
+        type: "bombAttack",
+        displayName: "Bomb Attack",
         moveDelay: 120,
         actionsUse: 1,
         mainEffect: Effects.bombAttack
       }
-      export var guardColumn: AbilityTemplate =
+      export var guardColumn: IAbilityTemplate =
       {
-        name: "guardColumn",
+        type: "guardColumn",
+        displayName: "Guard Column",
         moveDelay: 100,
         actionsUse: 1,
         mainEffect: Effects.guardColumn
       }
 
-      export var standBy: AbilityTemplate =
+      export var standBy: IAbilityTemplate =
       {
-        name: "standBy",
+        type: "standBy",
+        displayName: "Standby",
         moveDelay: 50,
         actionsUse: "all",
         mainEffect: Effects.standBy

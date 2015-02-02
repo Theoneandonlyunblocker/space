@@ -117,7 +117,7 @@ module Rance
 
         var containerElements =
         [
-          React.DOM.div({className: "unit-image", key: "image"}),
+          React.DOM.div({className: "unit-image", key: "image"}), // UNIT IMAGE TODO
           UIComponents.UnitInfo(infoProps),
         ];
 
