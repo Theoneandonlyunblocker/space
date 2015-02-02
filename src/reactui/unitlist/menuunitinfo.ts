@@ -31,12 +31,41 @@ module Rance
             currentDragItem: this.props.currentDragItem
           }));
         }
+
+        var abilityElements = [];
+        var abilities = unit.getAllAbilities();
+
+        for (var i = 0; i < abilities.length; i++)
+        {
+          var ability = abilities[i];
+
+          abilityElements.push(
+            React.DOM.li(
+            {
+              key: ability.type
+            },
+              ability.displayName
+            )
+          );
+        }
       
         return(
           React.DOM.div(
           {
             className: "menu-unit-info"
           },
+            React.DOM.div(
+            {
+              className: "menu-unit-info-image unit-image" // UNIT IMAGE TODO
+            },
+              null
+            ),
+            React.DOM.ul(
+            {
+              className: "menu-unit-info-abilities"
+            },
+              abilityElements
+            ),
             React.DOM.div(
             {
               className: "menu-unit-info-items-wrapper"

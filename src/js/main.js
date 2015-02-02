@@ -2066,14 +2066,18 @@ var Rance;
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
 
-                    abilityElements.push(React.DOM.li({}, ability.displayName));
+                    abilityElements.push(React.DOM.li({
+                        key: ability.type
+                    }, ability.displayName));
                 }
 
                 return (React.DOM.div({
                     className: "menu-unit-info"
                 }, React.DOM.div({
                     className: "menu-unit-info-image unit-image"
-                }, null), React.DOM.div({
+                }, null), React.DOM.ul({
+                    className: "menu-unit-info-abilities"
+                }, abilityElements), React.DOM.div({
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));
             }
