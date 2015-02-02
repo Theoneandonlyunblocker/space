@@ -657,8 +657,9 @@ progress::-webkit-progress-value { background: #080; }
 
 .unit-image
 {
-  min-width: 64px;
-  //background-color: red;
+  width: 64px;
+  height: 64px;
+  border: 1px solid red !important;
 
   @media(max-width: 800px)
   {
@@ -1691,6 +1692,11 @@ progress::-webkit-progress-value { background: #080; }
   //flex: 2;
   //border: 1px solid @ui-border-color1;
   margin-bottom: 5px;
+}
+
+.menu-unit-info-image
+{
+  margin: 5px;
 }
 
 .menu-unit-info-items-wrapper

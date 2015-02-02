@@ -431,7 +431,9 @@ progress::-webkit-progress-value {
   }
 }
 .unit-image {
-  min-width: 64px;
+  width: 64px;
+  height: 64px;
+  border: 1px solid red !important;
 }
 @media (max-width: 800px) {
   .unit-image {
@@ -1529,6 +1531,9 @@ progress::-webkit-progress-value {
 }
 .menu-unit-info {
   margin-bottom: 5px;
+}
+.menu-unit-info-image {
+  margin: 5px;
 }
 .menu-unit-info-items-wrapper {
   display: flex;

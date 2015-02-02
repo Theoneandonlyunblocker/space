@@ -381,8 +381,9 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface AbilityTemplate {
-            name: string;
+        interface IAbilityTemplate {
+            type: string;
+            displayName: string;
             moveDelay: number;
             preparation?: {
                 turnsToPrep: number;
@@ -394,14 +395,14 @@ declare module Rance {
             secondaryEffects?: Templates.IEffectTemplate[];
         }
         module Abilities {
-            var dummyTargetColumn: AbilityTemplate;
-            var dummyTargetAll: AbilityTemplate;
-            var rangedAttack: AbilityTemplate;
-            var closeAttack: AbilityTemplate;
-            var wholeRowAttack: AbilityTemplate;
-            var bombAttack: AbilityTemplate;
-            var guardColumn: AbilityTemplate;
-            var standBy: AbilityTemplate;
+            var dummyTargetColumn: IAbilityTemplate;
+            var dummyTargetAll: IAbilityTemplate;
+            var rangedAttack: IAbilityTemplate;
+            var closeAttack: IAbilityTemplate;
+            var wholeRowAttack: IAbilityTemplate;
+            var bombAttack: IAbilityTemplate;
+            var guardColumn: IAbilityTemplate;
+            var standBy: IAbilityTemplate;
         }
     }
 }
@@ -422,7 +423,7 @@ declare module Rance {
                 intelligence: number;
                 speed: number;
             };
-            abilities: Templates.AbilityTemplate[];
+            abilities: Templates.IAbilityTemplate[];
         }
         module ShipTypes {
             var cheatShip: TypeTemplate;
@@ -503,7 +504,7 @@ declare module Rance {
             techLevel: number;
             slot: string;
             cost: number;
-            ability?: Templates.AbilityTemplate;
+            ability?: Templates.IAbilityTemplate;
             attributes?: {
                 attack?: number;
                 defence?: number;
@@ -519,7 +520,7 @@ declare module Rance {
                 techLevel: number;
                 cost: number;
                 slot: string;
-                ability: Templates.AbilityTemplate;
+                ability: Templates.IAbilityTemplate;
             };
             var bombLauncher2: {
                 type: string;
@@ -531,7 +532,7 @@ declare module Rance {
                     attack: number;
                 };
                 slot: string;
-                ability: Templates.AbilityTemplate;
+                ability: Templates.IAbilityTemplate;
             };
             var bombLauncher3: {
                 type: string;
@@ -543,7 +544,7 @@ declare module Rance {
                     attack: number;
                 };
                 slot: string;
-                ability: Templates.AbilityTemplate;
+                ability: Templates.IAbilityTemplate;
             };
             var afterBurner1: {
                 type: string;
@@ -612,7 +613,7 @@ declare module Rance {
                     speed: number;
                 };
                 slot: string;
-                ability: Templates.AbilityTemplate;
+                ability: Templates.IAbilityTemplate;
             };
         }
     }
@@ -1192,17 +1193,17 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function useAbility(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): void;
-    function validateTarget(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): boolean;
-    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit;
-    function getGuarders(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: Unit): Unit[];
-    function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): Unit[];
+    function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
+    function validateTarget(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): boolean;
+    function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit;
+    function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit[];
+    function getPotentialTargets(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): Unit[];
     function getFleetsToTarget(battle: Battle, user: Unit, effect: Templates.IEffectTemplate): Unit[][];
-    function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.AbilityTemplate): number[][];
-    function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.AbilityTemplate, target: number[]): Unit[];
+    function getPotentialTargetsByPosition(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate): number[][];
+    function getUnitsInAbilityArea(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: number[]): Unit[];
     function getUnitsInEffectArea(battle: Battle, user: Unit, effect: Templates.IEffectTemplate, target: number[]): Unit[];
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {
-        [id: number]: Templates.AbilityTemplate[];
+        [id: number]: Templates.IAbilityTemplate[];
     };
 }
 declare module Rance {
@@ -1264,7 +1265,7 @@ declare module Rance {
         public adjustAttribute(attribute: string, amount: number): void;
         public removeItemAtSlot(slot: string): boolean;
         public getItemAbilities(): any[];
-        public getAllAbilities(): Rance.Templates.AbilityTemplate[];
+        public getAllAbilities(): Rance.Templates.IAbilityTemplate[];
         public recieveDamage(amount: number, damageType: string): void;
         public getAttackDamageIncrease(damageType: string): number;
         public getReducedDamageFactor(damageType: string): number;
@@ -1908,7 +1909,7 @@ declare module Rance {
 }
 declare module Rance {
     interface IMove {
-        ability: Rance.Templates.AbilityTemplate;
+        ability: Rance.Templates.IAbilityTemplate;
         targetId: number;
     }
     class MCTreeNode {

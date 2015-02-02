@@ -342,7 +342,7 @@ module Rance
 
       return itemAbilities;
     }
-    getAllAbilities()
+    getAllAbilities(): Templates.IAbilityTemplate[]
     {
       var abilities = this.template.abilities;
 

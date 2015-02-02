@@ -987,7 +987,7 @@ var Rance;
                     data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
                     data.onMouseLeave = this.props.handleMouseLeaveAbility;
 
-                    abilityElements.push(React.DOM.div(data, ability.name));
+                    abilityElements.push(React.DOM.div(data, ability.displayName));
                 }
 
                 return (React.DOM.div(containerProps, abilityElements));
@@ -1175,7 +1175,7 @@ var Rance;
                 var target = this.props.battle.unitsById[move.targetId];
 
                 this.handleAbilityUse(move.ability, target);
-                console.log("used ability", move.ability.name, move.targetId);
+                console.log("used ability", move.ability.type, move.targetId);
             },
             finishBattle: function () {
                 var battle = this.props.battle;
@@ -2060,9 +2060,20 @@ var Rance;
                     }));
                 }
 
+                var abilityElements = [];
+                var abilities = unit.getAllAbilities();
+
+                for (var i = 0; i < abilities.length; i++) {
+                    var ability = abilities[i];
+
+                    abilityElements.push(React.DOM.li({}, ability.displayName));
+                }
+
                 return (React.DOM.div({
                     className: "menu-unit-info"
                 }, React.DOM.div({
+                    className: "menu-unit-info-image unit-image"
+                }, null), React.DOM.div({
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));
             }
@@ -3048,9 +3059,6 @@ var Rance;
                     className: "top-menu-items-button",
                     onClick: this.handleLoadGame
                 }, "Load"), React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleEconomySummary
-                }, "Economy"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleBuyItems
                 }, "Buy items"), React.DOM.button({
@@ -4197,51 +4205,59 @@ var Rance;
     (function (Templates) {
         (function (Abilities) {
             Abilities.dummyTargetColumn = {
-                name: "dummyTargetColumn",
+                type: "dummyTargetColumn",
+                displayName: "dummyTargetColumn",
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: Rance.Templates.Effects.dummyTargetColumn
             };
             Abilities.dummyTargetAll = {
-                name: "dummyTargetAll",
+                type: "dummyTargetAll",
+                displayName: "dummyTargetAll",
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: Rance.Templates.Effects.dummyTargetAll
             };
             Abilities.rangedAttack = {
-                name: "rangedAttack",
+                type: "rangedAttack",
+                displayName: "Ranged Attack",
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.rangedAttack
             };
             Abilities.closeAttack = {
-                name: "closeAttack",
+                type: "closeAttack",
+                displayName: "Close Attack",
                 moveDelay: 90,
                 actionsUse: 2,
                 mainEffect: Rance.Templates.Effects.closeAttack
             };
             Abilities.wholeRowAttack = {
-                name: "wholeRowAttack",
+                type: "wholeRowAttack",
+                displayName: "Row Attack",
                 moveDelay: 300,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.wholeRowAttack
             };
 
             Abilities.bombAttack = {
-                name: "bombAttack",
+                type: "bombAttack",
+                displayName: "Bomb Attack",
                 moveDelay: 120,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.bombAttack
             };
             Abilities.guardColumn = {
-                name: "guardColumn",
+                type: "guardColumn",
+                displayName: "Guard Column",
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.guardColumn
             };
 
             Abilities.standBy = {
-                name: "standBy",
+                type: "standBy",
+                displayName: "Standby",
                 moveDelay: 50,
                 actionsUse: "all",
                 mainEffect: Rance.Templates.Effects.standBy
@@ -11827,13 +11843,15 @@ var Rance;
             star.baseIncome = data.baseIncome;
             star.backgroundSeed = data.backgroundSeed;
 
-            star.buildableItems = {};
+            var buildableItems = {};
 
             for (var techLevel in data.buildableItems) {
-                star.buildableItems[techLevel] = data.buildableItems[techLevel].map(function (templateType) {
+                buildableItems[techLevel] = data.buildableItems[techLevel].map(function (templateType) {
                     return Rance.Templates.Items[templateType];
                 });
             }
+
+            star.buildableItems = buildableItems;
 
             return star;
         };
@@ -12119,7 +12137,7 @@ var Rance;
                     winRate: node.winRate,
                     currentScore: node.currentScore,
                     averageScore: node.averageScore,
-                    abilityName: node.move.ability.name,
+                    abilityName: node.move.ability.displayName,
                     targetId: node.move.targetId
                 };
                 consoleRows.push(row);

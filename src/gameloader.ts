@@ -112,15 +112,17 @@ module Rance
       star.baseIncome = data.baseIncome;
       star.backgroundSeed = data.backgroundSeed;
 
-      star.buildableItems = <any> {};
+      var buildableItems: any = {};
 
       for (var techLevel in data.buildableItems)
       {
-        star.buildableItems[techLevel] = data.buildableItems[techLevel].map(function(templateType)
+        buildableItems[techLevel] = data.buildableItems[techLevel].map(function(templateType)
         {
           return Templates.Items[templateType];
         });
       }
+
+      star.buildableItems = buildableItems;
 
       return star;
     }

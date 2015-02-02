@@ -170,11 +170,13 @@ module Rance
                 className: "top-menu-items-button",
                 onClick: this.handleLoadGame
               }, "Load"),
+              /*
               React.DOM.button(
               {
                 className: "top-menu-items-button",
                 onClick: this.handleEconomySummary
               }, "Economy"),
+*/
               React.DOM.button(
               {
                 className: "top-menu-items-button",
