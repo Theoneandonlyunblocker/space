@@ -346,6 +346,7 @@ declare module Rance {
     function arraysEqual(a1: any[], a2: any[]): boolean;
     function prettifyDate(date: Date): string;
     function shuffleArray(toShuffle: any[]): any[];
+    function getRelativeValue(value: number, min: number, max: number): number;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -478,11 +479,13 @@ declare module Rance {
         public location: Rance.Star;
         public controller: Rance.Player;
         public upgradeLevel: number;
+        public totalCost: number;
         constructor(props: {
             template: Rance.Templates.IBuildingTemplate;
             location: Rance.Star;
             controller?: Rance.Player;
             upgradeLevel?: number;
+            totalCost?: number;
             id?: number;
         });
         public getPossibleUpgrades(): {
@@ -1104,6 +1107,7 @@ declare module Rance {
         public removeStar(star: Rance.Star): boolean;
         public getIncome(): number;
         public getBuildableShips(): any[];
+        public getNeighboringStars(): Rance.Star[];
         public getIsland(start: Rance.Star): Rance.Star[];
         public getAllIslands(): Rance.Star[][];
         public getBorderEdges(): any[];
@@ -1948,6 +1952,23 @@ declare module Rance {
         public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
         public evaluate(iterations: number): Rance.MCTreeNode;
         public printToConsole(): void;
+    }
+}
+declare module Rance {
+    class MapEvaluator {
+        public map: Rance.GalaxyMap;
+        public player: Rance.Player;
+        constructor(map: Rance.GalaxyMap, player: Rance.Player);
+        public getHostileStrengthAtStar(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
+        public getRelativeTotalHostileStrengthAtStars(stars: Rance.Star[]): {
+            [starId: number]: number;
+        };
+        public evaluateStarIncome(star: Rance.Star): number;
+        public evaluateStarInfrastructure(star: Rance.Star): number;
+        public getImmediateExpansionDesirability(): void;
     }
 }
 declare module Rance {

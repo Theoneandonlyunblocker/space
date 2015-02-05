@@ -3659,6 +3659,7 @@ var Rance;
 
                 this.props.star.addBuilding(building);
                 building.controller.money -= template.buildCost;
+                building.totalCost += template.buildCost;
                 this.updateBuildings();
             },
             render: function () {
@@ -3996,6 +3997,10 @@ var Rance;
         return resultArray;
     }
     Rance.shuffleArray = shuffleArray;
+    function getRelativeValue(value, min, max) {
+        return (value - min) / (max - min);
+    }
+    Rance.getRelativeValue = getRelativeValue;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -4500,6 +4505,7 @@ var Rance;
             this.location = props.location;
             this.controller = props.controller || this.location.owner;
             this.upgradeLevel = props.upgradeLevel || 1;
+            this.totalCost = props.totalCost || 0;
         }
         Building.prototype.getPossibleUpgrades = function () {
             var upgrades = [];
@@ -4545,6 +4551,7 @@ var Rance;
             data.controllerId = this.controller.id;
 
             data.upgradeLevel = this.upgradeLevel;
+            data.totalCost = this.totalCost;
 
             return data;
         };
@@ -6731,6 +6738,31 @@ var Rance;
 
             return templates;
         };
+        Player.prototype.getNeighboringStars = function () {
+            var stars = {};
+
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                var currentOwned = this.controlledLocations[i];
+                var frontier = currentOwned.getLinkedInRange(1).all;
+                for (var j = 0; j < frontier.length; j++) {
+                    if (stars[frontier[j].id]) {
+                        continue;
+                    } else if (frontier[j].owner.id === this.id) {
+                        continue;
+                    } else {
+                        stars[frontier[j].id] = frontier[j];
+                    }
+                }
+            }
+
+            var allStars = [];
+
+            for (var id in stars) {
+                allStars.push(stars[id]);
+            }
+
+            return allStars;
+        };
         Player.prototype.getIsland = function (start) {
             var self = this;
             var connected = {};
@@ -8122,7 +8154,8 @@ var Rance;
                     template: upgradeData.template,
                     location: star,
                     controller: upgradeData.parentBuilding.controller,
-                    upgradeLevel: upgradeData.level
+                    upgradeLevel: upgradeData.level,
+                    totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost
                 });
 
                 star.removeBuilding(upgradeData.parentBuilding);
@@ -11881,6 +11914,7 @@ var Rance;
                 location: this.pointsById[data.locationId],
                 controller: this.playersById[data.controllerId],
                 upgradeLevel: data.upgradeLevel,
+                totalCost: data.totalCost,
                 id: data.id
             });
 
@@ -12160,6 +12194,107 @@ var Rance;
     })();
     Rance.MCTree = MCTree;
 })(Rance || (Rance = {}));
+/// <reference path="galaxymap.ts"/>
+/// <reference path="player.ts"/>
+var Rance;
+(function (Rance) {
+    var MapEvaluator = (function () {
+        function MapEvaluator(map, player) {
+            this.map = map;
+            this.player = player;
+        }
+        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+            var hostilePlayers = star.getEnemyFleetOwners(this.player);
+            var strengthByEnemy = {};
+
+            for (var i = 0; i < hostilePlayers.length; i++) {
+                var enemyShips = star.getAllShipsOfPlayer(hostilePlayers[i]);
+
+                var strength = 0;
+                for (var j = 0; j < enemyShips.length; j++) {
+                    strength += enemyShips[j].currentStrength;
+                }
+
+                strengthByEnemy[hostilePlayers[i].id] = strength;
+            }
+
+            return strengthByEnemy;
+        };
+
+        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+
+            var total = 0;
+
+            for (var playerId in byPlayer) {
+                total += byPlayer[playerId];
+            }
+
+            return total;
+        };
+
+        MapEvaluator.prototype.getRelativeTotalHostileStrengthAtStars = function (stars) {
+            var absoluteByStar = {};
+
+            var min, max;
+
+            for (var i = 0; i < stars.length; i++) {
+                var hostileStrength = this.getTotalHostileStrengthAtStar(stars[i]);
+                absoluteByStar[stars[i].id] = hostileStrength;
+
+                if (!isFinite(min) || hostileStrength < min)
+                    min = hostileStrength;
+                if (!isFinite(max) || hostileStrength > max)
+                    max = hostileStrength;
+            }
+
+            var relativeByStar = {};
+
+            for (var id in absoluteByStar) {
+                relativeByStar[id] = Rance.getRelativeValue(absoluteByStar[id], min, max);
+            }
+
+            return relativeByStar;
+        };
+
+        MapEvaluator.prototype.evaluateStarIncome = function (star) {
+            var evaluation = 0;
+
+            evaluation += star.baseIncome;
+            evaluation += (star.getIncome() - star.baseIncome) / 0.75;
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
+            var evaluation = 0;
+
+            for (var category in star.buildings) {
+                for (var i = 0; i < star.buildings[category].length; i++) {
+                    evaluation += star.buildings[category][i].totalCost;
+                }
+            }
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.getImmediateExpansionDesirability = function () {
+            var stars = this.player.getNeighboringStars();
+
+            var byDesirability = {};
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                var desirability = star.getIncome();
+
+                byDesirability[star.id] = desirability;
+            }
+        };
+        return MapEvaluator;
+    })();
+    Rance.MapEvaluator = MapEvaluator;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
@@ -12174,6 +12309,7 @@ var Rance;
 /// <reference path="gameloader.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
+/// <reference path="mapevaluator.ts"/>
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {

@@ -16,6 +16,8 @@
 
 /// <reference path="mctree.ts"/>
 
+/// <reference path="mapevaluator.ts"/>
+
 module Rance
 {
 
