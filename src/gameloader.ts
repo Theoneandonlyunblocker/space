@@ -157,6 +157,7 @@ module Rance
         controller: this.playersById[data.controllerId],
 
         upgradeLevel: data.upgradeLevel,
+        totalCost: data.totalCost,
         id: data.id
       });
 

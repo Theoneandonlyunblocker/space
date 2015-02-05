@@ -203,6 +203,43 @@ module Rance
 
       return templates;
     }
+    getNeighboringStars(): Star[]
+    {
+      var stars:
+      {
+        [id: number]: Star;
+      } = {};
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
+      {
+        var currentOwned = this.controlledLocations[i];
+        var frontier =  currentOwned.getLinkedInRange(1).all;
+        for (var j = 0; j < frontier.length; j++)
+        {
+          if (stars[frontier[j].id])
+          {
+            continue;
+          }
+          else if (frontier[j].owner.id === this.id)
+          {
+            continue;
+          }
+          else
+          {
+            stars[frontier[j].id] = frontier[j];
+          }
+        }
+      }
+
+      var allStars = [];
+
+      for (var id in stars)
+      {
+        allStars.push(stars[id]);
+      }
+
+      return allStars;
+    }
     getIsland(start: Star): Star[]
     {
       var self = this;

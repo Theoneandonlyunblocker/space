@@ -408,7 +408,7 @@ module Rance
 
       return targets;
     }
-    getFirstEnemyDefenceBuilding(player: Player)
+    getFirstEnemyDefenceBuilding(player: Player): Building
     {
       if (!this.buildings["defence"]) return null;
 
@@ -425,7 +425,7 @@ module Rance
 
       return null;
     }
-    getEnemyFleetOwners(player: Player, excludedTarget?: Player)
+    getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[]
     {
       var fleetOwners: Player[] = [];
 
