@@ -322,4 +322,8 @@ module Rance
     }
     return resultArray;
   }
+  export function getRelativeValue(value: number, min: number, max: number)
+  {
+    return (value - min) / (max - min);
+  }
 }
