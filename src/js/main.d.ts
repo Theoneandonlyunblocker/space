@@ -1955,19 +1955,40 @@ declare module Rance {
     }
 }
 declare module Rance {
+    var defaultEvaluationParameters: {
+        starDesirability: {
+            neighborRange: number;
+            neighborWeight: number;
+            totalIncomeWeight: number;
+            baseIncomeWeight: number;
+            infrastructureWeight: number;
+            productionWeight: number;
+        };
+    };
     class MapEvaluator {
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
+        public evaluationParameters: {
+            starDesirability: {
+                neighborRange: number;
+                neighborWeight: number;
+                totalIncomeWeight: number;
+                baseIncomeWeight: number;
+                infrastructureWeight: number;
+                productionWeight: number;
+            };
+        };
         constructor(map: Rance.GalaxyMap, player: Rance.Player);
         public getHostileStrengthAtStar(star: Rance.Star): {
             [playerId: number]: number;
         };
         public getTotalHostileStrengthAtStar(star: Rance.Star): number;
-        public getRelativeTotalHostileStrengthAtStars(stars: Rance.Star[]): {
-            [starId: number]: number;
-        };
         public evaluateStarIncome(star: Rance.Star): number;
         public evaluateStarInfrastructure(star: Rance.Star): number;
+        public evaluateStarProduction(star: Rance.Star): number;
+        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
+        public evaluateIndividualStarDesirability(star: Rance.Star): number;
+        public evaluateStarDesirability(star: Rance.Star): number;
         public getImmediateExpansionDesirability(): void;
     }
 }

@@ -12198,6 +12198,16 @@ var Rance;
 /// <reference path="player.ts"/>
 var Rance;
 (function (Rance) {
+    Rance.defaultEvaluationParameters = {
+        starDesirability: {
+            neighborRange: 1,
+            neighborWeight: 0.5,
+            totalIncomeWeight: 1,
+            baseIncomeWeight: 0.5,
+            infrastructureWeight: 1,
+            productionWeight: 1
+        }
+    };
     var MapEvaluator = (function () {
         function MapEvaluator(map, player) {
             this.map = map;
@@ -12233,35 +12243,11 @@ var Rance;
             return total;
         };
 
-        MapEvaluator.prototype.getRelativeTotalHostileStrengthAtStars = function (stars) {
-            var absoluteByStar = {};
-
-            var min, max;
-
-            for (var i = 0; i < stars.length; i++) {
-                var hostileStrength = this.getTotalHostileStrengthAtStar(stars[i]);
-                absoluteByStar[stars[i].id] = hostileStrength;
-
-                if (!isFinite(min) || hostileStrength < min)
-                    min = hostileStrength;
-                if (!isFinite(max) || hostileStrength > max)
-                    max = hostileStrength;
-            }
-
-            var relativeByStar = {};
-
-            for (var id in absoluteByStar) {
-                relativeByStar[id] = Rance.getRelativeValue(absoluteByStar[id], min, max);
-            }
-
-            return relativeByStar;
-        };
-
         MapEvaluator.prototype.evaluateStarIncome = function (star) {
             var evaluation = 0;
 
             evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) / 0.75;
+            evaluation += (star.getIncome() - star.baseIncome) * (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
 
             return evaluation;
         };
@@ -12278,18 +12264,57 @@ var Rance;
             return evaluation;
         };
 
+        MapEvaluator.prototype.evaluateStarProduction = function (star) {
+            var evaluation = 0;
+
+            evaluation += star.getItemManufactoryLevel();
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
+            var evaluation = 0;
+
+            var getDistanceFalloff = function (distance) {
+                return 1 / (distance + 1);
+            };
+            var inRange = star.getLinkedInRange(range).byRange;
+
+            for (var distanceString in inRange) {
+                var stars = inRange[distanceString];
+                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+
+                for (var i = 0; i < stars.length; i++) {
+                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
+                }
+            }
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+
+            evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
+            evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+            evaluation += this.evaluateStarProduction(star) * p.productionWeight;
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+
+            evaluation += this.evaluateIndividualStarDesirability(star);
+            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) * p.neighborWeight;
+
+            return evaluation;
+        };
+
         MapEvaluator.prototype.getImmediateExpansionDesirability = function () {
             var stars = this.player.getNeighboringStars();
-
-            var byDesirability = {};
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                var desirability = star.getIncome();
-
-                byDesirability[star.id] = desirability;
-            }
         };
         return MapEvaluator;
     })();

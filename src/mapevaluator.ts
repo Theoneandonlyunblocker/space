@@ -3,10 +3,38 @@
 
 module Rance
 {
+  export var defaultEvaluationParameters =
+  {
+    starDesirability:
+    {
+      neighborRange: 1,
+      neighborWeight: 0.5,
+
+      totalIncomeWeight: 1,
+      baseIncomeWeight: 0.5,
+
+      infrastructureWeight: 1,
+      productionWeight: 1,
+    }
+  }
   export class MapEvaluator
   {
     map: GalaxyMap;
     player: Player;
+    evaluationParameters:
+    {
+      starDesirability:
+      {
+        neighborRange: number;
+        neighborWeight: number;
+
+        totalIncomeWeight: number;
+        baseIncomeWeight: number;
+
+        infrastructureWeight: number;
+        productionWeight: number;
+      };
+    };
 
     constructor(map: GalaxyMap, player: Player)
     {
@@ -52,43 +80,13 @@ module Rance
       return total;
     }
 
-    getRelativeTotalHostileStrengthAtStars(stars: Star[])
-    {
-      var absoluteByStar:
-      {
-        [starId: number]: number;
-      } = {};
-
-      var min, max;
-
-      for (var i = 0; i < stars.length; i++)
-      {
-        var hostileStrength = this.getTotalHostileStrengthAtStar(stars[i]);
-        absoluteByStar[stars[i].id] = hostileStrength;
-
-        if (!isFinite(min) || hostileStrength < min) min = hostileStrength;
-        if (!isFinite(max) || hostileStrength > max) max = hostileStrength;
-      }
-
-      var relativeByStar:
-      {
-        [starId: number]: number;
-      } = {};
-
-      for (var id in absoluteByStar)
-      {
-        relativeByStar[id] = getRelativeValue(absoluteByStar[id], min, max);
-      }
-
-      return relativeByStar;
-    }
-
     evaluateStarIncome(star: Star): number
     {
       var evaluation = 0;
 
       evaluation += star.baseIncome;
-      evaluation += (star.getIncome() - star.baseIncome) / 0.75;
+      evaluation += (star.getIncome() - star.baseIncome) *
+      (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
 
       return evaluation;
     }
@@ -108,23 +106,68 @@ module Rance
       return evaluation;
     }
 
+    evaluateStarProduction(star: Star): number
+    {
+      var evaluation = 0;
+
+      evaluation += star.getItemManufactoryLevel();
+
+      return evaluation;
+    }
+
+    evaluateNeighboringStarsDesirability(star: Star, range: number): number
+    {
+      var evaluation = 0;
+
+      var getDistanceFalloff = function(distance)
+      {
+        return 1 / (distance + 1);
+      }
+      var inRange = star.getLinkedInRange(range).byRange;
+
+      for (var distanceString in inRange)
+      {
+        var stars = inRange[distanceString];
+        var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+
+        for (var i = 0; i < stars.length; i++)
+        {
+          evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff
+        }
+      }
+
+      return evaluation;
+    }
+
+    evaluateIndividualStarDesirability(star: Star): number
+    {
+      var evaluation = 0;
+      var p = this.evaluationParameters.starDesirability;
+
+      evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
+      evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+      evaluation += this.evaluateStarProduction(star) * p.productionWeight;
+
+      return evaluation;
+    }
+
+    evaluateStarDesirability(star: Star): number
+    {
+      var evaluation = 0;
+      var p = this.evaluationParameters.starDesirability;
+
+      evaluation += this.evaluateIndividualStarDesirability(star);
+      evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
+        p.neighborWeight;
+
+      return evaluation;
+    }
+
     getImmediateExpansionDesirability()
     {
       var stars = this.player.getNeighboringStars();
 
-      var byDesirability:
-      {
-        [starId: number]: number;
-      } = {};
-
-      for (var i = 0; i < stars.length; i++)
-      {
-        var star = stars[i];
-
-        var desirability = star.getIncome();
-
-        byDesirability[star.id] = desirability;
-      }
+      
     }
   }
 }
