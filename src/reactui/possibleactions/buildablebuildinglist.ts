@@ -40,6 +40,7 @@ module Rance
 
         this.props.star.addBuilding(building);
         building.controller.money -= template.buildCost;
+        building.totalCost += template.buildCost;
         this.updateBuildings();
       },
 

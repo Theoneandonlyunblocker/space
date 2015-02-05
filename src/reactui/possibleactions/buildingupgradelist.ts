@@ -18,7 +18,8 @@ module Rance
           template: upgradeData.template,
           location: star,
           controller: upgradeData.parentBuilding.controller,
-          upgradeLevel: upgradeData.level
+          upgradeLevel: upgradeData.level,
+          totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost
         });
 
         star.removeBuilding(upgradeData.parentBuilding);

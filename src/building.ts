@@ -14,6 +14,7 @@ module Rance
     controller: Player;
 
     upgradeLevel: number;
+    totalCost: number;
 
     constructor(props:
     {
@@ -23,6 +24,8 @@ module Rance
       controller?: Player;
 
       upgradeLevel?: number;
+      totalCost?: number;
+
       id?: number;
     })
     {
@@ -32,6 +35,7 @@ module Rance
       this.location = props.location;
       this.controller = props.controller || this.location.owner;
       this.upgradeLevel = props.upgradeLevel || 1;
+      this.totalCost = props.totalCost || 0;
     }
     getPossibleUpgrades()
     {
@@ -93,6 +97,7 @@ module Rance
       data.controllerId = this.controller.id;
 
       data.upgradeLevel = this.upgradeLevel;
+      data.totalCost = this.totalCost;
 
       return data;
     }
