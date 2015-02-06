@@ -41,7 +41,7 @@ module Rance
             techLevel: item.template.techLevel,
             cost: item.template.cost,
 
-            ability: item.template.ability ? item.template.ability.name : "",
+            ability: item.template.ability ? item.template.ability.displayName : "",
 
             isReserved: Boolean(item.unit),
 
