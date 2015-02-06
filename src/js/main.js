@@ -1821,7 +1821,7 @@ var Rance;
                         unitName: item.unit ? item.unit.name : "",
                         techLevel: item.template.techLevel,
                         cost: item.template.cost,
-                        ability: item.template.ability ? item.template.ability.name : "",
+                        ability: item.template.ability ? item.template.ability.displayName : "",
                         isReserved: Boolean(item.unit),
                         makeClone: true,
                         rowConstructor: Rance.UIComponents.ItemListItem,
@@ -6594,6 +6594,7 @@ var Rance;
             this.units = {};
             this.fleets = [];
             this.items = [];
+            this.isIndependent = false;
             this.controlledLocations = [];
             this.visionIsDirty = true;
             this.visibleStars = {};
@@ -6613,6 +6614,8 @@ var Rance;
             this.color = 0x000000;
             this.colorAlpha = 0;
             this.secondaryColor = 0xFFFFFF;
+
+            this.isIndependent = true;
 
             var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             foregroundEmblem.inner = {
@@ -7029,6 +7032,7 @@ var Rance;
             data.color = this.color;
             data.colorAlpha = this.colorAlpha;
             data.secondaryColor = this.secondaryColor;
+            data.isIndependent = this.isIndependent;
 
             data.flag = this.flag.serialize();
 
@@ -11925,7 +11929,7 @@ var Rance;
             player.money = data.money;
 
             // color scheme & flag
-            if (data.name === "Independent") {
+            if (data.isIndependent) {
                 player.setupPirates();
             } else {
                 player.color = data.color;
@@ -12304,19 +12308,31 @@ var Rance;
             });
         };
 
-        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+        MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
             var hostilePlayers = star.getEnemyFleetOwners(this.player);
-            var strengthByEnemy = {};
+
+            var shipsByEnemy = {};
 
             for (var i = 0; i < hostilePlayers.length; i++) {
-                var enemyShips = star.getAllShipsOfPlayer(hostilePlayers[i]);
+                shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+            }
 
+            return shipsByEnemy;
+        };
+
+        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+            var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
+
+            var strengthByEnemy = {};
+
+            for (var playerId in hostileShipsByPlayer) {
                 var strength = 0;
-                for (var j = 0; j < enemyShips.length; j++) {
-                    strength += enemyShips[j].currentStrength;
+
+                for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
+                    strength += hostileShipsByPlayer[playerId][i].currentStrength;
                 }
 
-                strengthByEnemy[hostilePlayers[i].id] = strength;
+                strengthByEnemy[playerId] = strength;
             }
 
             return strengthByEnemy;
@@ -12334,7 +12350,7 @@ var Rance;
             return total;
         };
 
-        MapEvaluator.prototype.getTotalHostileStrengthAtNeighboringStars = function (star, range) {
+        MapEvaluator.prototype.evaluateHostileStrengthAtNeighboringStars = function (star, range) {
             var strength = 0;
 
             var getDistanceFalloff = function (distance) {
@@ -12369,6 +12385,10 @@ var Rance;
             var currentDefenceStrength = 0;
             currentDefenceStrength += this.getTotalHostileStrengthAtStar(star);
             currentDefenceStrength += this.getDefenceBuildingStrengthAtStar(star);
+
+            var nearbyDefenceStrength = this.evaluateHostileStrengthAtNeighboringStars(star, 2);
+
+            debugger;
         };
         return MapEvaluator;
     })();
@@ -12389,6 +12409,7 @@ var Rance;
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
+var a;
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
@@ -12440,6 +12461,8 @@ var Rance;
             this.initGame();
             this.initDisplay();
             this.initUI();
+
+            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
         };
         App.prototype.destroy = function () {
             this.renderer.destroy();
@@ -12549,6 +12572,4 @@ var Rance;
 })(Rance || (Rance = {}));
 
 var app = new Rance.App();
-
-var a = new Rance.MapEvaluator(app.game.galaxyMap, app.humanPlayer);
 //# sourceMappingURL=main.js.map

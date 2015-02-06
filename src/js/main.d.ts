@@ -1081,6 +1081,7 @@ declare module Rance {
         };
         public fleets: Rance.Fleet[];
         public items: Rance.Item[];
+        public isIndependent: boolean;
         public money: number;
         public controlledLocations: Rance.Star[];
         public visionIsDirty: boolean;
@@ -1989,15 +1990,19 @@ declare module Rance {
             star: Rance.Star;
             desirability: number;
         }[];
+        public getHostileShipsAtStar(star: Rance.Star): {
+            [playerId: number]: Rance.Unit[];
+        };
         public getHostileStrengthAtStar(star: Rance.Star): {
             [playerId: number]: number;
         };
         public getTotalHostileStrengthAtStar(star: Rance.Star): number;
-        public getTotalHostileStrengthAtNeighboringStars(star: Rance.Star, range: number): number;
+        public evaluateHostileStrengthAtNeighboringStars(star: Rance.Star, range: number): number;
         public getDefenceBuildingStrengthAtStar(star: Rance.Star): number;
         public evaluateStarVulnerability(star: Rance.Star): void;
     }
 }
+declare var a: any;
 declare module Rance {
     var idGenerators: {
         fleet: number;
@@ -2038,4 +2043,3 @@ declare module Rance {
     }
 }
 declare var app: Rance.App;
-declare var a: Rance.MapEvaluator;

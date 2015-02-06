@@ -18,6 +18,7 @@
 
 /// <reference path="mapevaluator.ts"/>
 
+var a;
 module Rance
 {
 
@@ -92,6 +93,8 @@ module Rance
       this.initGame();
       this.initDisplay();
       this.initUI();
+
+      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
     }
     destroy()
     {
@@ -209,5 +212,3 @@ module Rance
 }
 
 var app = new Rance.App();
-
-var a = new Rance.MapEvaluator(app.game.galaxyMap, app.humanPlayer);
