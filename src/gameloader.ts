@@ -170,7 +170,7 @@ module Rance
       player.money = data.money;
 
       // color scheme & flag
-      if (data.name === "Independent")
+      if (data.isIndependent)
       {
         player.setupPirates();
       }

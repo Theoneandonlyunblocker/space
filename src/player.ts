@@ -25,6 +25,8 @@ module Rance
     fleets: Fleet[] = [];
     items: Item[] = [];
 
+    isIndependent: boolean = false;
+
     money: number;
     controlledLocations: Star[] = [];
 
@@ -57,6 +59,8 @@ module Rance
       this.color = 0x000000;
       this.colorAlpha = 0;
       this.secondaryColor = 0xFFFFFF;
+
+      this.isIndependent = true;
 
       var foregroundEmblem = new Emblem(this.secondaryColor);
       foregroundEmblem.inner = 
@@ -571,6 +575,7 @@ module Rance
       data.color = this.color;
       data.colorAlpha = this.colorAlpha;
       data.secondaryColor = this.secondaryColor;
+      data.isIndependent = this.isIndependent;
 
       data.flag = this.flag.serialize();
 
