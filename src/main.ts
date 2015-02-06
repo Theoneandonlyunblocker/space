@@ -209,3 +209,5 @@ module Rance
 }
 
 var app = new Rance.App();
+
+var a = new Rance.MapEvaluator(app.game.galaxyMap, app.humanPlayer);

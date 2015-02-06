@@ -40,44 +40,8 @@ module Rance
     {
       this.map = map;
       this.player = player;
-    }
 
-    getHostileStrengthAtStar(star: Star)
-    {
-      var hostilePlayers = star.getEnemyFleetOwners(this.player);
-      var strengthByEnemy:
-      {
-        [playerId: number]: number;
-      } = {};
-
-      for (var i = 0; i < hostilePlayers.length; i++)
-      {
-        var enemyShips = star.getAllShipsOfPlayer(hostilePlayers[i]);
-
-        var strength = 0;
-        for (var j = 0; j < enemyShips.length; j++)
-        {
-          strength += enemyShips[j].currentStrength;
-        }
-
-        strengthByEnemy[hostilePlayers[i].id] = strength;
-      }
-
-      return strengthByEnemy;
-    }
-
-    getTotalHostileStrengthAtStar(star: Star)
-    {
-      var byPlayer = this.getHostileStrengthAtStar(star);
-
-      var total = 0;
-
-      for (var playerId in byPlayer)
-      {
-        total += byPlayer[playerId];
-      }
-
-      return total;
+      this.evaluationParameters = defaultEvaluationParameters;
     }
 
     evaluateStarIncome(star: Star): number
@@ -167,7 +131,110 @@ module Rance
     {
       var stars = this.player.getNeighboringStars();
 
-      
+      var evaluations:
+      {
+        star: Star;
+        desirability: number;
+      }[] = [];
+
+      for (var i = 0; i < stars.length; i++)
+      {
+        var star = stars[i];
+        var starDesirability = this.evaluateStarDesirability(star);
+
+        evaluations.push(
+        {
+          star: star,
+          desirability: starDesirability
+        });
+      }
+
+      return evaluations.sort(function(a, b)
+      {
+        return b.desirability - a.desirability;
+      });
+    }
+
+    getHostileStrengthAtStar(star: Star)
+    {
+      var hostilePlayers = star.getEnemyFleetOwners(this.player);
+      var strengthByEnemy:
+      {
+        [playerId: number]: number;
+      } = {};
+
+      for (var i = 0; i < hostilePlayers.length; i++)
+      {
+        var enemyShips = star.getAllShipsOfPlayer(hostilePlayers[i]);
+
+        var strength = 0;
+        for (var j = 0; j < enemyShips.length; j++)
+        {
+          strength += enemyShips[j].currentStrength;
+        }
+
+        strengthByEnemy[hostilePlayers[i].id] = strength;
+      }
+
+      return strengthByEnemy;
+    }
+
+    getTotalHostileStrengthAtStar(star: Star): number
+    {
+      var byPlayer = this.getHostileStrengthAtStar(star);
+
+      var total = 0;
+
+      for (var playerId in byPlayer)
+      {
+        total += byPlayer[playerId];
+      }
+
+      return total;
+    }
+
+    getTotalHostileStrengthAtNeighboringStars(star: Star, range: number): number
+    {
+      var strength = 0;
+
+      var getDistanceFalloff = function(distance)
+      {
+        return 1 / (distance + 1);
+      }
+      var inRange = star.getLinkedInRange(range).byRange;
+
+      for (var distanceString in inRange)
+      {
+        var stars = inRange[distanceString];
+        var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+
+        for (var i = 0; i < stars.length; i++)
+        {
+          strength += this.getTotalHostileStrengthAtStar(stars[i]) * distanceFalloff
+        }
+      }
+
+      return strength;
+    }
+
+    getDefenceBuildingStrengthAtStar(star: Star): number
+    {
+      var strength = 0;
+
+      for (var i = 0; i < star.buildings["defence"].length; i++)
+      {
+        var building = star.buildings["defence"][i];
+        strength += building.totalCost;
+      }
+
+      return strength;
+    }
+
+    evaluateStarVulnerability(star: Star)
+    {
+      var currentDefenceStrength = 0;
+      currentDefenceStrength += this.getTotalHostileStrengthAtStar(star);
+      currentDefenceStrength += this.getDefenceBuildingStrengthAtStar(star);
     }
   }
 }

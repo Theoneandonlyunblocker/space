@@ -584,7 +584,6 @@ module Rance
       } = {};
 
       visited[this.id] = this;
-      visitedByRange[0] = [this];
 
       var current = [];
       var frontier: Star[] = [this];

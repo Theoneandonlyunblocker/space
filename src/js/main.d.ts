@@ -1979,17 +1979,23 @@ declare module Rance {
             };
         };
         constructor(map: Rance.GalaxyMap, player: Rance.Player);
-        public getHostileStrengthAtStar(star: Rance.Star): {
-            [playerId: number]: number;
-        };
-        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
         public evaluateStarIncome(star: Rance.Star): number;
         public evaluateStarInfrastructure(star: Rance.Star): number;
         public evaluateStarProduction(star: Rance.Star): number;
         public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
         public evaluateIndividualStarDesirability(star: Rance.Star): number;
         public evaluateStarDesirability(star: Rance.Star): number;
-        public getImmediateExpansionDesirability(): void;
+        public getImmediateExpansionDesirability(): {
+            star: Rance.Star;
+            desirability: number;
+        }[];
+        public getHostileStrengthAtStar(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
+        public getTotalHostileStrengthAtNeighboringStars(star: Rance.Star, range: number): number;
+        public getDefenceBuildingStrengthAtStar(star: Rance.Star): number;
+        public evaluateStarVulnerability(star: Rance.Star): void;
     }
 }
 declare module Rance {
@@ -2032,3 +2038,4 @@ declare module Rance {
     }
 }
 declare var app: Rance.App;
+declare var a: Rance.MapEvaluator;
