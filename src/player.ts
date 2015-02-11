@@ -488,7 +488,7 @@ module Rance
 
       eventManager.dispatchEvent("renderMap");
     }
-    getVisibleStars()
+    getVisibleStars(): Star[]
     {
       if (this.visionIsDirty) this.updateVisibleStars();
 
@@ -501,7 +501,7 @@ module Rance
 
       return visible;
     }
-    getRevealedStars()
+    getRevealedStars(): Star[]
     {
       if (this.visionIsDirty) this.updateVisibleStars();
 
@@ -514,7 +514,7 @@ module Rance
 
       return toReturn;
     }
-    getRevealedButNotVisibleStars()
+    getRevealedButNotVisibleStars(): Star[]
     {
       if (this.visionIsDirty) this.updateVisibleStars();
 
