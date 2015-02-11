@@ -234,13 +234,38 @@ module Rance
       return strength;
     }
 
-    getDefenceBuildingStrengthAtStar(star: Star): number
+    getDefenceBuildingStrengthAtStarByPlayer(star: Star): number
+    {
+      var byPlayer:
+      {
+        [playerId: number]: number;
+      } = {};
+
+      for (var i = 0; i < star.buildings["defence"].length; i++)
+      {
+        var building = star.buildings["defence"][i];
+
+        if (!byPlayer[building.controller.id])
+        {
+          byPlayer[building.controller.id] = 0;
+        }
+        
+        byPlayer[building.controller.id] += building.totalCost;
+      }
+
+      return byPlayer;
+    }
+
+    getTotalDefenceBuildingStrengthAtStar(star: Star): number
     {
       var strength = 0;
 
       for (var i = 0; i < star.buildings["defence"].length; i++)
       {
         var building = star.buildings["defence"][i];
+        
+        if (building.controller.id === this.player.id) continue;
+
         strength += building.totalCost;
       }
 
@@ -253,9 +278,64 @@ module Rance
     {
       var currentDefenceStrength = 0;
       currentDefenceStrength += this.getTotalHostileStrengthAtStar(star);
-      currentDefenceStrength += this.getDefenceBuildingStrengthAtStar(star);
+      currentDefenceStrength += this.getTotalDefenceBuildingStrengthAtStar(star);
 
       var nearbyDefenceStrength = this.evaluateHostileStrengthAtNeighboringStars(star, 2);
+    }
+
+    getVisibleFleetsByPlayer()
+    {
+      var stars = this.player.getVisibleStars();
+
+      var byPlayer:
+      {
+        [playerId: number]: Fleet[];
+      } = {};
+
+      for (var i = 0; i < stars.length; i++)
+      {
+        var star = stars[i];
+
+        for (var playerId in star.fleets)
+        {
+          var playerFleets = star.fleets[playerId];
+
+          if (!byPlayer[playerId])
+          {
+            byPlayer[playerId] = [];
+          }
+
+          for (var j = 0; j < playerFleets.length; j++)
+          {
+            byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+          }
+        }
+      }
+
+      return byPlayer;
+    }
+
+    buildPlayerInfluenceMap(player: Player)
+    {
+      var playerIsImmobile = player.isIndependent;
+
+      var influenceByStar:
+      {
+        [starId: number]: number;
+      } = {};
+
+      var stars = this.player.getVisibleStars();
+
+      for (var i = 0; i < stars.length; i++)
+      {
+        var star = stars[i];
+        if (!isFinite(influenceByStar[star.id]))
+        {
+          influenceByStar[star.id] = 0;
+        };
+
+        influenceByStar[star.id] = this.get
+      }
     }
   }
 }

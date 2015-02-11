@@ -12375,6 +12375,10 @@ var Rance;
 
             for (var i = 0; i < star.buildings["defence"].length; i++) {
                 var building = star.buildings["defence"][i];
+
+                if (building.controller.id === this.player.id)
+                    continue;
+
                 strength += building.totalCost;
             }
 
@@ -12387,8 +12391,47 @@ var Rance;
             currentDefenceStrength += this.getDefenceBuildingStrengthAtStar(star);
 
             var nearbyDefenceStrength = this.evaluateHostileStrengthAtNeighboringStars(star, 2);
+        };
 
-            debugger;
+        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
+            var stars = this.player.getVisibleStars();
+
+            var byPlayer = {};
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                for (var playerId in star.fleets) {
+                    var playerFleets = star.fleets[playerId];
+
+                    if (!byPlayer[playerId]) {
+                        byPlayer[playerId] = [];
+                    }
+
+                    for (var j = 0; j < playerFleets.length; j++) {
+                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+                    }
+                }
+            }
+
+            return byPlayer;
+        };
+
+        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
+            var playerIsImmobile = player.isIndependent;
+
+            var influenceByStar = {};
+
+            var stars = this.player.getVisibleStars();
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                if (!isFinite(influenceByStar[star.id])) {
+                    influenceByStar[star.id] = 0;
+                }
+                ;
+                //influenceByStar[star.id] = this.get
+            }
         };
         return MapEvaluator;
     })();

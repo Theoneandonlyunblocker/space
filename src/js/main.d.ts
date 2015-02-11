@@ -2000,6 +2000,10 @@ declare module Rance {
         public evaluateHostileStrengthAtNeighboringStars(star: Rance.Star, range: number): number;
         public getDefenceBuildingStrengthAtStar(star: Rance.Star): number;
         public evaluateStarVulnerability(star: Rance.Star): void;
+        public getVisibleFleetsByPlayer(): {
+            [playerId: number]: Rance.Fleet[];
+        };
+        public buildPlayerInfluenceMap(player: Rance.Player): void;
     }
 }
 declare var a: any;
