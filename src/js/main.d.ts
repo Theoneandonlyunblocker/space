@@ -1998,12 +1998,18 @@ declare module Rance {
         };
         public getTotalHostileStrengthAtStar(star: Rance.Star): number;
         public evaluateHostileStrengthAtNeighboringStars(star: Rance.Star, range: number): number;
-        public getDefenceBuildingStrengthAtStar(star: Rance.Star): number;
+        public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
         public evaluateStarVulnerability(star: Rance.Star): void;
+        public evaluateFleetStrength(fleet: Rance.Fleet): number;
         public getVisibleFleetsByPlayer(): {
             [playerId: number]: Rance.Fleet[];
         };
-        public buildPlayerInfluenceMap(player: Rance.Player): void;
+        public buildPlayerInfluenceMap(player: Rance.Player): {
+            [starId: number]: number;
+        };
     }
 }
 declare var a: any;

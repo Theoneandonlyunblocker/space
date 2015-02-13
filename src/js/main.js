@@ -3659,7 +3659,8 @@ var Rance;
 
                 this.props.star.addBuilding(building);
                 building.controller.money -= template.buildCost;
-                building.totalCost += template.buildCost;
+
+                //building.totalCost += template.buildCost;
                 this.updateBuildings();
             },
             render: function () {
@@ -4505,7 +4506,7 @@ var Rance;
             this.location = props.location;
             this.controller = props.controller || this.location.owner;
             this.upgradeLevel = props.upgradeLevel || 1;
-            this.totalCost = props.totalCost || 0;
+            this.totalCost = props.totalCost || this.template.buildCost || 0;
         }
         Building.prototype.getPossibleUpgrades = function () {
             var upgrades = [];
@@ -12370,7 +12371,23 @@ var Rance;
             return strength;
         };
 
-        MapEvaluator.prototype.getDefenceBuildingStrengthAtStar = function (star) {
+        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
+            var byPlayer = {};
+
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+
+                if (!byPlayer[building.controller.id]) {
+                    byPlayer[building.controller.id] = 0;
+                }
+
+                byPlayer[building.controller.id] += building.totalCost;
+            }
+
+            return byPlayer;
+        };
+
+        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
             var strength = 0;
 
             for (var i = 0; i < star.buildings["defence"].length; i++) {
@@ -12388,9 +12405,13 @@ var Rance;
         MapEvaluator.prototype.evaluateStarVulnerability = function (star) {
             var currentDefenceStrength = 0;
             currentDefenceStrength += this.getTotalHostileStrengthAtStar(star);
-            currentDefenceStrength += this.getDefenceBuildingStrengthAtStar(star);
+            currentDefenceStrength += this.getTotalDefenceBuildingStrengthAtStar(star);
 
             var nearbyDefenceStrength = this.evaluateHostileStrengthAtNeighboringStars(star, 2);
+        };
+
+        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
+            return fleet.getTotalStrength().current;
         };
 
         MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
@@ -12422,16 +12443,65 @@ var Rance;
 
             var influenceByStar = {};
 
-            var stars = this.player.getVisibleStars();
+            var stars = this.player.getRevealedStars();
 
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
-                if (!isFinite(influenceByStar[star.id])) {
-                    influenceByStar[star.id] = 0;
+
+                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+
+                if (defenceBuildingStrengths[player.id]) {
+                    if (!isFinite(influenceByStar[star.id])) {
+                        influenceByStar[star.id] = 0;
+                    }
+                    ;
+
+                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
                 }
-                ;
-                //influenceByStar[star.id] = this.get
             }
+
+            var fleets = this.getVisibleFleetsByPlayer()[player.id];
+
+            function getDistanceFalloff(distance) {
+                return 1 / (distance + 1);
+            }
+
+            for (var i = 0; i < fleets.length; i++) {
+                var fleet = fleets[i];
+                var strength = this.evaluateFleetStrength(fleet);
+                var location = fleet.location;
+
+                var range = fleet.getMinMaxMovePoints();
+                var turnsToCheck = 2;
+
+                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+
+                inFleetRange[0] = [location];
+
+                for (var distance in inFleetRange) {
+                    var numericDistance = parseInt(distance);
+                    var turnsToReach = Math.floor((numericDistance - 1) / range);
+                    if (turnsToReach < 0)
+                        turnsToReach = 0;
+                    var distanceFalloff = getDistanceFalloff(turnsToReach);
+                    var adjustedStrength = strength * distanceFalloff;
+
+                    for (var j = 0; j < inFleetRange[distance].length; j++) {
+                        var star = inFleetRange[distance][j];
+
+                        if (!isFinite(influenceByStar[star.id])) {
+                            influenceByStar[star.id] = 0;
+                        }
+                        ;
+
+                        influenceByStar[star.id] += adjustedStrength;
+                    }
+                }
+            }
+
+            debugger;
+
+            return influenceByStar;
         };
         return MapEvaluator;
     })();
