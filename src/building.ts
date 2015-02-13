@@ -35,7 +35,7 @@ module Rance
       this.location = props.location;
       this.controller = props.controller || this.location.owner;
       this.upgradeLevel = props.upgradeLevel || 1;
-      this.totalCost = props.totalCost || 0;
+      this.totalCost = props.totalCost || this.template.buildCost || 0;
     }
     getPossibleUpgrades()
     {
