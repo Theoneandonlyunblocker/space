@@ -389,8 +389,6 @@ module Rance
         }
       }
 
-      debugger;
-
       return influenceByStar;
     }
   }

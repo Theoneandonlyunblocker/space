@@ -457,6 +457,95 @@ module Rance
           return doc;
         }
       }
+      this.layers["playerInfluence"] =
+      {
+        isDirty: true,
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.DisplayObjectContainer();
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getRevealedStars();
+          }
+          var mapEvaluator = new MapEvaluator(map, this.player);
+          var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
+
+          var minInfluence, maxInfluence;
+
+          for (var starId in influenceByStar)
+          {
+            var influence = influenceByStar[starId];
+            if (!isFinite(minInfluence) || influence < minInfluence)
+            {
+              minInfluence = influence;
+            }
+            if (!isFinite(maxInfluence) || influence > maxInfluence)
+            {
+              maxInfluence = influence;
+            }
+          }
+
+          function getRelativeValue(min: number, max: number, value: number)
+          {
+            var difference = max - min;
+            if (difference < 1) difference = 1;
+            // clamps to n different colors
+            var threshhold = difference / 10;
+            if (threshhold < 1) threshhold = 1;
+            var relative = (Math.round(value/threshhold) * threshhold - min) / (difference);
+            return relative;
+          }
+
+          var colorIndexes:
+          {
+            [value: number]: number;
+          } = {};
+
+          function getRelativeColor(min: number, max: number, value: number)
+          {
+            if (!colorIndexes[value])
+            {
+              if (value < 0) value = 0;
+              else if (value > 1) value = 1;
+
+              var deviation = Math.abs(0.5 - value) * 2;
+
+              var hue = 110 * value;
+              var saturation = 0.5 + 0.2 * deviation;
+              var lightness = 0.6 + 0.25 * deviation;
+
+              colorIndexes[value] = hslToHex(hue / 360, saturation, lightness / 2);
+            }
+            return colorIndexes[value];
+          }
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            var influence = influenceByStar[star.id];
+
+            if (!influence) continue;
+
+            var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
+            var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
+
+            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+            var gfx = new PIXI.Graphics();
+            gfx.beginFill(color, 0.6);
+            gfx.drawShape(poly);
+            gfx.endFill;
+            doc.addChild(gfx);
+          }
+          doc.height;
+          return doc;
+        }
+      }
       this.layers["nonFillerVoronoiLines"] =
       {
         isDirty: true,
@@ -710,6 +799,18 @@ module Rance
         layers:
         [
           {layer: this.layers["starIncome"]},
+          {layer: this.layers["nonFillerVoronoiLines"]},
+          {layer: this.layers["starLinks"]},
+          {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fleets"]}
+        ]
+      }
+      this.mapModes["influence"] =
+      {
+        name: "influence",
+        layers:
+        [
+          {layer: this.layers["playerInfluence"]},
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},

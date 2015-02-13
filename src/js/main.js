@@ -8496,7 +8496,7 @@ var Rance;
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"))));
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = false;
@@ -10209,6 +10209,86 @@ var Rance;
                     return doc;
                 }
             };
+            this.layers["playerInfluence"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+                    var mapEvaluator = new Rance.MapEvaluator(map, this.player);
+                    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
+
+                    var minInfluence, maxInfluence;
+
+                    for (var starId in influenceByStar) {
+                        var influence = influenceByStar[starId];
+                        if (!isFinite(minInfluence) || influence < minInfluence) {
+                            minInfluence = influence;
+                        }
+                        if (!isFinite(maxInfluence) || influence > maxInfluence) {
+                            maxInfluence = influence;
+                        }
+                    }
+
+                    function getRelativeValue(min, max, value) {
+                        var difference = max - min;
+                        if (difference < 1)
+                            difference = 1;
+
+                        // clamps to n different colors
+                        var threshhold = difference / 10;
+                        if (threshhold < 1)
+                            threshhold = 1;
+                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
+                        return relative;
+                    }
+
+                    var colorIndexes = {};
+
+                    function getRelativeColor(min, max, value) {
+                        if (!colorIndexes[value]) {
+                            if (value < 0)
+                                value = 0;
+                            else if (value > 1)
+                                value = 1;
+
+                            var deviation = Math.abs(0.5 - value) * 2;
+
+                            var hue = 110 * value;
+                            var saturation = 0.5 + 0.2 * deviation;
+                            var lightness = 0.6 + 0.25 * deviation;
+
+                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
+                        }
+                        return colorIndexes[value];
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var influence = influenceByStar[star.id];
+
+                        if (!influence)
+                            continue;
+
+                        var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
+                        var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
             this.layers["nonFillerVoronoiLines"] = {
                 isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
@@ -10420,6 +10500,16 @@ var Rance;
                 name: "income",
                 layers: [
                     { layer: this.layers["starIncome"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["influence"] = {
+                name: "influence",
+                layers: [
+                    { layer: this.layers["playerInfluence"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
@@ -12498,8 +12588,6 @@ var Rance;
                     }
                 }
             }
-
-            debugger;
 
             return influenceByStar;
         };
