@@ -347,6 +347,8 @@ declare module Rance {
     function prettifyDate(date: Date): string;
     function shuffleArray(toShuffle: any[]): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
+    function curveThroughPoints(points: Point[]): any[];
+    function drawPath(points: number[][]): PIXI.Graphics;
 }
 declare module Rance {
     interface TargetingFunction {

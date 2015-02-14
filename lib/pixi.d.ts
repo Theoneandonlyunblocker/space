@@ -264,6 +264,7 @@ declare module PIXI
 		constructor();
 
 		beginFill(color?: number, alpha?: number): void;
+		bezierCurveTo(): any;
 		clear(): void;
 		drawCircle(x: number, y: number, radius: number): void;
 		drawEllipse(x: number, y: number, width: number, height: number): void;

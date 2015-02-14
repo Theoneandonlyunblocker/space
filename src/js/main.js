@@ -4002,6 +4002,55 @@ var Rance;
         return (value - min) / (max - min);
     }
     Rance.getRelativeValue = getRelativeValue;
+
+    function curveThroughPoints(points) {
+        var i6 = 1.0 / 6.0;
+        var path = [];
+        var abababa = [points[0]].concat(points);
+        abababa.push(points[points.length - 1]);
+
+        console.log(abababa);
+
+        for (var i = 3, n = abababa.length; i < n; i++) {
+            var p0 = abababa[i - 3];
+            var p1 = abababa[i - 2];
+            var p2 = abababa[i - 1];
+            var p3 = abababa[i];
+
+            path.push([
+                p2.x * i6 + p1.x - p0.x * i6,
+                p2.y * i6 + p1.y - p0.y * i6,
+                p3.x * -i6 + p2.x + p1.x * i6,
+                p3.y * -i6 + p2.y + p1.y * i6,
+                p2.x,
+                p2.y
+            ]);
+        }
+
+        return path;
+    }
+    Rance.curveThroughPoints = curveThroughPoints;
+
+    function drawPath(points) {
+        var gfx = new PIXI.Graphics();
+
+        console.log(points);
+
+        gfx.lineStyle(4, 0xFF0000, 0.5);
+
+        //gfx.beginFill(0xFF0000);
+        gfx.moveTo(points[0][0], points[0][1]);
+
+        for (var i = 0; i < points.length; i++) {
+            gfx.bezierCurveTo.apply(gfx, points[i]);
+        }
+
+        //gfx.endFill();
+        gfx.height;
+
+        return gfx;
+    }
+    Rance.drawPath = drawPath;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -10045,6 +10094,12 @@ var Rance;
                     var rightClickFN = function (star) {
                         Rance.eventManager.dispatchEvent("starRightClick", star);
                     };
+                    var mouseOverFN = function (event) {
+                        console.log(this.star.id);
+                        console.log(event.originalEvent.button);
+                        if (event.originalEvent.button === 2) {
+                        }
+                    };
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
                         var starSize = 1;
@@ -10052,6 +10107,9 @@ var Rance;
                             starSize += star.buildings["defence"].length * 2;
                         }
                         var gfx = new PIXI.Graphics();
+                        if (!star.owner.isIndependent) {
+                            gfx.lineStyle(starSize / 2, star.owner.color, 1);
+                        }
                         gfx.star = star;
                         gfx.beginFill(0xFFFFF0);
                         gfx.drawEllipse(star.x, star.y, starSize, starSize);
@@ -10068,6 +10126,7 @@ var Rance;
                             onClickFN(this.star);
                         }.bind(gfx);
                         gfx.rightclick = rightClickFN.bind(gfx, star);
+                        gfx.mouseover = mouseOverFN;
 
                         doc.addChild(gfx);
                     }

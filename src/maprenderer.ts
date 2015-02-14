@@ -277,6 +277,15 @@ module Rance
           {
             eventManager.dispatchEvent("starRightClick", star);
           }
+          var mouseOverFN = function(event)
+          {
+            console.log(this.star.id);
+            console.log(event.originalEvent.button)
+            if (event.originalEvent.button === 2)
+            {
+              
+            }
+          }
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
@@ -286,6 +295,10 @@ module Rance
               starSize += star.buildings["defence"].length * 2;
             }
             var gfx: any = new PIXI.Graphics();
+            if (!star.owner.isIndependent)
+            {
+              gfx.lineStyle(starSize / 2, star.owner.color, 1);
+            }
             gfx.star = star;
             gfx.beginFill(0xFFFFF0);
             gfx.drawEllipse(star.x, star.y, starSize, starSize);
@@ -303,6 +316,7 @@ module Rance
               onClickFN(this.star);
             }.bind(gfx);
             gfx.rightclick = rightClickFN.bind(gfx, star);
+            gfx.mouseover = mouseOverFN;
 
             doc.addChild(gfx);
           }
