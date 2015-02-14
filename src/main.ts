@@ -18,6 +18,8 @@
 
 /// <reference path="mapevaluator.ts"/>
 
+/// <reference path="pathfindingarrow.ts"/>
+
 var a;
 module Rance
 {

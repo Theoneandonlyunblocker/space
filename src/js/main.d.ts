@@ -347,8 +347,6 @@ declare module Rance {
     function prettifyDate(date: Date): string;
     function shuffleArray(toShuffle: any[]): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
-    function curveThroughPoints(points: Point[]): any[];
-    function drawPath(points: number[][]): PIXI.Graphics;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -2012,6 +2010,54 @@ declare module Rance {
         public buildPlayerInfluenceMap(player: Rance.Player): {
             [starId: number]: number;
         };
+    }
+}
+declare module Rance {
+    class PathfindingArrow {
+        public parentContainer: PIXI.DisplayObjectContainer;
+        public container: PIXI.DisplayObjectContainer;
+        public active: boolean;
+        public currentTarget: Rance.Star;
+        public selectedFleets: Rance.Fleet[];
+        public labelCache: {
+            [style: string]: {
+                [distance: number]: PIXI.Text;
+            };
+        };
+        public listeners: {
+            [name: string]: any;
+        };
+        public curveStyles: {
+            reachable: {
+                color: number;
+            };
+            unreachable: {
+                color: number;
+            };
+        };
+        constructor(parentContainer: PIXI.DisplayObjectContainer);
+        public removeEventListener(name: string): void;
+        public removeEventListeners(): void;
+        public addEventListener(name: string, handler: any): void;
+        public addEventListeners(): void;
+        public startMove(): void;
+        public setTarget(star: Rance.Star): void;
+        public clearTarget(): void;
+        public endMove(): void;
+        public clearArrows(): void;
+        public makeLabel(style: string, distance: number): void;
+        public getLabel(style: string, distance: number): PIXI.Text;
+        public getAllCurrentPaths(): {
+            fleet: Rance.Fleet;
+            path: any;
+        }[];
+        public getAllCurrentCurves(): {
+            style: string;
+            curveData: number[][];
+        }[];
+        public drawAllCurrentCurves(): void;
+        public getCurveData(points: Rance.Star[]): number[][];
+        public drawCurve(points: number[][], style: any): PIXI.Graphics;
     }
 }
 declare var a: any;

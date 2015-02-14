@@ -315,7 +315,7 @@ module Rance
 
               onClickFN(this.star);
             }.bind(gfx);
-            gfx.rightclick = rightClickFN.bind(gfx, star);
+            gfx.rightup = rightClickFN.bind(gfx, star);
             gfx.mouseover = mouseOverFN;
 
             doc.addChild(gfx);
