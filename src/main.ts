@@ -20,7 +20,7 @@
 
 /// <reference path="pathfindingarrow.ts"/>
 
-var a;
+var a, b;
 module Rance
 {
 
@@ -96,7 +96,8 @@ module Rance
       this.initDisplay();
       this.initUI();
 
-      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
+      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
+      b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
     }
     destroy()
     {

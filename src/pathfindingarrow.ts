@@ -44,6 +44,9 @@ module Rance
     {
       this.parentContainer = parentContainer;
       this.container = new PIXI.DisplayObjectContainer();
+      this.parentContainer.addChild(this.container);
+
+      this.addEventListeners();
     }
     removeEventListener(name: string)
     {
@@ -84,6 +87,11 @@ module Rance
       {
         self.endMove();
       });
+
+      this.addEventListener("mouseUp", function(e)
+      {
+        self.endMove();
+      });
     }
 
     startMove()
@@ -92,7 +100,6 @@ module Rance
 
       if (this.active || !fleets || fleets.length < 1)
       {
-        debugger;
         return;
       }
 
@@ -110,6 +117,8 @@ module Rance
       }
 
       this.currentTarget = star;
+      this.clearArrows();
+      this.drawAllCurrentCurves();
     }
 
     clearTarget()
@@ -190,6 +199,8 @@ module Rance
       {
         var fleet = this.selectedFleets[i];
 
+        if (fleet.location.id === this.currentTarget.id) continue;
+
         var path = fleet.getPathTo(this.currentTarget);
 
         paths.push(
@@ -223,7 +234,7 @@ module Rance
 
         var style = canReach ? "reachable" : "unreachable";
 
-        var stars = path.filter(function(pathPoint)
+        var stars = path.map(function(pathPoint)
         {
           return pathPoint.star;
         });
@@ -250,6 +261,7 @@ module Rance
 
         this.container.addChild(curve);
       }
+
     }
 
     getCurveData(points: Star[]): number[][]
@@ -259,7 +271,6 @@ module Rance
       var abababa = [points[0]].concat(points);
       abababa.push(points[points.length - 1]);
 
-      console.log(abababa);
 
       for (var i = 3, n = abababa.length; i < n; i++)
       {
@@ -287,7 +298,6 @@ module Rance
     {
       var gfx = new PIXI.Graphics();
 
-      console.log(points);
 
       gfx.lineStyle(4, style.color, 0.8);
       gfx.moveTo(points[0][0], points[0][1]);

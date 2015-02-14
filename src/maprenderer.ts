@@ -273,18 +273,18 @@ module Rance
           {
             eventManager.dispatchEvent("starClick", star);
           }
-          var rightClickFN = function(star)
+          var rightDownFN = function(star)
+          {
+            eventManager.dispatchEvent("startPotentialMove", star);
+          }
+          var rightUpFN = function(star)
           {
             eventManager.dispatchEvent("starRightClick", star);
+            eventManager.dispatchEvent("endPotentialMove");
           }
-          var mouseOverFN = function(event)
+          var mouseOverFN = function(star)
           {
-            console.log(this.star.id);
-            console.log(event.originalEvent.button)
-            if (event.originalEvent.button === 2)
-            {
-              
-            }
+            eventManager.dispatchEvent("setPotentialMoveTarget", star);
           }
           for (var i = 0; i < points.length; i++)
           {
@@ -315,8 +315,9 @@ module Rance
 
               onClickFN(this.star);
             }.bind(gfx);
-            gfx.rightup = rightClickFN.bind(gfx, star);
-            gfx.mouseover = mouseOverFN;
+            gfx.rightdown = rightDownFN.bind(gfx, star);
+            gfx.rightup = rightUpFN.bind(gfx, star);
+            gfx.mouseover = mouseOverFN.bind(gfx, star);
 
             doc.addChild(gfx);
           }

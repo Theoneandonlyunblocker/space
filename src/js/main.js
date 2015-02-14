@@ -10042,14 +10042,15 @@ var Rance;
                     var onClickFN = function (star) {
                         Rance.eventManager.dispatchEvent("starClick", star);
                     };
-                    var rightClickFN = function (star) {
-                        Rance.eventManager.dispatchEvent("starRightClick", star);
+                    var rightDownFN = function (star) {
+                        Rance.eventManager.dispatchEvent("startPotentialMove", star);
                     };
-                    var mouseOverFN = function (event) {
-                        console.log(this.star.id);
-                        console.log(event.originalEvent.button);
-                        if (event.originalEvent.button === 2) {
-                        }
+                    var rightUpFN = function (star) {
+                        Rance.eventManager.dispatchEvent("starRightClick", star);
+                        Rance.eventManager.dispatchEvent("endPotentialMove");
+                    };
+                    var mouseOverFN = function (star) {
+                        Rance.eventManager.dispatchEvent("setPotentialMoveTarget", star);
                     };
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
@@ -10076,8 +10077,9 @@ var Rance;
 
                             onClickFN(this.star);
                         }.bind(gfx);
-                        gfx.rightup = rightClickFN.bind(gfx, star);
-                        gfx.mouseover = mouseOverFN;
+                        gfx.rightdown = rightDownFN.bind(gfx, star);
+                        gfx.rightup = rightUpFN.bind(gfx, star);
+                        gfx.mouseover = mouseOverFN.bind(gfx, star);
 
                         doc.addChild(gfx);
                     }
@@ -12625,6 +12627,9 @@ var Rance;
             };
             this.parentContainer = parentContainer;
             this.container = new PIXI.DisplayObjectContainer();
+            this.parentContainer.addChild(this.container);
+
+            this.addEventListeners();
         }
         PathfindingArrow.prototype.removeEventListener = function (name) {
             Rance.eventManager.removeEventListener(name, this.listeners[name]);
@@ -12656,13 +12661,16 @@ var Rance;
             this.addEventListener("endPotentialMove", function (e) {
                 self.endMove();
             });
+
+            this.addEventListener("mouseUp", function (e) {
+                self.endMove();
+            });
         };
 
         PathfindingArrow.prototype.startMove = function () {
             var fleets = app.playerControl.selectedFleets;
 
             if (this.active || !fleets || fleets.length < 1) {
-                debugger;
                 return;
             }
 
@@ -12678,6 +12686,8 @@ var Rance;
             }
 
             this.currentTarget = star;
+            this.clearArrows();
+            this.drawAllCurrentCurves();
         };
 
         PathfindingArrow.prototype.clearTarget = function () {
@@ -12739,6 +12749,9 @@ var Rance;
             for (var i = 0; i < this.selectedFleets.length; i++) {
                 var fleet = this.selectedFleets[i];
 
+                if (fleet.location.id === this.currentTarget.id)
+                    continue;
+
                 var path = fleet.getPathTo(this.currentTarget);
 
                 paths.push({
@@ -12765,7 +12778,7 @@ var Rance;
 
                 var style = canReach ? "reachable" : "unreachable";
 
-                var stars = path.filter(function (pathPoint) {
+                var stars = path.map(function (pathPoint) {
                     return pathPoint.star;
                 });
                 var curveData = this.getCurveData(stars);
@@ -12796,8 +12809,6 @@ var Rance;
             var abababa = [points[0]].concat(points);
             abababa.push(points[points.length - 1]);
 
-            console.log(abababa);
-
             for (var i = 3, n = abababa.length; i < n; i++) {
                 var p0 = abababa[i - 3];
                 var p1 = abababa[i - 2];
@@ -12819,8 +12830,6 @@ var Rance;
 
         PathfindingArrow.prototype.drawCurve = function (points, style) {
             var gfx = new PIXI.Graphics();
-
-            console.log(points);
 
             gfx.lineStyle(4, style.color, 0.8);
             gfx.moveTo(points[0][0], points[0][1]);
@@ -12852,7 +12861,7 @@ var Rance;
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
-var a;
+var a, b;
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
@@ -12905,7 +12914,8 @@ var Rance;
             this.initDisplay();
             this.initUI();
 
-            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
+            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
+            b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
         };
         App.prototype.destroy = function () {
             this.renderer.destroy();

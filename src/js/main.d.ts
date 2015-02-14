@@ -2060,7 +2060,7 @@ declare module Rance {
         public drawCurve(points: number[][], style: any): PIXI.Graphics;
     }
 }
-declare var a: any;
+declare var a: any, b: any;
 declare module Rance {
     var idGenerators: {
         fleet: number;
