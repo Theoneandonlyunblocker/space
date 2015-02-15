@@ -323,6 +323,7 @@ declare module Rance {
     function getRandomKey(target: any): string;
     function getRandomProperty(target: any): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
+    function divmod(x: any, y: any): number[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
@@ -2018,6 +2019,7 @@ declare module Rance {
         public container: PIXI.DisplayObjectContainer;
         public active: boolean;
         public currentTarget: Rance.Star;
+        public clearTargetTimeout: any;
         public selectedFleets: Rance.Fleet[];
         public labelCache: {
             [style: string]: {
@@ -2058,6 +2060,10 @@ declare module Rance {
         public drawAllCurrentCurves(): void;
         public getCurveData(points: Rance.Star[]): number[][];
         public drawCurve(points: number[][], style: any): PIXI.Graphics;
+        public getTargetOffset(target: Rance.Point, i: number, totalPaths: number, offsetPerOrbit: number): {
+            x: number;
+            y: number;
+        };
     }
 }
 declare var a: any, b: any;

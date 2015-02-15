@@ -14,6 +14,8 @@ module Rance
     active: boolean;
     currentTarget: Star;
 
+    clearTargetTimeout: any;
+
     selectedFleets: Fleet[];
 
     labelCache:
@@ -116,8 +118,12 @@ module Rance
         return;
       }
 
+      if (this.clearTargetTimeout)
+      {
+        window.clearTimeout(this.clearTargetTimeout);
+      }
+
       this.currentTarget = star;
-      this.clearArrows();
       this.drawAllCurrentCurves();
     }
 
@@ -128,8 +134,19 @@ module Rance
         return;
       }
 
-      this.currentTarget = null;
-      this.clearArrows();
+      var self = this;
+
+      if (this.clearTargetTimeout)
+      {
+        window.clearTimeout(this.clearTargetTimeout);
+      }
+
+      this.clearTargetTimeout = window.setTimeout(function()
+      {
+        self.currentTarget = null;
+        self.clearArrows();
+        self.clearTargetTimeout = null;
+      }, 10)
     }
 
     endMove()
@@ -216,12 +233,41 @@ module Rance
     getAllCurrentCurves()
     {
       var paths = this.getAllCurrentPaths();
+      var self = this;
 
       var curves:
       {
         style: string;
         curveData: number[][];
       }[] = [];
+
+      var totalPathsPerStar:
+      {
+        [starId: number]: number;
+      } = {};
+      var alreadyVisitedPathsPerStar:
+      {
+        [starId: number]: number;
+      } = {};
+
+      // get total paths passing through star
+      // used for seperating overlapping paths to pass through
+      // orbits around the star
+      for (var i = 0; i < paths.length; i++)
+      {
+        for (var j = 0; j < paths[i].path.length; j++)
+        {
+          var star = paths[i].path[j].star;
+
+          if (!totalPathsPerStar[star.id])
+          {
+            totalPathsPerStar[star.id] = 0;
+            alreadyVisitedPathsPerStar[star.id] = 0;
+          }
+
+          totalPathsPerStar[star.id]++;
+        }
+      }
 
       for (var i = 0; i < paths.length; i++)
       {
@@ -236,7 +282,16 @@ module Rance
 
         var stars = path.map(function(pathPoint)
         {
-          return pathPoint.star;
+          var star = pathPoint.star;
+          if (totalPathsPerStar[star.id] > 1)
+          {
+            var visits = ++alreadyVisitedPathsPerStar[star.id];
+            return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
+          }
+          else
+          {
+            return star;
+          }
         });
         var curveData = this.getCurveData(stars);
 
@@ -299,7 +354,7 @@ module Rance
       var gfx = new PIXI.Graphics();
 
 
-      gfx.lineStyle(4, style.color, 0.8);
+      gfx.lineStyle(4, style.color, 0.7);
       gfx.moveTo(points[0][0], points[0][1]);
 
       for (var i = 0; i < points.length; i++)
@@ -311,6 +366,30 @@ module Rance
       return gfx;
     }
 
-    
+    getTargetOffset(target: Point, i: number, totalPaths: number, offsetPerOrbit: number)
+    {
+      var maxPerOrbit = 6;
+
+      var currentOrbit = Math.ceil(i / maxPerOrbit);
+      var isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
+      var pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
+
+      var positionInOrbit = (i - 1) % pathsInCurrentOrbit;
+
+      var distance = currentOrbit * offsetPerOrbit;
+
+      var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
+
+      var x = Math.sin(angle) * distance;
+      var y = Math.cos(angle) * distance;
+
+      console.log(positionInOrbit, maxPerOrbit, (180 / Math.PI) * angle);
+      
+      return(
+      {
+        x: target.x + x,
+        y: target.y - y
+      });
+    }
   }
 }

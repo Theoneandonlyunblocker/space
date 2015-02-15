@@ -3750,6 +3750,12 @@ var Rance;
         return result;
     }
     Rance.getFrom2dArray = getFrom2dArray;
+    function divmod(x, y) {
+        var a = Math.floor(x / y);
+        var b = x % y;
+        return [a, b];
+    }
+    Rance.divmod = divmod;
     function flatten2dArray(toFlatten) {
         var flattened = [];
         for (var i = 0; i < toFlatten.length; i++) {
@@ -8980,14 +8986,8 @@ var Rance;
                 [null, null, null, null]
             ];
 
-            function divmod(x, y) {
-                var a = Math.floor(x / y);
-                var b = x % y;
-                return [a, b];
-            }
-
             for (var i = 0; i < this.enemyUnits.length; i++) {
-                var d = divmod(i, 3);
+                var d = Rance.divmod(i, 3);
 
                 if (d[0] > 1)
                     break;
@@ -12685,8 +12685,11 @@ var Rance;
                 return;
             }
 
+            if (this.clearTargetTimeout) {
+                window.clearTimeout(this.clearTargetTimeout);
+            }
+
             this.currentTarget = star;
-            this.clearArrows();
             this.drawAllCurrentCurves();
         };
 
@@ -12695,8 +12698,17 @@ var Rance;
                 return;
             }
 
-            this.currentTarget = null;
-            this.clearArrows();
+            var self = this;
+
+            if (this.clearTargetTimeout) {
+                window.clearTimeout(this.clearTargetTimeout);
+            }
+
+            this.clearTargetTimeout = window.setTimeout(function () {
+                self.currentTarget = null;
+                self.clearArrows();
+                self.clearTargetTimeout = null;
+            }, 10);
         };
 
         PathfindingArrow.prototype.endMove = function () {
@@ -12765,8 +12777,25 @@ var Rance;
 
         PathfindingArrow.prototype.getAllCurrentCurves = function () {
             var paths = this.getAllCurrentPaths();
+            var self = this;
 
             var curves = [];
+
+            var totalPathsPerStar = {};
+            var alreadyVisitedPathsPerStar = {};
+
+            for (var i = 0; i < paths.length; i++) {
+                for (var j = 0; j < paths[i].path.length; j++) {
+                    var star = paths[i].path[j].star;
+
+                    if (!totalPathsPerStar[star.id]) {
+                        totalPathsPerStar[star.id] = 0;
+                        alreadyVisitedPathsPerStar[star.id] = 0;
+                    }
+
+                    totalPathsPerStar[star.id]++;
+                }
+            }
 
             for (var i = 0; i < paths.length; i++) {
                 var fleet = paths[i].fleet;
@@ -12779,7 +12808,13 @@ var Rance;
                 var style = canReach ? "reachable" : "unreachable";
 
                 var stars = path.map(function (pathPoint) {
-                    return pathPoint.star;
+                    var star = pathPoint.star;
+                    if (totalPathsPerStar[star.id] > 1) {
+                        var visits = ++alreadyVisitedPathsPerStar[star.id];
+                        return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
+                    } else {
+                        return star;
+                    }
                 });
                 var curveData = this.getCurveData(stars);
 
@@ -12831,7 +12866,7 @@ var Rance;
         PathfindingArrow.prototype.drawCurve = function (points, style) {
             var gfx = new PIXI.Graphics();
 
-            gfx.lineStyle(4, style.color, 0.8);
+            gfx.lineStyle(4, style.color, 0.7);
             gfx.moveTo(points[0][0], points[0][1]);
 
             for (var i = 0; i < points.length; i++) {
@@ -12840,6 +12875,30 @@ var Rance;
             gfx.height;
 
             return gfx;
+        };
+
+        PathfindingArrow.prototype.getTargetOffset = function (target, i, totalPaths, offsetPerOrbit) {
+            var maxPerOrbit = 6;
+
+            var currentOrbit = Math.ceil(i / maxPerOrbit);
+            var isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
+            var pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
+
+            var positionInOrbit = (i - 1) % pathsInCurrentOrbit;
+
+            var distance = currentOrbit * offsetPerOrbit;
+
+            var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
+
+            var x = Math.sin(angle) * distance;
+            var y = Math.cos(angle) * distance;
+
+            console.log(positionInOrbit, maxPerOrbit, (180 / Math.PI) * angle);
+
+            return ({
+                x: target.x + x,
+                y: target.y - y
+            });
         };
         return PathfindingArrow;
     })();
