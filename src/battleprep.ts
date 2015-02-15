@@ -55,13 +55,6 @@ module Rance
         [null, null, null, null]
       ];
 
-      function divmod( x, y )
-      {
-        var a = Math.floor(x / y);
-        var b = x % y;
-        return [a, b];
-      }
-
       for (var i = 0; i < this.enemyUnits.length; i++)
       {
         var d = divmod(i, 3);

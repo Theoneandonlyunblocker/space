@@ -50,6 +50,12 @@ module Rance
     };
     return result;
   }
+  export function divmod(x, y)
+  {
+    var a = Math.floor(x / y);
+    var b = x % y;
+    return [a, b];
+  }
   export function flatten2dArray(toFlatten: any[][]): any[]
   {
     var flattened = [];
