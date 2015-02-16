@@ -2060,6 +2060,7 @@ declare module Rance {
         public drawAllCurrentCurves(): void;
         public getCurveData(points: Rance.Star[]): number[][];
         public drawCurve(points: number[][], style: any): PIXI.Graphics;
+        public drawArrowHead(gfx: PIXI.Graphics, color: number): void;
         public getTargetOffset(target: Rance.Point, i: number, totalPaths: number, offsetPerOrbit: number): {
             x: number;
             y: number;

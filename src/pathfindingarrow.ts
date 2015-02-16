@@ -74,6 +74,10 @@ module Rance
       this.addEventListener("startPotentialMove", function(e)
       {
         self.startMove();
+        if (e.data)
+        {
+          self.setTarget(e.data);
+        }
       });
 
       this.addEventListener("setPotentialMoveTarget", function(e)
@@ -283,7 +287,7 @@ module Rance
         var stars = path.map(function(pathPoint)
         {
           var star = pathPoint.star;
-          if (totalPathsPerStar[star.id] > 1)
+          if (totalPathsPerStar[star.id] > 1 && star !== self.currentTarget)
           {
             var visits = ++alreadyVisitedPathsPerStar[star.id];
             return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
@@ -346,6 +350,9 @@ module Rance
         ]);
       }
 
+      path[0][0] = points[0].x;
+      path[0][1] = points[0].y;
+
       return path;
     }
 
@@ -354,7 +361,7 @@ module Rance
       var gfx = new PIXI.Graphics();
 
 
-      gfx.lineStyle(4, style.color, 0.7);
+      gfx.lineStyle(12, style.color, 0.7);
       gfx.moveTo(points[0][0], points[0][1]);
 
       for (var i = 0; i < points.length; i++)
@@ -363,7 +370,66 @@ module Rance
       }
       gfx.height;
 
+      this.drawArrowHead(gfx, style.color);
+
       return gfx;
+    }
+    drawArrowHead(gfx: PIXI.Graphics, color: number)
+    {
+      var points = gfx.graphicsData[0].shape.points;
+
+      var x1 = points[points.length - 12];
+      var y1 = points[points.length - 11];
+      var x2 = points[points.length - 2];
+      var y2 = points[points.length - 1];
+
+      var lineAngle = Math.atan2(y2 - y1, x2 - x1);
+      var headLength = 30;
+      var buttAngle = 27 * (Math.PI / 180);
+
+      var hypotenuseLength = Math.abs(headLength / Math.cos(buttAngle));
+
+      var angle1 = lineAngle + Math.PI + buttAngle;
+      var topX = x2 + Math.cos(angle1) * hypotenuseLength;
+      var topY = y2 + Math.sin(angle1) * hypotenuseLength;
+
+      var angle2 = lineAngle + Math.PI - buttAngle;
+      var botX = x2 + Math.cos(angle2) * hypotenuseLength;
+      var botY = y2 + Math.sin(angle2) * hypotenuseLength;
+
+      gfx.lineStyle(null);
+
+      gfx.moveTo(x2, y2);
+      gfx.beginFill(color, 0.7);
+      gfx.lineTo(topX, topY);
+      gfx.lineTo(botX, botY);
+      gfx.lineTo(x2, y2);
+      gfx.endFill();
+
+      var buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
+      var buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
+
+      for (var i = points.length - 1; i >= 0; i -= 2)
+      {
+        var y = points[i];
+        var x = points[i-1];
+        var distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+
+        if (distance >= headLength + 10)
+        {
+          points.push(buttMidX);
+          points.push(buttMidY);
+          break;
+        }
+        else
+        {
+          points.pop();
+          points.pop();
+        }
+
+      }
+
+      gfx.height;
     }
 
     getTargetOffset(target: Point, i: number, totalPaths: number, offsetPerOrbit: number)
@@ -383,7 +449,6 @@ module Rance
       var x = Math.sin(angle) * distance;
       var y = Math.cos(angle) * distance;
 
-      console.log(positionInOrbit, maxPerOrbit, (180 / Math.PI) * angle);
       
       return(
       {

@@ -261,6 +261,7 @@ declare module PIXI
 		boundsPadding: number;
 		bounds: any;
 		filters: any[];
+		graphicsData: any[];
 		constructor();
 
 		beginFill(color?: number, alpha?: number): void;
