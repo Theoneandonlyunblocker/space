@@ -32,6 +32,7 @@ module Rance
       handleMouseEnter: function(e)
       {
         if (!this.props.handleMouseEnterUnit) return;
+        if (this.props.unit.currentStrength <= 0) return;
 
         this.props.handleMouseEnterUnit(this.props.unit);
       },
