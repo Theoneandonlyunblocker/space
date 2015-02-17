@@ -225,8 +225,8 @@ module Rance
     }
     getCapturedUnits(victor: Player, maxCapturedUnits: number = 1)
     {
-      if (!victor) return [];
-      
+      if (!victor || victor.isIndependent) return [];
+
       var winningSide = this.getSideForPlayer(victor);
       var losingSide = reverseSide(winningSide);
 
@@ -260,7 +260,7 @@ module Rance
       {
         if (unit.currentStrength <= 0)
         {
-          var wasCaptured = capturedUnits.indexOf(unit) < 0;
+          var wasCaptured = capturedUnits.indexOf(unit) >= 0;
           if (!wasCaptured)
           {
             if (Math.random() <= UNIT_DEATH_CHANCE)
@@ -281,8 +281,31 @@ module Rance
 
       var victor = this.getVictor();
 
+      debugger;
+
       this.capturedUnits = this.getCapturedUnits(victor);
       this.deadUnits = this.getDeadUnits(this.capturedUnits);
+
+
+
+      var _ : any = window;
+
+      var consoleRows = [];
+      this.forEachUnit(function(unit)
+      {
+        consoleRows.push(
+        {
+          id: unit.id,
+          health: unit.currentStrength,
+          destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
+          captureChance: unit.battleStats.captureChance,
+          captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
+        });
+      }.bind(this));
+
+      _.console.table(consoleRows);
+
+
 
       eventManager.dispatchEvent("battleEnd", null);
     }

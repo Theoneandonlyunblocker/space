@@ -126,6 +126,15 @@ module Rance
           containerElements = containerElements.reverse();
         }
 
+        if (unit.currentStrength <= 0)
+        {
+          containerElements.push(
+            React.DOM.div({className: "unit-annihilated-overlay"},
+              "Unit annihilated"
+            )
+          );
+        }
+
         var allElements =
         [
           React.DOM.div(containerProps,

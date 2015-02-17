@@ -556,6 +556,10 @@ var Rance;
                     containerElements = containerElements.reverse();
                 }
 
+                if (unit.currentStrength <= 0) {
+                    containerElements.push(React.DOM.div({ className: "unit-annihilated-overlay" }, "Unit annihilated"));
+                }
+
                 var allElements = [
                     React.DOM.div(containerProps, containerElements),
                     Rance.UIComponents.UnitIcon({
@@ -7235,7 +7239,7 @@ var Rance;
         };
         Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
             if (typeof maxCapturedUnits === "undefined") { maxCapturedUnits = 1; }
-            if (!victor)
+            if (!victor || victor.isIndependent)
                 return [];
 
             var winningSide = this.getSideForPlayer(victor);
@@ -7266,7 +7270,7 @@ var Rance;
 
             this.forEachUnit(function (unit) {
                 if (unit.currentStrength <= 0) {
-                    var wasCaptured = capturedUnits.indexOf(unit) < 0;
+                    var wasCaptured = capturedUnits.indexOf(unit) >= 0;
                     if (!wasCaptured) {
                         if (Math.random() <= UNIT_DEATH_CHANCE) {
                             deadUnits.push(unit);
@@ -7285,8 +7289,25 @@ var Rance;
 
             var victor = this.getVictor();
 
+            debugger;
+
             this.capturedUnits = this.getCapturedUnits(victor);
             this.deadUnits = this.getDeadUnits(this.capturedUnits);
+
+            var _ = window;
+
+            var consoleRows = [];
+            this.forEachUnit(function (unit) {
+                consoleRows.push({
+                    id: unit.id,
+                    health: unit.currentStrength,
+                    destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
+                    captureChance: unit.battleStats.captureChance,
+                    captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
+                });
+            }.bind(this));
+
+            _.console.table(consoleRows);
 
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
