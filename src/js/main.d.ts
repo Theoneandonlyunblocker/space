@@ -1164,6 +1164,8 @@ declare module Rance {
         };
         public isVirtual: boolean;
         public ended: boolean;
+        public capturedUnits: Rance.Unit[];
+        public deadUnits: Rance.Unit[];
         constructor(props: {
             battleData: Rance.IBattleData;
             side1: Rance.Unit[][];
@@ -1181,8 +1183,11 @@ declare module Rance {
         public endTurn(): void;
         public getFleetsForSide(side: string): any;
         public getPlayerForSide(side: string): Rance.Player;
+        public getSideForPlayer(player: Rance.Player): string;
         public getActivePlayer(): Rance.Player;
         public getColumnByPosition(position: number): any;
+        public getCapturedUnits(victor: Rance.Player, maxCapturedUnits?: number): Rance.Unit[];
+        public getDeadUnits(capturedUnits: Rance.Unit[]): Rance.Unit[];
         public endBattle(): void;
         public finishBattle(): void;
         public getVictor(): Rance.Player;
@@ -1244,6 +1249,7 @@ declare module Rance {
             currentActionPoints: number;
             guardAmount: number;
             guardCoverage: string;
+            captureChance: number;
         };
         public fleet: Rance.Fleet;
         public items: {
@@ -1277,7 +1283,8 @@ declare module Rance {
         public getReducedDamageFactor(damageType: string): number;
         public addToFleet(fleet: Rance.Fleet): void;
         public removeFromFleet(): void;
-        public die(): void;
+        public removeFromPlayer(): void;
+        public transferToPlayer(newPlayer: Rance.Player): void;
         public removeGuard(amount: number): void;
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
@@ -2105,7 +2112,7 @@ declare module Rance {
         };
         public itemGenerator: Rance.ItemGenerator;
         constructor();
-        public makeApp(savedGame?: any): void;
+        public makeApp(): void;
         public destroy(): void;
         public load(saveName: string): void;
         public makeGame(): Rance.Game;

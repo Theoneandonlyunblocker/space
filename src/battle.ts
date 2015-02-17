@@ -46,6 +46,9 @@ module Rance
     isVirtual: boolean = false; // true when a simulation clone for ai
     ended: boolean = false;
 
+    capturedUnits: Unit[];
+    deadUnits: Unit[];
+
     constructor(props:
     {
       battleData: IBattleData;
@@ -199,6 +202,12 @@ module Rance
       else if (side === "side2") return this.side2Player;
       else throw new Error("invalid side");
     }
+    getSideForPlayer(player: Player)
+    {
+      if (this.side1Player === player) return "side1";
+      else if (this.side2Player === player) return "side2";
+      else throw new Error("invalid player");
+    }
     getActivePlayer()
     {
       if (!this.activeUnit) return null;
@@ -214,30 +223,92 @@ module Rance
 
       return this[side][relativePosition];
     }
+    getCapturedUnits(victor: Player, maxCapturedUnits: number = 1)
+    {
+      if (!victor) return [];
+      
+      var winningSide = this.getSideForPlayer(victor);
+      var losingSide = reverseSide(winningSide);
+
+      var losingUnits = this.unitsBySide[losingSide].slice(0);
+      losingUnits.sort(function(a, b)
+      {
+        return b.battleStats.captureChance - a.battleStats.captureChance;
+      });
+
+      var capturedUnits: Unit[] = [];
+
+      for (var i = 0; i < losingUnits.length; i++)
+      {
+        if (capturedUnits.length >= maxCapturedUnits) break;
+
+        var unit = losingUnits[i];
+        if (Math.random() <= unit.battleStats.captureChance)
+        {
+          capturedUnits.push(unit);
+        }
+      }
+
+      return capturedUnits;
+    }
+    getDeadUnits(capturedUnits: Unit[])
+    {
+      var UNIT_DEATH_CHANCE = 1;
+      var deadUnits: Unit[] = [];
+
+      this.forEachUnit(function(unit)
+      {
+        if (unit.currentStrength <= 0)
+        {
+          var wasCaptured = capturedUnits.indexOf(unit) < 0;
+          if (!wasCaptured)
+          {
+            if (Math.random() <= UNIT_DEATH_CHANCE)
+            {
+              deadUnits.push(unit);
+            }
+          }
+        }
+      });
+
+      return deadUnits;
+    }
     endBattle()
     {
       this.ended = true;
 
       if (this.isVirtual) return;
 
-      this.forEachUnit(function(unit)
-      {
-        if (unit.currentStrength <= 0)
-        {
-          unit.die();
-        }
-      });
+      var victor = this.getVictor();
+
+      this.capturedUnits = this.getCapturedUnits(victor);
+      this.deadUnits = this.getDeadUnits(this.capturedUnits);
 
       eventManager.dispatchEvent("battleEnd", null);
     }
     finishBattle()
     {
+      var victor = this.getVictor();
+
+      for (var i = 0; i < this.deadUnits.length; i++)
+      {
+        this.deadUnits[i].removeFromPlayer();
+      }
+
+      if (victor)
+      {
+        for (var i = 0; i < this.capturedUnits.length; i++)
+        {
+          this.capturedUnits[i].transferToPlayer(victor);
+        }
+      }
+      
+      
       this.forEachUnit(function(unit)
       {
         unit.resetBattleStats();
       });
       
-      var victor = this.getVictor();
       if (this.battleData.building)
       {
         if (victor)

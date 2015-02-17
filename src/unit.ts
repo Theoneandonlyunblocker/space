@@ -50,6 +50,7 @@ module Rance
       currentActionPoints: number;
       guardAmount: number;
       guardCoverage: string;
+      captureChance: number;
       //queuedAction: Action;
     };
     
@@ -128,6 +129,7 @@ module Rance
       battleStats.currentActionPoints = data.battleStats.currentActionPoints;
       battleStats.guardAmount = data.battleStats.guardAmount;
       battleStats.guardCoverage = data.battleStats.guardCoverage;
+      battleStats.captureChance = data.battleStats.captureChance;
 
       this.battleStats = battleStats;
 
@@ -214,7 +216,8 @@ module Rance
         side: null,
         position: null,
         guardAmount: 0,
-        guardCoverage: null
+        guardCoverage: null,
+        captureChance: 0.1 // BASE_CAPTURE_CHANCE
       }
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
@@ -418,7 +421,7 @@ module Rance
     {
       this.fleet = null;
     }
-    die()
+    removeFromPlayer()
     {
       var player = this.fleet.player;
 
@@ -426,6 +429,16 @@ module Rance
       this.fleet.removeShip(this);
 
       this.uiDisplayIsDirty = true;
+    }
+    transferToPlayer(newPlayer: Player)
+    {
+      var oldPlayer = this.fleet.player;
+      var location = this.fleet.location;
+
+      this.removeFromPlayer();
+
+      newPlayer.addUnit(this);
+      var newFleet = new Fleet(newPlayer, [this], location);
     }
     removeGuard(amount: number)
     {
@@ -485,6 +498,7 @@ module Rance
       data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
       data.battleStats.guardAmount = this.battleStats.guardAmount;
       data.battleStats.guardCoverage = this.battleStats.guardCoverage;
+      data.battleStats.captureChance = this.battleStats.captureChance;
 
       if (this.fleet)
       {

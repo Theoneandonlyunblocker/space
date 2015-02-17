@@ -7211,6 +7211,14 @@ var Rance;
             else
                 throw new Error("invalid side");
         };
+        Battle.prototype.getSideForPlayer = function (player) {
+            if (this.side1Player === player)
+                return "side1";
+            else if (this.side2Player === player)
+                return "side2";
+            else
+                throw new Error("invalid player");
+        };
         Battle.prototype.getActivePlayer = function () {
             if (!this.activeUnit)
                 return null;
@@ -7225,26 +7233,80 @@ var Rance;
 
             return this[side][relativePosition];
         };
+        Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
+            if (typeof maxCapturedUnits === "undefined") { maxCapturedUnits = 1; }
+            if (!victor)
+                return [];
+
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = Rance.reverseSide(winningSide);
+
+            var losingUnits = this.unitsBySide[losingSide].slice(0);
+            losingUnits.sort(function (a, b) {
+                return b.battleStats.captureChance - a.battleStats.captureChance;
+            });
+
+            var capturedUnits = [];
+
+            for (var i = 0; i < losingUnits.length; i++) {
+                if (capturedUnits.length >= maxCapturedUnits)
+                    break;
+
+                var unit = losingUnits[i];
+                if (Math.random() <= unit.battleStats.captureChance) {
+                    capturedUnits.push(unit);
+                }
+            }
+
+            return capturedUnits;
+        };
+        Battle.prototype.getDeadUnits = function (capturedUnits) {
+            var UNIT_DEATH_CHANCE = 1;
+            var deadUnits = [];
+
+            this.forEachUnit(function (unit) {
+                if (unit.currentStrength <= 0) {
+                    var wasCaptured = capturedUnits.indexOf(unit) < 0;
+                    if (!wasCaptured) {
+                        if (Math.random() <= UNIT_DEATH_CHANCE) {
+                            deadUnits.push(unit);
+                        }
+                    }
+                }
+            });
+
+            return deadUnits;
+        };
         Battle.prototype.endBattle = function () {
             this.ended = true;
 
             if (this.isVirtual)
                 return;
 
-            this.forEachUnit(function (unit) {
-                if (unit.currentStrength <= 0) {
-                    unit.die();
-                }
-            });
+            var victor = this.getVictor();
+
+            this.capturedUnits = this.getCapturedUnits(victor);
+            this.deadUnits = this.getDeadUnits(this.capturedUnits);
 
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.finishBattle = function () {
+            var victor = this.getVictor();
+
+            for (var i = 0; i < this.deadUnits.length; i++) {
+                this.deadUnits[i].removeFromPlayer();
+            }
+
+            if (victor) {
+                for (var i = 0; i < this.capturedUnits.length; i++) {
+                    this.capturedUnits[i].transferToPlayer(victor);
+                }
+            }
+
             this.forEachUnit(function (unit) {
                 unit.resetBattleStats();
             });
 
-            var victor = this.getVictor();
             if (this.battleData.building) {
                 if (victor) {
                     this.battleData.building.setController(victor);
@@ -7697,6 +7759,7 @@ var Rance;
             battleStats.currentActionPoints = data.battleStats.currentActionPoints;
             battleStats.guardAmount = data.battleStats.guardAmount;
             battleStats.guardCoverage = data.battleStats.guardCoverage;
+            battleStats.captureChance = data.battleStats.captureChance;
 
             this.battleStats = battleStats;
 
@@ -7771,7 +7834,8 @@ var Rance;
                 side: null,
                 position: null,
                 guardAmount: 0,
-                guardCoverage: null
+                guardCoverage: null,
+                captureChance: 0.1
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
@@ -7940,13 +8004,22 @@ var Rance;
         Unit.prototype.removeFromFleet = function () {
             this.fleet = null;
         };
-        Unit.prototype.die = function () {
+        Unit.prototype.removeFromPlayer = function () {
             var player = this.fleet.player;
 
             player.removeUnit(this);
             this.fleet.removeShip(this);
 
             this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.transferToPlayer = function (newPlayer) {
+            var oldPlayer = this.fleet.player;
+            var location = this.fleet.location;
+
+            this.removeFromPlayer();
+
+            newPlayer.addUnit(this);
+            var newFleet = new Rance.Fleet(newPlayer, [this], location);
         };
         Unit.prototype.removeGuard = function (amount) {
             this.battleStats.guardAmount -= amount;
@@ -8002,6 +8075,7 @@ var Rance;
             data.battleStats.currentActionPoints = this.battleStats.currentActionPoints;
             data.battleStats.guardAmount = this.battleStats.guardAmount;
             data.battleStats.guardCoverage = this.battleStats.guardCoverage;
+            data.battleStats.captureChance = this.battleStats.captureChance;
 
             if (this.fleet) {
                 data.fleetId = this.fleet.id;
@@ -13056,7 +13130,7 @@ var Rance;
                 self.makeApp();
             });
         }
-        App.prototype.makeApp = function (savedGame) {
+        App.prototype.makeApp = function () {
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
             this.game = this.makeGame();
