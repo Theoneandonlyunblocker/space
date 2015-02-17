@@ -196,7 +196,18 @@ var Rance;
             displayName: "UnitInfo",
             mixins: [React.addons.PureRenderMixin],
             render: function () {
-                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), Rance.UIComponents.UnitStatus({
+                var battleEndStatus = null;
+                if (this.props.isDead) {
+                    battleEndStatus = React.DOM.div({
+                        className: "unit-battle-end-status unit-battle-end-status-dead"
+                    }, "Destroyed");
+                } else if (this.props.isCaptured) {
+                    battleEndStatus = React.DOM.div({
+                        className: "unit-battle-end-status unit-battle-end-status-captured"
+                    }, "Captured");
+                }
+
+                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, Rance.UIComponents.UnitStatus({
                     guardAmount: this.props.guardAmount
                 }), Rance.UIComponents.UnitStrength({
                     maxStrength: this.props.maxStrength,
@@ -206,7 +217,7 @@ var Rance;
                 }), Rance.UIComponents.UnitActions({
                     maxActionPoints: this.props.maxActionPoints,
                     currentActionPoints: this.props.currentActionPoints
-                })));
+                }), battleEndStatus)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -538,6 +549,20 @@ var Rance;
                     wrapperProps.className += " hovered-unit";
                 }
 
+                var isDead = false;
+                if (this.props.battle && this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
+                    if (this.props.battle.deadUnits.indexOf(unit) >= 0) {
+                        isDead = true;
+                    }
+                }
+
+                var isCaptured = false;
+                if (this.props.battle && this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
+                    if (this.props.battle.capturedUnits.indexOf(unit) >= 0) {
+                        isCaptured = true;
+                    }
+                }
+
                 var infoProps = {
                     key: "info",
                     name: unit.name,
@@ -546,7 +571,9 @@ var Rance;
                     currentStrength: unit.currentStrength,
                     isSquadron: unit.isSquadron,
                     maxActionPoints: unit.attributes.maxActionPoints,
-                    currentActionPoints: unit.battleStats.currentActionPoints
+                    currentActionPoints: unit.battleStats.currentActionPoints,
+                    isDead: isDead,
+                    isCaptured: isCaptured
                 };
 
                 var containerElements = [
@@ -559,7 +586,7 @@ var Rance;
                 }
 
                 if (unit.currentStrength <= 0) {
-                    containerElements.push(React.DOM.div({ className: "unit-annihilated-overlay" }, "Unit annihilated"));
+                    containerElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
                 }
 
                 var allElements = [
@@ -673,6 +700,11 @@ var Rance;
                         return true;
                     }
                 }
+                if (this.props.battle && newProps.battle) {
+                    if (this.props.battle.ended !== newProps.battle.ended) {
+                        return true;
+                    }
+                }
                 return false;
             },
             displayName: "UnitWrapper",
@@ -731,6 +763,7 @@ var Rance;
                     data.key = i;
                     data.unit = column[i];
                     data.position = [absoluteColumnPosition, i];
+                    data.battle = this.props.battle;
                     data.facesLeft = this.props.facesLeft;
                     data.activeUnit = this.props.activeUnit;
                     data.activeTargets = this.props.activeTargets;
@@ -779,6 +812,7 @@ var Rance;
                         key: i,
                         column: fleet[i],
                         columnPosInOwnFleet: i,
+                        battle: this.props.battle,
                         facesLeft: this.props.facesLeft,
                         activeUnit: this.props.activeUnit,
                         hoveredUnit: this.props.hoveredUnit,
@@ -1253,6 +1287,7 @@ var Rance;
                     className: "fleets-container",
                     ref: "fleetsContainer"
                 }, Rance.UIComponents.Fleet({
+                    battle: battle,
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
@@ -1264,6 +1299,7 @@ var Rance;
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
                 }), Rance.UIComponents.Fleet({
+                    battle: battle,
                     fleet: battle.side2,
                     facesLeft: true,
                     activeUnit: battle.activeUnit,

@@ -60,6 +60,13 @@ module Rance
             return true;
           }
         }
+        if (this.props.battle && newProps.battle)
+        {
+          if (this.props.battle.ended !== newProps.battle.ended)
+          {
+            return true;
+          }
+        }
         return false;
       },
       displayName: "UnitWrapper",

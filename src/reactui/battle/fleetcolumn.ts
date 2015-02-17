@@ -25,6 +25,7 @@ module Rance
           data.key = i;
           data.unit = column[i];
           data.position = [absoluteColumnPosition, i];
+          data.battle = this.props.battle;
           data.facesLeft = this.props.facesLeft;
           data.activeUnit = this.props.activeUnit;
           data.activeTargets = this.props.activeTargets;

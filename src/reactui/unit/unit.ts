@@ -104,6 +104,26 @@ module Rance
           wrapperProps.className += " hovered-unit";
         }
 
+        var isDead = false;
+        if (this.props.battle &&
+          this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0)
+        {
+          if (this.props.battle.deadUnits.indexOf(unit) >= 0)
+          {
+            isDead = true;
+          }
+        }
+
+        var isCaptured = false;
+        if (this.props.battle &&
+          this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0)
+        {
+          if (this.props.battle.capturedUnits.indexOf(unit) >= 0)
+          {
+            isCaptured = true;
+          }
+        }
+
         var infoProps =
         {
           key: "info",
@@ -114,6 +134,9 @@ module Rance
           isSquadron: unit.isSquadron,
           maxActionPoints: unit.attributes.maxActionPoints,
           currentActionPoints: unit.battleStats.currentActionPoints,
+
+          isDead: isDead,
+          isCaptured: isCaptured
         }
 
         var containerElements =
@@ -130,7 +153,7 @@ module Rance
         if (unit.currentStrength <= 0)
         {
           containerElements.push(
-            React.DOM.div({className: "unit-annihilated-overlay"},
+            React.DOM.div({key: "overlay", className: "unit-annihilated-overlay"},
               "Unit annihilated"
             )
           );

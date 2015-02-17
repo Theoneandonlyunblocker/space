@@ -671,8 +671,12 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: block;
   flex: 1;
-  flex-flow: column;
-  justify-content: space-between;
+}
+
+.unit-info-inner
+{
+  display: block;
+  position: relative;
 }
 
 .unit-info-name
@@ -685,9 +689,8 @@ progress::-webkit-progress-value { background: #080; }
 .unit-status
 {
   height: 20px;
-  margin: 2px;
   position: relative;
-  padding: 0 2px;
+  padding: 2px 4px;
 }
 
 .status-container
@@ -866,6 +869,39 @@ progress::-webkit-progress-value { background: #080; }
 
   align-items: flex-end;
   justify-content: center;
+}
+
+.unit-battle-end-status
+{
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 88%;
+  z-index: 99;
+
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.unit-battle-end-status-dead
+{
+  background: linear-gradient(
+    to top,
+    #B00,
+    #000
+  );
+}
+
+.unit-battle-end-status-captured
+{
+  background: linear-gradient(
+    to top,
+    #1987DC,
+    #000
+  );
 }
 
 .turns-container

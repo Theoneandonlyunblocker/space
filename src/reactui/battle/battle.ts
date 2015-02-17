@@ -272,6 +272,7 @@ module Rance
               },
                 UIComponents.Fleet(
                 {
+                  battle: battle,
                   fleet: battle.side1,
                   activeUnit: battle.activeUnit,
                   hoveredUnit: this.state.hoveredUnit,
@@ -287,6 +288,7 @@ module Rance
                 }),
                 UIComponents.Fleet(
                 {
+                  battle: battle,
                   fleet: battle.side2,
                   facesLeft: true,
                   activeUnit: battle.activeUnit,
