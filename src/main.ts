@@ -20,7 +20,7 @@
 
 /// <reference path="pathfindingarrow.ts"/>
 
-var a, b;
+var a, b; // TODO
 module Rance
 {
 
@@ -87,7 +87,7 @@ module Rance
         self.makeApp();
       });
     }
-    makeApp(savedGame?)
+    makeApp()
     {
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();

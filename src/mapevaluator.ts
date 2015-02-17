@@ -17,6 +17,16 @@ module Rance
       productionWeight: 1,
     }
   }
+  export interface IExpansionTargetEvaluations
+  {
+    [starId: number]:
+    {
+      star: Star;
+      desirability: number;
+      independentStrength: number;
+      ownInfluence: number;
+    }
+  }
   export class MapEvaluator
   {
     map: GalaxyMap;
@@ -127,32 +137,71 @@ module Rance
       return evaluation;
     }
 
-    getImmediateExpansionDesirability()
+    evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations
     {
       var stars = this.player.getNeighboringStars();
 
-      var evaluations:
-      {
-        star: Star;
-        desirability: number;
-      }[] = [];
+      var evaluationByStar: IExpansionTargetEvaluations = {};
 
       for (var i = 0; i < stars.length; i++)
       {
         var star = stars[i];
-        var starDesirability = this.evaluateStarDesirability(star);
 
-        evaluations.push(
+        var desirability = this.evaluateStarDesirability(star);
+        var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+
+        var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player) || 0;
+        var ownInfluenceAtStar = ownInfluenceMap[star.id];
+
+        evaluationByStar[star.id] =
         {
           star: star,
-          desirability: starDesirability
+          desirability: desirability,
+          independentStrength: independentStrength,
+          ownInfluence: ownInfluenceAtStar
+        }
+      }
+
+      return evaluationByStar;
+    }
+
+    scoreExpansionTargets(evaluations: IExpansionTargetEvaluations)
+    {
+      var scores:
+      {
+        star: Star;
+        score: number;
+      }[] = [];
+
+      for (var starId in evaluations)
+      {
+        var evaluation = evaluations[starId];
+
+        var easeOfCapturing = Math.log(evaluation.ownInfluence / evaluation.independentStrength);
+
+        var score = evaluation.desirability * easeOfCapturing;
+
+        scores.push(
+        {
+          star: evaluation.star,
+          score: score
         });
       }
 
-      return evaluations.sort(function(a, b)
+      return scores.sort(function(a, b)
       {
-        return b.desirability - a.desirability;
+        return b.score - a.score;
       });
+    }
+
+    getExpansionTarget()
+    {
+      var evaluations = this.evaluateImmediateExpansionTargets();
+      var scores = this.scoreExpansionTargets(evaluations);
+
+      debugger;
+
+      return scores[0];
     }
 
     getHostileShipsAtStar(star: Star)
@@ -196,6 +245,39 @@ module Rance
       return strengthByEnemy;
     }
 
+    getIndependentStrengthAtStar(star: Star): number
+    {
+      var byPlayer = this.getHostileStrengthAtStar(star);
+
+      var total = 0;
+
+      for (var playerId in byPlayer)
+      {
+        // TODO
+        var isIndependent = false;
+        for (var i = 0; i < this.map.game.independents.length; i++)
+        {
+          if (this.map.game.independents[i].id === parseInt(playerId))
+          {
+            isIndependent = true;
+            break;
+          }
+        }
+        // END
+
+        if (isIndependent)
+        {
+          total += byPlayer[playerId];
+        }
+        else
+        {
+          continue;
+        }
+      }
+
+      return total;
+    }
+
     getTotalHostileStrengthAtStar(star: Star): number
     {
       var byPlayer = this.getHostileStrengthAtStar(star);
@@ -208,30 +290,6 @@ module Rance
       }
 
       return total;
-    }
-
-    evaluateHostileStrengthAtNeighboringStars(star: Star, range: number): number
-    {
-      var strength = 0;
-
-      var getDistanceFalloff = function(distance)
-      {
-        return 1 / (distance + 1);
-      }
-      var inRange = star.getLinkedInRange(range).byRange;
-
-      for (var distanceString in inRange)
-      {
-        var stars = inRange[distanceString];
-        var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-
-        for (var i = 0; i < stars.length; i++)
-        {
-          strength += this.getTotalHostileStrengthAtStar(stars[i]) * distanceFalloff
-        }
-      }
-
-      return strength;
     }
 
     getDefenceBuildingStrengthAtStarByPlayer(star: Star)
@@ -272,19 +330,12 @@ module Rance
       return strength;
     }
 
-    evaluateStarVulnerability(star: Star)
-    {
-      var currentDefenceStrength = 0;
-      currentDefenceStrength += this.getTotalHostileStrengthAtStar(star);
-      currentDefenceStrength += this.getTotalDefenceBuildingStrengthAtStar(star);
-
-      var nearbyDefenceStrength = this.evaluateHostileStrengthAtNeighboringStars(star, 2);
-    }
-
     evaluateFleetStrength(fleet: Fleet): number
     {
       return fleet.getTotalStrength().current;
     }
+
+
 
     getVisibleFleetsByPlayer()
     {

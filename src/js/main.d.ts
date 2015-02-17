@@ -1967,6 +1967,14 @@ declare module Rance {
             productionWeight: number;
         };
     };
+    interface IExpansionTargetEvaluations {
+        [starId: number]: {
+            star: Rance.Star;
+            desirability: number;
+            independentStrength: number;
+            ownInfluence: number;
+        };
+    }
     class MapEvaluator {
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
@@ -1987,23 +1995,27 @@ declare module Rance {
         public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
         public evaluateIndividualStarDesirability(star: Rance.Star): number;
         public evaluateStarDesirability(star: Rance.Star): number;
-        public getImmediateExpansionDesirability(): {
+        public evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations;
+        public scoreExpansionTargets(evaluations: IExpansionTargetEvaluations): {
             star: Rance.Star;
-            desirability: number;
+            score: number;
         }[];
+        public getExpansionTarget(): {
+            star: Rance.Star;
+            score: number;
+        };
         public getHostileShipsAtStar(star: Rance.Star): {
             [playerId: number]: Rance.Unit[];
         };
         public getHostileStrengthAtStar(star: Rance.Star): {
             [playerId: number]: number;
         };
+        public getIndependentStrengthAtStar(star: Rance.Star): number;
         public getTotalHostileStrengthAtStar(star: Rance.Star): number;
-        public evaluateHostileStrengthAtNeighboringStars(star: Rance.Star, range: number): number;
         public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
             [playerId: number]: number;
         };
         public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
-        public evaluateStarVulnerability(star: Rance.Star): void;
         public evaluateFleetStrength(fleet: Rance.Fleet): number;
         public getVisibleFleetsByPlayer(): {
             [playerId: number]: Rance.Fleet[];

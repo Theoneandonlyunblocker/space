@@ -12314,6 +12314,7 @@ var Rance;
             productionWeight: 1
         }
     };
+
     var MapEvaluator = (function () {
         function MapEvaluator(map, player) {
             this.map = map;
@@ -12391,24 +12392,59 @@ var Rance;
             return evaluation;
         };
 
-        MapEvaluator.prototype.getImmediateExpansionDesirability = function () {
+        MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
             var stars = this.player.getNeighboringStars();
 
-            var evaluations = [];
+            var evaluationByStar = {};
 
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
-                var starDesirability = this.evaluateStarDesirability(star);
 
-                evaluations.push({
+                var desirability = this.evaluateStarDesirability(star);
+                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+
+                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player) || 0;
+                var ownInfluenceAtStar = ownInfluenceMap[star.id];
+
+                evaluationByStar[star.id] = {
                     star: star,
-                    desirability: starDesirability
+                    desirability: desirability,
+                    independentStrength: independentStrength,
+                    ownInfluence: ownInfluenceAtStar
+                };
+            }
+
+            return evaluationByStar;
+        };
+
+        MapEvaluator.prototype.scoreExpansionTargets = function (evaluations) {
+            var scores = [];
+
+            for (var starId in evaluations) {
+                var evaluation = evaluations[starId];
+
+                var easeOfCapturing = Math.log(evaluation.ownInfluence / evaluation.independentStrength);
+
+                var score = evaluation.desirability * easeOfCapturing;
+
+                scores.push({
+                    star: evaluation.star,
+                    score: score
                 });
             }
 
-            return evaluations.sort(function (a, b) {
-                return b.desirability - a.desirability;
+            return scores.sort(function (a, b) {
+                return b.score - a.score;
             });
+        };
+
+        MapEvaluator.prototype.getExpansionTarget = function () {
+            var evaluations = this.evaluateImmediateExpansionTargets();
+            var scores = this.scoreExpansionTargets(evaluations);
+
+            debugger;
+
+            return scores[0];
         };
 
         MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
@@ -12441,6 +12477,32 @@ var Rance;
             return strengthByEnemy;
         };
 
+        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+
+            var total = 0;
+
+            for (var playerId in byPlayer) {
+                // TODO
+                var isIndependent = false;
+                for (var i = 0; i < this.map.game.independents.length; i++) {
+                    if (this.map.game.independents[i].id === parseInt(playerId)) {
+                        isIndependent = true;
+                        break;
+                    }
+                }
+
+                // END
+                if (isIndependent) {
+                    total += byPlayer[playerId];
+                } else {
+                    continue;
+                }
+            }
+
+            return total;
+        };
+
         MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
             var byPlayer = this.getHostileStrengthAtStar(star);
 
@@ -12451,26 +12513,6 @@ var Rance;
             }
 
             return total;
-        };
-
-        MapEvaluator.prototype.evaluateHostileStrengthAtNeighboringStars = function (star, range) {
-            var strength = 0;
-
-            var getDistanceFalloff = function (distance) {
-                return 1 / (distance + 1);
-            };
-            var inRange = star.getLinkedInRange(range).byRange;
-
-            for (var distanceString in inRange) {
-                var stars = inRange[distanceString];
-                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-
-                for (var i = 0; i < stars.length; i++) {
-                    strength += this.getTotalHostileStrengthAtStar(stars[i]) * distanceFalloff;
-                }
-            }
-
-            return strength;
         };
 
         MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
@@ -12502,14 +12544,6 @@ var Rance;
             }
 
             return strength;
-        };
-
-        MapEvaluator.prototype.evaluateStarVulnerability = function (star) {
-            var currentDefenceStrength = 0;
-            currentDefenceStrength += this.getTotalHostileStrengthAtStar(star);
-            currentDefenceStrength += this.getTotalDefenceBuildingStrengthAtStar(star);
-
-            var nearbyDefenceStrength = this.evaluateHostileStrengthAtNeighboringStars(star, 2);
         };
 
         MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
