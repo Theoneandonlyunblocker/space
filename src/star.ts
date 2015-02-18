@@ -24,6 +24,8 @@ module Rance
 
     name: string;
     owner: Player;
+
+    sectorId: number;
     
     fleets:
     {
@@ -628,7 +630,65 @@ module Rance
         all: allVisited,
         byRange: visitedByRange
       });
+    }
+    // Recursively gets all neighbors that fulfill the callback condition with this star
+    // Optional earlyReturnSize parameter returns if an island of specified size is found
+    getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean,
+      earlyReturnSize?: number): Star[]
+    {
+      var visited:
+      {
+        [starId: number]: boolean;
+      } = {};
 
+      var connected:
+      {
+        [starId: number]: Star;
+      } = {};
+
+      var sizeFound = 1;
+
+      var initialStar = this;
+      var frontier: Star[] = [initialStar];
+      visited[initialStar.id] = true;
+
+      while (frontier.length > 0)
+      {
+        var current = frontier.pop();
+        connected[current.id] = current;
+        var neighbors = current.getLinkedInRange(1).all;
+        
+        for (var i = 0; i < neighbors.length; i++)
+        {
+          var neighbor = neighbors[i];
+          if (visited[neighbor.id]) continue;
+
+          visited[neighbor.id] = true;
+          if (qualifier(initialStar, neighbor))
+          {
+            sizeFound++;
+            frontier.push(neighbor);
+          }
+        }
+        // breaks when sufficiently big island has been found
+        if (earlyReturnSize && sizeFound >= earlyReturnSize)
+        {
+          for (var i = 0; i < frontier.length; i++)
+          {
+            connected[frontier[i].id] = frontier[i];
+          }
+
+          break;
+        }
+      }
+
+      var island: Star[] = [];
+      for (var starId in connected)
+      {
+        island.push(connected[starId]);
+      }
+
+      return island;
     }
     getDistanceToStar(target: Star)
     {
