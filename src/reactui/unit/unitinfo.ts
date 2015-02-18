@@ -17,15 +17,29 @@ module Rance
         {
           battleEndStatus = React.DOM.div(
           {
-            className: "unit-battle-end-status unit-battle-end-status-dead"
-          }, "Destroyed")
+            className: "unit-battle-end-status-container"
+          },
+            React.DOM.div(
+            {
+              className: "unit-battle-end-status unit-battle-end-status-dead"
+            },
+              "Destroyed"
+            )
+          )
         }
         else if (this.props.isCaptured)
         {
           battleEndStatus = React.DOM.div(
           {
-            className: "unit-battle-end-status unit-battle-end-status-captured"
-          }, "Captured")
+            className: "unit-battle-end-status-container"
+          },
+            React.DOM.div(
+            {
+              className: "unit-battle-end-status unit-battle-end-status-captured"
+            },
+              "Captured"
+            )
+          )
         }
 
         return(

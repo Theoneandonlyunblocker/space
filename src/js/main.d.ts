@@ -1187,7 +1187,7 @@ declare module Rance {
         public getActivePlayer(): Rance.Player;
         public getColumnByPosition(position: number): any;
         public getCapturedUnits(victor: Rance.Player, maxCapturedUnits?: number): Rance.Unit[];
-        public getDeadUnits(capturedUnits: Rance.Unit[]): Rance.Unit[];
+        public getDeadUnits(capturedUnits: Rance.Unit[], victor: Rance.Player): Rance.Unit[];
         public endBattle(): void;
         public finishBattle(): void;
         public getVictor(): Rance.Player;

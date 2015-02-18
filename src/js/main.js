@@ -199,12 +199,16 @@ var Rance;
                 var battleEndStatus = null;
                 if (this.props.isDead) {
                     battleEndStatus = React.DOM.div({
+                        className: "unit-battle-end-status-container"
+                    }, React.DOM.div({
                         className: "unit-battle-end-status unit-battle-end-status-dead"
-                    }, "Destroyed");
+                    }, "Destroyed"));
                 } else if (this.props.isCaptured) {
                     battleEndStatus = React.DOM.div({
+                        className: "unit-battle-end-status-container"
+                    }, React.DOM.div({
                         className: "unit-battle-end-status unit-battle-end-status-captured"
-                    }, "Captured");
+                    }, "Captured"));
                 }
 
                 return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, Rance.UIComponents.UnitStatus({
@@ -474,7 +478,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Unit = React.createClass({
             displayName: "Unit",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [Rance.UIComponents.Draggable, React.addons.PureRenderMixin],
             getInitialState: function () {
                 return ({
                     hasPopup: false,
@@ -549,20 +553,6 @@ var Rance;
                     wrapperProps.className += " hovered-unit";
                 }
 
-                var isDead = false;
-                if (this.props.battle && this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
-                    if (this.props.battle.deadUnits.indexOf(unit) >= 0) {
-                        isDead = true;
-                    }
-                }
-
-                var isCaptured = false;
-                if (this.props.battle && this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
-                    if (this.props.battle.capturedUnits.indexOf(unit) >= 0) {
-                        isCaptured = true;
-                    }
-                }
-
                 var infoProps = {
                     key: "info",
                     name: unit.name,
@@ -572,8 +562,8 @@ var Rance;
                     isSquadron: unit.isSquadron,
                     maxActionPoints: unit.attributes.maxActionPoints,
                     currentActionPoints: unit.battleStats.currentActionPoints,
-                    isDead: isDead,
-                    isCaptured: isCaptured
+                    isDead: this.props.isDead,
+                    isCaptured: this.props.isCaptured
                 };
 
                 var containerElements = [
@@ -700,11 +690,11 @@ var Rance;
                         return true;
                     }
                 }
-                if (this.props.battle && newProps.battle) {
-                    if (this.props.battle.ended !== newProps.battle.ended) {
-                        return true;
-                    }
+
+                if (newProps.battle && newProps.battle.ended) {
+                    return true;
                 }
+
                 return false;
             },
             displayName: "UnitWrapper",
@@ -732,6 +722,20 @@ var Rance;
                 allElements.push(empty);
 
                 if (this.props.unit) {
+                    var isDead = false;
+                    if (this.props.battle && this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
+                        if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0) {
+                            this.props.isDead = true;
+                        }
+                    }
+
+                    var isCaptured = false;
+                    if (this.props.battle && this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
+                        if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0) {
+                            this.props.isCaptured = true;
+                        }
+                    }
+
                     var unit = Rance.UIComponents.Unit(this.props);
                     allElements.push(unit);
                 }
@@ -7302,15 +7306,27 @@ var Rance;
 
             return capturedUnits;
         };
-        Battle.prototype.getDeadUnits = function (capturedUnits) {
-            var UNIT_DEATH_CHANCE = 1;
+        Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
+            var INDEPENDENT_DEATH_CHANCE = 1;
+            var PLAYER_DEATH_CHANCE = 0.4;
+            var LOSER_DEATH_CHANCE = 0.25;
+
+            var winningSide = this.getSideForPlayer(victor);
+            var losingSide = Rance.reverseSide(winningSide);
+            var losingPlayer = this.getPlayerForSide(losingSide);
+
             var deadUnits = [];
 
             this.forEachUnit(function (unit) {
                 if (unit.currentStrength <= 0) {
                     var wasCaptured = capturedUnits.indexOf(unit) >= 0;
                     if (!wasCaptured) {
-                        if (Math.random() <= UNIT_DEATH_CHANCE) {
+                        var isIndependent = unit.fleet.player.isIndependent;
+                        var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
+                        if (unit.fleet.player.id === losingPlayer)
+                            deathChance += LOSER_DEATH_CHANCE;
+
+                        if (Math.random() <= deathChance) {
                             deadUnits.push(unit);
                         }
                     }
@@ -7327,10 +7343,8 @@ var Rance;
 
             var victor = this.getVictor();
 
-            debugger;
-
             this.capturedUnits = this.getCapturedUnits(victor);
-            this.deadUnits = this.getDeadUnits(this.capturedUnits);
+            this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
 
             var _ = window;
 
@@ -7359,6 +7373,7 @@ var Rance;
             if (victor) {
                 for (var i = 0; i < this.capturedUnits.length; i++) {
                     this.capturedUnits[i].transferToPlayer(victor);
+                    this.capturedUnits[i].currentStrength = Math.round(this.capturedUnits[i].maxStrength * 0.1);
                 }
             }
 
@@ -7894,7 +7909,7 @@ var Rance;
                 position: null,
                 guardAmount: 0,
                 guardCoverage: null,
-                captureChance: 0.1
+                captureChance: 1
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {

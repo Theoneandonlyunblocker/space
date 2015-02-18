@@ -9,7 +9,7 @@ module Rance
     export var Unit = React.createClass(
     {
       displayName: "Unit",
-      mixins: [Draggable],
+      mixins: [Draggable, React.addons.PureRenderMixin],
       
       getInitialState: function()
       {
@@ -104,25 +104,7 @@ module Rance
           wrapperProps.className += " hovered-unit";
         }
 
-        var isDead = false;
-        if (this.props.battle &&
-          this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0)
-        {
-          if (this.props.battle.deadUnits.indexOf(unit) >= 0)
-          {
-            isDead = true;
-          }
-        }
-
-        var isCaptured = false;
-        if (this.props.battle &&
-          this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0)
-        {
-          if (this.props.battle.capturedUnits.indexOf(unit) >= 0)
-          {
-            isCaptured = true;
-          }
-        }
+        
 
         var infoProps =
         {
@@ -135,8 +117,8 @@ module Rance
           maxActionPoints: unit.attributes.maxActionPoints,
           currentActionPoints: unit.battleStats.currentActionPoints,
 
-          isDead: isDead,
-          isCaptured: isCaptured
+          isDead: this.props.isDead,
+          isCaptured: this.props.isCaptured
         }
 
         var containerElements =

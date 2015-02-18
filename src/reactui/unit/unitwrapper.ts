@@ -60,13 +60,12 @@ module Rance
             return true;
           }
         }
-        if (this.props.battle && newProps.battle)
+
+        if (newProps.battle && newProps.battle.ended)
         {
-          if (this.props.battle.ended !== newProps.battle.ended)
-          {
-            return true;
-          }
+          return true;
         }
+
         return false;
       },
       displayName: "UnitWrapper",
@@ -100,6 +99,27 @@ module Rance
 
         if (this.props.unit)
         {
+
+          var isDead = false;
+          if (this.props.battle &&
+            this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0)
+          {
+            if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0)
+            {
+              this.props.isDead = true;
+            }
+          }
+
+          var isCaptured = false;
+          if (this.props.battle &&
+            this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0)
+          {
+            if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0)
+            {
+              this.props.isCaptured = true;
+            }
+          }
+
           var unit = UIComponents.Unit(this.props);
           allElements.push(unit);
         }

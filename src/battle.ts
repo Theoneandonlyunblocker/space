@@ -251,19 +251,32 @@ module Rance
 
       return capturedUnits;
     }
-    getDeadUnits(capturedUnits: Unit[])
+    getDeadUnits(capturedUnits: Unit[], victor: Player)
     {
-      var UNIT_DEATH_CHANCE = 1;
+      var INDEPENDENT_DEATH_CHANCE = 1;
+      var PLAYER_DEATH_CHANCE = 0.4;
+      var LOSER_DEATH_CHANCE = 0.25;
+
+      var winningSide = this.getSideForPlayer(victor);
+      var losingSide = reverseSide(winningSide);
+      var losingPlayer = this.getPlayerForSide(losingSide);
+
       var deadUnits: Unit[] = [];
+
 
       this.forEachUnit(function(unit)
       {
+        
         if (unit.currentStrength <= 0)
         {
           var wasCaptured = capturedUnits.indexOf(unit) >= 0;
           if (!wasCaptured)
           {
-            if (Math.random() <= UNIT_DEATH_CHANCE)
+            var isIndependent = unit.fleet.player.isIndependent;
+            var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
+            if (unit.fleet.player.id === losingPlayer) deathChance += LOSER_DEATH_CHANCE;
+
+            if (Math.random() <= deathChance)
             {
               deadUnits.push(unit);
             }
@@ -281,10 +294,8 @@ module Rance
 
       var victor = this.getVictor();
 
-      debugger;
-
       this.capturedUnits = this.getCapturedUnits(victor);
-      this.deadUnits = this.getDeadUnits(this.capturedUnits);
+      this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
 
 
 
@@ -323,6 +334,8 @@ module Rance
         for (var i = 0; i < this.capturedUnits.length; i++)
         {
           this.capturedUnits[i].transferToPlayer(victor);
+          this.capturedUnits[i].currentStrength =
+            Math.round(this.capturedUnits[i].maxStrength * 0.1);
         }
       }
       

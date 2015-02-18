@@ -756,7 +756,7 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: space-between;
 }
 
-.unit-strength-container
+.unit-info .unit-strength-container
 {
   padding: 0 2px;
 }
@@ -871,7 +871,7 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: center;
 }
 
-.unit-battle-end-status
+.unit-battle-end-status-container
 {
   display: flex;
   position: absolute;
@@ -881,27 +881,50 @@ progress::-webkit-progress-value { background: #080; }
   height: 88%;
   z-index: 99;
 
+  background: black;
+
   align-items: center;
   justify-content: center;
-  align-self: center;
+}
+
+.unit-battle-end-status
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  border-width: 2px;
+  border-radius: 4px;
+  border-style: solid;
+  box-sizing: border-box;
+  width: 95%;
+  height: 95%;
 }
 
 .unit-battle-end-status-dead
 {
+  @col: #B00;
+
   background: linear-gradient(
     to top,
-    #B00,
-    #000
+    @col,
+    #333
   );
+
+  border-color: lighten(@col, 5%);
 }
 
 .unit-battle-end-status-captured
 {
+  @col: #1987DC;
+
   background: linear-gradient(
     to top,
-    #1987DC,
-    #000
+    @col,
+    #333
   );
+
+  border-color: lighten(@col, 5%);
 }
 
 .turns-container

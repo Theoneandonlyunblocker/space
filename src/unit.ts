@@ -217,7 +217,7 @@ module Rance
         position: null,
         guardAmount: 0,
         guardCoverage: null,
-        captureChance: 0.1 // BASE_CAPTURE_CHANCE
+        captureChance: 1 // BASE_CAPTURE_CHANCE
       }
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
