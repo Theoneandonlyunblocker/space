@@ -246,35 +246,12 @@ module Rance
     }
     getIsland(start: Star): Star[]
     {
-      var self = this;
-      var connected:
+      var isOwnedByThisPlayerFN = function(a, b)
       {
-        [id: number]: Star;
-      } = {};
-
-      var toConnect: Star[] = [start];
-
-      while (toConnect.length > 0)
-      {
-        var current = toConnect.pop();
-        var neighbors = current.getNeighbors();
-        var newFriendlyNeighbors = neighbors.filter(function(s)
-        {
-          return (s.owner && !connected[s.id] && s.owner.id === self.id);
-        })
-
-        toConnect = toConnect.concat(newFriendlyNeighbors);
-
-        connected[current.id] = current;
+        return (b.owner && a.owner.id === b.owner.id);
       }
 
-      var island: Star[] = [];
-      for (var id in connected)
-      {
-        island.push(connected[id]);
-      }
-
-      return island;
+      return start.getIslandForQualifier(isOwnedByThisPlayerFN);
     }
     getAllIslands(): Star[][]
     {
