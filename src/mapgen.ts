@@ -607,5 +607,27 @@ module Rance
 
       console.log(cuts, noCuts, reverts)
     }
+    /*
+    while average size sectors left to assign && unassigned stars left
+      pick random unassigned star
+      if star cannot form island bigger than minsize
+        remove from unassigned into leftovers & break
+
+    remaining unassigned if any put into leftovers
+
+    while leftovers
+      pick random leftover
+      if leftover has no assigned neighbor pick, continue
+
+      leftover gets assigned to smallest neighboring sector
+      if sizes equal, assign to region with least neighboring leftovers
+     */
+    divideSectors(minSize: number, maxSize: number)
+    {
+      var totalStars = this.nonFillerPoints.length;
+      var unassignedStars = this.nonFillerPoints.slice(0);
+      
+      
+    }
   }
 }
