@@ -612,7 +612,7 @@ module Rance
           }
         }
       }
-      var allVisited = [];
+      var allVisited: Star[] = [];
 
       for (var id in visited)
       {

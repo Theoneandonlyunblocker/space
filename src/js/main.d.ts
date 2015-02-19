@@ -319,6 +319,7 @@ declare module Rance {
 declare module Rance {
     function randInt(min: any, max: any): number;
     function randRange(min: any, max: any): any;
+    function getRandomArrayKey(target: any[]): number;
     function getRandomArrayItem(target: any[]): any;
     function getRandomKey(target: any): string;
     function getRandomProperty(target: any): any;
@@ -654,6 +655,7 @@ declare module Rance {
         public baseIncome: number;
         public name: string;
         public owner: Rance.Player;
+        public sectorId: number;
         public fleets: {
             [playerId: string]: Rance.Fleet[];
         };
@@ -724,11 +726,12 @@ declare module Rance {
         public severLinksToNonCenter(): void;
         public getNeighbors(): Star[];
         public getLinkedInRange(range: number): {
-            all: any[];
+            all: Star[];
             byRange: {
                 [range: number]: Star[];
             };
         };
+        public getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
         public getDistanceToStar(target: Star): number;
         public getVisionRange(): number;
         public getVision(): Star[];
@@ -1536,6 +1539,7 @@ declare module Rance {
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
         public getFurthestPointInRegion(region: any): Rance.Star;
         public partiallyCutConnections(minConnections: number): void;
+        public divideSectors(minSize: number, maxSize: number): void;
     }
 }
 declare module Rance {

@@ -611,9 +611,10 @@ module Rance
     while average size sectors left to assign && unassigned stars left
       pick random unassigned star
       if star cannot form island bigger than minsize
-        remove from unassigned into leftovers & break
+        put from unassigned into leftovers & continue
+      else
+        add random neighbors into region until minsize is met
 
-    remaining unassigned if any put into leftovers
 
     while leftovers
       pick random leftover
@@ -625,9 +626,163 @@ module Rance
     divideSectors(minSize: number, maxSize: number)
     {
       var totalStars = this.nonFillerPoints.length;
-      var unassignedStars = this.nonFillerPoints.slice(0);
+      var unassignedStars: Star[] = this.nonFillerPoints.slice(0);
+      var leftoverStars: Star[] = [];
       
-      
+      var averageSize = (minSize + maxSize) / 2;
+      var averageSectorsAmount = Math.round(totalStars / averageSize);
+
+      var sectorIdGenerator = 0;
+      var sectors:
+      {
+        [sectorId: number]: Star[];
+      } = {};
+
+      var sameSectorFN = function(a, b)
+      {
+        return a.sectorId === b.sectorId;
+      };
+
+      var getNeighboringStarsForSector = function(sectorId: number)
+      {
+        var stars = sectors[sectorId];
+        var neighbors: Star[] = [];
+        var alreadyAdded:
+        {
+          [starId: number]: boolean;
+        } = {};
+
+        for (var i = 0; i < stars.length; i++)
+        {
+          var frontier = stars[i].getLinkedInRange(1).all;
+          for (var j = 0; j < frontier.length; j++)
+          {
+            if (frontier[j].sectorId !== sectorId && !alreadyAdded[frontier[j].id])
+            {
+              neighbors.push(frontier[j]);
+              alreadyAdded[frontier[j].id] = true;
+            }
+          }
+        }
+
+        return neighbors;
+      }
+
+      var addStarToSector = function(star: Star, sectorId: number)
+      {
+        star.sectorId = sectorId;
+        sectors[sectorId].push(star);
+      }
+
+      while (averageSectorsAmount > 0 && unassignedStars.length > 0)
+      {
+
+        var seedStar = unassignedStars.pop();
+        var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+
+        if (canFormMinSizeSector)
+        {
+          var sectorId = sectorIdGenerator++;
+          sectors[sectorId] = [];
+
+          var discoveryStarIndex = 0;
+          var sectorStars = [seedStar];
+          addStarToSector(seedStar, sectorId);
+
+          while (sectorStars.length < minSize)
+          {
+            var discoveryStar = sectorStars[discoveryStarIndex];
+
+            var frontier = discoveryStar.getLinkedInRange(1).all;
+            frontier = frontier.filter(function(star)
+            {
+              return !isFinite(star.sectorId);
+            });
+
+            while (sectorStars.length < minSize && frontier.length > 0)
+            {
+              var randomFrontierKey = getRandomArrayKey(frontier);
+              var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+              sectorStars.push(toAdd);
+              unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
+              addStarToSector(toAdd, sectorId);
+            }
+
+            discoveryStarIndex++;
+          }
+        }
+        else
+        {
+          leftoverStars.push(seedStar);
+        }
+      }
+
+      while (leftoverStars.length > 0)
+      {
+        var star = leftoverStars.pop();
+
+        var neighbors = star.getLinkedInRange(1).all;
+        var alreadyAddedNeighbors:
+        {
+          [sectorId: number]: boolean;
+        } = {};
+        var candidateSectors: number[] = [];
+
+        for (var j = 0; j < neighbors.length; j++)
+        {
+          if (!isFinite(neighbors[j].sectorId)) continue;
+          else
+          {
+            if (!alreadyAddedNeighbors[neighbors[j].sectorId])
+            {
+              alreadyAddedNeighbors[neighbors[j].sectorId] = true;
+              candidateSectors.push(neighbors[j].sectorId);
+            }
+          }
+        }
+
+        if (candidateSectors.length < 1)
+        {
+          leftoverStars.unshift(star);
+          continue;
+        }
+
+        var unclaimedNeighborsPerSector:
+        {
+          [sectorId: number]: number;
+        } = {};
+
+        for (var j = 0; j < candidateSectors.length; j++)
+        {
+          var sectorNeighbors = getNeighboringStarsForSector(candidateSectors[j]);
+          var unclaimed = 0;
+          for (var k = 0; k < sectorNeighbors.length; k++)
+          {
+            if (!isFinite(sectorNeighbors[k].sectorId))
+            {
+              unclaimed++;
+            }
+          }
+
+          unclaimedNeighborsPerSector[candidateSectors[j]] = unclaimed;
+        }
+
+        candidateSectors.sort(function(a, b)
+        {
+          var sizeSort = sectors[a].length - sectors[b].length;
+          if (sizeSort) return sizeSort;
+
+          var unclaimedSort = unclaimedNeighborsPerSector[b] -
+            unclaimedNeighborsPerSector[a];
+          return unclaimedSort;
+        });
+
+        var sectorToAddTo = candidateSectors[0];
+
+        addStarToSector(star, sectorToAddTo);
+      }
+
+      debugger;
     }
   }
 }

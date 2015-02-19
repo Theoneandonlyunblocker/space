@@ -11,6 +11,10 @@ module Rance
   {
     return Math.random() * (max - min) + min;
   }
+  export function getRandomArrayKey(target: any[])
+  {
+    return Math.floor(Math.random() * (target.length));
+  }
   export function getRandomArrayItem(target: any[])
   {
     var _rnd = Math.floor(Math.random() * (target.length));

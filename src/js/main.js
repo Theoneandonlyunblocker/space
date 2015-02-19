@@ -3588,7 +3588,9 @@ var Rance;
                     className: "star-info-location"
                 }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed()), React.DOM.div({
                     className: "star-info-income"
-                }, "Income: " + star.getIncome()), Rance.UIComponents.DefenceBuildingList({
+                }, "Income: " + star.getIncome()), React.DOM.div({
+                    className: "star-info-sector"
+                }, "Sector: " + star.sectorId), Rance.UIComponents.DefenceBuildingList({
                     buildings: star.buildings["defence"]
                 })));
             }
@@ -3766,6 +3768,10 @@ var Rance;
         return Math.random() * (max - min) + min;
     }
     Rance.randRange = randRange;
+    function getRandomArrayKey(target) {
+        return Math.floor(Math.random() * (target.length));
+    }
+    Rance.getRandomArrayKey = getRandomArrayKey;
     function getRandomArrayItem(target) {
         var _rnd = Math.floor(Math.random() * (target.length));
         return target[_rnd];
@@ -5249,6 +5255,54 @@ var Rance;
                 all: allVisited,
                 byRange: visitedByRange
             });
+        };
+
+        // Recursively gets all neighbors that fulfill the callback condition with this star
+        // Optional earlyReturnSize parameter returns if an island of specified size is found
+        Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
+            var visited = {};
+
+            var connected = {};
+
+            var sizeFound = 1;
+
+            var initialStar = this;
+            var frontier = [initialStar];
+            visited[initialStar.id] = true;
+
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                connected[current.id] = current;
+                var neighbors = current.getLinkedInRange(1).all;
+
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+
+                    visited[neighbor.id] = true;
+                    if (qualifier(initialStar, neighbor)) {
+                        sizeFound++;
+                        frontier.push(neighbor);
+                    }
+                }
+
+                // breaks when sufficiently big island has been found
+                if (earlyReturnSize && sizeFound >= earlyReturnSize) {
+                    for (var i = 0; i < frontier.length; i++) {
+                        connected[frontier[i].id] = frontier[i];
+                    }
+
+                    break;
+                }
+            }
+
+            var island = [];
+            for (var starId in connected) {
+                island.push(connected[starId]);
+            }
+
+            return island;
         };
         Star.prototype.getDistanceToStar = function (target) {
             if (!this.indexedDistanceToStar[target.id]) {
@@ -6819,29 +6873,11 @@ var Rance;
             return allStars;
         };
         Player.prototype.getIsland = function (start) {
-            var self = this;
-            var connected = {};
+            var isOwnedByThisPlayerFN = function (a, b) {
+                return (b.owner && a.owner.id === b.owner.id);
+            };
 
-            var toConnect = [start];
-
-            while (toConnect.length > 0) {
-                var current = toConnect.pop();
-                var neighbors = current.getNeighbors();
-                var newFriendlyNeighbors = neighbors.filter(function (s) {
-                    return (s.owner && !connected[s.id] && s.owner.id === self.id);
-                });
-
-                toConnect = toConnect.concat(newFriendlyNeighbors);
-
-                connected[current.id] = current;
-            }
-
-            var island = [];
-            for (var id in connected) {
-                island.push(connected[id]);
-            }
-
-            return island;
+            return start.getIslandForQualifier(isOwnedByThisPlayerFN);
         };
         Player.prototype.getAllIslands = function () {
             var unConnected = this.controlledLocations.slice(0);
@@ -10003,6 +10039,149 @@ var Rance;
 
             console.log(cuts, noCuts, reverts);
         };
+
+        /*
+        while average size sectors left to assign && unassigned stars left
+        pick random unassigned star
+        if star cannot form island bigger than minsize
+        put from unassigned into leftovers & continue
+        else
+        add random neighbors into region until minsize is met
+        
+        
+        while leftovers
+        pick random leftover
+        if leftover has no assigned neighbor pick, continue
+        
+        leftover gets assigned to smallest neighboring sector
+        if sizes equal, assign to region with least neighboring leftovers
+        */
+        MapGen.prototype.divideSectors = function (minSize, maxSize) {
+            var totalStars = this.nonFillerPoints.length;
+            var unassignedStars = this.nonFillerPoints.slice(0);
+            var leftoverStars = [];
+
+            var averageSize = (minSize + maxSize) / 2;
+            var averageSectorsAmount = Math.round(totalStars / averageSize);
+
+            var sectorIdGenerator = 0;
+            var sectors = {};
+
+            var sameSectorFN = function (a, b) {
+                return a.sectorId === b.sectorId;
+            };
+
+            var getNeighboringStarsForSector = function (sectorId) {
+                var stars = sectors[sectorId];
+                var neighbors = [];
+                var alreadyAdded = {};
+
+                for (var i = 0; i < stars.length; i++) {
+                    var frontier = stars[i].getLinkedInRange(1).all;
+                    for (var j = 0; j < frontier.length; j++) {
+                        if (frontier[j].sectorId !== sectorId && !alreadyAdded[frontier[j].id]) {
+                            neighbors.push(frontier[j]);
+                            alreadyAdded[frontier[j].id] = true;
+                        }
+                    }
+                }
+
+                return neighbors;
+            };
+
+            var addStarToSector = function (star, sectorId) {
+                star.sectorId = sectorId;
+                sectors[sectorId].push(star);
+            };
+
+            while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
+                var seedStar = unassignedStars.pop();
+                var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+
+                if (canFormMinSizeSector) {
+                    var sectorId = sectorIdGenerator++;
+                    sectors[sectorId] = [];
+
+                    var discoveryStarIndex = 0;
+                    var sectorStars = [seedStar];
+                    addStarToSector(seedStar, sectorId);
+
+                    while (sectorStars.length < minSize) {
+                        var discoveryStar = sectorStars[discoveryStarIndex];
+
+                        var frontier = discoveryStar.getLinkedInRange(1).all;
+                        frontier = frontier.filter(function (star) {
+                            return !isFinite(star.sectorId);
+                        });
+
+                        while (sectorStars.length < minSize && frontier.length > 0) {
+                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
+                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+                            sectorStars.push(toAdd);
+                            unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
+                            addStarToSector(toAdd, sectorId);
+                        }
+
+                        discoveryStarIndex++;
+                    }
+                } else {
+                    leftoverStars.push(seedStar);
+                }
+            }
+
+            while (leftoverStars.length > 0) {
+                var star = leftoverStars.pop();
+
+                var neighbors = star.getLinkedInRange(1).all;
+                var alreadyAddedNeighbors = {};
+                var candidateSectors = [];
+
+                for (var j = 0; j < neighbors.length; j++) {
+                    if (!isFinite(neighbors[j].sectorId))
+                        continue;
+                    else {
+                        if (!alreadyAddedNeighbors[neighbors[j].sectorId]) {
+                            alreadyAddedNeighbors[neighbors[j].sectorId] = true;
+                            candidateSectors.push(neighbors[j].sectorId);
+                        }
+                    }
+                }
+
+                if (candidateSectors.length < 1) {
+                    leftoverStars.unshift(star);
+                    continue;
+                }
+
+                var unclaimedNeighborsPerSector = {};
+
+                for (var j = 0; j < candidateSectors.length; j++) {
+                    var sectorNeighbors = getNeighboringStarsForSector(candidateSectors[j]);
+                    var unclaimed = 0;
+                    for (var k = 0; k < sectorNeighbors.length; k++) {
+                        if (!isFinite(sectorNeighbors[k].sectorId)) {
+                            unclaimed++;
+                        }
+                    }
+
+                    unclaimedNeighborsPerSector[candidateSectors[j]] = unclaimed;
+                }
+
+                candidateSectors.sort(function (a, b) {
+                    var sizeSort = sectors[a].length - sectors[b].length;
+                    if (sizeSort)
+                        return sizeSort;
+
+                    var unclaimedSort = unclaimedNeighborsPerSector[b] - unclaimedNeighborsPerSector[a];
+                    return unclaimedSort;
+                });
+
+                var sectorToAddTo = candidateSectors[0];
+
+                addStarToSector(star, sectorToAddTo);
+            }
+
+            debugger;
+        };
         return MapGen;
     })();
     Rance.MapGen = MapGen;
@@ -10548,6 +10727,41 @@ var Rance;
                     return doc;
                 }
             };
+            this.layers["sectors"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (!isFinite(star.sectorId))
+                            break;
+
+                        var hue = (360 / 12) * star.sectorId;
+                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
             this.layers["fleets"] = {
                 isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
@@ -10643,7 +10857,8 @@ var Rance;
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
                     { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["fleets"] }
+                    { layer: this.layers["fleets"] },
+                    { layer: this.layers["sectors"] }
                 ]
             };
             this.mapModes["noStatic"] = {
