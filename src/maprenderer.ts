@@ -683,6 +683,46 @@ module Rance
           return doc;
         }
       }
+      this.layers["sectors"] =
+      {
+        isDirty: true,
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var self = this;
+
+          var doc = new PIXI.DisplayObjectContainer();
+
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getVisibleStars();
+          }
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            if (!isFinite(star.sectorId)) break;
+
+            var hue = (360 / 12) * star.sectorId;
+            var color = hslToHex(hue / 360, 1, 0.5)
+
+            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+            var gfx = new PIXI.Graphics();
+            gfx.beginFill(color, 0.6);
+            gfx.drawShape(poly);
+            gfx.endFill;
+            doc.addChild(gfx);
+          }
+
+          doc.height;
+          return doc;
+        }
+      }
       this.layers["fleets"] =
       {
         isDirty: true,
@@ -826,6 +866,18 @@ module Rance
         layers:
         [
           {layer: this.layers["playerInfluence"]},
+          {layer: this.layers["nonFillerVoronoiLines"]},
+          {layer: this.layers["starLinks"]},
+          {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fleets"]}
+        ]
+      }
+      this.mapModes["sectors"] =
+      {
+        name: "sectors",
+        layers:
+        [
+          {layer: this.layers["sectors"]},
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},

@@ -8686,7 +8686,7 @@ var Rance;
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"), React.DOM.option({ value: "sectors" }, "sectors"))));
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = false;
@@ -10857,8 +10857,7 @@ var Rance;
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
                     { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["fleets"] },
-                    { layer: this.layers["sectors"] }
+                    { layer: this.layers["fleets"] }
                 ]
             };
             this.mapModes["noStatic"] = {
@@ -10885,6 +10884,16 @@ var Rance;
                 name: "influence",
                 layers: [
                     { layer: this.layers["playerInfluence"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["sectors"] = {
+                name: "sectors",
+                layers: [
+                    { layer: this.layers["sectors"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
