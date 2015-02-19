@@ -73,6 +73,11 @@ module Rance
         mapGen.makeRegion(data.regionNames[i]);
       }
 
+      var sectors:
+      {
+        [sectorId: number]: Star[]
+      } = {};
+
       var allPoints = [];
 
       for (var i = 0; i < data.allPoints.length; i++)
@@ -80,6 +85,11 @@ module Rance
         var point = this.deserializePoint(data.allPoints[i]);
         allPoints.push(point);
         this.pointsById[point.id] = point;
+        if (!sectors[point.sectorId])
+        {
+          sectors[point.sectorId] = [];
+        }
+        sectors[point.sectorId].push(point);
       }
 
       for (var i = 0; i < data.allPoints.length; i++)
@@ -96,6 +106,7 @@ module Rance
       }
 
       mapGen.points = allPoints;
+      mapGen.sectors = sectors;
       mapGen.makeVoronoi();
 
       var galaxyMap = new GalaxyMap();
@@ -109,6 +120,7 @@ module Rance
       star.name = data.name;
       star.distance = data.distance;
       star.region = data.region;
+      star.sectorId = data.sectorId;
       star.baseIncome = data.baseIncome;
       star.backgroundSeed = data.backgroundSeed;
 

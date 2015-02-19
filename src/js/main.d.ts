@@ -1476,6 +1476,9 @@ declare module Rance {
                 points: Rance.Star[];
             };
         };
+        public sectors: {
+            [id: number]: Rance.Star[];
+        };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
         public nonFillerVoronoiLines: {
@@ -1539,7 +1542,9 @@ declare module Rance {
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
         public getFurthestPointInRegion(region: any): Rance.Star;
         public partiallyCutConnections(minConnections: number): void;
-        public divideSectors(minSize: number, maxSize: number): void;
+        public makeSectors(minSize: number, maxSize: number): {
+            [sectorId: number]: Rance.Star[];
+        };
     }
 }
 declare module Rance {
@@ -1608,6 +1613,9 @@ declare module Rance {
     class GalaxyMap {
         public allPoints: Rance.Star[];
         public stars: Rance.Star[];
+        public sectors: {
+            [sectorId: number]: Rance.Star[];
+        };
         public mapGen: Rance.MapGen;
         public mapRenderer: Rance.MapRenderer;
         public game: Rance.Game;

@@ -25,6 +25,10 @@ module Rance
         points: Star[];
       };
     } = {};
+    sectors:
+    {
+      [id: number]: Star[];
+    };
     triangles: Triangle[] = [];
     voronoiDiagram: any;
 
@@ -93,6 +97,8 @@ module Rance
       this.triangulate();
       this.severArmLinks();
       this.partiallyCutConnections(4);
+
+      this.sectors = this.makeSectors(3, 5);
 
       this.setPlayers();
       this.setDistanceFromStartLocations();
@@ -623,7 +629,7 @@ module Rance
       leftover gets assigned to smallest neighboring sector
       if sizes equal, assign to region with least neighboring leftovers
      */
-    divideSectors(minSize: number, maxSize: number)
+    makeSectors(minSize: number, maxSize: number)
     {
       var totalStars = this.nonFillerPoints.length;
       var unassignedStars: Star[] = this.nonFillerPoints.slice(0);
@@ -782,7 +788,7 @@ module Rance
         addStarToSector(star, sectorToAddTo);
       }
 
-      debugger;
+      return sectors;
     }
   }
 }

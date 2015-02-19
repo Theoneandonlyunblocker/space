@@ -5436,6 +5436,7 @@ var Rance;
 
             data.distance = this.distance;
             data.region = this.region;
+            data.sectorId = this.sectorId;
 
             data.baseIncome = this.baseIncome;
 
@@ -9610,6 +9611,8 @@ var Rance;
             this.severArmLinks();
             this.partiallyCutConnections(4);
 
+            this.sectors = this.makeSectors(3, 5);
+
             this.setPlayers();
             this.setDistanceFromStartLocations();
 
@@ -10056,7 +10059,7 @@ var Rance;
         leftover gets assigned to smallest neighboring sector
         if sizes equal, assign to region with least neighboring leftovers
         */
-        MapGen.prototype.divideSectors = function (minSize, maxSize) {
+        MapGen.prototype.makeSectors = function (minSize, maxSize) {
             var totalStars = this.nonFillerPoints.length;
             var unassignedStars = this.nonFillerPoints.slice(0);
             var leftoverStars = [];
@@ -10180,7 +10183,7 @@ var Rance;
                 addStarToSector(star, sectorToAddTo);
             }
 
-            debugger;
+            return sectors;
         };
         return MapGen;
     })();
@@ -10747,7 +10750,9 @@ var Rance;
                         if (!isFinite(star.sectorId))
                             break;
 
-                        var hue = (360 / 12) * star.sectorId;
+                        var sectorsAmount = Object.keys(map.sectors).length;
+
+                        var hue = (360 / sectorsAmount) * star.sectorId;
                         var color = Rance.hslToHex(hue / 360, 1, 0.5);
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
@@ -11001,6 +11006,7 @@ var Rance;
 
             this.allPoints = mapGen.points;
             this.stars = mapGen.getNonFillerPoints();
+            this.sectors = mapGen.sectors;
         };
         GalaxyMap.prototype.getIncomeBounds = function () {
             var min, max;
@@ -12323,12 +12329,18 @@ var Rance;
                 mapGen.makeRegion(data.regionNames[i]);
             }
 
+            var sectors = {};
+
             var allPoints = [];
 
             for (var i = 0; i < data.allPoints.length; i++) {
                 var point = this.deserializePoint(data.allPoints[i]);
                 allPoints.push(point);
                 this.pointsById[point.id] = point;
+                if (!sectors[point.sectorId]) {
+                    sectors[point.sectorId] = [];
+                }
+                sectors[point.sectorId].push(point);
             }
 
             for (var i = 0; i < data.allPoints.length; i++) {
@@ -12343,6 +12355,7 @@ var Rance;
             }
 
             mapGen.points = allPoints;
+            mapGen.sectors = sectors;
             mapGen.makeVoronoi();
 
             var galaxyMap = new Rance.GalaxyMap();
@@ -12355,6 +12368,7 @@ var Rance;
             star.name = data.name;
             star.distance = data.distance;
             star.region = data.region;
+            star.sectorId = data.sectorId;
             star.baseIncome = data.baseIncome;
             star.backgroundSeed = data.backgroundSeed;
 

@@ -10,6 +10,10 @@ module Rance
   {
     allPoints: Star[];
     stars: Star[];
+    sectors:
+    {
+      [sectorId: number]: Star[]
+    };
     mapGen: MapGen;
     mapRenderer: MapRenderer;
     game: Game;
@@ -23,6 +27,7 @@ module Rance
 
       this.allPoints = mapGen.points;
       this.stars = mapGen.getNonFillerPoints();
+      this.sectors = mapGen.sectors;
     }
     getIncomeBounds()
     {

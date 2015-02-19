@@ -848,6 +848,7 @@ module Rance
 
       data.distance = this.distance;
       data.region = this.region;
+      data.sectorId = this.sectorId;
 
       data.baseIncome = this.baseIncome;
 
