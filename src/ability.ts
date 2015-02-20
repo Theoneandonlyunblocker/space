@@ -17,7 +17,10 @@ module Rance
 
     target = getTargetOrGuard(battle, user, ability, target);
 
-    var previousUserGuard = user.battleStats.guardAmount;
+    if (!ability.addsGuard)
+    {
+      user.removeAllGuard();
+    }
 
     var effectsToCall = [ability.mainEffect];
     if (ability.secondaryEffects)
@@ -40,11 +43,6 @@ module Rance
 
     user.removeActionPoints(ability.actionsUse);
     user.addMoveDelay(ability.moveDelay);
-
-    if (user.battleStats.guardAmount < previousUserGuard)
-    {
-      user.removeAllGuard();
-    }
   }
   export function validateTarget(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
