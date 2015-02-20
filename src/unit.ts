@@ -269,10 +269,17 @@ module Rance
     {
       this.battleStats.moveDelay += amount;
     }
+    
+    // redundant until stealth mechanics are added
     isTargetable()
     {
       return this.currentStrength > 0;
     }
+    isActiveInBattle()
+    {
+      return this.currentStrength > 0;
+    }
+
     addItem(item: Item)
     {
       var itemSlot = item.template.slot;

@@ -208,7 +208,11 @@ module Rance
 
     var inArea = effect.targetingFunction(targetFleets, target);
 
-    return inArea.filter(Boolean);
+    return inArea.filter(function(unit: Unit)
+    {
+      if (!unit) return false;
+      else return unit.isActiveInBattle();
+    });
   }
 
   export function getTargetsForAllAbilities(battle: Battle, user: Unit)
