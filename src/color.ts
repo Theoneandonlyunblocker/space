@@ -303,7 +303,7 @@ module Rance
     return [randRange(0, 360), randRange(0.55, 0.65), 1]
   }
 
-  export function makeRandomColor(values:
+  export function makeRandomColor(values?:
   {
     h?: IRange[];
     s?: IRange[];

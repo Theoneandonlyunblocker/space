@@ -4618,12 +4618,544 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
+/// <reference path="../lib/husl.d.ts" />
+/// <reference path="../data/templates/colorranges.ts" />
+var Rance;
+(function (Rance) {
+    function hex2rgb(hex) {
+        return ([
+            (hex >> 16 & 0xFF) / 255,
+            (hex >> 8 & 0xFF) / 255,
+            (hex & 0xFF) / 255
+        ]);
+    }
+    Rance.hex2rgb = hex2rgb;
+
+    function rgb2hex(rgb) {
+        return ((rgb[0] * 255 << 16) + (rgb[1] * 255 << 8) + rgb[2] * 255);
+    }
+    Rance.rgb2hex = rgb2hex;
+
+    //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+    /* accepts parameters
+    * h  Object = {h:x, s:y, v:z}
+    * OR
+    * h, s, v
+    */
+    function hsvToRgb(h, s, v) {
+        var r, g, b, i, f, p, q, t;
+
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0:
+                r = v, g = t, b = p;
+                break;
+            case 1:
+                r = q, g = v, b = p;
+                break;
+            case 2:
+                r = p, g = v, b = t;
+                break;
+            case 3:
+                r = p, g = q, b = v;
+                break;
+            case 4:
+                r = t, g = p, b = v;
+                break;
+            case 5:
+                r = v, g = p, b = q;
+                break;
+        }
+        return [r, g, b];
+    }
+    Rance.hsvToRgb = hsvToRgb;
+    function hslToRgb(h, s, l) {
+        var r, g, b;
+
+        if (s == 0) {
+            r = g = b = l; // achromatic
+        } else {
+            function hue2rgb(p, q, t) {
+                if (t < 0)
+                    t += 1;
+                if (t > 1)
+                    t -= 1;
+                if (t < 1 / 6)
+                    return p + (q - p) * 6 * t;
+                if (t < 1 / 2)
+                    return q;
+                if (t < 2 / 3)
+                    return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
+
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [r, g, b];
+    }
+    Rance.hslToRgb = hslToRgb;
+    function rgbToHsv(r, g, b) {
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max == 0 ? 0 : d / max;
+
+        if (max == min) {
+            h = 0; // achromatic
+        } else {
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, v];
+    }
+    Rance.rgbToHsv = rgbToHsv;
+    function rgbToHsl(r, g, b) {
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if (max == min) {
+            h = s = 0; // achromatic
+        } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, l];
+    }
+    Rance.rgbToHsl = rgbToHsl;
+
+    function hslToHex(h, s, l) {
+        return rgb2hex(hslToRgb(h, s, l));
+    }
+    Rance.hslToHex = hslToHex;
+    function hsvToHex(h, s, v) {
+        return rgb2hex(hsvToRgb(h, s, v));
+    }
+    Rance.hsvToHex = hsvToHex;
+
+    function hexToHsl(hex) {
+        return rgbToHsl.apply(null, hex2rgb(hex));
+    }
+    Rance.hexToHsl = hexToHsl;
+    function hexToHsv(hex) {
+        return rgbToHsv.apply(null, hex2rgb(hex));
+    }
+    Rance.hexToHsv = hexToHsv;
+
+    function excludeFromRanges(ranges, toExclude) {
+        var intersecting = getIntersectingRanges(ranges, toExclude);
+
+        var newRanges = ranges.slice(0);
+
+        for (var i = 0; i < intersecting.length; i++) {
+            newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
+
+            var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
+
+            if (intersectedRanges) {
+                newRanges = newRanges.concat(intersectedRanges);
+            }
+        }
+
+        return newRanges;
+    }
+    Rance.excludeFromRanges = excludeFromRanges;
+
+    function getIntersectingRanges(ranges, toIntersectWith) {
+        var intersecting = [];
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
+                continue;
+            }
+
+            intersecting.push(range);
+        }
+        return intersecting;
+    }
+    Rance.getIntersectingRanges = getIntersectingRanges;
+
+    function excludeFromRange(range, toExclude) {
+        if (toExclude.max < range.min || toExclude.min > range.max) {
+            return null;
+        } else if (toExclude.min < range.min && toExclude.max > range.max) {
+            return null;
+        }
+
+        if (toExclude.min <= range.min) {
+            return ([{ min: toExclude.max, max: range.max }]);
+        } else if (toExclude.max >= range.max) {
+            return ([{ min: range.min, max: toExclude.min }]);
+        }
+
+        var a = {
+            min: range.min,
+            max: toExclude.min
+        };
+        var b = {
+            min: toExclude.max,
+            max: range.max
+        };
+
+        return [a, b];
+    }
+    Rance.excludeFromRange = excludeFromRange;
+
+    function randomSelectFromRanges(ranges) {
+        var totalWeight = 0;
+        var rangesByRelativeWeight = {};
+        var currentRelativeWeight = 0;
+
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (!isFinite(range.max))
+                range.max = 1;
+            if (!isFinite(range.min))
+                range.min = 0;
+            var weight = range.max - range.min;
+
+            totalWeight += weight;
+        }
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            var relativeWeight = (range.max - range.min) / totalWeight;
+            if (totalWeight === 0)
+                relativeWeight = 1;
+            currentRelativeWeight += relativeWeight;
+            rangesByRelativeWeight[currentRelativeWeight] = range;
+        }
+
+        var rand = Math.random();
+        var selectedRange;
+
+        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
+            return parseFloat(w);
+        });
+
+        var sortedWeights = sortedWeights.sort();
+
+        for (var i = 0; i < sortedWeights.length; i++) {
+            if (rand < sortedWeights[i]) {
+                selectedRange = rangesByRelativeWeight[sortedWeights[i]];
+                break;
+            }
+        }
+        if (!selectedRange)
+            console.log(rangesByRelativeWeight);
+
+        return Rance.randRange(selectedRange.min, selectedRange.max);
+    }
+    Rance.randomSelectFromRanges = randomSelectFromRanges;
+
+    function makeRandomVibrantColor() {
+        var hRanges = [
+            { min: 0, max: 90 / 360 },
+            { min: 120 / 360, max: 150 / 360 },
+            { min: 180 / 360, max: 290 / 360 },
+            { min: 320 / 360, max: 1 }
+        ];
+        return [randomSelectFromRanges(hRanges), Rance.randRange(0.8, 0.9), Rance.randRange(0.88, 0.92)];
+    }
+    Rance.makeRandomVibrantColor = makeRandomVibrantColor;
+    function makeRandomDeepColor() {
+        // yellow
+        if (Math.random() < 0.1) {
+            return [Rance.randRange(15 / 360, 80 / 360), Rance.randRange(0.92, 1), Rance.randRange(0.92, 1)];
+        }
+        var hRanges = [
+            { min: 0, max: 15 / 360 },
+            { min: 100 / 360, max: 195 / 360 },
+            { min: 210 / 360, max: 1 }
+        ];
+        return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
+    }
+    Rance.makeRandomDeepColor = makeRandomDeepColor;
+    function makeRandomLightColor() {
+        return [Rance.randRange(0, 360), Rance.randRange(0.55, 0.65), 1];
+    }
+    Rance.makeRandomLightColor = makeRandomLightColor;
+
+    function makeRandomColor(values) {
+        values = values || {};
+        var color = {};
+
+        ["h", "s", "l"].forEach(function (v) {
+            if (!values[v])
+                values[v] = [];
+        });
+
+        for (var value in values) {
+            if (values[value].length < 1) {
+                values[value] = [{ min: 0, max: 1 }];
+            }
+
+            color[value] = randomSelectFromRanges(values[value]);
+        }
+
+        return [color.h, color.s, color.l];
+    }
+    Rance.makeRandomColor = makeRandomColor;
+    function colorFromScalars(color) {
+        return [color[0] * 360, color[1] * 100, color[2] * 100];
+    }
+    Rance.colorFromScalars = colorFromScalars;
+    function scalarsFromColor(scalars) {
+        return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
+    }
+    Rance.scalarsFromColor = scalarsFromColor;
+
+    function makeContrastingColor(props) {
+        var initialRanges = props.initialRanges || {};
+        var exclusions = props.minDifference || {};
+        var maxDifference = props.maxDifference || {};
+        var color = props.color;
+        var hMaxDiffernece = isFinite(maxDifference.h) ? maxDifference.h : 360;
+        var sMaxDiffernece = isFinite(maxDifference.s) ? maxDifference.s : 100;
+        var lMaxDiffernece = isFinite(maxDifference.l) ? maxDifference.l : 100;
+
+        var hRange = initialRanges.h || { min: 0, max: 360 };
+        var sRange = initialRanges.s || { min: 50, max: 100 };
+        var lRange = initialRanges.l || { min: 0, max: 100 };
+
+        var hExclusion = exclusions.h || 30;
+
+        var hMin = (color[0] - hExclusion) % 360;
+        var hMax = (color[0] + hExclusion) % 360;
+
+        var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
+
+        var h = randomSelectFromRanges(hRange2);
+        h = Rance.clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
+        var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
+        var relativeHDistance = 1 / (180 / hDistance);
+
+        var lExclusion = exclusions.l || 30;
+
+        // if (relativeHDistance < 0.2)
+        // {
+        //   lExclusion /= 2;
+        //   clamp(lExclusion, 0, 100);
+        // }
+        //
+        var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
+        var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
+
+        var sExclusion = exclusions.s || 0;
+        var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
+        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
+
+        var ranges = {
+            h: [{ min: h, max: h }],
+            s: excludeFromRange(sRange, { min: sMin, max: sMax }),
+            l: excludeFromRange(lRange, { min: lMin, max: lMax })
+        };
+
+        return makeRandomColor(ranges);
+    }
+    Rance.makeContrastingColor = makeContrastingColor;
+    function hexToHusl(hex) {
+        return HUSL.fromHex(Rance.hexToString(hex));
+    }
+    Rance.hexToHusl = hexToHusl;
+    function generateMainColor() {
+        var color;
+        var hexColor;
+        var genType;
+        if (Math.random() < 0.6) {
+            color = makeRandomDeepColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "deep";
+        } else if (Math.random() < 0.25) {
+            color = makeRandomLightColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "light";
+        } else if (Math.random() < 0.3) {
+            color = makeRandomVibrantColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "vibrant";
+        } else {
+            color = makeRandomColor({
+                s: [{ min: 1, max: 1 }],
+                l: [{ min: 0.88, max: 1 }]
+            });
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
+            genType = "husl";
+        }
+
+        var huslColor = hexToHusl(hexColor);
+        huslColor[2] = Rance.clamp(huslColor[2], 30, 100);
+        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, huslColor));
+        return hexColor;
+    }
+    Rance.generateMainColor = generateMainColor;
+    function generateSecondaryColor(mainColor) {
+        var huslColor = hexToHusl(mainColor);
+        var hexColor;
+
+        if (huslColor[2] < 0.3 || Math.random() < 0.4) {
+            var contrastingColor = makeContrastingColor({
+                color: huslColor,
+                minDifference: {
+                    h: 30,
+                    l: 30
+                },
+                maxDifference: {
+                    h: 80
+                }
+            });
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
+        } else {
+            function contrasts(c1, c2) {
+                return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
+            }
+            function makeColor(c1, easing) {
+                var hsvColor = hexToHsv(c1);
+
+                hsvColor = colorFromScalars(hsvColor);
+                var contrastingColor = makeContrastingColor({
+                    color: hsvColor,
+                    initialRanges: {
+                        l: { min: 60 * easing, max: 100 }
+                    },
+                    minDifference: {
+                        h: 20 * easing,
+                        s: 30 * easing
+                    },
+                    maxDifference: {
+                        h: 100
+                    }
+                });
+
+                var hex = hsvToHex.apply(null, scalarsFromColor(contrastingColor));
+
+                return hexToHusl(hex);
+            }
+
+            var huslBg = hexToHusl(mainColor);
+            var easing = 1;
+            var candidateColor = makeColor(mainColor, easing);
+
+            while (!contrasts(huslBg, candidateColor)) {
+                easing -= 0.1;
+                candidateColor = makeColor(mainColor, easing);
+            }
+
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
+        }
+
+        return hexColor;
+    }
+    Rance.generateSecondaryColor = generateSecondaryColor;
+    function generateColorScheme(mainColor) {
+        var mainColor = mainColor !== null && isFinite(mainColor) ? mainColor : generateMainColor();
+        var secondaryColor = generateSecondaryColor(mainColor);
+
+        return ({
+            main: mainColor,
+            secondary: secondaryColor
+        });
+    }
+    Rance.generateColorScheme = generateColorScheme;
+
+    function checkRandomGenHues(amt) {
+        var maxBarSize = 80;
+        var hues = {};
+        for (var i = 0; i < amt; i++) {
+            var color = generateMainColor();
+            var hue = colorFromScalars(hexToHsv(color))[0];
+            var roundedHue = Math.round(hue / 10) * 10;
+
+            if (!hues[roundedHue])
+                hues[roundedHue] = 0;
+            hues[roundedHue]++;
+        }
+
+        var min;
+        var max;
+
+        for (var _hue in hues) {
+            var count = hues[_hue];
+
+            if (!min) {
+                min = count;
+            }
+            if (!max) {
+                max = count;
+            }
+
+            min = Math.min(min, count);
+            max = Math.max(max, count);
+        }
+
+        var args = [""];
+        var toPrint = "";
+
+        for (var _hue in hues) {
+            var hue = parseInt(_hue);
+            var color = hsvToHex(hue / 360, 1, 1);
+            var count = hues[_hue];
+
+            var difference = max - min;
+            var relative = (count - min) / difference;
+
+            var chars = relative * maxBarSize;
+
+            var line = "\n%c ";
+            for (var i = 0; i < chars; i++) {
+                line += "#";
+            }
+            toPrint += line;
+            args.push("color: " + "#" + Rance.hexToString(color));
+        }
+
+        args[0] = toPrint;
+
+        console.log.apply(console, args);
+    }
+    Rance.checkRandomGenHues = checkRandomGenHues;
+})(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+/// <reference path="color.ts" />
 var Rance;
 (function (Rance) {
     var Sector = (function () {
-        function Sector(id) {
+        function Sector(id, color) {
             this.stars = [];
             this.id = isFinite(id) ? id : Rance.idGenerators.sector++;
+            this.color = isFinite(color) ? color : Rance.hslToHex.apply(null, Rance.makeRandomColor());
         }
         Sector.prototype.addStar = function (star) {
             if (star.sector) {
@@ -4649,6 +5181,18 @@ var Rance;
             }
 
             return neighbors;
+        };
+
+        Sector.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.starIds = this.stars.map(function (star) {
+                return star.id;
+            });
+            data.color = this.color;
+
+            return data;
         };
         return Sector;
     })();
@@ -6020,535 +6564,6 @@ var Rance;
         var SubEmblems = Templates.SubEmblems;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/husl.d.ts" />
-/// <reference path="../data/templates/colorranges.ts" />
-var Rance;
-(function (Rance) {
-    function hex2rgb(hex) {
-        return ([
-            (hex >> 16 & 0xFF) / 255,
-            (hex >> 8 & 0xFF) / 255,
-            (hex & 0xFF) / 255
-        ]);
-    }
-    Rance.hex2rgb = hex2rgb;
-
-    function rgb2hex(rgb) {
-        return ((rgb[0] * 255 << 16) + (rgb[1] * 255 << 8) + rgb[2] * 255);
-    }
-    Rance.rgb2hex = rgb2hex;
-
-    //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-    /* accepts parameters
-    * h  Object = {h:x, s:y, v:z}
-    * OR
-    * h, s, v
-    */
-    function hsvToRgb(h, s, v) {
-        var r, g, b, i, f, p, q, t;
-
-        i = Math.floor(h * 6);
-        f = h * 6 - i;
-        p = v * (1 - s);
-        q = v * (1 - f * s);
-        t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-            case 0:
-                r = v, g = t, b = p;
-                break;
-            case 1:
-                r = q, g = v, b = p;
-                break;
-            case 2:
-                r = p, g = v, b = t;
-                break;
-            case 3:
-                r = p, g = q, b = v;
-                break;
-            case 4:
-                r = t, g = p, b = v;
-                break;
-            case 5:
-                r = v, g = p, b = q;
-                break;
-        }
-        return [r, g, b];
-    }
-    Rance.hsvToRgb = hsvToRgb;
-    function hslToRgb(h, s, l) {
-        var r, g, b;
-
-        if (s == 0) {
-            r = g = b = l; // achromatic
-        } else {
-            function hue2rgb(p, q, t) {
-                if (t < 0)
-                    t += 1;
-                if (t > 1)
-                    t -= 1;
-                if (t < 1 / 6)
-                    return p + (q - p) * 6 * t;
-                if (t < 1 / 2)
-                    return q;
-                if (t < 2 / 3)
-                    return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            }
-
-            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            var p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1 / 3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1 / 3);
-        }
-
-        return [r, g, b];
-    }
-    Rance.hslToRgb = hslToRgb;
-    function rgbToHsv(r, g, b) {
-        var max = Math.max(r, g, b), min = Math.min(r, g, b);
-        var h, s, v = max;
-
-        var d = max - min;
-        s = max == 0 ? 0 : d / max;
-
-        if (max == min) {
-            h = 0; // achromatic
-        } else {
-            switch (max) {
-                case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                case g:
-                    h = (b - r) / d + 2;
-                    break;
-                case b:
-                    h = (r - g) / d + 4;
-                    break;
-            }
-            h /= 6;
-        }
-
-        return [h, s, v];
-    }
-    Rance.rgbToHsv = rgbToHsv;
-    function rgbToHsl(r, g, b) {
-        var max = Math.max(r, g, b), min = Math.min(r, g, b);
-        var h, s, l = (max + min) / 2;
-
-        if (max == min) {
-            h = s = 0; // achromatic
-        } else {
-            var d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch (max) {
-                case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                case g:
-                    h = (b - r) / d + 2;
-                    break;
-                case b:
-                    h = (r - g) / d + 4;
-                    break;
-            }
-            h /= 6;
-        }
-
-        return [h, s, l];
-    }
-    Rance.rgbToHsl = rgbToHsl;
-
-    function hslToHex(h, s, l) {
-        return rgb2hex(hslToRgb(h, s, l));
-    }
-    Rance.hslToHex = hslToHex;
-    function hsvToHex(h, s, v) {
-        return rgb2hex(hsvToRgb(h, s, v));
-    }
-    Rance.hsvToHex = hsvToHex;
-
-    function hexToHsl(hex) {
-        return rgbToHsl.apply(null, hex2rgb(hex));
-    }
-    Rance.hexToHsl = hexToHsl;
-    function hexToHsv(hex) {
-        return rgbToHsv.apply(null, hex2rgb(hex));
-    }
-    Rance.hexToHsv = hexToHsv;
-
-    function excludeFromRanges(ranges, toExclude) {
-        var intersecting = getIntersectingRanges(ranges, toExclude);
-
-        var newRanges = ranges.slice(0);
-
-        for (var i = 0; i < intersecting.length; i++) {
-            newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
-
-            var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
-
-            if (intersectedRanges) {
-                newRanges = newRanges.concat(intersectedRanges);
-            }
-        }
-
-        return newRanges;
-    }
-    Rance.excludeFromRanges = excludeFromRanges;
-
-    function getIntersectingRanges(ranges, toIntersectWith) {
-        var intersecting = [];
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
-                continue;
-            }
-
-            intersecting.push(range);
-        }
-        return intersecting;
-    }
-    Rance.getIntersectingRanges = getIntersectingRanges;
-
-    function excludeFromRange(range, toExclude) {
-        if (toExclude.max < range.min || toExclude.min > range.max) {
-            return null;
-        } else if (toExclude.min < range.min && toExclude.max > range.max) {
-            return null;
-        }
-
-        if (toExclude.min <= range.min) {
-            return ([{ min: toExclude.max, max: range.max }]);
-        } else if (toExclude.max >= range.max) {
-            return ([{ min: range.min, max: toExclude.min }]);
-        }
-
-        var a = {
-            min: range.min,
-            max: toExclude.min
-        };
-        var b = {
-            min: toExclude.max,
-            max: range.max
-        };
-
-        return [a, b];
-    }
-    Rance.excludeFromRange = excludeFromRange;
-
-    function randomSelectFromRanges(ranges) {
-        var totalWeight = 0;
-        var rangesByRelativeWeight = {};
-        var currentRelativeWeight = 0;
-
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            if (!isFinite(range.max))
-                range.max = 1;
-            if (!isFinite(range.min))
-                range.min = 0;
-            var weight = range.max - range.min;
-
-            totalWeight += weight;
-        }
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            var relativeWeight = (range.max - range.min) / totalWeight;
-            if (totalWeight === 0)
-                relativeWeight = 1;
-            currentRelativeWeight += relativeWeight;
-            rangesByRelativeWeight[currentRelativeWeight] = range;
-        }
-
-        var rand = Math.random();
-        var selectedRange;
-
-        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
-            return parseFloat(w);
-        });
-
-        var sortedWeights = sortedWeights.sort();
-
-        for (var i = 0; i < sortedWeights.length; i++) {
-            if (rand < sortedWeights[i]) {
-                selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-                break;
-            }
-        }
-        if (!selectedRange)
-            console.log(rangesByRelativeWeight);
-
-        return Rance.randRange(selectedRange.min, selectedRange.max);
-    }
-    Rance.randomSelectFromRanges = randomSelectFromRanges;
-
-    function makeRandomVibrantColor() {
-        var hRanges = [
-            { min: 0, max: 90 / 360 },
-            { min: 120 / 360, max: 150 / 360 },
-            { min: 180 / 360, max: 290 / 360 },
-            { min: 320 / 360, max: 1 }
-        ];
-        return [randomSelectFromRanges(hRanges), Rance.randRange(0.8, 0.9), Rance.randRange(0.88, 0.92)];
-    }
-    Rance.makeRandomVibrantColor = makeRandomVibrantColor;
-    function makeRandomDeepColor() {
-        // yellow
-        if (Math.random() < 0.1) {
-            return [Rance.randRange(15 / 360, 80 / 360), Rance.randRange(0.92, 1), Rance.randRange(0.92, 1)];
-        }
-        var hRanges = [
-            { min: 0, max: 15 / 360 },
-            { min: 100 / 360, max: 195 / 360 },
-            { min: 210 / 360, max: 1 }
-        ];
-        return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
-    }
-    Rance.makeRandomDeepColor = makeRandomDeepColor;
-    function makeRandomLightColor() {
-        return [Rance.randRange(0, 360), Rance.randRange(0.55, 0.65), 1];
-    }
-    Rance.makeRandomLightColor = makeRandomLightColor;
-
-    function makeRandomColor(values) {
-        values = values || {};
-        var color = {};
-
-        ["h", "s", "l"].forEach(function (v) {
-            if (!values[v])
-                values[v] = [];
-        });
-
-        for (var value in values) {
-            if (values[value].length < 1) {
-                values[value] = [{ min: 0, max: 1 }];
-            }
-
-            color[value] = randomSelectFromRanges(values[value]);
-        }
-
-        return [color.h, color.s, color.l];
-    }
-    Rance.makeRandomColor = makeRandomColor;
-    function colorFromScalars(color) {
-        return [color[0] * 360, color[1] * 100, color[2] * 100];
-    }
-    Rance.colorFromScalars = colorFromScalars;
-    function scalarsFromColor(scalars) {
-        return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
-    }
-    Rance.scalarsFromColor = scalarsFromColor;
-
-    function makeContrastingColor(props) {
-        var initialRanges = props.initialRanges || {};
-        var exclusions = props.minDifference || {};
-        var maxDifference = props.maxDifference || {};
-        var color = props.color;
-        var hMaxDiffernece = isFinite(maxDifference.h) ? maxDifference.h : 360;
-        var sMaxDiffernece = isFinite(maxDifference.s) ? maxDifference.s : 100;
-        var lMaxDiffernece = isFinite(maxDifference.l) ? maxDifference.l : 100;
-
-        var hRange = initialRanges.h || { min: 0, max: 360 };
-        var sRange = initialRanges.s || { min: 50, max: 100 };
-        var lRange = initialRanges.l || { min: 0, max: 100 };
-
-        var hExclusion = exclusions.h || 30;
-
-        var hMin = (color[0] - hExclusion) % 360;
-        var hMax = (color[0] + hExclusion) % 360;
-
-        var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
-
-        var h = randomSelectFromRanges(hRange2);
-        h = Rance.clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
-        var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
-        var relativeHDistance = 1 / (180 / hDistance);
-
-        var lExclusion = exclusions.l || 30;
-
-        // if (relativeHDistance < 0.2)
-        // {
-        //   lExclusion /= 2;
-        //   clamp(lExclusion, 0, 100);
-        // }
-        //
-        var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
-        var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
-
-        var sExclusion = exclusions.s || 0;
-        var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
-        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
-
-        var ranges = {
-            h: [{ min: h, max: h }],
-            s: excludeFromRange(sRange, { min: sMin, max: sMax }),
-            l: excludeFromRange(lRange, { min: lMin, max: lMax })
-        };
-
-        return makeRandomColor(ranges);
-    }
-    Rance.makeContrastingColor = makeContrastingColor;
-    function hexToHusl(hex) {
-        return HUSL.fromHex(Rance.hexToString(hex));
-    }
-    Rance.hexToHusl = hexToHusl;
-    function generateMainColor() {
-        var color;
-        var hexColor;
-        var genType;
-        if (Math.random() < 0.6) {
-            color = makeRandomDeepColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "deep";
-        } else if (Math.random() < 0.25) {
-            color = makeRandomLightColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "light";
-        } else if (Math.random() < 0.3) {
-            color = makeRandomVibrantColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "vibrant";
-        } else {
-            color = makeRandomColor({
-                s: [{ min: 1, max: 1 }],
-                l: [{ min: 0.88, max: 1 }]
-            });
-            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
-            genType = "husl";
-        }
-
-        var huslColor = hexToHusl(hexColor);
-        huslColor[2] = Rance.clamp(huslColor[2], 30, 100);
-        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, huslColor));
-        return hexColor;
-    }
-    Rance.generateMainColor = generateMainColor;
-    function generateSecondaryColor(mainColor) {
-        var huslColor = hexToHusl(mainColor);
-        var hexColor;
-
-        if (huslColor[2] < 0.3 || Math.random() < 0.4) {
-            var contrastingColor = makeContrastingColor({
-                color: huslColor,
-                minDifference: {
-                    h: 30,
-                    l: 30
-                },
-                maxDifference: {
-                    h: 80
-                }
-            });
-            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
-        } else {
-            function contrasts(c1, c2) {
-                return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
-            }
-            function makeColor(c1, easing) {
-                var hsvColor = hexToHsv(c1);
-
-                hsvColor = colorFromScalars(hsvColor);
-                var contrastingColor = makeContrastingColor({
-                    color: hsvColor,
-                    initialRanges: {
-                        l: { min: 60 * easing, max: 100 }
-                    },
-                    minDifference: {
-                        h: 20 * easing,
-                        s: 30 * easing
-                    },
-                    maxDifference: {
-                        h: 100
-                    }
-                });
-
-                var hex = hsvToHex.apply(null, scalarsFromColor(contrastingColor));
-
-                return hexToHusl(hex);
-            }
-
-            var huslBg = hexToHusl(mainColor);
-            var easing = 1;
-            var candidateColor = makeColor(mainColor, easing);
-
-            while (!contrasts(huslBg, candidateColor)) {
-                easing -= 0.1;
-                candidateColor = makeColor(mainColor, easing);
-            }
-
-            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
-        }
-
-        return hexColor;
-    }
-    Rance.generateSecondaryColor = generateSecondaryColor;
-    function generateColorScheme(mainColor) {
-        var mainColor = mainColor !== null && isFinite(mainColor) ? mainColor : generateMainColor();
-        var secondaryColor = generateSecondaryColor(mainColor);
-
-        return ({
-            main: mainColor,
-            secondary: secondaryColor
-        });
-    }
-    Rance.generateColorScheme = generateColorScheme;
-
-    function checkRandomGenHues(amt) {
-        var maxBarSize = 80;
-        var hues = {};
-        for (var i = 0; i < amt; i++) {
-            var color = generateMainColor();
-            var hue = colorFromScalars(hexToHsv(color))[0];
-            var roundedHue = Math.round(hue / 10) * 10;
-
-            if (!hues[roundedHue])
-                hues[roundedHue] = 0;
-            hues[roundedHue]++;
-        }
-
-        var min;
-        var max;
-
-        for (var _hue in hues) {
-            var count = hues[_hue];
-
-            if (!min) {
-                min = count;
-            }
-            if (!max) {
-                max = count;
-            }
-
-            min = Math.min(min, count);
-            max = Math.max(max, count);
-        }
-
-        var args = [""];
-        var toPrint = "";
-
-        for (var _hue in hues) {
-            var hue = parseInt(_hue);
-            var color = hsvToHex(hue / 360, 1, 1);
-            var count = hues[_hue];
-
-            var difference = max - min;
-            var relative = (count - min) / difference;
-
-            var chars = relative * maxBarSize;
-
-            var line = "\n%c ";
-            for (var i = 0; i < chars; i++) {
-                line += "#";
-            }
-            toPrint += line;
-            args.push("color: " + "#" + Rance.hexToString(color));
-        }
-
-        args[0] = toPrint;
-
-        console.log.apply(console, args);
-    }
-    Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="../data/templates/subemblemtemplates.ts" />
@@ -10763,10 +10778,12 @@ var Rance;
                         if (!star.sector)
                             break;
 
+                        /*
                         var sectorsAmount = Object.keys(map.sectors).length;
-
                         var hue = (360 / sectorsAmount) * star.sector.id;
-                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
+                        var color = hslToHex(hue / 360, 1, 0.5)
+                        */
+                        var color = star.sector.color;
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
@@ -11054,6 +11071,12 @@ var Rance;
 
             for (var name in this.mapGen.regions) {
                 data.regionNames.push(name);
+            }
+
+            data.sectors = [];
+
+            for (var sectorId in this.sectors) {
+                data.sectors.push(this.sectors[sectorId].serialize());
             }
 
             data.maxWidth = this.mapGen.maxWidth;
@@ -12364,6 +12387,10 @@ var Rance;
                 }
             }
 
+            for (var i = 0; i < data.sectors.length; i++) {
+                this.sectors[data.sectors[i].id] = this.deserializeSector(data.sectors[i]);
+            }
+
             mapGen.points = allPoints;
             mapGen.sectors = this.sectors;
             mapGen.makeVoronoi();
@@ -12373,6 +12400,13 @@ var Rance;
 
             return galaxyMap;
         };
+        GameLoader.prototype.deserializeSector = function (data) {
+            var sector = new Rance.Sector(data.id, data.color);
+            for (var i = 0; i < data.starIds.length; i++) {
+                sector.addStar(this.pointsById[data.starIds[i]]);
+            }
+            return sector;
+        };
         GameLoader.prototype.deserializePoint = function (data) {
             var star = new Rance.Star(data.x, data.y, data.id);
             star.name = data.name;
@@ -12380,13 +12414,6 @@ var Rance;
             star.region = data.region;
             star.baseIncome = data.baseIncome;
             star.backgroundSeed = data.backgroundSeed;
-
-            if (isFinite(data.sectorId)) {
-                if (!this.sectors[data.sectorId]) {
-                    this.sectors[data.sectorId] = new Rance.Sector(data.sectorId);
-                }
-                this.sectors[data.sectorId].addStar(star);
-            }
 
             var buildableItems = {};
 

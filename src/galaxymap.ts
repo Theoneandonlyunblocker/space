@@ -68,6 +68,13 @@ module Rance
         data.regionNames.push(name);
       }
 
+      data.sectors = [];
+
+      for (var sectorId in this.sectors)
+      {
+        data.sectors.push(this.sectors[sectorId].serialize());
+      }
+
       data.maxWidth = this.mapGen.maxWidth;
       data.maxHeight = this.mapGen.maxHeight;
 

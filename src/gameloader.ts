@@ -100,6 +100,11 @@ module Rance
         }
       }
 
+      for (var i = 0; i < data.sectors.length; i++)
+      {
+        this.sectors[data.sectors[i].id] = this.deserializeSector(data.sectors[i]);
+      }
+
       mapGen.points = allPoints;
       mapGen.sectors = this.sectors;
       mapGen.makeVoronoi();
@@ -109,6 +114,15 @@ module Rance
 
       return galaxyMap;
     }
+    deserializeSector(data)
+    {
+      var sector = new Sector(data.id, data.color);
+      for (var i = 0; i < data.starIds.length; i++)
+      {
+        sector.addStar(this.pointsById[data.starIds[i]]);
+      }
+      return sector;
+    }
     deserializePoint(data)
     {
       var star = new Star(data.x, data.y, data.id);
@@ -117,15 +131,6 @@ module Rance
       star.region = data.region;
       star.baseIncome = data.baseIncome;
       star.backgroundSeed = data.backgroundSeed;
-
-      if (isFinite(data.sectorId))
-      {
-        if (!this.sectors[data.sectorId])
-        {
-          this.sectors[data.sectorId] = new Sector(data.sectorId);
-        }
-        this.sectors[data.sectorId].addStar(star);
-      }
       
       var buildableItems: any = {};
 

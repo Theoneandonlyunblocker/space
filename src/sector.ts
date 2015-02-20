@@ -1,13 +1,18 @@
+/// <reference path="star.ts" />
+/// <reference path="color.ts" />
+
 module Rance
 {
   export class Sector
   {
     id: number;
     stars: Star[] = [];
+    color: number;
 
-    constructor(id?: number)
+    constructor(id?: number, color?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.sector++;
+      this.color = isFinite(color) ? color : hslToHex.apply(null, makeRandomColor());
     }
     addStar(star: Star)
     {
@@ -42,6 +47,20 @@ module Rance
       }
 
       return neighbors;
+    }
+
+    serialize()
+    {
+      var data: any = {};
+
+      data.id = this.id;
+      data.starIds = this.stars.map(function(star)
+      {
+        return star.id;
+      });
+      data.color = this.color;
+
+      return data;
     }
   }
 }
