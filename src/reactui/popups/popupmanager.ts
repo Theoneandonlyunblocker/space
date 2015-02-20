@@ -23,6 +23,11 @@ module Rance
           {
             self.closePopup(e.data);
           });
+        this.listeners["setPopupContent"] =
+          eventManager.addEventListener("setPopupContent", function(e)
+          {
+            self.setPopupContent(e.data.id, e.data.content);
+          });
       },
 
       componentWillUnmount: function()
@@ -53,6 +58,16 @@ module Rance
         if (!this.popupId) this.popupId = 0;
 
         return this.popupId++;
+      },
+
+      getPopup: function(id: number)
+      {
+        for (var i = 0; i < this.state.popups.length; i++)
+        {
+          if (this.state.popups[i].id === id) return this.state.popups[i];
+        }
+
+        return null;
       },
 
       hasPopup: function(id: number)
@@ -99,6 +114,16 @@ module Rance
         {
           popups: popups
         });
+      },
+
+      setPopupContent: function(popupId: number, newContent: any)
+      {
+        var popup = this.getPopup(popupId);
+        if (!popup) throw new Error();
+
+        popup.contentProps = newContent;
+
+        this.forceUpdate();
       },
 
       render: function()

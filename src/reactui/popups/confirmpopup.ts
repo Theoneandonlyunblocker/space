@@ -13,6 +13,12 @@ module Rance
 
       handleOk: function()
       {
+        if (!this.props.handleOk)
+        {
+          this.handleClose();
+          return;
+        }
+        
         var callbackSuccesful = this.props.handleOk();
 
         if (callbackSuccesful !== false)

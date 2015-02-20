@@ -22,6 +22,7 @@ module Rance
             {
               className: "galaxy-map"  
             },
+            UIComponents.PopupManager(),
             React.DOM.div(
             {
               ref: "pixiContainer",
