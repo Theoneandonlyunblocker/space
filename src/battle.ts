@@ -334,8 +334,6 @@ module Rance
         for (var i = 0; i < this.capturedUnits.length; i++)
         {
           this.capturedUnits[i].transferToPlayer(victor);
-          this.capturedUnits[i].currentStrength =
-            Math.round(this.capturedUnits[i].maxStrength * 0.1);
         }
       }
       
@@ -343,6 +341,13 @@ module Rance
       this.forEachUnit(function(unit)
       {
         unit.resetBattleStats();
+      });
+      this.forEachUnit(function(unit)
+      {
+        if (unit.currentStrength < Math.round(unit.maxStrength * 0.1))
+        {
+          unit.currentStrength = Math.round(unit.maxStrength * 0.1);
+        }
       });
       
       if (this.battleData.building)
