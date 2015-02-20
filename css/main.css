@@ -659,8 +659,23 @@ progress::-webkit-progress-value {
 .no-actions-left {
   background-color: red;
 }
+.draggable-cursor {
+  cursor: move;
+  cursor: grab;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
+.dragging-cursor {
+  cursor: move;
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+}
 .draggable {
   cursor: move;
+  cursor: grab;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -672,7 +687,10 @@ progress::-webkit-progress-value {
 .dragging {
   position: fixed !important;
   pointer-events: none;
-  cursor: move;
+  cursor: move !important;
+  cursor: grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: -moz-grabbing !important;
   z-index: 999;
 }
 .prevent-user-select {
@@ -1880,7 +1898,6 @@ progress::-webkit-progress-value {
 }
 .popup {
   position: absolute;
-  padding: 8px;
   color: #eeeeec;
   background-color: #0c1615;
   border: 5px solid transparent;
@@ -1915,6 +1932,40 @@ progress::-webkit-progress-value {
 .popup-button:disabled *,
 .popup-button.disabled * {
   pointer-events: none !important;
+}
+.confirm-popup {
+  padding: 8px;
+}
+.tutorial-popup {
+  min-width: 20em;
+}
+.tutorial-popup-inner {
+  display: flex;
+  flex-flow: row;
+  min-height: 10em;
+}
+.tutorial-popup-content {
+  flex: 1;
+  margin: 8px 0;
+  padding: 0 1em;
+}
+.tutorial-popup-flip-page {
+  cursor: pointer;
+  display: flex;
+  font-size: 1.5em;
+  flex: 0 0 1.5em;
+  align-items: center;
+}
+.tutorial-popup-flip-page.disabled {
+  cursor: inherit;
+}
+.tutorial-popup-flip-page-back {
+  justify-content: flex-start;
+  background: linear-gradient(to left, #0c1615, #0d2335);
+}
+.tutorial-popup-flip-page-forward {
+  justify-content: flex-end;
+  background: linear-gradient(to right, #0c1615, #0d2335);
 }
 .buy-items {
   color: #eeeeec;

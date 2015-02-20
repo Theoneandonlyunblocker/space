@@ -2352,7 +2352,7 @@ var Rance;
                 var backElement;
                 if (hasBackArrow) {
                     backElement = React.DOM.div({
-                        className: "tutorial-popup-flip-page",
+                        className: "tutorial-popup-flip-page tutorial-popup-flip-page-back",
                         onClick: this.flipPage.bind(this, -1)
                     }, "<");
                 } else {
@@ -2365,7 +2365,7 @@ var Rance;
                 var forwardElement;
                 if (hasForwardArrow) {
                     forwardElement = React.DOM.div({
-                        className: "tutorial-popup-flip-page",
+                        className: "tutorial-popup-flip-page tutorial-popup-flip-page-forward",
                         onClick: this.flipPage.bind(this, 1)
                     }, ">");
                 } else {

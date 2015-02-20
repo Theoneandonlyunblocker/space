@@ -45,7 +45,7 @@ module Rance
         {
           backElement = React.DOM.div(
           {
-            className: "tutorial-popup-flip-page",
+            className: "tutorial-popup-flip-page tutorial-popup-flip-page-back",
             onClick: this.flipPage.bind(this, -1)
           }, "<")
         }
@@ -63,7 +63,7 @@ module Rance
         {
           forwardElement = React.DOM.div(
           {
-            className: "tutorial-popup-flip-page",
+            className: "tutorial-popup-flip-page tutorial-popup-flip-page-forward",
             onClick: this.flipPage.bind(this, 1)
           }, ">")
         }
