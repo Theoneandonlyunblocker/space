@@ -183,6 +183,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var TutorialPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var ConfirmPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

@@ -1,5 +1,6 @@
 /// <reference path="popup.ts"/>
 
+/// <reference path="tutorialpopup.ts"/>
 /// <reference path="confirmpopup.ts"/>
 module Rance
 {
