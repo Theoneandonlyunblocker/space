@@ -1055,17 +1055,17 @@ progress::-webkit-progress-value { background: #080; }
 .draggable-cursor
 {
   cursor: move;
-  cursor: grab;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
+  //cursor: grab;
+  //cursor: -webkit-grab;
+  //cursor: -moz-grab;
 }
 
 .dragging-cursor
 {
   cursor: move;
-  cursor: grabbing;
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
+  //cursor: grabbing;
+  //cursor: -webkit-grabbing;
+  //cursor: -moz-grabbing;
 }
 
 .draggable
@@ -1952,6 +1952,19 @@ progress::-webkit-progress-value { background: #080; }
   margin: 5px 20px;
 }
 
+.dont-show-again-wrapper
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 1em;
+}
+
+.dont-show-again
+{
+  margin-right: 0.5em;
+}
+
 .confirm-popup
 {
   padding: 8px;
@@ -1960,6 +1973,7 @@ progress::-webkit-progress-value { background: #080; }
 .tutorial-popup
 {
   min-width: 20em;
+  max-width: 30em;
 }
 
 .tutorial-popup-inner
@@ -1975,6 +1989,8 @@ progress::-webkit-progress-value { background: #080; }
   //border: 1px solid green;
   margin: 8px 0;
   padding: 0 1em;
+  max-height: 15em;
+  overflow-y: auto;
 }
 
 .tutorial-popup-flip-page

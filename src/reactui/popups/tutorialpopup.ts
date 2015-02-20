@@ -10,8 +10,7 @@ module Rance
       {
         return(
         {
-          currentPage: 0,
-          dontShowAgainChecked: false
+          currentPage: 0
         });
       },
 
@@ -29,7 +28,7 @@ module Rance
 
       handleClose: function()
       {
-        if (this.state.dontShowAgainChecked)
+        if (this.refs.dontShowAgain.getDOMNode().checked)
         {
           //do stuff
         }
@@ -97,18 +96,27 @@ module Rance
 
             React.DOM.div(
             {
-              className: "popup-buttons"
+              className: "dont-show-again-wrapper"
             },
-              React.DOM.button(
+              React.DOM.label(null,
+                React.DOM.input(
+                {
+                  type: "checkBox",
+                  ref: "dontShowAgain",
+                  className: "dont-show-again"
+                }),
+                "Disable tutorial"
+              ),
+              React.DOM.div(
               {
-                className: "popup-button",
-                onClick: this.handleOk
-              }, this.props.okText || "Confirm"),
-              React.DOM.button(
-              {
-                className: "popup-button",
-                onClick: this.handleClose
-              }, this.props.cancelText || "Cancel")
+                className: "popup-buttons"
+              },
+                React.DOM.button(
+                {
+                  className: "popup-button",
+                  onClick: this.handleClose
+                }, this.props.cancelText || "Close")
+              )
             )
           )
         );

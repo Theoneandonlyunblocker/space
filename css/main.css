@@ -661,21 +661,12 @@ progress::-webkit-progress-value {
 }
 .draggable-cursor {
   cursor: move;
-  cursor: grab;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
 }
 .dragging-cursor {
   cursor: move;
-  cursor: grabbing;
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
 }
 .draggable {
   cursor: move;
-  cursor: grab;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -688,9 +679,6 @@ progress::-webkit-progress-value {
   position: fixed !important;
   pointer-events: none;
   cursor: move !important;
-  cursor: grabbing !important;
-  cursor: -webkit-grabbing !important;
-  cursor: -moz-grabbing !important;
   z-index: 999;
 }
 .prevent-user-select {
@@ -1933,11 +1921,21 @@ progress::-webkit-progress-value {
 .popup-button.disabled * {
   pointer-events: none !important;
 }
+.dont-show-again-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 1em;
+}
+.dont-show-again {
+  margin-right: 0.5em;
+}
 .confirm-popup {
   padding: 8px;
 }
 .tutorial-popup {
   min-width: 20em;
+  max-width: 30em;
 }
 .tutorial-popup-inner {
   display: flex;
@@ -1948,6 +1946,8 @@ progress::-webkit-progress-value {
   flex: 1;
   margin: 8px 0;
   padding: 0 1em;
+  max-height: 15em;
+  overflow-y: auto;
 }
 .tutorial-popup-flip-page {
   cursor: pointer;

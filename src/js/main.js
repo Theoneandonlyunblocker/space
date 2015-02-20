@@ -2327,8 +2327,7 @@ var Rance;
             displayName: "TutorialPopup",
             getInitialState: function () {
                 return ({
-                    currentPage: 0,
-                    dontShowAgainChecked: false
+                    currentPage: 0
                 });
             },
             flipPage: function (amount) {
@@ -2341,7 +2340,7 @@ var Rance;
                 });
             },
             handleClose: function () {
-                if (this.state.dontShowAgainChecked) {
+                if (this.refs.dontShowAgain.getDOMNode().checked) {
                     //do stuff
                 }
 
@@ -2381,14 +2380,17 @@ var Rance;
                 }, backElement, React.DOM.div({
                     className: "tutorial-popup-content"
                 }, this.props.pages[this.state.currentPage]), forwardElement), React.DOM.div({
+                    className: "dont-show-again-wrapper"
+                }, React.DOM.label(null, React.DOM.input({
+                    type: "checkBox",
+                    ref: "dontShowAgain",
+                    className: "dont-show-again"
+                }), "Disable tutorial"), React.DOM.div({
                     className: "popup-buttons"
                 }, React.DOM.button({
                     className: "popup-button",
-                    onClick: this.handleOk
-                }, this.props.okText || "Confirm"), React.DOM.button({
-                    className: "popup-button",
                     onClick: this.handleClose
-                }, this.props.cancelText || "Cancel"))));
+                }, this.props.cancelText || "Close")))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
