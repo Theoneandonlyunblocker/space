@@ -12,12 +12,12 @@
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 
+/// <reference path="../data/setdynamictemplateproperties.ts"/>
+
 /// <reference path="shadermanager.ts"/>
 
 /// <reference path="mctree.ts"/>
-
 /// <reference path="mapevaluator.ts"/>
-
 /// <reference path="pathfindingarrow.ts"/>
 
 var a, b; // TODO
@@ -87,6 +87,8 @@ module Rance
       {
         self.makeApp();
       });
+
+      setAllDynamicTemplateProperties();
     }
     makeApp()
     {

@@ -396,6 +396,7 @@ declare module Rance {
             actionsUse: any;
             mainEffect: Templates.IEffectTemplate;
             secondaryEffects?: Templates.IEffectTemplate[];
+            addsGuard?: boolean;
         }
         module Abilities {
             var dummyTargetColumn: IAbilityTemplate;
@@ -1286,6 +1287,7 @@ declare module Rance {
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
         public isTargetable(): boolean;
+        public isActiveInBattle(): boolean;
         public addItem(item: Rance.Item): boolean;
         public removeItem(item: Rance.Item): boolean;
         public adjustAttribute(attribute: string, amount: number): void;
@@ -1946,6 +1948,9 @@ declare module Rance {
         public deserializeShip(data: any): Rance.Unit;
         public deserializeItem(data: any, player: Rance.Player): void;
     }
+}
+declare module Rance {
+    function setAllDynamicTemplateProperties(): void;
 }
 declare module Rance {
     interface IMove {

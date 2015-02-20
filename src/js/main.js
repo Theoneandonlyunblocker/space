@@ -2329,6 +2329,11 @@ var Rance;
                 this.refs.okButton.getDOMNode().focus();
             },
             handleOk: function () {
+                if (!this.props.handleOk) {
+                    this.handleClose();
+                    return;
+                }
+
                 var callbackSuccesful = this.props.handleOk();
 
                 if (callbackSuccesful !== false) {
@@ -2374,6 +2379,9 @@ var Rance;
                 this.listeners["closePopup"] = Rance.eventManager.addEventListener("closePopup", function (e) {
                     self.closePopup(e.data);
                 });
+                this.listeners["setPopupContent"] = Rance.eventManager.addEventListener("setPopupContent", function (e) {
+                    self.setPopupContent(e.data.id, e.data.content);
+                });
             },
             componentWillUnmount: function () {
                 for (var listenerId in this.listeners) {
@@ -2396,6 +2404,14 @@ var Rance;
                     this.popupId = 0;
 
                 return this.popupId++;
+            },
+            getPopup: function (id) {
+                for (var i = 0; i < this.state.popups.length; i++) {
+                    if (this.state.popups[i].id === id)
+                        return this.state.popups[i];
+                }
+
+                return null;
             },
             hasPopup: function (id) {
                 for (var i = 0; i < this.state.popups.length; i++) {
@@ -2429,6 +2445,15 @@ var Rance;
                 this.setState({
                     popups: popups
                 });
+            },
+            setPopupContent: function (popupId, newContent) {
+                var popup = this.getPopup(popupId);
+                if (!popup)
+                    throw new Error();
+
+                popup.contentProps = newContent;
+
+                this.forceUpdate();
             },
             render: function () {
                 var popups = this.state.popups;
@@ -5155,7 +5180,8 @@ var Rance;
         function Sector(id, color) {
             this.stars = [];
             this.id = isFinite(id) ? id : Rance.idGenerators.sector++;
-            this.color = isFinite(color) ? color : Rance.hslToHex.apply(null, Rance.makeRandomColor());
+
+            this.color = isFinite(color) ? color : Rance.hslToHex.apply(null, [Rance.randRange(0, 1), Rance.randRange(0.8, 1), Rance.randRange(0.4, 0.6)]);
         }
         Sector.prototype.addStar = function (star) {
             if (star.sector) {
@@ -7462,12 +7488,16 @@ var Rance;
             if (victor) {
                 for (var i = 0; i < this.capturedUnits.length; i++) {
                     this.capturedUnits[i].transferToPlayer(victor);
-                    this.capturedUnits[i].currentStrength = Math.round(this.capturedUnits[i].maxStrength * 0.1);
                 }
             }
 
             this.forEachUnit(function (unit) {
                 unit.resetBattleStats();
+            });
+            this.forEachUnit(function (unit) {
+                if (unit.currentStrength < Math.round(unit.maxStrength * 0.1)) {
+                    unit.currentStrength = Math.round(unit.maxStrength * 0.1);
+                }
             });
 
             if (this.battleData.building) {
@@ -7672,7 +7702,9 @@ var Rance;
 
         target = getTargetOrGuard(battle, user, ability, target);
 
-        var previousUserGuard = user.battleStats.guardAmount;
+        if (!ability.addsGuard) {
+            user.removeAllGuard();
+        }
 
         var effectsToCall = [ability.mainEffect];
         if (ability.secondaryEffects) {
@@ -7692,10 +7724,6 @@ var Rance;
 
         user.removeActionPoints(ability.actionsUse);
         user.addMoveDelay(ability.moveDelay);
-
-        if (user.battleStats.guardAmount < previousUserGuard) {
-            user.removeAllGuard();
-        }
     }
     Rance.useAbility = useAbility;
     function validateTarget(battle, user, ability, target) {
@@ -7825,7 +7853,12 @@ var Rance;
 
         var inArea = effect.targetingFunction(targetFleets, target);
 
-        return inArea.filter(Boolean);
+        return inArea.filter(function (unit) {
+            if (!unit)
+                return false;
+            else
+                return unit.isActiveInBattle();
+        });
     }
     Rance.getUnitsInEffectArea = getUnitsInEffectArea;
 
@@ -8039,9 +8072,15 @@ var Rance;
         Unit.prototype.addMoveDelay = function (amount) {
             this.battleStats.moveDelay += amount;
         };
+
+        // redundant until stealth mechanics are added
         Unit.prototype.isTargetable = function () {
             return this.currentStrength > 0;
         };
+        Unit.prototype.isActiveInBattle = function () {
+            return this.currentStrength > 0;
+        };
+
         Unit.prototype.addItem = function (item) {
             var itemSlot = item.template.slot;
 
@@ -8728,7 +8767,7 @@ var Rance;
             render: function () {
                 return (React.DOM.div({
                     className: "galaxy-map"
-                }, React.DOM.div({
+                }, Rance.UIComponents.PopupManager(), React.DOM.div({
                     ref: "pixiContainer",
                     id: "pixi-container"
                 }, Rance.UIComponents.GalaxyMapUI({
@@ -10778,13 +10817,11 @@ var Rance;
                         if (!star.sector)
                             break;
 
-                        /*
                         var sectorsAmount = Object.keys(map.sectors).length;
                         var hue = (360 / sectorsAmount) * star.sector.id;
-                        var color = hslToHex(hue / 360, 1, 0.5)
-                        */
-                        var color = star.sector.color;
+                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
 
+                        //var color = star.sector.color;
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
                         gfx.beginFill(color, 0.6);
@@ -12520,6 +12557,40 @@ var Rance;
     })();
     Rance.GameLoader = GameLoader;
 })(Rance || (Rance = {}));
+// handles assignment of all dynamic properties for templates
+/// <reference path="templates/abilitytemplates.ts" />
+var Rance;
+(function (Rance) {
+    function setAllDynamicTemplateProperties() {
+        setAbilityGuardAddition();
+    }
+    Rance.setAllDynamicTemplateProperties = setAllDynamicTemplateProperties;
+    function setAbilityGuardAddition() {
+        function checkIfAbilityAddsGuard(ability) {
+            var effects = [ability.mainEffect];
+            if (ability.secondaryEffects) {
+                effects = effects.concat(ability.secondaryEffects);
+            }
+
+            var dummyUser = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
+            var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
+
+            for (var i = 0; i < effects.length; i++) {
+                effects[i].effect(dummyUser, dummyTarget);
+                if (dummyUser.battleStats.guardAmount) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        for (var abilityName in Rance.Templates.Abilities) {
+            var ability = Rance.Templates.Abilities[abilityName];
+            ability.addsGuard = checkIfAbilityAddsGuard(ability);
+        }
+    }
+})(Rance || (Rance = {}));
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="unit.ts"/>
 var Rance;
@@ -13436,6 +13507,7 @@ var Rance;
 /// <reference path="itemgenerator.ts" />
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
+/// <reference path="../data/setdynamictemplateproperties.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
@@ -13485,6 +13557,8 @@ var Rance;
             this.loader = new Rance.AppLoader(function () {
                 self.makeApp();
             });
+
+            Rance.setAllDynamicTemplateProperties();
         }
         App.prototype.makeApp = function () {
             this.images = this.loader.imageCache;

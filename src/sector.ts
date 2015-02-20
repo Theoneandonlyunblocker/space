@@ -12,7 +12,9 @@ module Rance
     constructor(id?: number, color?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.sector++;
-      this.color = isFinite(color) ? color : hslToHex.apply(null, makeRandomColor());
+      
+      this.color = isFinite(color) ? color : hslToHex.apply(null, 
+        [randRange(0, 1), randRange(0.8, 1), randRange(0.4, 0.6)]);
     }
     addStar(star: Star)
     {
