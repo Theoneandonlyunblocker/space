@@ -19,6 +19,9 @@ module Rance
 
       mainEffect: IEffectTemplate;
       secondaryEffects?: IEffectTemplate[];
+
+      // dynamically set
+      addsGuard?: boolean;
     }
 
     export module Abilities
