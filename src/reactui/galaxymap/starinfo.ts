@@ -48,7 +48,7 @@ module Rance
             {
               className: "star-info-sector"
             },
-              "Sector: " + star.sectorId
+              "Sector: " + star.sector.id
             ),
             UIComponents.DefenceBuildingList(
             {

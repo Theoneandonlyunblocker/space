@@ -3590,7 +3590,7 @@ var Rance;
                     className: "star-info-income"
                 }, "Income: " + star.getIncome()), React.DOM.div({
                     className: "star-info-sector"
-                }, "Sector: " + star.sectorId), Rance.UIComponents.DefenceBuildingList({
+                }, "Sector: " + star.sector.id), Rance.UIComponents.DefenceBuildingList({
                     buildings: star.buildings["defence"]
                 })));
             }
@@ -4618,6 +4618,42 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Sector = (function () {
+        function Sector(id) {
+            this.stars = [];
+            this.id = isFinite(id) ? id : Rance.idGenerators.sector++;
+        }
+        Sector.prototype.addStar = function (star) {
+            if (star.sector) {
+                throw new Error("Star already part of a sector");
+            }
+
+            this.stars.push(star);
+            star.sector = this;
+        };
+
+        Sector.prototype.getNeighboringStars = function () {
+            var neighbors = [];
+            var alreadyAdded = {};
+
+            for (var i = 0; i < this.stars.length; i++) {
+                var frontier = this.stars[i].getLinkedInRange(1).all;
+                for (var j = 0; j < frontier.length; j++) {
+                    if (frontier[j].sector !== this && !alreadyAdded[frontier[j].id]) {
+                        neighbors.push(frontier[j]);
+                        alreadyAdded[frontier[j].id] = true;
+                    }
+                }
+            }
+
+            return neighbors;
+        };
+        return Sector;
+    })();
+    Rance.Sector = Sector;
+})(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts" />
 var Rance;
 (function (Rance) {
@@ -4788,6 +4824,7 @@ var Rance;
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="sector.ts" />
 /// <reference path="itemgenerator.ts" />
 var Rance;
 (function (Rance) {
@@ -5436,7 +5473,7 @@ var Rance;
 
             data.distance = this.distance;
             data.region = this.region;
-            data.sectorId = this.sectorId;
+            data.sectorId = this.sector ? this.sector.id : null;
 
             data.baseIncome = this.baseIncome;
 
@@ -9571,6 +9608,7 @@ var Rance;
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
+/// <reference path="sector.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
 var Rance;
@@ -10067,34 +10105,10 @@ var Rance;
             var averageSize = (minSize + maxSize) / 2;
             var averageSectorsAmount = Math.round(totalStars / averageSize);
 
-            var sectorIdGenerator = 0;
-            var sectors = {};
+            var sectorsById = {};
 
             var sameSectorFN = function (a, b) {
-                return a.sectorId === b.sectorId;
-            };
-
-            var getNeighboringStarsForSector = function (sectorId) {
-                var stars = sectors[sectorId];
-                var neighbors = [];
-                var alreadyAdded = {};
-
-                for (var i = 0; i < stars.length; i++) {
-                    var frontier = stars[i].getLinkedInRange(1).all;
-                    for (var j = 0; j < frontier.length; j++) {
-                        if (frontier[j].sectorId !== sectorId && !alreadyAdded[frontier[j].id]) {
-                            neighbors.push(frontier[j]);
-                            alreadyAdded[frontier[j].id] = true;
-                        }
-                    }
-                }
-
-                return neighbors;
-            };
-
-            var addStarToSector = function (star, sectorId) {
-                star.sectorId = sectorId;
-                sectors[sectorId].push(star);
+                return a.sector === b.sector;
             };
 
             while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
@@ -10102,27 +10116,26 @@ var Rance;
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
 
                 if (canFormMinSizeSector) {
-                    var sectorId = sectorIdGenerator++;
-                    sectors[sectorId] = [];
+                    var sector = new Rance.Sector();
+                    sectorsById[sector.id] = sector;
 
                     var discoveryStarIndex = 0;
-                    var sectorStars = [seedStar];
-                    addStarToSector(seedStar, sectorId);
+                    sector.addStar(seedStar);
 
-                    while (sectorStars.length < minSize) {
-                        var discoveryStar = sectorStars[discoveryStarIndex];
+                    while (sector.stars.length < minSize) {
+                        var discoveryStar = sector.stars[discoveryStarIndex];
 
                         var frontier = discoveryStar.getLinkedInRange(1).all;
                         frontier = frontier.filter(function (star) {
-                            return !isFinite(star.sectorId);
+                            return !star.sector;
                         });
 
-                        while (sectorStars.length < minSize && frontier.length > 0) {
+                        while (sector.stars.length < minSize && frontier.length > 0) {
                             var randomFrontierKey = Rance.getRandomArrayKey(frontier);
                             var toAdd = frontier.splice(randomFrontierKey, 1)[0];
-                            sectorStars.push(toAdd);
                             unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
-                            addStarToSector(toAdd, sectorId);
+
+                            sector.addStar(toAdd);
                         }
 
                         discoveryStarIndex++;
@@ -10136,20 +10149,22 @@ var Rance;
                 var star = leftoverStars.pop();
 
                 var neighbors = star.getLinkedInRange(1).all;
-                var alreadyAddedNeighbors = {};
+                var alreadyAddedNeighborSectors = {};
                 var candidateSectors = [];
 
                 for (var j = 0; j < neighbors.length; j++) {
-                    if (!isFinite(neighbors[j].sectorId))
+                    if (!neighbors[j].sector)
                         continue;
                     else {
-                        if (!alreadyAddedNeighbors[neighbors[j].sectorId]) {
-                            alreadyAddedNeighbors[neighbors[j].sectorId] = true;
-                            candidateSectors.push(neighbors[j].sectorId);
+                        if (!alreadyAddedNeighborSectors[neighbors[j].sector.id]) {
+                            alreadyAddedNeighborSectors[neighbors[j].sector.id] = true;
+                            candidateSectors.push(neighbors[j].sector);
                         }
                     }
                 }
 
+                // all neighboring stars don't have sectors
+                // put star at back of queue and try again later
                 if (candidateSectors.length < 1) {
                     leftoverStars.unshift(star);
                     continue;
@@ -10158,32 +10173,30 @@ var Rance;
                 var unclaimedNeighborsPerSector = {};
 
                 for (var j = 0; j < candidateSectors.length; j++) {
-                    var sectorNeighbors = getNeighboringStarsForSector(candidateSectors[j]);
+                    var sectorNeighbors = candidateSectors[j].getNeighboringStars();
                     var unclaimed = 0;
                     for (var k = 0; k < sectorNeighbors.length; k++) {
-                        if (!isFinite(sectorNeighbors[k].sectorId)) {
+                        if (!sectorNeighbors[k].sector) {
                             unclaimed++;
                         }
                     }
 
-                    unclaimedNeighborsPerSector[candidateSectors[j]] = unclaimed;
+                    unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
                 }
 
                 candidateSectors.sort(function (a, b) {
-                    var sizeSort = sectors[a].length - sectors[b].length;
+                    var sizeSort = a.stars.length - b.stars.length;
                     if (sizeSort)
                         return sizeSort;
 
-                    var unclaimedSort = unclaimedNeighborsPerSector[b] - unclaimedNeighborsPerSector[a];
+                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] - unclaimedNeighborsPerSector[a.id];
                     return unclaimedSort;
                 });
 
-                var sectorToAddTo = candidateSectors[0];
-
-                addStarToSector(star, sectorToAddTo);
+                candidateSectors[0].addStar(star);
             }
 
-            return sectors;
+            return sectorsById;
         };
         return MapGen;
     })();
@@ -10747,12 +10760,12 @@ var Rance;
 
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
-                        if (!isFinite(star.sectorId))
+                        if (!star.sector)
                             break;
 
                         var sectorsAmount = Object.keys(map.sectors).length;
 
-                        var hue = (360 / sectorsAmount) * star.sectorId;
+                        var hue = (360 / sectorsAmount) * star.sector.id;
                         var color = Rance.hslToHex(hue / 360, 1, 0.5);
 
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
@@ -10996,6 +11009,7 @@ var Rance;
 /// <reference path="star.ts" />
 /// <reference path="mapgen.ts" />
 /// <reference path="maprenderer.ts" />
+/// <reference path="sector.ts" />
 var Rance;
 (function (Rance) {
     var GalaxyMap = (function () {
@@ -12286,6 +12300,7 @@ var Rance;
 /// <reference path="mapgen.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
+/// <reference path="sector.ts"/>
 var Rance;
 (function (Rance) {
     var GameLoader = (function () {
@@ -12296,6 +12311,7 @@ var Rance;
             this.pointsById = {};
             this.unitsById = {};
             this.buildingsByControllerId = {};
+            this.sectors = {};
         }
         GameLoader.prototype.deserializeGame = function (data) {
             this.map = this.deserializeMap(data.galaxyMap);
@@ -12329,18 +12345,12 @@ var Rance;
                 mapGen.makeRegion(data.regionNames[i]);
             }
 
-            var sectors = {};
-
             var allPoints = [];
 
             for (var i = 0; i < data.allPoints.length; i++) {
                 var point = this.deserializePoint(data.allPoints[i]);
                 allPoints.push(point);
                 this.pointsById[point.id] = point;
-                if (!sectors[point.sectorId]) {
-                    sectors[point.sectorId] = [];
-                }
-                sectors[point.sectorId].push(point);
             }
 
             for (var i = 0; i < data.allPoints.length; i++) {
@@ -12355,7 +12365,7 @@ var Rance;
             }
 
             mapGen.points = allPoints;
-            mapGen.sectors = sectors;
+            mapGen.sectors = this.sectors;
             mapGen.makeVoronoi();
 
             var galaxyMap = new Rance.GalaxyMap();
@@ -12368,9 +12378,15 @@ var Rance;
             star.name = data.name;
             star.distance = data.distance;
             star.region = data.region;
-            star.sectorId = data.sectorId;
             star.baseIncome = data.baseIncome;
             star.backgroundSeed = data.backgroundSeed;
+
+            if (isFinite(data.sectorId)) {
+                if (!this.sectors[data.sectorId]) {
+                    this.sectors[data.sectorId] = new Rance.Sector(data.sectorId);
+                }
+                this.sectors[data.sectorId].addStar(star);
+            }
 
             var buildableItems = {};
 
@@ -13406,7 +13422,8 @@ var Rance;
         player: 0,
         star: 0,
         unit: 0,
-        building: 0
+        building: 0,
+        sector: 0
     };
 
     var App = (function () {

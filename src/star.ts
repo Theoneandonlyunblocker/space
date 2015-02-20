@@ -2,6 +2,7 @@
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="sector.ts" />
 
 /// <reference path="itemgenerator.ts" />
 
@@ -25,7 +26,7 @@ module Rance
     name: string;
     owner: Player;
 
-    sectorId: number;
+    sector: Sector;
     
     fleets:
     {
@@ -848,7 +849,7 @@ module Rance
 
       data.distance = this.distance;
       data.region = this.region;
-      data.sectorId = this.sectorId;
+      data.sectorId = this.sector ? this.sector.id : null;
 
       data.baseIncome = this.baseIncome;
 

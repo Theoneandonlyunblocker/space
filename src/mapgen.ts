@@ -5,6 +5,7 @@
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
+/// <reference path="sector.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
 
@@ -27,7 +28,7 @@ module Rance
     } = {};
     sectors:
     {
-      [id: number]: Star[];
+      [id: number]: Sector;
     };
     triangles: Triangle[] = [];
     voronoiDiagram: any;
@@ -638,80 +639,46 @@ module Rance
       var averageSize = (minSize + maxSize) / 2;
       var averageSectorsAmount = Math.round(totalStars / averageSize);
 
-      var sectorIdGenerator = 0;
-      var sectors:
+      var sectorsById:
       {
-        [sectorId: number]: Star[];
+        [sectorId: number]: Sector;
       } = {};
 
       var sameSectorFN = function(a, b)
       {
-        return a.sectorId === b.sectorId;
+        return a.sector === b.sector;
       };
-
-      var getNeighboringStarsForSector = function(sectorId: number)
-      {
-        var stars = sectors[sectorId];
-        var neighbors: Star[] = [];
-        var alreadyAdded:
-        {
-          [starId: number]: boolean;
-        } = {};
-
-        for (var i = 0; i < stars.length; i++)
-        {
-          var frontier = stars[i].getLinkedInRange(1).all;
-          for (var j = 0; j < frontier.length; j++)
-          {
-            if (frontier[j].sectorId !== sectorId && !alreadyAdded[frontier[j].id])
-            {
-              neighbors.push(frontier[j]);
-              alreadyAdded[frontier[j].id] = true;
-            }
-          }
-        }
-
-        return neighbors;
-      }
-
-      var addStarToSector = function(star: Star, sectorId: number)
-      {
-        star.sectorId = sectorId;
-        sectors[sectorId].push(star);
-      }
 
       while (averageSectorsAmount > 0 && unassignedStars.length > 0)
       {
-
         var seedStar = unassignedStars.pop();
         var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
 
         if (canFormMinSizeSector)
         {
-          var sectorId = sectorIdGenerator++;
-          sectors[sectorId] = [];
+          var sector = new Sector();
+          sectorsById[sector.id] = sector;
 
           var discoveryStarIndex = 0;
-          var sectorStars = [seedStar];
-          addStarToSector(seedStar, sectorId);
+          sector.addStar(seedStar);
 
-          while (sectorStars.length < minSize)
+          while (sector.stars.length < minSize)
           {
-            var discoveryStar = sectorStars[discoveryStarIndex];
+            var discoveryStar = sector.stars[discoveryStarIndex];
 
             var frontier = discoveryStar.getLinkedInRange(1).all;
             frontier = frontier.filter(function(star)
             {
-              return !isFinite(star.sectorId);
+              return !star.sector;
             });
 
-            while (sectorStars.length < minSize && frontier.length > 0)
+            while (sector.stars.length < minSize && frontier.length > 0)
             {
               var randomFrontierKey = getRandomArrayKey(frontier);
               var toAdd = frontier.splice(randomFrontierKey, 1)[0];
-              sectorStars.push(toAdd);
               unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
-              addStarToSector(toAdd, sectorId);
+
+              sector.addStar(toAdd);
             }
 
             discoveryStarIndex++;
@@ -727,26 +694,28 @@ module Rance
       {
         var star = leftoverStars.pop();
 
-        var neighbors = star.getLinkedInRange(1).all;
-        var alreadyAddedNeighbors:
+        var neighbors: Star[] = star.getLinkedInRange(1).all;
+        var alreadyAddedNeighborSectors:
         {
           [sectorId: number]: boolean;
         } = {};
-        var candidateSectors: number[] = [];
+        var candidateSectors: Sector[] = [];
 
         for (var j = 0; j < neighbors.length; j++)
         {
-          if (!isFinite(neighbors[j].sectorId)) continue;
+          if (!neighbors[j].sector) continue;
           else
           {
-            if (!alreadyAddedNeighbors[neighbors[j].sectorId])
+            if (!alreadyAddedNeighborSectors[neighbors[j].sector.id])
             {
-              alreadyAddedNeighbors[neighbors[j].sectorId] = true;
-              candidateSectors.push(neighbors[j].sectorId);
+              alreadyAddedNeighborSectors[neighbors[j].sector.id] = true;
+              candidateSectors.push(neighbors[j].sector);
             }
           }
         }
 
+        // all neighboring stars don't have sectors
+        // put star at back of queue and try again later
         if (candidateSectors.length < 1)
         {
           leftoverStars.unshift(star);
@@ -760,35 +729,33 @@ module Rance
 
         for (var j = 0; j < candidateSectors.length; j++)
         {
-          var sectorNeighbors = getNeighboringStarsForSector(candidateSectors[j]);
+          var sectorNeighbors = candidateSectors[j].getNeighboringStars();
           var unclaimed = 0;
           for (var k = 0; k < sectorNeighbors.length; k++)
           {
-            if (!isFinite(sectorNeighbors[k].sectorId))
+            if (!sectorNeighbors[k].sector)
             {
               unclaimed++;
             }
           }
 
-          unclaimedNeighborsPerSector[candidateSectors[j]] = unclaimed;
+          unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
         }
 
         candidateSectors.sort(function(a, b)
         {
-          var sizeSort = sectors[a].length - sectors[b].length;
+          var sizeSort = a.stars.length - b.stars.length;
           if (sizeSort) return sizeSort;
 
-          var unclaimedSort = unclaimedNeighborsPerSector[b] -
-            unclaimedNeighborsPerSector[a];
+          var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
+            unclaimedNeighborsPerSector[a.id];
           return unclaimedSort;
         });
 
-        var sectorToAddTo = candidateSectors[0];
-
-        addStarToSector(star, sectorToAddTo);
+        candidateSectors[0].addStar(star);
       }
 
-      return sectors;
+      return sectorsById;
     }
   }
 }

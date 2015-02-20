@@ -706,11 +706,11 @@ module Rance
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
-            if (!isFinite(star.sectorId)) break;
+            if (!star.sector) break;
 
             var sectorsAmount = Object.keys(map.sectors).length;
 
-            var hue = (360 / sectorsAmount) * star.sectorId;
+            var hue = (360 / sectorsAmount) * star.sector.id;
             var color = hslToHex(hue / 360, 1, 0.5)
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);

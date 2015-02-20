@@ -501,6 +501,15 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class Sector {
+        public id: number;
+        public stars: Rance.Star[];
+        constructor(id?: number);
+        public addStar(star: Rance.Star): void;
+        public getNeighboringStars(): Rance.Star[];
+    }
+}
+declare module Rance {
     module Templates {
         interface IItemTemplate {
             type: string;
@@ -655,7 +664,7 @@ declare module Rance {
         public baseIncome: number;
         public name: string;
         public owner: Rance.Player;
-        public sectorId: number;
+        public sector: Rance.Sector;
         public fleets: {
             [playerId: string]: Rance.Fleet[];
         };
@@ -1477,7 +1486,7 @@ declare module Rance {
             };
         };
         public sectors: {
-            [id: number]: Rance.Star[];
+            [id: number]: Rance.Sector;
         };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
@@ -1543,7 +1552,7 @@ declare module Rance {
         public getFurthestPointInRegion(region: any): Rance.Star;
         public partiallyCutConnections(minConnections: number): void;
         public makeSectors(minSize: number, maxSize: number): {
-            [sectorId: number]: Rance.Star[];
+            [sectorId: number]: Rance.Sector;
         };
     }
 }
@@ -1614,7 +1623,7 @@ declare module Rance {
         public allPoints: Rance.Star[];
         public stars: Rance.Star[];
         public sectors: {
-            [sectorId: number]: Rance.Star[];
+            [sectorId: number]: Rance.Sector;
         };
         public mapGen: Rance.MapGen;
         public mapRenderer: Rance.MapRenderer;
@@ -1920,6 +1929,9 @@ declare module Rance {
         public buildingsByControllerId: {
             [id: number]: Rance.Building;
         };
+        public sectors: {
+            [id: number]: Rance.Sector;
+        };
         constructor();
         public deserializeGame(data: any): Rance.Game;
         public deserializeMap(data: any): Rance.GalaxyMap;
@@ -2107,6 +2119,7 @@ declare module Rance {
         star: number;
         unit: number;
         building: number;
+        sector: number;
     };
     class App {
         public seed: any;

@@ -3,6 +3,7 @@
 /// <reference path="star.ts" />
 /// <reference path="mapgen.ts" />
 /// <reference path="maprenderer.ts" />
+/// <reference path="sector.ts" />
 
 module Rance
 {
@@ -12,7 +13,7 @@ module Rance
     stars: Star[];
     sectors:
     {
-      [sectorId: number]: Star[]
+      [sectorId: number]: Sector;
     };
     mapGen: MapGen;
     mapRenderer: MapRenderer;
