@@ -20,6 +20,8 @@
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
 
+/// <reference path="../data/tutorials/uitutorial.ts"/>
+
 var a, b; // TODO
 module Rance
 {

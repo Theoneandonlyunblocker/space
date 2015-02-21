@@ -5,6 +5,7 @@
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
+/// <reference path="../../data/tutorials/tutorial.d.ts" />
 declare module Rance {
     function EventManager(): void;
     var eventManager: any;
@@ -805,7 +806,10 @@ declare module Rance {
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
         public severLinksToNonCenter(): void;
-        public getNeighbors(): Star[];
+        public getNeighborsWithEdges(): {
+            star: Star;
+            edge: any;
+        }[];
         public getLinkedInRange(range: number): {
             all: Star[];
             byRange: {
@@ -1132,7 +1136,7 @@ declare module Rance {
         public getNeighboringStars(): Rance.Star[];
         public getIsland(start: Rance.Star): Rance.Star[];
         public getAllIslands(): Rance.Star[][];
-        public getBorderEdges(): any[];
+        public getBorderEdges(): any[][];
         public getBorderPolygons(): any[];
         public updateVisibleStars(): void;
         public getVisibleStars(): Rance.Star[];
@@ -2120,6 +2124,13 @@ declare module Rance {
         public getTargetOffset(target: Rance.Point, i: number, totalPaths: number, offsetPerOrbit: number): {
             x: number;
             y: number;
+        };
+    }
+}
+declare module Rance {
+    module Tutorials {
+        var uiTutorial: {
+            pages: {}[];
         };
     }
 }

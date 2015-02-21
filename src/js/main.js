@@ -5875,16 +5875,16 @@ var Rance;
                 this.severLinksToRegion(nonCenterRegions[i]);
             }
         };
-        Star.prototype.getNeighbors = function () {
+        Star.prototype.getNeighborsWithEdges = function () {
             var neighbors = [];
 
             for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
                 var edge = this.voronoiCell.halfedges[i].edge;
 
                 if (edge.lSite !== null && edge.lSite.id !== this.id) {
-                    neighbors.push(edge.lSite);
+                    neighbors.push({ star: edge.lSite, edge: edge });
                 } else if (edge.rSite !== null && edge.rSite.id !== this.id) {
-                    neighbors.push(edge.rSite);
+                    neighbors.push({ star: edge.rSite, edge: edge });
                 }
             }
 
@@ -7080,60 +7080,60 @@ var Rance;
             var edgeGroups = this.getBorderEdges();
             var polys = [];
 
+            function setVertex(vertex, edge) {
+                var x = Math.round(vertex.x * 100);
+                var y = Math.round(vertex.y * 100);
+                if (!edgesByLocation[x]) {
+                    edgesByLocation[x] = {};
+                }
+                if (!edgesByLocation[x][y]) {
+                    edgesByLocation[x][y] = [];
+                }
+
+                edgesByLocation[x][y].push(edge);
+            }
+            function setEdge(edge) {
+                setVertex(edge.va, edge);
+                setVertex(edge.vb, edge);
+            }
+            function removeEdge(edge) {
+                var a = edgesByLocation[edge.va.x][edge.va.y];
+                var b = edgesByLocation[edge.vb.x][edge.vb.y];
+
+                a.splice(a.indexOf(edge));
+                b.splice(b.indexOf(edge));
+            }
+            function getEdges(x, y) {
+                return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
+            }
+            function getOtherVertex(edge, vertex) {
+                if (Rance.pointsEqual(edge.va, vertex))
+                    return edge.vb;
+                else
+                    return edge.va;
+            }
+            function getOtherEdgeAtVertex(vertex, edge) {
+                var edges = getEdges(vertex.x, vertex.y);
+
+                return edges.filter(function (toFilter) {
+                    return toFilter !== edge;
+                })[0];
+            }
+            function getNext(currentVertex, currentEdge) {
+                var nextVertex = getOtherVertex(currentEdge, currentVertex);
+                var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
+
+                return ({
+                    vertex: nextVertex,
+                    edge: nextEdge
+                });
+            }
+
             for (var i = 0; i < edgeGroups.length; i++) {
                 var island = edgeGroups[i];
                 var poly = [];
 
                 var edgesByLocation = {};
-
-                function setVertex(vertex, edge) {
-                    var x = Math.round(vertex.x * 100);
-                    var y = Math.round(vertex.y * 100);
-                    if (!edgesByLocation[x]) {
-                        edgesByLocation[x] = {};
-                    }
-                    if (!edgesByLocation[x][y]) {
-                        edgesByLocation[x][y] = [];
-                    }
-
-                    edgesByLocation[x][y].push(edge);
-                }
-                function setEdge(edge) {
-                    setVertex(edge.va, edge);
-                    setVertex(edge.vb, edge);
-                }
-                function removeEdge(edge) {
-                    var a = edgesByLocation[edge.va.x][edge.va.y];
-                    var b = edgesByLocation[edge.vb.x][edge.vb.y];
-
-                    a.splice(a.indexOf(edge));
-                    b.splice(b.indexOf(edge));
-                }
-                function getEdges(x, y) {
-                    return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
-                }
-                function getOtherVertex(edge, vertex) {
-                    if (Rance.pointsEqual(edge.va, vertex))
-                        return edge.vb;
-                    else
-                        return edge.va;
-                }
-                function getOtherEdgeAtVertex(vertex, edge) {
-                    var edges = getEdges(vertex.x, vertex.y);
-
-                    return edges.filter(function (toFilter) {
-                        return toFilter !== edge;
-                    })[0];
-                }
-                function getNext(currentVertex, currentEdge) {
-                    var nextVertex = getOtherVertex(currentEdge, currentVertex);
-                    var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
-
-                    return ({
-                        vertex: nextVertex,
-                        edge: nextEdge
-                    });
-                }
 
                 for (var j = 0; j < island.length; j++) {
                     setEdge(island[j]);
@@ -7299,7 +7299,7 @@ var Rance;
 
             data.revealedStarIds = [];
             for (var id in this.revealedStars) {
-                data.revealedStarIds.push(id);
+                data.revealedStarIds.push(parseInt(id));
             }
 
             data.buildings = [];
@@ -10807,30 +10807,54 @@ var Rance;
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
 
-                    var players = this.game.playerOrder;
+                    var stars = this.player ? this.player.getRevealedStars() : map.mapGen.getNonFillerPoints();
 
-                    for (var i = 0; i < players.length; i++) {
-                        var player = players[i];
-                        var polys = player.getBorderPolygons();
+                    var alreadyChecked = {};
 
-                        for (var j = 0; j < polys.length; j++) {
-                            var poly = polys[j];
-                            var inset = Rance.offsetPolygon(poly, -2);
+                    for (var i = 0; i < stars.length; i++) {
+                        var star = stars[i];
 
-                            if (!inset) {
-                                gfx.lineStyle(4, 0xFF0000, 1);
-                                gfx.beginFill(0x000000, 0);
-                                gfx.drawShape(new PIXI.Polygon(poly));
-                                gfx.endFill;
-                            } else {
-                                gfx.lineStyle(4, player.secondaryColor, 0.7);
-                                gfx.beginFill(0x000000, 0);
-                                gfx.drawShape(new PIXI.Polygon(inset));
-                                gfx.endFill;
-                            }
+                        var neighborsWithEdges = star.getNeighborsWithEdges();
+
+                        for (var j = 0; j < neighborsWithEdges.length; j++) {
+                            var neighbor = neighborsWithEdges[j].star;
+                            var edge = neighborsWithEdges[j].edge;
+
+                            if (alreadyChecked[neighbor.id])
+                                continue;
                         }
+
+                        alreadyChecked[star.id] = true;
                     }
 
+                    /*
+                    for (var i = 0; i < players.length; i++)
+                    {
+                    var player = players[i];
+                    var polys = player.getBorderPolygons();
+                    
+                    for (var j = 0; j < polys.length; j++)
+                    {
+                    var poly = polys[j];
+                    var inset = offsetPolygon(poly, -2);
+                    
+                    if (!inset)
+                    {
+                    gfx.lineStyle(4, 0xFF0000, 1);
+                    gfx.beginFill(0x000000, 0);
+                    gfx.drawShape(new PIXI.Polygon(poly));
+                    gfx.endFill;
+                    }
+                    else
+                    {
+                    gfx.lineStyle(4, player.secondaryColor, 0.7);
+                    gfx.beginFill(0x000000, 0);
+                    gfx.drawShape(new PIXI.Polygon(inset));
+                    gfx.endFill;
+                    }
+                    
+                    }
+                    }*/
                     doc.height;
                     return doc;
                 }
@@ -10886,7 +10910,7 @@ var Rance;
                     if (!this.player) {
                         points = map.mapGen.getNonFillerPoints();
                     } else {
-                        points = this.player.getVisibleStars();
+                        points = this.player.getRevealedStars();
                     }
 
                     for (var i = 0; i < points.length; i++) {
@@ -12598,6 +12622,11 @@ var Rance;
                 this.deserializeItem(data.items[i], player);
             }
 
+            for (var i = 0; i < data.revealedStarIds.length; i++) {
+                var id = data.revealedStarIds[i];
+                player.revealedStars[id] = this.pointsById[id];
+            }
+
             return player;
         };
         GameLoader.prototype.deserializeFleet = function (player, data) {
@@ -13572,6 +13601,20 @@ var Rance;
     })();
     Rance.PathfindingArrow = PathfindingArrow;
 })(Rance || (Rance = {}));
+/// <reference path="tutorial.d.ts"/>
+var Rance;
+(function (Rance) {
+    (function (Tutorials) {
+        Tutorials.uiTutorial = {
+            pages: [
+                "This is a tutorial",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultricies condimentum ex eget consequat. Cras scelerisque vulputate libero consequat hendrerit. Sed ut mauris sed lorem mattis consectetur feugiat nec enim. Nulla metus magna, aliquam volutpat ornare nec, dictum non tellus. Curabitur quis massa egestas, congue massa at, malesuada velit. Sed ornare dui quam, nec vulputate ipsum blandit sed. Curabitur et consequat nulla. Cras lorem odio, varius ut diam ut, elementum fringilla nisi. In lobortis lectus eu libero volutpat, et viverra metus consectetur. Praesent cursus lacus vitae fermentum dapibus. Aliquam ac auctor eros. Praesent vel felis vel odio congue aliquam a et elit.\n\nDuis ac leo efficitur, lacinia libero at, vulputate lorem. Maecenas elementum aliquet tellus vitae tempus. Aliquam a lectus risus. Mauris porttitor, eros a faucibus vulputate, mauris libero ultricies lectus, eget consectetur orci diam id est. Integer eros nibh, lobortis ac iaculis ut, molestie at mi. Proin sit amet pulvinar ante. Curabitur a purus tempus velit varius sollicitudin. Nullam euismod felis eu elit consectetur tincidunt. Duis sed lobortis purus.\n\nMorbi sit amet sem blandit, cursus felis sit amet, accumsan turpis. Vivamus et facilisis enim. Duis vestibulum sodales neque, ut suscipit nulla ultrices vitae. In ac accumsan erat. Nunc consectetur massa non elit mollis bibendum. Nullam tincidunt augue mi. Vestibulum dapibus et nunc quis auctor. Etiam malesuada cursus purus, et gravida dolor vehicula vel. Nam scelerisque magna ut risus semper, eget iaculis ligula hendrerit. Donec ac varius mauris, a pulvinar diam. Sed elementum, ex molestie dictum suscipit, lectus nunc pellentesque turpis, ac scelerisque tellus odio vel nisi. Donec facilisis, purus id volutpat varius, mi ex accumsan diam, a viverra lectus dui vel turpis. Nam tellus est, volutpat id scelerisque at, auctor id arcu. Proin molestie lobortis tempor. Ut ultricies lectus tincidunt erat consequat, at vestibulum erat commodo.",
+                React.DOM.div(null, React.DOM.div(null, "Works with"), React.DOM.button(null, "react elements too"))
+            ]
+        };
+    })(Rance.Tutorials || (Rance.Tutorials = {}));
+    var Tutorials = Rance.Tutorials;
+})(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
@@ -13589,6 +13632,7 @@ var Rance;
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
+/// <reference path="../data/tutorials/uitutorial.ts"/>
 var a, b;
 var Rance;
 (function (Rance) {
