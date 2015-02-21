@@ -1136,7 +1136,7 @@ declare module Rance {
         public getNeighboringStars(): Rance.Star[];
         public getIsland(start: Rance.Star): Rance.Star[];
         public getAllIslands(): Rance.Star[][];
-        public getBorderEdges(): any[][];
+        public getBorderEdges(): any[];
         public getBorderPolygons(): any[];
         public updateVisibleStars(): void;
         public getVisibleStars(): Rance.Star[];
@@ -2126,6 +2126,14 @@ declare module Rance {
             y: number;
         };
     }
+}
+declare module Rance {
+    function getAllBorderEdgesByStar(edges: any[]): {
+        [starId: number]: {
+            star: Star;
+            edges: any[];
+        };
+    };
 }
 declare module Rance {
     module Tutorials {

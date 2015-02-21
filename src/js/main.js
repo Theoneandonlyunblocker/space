@@ -7066,8 +7066,10 @@ var Rance;
                     for (var k = 0; k < halfedges.length; k++) {
                         var edge = halfedges[k].edge;
                         if (!edge.lSite || !edge.rSite) {
+                            //island.push({edge: edge, star: star});
                             island.push(edge);
                         } else if (edge.lSite.owner !== this || edge.rSite.owner !== this) {
+                            //island.push({edge: edge, star: star});
                             island.push(edge);
                         }
                     }
@@ -10807,54 +10809,21 @@ var Rance;
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
 
-                    var stars = this.player ? this.player.getRevealedStars() : map.mapGen.getNonFillerPoints();
+                    var borderEdges = Rance.getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges);
 
-                    var alreadyChecked = {};
+                    for (var starId in borderEdges) {
+                        var edgeData = borderEdges[starId];
 
-                    for (var i = 0; i < stars.length; i++) {
-                        var star = stars[i];
+                        var player = edgeData.star.owner;
+                        gfx.lineStyle(4, player.secondaryColor, 0.7);
 
-                        var neighborsWithEdges = star.getNeighborsWithEdges();
-
-                        for (var j = 0; j < neighborsWithEdges.length; j++) {
-                            var neighbor = neighborsWithEdges[j].star;
-                            var edge = neighborsWithEdges[j].edge;
-
-                            if (alreadyChecked[neighbor.id])
-                                continue;
+                        for (var i = 0; i < edgeData.edges.length; i++) {
+                            var edge = edgeData.edges[i];
+                            gfx.moveTo(edge.va.x, edge.va.y);
+                            gfx.lineTo(edge.vb.x, edge.vb.y);
                         }
-
-                        alreadyChecked[star.id] = true;
                     }
 
-                    /*
-                    for (var i = 0; i < players.length; i++)
-                    {
-                    var player = players[i];
-                    var polys = player.getBorderPolygons();
-                    
-                    for (var j = 0; j < polys.length; j++)
-                    {
-                    var poly = polys[j];
-                    var inset = offsetPolygon(poly, -2);
-                    
-                    if (!inset)
-                    {
-                    gfx.lineStyle(4, 0xFF0000, 1);
-                    gfx.beginFill(0x000000, 0);
-                    gfx.drawShape(new PIXI.Polygon(poly));
-                    gfx.endFill;
-                    }
-                    else
-                    {
-                    gfx.lineStyle(4, player.secondaryColor, 0.7);
-                    gfx.beginFill(0x000000, 0);
-                    gfx.drawShape(new PIXI.Polygon(inset));
-                    gfx.endFill;
-                    }
-                    
-                    }
-                    }*/
                     doc.height;
                     return doc;
                 }
@@ -13601,6 +13570,38 @@ var Rance;
     })();
     Rance.PathfindingArrow = PathfindingArrow;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    function getAllBorderEdgesByStar(edges) {
+        var edgesByStar = {};
+
+        for (var i = 0; i < edges.length; i++) {
+            var edge = edges[i];
+
+            if (edge.lSite && edge.rSite && edge.lSite.owner === edge.rSite.owner) {
+                continue;
+            }
+
+            ["lSite", "rSite"].forEach(function (neighborDirection) {
+                var neighbor = edge[neighborDirection];
+
+                if (neighbor && neighbor.owner && !neighbor.owner.isIndependent) {
+                    if (!edgesByStar[neighbor.id]) {
+                        edgesByStar[neighbor.id] = {
+                            star: neighbor,
+                            edges: []
+                        };
+                    }
+
+                    edgesByStar[neighbor.id].edges.push(edge);
+                }
+            });
+        }
+
+        return edgesByStar;
+    }
+    Rance.getAllBorderEdgesByStar = getAllBorderEdgesByStar;
+})(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -13632,6 +13633,7 @@ var Rance;
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
+/// <reference path="borderpolygon.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 var a, b;
 var Rance;

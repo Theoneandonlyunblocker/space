@@ -599,34 +599,22 @@ module Rance
           doc.addChild(gfx);
 
           
-          var players = this.game.playerOrder;
+          var borderEdges = getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges);
 
-          for (var i = 0; i < players.length; i++)
+          for (var starId in borderEdges)
           {
-            var player = players[i];
-            var polys = player.getBorderPolygons();
+            var edgeData = borderEdges[starId];
 
-            for (var j = 0; j < polys.length; j++)
+            var player = edgeData.star.owner;
+            gfx.lineStyle(4, player.secondaryColor, 0.7);
+
+            for (var i = 0; i < edgeData.edges.length; i++)
             {
-              var poly = polys[j];
-              var inset = offsetPolygon(poly, -2);
-
-              if (!inset)
-              {
-                gfx.lineStyle(4, 0xFF0000, 1);
-                gfx.beginFill(0x000000, 0);
-                gfx.drawShape(new PIXI.Polygon(poly));
-                gfx.endFill;
-              }
-              else
-              {
-                gfx.lineStyle(4, player.secondaryColor, 0.7);
-                gfx.beginFill(0x000000, 0);
-                gfx.drawShape(new PIXI.Polygon(inset));
-                gfx.endFill;
-              }
-
+              var edge = edgeData.edges[i];
+              gfx.moveTo(edge.va.x, edge.va.y);
+              gfx.lineTo(edge.vb.x, edge.vb.y);
             }
+
           }
           
 
@@ -700,7 +688,7 @@ module Rance
           }
           else
           {
-            points = this.player.getVisibleStars();
+            points = this.player.getRevealedStars();
           }
 
           for (var i = 0; i < points.length; i++)
