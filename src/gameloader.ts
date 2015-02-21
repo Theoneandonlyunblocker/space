@@ -222,6 +222,12 @@ module Rance
         this.deserializeItem(data.items[i], player);
       }
 
+      for (var i = 0; i < data.revealedStarIds.length; i++)
+      {
+        var id = data.revealedStarIds[i];
+        player.revealedStars[id] = this.pointsById[id];
+      }
+
 
       return player;
     }

@@ -571,7 +571,7 @@ module Rance
       data.revealedStarIds = [];
       for (var id in this.revealedStars)
       {
-        data.revealedStarIds.push(id);
+        data.revealedStarIds.push(parseInt(id));
       }
 
       data.buildings = [];
