@@ -806,10 +806,7 @@ declare module Rance {
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
         public severLinksToNonCenter(): void;
-        public getNeighborsWithEdges(): {
-            star: Star;
-            edge: any;
-        }[];
+        public getNeighbors(): Star[];
         public getLinkedInRange(range: number): {
             all: Star[];
             byRange: {
@@ -1136,7 +1133,7 @@ declare module Rance {
         public getNeighboringStars(): Rance.Star[];
         public getIsland(start: Rance.Star): Rance.Star[];
         public getAllIslands(): Rance.Star[][];
-        public getBorderEdges(): any[];
+        public getBorderEdges(): any[][];
         public getBorderPolygons(): any[];
         public updateVisibleStars(): void;
         public getVisibleStars(): Rance.Star[];
@@ -2128,7 +2125,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function getAllBorderEdgesByStar(edges: any[]): {
+    function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
         [starId: number]: {
             star: Star;
             edges: any[];

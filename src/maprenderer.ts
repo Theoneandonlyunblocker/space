@@ -598,8 +598,9 @@ module Rance
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
 
-          
-          var borderEdges = getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges);
+          var revealedStars = this.player.getRevealedStars();
+          var borderEdges =
+            getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges, revealedStars);
 
           for (var starId in borderEdges)
           {

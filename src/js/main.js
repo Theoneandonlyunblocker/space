@@ -5875,16 +5875,16 @@ var Rance;
                 this.severLinksToRegion(nonCenterRegions[i]);
             }
         };
-        Star.prototype.getNeighborsWithEdges = function () {
+        Star.prototype.getNeighbors = function () {
             var neighbors = [];
 
             for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
                 var edge = this.voronoiCell.halfedges[i].edge;
 
                 if (edge.lSite !== null && edge.lSite.id !== this.id) {
-                    neighbors.push({ star: edge.lSite, edge: edge });
+                    neighbors.push(edge.lSite);
                 } else if (edge.rSite !== null && edge.rSite.id !== this.id) {
-                    neighbors.push({ star: edge.rSite, edge: edge });
+                    neighbors.push(edge.rSite);
                 }
             }
 
@@ -7066,10 +7066,8 @@ var Rance;
                     for (var k = 0; k < halfedges.length; k++) {
                         var edge = halfedges[k].edge;
                         if (!edge.lSite || !edge.rSite) {
-                            //island.push({edge: edge, star: star});
                             island.push(edge);
                         } else if (edge.lSite.owner !== this || edge.rSite.owner !== this) {
-                            //island.push({edge: edge, star: star});
                             island.push(edge);
                         }
                     }
@@ -10809,7 +10807,8 @@ var Rance;
                     var gfx = new PIXI.Graphics();
                     doc.addChild(gfx);
 
-                    var borderEdges = Rance.getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges);
+                    var revealedStars = this.player.getRevealedStars();
+                    var borderEdges = Rance.getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges, revealedStars);
 
                     for (var starId in borderEdges) {
                         var edgeData = borderEdges[starId];
@@ -13572,7 +13571,7 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    function getAllBorderEdgesByStar(edges) {
+    function getAllBorderEdgesByStar(edges, revealedStars) {
         var edgesByStar = {};
 
         for (var i = 0; i < edges.length; i++) {
@@ -13586,14 +13585,15 @@ var Rance;
                 var neighbor = edge[neighborDirection];
 
                 if (neighbor && neighbor.owner && !neighbor.owner.isIndependent) {
-                    if (!edgesByStar[neighbor.id]) {
-                        edgesByStar[neighbor.id] = {
-                            star: neighbor,
-                            edges: []
-                        };
+                    if (!revealedStars || revealedStars.indexOf(neighbor) !== -1) {
+                        if (!edgesByStar[neighbor.id]) {
+                            edgesByStar[neighbor.id] = {
+                                star: neighbor,
+                                edges: []
+                            };
+                        }
+                        edgesByStar[neighbor.id].edges.push(edge);
                     }
-
-                    edgesByStar[neighbor.id].edges.push(edge);
                 }
             });
         }

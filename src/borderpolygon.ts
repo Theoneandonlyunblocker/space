@@ -1,6 +1,6 @@
 module Rance
 {
-  export function getAllBorderEdgesByStar(edges: any[]) // Voronoi.Edge[]
+  export function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[])
   {
     var edgesByStar:
     {
@@ -26,16 +26,18 @@ module Rance
 
         if (neighbor && neighbor.owner && !neighbor.owner.isIndependent)
         {
-          if (!edgesByStar[neighbor.id])
+          if (!revealedStars || revealedStars.indexOf(neighbor) !== -1)
           {
-            edgesByStar[neighbor.id] =
+            if (!edgesByStar[neighbor.id])
             {
-              star: neighbor,
-              edges: []
+              edgesByStar[neighbor.id] =
+              {
+                star: neighbor,
+                edges: []
+              }
             }
-          }
-
           edgesByStar[neighbor.id].edges.push(edge);
+          }
         }
       });
     }
