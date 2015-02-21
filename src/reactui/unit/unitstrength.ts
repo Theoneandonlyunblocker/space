@@ -11,7 +11,8 @@ module Rance
       {
         return(
         {
-          displayedStrength: this.props.currentStrength
+          displayedStrength: this.props.currentStrength,
+          activeTween: null
         });
       },
       componentWillReceiveProps: function(newProps: any)
@@ -28,6 +29,13 @@ module Rance
           }
         }
       },
+      componentWillUnmount: function()
+      {
+        if (this.activeTween)
+        {
+          this.activeTween.stop();
+        }
+      },
       updateDisplayStrength: function(newAmount: number)
       {
         this.setState(
@@ -42,10 +50,14 @@ module Rance
 
         var animateTween = function()
         {
-          if (stopped) return;
+          if (stopped)
+          {
+            cancelAnimationFrame(self.requestAnimFrame);
+            return;
+          }
 
           TWEEN.update();
-          requestAnimFrame(animateTween);
+          self.requestAnimFrame = requestAnimFrame(animateTween);
         }
 
         var tween = new TWEEN.Tween(
@@ -68,9 +80,10 @@ module Rance
           TWEEN.remove(tween);
         });
 
+        this.activeTween = tween;
+
         tween.start();
         animateTween();
-
       },
       makeSquadronInfo: function()
       {

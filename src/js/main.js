@@ -20,7 +20,8 @@ var Rance;
             displayName: "UnitStrength",
             getInitialState: function () {
                 return ({
-                    displayedStrength: this.props.currentStrength
+                    displayedStrength: this.props.currentStrength,
+                    activeTween: null
                 });
             },
             componentWillReceiveProps: function (newProps) {
@@ -30,6 +31,11 @@ var Rance;
                     } else {
                         this.updateDisplayStrength(newProps.currentStrength);
                     }
+                }
+            },
+            componentWillUnmount: function () {
+                if (this.activeTween) {
+                    this.activeTween.stop();
                 }
             },
             updateDisplayStrength: function (newAmount) {
@@ -42,11 +48,13 @@ var Rance;
                 var stopped = false;
 
                 var animateTween = function () {
-                    if (stopped)
+                    if (stopped) {
+                        cancelAnimationFrame(self.requestAnimFrame);
                         return;
+                    }
 
                     TWEEN.update();
-                    requestAnimFrame(animateTween);
+                    self.requestAnimFrame = requestAnimFrame(animateTween);
                 };
 
                 var tween = new TWEEN.Tween({
@@ -63,6 +71,8 @@ var Rance;
                     stopped = true;
                     TWEEN.remove(tween);
                 });
+
+                this.activeTween = tween;
 
                 tween.start();
                 animateTween();
@@ -7027,144 +7037,6 @@ var Rance;
             }
 
             return allStars;
-        };
-        Player.prototype.getIsland = function (start) {
-            var isOwnedByThisPlayerFN = function (a, b) {
-                return (b.owner && a.owner.id === b.owner.id);
-            };
-
-            return start.getIslandForQualifier(isOwnedByThisPlayerFN);
-        };
-        Player.prototype.getAllIslands = function () {
-            var unConnected = this.controlledLocations.slice(0);
-            var islands = [];
-
-            while (unConnected.length > 0) {
-                var current = unConnected.pop();
-
-                var currentIsland = this.getIsland(current);
-
-                islands.push(currentIsland);
-                unConnected = unConnected.filter(function (s) {
-                    return currentIsland.indexOf(s) < 0;
-                });
-            }
-
-            return islands;
-        };
-        Player.prototype.getBorderEdges = function () {
-            var islands = this.getAllIslands();
-            var edges = [];
-
-            for (var i = 0; i < islands.length; i++) {
-                var island = [];
-
-                for (var j = 0; j < islands[i].length; j++) {
-                    var star = islands[i][j];
-                    var halfedges = star.voronoiCell.halfedges;
-
-                    for (var k = 0; k < halfedges.length; k++) {
-                        var edge = halfedges[k].edge;
-                        if (!edge.lSite || !edge.rSite) {
-                            island.push(edge);
-                        } else if (edge.lSite.owner !== this || edge.rSite.owner !== this) {
-                            island.push(edge);
-                        }
-                    }
-                }
-                edges.push(island);
-            }
-            return edges;
-        };
-        Player.prototype.getBorderPolygons = function () {
-            var edgeGroups = this.getBorderEdges();
-            var polys = [];
-
-            function setVertex(vertex, edge) {
-                var x = Math.round(vertex.x * 100);
-                var y = Math.round(vertex.y * 100);
-                if (!edgesByLocation[x]) {
-                    edgesByLocation[x] = {};
-                }
-                if (!edgesByLocation[x][y]) {
-                    edgesByLocation[x][y] = [];
-                }
-
-                edgesByLocation[x][y].push(edge);
-            }
-            function setEdge(edge) {
-                setVertex(edge.va, edge);
-                setVertex(edge.vb, edge);
-            }
-            function removeEdge(edge) {
-                var a = edgesByLocation[edge.va.x][edge.va.y];
-                var b = edgesByLocation[edge.vb.x][edge.vb.y];
-
-                a.splice(a.indexOf(edge));
-                b.splice(b.indexOf(edge));
-            }
-            function getEdges(x, y) {
-                return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
-            }
-            function getOtherVertex(edge, vertex) {
-                if (Rance.pointsEqual(edge.va, vertex))
-                    return edge.vb;
-                else
-                    return edge.va;
-            }
-            function getOtherEdgeAtVertex(vertex, edge) {
-                var edges = getEdges(vertex.x, vertex.y);
-
-                return edges.filter(function (toFilter) {
-                    return toFilter !== edge;
-                })[0];
-            }
-            function getNext(currentVertex, currentEdge) {
-                var nextVertex = getOtherVertex(currentEdge, currentVertex);
-                var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
-
-                return ({
-                    vertex: nextVertex,
-                    edge: nextEdge
-                });
-            }
-
-            for (var i = 0; i < edgeGroups.length; i++) {
-                var island = edgeGroups[i];
-                var poly = [];
-
-                var edgesByLocation = {};
-
-                for (var j = 0; j < island.length; j++) {
-                    setEdge(island[j]);
-                }
-                var edgesDone = [];
-
-                var currentEdge = island[0];
-                var currentVertex = currentEdge.vb;
-                poly.push(currentVertex);
-
-                while (edgesDone.length !== island.length) {
-                    edgesDone.push(currentEdge);
-
-                    if (!getNext(currentVertex, currentEdge).edge)
-                        debugger;
-                    var next = getNext(currentVertex, currentEdge);
-
-                    currentEdge = next.edge;
-                    currentVertex = next.vertex;
-
-                    if (poly[poly.length - 1] === next.vertex) {
-                        debugger;
-                    } else if (Rance.pointsEqual(poly[poly.length - 1], next.vertex)) {
-                        debugger;
-                    }
-                    poly.push(next.vertex);
-                }
-
-                polys.push(poly);
-            }
-            return polys;
         };
         Player.prototype.updateVisibleStars = function () {
             this.visibleStars = {};

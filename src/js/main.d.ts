@@ -1131,10 +1131,6 @@ declare module Rance {
         public getIncome(): number;
         public getBuildableShips(): any[];
         public getNeighboringStars(): Rance.Star[];
-        public getIsland(start: Rance.Star): Rance.Star[];
-        public getAllIslands(): Rance.Star[][];
-        public getBorderEdges(): any[][];
-        public getBorderPolygons(): any[];
         public updateVisibleStars(): void;
         public getVisibleStars(): Rance.Star[];
         public getRevealedStars(): Rance.Star[];
