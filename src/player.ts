@@ -276,7 +276,7 @@ module Rance
     getBorderEdges()
     {
       var islands = this.getAllIslands();
-      var edges = [];
+      var edges: any[][] = [];
 
       for (var i = 0; i < islands.length; i++)
       {
@@ -310,6 +310,64 @@ module Rance
       var edgeGroups = this.getBorderEdges();
       var polys = [];
 
+      function setVertex(vertex, edge)
+      {
+        var x = Math.round(vertex.x * 100);
+        var y = Math.round(vertex.y * 100);
+        if (!edgesByLocation[x])
+        {
+          edgesByLocation[x] = {};
+        }
+        if (!edgesByLocation[x][y])
+        {
+          edgesByLocation[x][y] = [];
+        }
+
+        edgesByLocation[x][y].push(edge);
+      }
+      function setEdge(edge)
+      {
+        setVertex(edge.va, edge);
+        setVertex(edge.vb, edge);
+      }
+      function removeEdge(edge)
+      {
+        var a = edgesByLocation[edge.va.x][edge.va.y];
+        var b = edgesByLocation[edge.vb.x][edge.vb.y];
+
+        a.splice(a.indexOf(edge));
+        b.splice(b.indexOf(edge));
+      }
+      function getEdges(x, y)
+      {
+        return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
+      }
+      function getOtherVertex(edge, vertex)
+      {
+        if (pointsEqual(edge.va, vertex)) return edge.vb;
+        else return edge.va;
+      }
+      function getOtherEdgeAtVertex(vertex, edge)
+      {
+        var edges = getEdges(vertex.x, vertex.y);
+
+        return edges.filter(function(toFilter)
+        {
+          return toFilter !== edge;
+        })[0];
+      }
+      function getNext(currentVertex, currentEdge)
+      {
+        var nextVertex = getOtherVertex(currentEdge, currentVertex);
+        var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
+
+        return(
+        {
+          vertex: nextVertex,
+          edge: nextEdge
+        });
+      }
+
       for (var i = 0; i < edgeGroups.length; i++)
       {
         var island = edgeGroups[i];
@@ -322,64 +380,7 @@ module Rance
             [y:string]: {va: number; vb: number}[];
           }
         } = {};
-
-        function setVertex(vertex, edge)
-        {
-          var x = Math.round(vertex.x * 100);
-          var y = Math.round(vertex.y * 100);
-          if (!edgesByLocation[x])
-          {
-            edgesByLocation[x] = {};
-          }
-          if (!edgesByLocation[x][y])
-          {
-            edgesByLocation[x][y] = [];
-          }
-
-          edgesByLocation[x][y].push(edge);
-        }
-        function setEdge(edge)
-        {
-          setVertex(edge.va, edge);
-          setVertex(edge.vb, edge);
-        }
-        function removeEdge(edge)
-        {
-          var a = edgesByLocation[edge.va.x][edge.va.y];
-          var b = edgesByLocation[edge.vb.x][edge.vb.y];
-
-          a.splice(a.indexOf(edge));
-          b.splice(b.indexOf(edge));
-        }
-        function getEdges(x, y)
-        {
-          return edgesByLocation[Math.round(x * 100)][Math.round(y * 100)];
-        }
-        function getOtherVertex(edge, vertex)
-        {
-          if (pointsEqual(edge.va, vertex)) return edge.vb;
-          else return edge.va;
-        }
-        function getOtherEdgeAtVertex(vertex, edge)
-        {
-          var edges = getEdges(vertex.x, vertex.y);
-
-          return edges.filter(function(toFilter)
-          {
-            return toFilter !== edge;
-          })[0];
-        }
-        function getNext(currentVertex, currentEdge)
-        {
-          var nextVertex = getOtherVertex(currentEdge, currentVertex);
-          var nextEdge = getOtherEdgeAtVertex(nextVertex, currentEdge);
-
-          return(
-          {
-            vertex: nextVertex,
-            edge: nextEdge
-          });
-        }
+        
 
         for (var j = 0; j < island.length; j++)
         {
