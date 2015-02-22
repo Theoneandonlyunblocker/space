@@ -21,8 +21,7 @@ module Rance
             facesLeft: null
           },
           hoveredAbility: null,
-          hoveredUnit: null,
-          backgroundImage: null
+          hoveredUnit: null
         });
       },
       resize: function()
@@ -45,18 +44,7 @@ module Rance
       {
         this.props.renderer.isBattleBackground = true;
 
-        var seed = this.props.battle.battleData.location.getBackgroundSeed();
-
-        var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-
-        this.props.renderer.blurProps =
-        [
-          blurArea.left,
-          0,
-          blurArea.width,
-          blurArea.height,
-          seed
-        ];
+        this.resize();
 
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
