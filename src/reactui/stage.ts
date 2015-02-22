@@ -81,7 +81,10 @@ module Rance
           case "flagMaker":
           {
             elementsToRender.push(
-              UIComponents.FlagMaker()
+              UIComponents.FlagMaker(
+              {
+                key: "flagMaker"
+              })
             );
             break;
           }
