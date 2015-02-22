@@ -6,6 +6,46 @@
 
 module Rance
 {
+  export function getAbilityUseData(battle: Battle, user: Unit,
+    ability: Templates.IAbilityTemplate, target: Unit)
+  {
+    var data: any = {};
+    data.user = user;
+    data.originalTarget = target;
+    data.actualTarget = getTargetOrGuard(battle, user, ability, target);
+    data.beforeUse = [];
+    if (!ability.addsGuard)
+    {
+      data.beforeUse.push(user.removeAllGuard);
+    }
+
+    data.effectsToCall = [];
+    
+    var effectsToCall = [ability.mainEffect];
+    if (ability.secondaryEffects)
+    {
+      effectsToCall = effectsToCall.concat(ability.secondaryEffects);
+    }
+
+    for (var i = 0; i < effectsToCall.length; i++)
+    {
+      var effect = effectsToCall[i];
+      var targetsInArea = getUnitsInEffectArea(battle, user, effect, target.battleStats.position);
+
+      for (var j = 0; j < targetsInArea.length; j++)
+      {
+        var target = targetsInArea[j];
+
+        data.effectsToCall.push(effect.effect.bind(null, user, target));
+      }
+    }
+
+    data.afterUse = [];
+    data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
+    data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
+
+    return data;
+  }
   export function useAbility(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
   {
