@@ -2,6 +2,7 @@
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="../../lib/clipper.d.ts" />
+/// <reference path="../../data/templates/spritetemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
@@ -113,6 +114,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var BattleScore: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleScene: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
@@ -418,9 +424,10 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface TypeTemplate {
+        interface IUnitTemplate {
             type: string;
             typeName: string;
+            sprite: Templates.ISpriteTemplate;
             isSquadron: boolean;
             buildCost: number;
             icon: string;
@@ -436,12 +443,12 @@ declare module Rance {
             abilities: Templates.IAbilityTemplate[];
         }
         module ShipTypes {
-            var cheatShip: TypeTemplate;
-            var fighterSquadron: TypeTemplate;
-            var bomberSquadron: TypeTemplate;
-            var battleCruiser: TypeTemplate;
-            var scout: TypeTemplate;
-            var shieldBoat: TypeTemplate;
+            var cheatShip: IUnitTemplate;
+            var fighterSquadron: IUnitTemplate;
+            var bomberSquadron: IUnitTemplate;
+            var battleCruiser: IUnitTemplate;
+            var scout: IUnitTemplate;
+            var shieldBoat: IUnitTemplate;
         }
     }
 }
@@ -1225,9 +1232,17 @@ declare module Rance {
         user: Rance.Unit;
         originalTarget: Rance.Unit;
         actualTarget: Rance.Unit;
-        beforeUse: any[];
-        effectsToCall: any[];
-        afterUse: any[];
+        beforeUse: {
+            (): void;
+        }[];
+        effectsToCall: {
+            effect: () => void;
+            user: Rance.Unit;
+            target: Rance.Unit;
+        }[];
+        afterUse: {
+            (): void;
+        }[];
     }
     function getAbilityUseData(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData;
     function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
@@ -1245,7 +1260,7 @@ declare module Rance {
 }
 declare module Rance {
     class Unit {
-        public template: Rance.Templates.TypeTemplate;
+        public template: Rance.Templates.IUnitTemplate;
         public id: number;
         public name: string;
         public maxStrength: number;
@@ -1284,7 +1299,7 @@ declare module Rance {
             high: Rance.Item;
         };
         public uiDisplayIsDirty: boolean;
-        constructor(template: Rance.Templates.TypeTemplate, id?: number, data?: any);
+        constructor(template: Rance.Templates.IUnitTemplate, id?: number, data?: any);
         public makeFromData(data: any): void;
         public setInitialValues(): void;
         public setBaseHealth(): void;
@@ -1316,6 +1331,7 @@ declare module Rance {
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
         public heal(): void;
+        public drawBattleScene(width: number, height: number, unitsToDraw: number, maxUnitsPerColumn: number): HTMLCanvasElement;
         public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;
     }
