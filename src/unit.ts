@@ -480,11 +480,24 @@ module Rance
 
       this.addStrength(healAmount);
     }
-    drawBattleScene(width: number, height: number, unitsToDraw: number, maxUnitsPerColumn: number)
+    drawBattleScene(props:
     {
+      width: number;
+      height: number;
+      unitsToDraw: number;
+      maxUnitsPerColumn: number;
+      isConvex: boolean;
+      degree: number;
+    })
+    {
+      var unitsToDraw = props.unitsToDraw;
+      var maxUnitsPerColumn = props.maxUnitsPerColumn;
+      var isConvex = props.isConvex;
+      var degree = props.degree;
+
       var canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = props.width;
+      canvas.height = props.height;
       var myNode = document.body;
       while (myNode.firstChild) {
           myNode.removeChild(myNode.firstChild);
@@ -504,6 +517,18 @@ module Rance
       var image = new Image();
       image.src = "img\/ships\/testShip.png";
       //var image = app.images["units"][spriteTemplate.imageSrc];
+      var tableData = [];
+
+      var minXOffset;
+      if (isConvex)
+      {
+        minXOffset = 0;
+      }
+      else
+      {
+        minXOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1))
+      }
+
 
       for (var i = unitsToDraw - 1; i >= 0; i--)
       {
@@ -513,27 +538,41 @@ module Rance
         var zPos;
         if (isLastColumn)
         {
-          var unitsInLastColumn = unitsToDraw % maxUnitsPerColumn;
-          var positionInLastColumn = i % unitsInLastColumn;
-          zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (unitsInLastColumn - 1));
+          var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+          var positionInLastColumn = i % maxUnitsInThisColumn;
+          zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
         }
         else
         {
           zPos = i % maxUnitsPerColumn;
         }
 
-        var xOffset = Math.round(Math.sin(Math.PI / 2 * zPos));
-        var xAnchor = 1 - ((xOffset + 1) / 2);
-        var xPos = column;
+        var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+        if (isConvex)
+        {
+          xOffset = 1 - xOffset;
+        }
 
-        var x = xAnchor * (image.width / 2) + column * image.width;
+        xOffset -= minXOffset;
 
-        var y = (image.height + 5) * (maxUnitsPerColumn - zPos);
+        var x = Math.round(xOffset * image.width * degree + column * image.width);
+        var y = Math.round((image.height + 5) * (maxUnitsPerColumn - zPos));
 
         ctx.drawImage(image, x, y);
 
-        console.log(i, column, isLastColumn, x, y, zPos);
+        tableData.push(
+        {
+          i: i,
+          column: column,
+          x: x,
+          xOffset: xOffset,
+          y: y,
+          zPos: zPos
+        });
       }
+
+      var _: any = window;
+      _.console.table(tableData);
 
       return canvas;
     }

@@ -1331,7 +1331,14 @@ declare module Rance {
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
         public heal(): void;
-        public drawBattleScene(width: number, height: number, unitsToDraw: number, maxUnitsPerColumn: number): HTMLCanvasElement;
+        public drawBattleScene(props: {
+            width: number;
+            height: number;
+            unitsToDraw: number;
+            maxUnitsPerColumn: number;
+            isConvex: boolean;
+            degree: number;
+        }): HTMLCanvasElement;
         public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;
     }
