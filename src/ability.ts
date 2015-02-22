@@ -11,9 +11,14 @@ module Rance
     user: Unit;
     originalTarget: Unit;
     actualTarget: Unit;
-    beforeUse: any[];
-    effectsToCall: any[];
-    afterUse: any[];
+    beforeUse: {(): void;}[];
+    effectsToCall:
+    {
+      effect: {(): void;};
+      user: Unit;
+      target: Unit;
+    }[];
+    afterUse: {(): void;}[];
   }
   export function getAbilityUseData(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData
@@ -45,7 +50,12 @@ module Rance
       {
         var target = targetsInArea[j];
 
-        data.effectsToCall.push(effect.effect.bind(null, user, target));
+        data.effectsToCall.push(
+        {
+          effect: effect.effect.bind(null, user, target),
+          user: user,
+          target: target
+        });
       }
     }
 
@@ -62,17 +72,17 @@ module Rance
 
     for (var i = 0; i < abilityData.beforeUse.length; i++)
     {
-      abilityData.beforeUse[i].call();
+      abilityData.beforeUse[i]();
     }
 
     for (var i = 0; i < abilityData.effectsToCall.length; i++)
     {
-      abilityData.effectsToCall[i].call();
+      abilityData.effectsToCall[i].effect();
     }
 
     for (var i = 0; i < abilityData.afterUse.length; i++)
     {
-      abilityData.afterUse[i].call();
+      abilityData.afterUse[i]();
     }
   }
   export function validateTarget(battle: Battle, user: Unit,
