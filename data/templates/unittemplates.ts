@@ -1,14 +1,15 @@
 /// <reference path="abilitytemplates.ts"/>
-
+/// <reference path="spritetemplate.d.ts"/>
 
 module Rance
 {
   export module Templates
   {
-    export interface TypeTemplate
+    export interface IUnitTemplate
     {
       type: string;
       typeName: string;
+      sprite: ISpriteTemplate;
       isSquadron: boolean;
       buildCost: number;
       icon: string;
@@ -26,10 +27,15 @@ module Rance
     }
     export module ShipTypes
     {
-      export var cheatShip: TypeTemplate =
+      export var cheatShip: IUnitTemplate =
       {
         type: "cheatShip",
         typeName: "Cheat Ship",
+        sprite:
+        {
+          imageSrc: "testShip.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
         isSquadron: false,
         buildCost: 0,
         icon: "img\/icons\/f.png",
@@ -50,10 +56,15 @@ module Rance
           Abilities.guardColumn
         ]
       }
-      export var fighterSquadron: TypeTemplate =
+      export var fighterSquadron: IUnitTemplate =
       {
         type: "fighterSquadron",
         typeName: "Fighter Squadron",
+        sprite:
+        {
+          imageSrc: "testShip.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
         isSquadron: true,
         buildCost: 100,
         icon: "img\/icons\/f.png",
@@ -73,10 +84,15 @@ module Rance
           Abilities.closeAttack
         ]
       }
-      export var bomberSquadron: TypeTemplate =
+      export var bomberSquadron: IUnitTemplate =
       {
         type: "bomberSquadron",
         typeName: "Bomber Squadron",
+        sprite:
+        {
+          imageSrc: "testShip.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
         isSquadron: true,
         buildCost: 200,
         icon: "img\/icons\/f.png",
@@ -96,10 +112,15 @@ module Rance
           Abilities.bombAttack
         ]
       }
-      export var battleCruiser: TypeTemplate =
+      export var battleCruiser: IUnitTemplate =
       {
         type: "battleCruiser",
         typeName: "Battlecruiser",
+        sprite:
+        {
+          imageSrc: "testShip.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
         isSquadron: false,
         buildCost: 200,
         icon: "img\/icons\/b.png",
@@ -119,10 +140,15 @@ module Rance
           Abilities.wholeRowAttack
         ]
       }
-      export var scout: TypeTemplate =
+      export var scout: IUnitTemplate =
       {
         type: "scout",
         typeName: "Scout",
+        sprite:
+        {
+          imageSrc: "testShip.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
         isSquadron: true,
         buildCost: 200,
         icon: "img\/icons\/f.png",
@@ -141,10 +167,15 @@ module Rance
           Abilities.rangedAttack
         ]
       }
-      export var shieldBoat: TypeTemplate =
+      export var shieldBoat: IUnitTemplate =
       {
         type: "shieldBoat",
         typeName: "Shield Boat",
+        sprite:
+        {
+          imageSrc: "testShip.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
         isSquadron: false,
         buildCost: 200,
         icon: "img\/icons\/b.png",

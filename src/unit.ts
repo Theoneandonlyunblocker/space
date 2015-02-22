@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/typetemplates.ts" />
+/// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 
 /// <reference path="utility.ts"/>
@@ -10,7 +10,7 @@ module Rance
 {
   export class Unit
   {
-    template: Templates.TypeTemplate;
+    template: Templates.IUnitTemplate;
 
     id: number;
 
@@ -70,7 +70,7 @@ module Rance
 
     uiDisplayIsDirty: boolean = true;
 
-    constructor(template: Templates.TypeTemplate, id?: number, data?)
+    constructor(template: Templates.IUnitTemplate, id?: number, data?)
     {
       this.id = isFinite(id) ? id : idGenerators.unit++;
 
