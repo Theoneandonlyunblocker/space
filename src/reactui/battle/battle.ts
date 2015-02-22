@@ -3,6 +3,7 @@
 /// <reference path="turnorder.ts"/>
 /// <reference path="abilitytooltip.ts"/>
 /// <reference path="battlescore.ts"/>
+/// <reference path="battlescene.ts"/>
 
 module Rance
 {
@@ -20,8 +21,14 @@ module Rance
             parentElement: null,
             facesLeft: null
           },
+          targetsInPotentialArea: [],
+          potentialDelay: null,
+
           hoveredAbility: null,
-          hoveredUnit: null
+          hoveredUnit: null,
+
+          battleSceneUnit1: null,
+          battleSceneUnit2: null
         });
       },
       resize: function()
@@ -50,6 +57,8 @@ module Rance
 
         window.addEventListener("resize", this.resize, false);
 
+        this.setBattleSceneUnits(this.state.hoveredUnit);
+
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
           this.useAIAbility();
@@ -65,7 +74,7 @@ module Rance
       {
         this.setState(
         {
-          hoveredUnit: false,
+          hoveredUnit: null,
           abilityTooltip:
           {
             parentElement: null
@@ -74,6 +83,8 @@ module Rance
           potentialDelay: null,
           targetsInPotentialArea: []
         });
+
+        this.setBattleSceneUnits(null);
       },
       handleMouseLeaveUnit: function(e)
       {
@@ -121,11 +132,41 @@ module Rance
           },
           hoveredUnit: unit
         });
+
+        this.setBattleSceneUnits(unit);
       },
 
       getUnitElement: function(unit)
       {
         return document.getElementById("unit-id_" + unit.id);
+      },
+
+      setBattleSceneUnits: function(hoveredUnit: Unit)
+      {
+        var activeUnit = this.props.battle.activeUnit;
+
+        var shouldDisplayHovered = (hoveredUnit &&
+          hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
+
+        var unit1, unit2;
+
+        if (activeUnit.battleStats.side === "side1")
+        {
+          unit1 = activeUnit;
+          unit2 = shouldDisplayHovered ? hoveredUnit : null;
+        }
+        else
+        {
+          unit1 = shouldDisplayHovered ? hoveredUnit : null;
+          unit2 = activeUnit;
+        }
+
+        this.setState(
+        {
+          battleSceneUnit1: unit1,
+          battleSceneUnit2: unit2
+        });
+
       },
 
       handleAbilityUse: function(ability, target)
@@ -135,17 +176,17 @@ module Rance
 
         for (var i = 0; i < abilityData.beforeUse.length; i++)
         {
-          abilityData.beforeUse[i].call();
+          abilityData.beforeUse[i]();
         }
 
         for (var i = 0; i < abilityData.effectsToCall.length; i++)
         {
-          abilityData.effectsToCall[i].call();
+          abilityData.effectsToCall[i].effect();
         }
 
         for (var i = 0; i < abilityData.afterUse.length; i++)
         {
-          abilityData.afterUse[i].call();
+          abilityData.afterUse[i]();
         }
 
         this.handleTurnEnd();
@@ -162,6 +203,7 @@ module Rance
         }
 
         this.props.battle.endTurn();
+        this.setBattleSceneUnits(this.state.hoveredUnit);
 
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
@@ -280,6 +322,11 @@ module Rance
                   hoveredUnit: this.state.hoveredUnit,
                   onMouseEnterUnit: this.handleMouseEnterUnit,
                   onMouseLeaveUnit: this.handleMouseLeaveUnit
+                }),
+                UIComponents.BattleScene(
+                {
+                  unit1: this.state.battleSceneUnit1,
+                  unit2: this.state.battleSceneUnit2
                 })
               ),
               React.DOM.div(

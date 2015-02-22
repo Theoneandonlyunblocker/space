@@ -158,6 +158,7 @@ progress::-webkit-progress-value {
   flex-flow: row;
   justify-content: center;
   margin-bottom: 5px;
+  z-index: 2;
 }
 .battle-score-container {
   display: flex;
@@ -193,6 +194,7 @@ progress::-webkit-progress-value {
   flex-flow: row;
   width: 100%;
   min-height: 20px;
+  z-index: 1;
 }
 .turn-order-unit {
   display: flex;
@@ -228,6 +230,19 @@ progress::-webkit-progress-value {
   left: -10px;
   background-image: url("../img/icons/turnOrderArrow.png");
   z-index: 101;
+}
+.battle-scene {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.battle-scene-units-container {
+  background-color: white;
 }
 .ability-tooltip {
   position: absolute;
