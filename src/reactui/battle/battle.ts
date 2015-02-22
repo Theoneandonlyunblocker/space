@@ -130,8 +130,37 @@ module Rance
 
       handleAbilityUse: function(ability, target)
       {
-        useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
-        this.clearHoveredUnit();
+        var abilityData = getAbilityUseData(this.props.battle,
+          this.props.battle.activeUnit, ability, target);
+
+        for (var i = 0; i < abilityData.beforeUse.length; i++)
+        {
+          abilityData.beforeUse[i].call();
+        }
+
+        for (var i = 0; i < abilityData.effectsToCall.length; i++)
+        {
+          abilityData.effectsToCall[i].call();
+        }
+
+        for (var i = 0; i < abilityData.afterUse.length; i++)
+        {
+          abilityData.afterUse[i].call();
+        }
+
+        this.handleTurnEnd();
+      },
+      handleTurnEnd: function()
+      {
+        if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
+        {
+          this.forceUpdate();
+        }
+        else
+        {
+          this.clearHoveredUnit();
+        }
+
         this.props.battle.endTurn();
 
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)

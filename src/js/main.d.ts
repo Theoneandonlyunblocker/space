@@ -1221,6 +1221,15 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IAbilityUseData {
+        user: Rance.Unit;
+        originalTarget: Rance.Unit;
+        actualTarget: Rance.Unit;
+        beforeUse: any[];
+        effectsToCall: any[];
+        afterUse: any[];
+    }
+    function getAbilityUseData(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData;
     function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
     function validateTarget(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): boolean;
     function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit;

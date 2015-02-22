@@ -1114,8 +1114,7 @@ var Rance;
                         facesLeft: null
                     },
                     hoveredAbility: null,
-                    hoveredUnit: null,
-                    backgroundImage: null
+                    hoveredUnit: null
                 });
             },
             resize: function () {
@@ -1134,17 +1133,7 @@ var Rance;
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = true;
 
-                var seed = this.props.battle.battleData.location.getBackgroundSeed();
-
-                var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-
-                this.props.renderer.blurProps = [
-                    blurArea.left,
-                    0,
-                    blurArea.width,
-                    blurArea.height,
-                    seed
-                ];
+                this.resize();
 
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
@@ -1210,8 +1199,29 @@ var Rance;
                 return document.getElementById("unit-id_" + unit.id);
             },
             handleAbilityUse: function (ability, target) {
-                Rance.useAbility(this.props.battle, this.props.battle.activeUnit, ability, target);
-                this.clearHoveredUnit();
+                var abilityData = Rance.getAbilityUseData(this.props.battle, this.props.battle.activeUnit, ability, target);
+
+                for (var i = 0; i < abilityData.beforeUse.length; i++) {
+                    abilityData.beforeUse[i].call();
+                }
+
+                for (var i = 0; i < abilityData.effectsToCall.length; i++) {
+                    abilityData.effectsToCall[i].call();
+                }
+
+                for (var i = 0; i < abilityData.afterUse.length; i++) {
+                    abilityData.afterUse[i].call();
+                }
+
+                this.handleTurnEnd();
+            },
+            handleTurnEnd: function () {
+                if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
+                    this.forceUpdate();
+                } else {
+                    this.clearHoveredUnit();
+                }
+
                 this.props.battle.endTurn();
 
                 if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
@@ -7643,17 +7653,17 @@ var Rance;
 /// <reference path="targeting.ts"/>
 var Rance;
 (function (Rance) {
-    function useAbility(battle, user, ability, target) {
-        var isValidTarget = validateTarget(battle, user, ability, target);
-        if (!isValidTarget) {
-            console.warn("Invalid target");
-        }
-
-        target = getTargetOrGuard(battle, user, ability, target);
-
+    function getAbilityUseData(battle, user, ability, target) {
+        var data = {};
+        data.user = user;
+        data.originalTarget = target;
+        data.actualTarget = getTargetOrGuard(battle, user, ability, target);
+        data.beforeUse = [];
         if (!ability.addsGuard) {
-            user.removeAllGuard();
+            data.beforeUse.push(user.removeAllGuard.bind(user));
         }
+
+        data.effectsToCall = [];
 
         var effectsToCall = [ability.mainEffect];
         if (ability.secondaryEffects) {
@@ -7667,12 +7677,31 @@ var Rance;
             for (var j = 0; j < targetsInArea.length; j++) {
                 var target = targetsInArea[j];
 
-                effect.effect.call(null, user, target);
+                data.effectsToCall.push(effect.effect.bind(null, user, target));
             }
         }
 
-        user.removeActionPoints(ability.actionsUse);
-        user.addMoveDelay(ability.moveDelay);
+        data.afterUse = [];
+        data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
+        data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
+
+        return data;
+    }
+    Rance.getAbilityUseData = getAbilityUseData;
+    function useAbility(battle, user, ability, target) {
+        var abilityData = getAbilityUseData(battle, user, ability, target);
+
+        for (var i = 0; i < abilityData.beforeUse.length; i++) {
+            abilityData.beforeUse[i].call();
+        }
+
+        for (var i = 0; i < abilityData.effectsToCall.length; i++) {
+            abilityData.effectsToCall[i].call();
+        }
+
+        for (var i = 0; i < abilityData.afterUse.length; i++) {
+            abilityData.afterUse[i].call();
+        }
     }
     Rance.useAbility = useAbility;
     function validateTarget(battle, user, ability, target) {
@@ -8871,7 +8900,9 @@ var Rance;
                         break;
                     }
                     case "flagMaker": {
-                        elementsToRender.push(Rance.UIComponents.FlagMaker());
+                        elementsToRender.push(Rance.UIComponents.FlagMaker({
+                            key: "flagMaker"
+                        }));
                         break;
                     }
                 }

@@ -6,17 +6,26 @@
 
 module Rance
 {
-  export function getAbilityUseData(battle: Battle, user: Unit,
-    ability: Templates.IAbilityTemplate, target: Unit)
+  export interface IAbilityUseData
   {
-    var data: any = {};
+    user: Unit;
+    originalTarget: Unit;
+    actualTarget: Unit;
+    beforeUse: any[];
+    effectsToCall: any[];
+    afterUse: any[];
+  }
+  export function getAbilityUseData(battle: Battle, user: Unit,
+    ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData
+  {
+    var data = <IAbilityUseData> {};
     data.user = user;
     data.originalTarget = target;
     data.actualTarget = getTargetOrGuard(battle, user, ability, target);
     data.beforeUse = [];
     if (!ability.addsGuard)
     {
-      data.beforeUse.push(user.removeAllGuard);
+      data.beforeUse.push(user.removeAllGuard.bind(user));
     }
 
     data.effectsToCall = [];
@@ -49,40 +58,22 @@ module Rance
   export function useAbility(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
   {
-    var isValidTarget = validateTarget(battle, user, ability, target);
-    if (!isValidTarget)
+    var abilityData = getAbilityUseData(battle, user, ability, target);
+
+    for (var i = 0; i < abilityData.beforeUse.length; i++)
     {
-      console.warn("Invalid target");
+      abilityData.beforeUse[i].call();
     }
 
-    target = getTargetOrGuard(battle, user, ability, target);
-
-    if (!ability.addsGuard)
+    for (var i = 0; i < abilityData.effectsToCall.length; i++)
     {
-      user.removeAllGuard();
+      abilityData.effectsToCall[i].call();
     }
 
-    var effectsToCall = [ability.mainEffect];
-    if (ability.secondaryEffects)
+    for (var i = 0; i < abilityData.afterUse.length; i++)
     {
-      effectsToCall = effectsToCall.concat(ability.secondaryEffects);
+      abilityData.afterUse[i].call();
     }
-
-    for (var i = 0; i < effectsToCall.length; i++)
-    {
-      var effect = effectsToCall[i];
-      var targetsInArea = getUnitsInEffectArea(battle, user, effect, target.battleStats.position);
-
-      for (var j = 0; j < targetsInArea.length; j++)
-      {
-        var target = targetsInArea[j];
-
-        effect.effect.call(null, user, target);
-      }
-    }
-
-    user.removeActionPoints(ability.actionsUse);
-    user.addMoveDelay(ability.moveDelay);
   }
   export function validateTarget(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
