@@ -87,16 +87,18 @@ module Rance
         });
       }
     }
-    loadEmblems()
+    loadImagesFN(identifier: string)
     {
+      if (this.loaded[identifier] === undefined) this.loaded[identifier] = false;
+
       var self = this;
-      var loader = new PIXI.JsonLoader("img\/emblems.json");
+      var loader = new PIXI.JsonLoader("img\/" + identifier + ".json");
       loader.addEventListener("loaded", function(event)
       {
         var spriteImages = self.spritesheetToDataURLs(event.target.json,
           event.target.texture.source);
-        self.imageCache["emblems"] = spriteImages;
-        self.loaded.emblems = true;
+        self.imageCache[identifier] = spriteImages;
+        self.loaded[identifier] = true;
         self.checkLoaded();
       });
 
