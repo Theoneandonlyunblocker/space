@@ -1336,8 +1336,9 @@ declare module Rance {
             height: number;
             unitsToDraw: number;
             maxUnitsPerColumn: number;
-            isConvex: boolean;
             degree: number;
+            rotationAngle: number;
+            scalingFactor: number;
         }): HTMLCanvasElement;
         public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;

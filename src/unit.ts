@@ -486,23 +486,24 @@ module Rance
       height: number;
       unitsToDraw: number;
       maxUnitsPerColumn: number;
-      isConvex: boolean;
       degree: number;
+      rotationAngle: number;
+      scalingFactor: number;
     })
     {
       var unitsToDraw = props.unitsToDraw;
       var maxUnitsPerColumn = props.maxUnitsPerColumn;
-      var isConvex = props.isConvex;
+      var isConvex = true
       var degree = props.degree;
+      if (degree < 0)
+      {
+        isConvex = !isConvex;
+        degree = Math.abs(degree);
+      }
 
       var canvas = document.createElement("canvas");
-      canvas.width = props.width;
-      canvas.height = props.height;
-      var myNode = document.body;
-      while (myNode.firstChild) {
-          myNode.removeChild(myNode.firstChild);
-      }
-      document.body.appendChild(canvas);
+      canvas.width = props.width + 400;
+      canvas.height = props.height + 400;
 
       var ctx = canvas.getContext("2d");
 
@@ -519,16 +520,28 @@ module Rance
       //var image = app.images["units"][spriteTemplate.imageSrc];
       var tableData = [];
 
-      var minXOffset;
-      if (isConvex)
+      var xMin, xMax, yMin, yMax;
+
+      function transformMat3(a, m)
       {
-        minXOffset = 0;
-      }
-      else
-      {
-        minXOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1))
+        var x = m[0] * a.x + m[3] * a.y + m[6];
+        var y = m[1] * a.x + m[4] * a.y + m[7];
+
+        return {x: x, y: y};
       }
 
+      var rotationAngle = Math.PI / 180 * props.rotationAngle;
+      var sA = Math.sin(rotationAngle);
+      var cA = Math.cos(rotationAngle);
+
+      var rotationMatrix =
+      [
+        1, 0, 0,
+        0, cA, -sA,
+        0, sA, cA
+      ];
+
+      var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
       for (var i = unitsToDraw - 1; i >= 0; i--)
       {
@@ -555,26 +568,61 @@ module Rance
 
         xOffset -= minXOffset;
 
-        var x = Math.round(xOffset * image.width * degree + column * image.width);
-        var y = Math.round((image.height + 5) * (maxUnitsPerColumn - zPos));
+        var scale = 1 - zPos * props.scalingFactor;
+        var scaledWidth = image.width * scale;
+        var scaledHeight = image.height * scale;
+        
 
-        ctx.drawImage(image, x, y);
+        var x = Math.round(xOffset * scaledWidth * degree + column * (scaledWidth + 5 * scale));
+        var y = Math.round((scaledHeight + 5 * scale) * (maxUnitsPerColumn - zPos));
+
+        var translated = transformMat3({x: x, y: y}, rotationMatrix);
+
+        x = translated.x;
+        y = translated.y;
+
+        xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
+        xMax = isFinite(xMax) ? Math.max(x, xMax) : x;
+        yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
+        yMax = isFinite(yMax) ? Math.max(y, yMax) : y;
+
+
+        ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
 
         tableData.push(
         {
           i: i,
-          column: column,
           x: x,
-          xOffset: xOffset,
           y: y,
-          zPos: zPos
+          xMin: xMin,
+          xMax: xMax,
+          yMin: yMin,
+          yMax: yMax
         });
       }
 
       var _: any = window;
       _.console.table(tableData);
 
-      return canvas;
+      xMax += image.width;
+      yMax += image.height;
+
+      var resultCanvas = document.createElement("canvas");
+      resultCanvas.width = xMax - xMin;
+      resultCanvas.height = yMax - yMin;
+
+      var resultCtx = resultCanvas.getContext("2d");
+      resultCtx.drawImage(canvas, -xMin, -yMin);
+
+      console.log(resultCanvas.width);
+
+      var myNode = document.body;
+      while (myNode.firstChild) {
+          myNode.removeChild(myNode.firstChild);
+      }
+      document.body.appendChild(resultCanvas);
+
+      return resultCanvas;
     }
     serialize(includeItems: boolean = true)
     {
