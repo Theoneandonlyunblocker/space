@@ -1339,6 +1339,9 @@ declare module Rance {
             scalingFactor: number;
             xDistance: number;
             zDistance: number;
+            facesRight: boolean;
+            maxWidth?: number;
+            maxHeight?: number;
         }): HTMLCanvasElement;
         public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;
@@ -1456,7 +1459,8 @@ declare module Rance {
         };
         constructor(player: Rance.Player, battleData: Rance.IBattleData);
         public setAvailableUnits(): void;
-        public makeEnemyFleet(): any[][];
+        public makeEmptyFleet(): any[];
+        public makeEnemyFleet(): any[];
         public getUnitPosition(unit: Rance.Unit): number[];
         public getUnitAtPosition(position: number[]): Rance.Unit;
         public setUnit(unit: Rance.Unit, position: number[]): void;
@@ -1936,6 +1940,7 @@ declare module Rance {
         public loaded: {
             DOM: boolean;
             emblems: boolean;
+            units: boolean;
             other: boolean;
         };
         public startTime: number;
@@ -1950,7 +1955,9 @@ declare module Rance {
             [id: string]: HTMLImageElement;
         };
         public loadDOM(): void;
+        public loadImagesFN(identifier: string): void;
         public loadEmblems(): void;
+        public loadUnits(): void;
         public loadOther(): void;
         public checkLoaded(): void;
     }

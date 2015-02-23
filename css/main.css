@@ -241,9 +241,6 @@ progress::-webkit-progress-value {
   display: flex;
   justify-content: space-between;
 }
-.battle-scene-units-container {
-  background-color: white;
-}
 .ability-tooltip {
   position: absolute;
   z-index: 201;

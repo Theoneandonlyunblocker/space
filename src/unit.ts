@@ -489,6 +489,9 @@ module Rance
       scalingFactor: number;
       xDistance: number;
       zDistance: number;
+      facesRight: boolean;
+      maxWidth?: number;
+      maxHeight?: number;
     })
     {
       var unitsToDraw = props.unitsToDraw;
@@ -595,27 +598,30 @@ module Rance
 
 
         ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
-
-        tableData.push(
-        {
-          i: i,
-          x: x,
-          y: y,
-          xMin: xMin,
-          xMax: xMax,
-          yMin: yMin,
-          yMax: yMax
-        });
       }
 
-      var _: any = window;
-      //_.console.table(tableData);
-
       var resultCanvas = document.createElement("canvas");
+
       resultCanvas.width = xMax - xMin;
+      if (props.maxWidth)
+      {
+        resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width)
+      }
+
       resultCanvas.height = yMax - yMin;
+      if (props.maxHeight)
+      {
+        resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height)
+      }
 
       var resultCtx = resultCanvas.getContext("2d");
+
+      // flip horizontally
+      if (props.facesRight)
+      {
+        resultCtx.translate(resultCanvas.width, 0);
+        resultCtx.scale(-1, 1);
+      }
       resultCtx.drawImage(canvas, -xMin, -yMin);
 
       console.log(yMin, yMax, resultCanvas.height, canvas.height);

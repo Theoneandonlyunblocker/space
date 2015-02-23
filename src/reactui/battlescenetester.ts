@@ -15,7 +15,8 @@ module Rance
         maxUnitsPerColumn: 5,
         degree: -0.5,
         rotationAngle: 60,
-        scalingFactor: 0.02
+        scalingFactor: 0.02,
+        facesRight: true
       },
 
       componentDidMount: function()
@@ -37,7 +38,8 @@ module Rance
           maxUnitsPerColumn: Number(this.refs["maxUnitsPerColumn"].getDOMNode().value),
           degree: Number(this.refs["degree"].getDOMNode().value),
           rotationAngle: Number(this.refs["rotationAngle"].getDOMNode().value),
-          scalingFactor: Number(this.refs["scalingFactor"].getDOMNode().value)
+          scalingFactor: Number(this.refs["scalingFactor"].getDOMNode().value),
+          facesRight: this.refs["facesRight"].getDOMNode().checked
         });
 
         var container = this.refs["canvasContainer"].getDOMNode();
@@ -168,6 +170,17 @@ module Rance
                   onChange: this.renderScene
                 },
                   "scalingFactor"
+                )
+              ),
+              React.DOM.label(null,
+
+                React.DOM.input(
+                {
+                  ref: "facesRight",
+                  type: "checkBox",
+                  onChange: this.renderScene
+                },
+                  "facesRight"
                 )
               ),
               React.DOM.button(

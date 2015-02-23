@@ -1102,14 +1102,77 @@ var Rance;
     (function (UIComponents) {
         UIComponents.BattleScene = React.createClass({
             displayName: "BattleScene",
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.unit1 !== this.props.unit1) {
+                    this.renderScene("side1", newProps.unit1);
+                }
+
+                if (newProps.unit2 !== this.props.unit2) {
+                    this.renderScene("side2", newProps.unit2);
+                }
+            },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.handleResize, false);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+            },
+            handleResize: function () {
+                if (this.props.unit1) {
+                    this.renderScene("side1", this.props.unit1);
+                }
+                if (this.props.unit2) {
+                    this.renderScene("side2", this.props.unit2);
+                }
+            },
+            getUnitsContainerForSide: function (side) {
+                if (side === "side1")
+                    return this.refs["unit1Scene"].getDOMNode();
+                else if (side === "side2")
+                    return this.refs["unit2Scene"].getDOMNode();
+                else
+                    throw new Error("Invalid side");
+            },
+            getSceneProps: function (unit) {
+                var container = this.getUnitsContainerForSide(unit.battleStats.side);
+                var boundingRect = container.getBoundingClientRect();
+
+                return ({
+                    zDistance: 5,
+                    xDistance: 5,
+                    unitsToDraw: 20,
+                    maxUnitsPerColumn: 8,
+                    degree: -0.5,
+                    rotationAngle: 60,
+                    scalingFactor: 0.02,
+                    facesRight: unit.battleStats.side === "side1",
+                    maxHeight: boundingRect.height
+                });
+            },
+            renderScene: function (side, unit) {
+                var container = this.getUnitsContainerForSide(side);
+
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+
+                if (unit) {
+                    var scene = unit.drawBattleScene(this.getSceneProps(unit));
+
+                    container.appendChild(scene);
+                    console.log("render battleScene", side, unit);
+                }
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "battle-scene"
                 }, React.DOM.div({
-                    className: "battle-scene-units-container"
-                }, this.props.unit1 ? this.props.unit1.id : null), React.DOM.div({
-                    className: "battle-scene-units-container"
-                }, this.props.unit2 ? this.props.unit2.id : null)));
+                    className: "battle-scene-units-container",
+                    ref: "unit1Scene"
+                }, null), React.DOM.div({
+                    className: "battle-scene-units-container",
+                    ref: "unit2Scene"
+                }, null)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4569,7 +4632,7 @@ var Rance;
                 type: "bomberSquadron",
                 typeName: "Bomber Squadron",
                 sprite: {
-                    imageSrc: "testShip.png",
+                    imageSrc: "testShip2.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -4593,7 +4656,7 @@ var Rance;
                 type: "battleCruiser",
                 typeName: "Battlecruiser",
                 sprite: {
-                    imageSrc: "testShip.png",
+                    imageSrc: "testShip2.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -4617,7 +4680,7 @@ var Rance;
                 type: "scout",
                 typeName: "Scout",
                 sprite: {
-                    imageSrc: "testShip.png",
+                    imageSrc: "testShip3.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -4640,7 +4703,7 @@ var Rance;
                 type: "shieldBoat",
                 typeName: "Shield Boat",
                 sprite: {
-                    imageSrc: "testShip.png",
+                    imageSrc: "testShip3.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -8340,11 +8403,7 @@ var Rance;
 
             var spriteTemplate = this.template.sprite;
 
-            var image = new Image();
-            image.src = "img\/ships\/testShip.png";
-
-            //var image = app.images["units"][spriteTemplate.imageSrc];
-            var tableData = [];
+            var image = app.images["units"][spriteTemplate.imageSrc];
 
             var xMin, xMax, yMin, yMax;
 
@@ -8409,26 +8468,27 @@ var Rance;
                 yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
 
                 ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
-
-                tableData.push({
-                    i: i,
-                    x: x,
-                    y: y,
-                    xMin: xMin,
-                    xMax: xMax,
-                    yMin: yMin,
-                    yMax: yMax
-                });
             }
 
-            var _ = window;
-
-            //_.console.table(tableData);
             var resultCanvas = document.createElement("canvas");
+
             resultCanvas.width = xMax - xMin;
+            if (props.maxWidth) {
+                resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width);
+            }
+
             resultCanvas.height = yMax - yMin;
+            if (props.maxHeight) {
+                resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height);
+            }
 
             var resultCtx = resultCanvas.getContext("2d");
+
+            // flip horizontally
+            if (props.facesRight) {
+                resultCtx.translate(resultCanvas.width, 0);
+                resultCtx.scale(-1, 1);
+            }
             resultCtx.drawImage(canvas, -xMin, -yMin);
 
             console.log(yMin, yMax, resultCanvas.height, canvas.height);
@@ -9061,7 +9121,8 @@ var Rance;
                 maxUnitsPerColumn: 5,
                 degree: -0.5,
                 rotationAngle: 60,
-                scalingFactor: 0.02
+                scalingFactor: 0.02,
+                facesRight: true
             },
             componentDidMount: function () {
                 var unit = app.humanPlayer.getAllUnits()[0];
@@ -9078,7 +9139,8 @@ var Rance;
                     maxUnitsPerColumn: Number(this.refs["maxUnitsPerColumn"].getDOMNode().value),
                     degree: Number(this.refs["degree"].getDOMNode().value),
                     rotationAngle: Number(this.refs["rotationAngle"].getDOMNode().value),
-                    scalingFactor: Number(this.refs["scalingFactor"].getDOMNode().value)
+                    scalingFactor: Number(this.refs["scalingFactor"].getDOMNode().value),
+                    facesRight: this.refs["facesRight"].getDOMNode().checked
                 });
 
                 var container = this.refs["canvasContainer"].getDOMNode();
@@ -9146,7 +9208,11 @@ var Rance;
                     max: 1,
                     step: 0.005,
                     onChange: this.renderScene
-                }, "scalingFactor")), React.DOM.button({
+                }, "scalingFactor")), React.DOM.label(null, React.DOM.input({
+                    ref: "facesRight",
+                    type: "checkBox",
+                    onChange: this.renderScene
+                }, "facesRight")), React.DOM.button({
                     onClick: this.resetValues
                 }, "Reset"))));
             }
@@ -9533,10 +9599,7 @@ var Rance;
             this.player = player;
             this.battleData = battleData;
 
-            this.fleet = [
-                [null, null, null, null],
-                [null, null, null, null]
-            ];
+            this.fleet = this.makeEmptyFleet();
 
             this.setAvailableUnits();
         }
@@ -9551,13 +9614,25 @@ var Rance;
                 this.enemyUnits = this.battleData.attacker.ships;
             }
         };
+        BattlePrep.prototype.makeEmptyFleet = function () {
+            var COLUMNS_PER_FLEET = 2;
+            var SHIPS_PER_COLUMN = 3;
+
+            var fleet = [];
+            for (var i = 0; i < COLUMNS_PER_FLEET; i++) {
+                var column = [];
+                for (var j = 0; j < SHIPS_PER_COLUMN; j++) {
+                    column.push(null);
+                }
+                fleet.push(column);
+            }
+
+            return fleet;
+        };
 
         // TODO
         BattlePrep.prototype.makeEnemyFleet = function () {
-            var fleet = [
-                [null, null, null, null],
-                [null, null, null, null]
-            ];
+            var fleet = this.makeEmptyFleet();
 
             for (var i = 0; i < this.enemyUnits.length; i++) {
                 var d = Rance.divmod(i, 3);
@@ -12561,6 +12636,7 @@ var Rance;
             this.loaded = {
                 DOM: false,
                 emblems: false,
+                units: false,
                 other: false
             };
             this.imageCache = {};
@@ -12570,6 +12646,7 @@ var Rance;
 
             this.loadDOM();
             this.loadEmblems();
+            this.loadUnits();
             this.loadOther();
         }
         AppLoader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
@@ -12608,17 +12685,26 @@ var Rance;
                 });
             }
         };
-        AppLoader.prototype.loadEmblems = function () {
+        AppLoader.prototype.loadImagesFN = function (identifier) {
+            if (this.loaded[identifier] === undefined)
+                this.loaded[identifier] = false;
+
             var self = this;
-            var loader = new PIXI.JsonLoader("img\/emblems.json");
+            var loader = new PIXI.JsonLoader("img\/" + identifier + ".json");
             loader.addEventListener("loaded", function (event) {
                 var spriteImages = self.spritesheetToDataURLs(event.target.json, event.target.texture.source);
-                self.imageCache["emblems"] = spriteImages;
-                self.loaded.emblems = true;
+                self.imageCache[identifier] = spriteImages;
+                self.loaded[identifier] = true;
                 self.checkLoaded();
             });
 
             loader.load();
+        };
+        AppLoader.prototype.loadEmblems = function () {
+            this.loadImagesFN("emblems");
+        };
+        AppLoader.prototype.loadUnits = function () {
+            this.loadImagesFN("units");
         };
         AppLoader.prototype.loadOther = function () {
             var self = this;
