@@ -23,11 +23,7 @@ module Rance
       this.player = player;
       this.battleData = battleData;
 
-      this.fleet =
-      [
-        [null, null, null, null],
-        [null, null, null, null]
-      ];
+      this.fleet = this.makeEmptyFleet();
 
       this.setAvailableUnits();
     }
@@ -46,14 +42,29 @@ module Rance
         this.enemyUnits = this.battleData.attacker.ships;
       }
     }
+    makeEmptyFleet()
+    {
+      var COLUMNS_PER_FLEET = 2;
+      var SHIPS_PER_COLUMN = 3;
+
+      var fleet = [];
+      for (var i = 0; i < COLUMNS_PER_FLEET; i++)
+      {
+        var column = [];
+        for (var j = 0; j < SHIPS_PER_COLUMN; j++)
+        {
+          column.push(null);
+        }
+        fleet.push(column);
+      }
+
+      return fleet;
+    }
+
     // TODO
     makeEnemyFleet()
     {
-      var fleet =
-      [
-        [null, null, null, null],
-        [null, null, null, null]
-      ];
+      var fleet = this.makeEmptyFleet();
 
       for (var i = 0; i < this.enemyUnits.length; i++)
       {
