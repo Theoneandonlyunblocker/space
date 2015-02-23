@@ -18,6 +18,14 @@ module Rance
         scalingFactor: 0.02
       },
 
+      componentDidMount: function()
+      {
+        var unit = app.humanPlayer.getAllUnits()[0];
+        var image = new Image();
+        image.src = "img\/ships\/testShip.png";
+        image.onload = this.renderScene;
+      },
+
       renderScene: function()
       {
         var unit = app.humanPlayer.getAllUnits()[0];
@@ -130,7 +138,7 @@ module Rance
                   defaultValue: this.initialValues["degree"],
                   min: -10,
                   max: 10,
-                  step: 0.01,
+                  step: 0.05,
                   onChange: this.renderScene
                 },
                   "degree"

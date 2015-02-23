@@ -8391,10 +8391,9 @@ var Rance;
 
                 xOffset -= minXOffset;
 
-                //var scale = 1 - zPos * props.scalingFactor;
-                var scale = 1 - zPos * rotationAngle * 0.0004;
-                var scaledWidth = Math.round(image.width * scale);
-                var scaledHeight = Math.round(image.height * scale);
+                var scale = 1 - zPos * props.scalingFactor;
+                var scaledWidth = image.width * scale;
+                var scaledHeight = image.height * scale;
 
                 var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
                 var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
@@ -8405,9 +8404,9 @@ var Rance;
                 y = Math.round(translated.y);
 
                 xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
-                xMax = isFinite(xMax) ? Math.max(x, xMax) : x;
+                xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
                 yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
-                yMax = isFinite(yMax) ? Math.max(y, yMax) : y;
+                yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
 
                 ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
 
@@ -8425,9 +8424,6 @@ var Rance;
             var _ = window;
 
             //_.console.table(tableData);
-            xMax += image.width;
-            yMax += image.height;
-
             var resultCanvas = document.createElement("canvas");
             resultCanvas.width = xMax - xMin;
             resultCanvas.height = yMax - yMin;
@@ -9067,6 +9063,12 @@ var Rance;
                 rotationAngle: 60,
                 scalingFactor: 0.02
             },
+            componentDidMount: function () {
+                var unit = app.humanPlayer.getAllUnits()[0];
+                var image = new Image();
+                image.src = "img\/ships\/testShip.png";
+                image.onload = this.renderScene;
+            },
             renderScene: function () {
                 var unit = app.humanPlayer.getAllUnits()[0];
                 var canvas = unit.drawBattleScene({
@@ -9130,7 +9132,7 @@ var Rance;
                     defaultValue: this.initialValues["degree"],
                     min: -10,
                     max: 10,
-                    step: 0.01,
+                    step: 0.05,
                     onChange: this.renderScene
                 }, "degree")), React.DOM.label(null, React.DOM.input({
                     ref: "rotationAngle",
@@ -14011,7 +14013,15 @@ var Rance;
             reactUI.renderer = this.renderer;
             reactUI.playerControl = this.playerControl;
 
-            reactUI.currentScene = "galaxyMap";
+            var uriParser = document.createElement("a");
+            uriParser.href = document.URL;
+            var hash = uriParser.hash;
+            if (hash) {
+                reactUI.currentScene = hash.slice(1);
+            } else {
+                reactUI.currentScene = "galaxyMap";
+            }
+
             reactUI.render();
         };
         return App;

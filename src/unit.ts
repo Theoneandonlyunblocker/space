@@ -578,10 +578,9 @@ module Rance
 
         xOffset -= minXOffset;
 
-        //var scale = 1 - zPos * props.scalingFactor;
-        var scale = 1 - zPos * rotationAngle * 0.0004;
-        var scaledWidth = Math.round(image.width * scale);
-        var scaledHeight = Math.round(image.height * scale);
+        var scale = 1 - zPos * props.scalingFactor;
+        var scaledWidth = image.width * scale;
+        var scaledHeight = image.height * scale;
         
 
         var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
@@ -593,9 +592,9 @@ module Rance
         y = Math.round(translated.y);
 
         xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
-        xMax = isFinite(xMax) ? Math.max(x, xMax) : x;
+        xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
         yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
-        yMax = isFinite(yMax) ? Math.max(y, yMax) : y;
+        yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
 
 
         ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
@@ -614,9 +613,6 @@ module Rance
 
       var _: any = window;
       //_.console.table(tableData);
-
-      xMax += image.width;
-      yMax += image.height;
 
       var resultCanvas = document.createElement("canvas");
       resultCanvas.width = xMax - xMin;
