@@ -7,6 +7,7 @@
 /// <reference path="galaxymap/galaxymap.ts"/>
 
 /// <reference path="flagmaker.ts"/>
+/// <reference path="battlescenetester.ts"/>
 
 module Rance
 {
@@ -88,6 +89,16 @@ module Rance
             );
             break;
           }
+          case "battleScene":
+          {
+            elementsToRender.push(
+              UIComponents.BattleSceneTester(
+              {
+                key: "battleScene"
+              })
+            );
+            break;
+          }
         }
         return(
           React.DOM.div({className: "react-stage"},
@@ -103,7 +114,8 @@ module Rance
               React.DOM.option({value: "itemEquip"}, "equip items"),
               React.DOM.option({value: "battlePrep"}, "battle setup"),
               React.DOM.option({value: "battle"}, "battle"),
-              React.DOM.option({value: "flagMaker"}, "make flags")
+              React.DOM.option({value: "flagMaker"}, "make flags"),
+              React.DOM.option({value: "battleScene"}, "battle scene test")
             )
           )
         );

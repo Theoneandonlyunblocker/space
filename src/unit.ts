@@ -482,13 +482,13 @@ module Rance
     }
     drawBattleScene(props:
     {
-      width: number;
-      height: number;
       unitsToDraw: number;
       maxUnitsPerColumn: number;
       degree: number;
       rotationAngle: number;
       scalingFactor: number;
+      xDistance: number;
+      zDistance: number;
     })
     {
       var unitsToDraw = props.unitsToDraw;
@@ -501,9 +501,12 @@ module Rance
         degree = Math.abs(degree);
       }
 
+      var xDistance = isFinite(props.xDistance) ? props.xDistance : 5;
+      var zDistance = isFinite(props.zDistance) ? props.zDistance : 5;
+
       var canvas = document.createElement("canvas");
-      canvas.width = props.width + 400;
-      canvas.height = props.height + 400;
+      canvas.width = 2000;
+      canvas.height = 2000;
 
       var ctx = canvas.getContext("2d");
 
@@ -552,8 +555,15 @@ module Rance
         if (isLastColumn)
         {
           var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-          var positionInLastColumn = i % maxUnitsInThisColumn;
-          zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+          if (maxUnitsInThisColumn === 1)
+          {
+            zPos = (maxUnitsPerColumn - 1) / 2;
+          }
+          else
+          {
+            var positionInLastColumn = i % maxUnitsInThisColumn;
+            zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+          }
         }
         else
         {
@@ -568,18 +578,19 @@ module Rance
 
         xOffset -= minXOffset;
 
-        var scale = 1 - zPos * props.scalingFactor;
-        var scaledWidth = image.width * scale;
-        var scaledHeight = image.height * scale;
+        //var scale = 1 - zPos * props.scalingFactor;
+        var scale = 1 - zPos * rotationAngle * 0.0004;
+        var scaledWidth = Math.round(image.width * scale);
+        var scaledHeight = Math.round(image.height * scale);
         
 
-        var x = Math.round(xOffset * scaledWidth * degree + column * (scaledWidth + 5 * scale));
-        var y = Math.round((scaledHeight + 5 * scale) * (maxUnitsPerColumn - zPos));
+        var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+        var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
 
         var translated = transformMat3({x: x, y: y}, rotationMatrix);
 
-        x = translated.x;
-        y = translated.y;
+        x = Math.round(translated.x);
+        y = Math.round(translated.y);
 
         xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
         xMax = isFinite(xMax) ? Math.max(x, xMax) : x;
@@ -602,7 +613,7 @@ module Rance
       }
 
       var _: any = window;
-      _.console.table(tableData);
+      //_.console.table(tableData);
 
       xMax += image.width;
       yMax += image.height;
@@ -614,13 +625,8 @@ module Rance
       var resultCtx = resultCanvas.getContext("2d");
       resultCtx.drawImage(canvas, -xMin, -yMin);
 
-      console.log(resultCanvas.width);
+      console.log(yMin, yMax, resultCanvas.height, canvas.height);
 
-      var myNode = document.body;
-      while (myNode.firstChild) {
-          myNode.removeChild(myNode.firstChild);
-      }
-      document.body.appendChild(resultCanvas);
 
       return resultCanvas;
     }

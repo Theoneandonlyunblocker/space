@@ -8322,9 +8322,12 @@ var Rance;
                 degree = Math.abs(degree);
             }
 
+            var xDistance = isFinite(props.xDistance) ? props.xDistance : 5;
+            var zDistance = isFinite(props.zDistance) ? props.zDistance : 5;
+
             var canvas = document.createElement("canvas");
-            canvas.width = props.width + 400;
-            canvas.height = props.height + 400;
+            canvas.width = 2000;
+            canvas.height = 2000;
 
             var ctx = canvas.getContext("2d");
 
@@ -8371,8 +8374,12 @@ var Rance;
                 var zPos;
                 if (isLastColumn) {
                     var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-                    var positionInLastColumn = i % maxUnitsInThisColumn;
-                    zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                    if (maxUnitsInThisColumn === 1) {
+                        zPos = (maxUnitsPerColumn - 1) / 2;
+                    } else {
+                        var positionInLastColumn = i % maxUnitsInThisColumn;
+                        zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                    }
                 } else {
                     zPos = i % maxUnitsPerColumn;
                 }
@@ -8384,17 +8391,18 @@ var Rance;
 
                 xOffset -= minXOffset;
 
-                var scale = 1 - zPos * props.scalingFactor;
-                var scaledWidth = image.width * scale;
-                var scaledHeight = image.height * scale;
+                //var scale = 1 - zPos * props.scalingFactor;
+                var scale = 1 - zPos * rotationAngle * 0.0004;
+                var scaledWidth = Math.round(image.width * scale);
+                var scaledHeight = Math.round(image.height * scale);
 
-                var x = Math.round(xOffset * scaledWidth * degree + column * (scaledWidth + 5 * scale));
-                var y = Math.round((scaledHeight + 5 * scale) * (maxUnitsPerColumn - zPos));
+                var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+                var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
 
                 var translated = transformMat3({ x: x, y: y }, rotationMatrix);
 
-                x = translated.x;
-                y = translated.y;
+                x = Math.round(translated.x);
+                y = Math.round(translated.y);
 
                 xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
                 xMax = isFinite(xMax) ? Math.max(x, xMax) : x;
@@ -8415,8 +8423,8 @@ var Rance;
             }
 
             var _ = window;
-            _.console.table(tableData);
 
+            //_.console.table(tableData);
             xMax += image.width;
             yMax += image.height;
 
@@ -8427,13 +8435,7 @@ var Rance;
             var resultCtx = resultCanvas.getContext("2d");
             resultCtx.drawImage(canvas, -xMin, -yMin);
 
-            console.log(resultCanvas.width);
-
-            var myNode = document.body;
-            while (myNode.firstChild) {
-                myNode.removeChild(myNode.firstChild);
-            }
-            document.body.appendChild(resultCanvas);
+            console.log(yMin, yMax, resultCanvas.height, canvas.height);
 
             return resultCanvas;
         };
@@ -9051,6 +9053,105 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BattleSceneTester = React.createClass({
+            displayName: "BattleSceneTester",
+            initialValues: {
+                zDistance: 5,
+                xDistance: 5,
+                unitsToDraw: 5,
+                maxUnitsPerColumn: 5,
+                degree: -0.5,
+                rotationAngle: 60,
+                scalingFactor: 0.02
+            },
+            renderScene: function () {
+                var unit = app.humanPlayer.getAllUnits()[0];
+                var canvas = unit.drawBattleScene({
+                    zDistance: Number(this.refs["zDistance"].getDOMNode().value),
+                    xDistance: Number(this.refs["xDistance"].getDOMNode().value),
+                    unitsToDraw: Number(this.refs["unitsToDraw"].getDOMNode().value),
+                    maxUnitsPerColumn: Number(this.refs["maxUnitsPerColumn"].getDOMNode().value),
+                    degree: Number(this.refs["degree"].getDOMNode().value),
+                    rotationAngle: Number(this.refs["rotationAngle"].getDOMNode().value),
+                    scalingFactor: Number(this.refs["scalingFactor"].getDOMNode().value)
+                });
+
+                var container = this.refs["canvasContainer"].getDOMNode();
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+
+                container.appendChild(canvas);
+            },
+            resetValues: function () {
+                for (var prop in this.initialValues) {
+                    var element = this.refs[prop].getDOMNode();
+                    element.value = this.initialValues[prop];
+                }
+
+                this.renderScene();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    style: {
+                        display: "flex"
+                    }
+                }, React.DOM.div({ ref: "canvasContainer", style: { flex: 1 } }, null), React.DOM.div({
+                    style: {
+                        display: "flex",
+                        flexFlow: "column"
+                    }
+                }, React.DOM.label(null, React.DOM.input({
+                    ref: "zDistance",
+                    type: "number",
+                    defaultValue: this.initialValues["zDistance"],
+                    onChange: this.renderScene
+                }, "zDistance")), React.DOM.label(null, React.DOM.input({
+                    ref: "xDistance",
+                    type: "number",
+                    defaultValue: this.initialValues["xDistance"],
+                    onChange: this.renderScene
+                }, "xDistance")), React.DOM.label(null, React.DOM.input({
+                    ref: "unitsToDraw",
+                    type: "number",
+                    defaultValue: this.initialValues["unitsToDraw"],
+                    onChange: this.renderScene
+                }, "unitsToDraw")), React.DOM.label(null, React.DOM.input({
+                    ref: "maxUnitsPerColumn",
+                    type: "number",
+                    defaultValue: this.initialValues["maxUnitsPerColumn"],
+                    onChange: this.renderScene
+                }, "maxUnitsPerColumn")), React.DOM.label(null, React.DOM.input({
+                    ref: "degree",
+                    type: "number",
+                    defaultValue: this.initialValues["degree"],
+                    min: -10,
+                    max: 10,
+                    step: 0.01,
+                    onChange: this.renderScene
+                }, "degree")), React.DOM.label(null, React.DOM.input({
+                    ref: "rotationAngle",
+                    type: "number",
+                    defaultValue: this.initialValues["rotationAngle"],
+                    onChange: this.renderScene
+                }, "rotationAngle")), React.DOM.label(null, React.DOM.input({
+                    ref: "scalingFactor",
+                    type: "number",
+                    defaultValue: this.initialValues["scalingFactor"],
+                    max: 1,
+                    step: 0.005,
+                    onChange: this.renderScene
+                }, "scalingFactor")), React.DOM.button({
+                    onClick: this.resetValues
+                }, "Reset"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="battle/battle.ts"/>
 /// <reference path="unitlist/unitlist.ts"/>
@@ -9058,6 +9159,7 @@ var Rance;
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
 /// <reference path="flagmaker.ts"/>
+/// <reference path="battlescenetester.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -9112,13 +9214,19 @@ var Rance;
                         }));
                         break;
                     }
+                    case "battleScene": {
+                        elementsToRender.push(Rance.UIComponents.BattleSceneTester({
+                            key: "battleScene"
+                        }));
+                        break;
+                    }
                 }
                 return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
                     className: "reactui-selector",
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "itemEquip" }, "equip items"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"), React.DOM.option({ value: "flagMaker" }, "make flags"))));
+                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "itemEquip" }, "equip items"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene test"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

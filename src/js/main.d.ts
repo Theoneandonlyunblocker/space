@@ -1332,13 +1332,13 @@ declare module Rance {
         public removeAllGuard(): void;
         public heal(): void;
         public drawBattleScene(props: {
-            width: number;
-            height: number;
             unitsToDraw: number;
             maxUnitsPerColumn: number;
             degree: number;
             rotationAngle: number;
             scalingFactor: number;
+            xDistance: number;
+            zDistance: number;
         }): HTMLCanvasElement;
         public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;
@@ -1377,6 +1377,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var FlagMaker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleSceneTester: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
