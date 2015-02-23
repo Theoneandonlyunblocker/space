@@ -90,7 +90,7 @@ module Rance
         typeName: "Bomber Squadron",
         sprite:
         {
-          imageSrc: "testShip.png",
+          imageSrc: "testShip2.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: true,
@@ -118,7 +118,7 @@ module Rance
         typeName: "Battlecruiser",
         sprite:
         {
-          imageSrc: "testShip.png",
+          imageSrc: "testShip2.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: false,
@@ -146,7 +146,7 @@ module Rance
         typeName: "Scout",
         sprite:
         {
-          imageSrc: "testShip.png",
+          imageSrc: "testShip3.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: true,
@@ -173,7 +173,7 @@ module Rance
         typeName: "Shield Boat",
         sprite:
         {
-          imageSrc: "testShip.png",
+          imageSrc: "testShip3.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: false,

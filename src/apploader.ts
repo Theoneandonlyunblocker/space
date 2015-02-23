@@ -20,6 +20,7 @@ module Rance
     {
       DOM: false,
       emblems: false,
+      units: false,
       other: false
     };
     startTime: number;
@@ -40,6 +41,7 @@ module Rance
 
       this.loadDOM();
       this.loadEmblems();
+      this.loadUnits();
       this.loadOther();
     }
     spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement)
@@ -103,6 +105,14 @@ module Rance
       });
 
       loader.load();
+    }
+    loadEmblems()
+    {
+      this.loadImagesFN("emblems");
+    }
+    loadUnits()
+    {
+      this.loadImagesFN("units");
     }
     loadOther()
     {

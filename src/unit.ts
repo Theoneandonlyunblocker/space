@@ -518,10 +518,7 @@ module Rance
 
       var spriteTemplate = this.template.sprite;
 
-      var image = new Image();
-      image.src = "img\/ships\/testShip.png";
-      //var image = app.images["units"][spriteTemplate.imageSrc];
-      var tableData = [];
+      var image = app.images["units"][spriteTemplate.imageSrc];
 
       var xMin, xMax, yMin, yMax;
 

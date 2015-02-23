@@ -1,0 +1,25 @@
+{
+"frames": {
+	"testShip.png": {
+		"frame": {"x":0, "y":70, "w":73, "h":34},
+		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
+		"sourceSize": {"w":73,"h":34}
+	},
+	"testShip2.png": {
+		"frame": {"x":0, "y":35, "w":73, "h":34},
+		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
+		"sourceSize": {"w":73,"h":34}
+	},
+	"testShip3.png": {
+		"frame": {"x":0, "y":0, "w":73, "h":34},
+		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
+		"sourceSize": {"w":73,"h":34}
+	}
+
+},
+"meta": {
+	"image": "units.png",
+	"size": {"w": 74, "h": 105},
+	"scale": "1"
+}
+}
