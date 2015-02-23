@@ -215,7 +215,18 @@ module Rance
       reactUI.renderer = this.renderer;
       reactUI.playerControl = this.playerControl;
 
-      reactUI.currentScene = "galaxyMap";
+      var uriParser = document.createElement("a");
+      uriParser.href = document.URL;
+      var hash = uriParser.hash;
+      if (hash)
+      {
+        reactUI.currentScene = hash.slice(1);
+      }
+      else
+      {
+        reactUI.currentScene = "galaxyMap";
+      }
+
       reactUI.render();
     }
   }
