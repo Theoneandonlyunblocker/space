@@ -33,7 +33,6 @@ module Rance
         };
 
         var parentRect = this.props.parentElement.getBoundingClientRect();
-        //var parentRect = {top: 0, left: 0, right: 500};
 
         if (this.props.facesLeft)
         {
@@ -41,7 +40,7 @@ module Rance
 
           containerProps.style =
           {
-            position: "absolute",
+            position: "fixed",
             top: parentRect.top,
             left: parentRect.right - 96 - 128
           }
@@ -52,6 +51,7 @@ module Rance
 
           containerProps.style =
           {
+            position: "fixed",
             top: parentRect.top,
             left: parentRect.left + 96
           }

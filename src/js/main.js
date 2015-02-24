@@ -1020,12 +1020,11 @@ var Rance;
 
                 var parentRect = this.props.parentElement.getBoundingClientRect();
 
-                //var parentRect = {top: 0, left: 0, right: 500};
                 if (this.props.facesLeft) {
                     containerProps.className += " ability-tooltip-faces-left";
 
                     containerProps.style = {
-                        position: "absolute",
+                        position: "fixed",
                         top: parentRect.top,
                         left: parentRect.right - 96 - 128
                     };
@@ -1033,6 +1032,7 @@ var Rance;
                     containerProps.className += " ability-tooltip-faces-right";
 
                     containerProps.style = {
+                        position: "fixed",
                         top: parentRect.top,
                         left: parentRect.left + 96
                     };
@@ -1411,6 +1411,7 @@ var Rance;
                 });
 
                 effectData[i].effect();
+                console.log("applied ability effect", effectData[i]);
 
                 window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
             },
@@ -1451,7 +1452,7 @@ var Rance;
                 var target = this.props.battle.unitsById[move.targetId];
 
                 this.handleAbilityUse(move.ability, target);
-                console.log("used ability", move.ability.type, move.targetId);
+                console.log("ai used ability", move.ability.type, move.targetId);
             },
             finishBattle: function () {
                 var battle = this.props.battle;
@@ -8600,8 +8601,6 @@ var Rance;
                 resultCtx.scale(-1, 1);
             }
             resultCtx.drawImage(canvas, -xMin, -yMin);
-
-            console.log(yMin, yMax, resultCanvas.height, canvas.height);
 
             return resultCanvas;
         };

@@ -624,8 +624,6 @@ module Rance
       }
       resultCtx.drawImage(canvas, -xMin, -yMin);
 
-      console.log(yMin, yMax, resultCanvas.height, canvas.height);
-
 
       return resultCanvas;
     }

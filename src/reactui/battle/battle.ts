@@ -232,6 +232,7 @@ module Rance
         });
 
         effectData[i].effect();
+        console.log("applied ability effect", effectData[i]);
 
         window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
       },
@@ -282,7 +283,7 @@ module Rance
         var target = this.props.battle.unitsById[move.targetId];
 
         this.handleAbilityUse(move.ability, target);
-        console.log("used ability", move.ability.type, move.targetId)
+        console.log("ai used ability", move.ability.type, move.targetId)
       },
 
       finishBattle: function()
