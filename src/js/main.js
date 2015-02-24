@@ -667,7 +667,8 @@ var Rance;
                 var targetedProps = {
                     activeUnit: true,
                     hoveredUnit: true,
-                    targetsInPotentialArea: true
+                    targetsInPotentialArea: true,
+                    activeEffectUnits: true
                 };
 
                 for (var prop in newProps) {
@@ -685,7 +686,7 @@ var Rance;
                     if (!newValue && !oldValue)
                         continue;
 
-                    if (prop === "targetsInPotentialArea") {
+                    if (prop === "targetsInPotentialArea" || prop === "activeEffectUnits") {
                         if (!oldValue) {
                             if (newValue.indexOf(unit) >= 0)
                                 return true;
@@ -722,6 +723,11 @@ var Rance;
                     wrapperProps.onMouseUp = this.handleMouseUp;
                 }
                 ;
+                if (this.props.activeEffectUnits) {
+                    if (this.props.activeEffectUnits.indexOf(this.props.unit) >= 0) {
+                        wrapperProps.className += " active-effect-unit";
+                    }
+                }
 
                 var empty = Rance.UIComponents.EmptyUnit({
                     facesLeft: this.props.facesLeft,
@@ -785,6 +791,7 @@ var Rance;
                     data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
+                    data.activeEffectUnits = this.props.activeEffectUnits;
 
                     data.onMouseUp = this.props.onMouseUp;
 
@@ -833,6 +840,7 @@ var Rance;
                         handleMouseEnterUnit: this.props.handleMouseEnterUnit,
                         handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
                         targetsInPotentialArea: this.props.targetsInPotentialArea,
+                        activeEffectUnits: this.props.activeEffectUnits,
                         onMouseUp: this.props.onMouseUp,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
@@ -1493,6 +1501,12 @@ var Rance;
                         ref: "abilityTooltip"
                     });
                 }
+                ;
+
+                var activeEffectUnits = [];
+                if (this.state.playingBattleEffect) {
+                    activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
+                }
 
                 return (React.DOM.div({
                     className: "battle-pixi-container",
@@ -1525,7 +1539,8 @@ var Rance;
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
-                    handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                    handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                    activeEffectUnits: activeEffectUnits
                 }), Rance.UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
@@ -1538,8 +1553,9 @@ var Rance;
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
-                    handleMouseLeaveUnit: this.handleMouseLeaveUnit
-                }), abilityTooltip), battle.ended ? React.DOM.button({
+                    handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                    activeEffectUnits: activeEffectUnits
+                }), abilityTooltip, this.state.playingBattleEffect ? React.DOM.div({ className: "battle-fleets-darken" }, null) : null), battle.ended ? React.DOM.button({
                     className: "end-battle-button",
                     onClick: this.finishBattle
                 }, "end") : null)));

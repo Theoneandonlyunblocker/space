@@ -354,6 +354,12 @@ module Rance
             activeTargets: activeTargets,
             ref: "abilityTooltip"
           });
+        };
+
+        var activeEffectUnits = [];
+        if (this.state.playingBattleEffect)
+        {
+          activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
         }
 
         return(
@@ -404,7 +410,8 @@ module Rance
                   activeTargets: activeTargets,
                   targetsInPotentialArea: this.state.targetsInPotentialArea,
                   handleMouseEnterUnit: this.handleMouseEnterUnit,
-                  handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                  handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                  activeEffectUnits: activeEffectUnits
                 }),
                 UIComponents.TurnCounter(
                 {
@@ -421,9 +428,13 @@ module Rance
                   activeTargets: activeTargets,
                   targetsInPotentialArea: this.state.targetsInPotentialArea,
                   handleMouseEnterUnit: this.handleMouseEnterUnit,
-                  handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                  handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+                  activeEffectUnits: activeEffectUnits
                 }),
-                abilityTooltip
+                abilityTooltip,
+                this.state.playingBattleEffect ?
+                  React.DOM.div({className: "battle-fleets-darken"}, null):
+                  null
               ),
               battle.ended ? React.DOM.button(
               {

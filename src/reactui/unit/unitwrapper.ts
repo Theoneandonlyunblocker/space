@@ -16,7 +16,8 @@ module Rance
         {
           activeUnit: true,
           hoveredUnit: true,
-          targetsInPotentialArea: true
+          targetsInPotentialArea: true,
+          activeEffectUnits: true
         };
 
 
@@ -38,7 +39,7 @@ module Rance
 
           if (!newValue && !oldValue) continue;
 
-          if (prop === "targetsInPotentialArea")
+          if (prop === "targetsInPotentialArea" || prop === "activeEffectUnits")
           {
             if (!oldValue)
             {
@@ -87,6 +88,13 @@ module Rance
         {
           wrapperProps.onMouseUp = this.handleMouseUp
         };
+        if (this.props.activeEffectUnits)
+        {
+          if (this.props.activeEffectUnits.indexOf(this.props.unit) >= 0)
+          {
+            wrapperProps.className += " active-effect-unit";
+          }
+        }
 
         var empty = UIComponents.EmptyUnit(
         {
