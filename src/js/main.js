@@ -10167,6 +10167,12 @@ var Rance;
             this.severArmLinks();
             this.partiallyCutConnections(4);
 
+            var isConnected = this.isConnected();
+            if (!isConnected) {
+                debugger;
+                return this.makeMap(options);
+            }
+
             this.sectors = this.makeSectors(3, 5);
 
             this.setPlayers();
@@ -10175,6 +10181,11 @@ var Rance;
             this.setupPirates();
 
             return this;
+        };
+        MapGen.prototype.isConnected = function () {
+            var initialPoint = this.getNonFillerPoints()[0];
+
+            return initialPoint.getLinkedInRange(9999).all.length === this.nonFillerPoints.length;
         };
         MapGen.prototype.setPlayers = function () {
             var regionNames = Object.keys(this.regions);
@@ -14050,29 +14061,9 @@ var Rance;
         function App() {
             var self = this;
 
-            /*
-            mapOptions:
-            {
-            width: 600,
-            height: 600
-            },
-            starGeneration:
-            {
-            galaxyType: "spiral",
-            totalAmount: 40,
-            arms: 5,
-            centerSize: 0.4,
-            amountInCenter: 0.3
-            },
-            relaxation:
-            {
-            timesToRelax: 5,
-            dampeningFactor: 2
-            }
-            these map parameters break map gen with following seed as per 23.01.2015
-            */
-            //this.seed = 0.5727128006983548;
             this.seed = Math.random();
+
+            //this.seed = 0.25154878688044846;
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {

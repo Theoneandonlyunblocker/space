@@ -1564,7 +1564,8 @@ declare module Rance {
                 timesToRelax: number;
                 dampeningFactor: number;
             };
-        }): MapGen;
+        }): any;
+        public isConnected(): boolean;
         public setPlayers(): void;
         public setDistanceFromStartLocations(): void;
         public setupPirates(): void;

@@ -62,29 +62,8 @@ module Rance
     {
       var self = this;
 
-      /*
-      mapOptions:
-      {
-        width: 600,
-        height: 600
-      },
-      starGeneration:
-      {
-        galaxyType: "spiral",
-        totalAmount: 40,
-        arms: 5,
-        centerSize: 0.4,
-        amountInCenter: 0.3
-      },
-      relaxation:
-      {
-        timesToRelax: 5,
-        dampeningFactor: 2
-      }
-      these map parameters break map gen with following seed as per 23.01.2015
-       */
-      //this.seed = 0.5727128006983548;
       this.seed = Math.random();
+      //this.seed = 0.25154878688044846;
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()

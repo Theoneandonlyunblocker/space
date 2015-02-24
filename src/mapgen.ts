@@ -99,6 +99,13 @@ module Rance
       this.severArmLinks();
       this.partiallyCutConnections(4);
 
+      var isConnected = this.isConnected();
+      if (!isConnected)
+      {
+        debugger;
+        return this.makeMap(options);
+      }
+
       this.sectors = this.makeSectors(3, 5);
 
       this.setPlayers();
@@ -107,6 +114,12 @@ module Rance
       this.setupPirates();
 
       return this;
+    }
+    isConnected()
+    {
+      var initialPoint = this.getNonFillerPoints()[0];
+
+      return initialPoint.getLinkedInRange(9999).all.length === this.nonFillerPoints.length;
     }
     setPlayers()
     {
