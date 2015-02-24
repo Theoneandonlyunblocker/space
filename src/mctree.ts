@@ -57,7 +57,10 @@ module Rance
       }
       var _ : any = window;
 
-      _.console.table(consoleRows);
+      if (_.console.table)
+      {
+        _.console.table(consoleRows);
+      }
 
       console.log(sortedMoves);
 

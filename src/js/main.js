@@ -7666,7 +7666,9 @@ var Rance;
                 });
             }.bind(this));
 
-            _.console.table(consoleRows);
+            if (_.console.table) {
+                _.console.table(consoleRows);
+            }
 
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
@@ -13271,7 +13273,9 @@ var Rance;
             }
             var _ = window;
 
-            _.console.table(consoleRows);
+            if (_.console.table) {
+                _.console.table(consoleRows);
+            }
 
             console.log(sortedMoves);
 

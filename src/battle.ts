@@ -315,7 +315,10 @@ module Rance
         });
       }.bind(this));
 
-      _.console.table(consoleRows);
+      if (_.console.table)
+      {
+        _.console.table(consoleRows);
+      }
 
 
 
