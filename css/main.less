@@ -448,7 +448,41 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-scene-units-container
 {
-  
+  position: relative;
+}
+
+.battle-scene-unit-enter
+{
+  animation-duration: 1s;
+  animation-name: battle-scene-unit-enter;
+}
+@keyframes battle-scene-unit-enter
+{
+  from
+  {
+    margin: 0 100%;
+  }
+  to
+  {
+    margin: 0;
+  }
+}
+
+.battle-scene-unit-leave
+{
+  animation-duration: 1s;
+  animation-name: battle-scene-unit-leave;
+}
+@keyframes battle-scene-unit-leave
+{
+  from
+  {
+    margin: 0;
+  }
+  to
+  {
+    margin: 0 100%;
+  }
 }
 
 .ability-tooltip

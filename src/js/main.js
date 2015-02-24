@@ -1104,12 +1104,24 @@ var Rance;
             displayName: "BattleScene",
             componentWillReceiveProps: function (newProps) {
                 if (newProps.unit1 !== this.props.unit1) {
-                    this.renderScene("side1", newProps.unit1);
+                    this.renderScene("side1", true, newProps.unit1);
                 }
 
                 if (newProps.unit2 !== this.props.unit2) {
-                    this.renderScene("side2", newProps.unit2);
+                    this.renderScene("side2", true, newProps.unit2);
                 }
+            },
+            addTimeout: function (id, callBack) {
+                if (!this.timeouts)
+                    this.timeouts = {};
+
+                this.timeouts[id] = window.setTimeout(callBack);
+            },
+            removeTimeout: function (id) {
+                window.clearTimeout(this.timeouts[id]);
+
+                this.timeouts[id] = null;
+                delete this.timeouts[id];
             },
             componentDidMount: function () {
                 window.addEventListener("resize", this.handleResize, false);
@@ -1119,10 +1131,10 @@ var Rance;
             },
             handleResize: function () {
                 if (this.props.unit1) {
-                    this.renderScene("side1", this.props.unit1);
+                    this.renderScene("side1", false, this.props.unit1);
                 }
                 if (this.props.unit2) {
-                    this.renderScene("side2", this.props.unit2);
+                    this.renderScene("side2", false, this.props.unit2);
                 }
             },
             getUnitsContainerForSide: function (side) {
@@ -1138,30 +1150,55 @@ var Rance;
                 var boundingRect = container.getBoundingClientRect();
 
                 return ({
-                    zDistance: 5,
+                    zDistance: 8,
                     xDistance: 5,
                     unitsToDraw: 20,
                     maxUnitsPerColumn: 8,
                     degree: -0.5,
-                    rotationAngle: 60,
-                    scalingFactor: 0.02,
+                    rotationAngle: 70,
+                    scalingFactor: 0.04,
                     facesRight: unit.battleStats.side === "side1",
                     maxHeight: boundingRect.height
                 });
             },
-            renderScene: function (side, unit) {
+            addUnit: function (side, animate, unit) {
                 var container = this.getUnitsContainerForSide(side);
-
-                while (container.firstChild) {
-                    container.removeChild(container.firstChild);
-                }
 
                 if (unit) {
                     var scene = unit.drawBattleScene(this.getSceneProps(unit));
+                    scene.classList.add("battle-scene-unit-enter");
 
                     container.appendChild(scene);
-                    console.log("render battleScene", side, unit);
                 }
+            },
+            removeUnit: function (side, animate, onComplete) {
+                var container = this.getUnitsContainerForSide(side);
+
+                // has child. child will be removed with animation if specified, then fire callback
+                if (container.firstChild) {
+                    if (animate) {
+                        container.firstChild.addEventListener("animationend", function () {
+                            if (container.firstChild) {
+                                container.removeChild(container.firstChild);
+                            }
+                            onComplete();
+                        });
+
+                        container.firstChild.classList.add("battle-scene-unit-leave");
+                    } else {
+                        container.removeChild(container.firstChild);
+                    }
+                } else {
+                    if (onComplete)
+                        onComplete();
+                }
+            },
+            renderScene: function (side, animate, unit) {
+                var container = this.getUnitsContainerForSide(side);
+
+                var addUnitFN = this.addUnit.bind(this, side, animate, unit);
+
+                this.removeUnit(side, animate, addUnitFN);
             },
             render: function () {
                 return (React.DOM.div({
@@ -1250,7 +1287,7 @@ var Rance;
                 this.setBattleSceneUnits(null);
             },
             handleMouseLeaveUnit: function (e) {
-                if (!this.state.hoveredUnit)
+                if (!this.state.hoveredUnit || this.state.playingBattleEffect)
                     return;
 
                 var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -1272,7 +1309,7 @@ var Rance;
                 }
             },
             handleMouseEnterUnit: function (unit) {
-                if (this.props.battle.ended)
+                if (this.props.battle.ended || this.state.playingBattleEffect)
                     return;
 
                 var facesLeft = unit.battleStats.side === "side2";
@@ -1351,7 +1388,14 @@ var Rance;
                 this.setState({
                     battleSceneUnit1: side1Unit,
                     battleSceneUnit2: side2Unit,
-                    playingBattleEffect: true
+                    playingBattleEffect: true,
+                    hoveredUnit: abilityData.originalTarget,
+                    abilityTooltip: {
+                        parentElement: null
+                    },
+                    hoveredAbility: null,
+                    potentialDelay: null,
+                    targetsInPotentialArea: []
                 });
 
                 effectData[i].effect();
@@ -1364,7 +1408,8 @@ var Rance;
                 }
 
                 this.setState({
-                    playingBattleEffect: false
+                    playingBattleEffect: false,
+                    hoveredUnit: null
                 });
 
                 this.handleTurnEnd();
@@ -1431,7 +1476,7 @@ var Rance;
 
                 var abilityTooltip = null;
 
-                if (!battle.ended && this.state.hoveredUnit && activeTargets[this.state.hoveredUnit.id]) {
+                if (!battle.ended && !this.state.playingBattleEffect && this.state.hoveredUnit && activeTargets[this.state.hoveredUnit.id]) {
                     abilityTooltip = Rance.UIComponents.AbilityTooltip({
                         handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
@@ -7856,15 +7901,15 @@ var Rance;
 
         for (var i = 0; i < effectsToCall.length; i++) {
             var effect = effectsToCall[i];
-            var targetsInArea = getUnitsInEffectArea(battle, user, effect, target.battleStats.position);
+            var targetsInArea = getUnitsInEffectArea(battle, user, effect, data.actualTarget.battleStats.position);
 
             for (var j = 0; j < targetsInArea.length; j++) {
-                var target = targetsInArea[j];
+                var effectTarget = targetsInArea[j];
 
                 data.effectsToCall.push({
-                    effect: effect.effect.bind(null, user, target),
+                    effect: effect.effect.bind(null, user, effectTarget),
                     user: user,
-                    target: target
+                    target: effectTarget
                 });
             }
         }

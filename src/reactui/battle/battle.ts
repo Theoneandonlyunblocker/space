@@ -89,7 +89,7 @@ module Rance
       },
       handleMouseLeaveUnit: function(e)
       {
-        if (!this.state.hoveredUnit) return;
+        if (!this.state.hoveredUnit || this.state.playingBattleEffect) return;
 
         var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
 
@@ -119,7 +119,7 @@ module Rance
       },
       handleMouseEnterUnit: function(unit)
       {
-        if (this.props.battle.ended) return;
+        if (this.props.battle.ended || this.state.playingBattleEffect) return;
 
         var facesLeft = unit.battleStats.side === "side2";
         var parentElement = this.getUnitElement(unit);
@@ -220,7 +220,15 @@ module Rance
         {
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
-          playingBattleEffect: true
+          playingBattleEffect: true,
+          hoveredUnit: abilityData.originalTarget,
+          abilityTooltip:
+          {
+            parentElement: null
+          },
+          hoveredAbility: null,
+          potentialDelay: null,
+          targetsInPotentialArea: []
         });
 
         effectData[i].effect();
@@ -236,7 +244,8 @@ module Rance
 
         this.setState(
         {
-          playingBattleEffect: false
+          playingBattleEffect: false,
+          hoveredUnit: null
         });
 
         this.handleTurnEnd();
@@ -328,6 +337,7 @@ module Rance
 
         if (
           !battle.ended &&
+          !this.state.playingBattleEffect &&
           this.state.hoveredUnit &&
           activeTargets[this.state.hoveredUnit.id]
         )
