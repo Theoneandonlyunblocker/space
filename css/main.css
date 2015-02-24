@@ -195,6 +195,7 @@ progress::-webkit-progress-value {
   width: 100%;
   min-height: 20px;
   z-index: 1;
+  order: 999;
 }
 .turn-order-unit {
   display: flex;
@@ -254,11 +255,9 @@ progress::-webkit-progress-value {
 @keyframes battle-scene-unit-enter-side1 {
   from {
     left: -100%;
-    background-color: #ffffff;
   }
   to {
     left: 0;
-    background-color: rgba(255, 255, 255, 0);
   }
 }
 .battle-scene-unit-leave-side1 {
@@ -501,7 +500,6 @@ progress::-webkit-progress-value {
 .unit-image {
   width: 64px;
   height: 64px;
-  border: 1px solid red !important;
 }
 @media (max-width: 800px) {
   .unit-image {
