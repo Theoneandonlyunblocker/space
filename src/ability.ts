@@ -27,6 +27,7 @@ module Rance
     data.user = user;
     data.originalTarget = target;
     data.actualTarget = getTargetOrGuard(battle, user, ability, target);
+    var actualTarget = actualTarget;
     data.beforeUse = [];
     if (!ability.addsGuard)
     {
@@ -44,17 +45,17 @@ module Rance
     for (var i = 0; i < effectsToCall.length; i++)
     {
       var effect = effectsToCall[i];
-      var targetsInArea = getUnitsInEffectArea(battle, user, effect, target.battleStats.position);
+      var targetsInArea = getUnitsInEffectArea(battle, user, effect, actualTarget.battleStats.position);
 
       for (var j = 0; j < targetsInArea.length; j++)
       {
-        var target = targetsInArea[j];
+        var effectTarget = targetsInArea[j];
 
         data.effectsToCall.push(
         {
-          effect: effect.effect.bind(null, user, target),
+          effect: effect.effect.bind(null, user, effectTarget),
           user: user,
-          target: target
+          target: effectTarget
         });
       }
     }
