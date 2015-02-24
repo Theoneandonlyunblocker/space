@@ -28,7 +28,8 @@ module Rance
           hoveredUnit: null,
 
           battleSceneUnit1: null,
-          battleSceneUnit2: null
+          battleSceneUnit2: null,
+          playingBattleEffect: false
         });
       },
       resize: function()
@@ -143,7 +144,18 @@ module Rance
 
       setBattleSceneUnits: function(hoveredUnit: Unit)
       {
+        if (this.state.playingBattleEffect) return;
+
         var activeUnit = this.props.battle.activeUnit;
+        if (!activeUnit)
+        {
+          this.setState(
+          {
+            battleSceneUnit1: null,
+            battleSceneUnit2: null
+          });
+          return;
+        }
 
         var shouldDisplayHovered = (hoveredUnit &&
           hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
@@ -179,18 +191,57 @@ module Rance
           abilityData.beforeUse[i]();
         }
 
-        for (var i = 0; i < abilityData.effectsToCall.length; i++)
+        this.playBattleEffect(abilityData, 0);
+      },
+      playBattleEffect: function(abilityData: IAbilityUseData, i: number)
+      {
+        var effectData = abilityData.effectsToCall;
+        if (!effectData[i])
         {
-          abilityData.effectsToCall[i].effect();
-        }
+          this.endBattleEffect(abilityData);
+          return;
+        };
 
+        var side1Unit = null;
+        var side2Unit = null;
+        [effectData[i].user, effectData[i].target].forEach(function(unit)
+        {
+          if (unit.battleStats.side === "side1" && !side1Unit)
+          {
+            side1Unit = unit;
+          }
+          else if (unit.battleStats.side === "side2" && !side2Unit)
+          {
+            side2Unit = unit;
+          }
+        });
+
+        this.setState(
+        {
+          battleSceneUnit1: side1Unit,
+          battleSceneUnit2: side2Unit,
+          playingBattleEffect: true
+        });
+
+        effectData[i].effect();
+
+        window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
+      },
+      endBattleEffect: function(abilityData: IAbilityUseData)
+      {
         for (var i = 0; i < abilityData.afterUse.length; i++)
         {
           abilityData.afterUse[i]();
         }
 
+        this.setState(
+        {
+          playingBattleEffect: false
+        });
+
         this.handleTurnEnd();
       },
+
       handleTurnEnd: function()
       {
         if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable())
@@ -212,7 +263,7 @@ module Rance
       },
       useAIAbility: function()
       {
-        if (!this.props.battle.activeUnit) return;
+        if (!this.props.battle.activeUnit || this.props.battle.ended) return;
         
         var tree = new MCTree(this.props.battle,
           this.props.battle.activeUnit.battleStats.side);

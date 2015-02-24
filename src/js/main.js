@@ -1200,7 +1200,8 @@ var Rance;
                     hoveredAbility: null,
                     hoveredUnit: null,
                     battleSceneUnit1: null,
-                    battleSceneUnit2: null
+                    battleSceneUnit2: null,
+                    playingBattleEffect: false
                 });
             },
             resize: function () {
@@ -1291,7 +1292,17 @@ var Rance;
                 return document.getElementById("unit-id_" + unit.id);
             },
             setBattleSceneUnits: function (hoveredUnit) {
+                if (this.state.playingBattleEffect)
+                    return;
+
                 var activeUnit = this.props.battle.activeUnit;
+                if (!activeUnit) {
+                    this.setState({
+                        battleSceneUnit1: null,
+                        battleSceneUnit2: null
+                    });
+                    return;
+                }
 
                 var shouldDisplayHovered = (hoveredUnit && hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
 
@@ -1317,13 +1328,44 @@ var Rance;
                     abilityData.beforeUse[i]();
                 }
 
-                for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-                    abilityData.effectsToCall[i].effect();
+                this.playBattleEffect(abilityData, 0);
+            },
+            playBattleEffect: function (abilityData, i) {
+                var effectData = abilityData.effectsToCall;
+                if (!effectData[i]) {
+                    this.endBattleEffect(abilityData);
+                    return;
                 }
+                ;
 
+                var side1Unit = null;
+                var side2Unit = null;
+                [effectData[i].user, effectData[i].target].forEach(function (unit) {
+                    if (unit.battleStats.side === "side1" && !side1Unit) {
+                        side1Unit = unit;
+                    } else if (unit.battleStats.side === "side2" && !side2Unit) {
+                        side2Unit = unit;
+                    }
+                });
+
+                this.setState({
+                    battleSceneUnit1: side1Unit,
+                    battleSceneUnit2: side2Unit,
+                    playingBattleEffect: true
+                });
+
+                effectData[i].effect();
+
+                window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
+            },
+            endBattleEffect: function (abilityData) {
                 for (var i = 0; i < abilityData.afterUse.length; i++) {
                     abilityData.afterUse[i]();
                 }
+
+                this.setState({
+                    playingBattleEffect: false
+                });
 
                 this.handleTurnEnd();
             },
@@ -1342,7 +1384,7 @@ var Rance;
                 }
             },
             useAIAbility: function () {
-                if (!this.props.battle.activeUnit)
+                if (!this.props.battle.activeUnit || this.props.battle.ended)
                     return;
 
                 var tree = new Rance.MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
@@ -7556,6 +7598,7 @@ var Rance;
             if (this.isVirtual)
                 return;
 
+            this.activeUnit = null;
             var victor = this.getVictor();
 
             this.capturedUnits = this.getCapturedUnits(victor);

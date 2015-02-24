@@ -292,6 +292,7 @@ module Rance
 
       if (this.isVirtual) return;
 
+      this.activeUnit = null;
       var victor = this.getVictor();
 
       this.capturedUnits = this.getCapturedUnits(victor);
