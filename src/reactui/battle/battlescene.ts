@@ -88,7 +88,10 @@ module Rance
         if (unit)
         {
           var scene = unit.drawBattleScene(this.getSceneProps(unit));
-          scene.classList.add("battle-scene-unit-enter");
+          if (animate)
+          {
+            scene.classList.add("battle-scene-unit-enter-" + side);
+          }
 
           container.appendChild(scene);
         }
@@ -112,11 +115,12 @@ module Rance
               onComplete();
             });
 
-            container.firstChild.classList.add("battle-scene-unit-leave");
+            container.firstChild.classList.add("battle-scene-unit-leave-" + side);
           }
           else
           {
             container.removeChild(container.firstChild);
+            if (onComplete) onComplete();
           }
         }
         // no child, fire callback immediately

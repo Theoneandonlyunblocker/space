@@ -449,39 +449,79 @@ progress::-webkit-progress-value { background: #080; }
 .battle-scene-units-container
 {
   position: relative;
-}
-
-.battle-scene-unit-enter
-{
-  animation-duration: 1s;
-  animation-name: battle-scene-unit-enter;
-}
-@keyframes battle-scene-unit-enter
-{
-  from
+  canvas
   {
-    margin: 0 100%;
-  }
-  to
-  {
-    margin: 0;
+    position: relative;
   }
 }
 
-.battle-scene-unit-leave
+.battle-scene-unit-enter-side1
 {
-  animation-duration: 1s;
-  animation-name: battle-scene-unit-leave;
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-enter-side1;
 }
-@keyframes battle-scene-unit-leave
+@keyframes battle-scene-unit-enter-side1
 {
   from
   {
-    margin: 0;
+    left: -100%;
+    background-color: rgba(255, 255, 255, 1);
   }
   to
   {
-    margin: 0 100%;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0);
+  }
+}
+
+.battle-scene-unit-leave-side1
+{
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-leave-side1;
+}
+@keyframes battle-scene-unit-leave-side1
+{
+  from
+  {
+    right: 0;
+  }
+  to
+  {
+    right: 100%;
+  }
+}
+
+.battle-scene-unit-enter-side2
+{
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-enter-side2;
+}
+@keyframes battle-scene-unit-enter-side2
+{
+  from
+  {
+    margin-left: 100%;
+  }
+  to
+  {
+    margin-left: 0;
+  }
+}
+
+.battle-scene-unit-leave-side2
+{
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-leave-side2;
+}
+@keyframes battle-scene-unit-leave-side2
+{
+  from
+  {
+    margin-left: 0;
+  }
+  to
+  {
+    margin-left: 100%;
   }
 }
 

@@ -244,28 +244,57 @@ progress::-webkit-progress-value {
 .battle-scene-units-container {
   position: relative;
 }
-.battle-scene-unit-enter {
-  animation-duration: 1s;
-  animation-name: battle-scene-unit-enter;
+.battle-scene-units-container canvas {
+  position: relative;
 }
-@keyframes battle-scene-unit-enter {
+.battle-scene-unit-enter-side1 {
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-enter-side1;
+}
+@keyframes battle-scene-unit-enter-side1 {
   from {
-    margin: 0 100%;
+    left: -100%;
+    background-color: #ffffff;
   }
   to {
-    margin: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0);
   }
 }
-.battle-scene-unit-leave {
-  animation-duration: 1s;
-  animation-name: battle-scene-unit-leave;
+.battle-scene-unit-leave-side1 {
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-leave-side1;
 }
-@keyframes battle-scene-unit-leave {
+@keyframes battle-scene-unit-leave-side1 {
   from {
-    margin: 0;
+    right: 0;
   }
   to {
-    margin: 0 100%;
+    right: 100%;
+  }
+}
+.battle-scene-unit-enter-side2 {
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-enter-side2;
+}
+@keyframes battle-scene-unit-enter-side2 {
+  from {
+    margin-left: 100%;
+  }
+  to {
+    margin-left: 0;
+  }
+}
+.battle-scene-unit-leave-side2 {
+  animation-duration: 0.2s;
+  animation-name: battle-scene-unit-leave-side2;
+}
+@keyframes battle-scene-unit-leave-side2 {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: 100%;
   }
 }
 .ability-tooltip {
