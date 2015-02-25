@@ -123,6 +123,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BattleDisplayStrength: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Battle: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

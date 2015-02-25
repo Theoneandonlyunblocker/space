@@ -189,13 +189,51 @@ progress::-webkit-progress-value {
 .battle-score-bar-side2 {
   border-left-width: 1px;
 }
+.battle-upper-footer-enter {
+  opacity: 0.01;
+  transition: opacity 0.2s ease-in;
+}
+.battle-upper-footer-enter.battle-upper-footer-enter-active {
+  opacity: 1;
+}
+.battle-upper-footer-leave {
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
+}
+.battle-upper-footer-leave.battle-upper-footer-leave-active {
+  opacity: 0.01;
+}
+.battle-display-strength-container {
+  display: flex;
+  flex-flow: row;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 40px;
+  z-index: 1;
+}
+.battle-display-strength {
+  position: absolute;
+  bottom: 0;
+  color: #eeeeec;
+  font-size: 3em;
+}
+.battle-display-strength-side1 {
+  left: 0;
+}
+.battle-display-strength-side2 {
+  right: 0;
+}
 .turn-order-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   display: flex;
   flex-flow: row;
   width: 100%;
   min-height: 20px;
   z-index: 1;
-  order: 999;
 }
 .turn-order-unit {
   display: flex;
@@ -414,7 +452,7 @@ progress::-webkit-progress-value {
   background-color: transparent !important;
 }
 .empty-unit .unit-info-name {
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996)) !important;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)) !important;
   border-bottom: 1px solid rgba(26, 26, 26, 0.4) !important;
 }
 .friendly-unit .unit-container {
@@ -424,7 +462,7 @@ progress::-webkit-progress-value {
   background-color: rgba(100, 120, 250, 0.5);
 }
 .friendly-unit .unit-info-name {
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(146, 161, 255, 0.9);
 }
 .friendly-unit .unit-container {
@@ -438,7 +476,7 @@ progress::-webkit-progress-value {
   background-color: rgba(250, 100, 120, 0.5);
 }
 .enemy-unit .unit-info-name {
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(255, 146, 161, 0.9);
 }
 .enemy-unit .unit-container {
@@ -452,7 +490,7 @@ progress::-webkit-progress-value {
   background-color: rgba(200, 200, 20, 0.5);
 }
 .active-unit.friendly-unit .unit-info-name {
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(146, 161, 255, 0.9);
 }
 .active-unit.friendly-unit * {
@@ -465,7 +503,7 @@ progress::-webkit-progress-value {
   background-color: rgba(200, 200, 20, 0.5);
 }
 .active-unit.enemy-unit .unit-info-name {
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(255, 146, 161, 0.9);
 }
 .active-unit.enemy-unit * {
@@ -478,7 +516,7 @@ progress::-webkit-progress-value {
   background-color: rgba(20, 200, 20, 0.5);
 }
 .target-unit.friendly-unit .unit-info-name {
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(146, 161, 255, 0.9);
 }
 .target-unit.enemy-unit .unit-container {
@@ -488,7 +526,7 @@ progress::-webkit-progress-value {
   background-color: rgba(20, 200, 20, 0.5);
 }
 .target-unit.enemy-unit .unit-info-name {
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.19999999999999996));
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2));
   border-bottom: 1px solid rgba(255, 146, 161, 0.9);
 }
 .active-border * {
@@ -701,7 +739,7 @@ progress::-webkit-progress-value {
 }
 .used-turn {
   border: 1px solid #999;
-  background-color: rgba(255, 255, 255, 0.19999999999999996);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 .available-turn {
   border: 1px solid #0ac7b3;

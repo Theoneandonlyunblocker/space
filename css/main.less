@@ -372,14 +372,68 @@ progress::-webkit-progress-value { background: #080; }
   border-left-width: 1px;
 }
 
+.battle-upper-footer-enter
+{
+  opacity: 0.01;
+  transition: opacity 0.2s ease-in;
+}
+
+.battle-upper-footer-enter.battle-upper-footer-enter-active
+{
+  opacity: 1;
+}
+
+.battle-upper-footer-leave
+{
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
+}
+
+.battle-upper-footer-leave.battle-upper-footer-leave-active
+{
+  opacity: 0.01;
+}
+
+.battle-display-strength-container
+{
+  display: flex;
+  flex-flow: row;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 40px;
+  z-index: 1;
+}
+
+.battle-display-strength
+{
+  position: absolute;
+  bottom: 0;
+  color: @text-color;
+  font-size: 3em;
+}
+
+.battle-display-strength-side1
+{
+  left: 0;
+}
+
+.battle-display-strength-side2
+{
+  right: 0;
+}
+
 .turn-order-container
 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   display: flex;
   flex-flow: row;
   width: 100%;
   min-height: 20px;
   z-index: 1;
-  order: 999;
 }
 
 .turn-order-unit

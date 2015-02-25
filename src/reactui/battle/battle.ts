@@ -4,6 +4,7 @@
 /// <reference path="abilitytooltip.ts"/>
 /// <reference path="battlescore.ts"/>
 /// <reference path="battlescene.ts"/>
+/// <reference path="battledisplaystrength.ts"/>
 
 module Rance
 {
@@ -27,6 +28,8 @@ module Rance
           hoveredAbility: null,
           hoveredUnit: null,
 
+          battleSceneUnit1StartingStrength: null,
+          battleSceneUnit2StartingStrength: null,
           battleSceneUnit1: null,
           battleSceneUnit2: null,
           playingBattleEffect: false
@@ -198,7 +201,15 @@ module Rance
         var effectData = abilityData.effectsToCall;
         if (!effectData[i])
         {
+          for (var i = 0; i < abilityData.afterUse.length; i++)
+          {
+            abilityData.afterUse[i]();
+          }
+
           this.endBattleEffect(abilityData);
+
+          window.setTimeout(this.handleTurnEnd, 500);
+
           return;
         };
 
@@ -216,10 +227,15 @@ module Rance
           }
         });
 
+        var previousUnit1Strength = side1Unit ? side1Unit.currentStrength : null;
+        var previousUnit2Strength = side2Unit ? side2Unit.currentStrength : null;
+
         effectData[i].effect();
 
         this.setState(
         {
+          battleSceneUnit1StartingStrength: previousUnit1Strength,
+          battleSceneUnit2StartingStrength: previousUnit2Strength,
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
@@ -233,23 +249,15 @@ module Rance
           targetsInPotentialArea: []
         });
 
-
-        window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
+        window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 3000);
       },
-      endBattleEffect: function(abilityData: IAbilityUseData)
+      endBattleEffect: function()
       {
-        for (var i = 0; i < abilityData.afterUse.length; i++)
-        {
-          abilityData.afterUse[i]();
-        }
-
         this.setState(
         {
           playingBattleEffect: false,
           hoveredUnit: null
         });
-
-        this.handleTurnEnd();
       },
 
       handleTurnEnd: function()
@@ -283,7 +291,6 @@ module Rance
         var target = this.props.battle.unitsById[move.targetId];
 
         this.handleAbilityUse(move.ability, target);
-        console.log("ai used ability", move.ability.type, move.targetId)
       },
 
       finishBattle: function()
@@ -353,7 +360,8 @@ module Rance
             parentElement: this.state.abilityTooltip.parentElement,
             facesLeft: this.state.abilityTooltip.facesLeft,
             activeTargets: activeTargets,
-            ref: "abilityTooltip"
+            ref: "abilityTooltip",
+            key: this.state.hoveredUnit.id
           });
         };
 
@@ -361,6 +369,56 @@ module Rance
         if (this.state.playingBattleEffect)
         {
           activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
+        }
+
+        var upperFooterElement;
+        if (!this.state.playingBattleEffect)
+        {
+          upperFooterElement = UIComponents.TurnOrder(
+          {
+            key: "turnOrder",
+            turnOrder: battle.turnOrder,
+            unitsBySide: battle.unitsBySide,
+            potentialDelay: this.state.potentialDelay,
+            hoveredUnit: this.state.hoveredUnit,
+            onMouseEnterUnit: this.handleMouseEnterUnit,
+            onMouseLeaveUnit: this.handleMouseLeaveUnit
+          })
+        }
+        else
+        {
+          upperFooterElement = React.DOM.div(
+          {
+            key: "battleDisplayStrength",
+            className: "battle-display-strength-container"
+          },
+            React.DOM.div(
+            {
+              className: "battle-display-strength battle-display-strength-side1"
+            },
+
+              this.state.battleSceneUnit1 ? UIComponents.BattleDisplayStrength(
+              {
+                key: "" + this.state.battleSceneUnit1.id + Date.now(),
+                delay: 2000,
+                from: this.state.battleSceneUnit1StartingStrength,
+                to: this.state.battleSceneUnit1.currentStrength
+              }) : null
+            ),
+            React.DOM.div(
+            {
+              className: "battle-display-strength battle-display-strength-side2"
+            },
+              this.state.battleSceneUnit2 ? UIComponents.BattleDisplayStrength(
+              {
+                key: "" + this.state.battleSceneUnit2.id + Date.now(),
+                delay: 2000,
+                from: this.state.battleSceneUnit2StartingStrength,
+                to: this.state.battleSceneUnit2.currentStrength
+              }) : null
+            )
+          )
+          
         }
 
         return(
@@ -382,15 +440,9 @@ module Rance
                 {
                   battle: battle
                 }),
-                UIComponents.TurnOrder(
-                {
-                  turnOrder: battle.turnOrder,
-                  unitsBySide: battle.unitsBySide,
-                  potentialDelay: this.state.potentialDelay,
-                  hoveredUnit: this.state.hoveredUnit,
-                  onMouseEnterUnit: this.handleMouseEnterUnit,
-                  onMouseLeaveUnit: this.handleMouseLeaveUnit
-                }),
+                React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
+                  upperFooterElement
+                ),
                 UIComponents.BattleScene(
                 {
                   unit1: this.state.battleSceneUnit1,
