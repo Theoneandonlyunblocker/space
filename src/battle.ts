@@ -243,7 +243,8 @@ module Rance
         if (capturedUnits.length >= maxCapturedUnits) break;
 
         var unit = losingUnits[i];
-        if (Math.random() <= unit.battleStats.captureChance)
+        if (unit.currentStrength <= 0 &&
+          Math.random() <= unit.battleStats.captureChance)
         {
           capturedUnits.push(unit);
         }
