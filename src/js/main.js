@@ -1397,6 +1397,8 @@ var Rance;
                     }
                 });
 
+                effectData[i].effect();
+
                 this.setState({
                     battleSceneUnit1: side1Unit,
                     battleSceneUnit2: side2Unit,
@@ -1409,9 +1411,6 @@ var Rance;
                     potentialDelay: null,
                     targetsInPotentialArea: []
                 });
-
-                effectData[i].effect();
-                console.log("applied ability effect", effectData[i]);
 
                 window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
             },
@@ -7622,7 +7621,7 @@ var Rance;
                     break;
 
                 var unit = losingUnits[i];
-                if (Math.random() <= unit.battleStats.captureChance) {
+                if (unit.currentStrength <= 0 && Math.random() <= unit.battleStats.captureChance) {
                     capturedUnits.push(unit);
                 }
             }

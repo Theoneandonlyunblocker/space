@@ -216,6 +216,8 @@ module Rance
           }
         });
 
+        effectData[i].effect();
+
         this.setState(
         {
           battleSceneUnit1: side1Unit,
@@ -231,8 +233,6 @@ module Rance
           targetsInPotentialArea: []
         });
 
-        effectData[i].effect();
-        console.log("applied ability effect", effectData[i]);
 
         window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2000);
       },
