@@ -37,12 +37,13 @@ module Rance
       {
         var self = this;
         var stopped = false;
-        console.log("animate display strength", this.state.displayedStrength, newAmount);
 
         if (this.activeTween)
         {
           this.activeTween.stop();
         }
+        
+        if (from === newAmount) return;
 
         var animateTween = function()
         {

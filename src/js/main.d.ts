@@ -1297,6 +1297,9 @@ declare module Rance {
             guardCoverage: string;
             captureChance: number;
         };
+        public displayFlags: {
+            isAnnihilated: boolean;
+        };
         public fleet: Rance.Fleet;
         public items: {
             low: Rance.Item;

@@ -19,20 +19,6 @@ module Rance
         }
       },
 
-      addTimeout: function(id: string, callBack: {(): void})
-      {
-        if (!this.timeouts) this.timeouts = {};
-
-        this.timeouts[id] = window.setTimeout(callBack);
-      },
-      removeTimeout: function(id: string)
-      {
-        window.clearTimeout(this.timeouts[id]);
-
-        this.timeouts[id] = null;
-        delete this.timeouts[id];
-      },
-
       componentDidMount: function()
       {
         window.addEventListener("resize", this.handleResize, false);

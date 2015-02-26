@@ -118,7 +118,6 @@ var Rance;
             },
             render: function () {
                 var toRender;
-
                 if (this.props.isSquadron) {
                     toRender = this.makeSquadronInfo();
                 } else {
@@ -586,7 +585,7 @@ var Rance;
                     containerElements = containerElements.reverse();
                 }
 
-                if (unit.currentStrength <= 0) {
+                if (unit.displayFlags.isAnnihilated) {
                     containerElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
                 }
 
@@ -658,6 +657,7 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
+            displayName: "UnitWrapper",
             shouldComponentUpdate: function (newProps) {
                 if (!this.props.unit && !newProps.unit)
                     return false;
@@ -709,7 +709,6 @@ var Rance;
 
                 return false;
             },
-            displayName: "UnitWrapper",
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.position);
             },
@@ -752,6 +751,8 @@ var Rance;
                             this.props.isCaptured = true;
                         }
                     }
+
+                    this.props.isAnnihilated = (this.props.unit && this.props.unit.displayFlags.isAnnihilated);
 
                     var unit = Rance.UIComponents.Unit(this.props);
                     allElements.push(unit);
@@ -1120,18 +1121,6 @@ var Rance;
                     this.renderScene("side2", true, newProps.unit2);
                 }
             },
-            addTimeout: function (id, callBack) {
-                if (!this.timeouts)
-                    this.timeouts = {};
-
-                this.timeouts[id] = window.setTimeout(callBack);
-            },
-            removeTimeout: function (id) {
-                window.clearTimeout(this.timeouts[id]);
-
-                this.timeouts[id] = null;
-                delete this.timeouts[id];
-            },
             componentDidMount: function () {
                 window.addEventListener("resize", this.handleResize, false);
             },
@@ -1255,11 +1244,13 @@ var Rance;
             animateDisplayedStrength: function (from, newAmount, time) {
                 var self = this;
                 var stopped = false;
-                console.log("animate display strength", this.state.displayedStrength, newAmount);
 
                 if (this.activeTween) {
                     this.activeTween.stop();
                 }
+
+                if (from === newAmount)
+                    return;
 
                 var animateTween = function () {
                     if (stopped) {
@@ -1324,7 +1315,8 @@ var Rance;
                     battleSceneUnit2StartingStrength: null,
                     battleSceneUnit1: null,
                     battleSceneUnit2: null,
-                    playingBattleEffect: false
+                    playingBattleEffect: false,
+                    playingBattleEffectActive: false
                 });
             },
             resize: function () {
@@ -1462,7 +1454,7 @@ var Rance;
 
                     this.endBattleEffect(abilityData);
 
-                    window.setTimeout(this.handleTurnEnd, 500);
+                    this.handleTurnEnd();
 
                     return;
                 }
@@ -1481,8 +1473,6 @@ var Rance;
                 var previousUnit1Strength = side1Unit ? side1Unit.currentStrength : null;
                 var previousUnit2Strength = side2Unit ? side2Unit.currentStrength : null;
 
-                effectData[i].effect();
-
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
                     battleSceneUnit2StartingStrength: previousUnit2Strength,
@@ -1498,7 +1488,15 @@ var Rance;
                     targetsInPotentialArea: []
                 });
 
-                window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 3000);
+                window.setTimeout(function () {
+                    effectData[i].effect();
+
+                    this.setState({
+                        playingBattleEffectActive: true
+                    });
+                }.bind(this), 350 / (1 + Math.log(i + 1)));
+
+                window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2750);
             },
             endBattleEffect: function () {
                 this.setState({
@@ -7658,6 +7656,15 @@ var Rance;
             this.updateTurnOrder();
             this.setActiveUnit();
 
+            if (!this.isVirtual) {
+                this.forEachUnit(function (unit) {
+                    if (unit.currentStrength <= 0) {
+                        unit.displayFlags.isAnnihilated = true;
+                        unit.uiDisplayIsDirty = true;
+                    }
+                });
+            }
+
             var shouldEnd = this.checkBattleEnd();
             if (shouldEnd) {
                 this.endBattle();
@@ -8370,6 +8377,10 @@ var Rance;
                 guardAmount: 0,
                 guardCoverage: null,
                 captureChance: 1
+            };
+
+            this.displayFlags = {
+                isAnnihilated: false
             };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
@@ -12728,6 +12739,9 @@ var Rance;
 
             fg.filters = [new PIXI.BlurFilter()];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
+            fg.filterArea.height;
+
+            console.log(fg.filterArea);
 
             var texture = container.generateTexture();
 
