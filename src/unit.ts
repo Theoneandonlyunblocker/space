@@ -53,6 +53,11 @@ module Rance
       captureChance: number;
       //queuedAction: Action;
     };
+
+    displayFlags:
+    {
+      isAnnihilated: boolean;
+    };
     
     fleet: Fleet;
 
@@ -218,7 +223,12 @@ module Rance
         guardAmount: 0,
         guardCoverage: null,
         captureChance: 1 // BASE_CAPTURE_CHANCE
-      }
+      };
+
+      this.displayFlags =
+      {
+        isAnnihilated: false
+      };
     }
     setBattlePosition(battle: Battle, side: string, position: number[])
     {
