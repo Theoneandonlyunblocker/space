@@ -32,7 +32,8 @@ module Rance
           battleSceneUnit2StartingStrength: null,
           battleSceneUnit1: null,
           battleSceneUnit2: null,
-          playingBattleEffect: false
+          playingBattleEffect: false,
+          playingBattleEffectActive: false
         });
       },
       resize: function()
@@ -208,7 +209,7 @@ module Rance
 
           this.endBattleEffect(abilityData);
 
-          window.setTimeout(this.handleTurnEnd, 500);
+          this.handleTurnEnd();
 
           return;
         };
@@ -230,8 +231,6 @@ module Rance
         var previousUnit1Strength = side1Unit ? side1Unit.currentStrength : null;
         var previousUnit2Strength = side2Unit ? side2Unit.currentStrength : null;
 
-        effectData[i].effect();
-
         this.setState(
         {
           battleSceneUnit1StartingStrength: previousUnit1Strength,
@@ -249,7 +248,19 @@ module Rance
           targetsInPotentialArea: []
         });
 
-        window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 3000);
+        window.setTimeout(function()
+        {
+          effectData[i].effect();
+
+          this.setState(
+          {
+            playingBattleEffectActive: true
+          });
+        }.bind(this), 350 / (1 + Math.log(i + 1)));
+
+        
+
+        window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2750);
       },
       endBattleEffect: function()
       {
