@@ -504,7 +504,7 @@ module Rance
       maxHeight?: number;
     })
     {
-      var unitsToDraw = props.unitsToDraw;
+      //var unitsToDraw = props.unitsToDraw;
       var maxUnitsPerColumn = props.maxUnitsPerColumn;
       var isConvex = true
       var degree = props.degree;
@@ -523,11 +523,9 @@ module Rance
 
       var ctx = canvas.getContext("2d");
 
-      //var maxUnitsPerColumn = 20;
-      var log10Strength = Math.log(this.currentStrength) / Math.LN10;
-      //var unitsToDraw = 200;
-      //var unitsToDraw = Math.round(log10Strength * 4);
-      clamp(unitsToDraw, 1, maxUnitsPerColumn * 4);
+      
+      var unitsToDraw = Math.round(this.currentStrength * 0.05);
+      unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
       var spriteTemplate = this.template.sprite;
 
