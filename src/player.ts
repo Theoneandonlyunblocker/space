@@ -139,10 +139,7 @@ module Rance
     {
       var fleetIndex = this.getFleetIndex(fleet);
 
-      if (fleetIndex <= 0)
-      {
-        return;
-      }
+      if (fleetIndex < 0) return;
 
       this.fleets.splice(fleetIndex, 1);
       this.visionIsDirty = true;
