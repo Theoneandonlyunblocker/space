@@ -390,6 +390,7 @@ declare module Rance {
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
             var dummyTargetAll: IEffectTemplate;
+            var killAI: IEffectTemplate;
             var rangedAttack: IEffectTemplate;
             var closeAttack: IEffectTemplate;
             var wholeRowAttack: IEffectTemplate;
@@ -418,6 +419,7 @@ declare module Rance {
         module Abilities {
             var dummyTargetColumn: IAbilityTemplate;
             var dummyTargetAll: IAbilityTemplate;
+            var killAI: IAbilityTemplate;
             var rangedAttack: IAbilityTemplate;
             var closeAttack: IAbilityTemplate;
             var wholeRowAttack: IAbilityTemplate;
@@ -1218,7 +1220,7 @@ declare module Rance {
         public getCapturedUnits(victor: Rance.Player, maxCapturedUnits?: number): Rance.Unit[];
         public getDeadUnits(capturedUnits: Rance.Unit[], victor: Rance.Player): Rance.Unit[];
         public endBattle(): void;
-        public finishBattle(): void;
+        public finishBattle(forcedVictor?: Rance.Player): void;
         public getVictor(): Rance.Player;
         public getTotalHealthForColumn(position: number): number;
         public getTotalHealthForSide(side: string): {
@@ -2121,6 +2123,16 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class ObjectivesAI {
+        public mapEvaluator: Rance.MapEvaluator;
+        public map: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public game: Rance.Game;
+        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
+        public getDesireToExpand(): number;
+    }
+}
+declare module Rance {
     class PathfindingArrow {
         public parentContainer: PIXI.DisplayObjectContainer;
         public container: PIXI.DisplayObjectContainer;
@@ -2189,7 +2201,7 @@ declare module Rance {
         };
     }
 }
-declare var a: any, b: any;
+declare var a: any, b: any, c: any;
 declare module Rance {
     var idGenerators: {
         fleet: number;

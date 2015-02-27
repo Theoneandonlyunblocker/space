@@ -657,7 +657,6 @@ var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
-            displayName: "UnitWrapper",
             shouldComponentUpdate: function (newProps) {
                 if (!this.props.unit && !newProps.unit)
                     return false;
@@ -709,6 +708,7 @@ var Rance;
 
                 return false;
             },
+            displayName: "UnitWrapper",
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.position);
             },
@@ -751,8 +751,6 @@ var Rance;
                             this.props.isCaptured = true;
                         }
                     }
-
-                    this.props.isAnnihilated = (this.props.unit && this.props.unit.displayFlags.isAnnihilated);
 
                     var unit = Rance.UIComponents.Unit(this.props);
                     allElements.push(unit);
@@ -4629,6 +4627,17 @@ var Rance;
                 effect: function () {
                 }
             };
+            Effects.killAI = {
+                name: "rangedAttack",
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetAll,
+                targetRange: "all",
+                effect: function (user, target) {
+                    if (target.fleet && target.fleet.player.id !== app.humanPlayer.id) {
+                        target.currentStrength = 0;
+                    }
+                }
+            };
             Effects.rangedAttack = {
                 name: "rangedAttack",
                 targetFleets: "enemy",
@@ -4734,6 +4743,13 @@ var Rance;
                 actionsUse: 0,
                 mainEffect: Rance.Templates.Effects.dummyTargetAll
             };
+            Abilities.killAI = {
+                type: "killAI",
+                displayName: "Kill AI",
+                moveDelay: 0,
+                actionsUse: 0,
+                mainEffect: Rance.Templates.Effects.killAI
+            };
             Abilities.rangedAttack = {
                 type: "rangedAttack",
                 displayName: "Ranged Attack",
@@ -4806,12 +4822,13 @@ var Rance;
                     attack: 0.7,
                     defence: 0.4,
                     intelligence: 0.5,
-                    speed: 0.8
+                    speed: 1
                 },
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.bombAttack,
-                    Rance.Templates.Abilities.guardColumn
+                    Rance.Templates.Abilities.guardColumn,
+                    Rance.Templates.Abilities.killAI
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -7800,8 +7817,8 @@ var Rance;
 
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
-        Battle.prototype.finishBattle = function () {
-            var victor = this.getVictor();
+        Battle.prototype.finishBattle = function (forcedVictor) {
+            var victor = forcedVictor || this.getVictor();
 
             for (var i = 0; i < this.deadUnits.length; i++) {
                 this.deadUnits[i].removeFromPlayer();
@@ -8602,7 +8619,7 @@ var Rance;
             this.addStrength(healAmount);
         };
         Unit.prototype.drawBattleScene = function (props) {
-            var unitsToDraw = props.unitsToDraw;
+            //var unitsToDraw = props.unitsToDraw;
             var maxUnitsPerColumn = props.maxUnitsPerColumn;
             var isConvex = true;
             var degree = props.degree;
@@ -8620,12 +8637,8 @@ var Rance;
 
             var ctx = canvas.getContext("2d");
 
-            //var maxUnitsPerColumn = 20;
-            var log10Strength = Math.log(this.currentStrength) / Math.LN10;
-
-            //var unitsToDraw = 200;
-            //var unitsToDraw = Math.round(log10Strength * 4);
-            Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 4);
+            var unitsToDraw = Math.round(this.currentStrength * 0.05);
+            unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
             var spriteTemplate = this.template.sprite;
 
@@ -12739,9 +12752,6 @@ var Rance;
 
             fg.filters = [new PIXI.BlurFilter()];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
-            fg.filterArea.height;
-
-            console.log(fg.filterArea);
 
             var texture = container.generateTexture();
 
@@ -12993,7 +13003,7 @@ var Rance;
                 var playerData = data.players[i];
                 var id = playerData.id;
                 var player = this.playersById[id] = this.deserializePlayer(playerData);
-                if (player.name === "Independent") {
+                if (player.isIndependent) {
                     this.independents.push(player);
                 } else {
                     this.players.push(player);
@@ -13514,6 +13524,9 @@ var Rance;
 
         MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
             var stars = this.player.getNeighboringStars();
+            stars = stars.filter(function (star) {
+                return star.owner.isIndependent;
+            });
 
             var evaluationByStar = {};
 
@@ -13523,8 +13536,8 @@ var Rance;
                 var desirability = this.evaluateStarDesirability(star);
                 var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
 
-                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player) || 0;
-                var ownInfluenceAtStar = ownInfluenceMap[star.id];
+                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
 
                 evaluationByStar[star.id] = {
                     star: star,
@@ -13760,6 +13773,41 @@ var Rance;
         return MapEvaluator;
     })();
     Rance.MapEvaluator = MapEvaluator;
+})(Rance || (Rance = {}));
+/// <reference path="galaxymap.ts"/>
+/// <reference path="game.ts"/>
+/// <reference path="mapevaluator.ts"/>
+var Rance;
+(function (Rance) {
+    var ObjectivesAI = (function () {
+        function ObjectivesAI(mapEvaluator, game) {
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.game = game;
+        }
+        ObjectivesAI.prototype.getDesireToExpand = function () {
+            var neighboringStars = this.player.getNeighboringStars();
+
+            var independentNeighbors = neighboringStars.filter(function (star) {
+                return star.owner.isIndependent;
+            });
+
+            if (independentNeighbors.length <= 0) {
+                return 0;
+            }
+
+            var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
+            var minDesiredStars = starsPerPlayer / 2;
+
+            var desire = minDesiredStars / this.player.controlledLocations.length;
+            desire = Rance.clamp(desire, 0, 1);
+
+            return desire;
+        };
+        return ObjectivesAI;
+    })();
+    Rance.ObjectivesAI = ObjectivesAI;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 /// <reference path="eventmanager.ts"/>
@@ -14178,10 +14226,11 @@ var Rance;
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
 /// <reference path="borderpolygon.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
-var a, b;
+var a, b, c;
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
@@ -14219,6 +14268,7 @@ var Rance;
 
             a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
             b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
+            c = new Rance.ObjectivesAI(a, this.game); // TODO
         };
         App.prototype.destroy = function () {
             this.renderer.destroy();

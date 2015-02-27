@@ -18,13 +18,14 @@
 
 /// <reference path="mctree.ts"/>
 /// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
 
 /// <reference path="borderpolygon.ts"/>
 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 
-var a, b; // TODO
+var a, b, c; // TODO
 module Rance
 {
 
@@ -84,6 +85,7 @@ module Rance
 
       a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
       b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
+      c = new Rance.ObjectivesAI(a, this.game); // TODO
     }
     destroy()
     {
