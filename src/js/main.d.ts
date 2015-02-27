@@ -390,7 +390,6 @@ declare module Rance {
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
             var dummyTargetAll: IEffectTemplate;
-            var killAI: IEffectTemplate;
             var rangedAttack: IEffectTemplate;
             var closeAttack: IEffectTemplate;
             var wholeRowAttack: IEffectTemplate;
@@ -419,7 +418,6 @@ declare module Rance {
         module Abilities {
             var dummyTargetColumn: IAbilityTemplate;
             var dummyTargetAll: IAbilityTemplate;
-            var killAI: IAbilityTemplate;
             var rangedAttack: IAbilityTemplate;
             var closeAttack: IAbilityTemplate;
             var wholeRowAttack: IAbilityTemplate;

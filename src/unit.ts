@@ -90,6 +90,11 @@ module Rance
       {
         this.setInitialValues();
       }
+
+      this.displayFlags =
+      {
+        isAnnihilated: false
+      };
     }
     makeFromData(data)
     {

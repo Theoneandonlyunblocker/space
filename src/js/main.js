@@ -4627,17 +4627,6 @@ var Rance;
                 effect: function () {
                 }
             };
-            Effects.killAI = {
-                name: "rangedAttack",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetAll,
-                targetRange: "all",
-                effect: function (user, target) {
-                    if (target.fleet && target.fleet.player.id !== app.humanPlayer.id) {
-                        target.currentStrength = 0;
-                    }
-                }
-            };
             Effects.rangedAttack = {
                 name: "rangedAttack",
                 targetFleets: "enemy",
@@ -4743,13 +4732,6 @@ var Rance;
                 actionsUse: 0,
                 mainEffect: Rance.Templates.Effects.dummyTargetAll
             };
-            Abilities.killAI = {
-                type: "killAI",
-                displayName: "Kill AI",
-                moveDelay: 0,
-                actionsUse: 0,
-                mainEffect: Rance.Templates.Effects.killAI
-            };
             Abilities.rangedAttack = {
                 type: "rangedAttack",
                 displayName: "Ranged Attack",
@@ -4822,13 +4804,12 @@ var Rance;
                     attack: 0.7,
                     defence: 0.4,
                     intelligence: 0.5,
-                    speed: 1
+                    speed: 0.8
                 },
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.bombAttack,
-                    Rance.Templates.Abilities.guardColumn,
-                    Rance.Templates.Abilities.killAI
+                    Rance.Templates.Abilities.guardColumn
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -7332,7 +7313,7 @@ var Rance;
         Player.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
 
-            if (fleetIndex <= 0) {
+            if (fleetIndex < 0) {
                 return;
             }
 
@@ -8278,6 +8259,10 @@ var Rance;
             } else {
                 this.setInitialValues();
             }
+
+            this.displayFlags = {
+                isAnnihilated: false
+            };
         }
         Unit.prototype.makeFromData = function (data) {
             var items = {};
