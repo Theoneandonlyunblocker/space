@@ -48,7 +48,7 @@ module Rance
         var playerData = data.players[i];
         var id = playerData.id;
         var player = this.playersById[id] = this.deserializePlayer(playerData);
-        if (player.name === "Independent")
+        if (player.isIndependent)
         {
           this.independents.push(player);
         }
