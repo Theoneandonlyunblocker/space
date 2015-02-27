@@ -337,9 +337,9 @@ module Rance
 
       eventManager.dispatchEvent("battleEnd", null);
     }
-    finishBattle()
+    finishBattle(forcedVictor?: Player)
     {
-      var victor = this.getVictor();
+      var victor = forcedVictor || this.getVictor();
 
       for (var i = 0; i < this.deadUnits.length; i++)
       {
