@@ -140,6 +140,10 @@ module Rance
     evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations
     {
       var stars = this.player.getNeighboringStars();
+      stars = stars.filter(function(star)
+      {
+        return star.owner.isIndependent;
+      });
 
       var evaluationByStar: IExpansionTargetEvaluations = {};
 
@@ -150,8 +154,8 @@ module Rance
         var desirability = this.evaluateStarDesirability(star);
         var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
 
-        var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player) || 0;
-        var ownInfluenceAtStar = ownInfluenceMap[star.id];
+        var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+        var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
 
         evaluationByStar[star.id] =
         {
