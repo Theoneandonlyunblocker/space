@@ -102,7 +102,6 @@ module Rance
       var isConnected = this.isConnected();
       if (!isConnected)
       {
-        debugger;
         return this.makeMap(options);
       }
 

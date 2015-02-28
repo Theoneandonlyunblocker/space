@@ -38,7 +38,7 @@ module Rance
         overlayColor: {type: "3fv", value: hex2rgb(nebulaColorScheme.secondary)},
         highlightColor: {type: "3fv", value: [1.0, 1.0, 1.0]},
 
-        coverage: {type: "1f", value: randRange(0.2, 0.4)},
+        coverage: {type: "1f", value: randRange(0.28, 0.32)},
 
         scale: {type: "1f", value: randRange(4, 8)},
 
