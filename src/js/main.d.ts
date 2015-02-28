@@ -1861,7 +1861,6 @@ declare module Rance {
 declare module Rance {
     module ShaderSources {
         var nebula: string[];
-        var starfield: string[];
     }
 }
 declare module Rance {
@@ -2052,85 +2051,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    var defaultEvaluationParameters: {
-        starDesirability: {
-            neighborRange: number;
-            neighborWeight: number;
-            totalIncomeWeight: number;
-            baseIncomeWeight: number;
-            infrastructureWeight: number;
-            productionWeight: number;
-        };
-    };
-    interface IExpansionTargetEvaluations {
-        [starId: number]: {
-            star: Rance.Star;
-            desirability: number;
-            independentStrength: number;
-            ownInfluence: number;
-        };
-    }
-    class MapEvaluator {
-        public map: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public evaluationParameters: {
-            starDesirability: {
-                neighborRange: number;
-                neighborWeight: number;
-                totalIncomeWeight: number;
-                baseIncomeWeight: number;
-                infrastructureWeight: number;
-                productionWeight: number;
-            };
-        };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player);
-        public evaluateStarIncome(star: Rance.Star): number;
-        public evaluateStarInfrastructure(star: Rance.Star): number;
-        public evaluateStarProduction(star: Rance.Star): number;
-        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
-        public evaluateIndividualStarDesirability(star: Rance.Star): number;
-        public evaluateStarDesirability(star: Rance.Star): number;
-        public evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations;
-        public scoreExpansionTargets(evaluations: IExpansionTargetEvaluations): {
-            star: Rance.Star;
-            score: number;
-        }[];
-        public getExpansionTarget(): {
-            star: Rance.Star;
-            score: number;
-        };
-        public getHostileShipsAtStar(star: Rance.Star): {
-            [playerId: number]: Rance.Unit[];
-        };
-        public getHostileStrengthAtStar(star: Rance.Star): {
-            [playerId: number]: number;
-        };
-        public getIndependentStrengthAtStar(star: Rance.Star): number;
-        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
-        public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
-            [playerId: number]: number;
-        };
-        public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
-        public evaluateFleetStrength(fleet: Rance.Fleet): number;
-        public getVisibleFleetsByPlayer(): {
-            [playerId: number]: Rance.Fleet[];
-        };
-        public buildPlayerInfluenceMap(player: Rance.Player): {
-            [starId: number]: number;
-        };
-    }
-}
-declare module Rance {
-    class ObjectivesAI {
-        public mapEvaluator: Rance.MapEvaluator;
-        public map: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public game: Rance.Game;
-        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
-        public getDesireToExpand(): number;
-    }
-}
-declare module Rance {
     class PathfindingArrow {
         public parentContainer: PIXI.DisplayObjectContainer;
         public container: PIXI.DisplayObjectContainer;
@@ -2191,6 +2111,125 @@ declare module Rance {
             edges: any[];
         };
     };
+}
+declare module Rance {
+    var defaultEvaluationParameters: {
+        starDesirability: {
+            neighborRange: number;
+            neighborWeight: number;
+            totalIncomeWeight: number;
+            baseIncomeWeight: number;
+            infrastructureWeight: number;
+            productionWeight: number;
+        };
+    };
+    interface IExpansionTargetEvaluations {
+        [starId: number]: {
+            star: Rance.Star;
+            desirability: number;
+            independentStrength: number;
+            ownInfluence: number;
+        };
+    }
+    class MapEvaluator {
+        public map: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public evaluationParameters: {
+            starDesirability: {
+                neighborRange: number;
+                neighborWeight: number;
+                totalIncomeWeight: number;
+                baseIncomeWeight: number;
+                infrastructureWeight: number;
+                productionWeight: number;
+            };
+        };
+        constructor(map: Rance.GalaxyMap, player: Rance.Player);
+        public evaluateStarIncome(star: Rance.Star): number;
+        public evaluateStarInfrastructure(star: Rance.Star): number;
+        public evaluateStarProduction(star: Rance.Star): number;
+        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
+        public evaluateIndividualStarDesirability(star: Rance.Star): number;
+        public evaluateStarDesirability(star: Rance.Star): number;
+        public evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations;
+        public scoreExpansionTargets(evaluations: IExpansionTargetEvaluations): {
+            star: Rance.Star;
+            score: number;
+        }[];
+        public getScoredExpansionTargets(): {
+            star: Rance.Star;
+            score: number;
+        }[];
+        public getHostileShipsAtStar(star: Rance.Star): {
+            [playerId: number]: Rance.Unit[];
+        };
+        public getHostileStrengthAtStar(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getIndependentStrengthAtStar(star: Rance.Star): number;
+        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
+        public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
+        public evaluateFleetStrength(fleet: Rance.Fleet): number;
+        public getVisibleFleetsByPlayer(): {
+            [playerId: number]: Rance.Fleet[];
+        };
+        public buildPlayerInfluenceMap(player: Rance.Player): {
+            [starId: number]: number;
+        };
+    }
+}
+declare module Rance {
+    interface IRequestGoal {
+        score: number;
+    }
+    class Request {
+        public priority: number;
+        public goals: IRequestGoal[];
+        constructor(priority: number, goals: IRequestGoal[]);
+        public getGoalsByScore(): IRequestGoal[];
+    }
+}
+declare module Rance {
+    interface IExpansionGoal extends Rance.IRequestGoal {
+        score: number;
+        target: Rance.Star;
+    }
+    class ExpansionRequest extends Rance.Request {
+        public priority: number;
+        public goals: IExpansionGoal[];
+        constructor(priority: number, goals: IExpansionGoal[]);
+    }
+}
+declare module Rance {
+    class ObjectivesAI {
+        public mapEvaluator: Rance.MapEvaluator;
+        public map: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public game: Rance.Game;
+        public indexedObjectives: {
+            [objectiveType: string]: any;
+        };
+        public objectives: any[];
+        public maxActiveExpansionRequests: number;
+        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
+        public processObjectives(): void;
+        public getDesireToExpand(): number;
+        public getShipsNeededToExpand(): number;
+    }
+}
+declare module Rance {
+    interface IPersonalityData {
+        expansiveness: number;
+        aggressiveness: number;
+    }
+    class Personality implements IPersonalityData {
+        public expansiveness: number;
+        public aggressiveness: number;
+        constructor(personalityData: IPersonalityData);
+    }
 }
 declare module Rance {
     module Tutorials {

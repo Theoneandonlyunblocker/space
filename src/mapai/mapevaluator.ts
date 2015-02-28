@@ -1,5 +1,5 @@
-/// <reference path="galaxymap.ts"/>
-/// <reference path="player.ts"/>
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../player.ts"/>
 
 module Rance
 {
@@ -198,14 +198,12 @@ module Rance
       });
     }
 
-    getExpansionTarget()
+    getScoredExpansionTargets()
     {
       var evaluations = this.evaluateImmediateExpansionTargets();
       var scores = this.scoreExpansionTargets(evaluations);
 
-      debugger;
-
-      return scores[0];
+      return scores;
     }
 
     getHostileShipsAtStar(star: Star)

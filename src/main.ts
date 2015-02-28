@@ -17,12 +17,13 @@
 /// <reference path="shadermanager.ts"/>
 
 /// <reference path="mctree.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
-
 /// <reference path="borderpolygon.ts"/>
 
+/// <reference path="mapai/mapevaluator.ts"/>
+/// <reference path="mapai/objectivesai.ts"/>
+/// <reference path="mapai/personality.ts"/>
+/// 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 
 var a, b, c; // TODO
@@ -64,7 +65,7 @@ module Rance
       var self = this;
 
       this.seed = Math.random();
-      //this.seed = 0.25154878688044846;
+      //this.seed = 0.14325129357166588;
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()

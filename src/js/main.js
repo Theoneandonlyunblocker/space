@@ -7313,9 +7313,8 @@ var Rance;
         Player.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
 
-            if (fleetIndex < 0) {
+            if (fleetIndex < 0)
                 return;
-            }
 
             this.fleets.splice(fleetIndex, 1);
             this.visionIsDirty = true;
@@ -10299,7 +10298,6 @@ var Rance;
 
             var isConnected = this.isConnected();
             if (!isConnected) {
-                debugger;
                 return this.makeMap(options);
             }
 
@@ -10912,8 +10910,15 @@ var Rance;
                 self.setLayerAsDirty(e.data);
             });
 
-            Rance.eventManager.dispatchEvent("registerOnMoveCallback", this.updateShaderOffsets.bind(this));
-            Rance.eventManager.dispatchEvent("registerOnZoomCallback", this.updateShaderZoom.bind(this));
+            var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
+            var boundUpdateZoom = this.updateShaderZoom.bind(this);
+
+            this.listeners["registerOnMoveCallback"] = Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
+                e.data.push(boundUpdateOffsets);
+            });
+            this.listeners["registerOnZoomCallback"] = Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
+                e.data.push(boundUpdateZoom);
+            });
         };
         MapRenderer.prototype.setPlayer = function (player) {
             this.player = player;
@@ -11784,12 +11789,9 @@ var Rance;
                 self.centerOnPosition(e.data);
             });
 
-            this.listeners["registerOnMoveCallback"] = Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
-                self.onMoveCallbacks.push(e.data);
-            });
-            this.listeners["registerOnZoomCallback"] = Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
-                self.onZoomCallbacks.push(e.data);
-            });
+            Rance.eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
+
+            Rance.eventManager.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
         };
 
         /**
@@ -12391,19 +12393,21 @@ var Rance;
             "    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)) );",
             "",
             "",
-            "  return c * volume;",
+            "  return clamp(c * volume, 0.0, 1.0);",
             "}",
             "",
-            "float star(vec2 pos)",
+            "float star(vec2 pos, float volume)",
             "{",
             "  float genValue = hash(pos);",
             "",
+            "  genValue -= volume * 0.01;",
+            "",
             "  float color = 0.0;",
             "",
-            "  if (genValue < 0.005)",
+            "  if (genValue < 0.001)",
             "  {",
             "    float r = hash(pos + vec2(4.20, 6.9));",
-            "    color = r;// * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",
+            "    color = r;",
             "    return color;",
             "  }",
             "  else",
@@ -12418,39 +12422,9 @@ var Rance;
             "  pos += seed;",
             "  float volume = 0.0;",
             "  vec3 c = nebula(pos, volume);",
-            "  c += vec3(star(pos));",
+            "  c += vec3(star(pos, volume));",
             "",
             "  gl_FragColor = vec4(c, 1.0);",
-            "}"
-        ];
-        ShaderSources.starfield = [
-            "precision mediump float;",
-            "uniform vec3 bgColor;",
-            "uniform float time;",
-            "",
-            "float density = 0.005;",
-            "",
-            "float rand(vec2 p)",
-            "{",
-            "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
-            "}",
-            "",
-            "void main(void)",
-            "{",
-            "  vec2 pos = floor(gl_FragCoord.xy);",
-            "  float color = 0.0;",
-            "  float starGenValue = rand(gl_FragCoord.xy);",
-            "",
-            "  if (starGenValue < density)",
-            "  {",
-            "    float r = rand(gl_FragCoord.xy + vec2(4.20, 6.9));",
-            "    color = r * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);",
-            "    gl_FragColor = vec4(vec3(color), 1.0);",
-            "  }",
-            "  else",
-            "  {",
-            "    gl_FragColor = vec4(bgColor, 1.0);",
-            "  }",
             "}"
         ];
     })(Rance.ShaderSources || (Rance.ShaderSources = {}));
@@ -12483,7 +12457,7 @@ var Rance;
                 baseColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.main) },
                 overlayColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.secondary) },
                 highlightColor: { type: "3fv", value: [1.0, 1.0, 1.0] },
-                coverage: { type: "1f", value: Rance.randRange(0.2, 0.4) },
+                coverage: { type: "1f", value: Rance.randRange(0.28, 0.32) },
                 scale: { type: "1f", value: Rance.randRange(4, 8) },
                 diffusion: { type: "1f", value: Rance.randRange(1.5, 3.0) },
                 streakiness: { type: "1f", value: Rance.randRange(1.5, 2.5) },
@@ -13415,385 +13389,6 @@ var Rance;
     })();
     Rance.MCTree = MCTree;
 })(Rance || (Rance = {}));
-/// <reference path="galaxymap.ts"/>
-/// <reference path="player.ts"/>
-var Rance;
-(function (Rance) {
-    Rance.defaultEvaluationParameters = {
-        starDesirability: {
-            neighborRange: 1,
-            neighborWeight: 0.5,
-            totalIncomeWeight: 1,
-            baseIncomeWeight: 0.5,
-            infrastructureWeight: 1,
-            productionWeight: 1
-        }
-    };
-
-    var MapEvaluator = (function () {
-        function MapEvaluator(map, player) {
-            this.map = map;
-            this.player = player;
-
-            this.evaluationParameters = Rance.defaultEvaluationParameters;
-        }
-        MapEvaluator.prototype.evaluateStarIncome = function (star) {
-            var evaluation = 0;
-
-            evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) * (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
-            var evaluation = 0;
-
-            for (var category in star.buildings) {
-                for (var i = 0; i < star.buildings[category].length; i++) {
-                    evaluation += star.buildings[category][i].totalCost;
-                }
-            }
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateStarProduction = function (star) {
-            var evaluation = 0;
-
-            evaluation += star.getItemManufactoryLevel();
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
-            var evaluation = 0;
-
-            var getDistanceFalloff = function (distance) {
-                return 1 / (distance + 1);
-            };
-            var inRange = star.getLinkedInRange(range).byRange;
-
-            for (var distanceString in inRange) {
-                var stars = inRange[distanceString];
-                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-
-                for (var i = 0; i < stars.length; i++) {
-                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
-                }
-            }
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-
-            evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
-            evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
-            evaluation += this.evaluateStarProduction(star) * p.productionWeight;
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-
-            evaluation += this.evaluateIndividualStarDesirability(star);
-            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) * p.neighborWeight;
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
-            var stars = this.player.getNeighboringStars();
-            stars = stars.filter(function (star) {
-                return star.owner.isIndependent;
-            });
-
-            var evaluationByStar = {};
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                var desirability = this.evaluateStarDesirability(star);
-                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-
-                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
-                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
-
-                evaluationByStar[star.id] = {
-                    star: star,
-                    desirability: desirability,
-                    independentStrength: independentStrength,
-                    ownInfluence: ownInfluenceAtStar
-                };
-            }
-
-            return evaluationByStar;
-        };
-
-        MapEvaluator.prototype.scoreExpansionTargets = function (evaluations) {
-            var scores = [];
-
-            for (var starId in evaluations) {
-                var evaluation = evaluations[starId];
-
-                var easeOfCapturing = Math.log(evaluation.ownInfluence / evaluation.independentStrength);
-
-                var score = evaluation.desirability * easeOfCapturing;
-
-                scores.push({
-                    star: evaluation.star,
-                    score: score
-                });
-            }
-
-            return scores.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        };
-
-        MapEvaluator.prototype.getExpansionTarget = function () {
-            var evaluations = this.evaluateImmediateExpansionTargets();
-            var scores = this.scoreExpansionTargets(evaluations);
-
-            debugger;
-
-            return scores[0];
-        };
-
-        MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
-            var hostilePlayers = star.getEnemyFleetOwners(this.player);
-
-            var shipsByEnemy = {};
-
-            for (var i = 0; i < hostilePlayers.length; i++) {
-                shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
-            }
-
-            return shipsByEnemy;
-        };
-
-        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-            var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
-
-            var strengthByEnemy = {};
-
-            for (var playerId in hostileShipsByPlayer) {
-                var strength = 0;
-
-                for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
-                    strength += hostileShipsByPlayer[playerId][i].currentStrength;
-                }
-
-                strengthByEnemy[playerId] = strength;
-            }
-
-            return strengthByEnemy;
-        };
-
-        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-
-            var total = 0;
-
-            for (var playerId in byPlayer) {
-                // TODO
-                var isIndependent = false;
-                for (var i = 0; i < this.map.game.independents.length; i++) {
-                    if (this.map.game.independents[i].id === parseInt(playerId)) {
-                        isIndependent = true;
-                        break;
-                    }
-                }
-
-                // END
-                if (isIndependent) {
-                    total += byPlayer[playerId];
-                } else {
-                    continue;
-                }
-            }
-
-            return total;
-        };
-
-        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-
-            var total = 0;
-
-            for (var playerId in byPlayer) {
-                total += byPlayer[playerId];
-            }
-
-            return total;
-        };
-
-        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
-            var byPlayer = {};
-
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-
-                if (!byPlayer[building.controller.id]) {
-                    byPlayer[building.controller.id] = 0;
-                }
-
-                byPlayer[building.controller.id] += building.totalCost;
-            }
-
-            return byPlayer;
-        };
-
-        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
-            var strength = 0;
-
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-
-                if (building.controller.id === this.player.id)
-                    continue;
-
-                strength += building.totalCost;
-            }
-
-            return strength;
-        };
-
-        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
-            return fleet.getTotalStrength().current;
-        };
-
-        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
-            var stars = this.player.getVisibleStars();
-
-            var byPlayer = {};
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                for (var playerId in star.fleets) {
-                    var playerFleets = star.fleets[playerId];
-
-                    if (!byPlayer[playerId]) {
-                        byPlayer[playerId] = [];
-                    }
-
-                    for (var j = 0; j < playerFleets.length; j++) {
-                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
-                    }
-                }
-            }
-
-            return byPlayer;
-        };
-
-        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
-            var playerIsImmobile = player.isIndependent;
-
-            var influenceByStar = {};
-
-            var stars = this.player.getRevealedStars();
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-
-                if (defenceBuildingStrengths[player.id]) {
-                    if (!isFinite(influenceByStar[star.id])) {
-                        influenceByStar[star.id] = 0;
-                    }
-                    ;
-
-                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
-                }
-            }
-
-            var fleets = this.getVisibleFleetsByPlayer()[player.id];
-
-            function getDistanceFalloff(distance) {
-                return 1 / (distance + 1);
-            }
-
-            for (var i = 0; i < fleets.length; i++) {
-                var fleet = fleets[i];
-                var strength = this.evaluateFleetStrength(fleet);
-                var location = fleet.location;
-
-                var range = fleet.getMinMaxMovePoints();
-                var turnsToCheck = 2;
-
-                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
-
-                inFleetRange[0] = [location];
-
-                for (var distance in inFleetRange) {
-                    var numericDistance = parseInt(distance);
-                    var turnsToReach = Math.floor((numericDistance - 1) / range);
-                    if (turnsToReach < 0)
-                        turnsToReach = 0;
-                    var distanceFalloff = getDistanceFalloff(turnsToReach);
-                    var adjustedStrength = strength * distanceFalloff;
-
-                    for (var j = 0; j < inFleetRange[distance].length; j++) {
-                        var star = inFleetRange[distance][j];
-
-                        if (!isFinite(influenceByStar[star.id])) {
-                            influenceByStar[star.id] = 0;
-                        }
-                        ;
-
-                        influenceByStar[star.id] += adjustedStrength;
-                    }
-                }
-            }
-
-            return influenceByStar;
-        };
-        return MapEvaluator;
-    })();
-    Rance.MapEvaluator = MapEvaluator;
-})(Rance || (Rance = {}));
-/// <reference path="galaxymap.ts"/>
-/// <reference path="game.ts"/>
-/// <reference path="mapevaluator.ts"/>
-var Rance;
-(function (Rance) {
-    var ObjectivesAI = (function () {
-        function ObjectivesAI(mapEvaluator, game) {
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.game = game;
-        }
-        ObjectivesAI.prototype.getDesireToExpand = function () {
-            var neighboringStars = this.player.getNeighboringStars();
-
-            var independentNeighbors = neighboringStars.filter(function (star) {
-                return star.owner.isIndependent;
-            });
-
-            if (independentNeighbors.length <= 0) {
-                return 0;
-            }
-
-            var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
-            var minDesiredStars = starsPerPlayer / 2;
-
-            var desire = minDesiredStars / this.player.controlledLocations.length;
-            desire = Rance.clamp(desire, 0, 1);
-
-            return desire;
-        };
-        return ObjectivesAI;
-    })();
-    Rance.ObjectivesAI = ObjectivesAI;
-})(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 /// <reference path="eventmanager.ts"/>
 /// <reference path="fleet.ts" />
@@ -14181,6 +13776,462 @@ var Rance;
     }
     Rance.getAllBorderEdgesByStar = getAllBorderEdgesByStar;
 })(Rance || (Rance = {}));
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../player.ts"/>
+var Rance;
+(function (Rance) {
+    Rance.defaultEvaluationParameters = {
+        starDesirability: {
+            neighborRange: 1,
+            neighborWeight: 0.5,
+            totalIncomeWeight: 1,
+            baseIncomeWeight: 0.5,
+            infrastructureWeight: 1,
+            productionWeight: 1
+        }
+    };
+
+    var MapEvaluator = (function () {
+        function MapEvaluator(map, player) {
+            this.map = map;
+            this.player = player;
+
+            this.evaluationParameters = Rance.defaultEvaluationParameters;
+        }
+        MapEvaluator.prototype.evaluateStarIncome = function (star) {
+            var evaluation = 0;
+
+            evaluation += star.baseIncome;
+            evaluation += (star.getIncome() - star.baseIncome) * (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
+            var evaluation = 0;
+
+            for (var category in star.buildings) {
+                for (var i = 0; i < star.buildings[category].length; i++) {
+                    evaluation += star.buildings[category][i].totalCost;
+                }
+            }
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarProduction = function (star) {
+            var evaluation = 0;
+
+            evaluation += star.getItemManufactoryLevel();
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
+            var evaluation = 0;
+
+            var getDistanceFalloff = function (distance) {
+                return 1 / (distance + 1);
+            };
+            var inRange = star.getLinkedInRange(range).byRange;
+
+            for (var distanceString in inRange) {
+                var stars = inRange[distanceString];
+                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+
+                for (var i = 0; i < stars.length; i++) {
+                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
+                }
+            }
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+
+            evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
+            evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+            evaluation += this.evaluateStarProduction(star) * p.productionWeight;
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+
+            evaluation += this.evaluateIndividualStarDesirability(star);
+            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) * p.neighborWeight;
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
+            var stars = this.player.getNeighboringStars();
+            stars = stars.filter(function (star) {
+                return star.owner.isIndependent;
+            });
+
+            var evaluationByStar = {};
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                var desirability = this.evaluateStarDesirability(star);
+                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+
+                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
+
+                evaluationByStar[star.id] = {
+                    star: star,
+                    desirability: desirability,
+                    independentStrength: independentStrength,
+                    ownInfluence: ownInfluenceAtStar
+                };
+            }
+
+            return evaluationByStar;
+        };
+
+        MapEvaluator.prototype.scoreExpansionTargets = function (evaluations) {
+            var scores = [];
+
+            for (var starId in evaluations) {
+                var evaluation = evaluations[starId];
+
+                var easeOfCapturing = Math.log(evaluation.ownInfluence / evaluation.independentStrength);
+
+                var score = evaluation.desirability * easeOfCapturing;
+
+                scores.push({
+                    star: evaluation.star,
+                    score: score
+                });
+            }
+
+            return scores.sort(function (a, b) {
+                return b.score - a.score;
+            });
+        };
+
+        MapEvaluator.prototype.getScoredExpansionTargets = function () {
+            var evaluations = this.evaluateImmediateExpansionTargets();
+            var scores = this.scoreExpansionTargets(evaluations);
+
+            return scores;
+        };
+
+        MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
+            var hostilePlayers = star.getEnemyFleetOwners(this.player);
+
+            var shipsByEnemy = {};
+
+            for (var i = 0; i < hostilePlayers.length; i++) {
+                shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+            }
+
+            return shipsByEnemy;
+        };
+
+        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+            var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
+
+            var strengthByEnemy = {};
+
+            for (var playerId in hostileShipsByPlayer) {
+                var strength = 0;
+
+                for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
+                    strength += hostileShipsByPlayer[playerId][i].currentStrength;
+                }
+
+                strengthByEnemy[playerId] = strength;
+            }
+
+            return strengthByEnemy;
+        };
+
+        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+
+            var total = 0;
+
+            for (var playerId in byPlayer) {
+                // TODO
+                var isIndependent = false;
+                for (var i = 0; i < this.map.game.independents.length; i++) {
+                    if (this.map.game.independents[i].id === parseInt(playerId)) {
+                        isIndependent = true;
+                        break;
+                    }
+                }
+
+                // END
+                if (isIndependent) {
+                    total += byPlayer[playerId];
+                } else {
+                    continue;
+                }
+            }
+
+            return total;
+        };
+
+        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+
+            var total = 0;
+
+            for (var playerId in byPlayer) {
+                total += byPlayer[playerId];
+            }
+
+            return total;
+        };
+
+        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
+            var byPlayer = {};
+
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+
+                if (!byPlayer[building.controller.id]) {
+                    byPlayer[building.controller.id] = 0;
+                }
+
+                byPlayer[building.controller.id] += building.totalCost;
+            }
+
+            return byPlayer;
+        };
+
+        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
+            var strength = 0;
+
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+
+                if (building.controller.id === this.player.id)
+                    continue;
+
+                strength += building.totalCost;
+            }
+
+            return strength;
+        };
+
+        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
+            return fleet.getTotalStrength().current;
+        };
+
+        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
+            var stars = this.player.getVisibleStars();
+
+            var byPlayer = {};
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                for (var playerId in star.fleets) {
+                    var playerFleets = star.fleets[playerId];
+
+                    if (!byPlayer[playerId]) {
+                        byPlayer[playerId] = [];
+                    }
+
+                    for (var j = 0; j < playerFleets.length; j++) {
+                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+                    }
+                }
+            }
+
+            return byPlayer;
+        };
+
+        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
+            var playerIsImmobile = player.isIndependent;
+
+            var influenceByStar = {};
+
+            var stars = this.player.getRevealedStars();
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+
+                if (defenceBuildingStrengths[player.id]) {
+                    if (!isFinite(influenceByStar[star.id])) {
+                        influenceByStar[star.id] = 0;
+                    }
+                    ;
+
+                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
+                }
+            }
+
+            var fleets = this.getVisibleFleetsByPlayer()[player.id];
+
+            function getDistanceFalloff(distance) {
+                return 1 / (distance + 1);
+            }
+
+            for (var i = 0; i < fleets.length; i++) {
+                var fleet = fleets[i];
+                var strength = this.evaluateFleetStrength(fleet);
+                var location = fleet.location;
+
+                var range = fleet.getMinMaxMovePoints();
+                var turnsToCheck = 2;
+
+                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+
+                inFleetRange[0] = [location];
+
+                for (var distance in inFleetRange) {
+                    var numericDistance = parseInt(distance);
+                    var turnsToReach = Math.floor((numericDistance - 1) / range);
+                    if (turnsToReach < 0)
+                        turnsToReach = 0;
+                    var distanceFalloff = getDistanceFalloff(turnsToReach);
+                    var adjustedStrength = strength * distanceFalloff;
+
+                    for (var j = 0; j < inFleetRange[distance].length; j++) {
+                        var star = inFleetRange[distance][j];
+
+                        if (!isFinite(influenceByStar[star.id])) {
+                            influenceByStar[star.id] = 0;
+                        }
+                        ;
+
+                        influenceByStar[star.id] += adjustedStrength;
+                    }
+                }
+            }
+
+            return influenceByStar;
+        };
+        return MapEvaluator;
+    })();
+    Rance.MapEvaluator = MapEvaluator;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Request = (function () {
+        function Request(priority, goals) {
+            this.priority = priority;
+            this.goals = goals;
+        }
+        Request.prototype.getGoalsByScore = function () {
+            return this.goals.sort(function (a, b) {
+                return b.score - a.score;
+            });
+        };
+        return Request;
+    })();
+    Rance.Request = Request;
+})(Rance || (Rance = {}));
+/// <reference path="request.ts"/>
+/// <reference path="../star.ts"/>
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+/*
+GS AI           |
+expansivity   |
+v
+objectives ai
+desire to expand
+*/
+var Rance;
+(function (Rance) {
+    var ExpansionRequest = (function (_super) {
+        __extends(ExpansionRequest, _super);
+        function ExpansionRequest(priority, goals) {
+            _super.call(this, priority, goals);
+        }
+        return ExpansionRequest;
+    })(Rance.Request);
+    Rance.ExpansionRequest = ExpansionRequest;
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../game.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="expansionrequest.ts"/>
+// figure out what we want to do
+//   various short to medium term goals are assigned priorities
+//
+// evaluate current requests if any
+// send new requests
+/*
+evaluate expansion as most important nearby goal
+*/
+var Rance;
+(function (Rance) {
+    var ObjectivesAI = (function () {
+        function ObjectivesAI(mapEvaluator, game) {
+            this.indexedObjectives = {};
+            this.objectives = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.game = game;
+        }
+        ObjectivesAI.prototype.processObjectives = function () {
+        };
+
+        ObjectivesAI.prototype.getDesireToExpand = function () {
+            var neighboringStars = this.player.getNeighboringStars();
+
+            var independentNeighbors = neighboringStars.filter(function (star) {
+                return star.owner.isIndependent;
+            });
+
+            if (independentNeighbors.length <= 0) {
+                return 0;
+            }
+
+            var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
+            var minDesiredStars = starsPerPlayer / 2;
+
+            var desire = minDesiredStars / this.player.controlledLocations.length;
+            desire = Rance.clamp(desire, 0, 1);
+
+            return desire;
+        };
+        ObjectivesAI.prototype.getShipsNeededToExpand = function () {
+            var expansionEvaluations = this.mapEvaluator.evaluateImmediateExpansionTargets();
+            var expansionScores = this.mapEvaluator.scoreExpansionTargets(expansionEvaluations);
+
+            var bestStar = expansionScores[0].star;
+            var bestStarEvaluation = expansionEvaluations[bestStar.id];
+            var independentStrengthAtBestStar = bestStarEvaluation.independentStrength;
+            var ownInfluenceAtBestStar = bestStarEvaluation.ownInfluence;
+
+            return Math.round((1000 + independentStrengthAtBestStar - ownInfluenceAtBestStar) / 500);
+        };
+        return ObjectivesAI;
+    })();
+    Rance.ObjectivesAI = ObjectivesAI;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Personality = (function () {
+        function Personality(personalityData) {
+            for (var property in personalityData) {
+                this[property] = personalityData[property];
+            }
+        }
+        return Personality;
+    })();
+    Rance.Personality = Personality;
+})(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -14210,10 +14261,12 @@ var Rance;
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
 /// <reference path="pathfindingarrow.ts"/>
 /// <reference path="borderpolygon.ts"/>
+/// <reference path="mapai/mapevaluator.ts"/>
+/// <reference path="mapai/objectivesai.ts"/>
+/// <reference path="mapai/personality.ts"/>
+///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 var a, b, c;
 var Rance;
@@ -14234,7 +14287,7 @@ var Rance;
 
             this.seed = Math.random();
 
-            //this.seed = 0.25154878688044846;
+            //this.seed = 0.14325129357166588;
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
