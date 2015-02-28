@@ -111,16 +111,18 @@ vec3 nebula(vec2 pos, out float volume)
   return c * volume;
 }
 
-float star(vec2 pos)
+float star(vec2 pos, float volume)
 {
   float genValue = hash(pos);
 
+  genValue -= volume * 0.01;
+
   float color = 0.0;
 
-  if (genValue < 0.005)
+  if (genValue < 0.001)
   {
     float r = hash(pos + vec2(4.20, 6.9));
-    color = r;// * (0.1 * sin(time * (r * 5.0) + 720.0 * r) + 0.75);
+    color = r;
     return color;
   }
   else
@@ -135,7 +137,7 @@ void main(void)
   pos += seed;
   float volume = 0.0;
   vec3 c = nebula(pos, volume);
-  c += vec3(star(pos));
+  c += vec3(star(pos, volume));
 
   gl_FragColor = vec4(c, 1.0);
 }
