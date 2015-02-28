@@ -84,16 +84,10 @@ module Rance
         self.centerOnPosition(e.data);
       });
 
-      this.listeners["registerOnMoveCallback"] =
-        eventManager.addEventListener("registerOnMoveCallback", function(e)
-      {
-        self.onMoveCallbacks.push(e.data);
-      });
-      this.listeners["registerOnZoomCallback"] =
-        eventManager.addEventListener("registerOnZoomCallback", function(e)
-      {
-        self.onZoomCallbacks.push(e.data);
-      });
+      
+      eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
+      
+      eventManager.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
     }
 
     /**

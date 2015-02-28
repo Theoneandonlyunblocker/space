@@ -107,12 +107,22 @@ module Rance
       this.listeners["renderLayer"] =
         eventManager.addEventListener("renderLayer", function(e)
       {
-        
         self.setLayerAsDirty(e.data);
       });
 
-      eventManager.dispatchEvent( "registerOnMoveCallback", this.updateShaderOffsets.bind(this) );
-      eventManager.dispatchEvent( "registerOnZoomCallback", this.updateShaderZoom.bind(this) );
+      var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
+      var boundUpdateZoom = this.updateShaderZoom.bind(this);
+
+      this.listeners["registerOnMoveCallback"] =
+        eventManager.addEventListener("registerOnMoveCallback", function(e)
+        {
+          e.data.push(boundUpdateOffsets);
+        });
+      this.listeners["registerOnZoomCallback"] =
+        eventManager.addEventListener("registerOnZoomCallback", function(e)
+        {
+          e.data.push(boundUpdateZoom);
+        });
     }
     setPlayer(player: Player)
     {
