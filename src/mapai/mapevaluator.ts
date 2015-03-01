@@ -188,6 +188,7 @@ module Rance
         scores.push(
         {
           star: evaluation.star,
+          evaluation: evaluation,
           score: score
         });
       }

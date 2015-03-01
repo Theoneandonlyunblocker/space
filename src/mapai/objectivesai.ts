@@ -1,20 +1,28 @@
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="mapevaluator.ts"/>
-/// <reference path="expansionrequest.ts"/>
-
-// figure out what we want to do
-//   various short to medium term goals are assigned priorities
-//   
-// evaluate current requests if any
-// send new requests
-
+/// <reference path="objective.ts"/>
 
 /*
-evaluate expansion as most important nearby goal
+-- objectives ai
+get expansion targets
+create expansion objectives with priority based on score
+add flat amount of priority if objective is ongoing
+sort objectives by priority
+while under max active expansion objectives
+  make highest priority expansion objective active
 
+-- fronts ai
+divide available units to fronts based on priority
+make requests for extra units if needed
+muster units at muster location
+when requested units arrive
+  move units to target location
+  execute action
+
+-- economy ai
+build units near request target
  */
-
 
 module Rance
 {
@@ -25,11 +33,11 @@ module Rance
     player: Player;
     game: Game;
 
-    indexedObjectives:
+    objectivesByType =
     {
-      [objectiveType: string]: any;
-    } = {};
-    objectives: any[] = [];
+      expansion: []
+    };
+    objectives: Objective[] = [];
 
     maxActiveExpansionRequests: number;
 
@@ -41,44 +49,57 @@ module Rance
       this.game = game;
     }
 
-    processObjectives()
+    getExpansionObjectives()
     {
-
-    }
-
-    getDesireToExpand()
-    {
-      var neighboringStars = this.player.getNeighboringStars();
-
-      var independentNeighbors = neighboringStars.filter(function(star)
+      var objectivesByTarget:
       {
-        return star.owner.isIndependent;
-      });
+        [starId: number]: Objective;
+      } = {};
 
-      if (independentNeighbors.length <= 0)
+      var allObjectives: Objective[] = [];
+
+      for (var i = 0; i < this.objectivesByType.expansion.length; i++)
       {
-        return 0;
+        var _o = this.objectivesByType.expansion[i];
+        _o.isOngoing = true;
+        objectivesByTarget[_o.target.id] = _o;
       }
 
-      var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
-      var minDesiredStars = starsPerPlayer / 2;
+      var minScore, maxScore;
 
-      var desire = minDesiredStars / this.player.controlledLocations.length;
-      desire = clamp(desire, 0, 1);
+      var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
 
-      return desire;
+      for (var i = 0; i < expansionScores.length; i++)
+      {
+        var score = expansionScores[i].score;
+        minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+        maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+      }
+
+      for (var i = 0; i < expansionScores.length; i++)
+      {
+        var star = expansionScores[i].star;
+        var relativeScore = getRelativeValue(expansionScores[i].score, minScore, maxScore);
+        if (objectivesByTarget[star.id])
+        {
+          objectivesByTarget[star.id].priority = relativeScore;
+        }
+        else
+        {
+          objectivesByTarget[star.id] = new Objective("expansion", relativeScore, star, expansionScores[i]);
+        }
+
+        allObjectives.push(objectivesByTarget[star.id]);
+      }
+
+      return allObjectives;
     }
-    getShipsNeededToExpand()
+
+    processExpansionObjectives(objectives: Objective[])
     {
-      var expansionEvaluations = this.mapEvaluator.evaluateImmediateExpansionTargets();
-      var expansionScores = this.mapEvaluator.scoreExpansionTargets(expansionEvaluations);
+      var activeObjectives: Objective[] = [];
 
-      var bestStar = expansionScores[0].star;
-      var bestStarEvaluation = expansionEvaluations[bestStar.id];
-      var independentStrengthAtBestStar = bestStarEvaluation.independentStrength;
-      var ownInfluenceAtBestStar = bestStarEvaluation.ownInfluence;
 
-      return Math.round((1000 + independentStrengthAtBestStar - ownInfluenceAtBestStar) / 500);
     }
   }
 }

@@ -2182,25 +2182,14 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface IRequestGoal {
-        score: number;
-    }
-    class Request {
-        public priority: number;
-        public goals: IRequestGoal[];
-        constructor(priority: number, goals: IRequestGoal[]);
-        public getGoalsByScore(): IRequestGoal[];
-    }
-}
-declare module Rance {
-    interface IExpansionGoal extends Rance.IRequestGoal {
-        score: number;
-        target: Rance.Star;
-    }
-    class ExpansionRequest extends Rance.Request {
-        public priority: number;
-        public goals: IExpansionGoal[];
-        constructor(priority: number, goals: IExpansionGoal[]);
+    class Objective {
+        public id: number;
+        public type: string;
+        private _basePriority;
+        public priority : number;
+        public isOngoing: boolean;
+        public target: Rance.Star;
+        constructor(type: string, priority: number, target: Rance.Star);
     }
 }
 declare module Rance {
@@ -2209,14 +2198,17 @@ declare module Rance {
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
         public game: Rance.Game;
-        public indexedObjectives: {
-            [objectiveType: string]: any;
+        public objectivesByType: {
+            expansion: any[];
         };
-        public objectives: any[];
+        public objectives: Rance.Objective[];
         public maxActiveExpansionRequests: number;
         constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
+        public addObjective(objective: Rance.Objective): void;
+        public setOngoingObjectives(): void;
         public processObjectives(): void;
-        public getDesireToExpand(): number;
+        public getExpansionObjectives(): Rance.Objective[];
+        public processExpansionObjectives(objectives: Rance.Objective[]): void;
         public getShipsNeededToExpand(): number;
     }
 }
@@ -2248,6 +2240,7 @@ declare module Rance {
         unit: number;
         building: number;
         sector: number;
+        objective: number;
     };
     class App {
         public seed: any;

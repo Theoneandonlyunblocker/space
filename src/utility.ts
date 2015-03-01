@@ -334,6 +334,10 @@ module Rance
   }
   export function getRelativeValue(value: number, min: number, max: number)
   {
-    return (value - min) / (max - min);
+    if (min === max) return 1;
+    else
+    {
+      return (value - min) / (max - min);
+    }
   }
 }

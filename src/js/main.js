@@ -4503,7 +4503,11 @@ var Rance;
     }
     Rance.shuffleArray = shuffleArray;
     function getRelativeValue(value, min, max) {
-        return (value - min) / (max - min);
+        if (min === max)
+            return 1;
+        else {
+            return (value - min) / (max - min);
+        }
     }
     Rance.getRelativeValue = getRelativeValue;
 })(Rance || (Rance = {}));
@@ -12393,7 +12397,7 @@ var Rance;
             "    smoothstep(highlightA, highlightB, abs(on.x)+abs(on.y)) );",
             "",
             "",
-            "  return clamp(c * volume, 0.0, 1.0);",
+            "  return c * volume;",
             "}",
             "",
             "float star(vec2 pos, float volume)",
@@ -13908,6 +13912,7 @@ var Rance;
 
                 scores.push({
                     star: evaluation.star,
+                    evaluation: evaluation,
                     score: score
                 });
             }
@@ -14118,93 +14123,129 @@ var Rance;
     })();
     Rance.MapEvaluator = MapEvaluator;
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var Request = (function () {
-        function Request(priority, goals) {
-            this.priority = priority;
-            this.goals = goals;
-        }
-        Request.prototype.getGoalsByScore = function () {
-            return this.goals.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        };
-        return Request;
-    })();
-    Rance.Request = Request;
-})(Rance || (Rance = {}));
-/// <reference path="request.ts"/>
 /// <reference path="../star.ts"/>
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 /*
-GS AI           |
-expansivity   |
-v
-objectives ai
-desire to expand
+objectives:
+defend area
+attack player at area
+expand
+processing objectives
 */
 var Rance;
 (function (Rance) {
-    var ExpansionRequest = (function (_super) {
-        __extends(ExpansionRequest, _super);
-        function ExpansionRequest(priority, goals) {
-            _super.call(this, priority, goals);
+    var Objective = (function () {
+        function Objective(type, priority, target) {
+            this.isOngoing = false;
+            this.id = Rance.idGenerators.objective++;
+
+            this.type = type;
+            this.priority = priority;
+            this.target = target;
         }
-        return ExpansionRequest;
-    })(Rance.Request);
-    Rance.ExpansionRequest = ExpansionRequest;
+        Object.defineProperty(Objective.prototype, "priority", {
+            get: function () {
+                return this.isOngoing ? this._basePriority * 1.05 : this._basePriority;
+            },
+            set: function (priority) {
+                this._basePriority = priority;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Objective;
+    })();
+    Rance.Objective = Objective;
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="mapevaluator.ts"/>
-/// <reference path="expansionrequest.ts"/>
-// figure out what we want to do
-//   various short to medium term goals are assigned priorities
-//
-// evaluate current requests if any
-// send new requests
+/// <reference path="objective.ts"/>
 /*
-evaluate expansion as most important nearby goal
+-- objectives ai
+get expansion targets
+create expansion objectives with priority based on score
+add flat amount of priority if objective is ongoing
+sort objectives by priority
+while under max active expansion objectives
+make highest priority expansion objective active
+-- fronts ai
+divide available units to fronts based on priority
+make requests for extra units if needed
+muster units at muster location
+when requested units arrive
+move units to target location
+execute action
+-- economy ai
+build units near request target
 */
 var Rance;
 (function (Rance) {
     var ObjectivesAI = (function () {
         function ObjectivesAI(mapEvaluator, game) {
-            this.indexedObjectives = {};
+            this.objectivesByType = {
+                expansion: []
+            };
             this.objectives = [];
             this.mapEvaluator = mapEvaluator;
             this.map = mapEvaluator.map;
             this.player = mapEvaluator.player;
             this.game = game;
         }
-        ObjectivesAI.prototype.processObjectives = function () {
+        ObjectivesAI.prototype.addObjective = function (objective) {
+            this.objectivesByType[objective.type].push(objective);
+            this.objectives.push(objective);
         };
 
-        ObjectivesAI.prototype.getDesireToExpand = function () {
-            var neighboringStars = this.player.getNeighboringStars();
+        ObjectivesAI.prototype.setOngoingObjectives = function () {
+            for (var i = 0; i < this.objectives.length; i++) {
+                this.objectives[i].isOngoing = true;
+            }
+        };
 
-            var independentNeighbors = neighboringStars.filter(function (star) {
-                return star.owner.isIndependent;
-            });
+        ObjectivesAI.prototype.processObjectives = function () {
+            this.setOngoingObjectives();
+        };
 
-            if (independentNeighbors.length <= 0) {
-                return 0;
+        ObjectivesAI.prototype.getExpansionObjectives = function () {
+            var objectivesByTarget = {};
+
+            var allObjectives = [];
+
+            for (var i = 0; i < this.objectivesByType.expansion.length; i++) {
+                var _o = this.objectivesByType.expansion[i];
+                objectivesByTarget[_o.target.id] = _o;
             }
 
-            var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
-            var minDesiredStars = starsPerPlayer / 2;
+            var minScore, maxScore;
 
-            var desire = minDesiredStars / this.player.controlledLocations.length;
-            desire = Rance.clamp(desire, 0, 1);
+            var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
 
-            return desire;
+            for (var i = 0; i < expansionScores.length; i++) {
+                var score = expansionScores[i].score;
+                minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+                maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+            }
+
+            for (var i = 0; i < expansionScores.length; i++) {
+                var star = expansionScores[i].star;
+                var relativeScore = Rance.getRelativeValue(expansionScores[i].score, minScore, maxScore);
+                if (objectivesByTarget[star.id]) {
+                    objectivesByTarget[star.id].priority = relativeScore;
+                } else {
+                    objectivesByTarget[star.id] = new Rance.Objective("expansion", relativeScore, star);
+                }
+
+                allObjectives.push(objectivesByTarget[star.id]);
+            }
+
+            return allObjectives;
         };
+
+        ObjectivesAI.prototype.processExpansionObjectives = function (objectives) {
+            for (var i = 0; i < objectives.length; i++) {
+            }
+        };
+
         ObjectivesAI.prototype.getShipsNeededToExpand = function () {
             var expansionEvaluations = this.mapEvaluator.evaluateImmediateExpansionTargets();
             var expansionScores = this.mapEvaluator.scoreExpansionTargets(expansionEvaluations);
@@ -14278,7 +14319,8 @@ var Rance;
         star: 0,
         unit: 0,
         building: 0,
-        sector: 0
+        sector: 0,
+        objective: 0
     };
 
     var App = (function () {

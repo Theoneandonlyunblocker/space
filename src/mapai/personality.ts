@@ -9,7 +9,7 @@ module Rance
   {
     expansiveness: number;
     aggressiveness: number;
-    
+
     constructor(personalityData: IPersonalityData)
     {
       for (var property in personalityData)
