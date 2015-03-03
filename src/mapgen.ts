@@ -766,9 +766,9 @@ module Rance
     setResources()
     {
       // TODO
-      var getResourceDistributionFlags = function(region: string)
+      var getResourceDistributionFlags = function(region: Region)
       {
-        switch (region)
+        switch (region.id)
         {
           case "center":
           {
@@ -779,6 +779,27 @@ module Rance
             return ["common"];
           }
         }
+      }
+
+      var getResourcesForDistributionGroups = function(groupsToMatch: string[])
+      {
+        var allResources = Templates.Resources;
+        var matchingResources: Templates.IResourceTemplate[] = [];
+
+        for (var resourceType in allResources)
+        {
+          var resourceGroups = allResources[resourceType].distributionGroups;
+          for (var i = 0; i < resourceGroups.length; i++)
+          {
+            if (groupsToMatch.indexOf(resourceGroups[i]) !== -1)
+            {
+              matchingResources.push(allResources[resourceType]);
+              break;
+            }
+          }
+        }
+
+        return matchingResources;
       }
 
       for (var sectorId in this.sectors)
@@ -797,7 +818,48 @@ module Rance
         {
           resourceDistributionFlags = resourceDistributionFlags.concat(
             getResourceDistributionFlags(majorityRegions[i]));
+
+          for (var j = 0; j < majorityRegions[i].stars.length; j++)
+          {
+            var star = majorityRegions[i].stars[j];
+            if (star.resource)
+            {
+              resourcesAlreadyPresentInRegions[star.resource.type] = true;
+            }
+          }
         }
+
+
+        var candidateResources =
+          getResourcesForDistributionGroups(resourceDistributionFlags);
+
+        var nonDuplicateResources = candidateResources.filter(function(resource)
+        {
+          return !resourcesAlreadyPresentInRegions[resource.type];
+        });
+
+        if (nonDuplicateResources.length > 0)
+        {
+          candidateResources = nonDuplicateResources;
+        }
+
+        var selectedResource: Templates.IResourceTemplate = null;
+
+        // TODO
+        while (!selectedResource)
+        {
+          var randomResource = getRandomArrayItem(candidateResources);
+          if (Math.random() < randomResource.rarity)
+          {
+            selectedResource = randomResource;
+          }
+        }
+
+        var star = getRandomArrayItem(sector.stars);
+
+        star.resource = selectedResource;
+        sector.resourceType = selectedResource;
+        sector.resourceLocation = star;
       }
     }
   }

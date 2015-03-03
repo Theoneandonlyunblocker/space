@@ -14,40 +14,40 @@ module Rance
     }
     export module Resources
     {
-      export var testResource1
+      export var testResource1: IResourceTemplate =
       {
         type: "testResource1",
         displayName: "Test Resource 1",
         rarity: 1,
         distributionGroups: ["common"]
       }
-      export var testResource2
+      export var testResource2: IResourceTemplate =
       {
         type: "testResource2",
         displayName: "Test Resource 2",
         rarity: 1,
         distributionGroups: ["common"]
       }
-      export var testResource3
+      export var testResource3: IResourceTemplate =
       {
         type: "testResource3",
         displayName: "Test Resource 3",
         rarity: 1,
         distributionGroups: ["common"]
       }
-      export var testResource4
+      export var testResource4: IResourceTemplate =
       {
         type: "testResource4",
         displayName: "Test Resource 4",
         rarity: 1,
-        distributionGroups: ["common", "rare"]
+        distributionGroups: ["rare"]
       }
-      export var testResource5
+      export var testResource5: IResourceTemplate =
       {
         type: "testResource5",
         displayName: "Test Resource 5",
         rarity: 1,
-        distributionGroups: ["common", "rare"]
+        distributionGroups: ["rare"]
       }
     }
   }

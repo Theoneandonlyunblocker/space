@@ -1,3 +1,5 @@
+/// <reference path="../data/templates/resourcetemplates.ts" />
+
 /// <reference path="star.ts" />
 /// <reference path="color.ts" />
 
@@ -8,6 +10,8 @@ module Rance
     id: number;
     stars: Star[] = [];
     color: number;
+    resourceType: Templates.IResourceTemplate;
+    resourceLocation: Star;
 
     constructor(id?: number, color?: number)
     {
@@ -55,7 +59,11 @@ module Rance
     {
       var regionsByStars:
       {
-        [regionId: string]: number;
+        [regionId: string]:
+        {
+          count: number;
+          region: Region;
+        };
       } = {};
 
       var biggestRegionStarCount = 0;
@@ -66,23 +74,27 @@ module Rance
 
         if (!regionsByStars[region.id])
         {
-          regionsByStars[region.id] = 0;
+          regionsByStars[region.id] =
+          {
+            count: 0,
+            region: region
+          }
         }
 
-        regionsByStars[region.id]++;
+        regionsByStars[region.id].count++;
 
-        if (regionsByStars[region.id] > biggestRegionStarCount)
+        if (regionsByStars[region.id].count > biggestRegionStarCount)
         {
-          biggestRegionStarCount = regionsByStars[region.id];
+          biggestRegionStarCount = regionsByStars[region.id].count;
         }
       }
 
       var majorityRegions = [];
       for (var regionId in regionsByStars)
       {
-        if (regionsByStars[regionId] === biggestRegionStarCount)
+        if (regionsByStars[regionId].count >= biggestRegionStarCount)
         {
-          majorityRegions.push(regionId);
+          majorityRegions.push(regionsByStars[regionId].region);
         }
       }
 

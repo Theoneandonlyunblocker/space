@@ -1,3 +1,5 @@
+/// <reference path="../data/templates/resourcetemplates.ts" />
+
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
@@ -28,6 +30,7 @@ module Rance
     owner: Player;
 
     sector: Sector;
+    resource: Templates.IResourceTemplate;
     
     fleets:
     {

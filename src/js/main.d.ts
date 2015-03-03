@@ -459,6 +459,23 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        interface IResourceTemplate {
+            type: string;
+            displayName: string;
+            rarity: number;
+            distributionGroups: string[];
+        }
+        module Resources {
+            var testResource1: IResourceTemplate;
+            var testResource2: IResourceTemplate;
+            var testResource3: IResourceTemplate;
+            var testResource4: IResourceTemplate;
+            var testResource5: IResourceTemplate;
+        }
+    }
+}
+declare module Rance {
     interface Point {
         x: number;
         y: number;
@@ -599,6 +616,8 @@ declare module Rance {
         public id: number;
         public stars: Rance.Star[];
         public color: number;
+        public resourceType: Rance.Templates.IResourceTemplate;
+        public resourceLocation: Rance.Star;
         constructor(id?: number, color?: number);
         public addStar(star: Rance.Star): void;
         public getNeighboringStars(): Rance.Star[];
@@ -762,6 +781,7 @@ declare module Rance {
         public name: string;
         public owner: Rance.Player;
         public sector: Rance.Sector;
+        public resource: Rance.Templates.IResourceTemplate;
         public fleets: {
             [playerId: string]: Rance.Fleet[];
         };

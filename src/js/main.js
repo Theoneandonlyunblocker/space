@@ -4949,6 +4949,45 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (Templates) {
+        (function (Resources) {
+            Resources.testResource1 = {
+                type: "testResource1",
+                displayName: "Test Resource 1",
+                rarity: 1,
+                distributionGroups: ["common"]
+            };
+            Resources.testResource2 = {
+                type: "testResource2",
+                displayName: "Test Resource 2",
+                rarity: 1,
+                distributionGroups: ["common"]
+            };
+            Resources.testResource3 = {
+                type: "testResource3",
+                displayName: "Test Resource 3",
+                rarity: 1,
+                distributionGroups: ["common"]
+            };
+            Resources.testResource4 = {
+                type: "testResource4",
+                displayName: "Test Resource 4",
+                rarity: 1,
+                distributionGroups: ["rare"]
+            };
+            Resources.testResource5 = {
+                type: "testResource5",
+                displayName: "Test Resource 5",
+                rarity: 1,
+                distributionGroups: ["rare"]
+            };
+        })(Templates.Resources || (Templates.Resources = {}));
+        var Resources = Templates.Resources;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
         (function (Buildings) {
             Buildings.sectorCommand = {
                 type: "sectorCommand",
@@ -5653,6 +5692,7 @@ var Rance;
     }
     Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
+/// <reference path="../data/templates/resourcetemplates.ts" />
 /// <reference path="star.ts" />
 /// <reference path="color.ts" />
 var Rance;
@@ -5699,20 +5739,23 @@ var Rance;
                 var region = star.region;
 
                 if (!regionsByStars[region.id]) {
-                    regionsByStars[region.id] = 0;
+                    regionsByStars[region.id] = {
+                        count: 0,
+                        region: region
+                    };
                 }
 
-                regionsByStars[region.id]++;
+                regionsByStars[region.id].count++;
 
-                if (regionsByStars[region.id] > biggestRegionStarCount) {
-                    biggestRegionStarCount = regionsByStars[region.id];
+                if (regionsByStars[region.id].count > biggestRegionStarCount) {
+                    biggestRegionStarCount = regionsByStars[region.id].count;
                 }
             }
 
             var majorityRegions = [];
             for (var regionId in regionsByStars) {
-                if (regionsByStars[regionId] === biggestRegionStarCount) {
-                    majorityRegions.push(regionId);
+                if (regionsByStars[regionId].count >= biggestRegionStarCount) {
+                    majorityRegions.push(regionsByStars[regionId].region);
                 }
             }
 
@@ -5897,6 +5940,7 @@ var Rance;
     })();
     Rance.ItemGenerator = ItemGenerator;
 })(Rance || (Rance = {}));
+/// <reference path="../data/templates/resourcetemplates.ts" />
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
@@ -10921,7 +10965,7 @@ var Rance;
         MapGen.prototype.setResources = function () {
             // TODO
             var getResourceDistributionFlags = function (region) {
-                switch (region) {
+                switch (region.id) {
                     case "center": {
                         return ["rare"];
                     }
@@ -10929,6 +10973,23 @@ var Rance;
                         return ["common"];
                     }
                 }
+            };
+
+            var getResourcesForDistributionGroups = function (groupsToMatch) {
+                var allResources = Rance.Templates.Resources;
+                var matchingResources = [];
+
+                for (var resourceType in allResources) {
+                    var resourceGroups = allResources[resourceType].distributionGroups;
+                    for (var i = 0; i < resourceGroups.length; i++) {
+                        if (groupsToMatch.indexOf(resourceGroups[i]) !== -1) {
+                            matchingResources.push(allResources[resourceType]);
+                            break;
+                        }
+                    }
+                }
+
+                return matchingResources;
             };
 
             for (var sectorId in this.sectors) {
@@ -10941,7 +11002,39 @@ var Rance;
 
                 for (var i = 0; i < majorityRegions.length; i++) {
                     resourceDistributionFlags = resourceDistributionFlags.concat(getResourceDistributionFlags(majorityRegions[i]));
+
+                    for (var j = 0; j < majorityRegions[i].stars.length; j++) {
+                        var star = majorityRegions[i].stars[j];
+                        if (star.resource) {
+                            resourcesAlreadyPresentInRegions[star.resource.type] = true;
+                        }
+                    }
                 }
+
+                var candidateResources = getResourcesForDistributionGroups(resourceDistributionFlags);
+
+                var nonDuplicateResources = candidateResources.filter(function (resource) {
+                    return !resourcesAlreadyPresentInRegions[resource.type];
+                });
+
+                if (nonDuplicateResources.length > 0) {
+                    candidateResources = nonDuplicateResources;
+                }
+
+                var selectedResource = null;
+
+                while (!selectedResource) {
+                    var randomResource = Rance.getRandomArrayItem(candidateResources);
+                    if (Math.random() < randomResource.rarity) {
+                        selectedResource = randomResource;
+                    }
+                }
+
+                var star = Rance.getRandomArrayItem(sector.stars);
+
+                star.resource = selectedResource;
+                sector.resourceType = selectedResource;
+                sector.resourceLocation = star;
             }
         };
         return MapGen;
@@ -11566,6 +11659,43 @@ var Rance;
                     return doc;
                 }
             };
+            this.layers["resources"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (!star.resource)
+                            continue;
+
+                        var text = new PIXI.Text(star.resource.displayName, {
+                            fill: "#FFFFFF",
+                            stroke: "#000000",
+                            strokeThickness: 2
+                        });
+
+                        text.x = star.x;
+                        text.x -= text.width / 2;
+                        text.y = star.y + 20;
+
+                        doc.addChild(text);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
             this.layers["fleets"] = {
                 isDirty: true,
                 container: new PIXI.DisplayObjectContainer(),
@@ -11701,6 +11831,7 @@ var Rance;
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["resources"] },
                     { layer: this.layers["fleets"] }
                 ]
             };
