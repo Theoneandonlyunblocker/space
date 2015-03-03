@@ -19,5 +19,14 @@ module Rance
       this.stars.push(star);
       star.region = this;
     }
+    serialize()
+    {
+      var data: any = {};
+
+      data.id = this.id;
+      data.isFiller = this.isFiller;
+
+      return data;
+    }
   }
 }

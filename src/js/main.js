@@ -5112,6 +5112,14 @@ var Rance;
             this.stars.push(star);
             star.region = this;
         };
+        Region.prototype.serialize = function () {
+            var data = {};
+
+            data.id = this.id;
+            data.isFiller = this.isFiller;
+
+            return data;
+        };
         return Region;
     })();
     Rance.Region = Region;
@@ -5715,9 +5723,6 @@ var Rance;
             var data = {};
 
             data.id = this.id;
-            data.starIds = this.stars.map(function (star) {
-                return star.id;
-            });
             data.color = this.color;
 
             return data;
@@ -6260,18 +6265,21 @@ var Rance;
                 var star = allLinks[i];
                 var region = star.region;
 
-                if (!linksByRegion[region]) {
-                    linksByRegion[region] = [];
+                if (!linksByRegion[region.id]) {
+                    linksByRegion[region.id] = {
+                        links: [],
+                        region: region
+                    };
                 }
 
-                linksByRegion[region].push(star);
+                linksByRegion[region.id].links.push(star);
             }
 
             return linksByRegion;
         };
         Star.prototype.severLinksToRegion = function (regionToSever) {
             var linksByRegion = this.getLinksByRegion();
-            var links = linksByRegion[regionToSever];
+            var links = linksByRegion[regionToSever].links;
 
             for (var i = 0; i < links.length; i++) {
                 var star = links[i];
@@ -6281,20 +6289,19 @@ var Rance;
         };
         Star.prototype.severLinksToFiller = function () {
             var linksByRegion = this.getLinksByRegion();
-            var fillerRegions = Object.keys(linksByRegion).filter(function (region) {
-                return region.indexOf("filler") >= 0;
-            });
 
-            for (var i = 0; i < fillerRegions.length; i++) {
-                this.severLinksToRegion(fillerRegions[i]);
+            for (var regionId in linksByRegion) {
+                if (linksByRegion[regionId].region.isFiller) {
+                    this.severLinksToRegion(regionId);
+                }
             }
         };
         Star.prototype.severLinksToNonCenter = function () {
             var self = this;
 
             var linksByRegion = this.getLinksByRegion();
-            var nonCenterRegions = Object.keys(linksByRegion).filter(function (region) {
-                return region !== self.region && region !== "center";
+            var nonCenterRegions = Object.keys(linksByRegion).filter(function (regionId) {
+                return regionId !== self.region.id && regionId !== "center";
             });
 
             for (var i = 0; i < nonCenterRegions.length; i++) {
@@ -6545,7 +6552,7 @@ var Rance;
             data.y = this.y;
 
             data.distance = this.distance;
-            data.region = this.region;
+            data.regionId = this.region ? this.region.id : null;
             data.sectorId = this.sector ? this.sector.id : null;
 
             data.baseIncome = this.baseIncome;
@@ -11798,6 +11805,7 @@ var Rance;
 /// <reference path="star.ts" />
 /// <reference path="mapgen.ts" />
 /// <reference path="maprenderer.ts" />
+/// <reference path="region.ts" />
 /// <reference path="sector.ts" />
 var Rance;
 (function (Rance) {
@@ -11810,6 +11818,7 @@ var Rance;
             this.allPoints = mapGen.points;
             this.stars = mapGen.getNonFillerPoints();
             this.sectors = mapGen.sectors;
+            this.regions = mapGen.regions;
         };
         GalaxyMap.prototype.getIncomeBounds = function () {
             var min, max;
@@ -11839,10 +11848,10 @@ var Rance;
                 return star.serialize();
             });
 
-            data.regionNames = [];
+            data.regions = [];
 
-            for (var name in this.mapGen.regions) {
-                data.regionNames.push(name);
+            for (var regionId in this.regions) {
+                data.regions.push(this.regions[regionId].serialize());
             }
 
             data.sectors = [];
@@ -13086,6 +13095,7 @@ var Rance;
             this.pointsById = {};
             this.unitsById = {};
             this.buildingsByControllerId = {};
+            this.regions = {};
             this.sectors = {};
         }
         GameLoader.prototype.deserializeGame = function (data) {
@@ -13116,8 +13126,11 @@ var Rance;
             mapGen.maxWidth = data.maxWidth;
             mapGen.maxHeight = data.maxHeight;
 
-            for (var i = 0; i < data.regionNames; i++) {
-                mapGen.makeRegion(data.regionNames[i]);
+            for (var i = 0; i < data.regions.length; i++) {
+                this.regions[data.regions[i].id] = this.deserializeRegion(data.regions[i]);
+            }
+            for (var i = 0; i < data.sectors.length; i++) {
+                this.sectors[data.sectors[i].id] = this.deserializeSector(data.sectors[i]);
             }
 
             var allPoints = [];
@@ -13139,11 +13152,8 @@ var Rance;
                 }
             }
 
-            for (var i = 0; i < data.sectors.length; i++) {
-                this.sectors[data.sectors[i].id] = this.deserializeSector(data.sectors[i]);
-            }
-
             mapGen.points = allPoints;
+            mapGen.regions = this.regions;
             mapGen.sectors = this.sectors;
             mapGen.makeVoronoi();
 
@@ -13152,20 +13162,24 @@ var Rance;
 
             return galaxyMap;
         };
+        GameLoader.prototype.deserializeRegion = function (data) {
+            var region = new Rance.Region(data.id, [], data.isFiller);
+            return region;
+        };
         GameLoader.prototype.deserializeSector = function (data) {
             var sector = new Rance.Sector(data.id, data.color);
-            for (var i = 0; i < data.starIds.length; i++) {
-                sector.addStar(this.pointsById[data.starIds[i]]);
-            }
             return sector;
         };
         GameLoader.prototype.deserializePoint = function (data) {
             var star = new Rance.Star(data.x, data.y, data.id);
             star.name = data.name;
             star.distance = data.distance;
-            star.region = data.region;
             star.baseIncome = data.baseIncome;
             star.backgroundSeed = data.backgroundSeed;
+
+            this.regions[data.regionId].addStar(star);
+            if (this.sectors[data.sectorId])
+                this.sectors[data.sectorId].addStar(star);
 
             var buildableItems = {};
 

@@ -2,6 +2,7 @@
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="region.ts" />
 /// <reference path="sector.ts" />
 
 /// <reference path="itemgenerator.ts" />
@@ -17,7 +18,7 @@ module Rance
     linksTo: Star[] = [];
     linksFrom: Star[] = [];
     distance: number;
-    region: string;
+    region: Region;
 
     backgroundSeed: string;
 
@@ -490,7 +491,11 @@ module Rance
     {
       var linksByRegion:
       {
-        [regionId: string]: Star[];
+        [regionId: string]:
+        {
+          links: Star[];
+          region: Region;
+        };
       } = {};
 
       var allLinks = this.getAllLinks();
@@ -500,12 +505,16 @@ module Rance
         var star = allLinks[i];
         var region = star.region;
 
-        if (!linksByRegion[region])
+        if (!linksByRegion[region.id])
         {
-          linksByRegion[region] = [];
+          linksByRegion[region.id] =
+          {
+            links: [],
+            region: region
+          }
         }
 
-        linksByRegion[region].push(star);
+        linksByRegion[region.id].links.push(star);
       }
 
       return linksByRegion;
@@ -513,7 +522,7 @@ module Rance
     severLinksToRegion(regionToSever: string)
     {
       var linksByRegion = this.getLinksByRegion();
-      var links = linksByRegion[regionToSever];
+      var links = linksByRegion[regionToSever].links;
 
       for (var i = 0; i < links.length; i++)
       {
@@ -525,14 +534,13 @@ module Rance
     severLinksToFiller()
     {
       var linksByRegion = this.getLinksByRegion();
-      var fillerRegions = Object.keys(linksByRegion).filter(function(region)
+      
+      for (var regionId in linksByRegion)
       {
-        return region.indexOf("filler") >= 0;
-      });
-
-      for (var i = 0; i < fillerRegions.length; i++)
-      {
-        this.severLinksToRegion(fillerRegions[i]);      
+        if (linksByRegion[regionId].region.isFiller)
+        {
+          this.severLinksToRegion(regionId);
+        }
       }
     }
     severLinksToNonCenter()
@@ -540,9 +548,9 @@ module Rance
       var self = this;
 
       var linksByRegion = this.getLinksByRegion();
-      var nonCenterRegions = Object.keys(linksByRegion).filter(function(region)
+      var nonCenterRegions = Object.keys(linksByRegion).filter(function(regionId)
       {
-        return region !== self.region && region !== "center";
+        return regionId !== self.region.id && regionId !== "center";
       });
 
       for (var i = 0; i < nonCenterRegions.length; i++)
@@ -848,7 +856,7 @@ module Rance
       data.y = this.y;
 
       data.distance = this.distance;
-      data.region = this.region;
+      data.regionId = this.region ? this.region.id : null;
       data.sectorId = this.sector ? this.sector.id : null;
 
       data.baseIncome = this.baseIncome;

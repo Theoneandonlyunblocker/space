@@ -94,10 +94,6 @@ module Rance
       var data: any = {};
 
       data.id = this.id;
-      data.starIds = this.stars.map(function(star)
-      {
-        return star.id;
-      });
       data.color = this.color;
 
       return data;

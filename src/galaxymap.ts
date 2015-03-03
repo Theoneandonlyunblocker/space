@@ -3,6 +3,7 @@
 /// <reference path="star.ts" />
 /// <reference path="mapgen.ts" />
 /// <reference path="maprenderer.ts" />
+/// <reference path="region.ts" />
 /// <reference path="sector.ts" />
 
 module Rance
@@ -14,6 +15,10 @@ module Rance
     sectors:
     {
       [sectorId: number]: Sector;
+    };
+    regions:
+    {
+      [regionId: string]: Region;
     };
     mapGen: MapGen;
     mapRenderer: MapRenderer;
@@ -29,6 +34,7 @@ module Rance
       this.allPoints = mapGen.points;
       this.stars = mapGen.getNonFillerPoints();
       this.sectors = mapGen.sectors;
+      this.regions = mapGen.regions;
     }
     getIncomeBounds()
     {
@@ -61,11 +67,11 @@ module Rance
         return star.serialize();
       });
 
-      data.regionNames = [];
+      data.regions = [];
 
-      for (var name in this.mapGen.regions)
+      for (var regionId in this.regions)
       {
-        data.regionNames.push(name);
+        data.regions.push(this.regions[regionId].serialize());
       }
 
       data.sectors = [];

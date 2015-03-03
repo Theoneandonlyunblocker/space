@@ -521,6 +521,16 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class Region {
+        public id: string;
+        public stars: Rance.Star[];
+        public isFiller: boolean;
+        constructor(id: string, stars: Rance.Star[], isFiller: boolean);
+        public addStar(star: Rance.Star): void;
+        public serialize(): any;
+    }
+}
+declare module Rance {
     module Templates {
         interface IColorRangeTemplate {
         }
@@ -592,6 +602,7 @@ declare module Rance {
         constructor(id?: number, color?: number);
         public addStar(star: Rance.Star): void;
         public getNeighboringStars(): Rance.Star[];
+        public getMajorityRegions(): any[];
         public serialize(): any;
     }
 }
@@ -745,7 +756,7 @@ declare module Rance {
         public linksTo: Star[];
         public linksFrom: Star[];
         public distance: number;
-        public region: string;
+        public region: Rance.Region;
         public backgroundSeed: string;
         public baseIncome: number;
         public name: string;
@@ -814,7 +825,10 @@ declare module Rance {
         public getAllLinks(): Star[];
         public clearLinks(): void;
         public getLinksByRegion(): {
-            [regionId: string]: Star[];
+            [regionId: string]: {
+                links: Star[];
+                region: Rance.Region;
+            };
         };
         public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
@@ -826,7 +840,6 @@ declare module Rance {
                 [range: number]: Star[];
             };
         };
-        public getNearestStarsForQualifier(qualifier: (star: Star) => boolean): void;
         public getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
         public getDistanceToStar(target: Star): number;
         public getVisionRange(): number;
@@ -1538,10 +1551,7 @@ declare module Rance {
         public players: Rance.Player[];
         public independents: Rance.Player;
         public regions: {
-            [id: string]: {
-                id: string;
-                points: Rance.Star[];
-            };
+            [id: string]: Rance.Region;
         };
         public sectors: {
             [id: number]: Rance.Sector;
@@ -1586,7 +1596,7 @@ declare module Rance {
             centerSize: number;
             amountInCenter: number;
         }): any;
-        public makeRegion(name: string): void;
+        public makeRegion(name: string, isFiller: boolean): Rance.Region;
         public makeSpiralPoints(props: {
             amountPerArm: number;
             arms: number;
@@ -1608,11 +1618,12 @@ declare module Rance {
         }): void;
         public getNonFillerPoints(): Rance.Star[];
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
-        public getFurthestPointInRegion(region: any): Rance.Star;
+        public getFurthestPointInRegion(region: Rance.Region): Rance.Star;
         public partiallyCutConnections(minConnections: number): void;
         public makeSectors(minSize: number, maxSize: number): {
             [sectorId: number]: Rance.Sector;
         };
+        public setResources(): void;
     }
 }
 declare module Rance {
@@ -1683,6 +1694,9 @@ declare module Rance {
         public stars: Rance.Star[];
         public sectors: {
             [sectorId: number]: Rance.Sector;
+        };
+        public regions: {
+            [regionId: string]: Rance.Region;
         };
         public mapGen: Rance.MapGen;
         public mapRenderer: Rance.MapRenderer;
@@ -1990,12 +2004,16 @@ declare module Rance {
         public buildingsByControllerId: {
             [id: number]: Rance.Building;
         };
+        public regions: {
+            [id: string]: Rance.Region;
+        };
         public sectors: {
             [id: number]: Rance.Sector;
         };
         constructor();
         public deserializeGame(data: any): Rance.Game;
         public deserializeMap(data: any): Rance.GalaxyMap;
+        public deserializeRegion(data: any): Rance.Region;
         public deserializeSector(data: any): Rance.Sector;
         public deserializePoint(data: any): Rance.Star;
         public deserializeBuildings(data: any): void;
