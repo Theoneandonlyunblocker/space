@@ -204,6 +204,19 @@ module Rance
       }
       return this.baseIncome + tempBuildingIncome;
     }
+    getResourceIncome()
+    {
+      if (!this.resource || !this.buildings["mine"]) return null;
+      else
+      {
+        return(
+        {
+          resource: this.resource,
+          amount: this.buildings["mine"].length
+        });
+      }
+      
+    }
     getAllBuildings()
     {
       var buildings = [];

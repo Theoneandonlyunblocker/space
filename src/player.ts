@@ -22,6 +22,10 @@ module Rance
     {
       [id: number]: Unit;
     } = {};
+    resources:
+    {
+      [resourceType: string]: number;
+    } = {};
     fleets: Fleet[] = [];
     items: Item[] = [];
 
@@ -192,6 +196,48 @@ module Rance
       }
 
       return income;
+    }
+    addResource(resource: Templates.IResourceTemplate, amount: number)
+    {
+      if (!this.resources[resource.type])
+      {
+        this.resources[resource.type] = 0;
+      }
+
+      this.resources[resource.type] += amount;
+    }
+    getResourceIncome()
+    {
+      var incomeByResource:
+      {
+        [resourceType: string]:
+        {
+          resource: Templates.IResourceTemplate;
+          amount: number;
+        };
+      } = {};
+
+      for (var i = 0; i < this.controlledLocations.length; i++)
+      {
+        var star = this.controlledLocations[i];
+
+        var starIncome = star.getResourceIncome();
+
+        if (!starIncome) continue;
+
+        if (!incomeByResource[starIncome.resource.type])
+        {
+          incomeByResource[starIncome.resource.type] =
+          {
+            resource: starIncome.resource,
+            amount: 0
+          }
+        }
+
+        incomeByResource[starIncome.resource.type].amount += starIncome.amount;
+      }
+
+      return incomeByResource;
     }
     getBuildableShips()
     {

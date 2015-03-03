@@ -508,6 +508,7 @@ declare module Rance {
             var commercialPort: IBuildingTemplate;
             var deepSpaceRadar: IBuildingTemplate;
             var itemManufactory: IBuildingTemplate;
+            var resourceMine: IBuildingTemplate;
         }
     }
 }
@@ -815,6 +816,10 @@ declare module Rance {
         public getSecondaryController(): Rance.Player;
         public updateController(): any;
         public getIncome(): number;
+        public getResourceIncome(): {
+            resource: Rance.Templates.IResourceTemplate;
+            amount: number;
+        };
         public getAllBuildings(): any[];
         public getBuildingsForPlayer(player: Rance.Player): any[];
         public getBuildingsByType(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
@@ -1149,6 +1154,9 @@ declare module Rance {
         public units: {
             [id: number]: Rance.Unit;
         };
+        public resources: {
+            [resourceType: string]: number;
+        };
         public fleets: Rance.Fleet[];
         public items: Rance.Item[];
         public isIndependent: boolean;
@@ -1177,6 +1185,13 @@ declare module Rance {
         public addStar(star: Rance.Star): boolean;
         public removeStar(star: Rance.Star): boolean;
         public getIncome(): number;
+        public addResource(resource: Rance.Templates.IResourceTemplate, amount: number): void;
+        public getResourceIncome(): {
+            [resourceType: string]: {
+                resource: Rance.Templates.IResourceTemplate;
+                amount: number;
+            };
+        };
         public getBuildableShips(): any[];
         public getNeighboringStars(): Rance.Star[];
         public updateVisibleStars(): void;

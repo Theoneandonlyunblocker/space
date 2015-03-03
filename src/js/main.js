@@ -5067,6 +5067,15 @@ var Rance;
                 maxPerType: 1,
                 maxUpgradeLevel: 3
             };
+            Buildings.resourceMine = {
+                type: "resourceMine",
+                category: "mine",
+                name: "Mine",
+                icon: "img\/buildings\/commercialPort.png",
+                buildCost: 500,
+                maxPerType: 1,
+                maxUpgradeLevel: 3
+            };
         })(Templates.Buildings || (Templates.Buildings = {}));
         var Buildings = Templates.Buildings;
     })(Rance.Templates || (Rance.Templates = {}));
@@ -6065,6 +6074,16 @@ var Rance;
             }
             return this.baseIncome + tempBuildingIncome;
         };
+        Star.prototype.getResourceIncome = function () {
+            if (!this.resource || !this.buildings["mine"])
+                return null;
+            else {
+                return ({
+                    resource: this.resource,
+                    amount: this.buildings["mine"].length
+                });
+            }
+        };
         Star.prototype.getAllBuildings = function () {
             var buildings = [];
 
@@ -6118,6 +6137,11 @@ var Rance;
             for (var buildingType in Rance.Templates.Buildings) {
                 var template = Rance.Templates.Buildings[buildingType];
                 var alreadyBuilt;
+
+                if (template.category === "mine" && !this.resource) {
+                    continue;
+                }
+
                 if (template.family) {
                     alreadyBuilt = this.getBuildingsByFamily(template);
                 } else {
@@ -7341,6 +7365,7 @@ var Rance;
     var Player = (function () {
         function Player(id) {
             this.units = {};
+            this.resources = {};
             this.fleets = [];
             this.items = [];
             this.isIndependent = false;
@@ -7478,6 +7503,36 @@ var Rance;
             }
 
             return income;
+        };
+        Player.prototype.addResource = function (resource, amount) {
+            if (!this.resources[resource.type]) {
+                this.resources[resource.type] = 0;
+            }
+
+            this.resources[resource.type] += amount;
+        };
+        Player.prototype.getResourceIncome = function () {
+            var incomeByResource = {};
+
+            for (var i = 0; i < this.controlledLocations.length; i++) {
+                var star = this.controlledLocations[i];
+
+                var starIncome = star.getResourceIncome();
+
+                if (!starIncome)
+                    continue;
+
+                if (!incomeByResource[starIncome.resource.type]) {
+                    incomeByResource[starIncome.resource.type] = {
+                        resource: starIncome.resource,
+                        amount: 0
+                    };
+                }
+
+                incomeByResource[starIncome.resource.type].amount += starIncome.amount;
+            }
+
+            return incomeByResource;
         };
         Player.prototype.getBuildableShips = function () {
             var templates = [];
@@ -13073,6 +13128,12 @@ var Rance;
 
             player.forEachUnit(shipStartTurnFN);
             player.money += player.getIncome();
+
+            var allResourceIncomeData = player.getResourceIncome();
+            for (var resourceType in allResourceIncomeData) {
+                var resourceData = allResourceIncomeData[resourceType];
+                player.addResource(resourceData.resource, resourceData.amount);
+            }
         };
 
         Game.prototype.setNextPlayer = function () {

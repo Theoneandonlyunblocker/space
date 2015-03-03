@@ -55,6 +55,13 @@ module Rance
 
       player.forEachUnit(shipStartTurnFN);
       player.money += player.getIncome();
+
+      var allResourceIncomeData = player.getResourceIncome();
+      for (var resourceType in allResourceIncomeData)
+      {
+        var resourceData = allResourceIncomeData[resourceType];
+        player.addResource(resourceData.resource, resourceData.amount);
+      }
     }
 
 
