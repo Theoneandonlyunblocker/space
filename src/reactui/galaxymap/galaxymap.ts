@@ -45,7 +45,8 @@ module Rance
               React.DOM.option({value: "noStatic"}, "no static layers"),
               React.DOM.option({value: "income"}, "income"),
               React.DOM.option({value: "influence"}, "influence"),
-              React.DOM.option({value: "sectors"}, "sectors")
+              React.DOM.option({value: "sectors"}, "sectors"),
+              React.DOM.option({value: "regions"}, "regions")
             )
           )
         );

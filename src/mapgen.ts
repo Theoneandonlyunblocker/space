@@ -106,6 +106,7 @@ module Rance
       }
 
       this.sectors = this.makeSectors(3, 5);
+      this.setResources();
 
       this.setPlayers();
       this.setDistanceFromStartLocations();
@@ -768,6 +769,50 @@ module Rance
       }
 
       return sectorsById;
+    }
+
+    setResources()
+    {
+      // TODO
+      var getResourceDistributionFlags = function(region: string)
+      {
+        switch (region)
+        {
+          case "center":
+          {
+            return ["rare"];
+          }
+          default:
+          {
+            return ["common"];
+          }
+        }
+      }
+
+      for (var sectorId in this.sectors)
+      {
+        var sector = this.sectors[sectorId];
+
+        var majorityRegions = sector.getMajorityRegions();
+
+        var resourceDistributionFlags: string[] = [];
+        var resourcesAlreadyPresentInRegions:
+        {
+          [resourceType: string]: boolean;
+        } = {};
+
+        for (var i = 0; i < majorityRegions.length; i++)
+        {
+          resourceDistributionFlags = resourceDistributionFlags.concat(
+            getResourceDistributionFlags(majorityRegions[i]));
+        }
+
+
+        for (var i = 0; i < ; i++)
+        {
+          
+        }
+      }
     }
   }
 }

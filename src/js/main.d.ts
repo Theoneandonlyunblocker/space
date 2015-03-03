@@ -431,6 +431,7 @@ declare module Rance {
     module Templates {
         interface IUnitTemplate {
             type: string;
+            archetype: string;
             typeName: string;
             sprite: Templates.ISpriteTemplate;
             isSquadron: boolean;
@@ -825,6 +826,7 @@ declare module Rance {
                 [range: number]: Star[];
             };
         };
+        public getNearestStarsForQualifier(qualifier: (star: Star) => boolean): void;
         public getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
         public getDistanceToStar(target: Star): number;
         public getVisionRange(): number;
@@ -2189,7 +2191,8 @@ declare module Rance {
         public priority : number;
         public isOngoing: boolean;
         public target: Rance.Star;
-        constructor(type: string, priority: number, target: Rance.Star);
+        public data: any;
+        constructor(type: string, priority: number, target: Rance.Star, data?: any);
     }
 }
 declare module Rance {
@@ -2204,12 +2207,8 @@ declare module Rance {
         public objectives: Rance.Objective[];
         public maxActiveExpansionRequests: number;
         constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
-        public addObjective(objective: Rance.Objective): void;
-        public setOngoingObjectives(): void;
-        public processObjectives(): void;
         public getExpansionObjectives(): Rance.Objective[];
         public processExpansionObjectives(objectives: Rance.Objective[]): void;
-        public getShipsNeededToExpand(): number;
     }
 }
 declare module Rance {

@@ -51,6 +51,44 @@ module Rance
       return neighbors;
     }
 
+    getMajorityRegions()
+    {
+      var regionsByStars:
+      {
+        [regionId: string]: number;
+      } = {};
+
+      var biggestRegionStarCount = 0;
+      for (var i = 0; i < this.stars.length; i++)
+      {
+        var star = this.stars[i];
+        var region = star.region;
+
+        if (!regionsByStars[region])
+        {
+          regionsByStars[region] = 0;
+        }
+
+        regionsByStars[region]++;
+
+        if (regionsByStars[region] > biggestRegionStarCount)
+        {
+          biggestRegionStarCount = regionsByStars[region];
+        }
+      }
+
+      var majorityRegions = [];
+      for (var regionId in regionsByStars)
+      {
+        if (regionsByStars[regionId] === biggestRegionStarCount)
+        {
+          majorityRegions.push(regionId);
+        }
+      }
+
+      return majorityRegions;
+    }
+
     serialize()
     {
       var data: any = {};

@@ -702,19 +702,67 @@ module Rance
             points = this.player.getRevealedStars();
           }
 
+          var sectorsAmount = Object.keys(map.sectors).length;
+
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
             if (!star.sector) break;
 
-            
-            var sectorsAmount = Object.keys(map.sectors).length;
             var hue = (360 / sectorsAmount) * star.sector.id;
             var color = hslToHex(hue / 360, 1, 0.5)
-            
-           
             //var color = star.sector.color;
 
+            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+            var gfx = new PIXI.Graphics();
+            gfx.beginFill(color, 0.6);
+            gfx.drawShape(poly);
+            gfx.endFill;
+            doc.addChild(gfx);
+          }
+
+          doc.height;
+          return doc;
+        }
+      }
+      this.layers["regions"] =
+      {
+        isDirty: true,
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var self = this;
+
+          var doc = new PIXI.DisplayObjectContainer();
+
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getRevealedStars();
+          }
+
+          var regionIndexes:
+          {
+            [regionId: string]: number;
+          } = {};
+
+          var i = 0;
+          for (var regionId in map.mapGen.regions)
+          {
+            regionIndexes[regionId] = i++;
+          }
+          var regionsAmount = Object.keys(regionIndexes).length;
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+
+            var hue = (360 / regionsAmount) * regionIndexes[star.region];
+            var color = hslToHex(hue / 360, 1, 0.5)
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
             gfx.beginFill(color, 0.6);
@@ -882,6 +930,18 @@ module Rance
         layers:
         [
           {layer: this.layers["sectors"]},
+          {layer: this.layers["nonFillerVoronoiLines"]},
+          {layer: this.layers["starLinks"]},
+          {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["fleets"]}
+        ]
+      }
+      this.mapModes["regions"] =
+      {
+        name: "regions",
+        layers:
+        [
+          {layer: this.layers["regions"]},
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},

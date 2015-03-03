@@ -8,6 +8,17 @@ module Rance
     export interface IUnitTemplate
     {
       type: string;
+
+      /*
+      archetype is used by the ai to balance unit composition
+      
+      combat: overall fighting
+      defence: protetcting allies
+      magic: int based damage dealer
+      support: boost / heal allies
+      utility: useful misc abilities
+       */
+      archetype: string;
       typeName: string;
       sprite: ISpriteTemplate;
       isSquadron: boolean;
@@ -31,6 +42,7 @@ module Rance
       {
         type: "cheatShip",
         typeName: "Cheat Ship",
+        archetype: "combat",
         sprite:
         {
           imageSrc: "testShip.png",
@@ -60,6 +72,7 @@ module Rance
       {
         type: "fighterSquadron",
         typeName: "Fighter Squadron",
+        archetype: "combat",
         sprite:
         {
           imageSrc: "testShip.png",
@@ -88,6 +101,7 @@ module Rance
       {
         type: "bomberSquadron",
         typeName: "Bomber Squadron",
+        archetype: "combat",
         sprite:
         {
           imageSrc: "testShip2.png",
@@ -116,6 +130,7 @@ module Rance
       {
         type: "battleCruiser",
         typeName: "Battlecruiser",
+        archetype: "combat",
         sprite:
         {
           imageSrc: "testShip2.png",
@@ -144,6 +159,7 @@ module Rance
       {
         type: "scout",
         typeName: "Scout",
+        archetype: "utility",
         sprite:
         {
           imageSrc: "testShip3.png",
@@ -171,6 +187,7 @@ module Rance
       {
         type: "shieldBoat",
         typeName: "Shield Boat",
+        archetype: "defence",
         sprite:
         {
           imageSrc: "testShip3.png",

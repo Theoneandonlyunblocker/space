@@ -4794,6 +4794,7 @@ var Rance;
             ShipTypes.cheatShip = {
                 type: "cheatShip",
                 typeName: "Cheat Ship",
+                archetype: "combat",
                 sprite: {
                     imageSrc: "testShip.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -4819,6 +4820,7 @@ var Rance;
             ShipTypes.fighterSquadron = {
                 type: "fighterSquadron",
                 typeName: "Fighter Squadron",
+                archetype: "combat",
                 sprite: {
                     imageSrc: "testShip.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -4843,6 +4845,7 @@ var Rance;
             ShipTypes.bomberSquadron = {
                 type: "bomberSquadron",
                 typeName: "Bomber Squadron",
+                archetype: "combat",
                 sprite: {
                     imageSrc: "testShip2.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -4867,6 +4870,7 @@ var Rance;
             ShipTypes.battleCruiser = {
                 type: "battleCruiser",
                 typeName: "Battlecruiser",
+                archetype: "combat",
                 sprite: {
                     imageSrc: "testShip2.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -4891,6 +4895,7 @@ var Rance;
             ShipTypes.scout = {
                 type: "scout",
                 typeName: "Scout",
+                archetype: "utility",
                 sprite: {
                     imageSrc: "testShip3.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -4914,6 +4919,7 @@ var Rance;
             ShipTypes.shieldBoat = {
                 type: "shieldBoat",
                 typeName: "Shield Boat",
+                archetype: "defence",
                 sprite: {
                     imageSrc: "testShip3.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -6312,6 +6318,27 @@ var Rance;
                 all: allVisited,
                 byRange: visitedByRange
             });
+        };
+        Star.prototype.getNearestStarsForQualifier = function (qualifier) {
+            var visited = {};
+
+            var frontier = [this];
+            visited[this.id] = true;
+
+            var nearestMatches = [];
+
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                var neighbors = current.getLinkedInRange(1).all;
+
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+
+                    visited;
+                }
+            }
         };
 
         // Recursively gets all neighbors that fulfill the callback condition with this star
@@ -9246,7 +9273,7 @@ var Rance;
                     className: "reactui-selector",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"), React.DOM.option({ value: "sectors" }, "sectors"))));
+                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"), React.DOM.option({ value: "sectors" }, "sectors"), React.DOM.option({ value: "regions" }, "regions"))));
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = false;
@@ -11418,16 +11445,57 @@ var Rance;
                         points = this.player.getRevealedStars();
                     }
 
+                    var sectorsAmount = Object.keys(map.sectors).length;
+
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
                         if (!star.sector)
                             break;
 
-                        var sectorsAmount = Object.keys(map.sectors).length;
                         var hue = (360 / sectorsAmount) * star.sector.id;
                         var color = Rance.hslToHex(hue / 360, 1, 0.5);
 
                         //var color = star.sector.color;
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["regions"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    var regionIndexes = {};
+
+                    var i = 0;
+                    for (var regionId in map.mapGen.regions) {
+                        regionIndexes[regionId] = i++;
+                    }
+                    var regionsAmount = Object.keys(regionIndexes).length;
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+
+                        var hue = (360 / regionsAmount) * regionIndexes[star.region];
+                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();
                         gfx.beginFill(color, 0.6);
@@ -11572,6 +11640,16 @@ var Rance;
                 name: "sectors",
                 layers: [
                     { layer: this.layers["sectors"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["regions"] = {
+                name: "regions",
+                layers: [
+                    { layer: this.layers["regions"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
@@ -14134,13 +14212,14 @@ processing objectives
 var Rance;
 (function (Rance) {
     var Objective = (function () {
-        function Objective(type, priority, target) {
+        function Objective(type, priority, target, data) {
             this.isOngoing = false;
             this.id = Rance.idGenerators.objective++;
 
             this.type = type;
             this.priority = priority;
             this.target = target;
+            this.data = data;
         }
         Object.defineProperty(Objective.prototype, "priority", {
             get: function () {
@@ -14191,21 +14270,6 @@ var Rance;
             this.player = mapEvaluator.player;
             this.game = game;
         }
-        ObjectivesAI.prototype.addObjective = function (objective) {
-            this.objectivesByType[objective.type].push(objective);
-            this.objectives.push(objective);
-        };
-
-        ObjectivesAI.prototype.setOngoingObjectives = function () {
-            for (var i = 0; i < this.objectives.length; i++) {
-                this.objectives[i].isOngoing = true;
-            }
-        };
-
-        ObjectivesAI.prototype.processObjectives = function () {
-            this.setOngoingObjectives();
-        };
-
         ObjectivesAI.prototype.getExpansionObjectives = function () {
             var objectivesByTarget = {};
 
@@ -14213,6 +14277,7 @@ var Rance;
 
             for (var i = 0; i < this.objectivesByType.expansion.length; i++) {
                 var _o = this.objectivesByType.expansion[i];
+                _o.isOngoing = true;
                 objectivesByTarget[_o.target.id] = _o;
             }
 
@@ -14232,7 +14297,7 @@ var Rance;
                 if (objectivesByTarget[star.id]) {
                     objectivesByTarget[star.id].priority = relativeScore;
                 } else {
-                    objectivesByTarget[star.id] = new Rance.Objective("expansion", relativeScore, star);
+                    objectivesByTarget[star.id] = new Rance.Objective("expansion", relativeScore, star, expansionScores[i]);
                 }
 
                 allObjectives.push(objectivesByTarget[star.id]);
@@ -14242,20 +14307,7 @@ var Rance;
         };
 
         ObjectivesAI.prototype.processExpansionObjectives = function (objectives) {
-            for (var i = 0; i < objectives.length; i++) {
-            }
-        };
-
-        ObjectivesAI.prototype.getShipsNeededToExpand = function () {
-            var expansionEvaluations = this.mapEvaluator.evaluateImmediateExpansionTargets();
-            var expansionScores = this.mapEvaluator.scoreExpansionTargets(expansionEvaluations);
-
-            var bestStar = expansionScores[0].star;
-            var bestStarEvaluation = expansionEvaluations[bestStar.id];
-            var independentStrengthAtBestStar = bestStarEvaluation.independentStrength;
-            var ownInfluenceAtBestStar = bestStarEvaluation.ownInfluence;
-
-            return Math.round((1000 + independentStrengthAtBestStar - ownInfluenceAtBestStar) / 500);
+            var activeObjectives = [];
         };
         return ObjectivesAI;
     })();
