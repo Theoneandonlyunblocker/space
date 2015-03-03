@@ -775,6 +775,49 @@ module Rance
           return doc;
         }
       }
+      this.layers["resources"] =
+      {
+        isDirty: true,
+        container: new PIXI.DisplayObjectContainer(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var self = this;
+
+          var doc = new PIXI.DisplayObjectContainer();
+
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.mapGen.getNonFillerPoints();
+          }
+          else
+          {
+            points = this.player.getRevealedStars();
+          }
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            if (!star.resource) continue;
+
+            var text = new PIXI.Text(star.resource.displayName,
+            {
+              fill: "#FFFFFF",
+              stroke: "#000000",
+              strokeThickness: 2
+            });
+
+            text.x = star.x;
+            text.x -= text.width / 2;
+            text.y = star.y + 20;
+
+            doc.addChild(text);
+          }
+
+          doc.height;
+          return doc;
+        }
+      }
       this.layers["fleets"] =
       {
         isDirty: true,
@@ -933,6 +976,7 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
+          {layer: this.layers["resources"]},
           {layer: this.layers["fleets"]}
         ]
       }
