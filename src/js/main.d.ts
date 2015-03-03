@@ -808,6 +808,7 @@ declare module Rance {
             3: Rance.Templates.IItemTemplate[];
         };
         constructor(x: number, y: number, id?: number);
+        public setResource(resource: Rance.Templates.IResourceTemplate): void;
         public addBuilding(building: Rance.Building): void;
         public removeBuilding(building: Rance.Building): void;
         public sortDefenceBuildings(): void;

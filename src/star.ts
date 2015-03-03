@@ -85,6 +85,13 @@ module Rance
       this.y = y;
     }
 
+    setResource(resource: Templates.IResourceTemplate)
+    {
+      this.resource = resource;
+      this.sector.resourceType = resource;
+      this.sector.resourceLocation = this;
+    }
+
     // BUILDINGS
     addBuilding(building: Building)
     {
@@ -871,6 +878,10 @@ module Rance
       data.linksFromIds = this.linksFrom.map(function(star){return star.id});
 
       data.backgroundSeed = this.backgroundSeed;
+      if (this.resource)
+      {
+        data.resourceType = this.resource.type;
+      }
 
       data.buildings = {};
 

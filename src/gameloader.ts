@@ -139,6 +139,11 @@ module Rance
 
       this.regions[data.regionId].addStar(star);
       if (this.sectors[data.sectorId]) this.sectors[data.sectorId].addStar(star);
+
+      if (data.resourceType)
+      {
+        star.setResource(Templates.Resources[data.resourceType]);
+      }
       
       var buildableItems: any = {};
 

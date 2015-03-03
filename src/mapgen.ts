@@ -856,10 +856,7 @@ module Rance
         }
 
         var star = getRandomArrayItem(sector.stars);
-
-        star.resource = selectedResource;
-        sector.resourceType = selectedResource;
-        sector.resourceLocation = star;
+        star.setResource(selectedResource);
       }
     }
   }

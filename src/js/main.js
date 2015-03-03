@@ -5969,6 +5969,12 @@ var Rance;
             this.x = x;
             this.y = y;
         }
+        Star.prototype.setResource = function (resource) {
+            this.resource = resource;
+            this.sector.resourceType = resource;
+            this.sector.resourceLocation = this;
+        };
+
         // BUILDINGS
         Star.prototype.addBuilding = function (building) {
             if (!this.buildings[building.template.category]) {
@@ -6612,6 +6618,9 @@ var Rance;
             });
 
             data.backgroundSeed = this.backgroundSeed;
+            if (this.resource) {
+                data.resourceType = this.resource.type;
+            }
 
             data.buildings = {};
 
@@ -11031,10 +11040,7 @@ var Rance;
                 }
 
                 var star = Rance.getRandomArrayItem(sector.stars);
-
-                star.resource = selectedResource;
-                sector.resourceType = selectedResource;
-                sector.resourceLocation = star;
+                star.setResource(selectedResource);
             }
         };
         return MapGen;
@@ -13311,6 +13317,10 @@ var Rance;
             this.regions[data.regionId].addStar(star);
             if (this.sectors[data.sectorId])
                 this.sectors[data.sectorId].addStar(star);
+
+            if (data.resourceType) {
+                star.setResource(Rance.Templates.Resources[data.resourceType]);
+            }
 
             var buildableItems = {};
 
