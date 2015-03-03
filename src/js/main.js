@@ -5099,6 +5099,23 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
+/// <reference path="star.ts" />
+var Rance;
+(function (Rance) {
+    var Region = (function () {
+        function Region(id, stars, isFiller) {
+            this.id = id;
+            this.stars = stars;
+            this.isFiller = isFiller;
+        }
+        Region.prototype.addStar = function (star) {
+            this.stars.push(star);
+            star.region = this;
+        };
+        return Region;
+    })();
+    Rance.Region = Region;
+})(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
 /// <reference path="../data/templates/colorranges.ts" />
 var Rance;
@@ -5665,6 +5682,35 @@ var Rance;
             return neighbors;
         };
 
+        Sector.prototype.getMajorityRegions = function () {
+            var regionsByStars = {};
+
+            var biggestRegionStarCount = 0;
+            for (var i = 0; i < this.stars.length; i++) {
+                var star = this.stars[i];
+                var region = star.region;
+
+                if (!regionsByStars[region.id]) {
+                    regionsByStars[region.id] = 0;
+                }
+
+                regionsByStars[region.id]++;
+
+                if (regionsByStars[region.id] > biggestRegionStarCount) {
+                    biggestRegionStarCount = regionsByStars[region.id];
+                }
+            }
+
+            var majorityRegions = [];
+            for (var regionId in regionsByStars) {
+                if (regionsByStars[regionId] === biggestRegionStarCount) {
+                    majorityRegions.push(regionId);
+                }
+            }
+
+            return majorityRegions;
+        };
+
         Sector.prototype.serialize = function () {
             var data = {};
 
@@ -5850,6 +5896,7 @@ var Rance;
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
+/// <reference path="region.ts" />
 /// <reference path="sector.ts" />
 /// <reference path="itemgenerator.ts" />
 var Rance;
@@ -6318,27 +6365,6 @@ var Rance;
                 all: allVisited,
                 byRange: visitedByRange
             });
-        };
-        Star.prototype.getNearestStarsForQualifier = function (qualifier) {
-            var visited = {};
-
-            var frontier = [this];
-            visited[this.id] = true;
-
-            var nearestMatches = [];
-
-            while (frontier.length > 0) {
-                var current = frontier.pop();
-                var neighbors = current.getLinkedInRange(1).all;
-
-                for (var i = 0; i < neighbors.length; i++) {
-                    var neighbor = neighbors[i];
-                    if (visited[neighbor.id])
-                        continue;
-
-                    visited;
-                }
-            }
         };
 
         // Recursively gets all neighbors that fulfill the callback condition with this star
@@ -10286,6 +10312,7 @@ var Rance;
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
+/// <reference path="region.ts" />
 /// <reference path="sector.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
@@ -10333,6 +10360,7 @@ var Rance;
             }
 
             this.sectors = this.makeSectors(3, 5);
+            this.setResources();
 
             this.setPlayers();
             this.setDistanceFromStartLocations();
@@ -10451,11 +10479,9 @@ var Rance;
 
             return galaxyConstructor.call(this, starGenerationProps);
         };
-        MapGen.prototype.makeRegion = function (name) {
-            this.regions[name] = {
-                id: name,
-                points: []
-            };
+        MapGen.prototype.makeRegion = function (name, isFiller) {
+            this.regions[name] = new Rance.Region(name, [], isFiller);
+            return this.regions[name];
         };
         MapGen.prototype.makeSpiralPoints = function (props) {
             var totalArms = props.arms * 2;
@@ -10492,21 +10518,21 @@ var Rance;
                 var point = new Rance.Star(x, y);
 
                 point.distance = distance;
-                point.region = region;
+                region.addStar(point);
                 point.baseIncome = Rance.randInt(2, 10) * 10;
 
                 return point;
             }.bind(this);
 
-            this.makeRegion("center");
+            var centerRegion = this.makeRegion("center", false);
 
             var currentArmIsFiller = false;
             for (var i = 0; i < totalArms; i++) {
                 var arm = i;
-                var region = (currentArmIsFiller ? "filler_" : "arm_") + arm;
+                var regionName = (currentArmIsFiller ? "filler_" : "arm_") + arm;
+                var region = this.makeRegion(regionName, currentArmIsFiller);
                 var amountForThisArm = currentArmIsFiller ? amountPerFillerArm : amountPerArm;
                 var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
-                this.makeRegion(region);
 
                 var amountForThisCenter = Math.round(amountInCenter / totalArms);
 
@@ -10514,13 +10540,11 @@ var Rance;
                     var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
 
                     points.push(point);
-                    this.regions[region].points.push(point);
                 }
 
                 for (var j = 0; j < amountForThisCenter; j++) {
-                    var point = makePoint(0, centerThreshhold, "center", armOffsetMax);
+                    var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax);
                     points.push(point);
-                    this.regions["center"].points.push(point);
                 }
 
                 currentArmIsFiller = !currentArmIsFiller;
@@ -10642,7 +10666,7 @@ var Rance;
                 return [];
             if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
                 this.nonFillerPoints = this.points.filter(function (point) {
-                    return point.region.indexOf("filler") < 0;
+                    return !point.region.isFiller;
                 });
             }
 
@@ -10695,7 +10719,7 @@ var Rance;
                         }
                         ;
 
-                        if (site.region.indexOf("filler") >= 0) {
+                        if (site.region.isFiller) {
                             adjacentFillerSites++;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;
@@ -10714,10 +10738,10 @@ var Rance;
             var furthestDistance = 0;
             var furthestStar = null;
 
-            for (var i = 0; i < region.points.length; i++) {
-                if (region.points[i].distance > furthestDistance) {
-                    furthestStar = region.points[i];
-                    furthestDistance = region.points[i].distance;
+            for (var i = 0; i < region.stars.length; i++) {
+                if (region.stars[i].distance > furthestDistance) {
+                    furthestStar = region.stars[i];
+                    furthestDistance = region.stars[i].distance;
                 }
             }
 
@@ -10775,7 +10799,7 @@ var Rance;
         if star cannot form island bigger than minsize
         put from unassigned into leftovers & continue
         else
-        add random neighbors into region until minsize is met
+        add random neighbors into sector until minsize is met
         
         
         while leftovers
@@ -10783,7 +10807,7 @@ var Rance;
         if leftover has no assigned neighbor pick, continue
         
         leftover gets assigned to smallest neighboring sector
-        if sizes equal, assign to region with least neighboring leftovers
+        if sizes equal, assign to sector with least neighboring leftovers
         */
         MapGen.prototype.makeSectors = function (minSize, maxSize) {
             var totalStars = this.nonFillerPoints.length;
@@ -10885,6 +10909,33 @@ var Rance;
             }
 
             return sectorsById;
+        };
+
+        MapGen.prototype.setResources = function () {
+            // TODO
+            var getResourceDistributionFlags = function (region) {
+                switch (region) {
+                    case "center": {
+                        return ["rare"];
+                    }
+                    default: {
+                        return ["common"];
+                    }
+                }
+            };
+
+            for (var sectorId in this.sectors) {
+                var sector = this.sectors[sectorId];
+
+                var majorityRegions = sector.getMajorityRegions();
+
+                var resourceDistributionFlags = [];
+                var resourcesAlreadyPresentInRegions = {};
+
+                for (var i = 0; i < majorityRegions.length; i++) {
+                    resourceDistributionFlags = resourceDistributionFlags.concat(getResourceDistributionFlags(majorityRegions[i]));
+                }
+            }
         };
         return MapGen;
     })();
@@ -11494,7 +11545,7 @@ var Rance;
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
 
-                        var hue = (360 / regionsAmount) * regionIndexes[star.region];
+                        var hue = (360 / regionsAmount) * regionIndexes[star.region.id];
                         var color = Rance.hslToHex(hue / 360, 1, 0.5);
                         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                         var gfx = new PIXI.Graphics();

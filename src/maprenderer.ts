@@ -761,7 +761,7 @@ module Rance
           {
             var star = points[i];
 
-            var hue = (360 / regionsAmount) * regionIndexes[star.region];
+            var hue = (360 / regionsAmount) * regionIndexes[star.region.id];
             var color = hslToHex(hue / 360, 1, 0.5)
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();

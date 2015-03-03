@@ -64,16 +64,16 @@ module Rance
         var star = this.stars[i];
         var region = star.region;
 
-        if (!regionsByStars[region])
+        if (!regionsByStars[region.id])
         {
-          regionsByStars[region] = 0;
+          regionsByStars[region.id] = 0;
         }
 
-        regionsByStars[region]++;
+        regionsByStars[region.id]++;
 
-        if (regionsByStars[region] > biggestRegionStarCount)
+        if (regionsByStars[region.id] > biggestRegionStarCount)
         {
-          biggestRegionStarCount = regionsByStars[region];
+          biggestRegionStarCount = regionsByStars[region.id];
         }
       }
 

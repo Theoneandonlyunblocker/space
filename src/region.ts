@@ -14,5 +14,10 @@ module Rance
       this.stars = stars;
       this.isFiller = isFiller;
     }
+    addStar(star: Star)
+    {
+      this.stars.push(star);
+      star.region = this;
+    }
   }
 }

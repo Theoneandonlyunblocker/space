@@ -5,6 +5,7 @@
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
+/// <reference path="region.ts" />
 /// <reference path="sector.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
@@ -20,11 +21,7 @@ module Rance
     independents: Player;
     regions:
     {
-      [id: string]:
-      {
-        id: string;
-        points: Star[];
-      };
+      [id: string]: Region;
     } = {};
     sectors:
     {
@@ -255,13 +252,10 @@ module Rance
 
       return galaxyConstructor.call(this, starGenerationProps);
     }
-    makeRegion(name: string)
+    makeRegion(name: string, isFiller: boolean)
     {
-      this.regions[name] =
-      {
-        id: name,
-        points: []
-      }
+      this.regions[name] = new Region(name, [], isFiller);
+      return this.regions[name];
     }
     makeSpiralPoints(props:
     {
@@ -306,23 +300,23 @@ module Rance
         var point = new Star(x, y);
 
         point.distance = distance;
-        point.region = region;
+        region.addStar(point);
         point.baseIncome = randInt(2, 10) * 10;
 
         return point;
       }.bind(this);
 
-      this.makeRegion("center");
+      var centerRegion = this.makeRegion("center", false);
       
 
       var currentArmIsFiller = false;
       for (var i = 0; i < totalArms; i++)
       {
         var arm = i;
-        var region = (currentArmIsFiller ? "filler_" : "arm_") + arm;
+        var regionName = (currentArmIsFiller ? "filler_" : "arm_") + arm;
+        var region = this.makeRegion(regionName, currentArmIsFiller);
         var amountForThisArm = currentArmIsFiller ? amountPerFillerArm : amountPerArm;
         var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
-        this.makeRegion(region);
 
         var amountForThisCenter = Math.round(amountInCenter / totalArms);
 
@@ -331,14 +325,12 @@ module Rance
           var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
 
           points.push(point);
-          this.regions[region].points.push(point);
         }
 
         for (var j = 0; j < amountForThisCenter; j++)
         {
-          var point = makePoint(0, centerThreshhold, "center", armOffsetMax);
+          var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax);
           points.push(point);
-          this.regions["center"].points.push(point);
         }
 
         currentArmIsFiller = !currentArmIsFiller;
@@ -483,7 +475,7 @@ module Rance
       {
         this.nonFillerPoints = this.points.filter(function(point)
         {
-          return point.region.indexOf("filler") < 0;
+          return !point.region.isFiller;
         });
       }
 
@@ -544,7 +536,7 @@ module Rance
             };
 
 
-            if (site.region.indexOf("filler") >= 0)
+            if (site.region.isFiller)
             {
               adjacentFillerSites++;
               if (adjacentFillerSites >= maxAllowedFillerSites)
@@ -560,17 +552,17 @@ module Rance
 
       return this.nonFillerVoronoiLines[indexString];
     }
-    getFurthestPointInRegion(region): Star
+    getFurthestPointInRegion(region: Region): Star
     {
       var furthestDistance = 0;
       var furthestStar: Star = null;
 
-      for (var i = 0; i < region.points.length; i++)
+      for (var i = 0; i < region.stars.length; i++)
       {
-        if (region.points[i].distance > furthestDistance)
+        if (region.stars[i].distance > furthestDistance)
         {
-          furthestStar = region.points[i];
-          furthestDistance = region.points[i].distance;
+          furthestStar = region.stars[i];
+          furthestDistance = region.stars[i].distance;
         }
       }
 
@@ -633,7 +625,7 @@ module Rance
       if star cannot form island bigger than minsize
         put from unassigned into leftovers & continue
       else
-        add random neighbors into region until minsize is met
+        add random neighbors into sector until minsize is met
 
 
     while leftovers
@@ -641,7 +633,7 @@ module Rance
       if leftover has no assigned neighbor pick, continue
 
       leftover gets assigned to smallest neighboring sector
-      if sizes equal, assign to region with least neighboring leftovers
+      if sizes equal, assign to sector with least neighboring leftovers
      */
     makeSectors(minSize: number, maxSize: number)
     {
@@ -805,12 +797,6 @@ module Rance
         {
           resourceDistributionFlags = resourceDistributionFlags.concat(
             getResourceDistributionFlags(majorityRegions[i]));
-        }
-
-
-        for (var i = 0; i < ; i++)
-        {
-          
         }
       }
     }
