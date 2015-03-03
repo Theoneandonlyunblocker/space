@@ -270,6 +270,12 @@ module Rance
       {
         var template: Templates.IBuildingTemplate = Templates.Buildings[buildingType];
         var alreadyBuilt;
+        
+        if (template.category === "mine" && !this.resource)
+        {
+          continue;
+        }
+
         if (template.family) 
         {
           alreadyBuilt = this.getBuildingsByFamily(template);

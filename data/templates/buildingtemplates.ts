@@ -136,6 +136,19 @@ module Rance
 
         maxUpgradeLevel: 3 // MANUFACTORY_MAX
       }
+      export var resourceMine: IBuildingTemplate =
+      {
+        type: "resourceMine",
+        category: "mine",
+        name: "Mine",
+
+        icon: "img\/buildings\/commercialPort.png",
+        buildCost: 500,
+
+        maxPerType: 1,
+
+        maxUpgradeLevel: 3
+      }
     }
   }
 }
