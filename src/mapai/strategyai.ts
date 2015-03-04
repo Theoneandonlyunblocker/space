@@ -1,3 +1,5 @@
+/// <reference path="../../data/templates/personalitytemplates.ts" />
+
 module Rance
 {
   export class StrategyAI
@@ -5,13 +7,16 @@ module Rance
     player: Player;
     map: GalaxyMap;
     mapEvaluator: MapEvaluator;
+    personality: IPersonalityData;
 
-    constructor(mapEvaluator: MapEvaluator, game: Game)
+    constructor(mapEvaluator: MapEvaluator, game: Game,
+      personality: IPersonalityData)
     {
       this.mapEvaluator = mapEvaluator;
       this.player = mapEvaluator.player;
       this.map = mapEvaluator.map;
       this.game = game;
+      this.personality = personality;
     }
     getDesireToExpand()
     {
