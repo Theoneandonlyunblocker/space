@@ -19,11 +19,6 @@ module Rance
 
     personality: IPersonalityData;
 
-    totalUnitCountByArchetype:
-    {
-      [unitArchetype: string]: number;
-    } = {};
-
     constructor(props:
     {
       objectivesAI: ObjectivesAI;
@@ -43,31 +38,33 @@ module Rance
       this.personality = props.personality;
     }
 
-    resetTotalUnitCountByArchetype()
+    getTotalUnitCountByArchetype()
     {
-      this.totalUnitCountByArchetype = {};
+      var totalUnitCountByArchetype = {};
 
       var units = this.player.getAllUnits();
       for (var i = 0; i < units.length; i++)
       {
         var unitArchetype = units[i].template.archetype;
 
-        if (!this.totalUnitCountByArchetype[unitArchetype])
+        if (!totalUnitCountByArchetype[unitArchetype])
         {
-          this.totalUnitCountByArchetype[unitArchetype] = 0;
+          totalUnitCountByArchetype[unitArchetype] = 0;
         }
 
-        this.totalUnitCountByArchetype[unitArchetype]++;
+        totalUnitCountByArchetype[unitArchetype]++;
       }
+
+      return totalUnitCountByArchetype;
     }
 
-    getTotalUnitArchetypeRelativeWeights()
+    getUnitArchetypeRelativeWeights(unitsByArchetype)
     {
       var min = 0;
       var max;
-      for (var archetype in this.totalUnitCountByArchetype)
+      for (var archetype in unitsByArchetype)
       {
-        var count = this.totalUnitCountByArchetype[archetype];
+        var count = unitsByArchetype[archetype];
         max = isFinite(max) ? Math.max(max, count) : count;
       }
 
@@ -76,26 +73,23 @@ module Rance
         [archetype: string]: number;
       } = {};
 
-      for (var archetype in this.totalUnitCountByArchetype)
+      for (var archetype in unitsByArchetype)
       {
-        var count = this.totalUnitCountByArchetype[archetype];
+        var count = unitsByArchetype[archetype];
         relativeWeights[archetype] = getRelativeValue(count, min, max);
       }
 
       return relativeWeights;
     }
 
-    getGlobalUnitArcheypeScores()
+    getUnitCompositionDeviationFromIdeal(idealWeights, unitsByArchetype)
     {
-      this.resetTotalUnitCountByArchetype();
-      var relativeWeights = this.getTotalUnitArchetypeRelativeWeights();
+      var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
 
       var deviationFromIdeal:
       {
         [archetype: string]: number
       } = {};
-
-      var idealWeights = this.personality.unitCompositionPreference;
 
       for (var archetype in idealWeights)
       {
@@ -108,8 +102,35 @@ module Rance
       return deviationFromIdeal;
     }
 
-    getFrontUnitArchetypePreference(front: Front)
+    getGlobalUnitArcheypeScores()
     {
+      var ideal = this.personality.unitCompositionPreference;
+      var actual = this.getTotalUnitCountByArchetype();
+      return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
+    }
+
+    getFrontUnitArchetypeScores(front: Front)
+    {
+      var relativeFrontSize =
+        front.units.length / Object.keys(this.player.units).length;
+      var globalPreferenceWeight = relativeFrontSize;
+
+      var globalScores = this.getGlobalUnitArcheypeScores();
+
+      var scores:
+      {
+        [archetype: string]: number;
+      } = {};
+
+      var frontArchetypes = front.getUnitCountByArchetype();
+      var frontScores = this.getUnitCompositionDeviationFromIdeal(
+        frontArchetypes, this.personality.unitCompositionPreference);
+
+      for (var archetype in globalScores)
+      {
+        scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
+        scores[archetype] += frontScores[archetype];
+      }
 
     }
 

@@ -2328,23 +2328,23 @@ declare module Rance {
         public mapEvaluator: Rance.MapEvaluator;
         public player: Rance.Player;
         public personality: Rance.IPersonalityData;
-        public totalUnitCountByArchetype: {
-            [unitArchetype: string]: number;
-        };
         constructor(props: {
             objectivesAI: Rance.ObjectivesAI;
             frontsAI: Rance.FrontsAI;
             mapEvaluator: Rance.MapEvaluator;
             personality: Rance.IPersonalityData;
         });
-        public resetTotalUnitCountByArchetype(): void;
-        public getTotalUnitArchetypeRelativeWeights(): {
+        public getTotalUnitCountByArchetype(): {};
+        public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
+            [archetype: string]: number;
+        };
+        public getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
             [archetype: string]: number;
         };
         public getGlobalUnitArcheypeScores(): {
             [archetype: string]: number;
         };
-        public getFrontUnitArchetypePreference(front: Rance.Front): void;
+        public getFrontUnitArchetypeScores(front: Rance.Front): void;
         public satisfyFrontRequest(front: Rance.Front, request: any): void;
     }
 }

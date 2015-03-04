@@ -14738,7 +14738,6 @@ var Rance;
 (function (Rance) {
     var EconomicAI = (function () {
         function EconomicAI(props) {
-            this.totalUnitCountByArchetype = {};
             this.objectivesAI = props.objectivesAI;
             this.frontsAI = props.frontsAI;
 
@@ -14747,46 +14746,45 @@ var Rance;
 
             this.personality = props.personality;
         }
-        EconomicAI.prototype.resetTotalUnitCountByArchetype = function () {
-            this.totalUnitCountByArchetype = {};
+        EconomicAI.prototype.getTotalUnitCountByArchetype = function () {
+            var totalUnitCountByArchetype = {};
 
             var units = this.player.getAllUnits();
             for (var i = 0; i < units.length; i++) {
                 var unitArchetype = units[i].template.archetype;
 
-                if (!this.totalUnitCountByArchetype[unitArchetype]) {
-                    this.totalUnitCountByArchetype[unitArchetype] = 0;
+                if (!totalUnitCountByArchetype[unitArchetype]) {
+                    totalUnitCountByArchetype[unitArchetype] = 0;
                 }
 
-                this.totalUnitCountByArchetype[unitArchetype]++;
+                totalUnitCountByArchetype[unitArchetype]++;
             }
+
+            return totalUnitCountByArchetype;
         };
 
-        EconomicAI.prototype.getTotalUnitArchetypeRelativeWeights = function () {
+        EconomicAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
             var min = 0;
             var max;
-            for (var archetype in this.totalUnitCountByArchetype) {
-                var count = this.totalUnitCountByArchetype[archetype];
+            for (var archetype in unitsByArchetype) {
+                var count = unitsByArchetype[archetype];
                 max = isFinite(max) ? Math.max(max, count) : count;
             }
 
             var relativeWeights = {};
 
-            for (var archetype in this.totalUnitCountByArchetype) {
-                var count = this.totalUnitCountByArchetype[archetype];
+            for (var archetype in unitsByArchetype) {
+                var count = unitsByArchetype[archetype];
                 relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
             }
 
             return relativeWeights;
         };
 
-        EconomicAI.prototype.getGlobalUnitArcheypeScores = function () {
-            this.resetTotalUnitCountByArchetype();
-            var relativeWeights = this.getTotalUnitArchetypeRelativeWeights();
+        EconomicAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
+            var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
 
             var deviationFromIdeal = {};
-
-            var idealWeights = this.personality.unitCompositionPreference;
 
             for (var archetype in idealWeights) {
                 var ideal = idealWeights[archetype];
@@ -14798,7 +14796,27 @@ var Rance;
             return deviationFromIdeal;
         };
 
-        EconomicAI.prototype.getFrontUnitArchetypePreference = function (front) {
+        EconomicAI.prototype.getGlobalUnitArcheypeScores = function () {
+            var ideal = this.personality.unitCompositionPreference;
+            var actual = this.getTotalUnitCountByArchetype();
+            return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
+        };
+
+        EconomicAI.prototype.getFrontUnitArchetypeScores = function (front) {
+            var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
+            var globalPreferenceWeight = relativeFrontSize;
+
+            var globalScores = this.getGlobalUnitArcheypeScores();
+
+            var scores = {};
+
+            var frontArchetypes = front.getUnitCountByArchetype();
+            var frontScores = this.getUnitCompositionDeviationFromIdeal(frontArchetypes, this.personality.unitCompositionPreference);
+
+            for (var archetype in globalScores) {
+                scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
+                scores[archetype] += frontScores[archetype];
+            }
         };
 
         EconomicAI.prototype.satisfyFrontRequest = function (front, request) {
