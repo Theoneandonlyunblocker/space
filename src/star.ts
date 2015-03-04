@@ -728,6 +728,43 @@ module Rance
 
       return island;
     }
+    getNearestStarForQualifier(qualifier: (star: Star) => boolean)
+    {
+      var visited:
+      {
+        [starId: number]: boolean;
+      } = {};
+
+      if (qualifier(this)) return this;
+
+      var frontier: Star[] = [this];
+      visited[this.id] = true;
+
+      while (frontier.length > 0)
+      {
+        var current = frontier.pop();
+        var neighbors = current.getLinkedInRange(1).all;
+
+        for (var i = 0; i < neighbors.length; i++)
+        {
+          var neighbor = neighbors[i];
+          if (visited[neighbor.id]) continue;
+
+          visited[neighbor.id] = true;
+
+          if (qualifier(neighbor))
+          {
+            return neighbor;
+          }
+          else
+          {
+            frontier.push(neighbor);
+          }
+        }
+      }
+
+      return null;
+    }
     getDistanceToStar(target: Star)
     {
       if (!this.indexedDistanceToStar[target.id])
