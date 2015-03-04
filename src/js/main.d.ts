@@ -867,6 +867,7 @@ declare module Rance {
             };
         };
         public getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
+        public getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
         public getDistanceToStar(target: Star): number;
         public getVisionRange(): number;
         public getVision(): Star[];
@@ -1200,6 +1201,7 @@ declare module Rance {
         public getRevealedButNotVisibleStars(): Rance.Star[];
         public addItem(item: Rance.Item): void;
         public getAllBuildableItems(): any[];
+        public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;
         public serialize(): any;
     }
 }
@@ -2269,11 +2271,81 @@ declare module Rance {
     interface IPersonalityData {
         expansiveness: number;
         aggressiveness: number;
+        unitCompositionPreference: {
+            [archetype: string]: number;
+        };
     }
-    class Personality implements IPersonalityData {
-        public expansiveness: number;
-        public aggressiveness: number;
-        constructor(personalityData: IPersonalityData);
+    module Templates {
+        module Personalities {
+            var testPersonality1: Rance.IPersonalityData;
+        }
+    }
+}
+declare module Rance {
+    class Front {
+        public id: number;
+        public priority: number;
+        public units: Rance.Unit[];
+        public minUnitsDesired: number;
+        public idealUnitsDesired: number;
+        public targetLocation: Rance.Star;
+        public musterLocation: Rance.Star;
+        constructor(props: {
+            id: number;
+            priority: number;
+            units: Rance.Unit[];
+            minUnitsDesired: number;
+            idealUnitsDesired: number;
+            targetLocation: Rance.Star;
+            musterLocation: Rance.Star;
+        });
+        public getUnitIndex(unit: Rance.Unit): number;
+        public addUnit(unit: Rance.Unit): void;
+        public removeUnit(unit: Rance.Unit): void;
+        public getUnitCountByArchetype(): {
+            [archetype: string]: number;
+        };
+    }
+}
+declare module Rance {
+    class FrontsAI {
+        public player: Rance.Player;
+        public map: Rance.GalaxyMap;
+        public mapEvaluator: Rance.MapEvaluator;
+        public objectivesAI: Rance.ObjectivesAI;
+        public fronts: Rance.Front[];
+        public requests: any[];
+        constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI);
+        public processObjectives(): void;
+        public assignUnits(): void;
+        public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
+    }
+}
+declare module Rance {
+    class EconomicAI {
+        public objectivesAI: Rance.ObjectivesAI;
+        public frontsAI: Rance.FrontsAI;
+        public mapEvaluator: Rance.MapEvaluator;
+        public player: Rance.Player;
+        public personality: Rance.IPersonalityData;
+        public totalUnitCountByArchetype: {
+            [unitArchetype: string]: number;
+        };
+        constructor(props: {
+            objectivesAI: Rance.ObjectivesAI;
+            frontsAI: Rance.FrontsAI;
+            mapEvaluator: Rance.MapEvaluator;
+            personality: Rance.IPersonalityData;
+        });
+        public resetTotalUnitCountByArchetype(): void;
+        public getTotalUnitArchetypeRelativeWeights(): {
+            [archetype: string]: number;
+        };
+        public getGlobalUnitArcheypeScores(): {
+            [archetype: string]: number;
+        };
+        public getFrontUnitArchetypePreference(front: Rance.Front): void;
+        public satisfyFrontRequest(front: Rance.Front, request: any): void;
     }
 }
 declare module Rance {

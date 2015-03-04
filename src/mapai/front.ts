@@ -17,15 +17,15 @@ module Rance
 
     constructor(props:
     {
-      id: number,
-      priority: number,
-      units: Unit[],
+      id: number;
+      priority: number;
+      units: Unit[];
       
-      minUnitsDesired: number,
-      idealUnitsDesired: number,
+      minUnitsDesired: number;
+      idealUnitsDesired: number;
 
-      targetLocation: Star,
-      musterLocation: Star
+      targetLocation: Star;
+      musterLocation: Star;
     })
     {
       this.id = props.id;
@@ -57,6 +57,27 @@ module Rance
       {
         this.units.splice(unitIndex, 1);
       }
+    }
+    getUnitCountByArchetype()
+    {
+      var unitCountByArchetype:
+      {
+        [archetype: string]: number;
+      } = {};
+
+      for (var i = 0; i < this.units.length; i++)
+      {
+        var archetype = this.units[i].template.archetype;
+        
+        if (!unitCountByArchetype[archetype])
+        {
+          unitCountByArchetype[archetype] = 0;
+        }
+
+        unitCountByArchetype[archetype]++;
+      }
+
+      return unitCountByArchetype;
     }
   }
 }

@@ -22,7 +22,7 @@
 
 /// <reference path="mapai/mapevaluator.ts"/>
 /// <reference path="mapai/objectivesai.ts"/>
-/// <reference path="mapai/personality.ts"/>
+/// <reference path="mapai/economicai.ts"/>
 /// 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 

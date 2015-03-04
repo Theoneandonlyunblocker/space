@@ -6495,6 +6495,36 @@ var Rance;
 
             return island;
         };
+        Star.prototype.getNearestStarForQualifier = function (qualifier) {
+            var visited = {};
+
+            if (qualifier(this))
+                return this;
+
+            var frontier = [this];
+            visited[this.id] = true;
+
+            while (frontier.length > 0) {
+                var current = frontier.pop();
+                var neighbors = current.getLinkedInRange(1).all;
+
+                for (var i = 0; i < neighbors.length; i++) {
+                    var neighbor = neighbors[i];
+                    if (visited[neighbor.id])
+                        continue;
+
+                    visited[neighbor.id] = true;
+
+                    if (qualifier(neighbor)) {
+                        return neighbor;
+                    } else {
+                        frontier.push(neighbor);
+                    }
+                }
+            }
+
+            return null;
+        };
         Star.prototype.getDistanceToStar = function (target) {
             if (!this.indexedDistanceToStar[target.id]) {
                 var a = Rance.aStar(this, target);
@@ -7670,6 +7700,14 @@ var Rance;
             }
 
             return allBuildable;
+        };
+        Player.prototype.getNearestOwnedStarTo = function (star) {
+            var self = this;
+            var isOwnedByThisFN = function (star) {
+                return star.owner === self;
+            };
+
+            return star.getNearestStarForQualifier(isOwnedByThisFN);
         };
         Player.prototype.serialize = function () {
             var data = {};
@@ -14582,15 +14620,192 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var Personality = (function () {
-        function Personality(personalityData) {
-            for (var property in personalityData) {
-                this[property] = personalityData[property];
-            }
+    (function (Templates) {
+        (function (Personalities) {
+            Personalities.testPersonality1 = {
+                expansiveness: 1,
+                aggressiveness: 0.6,
+                unitCompositionPreference: {
+                    combat: 2,
+                    defence: 0.8,
+                    magic: 0.3,
+                    support: 0.3,
+                    utility: 0.3
+                }
+            };
+        })(Templates.Personalities || (Templates.Personalities = {}));
+        var Personalities = Templates.Personalities;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../unit.ts"/>
+/// <reference path="../star.ts"/>
+var Rance;
+(function (Rance) {
+    var Front = (function () {
+        function Front(props) {
+            this.id = props.id;
+            this.priority = props.priority;
+            this.units = props.units;
+
+            this.minUnitsDesired = props.minUnitsDesired;
+            this.idealUnitsDesired = props.idealUnitsDesired;
+
+            this.targetLocation = props.targetLocation;
+            this.musterLocation = props.musterLocation;
         }
-        return Personality;
+        Front.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
+        };
+        Front.prototype.addUnit = function (unit) {
+            if (this.getUnitIndex(unit) !== -1) {
+                this.units.push(unit);
+            }
+        };
+        Front.prototype.removeUnit = function (unit) {
+            var unitIndex = this.getUnitIndex(unit);
+            if (unitIndex !== -1) {
+                this.units.splice(unitIndex, 1);
+            }
+        };
+        Front.prototype.getUnitCountByArchetype = function () {
+            var unitCountByArchetype = {};
+
+            for (var i = 0; i < this.units.length; i++) {
+                var archetype = this.units[i].template.archetype;
+
+                if (!unitCountByArchetype[archetype]) {
+                    unitCountByArchetype[archetype] = 0;
+                }
+
+                unitCountByArchetype[archetype]++;
+            }
+
+            return unitCountByArchetype;
+        };
+        return Front;
     })();
-    Rance.Personality = Personality;
+    Rance.Front = Front;
+})(Rance || (Rance = {}));
+/// <reference path="../player.ts"/>
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="objectivesai.ts"/>
+/// <reference path="front.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
+var Rance;
+(function (Rance) {
+    var FrontsAI = (function () {
+        function FrontsAI(mapEvaluator, objectivesAI) {
+            this.fronts = [];
+            this.requests = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.objectivesAI = objectivesAI;
+        }
+        FrontsAI.prototype.processObjectives = function () {
+            var objectives = this.objectivesAI.objectives;
+            // evaluate unit fit
+        };
+
+        FrontsAI.prototype.assignUnits = function () {
+            var units = this.player.units;
+        };
+
+        FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
+            var star = objective.target;
+            var independentShips = star.getAllShipsOfPlayer(star.owner);
+
+            if (independentShips.length === 1)
+                return 2;
+            else {
+                var desired = independentShips.length + 2;
+                return Math.min(desired, 6);
+            }
+        };
+        return FrontsAI;
+    })();
+    Rance.FrontsAI = FrontsAI;
+})(Rance || (Rance = {}));
+/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../game.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
+/// <reference path="frontsai.ts"/>
+var Rance;
+(function (Rance) {
+    var EconomicAI = (function () {
+        function EconomicAI(props) {
+            this.totalUnitCountByArchetype = {};
+            this.objectivesAI = props.objectivesAI;
+            this.frontsAI = props.frontsAI;
+
+            this.mapEvaluator = props.mapEvaluator;
+            this.player = props.mapEvaluator.player;
+
+            this.personality = props.personality;
+        }
+        EconomicAI.prototype.resetTotalUnitCountByArchetype = function () {
+            this.totalUnitCountByArchetype = {};
+
+            var units = this.player.getAllUnits();
+            for (var i = 0; i < units.length; i++) {
+                var unitArchetype = units[i].template.archetype;
+
+                if (!this.totalUnitCountByArchetype[unitArchetype]) {
+                    this.totalUnitCountByArchetype[unitArchetype] = 0;
+                }
+
+                this.totalUnitCountByArchetype[unitArchetype]++;
+            }
+        };
+
+        EconomicAI.prototype.getTotalUnitArchetypeRelativeWeights = function () {
+            var min = 0;
+            var max;
+            for (var archetype in this.totalUnitCountByArchetype) {
+                var count = this.totalUnitCountByArchetype[archetype];
+                max = isFinite(max) ? Math.max(max, count) : count;
+            }
+
+            var relativeWeights = {};
+
+            for (var archetype in this.totalUnitCountByArchetype) {
+                var count = this.totalUnitCountByArchetype[archetype];
+                relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
+            }
+
+            return relativeWeights;
+        };
+
+        EconomicAI.prototype.getGlobalUnitArcheypeScores = function () {
+            this.resetTotalUnitCountByArchetype();
+            var relativeWeights = this.getTotalUnitArchetypeRelativeWeights();
+
+            var deviationFromIdeal = {};
+
+            var idealWeights = this.personality.unitCompositionPreference;
+
+            for (var archetype in idealWeights) {
+                var ideal = idealWeights[archetype];
+                var actual = relativeWeights[archetype] || 0;
+
+                deviationFromIdeal[archetype] = ideal - actual;
+            }
+
+            return deviationFromIdeal;
+        };
+
+        EconomicAI.prototype.getFrontUnitArchetypePreference = function (front) {
+        };
+
+        EconomicAI.prototype.satisfyFrontRequest = function (front, request) {
+        };
+        return EconomicAI;
+    })();
+    Rance.EconomicAI = EconomicAI;
 })(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
@@ -14625,7 +14840,7 @@ var Rance;
 /// <reference path="borderpolygon.ts"/>
 /// <reference path="mapai/mapevaluator.ts"/>
 /// <reference path="mapai/objectivesai.ts"/>
-/// <reference path="mapai/personality.ts"/>
+/// <reference path="mapai/economicai.ts"/>
 ///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 var a, b, c;
