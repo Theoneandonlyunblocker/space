@@ -411,6 +411,16 @@ module Rance
 
       return allBuildable;
     }
+    getNearestOwnedStarTo(star: Star)
+    {
+      var self = this;
+      var isOwnedByThisFN = function(star: Star)
+      {
+        return star.owner === self;
+      }
+
+      return star.getNearestStarForQualifier(isOwnedByThisFN);
+    }
     serialize()
     {
       var data: any = {};
