@@ -1203,6 +1203,7 @@ declare module Rance {
         public getVisibleStars(): Rance.Star[];
         public getRevealedStars(): Rance.Star[];
         public getRevealedButNotVisibleStars(): Rance.Star[];
+        public buildUnit(template: Rance.Templates.IUnitTemplate, location: Rance.Star): void;
         public addItem(item: Rance.Item): void;
         public getAllBuildableItems(): any[];
         public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;

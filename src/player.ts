@@ -375,6 +375,17 @@ module Rance
 
       return toReturn;
     }
+    buildUnit(template: Templates.IUnitTemplate, location: Star)
+    {
+      var unit = new Rance.Unit(template);
+      this.addUnit(unit);
+
+      var fleet = new Fleet(this, [unit], location);
+
+      this.money -= template.buildCost;
+
+      eventManager.dispatchEvent("playerControlUpdated");
+    }
     addItem(item: Item)
     {
       this.items.push(item);

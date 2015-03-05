@@ -21,16 +21,12 @@ module Rance
 
       buildShip: function(rowItem)
       {
-        var template = rowItem.data.template;
-
-        var ship = new Rance.Unit(template);
-        this.props.player.addUnit(ship);
-
-        var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
-
-        this.props.player.money -= template.buildCost;
-
-        eventManager.dispatchEvent("playerControlUpdated");
+        if (rowItem.data.template.buildCost > this.props.player.money)
+        {
+          return;
+        }
+        
+        this.props.player.buildUnit(rowItem.data.template, this.props.star);
       },
 
       render: function()

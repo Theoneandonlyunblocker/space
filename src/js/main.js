@@ -7687,6 +7687,16 @@ var Rance;
 
             return toReturn;
         };
+        Player.prototype.buildUnit = function (template, location) {
+            var unit = new Rance.Unit(template);
+            this.addUnit(unit);
+
+            var fleet = new Rance.Fleet(this, [unit], location);
+
+            this.money -= template.buildCost;
+
+            Rance.eventManager.dispatchEvent("playerControlUpdated");
+        };
         Player.prototype.addItem = function (item) {
             this.items.push(item);
         };
@@ -9058,16 +9068,11 @@ var Rance;
                 });
             },
             buildShip: function (rowItem) {
-                var template = rowItem.data.template;
+                if (rowItem.data.template.buildCost > this.props.player.money) {
+                    return;
+                }
 
-                var ship = new Rance.Unit(template);
-                this.props.player.addUnit(ship);
-
-                var fleet = new Rance.Fleet(this.props.player, [ship], this.props.star);
-
-                this.props.player.money -= template.buildCost;
-
-                Rance.eventManager.dispatchEvent("playerControlUpdated");
+                this.props.player.buildUnit(rowItem.data.template, this.props.star);
             },
             render: function () {
                 if (this.state.shipTemplates.length < 1)
