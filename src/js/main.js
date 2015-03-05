@@ -14589,6 +14589,7 @@ var Rance;
                 expansion: []
             };
             this.objectives = [];
+            this.requests = [];
             this.mapEvaluator = mapEvaluator;
             this.map = mapEvaluator.map;
             this.player = mapEvaluator.player;
@@ -14728,7 +14729,7 @@ var Rance;
     var FrontsAI = (function () {
         function FrontsAI(mapEvaluator, objectivesAI, personality) {
             this.fronts = [];
-            this.requests = [];
+            this.frontsRequestingUnits = [];
             this.mapEvaluator = mapEvaluator;
             this.map = mapEvaluator.map;
             this.player = mapEvaluator.player;
@@ -14926,6 +14927,18 @@ var Rance;
                 return Math.min(desired, 6);
             }
         };
+
+        FrontsAI.prototype.setUnitRequests = function () {
+            /*for each front that doesnt fulfill minimum unit requirement
+            make request with same priority of front
+            */
+            this.frontsRequestingUnits = [];
+
+            for (var i = 0; i < this.fronts.length; i++) {
+                var front = this.fronts[i];
+                this.frontsRequestingUnits.push(front);
+            }
+        };
         return FrontsAI;
     })();
     Rance.FrontsAI = FrontsAI;
@@ -14948,6 +14961,28 @@ var Rance;
 
             this.personality = props.personality;
         }
+        EconomicAI.prototype.satisfyAllRequests = function () {
+            /*
+            get all requests from OAI and FAI
+            sort by priority
+            fulfill by priority
+            */
+            var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+            allRequests.sort(function (a, b) {
+                return b.priority - a.priority;
+            });
+
+            for (var i = 0; i < allRequests.length; i++) {
+                var request = allRequests[i];
+
+                // is front
+                if (request.targetLocation) {
+                    this.satisfyFrontRequest(request);
+                } else {
+                }
+            }
+        };
+
         EconomicAI.prototype.satisfyFrontRequest = function (front) {
             // TODO
             var star = this.player.getNearestOwnedStarTo(front.musterLocation);
@@ -14980,6 +15015,7 @@ var Rance;
             if (!unitType)
                 debugger;
 
+            this.player.buildUnit(unitType, star);
             debugger;
         };
         return EconomicAI;

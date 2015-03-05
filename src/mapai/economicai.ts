@@ -37,7 +37,33 @@ module Rance
       this.personality = props.personality;
     }
 
-    
+    satisfyAllRequests()
+    {
+      /*
+      get all requests from OAI and FAI
+      sort by priority
+      fulfill by priority
+       */
+      var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+      allRequests.sort(function(a, b)
+      {
+        return b.priority - a.priority;
+      });
+
+      for (var i = 0; i < allRequests.length; i++)
+      {
+        var request = allRequests[i];
+        // is front
+        if (request.targetLocation)
+        {
+          this.satisfyFrontRequest(request);
+        }
+        else
+        {
+          
+        }
+      }
+    }
 
     satisfyFrontRequest(front: Front)
     {
@@ -78,6 +104,7 @@ module Rance
       }
       if (!unitType) debugger;
 
+      this.player.buildUnit(unitType, star);
       debugger;
     }
   }

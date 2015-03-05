@@ -2267,6 +2267,7 @@ declare module Rance {
         };
         public objectives: Rance.Objective[];
         public maxActiveExpansionRequests: number;
+        public requests: any[];
         constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
         public setAllObjectives(): void;
         public addObjectives(objectives: Rance.Objective[]): void;
@@ -2322,7 +2323,7 @@ declare module Rance {
         public objectivesAI: Rance.ObjectivesAI;
         public personality: Rance.IPersonalityData;
         public fronts: Rance.Front[];
-        public requests: any[];
+        public frontsRequestingUnits: Rance.Front[];
         constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI, personality: Rance.IPersonalityData);
         public getTotalUnitCountByArchetype(): {};
         public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
@@ -2345,6 +2346,7 @@ declare module Rance {
         }[];
         public assignUnits(): void;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
+        public setUnitRequests(): void;
     }
 }
 declare module Rance {
@@ -2360,6 +2362,7 @@ declare module Rance {
             mapEvaluator: Rance.MapEvaluator;
             personality: Rance.IPersonalityData;
         });
+        public satisfyAllRequests(): void;
         public satisfyFrontRequest(front: Rance.Front): void;
     }
 }

@@ -18,7 +18,7 @@ module Rance
     personality: IPersonalityData;
 
     fronts: Front[] = [];
-    requests: any[] = [];
+    frontsRequestingUnits: Front[] = [];
 
     constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
       personality: IPersonalityData)
@@ -268,6 +268,21 @@ module Rance
       {
         var desired = independentShips.length + 2;
         return Math.min(desired, 6);
+      }
+    }
+
+    setUnitRequests()
+    {
+      /*for each front that doesnt fulfill minimum unit requirement
+        make request with same priority of front
+      */
+     
+      this.frontsRequestingUnits = [];
+
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        var front = this.fronts[i];
+        this.frontsRequestingUnits.push(front);
       }
     }
   }

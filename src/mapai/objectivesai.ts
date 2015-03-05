@@ -41,6 +41,8 @@ module Rance
 
     maxActiveExpansionRequests: number;
 
+    requests: any[] = [];
+
     constructor(mapEvaluator: MapEvaluator, game: Game)
     {
       this.mapEvaluator = mapEvaluator;

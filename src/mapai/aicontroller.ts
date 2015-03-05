@@ -60,13 +60,10 @@ module Rance
       this.frontsAI.assignUnits();
 
       // fai request units
-
+      this.frontsAI.setUnitRequests();
 
       // eai fulfill requests
-
-
-      // eai build other stuff
-
+      this.economicAI.satisfyAllRequests();
 
       // fai move units
 
