@@ -14589,6 +14589,16 @@ var Rance;
             this.player = mapEvaluator.player;
             this.game = game;
         }
+        ObjectivesAI.prototype.setAllObjectives = function () {
+            this.objectives = [];
+
+            this.addObjectives(this.getExpansionObjectives());
+        };
+
+        ObjectivesAI.prototype.addObjectives = function (objectives) {
+            this.objectives = this.objectives.concat(objectives);
+        };
+
         ObjectivesAI.prototype.getExpansionObjectives = function () {
             var objectivesByTarget = {};
 
@@ -14720,11 +14730,6 @@ var Rance;
             this.objectivesAI = objectivesAI;
             this.personality = personality;
         }
-        FrontsAI.prototype.processObjectives = function () {
-            var objectives = this.objectivesAI.objectives;
-            // evaluate unit fit
-        };
-
         FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
             var totalUnitCountByArchetype = {};
 
@@ -14801,11 +14806,108 @@ var Rance;
             return scores;
         };
 
+        FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
+            // base score based on unit composition
+            var score = frontArchetypeScores[unit.template.archetype];
+
+            // add score based on front priority
+            // lower priority if front requirements already met
+            // more important fronts get priority but dont hog units
+            var unitsOverMinimum = front.units.length - front.minUnitsDesired;
+            var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
+
+            var priorityMultiplier = 1;
+            if (unitsOverMinimum > 0) {
+                priorityMultiplier -= unitsOverMinimum * 0.05;
+            }
+            if (unitsOverIdeal > 0) {
+                priorityMultiplier -= unitsOverIdeal * 0.1;
+            }
+
+            var adjustedPriority = front.priority * priorityMultiplier;
+            score += adjustedPriority;
+
+            // penalize initial units for front
+            // inertia at beginning of adding units to front
+            // so ai prioritizes fully formed fronts to incomplete ones
+            var newUnitInertia = 0.4 - front.units.length * 0.1;
+            if (newUnitInertia > 0) {
+                score -= newUnitInertia;
+            }
+
+            // penalize fronts with high requirements
+            // reduce forming incomplete fronts even if they have high priority
+            // effect lessens as total unit count increases
+            // TODO
+            // prioritize units closer to front target
+            var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
+            var distanceAdjust = distance * -0.05;
+            score += distanceAdjust;
+
+            return score;
+        };
+
         FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
+            var scores = [];
+
+            var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
+
+            for (var i = 0; i < units.length; i++) {
+                scores.push({
+                    unit: units[i],
+                    score: this.scoreUnitFitForFront(units[i], front, frontArchetypeScores),
+                    front: front
+                });
+            }
+
+            return scores;
         };
 
         FrontsAI.prototype.assignUnits = function () {
-            var units = this.player.units;
+            var units = this.player.getAllUnits();
+
+            var allUnitScores = [];
+            var unitScoresByFront = {};
+
+            var recalculateScoresForFront = function (front) {
+                var archetypeScores = this.getFrontUnitArchetypeScores(front);
+                var frontScores = unitScoresByFront[front.id];
+
+                for (var i = 0; i < frontScores.length; i++) {
+                    var unit = frontScores[i].unit;
+                    frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
+                }
+            };
+
+            var removeUnit = function (unit) {
+                for (var frontId in unitScoresByFront) {
+                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
+                        return score.unit !== unit;
+                    });
+                }
+            };
+
+            // ascending
+            var sortByScoreFN = function (a, b) {
+                return a.score - b.score;
+            };
+
+            for (var i = 0; i < this.fronts.length; i++) {
+                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+                unitScoresByFront[this.fronts[i].id] = frontScores;
+                allUnitScores = allUnitScores.concat(frontScores);
+            }
+
+            while (allUnitScores.length > 0) {
+                allUnitScores.sort(sortByScoreFN);
+
+                var bestScore = allUnitScores.pop();
+
+                bestScore.front.addUnit(bestScore.unit);
+
+                removeUnit(bestScore.unit);
+                recalculateScoresForFront(bestScore.front);
+            }
         };
 
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {

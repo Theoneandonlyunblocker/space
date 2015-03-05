@@ -49,6 +49,18 @@ module Rance
       this.game = game;
     }
 
+    setAllObjectives()
+    {
+      this.objectives = [];
+
+      this.addObjectives(this.getExpansionObjectives());
+    }
+
+    addObjectives(objectives: Objective[])
+    {
+      this.objectives = this.objectives.concat(objectives);
+    }
+
     getExpansionObjectives()
     {
       var objectivesByTarget:
