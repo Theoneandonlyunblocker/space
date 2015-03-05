@@ -131,7 +131,7 @@ module Rance
     scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores)
     {
       // base score based on unit composition
-      var score = frontArchetypeScores[unit.archetype];
+      var score = frontArchetypeScores[unit.template.archetype];
 
       // add score based on front priority
       // lower priority if front requirements already met
@@ -167,6 +167,10 @@ module Rance
 
       // TODO
 
+      // prioritize units closer to front target
+      var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
+      var distanceAdjust = distance * -0.05;
+      score += distanceAdjust;
  
       return score;
     }
@@ -192,12 +196,66 @@ module Rance
         });
       }
 
-      return scores();
+      return scores;
     }
 
     assignUnits()
     {
-      var units = this.player.units;
+      var units = this.player.getAllUnits();
+
+      var allUnitScores = [];
+      var unitScoresByFront:
+      {
+        [frontId: number]: any[];
+      } = {};
+
+      var recalculateScoresForFront = function(front: Front)
+      {
+        var archetypeScores = this.getFrontUnitArchetypeScores(front);
+        var frontScores = unitScoresByFront[front.id];
+
+        for (var i = 0; i < frontScores.length; i++)
+        {
+          var unit = frontScores[i].unit;
+          frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
+        }
+      }
+
+      var removeUnit = function(unit: Unit)
+      {
+        for (var frontId in unitScoresByFront)
+        {
+          unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function(score)
+          {
+            return score.unit !== unit;
+          });
+        }
+      }
+
+      // ascending
+      var sortByScoreFN = function(a, b)
+      {
+        return a.score - b.score;
+      }
+
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+        unitScoresByFront[this.fronts[i].id] = frontScores;
+        allUnitScores = allUnitScores.concat(frontScores);
+      }
+
+      while (allUnitScores.length > 0)
+      {
+        allUnitScores.sort(sortByScoreFN);
+
+        var bestScore = allUnitScores.pop();
+
+        bestScore.front.addUnit(bestScore.unit);
+
+        removeUnit(bestScore.unit);
+        recalculateScoresForFront(bestScore.front);
+      }
     }
 
     getUnitsToFillExpansionObjective(objective: Objective)
