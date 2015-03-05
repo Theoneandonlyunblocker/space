@@ -27,6 +27,21 @@ module Rance
     return _targetKeys[_rnd];
   }
 
+  export function getObjectKeysSortedByValue(obj:
+  {
+    [key: string]: number;
+  }, order: string)
+  {
+    return Object.keys(obj).sort(function(a, b)
+    {
+      if (order === "asc")
+      {
+        return obj[a] - obj[b];
+      }
+      else return obj[b] - obj[a];
+    });
+  }
+
   export function getRandomProperty(target)
   {
     var _rndProp = target[getRandomKey(target)];

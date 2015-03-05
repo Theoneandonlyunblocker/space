@@ -341,6 +341,11 @@ module Rance
       return allUpgrades;
     }
 
+    getBuildableShipTypes()
+    {
+      return this.owner.getBuildableShips();
+    }
+
     // FLEETS
     getAllFleets()
     {

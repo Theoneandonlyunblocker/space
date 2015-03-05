@@ -21,10 +21,10 @@ module Rance
 
         unitCompositionPreference:
         {
-          combat: 2,
+          combat: 1,
           defence: 0.8,
-          magic: 0.3,
-          support: 0.3,
+          //magic: 0.3,
+          //support: 0.3,
           utility: 0.3
         }
       }

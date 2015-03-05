@@ -4230,6 +4230,16 @@ var Rance;
     }
     Rance.getRandomKey = getRandomKey;
 
+    function getObjectKeysSortedByValue(obj, order) {
+        return Object.keys(obj).sort(function (a, b) {
+            if (order === "asc") {
+                return obj[a] - obj[b];
+            } else
+                return obj[b] - obj[a];
+        });
+    }
+    Rance.getObjectKeysSortedByValue = getObjectKeysSortedByValue;
+
     function getRandomProperty(target) {
         var _rndProp = target[getRandomKey(target)];
         return _rndProp;
@@ -6174,6 +6184,10 @@ var Rance;
             }
 
             return allUpgrades;
+        };
+
+        Star.prototype.getBuildableShipTypes = function () {
+            return this.owner.getBuildableShips();
         };
 
         // FLEETS
@@ -14626,10 +14640,10 @@ var Rance;
                 expansiveness: 1,
                 aggressiveness: 0.6,
                 unitCompositionPreference: {
-                    combat: 2,
+                    combat: 1,
                     defence: 0.8,
-                    magic: 0.3,
-                    support: 0.3,
+                    //magic: 0.3,
+                    //support: 0.3,
                     utility: 0.3
                 }
             };
@@ -14687,6 +14701,7 @@ var Rance;
     })();
     Rance.Front = Front;
 })(Rance || (Rance = {}));
+/// <reference path="../../data/templates/personalitytemplates.ts" />
 /// <reference path="../player.ts"/>
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="objectivesai.ts"/>
@@ -14696,17 +14711,97 @@ var Rance;
 var Rance;
 (function (Rance) {
     var FrontsAI = (function () {
-        function FrontsAI(mapEvaluator, objectivesAI) {
+        function FrontsAI(mapEvaluator, objectivesAI, personality) {
             this.fronts = [];
             this.requests = [];
             this.mapEvaluator = mapEvaluator;
             this.map = mapEvaluator.map;
             this.player = mapEvaluator.player;
             this.objectivesAI = objectivesAI;
+            this.personality = personality;
         }
         FrontsAI.prototype.processObjectives = function () {
             var objectives = this.objectivesAI.objectives;
             // evaluate unit fit
+        };
+
+        FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
+            var totalUnitCountByArchetype = {};
+
+            var units = this.player.getAllUnits();
+            for (var i = 0; i < units.length; i++) {
+                var unitArchetype = units[i].template.archetype;
+
+                if (!totalUnitCountByArchetype[unitArchetype]) {
+                    totalUnitCountByArchetype[unitArchetype] = 0;
+                }
+
+                totalUnitCountByArchetype[unitArchetype]++;
+            }
+
+            return totalUnitCountByArchetype;
+        };
+
+        FrontsAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
+            var min = 0;
+            var max;
+            for (var archetype in unitsByArchetype) {
+                var count = unitsByArchetype[archetype];
+                max = isFinite(max) ? Math.max(max, count) : count;
+            }
+
+            var relativeWeights = {};
+
+            for (var archetype in unitsByArchetype) {
+                var count = unitsByArchetype[archetype];
+                relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
+            }
+
+            return relativeWeights;
+        };
+
+        FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
+            var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
+
+            var deviationFromIdeal = {};
+
+            for (var archetype in idealWeights) {
+                var ideal = idealWeights[archetype];
+                var actual = relativeWeights[archetype] || 0;
+
+                deviationFromIdeal[archetype] = ideal - actual;
+            }
+
+            return deviationFromIdeal;
+        };
+
+        FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
+            var ideal = this.personality.unitCompositionPreference;
+            var actual = this.getTotalUnitCountByArchetype();
+            return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
+        };
+
+        FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
+            var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
+            var globalPreferenceWeight = relativeFrontSize;
+
+            var globalScores = this.getGlobalUnitArcheypeScores();
+
+            var scores = {};
+
+            var frontArchetypes = front.getUnitCountByArchetype();
+            var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
+
+            for (var archetype in globalScores) {
+                scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
+                scores[archetype] += frontScores[archetype];
+                scores[archetype] /= 2;
+            }
+
+            return scores;
+        };
+
+        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
         };
 
         FrontsAI.prototype.assignUnits = function () {
@@ -14746,80 +14841,39 @@ var Rance;
 
             this.personality = props.personality;
         }
-        EconomicAI.prototype.getTotalUnitCountByArchetype = function () {
-            var totalUnitCountByArchetype = {};
+        EconomicAI.prototype.satisfyFrontRequest = function (front) {
+            // TODO
+            var star = this.player.getNearestOwnedStarTo(front.musterLocation);
 
-            var units = this.player.getAllUnits();
-            for (var i = 0; i < units.length; i++) {
-                var unitArchetype = units[i].template.archetype;
+            var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
+            var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
 
-                if (!totalUnitCountByArchetype[unitArchetype]) {
-                    totalUnitCountByArchetype[unitArchetype] = 0;
+            var buildableUnitTypesByArchetype = {};
+
+            var buildableUnitTypes = star.getBuildableShipTypes();
+
+            for (var i = 0; i < buildableUnitTypes.length; i++) {
+                var archetype = buildableUnitTypes[i].archetype;
+
+                if (!buildableUnitTypesByArchetype[archetype]) {
+                    buildableUnitTypesByArchetype[archetype] = [];
                 }
 
-                totalUnitCountByArchetype[unitArchetype]++;
+                buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
             }
 
-            return totalUnitCountByArchetype;
-        };
+            var unitType;
 
-        EconomicAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
-            var min = 0;
-            var max;
-            for (var archetype in unitsByArchetype) {
-                var count = unitsByArchetype[archetype];
-                max = isFinite(max) ? Math.max(max, count) : count;
+            for (var i = 0; i < sortedScores.length; i++) {
+                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                    unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                    break;
+                }
             }
+            if (!unitType)
+                debugger;
 
-            var relativeWeights = {};
-
-            for (var archetype in unitsByArchetype) {
-                var count = unitsByArchetype[archetype];
-                relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
-            }
-
-            return relativeWeights;
-        };
-
-        EconomicAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
-            var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
-
-            var deviationFromIdeal = {};
-
-            for (var archetype in idealWeights) {
-                var ideal = idealWeights[archetype];
-                var actual = relativeWeights[archetype] || 0;
-
-                deviationFromIdeal[archetype] = ideal - actual;
-            }
-
-            return deviationFromIdeal;
-        };
-
-        EconomicAI.prototype.getGlobalUnitArcheypeScores = function () {
-            var ideal = this.personality.unitCompositionPreference;
-            var actual = this.getTotalUnitCountByArchetype();
-            return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
-        };
-
-        EconomicAI.prototype.getFrontUnitArchetypeScores = function (front) {
-            var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
-            var globalPreferenceWeight = relativeFrontSize;
-
-            var globalScores = this.getGlobalUnitArcheypeScores();
-
-            var scores = {};
-
-            var frontArchetypes = front.getUnitCountByArchetype();
-            var frontScores = this.getUnitCompositionDeviationFromIdeal(frontArchetypes, this.personality.unitCompositionPreference);
-
-            for (var archetype in globalScores) {
-                scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
-                scores[archetype] += frontScores[archetype];
-            }
-        };
-
-        EconomicAI.prototype.satisfyFrontRequest = function (front, request) {
+            debugger;
         };
         return EconomicAI;
     })();

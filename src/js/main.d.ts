@@ -339,6 +339,9 @@ declare module Rance {
     function getRandomArrayKey(target: any[]): number;
     function getRandomArrayItem(target: any[]): any;
     function getRandomKey(target: any): string;
+    function getObjectKeysSortedByValue(obj: {
+        [key: string]: number;
+    }, order: string): string[];
     function getRandomProperty(target: any): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function divmod(x: any, y: any): number[];
@@ -833,6 +836,7 @@ declare module Rance {
                 parentBuilding: Rance.Building;
             }[];
         };
+        public getBuildableShipTypes(): any[];
         public getAllFleets(): any[];
         public getFleetIndex(fleet: Rance.Fleet): number;
         public hasFleet(fleet: Rance.Fleet): boolean;
@@ -2313,10 +2317,25 @@ declare module Rance {
         public map: Rance.GalaxyMap;
         public mapEvaluator: Rance.MapEvaluator;
         public objectivesAI: Rance.ObjectivesAI;
+        public personality: Rance.IPersonalityData;
         public fronts: Rance.Front[];
         public requests: any[];
-        constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI);
+        constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI, personality: Rance.IPersonalityData);
         public processObjectives(): void;
+        public getTotalUnitCountByArchetype(): {};
+        public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
+            [archetype: string]: number;
+        };
+        public getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
+            [archetype: string]: number;
+        };
+        public getGlobalUnitArcheypeScores(): {
+            [archetype: string]: number;
+        };
+        public getFrontUnitArchetypeScores(front: Rance.Front): {
+            [archetype: string]: number;
+        };
+        public getUnitScoresForFront(units: Rance.Unit[], front: Rance.Front): void;
         public assignUnits(): void;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
     }
@@ -2334,18 +2353,7 @@ declare module Rance {
             mapEvaluator: Rance.MapEvaluator;
             personality: Rance.IPersonalityData;
         });
-        public getTotalUnitCountByArchetype(): {};
-        public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
-            [archetype: string]: number;
-        };
-        public getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
-            [archetype: string]: number;
-        };
-        public getGlobalUnitArcheypeScores(): {
-            [archetype: string]: number;
-        };
-        public getFrontUnitArchetypeScores(front: Rance.Front): void;
-        public satisfyFrontRequest(front: Rance.Front, request: any): void;
+        public satisfyFrontRequest(front: Rance.Front): void;
     }
 }
 declare module Rance {
