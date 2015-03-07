@@ -14700,6 +14700,10 @@ var Rance;
             var pureFleetsByLocation = {};
             var impureFleetMembersByLocation = {};
 
+            var ownUnitFilterFN = function (unit) {
+                return this.getUnitIndex(unit) >= 0;
+            }.bind(this);
+
             for (var i = 0; i < allFleets.length; i++) {
                 var fleet = allFleets[i];
                 var star = fleet.location;
@@ -14711,9 +14715,7 @@ var Rance;
 
                     pureFleetsByLocation[star.id].push(fleet);
                 } else {
-                    var ownUnits = fleet.ships.filter(function (unit) {
-                        return this.getUnitIndex(unit) >= 0;
-                    });
+                    var ownUnits = fleet.ships.filter(ownUnitFilterFN);
 
                     for (var j = 0; j < ownUnits.length; j++) {
                         if (!impureFleetMembersByLocation[star.id]) {
@@ -14959,7 +14961,7 @@ var Rance;
                 priorityMultiplier -= unitsOverMinimum * 0.05;
             }
             if (unitsOverIdeal > 0) {
-                priorityMultiplier -= unitsOverIdeal * 0.1;
+                priorityMultiplier -= unitsOverIdeal * 0.3;
             }
 
             var adjustedPriority = front.priority * priorityMultiplier;
@@ -14968,7 +14970,7 @@ var Rance;
             // penalize initial units for front
             // inertia at beginning of adding units to front
             // so ai prioritizes fully formed fronts to incomplete ones
-            var newUnitInertia = 0.4 - front.units.length * 0.1;
+            var newUnitInertia = 0.3 - front.units.length * 0.1;
             if (newUnitInertia > 0) {
                 score -= newUnitInertia;
             }

@@ -146,7 +146,7 @@ module Rance
       }
       if (unitsOverIdeal > 0)
       {
-        priorityMultiplier -= unitsOverIdeal * 0.1;
+        priorityMultiplier -= unitsOverIdeal * 0.3;
       }
 
       var adjustedPriority = front.priority * priorityMultiplier;
@@ -155,7 +155,7 @@ module Rance
       // penalize initial units for front
       // inertia at beginning of adding units to front
       // so ai prioritizes fully formed fronts to incomplete ones
-      var newUnitInertia = 0.4 - front.units.length * 0.1;
+      var newUnitInertia = 0.3 - front.units.length * 0.1;
       if (newUnitInertia > 0)
       {
         score -= newUnitInertia;
