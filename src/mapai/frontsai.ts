@@ -219,7 +219,7 @@ module Rance
           var unit = frontScores[i].unit;
           frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
         }
-      }
+      }.bind(this);
 
       var removeUnit = function(unit: Unit)
       {
@@ -258,6 +258,88 @@ module Rance
       }
     }
 
+    getFrontWithId(id: number)
+    {
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        if (this.fronts[i].id === id)
+        {
+          return this.fronts[i];
+        }
+      }
+
+      return null;
+    }
+
+    createFront(objective: Objective)
+    {
+      var musterLocation = this.player.getNearestOwnedStarTo(
+        objective.target);
+      var unitsDesired = this.getUnitsToFillExpansionObjective(objective);
+
+      var front = new Front(
+      {
+        id: objective.id,
+        priority: objective.priority,
+
+        minUnitsDesired: unitsDesired,
+        idealUnitsDesired: unitsDesired,
+
+        targetLocation: objective.target,
+        musterLocation: musterLocation
+      });
+
+      return front;
+    }
+
+    removeInactiveFronts()
+    {
+      // loop backwards because splicing
+      for (var i = this.fronts.length - 1; i >= 0; i--)
+      {
+        var front = this.fronts[i];
+        var hasActiveObjective = false;
+
+        for (var j = 0; j < this.objectivesAI.objectives.length; j++)
+        {
+          var objective = this.objectivesAI.objectives[i];
+          if (objective.id === front.id)
+          {
+            hasActiveObjective = true;
+            break;
+          }
+        }
+
+        if (!hasActiveObjective)
+        {
+          this.fronts.splice(i, 1);
+        }
+      }
+    }
+
+    formFronts()
+    {
+      /*
+      dissolve old fronts without an active objective
+      create new fronts for every objective not already assoicated with one
+       */
+      this.removeInactiveFronts();
+      
+      for (var i = 0; i < this.objectivesAI.objectives.length; i++)
+      {
+        var objective = this.objectivesAI.objectives[i];
+
+        if (objective.priority > 0.4)
+        {
+          if (!this.getFrontWithId(objective.id))
+          {
+            var front = this.createFront(objective);
+            this.fronts.push(front);
+          }
+        }
+      }
+    }
+
     getUnitsToFillExpansionObjective(objective: Objective)
     {
       var star = objective.target;
@@ -282,7 +364,10 @@ module Rance
       for (var i = 0; i < this.fronts.length; i++)
       {
         var front = this.fronts[i];
-        this.frontsRequestingUnits.push(front);
+        if (front.units.length < front.idealUnitsDesired)
+        {
+          this.frontsRequestingUnits.push(front);
+        }
       }
     }
   }
