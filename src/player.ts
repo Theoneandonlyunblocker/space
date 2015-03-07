@@ -385,6 +385,8 @@ module Rance
       this.money -= template.buildCost;
 
       eventManager.dispatchEvent("playerControlUpdated");
+
+      return unit;
     }
     addItem(item: Item)
     {
