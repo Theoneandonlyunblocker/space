@@ -2356,6 +2356,7 @@ declare module Rance {
         public createFront(objective: Rance.Objective): Rance.Front;
         public removeInactiveFronts(): void;
         public formFronts(): void;
+        public organizeFleets(): void;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
         public setUnitRequests(): void;
     }

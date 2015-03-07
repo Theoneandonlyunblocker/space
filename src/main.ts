@@ -85,8 +85,9 @@ module Rance
       this.initDisplay();
       this.initUI();
 
-      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
-      b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
+      // TODO
+      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
+      b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
       c = new Rance.AIController(
       {
         player: this.humanPlayer,
@@ -119,6 +120,15 @@ module Rance
       this.mapRenderer.setAllLayersAsDirty();
 
       idGenerators = cloneObject(parsed.idGenerators);
+
+      // TODO
+      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
+      b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
+      c = new Rance.AIController(
+      {
+        player: this.humanPlayer,
+        game: this.game
+      });
 
       this.initUI();
     }

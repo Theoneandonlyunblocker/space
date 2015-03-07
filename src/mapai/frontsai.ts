@@ -245,15 +245,27 @@ module Rance
         allUnitScores = allUnitScores.concat(frontScores);
       }
 
+      var alreadyAdded:
+      {
+        [unitId: number]: boolean;
+      } = {};
+
+
       while (allUnitScores.length > 0)
       {
+        // sorted in loop as scores get recalculated every iteration
         allUnitScores.sort(sortByScoreFN);
 
         var bestScore = allUnitScores.pop();
+        if (alreadyAdded[bestScore.unit.id])
+        {
+          continue;
+        }
 
         bestScore.front.addUnit(bestScore.unit);
 
         removeUnit(bestScore.unit);
+        alreadyAdded[bestScore.unit.id] = true;
         recalculateScoresForFront(bestScore.front);
       }
     }
@@ -324,7 +336,7 @@ module Rance
       create new fronts for every objective not already assoicated with one
        */
       this.removeInactiveFronts();
-      
+
       for (var i = 0; i < this.objectivesAI.objectives.length; i++)
       {
         var objective = this.objectivesAI.objectives[i];

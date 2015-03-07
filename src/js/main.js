@@ -14790,7 +14790,7 @@ var Rance;
             return this.units.indexOf(unit);
         };
         Front.prototype.addUnit = function (unit) {
-            if (this.getUnitIndex(unit) !== -1) {
+            if (this.getUnitIndex(unit) === -1) {
                 this.units.push(unit);
             }
         };
@@ -15036,14 +15036,21 @@ var Rance;
                 allUnitScores = allUnitScores.concat(frontScores);
             }
 
+            var alreadyAdded = {};
+
             while (allUnitScores.length > 0) {
+                // sorted in loop as scores get recalculated every iteration
                 allUnitScores.sort(sortByScoreFN);
 
                 var bestScore = allUnitScores.pop();
+                if (alreadyAdded[bestScore.unit.id]) {
+                    continue;
+                }
 
                 bestScore.front.addUnit(bestScore.unit);
 
                 removeUnit(bestScore.unit);
+                alreadyAdded[bestScore.unit.id] = true;
                 recalculateScoresForFront(bestScore.front);
             }
         };
@@ -15109,6 +15116,12 @@ var Rance;
                         this.fronts.push(front);
                     }
                 }
+            }
+        };
+
+        FrontsAI.prototype.organizeFleets = function () {
+            for (var i = 0; i < this.fronts.length; i++) {
+                this.fronts[i].organizeFleets();
             }
         };
 
@@ -15266,7 +15279,10 @@ var Rance;
 
             // eai fulfill requests
             this.economicAI.satisfyAllRequests();
-            // fai move units
+
+            // fai organize fleets
+            this.frontsAI.organizeFleets();
+            // fai move fleets
             //
         };
         return AIController;
@@ -15345,8 +15361,9 @@ var Rance;
             this.initDisplay();
             this.initUI();
 
-            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
-            b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
+            // TODO
+            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
+            b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
             c = new Rance.AIController({
                 player: this.humanPlayer,
                 game: this.game
@@ -15376,6 +15393,14 @@ var Rance;
             this.mapRenderer.setAllLayersAsDirty();
 
             Rance.idGenerators = Rance.cloneObject(parsed.idGenerators);
+
+            // TODO
+            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
+            b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
+            c = new Rance.AIController({
+                player: this.humanPlayer,
+                game: this.game
+            });
 
             this.initUI();
         };
