@@ -104,8 +104,9 @@ module Rance
       }
       if (!unitType) debugger;
 
-      this.player.buildUnit(unitType, star);
-      debugger;
+      var unit = this.player.buildUnit(unitType, star);
+      
+      front.addUnit(unit);
     }
   }
 }
