@@ -340,6 +340,14 @@ module Rance
       }
     }
 
+    organizeFleets()
+    {
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        this.fronts[i].organizeFleets();
+      }
+    }
+
     getUnitsToFillExpansionObjective(objective: Objective)
     {
       var star = objective.target;

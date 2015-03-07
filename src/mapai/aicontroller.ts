@@ -70,7 +70,10 @@ module Rance
       // eai fulfill requests
       this.economicAI.satisfyAllRequests();
 
-      // fai move units
+      // fai organize fleets
+      this.frontsAI.organizeFleets();
+
+      // fai move fleets
 
 
       // 
