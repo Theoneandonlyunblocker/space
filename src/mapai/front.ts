@@ -182,7 +182,7 @@ module Rance
     }
     addUnit(unit: Unit)
     {
-      if (this.getUnitIndex(unit) !== -1)
+      if (this.getUnitIndex(unit) === -1)
       {
         this.units.push(unit);
       }
