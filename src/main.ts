@@ -21,8 +21,7 @@
 /// <reference path="borderpolygon.ts"/>
 
 /// <reference path="mapai/mapevaluator.ts"/>
-/// <reference path="mapai/objectivesai.ts"/>
-/// <reference path="mapai/economicai.ts"/>
+/// <reference path="mapai/aicontroller.ts"/>
 /// 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 
@@ -88,7 +87,11 @@ module Rance
 
       a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
       b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
-      c = new Rance.ObjectivesAI(a, this.game); // TODO
+      c = new Rance.AIController(
+      {
+        player: this.humanPlayer,
+        game: this.game
+      });
     }
     destroy()
     {

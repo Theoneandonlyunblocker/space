@@ -7696,6 +7696,8 @@ var Rance;
             this.money -= template.buildCost;
 
             Rance.eventManager.dispatchEvent("playerControlUpdated");
+
+            return unit;
         };
         Player.prototype.addItem = function (item) {
             this.items.push(item);
@@ -14676,7 +14678,7 @@ var Rance;
         function Front(props) {
             this.id = props.id;
             this.priority = props.priority;
-            this.units = props.units;
+            this.units = props.units || [];
 
             this.minUnitsDesired = props.minUnitsDesired;
             this.idealUnitsDesired = props.idealUnitsDesired;
@@ -14684,6 +14686,106 @@ var Rance;
             this.targetLocation = props.targetLocation;
             this.musterLocation = props.musterLocation;
         }
+        Front.prototype.organizeFleets = function () {
+            // pure fleet only has units belonging to this front in it
+            /*
+            get all pure fleets + location
+            get all ships in impure fleets + location
+            merge pure fleets at same location
+            move impure ships to pure fleets at location if possible
+            create new pure fleets with remaining impure units
+            */
+            var allFleets = this.getAssociatedFleets();
+
+            var pureFleetsByLocation = {};
+            var impureFleetMembersByLocation = {};
+
+            for (var i = 0; i < allFleets.length; i++) {
+                var fleet = allFleets[i];
+                var star = fleet.location;
+
+                if (this.isFleetPure(fleet)) {
+                    if (!pureFleetsByLocation[star.id]) {
+                        pureFleetsByLocation[star.id] = [];
+                    }
+
+                    pureFleetsByLocation[star.id].push(fleet);
+                } else {
+                    var ownUnits = fleet.ships.filter(function (unit) {
+                        return this.getUnitIndex(unit) >= 0;
+                    });
+
+                    for (var j = 0; j < ownUnits.length; j++) {
+                        if (!impureFleetMembersByLocation[star.id]) {
+                            impureFleetMembersByLocation[star.id] = [];
+                        }
+
+                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+                    }
+                }
+            }
+
+            var sortFleetsBySizeFN = function (a, b) {
+                return b.ships.length - a.ships.length;
+            };
+
+            for (var starId in pureFleetsByLocation) {
+                // combine pure fleets at same location
+                var fleets = pureFleetsByLocation[starId];
+                if (fleets.length > 1) {
+                    fleets.sort(sortFleetsBySizeFN);
+
+                    for (var i = fleets.length - 1; i >= 1; i--) {
+                        fleets[i].mergeWith(fleets[0]);
+                        fleets.splice(i, 1);
+                    }
+                }
+
+                // move impure ships to pure fleets at same location
+                if (impureFleetMembersByLocation[starId]) {
+                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
+                        var ship = impureFleetMembersByLocation[starId][i];
+                        ship.fleet.transferShip(fleets[0], ship);
+                        impureFleetMembersByLocation[starId].splice(i, 1);
+                    }
+                }
+            }
+
+            for (var starId in impureFleetMembersByLocation) {
+                var ships = impureFleetMembersByLocation[starId];
+                var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
+
+                for (var i = ships.length - 1; i >= 0; i--) {
+                    ships[i].fleet.transferShip(newFleet, ships[i]);
+                }
+            }
+        };
+        Front.prototype.isFleetPure = function (fleet) {
+            for (var i = 0; i < fleet.ships.length; i++) {
+                if (this.getUnitIndex(fleet.ships[i]) === -1) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+        Front.prototype.getAssociatedFleets = function () {
+            var fleetsById = {};
+
+            for (var i = 0; i < this.units.length; i++) {
+                if (!fleetsById[this.units[i].fleet.id]) {
+                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+                }
+            }
+
+            var allFleets = [];
+
+            for (var fleetId in fleetsById) {
+                allFleets.push(fleetsById[fleetId]);
+            }
+
+            return allFleets;
+        };
         Front.prototype.getUnitIndex = function (unit) {
             return this.units.indexOf(unit);
         };
@@ -14712,6 +14814,36 @@ var Rance;
             }
 
             return unitCountByArchetype;
+        };
+        Front.prototype.getUnitsByLocation = function () {
+            var byLocation = {};
+
+            for (var i = 0; i < this.units.length; i++) {
+                var star = this.units[i].fleet.location;
+                if (!byLocation[star.id]) {
+                    byLocation[star.id] = [];
+                }
+
+                byLocation[star.id].push(this.units[i]);
+            }
+
+            return byLocation;
+        };
+
+        Front.prototype.moveUnits = function () {
+            var shouldMoveToTarget;
+
+            var unitsByLocation = this.getUnitsByLocation();
+            if (unitsByLocation[this.targetLocation.id].length + unitsByLocation[this.musterLocation.id].length >= this.minUnitsDesired) {
+                shouldMoveToTarget = true;
+            } else {
+                shouldMoveToTarget = false;
+            }
+
+            var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
+
+            for (var i = 0; i < this.units.length; i++) {
+            }
         };
         return Front;
     })();
@@ -14883,7 +15015,7 @@ var Rance;
                     var unit = frontScores[i].unit;
                     frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
                 }
-            };
+            }.bind(this);
 
             var removeUnit = function (unit) {
                 for (var frontId in unitScoresByFront) {
@@ -14916,6 +15048,70 @@ var Rance;
             }
         };
 
+        FrontsAI.prototype.getFrontWithId = function (id) {
+            for (var i = 0; i < this.fronts.length; i++) {
+                if (this.fronts[i].id === id) {
+                    return this.fronts[i];
+                }
+            }
+
+            return null;
+        };
+
+        FrontsAI.prototype.createFront = function (objective) {
+            var musterLocation = this.player.getNearestOwnedStarTo(objective.target);
+            var unitsDesired = this.getUnitsToFillExpansionObjective(objective);
+
+            var front = new Rance.Front({
+                id: objective.id,
+                priority: objective.priority,
+                minUnitsDesired: unitsDesired,
+                idealUnitsDesired: unitsDesired,
+                targetLocation: objective.target,
+                musterLocation: musterLocation
+            });
+
+            return front;
+        };
+
+        FrontsAI.prototype.removeInactiveFronts = function () {
+            for (var i = this.fronts.length - 1; i >= 0; i--) {
+                var front = this.fronts[i];
+                var hasActiveObjective = false;
+
+                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
+                    var objective = this.objectivesAI.objectives[i];
+                    if (objective.id === front.id) {
+                        hasActiveObjective = true;
+                        break;
+                    }
+                }
+
+                if (!hasActiveObjective) {
+                    this.fronts.splice(i, 1);
+                }
+            }
+        };
+
+        FrontsAI.prototype.formFronts = function () {
+            /*
+            dissolve old fronts without an active objective
+            create new fronts for every objective not already assoicated with one
+            */
+            this.removeInactiveFronts();
+
+            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
+                var objective = this.objectivesAI.objectives[i];
+
+                if (objective.priority > 0.4) {
+                    if (!this.getFrontWithId(objective.id)) {
+                        var front = this.createFront(objective);
+                        this.fronts.push(front);
+                    }
+                }
+            }
+        };
+
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
             var star = objective.target;
             var independentShips = star.getAllShipsOfPlayer(star.owner);
@@ -14936,7 +15132,9 @@ var Rance;
 
             for (var i = 0; i < this.fronts.length; i++) {
                 var front = this.fronts[i];
-                this.frontsRequestingUnits.push(front);
+                if (front.units.length < front.idealUnitsDesired) {
+                    this.frontsRequestingUnits.push(front);
+                }
             }
         };
         return FrontsAI;
@@ -15015,12 +15213,65 @@ var Rance;
             if (!unitType)
                 debugger;
 
-            this.player.buildUnit(unitType, star);
-            debugger;
+            var unit = this.player.buildUnit(unitType, star);
+
+            front.addUnit(unit);
         };
         return EconomicAI;
     })();
     Rance.EconomicAI = EconomicAI;
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../game.ts"/>
+/// <reference path="../player.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
+/// <reference path="economicai.ts"/>
+/// <reference path="frontsai.ts"/>
+var Rance;
+(function (Rance) {
+    var AIController = (function () {
+        function AIController(props) {
+            this.personality = Rance.Templates.Personalities.testPersonality1;
+
+            this.player = props.player;
+            this.game = props.game;
+
+            this.map = props.game.galaxyMap;
+
+            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
+
+            this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
+            this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
+            this.economicAI = new Rance.EconomicAI({
+                objectivesAI: this.objectivesAI,
+                frontsAI: this.frontsAI,
+                mapEvaluator: this.mapEvaluator,
+                personality: this.personality
+            });
+        }
+        AIController.prototype.processTurn = function () {
+            // gsai evaluate grand strategy
+            // oai make objectives
+            this.objectivesAI.setAllObjectives();
+
+            // fai form fronts
+            this.frontsAI.formFronts();
+
+            // fai assign units
+            this.frontsAI.assignUnits();
+
+            // fai request units
+            this.frontsAI.setUnitRequests();
+
+            // eai fulfill requests
+            this.economicAI.satisfyAllRequests();
+            // fai move units
+            //
+        };
+        return AIController;
+    })();
+    Rance.AIController = AIController;
 })(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
@@ -15054,8 +15305,7 @@ var Rance;
 /// <reference path="pathfindingarrow.ts"/>
 /// <reference path="borderpolygon.ts"/>
 /// <reference path="mapai/mapevaluator.ts"/>
-/// <reference path="mapai/objectivesai.ts"/>
-/// <reference path="mapai/economicai.ts"/>
+/// <reference path="mapai/aicontroller.ts"/>
 ///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 var a, b, c;
@@ -15097,7 +15347,10 @@ var Rance;
 
             a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer); // TODO
             b = new Rance.PathfindingArrow(this.renderer.layers["select"]); // TODO
-            c = new Rance.ObjectivesAI(a, this.game); // TODO
+            c = new Rance.AIController({
+                player: this.humanPlayer,
+                game: this.game
+            });
         };
         App.prototype.destroy = function () {
             this.renderer.destroy();

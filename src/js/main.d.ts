@@ -1203,7 +1203,7 @@ declare module Rance {
         public getVisibleStars(): Rance.Star[];
         public getRevealedStars(): Rance.Star[];
         public getRevealedButNotVisibleStars(): Rance.Star[];
-        public buildUnit(template: Rance.Templates.IUnitTemplate, location: Rance.Star): void;
+        public buildUnit(template: Rance.Templates.IUnitTemplate, location: Rance.Star): Rance.Unit;
         public addItem(item: Rance.Item): void;
         public getAllBuildableItems(): any[];
         public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;
@@ -2301,18 +2301,25 @@ declare module Rance {
         constructor(props: {
             id: number;
             priority: number;
-            units: Rance.Unit[];
+            units?: Rance.Unit[];
             minUnitsDesired: number;
             idealUnitsDesired: number;
             targetLocation: Rance.Star;
             musterLocation: Rance.Star;
         });
+        public organizeFleets(): void;
+        public isFleetPure(fleet: Rance.Fleet): boolean;
+        public getAssociatedFleets(): Rance.Fleet[];
         public getUnitIndex(unit: Rance.Unit): number;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public getUnitCountByArchetype(): {
             [archetype: string]: number;
         };
+        public getUnitsByLocation(): {
+            [starId: number]: Rance.Unit[];
+        };
+        public moveUnits(): void;
     }
 }
 declare module Rance {
@@ -2345,6 +2352,10 @@ declare module Rance {
             front: Rance.Front;
         }[];
         public assignUnits(): void;
+        public getFrontWithId(id: number): Rance.Front;
+        public createFront(objective: Rance.Objective): Rance.Front;
+        public removeInactiveFronts(): void;
+        public formFronts(): void;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
         public setUnitRequests(): void;
     }
@@ -2364,6 +2375,23 @@ declare module Rance {
         });
         public satisfyAllRequests(): void;
         public satisfyFrontRequest(front: Rance.Front): void;
+    }
+}
+declare module Rance {
+    class AIController {
+        public player: Rance.Player;
+        public game: Rance.Game;
+        public personality: Rance.IPersonalityData;
+        public map: Rance.GalaxyMap;
+        public mapEvaluator: Rance.MapEvaluator;
+        public objectivesAI: Rance.ObjectivesAI;
+        public economicAI: Rance.EconomicAI;
+        public frontsAI: Rance.FrontsAI;
+        constructor(props: {
+            player: Rance.Player;
+            game: Rance.Game;
+        });
+        public processTurn(): void;
     }
 }
 declare module Rance {

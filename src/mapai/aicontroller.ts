@@ -3,7 +3,7 @@
 /// <reference path="../player.ts"/>
 
 /// <reference path="mapevaluator.ts"/>
-/// <reference path="objectiveai.ts"/>
+/// <reference path="objectivesai.ts"/>
 /// <reference path="economicai.ts"/>
 /// <reference path="frontsai.ts"/>
 
@@ -29,6 +29,8 @@ module Rance
       game: Game;
     })
     {
+      this.personality = Templates.Personalities.testPersonality1;
+
       this.player = props.player;
       this.game = props.game;
 
@@ -55,8 +57,11 @@ module Rance
 
       // oai make objectives
       this.objectivesAI.setAllObjectives();
-      
+
       // fai form fronts
+      this.frontsAI.formFronts();
+      
+      // fai assign units
       this.frontsAI.assignUnits();
 
       // fai request units
