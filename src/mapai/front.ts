@@ -60,6 +60,11 @@ module Rance
         [starId: number]: Unit[];
       } = {};
 
+      var ownUnitFilterFN = function(unit)
+      {
+        return this.getUnitIndex(unit) >= 0;
+      }.bind(this);
+
       // build indexes of pure fleets and impure ships
       for (var i = 0; i < allFleets.length; i++)
       {
@@ -77,10 +82,7 @@ module Rance
         }
         else
         {
-          var ownUnits = fleet.ships.filter(function(unit)
-          {
-            return this.getUnitIndex(unit) >= 0;
-          });
+          var ownUnits = fleet.ships.filter(ownUnitFilterFN);
 
           for (var j = 0; j < ownUnits.length; j++)
           {
