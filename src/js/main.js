@@ -14676,6 +14676,7 @@ var Rance;
 (function (Rance) {
     var Front = (function () {
         function Front(props) {
+            this.hasMustered = false;
             this.id = props.id;
             this.priority = props.priority;
             this.units = props.units || [];
@@ -14832,19 +14833,30 @@ var Rance;
             return byLocation;
         };
 
-        Front.prototype.moveUnits = function () {
+        Front.prototype.moveFleets = function () {
             var shouldMoveToTarget;
 
             var unitsByLocation = this.getUnitsByLocation();
-            if (unitsByLocation[this.targetLocation.id].length + unitsByLocation[this.musterLocation.id].length >= this.minUnitsDesired) {
+            var fleets = this.getAssociatedFleets();
+
+            if (this.hasMustered) {
                 shouldMoveToTarget = true;
             } else {
-                shouldMoveToTarget = false;
+                var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
+                var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
+
+                if (atMuster + atTarget >= this.minUnitsDesired) {
+                    this.hasMustered = true;
+                    shouldMoveToTarget = true;
+                } else {
+                    shouldMoveToTarget = false;
+                }
             }
 
             var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
 
-            for (var i = 0; i < this.units.length; i++) {
+            for (var i = 0; i < fleets.length; i++) {
+                fleets[i].move(moveTarget);
             }
         };
         return Front;
@@ -15127,6 +15139,12 @@ var Rance;
             }
         };
 
+        FrontsAI.prototype.moveFleets = function () {
+            for (var i = 0; i < this.fronts.length; i++) {
+                this.fronts[i].moveFleets();
+            }
+        };
+
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
             var star = objective.target;
             var independentShips = star.getAllShipsOfPlayer(star.owner);
@@ -15284,8 +15302,12 @@ var Rance;
 
             // fai organize fleets
             this.frontsAI.organizeFleets();
+
             // fai move fleets
-            //
+            this.frontsAI.moveFleets();
+
+            // fai organize fleets
+            this.frontsAI.organizeFleets();
         };
         return AIController;
     })();

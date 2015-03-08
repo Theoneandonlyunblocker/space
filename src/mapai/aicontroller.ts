@@ -74,9 +74,10 @@ module Rance
       this.frontsAI.organizeFleets();
 
       // fai move fleets
+      this.frontsAI.moveFleets();
 
-
-      // 
+      // fai organize fleets
+      this.frontsAI.organizeFleets();
     }
   }
 }

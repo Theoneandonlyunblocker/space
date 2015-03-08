@@ -360,6 +360,18 @@ module Rance
       }
     }
 
+    moveFleets()
+    {
+      /*
+      for every fleet
+
+       */
+      for (var i = 0; i < this.fronts.length; i++)
+      {
+        this.fronts[i].moveFleets();
+      }
+    }
+
     getUnitsToFillExpansionObjective(objective: Objective)
     {
       var star = objective.target;

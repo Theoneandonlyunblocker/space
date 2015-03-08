@@ -2298,6 +2298,7 @@ declare module Rance {
         public idealUnitsDesired: number;
         public targetLocation: Rance.Star;
         public musterLocation: Rance.Star;
+        public hasMustered: boolean;
         constructor(props: {
             id: number;
             priority: number;
@@ -2319,7 +2320,7 @@ declare module Rance {
         public getUnitsByLocation(): {
             [starId: number]: Rance.Unit[];
         };
-        public moveUnits(): void;
+        public moveFleets(): void;
     }
 }
 declare module Rance {
@@ -2357,6 +2358,7 @@ declare module Rance {
         public removeInactiveFronts(): void;
         public formFronts(): void;
         public organizeFleets(): void;
+        public moveFleets(): void;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
         public setUnitRequests(): void;
     }
