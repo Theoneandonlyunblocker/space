@@ -7416,7 +7416,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Player = (function () {
-        function Player(id) {
+        function Player(isAI, id) {
             this.units = {};
             this.resources = {};
             this.fleets = [];
@@ -7428,6 +7428,11 @@ var Rance;
             this.revealedStars = {};
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
+
+            if (isAI) {
+                this.setupAI();
+            }
+
             this.money = 1000;
         }
         Player.prototype.makeColorScheme = function () {
@@ -7435,6 +7440,9 @@ var Rance;
 
             this.color = scheme.main;
             this.secondaryColor = scheme.secondary;
+        };
+        Player.prototype.setupAI = function () {
+            this.isAI = true;
         };
         Player.prototype.setupPirates = function () {
             this.name = "Independent";
@@ -7759,7 +7767,7 @@ var Rance;
             };
 
             // TODO
-            var battlePrep = new Rance.BattlePrep(this, battleData);
+            var battlePrep = new Rance.BattlePrep(battleData);
             app.reactUI.battlePrep = battlePrep;
             app.reactUI.switchScene("battlePrep");
         };
@@ -7772,6 +7780,7 @@ var Rance;
             data.colorAlpha = this.colorAlpha;
             data.secondaryColor = this.secondaryColor;
             data.isIndependent = this.isIndependent;
+            data.isAI = this.isAI;
 
             data.flag = this.flag.serialize();
 
@@ -10062,68 +10071,121 @@ var Rance;
 var Rance;
 (function (Rance) {
     var BattlePrep = (function () {
-        function BattlePrep(player, battleData) {
+        function BattlePrep(battleData) {
             this.alreadyPlaced = {};
-            this.player = player;
+            this.attacker = this.battleData.attacker.player;
+            this.defender = this.battleData.defender.player;
             this.battleData = battleData;
 
-            this.fleet = this.makeEmptyFleet();
+            this.makeAIFormations();
 
-            this.setAvailableUnits();
+            this.setupPlayer();
         }
-        BattlePrep.prototype.setAvailableUnits = function () {
-            if (this.battleData.attacker.player === this.player) {
-                this.availableUnits = this.battleData.attacker.ships;
-                this.enemy = this.battleData.defender.player;
-                this.enemyUnits = this.battleData.defender.ships;
-            } else {
-                this.availableUnits = this.battleData.defender.ships;
-                this.enemy = this.battleData.attacker.player;
-                this.enemyUnits = this.battleData.attacker.ships;
-            }
-        };
-        BattlePrep.prototype.makeEmptyFleet = function () {
-            var COLUMNS_PER_FLEET = 2;
+        BattlePrep.prototype.makeEmptyFormation = function () {
+            var COLUMNS_PER_FORMATION = 2;
             var SHIPS_PER_COLUMN = 3;
 
-            var fleet = [];
-            for (var i = 0; i < COLUMNS_PER_FLEET; i++) {
+            var formation = [];
+            for (var i = 0; i < COLUMNS_PER_FORMATION; i++) {
                 var column = [];
                 for (var j = 0; j < SHIPS_PER_COLUMN; j++) {
                     column.push(null);
                 }
-                fleet.push(column);
+                formation.push(column);
             }
 
-            return fleet;
+            return formation;
         };
 
-        BattlePrep.prototype.makeAIFleet = function (units) {
-            var fleet = this.makeEmptyFleet();
-            var alreadyPlaced = 0;
+        BattlePrep.prototype.makeAIFormations = function () {
+            if (this.attacker.isAI) {
+                this.attackerFormation = this.makeAIFormation(this.battleData.attacker.ships);
+            }
+            if (this.defender.isAI) {
+                this.defenderFormation = this.makeAIFormation(this.battleData.defender.ships);
+            }
         };
 
-        // TODO
-        BattlePrep.prototype.makeEnemyFleet = function () {
-            var fleet = this.makeEmptyFleet();
+        BattlePrep.prototype.setupPlayer = function () {
+            if (!this.attacker.isAI) {
+                this.availableUnits = this.battleData.attacker.ships;
+                this.attackerFormation = this.makeEmptyFormation();
+                this.playerFormation = this.attackerFormation;
+                this.enemyFormation = this.defenderFormation;
+                this.humanPlayer = this.attacker;
+                this.enemyPlayer = this.defender;
+            } else if (!this.defender.isAI) {
+                this.availableUnits = this.battleData.defender.ships;
+                this.defenderFormation = this.makeEmptyFormation();
+                this.playerFormation = this.attackerFormation;
+                this.enemyFormation = this.attackerFormation;
+                this.humanPlayer = this.defender;
+                this.enemyPlayer = this.attacker;
+            }
+        };
 
-            for (var i = 0; i < this.enemyUnits.length; i++) {
-                var d = Rance.divmod(i, 3);
+        BattlePrep.prototype.makeAIFormation = function (units) {
+            var formation = this.makeEmptyFormation();
+            var toPlace = units.slice(0);
+            var totalPlaced = 0;
+            var unitsPlacedByArchetype = {};
 
-                if (d[0] > 1)
+            // these are overridden if we run out of units or if alternative
+            // units have significantly lower strength
+            var maxTotalUnitsPerArchetype = {
+                combat: 6,
+                defence: 3,
+                magic: 3,
+                support: 2,
+                utility: 2
+            };
+            var maxUnitsInColumnPerArchetype = {
+                combat: 3,
+                defence: 2,
+                magic: 3,
+                support: 2,
+                utility: 2
+            };
+            var preferredColumnForArchetype = {
+                combat: "front",
+                defence: "front",
+                magic: "back",
+                support: "back",
+                utility: "back"
+            };
+
+            var getUnits;
+
+            // todo
+            var MAX_UNITS_PER_SIDE = 6;
+
+            toPlace.sort(function (a, b) {
+                return a.getStrengthEvaluation() - b.getStrengthEvaluation();
+            });
+
+            for (var i = toPlace.length - 1; i >= 0; i--) {
+                if (totalPlaced >= MAX_UNITS_PER_SIDE)
                     break;
 
-                fleet[d[0]][d[1]] = this.enemyUnits[i];
+                var unit = toPlace[i];
+                var archetype = unit.template.archetype;
+
+                if (!unitsPlacedByArchetype[archetype]) {
+                    unitsPlacedByArchetype[archetype] = 0;
+                }
+
+                unitsPlacedByArchetype[archetype]++;
             }
 
-            return fleet;
+            return formation;
         };
 
+        // Human formation stuff
         BattlePrep.prototype.getUnitPosition = function (unit) {
             return this.alreadyPlaced[unit.id];
         };
         BattlePrep.prototype.getUnitAtPosition = function (position) {
-            return this.fleet[position[0]][position[1]];
+            return this.playerFormation[position[0]][position[1]];
         };
         BattlePrep.prototype.setUnit = function (unit, position) {
             this.removeUnit(unit);
@@ -10138,7 +10200,7 @@ var Rance;
                 this.removeUnit(oldUnitInPosition);
             }
 
-            this.fleet[position[0]][position[1]] = unit;
+            this.playerFormation[position[0]][position[1]] = unit;
             this.alreadyPlaced[unit.id] = position;
         };
         BattlePrep.prototype.swapUnits = function (unit1, unit2) {
@@ -10157,19 +10219,64 @@ var Rance;
             if (!currentPosition)
                 return;
 
-            this.fleet[currentPosition[0]][currentPosition[1]] = null;
+            this.playerFormation[currentPosition[0]][currentPosition[1]] = null;
 
             this.alreadyPlaced[unit.id] = null;
             delete this.alreadyPlaced[unit.id];
         };
 
+        BattlePrep.prototype.humanFormationIsValid = function () {
+            /*
+            invalid if
+            attacking and no ships placed
+            battle is in territority not controlled by either and ships placed
+            is smaller than requirement
+            */
+            var shipsPlaced = 0;
+
+            this.forEachShipInFormation(this.playerFormation, function (unit) {
+                if (unit)
+                    shipsPlaced++;
+            });
+
+            if (!this.attacker.isAI) {
+                if (shipsPlaced < 1)
+                    return false;
+            }
+
+            if (!this.battleData.building) {
+                var minShips = 1;
+
+                if (shipsPlaced < minShips)
+                    return false;
+            }
+
+            return true;
+        };
+
+        // end player formation
+        BattlePrep.prototype.forEachShipInFormation = function (formation, operator) {
+            for (var i = 0; i < formation.length; i++) {
+                for (var j = 0; j < formation[i].length; j++) {
+                    operator(formation[i][j]);
+                }
+            }
+        };
+
+        // TODO
         BattlePrep.prototype.makeBattle = function () {
+            var side1Formation = this.playerFormation || this.attackerFormation;
+            var side2Formation = this.enemyFormation || this.defenderFormation;
+
+            var side1Player = this.humanPlayer || this.attacker;
+            var side2Player = this.enemyPlayer || this.defender;
+
             var battle = new Rance.Battle({
                 battleData: this.battleData,
-                side1: this.fleet,
-                side2: this.makeEnemyFleet(),
-                side1Player: this.player,
-                side2Player: this.enemy
+                side1: side1Formation,
+                side2: side2Formation.reverse(),
+                side1Player: side1Player,
+                side2Player: side2Player
             });
 
             battle.init();
@@ -13508,6 +13615,10 @@ var Rance;
 
             player.money = data.money;
 
+            if (data.isAI) {
+                player.setupAI();
+            }
+
             // color scheme & flag
             if (data.isIndependent) {
                 player.setupPirates();
@@ -15507,13 +15618,14 @@ var Rance;
             var players = [];
 
             for (var i = 0; i < 5; i++) {
-                var player = new Rance.Player();
+                var isAI = i >= 1;
+                var player = new Rance.Player(isAI);
                 player.makeFlag();
 
                 players.push(player);
             }
 
-            var pirates = new Rance.Player();
+            var pirates = new Rance.Player(false);
             pirates.setupPirates();
 
             return ({

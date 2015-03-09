@@ -1165,6 +1165,7 @@ declare module Rance {
         };
         public fleets: Rance.Fleet[];
         public items: Rance.Item[];
+        public isAI: boolean;
         public isIndependent: boolean;
         public money: number;
         public controlledLocations: Rance.Star[];
@@ -1175,8 +1176,9 @@ declare module Rance {
         public revealedStars: {
             [id: number]: Rance.Star;
         };
-        constructor(id?: number);
+        constructor(isAI: boolean, id?: number);
         public makeColorScheme(): void;
+        public setupAI(): void;
         public setupPirates(): void;
         public makeFlag(seed?: any): void;
         public addUnit(unit: Rance.Unit): void;
@@ -1517,25 +1519,31 @@ declare module Rance {
 }
 declare module Rance {
     class BattlePrep {
-        public player: Rance.Player;
-        public enemy: Rance.Player;
+        public attacker: Rance.Player;
+        public defender: Rance.Player;
         public battleData: Rance.IBattleData;
+        public attackerFormation: Rance.Unit[][];
+        public defenderFormation: Rance.Unit[][];
         public availableUnits: Rance.Unit[];
-        public enemyUnits: Rance.Unit[];
-        public fleet: Rance.Unit[][];
+        public playerFormation: Rance.Unit[][];
+        public humanPlayer: Rance.Player;
+        public enemyFormation: Rance.Unit[][];
+        public enemyPlayer: Rance.Player;
         public alreadyPlaced: {
             [id: number]: number[];
         };
-        constructor(player: Rance.Player, battleData: Rance.IBattleData);
-        public setAvailableUnits(): void;
-        public makeEmptyFleet(): any[];
-        public makeAIFleet(units: Rance.Unit[]): void;
-        public makeEnemyFleet(): any[];
+        constructor(battleData: Rance.IBattleData);
+        public makeEmptyFormation(): Rance.Unit[][];
+        public makeAIFormations(): void;
+        public setupPlayer(): void;
+        public makeAIFormation(units: Rance.Unit[]): Rance.Unit[][];
         public getUnitPosition(unit: Rance.Unit): number[];
         public getUnitAtPosition(position: number[]): Rance.Unit;
         public setUnit(unit: Rance.Unit, position: number[]): void;
         public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
+        public humanFormationIsValid(): boolean;
+        public forEachShipInFormation(formation: Rance.Unit[][], operator: (unit: Rance.Unit) => any): void;
         public makeBattle(): Rance.Battle;
     }
 }

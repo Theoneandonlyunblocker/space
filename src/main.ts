@@ -152,13 +152,14 @@ module Rance
 
       for (var i = 0; i < 5; i++)
       {
-        var player = new Player();
+        var isAI = i >= 1;
+        var player = new Player(isAI);
         player.makeFlag();
 
         players.push(player);
       }
 
-      var pirates = new Player();
+      var pirates = new Player(false);
       pirates.setupPirates();
 
       return(
