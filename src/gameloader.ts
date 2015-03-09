@@ -202,6 +202,11 @@ module Rance
 
       player.money = data.money;
 
+      if (data.isAI)
+      {
+        player.setupAI();
+      }
+
       // color scheme & flag
       if (data.isIndependent)
       {

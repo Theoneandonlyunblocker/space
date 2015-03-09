@@ -29,6 +29,7 @@ module Rance
     fleets: Fleet[] = [];
     items: Item[] = [];
 
+    isAI: boolean;
     isIndependent: boolean = false;
 
     money: number;
@@ -44,10 +45,16 @@ module Rance
       [id: number]: Star;
     } = {};
 
-    constructor(id?: number)
+    constructor(isAI: boolean, id?: number)
     {
       this.id = isFinite(id) ? id : idGenerators.player++;
       this.name = "Player " + this.id;
+
+      if (isAI)
+      {
+        this.setupAI();
+      }
+
       this.money = 1000;
     }
     makeColorScheme()
@@ -56,6 +63,10 @@ module Rance
 
       this.color = scheme.main;
       this.secondaryColor = scheme.secondary;
+    }
+    setupAI()
+    {
+      this.isAI = true;
     }
     setupPirates()
     {
@@ -453,7 +464,7 @@ module Rance
       }
 
       // TODO
-      var battlePrep = new BattlePrep(this, battleData);
+      var battlePrep = new BattlePrep(battleData);
       app.reactUI.battlePrep = battlePrep;
       app.reactUI.switchScene("battlePrep");
     }
@@ -467,6 +478,7 @@ module Rance
       data.colorAlpha = this.colorAlpha;
       data.secondaryColor = this.secondaryColor;
       data.isIndependent = this.isIndependent;
+      data.isAI = this.isAI;
 
       data.flag = this.flag.serialize();
 
