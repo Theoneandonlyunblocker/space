@@ -1207,6 +1207,7 @@ declare module Rance {
         public addItem(item: Rance.Item): void;
         public getAllBuildableItems(): any[];
         public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;
+        public attackTarget(location: Rance.Star, target: any): void;
         public serialize(): any;
     }
 }
@@ -2292,6 +2293,7 @@ declare module Rance {
 declare module Rance {
     class Front {
         public id: number;
+        public objective: Rance.Objective;
         public priority: number;
         public units: Rance.Unit[];
         public minUnitsDesired: number;
@@ -2301,6 +2303,7 @@ declare module Rance {
         public hasMustered: boolean;
         constructor(props: {
             id: number;
+            objective: Rance.Objective;
             priority: number;
             units?: Rance.Unit[];
             minUnitsDesired: number;
@@ -2320,7 +2323,8 @@ declare module Rance {
         public getUnitsByLocation(): {
             [starId: number]: Rance.Unit[];
         };
-        public moveFleets(): void;
+        public moveFleets(afterMoveCallback: any): void;
+        public executeAction(afterExecutedCallback: any): void;
     }
 }
 declare module Rance {
@@ -2332,6 +2336,7 @@ declare module Rance {
         public personality: Rance.IPersonalityData;
         public fronts: Rance.Front[];
         public frontsRequestingUnits: Rance.Front[];
+        public frontsToMove: Rance.Front[];
         constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI, personality: Rance.IPersonalityData);
         public getTotalUnitCountByArchetype(): {};
         public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
@@ -2358,7 +2363,8 @@ declare module Rance {
         public removeInactiveFronts(): void;
         public formFronts(): void;
         public organizeFleets(): void;
-        public moveFleets(): void;
+        public setFrontsToMove(): void;
+        public moveFleets(afterMovingAllCallback: any): void;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
         public setUnitRequests(): void;
     }
@@ -2395,6 +2401,7 @@ declare module Rance {
             game: Rance.Game;
         });
         public processTurn(): void;
+        public finishMovingFleets(): void;
     }
 }
 declare module Rance {

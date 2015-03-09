@@ -274,26 +274,7 @@ module Rance
 
       var currentLocation = this.selectedFleets[0].location;
 
-      var battleData: IBattleData =
-      {
-        location: currentLocation,
-        building: target.building,
-        attacker:
-        {
-          player: this.player,
-          ships: currentLocation.getAllShipsOfPlayer(this.player)
-        },
-        defender:
-        {
-          player: target.enemy,
-          ships: target.ships
-        }
-      }
-
-      // TODO
-      var battlePrep = new BattlePrep(this.player, battleData);
-      this.reactUI.battlePrep = battlePrep;
-      this.reactUI.switchScene("battlePrep");
+      this.player.attackTarget(currentLocation, target);
     }
   }
 }

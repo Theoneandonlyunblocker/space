@@ -434,6 +434,29 @@ module Rance
 
       return star.getNearestStarForQualifier(isOwnedByThisFN);
     }
+    attackTarget(location: Star, target: any)
+    {
+      var battleData: IBattleData =
+      {
+        location: location,
+        building: target.building,
+        attacker:
+        {
+          player: this,
+          ships: location.getAllShipsOfPlayer(this)
+        },
+        defender:
+        {
+          player: target.enemy,
+          ships: target.ships
+        }
+      }
+
+      // TODO
+      var battlePrep = new BattlePrep(this, battleData);
+      app.reactUI.battlePrep = battlePrep;
+      app.reactUI.switchScene("battlePrep");
+    }
     serialize()
     {
       var data: any = {};

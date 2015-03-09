@@ -7735,6 +7735,25 @@ var Rance;
 
             return star.getNearestStarForQualifier(isOwnedByThisFN);
         };
+        Player.prototype.attackTarget = function (location, target) {
+            var battleData = {
+                location: location,
+                building: target.building,
+                attacker: {
+                    player: this,
+                    ships: location.getAllShipsOfPlayer(this)
+                },
+                defender: {
+                    player: target.enemy,
+                    ships: target.ships
+                }
+            };
+
+            // TODO
+            var battlePrep = new Rance.BattlePrep(this, battleData);
+            app.reactUI.battlePrep = battlePrep;
+            app.reactUI.switchScene("battlePrep");
+        };
         Player.prototype.serialize = function () {
             var data = {};
 
@@ -10017,23 +10036,7 @@ var Rance;
 
             var currentLocation = this.selectedFleets[0].location;
 
-            var battleData = {
-                location: currentLocation,
-                building: target.building,
-                attacker: {
-                    player: this.player,
-                    ships: currentLocation.getAllShipsOfPlayer(this.player)
-                },
-                defender: {
-                    player: target.enemy,
-                    ships: target.ships
-                }
-            };
-
-            // TODO
-            var battlePrep = new Rance.BattlePrep(this.player, battleData);
-            this.reactUI.battlePrep = battlePrep;
-            this.reactUI.switchScene("battlePrep");
+            this.player.attackTarget(currentLocation, target);
         };
         return PlayerControl;
     })();
@@ -14678,6 +14681,7 @@ var Rance;
         function Front(props) {
             this.hasMustered = false;
             this.id = props.id;
+            this.objective = props.objective;
             this.priority = props.priority;
             this.units = props.units || [];
 
@@ -14833,7 +14837,7 @@ var Rance;
             return byLocation;
         };
 
-        Front.prototype.moveFleets = function () {
+        Front.prototype.moveFleets = function (afterMoveCallback) {
             var shouldMoveToTarget;
 
             var unitsByLocation = this.getUnitsByLocation();
@@ -14858,6 +14862,30 @@ var Rance;
             for (var i = 0; i < fleets.length; i++) {
                 fleets[i].move(moveTarget);
             }
+
+            unitsByLocation = this.getUnitsByLocation();
+            if (unitsByLocation[this.targetLocation.id].length >= this.minUnitsDesired) {
+                this.executeAction(afterMoveCallback);
+                return;
+            } else {
+                afterMoveCallback();
+            }
+        };
+        Front.prototype.executeAction = function (afterExecutedCallback) {
+            var star = this.targetLocation;
+            var player = this.units[0].fleet.player;
+
+            if (this.objective.type === "expansion") {
+                var attackTargets = star.getTargetsForPlayer(player);
+
+                var target = attackTargets.filter(function (target) {
+                    return target.enemy.isIndependent;
+                })[0];
+
+                console.log("attack", star, target);
+                player.attackTarget(star, target);
+            }
+            //afterExecutedCallback();
         };
         return Front;
     })();
@@ -14876,6 +14904,7 @@ var Rance;
         function FrontsAI(mapEvaluator, objectivesAI, personality) {
             this.fronts = [];
             this.frontsRequestingUnits = [];
+            this.frontsToMove = [];
             this.mapEvaluator = mapEvaluator;
             this.map = mapEvaluator.map;
             this.player = mapEvaluator.player;
@@ -15086,6 +15115,7 @@ var Rance;
             var front = new Rance.Front({
                 id: objective.id,
                 priority: objective.priority,
+                objective: objective,
                 minUnitsDesired: unitsDesired,
                 idealUnitsDesired: unitsDesired,
                 targetLocation: objective.target,
@@ -15139,10 +15169,19 @@ var Rance;
             }
         };
 
-        FrontsAI.prototype.moveFleets = function () {
-            for (var i = 0; i < this.fronts.length; i++) {
-                this.fronts[i].moveFleets();
+        FrontsAI.prototype.setFrontsToMove = function () {
+            this.frontsToMove = this.fronts.slice(0);
+        };
+
+        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
+            var front = this.frontsToMove.pop();
+
+            if (!front) {
+                afterMovingAllCallback();
+                return;
             }
+
+            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
         };
 
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
@@ -15303,11 +15342,16 @@ var Rance;
             // fai organize fleets
             this.frontsAI.organizeFleets();
 
-            // fai move fleets
-            this.frontsAI.moveFleets();
+            // fai set fleets yet to move
+            this.frontsAI.setFrontsToMove();
 
-            // fai organize fleets
+            // fai move fleets
+            // function param is called after all fronts have moved
+            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this));
+        };
+        AIController.prototype.finishMovingFleets = function () {
             this.frontsAI.organizeFleets();
+            console.log("finish moving");
         };
         return AIController;
     })();

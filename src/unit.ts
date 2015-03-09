@@ -495,6 +495,12 @@ module Rance
 
       this.addStrength(healAmount);
     }
+    getStrengthEvaluation()
+    {
+      // TODO
+      
+      return this.currentStrength;
+    }
     drawBattleScene(props:
     {
       unitsToDraw: number;

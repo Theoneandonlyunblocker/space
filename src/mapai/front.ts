@@ -6,6 +6,7 @@ module Rance
   export class Front
   {
     id: number;
+    objective: Objective;
     priority: number;
     units: Unit[];
 
@@ -19,6 +20,7 @@ module Rance
     constructor(props:
     {
       id: number;
+      objective: Objective;
       priority: number;
       units?: Unit[];
       
@@ -30,6 +32,7 @@ module Rance
     })
     {
       this.id = props.id;
+      this.objective = props.objective;
       this.priority = props.priority;
       this.units = props.units || [];
 
@@ -240,13 +243,13 @@ module Rance
       return byLocation;
     }
 
-    moveFleets()
+    moveFleets(afterMoveCallback: any)
     {
       var shouldMoveToTarget;
 
       var unitsByLocation = this.getUnitsByLocation();
       var fleets = this.getAssociatedFleets();
-      
+
 
       if (this.hasMustered)
       {
@@ -277,6 +280,36 @@ module Rance
       {
         fleets[i].move(moveTarget);
       }
+
+      unitsByLocation = this.getUnitsByLocation();
+      if (unitsByLocation[this.targetLocation.id].length >= this.minUnitsDesired)
+      {
+        this.executeAction(afterMoveCallback);
+        return
+      }
+      else
+      {
+        afterMoveCallback();
+      }
+    }
+    executeAction(afterExecutedCallback)
+    {
+      var star = this.targetLocation;
+      var player = this.units[0].fleet.player;
+
+      if (this.objective.type === "expansion")
+      {
+        var attackTargets = star.getTargetsForPlayer(player);
+
+        var target = attackTargets.filter(function(target)
+        {
+          return target.enemy.isIndependent;
+        })[0];
+
+        console.log("attack", star, target);
+        player.attackTarget(star, target);
+      }
+      //afterExecutedCallback();
     }
   }
 }

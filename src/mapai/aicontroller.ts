@@ -73,11 +73,17 @@ module Rance
       // fai organize fleets
       this.frontsAI.organizeFleets();
 
-      // fai move fleets
-      this.frontsAI.moveFleets();
+      // fai set fleets yet to move
+      this.frontsAI.setFrontsToMove();
 
-      // fai organize fleets
+      // fai move fleets
+      // function param is called after all fronts have moved
+      this.frontsAI.moveFleets(this.finishMovingFleets.bind(this));
+    }
+    finishMovingFleets()
+    {
       this.frontsAI.organizeFleets();
+      console.log("finish moving");
     }
   }
 }

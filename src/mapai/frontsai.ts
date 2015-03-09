@@ -19,6 +19,7 @@ module Rance
 
     fronts: Front[] = [];
     frontsRequestingUnits: Front[] = [];
+    frontsToMove: Front[] = [];
 
     constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
       personality: IPersonalityData)
@@ -293,6 +294,7 @@ module Rance
       {
         id: objective.id,
         priority: objective.priority,
+        objective: objective,
 
         minUnitsDesired: unitsDesired,
         idealUnitsDesired: unitsDesired,
@@ -360,16 +362,22 @@ module Rance
       }
     }
 
-    moveFleets()
+    setFrontsToMove()
     {
-      /*
-      for every fleet
+      this.frontsToMove = this.fronts.slice(0);
+    }
 
-       */
-      for (var i = 0; i < this.fronts.length; i++)
+    moveFleets(afterMovingAllCallback: any)
+    {
+      var front = this.frontsToMove.pop();
+
+      if (!front)
       {
-        this.fronts[i].moveFleets();
+        afterMovingAllCallback();
+        return;
       }
+
+      front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
     }
 
     getUnitsToFillExpansionObjective(objective: Objective)
