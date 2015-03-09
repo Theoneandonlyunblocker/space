@@ -20,16 +20,16 @@ var Rance;
             displayName: "UnitStrength",
             getInitialState: function () {
                 return ({
-                    displayedStrength: this.props.currentStrength,
+                    displayedStrength: this.props.currentHealth,
                     activeTween: null
                 });
             },
             componentWillReceiveProps: function (newProps) {
-                if (newProps.currentStrength !== this.props.currentStrength) {
+                if (newProps.currentHealth !== this.props.currentHealth) {
                     if (this.props.animateStrength) {
-                        this.animateDisplayedStrength(newProps.currentStrength, 2000);
+                        this.animateDisplayedStrength(newProps.currentHealth, 2000);
                     } else {
-                        this.updateDisplayStrength(newProps.currentStrength);
+                        this.updateDisplayStrength(newProps.currentHealth);
                     }
                 }
             },
@@ -83,7 +83,7 @@ var Rance;
             makeCapitalInfo: function () {
                 var text = this.makeStrengthText();
 
-                var relativeHealth = this.state.displayedStrength / this.props.maxStrength;
+                var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
 
                 var bar = React.DOM.div({
                     className: "unit-strength-bar"
@@ -102,11 +102,11 @@ var Rance;
                     className: "unit-strength-current"
                 };
 
-                var healthRatio = this.state.displayedStrength / this.props.maxStrength;
+                var healthRatio = this.state.displayedStrength / this.props.maxHealth;
 
                 if (healthRatio <= critThreshhold) {
                     currentStyle.className += " critical";
-                } else if (this.state.displayedStrength < this.props.maxStrength) {
+                } else if (this.state.displayedStrength < this.props.maxHealth) {
                     currentStyle.className += " wounded";
                 }
 
@@ -114,7 +114,7 @@ var Rance;
                     className: (this.props.isSquadron ? "unit-strength-amount" : "unit-strength-amount-capital")
                 };
 
-                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)), React.DOM.span({ className: "unit-strength-max" }, "/" + this.props.maxStrength)));
+                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)), React.DOM.span({ className: "unit-strength-max" }, "/" + this.props.maxHealth)));
             },
             render: function () {
                 var toRender;
@@ -224,8 +224,8 @@ var Rance;
                 return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, Rance.UIComponents.UnitStatus({
                     guardAmount: this.props.guardAmount
                 }), Rance.UIComponents.UnitStrength({
-                    maxStrength: this.props.maxStrength,
-                    currentStrength: this.props.currentStrength,
+                    maxHealth: this.props.maxHealth,
+                    currentHealth: this.props.currentHealth,
                     isSquadron: this.props.isSquadron,
                     animateStrength: true
                 }), Rance.UIComponents.UnitActions({
@@ -504,7 +504,7 @@ var Rance;
             handleMouseEnter: function (e) {
                 if (!this.props.handleMouseEnterUnit)
                     return;
-                if (this.props.unit.currentStrength <= 0)
+                if (this.props.unit.currentHealth <= 0)
                     return;
 
                 this.props.handleMouseEnterUnit(this.props.unit);
@@ -567,8 +567,8 @@ var Rance;
                     key: "info",
                     name: unit.name,
                     guardAmount: unit.battleStats.guardAmount,
-                    maxStrength: unit.maxStrength,
-                    currentStrength: unit.currentStrength,
+                    maxHealth: unit.maxHealth,
+                    currentHealth: unit.currentHealth,
                     isSquadron: unit.isSquadron,
                     maxActionPoints: unit.attributes.maxActionPoints,
                     currentActionPoints: unit.battleStats.currentActionPoints,
@@ -1468,8 +1468,8 @@ var Rance;
                     }
                 });
 
-                var previousUnit1Strength = side1Unit ? side1Unit.currentStrength : null;
-                var previousUnit2Strength = side2Unit ? side2Unit.currentStrength : null;
+                var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
+                var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
 
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
@@ -1605,14 +1605,14 @@ var Rance;
                         key: "" + this.state.battleSceneUnit1.id + Date.now(),
                         delay: 2000,
                         from: this.state.battleSceneUnit1StartingStrength,
-                        to: this.state.battleSceneUnit1.currentStrength
+                        to: this.state.battleSceneUnit1.currentHealth
                     }) : null), React.DOM.div({
                         className: "battle-display-strength battle-display-strength-side2"
                     }, this.state.battleSceneUnit2 ? Rance.UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit2.id + Date.now(),
                         delay: 2000,
                         from: this.state.battleSceneUnit2StartingStrength,
-                        to: this.state.battleSceneUnit2.currentStrength
+                        to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
                 }
 
@@ -1932,8 +1932,8 @@ var Rance;
                 switch (type) {
                     case "strength": {
                         cellContent = Rance.UIComponents.UnitStrength({
-                            maxStrength: this.props.maxStrength,
-                            currentStrength: this.props.currentStrength,
+                            maxHealth: this.props.maxHealth,
+                            currentHealth: this.props.currentHealth,
                             isSquadron: true
                         });
 
@@ -2026,9 +2026,9 @@ var Rance;
                         id: unit.id,
                         name: unit.name,
                         typeName: unit.template.typeName,
-                        strength: "" + unit.currentStrength + " / " + unit.maxStrength,
-                        currentStrength: unit.currentStrength,
-                        maxStrength: unit.maxStrength,
+                        strength: "" + unit.currentHealth + " / " + unit.maxHealth,
+                        currentHealth: unit.currentHealth,
+                        maxHealth: unit.maxHealth,
                         maxActionPoints: unit.attributes.maxActionPoints,
                         attack: unit.attributes.attack,
                         defence: unit.attributes.defence,
@@ -2066,7 +2066,7 @@ var Rance;
                         key: "strength",
                         defaultOrder: "desc",
                         sortingFunction: function (a, b) {
-                            return a.data.currentStrength - b.data.currentStrength;
+                            return a.data.currentHealth - b.data.currentHealth;
                         }
                     },
                     {
@@ -3643,7 +3643,7 @@ var Rance;
                 var fleet = this.props.fleet;
                 if (!fleet)
                     return null;
-                var totalStrength = fleet.getTotalStrength();
+                var totalHealth = fleet.getTotalHealth();
 
                 return (React.DOM.div({
                     className: "fleet-info"
@@ -3655,7 +3655,7 @@ var Rance;
                     className: "fleet-info-shipcount"
                 }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
-                }, totalStrength.current + "/" + totalStrength.max), React.DOM.div({
+                }, totalHealth.current + "/" + totalHealth.max), React.DOM.div({
                     className: "fleet-info-contols"
                 }, Rance.UIComponents.FleetControls({
                     fleet: fleet,
@@ -3691,8 +3691,8 @@ var Rance;
                 }, ship.name), React.DOM.div({
                     className: "ship-info-type"
                 }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
-                    maxStrength: ship.maxStrength,
-                    currentStrength: ship.currentStrength,
+                    maxHealth: ship.maxHealth,
+                    currentHealth: ship.currentHealth,
                     isSquadron: true
                 })));
             }
@@ -3740,8 +3740,8 @@ var Rance;
                 }, ship.name), React.DOM.div({
                     className: "ship-info-type"
                 }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
-                    maxStrength: ship.maxStrength,
-                    currentStrength: ship.currentStrength,
+                    maxHealth: ship.maxHealth,
+                    currentHealth: ship.currentHealth,
                     isSquadron: true
                 })));
             }
@@ -4812,7 +4812,7 @@ var Rance;
                 isSquadron: false,
                 buildCost: 0,
                 icon: "img\/icons\/f.png",
-                maxStrength: 0.5,
+                maxHealth: 0.5,
                 maxMovePoints: 999,
                 visionRange: 999,
                 attributeLevels: {
@@ -4838,7 +4838,7 @@ var Rance;
                 isSquadron: true,
                 buildCost: 100,
                 icon: "img\/icons\/f.png",
-                maxStrength: 0.7,
+                maxHealth: 0.7,
                 maxMovePoints: 2,
                 visionRange: 1,
                 attributeLevels: {
@@ -4863,7 +4863,7 @@ var Rance;
                 isSquadron: true,
                 buildCost: 200,
                 icon: "img\/icons\/f.png",
-                maxStrength: 0.5,
+                maxHealth: 0.5,
                 maxMovePoints: 1,
                 visionRange: 1,
                 attributeLevels: {
@@ -4888,7 +4888,7 @@ var Rance;
                 isSquadron: false,
                 buildCost: 200,
                 icon: "img\/icons\/b.png",
-                maxStrength: 1,
+                maxHealth: 1,
                 maxMovePoints: 1,
                 visionRange: 1,
                 attributeLevels: {
@@ -4913,7 +4913,7 @@ var Rance;
                 isSquadron: true,
                 buildCost: 200,
                 icon: "img\/icons\/f.png",
-                maxStrength: 0.6,
+                maxHealth: 0.6,
                 maxMovePoints: 2,
                 visionRange: 2,
                 attributeLevels: {
@@ -4937,7 +4937,7 @@ var Rance;
                 isSquadron: false,
                 buildCost: 200,
                 icon: "img\/icons\/b.png",
-                maxStrength: 0.9,
+                maxHealth: 0.9,
                 maxMovePoints: 1,
                 visionRange: 1,
                 attributeLevels: {
@@ -7016,15 +7016,24 @@ var Rance;
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
         };
-        Fleet.prototype.getTotalStrength = function () {
+        Fleet.prototype.getTotalStrengthEvaluation = function () {
+            var total = 0;
+
+            for (var i = 0; i < this.ships.length; i++) {
+                total += this.ships[i].getStrengthEvaluation();
+            }
+
+            return total;
+        };
+        Fleet.prototype.getTotalHealth = function () {
             var total = {
                 current: 0,
                 max: 0
             };
 
             for (var i = 0; i < this.ships.length; i++) {
-                total.current += this.ships[i].currentStrength;
-                total.max += this.ships[i].maxStrength;
+                total.current += this.ships[i].currentHealth;
+                total.max += this.ships[i].maxHealth;
             }
 
             return total;
@@ -7890,7 +7899,7 @@ var Rance;
                     return false;
                 }
 
-                if (unit.currentStrength <= 0) {
+                if (unit.currentHealth <= 0) {
                     return false;
                 }
 
@@ -7910,7 +7919,7 @@ var Rance;
 
             if (!this.isVirtual) {
                 this.forEachUnit(function (unit) {
-                    if (unit.currentStrength <= 0) {
+                    if (unit.currentHealth <= 0) {
                         unit.displayFlags.isAnnihilated = true;
                         unit.uiDisplayIsDirty = true;
                     }
@@ -7985,7 +7994,7 @@ var Rance;
                     break;
 
                 var unit = losingUnits[i];
-                if (unit.currentStrength <= 0 && Math.random() <= unit.battleStats.captureChance) {
+                if (unit.currentHealth <= 0 && Math.random() <= unit.battleStats.captureChance) {
                     capturedUnits.push(unit);
                 }
             }
@@ -8004,7 +8013,7 @@ var Rance;
             var deadUnits = [];
 
             this.forEachUnit(function (unit) {
-                if (unit.currentStrength <= 0) {
+                if (unit.currentHealth <= 0) {
                     var wasCaptured = capturedUnits.indexOf(unit) >= 0;
                     if (!wasCaptured) {
                         var isIndependent = unit.fleet.player.isIndependent;
@@ -8039,7 +8048,7 @@ var Rance;
             this.forEachUnit(function (unit) {
                 consoleRows.push({
                     id: unit.id,
-                    health: unit.currentStrength,
+                    health: unit.currentHealth,
                     destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
                     captureChance: unit.battleStats.captureChance,
                     captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
@@ -8069,8 +8078,8 @@ var Rance;
                 unit.resetBattleStats();
             });
             this.forEachUnit(function (unit) {
-                if (unit.currentStrength < Math.round(unit.maxStrength * 0.1)) {
-                    unit.currentStrength = Math.round(unit.maxStrength * 0.1);
+                if (unit.currentHealth < Math.round(unit.maxHealth * 0.1)) {
+                    unit.currentHealth = Math.round(unit.maxHealth * 0.1);
                 }
             });
 
@@ -8098,7 +8107,7 @@ var Rance;
 
             for (var i = 0; i < column.length; i++) {
                 if (column[i]) {
-                    total += column[i].currentStrength;
+                    total += column[i].currentHealth;
                 }
             }
 
@@ -8114,8 +8123,8 @@ var Rance;
 
             for (var i = 0; i < units.length; i++) {
                 var unit = units[i];
-                health.current += unit.currentStrength;
-                health.max += unit.maxStrength;
+                health.current += unit.currentHealth;
+                health.max += unit.maxHealth;
             }
 
             return health;
@@ -8136,7 +8145,7 @@ var Rance;
                     var lostHealthFactor = 1 - currentHealthFactor;
 
                     for (var i = 0; i < self.unitsBySide[side].length; i++) {
-                        if (self.unitsBySide[side][i].currentStrength <= 0) {
+                        if (self.unitsBySide[side][i].currentHealth <= 0) {
                             evaluation += 0.2 * sign;
                         }
                     }
@@ -8537,8 +8546,8 @@ var Rance;
 
             this.name = data.name;
 
-            this.maxStrength = data.maxStrength;
-            this.currentStrength = data.currentStrength;
+            this.maxHealth = data.maxHealth;
+            this.currentHealth = data.currentHealth;
 
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
@@ -8581,13 +8590,13 @@ var Rance;
             this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
-            var min = 500 * this.template.maxStrength;
-            var max = 1000 * this.template.maxStrength;
-            this.maxStrength = Rance.randInt(min, max);
+            var min = 500 * this.template.maxHealth;
+            var max = 1000 * this.template.maxHealth;
+            this.maxHealth = Rance.randInt(min, max);
             if (true) {
-                this.currentStrength = this.maxStrength;
+                this.currentHealth = this.maxHealth;
             } else {
-                this.currentStrength = Rance.randInt(this.maxStrength / 10, this.maxStrength);
+                this.currentHealth = Rance.randInt(this.maxHealth / 10, this.maxHealth);
             }
         };
         Unit.prototype.setAttributes = function (experience, variance) {
@@ -8645,17 +8654,17 @@ var Rance;
         };
 
         Unit.prototype.addStrength = function (amount) {
-            this.currentStrength += Math.round(amount);
-            if (this.currentStrength > this.maxStrength) {
-                this.currentStrength = this.maxStrength;
+            this.currentHealth += Math.round(amount);
+            if (this.currentHealth > this.maxHealth) {
+                this.currentHealth = this.maxHealth;
             }
 
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeStrength = function (amount) {
-            this.currentStrength -= Math.round(amount);
-            if (this.currentStrength < 0) {
-                this.currentStrength = 0;
+            this.currentHealth -= Math.round(amount);
+            if (this.currentHealth < 0) {
+                this.currentHealth = 0;
             }
 
             this.removeGuard(50);
@@ -8680,10 +8689,10 @@ var Rance;
 
         // redundant until stealth mechanics are added
         Unit.prototype.isTargetable = function () {
-            return this.currentStrength > 0;
+            return this.currentHealth > 0;
         };
         Unit.prototype.isActiveInBattle = function () {
-            return this.currentStrength > 0;
+            return this.currentHealth > 0;
         };
 
         Unit.prototype.addItem = function (item) {
@@ -8853,9 +8862,13 @@ var Rance;
             var baseHealFactor = 0.05;
             var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
 
-            var healAmount = this.maxStrength * healingFactor;
+            var healAmount = this.maxHealth * healingFactor;
 
             this.addStrength(healAmount);
+        };
+        Unit.prototype.getStrengthEvaluation = function () {
+            // TODO
+            return this.currentHealth;
         };
         Unit.prototype.drawBattleScene = function (props) {
             //var unitsToDraw = props.unitsToDraw;
@@ -8876,7 +8889,7 @@ var Rance;
 
             var ctx = canvas.getContext("2d");
 
-            var unitsToDraw = Math.round(this.currentStrength * 0.05);
+            var unitsToDraw = Math.round(this.currentHealth * 0.05);
             unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
             var spriteTemplate = this.template.sprite;
@@ -8979,8 +8992,8 @@ var Rance;
             data.id = this.id;
             data.name = this.name;
 
-            data.maxStrength = this.maxStrength;
-            data.currentStrength = this.currentStrength;
+            data.maxHealth = this.maxHealth;
+            data.currentHealth = this.currentHealth;
 
             data.currentMovePoints = this.currentMovePoints;
             data.maxMovePoints = this.maxMovePoints;
@@ -10083,6 +10096,11 @@ var Rance;
             }
 
             return fleet;
+        };
+
+        BattlePrep.prototype.makeAIFleet = function (units) {
+            var fleet = this.makeEmptyFleet();
+            var alreadyPlaced = 0;
         };
 
         // TODO
@@ -14357,7 +14375,7 @@ var Rance;
                 var strength = 0;
 
                 for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
-                    strength += hostileShipsByPlayer[playerId][i].currentStrength;
+                    strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
                 }
 
                 strengthByEnemy[playerId] = strength;
@@ -14436,7 +14454,7 @@ var Rance;
         };
 
         MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
-            return fleet.getTotalStrength().current;
+            return fleet.getTotalStrengthEvaluation();
         };
 
         MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {

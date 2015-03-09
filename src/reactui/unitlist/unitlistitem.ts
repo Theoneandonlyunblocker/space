@@ -34,8 +34,8 @@ module Rance
           {
             cellContent = UIComponents.UnitStrength(
             {
-              maxStrength: this.props.maxStrength,
-              currentStrength: this.props.currentStrength,
+              maxHealth: this.props.maxHealth,
+              currentHealth: this.props.currentHealth,
               isSquadron: true
             });
 

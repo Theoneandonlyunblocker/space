@@ -23,9 +23,9 @@ module Rance
             id: unit.id,
             name: unit.name,
             typeName: unit.template.typeName,
-            strength: "" + unit.currentStrength + " / " + unit.maxStrength,
-            currentStrength: unit.currentStrength,
-            maxStrength: unit.maxStrength,
+            strength: "" + unit.currentHealth + " / " + unit.maxHealth,
+            currentHealth: unit.currentHealth,
+            maxHealth: unit.maxHealth,
 
             maxActionPoints: unit.attributes.maxActionPoints,
             attack: unit.attributes.attack,
@@ -70,7 +70,7 @@ module Rance
             defaultOrder: "desc",
             sortingFunction: function(a, b)
             {
-              return a.data.currentStrength - b.data.currentStrength;
+              return a.data.currentHealth - b.data.currentHealth;
             }
           },
           {

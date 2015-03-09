@@ -239,7 +239,7 @@ module Rance
 
         for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++)
         {
-          strength += hostileShipsByPlayer[playerId][i].currentStrength;
+          strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
         }
 
         strengthByEnemy[playerId] = strength;
@@ -335,7 +335,7 @@ module Rance
 
     evaluateFleetStrength(fleet: Fleet): number
     {
-      return fleet.getTotalStrength().current;
+      return fleet.getTotalStrengthEvaluation();
     }
 
 

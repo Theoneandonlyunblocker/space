@@ -32,7 +32,7 @@ module Rance
       handleMouseEnter: function(e)
       {
         if (!this.props.handleMouseEnterUnit) return;
-        if (this.props.unit.currentStrength <= 0) return;
+        if (this.props.unit.currentHealth <= 0) return;
 
         this.props.handleMouseEnterUnit(this.props.unit);
       },
@@ -111,8 +111,8 @@ module Rance
           key: "info",
           name: unit.name,
           guardAmount: unit.battleStats.guardAmount,
-          maxStrength: unit.maxStrength,
-          currentStrength: unit.currentStrength,
+          maxHealth: unit.maxHealth,
+          currentHealth: unit.currentHealth,
           isSquadron: unit.isSquadron,
           maxActionPoints: unit.attributes.maxActionPoints,
           currentActionPoints: unit.battleStats.currentActionPoints,

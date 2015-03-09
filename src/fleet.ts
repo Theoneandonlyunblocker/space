@@ -210,7 +210,18 @@ module Rance
     {
       return this.location.fleets[this.player.id];
     }
-    getTotalStrength()
+    getTotalStrengthEvaluation()
+    {
+      var total = 0;
+
+      for (var i = 0; i < this.ships.length; i++)
+      {
+        total += this.ships[i].getStrengthEvaluation();
+      }
+
+      return total;
+    }
+    getTotalHealth()
     {
       var total =
       {
@@ -220,8 +231,8 @@ module Rance
 
       for (var i = 0; i < this.ships.length; i++)
       {
-        total.current += this.ships[i].currentStrength;
-        total.max += this.ships[i].maxStrength;
+        total.current += this.ships[i].currentHealth;
+        total.max += this.ships[i].maxHealth;
       }
 
       return total;

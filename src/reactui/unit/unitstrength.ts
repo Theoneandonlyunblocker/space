@@ -11,21 +11,21 @@ module Rance
       {
         return(
         {
-          displayedStrength: this.props.currentStrength,
+          displayedStrength: this.props.currentHealth,
           activeTween: null
         });
       },
       componentWillReceiveProps: function(newProps: any)
       {
-        if (newProps.currentStrength !== this.props.currentStrength)
+        if (newProps.currentHealth !== this.props.currentHealth)
         {
           if (this.props.animateStrength)
           {
-            this.animateDisplayedStrength(newProps.currentStrength, 2000);
+            this.animateDisplayedStrength(newProps.currentHealth, 2000);
           }
           else
           {
-            this.updateDisplayStrength(newProps.currentStrength);
+            this.updateDisplayStrength(newProps.currentHealth);
           }
         }
       },
@@ -97,7 +97,7 @@ module Rance
       {
         var text = this.makeStrengthText();
 
-        var relativeHealth = this.state.displayedStrength / this.props.maxStrength;
+        var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
 
         var bar = React.DOM.div(
         {
@@ -128,13 +128,13 @@ module Rance
           className: "unit-strength-current"
         };
 
-        var healthRatio = this.state.displayedStrength / this.props.maxStrength;
+        var healthRatio = this.state.displayedStrength / this.props.maxHealth;
 
         if (healthRatio <= critThreshhold)
         {
           currentStyle.className += " critical";
         }
-        else if (this.state.displayedStrength < this.props.maxStrength)
+        else if (this.state.displayedStrength < this.props.maxHealth)
         {
           currentStyle.className += " wounded";
         }
@@ -149,7 +149,7 @@ module Rance
           React.DOM.div(containerProps,
             React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)),
             React.DOM.span({className: "unit-strength-max"},
-              "/" + this.props.maxStrength)
+              "/" + this.props.maxHealth)
           )
         )
       },

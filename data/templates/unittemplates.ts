@@ -24,7 +24,7 @@ module Rance
       isSquadron: boolean;
       buildCost: number;
       icon: string;
-      maxStrength: number;
+      maxHealth: number;
       maxMovePoints: number;
       visionRange: number;
       attributeLevels:
@@ -51,7 +51,7 @@ module Rance
         isSquadron: false,
         buildCost: 0,
         icon: "img\/icons\/f.png",
-        maxStrength: 0.5,
+        maxHealth: 0.5,
         maxMovePoints: 999,
         visionRange: 999,
         attributeLevels:
@@ -81,7 +81,7 @@ module Rance
         isSquadron: true,
         buildCost: 100,
         icon: "img\/icons\/f.png",
-        maxStrength: 0.7,
+        maxHealth: 0.7,
         maxMovePoints: 2,
         visionRange: 1,
         attributeLevels:
@@ -110,7 +110,7 @@ module Rance
         isSquadron: true,
         buildCost: 200,
         icon: "img\/icons\/f.png",
-        maxStrength: 0.5,
+        maxHealth: 0.5,
         maxMovePoints: 1,
         visionRange: 1,
         attributeLevels:
@@ -139,7 +139,7 @@ module Rance
         isSquadron: false,
         buildCost: 200,
         icon: "img\/icons\/b.png",
-        maxStrength: 1,
+        maxHealth: 1,
         maxMovePoints: 1,
         visionRange: 1,
         attributeLevels:
@@ -168,7 +168,7 @@ module Rance
         isSquadron: true,
         buildCost: 200,
         icon: "img\/icons\/f.png",
-        maxStrength: 0.6,
+        maxHealth: 0.6,
         maxMovePoints: 2,
         visionRange: 2,
         attributeLevels:
@@ -196,7 +196,7 @@ module Rance
         isSquadron: false,
         buildCost: 200,
         icon: "img\/icons\/b.png",
-        maxStrength: 0.9,
+        maxHealth: 0.9,
         maxMovePoints: 1,
         visionRange: 1,
         attributeLevels:

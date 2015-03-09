@@ -15,8 +15,8 @@ module Rance
     id: number;
 
     name: string;
-    maxStrength: number;
-    currentStrength: number;
+    maxHealth: number;
+    currentHealth: number;
     isSquadron: boolean;
 
     currentMovePoints: number;
@@ -120,8 +120,8 @@ module Rance
 
       this.name = data.name;
 
-      this.maxStrength = data.maxStrength;
-      this.currentStrength = data.currentStrength;
+      this.maxHealth = data.maxHealth;
+      this.currentHealth = data.currentHealth;
 
       this.currentMovePoints = data.currentMovePoints;
       this.maxMovePoints = data.maxMovePoints;
@@ -169,16 +169,16 @@ module Rance
     }
     setBaseHealth()
     {
-      var min = 500 * this.template.maxStrength;
-      var max = 1000 * this.template.maxStrength;
-      this.maxStrength = randInt(min, max);
+      var min = 500 * this.template.maxHealth;
+      var max = 1000 * this.template.maxHealth;
+      this.maxHealth = randInt(min, max);
       if (true)//(Math.random() > 0.5)
       {
-        this.currentStrength = this.maxStrength;
+        this.currentHealth = this.maxHealth;
       }
       else
       {
-        this.currentStrength = randInt(this.maxStrength / 10, this.maxStrength);
+        this.currentHealth = randInt(this.maxHealth / 10, this.maxHealth);
       }
     }
     setAttributes(experience: number = 1, variance: number = 1)
@@ -243,20 +243,20 @@ module Rance
 
     addStrength(amount: number)
     {
-      this.currentStrength += Math.round(amount);
-      if (this.currentStrength > this.maxStrength)
+      this.currentHealth += Math.round(amount);
+      if (this.currentHealth > this.maxHealth)
       {
-        this.currentStrength = this.maxStrength;
+        this.currentHealth = this.maxHealth;
       }
 
       this.uiDisplayIsDirty = true;
     }
     removeStrength(amount: number)
     {
-      this.currentStrength -= Math.round(amount);
-      if (this.currentStrength < 0)
+      this.currentHealth -= Math.round(amount);
+      if (this.currentHealth < 0)
       {
-        this.currentStrength = 0;
+        this.currentHealth = 0;
       }
 
       this.removeGuard(50);
@@ -288,11 +288,11 @@ module Rance
     // redundant until stealth mechanics are added
     isTargetable()
     {
-      return this.currentStrength > 0;
+      return this.currentHealth > 0;
     }
     isActiveInBattle()
     {
-      return this.currentStrength > 0;
+      return this.currentHealth > 0;
     }
 
     addItem(item: Item)
@@ -491,7 +491,7 @@ module Rance
       var healingFactor =
         baseHealFactor + location.getHealingFactor(this.fleet.player);
 
-      var healAmount = this.maxStrength * healingFactor;
+      var healAmount = this.maxHealth * healingFactor;
 
       this.addStrength(healAmount);
     }
@@ -499,7 +499,7 @@ module Rance
     {
       // TODO
       
-      return this.currentStrength;
+      return this.currentHealth;
     }
     drawBattleScene(props:
     {
@@ -535,7 +535,7 @@ module Rance
       var ctx = canvas.getContext("2d");
 
       
-      var unitsToDraw = Math.round(this.currentStrength * 0.05);
+      var unitsToDraw = Math.round(this.currentHealth * 0.05);
       unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
       var spriteTemplate = this.template.sprite;
@@ -654,8 +654,8 @@ module Rance
       data.id = this.id;
       data.name = this.name;
 
-      data.maxStrength = this.maxStrength;
-      data.currentStrength = this.currentStrength;
+      data.maxHealth = this.maxHealth;
+      data.currentHealth = this.currentHealth;
 
       data.currentMovePoints = this.currentMovePoints;
       data.maxMovePoints = this.maxMovePoints;

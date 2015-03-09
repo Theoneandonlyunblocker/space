@@ -228,8 +228,8 @@ module Rance
           }
         });
 
-        var previousUnit1Strength = side1Unit ? side1Unit.currentStrength : null;
-        var previousUnit2Strength = side2Unit ? side2Unit.currentStrength : null;
+        var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
+        var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
 
         this.setState(
         {
@@ -413,7 +413,7 @@ module Rance
                 key: "" + this.state.battleSceneUnit1.id + Date.now(),
                 delay: 2000,
                 from: this.state.battleSceneUnit1StartingStrength,
-                to: this.state.battleSceneUnit1.currentStrength
+                to: this.state.battleSceneUnit1.currentHealth
               }) : null
             ),
             React.DOM.div(
@@ -425,7 +425,7 @@ module Rance
                 key: "" + this.state.battleSceneUnit2.id + Date.now(),
                 delay: 2000,
                 from: this.state.battleSceneUnit2StartingStrength,
-                to: this.state.battleSceneUnit2.currentStrength
+                to: this.state.battleSceneUnit2.currentHealth
               }) : null
             )
           )

@@ -61,6 +61,13 @@ module Rance
       return fleet;
     }
 
+    makeAIFleet(units: Unit[])
+    {
+      var fleet = this.makeEmptyFleet();
+      var alreadyPlaced = 0;
+
+    }
+
     // TODO
     makeEnemyFleet()
     {

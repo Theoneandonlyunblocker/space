@@ -68,8 +68,8 @@ module Rance
             ),
             UIComponents.UnitStrength(
             {
-              maxStrength: ship.maxStrength,
-              currentStrength: ship.currentStrength,
+              maxHealth: ship.maxHealth,
+              currentHealth: ship.currentHealth,
               isSquadron: true
             })
             

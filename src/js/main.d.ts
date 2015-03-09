@@ -440,7 +440,7 @@ declare module Rance {
             isSquadron: boolean;
             buildCost: number;
             icon: string;
-            maxStrength: number;
+            maxHealth: number;
             maxMovePoints: number;
             visionRange: number;
             attributeLevels: {
@@ -942,7 +942,8 @@ declare module Rance {
         }[];
         public pathFind(newLocation: Rance.Star, onMove?: any): void;
         public getFriendlyFleetsAtOwnLocation(): Fleet[];
-        public getTotalStrength(): {
+        public getTotalStrengthEvaluation(): number;
+        public getTotalHealth(): {
             current: number;
             max: number;
         };
@@ -1327,8 +1328,8 @@ declare module Rance {
         public template: Rance.Templates.IUnitTemplate;
         public id: number;
         public name: string;
-        public maxStrength: number;
-        public currentStrength: number;
+        public maxHealth: number;
+        public currentHealth: number;
         public isSquadron: boolean;
         public currentMovePoints: number;
         public maxMovePoints: number;
@@ -1398,6 +1399,7 @@ declare module Rance {
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
         public heal(): void;
+        public getStrengthEvaluation(): number;
         public drawBattleScene(props: {
             unitsToDraw: number;
             maxUnitsPerColumn: number;
@@ -1527,6 +1529,7 @@ declare module Rance {
         constructor(player: Rance.Player, battleData: Rance.IBattleData);
         public setAvailableUnits(): void;
         public makeEmptyFleet(): any[];
+        public makeAIFleet(units: Rance.Unit[]): void;
         public makeEnemyFleet(): any[];
         public getUnitPosition(unit: Rance.Unit): number[];
         public getUnitAtPosition(position: number[]): Rance.Unit;

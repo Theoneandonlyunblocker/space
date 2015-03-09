@@ -150,7 +150,7 @@ module Rance
           return false;
         }
 
-        if (unit.currentStrength <= 0)
+        if (unit.currentHealth <= 0)
         {
           return false;
         }
@@ -175,7 +175,7 @@ module Rance
       {
         this.forEachUnit(function(unit)
         {
-          if (unit.currentStrength <= 0)
+          if (unit.currentHealth <= 0)
           {
             unit.displayFlags.isAnnihilated = true;
             unit.uiDisplayIsDirty = true;
@@ -255,7 +255,7 @@ module Rance
         if (capturedUnits.length >= maxCapturedUnits) break;
 
         var unit = losingUnits[i];
-        if (unit.currentStrength <= 0 &&
+        if (unit.currentHealth <= 0 &&
           Math.random() <= unit.battleStats.captureChance)
         {
           capturedUnits.push(unit);
@@ -280,7 +280,7 @@ module Rance
       this.forEachUnit(function(unit)
       {
         
-        if (unit.currentStrength <= 0)
+        if (unit.currentHealth <= 0)
         {
           var wasCaptured = capturedUnits.indexOf(unit) >= 0;
           if (!wasCaptured)
@@ -321,7 +321,7 @@ module Rance
         consoleRows.push(
         {
           id: unit.id,
-          health: unit.currentStrength,
+          health: unit.currentHealth,
           destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
           captureChance: unit.battleStats.captureChance,
           captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
@@ -361,9 +361,9 @@ module Rance
       });
       this.forEachUnit(function(unit)
       {
-        if (unit.currentStrength < Math.round(unit.maxStrength * 0.1))
+        if (unit.currentHealth < Math.round(unit.maxHealth * 0.1))
         {
-          unit.currentStrength = Math.round(unit.maxStrength * 0.1);
+          unit.currentHealth = Math.round(unit.maxHealth * 0.1);
         }
       });
       
@@ -394,7 +394,7 @@ module Rance
       {
         if (column[i])
         {
-          total += column[i].currentStrength;
+          total += column[i].currentHealth;
         }
       }
 
@@ -413,8 +413,8 @@ module Rance
       for (var i = 0; i < units.length; i++)
       {
         var unit = units[i];
-        health.current += unit.currentStrength;
-        health.max += unit.maxStrength;
+        health.current += unit.currentHealth;
+        health.max += unit.maxHealth;
       }
 
       return health;
@@ -440,7 +440,7 @@ module Rance
 
           for (var i = 0; i < self.unitsBySide[side].length; i++)
           {
-            if (self.unitsBySide[side][i].currentStrength <= 0)
+            if (self.unitsBySide[side][i].currentHealth <= 0)
             {
               evaluation += 0.2 * sign;
             }

@@ -11,7 +11,7 @@ module Rance
       {
         var fleet = this.props.fleet;
         if (!fleet) return null;
-        var totalStrength = fleet.getTotalStrength();
+        var totalHealth = fleet.getTotalHealth();
 
         return(
           React.DOM.div(
@@ -33,7 +33,7 @@ module Rance
               React.DOM.div(
               {
                 className: "fleet-info-strength"
-              }, totalStrength.current + "/" + totalStrength.max),
+              }, totalHealth.current + "/" + totalHealth.max),
               React.DOM.div(
               {
                 className: "fleet-info-contols"
