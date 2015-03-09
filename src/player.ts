@@ -29,7 +29,7 @@ module Rance
     fleets: Fleet[] = [];
     items: Item[] = [];
 
-    isAI: boolean;
+    isAI: boolean = false;
     isIndependent: boolean = false;
 
     money: number;

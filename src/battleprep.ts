@@ -27,8 +27,8 @@ module Rance
 
     constructor(battleData: IBattleData)
     {
-      this.attacker = this.battleData.attacker.player;
-      this.defender = this.battleData.defender.player;
+      this.attacker = battleData.attacker.player;
+      this.defender = battleData.defender.player;
       this.battleData = battleData;
 
       this.makeAIFormations();
@@ -88,12 +88,13 @@ module Rance
       }
     }
 
-    
+
 
     makeAIFormation(units: Unit[]): Unit[][]
     {
       // todo
       var MAX_UNITS_PER_SIDE = 6;
+      var MAX_UNITS_PER_ROW = 3;
 
       var formation = this.makeEmptyFormation();
       var unitsToPlace = units.slice(0);
@@ -110,7 +111,7 @@ module Rance
       };
 
       // these are overridden if we run out of units or if alternative
-      // units have significantly lower strength
+      // units have significantly higher strength
       var maxUnitsPerArchetype =
       {
         combat:  Math.ceil(MAX_UNITS_PER_SIDE / 1),
@@ -137,6 +138,18 @@ module Rance
           score *= frontRowDefenceBonus;
         }
 
+        var archetype = unit.template.archetype;
+        var overMax = Math.max(0, 
+          unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
+
+        score *= 1 - overMax * 0.15;
+
+        var rowModifier = preferredColumnForArchetype[archetype] === row ?
+          1 :
+          0.5;
+
+        score *= rowModifier;
+
         return(
         {
           unit: unit,
@@ -153,18 +166,28 @@ module Rance
         for (var i = 0; i < formation[1].length; i++)
         {
           var unit = formation[1][i];
+          if (!unit)
+          {
+            continue;
+          }
+
           totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
 
-          if (!alreadyHasDefender && unit.template.archetype === "defence")
+          if (alreadyHasDefender)
+          {
+            totalDefenceUnderThreshhold = 0;
+          }
+          else if (!alreadyHasDefender && unit.template.archetype === "defence")
           {
             alreadyHasDefender = true;
             totalDefenceUnderThreshhold += 0.5;
           }
+
+
         }
 
         return 1 + totalDefenceUnderThreshhold * 0.25;
       }
-
       while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE)
       {
         var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
@@ -180,18 +203,36 @@ module Rance
         {
           var unit = unitsToPlace[i];
 
-          positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
-          positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
+          if (placedInFront < MAX_UNITS_PER_ROW)
+          {
+            positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
+          }
+          if (placedInBack < MAX_UNITS_PER_ROW)
+          {
+            positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
+          }
         }
 
-        topScore = positionScores[0];
+        positionScores.sort(function(a, b)
+        {
+          return (b.score - a.score);
+        });
+        var topScore = positionScores[0];
 
-        var topScore;
 
-        topScore.row === "front" ?
-          placedInFront++ :
+        if (topScore.row === "front")
+        {
+          placedInFront++;
+          formation[1][placedInFront - 1] = topScore.unit;
+        }
+        else
+        {
           placedInBack++;
+          formation[0][placedInBack - 1] = topScore.unit;
+        }
+
         totalPlaced++;
+        unitsPlacedByArchetype[topScore.unit.template.archetype]++;
         unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
       }
 
@@ -295,7 +336,6 @@ module Rance
       }
     }
 
-    // TODO
     makeBattle(): Battle
     {
       var side1Formation = this.playerFormation || this.attackerFormation;

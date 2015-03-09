@@ -159,7 +159,7 @@ module Rance
         players.push(player);
       }
 
-      var pirates = new Player(false);
+      var pirates = new Player(true);
       pirates.setupPirates();
 
       return(

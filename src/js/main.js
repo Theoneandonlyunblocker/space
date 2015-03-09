@@ -2594,7 +2594,7 @@ var Rance;
             },
             render: function () {
                 var fleet = Rance.UIComponents.Fleet({
-                    fleet: this.props.battlePrep.fleet.slice(0),
+                    fleet: this.props.battlePrep.playerFormation.slice(0),
                     onMouseUp: this.handleDrop,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
@@ -7421,6 +7421,7 @@ var Rance;
             this.resources = {};
             this.fleets = [];
             this.items = [];
+            this.isAI = false;
             this.isIndependent = false;
             this.controlledLocations = [];
             this.visionIsDirty = true;
@@ -10073,8 +10074,8 @@ var Rance;
     var BattlePrep = (function () {
         function BattlePrep(battleData) {
             this.alreadyPlaced = {};
-            this.attacker = this.battleData.attacker.player;
-            this.defender = this.battleData.defender.player;
+            this.attacker = battleData.attacker.player;
+            this.defender = battleData.defender.player;
             this.battleData = battleData;
 
             this.makeAIFormations();
@@ -10125,26 +10126,31 @@ var Rance;
         };
 
         BattlePrep.prototype.makeAIFormation = function (units) {
+            // todo
+            var MAX_UNITS_PER_SIDE = 6;
+            var MAX_UNITS_PER_ROW = 3;
+
             var formation = this.makeEmptyFormation();
-            var toPlace = units.slice(0);
+            var unitsToPlace = units.slice(0);
+            var placedInFront = 0;
+            var placedInBack = 0;
             var totalPlaced = 0;
-            var unitsPlacedByArchetype = {};
+            var unitsPlacedByArchetype = {
+                combat: 0,
+                defence: 0,
+                magic: 0,
+                support: 0,
+                utility: 0
+            };
 
             // these are overridden if we run out of units or if alternative
-            // units have significantly lower strength
-            var maxTotalUnitsPerArchetype = {
-                combat: 6,
-                defence: 3,
-                magic: 3,
-                support: 2,
-                utility: 2
-            };
-            var maxUnitsInColumnPerArchetype = {
-                combat: 3,
-                defence: 2,
-                magic: 3,
-                support: 2,
-                utility: 2
+            // units have significantly higher strength
+            var maxUnitsPerArchetype = {
+                combat: Math.ceil(MAX_UNITS_PER_SIDE / 1),
+                defence: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+                magic: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+                support: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
+                utility: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
             };
             var preferredColumnForArchetype = {
                 combat: "front",
@@ -10154,27 +10160,83 @@ var Rance;
                 utility: "back"
             };
 
-            var getUnits;
+            var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
+                var score = unit.getStrengthEvaluation();
 
-            // todo
-            var MAX_UNITS_PER_SIDE = 6;
-
-            toPlace.sort(function (a, b) {
-                return a.getStrengthEvaluation() - b.getStrengthEvaluation();
-            });
-
-            for (var i = toPlace.length - 1; i >= 0; i--) {
-                if (totalPlaced >= MAX_UNITS_PER_SIDE)
-                    break;
-
-                var unit = toPlace[i];
-                var archetype = unit.template.archetype;
-
-                if (!unitsPlacedByArchetype[archetype]) {
-                    unitsPlacedByArchetype[archetype] = 0;
+                if (unit.template.archetype === "defence" && row === "front") {
+                    score *= frontRowDefenceBonus;
                 }
 
-                unitsPlacedByArchetype[archetype]++;
+                var archetype = unit.template.archetype;
+                var overMax = Math.max(0, unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
+
+                score *= 1 - overMax * 0.15;
+
+                var rowModifier = preferredColumnForArchetype[archetype] === row ? 1 : 0.5;
+
+                score *= rowModifier;
+
+                return ({
+                    unit: unit,
+                    score: score,
+                    row: row
+                });
+            };
+
+            var getFrontRowDefenceBonusFN = function (threshhold) {
+                var totalDefenceUnderThreshhold = 0;
+                var alreadyHasDefender = false;
+
+                for (var i = 0; i < formation[1].length; i++) {
+                    var unit = formation[1][i];
+                    if (!unit) {
+                        continue;
+                    }
+
+                    totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
+
+                    if (alreadyHasDefender) {
+                        totalDefenceUnderThreshhold = 0;
+                    } else if (!alreadyHasDefender && unit.template.archetype === "defence") {
+                        alreadyHasDefender = true;
+                        totalDefenceUnderThreshhold += 0.5;
+                    }
+                }
+
+                return 1 + totalDefenceUnderThreshhold * 0.25;
+            };
+            while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE) {
+                var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
+
+                var positionScores = [];
+
+                for (var i = 0; i < unitsToPlace.length; i++) {
+                    var unit = unitsToPlace[i];
+
+                    if (placedInFront < MAX_UNITS_PER_ROW) {
+                        positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
+                    }
+                    if (placedInBack < MAX_UNITS_PER_ROW) {
+                        positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
+                    }
+                }
+
+                positionScores.sort(function (a, b) {
+                    return (b.score - a.score);
+                });
+                var topScore = positionScores[0];
+
+                if (topScore.row === "front") {
+                    placedInFront++;
+                    formation[1][placedInFront - 1] = topScore.unit;
+                } else {
+                    placedInBack++;
+                    formation[0][placedInBack - 1] = topScore.unit;
+                }
+
+                totalPlaced++;
+                unitsPlacedByArchetype[topScore.unit.template.archetype]++;
+                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
             }
 
             return formation;
@@ -10247,6 +10309,7 @@ var Rance;
             if (!this.battleData.building) {
                 var minShips = 1;
 
+                // TODO add passive ability that forces more enemy ships to stay and fight
                 if (shipsPlaced < minShips)
                     return false;
             }
@@ -10263,7 +10326,6 @@ var Rance;
             }
         };
 
-        // TODO
         BattlePrep.prototype.makeBattle = function () {
             var side1Formation = this.playerFormation || this.attackerFormation;
             var side2Formation = this.enemyFormation || this.defenderFormation;
@@ -15521,7 +15583,7 @@ var Rance;
 /// <reference path="mapai/aicontroller.ts"/>
 ///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
-var a, b, c;
+var a, b, c, d;
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
@@ -15564,6 +15626,18 @@ var Rance;
             c = new Rance.AIController({
                 player: this.humanPlayer,
                 game: this.game
+            });
+            d = new Rance.BattlePrep({
+                location: this.game.galaxyMap.stars[0],
+                building: null,
+                attacker: {
+                    player: this.humanPlayer,
+                    ships: this.humanPlayer.getAllUnits()
+                },
+                defender: {
+                    player: this.game.independents[0],
+                    ships: this.game.independents[0].getAllUnits()
+                }
             });
         };
         App.prototype.destroy = function () {
@@ -15625,7 +15699,7 @@ var Rance;
                 players.push(player);
             }
 
-            var pirates = new Rance.Player(false);
+            var pirates = new Rance.Player(true);
             pirates.setupPirates();
 
             return ({
