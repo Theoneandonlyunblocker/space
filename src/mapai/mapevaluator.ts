@@ -181,7 +181,7 @@ module Rance
       {
         var evaluation = evaluations[starId];
 
-        var easeOfCapturing = Math.log(evaluation.ownInfluence / evaluation.independentStrength);
+        var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
 
         var score = evaluation.desirability * easeOfCapturing;
 
