@@ -7587,11 +7587,14 @@ var Rance;
 
             var sortedMoves = root.children.sort(this.sortByWinRateFN);
 
+            // this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
-
+            return best;
+        };
+        MCTree.prototype.printToConsole = function (nodes) {
             var consoleRows = [];
-            for (var i = 0; i < sortedMoves.length; i++) {
-                var node = sortedMoves[i];
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
                 var row = {
                     visits: node.visits,
                     uctEvaluation: node.uctEvaluation,
@@ -7609,11 +7612,7 @@ var Rance;
                 _.console.table(consoleRows);
             }
 
-            console.log(sortedMoves);
-
-            return best;
-        };
-        MCTree.prototype.printToConsole = function () {
+            console.log(nodes);
         };
         return MCTree;
     })();
@@ -8016,7 +8015,7 @@ var Rance;
 
             return star.getNearestStarForQualifier(isOwnedByThisFN);
         };
-        Player.prototype.attackTarget = function (location, target) {
+        Player.prototype.attackTarget = function (location, target, battleFinishCallback) {
             var battleData = {
                 location: location,
                 building: target.building,
@@ -8037,6 +8036,7 @@ var Rance;
                 app.reactUI.switchScene("battlePrep");
             } else {
                 var battle = battlePrep.makeBattle();
+                battle.afterFinishCallbacks.push(battleFinishCallback);
                 var simulator = new Rance.BattleSimulator(battle, 50);
                 simulator.simulateBattle();
                 simulator.finishBattle();
@@ -8106,6 +8106,7 @@ var Rance;
             // ai players
             this.isVirtual = false;
             this.ended = false;
+            this.afterFinishCallbacks = [];
             this.side1 = props.side1;
             this.side1Player = props.side1Player;
             this.side2 = props.side2;
@@ -8369,6 +8370,9 @@ var Rance;
                 if (victor) {
                     this.battleData.building.setController(victor);
                 }
+            }
+            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
+                this.afterFinishCallbacks[i]();
             }
             if (!this.isSimulated) {
                 Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
@@ -15032,6 +15036,9 @@ var Rance;
             var fleetsById = {};
 
             for (var i = 0; i < this.units.length; i++) {
+                if (!this.units[i].fleet)
+                    continue;
+
                 if (!fleetsById[this.units[i].fleet.id]) {
                     fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
                 }
@@ -15115,8 +15122,6 @@ var Rance;
                 unitsByLocation = this.getUnitsByLocation();
                 atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
 
-                console.log(unitsByLocation);
-
                 if (atTarget >= this.minUnitsDesired) {
                     this.executeAction(afterMoveCallback);
                 } else {
@@ -15147,10 +15152,8 @@ var Rance;
                     return target.enemy.isIndependent;
                 })[0];
 
-                console.log("attack", star, target);
-                player.attackTarget(star, target);
+                player.attackTarget(star, target, afterExecutedCallback);
             }
-            //afterExecutedCallback();
         };
         return Front;
     })();
@@ -15676,8 +15679,7 @@ var Rance;
             var self = this;
 
             this.seed = Math.random();
-
-            //this.seed = 0.14325129357166588;
+            this.seed = 0.2364406210836023;
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
@@ -15747,7 +15749,7 @@ var Rance;
         App.prototype.makePlayers = function () {
             var players = [];
 
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < 2; i++) {
                 var player = new Rance.Player(true);
                 player.makeFlag();
 

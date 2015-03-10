@@ -37,12 +37,17 @@ module Rance
 
       var sortedMoves = root.children.sort(this.sortByWinRateFN);
 
-      var best = sortedMoves[0];
+      // this.printToConsole(sortedMoves);
 
+      var best = sortedMoves[0];
+      return best;
+    }
+    printToConsole(nodes: MCTreeNode[])
+    {
       var consoleRows = [];
-      for (var i = 0; i < sortedMoves.length; i++)
+      for (var i = 0; i < nodes.length; i++)
       {
-        var node = sortedMoves[i];
+        var node = nodes[i];
         var row =
         {
           visits: node.visits,
@@ -62,13 +67,7 @@ module Rance
         _.console.table(consoleRows);
       }
 
-      console.log(sortedMoves);
-
-      return best;
-    }
-    printToConsole()
-    {
-
+      console.log(nodes);
     }
   }
 }

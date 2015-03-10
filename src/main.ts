@@ -66,7 +66,7 @@ module Rance
       var self = this;
 
       this.seed = Math.random();
-      //this.seed = 0.14325129357166588;
+      this.seed = 0.2364406210836023;
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
@@ -142,7 +142,7 @@ module Rance
     {
       var players = [];
 
-      for (var i = 0; i < 5; i++)
+      for (var i = 0; i < 2; i++)
       {
         var player = new Player(true);
         player.makeFlag();

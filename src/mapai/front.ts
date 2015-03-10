@@ -168,6 +168,8 @@ module Rance
 
       for (var i = 0; i < this.units.length; i++)
       {
+        if (!this.units[i].fleet) continue;
+        
         if (!fleetsById[this.units[i].fleet.id])
         {
           fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
@@ -283,8 +285,6 @@ module Rance
         unitsByLocation = this.getUnitsByLocation();
         atTarget = unitsByLocation[this.targetLocation.id] ? 
           unitsByLocation[this.targetLocation.id].length : 0;
-
-        console.log(unitsByLocation);
 
         if (atTarget >= this.minUnitsDesired)
         {

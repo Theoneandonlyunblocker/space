@@ -1188,7 +1188,7 @@ declare module Rance {
         public sortByWinRateFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
         public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
         public evaluate(iterations: number): Rance.MCTreeNode;
-        public printToConsole(): void;
+        public printToConsole(nodes: Rance.MCTreeNode[]): void;
     }
 }
 declare module Rance {
@@ -1266,7 +1266,7 @@ declare module Rance {
         public addItem(item: Rance.Item): void;
         public getAllBuildableItems(): any[];
         public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;
-        public attackTarget(location: Rance.Star, target: any): void;
+        public attackTarget(location: Rance.Star, target: any, battleFinishCallback?: any): void;
         public serialize(): any;
     }
 }
@@ -1314,6 +1314,7 @@ declare module Rance {
         public ended: boolean;
         public capturedUnits: Rance.Unit[];
         public deadUnits: Rance.Unit[];
+        public afterFinishCallbacks: any[];
         constructor(props: {
             battleData: Rance.IBattleData;
             side1: Rance.Unit[][];
