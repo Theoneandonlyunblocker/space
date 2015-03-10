@@ -7408,6 +7408,268 @@ var Rance;
     })();
     Rance.Flag = Flag;
 })(Rance || (Rance = {}));
+/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    var MCTreeNode = (function () {
+        function MCTreeNode(battle, sideId, move) {
+            this.depth = 0;
+            this.children = [];
+            this.visits = 0;
+            this.wins = 0;
+            this.winRate = 0;
+            this.totalScore = 0;
+            this.averageScore = 0;
+            this.uctIsDirty = true;
+            this.battle = battle;
+            this.sideId = sideId;
+            this.move = move;
+
+            this.currentScore = battle.getEvaluation();
+        }
+        MCTreeNode.prototype.getPossibleMoves = function () {
+            if (!this.battle.activeUnit) {
+                return null;
+            }
+            var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
+
+            var actions = [];
+
+            for (var id in targets) {
+                var unit = this.battle.unitsById[id];
+                var targetActions = targets[id];
+                for (var i = 0; i < targetActions.length; i++) {
+                    actions.push({
+                        targetId: id,
+                        ability: targetActions[i]
+                    });
+                }
+            }
+
+            return actions;
+        };
+        MCTreeNode.prototype.addChild = function () {
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
+            }
+
+            var move = this.possibleMoves.pop();
+
+            var battle = this.battle.makeVirtualClone();
+
+            Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
+
+            battle.endTurn();
+
+            var child = new MCTreeNode(battle, this.sideId, move);
+            child.parent = this;
+            child.depth = this.depth + 1;
+            this.children.push(child);
+
+            return child;
+        };
+        MCTreeNode.prototype.updateResult = function (result) {
+            this.visits++;
+            this.totalScore += result;
+
+            if (this.sideId === "side1") {
+                if (result < 0)
+                    this.wins++;
+            }
+            if (this.sideId === "side2") {
+                if (result > 0)
+                    this.wins++;
+            }
+
+            this.averageScore = this.totalScore / this.visits;
+            this.winRate = this.wins / this.visits;
+            this.uctIsDirty = true;
+
+            if (this.parent)
+                this.parent.updateResult(result);
+        };
+        MCTreeNode.prototype.simulateOnce = function (battle) {
+            var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
+            var targetId = Rance.getRandomKey(actions);
+
+            var action = Rance.getRandomArrayItem(actions[targetId]);
+
+            var target = battle.unitsById[targetId];
+
+            Rance.useAbility(battle, battle.activeUnit, action, target);
+            battle.endTurn();
+        };
+        MCTreeNode.prototype.simulateToEnd = function () {
+            var battle = this.battle.makeVirtualClone();
+
+            while (!battle.ended) {
+                this.simulateOnce(battle);
+            }
+
+            this.updateResult(battle.getEvaluation());
+        };
+        MCTreeNode.prototype.clearResult = function () {
+            this.visits = 0;
+            this.wins = 0;
+            this.averageScore = 0;
+            this.totalScore = 0;
+        };
+        MCTreeNode.prototype.setUct = function () {
+            if (!parent) {
+                this.uctEvaluation = -1;
+                this.uctIsDirty = false;
+                return;
+            }
+
+            this.uctEvaluation = this.wins / this.visits + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+
+            this.uctIsDirty = false;
+        };
+        MCTreeNode.prototype.getHighestUctChild = function () {
+            var highest = this.children[0];
+            for (var i = 0; i < this.children.length; i++) {
+                var child = this.children[i];
+                if (child.uctIsDirty) {
+                    child.setUct();
+                }
+
+                if (child.uctEvaluation > highest.uctEvaluation) {
+                    highest = child;
+                }
+            }
+
+            return highest;
+        };
+        MCTreeNode.prototype.getRecursiveBestUctChild = function () {
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
+            }
+
+            // not fully expanded
+            if (this.possibleMoves && this.possibleMoves.length > 0) {
+                return this.addChild();
+            } else if (this.children.length > 0) {
+                return this.getHighestUctChild().getRecursiveBestUctChild();
+            } else {
+                return this;
+            }
+        };
+        return MCTreeNode;
+    })();
+    Rance.MCTreeNode = MCTreeNode;
+})(Rance || (Rance = {}));
+/// <reference path="mctreenode.ts"/>
+/// <reference path="battle.ts"/>
+var Rance;
+(function (Rance) {
+    var MCTree = (function () {
+        function MCTree(battle, sideId) {
+            var cloned = battle.makeVirtualClone();
+            this.rootNode = new Rance.MCTreeNode(cloned, sideId);
+        }
+        MCTree.prototype.sortByWinRateFN = function (a, b) {
+            return b.winRate - a.winRate;
+        };
+        MCTree.prototype.sortByScoreFN = function (a, b) {
+            return b.averageScore - a.averageScore;
+        };
+        MCTree.prototype.evaluate = function (iterations) {
+            var root = this.rootNode;
+            root.possibleMoves = root.getPossibleMoves();
+            for (var i = 0; i < iterations; i++) {
+                // select & expand
+                var toSimulateFrom = root.getRecursiveBestUctChild();
+
+                // simulate & backpropagate
+                toSimulateFrom.simulateToEnd();
+            }
+
+            var sortedMoves = root.children.sort(this.sortByWinRateFN);
+
+            var best = sortedMoves[0];
+
+            var consoleRows = [];
+            for (var i = 0; i < sortedMoves.length; i++) {
+                var node = sortedMoves[i];
+                var row = {
+                    visits: node.visits,
+                    uctEvaluation: node.uctEvaluation,
+                    winRate: node.winRate,
+                    currentScore: node.currentScore,
+                    averageScore: node.averageScore,
+                    abilityName: node.move.ability.displayName,
+                    targetId: node.move.targetId
+                };
+                consoleRows.push(row);
+            }
+            var _ = window;
+
+            if (_.console.table) {
+                _.console.table(consoleRows);
+            }
+
+            console.log(sortedMoves);
+
+            return best;
+        };
+        MCTree.prototype.printToConsole = function () {
+        };
+        return MCTree;
+    })();
+    Rance.MCTree = MCTree;
+})(Rance || (Rance = {}));
+/// <reference path="battle.ts"/>
+/// <reference path="mctree.ts"/>
+var Rance;
+(function (Rance) {
+    var BattleSimulator = (function () {
+        function BattleSimulator(battle, moveSimulationDepth) {
+            this.battle = battle;
+            battle.isSimulated = true;
+            this.moveSimulationDepth = moveSimulationDepth;
+        }
+        BattleSimulator.prototype.simulateBattle = function () {
+            while (!this.battle.ended) {
+                this.simulateMove();
+            }
+        };
+
+        BattleSimulator.prototype.simulateMove = function () {
+            if (!this.battle.activeUnit || this.battle.ended) {
+                throw new Error("Simulated battle already ended");
+            }
+
+            var tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side);
+
+            var move = tree.evaluate(this.moveSimulationDepth).move;
+            var target = this.battle.unitsById[move.targetId];
+
+            this.simulateAbility(move.ability, target);
+
+            this.battle.endTurn();
+        };
+
+        BattleSimulator.prototype.simulateAbility = function (ability, target) {
+            Rance.useAbility(this.battle, this.battle.activeUnit, ability, target);
+        };
+
+        BattleSimulator.prototype.getBattleEndData = function () {
+            if (!this.battle.ended) {
+                throw new Error("Simulated battle hasn't ended yet");
+            }
+
+            var captured = this.battle.capturedUnits;
+            var destroyed = this.battle.deadUnits;
+            var victor = this.battle.getVictor();
+        };
+        BattleSimulator.prototype.finishBattle = function () {
+            this.battle.finishBattle();
+        };
+        return BattleSimulator;
+    })();
+    Rance.BattleSimulator = BattleSimulator;
+})(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
@@ -7415,6 +7677,7 @@ var Rance;
 /// <reference path="star.ts" />
 /// <reference path="flag.ts" />
 /// <reference path="item.ts" />
+/// <reference path="battlesimulator.ts" />
 var Rance;
 (function (Rance) {
     var Player = (function () {
@@ -7771,8 +8034,15 @@ var Rance;
 
             // TODO
             var battlePrep = new Rance.BattlePrep(battleData);
-            app.reactUI.battlePrep = battlePrep;
-            app.reactUI.switchScene("battlePrep");
+            if (battlePrep.humanPlayer) {
+                app.reactUI.battlePrep = battlePrep;
+                app.reactUI.switchScene("battlePrep");
+            } else {
+                var battle = battlePrep.makeBattle();
+                var simulator = new Rance.BattleSimulator(battle, 200);
+                simulator.simulateBattle();
+                simulator.finishBattle();
+            }
         };
         Player.prototype.serialize = function () {
             var data = {};
@@ -7834,6 +8104,8 @@ var Rance;
             };
             this.turnOrder = [];
             this.evaluation = {};
+            this.isSimulated = false;
+            // ai players
             this.isVirtual = false;
             this.ended = false;
             this.side1 = props.side1;
@@ -8100,8 +8372,10 @@ var Rance;
                     this.battleData.building.setController(victor);
                 }
             }
-            Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
-            Rance.eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
+            if (!this.isSimulated) {
+                Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+                Rance.eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
+            }
         };
         Battle.prototype.getVictor = function () {
             var evaluation = this.getEvaluation();
@@ -13782,217 +14056,6 @@ var Rance;
         }
     }
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/abilitytemplates.ts" />
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    var MCTreeNode = (function () {
-        function MCTreeNode(battle, sideId, move) {
-            this.depth = 0;
-            this.children = [];
-            this.visits = 0;
-            this.wins = 0;
-            this.winRate = 0;
-            this.totalScore = 0;
-            this.averageScore = 0;
-            this.uctIsDirty = true;
-            this.battle = battle;
-            this.sideId = sideId;
-            this.move = move;
-
-            this.currentScore = battle.getEvaluation();
-        }
-        MCTreeNode.prototype.getPossibleMoves = function () {
-            if (!this.battle.activeUnit) {
-                return null;
-            }
-            var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
-
-            var actions = [];
-
-            for (var id in targets) {
-                var unit = this.battle.unitsById[id];
-                var targetActions = targets[id];
-                for (var i = 0; i < targetActions.length; i++) {
-                    actions.push({
-                        targetId: id,
-                        ability: targetActions[i]
-                    });
-                }
-            }
-
-            return actions;
-        };
-        MCTreeNode.prototype.addChild = function () {
-            if (!this.possibleMoves) {
-                this.possibleMoves = this.getPossibleMoves();
-            }
-
-            var move = this.possibleMoves.pop();
-
-            var battle = this.battle.makeVirtualClone();
-
-            Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
-
-            battle.endTurn();
-
-            var child = new MCTreeNode(battle, this.sideId, move);
-            child.parent = this;
-            child.depth = this.depth + 1;
-            this.children.push(child);
-
-            return child;
-        };
-        MCTreeNode.prototype.updateResult = function (result) {
-            this.visits++;
-            this.totalScore += result;
-
-            if (this.sideId === "side1") {
-                if (result < 0)
-                    this.wins++;
-            }
-            if (this.sideId === "side2") {
-                if (result > 0)
-                    this.wins++;
-            }
-
-            this.averageScore = this.totalScore / this.visits;
-            this.winRate = this.wins / this.visits;
-            this.uctIsDirty = true;
-
-            if (this.parent)
-                this.parent.updateResult(result);
-        };
-        MCTreeNode.prototype.simulateOnce = function (battle) {
-            var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
-            var targetId = Rance.getRandomKey(actions);
-
-            var action = Rance.getRandomArrayItem(actions[targetId]);
-
-            var target = battle.unitsById[targetId];
-
-            Rance.useAbility(battle, battle.activeUnit, action, target);
-            battle.endTurn();
-        };
-        MCTreeNode.prototype.simulateToEnd = function () {
-            var battle = this.battle.makeVirtualClone();
-
-            while (!battle.ended) {
-                this.simulateOnce(battle);
-            }
-
-            this.updateResult(battle.getEvaluation());
-        };
-        MCTreeNode.prototype.clearResult = function () {
-            this.visits = 0;
-            this.wins = 0;
-            this.averageScore = 0;
-            this.totalScore = 0;
-        };
-        MCTreeNode.prototype.setUct = function () {
-            if (!parent) {
-                this.uctEvaluation = -1;
-                this.uctIsDirty = false;
-                return;
-            }
-
-            this.uctEvaluation = this.wins / this.visits + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
-
-            this.uctIsDirty = false;
-        };
-        MCTreeNode.prototype.getHighestUctChild = function () {
-            var highest = this.children[0];
-            for (var i = 0; i < this.children.length; i++) {
-                var child = this.children[i];
-                if (child.uctIsDirty) {
-                    child.setUct();
-                }
-
-                if (child.uctEvaluation > highest.uctEvaluation) {
-                    highest = child;
-                }
-            }
-
-            return highest;
-        };
-        MCTreeNode.prototype.getRecursiveBestUctChild = function () {
-            if (!this.possibleMoves) {
-                this.possibleMoves = this.getPossibleMoves();
-            }
-
-            // not fully expanded
-            if (this.possibleMoves && this.possibleMoves.length > 0) {
-                return this.addChild();
-            } else if (this.children.length > 0) {
-                return this.getHighestUctChild().getRecursiveBestUctChild();
-            } else {
-                return this;
-            }
-        };
-        return MCTreeNode;
-    })();
-    Rance.MCTreeNode = MCTreeNode;
-})(Rance || (Rance = {}));
-/// <reference path="mctreenode.ts"/>
-/// <reference path="battle.ts"/>
-var Rance;
-(function (Rance) {
-    var MCTree = (function () {
-        function MCTree(battle, sideId) {
-            var cloned = battle.makeVirtualClone();
-            this.rootNode = new Rance.MCTreeNode(cloned, sideId);
-        }
-        MCTree.prototype.sortByWinRateFN = function (a, b) {
-            return b.winRate - a.winRate;
-        };
-        MCTree.prototype.sortByScoreFN = function (a, b) {
-            return b.averageScore - a.averageScore;
-        };
-        MCTree.prototype.evaluate = function (iterations) {
-            var root = this.rootNode;
-            root.possibleMoves = root.getPossibleMoves();
-            for (var i = 0; i < iterations; i++) {
-                // select & expand
-                var toSimulateFrom = root.getRecursiveBestUctChild();
-
-                // simulate & backpropagate
-                toSimulateFrom.simulateToEnd();
-            }
-
-            var sortedMoves = root.children.sort(this.sortByWinRateFN);
-
-            var best = sortedMoves[0];
-
-            var consoleRows = [];
-            for (var i = 0; i < sortedMoves.length; i++) {
-                var node = sortedMoves[i];
-                var row = {
-                    visits: node.visits,
-                    uctEvaluation: node.uctEvaluation,
-                    winRate: node.winRate,
-                    currentScore: node.currentScore,
-                    averageScore: node.averageScore,
-                    abilityName: node.move.ability.displayName,
-                    targetId: node.move.targetId
-                };
-                consoleRows.push(row);
-            }
-            var _ = window;
-
-            if (_.console.table) {
-                _.console.table(consoleRows);
-            }
-
-            console.log(sortedMoves);
-
-            return best;
-        };
-        MCTree.prototype.printToConsole = function () {
-        };
-        return MCTree;
-    })();
-    Rance.MCTree = MCTree;
-})(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 /// <reference path="eventmanager.ts"/>
 /// <reference path="fleet.ts" />
@@ -15641,7 +15704,7 @@ var Rance;
             a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
             b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
             c = new Rance.AIController({
-                player: this.humanPlayer,
+                player: this.game.playerOrder[3],
                 game: this.game
             });
         };

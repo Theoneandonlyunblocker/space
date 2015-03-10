@@ -90,7 +90,7 @@ module Rance
       b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
       c = new Rance.AIController(
       {
-        player: this.humanPlayer,
+        player: this.game.playerOrder[3],
         game: this.game
       });
     }

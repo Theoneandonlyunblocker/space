@@ -5,6 +5,7 @@
 /// <reference path="star.ts" />
 /// <reference path="flag.ts" />
 /// <reference path="item.ts" />
+/// <reference path="battlesimulator.ts" />
 
 module Rance
 {
@@ -465,8 +466,18 @@ module Rance
 
       // TODO
       var battlePrep = new BattlePrep(battleData);
-      app.reactUI.battlePrep = battlePrep;
-      app.reactUI.switchScene("battlePrep");
+      if (battlePrep.humanPlayer)
+      {
+        app.reactUI.battlePrep = battlePrep;
+        app.reactUI.switchScene("battlePrep");
+      }
+      else
+      {
+        var battle = battlePrep.makeBattle();
+        var simulator = new BattleSimulator(battle, 200);
+        simulator.simulateBattle();
+        simulator.finishBattle();
+      }
     }
     serialize()
     {

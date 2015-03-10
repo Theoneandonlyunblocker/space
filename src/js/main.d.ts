@@ -1149,6 +1149,61 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IMove {
+        ability: Rance.Templates.IAbilityTemplate;
+        targetId: number;
+    }
+    class MCTreeNode {
+        public battle: Rance.Battle;
+        public sideId: string;
+        public move: IMove;
+        public depth: number;
+        public parent: MCTreeNode;
+        public children: MCTreeNode[];
+        public visits: number;
+        public wins: number;
+        public winRate: number;
+        public totalScore: number;
+        public averageScore: number;
+        public currentScore: number;
+        public possibleMoves: IMove[];
+        public uctEvaluation: number;
+        public uctIsDirty: boolean;
+        constructor(battle: Rance.Battle, sideId: string, move?: IMove);
+        public getPossibleMoves(): any[];
+        public addChild(): MCTreeNode;
+        public updateResult(result: number): void;
+        public simulateOnce(battle: Rance.Battle): void;
+        public simulateToEnd(): void;
+        public clearResult(): void;
+        public setUct(): void;
+        public getHighestUctChild(): MCTreeNode;
+        public getRecursiveBestUctChild(): any;
+    }
+}
+declare module Rance {
+    class MCTree {
+        public rootNode: Rance.MCTreeNode;
+        constructor(battle: Rance.Battle, sideId: string);
+        public sortByWinRateFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
+        public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
+        public evaluate(iterations: number): Rance.MCTreeNode;
+        public printToConsole(): void;
+    }
+}
+declare module Rance {
+    class BattleSimulator {
+        public battle: Rance.Battle;
+        public moveSimulationDepth: number;
+        constructor(battle: Rance.Battle, moveSimulationDepth: number);
+        public simulateBattle(): void;
+        public simulateMove(): void;
+        public simulateAbility(ability: Rance.Templates.IAbilityTemplate, target: Rance.Unit): void;
+        public getBattleEndData(): void;
+        public finishBattle(): void;
+    }
+}
+declare module Rance {
     class Player {
         public id: number;
         public name: string;
@@ -1253,6 +1308,7 @@ declare module Rance {
         public evaluation: {
             [turnNumber: number]: number;
         };
+        public isSimulated: boolean;
         public isVirtual: boolean;
         public ended: boolean;
         public capturedUnits: Rance.Unit[];
@@ -2081,49 +2137,6 @@ declare module Rance {
 }
 declare module Rance {
     function setAllDynamicTemplateProperties(): void;
-}
-declare module Rance {
-    interface IMove {
-        ability: Rance.Templates.IAbilityTemplate;
-        targetId: number;
-    }
-    class MCTreeNode {
-        public battle: Rance.Battle;
-        public sideId: string;
-        public move: IMove;
-        public depth: number;
-        public parent: MCTreeNode;
-        public children: MCTreeNode[];
-        public visits: number;
-        public wins: number;
-        public winRate: number;
-        public totalScore: number;
-        public averageScore: number;
-        public currentScore: number;
-        public possibleMoves: IMove[];
-        public uctEvaluation: number;
-        public uctIsDirty: boolean;
-        constructor(battle: Rance.Battle, sideId: string, move?: IMove);
-        public getPossibleMoves(): any[];
-        public addChild(): MCTreeNode;
-        public updateResult(result: number): void;
-        public simulateOnce(battle: Rance.Battle): void;
-        public simulateToEnd(): void;
-        public clearResult(): void;
-        public setUct(): void;
-        public getHighestUctChild(): MCTreeNode;
-        public getRecursiveBestUctChild(): any;
-    }
-}
-declare module Rance {
-    class MCTree {
-        public rootNode: Rance.MCTreeNode;
-        constructor(battle: Rance.Battle, sideId: string);
-        public sortByWinRateFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
-        public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
-        public evaluate(iterations: number): Rance.MCTreeNode;
-        public printToConsole(): void;
-    }
 }
 declare module Rance {
     class PathfindingArrow {
