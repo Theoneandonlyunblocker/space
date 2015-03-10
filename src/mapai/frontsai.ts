@@ -131,6 +131,7 @@ module Rance
 
     scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores)
     {
+
       // base score based on unit composition
       var score = frontArchetypeScores[unit.template.archetype];
 
@@ -156,10 +157,21 @@ module Rance
       // penalize initial units for front
       // inertia at beginning of adding units to front
       // so ai prioritizes fully formed fronts to incomplete ones
-      var newUnitInertia = 0.3 - front.units.length * 0.1;
+      var newUnitInertia = 0.5 - front.units.length * 0.1;
       if (newUnitInertia > 0)
       {
         score -= newUnitInertia;
+      }
+
+      // prefer units already part of this front
+      var alreadyInFront = unit.front && unit.front === front;
+      if (alreadyInFront)
+      {
+        score += 0.3;
+        if (front.hasMustered)
+        {
+          score += 0.3;
+        }
       }
 
       // penalize fronts with high requirements
@@ -170,7 +182,7 @@ module Rance
 
       // prioritize units closer to front target
       var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-      var distanceAdjust = distance * -0.05;
+      var distanceAdjust = distance * -0.1;
       score += distanceAdjust;
  
       return score;

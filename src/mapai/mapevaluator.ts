@@ -415,7 +415,7 @@ module Rance
         var location = fleet.location;
 
         var range = fleet.getMinMaxMovePoints();
-        var turnsToCheck = 2;
+        var turnsToCheck = 4;
 
         var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
 
