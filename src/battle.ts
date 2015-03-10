@@ -51,6 +51,8 @@ module Rance
     capturedUnits: Unit[];
     deadUnits: Unit[];
 
+    afterFinishCallbacks: any[] = [];
+
     constructor(props:
     {
       battleData: IBattleData;
@@ -375,6 +377,10 @@ module Rance
         {
           this.battleData.building.setController(victor);
         }
+      }
+      for (var i = 0; i < this.afterFinishCallbacks.length; i++)
+      {
+        this.afterFinishCallbacks[i]();
       }
       if (!this.isSimulated)
       {

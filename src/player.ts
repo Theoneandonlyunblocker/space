@@ -444,7 +444,7 @@ module Rance
 
       return star.getNearestStarForQualifier(isOwnedByThisFN);
     }
-    attackTarget(location: Star, target: any)
+    attackTarget(location: Star, target: any, battleFinishCallback?: any)
     {
       var battleData: IBattleData =
       {
@@ -472,6 +472,7 @@ module Rance
       else
       {
         var battle = battlePrep.makeBattle();
+        battle.afterFinishCallbacks.push(battleFinishCallback);
         var simulator = new BattleSimulator(battle, 50);
         simulator.simulateBattle();
         simulator.finishBattle();

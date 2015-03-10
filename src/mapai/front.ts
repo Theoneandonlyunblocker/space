@@ -325,10 +325,8 @@ module Rance
           return target.enemy.isIndependent;
         })[0];
 
-        console.log("attack", star, target);
-        player.attackTarget(star, target);
+        player.attackTarget(star, target, afterExecutedCallback);
       }
-      //afterExecutedCallback();
     }
   }
 }
