@@ -43,7 +43,9 @@ module Rance
       [turnNumber: number]: number;
     } = {};
 
-    isVirtual: boolean = false; // true when a simulation clone for ai
+    isSimulated: boolean = false; // true when battle is between two
+                                  // ai players
+    isVirtual: boolean = false; // true when a clone made by battle ai
     ended: boolean = false;
 
     capturedUnits: Unit[];
@@ -374,8 +376,11 @@ module Rance
           this.battleData.building.setController(victor);
         }
       }
-      eventManager.dispatchEvent("switchScene", "galaxyMap");
-      eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
+      if (!this.isSimulated)
+      {
+        eventManager.dispatchEvent("switchScene", "galaxyMap");
+        eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
+      }
     }
     getVictor()
     {

@@ -11,6 +11,7 @@ module Rance
     constructor(battle: Battle, moveSimulationDepth: number)
     {
       this.battle = battle;
+      battle.isSimulated = true;
       this.moveSimulationDepth = moveSimulationDepth;
     }
 
@@ -54,6 +55,10 @@ module Rance
       var captured = this.battle.capturedUnits;
       var destroyed = this.battle.deadUnits;
       var victor = this.battle.getVictor();
+    }
+    finishBattle()
+    {
+      this.battle.finishBattle();
     }
   }
 }
