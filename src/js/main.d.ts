@@ -2422,7 +2422,7 @@ declare module Rance {
         };
     }
 }
-declare var a: any, b: any, c: any, d: any;
+declare var a: any, b: any, c: any;
 declare module Rance {
     var idGenerators: {
         fleet: number;

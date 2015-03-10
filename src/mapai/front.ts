@@ -251,6 +251,10 @@ module Rance
       var unitsByLocation = this.getUnitsByLocation();
       var fleets = this.getAssociatedFleets();
 
+      var atMuster = unitsByLocation[this.musterLocation.id] ? 
+        unitsByLocation[this.musterLocation.id].length : 0;
+      var atTarget = unitsByLocation[this.targetLocation.id] ? 
+        unitsByLocation[this.targetLocation.id].length : 0;
 
       if (this.hasMustered)
       {
@@ -258,10 +262,6 @@ module Rance
       }
       else
       {
-        var atMuster = unitsByLocation[this.musterLocation.id] ? 
-          unitsByLocation[this.musterLocation.id].length : 0;
-        var atTarget = unitsByLocation[this.targetLocation.id] ? 
-          unitsByLocation[this.targetLocation.id].length : 0;
 
         if (atMuster + atTarget >= this.minUnitsDesired)
         {
@@ -282,8 +282,7 @@ module Rance
         fleets[i].move(moveTarget);
       }
 
-      unitsByLocation = this.getUnitsByLocation();
-      if (unitsByLocation[this.targetLocation.id].length >= this.minUnitsDesired)
+      if (atTarget >= this.minUnitsDesired)
       {
         this.executeAction(afterMoveCallback);
         return

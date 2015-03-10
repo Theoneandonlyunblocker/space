@@ -14951,6 +14951,8 @@ var Rance;
 
             for (var starId in impureFleetMembersByLocation) {
                 var ships = impureFleetMembersByLocation[starId];
+                if (ships.length < 1)
+                    continue;
                 var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
 
                 for (var i = ships.length - 1; i >= 0; i--) {
@@ -15034,12 +15036,12 @@ var Rance;
             var unitsByLocation = this.getUnitsByLocation();
             var fleets = this.getAssociatedFleets();
 
+            var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
+            var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
+
             if (this.hasMustered) {
                 shouldMoveToTarget = true;
             } else {
-                var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
-                var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
-
                 if (atMuster + atTarget >= this.minUnitsDesired) {
                     this.hasMustered = true;
                     shouldMoveToTarget = true;
@@ -15054,8 +15056,7 @@ var Rance;
                 fleets[i].move(moveTarget);
             }
 
-            unitsByLocation = this.getUnitsByLocation();
-            if (unitsByLocation[this.targetLocation.id].length >= this.minUnitsDesired) {
+            if (atTarget >= this.minUnitsDesired) {
                 this.executeAction(afterMoveCallback);
                 return;
             } else {
@@ -15583,7 +15584,7 @@ var Rance;
 /// <reference path="mapai/aicontroller.ts"/>
 ///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
-var a, b, c, d;
+var a, b, c;
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
@@ -15626,18 +15627,6 @@ var Rance;
             c = new Rance.AIController({
                 player: this.humanPlayer,
                 game: this.game
-            });
-            d = new Rance.BattlePrep({
-                location: this.game.galaxyMap.stars[0],
-                building: null,
-                attacker: {
-                    player: this.humanPlayer,
-                    ships: this.humanPlayer.getAllUnits()
-                },
-                defender: {
-                    player: this.game.independents[0],
-                    ships: this.game.independents[0].getAllUnits()
-                }
             });
         };
         App.prototype.destroy = function () {
