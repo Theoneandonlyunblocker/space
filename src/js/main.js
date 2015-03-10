@@ -6998,12 +6998,14 @@ var Rance;
 
             return path;
         };
-        Fleet.prototype.pathFind = function (newLocation, onMove) {
+        Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
             var path = this.getPathTo(newLocation);
 
             var interval = window.setInterval(function () {
                 if (!path || path.length <= 0) {
                     window.clearInterval(interval);
+                    if (afterMove)
+                        afterMove();
                     return;
                 }
 
@@ -15052,15 +15054,29 @@ var Rance;
 
             var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
 
-            for (var i = 0; i < fleets.length; i++) {
-                fleets[i].move(moveTarget);
-            }
+            var finishAllMoveFN = function () {
+                unitsByLocation = this.getUnitsByLocation();
+                atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
 
-            if (atTarget >= this.minUnitsDesired) {
-                this.executeAction(afterMoveCallback);
-                return;
-            } else {
-                afterMoveCallback();
+                console.log(unitsByLocation);
+
+                if (atTarget >= this.minUnitsDesired) {
+                    this.executeAction(afterMoveCallback);
+                } else {
+                    afterMoveCallback();
+                }
+            }.bind(this);
+
+            var finishedMovingCount = 0;
+            var finishFleetMoveFN = function () {
+                finishedMovingCount++;
+                if (finishedMovingCount >= fleets.length) {
+                    finishAllMoveFN();
+                }
+            };
+
+            for (var i = 0; i < fleets.length; i++) {
+                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
             }
         };
         Front.prototype.executeAction = function (afterExecutedCallback) {
@@ -15681,8 +15697,7 @@ var Rance;
             var players = [];
 
             for (var i = 0; i < 5; i++) {
-                var isAI = i >= 1;
-                var player = new Rance.Player(isAI);
+                var player = new Rance.Player(true);
                 player.makeFlag();
 
                 players.push(player);
@@ -15708,6 +15723,7 @@ var Rance;
         };
         App.prototype.initGame = function () {
             this.humanPlayer = this.game.humanPlayer;
+            this.humanPlayer.isAI = false;
 
             if (this.playerControl)
                 this.playerControl.removeEventListeners();

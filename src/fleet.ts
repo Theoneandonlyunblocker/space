@@ -187,7 +187,7 @@ module Rance
 
       return path;
     }
-    pathFind(newLocation: Star, onMove?: any)
+    pathFind(newLocation: Star, onMove?: any, afterMove?: any)
     {
       var path = this.getPathTo(newLocation);
 
@@ -196,6 +196,7 @@ module Rance
         if (!path || path.length <= 0)
         {
           window.clearInterval(interval);
+          if (afterMove) afterMove();
           return;
 
         }

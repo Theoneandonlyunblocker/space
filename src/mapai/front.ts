@@ -277,19 +277,38 @@ module Rance
 
       var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
 
+
+      var finishAllMoveFN = function()
+      {
+        unitsByLocation = this.getUnitsByLocation();
+        atTarget = unitsByLocation[this.targetLocation.id] ? 
+          unitsByLocation[this.targetLocation.id].length : 0;
+
+        console.log(unitsByLocation);
+
+        if (atTarget >= this.minUnitsDesired)
+        {
+          this.executeAction(afterMoveCallback);
+        }
+        else
+        {
+          afterMoveCallback();
+        }
+      }.bind(this);
+
+      var finishedMovingCount = 0;
+      var finishFleetMoveFN = function()
+      {
+        finishedMovingCount++;
+        if (finishedMovingCount >= fleets.length)
+        {
+          finishAllMoveFN();
+        }
+      };
+
       for (var i = 0; i < fleets.length; i++)
       {
-        fleets[i].move(moveTarget);
-      }
-
-      if (atTarget >= this.minUnitsDesired)
-      {
-        this.executeAction(afterMoveCallback);
-        return
-      }
-      else
-      {
-        afterMoveCallback();
+        fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
       }
     }
     executeAction(afterExecutedCallback)

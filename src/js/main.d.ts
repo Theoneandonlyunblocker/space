@@ -940,7 +940,7 @@ declare module Rance {
             star: Rance.Star;
             cost: any;
         }[];
-        public pathFind(newLocation: Rance.Star, onMove?: any): void;
+        public pathFind(newLocation: Rance.Star, onMove?: any, afterMove?: any): void;
         public getFriendlyFleetsAtOwnLocation(): Fleet[];
         public getTotalStrengthEvaluation(): number;
         public getTotalHealth(): {

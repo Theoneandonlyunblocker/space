@@ -152,8 +152,7 @@ module Rance
 
       for (var i = 0; i < 5; i++)
       {
-        var isAI = i >= 1;
-        var player = new Player(isAI);
+        var player = new Player(true);
         player.makeFlag();
 
         players.push(player);
@@ -182,6 +181,7 @@ module Rance
     initGame()
     {
       this.humanPlayer = this.game.humanPlayer;
+      this.humanPlayer.isAI = false;
 
       if (this.playerControl) this.playerControl.removeEventListeners();
 
