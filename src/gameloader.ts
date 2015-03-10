@@ -198,14 +198,9 @@ module Rance
     }
     deserializePlayer(data)
     {
-      var player = new Player(data.id);
+      var player = new Player(data.isAI, data.id);
 
       player.money = data.money;
-
-      if (data.isAI)
-      {
-        player.setupAI();
-      }
 
       // color scheme & flag
       if (data.isIndependent)

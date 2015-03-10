@@ -31,6 +31,7 @@ module Rance
     items: Item[] = [];
 
     isAI: boolean = false;
+    AIController: AIController;
     isIndependent: boolean = false;
 
     money: number;
@@ -51,10 +52,7 @@ module Rance
       this.id = isFinite(id) ? id : idGenerators.player++;
       this.name = "Player " + this.id;
 
-      if (isAI)
-      {
-        this.setupAI();
-      }
+      this.isAI = isAI;
 
       this.money = 1000;
     }
@@ -65,9 +63,9 @@ module Rance
       this.color = scheme.main;
       this.secondaryColor = scheme.secondary;
     }
-    setupAI()
+    setupAI(game: Game)
     {
-      this.isAI = true;
+      this.AIController = new AIController(this, game);
     }
     setupPirates()
     {
@@ -474,7 +472,7 @@ module Rance
       else
       {
         var battle = battlePrep.makeBattle();
-        var simulator = new BattleSimulator(battle, 200);
+        var simulator = new BattleSimulator(battle, 50);
         simulator.simulateBattle();
         simulator.finishBattle();
       }

@@ -1221,6 +1221,7 @@ declare module Rance {
         public fleets: Rance.Fleet[];
         public items: Rance.Item[];
         public isAI: boolean;
+        public AIController: Rance.AIController;
         public isIndependent: boolean;
         public money: number;
         public controlledLocations: Rance.Star[];
@@ -1233,7 +1234,7 @@ declare module Rance {
         };
         constructor(isAI: boolean, id?: number);
         public makeColorScheme(): void;
-        public setupAI(): void;
+        public setupAI(game: Rance.Game): void;
         public setupPirates(): void;
         public makeFlag(seed?: any): void;
         public addUnit(unit: Rance.Unit): void;
@@ -2420,10 +2421,7 @@ declare module Rance {
         public objectivesAI: Rance.ObjectivesAI;
         public economicAI: Rance.EconomicAI;
         public frontsAI: Rance.FrontsAI;
-        constructor(props: {
-            player: Rance.Player;
-            game: Rance.Game;
-        });
+        constructor(player: Rance.Player, game: Rance.Game);
         public processTurn(): void;
         public finishMovingFleets(): void;
     }

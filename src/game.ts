@@ -32,9 +32,9 @@ module Rance
       this.setNextPlayer();
       this.processPlayerStartTurn(this.activePlayer);
 
-      // TODO
-      if (this.activePlayer !== this.humanPlayer)
+      if (this.activePlayer.isAI)
       {
+        this.activePlayer.AIController.processTurn();
         this.endTurn();
       }
       else

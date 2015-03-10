@@ -7695,9 +7695,7 @@ var Rance;
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
 
-            if (isAI) {
-                this.setupAI();
-            }
+            this.isAI = isAI;
 
             this.money = 1000;
         }
@@ -7707,8 +7705,8 @@ var Rance;
             this.color = scheme.main;
             this.secondaryColor = scheme.secondary;
         };
-        Player.prototype.setupAI = function () {
-            this.isAI = true;
+        Player.prototype.setupAI = function (game) {
+            this.AIController = new Rance.AIController(this, game);
         };
         Player.prototype.setupPirates = function () {
             this.name = "Independent";
@@ -8039,7 +8037,7 @@ var Rance;
                 app.reactUI.switchScene("battlePrep");
             } else {
                 var battle = battlePrep.makeBattle();
-                var simulator = new Rance.BattleSimulator(battle, 200);
+                var simulator = new Rance.BattleSimulator(battle, 50);
                 simulator.simulateBattle();
                 simulator.finishBattle();
             }
@@ -13635,8 +13633,8 @@ var Rance;
             this.setNextPlayer();
             this.processPlayerStartTurn(this.activePlayer);
 
-            // TODO
-            if (this.activePlayer !== this.humanPlayer) {
+            if (this.activePlayer.isAI) {
+                this.activePlayer.AIController.processTurn();
                 this.endTurn();
             } else {
                 this.turnNumber++;
@@ -13949,13 +13947,9 @@ var Rance;
             return building;
         };
         GameLoader.prototype.deserializePlayer = function (data) {
-            var player = new Rance.Player(data.id);
+            var player = new Rance.Player(data.isAI, data.id);
 
             player.money = data.money;
-
-            if (data.isAI) {
-                player.setupAI();
-            }
 
             // color scheme & flag
             if (data.isIndependent) {
@@ -15574,13 +15568,13 @@ var Rance;
 var Rance;
 (function (Rance) {
     var AIController = (function () {
-        function AIController(props) {
+        function AIController(player, game) {
             this.personality = Rance.Templates.Personalities.testPersonality1;
 
-            this.player = props.player;
-            this.game = props.game;
+            this.player = player;
+            this.game = game;
 
-            this.map = props.game.galaxyMap;
+            this.map = game.galaxyMap;
 
             this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
 
@@ -15703,10 +15697,7 @@ var Rance;
             // TODO
             a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
             b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-            c = new Rance.AIController({
-                player: this.game.playerOrder[3],
-                game: this.game
-            });
+            c = new Rance.AIController(this.humanPlayer, this.game);
         };
         App.prototype.destroy = function () {
             this.renderer.destroy();
@@ -15736,10 +15727,7 @@ var Rance;
             // TODO
             a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
             b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-            c = new Rance.AIController({
-                player: this.humanPlayer,
-                game: this.game
-            });
+            c = new Rance.AIController(this.humanPlayer, this.game);
 
             this.initUI();
         };
@@ -15792,6 +15780,13 @@ var Rance;
                 this.playerControl.removeEventListeners();
 
             this.playerControl = new Rance.PlayerControl(this.humanPlayer);
+
+            for (var i = 0; i < this.game.playerOrder.length; i++) {
+                var player = this.game.playerOrder[i];
+                if (player.isAI) {
+                    player.setupAI(this.game);
+                }
+            }
 
             return this.game;
         };

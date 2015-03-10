@@ -88,11 +88,7 @@ module Rance
       // TODO
       a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
       b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-      c = new Rance.AIController(
-      {
-        player: this.game.playerOrder[3],
-        game: this.game
-      });
+      c = new Rance.AIController(this.humanPlayer, this.game);
     }
     destroy()
     {
@@ -124,11 +120,7 @@ module Rance
       // TODO
       a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
       b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-      c = new Rance.AIController(
-      {
-        player: this.humanPlayer,
-        game: this.game
-      });
+      c = new Rance.AIController(this.humanPlayer, this.game);
 
       this.initUI();
     }
@@ -186,6 +178,15 @@ module Rance
       if (this.playerControl) this.playerControl.removeEventListeners();
 
       this.playerControl = new PlayerControl(this.humanPlayer);
+
+      for (var i = 0; i < this.game.playerOrder.length; i++)
+      {
+        var player = this.game.playerOrder[i];
+        if (player.isAI)
+        {
+          player.setupAI(this.game);
+        }
+      }
 
       return this.game;
     }

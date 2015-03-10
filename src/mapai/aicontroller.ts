@@ -23,18 +23,14 @@ module Rance
     economicAI: EconomicAI;
     frontsAI: FrontsAI;
 
-    constructor(props:
-    {
-      player: Player;
-      game: Game;
-    })
+    constructor(player: Player, game: Game)
     {
       this.personality = Templates.Personalities.testPersonality1;
 
-      this.player = props.player;
-      this.game = props.game;
+      this.player = player;
+      this.game = game;
 
-      this.map = props.game.galaxyMap;
+      this.map = game.galaxyMap;
 
       this.mapEvaluator = new MapEvaluator(this.map, this.player);
 
