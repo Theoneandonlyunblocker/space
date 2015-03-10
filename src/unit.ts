@@ -74,6 +74,7 @@ module Rance
     };
 
     uiDisplayIsDirty: boolean = true;
+    front: Front;
 
     constructor(template: Templates.IUnitTemplate, id?: number, data?)
     {
@@ -449,6 +450,11 @@ module Rance
 
       player.removeUnit(this);
       this.fleet.removeShip(this);
+
+      if (this.front)
+      {
+        this.front.removeUnit(this);
+      }
 
       this.uiDisplayIsDirty = true;
     }

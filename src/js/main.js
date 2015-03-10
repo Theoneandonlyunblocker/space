@@ -8325,23 +8325,27 @@ var Rance;
             this.capturedUnits = this.getCapturedUnits(victor);
             this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
 
-            var _ = window;
-
+            /*
+            var _ : any = window;
+            
             var consoleRows = [];
-            this.forEachUnit(function (unit) {
-                consoleRows.push({
-                    id: unit.id,
-                    health: unit.currentHealth,
-                    destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
-                    captureChance: unit.battleStats.captureChance,
-                    captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
-                });
+            this.forEachUnit(function(unit)
+            {
+            consoleRows.push(
+            {
+            id: unit.id,
+            health: unit.currentHealth,
+            destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
+            captureChance: unit.battleStats.captureChance,
+            captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
+            });
             }.bind(this));
-
-            if (_.console.table) {
-                _.console.table(consoleRows);
+            
+            if (_.console.table)
+            {
+            _.console.table(consoleRows);
             }
-
+            */
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.finishBattle = function (forcedVictor) {
@@ -8374,7 +8378,10 @@ var Rance;
             for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
                 this.afterFinishCallbacks[i]();
             }
-            if (!this.isSimulated) {
+
+            if (this.isSimulated) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+            } else {
                 Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
                 Rance.eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
             }
@@ -9113,6 +9120,10 @@ var Rance;
 
             player.removeUnit(this);
             this.fleet.removeShip(this);
+
+            if (this.front) {
+                this.front.removeUnit(this);
+            }
 
             this.uiDisplayIsDirty = true;
         };
@@ -12312,7 +12323,14 @@ var Rance;
 
                     function singleFleetDrawFN(fleet) {
                         var fleetContainer = new PIXI.DisplayObjectContainer();
-                        var playerColor = fleet.player.color;
+
+                        if (fleet.ships[0] && fleet.ships[0].front) {
+                            var front = fleet.ships[0].front;
+                            var frontHue = ((front.id * 20) % 360) / 360;
+                            var color = Rance.hslToHex(frontHue, 1, 0.5);
+                        } else {
+                            var color = fleet.player.color;
+                        }
 
                         var text = new PIXI.Text(fleet.ships.length, {
                             //fill: "#" + playerColor.toString(16)
@@ -12323,7 +12341,7 @@ var Rance;
 
                         var containerGfx = new PIXI.Graphics();
                         containerGfx.lineStyle(1, 0x00000, 1);
-                        containerGfx.beginFill(playerColor, 0.7);
+                        containerGfx.beginFill(color, 0.7);
                         containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
                         containerGfx.endFill();
 
@@ -14806,7 +14824,7 @@ var Rance;
         }
         Object.defineProperty(Objective.prototype, "priority", {
             get: function () {
-                return this.isOngoing ? this._basePriority * 1.05 : this._basePriority;
+                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
             },
             set: function (priority) {
                 this._basePriority = priority;
@@ -14875,19 +14893,22 @@ var Rance;
                 objectivesByTarget[_o.target.id] = _o;
             }
 
+            this.objectivesByType["expansion"] = [];
+
             var minScore, maxScore;
 
             var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
 
             for (var i = 0; i < expansionScores.length; i++) {
                 var score = expansionScores[i].score;
-                minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+
+                //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
                 maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
             }
 
             for (var i = 0; i < expansionScores.length; i++) {
                 var star = expansionScores[i].star;
-                var relativeScore = Rance.getRelativeValue(expansionScores[i].score, minScore, maxScore);
+                var relativeScore = Rance.getRelativeValue(expansionScores[i].score, 0, maxScore);
                 if (objectivesByTarget[star.id]) {
                     objectivesByTarget[star.id].priority = relativeScore;
                 } else {
@@ -14895,6 +14916,7 @@ var Rance;
                 }
 
                 allObjectives.push(objectivesByTarget[star.id]);
+                this.objectivesByType["expansion"].push(objectivesByTarget[star.id]);
             }
 
             return allObjectives;
@@ -15057,12 +15079,18 @@ var Rance;
         };
         Front.prototype.addUnit = function (unit) {
             if (this.getUnitIndex(unit) === -1) {
+                if (unit.front) {
+                    unit.front.removeUnit(unit);
+                }
+
+                unit.front = this;
                 this.units.push(unit);
             }
         };
         Front.prototype.removeUnit = function (unit) {
             var unitIndex = this.getUnitIndex(unit);
             if (unitIndex !== -1) {
+                unit.front = null;
                 this.units.splice(unitIndex, 1);
             }
         };
@@ -15274,7 +15302,7 @@ var Rance;
             }
 
             var adjustedPriority = front.priority * priorityMultiplier;
-            score += adjustedPriority;
+            score += adjustedPriority * 2;
 
             // penalize initial units for front
             // inertia at beginning of adding units to front
@@ -15399,8 +15427,8 @@ var Rance;
                 var hasActiveObjective = false;
 
                 for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
-                    var objective = this.objectivesAI.objectives[i];
-                    if (objective.id === front.id) {
+                    var objective = this.objectivesAI.objectives[j];
+                    if (objective.id === front.id && objective.priority > 0.4) {
                         hasActiveObjective = true;
                         break;
                     }

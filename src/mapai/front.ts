@@ -193,6 +193,12 @@ module Rance
     {
       if (this.getUnitIndex(unit) === -1)
       {
+        if (unit.front)
+        {
+          unit.front.removeUnit(unit);
+        }
+        
+        unit.front = this;
         this.units.push(unit);
       }
     }
@@ -201,6 +207,7 @@ module Rance
       var unitIndex = this.getUnitIndex(unit);
       if (unitIndex !== -1)
       {
+        unit.front = null;
         this.units.splice(unitIndex, 1);
       }
     }

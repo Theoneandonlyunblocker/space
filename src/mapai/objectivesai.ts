@@ -79,6 +79,8 @@ module Rance
         objectivesByTarget[_o.target.id] = _o;
       }
 
+      this.objectivesByType["expansion"] = [];
+
       var minScore, maxScore;
 
       var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
@@ -86,14 +88,14 @@ module Rance
       for (var i = 0; i < expansionScores.length; i++)
       {
         var score = expansionScores[i].score;
-        minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+        //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
         maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
       }
 
       for (var i = 0; i < expansionScores.length; i++)
       {
         var star = expansionScores[i].star;
-        var relativeScore = getRelativeValue(expansionScores[i].score, minScore, maxScore);
+        var relativeScore = getRelativeValue(expansionScores[i].score, 0, maxScore);
         if (objectivesByTarget[star.id])
         {
           objectivesByTarget[star.id].priority = relativeScore;
@@ -104,6 +106,7 @@ module Rance
         }
 
         allObjectives.push(objectivesByTarget[star.id]);
+        this.objectivesByType["expansion"].push(objectivesByTarget[star.id]);
       }
 
       return allObjectives;

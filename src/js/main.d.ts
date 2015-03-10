@@ -1427,6 +1427,7 @@ declare module Rance {
             high: Rance.Item;
         };
         public uiDisplayIsDirty: boolean;
+        public front: Rance.Front;
         constructor(template: Rance.Templates.IUnitTemplate, id?: number, data?: any);
         public makeFromData(data: any): void;
         public setInitialValues(): void;

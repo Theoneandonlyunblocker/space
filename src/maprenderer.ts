@@ -855,7 +855,17 @@ module Rance
           function singleFleetDrawFN(fleet: Fleet)
           {
             var fleetContainer = new PIXI.DisplayObjectContainer();
-            var playerColor = fleet.player.color;
+
+            if (fleet.ships[0] && fleet.ships[0].front)
+            {
+              var front = fleet.ships[0].front;
+              var frontHue = ((front.id * 20) % 360) / 360;
+              var color = hslToHex(frontHue, 1, 0.5);
+            }
+            else
+            {
+              var color = fleet.player.color;
+            }
 
             var text = new PIXI.Text(fleet.ships.length,
             {
@@ -867,7 +877,7 @@ module Rance
 
             var containerGfx = new PIXI.Graphics();
             containerGfx.lineStyle(1, 0x00000, 1);
-            containerGfx.beginFill(playerColor, 0.7);
+            containerGfx.beginFill(color, 0.7);
             containerGfx.drawRect(0, 0, text.width+4, text.height+4);
             containerGfx.endFill();
 

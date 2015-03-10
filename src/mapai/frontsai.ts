@@ -151,7 +151,7 @@ module Rance
       }
 
       var adjustedPriority = front.priority * priorityMultiplier;
-      score += adjustedPriority;
+      score += adjustedPriority * 2;
 
       // penalize initial units for front
       // inertia at beginning of adding units to front
@@ -316,8 +316,8 @@ module Rance
 
         for (var j = 0; j < this.objectivesAI.objectives.length; j++)
         {
-          var objective = this.objectivesAI.objectives[i];
-          if (objective.id === front.id)
+          var objective = this.objectivesAI.objectives[j];
+          if (objective.id === front.id && objective.priority > 0.4)
           {
             hasActiveObjective = true;
             break;

@@ -18,7 +18,7 @@ module Rance
     private _basePriority: number;
     get priority(): number
     {
-      return this.isOngoing ? this._basePriority * 1.05 : this._basePriority;
+      return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
     }
     set priority(priority: number)
     {

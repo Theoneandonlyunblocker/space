@@ -316,7 +316,7 @@ module Rance
       this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
 
 
-
+      /*
       var _ : any = window;
 
       var consoleRows = [];
@@ -336,6 +336,7 @@ module Rance
       {
         _.console.table(consoleRows);
       }
+      */
 
 
 
@@ -382,7 +383,12 @@ module Rance
       {
         this.afterFinishCallbacks[i]();
       }
-      if (!this.isSimulated)
+      
+      if (this.isSimulated)
+      {
+        eventManager.dispatchEvent("renderLayer", "fleets");
+      }
+      else
       {
         eventManager.dispatchEvent("switchScene", "galaxyMap");
         eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
