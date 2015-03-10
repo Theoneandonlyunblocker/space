@@ -137,6 +137,7 @@ module Rance
       for (var starId in impureFleetMembersByLocation)
       {
         var ships = impureFleetMembersByLocation[starId];
+        if (ships.length < 1) continue;
         var newFleet = new Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
 
         for (var i = ships.length - 1; i >= 0; i--)
