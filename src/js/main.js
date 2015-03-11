@@ -15172,6 +15172,11 @@ var Rance;
         Front.prototype.healMoveRoutine = function (afterMoveCallback) {
             var fleets = this.getAssociatedFleets();
 
+            if (fleets.length <= 0) {
+                afterMoveCallback();
+                return;
+            }
+
             var finishedMovingCount = 0;
             var finishFleetMoveFN = function () {
                 finishedMovingCount++;
@@ -15779,11 +15784,11 @@ var Rance;
             this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
         };
         AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
+            console.log("finish moving");
             this.frontsAI.organizeFleets();
             if (afterFinishedCallback) {
                 afterFinishedCallback();
             }
-            console.log("finish moving");
         };
         return AIController;
     })();

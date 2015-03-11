@@ -274,6 +274,12 @@ module Rance
     {
       var fleets = this.getAssociatedFleets();
 
+      if (fleets.length <= 0)
+      {
+        afterMoveCallback();
+        return;
+      }
+
       var finishedMovingCount = 0;
       var finishFleetMoveFN = function()
       {
@@ -288,7 +294,7 @@ module Rance
       {
         var player = fleets[i].player;
         var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
-        
+
         fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
       }
     }
