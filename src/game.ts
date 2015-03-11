@@ -34,14 +34,14 @@ module Rance
 
       if (this.activePlayer.isAI)
       {
-        this.activePlayer.AIController.processTurn();
-        this.endTurn();
+        this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
       }
       else
       {
         this.turnNumber++;
       }
 
+      eventManager.dispatchEvent("endTurn", null);
       eventManager.dispatchEvent("updateSelection", null);
     }
     processPlayerStartTurn(player: Player)

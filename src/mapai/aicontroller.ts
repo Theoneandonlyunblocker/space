@@ -46,7 +46,7 @@ module Rance
       });
     }
 
-    processTurn()
+    processTurn(afterFinishedCallback?: any)
     {
       // gsai evaluate grand strategy
 
@@ -74,11 +74,15 @@ module Rance
 
       // fai move fleets
       // function param is called after all fronts have moved
-      this.frontsAI.moveFleets(this.finishMovingFleets.bind(this));
+      this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
     }
-    finishMovingFleets()
+    finishMovingFleets(afterFinishedCallback?: any)
     {
       this.frontsAI.organizeFleets();
+      if (afterFinishedCallback)
+      {
+        afterFinishedCallback();
+      }
       console.log("finish moving");
     }
   }
