@@ -248,7 +248,15 @@ module Rance
           targetsInPotentialArea: []
         });
 
-        window.setTimeout(function()
+        var baseBeforeDelay = Options.battleAnimationTiming["before"];
+        var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
+
+        var effectDuration = Options.battleAnimationTiming["effectDuration"];
+        var afterDelay = Options.battleAnimationTiming["before"];
+
+        var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
+
+        var startEffectFN = function()
         {
           effectData[i].effect();
 
@@ -256,11 +264,12 @@ module Rance
           {
             playingBattleEffectActive: true
           });
-        }.bind(this), 350 / (1 + Math.log(i + 1)));
 
-        
+          window.setTimeout(finishEffectFN, effectDuration + afterDelay);
+        }.bind(this);
 
-        window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2750);
+
+        window.setTimeout(startEffectFN, beforeDelay);
       },
       endBattleEffect: function()
       {
@@ -411,7 +420,7 @@ module Rance
               this.state.battleSceneUnit1 ? UIComponents.BattleDisplayStrength(
               {
                 key: "" + this.state.battleSceneUnit1.id + Date.now(),
-                delay: 2000,
+                delay: Options.battleAnimationTiming["effectDuration"],
                 from: this.state.battleSceneUnit1StartingStrength,
                 to: this.state.battleSceneUnit1.currentHealth
               }) : null
@@ -423,7 +432,7 @@ module Rance
               this.state.battleSceneUnit2 ? UIComponents.BattleDisplayStrength(
               {
                 key: "" + this.state.battleSceneUnit2.id + Date.now(),
-                delay: 2000,
+                delay: Options.battleAnimationTiming["effectDuration"],
                 from: this.state.battleSceneUnit2StartingStrength,
                 to: this.state.battleSceneUnit2.currentHealth
               }) : null
