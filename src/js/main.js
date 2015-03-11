@@ -6510,10 +6510,10 @@ var Rance;
             return island;
         };
         Star.prototype.getNearestStarForQualifier = function (qualifier) {
-            var visited = {};
-
             if (qualifier(this))
                 return this;
+
+            var visited = {};
 
             var frontier = [this];
             visited[this.id] = true;
@@ -14829,7 +14829,9 @@ objectives:
 defend area
 attack player at area
 expand
-processing objectives
+clean up pirates
+heal
+~~building
 */
 var Rance;
 (function (Rance) {
@@ -14884,7 +14886,8 @@ var Rance;
     var ObjectivesAI = (function () {
         function ObjectivesAI(mapEvaluator, game) {
             this.objectivesByType = {
-                expansion: []
+                expansion: [],
+                heal: []
             };
             this.objectives = [];
             this.requests = [];
@@ -14897,6 +14900,7 @@ var Rance;
             this.objectives = [];
 
             this.addObjectives(this.getExpansionObjectives());
+            this.addObjectives(this.getHealObjectives());
         };
 
         ObjectivesAI.prototype.addObjectives = function (objectives) {
@@ -14941,6 +14945,13 @@ var Rance;
             }
 
             return allObjectives;
+        };
+
+        ObjectivesAI.prototype.getHealObjectives = function () {
+            var objective = new Rance.Objective("heal", 1, null);
+            this.objectivesByType["heal"] = [objective];
+
+            return [objective];
         };
 
         ObjectivesAI.prototype.processExpansionObjectives = function (objectives) {
@@ -15146,6 +15157,38 @@ var Rance;
         };
 
         Front.prototype.moveFleets = function (afterMoveCallback) {
+            switch (this.objective.type) {
+                case "heal": {
+                    this.healMoveRoutine(afterMoveCallback);
+                    break;
+                }
+                default: {
+                    this.defaultMoveRoutine(afterMoveCallback);
+                    break;
+                }
+            }
+        };
+
+        Front.prototype.healMoveRoutine = function (afterMoveCallback) {
+            var fleets = this.getAssociatedFleets();
+
+            var finishedMovingCount = 0;
+            var finishFleetMoveFN = function () {
+                finishedMovingCount++;
+                if (finishedMovingCount >= fleets.length) {
+                    afterMoveCallback();
+                }
+            };
+
+            for (var i = 0; i < fleets.length; i++) {
+                var player = fleets[i].player;
+                var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
+
+                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+            }
+        };
+
+        Front.prototype.defaultMoveRoutine = function (afterMoveCallback) {
             var shouldMoveToTarget;
 
             var unitsByLocation = this.getUnitsByLocation();
@@ -15313,6 +15356,25 @@ var Rance;
         };
 
         FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
+            switch (front.objective.type) {
+                case "heal": {
+                    return this.getHealUnitFitScore(unit, front);
+                }
+                default: {
+                    return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+                }
+            }
+        };
+
+        FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
+            var healthPercentage = unit.currentHealth / unit.maxHealth;
+            if (healthPercentage > 0.75)
+                return -1;
+
+            return (1 - healthPercentage) * 2;
+        };
+
+        FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
             // base score based on unit composition
             var score = frontArchetypeScores[unit.template.archetype];
 
@@ -15357,6 +15419,14 @@ var Rance;
             // reduce forming incomplete fronts even if they have high priority
             // effect lessens as total unit count increases
             // TODO
+            // penalize units on low health
+            var healthPercentage = unit.currentHealth / unit.maxHealth;
+
+            if (healthPercentage < 0.75) {
+                var lostHealthPercentage = 1 - healthPercentage;
+                score += lostHealthPercentage * -2.5;
+            }
+
             // prioritize units closer to front target
             var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
             var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
@@ -15429,6 +15499,7 @@ var Rance;
                 }
 
                 bestScore.front.addUnit(bestScore.unit);
+                console.log(bestScore.front.objective.type, bestScore.unit.currentHealth, bestScore.unit.maxHealth);
 
                 removeUnit(bestScore.unit);
                 alreadyAdded[bestScore.unit.id] = true;
@@ -15447,8 +15518,8 @@ var Rance;
         };
 
         FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = this.player.getNearestOwnedStarTo(objective.target);
-            var unitsDesired = this.getUnitsToFillExpansionObjective(objective);
+            var musterLocation = objective.target ? this.player.getNearestOwnedStarTo(objective.target) : null;
+            var unitsDesired = this.getUnitsToFillObjective(objective);
 
             var front = new Rance.Front({
                 id: objective.id,
@@ -15509,6 +15580,15 @@ var Rance;
 
         FrontsAI.prototype.setFrontsToMove = function () {
             this.frontsToMove = this.fronts.slice(0);
+
+            var frontMovePriorities = {
+                expansion: 4,
+                heal: -1
+            };
+
+            this.frontsToMove.sort(function (a, b) {
+                return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
+            });
         };
 
         FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
@@ -15520,6 +15600,17 @@ var Rance;
             }
 
             front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+        };
+
+        FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
+            switch (objective.type) {
+                case "expansion": {
+                    return this.getUnitsToFillExpansionObjective(objective);
+                }
+                case "heal": {
+                    return 999;
+                }
+            }
         };
 
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {

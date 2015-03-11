@@ -35,7 +35,8 @@ module Rance
 
     objectivesByType =
     {
-      expansion: []
+      expansion: [],
+      heal: []
     };
     objectives: Objective[] = [];
 
@@ -56,6 +57,7 @@ module Rance
       this.objectives = [];
 
       this.addObjectives(this.getExpansionObjectives());
+      this.addObjectives(this.getHealObjectives());
     }
 
     addObjectives(objectives: Objective[])
@@ -110,6 +112,14 @@ module Rance
       }
 
       return allObjectives;
+    }
+
+    getHealObjectives()
+    {
+      var objective = new Objective("heal", 1, null);
+      this.objectivesByType["heal"] = [objective];
+
+      return [objective];
     }
 
     processExpansionObjectives(objectives: Objective[])

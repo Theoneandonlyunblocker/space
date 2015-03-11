@@ -131,7 +131,29 @@ module Rance
 
     scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores)
     {
+      switch (front.objective.type)
+      {
+        case "heal":
+        {
+          return this.getHealUnitFitScore(unit, front);
+        }
+        default:
+        {
+          return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+        }
+      }
+    }
 
+    getHealUnitFitScore(unit: Unit, front: Front)
+    {
+      var healthPercentage = unit.currentHealth / unit.maxHealth;
+      if (healthPercentage > 0.75) return -1;
+
+      return (1 - healthPercentage) * 2;
+    }
+
+    getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores)
+    {
       // base score based on unit composition
       var score = frontArchetypeScores[unit.template.archetype];
 
@@ -181,6 +203,17 @@ module Rance
       // effect lessens as total unit count increases
 
       // TODO
+      
+
+      // penalize units on low health
+      var healthPercentage = unit.currentHealth / unit.maxHealth;
+      
+      if (healthPercentage < 0.75)
+      {
+        var lostHealthPercentage = 1 - healthPercentage;
+        score += lostHealthPercentage * -2.5;
+      }
+
 
       // prioritize units closer to front target
       var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
@@ -190,7 +223,7 @@ module Rance
       );
       var distanceAdjust = turnsToReach * -0.1;
       score += distanceAdjust;
- 
+      
       return score;
     }
 
@@ -282,6 +315,8 @@ module Rance
         }
 
         bestScore.front.addUnit(bestScore.unit);
+        console.log(bestScore.front.objective.type, 
+          bestScore.unit.currentHealth, bestScore.unit.maxHealth);
 
         removeUnit(bestScore.unit);
         alreadyAdded[bestScore.unit.id] = true;
@@ -304,9 +339,10 @@ module Rance
 
     createFront(objective: Objective)
     {
-      var musterLocation = this.player.getNearestOwnedStarTo(
-        objective.target);
-      var unitsDesired = this.getUnitsToFillExpansionObjective(objective);
+      var musterLocation = objective.target ?
+        this.player.getNearestOwnedStarTo(objective.target) :
+        null;
+      var unitsDesired = this.getUnitsToFillObjective(objective);
 
       var front = new Front(
       {
@@ -407,6 +443,21 @@ module Rance
       }
 
       front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+    }
+
+    getUnitsToFillObjective(objective: Objective)
+    {
+      switch (objective.type)
+      {
+        case "expansion":
+        {
+          return this.getUnitsToFillExpansionObjective(objective);
+        }
+        case "heal":
+        {
+          return 999;
+        }
+      }
     }
 
     getUnitsToFillExpansionObjective(objective: Objective)

@@ -255,6 +255,46 @@ module Rance
 
     moveFleets(afterMoveCallback: any)
     {
+      switch (this.objective.type)
+      {
+        case "heal":
+        {
+          this.healMoveRoutine(afterMoveCallback);
+          break;
+        }
+        default:
+        {
+          this.defaultMoveRoutine(afterMoveCallback);
+          break;
+        }
+      }
+    }
+
+    healMoveRoutine(afterMoveCallback: any)
+    {
+      var fleets = this.getAssociatedFleets();
+
+      var finishedMovingCount = 0;
+      var finishFleetMoveFN = function()
+      {
+        finishedMovingCount++;
+        if (finishedMovingCount >= fleets.length)
+        {
+          afterMoveCallback();
+        }
+      };
+
+      for (var i = 0; i < fleets.length; i++)
+      {
+        var player = fleets[i].player;
+        var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
+        
+        fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+      }
+    }
+
+    defaultMoveRoutine(afterMoveCallback: any)
+    {
       var shouldMoveToTarget;
 
       var unitsByLocation = this.getUnitsByLocation();

@@ -735,12 +735,14 @@ module Rance
     }
     getNearestStarForQualifier(qualifier: (star: Star) => boolean)
     {
+      if (qualifier(this)) return this;
+
+      
       var visited:
       {
         [starId: number]: boolean;
       } = {};
 
-      if (qualifier(this)) return this;
 
       var frontier: Star[] = [this];
       visited[this.id] = true;

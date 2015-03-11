@@ -6,7 +6,10 @@ objectives:
   attack player at area
   expand
 
-processing objectives
+  clean up pirates
+  heal
+
+  ~~building
  */
 
 module Rance

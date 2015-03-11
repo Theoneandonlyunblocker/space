@@ -2292,6 +2292,7 @@ declare module Rance {
         public game: Rance.Game;
         public objectivesByType: {
             expansion: any[];
+            heal: any[];
         };
         public objectives: Rance.Objective[];
         public maxActiveExpansionRequests: number;
@@ -2300,6 +2301,7 @@ declare module Rance {
         public setAllObjectives(): void;
         public addObjectives(objectives: Rance.Objective[]): void;
         public getExpansionObjectives(): Rance.Objective[];
+        public getHealObjectives(): Rance.Objective[];
         public processExpansionObjectives(objectives: Rance.Objective[]): void;
     }
 }
@@ -2351,6 +2353,8 @@ declare module Rance {
             [starId: number]: Rance.Unit[];
         };
         public moveFleets(afterMoveCallback: any): void;
+        public healMoveRoutine(afterMoveCallback: any): void;
+        public defaultMoveRoutine(afterMoveCallback: any): void;
         public executeAction(afterExecutedCallback: any): void;
     }
 }
@@ -2379,6 +2383,8 @@ declare module Rance {
             [archetype: string]: number;
         };
         public scoreUnitFitForFront(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
+        public getHealUnitFitScore(unit: Rance.Unit, front: Rance.Front): number;
+        public getDefaultUnitFitScore(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
         public getUnitScoresForFront(units: Rance.Unit[], front: Rance.Front): {
             unit: Rance.Unit;
             score: number;
@@ -2392,6 +2398,7 @@ declare module Rance {
         public organizeFleets(): void;
         public setFrontsToMove(): void;
         public moveFleets(afterMovingAllCallback: any): void;
+        public getUnitsToFillObjective(objective: Rance.Objective): number;
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
         public setUnitRequests(): void;
     }
