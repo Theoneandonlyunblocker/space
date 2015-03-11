@@ -194,6 +194,23 @@ module Rance
     }
     return result;
   }
+  export function mergeObjects(target: any, toMerge: any)
+  {
+    for (var key in toMerge)
+    {
+      var value = toMerge[key]; 
+
+      if (typeof(value) === "object")
+      {
+        var subTarget = target[key] || {};
+        mergeObjects(subTarget, value);
+      }
+      else
+      {
+        target[key] = toMerge[key];
+      }
+    }
+  }
   export function recursiveRemoveAttribute(parent, attribute: string)
   {
     parent.removeAttribute(attribute);
@@ -317,6 +334,32 @@ module Rance
         ].join(":")
       ].join(" ")
     );
+  }
+  export function getMatchingLocalstorageItemsByDate(stringToMatch: string)
+  {
+    var allKeys = Object.keys(localStorage);
+    var matchingItems: any[] = [];
+
+
+    for (var i = 0; i < allKeys.length; i++)
+    {
+      if (allKeys[i].indexOf(stringToMatch) !== -1)
+      {
+        var item = localStorage.getItem(allKeys[i]);
+        var parsed = JSON.parse(item);
+        if (parsed.date)
+        {
+          matchingItems.push(parsed);
+        }
+      }
+    }
+
+    matchingItems.sort(function(a, b)
+    {
+      return Date.parse(b.date) - Date.parse(a.date);
+    });
+
+    return matchingItems;
   }
   export function shuffleArray(toShuffle: any[])
   {
