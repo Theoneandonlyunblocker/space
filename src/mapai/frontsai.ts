@@ -383,6 +383,17 @@ module Rance
     setFrontsToMove()
     {
       this.frontsToMove = this.fronts.slice(0);
+
+      var frontMovePriorities =
+      {
+        expansion: 4,
+        heal: -1
+      }
+
+      this.frontsToMove.sort(function(a: Front, b: Front)
+      {
+        return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
+      });
     }
 
     moveFleets(afterMovingAllCallback: any)
