@@ -856,6 +856,7 @@ module Rance
           {
             var fleetContainer = new PIXI.DisplayObjectContainer();
 
+            /*
             if (fleet.ships[0] && fleet.ships[0].front)
             {
               var front = fleet.ships[0].front;
@@ -866,6 +867,9 @@ module Rance
             {
               var color = fleet.player.color;
             }
+            */
+
+            var color = fleet.player.color;
 
             var text = new PIXI.Text(fleet.ships.length,
             {
