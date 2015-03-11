@@ -182,7 +182,11 @@ module Rance
 
       // prioritize units closer to front target
       var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-      var distanceAdjust = distance * -0.1;
+      var turnsToReach = Math.max(
+        0,
+        Math.floor((distance - 1) / unit.currentMovePoints)
+      );
+      var distanceAdjust = turnsToReach * -0.1;
       score += distanceAdjust;
  
       return score;
