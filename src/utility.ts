@@ -164,18 +164,6 @@ module Rance
 
     return parseInt(text, 16);
   }
-
-  export function makeTempPlayerIcon(player: Player, size: number)
-  {
-    var canvas = document.createElement("canvas");
-    canvas.width = canvas.height = size;
-
-    var ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#" + hexToString(player.color);
-    ctx.fillRect(0, 0, size, size);
-
-    return canvas.toDataURL();
-  }
   export function colorImageInPlayerColor(imageSrc: string, player: Player)
   {
     var image = new Image();
