@@ -262,8 +262,19 @@ module Rance
 
       var atMuster = unitsByLocation[this.musterLocation.id] ? 
         unitsByLocation[this.musterLocation.id].length : 0;
-      var atTarget = unitsByLocation[this.targetLocation.id] ? 
-        unitsByLocation[this.targetLocation.id].length : 0;
+
+
+      var inRangeOfTarget = 0;
+
+      for (var i = 0; i < fleets.length; i++)
+      {
+        var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
+        if (fleets[i].getMinCurrentMovePoints() >= distance)
+        {
+          inRangeOfTarget += fleets[i].ships.length;
+        }
+      }
+
 
       if (this.hasMustered)
       {
@@ -272,7 +283,7 @@ module Rance
       else
       {
 
-        if (atMuster + atTarget >= this.minUnitsDesired)
+        if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired)
         {
           this.hasMustered = true;
           shouldMoveToTarget = true;
@@ -290,7 +301,7 @@ module Rance
       var finishAllMoveFN = function()
       {
         unitsByLocation = this.getUnitsByLocation();
-        atTarget = unitsByLocation[this.targetLocation.id] ? 
+        var atTarget = unitsByLocation[this.targetLocation.id] ? 
           unitsByLocation[this.targetLocation.id].length : 0;
 
         if (atTarget >= this.minUnitsDesired)
