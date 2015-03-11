@@ -353,9 +353,9 @@ declare module Rance {
     function rectContains(rect: any, point: any): boolean;
     function hexToString(hex: number): string;
     function stringToHex(text: string): number;
-    function makeTempPlayerIcon(player: Player, size: number): string;
     function colorImageInPlayerColor(imageSrc: string, player: Player): string;
     function cloneObject(toClone: any): any;
+    function mergeObjects(target: any, toMerge: any): void;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
@@ -367,6 +367,7 @@ declare module Rance {
     function offsetPolygon(polygon: Point[], amount: number): any;
     function arraysEqual(a1: any[], a2: any[]): boolean;
     function prettifyDate(date: Date): string;
+    function getMatchingLocalstorageItemsByDate(stringToMatch: string): any[];
     function shuffleArray(toShuffle: any[]): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
 }
@@ -398,6 +399,7 @@ declare module Rance {
             var wholeRowAttack: IEffectTemplate;
             var bombAttack: IEffectTemplate;
             var guardColumn: IEffectTemplate;
+            var boardingHook: IEffectTemplate;
             var standBy: IEffectTemplate;
         }
     }
@@ -426,6 +428,7 @@ declare module Rance {
             var wholeRowAttack: IAbilityTemplate;
             var bombAttack: IAbilityTemplate;
             var guardColumn: IAbilityTemplate;
+            var boardingHook: IAbilityTemplate;
             var standBy: IAbilityTemplate;
         }
     }
@@ -2439,6 +2442,17 @@ declare module Rance {
     module Tutorials {
         var uiTutorial: {
             pages: {}[];
+        };
+    }
+}
+declare module Rance {
+    function saveOptions(slot?: number): void;
+    function loadOptions(slot?: number): void;
+    module Options {
+        var battleAnimationTiming: {
+            before: number;
+            effectDuration: number;
+            after: number;
         };
     }
 }

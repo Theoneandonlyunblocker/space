@@ -1486,15 +1486,25 @@ var Rance;
                     targetsInPotentialArea: []
                 });
 
-                window.setTimeout(function () {
+                var baseBeforeDelay = Rance.Options.battleAnimationTiming["before"];
+                var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
+
+                var effectDuration = Rance.Options.battleAnimationTiming["effectDuration"];
+                var afterDelay = Rance.Options.battleAnimationTiming["before"];
+
+                var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
+
+                var startEffectFN = function () {
                     effectData[i].effect();
 
                     this.setState({
                         playingBattleEffectActive: true
                     });
-                }.bind(this), 350 / (1 + Math.log(i + 1)));
 
-                window.setTimeout(this.playBattleEffect.bind(this, abilityData, i + 1), 2750);
+                    window.setTimeout(finishEffectFN, effectDuration + afterDelay);
+                }.bind(this);
+
+                window.setTimeout(startEffectFN, beforeDelay);
             },
             endBattleEffect: function () {
                 this.setState({
@@ -1603,14 +1613,14 @@ var Rance;
                         className: "battle-display-strength battle-display-strength-side1"
                     }, this.state.battleSceneUnit1 ? Rance.UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit1.id + Date.now(),
-                        delay: 2000,
+                        delay: Rance.Options.battleAnimationTiming["effectDuration"],
                         from: this.state.battleSceneUnit1StartingStrength,
                         to: this.state.battleSceneUnit1.currentHealth
                     }) : null), React.DOM.div({
                         className: "battle-display-strength battle-display-strength-side2"
                     }, this.state.battleSceneUnit2 ? Rance.UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit2.id + Date.now(),
-                        delay: 2000,
+                        delay: Rance.Options.battleAnimationTiming["effectDuration"],
                         from: this.state.battleSceneUnit2StartingStrength,
                         to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
@@ -4340,18 +4350,6 @@ var Rance;
         return parseInt(text, 16);
     }
     Rance.stringToHex = stringToHex;
-
-    function makeTempPlayerIcon(player, size) {
-        var canvas = document.createElement("canvas");
-        canvas.width = canvas.height = size;
-
-        var ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#" + hexToString(player.color);
-        ctx.fillRect(0, 0, size, size);
-
-        return canvas.toDataURL();
-    }
-    Rance.makeTempPlayerIcon = makeTempPlayerIcon;
     function colorImageInPlayerColor(imageSrc, player) {
         var image = new Image();
         image.src = imageSrc;
@@ -4380,6 +4378,19 @@ var Rance;
         return result;
     }
     Rance.cloneObject = cloneObject;
+    function mergeObjects(target, toMerge) {
+        for (var key in toMerge) {
+            var value = toMerge[key];
+
+            if (typeof (value) === "object") {
+                var subTarget = target[key] || {};
+                mergeObjects(subTarget, value);
+            } else {
+                target[key] = toMerge[key];
+            }
+        }
+    }
+    Rance.mergeObjects = mergeObjects;
     function recursiveRemoveAttribute(parent, attribute) {
         parent.removeAttribute(attribute);
 
@@ -4496,6 +4507,27 @@ var Rance;
         ].join(" "));
     }
     Rance.prettifyDate = prettifyDate;
+    function getMatchingLocalstorageItemsByDate(stringToMatch) {
+        var allKeys = Object.keys(localStorage);
+        var matchingItems = [];
+
+        for (var i = 0; i < allKeys.length; i++) {
+            if (allKeys[i].indexOf(stringToMatch) !== -1) {
+                var item = localStorage.getItem(allKeys[i]);
+                var parsed = JSON.parse(item);
+                if (parsed.date) {
+                    matchingItems.push(parsed);
+                }
+            }
+        }
+
+        matchingItems.sort(function (a, b) {
+            return Date.parse(b.date) - Date.parse(a.date);
+        });
+
+        return matchingItems;
+    }
+    Rance.getMatchingLocalstorageItemsByDate = getMatchingLocalstorageItemsByDate;
     function shuffleArray(toShuffle) {
         var resultArray = toShuffle.slice(0);
 
@@ -4713,6 +4745,22 @@ var Rance;
                     user.addGuard(guardAmount, "column");
                 }
             };
+            Effects.boardingHook = {
+                name: "boardingHook",
+                targetFleets: "enemy",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "all",
+                effect: function (user, target) {
+                    var baseDamage = 80;
+                    var damageType = "physical";
+
+                    var damageIncrease = user.getAttackDamageIncrease(damageType);
+                    var damage = baseDamage * damageIncrease;
+
+                    target.recieveDamage(damage, damageType);
+                    target.battleStats.captureChance += 1;
+                }
+            };
 
             Effects.standBy = {
                 name: "standBy",
@@ -4782,6 +4830,13 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.guardColumn
             };
+            Abilities.boardingHook = {
+                type: "boardingHook",
+                displayName: "Boarding Hook",
+                moveDelay: 100,
+                actionsUse: 1,
+                mainEffect: Rance.Templates.Effects.boardingHook
+            };
 
             Abilities.standBy = {
                 type: "standBy",
@@ -4796,6 +4851,7 @@ var Rance;
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts"/>
+// /// <reference path="skilltemplates.ts"/>
 /// <reference path="spritetemplate.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -4824,6 +4880,7 @@ var Rance;
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.bombAttack,
+                    Rance.Templates.Abilities.boardingHook,
                     Rance.Templates.Abilities.guardColumn
                 ]
             };
@@ -8936,7 +8993,7 @@ var Rance;
                 position: null,
                 guardAmount: 0,
                 guardCoverage: null,
-                captureChance: 1
+                captureChance: 0.1
             };
 
             this.displayFlags = {
@@ -15784,11 +15841,11 @@ var Rance;
             this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
         };
         AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
-            console.log("finish moving");
             this.frontsAI.organizeFleets();
             if (afterFinishedCallback) {
                 afterFinishedCallback();
             }
+            console.log("finish moving");
         };
         return AIController;
     })();
@@ -15807,6 +15864,43 @@ var Rance;
         };
     })(Rance.Tutorials || (Rance.Tutorials = {}));
     var Tutorials = Rance.Tutorials;
+})(Rance || (Rance = {}));
+/// <reference path="../src/utility.ts" />
+var Rance;
+(function (Rance) {
+    function saveOptions(slot) {
+        if (typeof slot === "undefined") { slot = 0; }
+        var data = JSON.stringify({
+            options: Rance.Options,
+            date: new Date()
+        });
+
+        var saveName = "Rance.Options." + slot;
+
+        localStorage.setItem(saveName, data);
+    }
+    Rance.saveOptions = saveOptions;
+    function loadOptions(slot) {
+        var baseString = "Rance.Options.";
+
+        var parsedOptions;
+        if (slot && localStorage[baseString + slot]) {
+            parsedOptions = JSON.parse(localStorage.getItem(baseString + slot));
+        } else {
+            parsedOptions = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
+        }
+
+        Rance.mergeObjects(Rance.Options, parsedOptions);
+    }
+    Rance.loadOptions = loadOptions;
+    (function (Options) {
+        Options.battleAnimationTiming = {
+            before: 250,
+            effectDuration: 1500,
+            after: 250
+        };
+    })(Rance.Options || (Rance.Options = {}));
+    var Options = Rance.Options;
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
@@ -15829,6 +15923,7 @@ var Rance;
 /// <reference path="mapai/aicontroller.ts"/>
 ///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
+/// <reference path="../data/options.ts"/>
 var a, b, c;
 var Rance;
 (function (Rance) {

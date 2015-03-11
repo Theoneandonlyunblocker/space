@@ -24,6 +24,8 @@
 /// <reference path="mapai/aicontroller.ts"/>
 /// 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
+/// <reference path="../data/options.ts"/>
+
 
 var a, b, c; // TODO
 module Rance
