@@ -1,4 +1,5 @@
 /// <reference path="abilitytemplates.ts"/>
+// /// <reference path="skilltemplates.ts"/>
 /// <reference path="spritetemplate.d.ts"/>
 
 module Rance
@@ -35,6 +36,7 @@ module Rance
         speed: number;
       };
       abilities: IAbilityTemplate[];
+      //passiveSkills: ISkillTemplate[];
     }
     export module ShipTypes
     {
@@ -65,6 +67,7 @@ module Rance
         [
           Abilities.rangedAttack,
           Abilities.bombAttack,
+          Abilities.boardingHook,
           Abilities.guardColumn
         ]
       }

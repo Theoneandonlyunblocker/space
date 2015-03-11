@@ -228,7 +228,7 @@ module Rance
         position: null,
         guardAmount: 0,
         guardCoverage: null,
-        captureChance: 1 // BASE_CAPTURE_CHANCE
+        captureChance: 0.1 // BASE_CAPTURE_CHANCE
       };
 
       this.displayFlags =

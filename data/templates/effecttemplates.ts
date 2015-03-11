@@ -115,6 +115,24 @@ module Rance
           user.addGuard(guardAmount, "column");
         }
       }
+      export var boardingHook: IEffectTemplate =
+      {
+        name: "boardingHook",
+        targetFleets: "enemy",
+        targetingFunction: targetSingle,
+        targetRange: "all",
+        effect: function(user: Unit, target: Unit)
+        {
+          var baseDamage = 80;
+          var damageType = "physical";
+
+          var damageIncrease = user.getAttackDamageIncrease(damageType);
+          var damage = baseDamage * damageIncrease;
+
+          target.recieveDamage(damage, damageType);
+          target.battleStats.captureChance += 1;
+        }
+      }
 
       export var standBy: IEffectTemplate =
       {

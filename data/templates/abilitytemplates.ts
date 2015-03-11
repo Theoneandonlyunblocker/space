@@ -83,6 +83,14 @@ module Rance
         actionsUse: 1,
         mainEffect: Effects.guardColumn
       }
+      export var boardingHook: IAbilityTemplate =
+      {
+        type: "boardingHook",
+        displayName: "Boarding Hook",
+        moveDelay: 100,
+        actionsUse: 1,
+        mainEffect: Effects.boardingHook
+      }
 
       export var standBy: IAbilityTemplate =
       {
