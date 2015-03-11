@@ -12,10 +12,6 @@ module Rance
     export var GalaxyMapUI = React.createClass(
     {
       displayName: "GalaxyMapUI",
-      endTurn: function()
-      {
-        this.props.game.endTurn();
-      },
 
       getInitialState: function()
       {
@@ -26,7 +22,21 @@ module Rance
           selectedFleets: pc.selectedFleets,
           currentlyReorganizing: pc.currentlyReorganizing,
           selectedStar: pc.selectedStar,
-          attackTargets: pc.currentAttackTargets
+          attackTargets: pc.currentAttackTargets,
+          isPlayerTurn: !this.props.game.playerOrder[0].isAI
+        });
+      },
+
+      endTurn: function()
+      {
+        this.props.game.endTurn();
+      },
+
+      setPlayerTurn: function()
+      {
+        this.setState(
+        {
+          isPlayerTurn: !this.props.game.activePlayer.isAI
         });
       },
 
@@ -58,6 +68,16 @@ module Rance
 
       render: function()
       {
+        var endTurnButtonProps =
+        {
+          className: "end-turn-button",
+          onClick: this.endTurn
+        }
+        if (!this.state.isPlayerTurn)
+        {
+          endTurnButtonProps.className += " disabled";
+        }
+
         return(
           React.DOM.div(
           {
@@ -107,11 +127,7 @@ module Rance
                 selectedStar: this.state.selectedStar
               })
             ),
-            React.DOM.button(
-            {
-              className: "end-turn-button",
-              onClick: this.endTurn
-            }, "End turn")
+            React.DOM.button(endTurnButtonProps, "End turn")
           )
         );
       },
@@ -120,11 +136,17 @@ module Rance
       {
         eventManager.addEventListener("playerControlUpdated",
           this.updateSelection);
+
+        eventManager.addEventListener("endTurn",
+          this.setPlayerTurn);
       },
       componentWillUnmount: function()
       {
         eventManager.removeEventListener("playerControlUpdated",
           this.updateSelection);
+
+        eventManager.removeEventListener("endTurn",
+          this.setPlayerTurn);
       }
     });
   }
