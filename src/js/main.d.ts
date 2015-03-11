@@ -2424,8 +2424,8 @@ declare module Rance {
         public economicAI: Rance.EconomicAI;
         public frontsAI: Rance.FrontsAI;
         constructor(player: Rance.Player, game: Rance.Game);
-        public processTurn(): void;
-        public finishMovingFleets(): void;
+        public processTurn(afterFinishedCallback?: any): void;
+        public finishMovingFleets(afterFinishedCallback?: any): void;
     }
 }
 declare module Rance {

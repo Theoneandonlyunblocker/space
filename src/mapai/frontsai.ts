@@ -144,13 +144,15 @@ module Rance
       var priorityMultiplier = 1;
       if (unitsOverMinimum > 0)
       {
-        priorityMultiplier -= unitsOverMinimum * 0.05;
+        priorityMultiplier -= unitsOverMinimum * 0.15;
       }
       if (unitsOverIdeal > 0)
       {
-        priorityMultiplier -= unitsOverIdeal * 0.3;
+        priorityMultiplier -= unitsOverIdeal * 0.4;
       }
 
+      if (priorityMultiplier < 0) priorityMultiplier = 0;
+      
       var adjustedPriority = front.priority * priorityMultiplier;
       score += adjustedPriority * 2;
 
@@ -167,10 +169,10 @@ module Rance
       var alreadyInFront = unit.front && unit.front === front;
       if (alreadyInFront)
       {
-        score += 0.3;
+        score += 0.2;
         if (front.hasMustered)
         {
-          score += 0.3;
+          score += 0.5;
         }
       }
 
@@ -313,7 +315,7 @@ module Rance
         objective: objective,
 
         minUnitsDesired: unitsDesired,
-        idealUnitsDesired: unitsDesired,
+        idealUnitsDesired: 6,
 
         targetLocation: objective.target,
         musterLocation: musterLocation
@@ -333,7 +335,7 @@ module Rance
         for (var j = 0; j < this.objectivesAI.objectives.length; j++)
         {
           var objective = this.objectivesAI.objectives[j];
-          if (objective.id === front.id && objective.priority > 0.4)
+          if (objective.id === front.id && objective.priority > 0.04)
           {
             hasActiveObjective = true;
             break;
@@ -359,7 +361,7 @@ module Rance
       {
         var objective = this.objectivesAI.objectives[i];
 
-        if (objective.priority > 0.4)
+        if (objective.priority > 0.04)
         {
           if (!this.getFrontWithId(objective.id))
           {

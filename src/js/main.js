@@ -9703,9 +9703,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.GalaxyMapUI = React.createClass({
             displayName: "GalaxyMapUI",
-            endTurn: function () {
-                this.props.game.endTurn();
-            },
             getInitialState: function () {
                 var pc = this.props.playerControl;
 
@@ -9713,7 +9710,16 @@ var Rance;
                     selectedFleets: pc.selectedFleets,
                     currentlyReorganizing: pc.currentlyReorganizing,
                     selectedStar: pc.selectedStar,
-                    attackTargets: pc.currentAttackTargets
+                    attackTargets: pc.currentAttackTargets,
+                    isPlayerTurn: !this.props.game.playerOrder[0].isAI
+                });
+            },
+            endTurn: function () {
+                this.props.game.endTurn();
+            },
+            setPlayerTurn: function () {
+                this.setState({
+                    isPlayerTurn: !this.props.game.activePlayer.isAI
                 });
             },
             updateSelection: function () {
@@ -9739,6 +9745,14 @@ var Rance;
                 this.updateSelection();
             },
             render: function () {
+                var endTurnButtonProps = {
+                    className: "end-turn-button",
+                    onClick: this.endTurn
+                };
+                if (!this.state.isPlayerTurn) {
+                    endTurnButtonProps.className += " disabled";
+                }
+
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, React.DOM.div({
@@ -9763,16 +9777,17 @@ var Rance;
                     player: this.props.player
                 }), Rance.UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
-                })), React.DOM.button({
-                    className: "end-turn-button",
-                    onClick: this.endTurn
-                }, "End turn")));
+                })), React.DOM.button(endTurnButtonProps, "End turn")));
             },
             componentWillMount: function () {
                 Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
+
+                Rance.eventManager.addEventListener("endTurn", this.setPlayerTurn);
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeEventListener("playerControlUpdated", this.updateSelection);
+
+                Rance.eventManager.removeEventListener("endTurn", this.setPlayerTurn);
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -12324,13 +12339,19 @@ var Rance;
                     function singleFleetDrawFN(fleet) {
                         var fleetContainer = new PIXI.DisplayObjectContainer();
 
-                        if (fleet.ships[0] && fleet.ships[0].front) {
-                            var front = fleet.ships[0].front;
-                            var frontHue = ((front.id * 20) % 360) / 360;
-                            var color = Rance.hslToHex(frontHue, 1, 0.5);
-                        } else {
-                            var color = fleet.player.color;
+                        /*
+                        if (fleet.ships[0] && fleet.ships[0].front)
+                        {
+                        var front = fleet.ships[0].front;
+                        var frontHue = ((front.id * 20) % 360) / 360;
+                        var color = hslToHex(frontHue, 1, 0.5);
                         }
+                        else
+                        {
+                        var color = fleet.player.color;
+                        }
+                        */
+                        var color = fleet.player.color;
 
                         var text = new PIXI.Text(fleet.ships.length, {
                             //fill: "#" + playerColor.toString(16)
@@ -13656,12 +13677,12 @@ var Rance;
             this.processPlayerStartTurn(this.activePlayer);
 
             if (this.activePlayer.isAI) {
-                this.activePlayer.AIController.processTurn();
-                this.endTurn();
+                this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
             } else {
                 this.turnNumber++;
             }
 
+            Rance.eventManager.dispatchEvent("endTurn", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         Game.prototype.processPlayerStartTurn = function (player) {
@@ -15131,12 +15152,20 @@ var Rance;
             var fleets = this.getAssociatedFleets();
 
             var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
-            var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
+
+            var inRangeOfTarget = 0;
+
+            for (var i = 0; i < fleets.length; i++) {
+                var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
+                if (fleets[i].getMinCurrentMovePoints() >= distance) {
+                    inRangeOfTarget += fleets[i].ships.length;
+                }
+            }
 
             if (this.hasMustered) {
                 shouldMoveToTarget = true;
             } else {
-                if (atMuster + atTarget >= this.minUnitsDesired) {
+                if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired) {
                     this.hasMustered = true;
                     shouldMoveToTarget = true;
                 } else {
@@ -15148,7 +15177,7 @@ var Rance;
 
             var finishAllMoveFN = function () {
                 unitsByLocation = this.getUnitsByLocation();
-                atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
+                var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
 
                 if (atTarget >= this.minUnitsDesired) {
                     this.executeAction(afterMoveCallback);
@@ -15295,11 +15324,14 @@ var Rance;
 
             var priorityMultiplier = 1;
             if (unitsOverMinimum > 0) {
-                priorityMultiplier -= unitsOverMinimum * 0.05;
+                priorityMultiplier -= unitsOverMinimum * 0.15;
             }
             if (unitsOverIdeal > 0) {
-                priorityMultiplier -= unitsOverIdeal * 0.3;
+                priorityMultiplier -= unitsOverIdeal * 0.4;
             }
+
+            if (priorityMultiplier < 0)
+                priorityMultiplier = 0;
 
             var adjustedPriority = front.priority * priorityMultiplier;
             score += adjustedPriority * 2;
@@ -15315,9 +15347,9 @@ var Rance;
             // prefer units already part of this front
             var alreadyInFront = unit.front && unit.front === front;
             if (alreadyInFront) {
-                score += 0.3;
+                score += 0.2;
                 if (front.hasMustered) {
-                    score += 0.3;
+                    score += 0.5;
                 }
             }
 
@@ -15327,7 +15359,8 @@ var Rance;
             // TODO
             // prioritize units closer to front target
             var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-            var distanceAdjust = distance * -0.1;
+            var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
+            var distanceAdjust = turnsToReach * -0.1;
             score += distanceAdjust;
 
             return score;
@@ -15422,7 +15455,7 @@ var Rance;
                 priority: objective.priority,
                 objective: objective,
                 minUnitsDesired: unitsDesired,
-                idealUnitsDesired: unitsDesired,
+                idealUnitsDesired: 6,
                 targetLocation: objective.target,
                 musterLocation: musterLocation
             });
@@ -15437,7 +15470,7 @@ var Rance;
 
                 for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
                     var objective = this.objectivesAI.objectives[j];
-                    if (objective.id === front.id && objective.priority > 0.4) {
+                    if (objective.id === front.id && objective.priority > 0.04) {
                         hasActiveObjective = true;
                         break;
                     }
@@ -15459,7 +15492,7 @@ var Rance;
             for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
                 var objective = this.objectivesAI.objectives[i];
 
-                if (objective.priority > 0.4) {
+                if (objective.priority > 0.04) {
                     if (!this.getFrontWithId(objective.id)) {
                         var front = this.createFront(objective);
                         this.fronts.push(front);
@@ -15627,7 +15660,7 @@ var Rance;
                 personality: this.personality
             });
         }
-        AIController.prototype.processTurn = function () {
+        AIController.prototype.processTurn = function (afterFinishedCallback) {
             // gsai evaluate grand strategy
             // oai make objectives
             this.objectivesAI.setAllObjectives();
@@ -15652,10 +15685,13 @@ var Rance;
 
             // fai move fleets
             // function param is called after all fronts have moved
-            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this));
+            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
         };
-        AIController.prototype.finishMovingFleets = function () {
+        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
             this.frontsAI.organizeFleets();
+            if (afterFinishedCallback) {
+                afterFinishedCallback();
+            }
             console.log("finish moving");
         };
         return AIController;
@@ -15716,7 +15752,8 @@ var Rance;
             var self = this;
 
             this.seed = Math.random();
-            this.seed = 0.2364406210836023;
+
+            //this.seed = 0.2364406210836023;
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
@@ -15786,7 +15823,7 @@ var Rance;
         App.prototype.makePlayers = function () {
             var players = [];
 
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < 5; i++) {
                 var player = new Rance.Player(true);
                 player.makeFlag();
 
