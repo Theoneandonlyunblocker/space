@@ -158,13 +158,13 @@ ul
 // pseudo elements used instead of borders as
 // borders dont scale to table rows properly
 // original design do not steal
-.civ-splitter-horizontal
+.civ-splitter-horizontal(@height: 2px)
 {
   content: "";
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
+  height: @height;
   background-image: url("../img/listSeparator.png");
   background-repeat: no-repeat;
   background-position: center bottom;
@@ -1462,8 +1462,12 @@ progress::-webkit-progress-value { background: #080; }
 
 .light-box-content
 {
+  position: relative;
   overflow-y: auto;
   margin: 25px;
+
+  background-color: @bg-color;
+  color: @text-color;
 }
 
 .light-box-close
@@ -2216,4 +2220,29 @@ progress::-webkit-progress-value { background: #080; }
 {
   .money-style;
   text-align: right;
+}
+
+.options
+{
+  padding: 0px 8px;
+  :last-child::after
+  {
+    background-image: none;
+  }
+}
+
+.option-group
+{
+  position: relative;
+  @ver-padding: 10px;
+  padding: @ver-padding 0px;
+  &::after
+  {
+    .civ-splitter-horizontal(@ver-padding);
+  }
+
+  label
+  {
+    margin: 0 0.5em;
+  }
 }

@@ -6,7 +6,7 @@
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
 /// <reference path="economysummary.ts"/>
-
+/// <reference path="optionslist.ts"/>
 
 module Rance
 {
@@ -139,8 +139,36 @@ module Rance
         }
       },
 
+      handleOptions: function()
+      {
+        if (this.state.opened === "options")
+        {
+          this.closeLightBox();
+        }
+        else
+        {
+          this.setState(
+          {
+            opened: "options",
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.OptionsList(
+              {
+                handleClose: this.closeLightBox
+              })
+            })
+          });
+        }
+      },
+
       closeLightBox: function()
       {
+        if (this.state.opened === "options")
+        {
+          saveOptions();
+        }
+        
         this.setState(
         {
           opened: null,
@@ -170,6 +198,11 @@ module Rance
                 className: "top-menu-items-button",
                 onClick: this.handleLoadGame
               }, "Load"),
+              React.DOM.button(
+              {
+                className: "top-menu-items-button",
+                onClick: this.handleOptions
+              }, "Options"),
               /*
               React.DOM.button(
               {

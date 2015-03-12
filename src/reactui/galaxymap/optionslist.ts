@@ -1,0 +1,96 @@
+/// <reference path="optionsgroup.ts"/>
+
+module Rance
+{
+  export module UIComponents
+  {
+    export var OptionsList = React.createClass(
+    {
+      displayName: "OptionsList",
+
+      makeBattleAnimationOption: function(stage: string)
+      {
+        if (!isFinite(Options.battleAnimationTiming[stage]))
+        {
+          throw new Error("Option doesn't exist");
+          return;
+        }
+
+        var onChangeFN = function(e)
+        {
+          var value = parseInt(e.target.value);
+          Options.battleAnimationTiming[stage] = value;
+          this.forceUpdate();
+        }.bind(this);
+
+        var key = "battle-animation-option-" + stage;
+
+        return(
+        {
+          content: React.DOM.div(
+          {
+
+          },
+            React.DOM.input(
+            {
+              type: "number",
+              id: key,
+              value: Options.battleAnimationTiming[stage],
+              min: 0,
+              max: 10000,
+              step: 10,
+              onChange: onChangeFN
+            }),
+            React.DOM.label(
+            {
+              htmlFor: key
+            },
+              stage
+            )
+          )
+        });
+
+      },
+      render: function()
+      {
+        var allOptions = [];
+
+        // battle animation timing
+        var battleAnimationOptions: any[] = [];
+        for (var stage in Options.battleAnimationTiming)
+        {
+          battleAnimationOptions.push(this.makeBattleAnimationOption(stage));
+        }
+        allOptions.push(UIComponents.OptionsGroup(
+        {
+          header: "Battle animation timing",
+          options: battleAnimationOptions,
+          resetFN: function()
+          {
+            extendObject(defaultOptions.battleAnimationTiming, Options.battleAnimationTiming);
+            this.forceUpdate();
+          }.bind(this),
+          key: "battleAnimationOptions"
+        }));
+
+        allOptions.push(UIComponents.OptionsGroup(
+        {
+          header: "Battle animation timing2",
+          options: battleAnimationOptions,
+          resetFN: function()
+          {
+            extendObject(defaultOptions.battleAnimationTiming, Options.battleAnimationTiming);
+            this.forceUpdate();
+          }.bind(this),
+          key: "battleAnimationOptions2"
+        }));
+
+        return(
+          React.DOM.div({className: "options"},
+            allOptions
+          )
+        );
+      }
+    });
+  }
+}
