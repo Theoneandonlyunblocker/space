@@ -25,6 +25,36 @@ module Rance
         });
       },
 
+      setInitialPosition: function()
+      {
+        var rect = this.getDOMNode().getBoundingClientRect();
+        var container = this.containerElement; // set in draggable mixin
+
+        var left = parseInt(container.offsetWidth) / 2.5 - rect.width / 2;
+        var top = parseInt(container.offsetHeight) / 3.5 - rect.height / 2;
+
+        left += this.props.activePopupsCount * 20;
+        top += this.props.activePopupsCount * 20;
+
+        left = Math.min(left, container.offsetWidth - rect.width);
+        top = Math.min(top, container.offsetHeight - rect.height);
+
+
+        this.setState(
+        {
+          dragPos:
+          {
+            top: top,
+            left: left
+          }
+        });
+      },
+
+      componentDidMount: function()
+      {
+        this.setInitialPosition();
+      },
+
       render: function()
       {
         var divProps: any =

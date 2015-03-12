@@ -144,7 +144,8 @@ module Rance
               contentProps: popup.contentProps,
               key: popup.id,
               incrementZIndex: this.incrementZIndex,
-              closePopup: this.closePopup.bind(this, popup.id)
+              closePopup: this.closePopup.bind(this, popup.id),
+              activePopupsCount: this.state.popups.length
             })
           );
         }
