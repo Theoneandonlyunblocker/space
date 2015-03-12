@@ -184,32 +184,27 @@ module Rance
     return canvas.toDataURL();
   }
 
-
-  export function cloneObject(toClone: any)
+  // http://stackoverflow.com/a/1042676
+  // extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
+  // 
+  // to[prop] = from[prop] seems to add a reference instead of actually copying value
+  // so calling the constructor with "new" is needed
+  export function extendObject(from: any, to?: any)
   {
-    var result: any = {};
-    for (var prop in toClone)
-    {
-      result[prop] = toClone[prop];
-    }
-    return result;
-  }
-  export function mergeObjects(target: any, toMerge: any)
-  {
-    for (var key in toMerge)
-    {
-      var value = toMerge[key]; 
+    if (from == null || typeof from != "object") return from;
+    if (from.constructor != Object && from.constructor != Array) return from;
+    if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
+      from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+      return new from.constructor(from);
 
-      if (typeof(value) === "object")
-      {
-        var subTarget = target[key] || {};
-        mergeObjects(subTarget, value);
-      }
-      else
-      {
-        target[key] = toMerge[key];
-      }
+    to = to || new from.constructor();
+
+    for (var name in from)
+    {
+      to[name] = extendObject(from[name], null);
     }
+
+    return to;
   }
   export function recursiveRemoveAttribute(parent, attribute: string)
   {

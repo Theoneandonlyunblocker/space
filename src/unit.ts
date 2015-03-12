@@ -129,8 +129,8 @@ module Rance
 
       this.timesActedThisTurn = data.timesActedThisTurn;
 
-      this.baseAttributes = cloneObject(data.baseAttributes);
-      this.attributes = cloneObject(this.baseAttributes);
+      this.baseAttributes = extendObject(data.baseAttributes);
+      this.attributes = extendObject(this.baseAttributes);
 
       var battleStats: any = {};
 
@@ -206,7 +206,7 @@ module Rance
         if (attributes[attribute] > 9) attributes[attribute] = 9;
       }
 
-      this.baseAttributes = cloneObject(attributes);
+      this.baseAttributes = extendObject(attributes);
       this.attributes = attributes;
     }
     getBaseMoveDelay()
@@ -668,7 +668,7 @@ module Rance
 
       data.timesActedThisTurn = this.timesActedThisTurn;
 
-      data.baseAttributes = cloneObject(this.baseAttributes);
+      data.baseAttributes = extendObject(this.baseAttributes);
 
       data.battleStats = {};
       data.battleStats.moveDelay = this.battleStats.moveDelay;
