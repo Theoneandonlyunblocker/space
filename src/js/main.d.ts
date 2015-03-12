@@ -260,6 +260,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var OptionsGroup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var OptionsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopMenu: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -354,8 +364,7 @@ declare module Rance {
     function hexToString(hex: number): string;
     function stringToHex(text: string): number;
     function colorImageInPlayerColor(imageSrc: string, player: Player): string;
-    function cloneObject(toClone: any): any;
-    function mergeObjects(target: any, toMerge: any): void;
+    function extendObject(from: any, to?: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
@@ -2448,13 +2457,14 @@ declare module Rance {
 declare module Rance {
     function saveOptions(slot?: number): void;
     function loadOptions(slot?: number): void;
-    module Options {
+    module defaultOptions {
         var battleAnimationTiming: {
             before: number;
             effectDuration: number;
             after: number;
         };
     }
+    var Options: any;
 }
 declare var a: any, b: any, c: any;
 declare module Rance {

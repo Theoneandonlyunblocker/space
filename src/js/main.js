@@ -27,7 +27,7 @@ var Rance;
             componentWillReceiveProps: function (newProps) {
                 if (newProps.currentHealth !== this.props.currentHealth) {
                     if (this.props.animateStrength) {
-                        this.animateDisplayedStrength(newProps.currentHealth, 2000);
+                        this.animateDisplayedStrength(newProps.currentHealth, Rance.Options.battleAnimationTiming.effectDuration);
                     } else {
                         this.updateDisplayStrength(newProps.currentHealth);
                     }
@@ -1450,7 +1450,7 @@ var Rance;
                         abilityData.afterUse[i]();
                     }
 
-                    this.endBattleEffect(abilityData);
+                    this.clearBattleEffect(abilityData);
 
                     this.handleTurnEnd();
 
@@ -1490,7 +1490,7 @@ var Rance;
                 var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
 
                 var effectDuration = Rance.Options.battleAnimationTiming["effectDuration"];
-                var afterDelay = Rance.Options.battleAnimationTiming["before"];
+                var afterDelay = Rance.Options.battleAnimationTiming["after"];
 
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
@@ -1506,7 +1506,7 @@ var Rance;
 
                 window.setTimeout(startEffectFN, beforeDelay);
             },
-            endBattleEffect: function () {
+            clearBattleEffect: function () {
                 this.setState({
                     playingBattleEffect: false,
                     hoveredUnit: null
@@ -3455,12 +3455,114 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.OptionsGroup = React.createClass({
+            displayName: "OptionsGroup",
+            render: function () {
+                var rows = [];
+
+                for (var i = 0; i < this.props.options.length; i++) {
+                    var option = this.props.options[i];
+
+                    rows.push(React.DOM.div({
+                        className: "option-container",
+                        key: "" + i
+                    }, React.DOM.div({
+                        className: "option-content"
+                    }, option.content)));
+                }
+
+                var resetButton = null;
+                if (this.props.resetFN) {
+                    resetButton = React.DOM.button({
+                        className: "reset-options-button",
+                        onClick: this.props.resetFN
+                    }, "reset");
+                }
+
+                return (React.DOM.div({ className: "option-group" }, React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton), rows));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="optionsgroup.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.OptionsList = React.createClass({
+            displayName: "OptionsList",
+            makeBattleAnimationOption: function (stage) {
+                if (!isFinite(Rance.Options.battleAnimationTiming[stage])) {
+                    throw new Error("Option doesn't exist");
+                    return;
+                }
+
+                var onChangeFN = function (e) {
+                    var value = parseInt(e.target.value);
+                    Rance.Options.battleAnimationTiming[stage] = value;
+                    this.forceUpdate();
+                }.bind(this);
+
+                var key = "battle-animation-option-" + stage;
+
+                return ({
+                    content: React.DOM.div({}, React.DOM.input({
+                        type: "number",
+                        id: key,
+                        value: Rance.Options.battleAnimationTiming[stage],
+                        min: 0,
+                        max: 10000,
+                        step: 10,
+                        onChange: onChangeFN
+                    }), React.DOM.label({
+                        htmlFor: key
+                    }, stage))
+                });
+            },
+            render: function () {
+                var allOptions = [];
+
+                // battle animation timing
+                var battleAnimationOptions = [];
+                for (var stage in Rance.Options.battleAnimationTiming) {
+                    battleAnimationOptions.push(this.makeBattleAnimationOption(stage));
+                }
+                allOptions.push(Rance.UIComponents.OptionsGroup({
+                    header: "Battle animation timing",
+                    options: battleAnimationOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.battleAnimationTiming, Rance.Options.battleAnimationTiming);
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "battleAnimationOptions"
+                }));
+
+                allOptions.push(Rance.UIComponents.OptionsGroup({
+                    header: "Battle animation timing2",
+                    options: battleAnimationOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.battleAnimationTiming, Rance.Options.battleAnimationTiming);
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "battleAnimationOptions2"
+                }));
+
+                return (React.DOM.div({ className: "options" }, allOptions));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
 /// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
 /// <reference path="economysummary.ts"/>
+/// <reference path="optionslist.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -3547,7 +3649,26 @@ var Rance;
                     });
                 }
             },
+            handleOptions: function () {
+                if (this.state.opened === "options") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "options",
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.OptionsList({
+                                handleClose: this.closeLightBox
+                            })
+                        })
+                    });
+                }
+            },
             closeLightBox: function () {
+                if (this.state.opened === "options") {
+                    Rance.saveOptions();
+                }
+
                 this.setState({
                     opened: null,
                     lightBoxElement: null
@@ -3565,6 +3686,9 @@ var Rance;
                     className: "top-menu-items-button",
                     onClick: this.handleLoadGame
                 }, "Load"), React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleOptions
+                }, "Options"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleBuyItems
                 }, "Buy items"), React.DOM.button({
@@ -4370,27 +4494,28 @@ var Rance;
     }
     Rance.colorImageInPlayerColor = colorImageInPlayerColor;
 
-    function cloneObject(toClone) {
-        var result = {};
-        for (var prop in toClone) {
-            result[prop] = toClone[prop];
-        }
-        return result;
-    }
-    Rance.cloneObject = cloneObject;
-    function mergeObjects(target, toMerge) {
-        for (var key in toMerge) {
-            var value = toMerge[key];
+    // http://stackoverflow.com/a/1042676
+    // extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
+    //
+    // to[prop] = from[prop] seems to add a reference instead of actually copying value
+    // so calling the constructor with "new" is needed
+    function extendObject(from, to) {
+        if (from == null || typeof from != "object")
+            return from;
+        if (from.constructor != Object && from.constructor != Array)
+            return from;
+        if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function || from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+            return new from.constructor(from);
 
-            if (typeof (value) === "object") {
-                var subTarget = target[key] || {};
-                mergeObjects(subTarget, value);
-            } else {
-                target[key] = toMerge[key];
-            }
+        to = to || new from.constructor();
+
+        for (var name in from) {
+            to[name] = extendObject(from[name], null);
         }
+
+        return to;
     }
-    Rance.mergeObjects = mergeObjects;
+    Rance.extendObject = extendObject;
     function recursiveRemoveAttribute(parent, attribute) {
         parent.removeAttribute(attribute);
 
@@ -7644,7 +7769,8 @@ var Rance;
 
             var sortedMoves = root.children.sort(this.sortByWinRateFN);
 
-            // this.printToConsole(sortedMoves);
+            //this.printToConsole(sortedMoves);
+            //console.log(iterations);
             var best = sortedMoves[0];
             return best;
         };
@@ -8906,8 +9032,8 @@ var Rance;
 
             this.timesActedThisTurn = data.timesActedThisTurn;
 
-            this.baseAttributes = Rance.cloneObject(data.baseAttributes);
-            this.attributes = Rance.cloneObject(this.baseAttributes);
+            this.baseAttributes = Rance.extendObject(data.baseAttributes);
+            this.attributes = Rance.extendObject(this.baseAttributes);
 
             var battleStats = {};
 
@@ -8975,7 +9101,7 @@ var Rance;
                     attributes[attribute] = 9;
             }
 
-            this.baseAttributes = Rance.cloneObject(attributes);
+            this.baseAttributes = Rance.extendObject(attributes);
             this.attributes = attributes;
         };
         Unit.prototype.getBaseMoveDelay = function () {
@@ -9356,7 +9482,7 @@ var Rance;
 
             data.timesActedThisTurn = this.timesActedThisTurn;
 
-            data.baseAttributes = Rance.cloneObject(this.baseAttributes);
+            data.baseAttributes = Rance.extendObject(this.baseAttributes);
 
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;
@@ -13789,7 +13915,7 @@ var Rance;
                 name: name,
                 date: date,
                 gameData: gameData,
-                idGenerators: Rance.cloneObject(Rance.idGenerators)
+                idGenerators: Rance.extendObject(Rance.idGenerators)
             });
 
             localStorage.setItem(saveString, stringified);
@@ -15883,24 +16009,27 @@ var Rance;
     function loadOptions(slot) {
         var baseString = "Rance.Options.";
 
-        var parsedOptions;
+        var parsedData;
         if (slot && localStorage[baseString + slot]) {
-            parsedOptions = JSON.parse(localStorage.getItem(baseString + slot));
+            parsedData = JSON.parse(localStorage.getItem(baseString + slot));
         } else {
-            parsedOptions = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
+            parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
 
-        Rance.mergeObjects(Rance.Options, parsedOptions);
+        Rance.Options = Rance.extendObject(parsedData.options, Rance.Options);
     }
     Rance.loadOptions = loadOptions;
-    (function (Options) {
-        Options.battleAnimationTiming = {
+
+    (function (defaultOptions) {
+        defaultOptions.battleAnimationTiming = {
             before: 250,
             effectDuration: 1500,
             after: 250
         };
-    })(Rance.Options || (Rance.Options = {}));
-    var Options = Rance.Options;
+    })(Rance.defaultOptions || (Rance.defaultOptions = {}));
+    var defaultOptions = Rance.defaultOptions;
+
+    Rance.Options;
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="unit.ts"/>
@@ -15954,6 +16083,12 @@ var Rance;
             Rance.setAllDynamicTemplateProperties();
         }
         App.prototype.makeApp = function () {
+            console.log(Rance.defaultOptions.battleAnimationTiming.before);
+            Rance.Options = Rance.extendObject(Rance.defaultOptions);
+            console.log(Rance.defaultOptions.battleAnimationTiming.before);
+            Rance.loadOptions();
+            console.log(Rance.defaultOptions.battleAnimationTiming.before);
+
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
             this.game = this.makeGame();
@@ -15989,7 +16124,7 @@ var Rance;
             this.mapRenderer.setMap(this.game.galaxyMap);
             this.mapRenderer.setAllLayersAsDirty();
 
-            Rance.idGenerators = Rance.cloneObject(parsed.idGenerators);
+            Rance.idGenerators = Rance.extendObject(parsed.idGenerators);
 
             // TODO
             a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);

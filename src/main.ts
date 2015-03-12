@@ -80,6 +80,12 @@ module Rance
     }
     makeApp()
     {
+      console.log(defaultOptions.battleAnimationTiming.before);
+      Options = extendObject(defaultOptions);
+      console.log(defaultOptions.battleAnimationTiming.before);
+      loadOptions();
+      console.log(defaultOptions.battleAnimationTiming.before);
+      
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();
       this.game = this.makeGame();
@@ -117,7 +123,7 @@ module Rance
       this.mapRenderer.setMap(this.game.galaxyMap);
       this.mapRenderer.setAllLayersAsDirty();
 
-      idGenerators = cloneObject(parsed.idGenerators);
+      idGenerators = extendObject(parsed.idGenerators);
 
       // TODO
       a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);

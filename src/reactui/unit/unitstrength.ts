@@ -21,7 +21,8 @@ module Rance
         {
           if (this.props.animateStrength)
           {
-            this.animateDisplayedStrength(newProps.currentHealth, 2000);
+            this.animateDisplayedStrength(
+              newProps.currentHealth, Options.battleAnimationTiming.effectDuration);
           }
           else
           {

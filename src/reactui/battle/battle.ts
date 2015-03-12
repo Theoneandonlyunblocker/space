@@ -207,7 +207,7 @@ module Rance
             abilityData.afterUse[i]();
           }
 
-          this.endBattleEffect(abilityData);
+          this.clearBattleEffect(abilityData);
 
           this.handleTurnEnd();
 
@@ -252,7 +252,7 @@ module Rance
         var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
 
         var effectDuration = Options.battleAnimationTiming["effectDuration"];
-        var afterDelay = Options.battleAnimationTiming["before"];
+        var afterDelay = Options.battleAnimationTiming["after"];
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
@@ -268,10 +268,9 @@ module Rance
           window.setTimeout(finishEffectFN, effectDuration + afterDelay);
         }.bind(this);
 
-
         window.setTimeout(startEffectFN, beforeDelay);
       },
-      endBattleEffect: function()
+      clearBattleEffect: function()
       {
         this.setState(
         {

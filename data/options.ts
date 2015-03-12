@@ -18,21 +18,20 @@ module Rance
   {
     var baseString = "Rance.Options.";
 
-    var parsedOptions;
+    var parsedData;
     if (slot && localStorage[baseString + slot])
     {
-      parsedOptions = JSON.parse(localStorage.getItem(baseString + slot));
+      parsedData = JSON.parse(localStorage.getItem(baseString + slot));
     }
     else
     {
-      parsedOptions = getMatchingLocalstorageItemsByDate(baseString)[0];
+      parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
     }
     
-    
-
-    mergeObjects(Rance.Options, parsedOptions);
+    Options = extendObject(parsedData.options, Rance.Options);
   }
-  export module Options
+  
+  export module defaultOptions
   {
     export var battleAnimationTiming =
     {
@@ -41,4 +40,6 @@ module Rance
       after: 250
     }
   }
+
+  export var Options: any;
 }
