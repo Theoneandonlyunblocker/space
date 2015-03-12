@@ -2648,6 +2648,29 @@ var Rance;
                     zIndex: this.props.incrementZIndex()
                 });
             },
+            setInitialPosition: function () {
+                var rect = this.getDOMNode().getBoundingClientRect();
+                var container = this.containerElement;
+
+                var left = parseInt(container.offsetWidth) / 2.5 - rect.width / 2;
+                var top = parseInt(container.offsetHeight) / 3.5 - rect.height / 2;
+
+                left += this.props.activePopupsCount * 20;
+                top += this.props.activePopupsCount * 20;
+
+                left = Math.min(left, container.offsetWidth - rect.width);
+                top = Math.min(top, container.offsetHeight - rect.height);
+
+                this.setState({
+                    dragPos: {
+                        top: top,
+                        left: left
+                    }
+                });
+            },
+            componentDidMount: function () {
+                this.setInitialPosition();
+            },
             render: function () {
                 var divProps = {
                     className: "popup draggable",
@@ -2899,7 +2922,8 @@ var Rance;
                         contentProps: popup.contentProps,
                         key: popup.id,
                         incrementZIndex: this.incrementZIndex,
-                        closePopup: this.closePopup.bind(this, popup.id)
+                        closePopup: this.closePopup.bind(this, popup.id),
+                        activePopupsCount: this.state.popups.length
                     }));
                 }
 
@@ -3522,6 +3546,22 @@ var Rance;
                     }, stage))
                 });
             },
+            handleResetAllOptions: function () {
+                var resetFN = function () {
+                    Rance.Options = Rance.extendObject(Rance.defaultOptions);
+                    this.forceUpdate();
+                }.bind(this);
+
+                var confirmProps = {
+                    handleOk: resetFN,
+                    contentText: "Are you sure you want to reset all options?"
+                };
+
+                this.refs.popupManager.makePopup({
+                    contentConstructor: Rance.UIComponents.ConfirmPopup,
+                    contentProps: confirmProps
+                });
+            },
             render: function () {
                 var allOptions = [];
 
@@ -3550,7 +3590,12 @@ var Rance;
                     key: "battleAnimationOptions2"
                 }));
 
-                return (React.DOM.div({ className: "options" }, allOptions));
+                return (React.DOM.div({ className: "options" }, Rance.UIComponents.PopupManager({
+                    ref: "popupManager"
+                }), React.DOM.div({ className: "options-header" }, "Options", React.DOM.button({
+                    className: "reset-options-button reset-all-options-button",
+                    onClick: this.handleResetAllOptions
+                }, "Reset all options")), allOptions));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -7769,8 +7814,7 @@ var Rance;
 
             var sortedMoves = root.children.sort(this.sortByWinRateFN);
 
-            //this.printToConsole(sortedMoves);
-            //console.log(iterations);
+            // this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
         };
@@ -16083,11 +16127,8 @@ var Rance;
             Rance.setAllDynamicTemplateProperties();
         }
         App.prototype.makeApp = function () {
-            console.log(Rance.defaultOptions.battleAnimationTiming.before);
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
-            console.log(Rance.defaultOptions.battleAnimationTiming.before);
             Rance.loadOptions();
-            console.log(Rance.defaultOptions.battleAnimationTiming.before);
 
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();

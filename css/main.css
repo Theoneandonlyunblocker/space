@@ -2221,7 +2221,23 @@ progress::-webkit-progress-value {
   padding: 0px 8px;
 }
 .options :last-child::after {
-  background-image: none;
+  content: none;
+}
+.options-header {
+  position: relative;
+  padding: 10px 0px;
+}
+.options-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+  bottom: 0;
 }
 .option-group {
   position: relative;
@@ -2240,4 +2256,29 @@ progress::-webkit-progress-value {
 }
 .option-group label {
   margin: 0 0.5em;
+}
+.reset-options-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  margin-left: 1em;
+}
+.reset-options-button:hover {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.reset-options-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.reset-options-button:disabled,
+.reset-options-button.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.reset-options-button:disabled *,
+.reset-options-button.disabled * {
+  pointer-events: none !important;
 }

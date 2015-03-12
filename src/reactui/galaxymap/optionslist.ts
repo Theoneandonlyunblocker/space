@@ -51,6 +51,28 @@ module Rance
         });
 
       },
+
+      handleResetAllOptions: function()
+      {
+        var resetFN = function()
+        {
+          Options = extendObject(defaultOptions);
+          this.forceUpdate();
+        }.bind(this);
+
+        var confirmProps =
+        {
+          handleOk: resetFN,
+          contentText: "Are you sure you want to reset all options?"
+        }
+
+        this.refs.popupManager.makePopup(
+        {
+          contentConstructor: UIComponents.ConfirmPopup,
+          contentProps: confirmProps
+        });
+      },
+
       render: function()
       {
         var allOptions = [];
@@ -87,6 +109,22 @@ module Rance
 
         return(
           React.DOM.div({className: "options"},
+
+            UIComponents.PopupManager(
+            {
+              ref: "popupManager"
+            }),
+
+            React.DOM.div({className: "options-header"},
+              "Options",
+              React.DOM.button(
+              {
+                className: "reset-options-button reset-all-options-button",
+                onClick: this.handleResetAllOptions
+              },
+                "Reset all options"
+              )
+            ),
             allOptions
           )
         );

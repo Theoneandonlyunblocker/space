@@ -2227,7 +2227,19 @@ progress::-webkit-progress-value { background: #080; }
   padding: 0px 8px;
   :last-child::after
   {
-    background-image: none;
+    content: none;
+  }
+}
+
+.options-header
+{
+  position: relative;
+  @ver-padding: 10px;
+  padding: @ver-padding 0px;
+  &::after
+  {
+    .civ-splitter-horizontal(@ver-padding);
+    bottom: 0;
   }
 }
 
@@ -2245,4 +2257,10 @@ progress::-webkit-progress-value { background: #080; }
   {
     margin: 0 0.5em;
   }
+}
+
+.reset-options-button
+{
+  .button-style;
+  margin-left: 1em;
 }

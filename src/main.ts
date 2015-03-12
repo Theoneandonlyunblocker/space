@@ -80,11 +80,8 @@ module Rance
     }
     makeApp()
     {
-      console.log(defaultOptions.battleAnimationTiming.before);
       Options = extendObject(defaultOptions);
-      console.log(defaultOptions.battleAnimationTiming.before);
       loadOptions();
-      console.log(defaultOptions.battleAnimationTiming.before);
       
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();
