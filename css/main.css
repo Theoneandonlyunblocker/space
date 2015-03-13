@@ -373,6 +373,7 @@ progress::-webkit-progress-value {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 500;
+  pointer-events: none;
 }
 .active-effect-unit {
   z-index: 501;
@@ -1019,7 +1020,8 @@ progress::-webkit-progress-value {
   position: relative;
   background-color: #0d2335;
   max-width: 95%;
-  max-height: 95%;
+  max-height: 90%;
+  overflow-y: auto;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -2219,12 +2221,17 @@ progress::-webkit-progress-value {
 }
 .options {
   padding: 0px 8px;
+  overflow-y: auto;
+  max-height: 500px;
 }
 .options :last-child::after {
   content: none;
 }
 .options-header {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   padding: 10px 0px;
 }
 .options-header::after {
@@ -2256,6 +2263,17 @@ progress::-webkit-progress-value {
 }
 .option-group label {
   margin: 0 0.5em;
+}
+.option-group-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 1.33em;
+  margin-bottom: 0.33em;
+}
+.option-group-header button {
+  font-size: initial;
 }
 .reset-options-button {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
