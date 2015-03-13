@@ -1368,7 +1368,6 @@ var Rance;
                 this.setBattleSceneUnits(null);
             },
             handleMouseLeaveUnit: function (e) {
-                console.log(Date.now(), "leave unit");
                 this.tempHoveredUnit = null;
 
                 if (!this.state.hoveredUnit || this.state.playingBattleEffect)
@@ -1395,7 +1394,6 @@ var Rance;
             handleMouseEnterUnit: function (unit) {
                 this.tempHoveredUnit = unit;
 
-                console.log(Date.now(), "enter unit", unit.name, this.tempHoveredUnit);
                 if (this.props.battle.ended || this.state.playingBattleEffect)
                     return;
 
@@ -1484,7 +1482,6 @@ var Rance;
 
                 if (!this.tempHoveredUnit) {
                     this.tempHoveredUnit = this.state.hoveredUnit;
-                    console.log(Date.now(), "set temp in battle effect", this.tempHoveredUnit);
                 }
 
                 this.setState({
@@ -1509,7 +1506,6 @@ var Rance;
                 var afterDelay = Rance.Options.battleAnimationTiming["after"];
 
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
-                console.log(Date.now(), "bind finish effect", this.tempHoveredUnit ? this.tempHoveredUnit.id : null);
 
                 var startEffectFN = function () {
                     effectData[i].effect();
@@ -1530,7 +1526,6 @@ var Rance;
                 });
 
                 if (this.tempHoveredUnit) {
-                    console.log(Date.now(), "set hovered from temp", this.tempHoveredUnit.id);
                     this.handleMouseEnterUnit(this.tempHoveredUnit);
                     this.tempHoveredUnit = null;
                 }
@@ -1569,7 +1564,6 @@ var Rance;
                 battle.finishBattle();
             },
             handleMouseEnterAbility: function (ability) {
-                console.log(Date.now(), "enter ability", ability.displayName);
                 var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.hoveredUnit.battleStats.position);
 
                 this.setState({
@@ -1582,7 +1576,6 @@ var Rance;
                 });
             },
             handleMouseLeaveAbility: function () {
-                console.log(Date.now(), "leave ability");
                 this.setState({
                     hoveredAbility: null,
                     potentialDelay: null,
@@ -1651,9 +1644,6 @@ var Rance;
                         to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
                 }
-
-                if (this.hoveredUnit)
-                    console.log(Date.now(), this.hoveredUnit.id);
 
                 return (React.DOM.div({
                     className: "battle-pixi-container",
@@ -8647,8 +8637,8 @@ var Rance;
             if (this.isSimulated) {
                 Rance.eventManager.dispatchEvent("renderLayer", "fleets");
             } else {
+                Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
                 Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
-                Rance.eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
             }
         };
         Battle.prototype.getVictor = function () {
@@ -10093,7 +10083,11 @@ var Rance;
 
                 this.props.renderer.resume();
 
-                this.props.renderer.camera.centerOnPosition(this.props.galaxyMap.game.humanPlayer.controlledLocations[0]);
+                var centerLocation = this.props.renderer.camera.toCenterOn || this.props.toCenterOn || this.props.galaxyMap.game.humanPlayer.controlledLocations[0];
+
+                console.log(Date.now(), "galaxy map mount", this.props.renderer.camera.toCenterOn, this.props.renderer.camera.tempCameraId);
+
+                this.props.renderer.camera.centerOnPosition(centerLocation);
             },
             componentWillUnmount: function () {
                 this.props.renderer.pause();
@@ -12893,6 +12887,7 @@ var Rance;
     Rance.GalaxyMap = GalaxyMap;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
+var tempCameraId = 0;
 var Rance;
 (function (Rance) {
     /**
@@ -12909,9 +12904,11 @@ var Rance;
         function Camera(container, bound) {
             this.bounds = {};
             this.currZoom = 1;
+            // renderer view is mounted
             this.onMoveCallbacks = [];
             this.onZoomCallbacks = [];
             this.listeners = {};
+            this.tempCameraId = tempCameraId++;
             this.container = container;
             this.bounds.min = bound;
             this.bounds.max = Number((1 - bound).toFixed(1));
@@ -12950,8 +12947,9 @@ var Rance;
 
             window.addEventListener("resize", this.resizeListener, false);
 
-            this.listeners["centerCameraAt"] = Rance.eventManager.addEventListener("centerCameraAt", function (e) {
-                self.centerOnPosition(e.data);
+            this.listeners["setCameraToCenterOn"] = Rance.eventManager.addEventListener("setCameraToCenterOn", function (e) {
+                self.toCenterOn = e.data;
+                console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId);
             });
 
             Rance.eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
@@ -13042,11 +13040,20 @@ var Rance;
                 y: this.height / 2
             });
         };
+        Camera.prototype.getLocalPosition = function (position) {
+            return this.container.worldTransform.apply(position);
+        };
+        Camera.prototype.getCenterPosition = function () {
+            var localOrigin = this.getLocalPosition(this.container.position);
+            return ({
+                x: this.container.position.x + this.width / 2 - localOrigin.x,
+                y: this.container.position.y + this.height / 2 - localOrigin.y
+            });
+        };
         Camera.prototype.centerOnPosition = function (pos) {
             this.setBounds();
-            var wt = this.container.worldTransform;
 
-            var localPos = wt.apply(pos);
+            var localPos = this.getLocalPosition(pos);
             var center = this.getScreenCenter();
 
             this.container.position.x += center.x - localPos.x;
@@ -13735,11 +13742,17 @@ var Rance;
             this.renderOnce();
         };
         Renderer.prototype.addCamera = function () {
+            var oldToCenterOn;
+
             if (this.mouseEventHandler)
                 this.mouseEventHandler.destroy();
-            if (this.camera)
+            if (this.camera) {
+                oldToCenterOn = this.camera.toCenterOn;
                 this.camera.destroy();
+            }
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
+            this.camera.toCenterOn = oldToCenterOn;
+
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
         };
         Renderer.prototype.addEventListeners = function () {
@@ -13997,7 +14010,8 @@ var Rance;
                 name: name,
                 date: date,
                 gameData: gameData,
-                idGenerators: Rance.extendObject(Rance.idGenerators)
+                idGenerators: Rance.extendObject(Rance.idGenerators),
+                cameraLocation: app.renderer.camera.getCenterPosition()
             });
 
             localStorage.setItem(saveString, stringified);
@@ -16200,6 +16214,10 @@ var Rance;
             this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
 
             this.initGame();
+
+            if (parsed.cameraLocation) {
+                this.renderer.camera.toCenterOn = parsed.cameraLocation;
+            }
 
             this.mapRenderer.preventRender = false;
 

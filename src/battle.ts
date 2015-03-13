@@ -390,8 +390,8 @@ module Rance
       }
       else
       {
+        eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
         eventManager.dispatchEvent("switchScene", "galaxyMap");
-        eventManager.dispatchEvent("centerCameraAt", this.battleData.location);
       }
     }
     getVictor()

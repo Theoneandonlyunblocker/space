@@ -1,5 +1,6 @@
 /// <reference path="../lib/pixi.d.ts" />
 
+var tempCameraId = 0;
 module Rance
 {
   /**
@@ -8,6 +9,8 @@ module Rance
    */
   export class Camera
   {
+    tempCameraId: number;
+
     container: PIXI.DisplayObjectContainer;
     width: number
     height: number
@@ -17,6 +20,9 @@ module Rance
     currZoom: number = 1;
     screenWidth: number;
     screenHeight: number;
+
+    toCenterOn: Point; // point to center on once
+                       // renderer view is mounted
 
     onMoveCallbacks: {(x: number, y: number): void;}[] = [];
     onZoomCallbacks: {(zoom: number): void;}[] = [];
@@ -36,6 +42,7 @@ module Rance
      */
     constructor( container:PIXI.DisplayObjectContainer, bound: number)
     {
+      this.tempCameraId = tempCameraId++;
       this.container = container;
       this.bounds.min = bound;
       this.bounds.max = Number( (1 - bound).toFixed(1) );
@@ -78,10 +85,11 @@ module Rance
 
       window.addEventListener("resize", this.resizeListener, false);
 
-      this.listeners["centerCameraAt"] =
-        eventManager.addEventListener("centerCameraAt", function(e)
+      this.listeners["setCameraToCenterOn"] =
+        eventManager.addEventListener("setCameraToCenterOn", function(e)
       {
-        self.centerOnPosition(e.data);
+        self.toCenterOn = e.data;
+        console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId)
       });
 
       
@@ -175,12 +183,24 @@ module Rance
         y: this.height / 2
       });
     }
+    getLocalPosition(position: Point): Point
+    {
+      return this.container.worldTransform.apply(position);
+    }
+    getCenterPosition(): Point
+    {
+      var localOrigin = this.getLocalPosition(this.container.position);
+      return(
+      {
+        x: this.container.position.x + this.width / 2 - localOrigin.x,
+        y: this.container.position.y + this.height / 2 - localOrigin.y
+      });
+    }
     centerOnPosition(pos: Point)
     {
       this.setBounds();
-      var wt = this.container.worldTransform;
 
-      var localPos = wt.apply(pos);
+      var localPos = this.getLocalPosition(pos);
       var center = this.getScreenCenter();
 
       this.container.position.x += center.x - localPos.x;

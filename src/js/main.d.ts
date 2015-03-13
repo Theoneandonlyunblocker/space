@@ -1836,12 +1836,14 @@ declare module Rance {
         public serialize(): any;
     }
 }
+declare var tempCameraId: number;
 declare module Rance {
     /**
     * @class Camera
     * @constructor
     */
     class Camera {
+        public tempCameraId: number;
         public container: PIXI.DisplayObjectContainer;
         public width: number;
         public height: number;
@@ -1851,6 +1853,7 @@ declare module Rance {
         public currZoom: number;
         public screenWidth: number;
         public screenHeight: number;
+        public toCenterOn: Rance.Point;
         public onMoveCallbacks: {
             (x: number, y: number): void;
         }[];
@@ -1903,6 +1906,8 @@ declare module Rance {
             x: number;
             y: number;
         };
+        public getLocalPosition(position: Rance.Point): Rance.Point;
+        public getCenterPosition(): Rance.Point;
         public centerOnPosition(pos: Rance.Point): void;
         /**
         * @method zoom

@@ -100,7 +100,6 @@ module Rance
       },
       handleMouseLeaveUnit: function(e)
       {
-        console.log(Date.now(), "leave unit");
         this.tempHoveredUnit = null;
 
         if (!this.state.hoveredUnit || this.state.playingBattleEffect) return;
@@ -135,7 +134,6 @@ module Rance
       {
         this.tempHoveredUnit = unit;
 
-        console.log(Date.now(), "enter unit", unit.name, this.tempHoveredUnit);
         if (this.props.battle.ended || this.state.playingBattleEffect) return;
 
         var facesLeft = unit.battleStats.side === "side2";
@@ -247,7 +245,6 @@ module Rance
         if (!this.tempHoveredUnit)
         {
           this.tempHoveredUnit = this.state.hoveredUnit;
-          console.log(Date.now(), "set temp in battle effect", this.tempHoveredUnit)
         }
 
         this.setState(
@@ -274,7 +271,6 @@ module Rance
         var afterDelay = Options.battleAnimationTiming["after"];
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
-        console.log(Date.now(), "bind finish effect", this.tempHoveredUnit ? this.tempHoveredUnit.id : null);
 
         var startEffectFN = function()
         {
@@ -300,7 +296,6 @@ module Rance
 
         if (this.tempHoveredUnit)
         {
-          console.log(Date.now(), "set hovered from temp", this.tempHoveredUnit.id);
           this.handleMouseEnterUnit(this.tempHoveredUnit);
           this.tempHoveredUnit = null;
         }
@@ -349,7 +344,6 @@ module Rance
 
       handleMouseEnterAbility: function(ability)
       {
-        console.log(Date.now(), "enter ability", ability.displayName);
         var targetsInPotentialArea = getUnitsInAbilityArea(
           this.props.battle,
           this.props.battle.activeUnit,
@@ -370,7 +364,6 @@ module Rance
       },
       handleMouseLeaveAbility: function()
       {
-        console.log(Date.now(), "leave ability");
         this.setState(
         {
           hoveredAbility: null,
@@ -469,7 +462,6 @@ module Rance
           )
         }
 
-        if (this.hoveredUnit) console.log(Date.now(), this.hoveredUnit.id);
 
         return(
           React.DOM.div(

@@ -115,6 +115,11 @@ module Rance
 
       this.initGame();
 
+      if (parsed.cameraLocation)
+      {
+        this.renderer.camera.toCenterOn = parsed.cameraLocation;
+      }
+
       this.mapRenderer.preventRender = false;
 
       this.mapRenderer.setParent(this.renderer.layers["map"]);

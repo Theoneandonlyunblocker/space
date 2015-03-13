@@ -99,7 +99,8 @@ module Rance
         name: name,
         date: date,
         gameData: gameData,
-        idGenerators: extendObject(idGenerators)
+        idGenerators: extendObject(idGenerators),
+        cameraLocation: app.renderer.camera.getCenterPosition()
       });
 
       localStorage.setItem(saveString, stringified);
