@@ -12,6 +12,15 @@ module Rance
           currentDragUnit: null
         });
       },
+      autoMakeFormation: function()
+      {
+        var battlePrep = this.props.battlePrep;
+
+        battlePrep.playerFormation = battlePrep.makeAIFormation(
+          battlePrep.availableUnits);
+
+        this.forceUpdate();
+      },
       handleDragStart: function(unit)
       {
         this.setState(
@@ -86,7 +95,11 @@ module Rance
                 app.reactUI.battle = battle;
                 app.reactUI.switchScene("battle");
               }.bind(this)
-            }, "Start battle")
+            }, "Start battle"),
+            React.DOM.button(
+            {
+              onClick: this.autoMakeFormation
+            }, "Auto formation")
           )
         );
       }
