@@ -27,6 +27,7 @@ module Rance
 
           hoveredAbility: null,
           hoveredUnit: null,
+          tempHoveredUnit: null,
 
           battleSceneUnit1StartingStrength: null,
           battleSceneUnit2StartingStrength: null,
@@ -80,6 +81,7 @@ module Rance
         this.setState(
         {
           hoveredUnit: null,
+          tempHoveredUnit: null,
           abilityTooltip:
           {
             parentElement: null
@@ -93,6 +95,11 @@ module Rance
       },
       handleMouseLeaveUnit: function(e)
       {
+        console.log(Date.now(), "leave unit");
+        this.setState(
+        {
+          tempHoveredUnit: null
+        });
         if (!this.state.hoveredUnit || this.state.playingBattleEffect) return;
 
         var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -123,6 +130,11 @@ module Rance
       },
       handleMouseEnterUnit: function(unit)
       {
+        this.setState(
+        {
+          tempHoveredUnit: unit
+        });
+        console.log(Date.now(), "enter unit", unit.name);
         if (this.props.battle.ended || this.state.playingBattleEffect) return;
 
         var facesLeft = unit.battleStats.side === "side2";
@@ -238,6 +250,7 @@ module Rance
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
+          tempHoveredUnit: this.state.hoveredUnit,
           hoveredUnit: abilityData.originalTarget,
           abilityTooltip:
           {
@@ -272,11 +285,20 @@ module Rance
       },
       clearBattleEffect: function()
       {
+        var tempHoveredUnit = this.state.tempHoveredUnit;
+
         this.setState(
         {
           playingBattleEffect: false,
-          hoveredUnit: null
+          hoveredUnit: null,
+          tempHoveredUnit: null
         });
+
+        if (tempHoveredUnit)
+        {
+          console.log(Date.now(), "set old hovered unit", tempHoveredUnit.id);
+          this.handleMouseEnterUnit(tempHoveredUnit);
+        }
       },
 
       handleTurnEnd: function()
@@ -322,6 +344,7 @@ module Rance
 
       handleMouseEnterAbility: function(ability)
       {
+        console.log(Date.now(), "enter ability", ability.displayName);
         var targetsInPotentialArea = getUnitsInAbilityArea(
           this.props.battle,
           this.props.battle.activeUnit,
@@ -342,6 +365,7 @@ module Rance
       },
       handleMouseLeaveAbility: function()
       {
+        console.log(Date.now(), "leave ability");
         this.setState(
         {
           hoveredAbility: null,
@@ -375,6 +399,7 @@ module Rance
             handleMouseLeave: this.handleMouseLeaveUnit,
             handleMouseEnterAbility: this.handleMouseEnterAbility,
             handleMouseLeaveAbility: this.handleMouseLeaveAbility,
+            activeUnit: battle.activeUnit,
             targetUnit: this.state.hoveredUnit,
             parentElement: this.state.abilityTooltip.parentElement,
             facesLeft: this.state.abilityTooltip.facesLeft,
@@ -437,8 +462,8 @@ module Rance
               }) : null
             )
           )
-          
         }
+
 
         return(
           React.DOM.div(

@@ -68,7 +68,7 @@ module Rance
       var self = this;
 
       this.seed = Math.random();
-      //this.seed = 0.2364406210836023;
+      // cool star bg seed 232.0568699.92311426176160617
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
@@ -82,7 +82,7 @@ module Rance
     {
       Options = extendObject(defaultOptions);
       loadOptions();
-      
+
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();
       this.game = this.makeGame();
@@ -105,6 +105,7 @@ module Rance
     {
       var itemName = "Rance.Save." + saveName;
       var data = localStorage.getItem(itemName);
+      if (!data) return;
       var parsed = JSON.parse(data);
       this.mapRenderer.preventRender = true;
 

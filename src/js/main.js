@@ -1309,6 +1309,7 @@ var Rance;
                     potentialDelay: null,
                     hoveredAbility: null,
                     hoveredUnit: null,
+                    tempHoveredUnit: null,
                     battleSceneUnit1StartingStrength: null,
                     battleSceneUnit2StartingStrength: null,
                     battleSceneUnit1: null,
@@ -1352,6 +1353,7 @@ var Rance;
             clearHoveredUnit: function () {
                 this.setState({
                     hoveredUnit: null,
+                    tempHoveredUnit: null,
                     abilityTooltip: {
                         parentElement: null
                     },
@@ -1363,6 +1365,10 @@ var Rance;
                 this.setBattleSceneUnits(null);
             },
             handleMouseLeaveUnit: function (e) {
+                console.log(Date.now(), "leave unit");
+                this.setState({
+                    tempHoveredUnit: null
+                });
                 if (!this.state.hoveredUnit || this.state.playingBattleEffect)
                     return;
 
@@ -1385,6 +1391,10 @@ var Rance;
                 }
             },
             handleMouseEnterUnit: function (unit) {
+                this.setState({
+                    tempHoveredUnit: unit
+                });
+                console.log(Date.now(), "enter unit", unit.name);
                 if (this.props.battle.ended || this.state.playingBattleEffect)
                     return;
 
@@ -1477,6 +1487,7 @@ var Rance;
                     battleSceneUnit1: side1Unit,
                     battleSceneUnit2: side2Unit,
                     playingBattleEffect: true,
+                    tempHoveredUnit: this.state.hoveredUnit,
                     hoveredUnit: abilityData.originalTarget,
                     abilityTooltip: {
                         parentElement: null
@@ -1507,10 +1518,18 @@ var Rance;
                 window.setTimeout(startEffectFN, beforeDelay);
             },
             clearBattleEffect: function () {
+                var tempHoveredUnit = this.state.tempHoveredUnit;
+
                 this.setState({
                     playingBattleEffect: false,
-                    hoveredUnit: null
+                    hoveredUnit: null,
+                    tempHoveredUnit: null
                 });
+
+                if (tempHoveredUnit) {
+                    console.log(Date.now(), "set old hovered unit", tempHoveredUnit.id);
+                    this.handleMouseEnterUnit(tempHoveredUnit);
+                }
             },
             handleTurnEnd: function () {
                 if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
@@ -1546,6 +1565,7 @@ var Rance;
                 battle.finishBattle();
             },
             handleMouseEnterAbility: function (ability) {
+                console.log(Date.now(), "enter ability", ability.displayName);
                 var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.hoveredUnit.battleStats.position);
 
                 this.setState({
@@ -1558,6 +1578,7 @@ var Rance;
                 });
             },
             handleMouseLeaveAbility: function () {
+                console.log(Date.now(), "leave ability");
                 this.setState({
                     hoveredAbility: null,
                     potentialDelay: null,
@@ -1579,6 +1600,7 @@ var Rance;
                         handleMouseLeave: this.handleMouseLeaveUnit,
                         handleMouseEnterAbility: this.handleMouseEnterAbility,
                         handleMouseLeaveAbility: this.handleMouseLeaveAbility,
+                        activeUnit: battle.activeUnit,
                         targetUnit: this.state.hoveredUnit,
                         parentElement: this.state.abilityTooltip.parentElement,
                         facesLeft: this.state.abilityTooltip.facesLeft,
@@ -16060,7 +16082,9 @@ var Rance;
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
 
-        Rance.Options = Rance.extendObject(parsedData.options, Rance.Options);
+        if (parsedData) {
+            Rance.Options = Rance.extendObject(parsedData.options, Rance.Options);
+        }
     }
     Rance.loadOptions = loadOptions;
 
@@ -16117,7 +16141,7 @@ var Rance;
 
             this.seed = Math.random();
 
-            //this.seed = 0.2364406210836023;
+            // cool star bg seed 232.0568699.92311426176160617
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
@@ -16150,6 +16174,8 @@ var Rance;
         App.prototype.load = function (saveName) {
             var itemName = "Rance.Save." + saveName;
             var data = localStorage.getItem(itemName);
+            if (!data)
+                return;
             var parsed = JSON.parse(data);
             this.mapRenderer.preventRender = true;
 
