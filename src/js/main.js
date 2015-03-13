@@ -1299,6 +1299,10 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Battle = React.createClass({
             displayName: "Battle",
+            // set as a property of the class instead of its state
+            // as its not used for trigger updates
+            // and needs to be changed synchronously
+            tempHoveredUnit: null,
             getInitialState: function () {
                 return ({
                     abilityTooltip: {
@@ -1309,7 +1313,6 @@ var Rance;
                     potentialDelay: null,
                     hoveredAbility: null,
                     hoveredUnit: null,
-                    tempHoveredUnit: null,
                     battleSceneUnit1StartingStrength: null,
                     battleSceneUnit2StartingStrength: null,
                     battleSceneUnit1: null,
@@ -1351,9 +1354,9 @@ var Rance;
                 this.props.renderer.removeRendererView();
             },
             clearHoveredUnit: function () {
+                this.tempHoveredUnit = null;
                 this.setState({
                     hoveredUnit: null,
-                    tempHoveredUnit: null,
                     abilityTooltip: {
                         parentElement: null
                     },
@@ -1366,9 +1369,8 @@ var Rance;
             },
             handleMouseLeaveUnit: function (e) {
                 console.log(Date.now(), "leave unit");
-                this.setState({
-                    tempHoveredUnit: null
-                });
+                this.tempHoveredUnit = null;
+
                 if (!this.state.hoveredUnit || this.state.playingBattleEffect)
                     return;
 
@@ -1391,10 +1393,9 @@ var Rance;
                 }
             },
             handleMouseEnterUnit: function (unit) {
-                this.setState({
-                    tempHoveredUnit: unit
-                });
-                console.log(Date.now(), "enter unit", unit.name);
+                this.tempHoveredUnit = unit;
+
+                console.log(Date.now(), "enter unit", unit.name, this.tempHoveredUnit);
                 if (this.props.battle.ended || this.state.playingBattleEffect)
                     return;
 
@@ -1481,13 +1482,17 @@ var Rance;
                 var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
                 var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
 
+                if (!this.tempHoveredUnit) {
+                    this.tempHoveredUnit = this.state.hoveredUnit;
+                    console.log(Date.now(), "set temp in battle effect", this.tempHoveredUnit);
+                }
+
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
                     battleSceneUnit2StartingStrength: previousUnit2Strength,
                     battleSceneUnit1: side1Unit,
                     battleSceneUnit2: side2Unit,
                     playingBattleEffect: true,
-                    tempHoveredUnit: this.state.hoveredUnit,
                     hoveredUnit: abilityData.originalTarget,
                     abilityTooltip: {
                         parentElement: null
@@ -1504,6 +1509,7 @@ var Rance;
                 var afterDelay = Rance.Options.battleAnimationTiming["after"];
 
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
+                console.log(Date.now(), "bind finish effect", this.tempHoveredUnit ? this.tempHoveredUnit.id : null);
 
                 var startEffectFN = function () {
                     effectData[i].effect();
@@ -1518,17 +1524,15 @@ var Rance;
                 window.setTimeout(startEffectFN, beforeDelay);
             },
             clearBattleEffect: function () {
-                var tempHoveredUnit = this.state.tempHoveredUnit;
-
                 this.setState({
                     playingBattleEffect: false,
-                    hoveredUnit: null,
-                    tempHoveredUnit: null
+                    hoveredUnit: null
                 });
 
-                if (tempHoveredUnit) {
-                    console.log(Date.now(), "set old hovered unit", tempHoveredUnit.id);
-                    this.handleMouseEnterUnit(tempHoveredUnit);
+                if (this.tempHoveredUnit) {
+                    console.log(Date.now(), "set hovered from temp", this.tempHoveredUnit.id);
+                    this.handleMouseEnterUnit(this.tempHoveredUnit);
+                    this.tempHoveredUnit = null;
                 }
             },
             handleTurnEnd: function () {
@@ -1647,6 +1651,9 @@ var Rance;
                         to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
                 }
+
+                if (this.hoveredUnit)
+                    console.log(Date.now(), this.hoveredUnit.id);
 
                 return (React.DOM.div({
                     className: "battle-pixi-container",
@@ -2596,6 +2603,13 @@ var Rance;
                     currentDragUnit: null
                 });
             },
+            autoMakeFormation: function () {
+                var battlePrep = this.props.battlePrep;
+
+                battlePrep.playerFormation = battlePrep.makeAIFormation(battlePrep.availableUnits);
+
+                this.forceUpdate();
+            },
             handleDragStart: function (unit) {
                 this.setState({
                     currentDragUnit: unit
@@ -2647,7 +2661,9 @@ var Rance;
                         app.reactUI.battle = battle;
                         app.reactUI.switchScene("battle");
                     }.bind(this)
-                }, "Start battle")));
+                }, "Start battle"), React.DOM.button({
+                    onClick: this.autoMakeFormation
+                }, "Auto formation")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

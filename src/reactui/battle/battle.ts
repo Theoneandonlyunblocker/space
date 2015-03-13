@@ -13,6 +13,12 @@ module Rance
     export var Battle = React.createClass(
     {
       displayName: "Battle",
+
+      // set as a property of the class instead of its state
+      // as its not used for trigger updates
+      // and needs to be changed synchronously
+      tempHoveredUnit: null,
+
       getInitialState: function()
       {
         return(
@@ -27,7 +33,6 @@ module Rance
 
           hoveredAbility: null,
           hoveredUnit: null,
-          tempHoveredUnit: null,
 
           battleSceneUnit1StartingStrength: null,
           battleSceneUnit2StartingStrength: null,
@@ -78,10 +83,10 @@ module Rance
 
       clearHoveredUnit: function()
       {
+        this.tempHoveredUnit = null;
         this.setState(
         {
           hoveredUnit: null,
-          tempHoveredUnit: null,
           abilityTooltip:
           {
             parentElement: null
@@ -96,10 +101,8 @@ module Rance
       handleMouseLeaveUnit: function(e)
       {
         console.log(Date.now(), "leave unit");
-        this.setState(
-        {
-          tempHoveredUnit: null
-        });
+        this.tempHoveredUnit = null;
+
         if (!this.state.hoveredUnit || this.state.playingBattleEffect) return;
 
         var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
@@ -130,11 +133,9 @@ module Rance
       },
       handleMouseEnterUnit: function(unit)
       {
-        this.setState(
-        {
-          tempHoveredUnit: unit
-        });
-        console.log(Date.now(), "enter unit", unit.name);
+        this.tempHoveredUnit = unit;
+
+        console.log(Date.now(), "enter unit", unit.name, this.tempHoveredUnit);
         if (this.props.battle.ended || this.state.playingBattleEffect) return;
 
         var facesLeft = unit.battleStats.side === "side2";
@@ -243,6 +244,12 @@ module Rance
         var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
         var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
 
+        if (!this.tempHoveredUnit)
+        {
+          this.tempHoveredUnit = this.state.hoveredUnit;
+          console.log(Date.now(), "set temp in battle effect", this.tempHoveredUnit)
+        }
+
         this.setState(
         {
           battleSceneUnit1StartingStrength: previousUnit1Strength,
@@ -250,7 +257,6 @@ module Rance
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
-          tempHoveredUnit: this.state.hoveredUnit,
           hoveredUnit: abilityData.originalTarget,
           abilityTooltip:
           {
@@ -268,6 +274,7 @@ module Rance
         var afterDelay = Options.battleAnimationTiming["after"];
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
+        console.log(Date.now(), "bind finish effect", this.tempHoveredUnit ? this.tempHoveredUnit.id : null);
 
         var startEffectFN = function()
         {
@@ -285,19 +292,17 @@ module Rance
       },
       clearBattleEffect: function()
       {
-        var tempHoveredUnit = this.state.tempHoveredUnit;
-
         this.setState(
         {
           playingBattleEffect: false,
-          hoveredUnit: null,
-          tempHoveredUnit: null
+          hoveredUnit: null
         });
 
-        if (tempHoveredUnit)
+        if (this.tempHoveredUnit)
         {
-          console.log(Date.now(), "set old hovered unit", tempHoveredUnit.id);
-          this.handleMouseEnterUnit(tempHoveredUnit);
+          console.log(Date.now(), "set hovered from temp", this.tempHoveredUnit.id);
+          this.handleMouseEnterUnit(this.tempHoveredUnit);
+          this.tempHoveredUnit = null;
         }
       },
 
@@ -464,6 +469,7 @@ module Rance
           )
         }
 
+        if (this.hoveredUnit) console.log(Date.now(), this.hoveredUnit.id);
 
         return(
           React.DOM.div(
