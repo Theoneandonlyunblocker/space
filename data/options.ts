@@ -28,7 +28,10 @@ module Rance
       parsedData = getMatchingLocalstorageItemsByDate(baseString)[0];
     }
     
-    Options = extendObject(parsedData.options, Rance.Options);
+    if (parsedData)
+    {
+      Options = extendObject(parsedData.options, Rance.Options);
+    }
   }
   
   export module defaultOptions
