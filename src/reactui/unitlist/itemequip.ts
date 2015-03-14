@@ -78,6 +78,7 @@ module Rance
                 unit: this.state.selectedUnit,
                 onMouseUp: this.handleDrop,
 
+                isDraggable: true,
                 onDragStart: this.handleDragStart,
                 onDragEnd: this.handleDragEnd,
                 currentDragItem: this.state.currentDragItem

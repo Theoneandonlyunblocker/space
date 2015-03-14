@@ -1269,16 +1269,50 @@ progress::-webkit-progress-value { background: #080; }
 
   .prevent-user-select;
 
-  .battle-fleet
-  {
-    flex: 1 2 auto;
-  }
-
   .unit-list
   {
     .sort-icons(900px);
   }
+
+  .unit.unit-image
+  {
+    @media(max-width: 1000px)
+    {
+      display: none;
+    }
+  }
 }
+
+.battle-prep-left
+{
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+
+  .menu-unit-info-image
+  {
+    @media(max-height: 500px)
+    {
+      display: none;
+    }
+  }
+}
+
+.battle-prep-left-upper
+{
+  flex: 1;
+}
+
+.battle-prep-left-controls
+{
+  flex: 0 0 auto;
+}
+
+.battle-prep-left-lower
+{
+  flex: 0 0 auto;
+}
+
 
 .reserved
 {

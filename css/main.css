@@ -811,9 +811,6 @@ progress::-webkit-progress-value {
   -ms-user-select: none;
   user-select: none;
 }
-.battle-prep .battle-fleet {
-  flex: 1 2 auto;
-}
 .battle-prep .unit-list .sort-icon {
   font-weight: 100;
   position: absolute;
@@ -860,6 +857,30 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
+}
+@media (max-width: 1000px) {
+  .battle-prep .unit.unit-image {
+    display: none;
+  }
+}
+.battle-prep-left {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+}
+@media (max-height: 500px) {
+  .battle-prep-left .menu-unit-info-image {
+    display: none;
+  }
+}
+.battle-prep-left-upper {
+  flex: 1;
+}
+.battle-prep-left-controls {
+  flex: 0 0 auto;
+}
+.battle-prep-left-lower {
+  flex: 0 0 auto;
 }
 .reserved {
   background-color: grey;

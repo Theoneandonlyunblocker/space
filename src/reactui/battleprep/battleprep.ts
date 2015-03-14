@@ -1,3 +1,5 @@
+/// <reference path="../unitlist/menuunitinfo.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -9,7 +11,11 @@ module Rance
       {
         return(
         {
-          currentDragUnit: null
+          currentDragUnit: null,
+          hoveredUnit: null,
+          selectedUnit: null,
+
+          currentDragItem: null
         });
       },
       autoMakeFormation: function()
@@ -21,11 +27,61 @@ module Rance
 
         this.forceUpdate();
       },
+
+      handleSelectRow: function(row)
+      {
+        if (!row.data.unit) return;
+
+        this.setSelectedUnit(row.data.unit);
+      },
+
+      clearSelectedUnit: function()
+      {
+        this.setState(
+        {
+          selectedUnit: null
+        });
+      },
+
+      setSelectedUnit: function(unit: Unit)
+      {
+        if (unit === this.state.selectedUnit)
+        {
+          this.clearSelectedUnit();
+          return;
+        }
+
+        this.setState(
+        {
+          selectedUnit: unit
+        });
+      },
+
+
+      handleMouseEnterUnit: function(unit)
+      {
+        console.log(Date.now(), "hover unit", unit.id)
+        this.setState(
+        {
+          hoveredUnit: unit
+        });
+      },
+
+      handleMouseLeaveUnit: function()
+      {
+        console.log(Date.now(), "clear hover")
+        this.setState(
+        {
+          hoveredUnit: null
+        });
+      },
+
       handleDragStart: function(unit)
       {
         this.setState(
         {
-          currentDragUnit: unit
+          currentDragUnit: unit,
+          hoveredUnit: null
         });
       },
       handleDragEnd: function(dropSuccesful: boolean = false)
@@ -37,7 +93,8 @@ module Rance
 
         this.setState(
         {
-          currentDragUnit: null
+          currentDragUnit: null,
+          hoveredUnit: null
         });
       },
       handleDrop: function(position)
@@ -59,6 +116,46 @@ module Rance
 
         this.handleDragEnd(true);
       },
+
+      handleItemDragStart: function(item)
+      {
+        this.setState(
+        {
+          currentDragItem: item
+        });
+      },
+      handleItemDragEnd: function(dropSuccesful: boolean = false)
+      {
+        if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit)
+        {
+          var item = this.state.currentDragItem;
+          if (this.state.selectedUnit.items[item.template.slot] === item)
+          {
+            this.state.selectedUnit.removeItem(item);
+          }
+        }
+
+        this.setState(
+        {
+          currentDragItem: null
+        });
+      },
+      handleItemDrop: function()
+      {
+        var item = this.state.currentDragItem;
+        var unit = this.state.selectedUnit;
+        if (unit && item)
+        {
+          if (unit.items[item.template.slot])
+          {
+            unit.removeItemAtSlot(item.template.slot);
+          }
+          unit.addItem(item);
+        }
+
+        this.handleDragEnd(true);
+      },
+
       render: function()
       {
         var fleet = UIComponents.Fleet(
@@ -69,12 +166,76 @@ module Rance
 
           isDraggable: true,
           onDragStart: this.handleDragStart,
-          onDragEnd: this.handleDragEnd
+          onDragEnd: this.handleDragEnd,
+
+          handleMouseEnterUnit: this.handleMouseEnterUnit,
+          handleMouseLeaveUnit: this.handleMouseLeaveUnit
         });
+
+        // priority: hovered unit > selected unit > battle infd
+        var leftUpperElement;
+
+        if (this.state.hoveredUnit)
+        {
+
+          leftUpperElement = UIComponents.MenuUnitInfo(
+          {
+            unit: this.state.hoveredUnit
+          });
+        }
+        else if (this.state.selectedUnit)
+        {
+          var selectedUnitIsFriendly =
+            this.props.battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
+
+          leftUpperElement = UIComponents.MenuUnitInfo(
+          {
+            unit: this.state.selectedUnit,
+            onMouseUp: this.handleDrop,
+
+            isDraggable: true,
+            onDragStart: this.handleDragStart,
+            onDragEnd: this.handleDragEnd,
+            currentDragItem: this.state.currentDragItem
+          })
+        }
+        else
+        {
+          leftUpperElement = React.DOM.div(null, "battle info todo");
+        }
+
+        var leftLowerElement = fleet;
 
         return(
           React.DOM.div({className: "battle-prep"},
-            fleet,
+            React.DOM.div({className: "battle-prep-left"},
+              React.DOM.div({className: "battle-prep-left-upper"}, leftUpperElement),
+              React.DOM.div({className: "battle-prep-left-controls"},
+                React.DOM.button(
+                {
+                  className: "disabled"
+                }, "Equip"),
+                React.DOM.button(
+                {
+                  className: "disabled"
+                }, "Own || Enemy"),
+                React.DOM.button(
+                {
+                  onClick: this.autoMakeFormation
+                }, "Auto formation"),
+                React.DOM.button(
+                {
+                  className: "start-battle",
+                  onClick: function()
+                  {
+                    var battle = this.props.battlePrep.makeBattle();
+                    app.reactUI.battle = battle;
+                    app.reactUI.switchScene("battle");
+                  }.bind(this)
+                }, "Start battle")
+              ),
+              React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement)
+            ),
             UIComponents.UnitList(
             {
               units: this.props.battlePrep.availableUnits,
@@ -84,22 +245,9 @@ module Rance
 
               isDraggable: true,
               onDragStart: this.handleDragStart,
-              onDragEnd: this.handleDragEnd
-            }),
-            React.DOM.button(
-            {
-              className: "start-battle",
-              onClick: function()
-              {
-                var battle = this.props.battlePrep.makeBattle();
-                app.reactUI.battle = battle;
-                app.reactUI.switchScene("battle");
-              }.bind(this)
-            }, "Start battle"),
-            React.DOM.button(
-            {
-              onClick: this.autoMakeFormation
-            }, "Auto formation")
+              onDragEnd: this.handleDragEnd,
+              onRowChange: this.handleSelectRow
+            })
           )
         );
       }

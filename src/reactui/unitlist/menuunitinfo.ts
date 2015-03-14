@@ -25,7 +25,7 @@ module Rance
             item: unit.items[slot],
             onMouseUp: this.props.onMouseUp,
 
-            isDraggable: true,
+            isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd,
             currentDragItem: this.props.currentDragItem
