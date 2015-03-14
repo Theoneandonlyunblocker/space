@@ -14,8 +14,9 @@ module Rance
           currentDragUnit: null,
           hoveredUnit: null,
           selectedUnit: null,
+          currentDragItem: null,
 
-          currentDragItem: null
+          leftLowerElement: "playerFleet" // "playerFleet" || "enemyFleet" || "itemEquip"
         });
       },
       autoMakeFormation: function()
@@ -153,24 +154,11 @@ module Rance
           unit.addItem(item);
         }
 
-        this.handleDragEnd(true);
+        this.handleItemDragEnd(true);
       },
 
       render: function()
       {
-        var fleet = UIComponents.Fleet(
-        {
-          fleet: this.props.battlePrep.playerFormation.slice(0),
-
-          onMouseUp: this.handleDrop,
-
-          isDraggable: true,
-          onDragStart: this.handleDragStart,
-          onDragEnd: this.handleDragEnd,
-
-          handleMouseEnterUnit: this.handleMouseEnterUnit,
-          handleMouseLeaveUnit: this.handleMouseLeaveUnit
-        });
 
         // priority: hovered unit > selected unit > battle infd
         var leftUpperElement;
@@ -191,11 +179,11 @@ module Rance
           leftUpperElement = UIComponents.MenuUnitInfo(
           {
             unit: this.state.selectedUnit,
-            onMouseUp: this.handleDrop,
+            onMouseUp: this.handleItemDrop,
 
             isDraggable: true,
-            onDragStart: this.handleDragStart,
-            onDragEnd: this.handleDragEnd,
+            onDragStart: this.handleItemDragStart,
+            onDragEnd: this.handleItemDragEnd,
             currentDragItem: this.state.currentDragItem
           })
         }
@@ -204,7 +192,53 @@ module Rance
           leftUpperElement = React.DOM.div(null, "battle info todo");
         }
 
-        var leftLowerElement = fleet;
+
+        var leftLowerElement;
+        switch (this.state.leftLowerElement)
+        {
+          case "playerFleet":
+          {
+            leftLowerElement = UIComponents.Fleet(
+            {
+              fleet: this.props.battlePrep.playerFormation.slice(0),
+
+              onMouseUp: this.handleDrop,
+              onUnitClick: this.setSelectedUnit,
+
+              isDraggable: true,
+              onDragStart: this.handleDragStart,
+              onDragEnd: this.handleDragEnd,
+
+              handleMouseEnterUnit: this.handleMouseEnterUnit,
+              handleMouseLeaveUnit: this.handleMouseLeaveUnit
+            });
+            break;
+          }
+          case "enemyFleet":
+          {
+            leftLowerElement = UIComponents.Fleet(
+            {
+              fleet: this.props.battlePrep.enemyFormation,
+              isDraggable: false,
+
+              handleMouseEnterUnit: this.handleMouseEnterUnit,
+              handleMouseLeaveUnit: this.handleMouseLeaveUnit
+            });
+            break;
+          }
+          case "itemEquip":
+          {
+            leftLowerElement = UIComponents.ItemList(
+            {
+              items: this.props.battlePrep.humanPlayer.items,
+              isDraggable: true,
+              onDragStart: this.handleItemDragStart,
+              onDragEnd: this.handleItemDragEnd,
+              onRowChange: this.handleSelectRow
+            })
+            break;
+          }
+        };
 
         return(
           React.DOM.div({className: "battle-prep"},
@@ -213,19 +247,26 @@ module Rance
               React.DOM.div({className: "battle-prep-left-controls"},
                 React.DOM.button(
                 {
-                  className: "disabled"
+                  className: "battle-prep-controls-button",
+                  onClick: function(){this.setState({leftLowerElement: "itemEquip"})}.bind(this)
                 }, "Equip"),
                 React.DOM.button(
                 {
-                  className: "disabled"
-                }, "Own || Enemy"),
+                  className: "battle-prep-controls-button",
+                  onClick: function(){this.setState({leftLowerElement: "playerFleet"})}.bind(this)
+                }, "Own"),
+                React.DOM.button(
+                {
+                  className: "battle-prep-controls-button",
+                  onClick: function(){this.setState({leftLowerElement: "enemyFleet"})}.bind(this)
+                }, "Enemy"),
                 React.DOM.button(
                 {
                   onClick: this.autoMakeFormation
                 }, "Auto formation"),
                 React.DOM.button(
                 {
-                  className: "start-battle",
+                  className: "battle-prep-controls-button",
                   onClick: function()
                   {
                     var battle = this.props.battlePrep.makeBattle();
@@ -239,6 +280,7 @@ module Rance
             UIComponents.UnitList(
             {
               units: this.props.battlePrep.availableUnits,
+              selectedUnit: this.state.selectedUnit,
               reservedUnits: this.props.battlePrep.alreadyPlaced,
 
               checkTimesActed: true,

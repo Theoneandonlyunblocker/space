@@ -29,6 +29,11 @@ module Rance
         this.props.onDragEnd();
       },
 
+      handleClick: function(e)
+      {
+        this.props.onUnitClick(this.props.unit);
+      },
+
       handleMouseEnter: function(e)
       {
         if (!this.props.handleMouseEnterUnit) return;
@@ -72,6 +77,11 @@ module Rance
         {
           wrapperProps.style = this.state.dragPos;
           wrapperProps.className += " dragging";
+        }
+
+        if (this.props.onUnitClick)
+        {
+          wrapperProps.onClick = this.handleClick;
         }
 
         if (this.props.facesLeft)

@@ -101,12 +101,12 @@ module Rance
 
         if (this.props.isSelected)
         {
-          rowProps.className += " selected";
+          rowProps.className += " selected-unit";
         };
 
         if (this.props.isReserved)
         {
-          rowProps.className += " reserved";
+          rowProps.className += " reserved-unit";
         }
 
         if (this.props.noActionsLeft)

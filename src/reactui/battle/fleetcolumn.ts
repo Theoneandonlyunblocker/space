@@ -36,6 +36,7 @@ module Rance
           data.activeEffectUnits = this.props.activeEffectUnits;
 
           data.onMouseUp = this.props.onMouseUp;
+          data.onUnitClick = this.props.onUnitClick;
 
           data.isDraggable = this.props.isDraggable;
           data.onDragStart = this.props.onDragStart;

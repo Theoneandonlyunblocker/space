@@ -874,15 +874,17 @@ progress::-webkit-progress-value {
   }
 }
 .battle-prep-left-upper {
-  flex: 1;
+  flex: 1 1 auto;
 }
 .battle-prep-left-controls {
   flex: 0 0 auto;
 }
 .battle-prep-left-lower {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  max-height: 300px;
+  overflow-y: auto;
 }
-.reserved {
+.reserved-unit {
   background-color: grey;
 }
 .galaxy-map #pixi-container {
@@ -1628,9 +1630,6 @@ progress::-webkit-progress-value {
 .item-equip .unit-list tr {
   cursor: pointer;
 }
-.item-equip .unit-list .selected {
-  background-color: #868a0a;
-}
 .item-equip > * {
   overflow-y: auto;
   background-color: #0c1615;
@@ -1638,6 +1637,9 @@ progress::-webkit-progress-value {
 }
 .item-equip table {
   margin-right: 25px;
+}
+.selected-unit {
+  background-color: #868a0a;
 }
 .item-list td {
   white-space: nowrap;
@@ -1704,7 +1706,7 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
-.item-equip-left .item-list .reserved {
+.item-equip-left .item-list .reserved-item {
   background-color: #064b0a;
 }
 .item-list-unitName {
@@ -1722,6 +1724,9 @@ progress::-webkit-progress-value {
 .menu-unit-info-items-wrapper {
   display: flex;
   flex-flow: row;
+}
+.redundant-ability {
+  color: grey;
 }
 .unit-item-wrapper {
   position: relative;

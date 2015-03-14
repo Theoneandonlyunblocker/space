@@ -72,12 +72,12 @@ module Rance
 
         if (this.props.isSelected)
         {
-          rowProps.className += " selected";
+          rowProps.className += " selected-item";
         };
 
         if (this.props.isReserved)
         {
-          rowProps.className += " reserved";
+          rowProps.className += " reserved-item";
         }
 
 

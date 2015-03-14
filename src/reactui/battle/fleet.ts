@@ -31,6 +31,7 @@ module Rance
             activeEffectUnits: this.props.activeEffectUnits,
 
             onMouseUp: this.props.onMouseUp,
+            onUnitClick: this.props.onUnitClick,
 
             isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,

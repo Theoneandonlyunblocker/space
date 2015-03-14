@@ -1213,10 +1213,6 @@ progress::-webkit-progress-value { background: #080; }
   background-color: red;
 }
 
-.selected
-{
-  //background-color: red;
-}
 
 .draggable-cursor
 {
@@ -1300,7 +1296,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-prep-left-upper
 {
-  flex: 1;
+  flex: 1 1 auto;
 }
 
 .battle-prep-left-controls
@@ -1310,11 +1306,13 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-prep-left-lower
 {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 
-.reserved
+.reserved-unit
 {
   background-color: grey;
 }
@@ -1929,10 +1927,6 @@ progress::-webkit-progress-value { background: #080; }
       cursor: pointer;
     }
 
-    .selected
-    {
-      background-color: average(@bg-color, yellow);
-    }
   }
 
   >*
@@ -1946,6 +1940,10 @@ progress::-webkit-progress-value { background: #080; }
   {
     margin-right: 25px;
   }
+}
+.selected-unit
+{
+  background-color: average(@bg-color, yellow);
 }
 
 .item-list td
@@ -1971,7 +1969,7 @@ progress::-webkit-progress-value { background: #080; }
       .horizontal-border(0px, 3px);
     }
 
-    .reserved
+    .reserved-item
     {
       background-color: average(@bg-color, green);
     }
@@ -2003,6 +2001,16 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: flex;
   flex-flow: row;
+}
+
+.unit-info-ability
+{
+
+}
+
+.redundant-ability
+{
+  color: grey;
 }
 
 .unit-item-wrapper

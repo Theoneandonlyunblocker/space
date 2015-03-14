@@ -33,20 +33,39 @@ module Rance
         }
 
         var abilityElements = [];
+        var addedAbilityTypes:
+        {
+          [abilityType: string]: number;
+        } = {};
+
         var abilities = unit.getAllAbilities();
 
         for (var i = 0; i < abilities.length; i++)
         {
           var ability = abilities[i];
+          if (!addedAbilityTypes[ability.type])
+          {
+            addedAbilityTypes[ability.type] = 0;
+          }
+
+          var className = "unit-info-ability";
+
+          if (addedAbilityTypes[ability.type] >= 1)
+          {
+            className += " redundant-ability";
+          }
 
           abilityElements.push(
             React.DOM.li(
             {
-              key: ability.type
+              className: className,
+              key: ability.type + addedAbilityTypes[ability.type]
             },
               ability.displayName
             )
           );
+
+          addedAbilityTypes[ability.type]++;
         }
       
         return(

@@ -501,6 +501,9 @@ var Rance;
             onDragEnd: function (e) {
                 this.props.onDragEnd();
             },
+            handleClick: function (e) {
+                this.props.onUnitClick(this.props.unit);
+            },
             handleMouseEnter: function (e) {
                 if (!this.props.handleMouseEnterUnit)
                     return;
@@ -539,6 +542,10 @@ var Rance;
                 if (this.state.dragging) {
                     wrapperProps.style = this.state.dragPos;
                     wrapperProps.className += " dragging";
+                }
+
+                if (this.props.onUnitClick) {
+                    wrapperProps.onClick = this.handleClick;
                 }
 
                 if (this.props.facesLeft) {
@@ -794,6 +801,7 @@ var Rance;
                     data.activeEffectUnits = this.props.activeEffectUnits;
 
                     data.onMouseUp = this.props.onMouseUp;
+                    data.onUnitClick = this.props.onUnitClick;
 
                     data.isDraggable = this.props.isDraggable;
                     data.onDragStart = this.props.onDragStart;
@@ -842,6 +850,7 @@ var Rance;
                         targetsInPotentialArea: this.props.targetsInPotentialArea,
                         activeEffectUnits: this.props.activeEffectUnits,
                         onMouseUp: this.props.onMouseUp,
+                        onUnitClick: this.props.onUnitClick,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
@@ -2014,12 +2023,12 @@ var Rance;
                 }
 
                 if (this.props.isSelected) {
-                    rowProps.className += " selected";
+                    rowProps.className += " selected-unit";
                 }
                 ;
 
                 if (this.props.isReserved) {
-                    rowProps.className += " reserved";
+                    rowProps.className += " reserved-unit";
                 }
 
                 if (this.props.noActionsLeft) {
@@ -2191,12 +2200,12 @@ var Rance;
                 }
 
                 if (this.props.isSelected) {
-                    rowProps.className += " selected";
+                    rowProps.className += " selected-item";
                 }
                 ;
 
                 if (this.props.isReserved) {
-                    rowProps.className += " reserved";
+                    rowProps.className += " reserved-item";
                 }
 
                 if (this.state.dragging) {
@@ -2480,14 +2489,28 @@ var Rance;
                 }
 
                 var abilityElements = [];
+                var addedAbilityTypes = {};
+
                 var abilities = unit.getAllAbilities();
 
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
+                    if (!addedAbilityTypes[ability.type]) {
+                        addedAbilityTypes[ability.type] = 0;
+                    }
+
+                    var className = "unit-info-ability";
+
+                    if (addedAbilityTypes[ability.type] >= 1) {
+                        className += " redundant-ability";
+                    }
 
                     abilityElements.push(React.DOM.li({
-                        key: ability.type
+                        className: className,
+                        key: ability.type + addedAbilityTypes[ability.type]
                     }, ability.displayName));
+
+                    addedAbilityTypes[ability.type]++;
                 }
 
                 return (React.DOM.div({
@@ -2595,7 +2618,8 @@ var Rance;
                     currentDragUnit: null,
                     hoveredUnit: null,
                     selectedUnit: null,
-                    currentDragItem: null
+                    currentDragItem: null,
+                    leftLowerElement: "playerFleet"
                 });
             },
             autoMakeFormation: function () {
@@ -2696,19 +2720,9 @@ var Rance;
                     unit.addItem(item);
                 }
 
-                this.handleDragEnd(true);
+                this.handleItemDragEnd(true);
             },
             render: function () {
-                var fleet = Rance.UIComponents.Fleet({
-                    fleet: this.props.battlePrep.playerFormation.slice(0),
-                    onMouseUp: this.handleDrop,
-                    isDraggable: true,
-                    onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd,
-                    handleMouseEnterUnit: this.handleMouseEnterUnit,
-                    handleMouseLeaveUnit: this.handleMouseLeaveUnit
-                });
-
                 // priority: hovered unit > selected unit > battle infd
                 var leftUpperElement;
 
@@ -2721,26 +2735,72 @@ var Rance;
 
                     leftUpperElement = Rance.UIComponents.MenuUnitInfo({
                         unit: this.state.selectedUnit,
-                        onMouseUp: this.handleDrop,
+                        onMouseUp: this.handleItemDrop,
                         isDraggable: true,
-                        onDragStart: this.handleDragStart,
-                        onDragEnd: this.handleDragEnd,
+                        onDragStart: this.handleItemDragStart,
+                        onDragEnd: this.handleItemDragEnd,
                         currentDragItem: this.state.currentDragItem
                     });
                 } else {
                     leftUpperElement = React.DOM.div(null, "battle info todo");
                 }
 
-                var leftLowerElement = fleet;
+                var leftLowerElement;
+                switch (this.state.leftLowerElement) {
+                    case "playerFleet": {
+                        leftLowerElement = Rance.UIComponents.Fleet({
+                            fleet: this.props.battlePrep.playerFormation.slice(0),
+                            onMouseUp: this.handleDrop,
+                            onUnitClick: this.setSelectedUnit,
+                            isDraggable: true,
+                            onDragStart: this.handleDragStart,
+                            onDragEnd: this.handleDragEnd,
+                            handleMouseEnterUnit: this.handleMouseEnterUnit,
+                            handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                        });
+                        break;
+                    }
+                    case "enemyFleet": {
+                        leftLowerElement = Rance.UIComponents.Fleet({
+                            fleet: this.props.battlePrep.enemyFormation,
+                            isDraggable: false,
+                            handleMouseEnterUnit: this.handleMouseEnterUnit,
+                            handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                        });
+                        break;
+                    }
+                    case "itemEquip": {
+                        leftLowerElement = Rance.UIComponents.ItemList({
+                            items: this.props.battlePrep.humanPlayer.items,
+                            isDraggable: true,
+                            onDragStart: this.handleItemDragStart,
+                            onDragEnd: this.handleItemDragEnd,
+                            onRowChange: this.handleSelectRow
+                        });
+                        break;
+                    }
+                }
+                ;
 
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper" }, leftUpperElement), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
-                    className: "disabled"
+                    className: "battle-prep-controls-button",
+                    onClick: function () {
+                        this.setState({ leftLowerElement: "itemEquip" });
+                    }.bind(this)
                 }, "Equip"), React.DOM.button({
-                    className: "disabled"
-                }, "Own || Enemy"), React.DOM.button({
+                    className: "battle-prep-controls-button",
+                    onClick: function () {
+                        this.setState({ leftLowerElement: "playerFleet" });
+                    }.bind(this)
+                }, "Own"), React.DOM.button({
+                    className: "battle-prep-controls-button",
+                    onClick: function () {
+                        this.setState({ leftLowerElement: "enemyFleet" });
+                    }.bind(this)
+                }, "Enemy"), React.DOM.button({
                     onClick: this.autoMakeFormation
                 }, "Auto formation"), React.DOM.button({
-                    className: "start-battle",
+                    className: "battle-prep-controls-button",
                     onClick: function () {
                         var battle = this.props.battlePrep.makeBattle();
                         app.reactUI.battle = battle;
@@ -2748,6 +2808,7 @@ var Rance;
                     }.bind(this)
                 }, "Start battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), Rance.UIComponents.UnitList({
                     units: this.props.battlePrep.availableUnits,
+                    selectedUnit: this.state.selectedUnit,
                     reservedUnits: this.props.battlePrep.alreadyPlaced,
                     checkTimesActed: true,
                     isDraggable: true,
