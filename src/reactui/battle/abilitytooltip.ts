@@ -69,6 +69,11 @@ module Rance
           data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
           data.onMouseLeave = this.props.handleMouseLeaveAbility;
 
+          if (ability.description)
+          {
+            data.title = ability.description;
+          }
+
           abilityElements.push(
             React.DOM.div(data,
               ability.displayName

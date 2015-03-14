@@ -8,6 +8,7 @@ module Rance
     {
       type: string;
       displayName: string;
+      description?: string;
       moveDelay: number;
       preparation?:
       {
@@ -46,6 +47,7 @@ module Rance
       {
         type: "rangedAttack",
         displayName: "Ranged Attack",
+        description: "Standard ranged attack",
         moveDelay: 100,
         actionsUse: 1,
         mainEffect: Effects.rangedAttack
@@ -54,6 +56,7 @@ module Rance
       {
         type: "closeAttack",
         displayName: "Close Attack",
+        description: "Close range attack that hits adjacent targets in same row as well",
         moveDelay: 90,
         actionsUse: 2,
         mainEffect: Effects.closeAttack
@@ -62,6 +65,7 @@ module Rance
       {
         type: "wholeRowAttack",
         displayName: "Row Attack",
+        description: "Attack entire row of units",
         moveDelay: 300,
         actionsUse: 1,
         mainEffect: Effects.wholeRowAttack
@@ -71,6 +75,7 @@ module Rance
       {
         type: "bombAttack",
         displayName: "Bomb Attack",
+        description: "Ranged attack that hits all adjacent enemy units",
         moveDelay: 120,
         actionsUse: 1,
         mainEffect: Effects.bombAttack
@@ -79,6 +84,7 @@ module Rance
       {
         type: "guardColumn",
         displayName: "Guard Column",
+        description: "Protect allies in the same row and boost defence up to 2x",
         moveDelay: 100,
         actionsUse: 1,
         mainEffect: Effects.guardColumn
@@ -87,6 +93,7 @@ module Rance
       {
         type: "boardingHook",
         displayName: "Boarding Hook",
+        description: "0.8x damage but increases target capture chance",
         moveDelay: 100,
         actionsUse: 1,
         mainEffect: Effects.boardingHook
