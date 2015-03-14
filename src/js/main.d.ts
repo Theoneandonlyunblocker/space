@@ -418,6 +418,7 @@ declare module Rance {
         interface IAbilityTemplate {
             type: string;
             displayName: string;
+            description?: string;
             moveDelay: number;
             preparation?: {
                 turnsToPrep: number;
@@ -1610,6 +1611,8 @@ declare module Rance {
         public makeAIFormation(units: Rance.Unit[]): Rance.Unit[][];
         public getUnitPosition(unit: Rance.Unit): number[];
         public getUnitAtPosition(position: number[]): Rance.Unit;
+        public clearPlayerFormation(): void;
+        public setupPlayerFormation(formation: Rance.Unit[][]): void;
         public setUnit(unit: Rance.Unit, position: number[]): void;
         public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;

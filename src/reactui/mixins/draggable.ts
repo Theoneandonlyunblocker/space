@@ -209,17 +209,6 @@ module Rance
         if (this.onDragEnd)
         {
           var endSuccesful = this.onDragEnd(e);
-
-          if (!endSuccesful)
-          {
-            this.DOMNode.style.left = this.state.originPosition.x+"px";
-            this.DOMNode.style.top = this.state.originPosition.y+"px";
-          }
-          else
-          {
-            this.DOMNode.style.left = this.props.position.left;
-            this.DOMNode.style.top = this.props.position.top;
-          }
         }
       },
       addEventListeners: function()

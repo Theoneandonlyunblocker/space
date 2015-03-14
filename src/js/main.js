@@ -25,12 +25,10 @@ var Rance;
                 });
             },
             componentWillReceiveProps: function (newProps) {
-                if (newProps.currentHealth !== this.props.currentHealth) {
-                    if (this.props.animateStrength) {
-                        this.animateDisplayedStrength(newProps.currentHealth, Rance.Options.battleAnimationTiming.effectDuration);
-                    } else {
-                        this.updateDisplayStrength(newProps.currentHealth);
-                    }
+                if (newProps.animateStrength && newProps.currentHealth !== this.props.currentHealth && (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
+                    this.animateDisplayedStrength(newProps.currentHealth, Rance.Options.battleAnimationTiming.effectDuration);
+                } else {
+                    this.updateDisplayStrength(newProps.currentHealth);
                 }
             },
             componentWillUnmount: function () {
@@ -442,14 +440,6 @@ var Rance;
 
                 if (this.onDragEnd) {
                     var endSuccesful = this.onDragEnd(e);
-
-                    if (!endSuccesful) {
-                        this.DOMNode.style.left = this.state.originPosition.x + "px";
-                        this.DOMNode.style.top = this.state.originPosition.y + "px";
-                    } else {
-                        this.DOMNode.style.left = this.props.position.left;
-                        this.DOMNode.style.top = this.props.position.top;
-                    }
                 }
             },
             addEventListeners: function () {
@@ -1057,6 +1047,10 @@ var Rance;
 
                     data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
                     data.onMouseLeave = this.props.handleMouseLeaveAbility;
+
+                    if (ability.description) {
+                        data.title = ability.description;
+                    }
 
                     abilityElements.push(React.DOM.div(data, ability.displayName));
                 }
@@ -2493,6 +2487,10 @@ var Rance;
 
                 var abilities = unit.getAllAbilities();
 
+                abilities.sort(function (a, b) {
+                    return a.displayName.toLowerCase() > b.displayName.toLowerCase();
+                });
+
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
                     if (!addedAbilityTypes[ability.type]) {
@@ -2507,8 +2505,9 @@ var Rance;
 
                     abilityElements.push(React.DOM.li({
                         className: className,
+                        title: ability.description,
                         key: ability.type + addedAbilityTypes[ability.type]
-                    }, ability.displayName));
+                    }, "[" + ability.displayName + "]"));
 
                     addedAbilityTypes[ability.type]++;
                 }
@@ -2625,7 +2624,10 @@ var Rance;
             autoMakeFormation: function () {
                 var battlePrep = this.props.battlePrep;
 
+                battlePrep.clearPlayerFormation();
                 battlePrep.playerFormation = battlePrep.makeAIFormation(battlePrep.availableUnits);
+
+                battlePrep.setupPlayerFormation(battlePrep.playerFormation);
 
                 this.forceUpdate();
             },
@@ -2670,7 +2672,9 @@ var Rance;
             },
             handleDragEnd: function (dropSuccesful) {
                 if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                console.log(Date.now(), "handleDragEnd", dropSuccesful, this.state.currentDragUnit);
                 if (!dropSuccesful && this.state.currentDragUnit) {
+                    console.log(Date.now(), "removeUnit", this.state.currentDragUnit);
                     this.props.battlePrep.removeUnit(this.state.currentDragUnit);
                 }
 
@@ -2678,8 +2682,11 @@ var Rance;
                     currentDragUnit: null,
                     hoveredUnit: null
                 });
+
+                return dropSuccesful;
             },
             handleDrop: function (position) {
+                console.log(Date.now(), "handleDrop");
                 var battlePrep = this.props.battlePrep;
                 if (this.state.currentDragUnit) {
                     var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
@@ -2696,6 +2703,18 @@ var Rance;
                 this.setState({
                     currentDragItem: item
                 });
+            },
+            setLeftLowerElement: function (newElement) {
+                var oldElement = this.state.leftLowerElement;
+                var newState = {
+                    leftLowerElement: newElement
+                };
+
+                if (oldElement === "enemyFleet" || newElement === "enemyFleet") {
+                    newState.selectedUnit = null;
+                }
+
+                this.setState(newState);
             },
             handleItemDragEnd: function (dropSuccesful) {
                 if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
@@ -2726,9 +2745,11 @@ var Rance;
                 // priority: hovered unit > selected unit > battle infd
                 var leftUpperElement;
 
-                if (this.state.hoveredUnit) {
+                var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
+
+                if (hoveredUnit) {
                     leftUpperElement = Rance.UIComponents.MenuUnitInfo({
-                        unit: this.state.hoveredUnit
+                        unit: hoveredUnit
                     });
                 } else if (this.state.selectedUnit) {
                     var selectedUnitIsFriendly = this.props.battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
@@ -2736,7 +2757,7 @@ var Rance;
                     leftUpperElement = Rance.UIComponents.MenuUnitInfo({
                         unit: this.state.selectedUnit,
                         onMouseUp: this.handleItemDrop,
-                        isDraggable: true,
+                        isDraggable: selectedUnitIsFriendly,
                         onDragStart: this.handleItemDragStart,
                         onDragEnd: this.handleItemDragEnd,
                         currentDragItem: this.state.currentDragItem
@@ -2763,6 +2784,7 @@ var Rance;
                     case "enemyFleet": {
                         leftLowerElement = Rance.UIComponents.Fleet({
                             fleet: this.props.battlePrep.enemyFormation,
+                            onUnitClick: this.setSelectedUnit,
                             isDraggable: false,
                             handleMouseEnterUnit: this.handleMouseEnterUnit,
                             handleMouseLeaveUnit: this.handleMouseLeaveUnit
@@ -2784,19 +2806,13 @@ var Rance;
 
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper" }, leftUpperElement), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: function () {
-                        this.setState({ leftLowerElement: "itemEquip" });
-                    }.bind(this)
+                    onClick: this.setLeftLowerElement.bind(this, "itemEquip")
                 }, "Equip"), React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: function () {
-                        this.setState({ leftLowerElement: "playerFleet" });
-                    }.bind(this)
+                    onClick: this.setLeftLowerElement.bind(this, "playerFleet")
                 }, "Own"), React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: function () {
-                        this.setState({ leftLowerElement: "enemyFleet" });
-                    }.bind(this)
+                    onClick: this.setLeftLowerElement.bind(this, "enemyFleet")
                 }, "Enemy"), React.DOM.button({
                     onClick: this.autoMakeFormation
                 }, "Auto formation"), React.DOM.button({
@@ -2811,7 +2827,7 @@ var Rance;
                     selectedUnit: this.state.selectedUnit,
                     reservedUnits: this.props.battlePrep.alreadyPlaced,
                     checkTimesActed: true,
-                    isDraggable: true,
+                    isDraggable: this.state.leftLowerElement === "playerFleet",
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd,
                     onRowChange: this.handleSelectRow
@@ -5157,6 +5173,7 @@ var Rance;
             Abilities.rangedAttack = {
                 type: "rangedAttack",
                 displayName: "Ranged Attack",
+                description: "Standard ranged attack",
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.rangedAttack
@@ -5164,6 +5181,7 @@ var Rance;
             Abilities.closeAttack = {
                 type: "closeAttack",
                 displayName: "Close Attack",
+                description: "Close range attack that hits adjacent targets in same row as well",
                 moveDelay: 90,
                 actionsUse: 2,
                 mainEffect: Rance.Templates.Effects.closeAttack
@@ -5171,6 +5189,7 @@ var Rance;
             Abilities.wholeRowAttack = {
                 type: "wholeRowAttack",
                 displayName: "Row Attack",
+                description: "Attack entire row of units",
                 moveDelay: 300,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.wholeRowAttack
@@ -5179,6 +5198,7 @@ var Rance;
             Abilities.bombAttack = {
                 type: "bombAttack",
                 displayName: "Bomb Attack",
+                description: "Ranged attack that hits all adjacent enemy units",
                 moveDelay: 120,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.bombAttack
@@ -5186,6 +5206,7 @@ var Rance;
             Abilities.guardColumn = {
                 type: "guardColumn",
                 displayName: "Guard Column",
+                description: "Protect allies in the same row and boost defence up to 2x",
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.guardColumn
@@ -5193,6 +5214,7 @@ var Rance;
             Abilities.boardingHook = {
                 type: "boardingHook",
                 displayName: "Boarding Hook",
+                description: "0.8x damage but increases target capture chance",
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: Rance.Templates.Effects.boardingHook
@@ -10851,7 +10873,6 @@ var Rance;
         };
 
         BattlePrep.prototype.makeAIFormation = function (units) {
-            // todo
             var MAX_UNITS_PER_SIDE = 6;
             var MAX_UNITS_PER_ROW = 3;
 
@@ -10973,6 +10994,21 @@ var Rance;
         };
         BattlePrep.prototype.getUnitAtPosition = function (position) {
             return this.playerFormation[position[0]][position[1]];
+        };
+        BattlePrep.prototype.clearPlayerFormation = function () {
+            this.alreadyPlaced = {};
+            this.playerFormation = this.makeEmptyFormation();
+        };
+
+        // called after player formation is created automatically
+        BattlePrep.prototype.setupPlayerFormation = function (formation) {
+            for (var i = 0; i < formation.length; i++) {
+                for (var j = 0; j < formation[i].length; j++) {
+                    if (formation[i][j]) {
+                        this.setUnit(formation[i][j], [i, j]);
+                    }
+                }
+            }
         };
         BattlePrep.prototype.setUnit = function (unit, position) {
             this.removeUnit(unit);

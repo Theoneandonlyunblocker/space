@@ -40,6 +40,11 @@ module Rance
 
         var abilities = unit.getAllAbilities();
 
+        abilities.sort(function(a, b)
+        {
+          return a.displayName.toLowerCase() > b.displayName.toLowerCase();
+        });
+
         for (var i = 0; i < abilities.length; i++)
         {
           var ability = abilities[i];
@@ -59,9 +64,10 @@ module Rance
             React.DOM.li(
             {
               className: className,
+              title: ability.description,
               key: ability.type + addedAbilityTypes[ability.type]
             },
-              ability.displayName
+              "[" + ability.displayName + "]"
             )
           );
 

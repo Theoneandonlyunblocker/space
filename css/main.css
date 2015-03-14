@@ -7,9 +7,6 @@ body {
   margin: 0;
   border: 0;
 }
-table {
-  border-collapse: separate;
-}
 ul {
   padding: 0;
   margin: 0;
@@ -765,8 +762,12 @@ progress::-webkit-progress-value {
 .unit-list .raised-stat {
   color: limegreen;
 }
+.unit-list-item,
+.item-list-item {
+  background: linear-gradient(to bottom, #0d1c25, #0c1615);
+}
 .no-actions-left {
-  background-color: red;
+  background: red;
 }
 .draggable-cursor {
   cursor: move;
@@ -803,6 +804,8 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: row;
   height: 100%;
+  color: #eeeeec;
+  background-color: #0d2335;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -810,6 +813,9 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.battle-prep > * {
+  background-color: #0c1615;
 }
 .battle-prep .unit-list .sort-icon {
   font-weight: 100;
@@ -867,6 +873,7 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: column;
   flex: 1 1 auto;
+  margin-right: 5px;
 }
 @media (max-height: 500px) {
   .battle-prep-left .menu-unit-info-image {
@@ -885,7 +892,7 @@ progress::-webkit-progress-value {
   overflow-y: auto;
 }
 .reserved-unit {
-  background-color: grey;
+  background: #464b4a;
 }
 .galaxy-map #pixi-container {
   flex: 1;
@@ -1639,10 +1646,13 @@ progress::-webkit-progress-value {
   margin-right: 25px;
 }
 .selected-unit {
-  background-color: #868a0a;
+  background: #868a0a;
 }
 .item-list td {
   white-space: nowrap;
+}
+.reserved-item {
+  background: #064b0a;
 }
 .item-equip-left {
   border: 1px solid #c4e5fb;
@@ -1705,9 +1715,6 @@ progress::-webkit-progress-value {
   border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
-}
-.item-equip-left .item-list .reserved-item {
-  background-color: #064b0a;
 }
 .item-list-unitName {
   overflow: hidden;

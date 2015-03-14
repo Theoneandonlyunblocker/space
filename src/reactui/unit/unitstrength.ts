@@ -17,17 +17,17 @@ module Rance
       },
       componentWillReceiveProps: function(newProps: any)
       {
-        if (newProps.currentHealth !== this.props.currentHealth)
+        if (newProps.animateStrength &&
+          newProps.currentHealth !== this.props.currentHealth &&
+          (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)
+          )
         {
-          if (this.props.animateStrength)
-          {
-            this.animateDisplayedStrength(
-              newProps.currentHealth, Options.battleAnimationTiming.effectDuration);
-          }
-          else
-          {
-            this.updateDisplayStrength(newProps.currentHealth);
-          }
+          this.animateDisplayedStrength(
+            newProps.currentHealth, Options.battleAnimationTiming.effectDuration);
+        }
+        else
+        {
+          this.updateDisplayStrength(newProps.currentHealth);
         }
       },
       componentWillUnmount: function()

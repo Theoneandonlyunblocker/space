@@ -92,7 +92,6 @@ module Rance
 
     makeAIFormation(units: Unit[]): Unit[][]
     {
-      // todo
       var MAX_UNITS_PER_SIDE = 6;
       var MAX_UNITS_PER_ROW = 3;
 
@@ -248,6 +247,25 @@ module Rance
     getUnitAtPosition(position: number[]): Unit
     {
       return this.playerFormation[position[0]][position[1]]
+    }
+    clearPlayerFormation()
+    {
+      this.alreadyPlaced = {};
+      this.playerFormation = this.makeEmptyFormation();
+    }
+    // called after player formation is created automatically
+    setupPlayerFormation(formation: Unit[][])
+    {
+      for (var i = 0; i < formation.length; i++)
+      {
+        for (var j = 0; j < formation[i].length; j++)
+        {
+          if (formation[i][j])
+          {
+            this.setUnit(formation[i][j], [i, j]);
+          }
+        }
+      }
     }
     setUnit(unit: Unit, position: number[]): void
     {

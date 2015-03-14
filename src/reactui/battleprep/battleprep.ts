@@ -23,8 +23,11 @@ module Rance
       {
         var battlePrep = this.props.battlePrep;
 
+        battlePrep.clearPlayerFormation();
         battlePrep.playerFormation = battlePrep.makeAIFormation(
           battlePrep.availableUnits);
+
+        battlePrep.setupPlayerFormation(battlePrep.playerFormation);
 
         this.forceUpdate();
       },
@@ -87,8 +90,10 @@ module Rance
       },
       handleDragEnd: function(dropSuccesful: boolean = false)
       {
+        console.log(Date.now(), "handleDragEnd", dropSuccesful, this.state.currentDragUnit);
         if (!dropSuccesful && this.state.currentDragUnit)
         {
+          console.log(Date.now(), "removeUnit", this.state.currentDragUnit);
           this.props.battlePrep.removeUnit(this.state.currentDragUnit);
         }
 
@@ -97,9 +102,12 @@ module Rance
           currentDragUnit: null,
           hoveredUnit: null
         });
+
+        return dropSuccesful;
       },
       handleDrop: function(position)
       {
+        console.log(Date.now(), "handleDrop")
         var battlePrep = this.props.battlePrep;
         if (this.state.currentDragUnit)
         {
@@ -124,6 +132,21 @@ module Rance
         {
           currentDragItem: item
         });
+      },
+      setLeftLowerElement: function(newElement: string)
+      {
+        var oldElement = this.state.leftLowerElement;
+        var newState: any =
+        {
+          leftLowerElement: newElement
+        }
+
+        if (oldElement === "enemyFleet" || newElement === "enemyFleet")
+        {
+          newState.selectedUnit = null
+        }
+
+        this.setState(newState);
       },
       handleItemDragEnd: function(dropSuccesful: boolean = false)
       {
@@ -163,12 +186,13 @@ module Rance
         // priority: hovered unit > selected unit > battle infd
         var leftUpperElement;
 
-        if (this.state.hoveredUnit)
-        {
+        var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
 
+        if (hoveredUnit)
+        {
           leftUpperElement = UIComponents.MenuUnitInfo(
           {
-            unit: this.state.hoveredUnit
+            unit: hoveredUnit
           });
         }
         else if (this.state.selectedUnit)
@@ -181,7 +205,7 @@ module Rance
             unit: this.state.selectedUnit,
             onMouseUp: this.handleItemDrop,
 
-            isDraggable: true,
+            isDraggable: selectedUnitIsFriendly,
             onDragStart: this.handleItemDragStart,
             onDragEnd: this.handleItemDragEnd,
             currentDragItem: this.state.currentDragItem
@@ -219,6 +243,8 @@ module Rance
             leftLowerElement = UIComponents.Fleet(
             {
               fleet: this.props.battlePrep.enemyFormation,
+
+              onUnitClick: this.setSelectedUnit,
               isDraggable: false,
 
               handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -248,17 +274,17 @@ module Rance
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: function(){this.setState({leftLowerElement: "itemEquip"})}.bind(this)
+                  onClick: this.setLeftLowerElement.bind(this, "itemEquip")
                 }, "Equip"),
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: function(){this.setState({leftLowerElement: "playerFleet"})}.bind(this)
+                  onClick: this.setLeftLowerElement.bind(this, "playerFleet")
                 }, "Own"),
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: function(){this.setState({leftLowerElement: "enemyFleet"})}.bind(this)
+                  onClick: this.setLeftLowerElement.bind(this, "enemyFleet")
                 }, "Enemy"),
                 React.DOM.button(
                 {
@@ -285,7 +311,7 @@ module Rance
 
               checkTimesActed: true,
 
-              isDraggable: true,
+              isDraggable: this.state.leftLowerElement === "playerFleet",
               onDragStart: this.handleDragStart,
               onDragEnd: this.handleDragEnd,
               onRowChange: this.handleSelectRow

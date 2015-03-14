@@ -10,7 +10,7 @@ body {
 
 table
 {
-  border-collapse: separate;
+  //border-collapse: separate;
 }
 
 ul
@@ -1208,9 +1208,18 @@ progress::-webkit-progress-value { background: #080; }
   }
 }
 
+.unit-list-item, .item-list-item
+{
+  background: linear-gradient(
+    to bottom,
+    average(@bg-color2, @bg-color),
+    @bg-color
+  );
+}
+
 .no-actions-left
 {
-  background-color: red;
+  background: red;
 }
 
 
@@ -1263,6 +1272,13 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: row;
   height: 100%;
 
+  color: @text-color;
+  background-color: @bg-color2;
+  >*
+  {
+    background-color: @bg-color;
+  }
+
   .prevent-user-select;
 
   .unit-list
@@ -1284,6 +1300,7 @@ progress::-webkit-progress-value { background: #080; }
   display: flex;
   flex-flow: column;
   flex: 1 1 auto;
+  margin-right: 5px;
 
   .menu-unit-info-image
   {
@@ -1314,7 +1331,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .reserved-unit
 {
-  background-color: grey;
+  background: average(@bg-color, grey);
 }
 
 .galaxy-map #pixi-container
@@ -1906,8 +1923,6 @@ progress::-webkit-progress-value { background: #080; }
   height: 100%;
   
   color: @text-color;
-  
-
 
   .prevent-user-select;
 
@@ -1943,12 +1958,17 @@ progress::-webkit-progress-value { background: #080; }
 }
 .selected-unit
 {
-  background-color: average(@bg-color, yellow);
+  background: average(@bg-color, yellow);
 }
 
 .item-list td
 {
   white-space: nowrap;
+}
+
+.reserved-item
+{
+  background: average(@bg-color, green);
 }
 
 .item-equip-left
@@ -1967,11 +1987,6 @@ progress::-webkit-progress-value { background: #080; }
     th
     {
       .horizontal-border(0px, 3px);
-    }
-
-    .reserved-item
-    {
-      background-color: average(@bg-color, green);
     }
   }
 }
