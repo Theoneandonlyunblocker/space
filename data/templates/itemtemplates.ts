@@ -8,6 +8,7 @@ module Rance
     {
       type: string;
       displayName: string;
+      description?: string;
       icon: string;
 
       techLevel: number;

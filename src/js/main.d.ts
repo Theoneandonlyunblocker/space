@@ -647,6 +647,7 @@ declare module Rance {
         interface IItemTemplate {
             type: string;
             displayName: string;
+            description?: string;
             icon: string;
             techLevel: number;
             slot: string;

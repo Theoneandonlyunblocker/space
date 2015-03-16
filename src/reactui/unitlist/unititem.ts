@@ -40,7 +40,8 @@ module Rance
 
         var divProps: any =
         {
-          className: "unit-item"
+          className: "unit-item",
+          title: item.template.displayName
         };
         
         if (this.props.isDraggable)

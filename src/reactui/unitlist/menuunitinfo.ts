@@ -81,6 +81,10 @@ module Rance
           },
             React.DOM.div(
             {
+              className: "menu-unit-info-name"
+            }, unit.name),
+            React.DOM.div(
+            {
               className: "menu-unit-info-image unit-image" // UNIT IMAGE TODO
             },
               null

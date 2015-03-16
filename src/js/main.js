@@ -2384,7 +2384,8 @@ var Rance;
                 var item = this.props.item;
 
                 var divProps = {
-                    className: "unit-item"
+                    className: "unit-item",
+                    title: item.template.displayName
                 };
 
                 if (this.props.isDraggable) {
@@ -2515,6 +2516,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "menu-unit-info"
                 }, React.DOM.div({
+                    className: "menu-unit-info-name"
+                }, unit.name), React.DOM.div({
                     className: "menu-unit-info-image unit-image"
                 }, null), React.DOM.ul({
                     className: "menu-unit-info-abilities"
