@@ -174,9 +174,9 @@ ul
 .fancy-table-style(@padding, @min-width)
 {
   position: relative;
-  th
+  .fixed-table-header-background
   {
-    .horizontal-border(0, 3px);
+    .horizontal-border(0px, 3px);
   }
 
   tbody :first-child::after
@@ -213,10 +213,11 @@ ul
 .hover-only-fancy-table-style(@padding, @min-width)
 {
   position: relative;
-  th
+  .fixed-table-header-background
   {
-    .horizontal-border(0, 3px);
+    .horizontal-border(0px, 3px);
   }
+
 
   tbody :first-child::after
   {
@@ -1183,7 +1184,7 @@ progress::-webkit-progress-value { background: #080; }
 .fixed-table-container
 {
   position: relative;
-  height: 25em;
+  // height is set dynamically in react component to equal parent height
   width: 100%;
   padding-top: 1.5em;
 }
@@ -1389,11 +1390,6 @@ progress::-webkit-progress-value { background: #080; }
 {
   flex: 1 1 auto;
   max-height: 300px;
-
-  .fixed-table-container
-  {
-    height: 300px;
-  }
 }
 
 
@@ -2046,12 +2042,21 @@ progress::-webkit-progress-value { background: #080; }
   {
     display: flex;
     flex: 3;
+    max-height: 12em;
 
     .sort-icons(1200px);
 
     .fixed-table-header-background
     {
       .horizontal-border(0px, 3px);
+    }
+  }
+
+  .menu-unit-info-image
+  {
+    @media(max-height: 600px)
+    {
+      display: none;
     }
   }
 }
@@ -2148,9 +2153,9 @@ progress::-webkit-progress-value { background: #080; }
 
   .sort-icons(400px);
 
-  th
+  .fixed-table-header-background
   {
-    .horizontal-border(0, 3px);
+    .horizontal-border(0px, 3px);
   }
 
   tbody :first-child::after

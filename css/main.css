@@ -750,7 +750,6 @@ progress::-webkit-progress-value {
 }
 .fixed-table-container {
   position: relative;
-  height: 25em;
   width: 100%;
   padding-top: 1.5em;
 }
@@ -940,9 +939,6 @@ progress::-webkit-progress-value {
 .battle-prep-left-lower {
   flex: 1 1 auto;
   max-height: 300px;
-}
-.battle-prep-left-lower .fixed-table-container {
-  height: 300px;
 }
 .reserved-unit {
   background: #464b4a;
@@ -1547,10 +1543,10 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
-.buildable-item-list th {
+.buildable-item-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 0;
+  border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -1709,6 +1705,7 @@ progress::-webkit-progress-value {
 .item-equip-left .item-list {
   display: flex;
   flex: 3;
+  max-height: 12em;
 }
 .item-equip-left .item-list .sort-icon {
   font-weight: 100;
@@ -1762,6 +1759,11 @@ progress::-webkit-progress-value {
   border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
+}
+@media (max-height: 600px) {
+  .item-equip-left .menu-unit-info-image {
+    display: none;
+  }
 }
 .item-list-unitName {
   overflow: hidden;
@@ -1866,10 +1868,10 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
-.economy-summary-list th {
+.economy-summary-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 0;
+  border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -1993,10 +1995,10 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
 }
-.save-list th {
+.save-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 0;
+  border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
@@ -2170,10 +2172,10 @@ progress::-webkit-progress-value {
   -ms-user-select: none;
   user-select: none;
 }
-.buy-items th {
+.buy-items .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
-  border-top-width: 0;
+  border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
