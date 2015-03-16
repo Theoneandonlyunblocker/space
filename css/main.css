@@ -739,8 +739,6 @@ progress::-webkit-progress-value {
 }
 .react-list {
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 .react-list th {
   padding-left: 2px;
@@ -1100,13 +1098,13 @@ progress::-webkit-progress-value {
   background-color: #0d2335;
   max-width: 95%;
   max-height: 90%;
+  padding: 25px;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
 }
 .light-box-content {
   position: relative;
-  margin: 25px;
   background-color: #0c1615;
   color: #eeeeec;
 }
@@ -1624,7 +1622,6 @@ progress::-webkit-progress-value {
 }
 .item-equip .unit-list {
   max-height: 25em;
-  border: 1px solid #c4e5fb;
 }
 .item-equip .unit-list .sort-icon {
   font-weight: 100;
@@ -1672,6 +1669,9 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
+.item-equip .unit-list .fixed-table-container {
+  border: 1px solid #c4e5fb;
+}
 .item-equip .unit-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
@@ -1706,6 +1706,11 @@ progress::-webkit-progress-value {
   display: flex;
   flex: 3;
   max-height: 12em;
+}
+@media (max-height: 600px) {
+  .item-equip-left .item-list {
+    max-height: calc(12em + 74px);
+  }
 }
 .item-equip-left .item-list .sort-icon {
   font-weight: 100;

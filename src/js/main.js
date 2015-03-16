@@ -1733,8 +1733,7 @@ var Rance;
                     columns: this.props.initialColumns,
                     selected: initialSelected,
                     selectedColumn: initialColumn,
-                    sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn),
-                    desiredHeight: null
+                    sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
                 });
             },
             componentDidMount: function () {
@@ -1769,20 +1768,28 @@ var Rance;
             },
             setDesiredHeight: function () {
                 var ownNode = this.getDOMNode();
+                var innerNode = this.refs.inner.getDOMNode();
+
+                ownNode.style.height = "auto";
+                innerNode.style.height = "auto";
 
                 var parentHeight = ownNode.parentNode.getBoundingClientRect().height;
-                var ownHeight = ownNode.getBoundingClientRect().height;
+                var ownRect = ownNode.getBoundingClientRect();
+                var ownHeight = ownRect.height;
 
                 var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
                 var extraHeight = ownHeight - strippedOwnHeight;
 
                 var desiredHeight = parentHeight - extraHeight;
 
-                console.log("set desired height", ownNode.parentNode, parentHeight, desiredHeight);
+                var maxHeight = window.innerHeight - ownRect.top - extraHeight;
 
-                this.setState({
-                    desiredHeight: desiredHeight
-                });
+                desiredHeight = Math.min(desiredHeight, maxHeight);
+
+                ownNode.style.height = "" + desiredHeight + "px";
+                innerNode.style.height = "" + desiredHeight + "px";
+
+                console.log(ownNode.parentNode, parentHeight);
             },
             makeInitialSortingOrder: function (columns, initialColumn) {
                 var initialSortOrder = this.props.initialSortOrder;
@@ -1959,9 +1966,8 @@ var Rance;
                 });
 
                 return (React.DOM.div({
-                    className: "fixed-table-container",
-                    style: this.state.desiredHeight ? { height: this.state.desiredHeight } : null
-                }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({ className: "fixed-table-container-inner" }, React.DOM.table({
+                    className: "fixed-table-container"
+                }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({ className: "fixed-table-container-inner", ref: "inner" }, React.DOM.table({
                     tabIndex: 1,
                     className: "react-list"
                 }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));

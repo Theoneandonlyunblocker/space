@@ -1169,8 +1169,6 @@ progress::-webkit-progress-value { background: #080; }
 .react-list
 {
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
   th
   {
     padding-left: 2px;
@@ -1570,6 +1568,7 @@ progress::-webkit-progress-value { background: #080; }
   background-color: @bg-color2;
   max-width: 95%;
   max-height: 90%;
+  padding: 25px;
 
   .full-border(5px);
 }
@@ -1577,7 +1576,6 @@ progress::-webkit-progress-value { background: #080; }
 .light-box-content
 {
   position: relative;
-  margin: 25px;
 
   background-color: @bg-color;
   color: @text-color;
@@ -1991,8 +1989,13 @@ progress::-webkit-progress-value { background: #080; }
   .unit-list
   {
     max-height: 25em;
-    border: 1px solid @ui-border-color1;
+    
     .sort-icons(1200px);
+
+    .fixed-table-container
+    {
+      border: 1px solid @ui-border-color1;
+    }
 
     .fixed-table-header-background
     {
@@ -2043,6 +2046,10 @@ progress::-webkit-progress-value { background: #080; }
     display: flex;
     flex: 3;
     max-height: 12em;
+    @media(max-height: 600px)
+    {
+      max-height: ~"calc(12em + 74px)";
+    }
 
     .sort-icons(1200px);
 
