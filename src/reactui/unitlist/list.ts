@@ -229,7 +229,7 @@ module Rance
 
           var sortStatus = null;
 
-          if (!column.notSortable) sortStatus = "sortable";
+          if (!column.notSortable) sortStatus = " sortable";
 
           if (self.state.selectedColumn.key === column.key)
           {
@@ -240,12 +240,23 @@ module Rance
           headerLabels.push(
             React.DOM.th(
               {
-                className: sortStatus,
-                title: column.title || colProps.title || null,
-                onMouseDown: self.handleSelectColumn.bind(null, column),
-                onTouchStart: self.handleSelectColumn.bind(null, column),
                 key: column.key
-              }, column.label)
+              },
+              React.DOM.div(
+                {
+                  className: "fixed-table-th-inner"
+                },
+                React.DOM.div(
+                {
+                  className: "fixed-table-th-content" + sortStatus,
+                  title: column.title || colProps.title || null,
+                  onMouseDown: self.handleSelectColumn.bind(null, column),
+                  onTouchStart: self.handleSelectColumn.bind(null, column),
+                },
+                  column.label
+                )
+              )
+            )
           );
         });
 
@@ -268,23 +279,34 @@ module Rance
         });
 
         return(
-          React.DOM.table(
-          {
-            tabIndex: 1,
-            className: "react-list"
-          },
-            React.DOM.colgroup(null,
-              columns
-            ),
+          React.DOM.div({className: "fixed-table-container"},
+            React.DOM.div({className: "fixed-table-header-background"}),
+            React.DOM.div({className: "fixed-table-container-inner"},
+              React.DOM.table(
+              {
+                tabIndex: 1,
+                className: "react-list"
+              },
+                React.DOM.colgroup(null,
+                  columns
+                ),
 
-            React.DOM.thead(null,
-              React.DOM.tr(null,
-                headerLabels
+                React.DOM.thead({className: "fixed-table-actual-header"},
+                  React.DOM.tr(null,
+                    headerLabels
+                  )
+                ),
+
+                React.DOM.thead({className: "fixed-table-hidden-header"},
+                  React.DOM.tr(null,
+                    headerLabels
+                  )
+                ),
+
+                React.DOM.tbody(null,
+                  rows
+                )
               )
-            ),
-
-            React.DOM.tbody(null,
-              rows
             )
           )
         );

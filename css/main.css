@@ -737,11 +737,49 @@ progress::-webkit-progress-value {
   border: 1px solid #0ac7b3;
   background: linear-gradient(to right, #9efff5 0%, #dfffef 50%, #9efff5 100%);
 }
+.react-list {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 .react-list th {
   padding-left: 2px;
 }
 .react-list td {
   padding: 0 5px;
+}
+.fixed-table-container {
+  position: relative;
+  height: 25em;
+  width: 100%;
+  padding-top: 1.5em;
+}
+.fixed-table-container-inner {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+.fixed-table-header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #2D2D2D;
+  height: 1.5em;
+}
+.fixed-table-hidden-header {
+  pointer-events: none;
+}
+.fixed-table-hidden-header .fixed-table-th-inner {
+  position: static;
+  visibility: hidden;
+  height: 0;
+  overflow-y: hidden;
+}
+.fixed-table-actual-header .fixed-table-th-inner {
+  position: absolute;
+  top: 0;
+  line-height: 1.5em;
 }
 .unit-list {
   flex-shrink: 1;
@@ -826,7 +864,6 @@ progress::-webkit-progress-value {
 }
 .battle-prep .unit-list .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 900px) {
@@ -866,6 +903,13 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
+.battle-prep .unit-list .fixed-table-header-background {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
 @media (max-width: 1000px) {
   .battle-prep .unit.unit-image {
     display: none;
@@ -896,7 +940,9 @@ progress::-webkit-progress-value {
 .battle-prep-left-lower {
   flex: 1 1 auto;
   max-height: 300px;
-  overflow-y: auto;
+}
+.battle-prep-left-lower .fixed-table-container {
+  height: 300px;
 }
 .reserved-unit {
   background: #464b4a;
@@ -1058,14 +1104,12 @@ progress::-webkit-progress-value {
   background-color: #0d2335;
   max-width: 95%;
   max-height: 90%;
-  overflow-y: auto;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
 }
 .light-box-content {
   position: relative;
-  overflow-y: auto;
   margin: 25px;
   background-color: #0c1615;
   color: #eeeeec;
@@ -1464,7 +1508,6 @@ progress::-webkit-progress-value {
 }
 .buildable-item-list .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 500px) {
@@ -1584,9 +1627,7 @@ progress::-webkit-progress-value {
   user-select: none;
 }
 .item-equip .unit-list {
-  max-height: 24em;
-  overflow-y: auto;
-  overflow-x: auto;
+  max-height: 25em;
   border: 1px solid #c4e5fb;
 }
 .item-equip .unit-list .sort-icon {
@@ -1596,7 +1637,6 @@ progress::-webkit-progress-value {
 }
 .item-equip .unit-list .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 1200px) {
@@ -1636,7 +1676,7 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
-.item-equip .unit-list th {
+.item-equip .unit-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
   border-top-width: 0px;
@@ -1669,8 +1709,6 @@ progress::-webkit-progress-value {
 .item-equip-left .item-list {
   display: flex;
   flex: 3;
-  max-height: 12em;
-  overflow-y: auto;
 }
 .item-equip-left .item-list .sort-icon {
   font-weight: 100;
@@ -1679,7 +1717,6 @@ progress::-webkit-progress-value {
 }
 .item-equip-left .item-list .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 1200px) {
@@ -1719,7 +1756,7 @@ progress::-webkit-progress-value {
     right: 5px;
   }
 }
-.item-equip-left .item-list th {
+.item-equip-left .item-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
   border-top-width: 0px;
@@ -1790,7 +1827,6 @@ progress::-webkit-progress-value {
 }
 .economy-summary-list .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 400px) {
@@ -1880,7 +1916,6 @@ progress::-webkit-progress-value {
 }
 .save-game .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 400px) {
@@ -2194,7 +2229,6 @@ progress::-webkit-progress-value {
 }
 .buy-items .sortable {
   cursor: pointer;
-  position: relative;
   padding-right: 20px;
 }
 @media (max-width: 700px) {

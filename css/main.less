@@ -1136,7 +1136,7 @@ progress::-webkit-progress-value { background: #080; }
   .sortable
   {
     cursor: pointer;
-    position: relative;
+    //position: relative;
     padding-right: 20px;
 
     @media(max-width: @maxWidth)
@@ -1167,6 +1167,9 @@ progress::-webkit-progress-value { background: #080; }
 
 .react-list
 {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
   th
   {
     padding-left: 2px;
@@ -1174,6 +1177,54 @@ progress::-webkit-progress-value { background: #080; }
   td
   {
     padding: 0 5px;
+  }
+}
+
+.fixed-table-container
+{
+  position: relative;
+  height: 25em;
+  width: 100%;
+  padding-top: 1.5em;
+}
+
+.fixed-table-container-inner
+{
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.fixed-table-header-background
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #2D2D2D;
+  height: 1.5em;
+}
+
+.fixed-table-hidden-header
+{
+  pointer-events: none;
+
+  .fixed-table-th-inner
+  {
+    position: static;
+    visibility: hidden;
+    height: 0;
+    overflow-y: hidden;
+  }
+}
+
+.fixed-table-actual-header
+{
+  .fixed-table-th-inner
+  {
+    position: absolute;
+    top: 0;
+    line-height: 1.5em;
   }
 }
 
@@ -1284,6 +1335,11 @@ progress::-webkit-progress-value { background: #080; }
   .unit-list
   {
     .sort-icons(900px);
+
+    .fixed-table-header-background
+    {
+      .horizontal-border(0px, 3px);
+    }
   }
 
   .unit.unit-image
@@ -1333,7 +1389,11 @@ progress::-webkit-progress-value { background: #080; }
 {
   flex: 1 1 auto;
   max-height: 300px;
-  overflow-y: auto;
+
+  .fixed-table-container
+  {
+    height: 300px;
+  }
 }
 
 
@@ -1514,7 +1574,6 @@ progress::-webkit-progress-value { background: #080; }
   background-color: @bg-color2;
   max-width: 95%;
   max-height: 90%;
-  overflow-y: auto;
 
   .full-border(5px);
 }
@@ -1522,7 +1581,6 @@ progress::-webkit-progress-value { background: #080; }
 .light-box-content
 {
   position: relative;
-  overflow-y: auto;
   margin: 25px;
 
   background-color: @bg-color;
@@ -1936,13 +1994,11 @@ progress::-webkit-progress-value { background: #080; }
 
   .unit-list
   {
-    max-height: 24em;
-    overflow-y: auto;
-    overflow-x: auto;
+    max-height: 25em;
     border: 1px solid @ui-border-color1;
     .sort-icons(1200px);
 
-    th
+    .fixed-table-header-background
     {
       .horizontal-border(0px, 3px);
     }
@@ -1990,12 +2046,10 @@ progress::-webkit-progress-value { background: #080; }
   {
     display: flex;
     flex: 3;
-    max-height: 12em;
-    overflow-y: auto;
 
     .sort-icons(1200px);
 
-    th
+    .fixed-table-header-background
     {
       .horizontal-border(0px, 3px);
     }
