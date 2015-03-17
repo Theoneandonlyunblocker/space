@@ -325,8 +325,6 @@ var Rance;
                     },
                     dragOffset: dragOffset
                 });
-
-                console.log(dragOffset);
             },
             handleMouseMove: function (e) {
                 if (e.clientX === 0 && e.clientY === 0)

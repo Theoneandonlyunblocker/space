@@ -65,8 +65,6 @@ module Rance
           },
           dragOffset: dragOffset
         });
-
-        console.log(dragOffset);
       },
       handleMouseMove: function(e)
       {

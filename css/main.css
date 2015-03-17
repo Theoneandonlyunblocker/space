@@ -26,6 +26,15 @@ ul {
   margin-left: 0.25em;
   color: #f3c620;
 }
+.disabled-button-style {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.disabled-button-style * {
+  pointer-events: none !important;
+}
 .button-style-no-border {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
@@ -2004,6 +2013,17 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
+.save-list .disabled,
+.save-list :disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.save-list .disabled *,
+.save-list :disabled * {
+  pointer-events: none !important;
+}
 .save-list tbody :first-child::after {
   background-image: none;
 }
@@ -2162,7 +2182,7 @@ progress::-webkit-progress-value {
   justify-content: flex-end;
   background: linear-gradient(to right, #0c1615, #0d2335);
 }
-.buy-items {
+.item-purchase-list {
   color: #eeeeec;
   background-color: #0c1615;
   position: relative;
@@ -2174,26 +2194,37 @@ progress::-webkit-progress-value {
   -ms-user-select: none;
   user-select: none;
 }
-.buy-items .fixed-table-header-background {
+.item-purchase-list .fixed-table-header-background {
   border: 0px solid transparent;
   border-bottom-width: 3px;
   border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
-.buy-items tbody :first-child::after {
+.item-purchase-list .disabled,
+.item-purchase-list :disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.item-purchase-list .disabled *,
+.item-purchase-list :disabled * {
+  pointer-events: none !important;
+}
+.item-purchase-list tbody :first-child::after {
   background-image: none;
 }
-.buy-items tbody tr {
+.item-purchase-list tbody tr {
   position: relative;
   cursor: pointer;
 }
-.buy-items tbody tr td {
+.item-purchase-list tbody tr td {
   padding-top: 2px;
   padding-bottom: 2px;
   min-width: 0;
 }
-.buy-items tbody tr::after {
+.item-purchase-list tbody tr::after {
   content: "";
   position: absolute;
   left: 0;
@@ -2204,44 +2235,44 @@ progress::-webkit-progress-value {
   background-position: center bottom;
   background-size: 100% 2px;
 }
-.buy-items tbody tr:hover {
+.item-purchase-list tbody tr:hover {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
 }
-.buy-items tbody tr:hover:hover {
+.item-purchase-list tbody tr:hover:hover {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
-.buy-items tbody tr:hover:active {
+.item-purchase-list tbody tr:hover:active {
   background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
-.buy-items tbody tr:hover:disabled,
-.buy-items tbody tr:hover.disabled {
+.item-purchase-list tbody tr:hover:disabled,
+.item-purchase-list tbody tr:hover.disabled {
   pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
-.buy-items tbody tr:hover:disabled *,
-.buy-items tbody tr:hover.disabled * {
+.item-purchase-list tbody tr:hover:disabled *,
+.item-purchase-list tbody tr:hover.disabled * {
   pointer-events: none !important;
 }
-.buy-items .sort-icon {
+.item-purchase-list .sort-icon {
   font-weight: 100;
   position: absolute;
   right: 5px;
 }
-.buy-items .sortable {
+.item-purchase-list .sortable {
   cursor: pointer;
   padding-right: 20px;
 }
 @media (max-width: 700px) {
-  .buy-items .sortable {
+  .item-purchase-list .sortable {
     padding-right: 2px;
   }
 }
 @media (min-width: 700px) {
-  .buy-items .unsorted::after {
+  .item-purchase-list .unsorted::after {
     content: "\f0dc";
     font-family: FontAwesome;
     font-style: normal;
@@ -2251,7 +2282,7 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
-  .buy-items .sorted-asc::after {
+  .item-purchase-list .sorted-asc::after {
     content: "\f0de";
     font-family: FontAwesome;
     font-style: normal;
@@ -2261,7 +2292,7 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
-  .buy-items .sorted-desc::after {
+  .item-purchase-list .sorted-desc::after {
     content: "\f0dd";
     font-family: FontAwesome;
     font-style: normal;

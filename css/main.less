@@ -109,6 +109,17 @@ ul
     lighten(@c1, 0%) 100%,
   );
 }
+.disabled-button-style
+{
+  .prevent-pointer-events;
+  cursor: default;
+  color: darken(@text-color, 20%);
+  .double-gradient(
+    to bottom,
+    darken(@bg-color2, 8%),
+    darken(@bg-color, 16%)
+  );
+}
 .button-style-no-border
 {
   .double-gradient(
@@ -137,14 +148,7 @@ ul
   }
   &:disabled, &.disabled
   {
-    .prevent-pointer-events;
-    cursor: default;
-    color: darken(@text-color, 20%);
-    .double-gradient(
-      to bottom,
-      darken(@bg-color2, 8%),
-      darken(@bg-color, 16%)
-    );
+    .disabled-button-style;
   }
 }
 
@@ -216,6 +220,11 @@ ul
   .fixed-table-header-background
   {
     .horizontal-border(0px, 3px);
+  }
+
+  .disabled, :disabled
+  {
+    .disabled-button-style;
   }
 
 
@@ -2333,7 +2342,7 @@ progress::-webkit-progress-value { background: #080; }
   );
 }
 
-.buy-items
+.item-purchase-list
 {
   color: @text-color;
   background-color: @bg-color;
