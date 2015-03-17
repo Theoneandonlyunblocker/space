@@ -304,9 +304,14 @@ var Rance;
                 });
             },
             handleMouseDown: function (e) {
-                var clientRect = this.DOMNode.getBoundingClientRect();
+                var clientRect = this.getDOMNode().getBoundingClientRect();
 
                 this.addEventListeners();
+
+                var dragOffset = this.props.forcedDragOffset || {
+                    x: e.clientX - clientRect.left,
+                    y: e.clientY - clientRect.top
+                };
 
                 this.setState({
                     mouseDown: true,
@@ -318,11 +323,10 @@ var Rance;
                         x: clientRect.left + document.body.scrollLeft,
                         y: clientRect.top + document.body.scrollTop
                     },
-                    dragOffset: {
-                        x: e.clientX - clientRect.left,
-                        y: e.clientY - clientRect.top
-                    }
+                    dragOffset: dragOffset
                 });
+
+                console.log(dragOffset);
             },
             handleMouseMove: function (e) {
                 if (e.clientX === 0 && e.clientY === 0)
@@ -335,20 +339,22 @@ var Rance;
                     var delta = deltaX + deltaY;
 
                     if (delta >= this.props.dragThreshhold) {
+                        var ownNode = this.getDOMNode();
+
                         var stateObj = {
                             dragging: true,
                             dragPos: {
-                                width: parseInt(this.DOMNode.offsetWidth),
-                                height: parseInt(this.DOMNode.offsetHeight)
+                                width: parseInt(ownNode.offsetWidth),
+                                height: parseInt(ownNode.offsetHeight)
                             }
                         };
 
                         if (this.props.makeClone) {
-                            var nextSibling = this.DOMNode.nextSibling;
-                            var clone = this.DOMNode.cloneNode(true);
+                            var nextSibling = ownNode.nextSibling;
+                            var clone = ownNode.cloneNode(true);
                             Rance.recursiveRemoveAttribute(clone, "data-reactid");
 
-                            this.DOMNode.parentNode.insertBefore(clone, nextSibling);
+                            ownNode.parentNode.insertBefore(clone, nextSibling);
                             stateObj.clone = clone;
                         }
 
@@ -2212,6 +2218,14 @@ var Rance;
                 var item = this.props.item;
                 var columns = this.props.activeColumns;
 
+                if (this.state.dragging) {
+                    return (React.DOM.img({
+                        className: "item-icon-base draggable dragging",
+                        src: item.template.icon,
+                        style: this.state.dragPos
+                    }));
+                }
+
                 var cells = [];
 
                 for (var i = 0; i < columns.length; i++) {
@@ -2237,11 +2251,6 @@ var Rance;
 
                 if (this.props.isReserved) {
                     rowProps.className += " reserved-item";
-                }
-
-                if (this.state.dragging) {
-                    rowProps.style = this.state.dragPos;
-                    rowProps.className += " dragging";
                 }
 
                 return (React.DOM.tr(rowProps, cells));
@@ -2283,6 +2292,7 @@ var Rance;
                         ability: item.template.ability ? item.template.ability.displayName : "",
                         isReserved: Boolean(item.unit),
                         makeClone: true,
+                        forcedDragOffset: { x: 32, y: 32 },
                         rowConstructor: Rance.UIComponents.ItemListItem,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,

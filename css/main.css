@@ -761,8 +761,8 @@ progress::-webkit-progress-value {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #2D2D2D;
   height: 1.5em;
+  background: linear-gradient(to bottom, #0d2335 0%, #0c1615 50%, #0d2335 100%);
 }
 .fixed-table-hidden-header {
   pointer-events: none;
@@ -1698,19 +1698,16 @@ progress::-webkit-progress-value {
   background: #064b0a;
 }
 .item-equip-left {
+  display: flex;
+  flex-flow: column;
+  overflow-y: hidden;
   border: 1px solid #c4e5fb;
   max-height: 25em;
   margin-right: 5px;
 }
 .item-equip-left .item-list {
-  display: flex;
-  flex: 3;
-  max-height: 12em;
-}
-@media (max-height: 600px) {
-  .item-equip-left .item-list {
-    max-height: calc(12em + 74px);
-  }
+  flex: 1 1 0%;
+  border-top: 1px solid #c4e5fb;
 }
 .item-equip-left .item-list .sort-icon {
   font-weight: 100;
