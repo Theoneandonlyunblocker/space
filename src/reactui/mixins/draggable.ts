@@ -40,9 +40,15 @@ module Rance
       },
       handleMouseDown: function(e)
       {
-        var clientRect = this.DOMNode.getBoundingClientRect();
+        var clientRect = this.getDOMNode().getBoundingClientRect();
 
         this.addEventListeners();
+
+        var dragOffset = this.props.forcedDragOffset ||
+        {
+          x: e.clientX - clientRect.left,
+          y: e.clientY - clientRect.top
+        };
 
         this.setState(
         {
@@ -57,12 +63,10 @@ module Rance
             x: clientRect.left + document.body.scrollLeft,
             y: clientRect.top + document.body.scrollTop
           },
-          dragOffset:
-          {
-            x: e.clientX - clientRect.left,
-            y: e.clientY - clientRect.top
-          }
+          dragOffset: dragOffset
         });
+
+        console.log(dragOffset);
       },
       handleMouseMove: function(e)
       {
@@ -78,24 +82,25 @@ module Rance
 
           if (delta >= this.props.dragThreshhold)
           {
+            var ownNode = this.getDOMNode();
 
             var stateObj: any =
             {
               dragging: true,
               dragPos:
               {
-                width: parseInt(this.DOMNode.offsetWidth),
-                height: parseInt(this.DOMNode.offsetHeight)
+                width: parseInt(ownNode.offsetWidth),
+                height: parseInt(ownNode.offsetHeight)
               }
             }
 
             if (this.props.makeClone)
             {
-              var nextSibling = this.DOMNode.nextSibling;
-              var clone = this.DOMNode.cloneNode(true);
+              var nextSibling = ownNode.nextSibling;
+              var clone = ownNode.cloneNode(true);
               recursiveRemoveAttribute(clone, "data-reactid");
 
-              this.DOMNode.parentNode.insertBefore(clone, nextSibling);
+              ownNode.parentNode.insertBefore(clone, nextSibling);
               stateObj.clone = clone;
             }
 

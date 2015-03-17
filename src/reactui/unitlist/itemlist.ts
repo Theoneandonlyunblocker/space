@@ -46,6 +46,7 @@ module Rance
             isReserved: Boolean(item.unit),
 
             makeClone: true,
+            forcedDragOffset: {x: 32, y: 32},
             rowConstructor: UIComponents.ItemListItem,
             isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,

@@ -48,6 +48,18 @@ module Rance
         var item = this.props.item;
         var columns = this.props.activeColumns;
 
+        if (this.state.dragging)
+        {
+          return(
+            React.DOM.img(
+            {
+              className: "item-icon-base draggable dragging",
+              src: item.template.icon,
+              style: this.state.dragPos
+            })
+          );
+        }
+
         var cells: any = [];
 
         for (var i = 0; i < columns.length; i++)
@@ -81,11 +93,6 @@ module Rance
         }
 
 
-        if (this.state.dragging)
-        {
-          rowProps.style = this.state.dragPos;
-          rowProps.className += " dragging";
-        }
 
         return(
           React.DOM.tr(rowProps,
