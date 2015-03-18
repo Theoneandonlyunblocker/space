@@ -10,10 +10,47 @@ module Rance
       displayName: "UnitListItem",
       mixins: [Draggable],
 
+      componentDidMount: function()
+      {
+        console.log(this.props.isDraggable);
+        if (!this.props.isDraggable) return;
+
+        var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+
+        this.forcedDragOffset =
+        {
+          x: container.offsetWidth / 2,
+          y: container.offsetHeight / 2
+        }
+      },
+
       onDragStart: function(e)
       {
         this.props.onDragStart(this.props.unit);
       },
+
+      onDragMove: function(x, y)
+      {
+        if (!this.refs.dragClone) return;
+
+        var node = this.refs.dragClone.getDOMNode();
+        node.classList.add("draggable");
+        node.classList.add("dragging");
+        node.style.left = "" + x + "px";
+        node.style.top = "" + y + "px";
+
+        var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+
+        node.style.width = "" + container.offsetWidth + "px";
+        node.style.height = "" + container.offsetHeight + "px";
+
+        this.forcedDragOffset =
+        {
+          x: container.offsetWidth / 2,
+          y: container.offsetHeight / 2
+        }
+      },
+
       onDragEnd: function(e)
       {
         this.props.onDragEnd();
@@ -83,10 +120,22 @@ module Rance
         );
       },
 
-      render: function()
+      render: function(): any
       {
         var unit = this.props.unit;
         var columns = this.props.activeColumns;
+
+        if (this.state.dragging)
+        {
+          return(
+            UIComponents.Unit(
+            {
+              ref: "dragClone",
+              unit: unit
+            })
+          );
+        }
+
 
         var cells: any = [];
 
@@ -127,11 +176,6 @@ module Rance
         }
 
 
-        if (this.state.dragging)
-        {
-          rowProps.style = this.state.dragPos;
-          rowProps.className += " dragging";
-        }
         else if (this.props.onMouseEnter)
         {
           rowProps.onMouseEnter = this.handleMouseEnter;

@@ -44,7 +44,7 @@ module Rance
 
         this.addEventListeners();
 
-        var dragOffset = this.props.forcedDragOffset ||
+        var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
         {
           x: e.clientX - clientRect.left,
           y: e.clientY - clientRect.top
@@ -94,7 +94,6 @@ module Rance
 
             if (this.props.makeClone)
             {
-              console.log(this.containerElement);
               if (!this.makeDragClone)
               {
                 var nextSibling = ownNode.nextSibling;
@@ -118,6 +117,10 @@ module Rance
             {
               this.onDragStart(e);
             }
+            if (this.onDragMove)
+            {
+              this.onDragMove(e.pageX - this.state.dragOffset.x, e.pageY - this.state.dragOffset.y);
+            }
           }
         }
 
@@ -133,15 +136,15 @@ module Rance
 
         var domWidth, domHeight;
 
-        if (this.state.clone)
+        if (this.makeDragClone)
         {
           domWidth = parseInt(this.state.clone.offsetWidth);
           domHeight = parseInt(this.state.clone.offsetHeight);
         }
         else
         {
-          domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
-          domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
+          domWidth = parseInt(this.getDOMNode().offsetWidth);
+          domHeight = parseInt(this.getDOMNode().offsetHeight);
         }
 
         var containerWidth = parseInt(this.containerElement.offsetWidth);
@@ -170,23 +173,24 @@ module Rance
           y = containerHeight - domHeight;
         };
 
-        this.setState(
-        {
-          dragPos:
-          {
-            top: y,
-            left: x,
-            width: this.props.makeClone ? null : this.state.dragPos.width,
-            height: this.props.makeClone ? null : this.state.dragPos.height
-          }
-        });
-        //this.DOMNode.style.left = x+"px";
-        //this.DOMNode.style.top = y+"px";
-
         if (this.onDragMove)
         {
           this.onDragMove(x, y);
         }
+        else
+        {
+          this.setState(
+          {
+            dragPos:
+            {
+              top: y,
+              left: x,
+              width: this.state.dragPos.width,
+              height: this.state.dragPos.height
+            }
+          });
+        }
+
       },
       handleMouseUp: function(e)
       {
