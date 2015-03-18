@@ -5,6 +5,7 @@
 /// <reference path="battlescore.ts"/>
 /// <reference path="battlescene.ts"/>
 /// <reference path="battledisplaystrength.ts"/>
+/// <reference path="battlebackground.ts"/>
 
 module Rance
 {
@@ -42,43 +43,19 @@ module Rance
           playingBattleEffectActive: false
         });
       },
-      resize: function()
+      getBlurArea: function()
       {
-        var seed = this.props.battle.battleData.location.getBackgroundSeed();
-
-        var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-
-        this.props.renderer.blurProps =
-        [
-          blurArea.left,
-          0,
-          blurArea.width,
-          blurArea.height,
-          seed
-        ];
+        return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
       },
 
       componentDidMount: function()
       {
-        this.props.renderer.isBattleBackground = true;
-
-        this.resize();
-
-        this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
-
-        window.addEventListener("resize", this.resize, false);
-
         this.setBattleSceneUnits(this.state.hoveredUnit);
 
         if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
           this.useAIAbility();
         }
-      },
-      componentWillUnmount: function()
-      {
-        window.removeEventListener("resize", this.resize);
-        this.props.renderer.removeRendererView();
       },
 
       clearHoveredUnit: function()
@@ -462,12 +439,21 @@ module Rance
           )
         }
 
+        /*
+        UIComponents.BattleBackground(
+        {
+          renderer: this.props.renderer,
+          backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
+          getBlurArea: this.getBlurArea
+        },
+         */
 
         return(
-          React.DOM.div(
+          UIComponents.BattleBackground(
           {
-            className: "battle-pixi-container",
-            ref: "pixiContainer"
+            renderer: this.props.renderer,
+            backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
+            getBlurArea: this.getBlurArea
           },
             React.DOM.div(
             {

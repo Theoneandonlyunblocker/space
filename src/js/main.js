@@ -308,7 +308,7 @@ var Rance;
 
                 this.addEventListeners();
 
-                var dragOffset = this.props.forcedDragOffset || {
+                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset || {
                     x: e.clientX - clientRect.left,
                     y: e.clientY - clientRect.top
                 };
@@ -348,7 +348,6 @@ var Rance;
                         };
 
                         if (this.props.makeClone) {
-                            console.log(this.containerElement);
                             if (!this.makeDragClone) {
                                 var nextSibling = ownNode.nextSibling;
                                 var clone = ownNode.cloneNode(true);
@@ -368,6 +367,9 @@ var Rance;
                         if (this.onDragStart) {
                             this.onDragStart(e);
                         }
+                        if (this.onDragMove) {
+                            this.onDragMove(e.pageX - this.state.dragOffset.x, e.pageY - this.state.dragOffset.y);
+                        }
                     }
                 }
 
@@ -381,12 +383,12 @@ var Rance;
 
                 var domWidth, domHeight;
 
-                if (this.state.clone) {
+                if (this.makeDragClone) {
                     domWidth = parseInt(this.state.clone.offsetWidth);
                     domHeight = parseInt(this.state.clone.offsetHeight);
                 } else {
-                    domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
-                    domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
+                    domWidth = parseInt(this.getDOMNode().offsetWidth);
+                    domHeight = parseInt(this.getDOMNode().offsetHeight);
                 }
 
                 var containerWidth = parseInt(this.containerElement.offsetWidth);
@@ -409,19 +411,17 @@ var Rance;
                 }
                 ;
 
-                this.setState({
-                    dragPos: {
-                        top: y,
-                        left: x,
-                        width: this.props.makeClone ? null : this.state.dragPos.width,
-                        height: this.props.makeClone ? null : this.state.dragPos.height
-                    }
-                });
-
-                //this.DOMNode.style.left = x+"px";
-                //this.DOMNode.style.top = y+"px";
                 if (this.onDragMove) {
                     this.onDragMove(x, y);
+                } else {
+                    this.setState({
+                        dragPos: {
+                            top: y,
+                            left: x,
+                            width: this.state.dragPos.width,
+                            height: this.state.dragPos.height
+                        }
+                    });
                 }
             },
             handleMouseUp: function (e) {
@@ -1308,6 +1308,52 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        /*
+        props
+        
+        renderer
+        backgroundSeed
+        getBlurAreaFN()
+        */
+        UIComponents.BattleBackground = React.createClass({
+            displayName: "BattleBackground",
+            handleResize: function () {
+                var blurArea = this.props.getBlurArea();
+
+                this.props.renderer.blurProps = [
+                    blurArea.left,
+                    0,
+                    blurArea.width,
+                    blurArea.height,
+                    this.props.seed
+                ];
+            },
+            componentDidMount: function () {
+                this.props.renderer.isBattleBackground = true;
+
+                this.handleResize();
+
+                this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
+
+                window.addEventListener("resize", this.resize, false);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.resize);
+                this.props.renderer.removeRendererView();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "battle-pixi-container",
+                    ref: "pixiContainer"
+                }, this.props.children));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="fleet.ts"/>
 /// <reference path="turncounter.ts"/>
 /// <reference path="turnorder.ts"/>
@@ -1315,6 +1361,7 @@ var Rance;
 /// <reference path="battlescore.ts"/>
 /// <reference path="battlescene.ts"/>
 /// <reference path="battledisplaystrength.ts"/>
+/// <reference path="battlebackground.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -1342,37 +1389,15 @@ var Rance;
                     playingBattleEffectActive: false
                 });
             },
-            resize: function () {
-                var seed = this.props.battle.battleData.location.getBackgroundSeed();
-
-                var blurArea = this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
-
-                this.props.renderer.blurProps = [
-                    blurArea.left,
-                    0,
-                    blurArea.width,
-                    blurArea.height,
-                    seed
-                ];
+            getBlurArea: function () {
+                return this.refs.fleetsContainer.getDOMNode().getBoundingClientRect();
             },
             componentDidMount: function () {
-                this.props.renderer.isBattleBackground = true;
-
-                this.resize();
-
-                this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
-
-                window.addEventListener("resize", this.resize, false);
-
                 this.setBattleSceneUnits(this.state.hoveredUnit);
 
                 if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                     this.useAIAbility();
                 }
-            },
-            componentWillUnmount: function () {
-                window.removeEventListener("resize", this.resize);
-                this.props.renderer.removeRendererView();
             },
             clearHoveredUnit: function () {
                 this.tempHoveredUnit = null;
@@ -1666,9 +1691,18 @@ var Rance;
                     }) : null));
                 }
 
-                return (React.DOM.div({
-                    className: "battle-pixi-container",
-                    ref: "pixiContainer"
+                /*
+                UIComponents.BattleBackground(
+                {
+                renderer: this.props.renderer,
+                backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
+                getBlurArea: this.getBlurArea
+                },
+                */
+                return (Rance.UIComponents.BattleBackground({
+                    renderer: this.props.renderer,
+                    backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
+                    getBlurArea: this.getBlurArea
                 }, React.DOM.div({
                     className: "battle-container",
                     ref: "battleContainer"
@@ -2003,8 +2037,40 @@ var Rance;
         UIComponents.UnitListItem = React.createClass({
             displayName: "UnitListItem",
             mixins: [Rance.UIComponents.Draggable],
+            componentDidMount: function () {
+                console.log(this.props.isDraggable);
+                if (!this.props.isDraggable)
+                    return;
+
+                var container = document.getElementsByClassName("unit-wrapper")[0];
+
+                this.forcedDragOffset = {
+                    x: container.offsetWidth / 2,
+                    y: container.offsetHeight / 2
+                };
+            },
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.unit);
+            },
+            onDragMove: function (x, y) {
+                if (!this.refs.dragClone)
+                    return;
+
+                var node = this.refs.dragClone.getDOMNode();
+                node.classList.add("draggable");
+                node.classList.add("dragging");
+                node.style.left = "" + x + "px";
+                node.style.top = "" + y + "px";
+
+                var container = document.getElementsByClassName("unit-wrapper")[0];
+
+                node.style.width = "" + container.offsetWidth + "px";
+                node.style.height = "" + container.offsetHeight + "px";
+
+                this.forcedDragOffset = {
+                    x: container.offsetWidth / 2,
+                    y: container.offsetHeight / 2
+                };
             },
             onDragEnd: function (e) {
                 this.props.onDragEnd();
@@ -2060,6 +2126,13 @@ var Rance;
                 var unit = this.props.unit;
                 var columns = this.props.activeColumns;
 
+                if (this.state.dragging) {
+                    return (Rance.UIComponents.Unit({
+                        ref: "dragClone",
+                        unit: unit
+                    }));
+                }
+
                 var cells = [];
 
                 for (var i = 0; i < columns.length; i++) {
@@ -2089,11 +2162,6 @@ var Rance;
 
                 if (this.props.noActionsLeft) {
                     rowProps.className += " no-actions-left";
-                }
-
-                if (this.state.dragging) {
-                    rowProps.style = this.state.dragPos;
-                    rowProps.className += " dragging";
                 } else if (this.props.onMouseEnter) {
                     rowProps.onMouseEnter = this.handleMouseEnter;
                     rowProps.onMouseLeave = this.handleMouseLeave;
