@@ -348,12 +348,18 @@ var Rance;
                         };
 
                         if (this.props.makeClone) {
-                            var nextSibling = ownNode.nextSibling;
-                            var clone = ownNode.cloneNode(true);
-                            Rance.recursiveRemoveAttribute(clone, "data-reactid");
+                            if (!this.makeDragClone) {
+                                var nextSibling = ownNode.nextSibling;
+                                var clone = ownNode.cloneNode(true);
+                                Rance.recursiveRemoveAttribute(clone, "data-reactid");
 
-                            ownNode.parentNode.insertBefore(clone, nextSibling);
-                            stateObj.clone = clone;
+                                ownNode.parentNode.insertBefore(clone, nextSibling);
+                                stateObj.clone = clone;
+                            } else {
+                                var clone = this.makeDragClone();
+                                document.body.appendChild(clone);
+                                stateObj.clone = clone;
+                            }
                         }
 
                         this.setState(stateObj);
@@ -1770,6 +1776,9 @@ var Rance;
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.setDesiredHeight);
             },
+            componentWillReceiveProps: function (newProps) {
+                this.setDesiredHeight();
+            },
             setDesiredHeight: function () {
                 var ownNode = this.getDOMNode();
                 var innerNode = this.refs.inner.getDOMNode();
@@ -1792,8 +1801,6 @@ var Rance;
 
                 ownNode.style.height = "" + desiredHeight + "px";
                 innerNode.style.height = "" + desiredHeight + "px";
-
-                console.log(ownNode.parentNode, parentHeight);
             },
             makeInitialSortingOrder: function (columns, initialColumn) {
                 var initialSortOrder = this.props.initialSortOrder;
@@ -2212,16 +2219,22 @@ var Rance;
 
                 return (React.DOM.td(cellProps, cellContent));
             },
+            makeDragClone: function () {
+                var clone = new Image();
+                clone.src = this.props.item.template.icon;
+                clone.className = "item-icon-base draggable dragging";
+
+                return clone;
+            },
             render: function () {
                 var item = this.props.item;
                 var columns = this.props.activeColumns;
 
-                if (this.state.dragging) {
-                    return (React.DOM.img({
-                        className: "item-icon-base draggable dragging",
-                        src: item.template.icon,
-                        style: this.state.dragPos
-                    }));
+                if (this.state.dragging && this.state.clone) {
+                    this.state.clone.style.left = "" + this.state.dragPos.left + "px";
+                    this.state.clone.style.top = "" + this.state.dragPos.top + "px";
+
+                    console.log(this.state.clone.style.left);
                 }
 
                 var cells = [];
@@ -2234,7 +2247,8 @@ var Rance;
 
                 var rowProps = {
                     className: "item-list-item",
-                    onClick: this.props.handleClick
+                    onClick: this.props.handleClick,
+                    key: this.props.key
                 };
 
                 if (this.props.isDraggable) {
@@ -2280,6 +2294,8 @@ var Rance;
 
                     var data = {
                         item: item,
+                        key: item.id,
+                        id: item.id,
                         typeName: item.template.displayName,
                         slot: item.template.slot,
                         slotIndex: this.getSlotIndex(item.template.slot),
@@ -2638,6 +2654,8 @@ var Rance;
                     currentDragItem: this.state.currentDragItem
                 }), Rance.UIComponents.ItemList({
                     items: player.items,
+                    // only used to trigger updates
+                    selectedUnit: this.state.selectedUnit,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd,

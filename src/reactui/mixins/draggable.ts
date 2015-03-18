@@ -94,12 +94,21 @@ module Rance
 
             if (this.props.makeClone)
             {
-              var nextSibling = ownNode.nextSibling;
-              var clone = ownNode.cloneNode(true);
-              recursiveRemoveAttribute(clone, "data-reactid");
+              if (!this.makeDragClone)
+              {
+                var nextSibling = ownNode.nextSibling;
+                var clone = ownNode.cloneNode(true);
+                recursiveRemoveAttribute(clone, "data-reactid");
 
-              ownNode.parentNode.insertBefore(clone, nextSibling);
-              stateObj.clone = clone;
+                ownNode.parentNode.insertBefore(clone, nextSibling);
+                stateObj.clone = clone;
+              }
+              else
+              {
+                var clone = this.makeDragClone();
+                document.body.appendChild(clone);
+                stateObj.clone = clone;
+              }
             }
 
             this.setState(stateObj);

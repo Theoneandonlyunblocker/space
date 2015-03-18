@@ -1273,11 +1273,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .unit-list-item
 {
-  background: linear-gradient(
-    to bottom,
-    @bg-color2,
-    @bg-color
-  );
+
 }
 
 .no-actions-left
@@ -1389,7 +1385,8 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-prep-left-upper
 {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  min-height: 15em;
 }
 
 .battle-prep-left-controls
@@ -1399,7 +1396,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-prep-left-lower
 {
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   max-height: 300px;
 }
 
@@ -2001,9 +1998,8 @@ progress::-webkit-progress-value { background: #080; }
 
   .unit-list
   {
-    max-height: 25em;
-    
     .sort-icons(1200px);
+    max-height: 30em;
 
     .fixed-table-container
     {
@@ -2053,9 +2049,9 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: column;
   overflow-y: hidden;
   border: 1px solid @ui-border-color1;
-  max-height: 25em;
 
   margin-right: 5px;
+  max-height: 30em;
 
   .item-list
   {
@@ -2067,6 +2063,14 @@ progress::-webkit-progress-value { background: #080; }
     .fixed-table-header-background
     {
       .horizontal-border(0px, 3px);
+    }
+  }
+
+  .redundant-ability
+  {
+    @media(max-height: 700px)
+    {
+      display: none;
     }
   }
 

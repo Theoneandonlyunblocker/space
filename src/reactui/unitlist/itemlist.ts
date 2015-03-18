@@ -33,6 +33,8 @@ module Rance
           var data: any =
           {
             item: item,
+            key: item.id,
+            id: item.id,
             typeName: item.template.displayName,
             slot: item.template.slot,
             slotIndex: this.getSlotIndex(item.template.slot),

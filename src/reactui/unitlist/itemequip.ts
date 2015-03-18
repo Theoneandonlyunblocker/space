@@ -86,6 +86,8 @@ module Rance
               UIComponents.ItemList(
               {
                 items: player.items,
+                // only used to trigger updates
+                selectedUnit: this.state.selectedUnit,
                 isDraggable: true,
                 onDragStart: this.handleDragStart,
                 onDragEnd: this.handleDragEnd,

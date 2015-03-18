@@ -65,6 +65,11 @@ module Rance
         window.removeEventListener("resize", this.setDesiredHeight);
       },
 
+      componentWillReceiveProps: function(newProps)
+      {
+        this.setDesiredHeight();
+      },
+
       setDesiredHeight: function()
       {
         var ownNode = this.getDOMNode();
@@ -89,8 +94,6 @@ module Rance
 
         ownNode.style.height = "" + desiredHeight + "px";
         innerNode.style.height = "" + desiredHeight + "px";
-
-        console.log(ownNode.parentNode, parentHeight);
       },
 
       makeInitialSortingOrder: function(columns, initialColumn)

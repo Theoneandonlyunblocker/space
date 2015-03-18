@@ -809,9 +809,6 @@ progress::-webkit-progress-value {
 .unit-list .raised-stat {
   color: limegreen;
 }
-.unit-list-item {
-  background: linear-gradient(to bottom, #0d2335, #0c1615);
-}
 .no-actions-left {
   background: red;
 }
@@ -938,13 +935,14 @@ progress::-webkit-progress-value {
   }
 }
 .battle-prep-left-upper {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  min-height: 15em;
 }
 .battle-prep-left-controls {
   flex: 0 0 auto;
 }
 .battle-prep-left-lower {
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   max-height: 300px;
 }
 .reserved-unit {
@@ -1630,7 +1628,7 @@ progress::-webkit-progress-value {
   user-select: none;
 }
 .item-equip .unit-list {
-  max-height: 25em;
+  max-height: 30em;
 }
 .item-equip .unit-list .sort-icon {
   font-weight: 100;
@@ -1711,8 +1709,8 @@ progress::-webkit-progress-value {
   flex-flow: column;
   overflow-y: hidden;
   border: 1px solid #c4e5fb;
-  max-height: 25em;
   margin-right: 5px;
+  max-height: 30em;
 }
 .item-equip-left .item-list {
   flex: 1 1 0%;
@@ -1770,6 +1768,11 @@ progress::-webkit-progress-value {
   border-top-width: 0px;
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
+}
+@media (max-height: 700px) {
+  .item-equip-left .redundant-ability {
+    display: none;
+  }
 }
 @media (max-height: 600px) {
   .item-equip-left .menu-unit-info-image {

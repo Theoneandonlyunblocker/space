@@ -43,21 +43,26 @@ module Rance
         );
       },
 
+      makeDragClone: function()
+      {
+        var clone = new Image();
+        clone.src = this.props.item.template.icon;
+        clone.className = "item-icon-base draggable dragging";
+
+        return clone;
+      },
+
       render: function()
       {
         var item = this.props.item;
         var columns = this.props.activeColumns;
 
-        if (this.state.dragging)
+        if (this.state.dragging && this.state.clone)
         {
-          return(
-            React.DOM.img(
-            {
-              className: "item-icon-base draggable dragging",
-              src: item.template.icon,
-              style: this.state.dragPos
-            })
-          );
+          this.state.clone.style.left = "" + this.state.dragPos.left + "px";
+          this.state.clone.style.top = "" + this.state.dragPos.top + "px";
+
+          console.log(this.state.clone.style.left);
         }
 
         var cells: any = [];
@@ -72,9 +77,10 @@ module Rance
         var rowProps: any =
         {
           className: "item-list-item",
-          onClick : this.props.handleClick
+          onClick : this.props.handleClick,
+          key: this.props.key
         };
-
+        
         if (this.props.isDraggable)
         {
           rowProps.className += " draggable";
