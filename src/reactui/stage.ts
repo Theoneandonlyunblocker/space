@@ -59,6 +59,7 @@ module Rance
               UIComponents.BattlePrep(
               {
                 battlePrep: this.props.battlePrep,
+                renderer: this.props.renderer,
                 key: "battlePrep"
               })
             );

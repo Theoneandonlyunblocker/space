@@ -439,15 +439,6 @@ module Rance
           )
         }
 
-        /*
-        UIComponents.BattleBackground(
-        {
-          renderer: this.props.renderer,
-          backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
-          getBlurArea: this.getBlurArea
-        },
-         */
-
         return(
           UIComponents.BattleBackground(
           {
