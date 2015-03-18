@@ -61,8 +61,6 @@ module Rance
         {
           this.state.clone.style.left = "" + this.state.dragPos.left + "px";
           this.state.clone.style.top = "" + this.state.dragPos.top + "px";
-
-          console.log(this.state.clone.style.left);
         }
 
         var cells: any = [];

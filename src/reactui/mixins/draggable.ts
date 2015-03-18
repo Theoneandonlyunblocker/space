@@ -94,6 +94,7 @@ module Rance
 
             if (this.props.makeClone)
             {
+              console.log(this.containerElement);
               if (!this.makeDragClone)
               {
                 var nextSibling = ownNode.nextSibling;
@@ -130,8 +131,18 @@ module Rance
         var x = e.pageX - this.state.dragOffset.x;
         var y = e.pageY - this.state.dragOffset.y;
 
-        var domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
-        var domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
+        var domWidth, domHeight;
+
+        if (this.state.clone)
+        {
+          domWidth = parseInt(this.state.clone.offsetWidth);
+          domHeight = parseInt(this.state.clone.offsetHeight);
+        }
+        else
+        {
+          domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
+          domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
+        }
 
         var containerWidth = parseInt(this.containerElement.offsetWidth);
         var containerHeight = parseInt(this.containerElement.offsetHeight);
