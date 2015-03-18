@@ -174,6 +174,11 @@ module Rance
         this.handleItemDragEnd(true);
       },
 
+      getBackgroundBlurArea: function()
+      {
+        return this.refs.upper.getDOMNode().getBoundingClientRect();
+      },
+
       render: function()
       {
 
@@ -267,7 +272,18 @@ module Rance
         return(
           React.DOM.div({className: "battle-prep"},
             React.DOM.div({className: "battle-prep-left"},
-              React.DOM.div({className: "battle-prep-left-upper"}, leftUpperElement),
+              React.DOM.div({className: "battle-prep-left-upper-wrapper", ref: "upper"},
+                UIComponents.BattleBackground(
+                {
+                  renderer: this.props.renderer,
+                  getBlurArea: this.getBackgroundBlurArea,
+                  backgroundSeed: this.props.battlePrep.battleData.location.getBackgroundSeed()
+                },
+                  React.DOM.div({className: "battle-prep-left-upper-inner"},
+                    leftUpperElement
+                  )
+                )
+              ),
               React.DOM.div({className: "battle-prep-left-controls"},
                 React.DOM.button(
                 {
