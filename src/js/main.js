@@ -629,8 +629,8 @@ var Rance;
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
             displayName: "EmptyUnit",
-            shouldComponentUpdate: function () {
-                return false;
+            shouldComponentUpdate: function (newProps) {
+                return newProps.facesLeft === this.props.facesLeft;
             },
             render: function () {
                 var wrapperProps = {
@@ -1322,26 +1322,28 @@ var Rance;
             displayName: "BattleBackground",
             handleResize: function () {
                 var blurArea = this.props.getBlurArea();
+                console.log(blurArea, this.props.backgroundSeed);
 
                 this.props.renderer.blurProps = [
                     blurArea.left,
                     0,
                     blurArea.width,
                     blurArea.height,
-                    this.props.seed
+                    this.props.backgroundSeed
                 ];
             },
             componentDidMount: function () {
+                console.log(this.props.backgroundSeed);
                 this.props.renderer.isBattleBackground = true;
 
                 this.handleResize();
 
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
 
-                window.addEventListener("resize", this.resize, false);
+                window.addEventListener("resize", this.handleResize, false);
             },
             componentWillUnmount: function () {
-                window.removeEventListener("resize", this.resize);
+                window.removeEventListener("resize", this.handleResize);
                 this.props.renderer.removeRendererView();
             },
             render: function () {
@@ -1691,14 +1693,6 @@ var Rance;
                     }) : null));
                 }
 
-                /*
-                UIComponents.BattleBackground(
-                {
-                renderer: this.props.renderer,
-                backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
-                getBlurArea: this.getBlurArea
-                },
-                */
                 return (Rance.UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
@@ -1790,9 +1784,6 @@ var Rance;
             },
             componentDidMount: function () {
                 var self = this;
-
-                this.setDesiredHeight();
-
                 if (this.props.autoSelect) {
                     this.handleSelectRow(this.props.sortedItems[0]);
                 }
@@ -1818,7 +1809,7 @@ var Rance;
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.setDesiredHeight);
             },
-            componentWillReceiveProps: function (newProps) {
+            componentDidUpdate: function () {
                 this.setDesiredHeight();
             },
             setDesiredHeight: function () {
@@ -2038,7 +2029,6 @@ var Rance;
             displayName: "UnitListItem",
             mixins: [Rance.UIComponents.Draggable],
             componentDidMount: function () {
-                console.log(this.props.isDraggable);
                 if (!this.props.isDraggable)
                     return;
 
@@ -2264,6 +2254,7 @@ var Rance;
                 ];
 
                 return (React.DOM.div({ className: "unit-list" }, Rance.UIComponents.List({
+                    ref: "list",
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.props.onRowChange,
@@ -2294,6 +2285,11 @@ var Rance;
                 var cellContent;
 
                 switch (type) {
+                    case "ability": {
+                        if (this.props.abilityTemplate) {
+                            cellProps.title = this.props.abilityTemplate.description;
+                        }
+                    }
                     default: {
                         cellContent = this.props[type];
                         if (isFinite(cellContent)) {
@@ -2389,6 +2385,7 @@ var Rance;
                         techLevel: item.template.techLevel,
                         cost: item.template.cost,
                         ability: item.template.ability ? item.template.ability.displayName : "",
+                        abilityTemplate: item.template.ability,
                         isReserved: Boolean(item.unit),
                         makeClone: true,
                         forcedDragOffset: { x: 32, y: 32 },
@@ -2491,6 +2488,7 @@ var Rance;
                 }
 
                 return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
+                    ref: "list",
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
@@ -2738,6 +2736,7 @@ var Rance;
                     onDragEnd: this.handleDragEnd,
                     currentDragItem: this.state.currentDragItem
                 }), Rance.UIComponents.ItemList({
+                    ref: "itemList",
                     items: player.items,
                     // only used to trigger updates
                     selectedUnit: this.state.selectedUnit,
@@ -2746,6 +2745,7 @@ var Rance;
                     onDragEnd: this.handleDragEnd,
                     onRowChange: this.handleSelectRow
                 })), Rance.UIComponents.UnitList({
+                    ref: "unitList",
                     units: player.units,
                     selectedUnit: this.state.selectedUnit,
                     isDraggable: false,
@@ -2886,6 +2886,9 @@ var Rance;
 
                 this.handleItemDragEnd(true);
             },
+            getBackgroundBlurArea: function () {
+                return this.refs.upper.getDOMNode().getBoundingClientRect();
+            },
             render: function () {
                 // priority: hovered unit > selected unit > battle infd
                 var leftUpperElement;
@@ -2915,6 +2918,7 @@ var Rance;
                 switch (this.state.leftLowerElement) {
                     case "playerFleet": {
                         leftLowerElement = Rance.UIComponents.Fleet({
+                            key: "playerFleet",
                             fleet: this.props.battlePrep.playerFormation.slice(0),
                             hoveredUnit: this.state.hoveredUnit,
                             activeUnit: this.state.selectedUnit,
@@ -2930,7 +2934,9 @@ var Rance;
                     }
                     case "enemyFleet": {
                         leftLowerElement = Rance.UIComponents.Fleet({
+                            key: "enemyFleet",
                             fleet: this.props.battlePrep.enemyFormation,
+                            facesLeft: true,
                             hoveredUnit: this.state.hoveredUnit,
                             activeUnit: this.state.selectedUnit,
                             onUnitClick: this.setSelectedUnit,
@@ -2942,6 +2948,7 @@ var Rance;
                     }
                     case "itemEquip": {
                         leftLowerElement = Rance.UIComponents.ItemList({
+                            key: "itemEquip",
                             items: this.props.battlePrep.humanPlayer.items,
                             isDraggable: true,
                             onDragStart: this.handleItemDragStart,
@@ -2953,7 +2960,11 @@ var Rance;
                 }
                 ;
 
-                return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper" }, leftUpperElement), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
+                return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, Rance.UIComponents.BattleBackground({
+                    renderer: this.props.renderer,
+                    getBlurArea: this.getBackgroundBlurArea,
+                    backgroundSeed: this.props.battlePrep.battleData.location.getBackgroundSeed()
+                }, React.DOM.div({ className: "battle-prep-left-upper-inner" }, leftUpperElement))), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
                     className: "battle-prep-controls-button",
                     onClick: this.setLeftLowerElement.bind(this, "itemEquip")
                 }, "Equip"), React.DOM.button({
@@ -10657,6 +10668,7 @@ var Rance;
                     case "battlePrep": {
                         elementsToRender.push(Rance.UIComponents.BattlePrep({
                             battlePrep: this.props.battlePrep,
+                            renderer: this.props.renderer,
                             key: "battlePrep"
                         }));
                         break;

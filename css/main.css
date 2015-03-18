@@ -791,6 +791,7 @@ progress::-webkit-progress-value {
 }
 .unit-list {
   flex-shrink: 1;
+  overflow-y: hidden;
 }
 .unit-list .fixed-table-header-background {
   border: 0px solid transparent;
@@ -1713,6 +1714,9 @@ progress::-webkit-progress-value {
   -ms-user-select: none;
   user-select: none;
 }
+.item-equip .item-list {
+  border-top: 1px solid #c4e5fb;
+}
 .item-equip .item-list .sort-icon {
   font-weight: 100;
   position: absolute;
@@ -1761,6 +1765,7 @@ progress::-webkit-progress-value {
 }
 .item-equip .unit-list {
   max-height: 30em;
+  border: 1px solid #c4e5fb;
 }
 .item-equip .unit-list .sort-icon {
   font-weight: 100;
@@ -1807,9 +1812,6 @@ progress::-webkit-progress-value {
     position: absolute;
     right: 5px;
   }
-}
-.item-equip .unit-list .fixed-table-container {
-  border: 1px solid #c4e5fb;
 }
 .item-equip .unit-list .fixed-table-header-background {
   border: 0px solid transparent;

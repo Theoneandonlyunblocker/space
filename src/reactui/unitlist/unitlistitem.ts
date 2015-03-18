@@ -12,7 +12,6 @@ module Rance
 
       componentDidMount: function()
       {
-        console.log(this.props.isDraggable);
         if (!this.props.isDraggable) return;
 
         var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];

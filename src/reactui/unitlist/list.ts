@@ -28,9 +28,6 @@ module Rance
       componentDidMount: function()
       {
         var self = this;
-
-        this.setDesiredHeight();
-
         if (this.props.autoSelect)
         {
           this.handleSelectRow(this.props.sortedItems[0]);
@@ -65,7 +62,7 @@ module Rance
         window.removeEventListener("resize", this.setDesiredHeight);
       },
 
-      componentWillReceiveProps: function(newProps)
+      componentDidUpdate: function()
       {
         this.setDesiredHeight();
       },
