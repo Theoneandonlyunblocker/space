@@ -5,9 +5,9 @@ module Rance
     export var EmptyUnit = React.createClass(
     {
       displayName: "EmptyUnit",
-      shouldComponentUpdate: function()
+      shouldComponentUpdate: function(newProps: any)
       {
-        return false;
+        return newProps.facesLeft === this.props.facesLeft;
       },
       render: function()
       {

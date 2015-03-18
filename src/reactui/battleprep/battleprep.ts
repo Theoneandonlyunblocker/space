@@ -223,6 +223,7 @@ module Rance
           {
             leftLowerElement = UIComponents.Fleet(
             {
+              key: "playerFleet",
               fleet: this.props.battlePrep.playerFormation.slice(0),
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
@@ -243,7 +244,9 @@ module Rance
           {
             leftLowerElement = UIComponents.Fleet(
             {
+              key: "enemyFleet",
               fleet: this.props.battlePrep.enemyFormation,
+              facesLeft: true,
               hoveredUnit: this.state.hoveredUnit,
               activeUnit: this.state.selectedUnit,
 
@@ -259,6 +262,7 @@ module Rance
           {
             leftLowerElement = UIComponents.ItemList(
             {
+              key: "itemEquip",
               items: this.props.battlePrep.humanPlayer.items,
               isDraggable: true,
               onDragStart: this.handleItemDragStart,
