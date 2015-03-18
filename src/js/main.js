@@ -348,6 +348,7 @@ var Rance;
                         };
 
                         if (this.props.makeClone) {
+                            console.log(this.containerElement);
                             if (!this.makeDragClone) {
                                 var nextSibling = ownNode.nextSibling;
                                 var clone = ownNode.cloneNode(true);
@@ -378,8 +379,15 @@ var Rance;
                 var x = e.pageX - this.state.dragOffset.x;
                 var y = e.pageY - this.state.dragOffset.y;
 
-                var domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
-                var domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
+                var domWidth, domHeight;
+
+                if (this.state.clone) {
+                    domWidth = parseInt(this.state.clone.offsetWidth);
+                    domHeight = parseInt(this.state.clone.offsetHeight);
+                } else {
+                    domWidth = this.state.dragPos.width || parseInt(this.DOMNode.offsetWidth);
+                    domHeight = this.state.dragPos.height || parseInt(this.DOMNode.offsetHeight);
+                }
 
                 var containerWidth = parseInt(this.containerElement.offsetWidth);
                 var containerHeight = parseInt(this.containerElement.offsetHeight);
@@ -2233,8 +2241,6 @@ var Rance;
                 if (this.state.dragging && this.state.clone) {
                     this.state.clone.style.left = "" + this.state.dragPos.left + "px";
                     this.state.clone.style.top = "" + this.state.dragPos.top + "px";
-
-                    console.log(this.state.clone.style.left);
                 }
 
                 var cells = [];
@@ -2837,6 +2843,8 @@ var Rance;
                     case "playerFleet": {
                         leftLowerElement = Rance.UIComponents.Fleet({
                             fleet: this.props.battlePrep.playerFormation.slice(0),
+                            hoveredUnit: this.state.hoveredUnit,
+                            activeUnit: this.state.selectedUnit,
                             onMouseUp: this.handleDrop,
                             onUnitClick: this.setSelectedUnit,
                             isDraggable: true,
@@ -2850,6 +2858,8 @@ var Rance;
                     case "enemyFleet": {
                         leftLowerElement = Rance.UIComponents.Fleet({
                             fleet: this.props.battlePrep.enemyFormation,
+                            hoveredUnit: this.state.hoveredUnit,
+                            activeUnit: this.state.selectedUnit,
                             onUnitClick: this.setSelectedUnit,
                             isDraggable: false,
                             handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -2882,6 +2892,10 @@ var Rance;
                 }, "Enemy"), React.DOM.button({
                     onClick: this.autoMakeFormation
                 }, "Auto formation"), React.DOM.button({
+                    onClick: function () {
+                        app.reactUI.switchScene("galaxyMap");
+                    }
+                }, "Cancel"), React.DOM.button({
                     className: "battle-prep-controls-button",
                     onClick: function () {
                         var battle = this.props.battlePrep.makeBattle();

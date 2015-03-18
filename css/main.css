@@ -105,6 +105,7 @@ progress::-webkit-progress-value {
   height: 100%;
 }
 .reactui-selector {
+  display: none;
   max-width: 200px;
   flex: 0 0 auto;
 }
@@ -790,6 +791,16 @@ progress::-webkit-progress-value {
 .unit-list {
   flex-shrink: 1;
 }
+.unit-list .fixed-table-header-background {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
+.unit-list tr {
+  cursor: pointer;
+}
 .unit-list td {
   text-align: center;
 }
@@ -860,6 +871,57 @@ progress::-webkit-progress-value {
 .battle-prep > * {
   background-color: #0c1615;
 }
+.battle-prep .item-list .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.battle-prep .item-list .sortable {
+  cursor: pointer;
+  padding-right: 20px;
+}
+@media (max-width: 1100px) {
+  .battle-prep .item-list .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 1100px) {
+  .battle-prep .item-list .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .battle-prep .item-list .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .battle-prep .item-list .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+}
+.battle-prep .unit-list {
+  border-style: solid;
+  border-color: #c4e5fb;
+  border-width: 0 0 0 1px;
+}
 .battle-prep .unit-list .sort-icon {
   font-weight: 100;
   position: absolute;
@@ -869,12 +931,12 @@ progress::-webkit-progress-value {
   cursor: pointer;
   padding-right: 20px;
 }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .battle-prep .unit-list .sortable {
     padding-right: 2px;
   }
 }
-@media (min-width: 900px) {
+@media (min-width: 1100px) {
   .battle-prep .unit-list .unsorted::after {
     content: "\f0dc";
     font-family: FontAwesome;
@@ -922,28 +984,41 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: column;
   flex: 1 1 auto;
-  margin-right: 5px;
+  margin-right: 1.5em;
+  background-image: url("../img/bgTest.png");
 }
 @media (max-height: 600px) {
   .battle-prep-left .menu-unit-info-image {
     display: none;
   }
 }
-@media (max-height: 600px) {
-  .battle-prep-left .redundant-ability {
-    display: none;
-  }
+.battle-prep-left .redundant-ability {
+  display: none;
 }
 .battle-prep-left-upper {
+  display: flex;
   flex: 0 0 auto;
-  min-height: 15em;
+  min-height: 16em;
+  border-style: solid;
+  border-color: #c4e5fb;
+  border-width: 0 1px 1px 0;
+}
+@media (max-height: 600px) {
+  .battle-prep-left-upper {
+    min-height: calc(16em - 74px);
+  }
 }
 .battle-prep-left-controls {
   flex: 0 0 auto;
+  min-width: 1.5em;
+  background-color: #0d2335;
 }
 .battle-prep-left-lower {
   flex: 1 1 0%;
-  max-height: 300px;
+  background-color: #0c1615;
+  border-style: solid;
+  border-color: #c4e5fb;
+  border-width: 1px 1px 0 0;
 }
 .reserved-unit {
   background: #464b4a;
@@ -1410,7 +1485,7 @@ progress::-webkit-progress-value {
 }
 .possible-actions {
   position: relative;
-  bottom: -3px;
+  bottom: 0;
   display: flex;
   flex-flow: column;
   flex: 0 0 auto;
@@ -1627,6 +1702,52 @@ progress::-webkit-progress-value {
   -ms-user-select: none;
   user-select: none;
 }
+.item-equip .item-list .sort-icon {
+  font-weight: 100;
+  position: absolute;
+  right: 5px;
+}
+.item-equip .item-list .sortable {
+  cursor: pointer;
+  padding-right: 20px;
+}
+@media (max-width: 1200px) {
+  .item-equip .item-list .sortable {
+    padding-right: 2px;
+  }
+}
+@media (min-width: 1200px) {
+  .item-equip .item-list .unsorted::after {
+    content: "\f0dc";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .item-equip .item-list .sorted-asc::after {
+    content: "\f0de";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+  .item-equip .item-list .sorted-desc::after {
+    content: "\f0dd";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+  }
+}
 .item-equip .unit-list {
   max-height: 30em;
 }
@@ -1704,6 +1825,18 @@ progress::-webkit-progress-value {
 .reserved-item {
   background: #064b0a;
 }
+.item-list {
+  flex: 1 1 0%;
+  min-height: 15em;
+  background-color: #0c1615;
+}
+.item-list .fixed-table-header-background {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
 .item-equip-left {
   display: flex;
   flex-flow: column;
@@ -1711,63 +1844,6 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   margin-right: 5px;
   max-height: 30em;
-}
-.item-equip-left .item-list {
-  flex: 1 1 0%;
-  border-top: 1px solid #c4e5fb;
-}
-.item-equip-left .item-list .sort-icon {
-  font-weight: 100;
-  position: absolute;
-  right: 5px;
-}
-.item-equip-left .item-list .sortable {
-  cursor: pointer;
-  padding-right: 20px;
-}
-@media (max-width: 1200px) {
-  .item-equip-left .item-list .sortable {
-    padding-right: 2px;
-  }
-}
-@media (min-width: 1200px) {
-  .item-equip-left .item-list .unsorted::after {
-    content: "\f0dc";
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    font-weight: 100;
-    position: absolute;
-    right: 5px;
-  }
-  .item-equip-left .item-list .sorted-asc::after {
-    content: "\f0de";
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    font-weight: 100;
-    position: absolute;
-    right: 5px;
-  }
-  .item-equip-left .item-list .sorted-desc::after {
-    content: "\f0dd";
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    font-weight: 100;
-    position: absolute;
-    right: 5px;
-  }
-}
-.item-equip-left .item-list .fixed-table-header-background {
-  border: 0px solid transparent;
-  border-bottom-width: 3px;
-  border-top-width: 0px;
-  border-image-source: url("../img/uiBorderHorizontal.png");
-  border-image-slice: 10%;
 }
 @media (max-height: 700px) {
   .item-equip-left .redundant-ability {
@@ -1786,6 +1862,8 @@ progress::-webkit-progress-value {
   white-space: nowrap;
 }
 .menu-unit-info {
+  display: flex;
+  flex-flow: column;
   margin-bottom: 5px;
 }
 .menu-unit-info-image {
@@ -1794,6 +1872,9 @@ progress::-webkit-progress-value {
 .menu-unit-info-items-wrapper {
   display: flex;
   flex-flow: row;
+}
+.menu-unit-info-abilities {
+  flex: 1;
 }
 .redundant-ability {
   color: grey;
