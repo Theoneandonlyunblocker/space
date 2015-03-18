@@ -115,7 +115,7 @@ progress::-webkit-progress-value {
 .battle-pixi-container {
   width: 100%;
   height: 100%;
-  position: relative;
+  position: absolute;
 }
 .battle-pixi-container > * {
   position: absolute;
@@ -369,6 +369,7 @@ progress::-webkit-progress-value {
   width: 100%;
   flex: 0 0 auto;
   color: #eeeeec;
+  background-color: rgba(0, 0, 0, 0.5);
   border: 0px solid transparent;
   border-bottom-width: 0;
   border-top-width: 5px;
@@ -985,7 +986,6 @@ progress::-webkit-progress-value {
   flex-flow: column;
   flex: 1 1 auto;
   margin-right: 1.5em;
-  background-image: url("../img/bgTest.png");
 }
 @media (max-height: 600px) {
   .battle-prep-left .menu-unit-info-image {
@@ -995,8 +995,8 @@ progress::-webkit-progress-value {
 .battle-prep-left .redundant-ability {
   display: none;
 }
-.battle-prep-left-upper {
-  display: flex;
+.battle-prep-left-upper-wrapper {
+  position: relative;
   flex: 0 0 auto;
   min-height: 16em;
   border-style: solid;
@@ -1004,9 +1004,20 @@ progress::-webkit-progress-value {
   border-width: 0 1px 1px 0;
 }
 @media (max-height: 600px) {
-  .battle-prep-left-upper {
+  .battle-prep-left-upper-wrapper {
     min-height: calc(16em - 74px);
   }
+}
+.battle-prep-left-upper-wrapper canvas {
+  z-index: 0;
+}
+.battle-prep-left-upper-inner {
+  z-index: 1;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .battle-prep-left-controls {
   flex: 0 0 auto;
