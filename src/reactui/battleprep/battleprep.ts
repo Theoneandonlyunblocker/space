@@ -225,6 +225,8 @@ module Rance
             leftLowerElement = UIComponents.Fleet(
             {
               fleet: this.props.battlePrep.playerFormation.slice(0),
+              hoveredUnit: this.state.hoveredUnit,
+              activeUnit: this.state.selectedUnit,
 
               onMouseUp: this.handleDrop,
               onUnitClick: this.setSelectedUnit,
@@ -243,6 +245,8 @@ module Rance
             leftLowerElement = UIComponents.Fleet(
             {
               fleet: this.props.battlePrep.enemyFormation,
+              hoveredUnit: this.state.hoveredUnit,
+              activeUnit: this.state.selectedUnit,
 
               onUnitClick: this.setSelectedUnit,
               isDraggable: false,
@@ -290,6 +294,13 @@ module Rance
                 {
                   onClick: this.autoMakeFormation
                 }, "Auto formation"),
+                React.DOM.button(
+                {
+                  onClick: function()
+                  {
+                    app.reactUI.switchScene("galaxyMap");
+                  }
+                }, "Cancel"),
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
