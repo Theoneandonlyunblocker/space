@@ -26,6 +26,13 @@ module Rance
 
         switch (type)
         {
+          case "ability":
+          {
+            if (this.props.abilityTemplate)
+            {
+              cellProps.title = this.props.abilityTemplate.description;
+            }
+          }
           default:
           {
             cellContent = this.props[type];

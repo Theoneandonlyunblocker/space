@@ -44,6 +44,7 @@ module Rance
             cost: item.template.cost,
 
             ability: item.template.ability ? item.template.ability.displayName : "",
+            abilityTemplate: item.template.ability,
 
             isReserved: Boolean(item.unit),
 
