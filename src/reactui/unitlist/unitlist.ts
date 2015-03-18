@@ -40,6 +40,9 @@ module Rance
             noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
             isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
 
+            onMouseEnter: this.props.onMouseEnter,
+            onMouseLeave: this.props.onMouseLeave,
+
             isDraggable: this.props.isDraggable,
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd

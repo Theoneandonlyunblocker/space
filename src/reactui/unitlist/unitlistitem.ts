@@ -19,6 +19,17 @@ module Rance
         this.props.onDragEnd();
       },
 
+
+      handleMouseEnter: function(e)
+      {
+        this.props.onMouseEnter(this.props.unit);
+      },
+      handleMouseLeave: function(e)
+      {
+        this.props.onMouseLeave();
+      },
+
+
       makeCell: function(type: string)
       {
         var unit = this.props.unit;
@@ -99,6 +110,7 @@ module Rance
             this.handleMouseDown;
         }
 
+
         if (this.props.isSelected)
         {
           rowProps.className += " selected-unit";
@@ -120,6 +132,12 @@ module Rance
           rowProps.style = this.state.dragPos;
           rowProps.className += " dragging";
         }
+        else if (this.props.onMouseEnter)
+        {
+          rowProps.onMouseEnter = this.handleMouseEnter;
+          rowProps.onMouseLeave = this.handleMouseLeave;
+        }
+
 
         return(
           React.DOM.tr(rowProps,

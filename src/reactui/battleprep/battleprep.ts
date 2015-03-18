@@ -64,7 +64,6 @@ module Rance
 
       handleMouseEnterUnit: function(unit)
       {
-        console.log(Date.now(), "hover unit", unit.id)
         this.setState(
         {
           hoveredUnit: unit
@@ -73,7 +72,6 @@ module Rance
 
       handleMouseLeaveUnit: function()
       {
-        console.log(Date.now(), "clear hover")
         this.setState(
         {
           hoveredUnit: null
@@ -90,24 +88,20 @@ module Rance
       },
       handleDragEnd: function(dropSuccesful: boolean = false)
       {
-        console.log(Date.now(), "handleDragEnd", dropSuccesful, this.state.currentDragUnit);
         if (!dropSuccesful && this.state.currentDragUnit)
         {
-          console.log(Date.now(), "removeUnit", this.state.currentDragUnit);
           this.props.battlePrep.removeUnit(this.state.currentDragUnit);
         }
 
         this.setState(
         {
-          currentDragUnit: null,
-          hoveredUnit: null
+          currentDragUnit: null
         });
 
         return dropSuccesful;
       },
       handleDrop: function(position)
       {
-        console.log(Date.now(), "handleDrop")
         var battlePrep = this.props.battlePrep;
         if (this.state.currentDragUnit)
         {
@@ -325,7 +319,11 @@ module Rance
               isDraggable: this.state.leftLowerElement === "playerFleet",
               onDragStart: this.handleDragStart,
               onDragEnd: this.handleDragEnd,
-              onRowChange: this.handleSelectRow
+
+              onRowChange: this.handleSelectRow,
+
+              onMouseEnter: this.handleMouseEnterUnit,
+              onMouseLeave: this.handleMouseLeaveUnit
             })
           )
         );

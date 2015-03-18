@@ -1010,7 +1010,7 @@ progress::-webkit-progress-value {
 }
 .battle-prep-left-controls {
   flex: 0 0 auto;
-  min-width: 1.5em;
+  min-height: 1.5em;
   background-color: #0d2335;
 }
 .battle-prep-left-lower {

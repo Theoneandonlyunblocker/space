@@ -2009,6 +2009,12 @@ var Rance;
             onDragEnd: function (e) {
                 this.props.onDragEnd();
             },
+            handleMouseEnter: function (e) {
+                this.props.onMouseEnter(this.props.unit);
+            },
+            handleMouseLeave: function (e) {
+                this.props.onMouseLeave();
+            },
             makeCell: function (type) {
                 var unit = this.props.unit;
                 var cellProps = {};
@@ -2088,6 +2094,9 @@ var Rance;
                 if (this.state.dragging) {
                     rowProps.style = this.state.dragPos;
                     rowProps.className += " dragging";
+                } else if (this.props.onMouseEnter) {
+                    rowProps.onMouseEnter = this.handleMouseEnter;
+                    rowProps.onMouseLeave = this.handleMouseLeave;
                 }
 
                 return (React.DOM.tr(rowProps, cells));
@@ -2127,6 +2136,8 @@ var Rance;
                         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
                         noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
                         isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
+                        onMouseEnter: this.props.onMouseEnter,
+                        onMouseLeave: this.props.onMouseLeave,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
@@ -2725,13 +2736,11 @@ var Rance;
                 });
             },
             handleMouseEnterUnit: function (unit) {
-                console.log(Date.now(), "hover unit", unit.id);
                 this.setState({
                     hoveredUnit: unit
                 });
             },
             handleMouseLeaveUnit: function () {
-                console.log(Date.now(), "clear hover");
                 this.setState({
                     hoveredUnit: null
                 });
@@ -2744,21 +2753,17 @@ var Rance;
             },
             handleDragEnd: function (dropSuccesful) {
                 if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
-                console.log(Date.now(), "handleDragEnd", dropSuccesful, this.state.currentDragUnit);
                 if (!dropSuccesful && this.state.currentDragUnit) {
-                    console.log(Date.now(), "removeUnit", this.state.currentDragUnit);
                     this.props.battlePrep.removeUnit(this.state.currentDragUnit);
                 }
 
                 this.setState({
-                    currentDragUnit: null,
-                    hoveredUnit: null
+                    currentDragUnit: null
                 });
 
                 return dropSuccesful;
             },
             handleDrop: function (position) {
-                console.log(Date.now(), "handleDrop");
                 var battlePrep = this.props.battlePrep;
                 if (this.state.currentDragUnit) {
                     var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
@@ -2910,7 +2915,9 @@ var Rance;
                     isDraggable: this.state.leftLowerElement === "playerFleet",
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd,
-                    onRowChange: this.handleSelectRow
+                    onRowChange: this.handleSelectRow,
+                    onMouseEnter: this.handleMouseEnterUnit,
+                    onMouseLeave: this.handleMouseLeaveUnit
                 })));
             }
         });
