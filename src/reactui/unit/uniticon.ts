@@ -10,10 +10,9 @@ module Rance
       {
         var unit = this.props.unit;
 
-        var imageProps: any =
+        var containerProps: any =
         {
-          className: "unit-icon",
-          src: this.props.icon
+          className: "unit-icon-container"
         };
 
         var fillerProps: any =
@@ -24,28 +23,34 @@ module Rance
         if (this.props.isActiveUnit)
         {
           fillerProps.className += " active-border";
-          imageProps.className += " active-border";
+          containerProps.className += " active-border";
         }
 
         if (this.props.facesLeft)
         {
           fillerProps.className += " unit-border-right";
-          imageProps.className += " unit-border-no-right";
+          containerProps.className += " unit-border-no-right";
         }
         else
         {
           fillerProps.className += " unit-border-left";
-          imageProps.className += " unit-border-no-left";
+          containerProps.className += " unit-border-no-left";
         }
 
-        var middleElement = this.props.icon ?
-          React.DOM.img(imageProps) :
-          React.DOM.div(imageProps);
+        var iconImage = this.props.icon ?
+          React.DOM.img(
+          {
+            className: "unit-icon",
+            src: this.props.icon
+          }) :
+          null;
 
         return(
-          React.DOM.div({className: "unit-icon-container"},
+          React.DOM.div({className: "unit-icon-wrapper"},
             React.DOM.div(fillerProps),
-            middleElement,
+            React.DOM.div(containerProps,
+              iconImage
+            ),
             React.DOM.div(fillerProps)
           )
         );

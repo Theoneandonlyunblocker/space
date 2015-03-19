@@ -451,7 +451,7 @@ progress::-webkit-progress-value {
 .empty-unit .unit-container {
   background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0)) !important;
 }
-.empty-unit .unit-icon {
+.empty-unit .unit-icon-container {
   background-color: transparent !important;
 }
 .empty-unit .unit-info-name {
@@ -461,7 +461,7 @@ progress::-webkit-progress-value {
 .friendly-unit .unit-container {
   background: linear-gradient(to left, rgba(100, 120, 250, 0.5), rgba(100, 120, 250, 0.3));
 }
-.friendly-unit .unit-icon {
+.friendly-unit .unit-icon-container {
   background-color: rgba(100, 120, 250, 0.5);
 }
 .friendly-unit .unit-info-name {
@@ -475,7 +475,7 @@ progress::-webkit-progress-value {
 .enemy-unit .unit-container {
   background: linear-gradient(to right, rgba(250, 100, 120, 0.5), rgba(250, 100, 120, 0.3));
 }
-.enemy-unit .unit-icon {
+.enemy-unit .unit-icon-container {
   background-color: rgba(250, 100, 120, 0.5);
 }
 .enemy-unit .unit-info-name {
@@ -485,11 +485,12 @@ progress::-webkit-progress-value {
 .enemy-unit .unit-container {
   border: 1px solid #999999;
   border-left: 0;
+  left: 1px;
 }
 .active-unit.friendly-unit .unit-container {
   background: linear-gradient(to left, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
 }
-.active-unit.friendly-unit .unit-icon {
+.active-unit.friendly-unit .unit-icon-container {
   background-color: rgba(200, 200, 20, 0.5);
 }
 .active-unit.friendly-unit .unit-info-name {
@@ -502,7 +503,7 @@ progress::-webkit-progress-value {
 .active-unit.enemy-unit .unit-container {
   background: linear-gradient(to right, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));
 }
-.active-unit.enemy-unit .unit-icon {
+.active-unit.enemy-unit .unit-icon-container {
   background-color: rgba(200, 200, 20, 0.5);
 }
 .active-unit.enemy-unit .unit-info-name {
@@ -515,7 +516,7 @@ progress::-webkit-progress-value {
 .target-unit.friendly-unit .unit-container {
   background: linear-gradient(to left, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
 }
-.target-unit.friendly-unit .unit-icon {
+.target-unit.friendly-unit .unit-icon-container {
   background-color: rgba(20, 200, 20, 0.5);
 }
 .target-unit.friendly-unit .unit-info-name {
@@ -525,7 +526,7 @@ progress::-webkit-progress-value {
 .target-unit.enemy-unit .unit-container {
   background: linear-gradient(to right, rgba(20, 200, 20, 0.5), rgba(20, 200, 20, 0.3));
 }
-.target-unit.enemy-unit .unit-icon {
+.target-unit.enemy-unit .unit-icon-container {
   background-color: rgba(20, 200, 20, 0.5);
 }
 .target-unit.enemy-unit .unit-info-name {
@@ -656,16 +657,19 @@ progress::-webkit-progress-value {
 .unit-action-points > * {
   vertical-align: super;
 }
-.unit-icon-container {
+.unit-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-flow: column;
-  width: 20px;
+  width: 24px;
 }
-.unit-icon {
+.unit-icon-container {
+  display: flex;
   width: 100%;
-  flex: 0 20px;
+  flex: 0 24px;
+  align-items: center;
+  justify-content: center;
 }
 .unit-icon-filler {
   width: 100%;
@@ -2282,6 +2286,9 @@ progress::-webkit-progress-value {
 .item-purchase-list {
   color: #eeeeec;
   background-color: #0c1615;
+  border-style: solid;
+  border-color: #c4e5fb;
+  border-width: 1px;
   position: relative;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

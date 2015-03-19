@@ -244,9 +244,8 @@ var Rance;
             render: function () {
                 var unit = this.props.unit;
 
-                var imageProps = {
-                    className: "unit-icon",
-                    src: this.props.icon
+                var containerProps = {
+                    className: "unit-icon-container"
                 };
 
                 var fillerProps = {
@@ -255,20 +254,23 @@ var Rance;
 
                 if (this.props.isActiveUnit) {
                     fillerProps.className += " active-border";
-                    imageProps.className += " active-border";
+                    containerProps.className += " active-border";
                 }
 
                 if (this.props.facesLeft) {
                     fillerProps.className += " unit-border-right";
-                    imageProps.className += " unit-border-no-right";
+                    containerProps.className += " unit-border-no-right";
                 } else {
                     fillerProps.className += " unit-border-left";
-                    imageProps.className += " unit-border-no-left";
+                    containerProps.className += " unit-border-no-left";
                 }
 
-                var middleElement = this.props.icon ? React.DOM.img(imageProps) : React.DOM.div(imageProps);
+                var iconImage = this.props.icon ? React.DOM.img({
+                    className: "unit-icon",
+                    src: this.props.icon
+                }) : null;
 
-                return (React.DOM.div({ className: "unit-icon-container" }, React.DOM.div(fillerProps), middleElement, React.DOM.div(fillerProps)));
+                return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconImage), React.DOM.div(fillerProps)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1322,18 +1324,16 @@ var Rance;
             displayName: "BattleBackground",
             handleResize: function () {
                 var blurArea = this.props.getBlurArea();
-                console.log(blurArea, this.props.backgroundSeed);
 
                 this.props.renderer.blurProps = [
                     blurArea.left,
                     0,
                     blurArea.width,
                     blurArea.height,
-                    this.props.backgroundSeed
+                    "232.0568699.92311426176160617"
                 ];
             },
             componentDidMount: function () {
-                console.log(this.props.backgroundSeed);
                 this.props.renderer.isBattleBackground = true;
 
                 this.handleResize();
@@ -1784,9 +1784,6 @@ var Rance;
             },
             componentDidMount: function () {
                 var self = this;
-                if (this.props.autoSelect) {
-                    this.handleSelectRow(this.props.sortedItems[0]);
-                }
 
                 window.addEventListener("resize", this.setDesiredHeight, false);
 
@@ -1805,6 +1802,11 @@ var Rance;
                         }
                     }
                 });
+
+                if (this.props.autoSelect) {
+                    this.handleSelectRow(this.props.sortedItems[0]);
+                    this.getDOMNode().focus();
+                }
             },
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.setDesiredHeight);
@@ -2010,9 +2012,9 @@ var Rance;
                 });
 
                 return (React.DOM.div({
-                    className: "fixed-table-container"
+                    className: "fixed-table-container",
+                    tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
                 }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({ className: "fixed-table-container-inner", ref: "inner" }, React.DOM.table({
-                    tabIndex: 1,
                     className: "react-list"
                 }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
             }
@@ -2254,7 +2256,6 @@ var Rance;
                 ];
 
                 return (React.DOM.div({ className: "unit-list" }, Rance.UIComponents.List({
-                    ref: "list",
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.props.onRowChange,
@@ -2488,11 +2489,11 @@ var Rance;
                 }
 
                 return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
-                    ref: "list",
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
-                    onRowChange: this.props.onRowChange
+                    onRowChange: this.props.onRowChange,
+                    tabIndex: 2
                 })));
             }
         });
@@ -2736,7 +2737,6 @@ var Rance;
                     onDragEnd: this.handleDragEnd,
                     currentDragItem: this.state.currentDragItem
                 }), Rance.UIComponents.ItemList({
-                    ref: "itemList",
                     items: player.items,
                     // only used to trigger updates
                     selectedUnit: this.state.selectedUnit,
@@ -2745,7 +2745,6 @@ var Rance;
                     onDragEnd: this.handleDragEnd,
                     onRowChange: this.handleSelectRow
                 })), Rance.UIComponents.UnitList({
-                    ref: "unitList",
                     units: player.units,
                     selectedUnit: this.state.selectedUnit,
                     isDraggable: false,
@@ -5442,7 +5441,7 @@ var Rance;
                 },
                 isSquadron: true,
                 buildCost: 100,
-                icon: "img\/icons\/f.png",
+                icon: "img\/icons\/fa.png",
                 maxHealth: 0.7,
                 maxMovePoints: 2,
                 visionRange: 1,
@@ -5467,7 +5466,7 @@ var Rance;
                 },
                 isSquadron: true,
                 buildCost: 200,
-                icon: "img\/icons\/f.png",
+                icon: "img\/icons\/fb.png",
                 maxHealth: 0.5,
                 maxMovePoints: 1,
                 visionRange: 1,
@@ -5492,7 +5491,7 @@ var Rance;
                 },
                 isSquadron: false,
                 buildCost: 200,
-                icon: "img\/icons\/b.png",
+                icon: "img\/icons\/bc.png",
                 maxHealth: 1,
                 maxMovePoints: 1,
                 visionRange: 1,
@@ -5517,7 +5516,7 @@ var Rance;
                 },
                 isSquadron: true,
                 buildCost: 200,
-                icon: "img\/icons\/f.png",
+                icon: "img\/icons\/sc.png",
                 maxHealth: 0.6,
                 maxMovePoints: 2,
                 visionRange: 2,
@@ -5541,7 +5540,7 @@ var Rance;
                 },
                 isSquadron: false,
                 buildCost: 200,
-                icon: "img\/icons\/b.png",
+                icon: "img\/icons\/sh.png",
                 maxHealth: 0.9,
                 maxMovePoints: 1,
                 visionRange: 1,
@@ -16536,7 +16535,7 @@ var Rance;
 
             this.seed = Math.random();
 
-            // cool star bg seed 232.0568699.92311426176160617
+            // cool star bg seed 232.0568699.92311426176160617;
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {

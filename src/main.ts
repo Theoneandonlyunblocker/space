@@ -68,7 +68,7 @@ module Rance
       var self = this;
 
       this.seed = Math.random();
-      // cool star bg seed 232.0568699.92311426176160617
+      // cool star bg seed 232.0568699.92311426176160617;
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
