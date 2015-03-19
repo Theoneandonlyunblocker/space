@@ -161,7 +161,8 @@ module Rance
               listItems: rows,
               initialColumns: columns,
               initialSortOrder: [columns[1], columns[2]], // slot, unit
-              onRowChange: this.props.onRowChange
+              onRowChange: this.props.onRowChange,
+              tabIndex: 2
             })
           )
         );

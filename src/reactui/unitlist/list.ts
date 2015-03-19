@@ -28,10 +28,6 @@ module Rance
       componentDidMount: function()
       {
         var self = this;
-        if (this.props.autoSelect)
-        {
-          this.handleSelectRow(this.props.sortedItems[0]);
-        }
 
         window.addEventListener("resize", this.setDesiredHeight, false);
 
@@ -55,6 +51,12 @@ module Rance
             }
           }
         });
+
+        if (this.props.autoSelect)
+        {
+          this.handleSelectRow(this.props.sortedItems[0]);
+          this.getDOMNode().focus();
+        }
       },
 
       componentWillUnmount: function()
@@ -318,13 +320,13 @@ module Rance
         return(
           React.DOM.div(
             {
-              className: "fixed-table-container"
+              className: "fixed-table-container",
+              tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
             },
             React.DOM.div({className: "fixed-table-header-background"}),
             React.DOM.div({className: "fixed-table-container-inner", ref: "inner"},
               React.DOM.table(
               {
-                tabIndex: 1,
                 className: "react-list"
               },
                 React.DOM.colgroup(null,
