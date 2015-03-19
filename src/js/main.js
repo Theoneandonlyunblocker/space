@@ -11600,6 +11600,7 @@ var Rance;
     Rance.edgesEqual = edgesEqual;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
+/// <reference path="../lib/quadtree.d.ts" />
 /// <reference path="../data/templates/mapgentemplates.ts" />
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
@@ -11650,6 +11651,8 @@ var Rance;
             if (!isConnected) {
                 return this.makeMap(options);
             }
+
+            this.makeTreeMap();
 
             this.sectors = this.makeSectors(3, 5);
             this.setResources();
@@ -11912,6 +11915,25 @@ var Rance;
             }
 
             return triangles;
+        };
+        MapGen.prototype.makeTreeMap = function () {
+            var treeMap = new QuadTree({
+                x: 0,
+                y: 0,
+                width: this.maxWidth * 2,
+                height: this.maxHeight * 2
+            });
+
+            var points = this.getNonFillerPoints();
+
+            for (var i = 0; i < points.length; i++) {
+                var cell = points[i].voronoiCell;
+                var bbox = cell.getBbox();
+                bbox.cell = cell;
+                treeMap.insert(bbox);
+            }
+
+            this.voronoiTreeMap = treeMap;
         };
         MapGen.prototype.getVerticesFromCell = function (cell) {
             var vertices = [];
@@ -12501,8 +12523,8 @@ var Rance;
                         gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
                         gfx.mousedown = mouseDownFN;
                         gfx.mouseup = mouseUpFN;
-                        gfx.click = function (event) {
-                            if (event.originalEvent.button !== 0)
+                        gfx.click = gfx.tap = function (event) {
+                            if (event.originalEvent.button)
                                 return;
 
                             onClickFN(this.star);
@@ -12517,6 +12539,28 @@ var Rance;
 
                     // gets set to 0 without this reference. no idea
                     doc.height;
+
+                    doc.interactive = true;
+
+                    // needs to be set or touchmove events wont be called
+                    doc.touchstart = function (event) {
+                        console.log("doc touchstart", event);
+                    };
+                    doc.touchmove = function (event) {
+                        var local = event.getLocalPosition(doc);
+                        var items = map.mapGen.voronoiTreeMap.retrieve(local);
+                        for (var i = 0; i < items.length; i++) {
+                            var cell = items[i].cell;
+
+                            if (cell.pointIntersection(local.x, local.y) > 0) {
+                                console.log("match", cell.site.id);
+                                return;
+                                ;
+                            }
+                        }
+                        console.log(local);
+                    };
+
                     return doc;
                 }
             };
@@ -14046,7 +14090,6 @@ var Rance;
             }
         };
         ShaderManager.prototype.initNebula = function () {
-            console.log("initNebula");
             var nebulaColorScheme = Rance.generateColorScheme();
 
             var lightness = Rance.randRange(1.1, 1.3);

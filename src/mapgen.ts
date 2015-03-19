@@ -1,4 +1,5 @@
 /// <reference path="../lib/voronoi.d.ts" />
+/// <reference path="../lib/quadtree.d.ts" />
 
 /// <reference path="../data/templates/mapgentemplates.ts" />
 
@@ -28,7 +29,9 @@ module Rance
       [id: number]: Sector;
     };
     triangles: Triangle[] = [];
+
     voronoiDiagram: any;
+    voronoiTreeMap: any;
 
     nonFillerVoronoiLines:
     {
@@ -101,6 +104,8 @@ module Rance
       {
         return this.makeMap(options);
       }
+
+      this.makeTreeMap();
 
       this.sectors = this.makeSectors(3, 5);
       this.setResources();
@@ -401,11 +406,12 @@ module Rance
 
       this.voronoiDiagram = diagram;
 
+
       for (var i = 0; i < diagram.cells.length; i++)
       {
         var cell = diagram.cells[i];
         cell.site.voronoiCell = cell;
-        cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell)
+        cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
       }
     }
     cleanTriangles(triangles: Triangle[], superTriangle: Triangle)
@@ -419,6 +425,28 @@ module Rance
       }
 
       return triangles;
+    }
+    makeTreeMap()
+    {
+      var treeMap = new QuadTree(
+      {
+        x: 0,
+        y: 0,
+        width: this.maxWidth * 2,
+        height: this.maxHeight * 2
+      });
+
+      var points = this.getNonFillerPoints();
+
+      for (var i = 0; i < points.length; i++)
+      {
+        var cell = points[i].voronoiCell;
+        var bbox = cell.getBbox();
+        bbox.cell = cell;
+        treeMap.insert(bbox);
+      }
+
+      this.voronoiTreeMap = treeMap;
     }
     getVerticesFromCell(cell: any)
     {

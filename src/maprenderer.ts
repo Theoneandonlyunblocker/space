@@ -323,9 +323,9 @@ module Rance
             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
             gfx.mousedown = mouseDownFN;
             gfx.mouseup = mouseUpFN;
-            gfx.click = function(event)
+            gfx.click = gfx.tap = function(event)
             {
-              if (event.originalEvent.button !== 0) return;
+              if (event.originalEvent.button) return;
 
               onClickFN(this.star);
             }.bind(gfx);
@@ -336,9 +336,32 @@ module Rance
 
             doc.addChild(gfx);
           }
-
           // gets set to 0 without this reference. no idea
           doc.height;
+
+          doc.interactive = true;
+          // needs to be set or touchmove events wont be called
+          doc.touchstart = function(event)
+          {
+            console.log("doc touchstart", event);
+          }
+          doc.touchmove = function(event: any)
+          {
+            var local = event.getLocalPosition(doc);
+            var items = map.mapGen.voronoiTreeMap.retrieve(local);
+            for (var i = 0; i < items.length; i++)
+            {
+              var cell = items[i].cell;
+
+              if (cell.pointIntersection(local.x, local.y) > 0)
+              {
+                console.log("match", cell.site.id);
+                return;;
+              }
+            }
+            console.log(local);
+          }
+
           return doc;
         }
       }

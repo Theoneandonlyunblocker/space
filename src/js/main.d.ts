@@ -6,6 +6,7 @@
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
+/// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
 declare module Rance {
     function EventManager(): void;
@@ -1693,6 +1694,7 @@ declare module Rance {
         };
         public triangles: Rance.Triangle[];
         public voronoiDiagram: any;
+        public voronoiTreeMap: any;
         public nonFillerVoronoiLines: {
             [visibility: string]: any[];
         };
@@ -1745,6 +1747,7 @@ declare module Rance {
         public severArmLinks(): void;
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
+        public makeTreeMap(): void;
         public getVerticesFromCell(cell: any): any[];
         public relaxPointsOnce(dampeningFactor?: number): void;
         public relaxPoints(options: {
