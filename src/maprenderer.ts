@@ -283,18 +283,22 @@ module Rance
           {
             eventManager.dispatchEvent("starClick", star);
           }
-          var rightDownFN = function(star)
+          var rightDownFN = function(event)
           {
-            eventManager.dispatchEvent("startPotentialMove", star);
+            eventManager.dispatchEvent("mouseDown", event);
           }
           var rightUpFN = function(star)
           {
+            eventManager.dispatchEvent("mouseUp", null);
             eventManager.dispatchEvent("starRightClick", star);
-            eventManager.dispatchEvent("endPotentialMove");
           }
           var mouseOverFN = function(star)
           {
-            eventManager.dispatchEvent("setPotentialMoveTarget", star);
+            eventManager.dispatchEvent("hoverStar", star);
+          }
+          var mouseOutFN = function(event)
+          {
+            eventManager.dispatchEvent("clearHover");
           }
           for (var i = 0; i < points.length; i++)
           {
@@ -325,9 +329,10 @@ module Rance
 
               onClickFN(this.star);
             }.bind(gfx);
-            gfx.rightdown = rightDownFN.bind(gfx, star);
+            gfx.rightdown = rightDownFN;
             gfx.rightup = rightUpFN.bind(gfx, star);
             gfx.mouseover = mouseOverFN.bind(gfx, star);
+            gfx.mouseout = mouseOutFN;
 
             doc.addChild(gfx);
           }
@@ -846,6 +851,10 @@ module Rance
           {
             eventManager.dispatchEvent("mouseUp", event);
           }
+          var mouseOverFN = function(fleet)
+          {
+            eventManager.dispatchEvent("hoverStar", fleet.location);
+          }
 
           function fleetClickFn(fleet: Fleet)
           {
@@ -893,6 +902,7 @@ module Rance
 
             containerGfx.mousedown = mouseDownFN;
             containerGfx.mouseup = mouseUpFN;
+            containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
 
             containerGfx.addChild(text);
             text.x += 2;

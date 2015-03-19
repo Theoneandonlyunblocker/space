@@ -1980,14 +1980,17 @@ declare module Rance {
         public currPoint: number[];
         public currAction: string;
         public stashedAction: string;
-        public preventingGhost: boolean;
+        public hoveredStar: Rance.Star;
+        public preventingGhost: {
+            [type: string]: any;
+        };
         public listeners: {
             [name: string]: any;
         };
         constructor(renderer: Rance.Renderer, camera: Rance.Camera);
         public addEventListeners(): void;
         public destroy(): void;
-        public preventGhost(delay: number): void;
+        public preventGhost(delay: number, type: string): void;
         public mouseDown(event: any, targetType: string): void;
         public mouseMove(event: any, targetType: string): void;
         public mouseUp(event: any, targetType: string): void;
@@ -1997,6 +2000,12 @@ declare module Rance {
         public zoomMove(event: any): void;
         public endZoom(event: any): void;
         public startZoom(event: any): void;
+        public setHoveredStar(star: Rance.Star): void;
+        public clearHoveredStar(): void;
+        public startFleetMove(event: any): void;
+        public setFleetMoveTarget(star: Rance.Star): void;
+        public completeFleetMove(): void;
+        public clearFleetMoveTarget(): void;
         public startSelect(event: any): void;
         public dragSelect(event: any): void;
         public endSelect(event: any): void;

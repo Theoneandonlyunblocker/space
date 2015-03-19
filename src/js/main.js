@@ -1330,7 +1330,7 @@ var Rance;
                     0,
                     blurArea.width,
                     blurArea.height,
-                    "232.0568699.92311426176160617"
+                    this.props.backgroundSeed
                 ];
             },
             componentDidMount: function () {
@@ -10715,6 +10715,7 @@ var Rance;
     var ReactUI = (function () {
         function ReactUI(container) {
             this.container = container;
+            React.initializeTouchEvents(true);
             this.addEventListeners();
         }
         ReactUI.prototype.addEventListeners = function () {
@@ -12468,15 +12469,18 @@ var Rance;
                     var onClickFN = function (star) {
                         Rance.eventManager.dispatchEvent("starClick", star);
                     };
-                    var rightDownFN = function (star) {
-                        Rance.eventManager.dispatchEvent("startPotentialMove", star);
+                    var rightDownFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseDown", event);
                     };
                     var rightUpFN = function (star) {
+                        Rance.eventManager.dispatchEvent("mouseUp", null);
                         Rance.eventManager.dispatchEvent("starRightClick", star);
-                        Rance.eventManager.dispatchEvent("endPotentialMove");
                     };
                     var mouseOverFN = function (star) {
-                        Rance.eventManager.dispatchEvent("setPotentialMoveTarget", star);
+                        Rance.eventManager.dispatchEvent("hoverStar", star);
+                    };
+                    var mouseOutFN = function (event) {
+                        Rance.eventManager.dispatchEvent("clearHover");
                     };
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
@@ -12503,9 +12507,10 @@ var Rance;
 
                             onClickFN(this.star);
                         }.bind(gfx);
-                        gfx.rightdown = rightDownFN.bind(gfx, star);
+                        gfx.rightdown = rightDownFN;
                         gfx.rightup = rightUpFN.bind(gfx, star);
                         gfx.mouseover = mouseOverFN.bind(gfx, star);
+                        gfx.mouseout = mouseOutFN;
 
                         doc.addChild(gfx);
                     }
@@ -12954,6 +12959,9 @@ var Rance;
                     var mouseUpFN = function (event) {
                         Rance.eventManager.dispatchEvent("mouseUp", event);
                     };
+                    var mouseOverFN = function (fleet) {
+                        Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
+                    };
 
                     function fleetClickFn(fleet) {
                         Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
@@ -12996,6 +13004,7 @@ var Rance;
 
                         containerGfx.mousedown = mouseDownFN;
                         containerGfx.mouseup = mouseUpFN;
+                        containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
 
                         containerGfx.addChild(text);
                         text.x += 2;
@@ -13545,14 +13554,14 @@ var Rance;
             var popups = document.getElementsByClassName("popup-container")[0];
             if (popups)
                 popups.classList.add("prevent-pointer-events");
-
-            this.setSelectionTargets();
         };
         RectangleSelect.prototype.moveSelection = function (point) {
             this.current = point;
             this.drawSelectionRectangle();
         };
         RectangleSelect.prototype.endSelection = function (point) {
+            this.setSelectionTargets();
+
             this.selecting = false;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
@@ -13636,7 +13645,7 @@ var Rance;
 (function (Rance) {
     var MouseEventHandler = (function () {
         function MouseEventHandler(renderer, camera) {
-            this.preventingGhost = false;
+            this.preventingGhost = {};
             this.listeners = {};
             this.renderer = renderer;
             this.camera = camera;
@@ -13678,18 +13687,28 @@ var Rance;
             this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
                 self.mouseUp(e.content, "world");
             });
+
+            this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (e) {
+                self.setHoveredStar(e.content);
+            });
+            this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function (e) {
+                self.clearHoveredStar();
+            });
         };
         MouseEventHandler.prototype.destroy = function () {
             for (var name in this.listeners) {
                 Rance.eventManager.removeEventListener(name, this.listeners[name]);
             }
         };
-        MouseEventHandler.prototype.preventGhost = function (delay) {
-            this.preventingGhost = true;
+        MouseEventHandler.prototype.preventGhost = function (delay, type) {
+            if (this.preventingGhost[type]) {
+                window.clearTimeout(this.preventingGhost[type]);
+            }
+
             var self = this;
-            var timeout = window.setTimeout(function () {
-                self.preventingGhost = false;
-                window.clearTimeout(timeout);
+
+            this.preventingGhost[type] = window.setTimeout(function () {
+                self.preventingGhost[type] = null;
             }, delay);
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
@@ -13698,8 +13717,10 @@ var Rance;
                     this.startScroll(event);
                 }
             } else if (targetType === "world") {
-                if (event.originalEvent.button === 0) {
+                if (event.originalEvent.button === 0 || !isFinite(event.originalEvent.button)) {
                     this.startSelect(event);
+                } else if (event.originalEvent.button === 2) {
+                    this.startFleetMove(event);
                 }
             }
         };
@@ -13720,19 +13741,22 @@ var Rance;
         MouseEventHandler.prototype.mouseUp = function (event, targetType) {
             if (this.currAction === undefined)
                 return;
-
             if (targetType === "stage") {
                 if (this.currAction === "scroll") {
                     this.endScroll(event);
-                    this.preventGhost(15);
+                    this.preventGhost(15, "mouseUp");
                 } else if (this.currAction === "zoom") {
                     this.endZoom(event);
-                    this.preventGhost(15);
+                    this.preventGhost(15, "mouseUp");
                 }
             } else {
                 if (this.currAction === "select") {
-                    if (!this.preventingGhost)
+                    if (!this.preventingGhost["mouseUp"])
                         this.endSelect(event);
+                }
+                if (this.currAction === "fleetMove") {
+                    if (!this.preventingGhost["mouseUp"])
+                        this.completeFleetMove();
                 }
             }
         };
@@ -13768,6 +13792,43 @@ var Rance;
                 this.stashedAction = "select";
             this.currAction = "zoom";
             this.startPoint = this.currPoint = [event.global.x, event.global.y];
+        };
+        MouseEventHandler.prototype.setHoveredStar = function (star) {
+            var sameAsOld = this.hoveredStar === star;
+            this.hoveredStar = star;
+            this.preventGhost(30, "hover");
+            if (!sameAsOld) {
+                this.setFleetMoveTarget(star);
+            }
+        };
+
+        MouseEventHandler.prototype.clearHoveredStar = function () {
+            var timeout = window.setTimeout(function () {
+                if (!this.preventingGhost["hover"]) {
+                    this.hoveredStar = null;
+                    this.clearFleetMoveTarget();
+                }
+                window.clearTimeout(timeout);
+            }.bind(this), 15);
+        };
+
+        MouseEventHandler.prototype.startFleetMove = function (event) {
+            Rance.eventManager.dispatchEvent("startPotentialMove", event.target.star);
+            this.currAction = "fleetMove";
+        };
+        MouseEventHandler.prototype.setFleetMoveTarget = function (star) {
+            if (this.currAction !== "fleetMove")
+                return;
+            Rance.eventManager.dispatchEvent("setPotentialMoveTarget", star);
+        };
+        MouseEventHandler.prototype.completeFleetMove = function () {
+            Rance.eventManager.dispatchEvent("endPotentialMove");
+            this.currAction = undefined;
+        };
+        MouseEventHandler.prototype.clearFleetMoveTarget = function () {
+            if (this.currAction !== "fleetMove")
+                return;
+            Rance.eventManager.dispatchEvent("clearPotentialMoveTarget");
         };
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currAction = "select";
@@ -13985,6 +14046,7 @@ var Rance;
             }
         };
         ShaderManager.prototype.initNebula = function () {
+            console.log("initNebula");
             var nebulaColorScheme = Rance.generateColorScheme();
 
             var lightness = Rance.randRange(1.1, 1.3);

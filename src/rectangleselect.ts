@@ -44,8 +44,6 @@ module Rance
 
       var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
       if (popups) popups.classList.add("prevent-pointer-events");
-
-      this.setSelectionTargets();
     }
     moveSelection(point: Point)
     {
@@ -54,6 +52,8 @@ module Rance
     }
     endSelection(point: Point)
     {
+      this.setSelectionTargets();
+
       this.selecting = false;
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
       if (ui) ui.classList.remove("prevent-pointer-events");

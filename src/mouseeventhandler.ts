@@ -17,7 +17,13 @@ module Rance
     currAction: string;
     stashedAction: string;
 
-    preventingGhost: boolean = false;
+    hoveredStar: Star;
+
+    preventingGhost:
+    {
+      [type: string]: any;
+    } = {};
+
     listeners:
     {
       [name: string]: any;
@@ -68,6 +74,15 @@ module Rance
       {
         self.mouseUp(e.content, "world");
       });
+
+      this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar", function(e)
+      {
+        self.setHoveredStar(e.content);
+      });
+      this.listeners["clearHover"] = eventManager.addEventListener("clearHover", function(e)
+      {
+        self.clearHoveredStar();
+      });
     }
     destroy()
     {
@@ -76,14 +91,18 @@ module Rance
         eventManager.removeEventListener(name, this.listeners[name]);
       }
     }
-    preventGhost(delay: number)
+    preventGhost(delay: number, type: string)
     {
-      this.preventingGhost = true;
-      var self = this;
-      var timeout = window.setTimeout(function()
+      if (this.preventingGhost[type])
       {
-        self.preventingGhost = false;
-        window.clearTimeout(timeout);
+        window.clearTimeout(this.preventingGhost[type]);
+      }
+
+      var self = this;
+
+      this.preventingGhost[type] = window.setTimeout(function()
+      {
+        self.preventingGhost[type] = null
       }, delay);
     }
     mouseDown(event, targetType: string)
@@ -102,9 +121,14 @@ module Rance
       }
       else if (targetType === "world")
       {
-        if (event.originalEvent.button === 0)
+        if (event.originalEvent.button === 0 ||
+          !isFinite(event.originalEvent.button))
         {
           this.startSelect(event);
+        }
+        else if (event.originalEvent.button === 2)
+        {
+          this.startFleetMove(event);
         }
       }
     }
@@ -133,25 +157,28 @@ module Rance
     mouseUp(event, targetType: string)
     {
       if (this.currAction === undefined) return;
-
       if (targetType === "stage")
       {
         if (this.currAction === "scroll")
         {
           this.endScroll(event);
-          this.preventGhost(15);
+          this.preventGhost(15, "mouseUp");
         }
         else if (this.currAction === "zoom")
         {
           this.endZoom(event);
-          this.preventGhost(15);
+          this.preventGhost(15, "mouseUp");
         }
       }
       else
       {
         if (this.currAction === "select")
         {
-          if (!this.preventingGhost) this.endSelect(event);
+          if (!this.preventingGhost["mouseUp"]) this.endSelect(event);
+        }
+        if (this.currAction === "fleetMove")
+        {
+          if (!this.preventingGhost["mouseUp"]) this.completeFleetMove();
         }
       }
     }
@@ -192,6 +219,50 @@ module Rance
       if (this.currAction === "select") this.stashedAction = "select";
       this.currAction = "zoom";
       this.startPoint = this.currPoint = [event.global.x, event.global.y];
+    }
+    setHoveredStar(star: Star)
+    {
+      var sameAsOld = this.hoveredStar === star;
+      this.hoveredStar = star;
+      this.preventGhost(30, "hover");
+      if (!sameAsOld)
+      {
+        this.setFleetMoveTarget(star);
+      }
+    }
+
+    clearHoveredStar()
+    {
+      var timeout = window.setTimeout(function()
+      {
+        if (!this.preventingGhost["hover"])
+        {
+          this.hoveredStar = null;
+          this.clearFleetMoveTarget();
+        }
+        window.clearTimeout(timeout);
+      }.bind(this), 15);
+    }
+
+    startFleetMove(event)
+    {
+      eventManager.dispatchEvent("startPotentialMove", event.target.star);
+      this.currAction = "fleetMove";
+    }
+    setFleetMoveTarget(star: Star)
+    {
+      if (this.currAction !== "fleetMove") return;
+      eventManager.dispatchEvent("setPotentialMoveTarget", star);
+    }
+    completeFleetMove()
+    {
+      eventManager.dispatchEvent("endPotentialMove");
+      this.currAction = undefined;
+    }
+    clearFleetMoveTarget()
+    {
+      if (this.currAction !== "fleetMove") return;
+      eventManager.dispatchEvent("clearPotentialMoveTarget");
     }
     startSelect(event)
     {

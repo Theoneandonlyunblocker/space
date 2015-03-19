@@ -765,9 +765,10 @@ progress::-webkit-progress-value {
   position: relative;
   width: 100%;
   padding-top: 1.5em;
+  overflow-x: hidden;
 }
 .fixed-table-container-inner {
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
   height: 100%;
 }
@@ -1194,12 +1195,19 @@ progress::-webkit-progress-value {
 .light-box-container {
   position: relative;
   background-color: #0d2335;
-  max-width: 95%;
   max-height: 90%;
   padding: 25px;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
+}
+@media (max-width: 900px) {
+  .light-box-container {
+    padding-left: 0;
+    padding-right: 0;
+    border-left: 0;
+    border-right: 0;
+  }
 }
 .light-box-content {
   position: relative;

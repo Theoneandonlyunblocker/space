@@ -1208,11 +1208,12 @@ progress::-webkit-progress-value { background: #080; }
   // height is set dynamically in react component to equal parent height
   width: 100%;
   padding-top: 1.5em;
+  overflow-x: hidden;
 }
 
 .fixed-table-container-inner
 {
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
   height: 100%;
 }
@@ -1635,11 +1636,18 @@ progress::-webkit-progress-value { background: #080; }
 {
   position: relative;
   background-color: @bg-color2;
-  max-width: 95%;
   max-height: 90%;
   padding: 25px;
 
   .full-border(5px);
+
+  @media(max-width: 900px)
+  {
+    padding-left: 0;
+    padding-right: 0;
+    border-left: 0;
+    border-right: 0;
+  }
 }
 
 .light-box-content

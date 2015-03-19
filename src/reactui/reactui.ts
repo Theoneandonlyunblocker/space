@@ -21,6 +21,7 @@ module Rance
     
     constructor(public container: HTMLElement)
     {
+      React.initializeTouchEvents(true);
       this.addEventListeners();
     }
     addEventListeners()
