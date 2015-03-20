@@ -10,7 +10,7 @@ module Rance
       {
         return(
         {
-          dragThreshhold: 5
+          dragThreshhold: 0
         });
       },
       getInitialState: function()
@@ -40,7 +40,24 @@ module Rance
       },
       handleMouseDown: function(e)
       {
+        e.preventDefault();
+
+        if (this.state.dragging) return;
+
         var clientRect = this.getDOMNode().getBoundingClientRect();
+
+        var e;
+        if (isFinite(e.clientX))
+        {
+          e = e;
+        }
+        else
+        {
+          e = e.touches[0];
+          this.needsFirstTouchUpdate = true;
+          this.touchEventTarget = e.target;
+        }
+
 
         this.addEventListeners();
 
@@ -65,9 +82,19 @@ module Rance
           },
           dragOffset: dragOffset
         });
+
+        if (this.props.dragThreshhold <= 0)
+        {
+          this.handleMouseMove(e);
+        }
       },
       handleMouseMove: function(e)
       {
+        if (e.preventDefault) e.preventDefault();
+
+        var e = e.clientX ? e : e.touches[0];
+
+
         if (e.clientX === 0 && e.clientY === 0) return;
 
 
@@ -77,6 +104,7 @@ module Rance
           var deltaY = Math.abs(e.pageY - this.state.mouseDownPosition.y);
 
           var delta = deltaX + deltaY;
+
 
           if (delta >= this.props.dragThreshhold)
           {
@@ -112,6 +140,7 @@ module Rance
             }
 
             this.setState(stateObj);
+            this.forceUpdate();
 
             if (this.onDragStart)
             {
@@ -194,6 +223,8 @@ module Rance
       },
       handleMouseUp: function(e)
       {
+        console.log("mouseUp", e);
+
         this.setState(
         {
           mouseDown: false,
@@ -243,12 +274,26 @@ module Rance
         var self = this;
         this.containerElement.addEventListener("mousemove", self.handleMouseMove);
         document.addEventListener("mouseup", self.handleMouseUp);
+
+        if (this.touchEventTarget)
+        {
+          this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
+          this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
+        }
       },
       removeEventListeners: function()
       {
         var self = this;
         this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
         document.removeEventListener("mouseup", self.handleMouseUp);
+
+        if (this.touchEventTarget)
+        {
+          this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
+          this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
+          this.touchEventTarget = null;
+        }
+
       },
       componentDidMount: function() {
         this.DOMNode = this.getDOMNode();

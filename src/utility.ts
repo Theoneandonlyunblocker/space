@@ -381,4 +381,33 @@ module Rance
       return (value - min) / (max - min);
     }
   }
+  export function getDropTargetAtLocation(x: number, y: number)
+  {
+    var dropTargets = document.getElementsByClassName("drop-target");
+    var point =
+    {
+      x: x,
+      y: y
+    }
+
+    for (var i = 0; i < dropTargets.length; i++)
+    {
+      var node = <HTMLElement> dropTargets[i];
+      var nodeBounds = node.getBoundingClientRect();
+
+      var rect =
+      {
+        x1: nodeBounds.left,
+        x2: nodeBounds.right,
+        y1: nodeBounds.top,
+        y2: nodeBounds.bottom
+      }
+      if (rectContains(rect, point))
+      {
+        return node;
+      }
+    }
+
+    return null;
+  }
 }

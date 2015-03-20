@@ -12,6 +12,16 @@ module Rance
         this.props.onMouseUp(this.props.slot);
       },
 
+      componentDidMount: function()
+      {
+        console.log("update", this._rootNodeID);
+      },
+
+      componentDidUpdate: function()
+      {
+        console.log("update", this._rootNodeID);
+      },
+
       render: function()
       {
         var allElements = [];
@@ -34,12 +44,12 @@ module Rance
           var dragItem = this.props.currentDragItem;
           if (dragItem.template.slot === this.props.slot)
           {
-
+            wrapperProps.className += " drop-target";
           }
           else
           {
             wrapperProps.onMouseUp = null;
-            wrapperProps.className += " invalid-drop-target"
+            wrapperProps.className += " invalid-drop-target";
           }
         }
         

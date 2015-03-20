@@ -85,7 +85,7 @@ module Rance
       {
         self.selectStar(e.data);
       });
-      this.addEventListener("starRightClick", function(e)
+      this.addEventListener("moveFleets", function(e)
       {
         self.moveFleets(e.data);
       });

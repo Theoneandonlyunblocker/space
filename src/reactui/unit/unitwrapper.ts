@@ -81,12 +81,12 @@ module Rance
 
         var wrapperProps: any =
         {
-          className: "unit-wrapper"
+          className: "unit-wrapper drop-target"
         };
 
         if (this.props.onMouseUp)
         {
-          wrapperProps.onMouseUp = this.handleMouseUp
+          wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp
         };
         if (this.props.activeEffectUnits)
         {

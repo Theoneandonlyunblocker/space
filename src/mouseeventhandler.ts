@@ -165,16 +165,16 @@ module Rance
     }
     touchEnd(event, targetType: string)
     {
-      console.log("touchEnd", event, targetType);
+      console.log("touchEnd", event, targetType, this.currentAction);
       if (targetType === "world")
       {
         if (this.currentAction === "select")
         {
-          if (!this.preventingGhost["mouseUp"]) this.endSelect(event);
+          this.endSelect(event);
         }
         if (this.currentAction === "fleetMove")
         {
-          if (!this.preventingGhost["mouseUp"]) this.completeFleetMove();
+          this.completeFleetMove();
         }
       }
       else
@@ -261,13 +261,9 @@ module Rance
     }
     setHoveredStar(star: Star)
     {
-      var sameAsOld = this.hoveredStar === star;
       this.hoveredStar = star;
       this.preventGhost(30, "hover");
-      if (!sameAsOld)
-      {
-        this.setFleetMoveTarget(star);
-      }
+      this.setFleetMoveTarget(star);
     }
 
     clearHoveredStar()
@@ -296,6 +292,10 @@ module Rance
     }
     completeFleetMove()
     {
+      if (this.hoveredStar)
+      {
+        eventManager.dispatchEvent("moveFleets", this.hoveredStar);
+      }
       eventManager.dispatchEvent("endPotentialMove");
       this.currentAction = undefined;
     }
@@ -317,10 +317,6 @@ module Rance
     {
       this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
       this.currentAction = undefined;
-    }
-    hover(event)
-    {
-
     }
 
   }

@@ -290,7 +290,6 @@ module Rance
           var rightUpFN = function(star)
           {
             eventManager.dispatchEvent("mouseUp", null);
-            eventManager.dispatchEvent("starRightClick", star);
           }
           var mouseOverFN = function(star)
           {
@@ -931,7 +930,7 @@ module Rance
             containerGfx.interactive = true;
             if (fleet.player.id === self.player.id)
             {
-              containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+              containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
             }
 
             containerGfx.mousedown = mouseDownFN;

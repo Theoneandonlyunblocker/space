@@ -283,7 +283,7 @@ var Rance;
         UIComponents.Draggable = {
             getDefaultProps: function () {
                 return ({
-                    dragThreshhold: 5
+                    dragThreshhold: 0
                 });
             },
             getInitialState: function () {
@@ -306,7 +306,21 @@ var Rance;
                 });
             },
             handleMouseDown: function (e) {
+                e.preventDefault();
+
+                if (this.state.dragging)
+                    return;
+
                 var clientRect = this.getDOMNode().getBoundingClientRect();
+
+                var e;
+                if (isFinite(e.clientX)) {
+                    e = e;
+                } else {
+                    e = e.touches[0];
+                    this.needsFirstTouchUpdate = true;
+                    this.touchEventTarget = e.target;
+                }
 
                 this.addEventListeners();
 
@@ -327,8 +341,17 @@ var Rance;
                     },
                     dragOffset: dragOffset
                 });
+
+                if (this.props.dragThreshhold <= 0) {
+                    this.handleMouseMove(e);
+                }
             },
             handleMouseMove: function (e) {
+                if (e.preventDefault)
+                    e.preventDefault();
+
+                var e = e.clientX ? e : e.touches[0];
+
                 if (e.clientX === 0 && e.clientY === 0)
                     return;
 
@@ -365,6 +388,7 @@ var Rance;
                         }
 
                         this.setState(stateObj);
+                        this.forceUpdate();
 
                         if (this.onDragStart) {
                             this.onDragStart(e);
@@ -427,6 +451,8 @@ var Rance;
                 }
             },
             handleMouseUp: function (e) {
+                console.log("mouseUp", e);
+
                 this.setState({
                     mouseDown: false,
                     mouseDownPosition: {
@@ -466,11 +492,22 @@ var Rance;
                 var self = this;
                 this.containerElement.addEventListener("mousemove", self.handleMouseMove);
                 document.addEventListener("mouseup", self.handleMouseUp);
+
+                if (this.touchEventTarget) {
+                    this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
+                    this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
+                }
             },
             removeEventListeners: function () {
                 var self = this;
                 this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
                 document.removeEventListener("mouseup", self.handleMouseUp);
+
+                if (this.touchEventTarget) {
+                    this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
+                    this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
+                    this.touchEventTarget = null;
+                }
             },
             componentDidMount: function () {
                 this.DOMNode = this.getDOMNode();
@@ -546,7 +583,7 @@ var Rance;
 
                 if (this.props.isDraggable) {
                     wrapperProps.className += " draggable";
-                    wrapperProps.onMouseDown = this.handleMouseDown;
+                    wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.handleMouseDown;
                 }
 
                 if (this.state.dragging) {
@@ -733,11 +770,11 @@ var Rance;
                 var allElements = [];
 
                 var wrapperProps = {
-                    className: "unit-wrapper"
+                    className: "unit-wrapper drop-target"
                 };
 
                 if (this.props.onMouseUp) {
-                    wrapperProps.onMouseUp = this.handleMouseUp;
+                    wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp;
                 }
                 ;
                 if (this.props.activeEffectUnits) {
@@ -2041,6 +2078,20 @@ var Rance;
                     y: container.offsetHeight / 2
                 };
             },
+            componentDidUpdate: function () {
+                if (this.needsFirstTouchUpdate && this.refs.dragClone) {
+                    var node = this.refs.dragClone.getDOMNode();
+                    node.classList.add("draggable");
+                    node.classList.add("dragging");
+
+                    var container = document.getElementsByClassName("unit-wrapper")[0];
+
+                    node.style.width = "" + container.offsetWidth + "px";
+                    node.style.height = "" + container.offsetHeight + "px";
+
+                    this.needsFirstTouchUpdate = false;
+                }
+            },
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.unit);
             },
@@ -2566,6 +2617,12 @@ var Rance;
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.slot);
             },
+            componentDidMount: function () {
+                console.log("update", this._rootNodeID);
+            },
+            componentDidUpdate: function () {
+                console.log("update", this._rootNodeID);
+            },
             render: function () {
                 var allElements = [];
                 var item = this.props.item;
@@ -2584,6 +2641,7 @@ var Rance;
                 if (this.props.currentDragItem) {
                     var dragItem = this.props.currentDragItem;
                     if (dragItem.template.slot === this.props.slot) {
+                        wrapperProps.className += " drop-target";
                     } else {
                         wrapperProps.onMouseUp = null;
                         wrapperProps.className += " invalid-drop-target";
@@ -5093,6 +5151,31 @@ var Rance;
         }
     }
     Rance.getRelativeValue = getRelativeValue;
+    function getDropTargetAtLocation(x, y) {
+        var dropTargets = document.getElementsByClassName("drop-target");
+        var point = {
+            x: x,
+            y: y
+        };
+
+        for (var i = 0; i < dropTargets.length; i++) {
+            var node = dropTargets[i];
+            var nodeBounds = node.getBoundingClientRect();
+
+            var rect = {
+                x1: nodeBounds.left,
+                x2: nodeBounds.right,
+                y1: nodeBounds.top,
+                y2: nodeBounds.bottom
+            };
+            if (rectContains(rect, point)) {
+                return node;
+            }
+        }
+
+        return null;
+    }
+    Rance.getDropTargetAtLocation = getDropTargetAtLocation;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -10811,7 +10894,7 @@ var Rance;
             this.addEventListener("starClick", function (e) {
                 self.selectStar(e.data);
             });
-            this.addEventListener("starRightClick", function (e) {
+            this.addEventListener("moveFleets", function (e) {
                 self.moveFleets(e.data);
             });
 
@@ -12496,7 +12579,6 @@ var Rance;
                     };
                     var rightUpFN = function (star) {
                         Rance.eventManager.dispatchEvent("mouseUp", null);
-                        Rance.eventManager.dispatchEvent("starRightClick", star);
                     };
                     var mouseOverFN = function (star) {
                         Rance.eventManager.dispatchEvent("hoverStar", star);
@@ -12563,7 +12645,6 @@ var Rance;
                             var cell = items[i].cell;
 
                             if (cell.pointIntersection(local.x, local.y) > 0) {
-                                console.log("touchOver", cell.site.id, local);
                                 Rance.eventManager.dispatchEvent("hoverStar", cell.site);
                                 return;
                             }
@@ -13052,7 +13133,7 @@ var Rance;
 
                         containerGfx.interactive = true;
                         if (fleet.player.id === self.player.id) {
-                            containerGfx.click = fleetClickFn.bind(containerGfx, fleet);
+                            containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
                         }
 
                         containerGfx.mousedown = mouseDownFN;
@@ -13800,15 +13881,13 @@ var Rance;
             }
         };
         MouseEventHandler.prototype.touchEnd = function (event, targetType) {
-            console.log("touchEnd", event, targetType);
+            console.log("touchEnd", event, targetType, this.currentAction);
             if (targetType === "world") {
                 if (this.currentAction === "select") {
-                    if (!this.preventingGhost["mouseUp"])
-                        this.endSelect(event);
+                    this.endSelect(event);
                 }
                 if (this.currentAction === "fleetMove") {
-                    if (!this.preventingGhost["mouseUp"])
-                        this.completeFleetMove();
+                    this.completeFleetMove();
                 }
             } else {
                 debugger;
@@ -13876,12 +13955,9 @@ var Rance;
             this.startPoint = this.currPoint = [event.global.x, event.global.y];
         };
         MouseEventHandler.prototype.setHoveredStar = function (star) {
-            var sameAsOld = this.hoveredStar === star;
             this.hoveredStar = star;
             this.preventGhost(30, "hover");
-            if (!sameAsOld) {
-                this.setFleetMoveTarget(star);
-            }
+            this.setFleetMoveTarget(star);
         };
 
         MouseEventHandler.prototype.clearHoveredStar = function () {
@@ -13905,6 +13981,9 @@ var Rance;
             console.log("setFleetMoveTarget", star.id);
         };
         MouseEventHandler.prototype.completeFleetMove = function () {
+            if (this.hoveredStar) {
+                Rance.eventManager.dispatchEvent("moveFleets", this.hoveredStar);
+            }
             Rance.eventManager.dispatchEvent("endPotentialMove");
             this.currentAction = undefined;
         };
@@ -13923,8 +14002,6 @@ var Rance;
         MouseEventHandler.prototype.endSelect = function (event) {
             this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
             this.currentAction = undefined;
-        };
-        MouseEventHandler.prototype.hover = function (event) {
         };
         return MouseEventHandler;
     })();

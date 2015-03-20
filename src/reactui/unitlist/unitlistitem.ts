@@ -23,6 +23,23 @@ module Rance
         }
       },
 
+      componentDidUpdate: function()
+      {
+        if (this.needsFirstTouchUpdate && this.refs.dragClone)
+        {
+          var node = this.refs.dragClone.getDOMNode();
+          node.classList.add("draggable");
+          node.classList.add("dragging");
+
+          var container = <HTMLElement> document.getElementsByClassName("unit-wrapper")[0];
+
+          node.style.width = "" + container.offsetWidth + "px";
+          node.style.height = "" + container.offsetHeight + "px";
+
+          this.needsFirstTouchUpdate = false;
+        }
+      },
+
       onDragStart: function(e)
       {
         this.props.onDragStart(this.props.unit);
@@ -42,6 +59,7 @@ module Rance
 
         node.style.width = "" + container.offsetWidth + "px";
         node.style.height = "" + container.offsetHeight + "px";
+
 
         this.forcedDragOffset =
         {

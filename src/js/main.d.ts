@@ -385,6 +385,7 @@ declare module Rance {
     function getMatchingLocalstorageItemsByDate(stringToMatch: string): any[];
     function shuffleArray(toShuffle: any[]): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
+    function getDropTargetAtLocation(x: number, y: number): HTMLElement;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -2014,7 +2015,6 @@ declare module Rance {
         public startSelect(event: any): void;
         public dragSelect(event: any): void;
         public endSelect(event: any): void;
-        public hover(event: any): void;
     }
 }
 declare module Rance {
