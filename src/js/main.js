@@ -283,7 +283,7 @@ var Rance;
         UIComponents.Draggable = {
             getDefaultProps: function () {
                 return ({
-                    dragThreshhold: 0
+                    dragThreshhold: 5
                 });
             },
             getInitialState: function () {
@@ -388,7 +388,6 @@ var Rance;
                         }
 
                         this.setState(stateObj);
-                        this.forceUpdate();
 
                         if (this.onDragStart) {
                             this.onDragStart(e);
@@ -451,15 +450,26 @@ var Rance;
                 }
             },
             handleMouseUp: function (e) {
-                console.log("mouseUp", e);
+                if (this.touchEventTarget) {
+                    var touch = e.changedTouches[0];
 
-                this.setState({
-                    mouseDown: false,
-                    mouseDownPosition: {
-                        x: 0,
-                        y: 0
+                    var dropTarget = Rance.getDropTargetAtLocation(touch.clientX, touch.clientY);
+                    console.log(dropTarget);
+                    if (dropTarget) {
+                        var reactid = dropTarget.getAttribute("data-reactid");
+                        Rance.eventManager.dispatchEvent("drop" + reactid);
                     }
-                });
+                }
+
+                if (this.isMounted()) {
+                    this.setState({
+                        mouseDown: false,
+                        mouseDownPosition: {
+                            x: 0,
+                            y: 0
+                        }
+                    });
+                }
 
                 if (this.state.dragging) {
                     this.handleDragEnd(e);
@@ -471,18 +481,20 @@ var Rance;
                 if (this.state.clone) {
                     this.state.clone.parentNode.removeChild(this.state.clone);
                 }
-                this.setState({
-                    dragging: false,
-                    dragOffset: {
-                        x: 0,
-                        y: 0
-                    },
-                    originPosition: {
-                        x: 0,
-                        y: 0
-                    },
-                    clone: null
-                });
+                if (this.isMounted()) {
+                    this.setState({
+                        dragging: false,
+                        dragOffset: {
+                            x: 0,
+                            y: 0
+                        },
+                        originPosition: {
+                            x: 0,
+                            y: 0
+                        },
+                        clone: null
+                    });
+                }
 
                 if (this.onDragEnd) {
                     var endSuccesful = this.onDragEnd(e);
@@ -706,11 +718,34 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/*
+used to register event listeners for manually firing drop events because
+touch events suck balls
+*/
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DropTarget = {
+            componentDidMount: function () {
+                if (!this.handleMouseUp)
+                    console.warn("No mouseUp handler on drop target", this);
+                Rance.eventManager.addEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
+            }
+        };
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/droptarget.ts"/>
 /// <reference path="uniticon.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
+            displayName: "UnitWrapper",
+            mixins: [Rance.UIComponents.DropTarget],
             shouldComponentUpdate: function (newProps) {
                 if (!this.props.unit && !newProps.unit)
                     return false;
@@ -762,8 +797,8 @@ var Rance;
 
                 return false;
             },
-            displayName: "UnitWrapper",
             handleMouseUp: function () {
+                console.log("unitMouseUp", this.props.position);
                 this.props.onMouseUp(this.props.position);
             },
             render: function () {
@@ -2324,6 +2359,7 @@ var Rance;
             displayName: "ItemListItem",
             mixins: [Rance.UIComponents.Draggable],
             onDragStart: function (e) {
+                console.log("onDragStart", this.props.item.template.displayName);
                 this.props.onDragStart(this.props.item);
             },
             onDragEnd: function (e) {
@@ -2608,20 +2644,16 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../mixins/droptarget.ts"/>
 /// <reference path="unititem.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.UnitItemWrapper = React.createClass({
             displayName: "UnitItemWrapper",
+            mixins: [Rance.UIComponents.DropTarget],
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.slot);
-            },
-            componentDidMount: function () {
-                console.log("update", this._rootNodeID);
-            },
-            componentDidUpdate: function () {
-                console.log("update", this._rootNodeID);
             },
             render: function () {
                 var allElements = [];
@@ -2837,6 +2869,7 @@ var Rance;
 
                 battlePrep.setupPlayerFormation(battlePrep.playerFormation);
 
+                this.setLeftLowerElement("playerFleet");
                 this.forceUpdate();
             },
             handleSelectRow: function (row) {
@@ -2857,10 +2890,12 @@ var Rance;
                 }
 
                 this.setState({
-                    selectedUnit: unit
+                    selectedUnit: unit,
+                    hoveredUnit: null
                 });
             },
             handleMouseEnterUnit: function (unit) {
+                console.log("handleMouseEnterUnit", unit.id);
                 this.setState({
                     hoveredUnit: unit
                 });
@@ -2872,18 +2907,19 @@ var Rance;
             },
             handleDragStart: function (unit) {
                 this.setState({
-                    currentDragUnit: unit,
-                    hoveredUnit: null
+                    currentDragUnit: unit
                 });
             },
             handleDragEnd: function (dropSuccesful) {
                 if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                console.log("handleDragEnd", dropSuccesful);
                 if (!dropSuccesful && this.state.currentDragUnit) {
                     this.props.battlePrep.removeUnit(this.state.currentDragUnit);
                 }
 
                 this.setState({
-                    currentDragUnit: null
+                    currentDragUnit: null,
+                    hoveredUnit: null
                 });
 
                 return dropSuccesful;
@@ -2951,7 +2987,6 @@ var Rance;
                 var leftUpperElement;
 
                 var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
-
                 if (hoveredUnit) {
                     leftUpperElement = Rance.UIComponents.MenuUnitInfo({
                         unit: hoveredUnit
@@ -13867,13 +13902,10 @@ var Rance;
         };
 
         MouseEventHandler.prototype.touchStart = function (event, targetType) {
-            console.log("touchStart", event, targetType);
             if (targetType === "world") {
                 if (app.playerControl.selectedFleets.length === 0) {
-                    console.log("startSelect");
                     this.startSelect(event);
                 } else {
-                    console.log("startFleetMove");
                     this.startFleetMove(event);
                 }
             } else {
@@ -13881,7 +13913,6 @@ var Rance;
             }
         };
         MouseEventHandler.prototype.touchEnd = function (event, targetType) {
-            console.log("touchEnd", event, targetType, this.currentAction);
             if (targetType === "world") {
                 if (this.currentAction === "select") {
                     this.endSelect(event);
@@ -13978,7 +14009,6 @@ var Rance;
             if (this.currentAction !== "fleetMove")
                 return;
             Rance.eventManager.dispatchEvent("setPotentialMoveTarget", star);
-            console.log("setFleetMoveTarget", star.id);
         };
         MouseEventHandler.prototype.completeFleetMove = function () {
             if (this.hoveredStar) {

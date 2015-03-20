@@ -1,3 +1,5 @@
+/// <reference path="../mixins/droptarget.ts"/>
+
 /// <reference path="uniticon.ts"/>
 
 module Rance
@@ -6,6 +8,8 @@ module Rance
   {
     export var UnitWrapper = React.createClass(
     {
+      displayName: "UnitWrapper",
+      mixins: [DropTarget],
       shouldComponentUpdate: function(newProps: any)
       {
         if (!this.props.unit && !newProps.unit) return false;
@@ -69,9 +73,9 @@ module Rance
 
         return false;
       },
-      displayName: "UnitWrapper",
       handleMouseUp: function()
       {
+        console.log("unitMouseUp", this.props.position);
         this.props.onMouseUp(this.props.position);
       },
 

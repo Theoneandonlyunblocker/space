@@ -1,3 +1,5 @@
+/// <reference path="../mixins/droptarget.ts"/>
+
 /// <reference path="unititem.ts"/>
 
 module Rance
@@ -7,19 +9,11 @@ module Rance
     export var UnitItemWrapper = React.createClass(
     {
       displayName: "UnitItemWrapper",
+      mixins: [DropTarget],
+
       handleMouseUp: function()
       {
         this.props.onMouseUp(this.props.slot);
-      },
-
-      componentDidMount: function()
-      {
-        console.log("update", this._rootNodeID);
-      },
-
-      componentDidUpdate: function()
-      {
-        console.log("update", this._rootNodeID);
       },
 
       render: function()

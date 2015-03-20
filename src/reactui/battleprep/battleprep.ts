@@ -29,6 +29,7 @@ module Rance
 
         battlePrep.setupPlayerFormation(battlePrep.playerFormation);
 
+        this.setLeftLowerElement("playerFleet");
         this.forceUpdate();
       },
 
@@ -57,13 +58,15 @@ module Rance
 
         this.setState(
         {
-          selectedUnit: unit
+          selectedUnit: unit,
+          hoveredUnit: null
         });
       },
 
 
       handleMouseEnterUnit: function(unit)
       {
+        console.log("handleMouseEnterUnit", unit.id);
         this.setState(
         {
           hoveredUnit: unit
@@ -82,12 +85,12 @@ module Rance
       {
         this.setState(
         {
-          currentDragUnit: unit,
-          hoveredUnit: null
+          currentDragUnit: unit
         });
       },
       handleDragEnd: function(dropSuccesful: boolean = false)
       {
+        console.log("handleDragEnd", dropSuccesful);
         if (!dropSuccesful && this.state.currentDragUnit)
         {
           this.props.battlePrep.removeUnit(this.state.currentDragUnit);
@@ -95,7 +98,8 @@ module Rance
 
         this.setState(
         {
-          currentDragUnit: null
+          currentDragUnit: null,
+          hoveredUnit: null
         });
 
         return dropSuccesful;
@@ -186,7 +190,6 @@ module Rance
         var leftUpperElement;
 
         var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
-
         if (hoveredUnit)
         {
           leftUpperElement = UIComponents.MenuUnitInfo(
@@ -198,6 +201,7 @@ module Rance
         {
           var selectedUnitIsFriendly =
             this.props.battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
+
 
           leftUpperElement = UIComponents.MenuUnitInfo(
           {

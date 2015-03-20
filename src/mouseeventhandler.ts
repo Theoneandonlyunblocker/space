@@ -144,17 +144,14 @@ module Rance
 
     touchStart(event, targetType: string)
     {
-      console.log("touchStart", event, targetType);
       if (targetType === "world")
       {
         if (app.playerControl.selectedFleets.length === 0)
         {
-          console.log("startSelect");
           this.startSelect(event);
         }
         else
         {
-          console.log("startFleetMove");
           this.startFleetMove(event);
         }
       }
@@ -165,7 +162,6 @@ module Rance
     }
     touchEnd(event, targetType: string)
     {
-      console.log("touchEnd", event, targetType, this.currentAction);
       if (targetType === "world")
       {
         if (this.currentAction === "select")
@@ -288,7 +284,6 @@ module Rance
     {
       if (this.currentAction !== "fleetMove") return;
       eventManager.dispatchEvent("setPotentialMoveTarget", star);
-      console.log("setFleetMoveTarget", star.id);
     }
     completeFleetMove()
     {

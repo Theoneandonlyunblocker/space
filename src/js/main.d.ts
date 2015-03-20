@@ -84,6 +84,14 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var DropTarget: {
+            componentDidMount: () => void;
+            componentWillUnmount: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitWrapper: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

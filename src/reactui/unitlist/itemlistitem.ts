@@ -9,6 +9,7 @@ module Rance
 
       onDragStart: function(e)
       {
+        console.log("onDragStart", this.props.item.template.displayName);
         this.props.onDragStart(this.props.item);
       },
       onDragEnd: function(e)

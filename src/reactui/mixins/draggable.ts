@@ -10,7 +10,7 @@ module Rance
       {
         return(
         {
-          dragThreshhold: 0
+          dragThreshhold: 5
         });
       },
       getInitialState: function()
@@ -140,7 +140,6 @@ module Rance
             }
 
             this.setState(stateObj);
-            this.forceUpdate();
 
             if (this.onDragStart)
             {
@@ -223,17 +222,32 @@ module Rance
       },
       handleMouseUp: function(e)
       {
-        console.log("mouseUp", e);
-
-        this.setState(
+        if (this.touchEventTarget)
         {
-          mouseDown: false,
-          mouseDownPosition:
+          var touch = e.changedTouches[0];
+
+          var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
+          console.log(dropTarget);
+          if (dropTarget)
           {
-            x: 0,
-            y: 0
+            var reactid = dropTarget.getAttribute("data-reactid");
+            eventManager.dispatchEvent("drop" + reactid);
           }
-        });
+        }
+
+        if (this.isMounted())
+        {
+          this.setState(
+          {
+            mouseDown: false,
+            mouseDownPosition:
+            {
+              x: 0,
+              y: 0
+            }
+          });
+        }
+        
 
         if (this.state.dragging)
         {
@@ -248,26 +262,30 @@ module Rance
         {
           this.state.clone.parentNode.removeChild(this.state.clone);
         }
-        this.setState(
+        if (this.isMounted())
         {
-          dragging: false,
-          dragOffset:
+          this.setState(
           {
-            x: 0,
-            y: 0
-          },
-          originPosition:
-          {
-            x: 0,
-            y: 0
-          },
-          clone: null
-        });
+            dragging: false,
+            dragOffset:
+            {
+              x: 0,
+              y: 0
+            },
+            originPosition:
+            {
+              x: 0,
+              y: 0
+            },
+            clone: null
+          });
+        }
 
         if (this.onDragEnd)
         {
           var endSuccesful = this.onDragEnd(e);
         }
+
       },
       addEventListeners: function()
       {
