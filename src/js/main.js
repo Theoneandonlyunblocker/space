@@ -12504,6 +12504,12 @@ var Rance;
                     var mouseOutFN = function (event) {
                         Rance.eventManager.dispatchEvent("clearHover");
                     };
+                    var touchStartFN = function (event) {
+                        Rance.eventManager.dispatchEvent("touchStart", event);
+                    };
+                    var touchEndFN = function (event) {
+                        Rance.eventManager.dispatchEvent("touchEnd", event);
+                    };
                     for (var i = 0; i < points.length; i++) {
                         var star = points[i];
                         var starSize = 1;
@@ -12521,16 +12527,20 @@ var Rance;
 
                         gfx.interactive = true;
                         gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
+
                         gfx.mousedown = mouseDownFN;
                         gfx.mouseup = mouseUpFN;
+
                         gfx.click = gfx.tap = function (event) {
                             if (event.originalEvent.button)
                                 return;
 
                             onClickFN(this.star);
                         }.bind(gfx);
+
                         gfx.rightdown = rightDownFN;
                         gfx.rightup = rightUpFN.bind(gfx, star);
+
                         gfx.mouseover = mouseOverFN.bind(gfx, star);
                         gfx.mouseout = mouseOutFN;
 
@@ -12542,10 +12552,10 @@ var Rance;
 
                     doc.interactive = true;
 
-                    // needs to be set or touchmove events wont be called
-                    doc.touchstart = function (event) {
-                        console.log("doc touchstart", event);
-                    };
+                    // cant be set on gfx as touchmove and touchend only register
+                    // on the object that had touchstart called on it
+                    doc.touchstart = touchStartFN;
+                    doc.touchend = touchEndFN;
                     doc.touchmove = function (event) {
                         var local = event.getLocalPosition(doc);
                         var items = map.mapGen.voronoiTreeMap.retrieve(local);
@@ -12553,12 +12563,11 @@ var Rance;
                             var cell = items[i].cell;
 
                             if (cell.pointIntersection(local.x, local.y) > 0) {
-                                console.log("match", cell.site.id);
+                                console.log("touchOver", cell.site.id, local);
+                                Rance.eventManager.dispatchEvent("hoverStar", cell.site);
                                 return;
-                                ;
                             }
                         }
-                        console.log(local);
                     };
 
                     return doc;
@@ -13694,7 +13703,7 @@ var Rance;
             this.renderer = renderer;
             this.camera = camera;
             this.rectangleselect = new Rance.RectangleSelect(renderer.layers["select"]);
-            this.currAction = undefined;
+            this.currentAction = undefined;
 
             window.oncontextmenu = function (event) {
                 var eventTarget = event.target;
@@ -13730,6 +13739,13 @@ var Rance;
             });
             this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
                 self.mouseUp(e.content, "world");
+            });
+
+            this.listeners["touchStart"] = Rance.eventManager.addEventListener("touchStart", function (e) {
+                self.touchStart(e.content, "world");
+            });
+            this.listeners["touchEnd"] = Rance.eventManager.addEventListener("touchEnd", function (e) {
+                self.touchEnd(e.content, "world");
             });
 
             this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (e) {
@@ -13769,46 +13785,68 @@ var Rance;
             }
         };
 
-        MouseEventHandler.prototype.mouseMove = function (event, targetType) {
-            if (targetType === "stage") {
-                if (this.currAction === "scroll") {
-                    this.scrollMove(event);
-                } else if (this.currAction === "zoom") {
-                    this.zoomMove(event);
+        MouseEventHandler.prototype.touchStart = function (event, targetType) {
+            console.log("touchStart", event, targetType);
+            if (targetType === "world") {
+                if (app.playerControl.selectedFleets.length === 0) {
+                    console.log("startSelect");
+                    this.startSelect(event);
+                } else {
+                    console.log("startFleetMove");
+                    this.startFleetMove(event);
                 }
             } else {
-                if (this.currAction === "select") {
-                    this.dragSelect(event);
-                }
+                debugger;
             }
         };
-        MouseEventHandler.prototype.mouseUp = function (event, targetType) {
-            if (this.currAction === undefined)
-                return;
-            if (targetType === "stage") {
-                if (this.currAction === "scroll") {
-                    this.endScroll(event);
-                    this.preventGhost(15, "mouseUp");
-                } else if (this.currAction === "zoom") {
-                    this.endZoom(event);
-                    this.preventGhost(15, "mouseUp");
-                }
-            } else {
-                if (this.currAction === "select") {
+        MouseEventHandler.prototype.touchEnd = function (event, targetType) {
+            console.log("touchEnd", event, targetType);
+            if (targetType === "world") {
+                if (this.currentAction === "select") {
                     if (!this.preventingGhost["mouseUp"])
                         this.endSelect(event);
                 }
-                if (this.currAction === "fleetMove") {
+                if (this.currentAction === "fleetMove") {
                     if (!this.preventingGhost["mouseUp"])
                         this.completeFleetMove();
                 }
+            } else {
+                debugger;
+            }
+        };
+
+        MouseEventHandler.prototype.mouseMove = function (event, targetType) {
+            if (this.currentAction === "scroll") {
+                this.scrollMove(event);
+            } else if (this.currentAction === "zoom") {
+                this.zoomMove(event);
+            } else if (this.currentAction === "select") {
+                this.dragSelect(event);
+            }
+        };
+        MouseEventHandler.prototype.mouseUp = function (event, targetType) {
+            if (this.currentAction === undefined)
+                return;
+
+            if (this.currentAction === "scroll") {
+                this.endScroll(event);
+                this.preventGhost(15, "mouseUp");
+            } else if (this.currentAction === "zoom") {
+                this.endZoom(event);
+                this.preventGhost(15, "mouseUp");
+            } else if (this.currentAction === "select") {
+                if (!this.preventingGhost["mouseUp"])
+                    this.endSelect(event);
+            } else if (this.currentAction === "fleetMove") {
+                if (!this.preventingGhost["mouseUp"])
+                    this.completeFleetMove();
             }
         };
 
         MouseEventHandler.prototype.startScroll = function (event) {
-            if (this.currAction === "select")
+            if (this.currentAction === "select")
                 this.stashedAction = "select";
-            this.currAction = "scroll";
+            this.currentAction = "scroll";
             this.startPoint = [event.global.x, event.global.y];
             this.camera.startScroll(this.startPoint);
         };
@@ -13818,7 +13856,7 @@ var Rance;
         MouseEventHandler.prototype.endScroll = function (event) {
             this.camera.end();
             this.startPoint = undefined;
-            this.currAction = this.stashedAction;
+            this.currentAction = this.stashedAction;
             this.stashedAction = undefined;
         };
         MouseEventHandler.prototype.zoomMove = function (event) {
@@ -13828,13 +13866,13 @@ var Rance;
         };
         MouseEventHandler.prototype.endZoom = function (event) {
             this.startPoint = undefined;
-            this.currAction = this.stashedAction;
+            this.currentAction = this.stashedAction;
             this.stashedAction = undefined;
         };
         MouseEventHandler.prototype.startZoom = function (event) {
-            if (this.currAction === "select")
+            if (this.currentAction === "select")
                 this.stashedAction = "select";
-            this.currAction = "zoom";
+            this.currentAction = "zoom";
             this.startPoint = this.currPoint = [event.global.x, event.global.y];
         };
         MouseEventHandler.prototype.setHoveredStar = function (star) {
@@ -13858,24 +13896,25 @@ var Rance;
 
         MouseEventHandler.prototype.startFleetMove = function (event) {
             Rance.eventManager.dispatchEvent("startPotentialMove", event.target.star);
-            this.currAction = "fleetMove";
+            this.currentAction = "fleetMove";
         };
         MouseEventHandler.prototype.setFleetMoveTarget = function (star) {
-            if (this.currAction !== "fleetMove")
+            if (this.currentAction !== "fleetMove")
                 return;
             Rance.eventManager.dispatchEvent("setPotentialMoveTarget", star);
+            console.log("setFleetMoveTarget", star.id);
         };
         MouseEventHandler.prototype.completeFleetMove = function () {
             Rance.eventManager.dispatchEvent("endPotentialMove");
-            this.currAction = undefined;
+            this.currentAction = undefined;
         };
         MouseEventHandler.prototype.clearFleetMoveTarget = function () {
-            if (this.currAction !== "fleetMove")
+            if (this.currentAction !== "fleetMove")
                 return;
             Rance.eventManager.dispatchEvent("clearPotentialMoveTarget");
         };
         MouseEventHandler.prototype.startSelect = function (event) {
-            this.currAction = "select";
+            this.currentAction = "select";
             this.rectangleselect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
@@ -13883,7 +13922,7 @@ var Rance;
         };
         MouseEventHandler.prototype.endSelect = function (event) {
             this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
-            this.currAction = undefined;
+            this.currentAction = undefined;
         };
         MouseEventHandler.prototype.hover = function (event) {
         };

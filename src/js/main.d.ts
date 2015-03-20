@@ -1981,7 +1981,7 @@ declare module Rance {
         public rectangleselect: Rance.RectangleSelect;
         public startPoint: number[];
         public currPoint: number[];
-        public currAction: string;
+        public currentAction: string;
         public stashedAction: string;
         public hoveredStar: Rance.Star;
         public preventingGhost: {
@@ -1995,6 +1995,8 @@ declare module Rance {
         public destroy(): void;
         public preventGhost(delay: number, type: string): void;
         public mouseDown(event: any, targetType: string): void;
+        public touchStart(event: any, targetType: string): void;
+        public touchEnd(event: any, targetType: string): void;
         public mouseMove(event: any, targetType: string): void;
         public mouseUp(event: any, targetType: string): void;
         public startScroll(event: any): void;

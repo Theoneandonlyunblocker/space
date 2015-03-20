@@ -300,6 +300,14 @@ module Rance
           {
             eventManager.dispatchEvent("clearHover");
           }
+          var touchStartFN = function(event)
+          {
+            eventManager.dispatchEvent("touchStart", event);
+          }
+          var touchEndFN = function(event)
+          {
+            eventManager.dispatchEvent("touchEnd", event);
+          }
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
@@ -321,16 +329,20 @@ module Rance
 
             gfx.interactive = true;
             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
+
             gfx.mousedown = mouseDownFN;
             gfx.mouseup = mouseUpFN;
+
             gfx.click = gfx.tap = function(event)
             {
               if (event.originalEvent.button) return;
 
               onClickFN(this.star);
             }.bind(gfx);
+
             gfx.rightdown = rightDownFN;
             gfx.rightup = rightUpFN.bind(gfx, star);
+
             gfx.mouseover = mouseOverFN.bind(gfx, star);
             gfx.mouseout = mouseOutFN;
 
@@ -340,11 +352,11 @@ module Rance
           doc.height;
 
           doc.interactive = true;
-          // needs to be set or touchmove events wont be called
-          doc.touchstart = function(event)
-          {
-            console.log("doc touchstart", event);
-          }
+
+          // cant be set on gfx as touchmove and touchend only register
+          // on the object that had touchstart called on it
+          doc.touchstart = touchStartFN;
+          doc.touchend = touchEndFN;
           doc.touchmove = function(event: any)
           {
             var local = event.getLocalPosition(doc);
@@ -355,11 +367,10 @@ module Rance
 
               if (cell.pointIntersection(local.x, local.y) > 0)
               {
-                console.log("match", cell.site.id);
-                return;;
+                eventManager.dispatchEvent("hoverStar", cell.site);
+                return;
               }
             }
-            console.log(local);
           }
 
           return doc;

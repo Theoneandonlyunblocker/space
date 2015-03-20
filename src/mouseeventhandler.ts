@@ -14,7 +14,7 @@ module Rance
     startPoint: number[];
     currPoint: number[];
 
-    currAction: string;
+    currentAction: string;
     stashedAction: string;
 
     hoveredStar: Star;
@@ -34,7 +34,7 @@ module Rance
       this.renderer = renderer;
       this.camera = camera;
       this.rectangleselect = new RectangleSelect(renderer.layers["select"]);
-      this.currAction = undefined;
+      this.currentAction = undefined;
 
       window.oncontextmenu = function(event)
       {
@@ -73,6 +73,15 @@ module Rance
       this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp", function(e)
       {
         self.mouseUp(e.content, "world");
+      });
+
+      this.listeners["touchStart"] = eventManager.addEventListener("touchStart", function(e)
+      {
+        self.touchStart(e.content, "world");
+      });
+      this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd", function(e)
+      {
+        self.touchEnd(e.content, "world");
       });
 
       this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar", function(e)
@@ -133,60 +142,90 @@ module Rance
       }
     }
 
-    mouseMove(event, targetType: string)
+    touchStart(event, targetType: string)
     {
-      if (targetType === "stage")
+      console.log("touchStart", event, targetType);
+      if (targetType === "world")
       {
-        if (this.currAction === "scroll")
+        if (app.playerControl.selectedFleets.length === 0)
         {
-          this.scrollMove(event);
+          console.log("startSelect");
+          this.startSelect(event);
         }
-        else if (this.currAction === "zoom")
+        else
         {
-          this.zoomMove(event);
+          console.log("startFleetMove");
+          this.startFleetMove(event);
         }
       }
       else
       {
-        if (this.currAction === "select")
+        debugger;
+      }
+    }
+    touchEnd(event, targetType: string)
+    {
+      console.log("touchEnd", event, targetType);
+      if (targetType === "world")
+      {
+        if (this.currentAction === "select")
         {
-          this.dragSelect(event);
+          if (!this.preventingGhost["mouseUp"]) this.endSelect(event);
         }
+        if (this.currentAction === "fleetMove")
+        {
+          if (!this.preventingGhost["mouseUp"]) this.completeFleetMove();
+        }
+      }
+      else
+      {
+        debugger;
+      }
+    }
+
+    mouseMove(event, targetType: string)
+    {
+      if (this.currentAction === "scroll")
+      {
+        this.scrollMove(event);
+      }
+      else if (this.currentAction === "zoom")
+      {
+        this.zoomMove(event);
+      }
+      else if (this.currentAction === "select")
+      {
+        this.dragSelect(event);
       }
     }
     mouseUp(event, targetType: string)
     {
-      if (this.currAction === undefined) return;
-      if (targetType === "stage")
+      if (this.currentAction === undefined) return;
+
+      if (this.currentAction === "scroll")
       {
-        if (this.currAction === "scroll")
-        {
-          this.endScroll(event);
-          this.preventGhost(15, "mouseUp");
-        }
-        else if (this.currAction === "zoom")
-        {
-          this.endZoom(event);
-          this.preventGhost(15, "mouseUp");
-        }
+        this.endScroll(event);
+        this.preventGhost(15, "mouseUp");
       }
-      else
+      else if (this.currentAction === "zoom")
       {
-        if (this.currAction === "select")
-        {
-          if (!this.preventingGhost["mouseUp"]) this.endSelect(event);
-        }
-        if (this.currAction === "fleetMove")
-        {
-          if (!this.preventingGhost["mouseUp"]) this.completeFleetMove();
-        }
+        this.endZoom(event);
+        this.preventGhost(15, "mouseUp");
+      }
+      else if (this.currentAction === "select")
+      {
+        if (!this.preventingGhost["mouseUp"]) this.endSelect(event);
+      }
+      else if (this.currentAction === "fleetMove")
+      {
+        if (!this.preventingGhost["mouseUp"]) this.completeFleetMove();
       }
     }
 
     startScroll(event)
     {
-      if (this.currAction === "select") this.stashedAction = "select";
-      this.currAction = "scroll";
+      if (this.currentAction === "select") this.stashedAction = "select";
+      this.currentAction = "scroll";
       this.startPoint = [event.global.x, event.global.y];
       this.camera.startScroll(this.startPoint);
     }
@@ -198,7 +237,7 @@ module Rance
     {
       this.camera.end();
       this.startPoint = undefined;
-      this.currAction = this.stashedAction;
+      this.currentAction = this.stashedAction;
       this.stashedAction = undefined;
     }
     zoomMove(event)
@@ -211,13 +250,13 @@ module Rance
     endZoom(event)
     {
       this.startPoint = undefined;
-      this.currAction = this.stashedAction;
+      this.currentAction = this.stashedAction;
       this.stashedAction = undefined;
     }
     startZoom(event)
     {
-      if (this.currAction === "select") this.stashedAction = "select";
-      this.currAction = "zoom";
+      if (this.currentAction === "select") this.stashedAction = "select";
+      this.currentAction = "zoom";
       this.startPoint = this.currPoint = [event.global.x, event.global.y];
     }
     setHoveredStar(star: Star)
@@ -247,26 +286,27 @@ module Rance
     startFleetMove(event)
     {
       eventManager.dispatchEvent("startPotentialMove", event.target.star);
-      this.currAction = "fleetMove";
+      this.currentAction = "fleetMove";
     }
     setFleetMoveTarget(star: Star)
     {
-      if (this.currAction !== "fleetMove") return;
+      if (this.currentAction !== "fleetMove") return;
       eventManager.dispatchEvent("setPotentialMoveTarget", star);
+      console.log("setFleetMoveTarget", star.id);
     }
     completeFleetMove()
     {
       eventManager.dispatchEvent("endPotentialMove");
-      this.currAction = undefined;
+      this.currentAction = undefined;
     }
     clearFleetMoveTarget()
     {
-      if (this.currAction !== "fleetMove") return;
+      if (this.currentAction !== "fleetMove") return;
       eventManager.dispatchEvent("clearPotentialMoveTarget");
     }
     startSelect(event)
     {
-      this.currAction = "select";
+      this.currentAction = "select";
       this.rectangleselect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
     }
     dragSelect(event)
@@ -276,7 +316,7 @@ module Rance
     endSelect(event)
     {
       this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
-      this.currAction = undefined;
+      this.currentAction = undefined;
     }
     hover(event)
     {
