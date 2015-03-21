@@ -309,11 +309,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var DraggableShipInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var FleetContents: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

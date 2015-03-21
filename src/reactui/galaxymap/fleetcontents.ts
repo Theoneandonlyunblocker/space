@@ -1,5 +1,4 @@
 /// <reference path="shipinfo.ts"/>
-/// <reference path="draggableshipinfo.ts"/>
 
 module Rance
 {
@@ -19,7 +18,7 @@ module Rance
       {
         var shipInfos = [];
 
-        var draggableContent =
+        var hasDraggableContent =
         (
           this.props.onDragStart ||
           this.props.onDragEnd
@@ -27,28 +26,18 @@ module Rance
 
         for (var i = 0; i < this.props.fleet.ships.length; i++)
         {
-          if (!draggableContent)
+          shipInfos.push(UIComponents.ShipInfo(
           {
-            shipInfos.push(UIComponents.ShipInfo(
-            {
-              key: this.props.fleet.ships[i].id,
-              ship: this.props.fleet.ships[i]
-            }));
-          }
-          else
-          {
-            shipInfos.push(UIComponents.DraggableShipInfo(
-            {
-              key: this.props.fleet.ships[i].id,
-              ship: this.props.fleet.ships[i],
-              onDragStart: this.props.onDragStart,
-              onDragMove: this.props.onDragMove,
-              onDragEnd: this.props.onDragEnd
-            }));
-          }
+            key: this.props.fleet.ships[i].id,
+            ship: this.props.fleet.ships[i],
+            isDraggable: hasDraggableContent,
+            onDragStart: this.props.onDragStart,
+            onDragMove: this.props.onDragMove,
+            onDragEnd: this.props.onDragEnd
+          }));
         }
 
-        if (draggableContent)
+        if (hasDraggableContent)
         {
           shipInfos.push(React.DOM.div(
           {

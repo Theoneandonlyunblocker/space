@@ -7,16 +7,41 @@ module Rance
     export var ShipInfo = React.createClass(
     {
       displayName: "ShipInfo",
+      mixins: [Draggable],
+
+      onDragStart: function(e)
+      {
+        this.props.onDragStart(this.props.ship);
+      },
+      onDragEnd: function(e)
+      {
+        this.props.onDragEnd(e)
+      },
 
       render: function()
       {
         var ship = this.props.ship;
+
+        var divProps: any =
+        {
+          className: "ship-info"
+        };
+
+        if (this.props.isDraggable)
+        {
+          divProps.className += " draggable";
+          divProps.onTouchStart = this.handleMouseDown;
+          divProps.onMouseDown = this.handleMouseDown;
+
+          if (this.state.dragging)
+          {
+            divProps.style = this.state.dragPos;
+            divProps.className += " dragging";
+          }
+        }
  
         return(
-          React.DOM.div(
-          {
-            className: "ship-info"
-          },
+          React.DOM.div(divProps,
             React.DOM.div(
             {
               className: "ship-info-icon-container"

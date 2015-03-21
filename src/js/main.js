@@ -4317,39 +4317,6 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ShipInfo = React.createClass({
             displayName: "ShipInfo",
-            render: function () {
-                var ship = this.props.ship;
-
-                return (React.DOM.div({
-                    className: "ship-info"
-                }, React.DOM.div({
-                    className: "ship-info-icon-container"
-                }, React.DOM.img({
-                    className: "ship-info-icon",
-                    src: ship.template.icon
-                })), React.DOM.div({
-                    className: "ship-info-info"
-                }, React.DOM.div({
-                    className: "ship-info-name"
-                }, ship.name), React.DOM.div({
-                    className: "ship-info-type"
-                }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
-                    maxHealth: ship.maxHealth,
-                    currentHealth: ship.currentHealth,
-                    isSquadron: true
-                })));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="../mixins/draggable.ts" />
-/// <reference path="../unit/unitstrength.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.DraggableShipInfo = React.createClass({
-            displayName: "DraggableShipInfo",
             mixins: [Rance.UIComponents.Draggable],
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.ship);
@@ -4361,14 +4328,18 @@ var Rance;
                 var ship = this.props.ship;
 
                 var divProps = {
-                    className: "ship-info draggable",
-                    onTouchStart: this.handleMouseDown,
-                    onMouseDown: this.handleMouseDown
+                    className: "ship-info"
                 };
 
-                if (this.state.dragging) {
-                    divProps.style = this.state.dragPos;
-                    divProps.className += " dragging";
+                if (this.props.isDraggable) {
+                    divProps.className += " draggable";
+                    divProps.onTouchStart = this.handleMouseDown;
+                    divProps.onMouseDown = this.handleMouseDown;
+
+                    if (this.state.dragging) {
+                        divProps.style = this.state.dragPos;
+                        divProps.className += " dragging";
+                    }
                 }
 
                 return (React.DOM.div(divProps, React.DOM.div({
@@ -4393,7 +4364,6 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="shipinfo.ts"/>
-/// <reference path="draggableshipinfo.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -4408,26 +4378,20 @@ var Rance;
             render: function () {
                 var shipInfos = [];
 
-                var draggableContent = (this.props.onDragStart || this.props.onDragEnd);
+                var hasDraggableContent = (this.props.onDragStart || this.props.onDragEnd);
 
                 for (var i = 0; i < this.props.fleet.ships.length; i++) {
-                    if (!draggableContent) {
-                        shipInfos.push(Rance.UIComponents.ShipInfo({
-                            key: this.props.fleet.ships[i].id,
-                            ship: this.props.fleet.ships[i]
-                        }));
-                    } else {
-                        shipInfos.push(Rance.UIComponents.DraggableShipInfo({
-                            key: this.props.fleet.ships[i].id,
-                            ship: this.props.fleet.ships[i],
-                            onDragStart: this.props.onDragStart,
-                            onDragMove: this.props.onDragMove,
-                            onDragEnd: this.props.onDragEnd
-                        }));
-                    }
+                    shipInfos.push(Rance.UIComponents.ShipInfo({
+                        key: this.props.fleet.ships[i].id,
+                        ship: this.props.fleet.ships[i],
+                        isDraggable: hasDraggableContent,
+                        onDragStart: this.props.onDragStart,
+                        onDragMove: this.props.onDragMove,
+                        onDragEnd: this.props.onDragEnd
+                    }));
                 }
 
-                if (draggableContent) {
+                if (hasDraggableContent) {
                     shipInfos.push(React.DOM.div({
                         className: "fleet-contents-dummy-ship",
                         key: "dummy"
