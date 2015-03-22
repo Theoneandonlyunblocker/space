@@ -1,3 +1,5 @@
+/// <reference path="playersetup.ts" />
+
 module Rance
 {
   export module UIComponents

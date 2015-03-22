@@ -22,6 +22,10 @@ module Rance
       updateColor: function(hexColor: number)
       {
         this.setState({hexColor: hexColor});
+        if (this.onChange)
+        {
+          this.onChange(hexColor);
+        }
       },
 
       render: function()
