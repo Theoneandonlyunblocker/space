@@ -40,6 +40,7 @@ module Rance
       },
       handleMouseDown: function(e)
       {
+        if (e.button) return;
         e.preventDefault();
 
         if (this.state.dragging) return;
