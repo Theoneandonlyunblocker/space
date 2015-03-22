@@ -186,6 +186,10 @@ module Rance
         {
           rowProps.className += " reserved-unit";
         }
+        if (this.props.isHovered)
+        {
+          rowProps.className += " unit-list-item-hovered";
+        }
 
         if (this.props.noActionsLeft)
         {

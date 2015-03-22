@@ -441,8 +441,8 @@ progress::-webkit-progress-value {
   z-index: 150;
   box-sizing: border-box;
   border: 30px solid transparent;
-  border-image-source: url("../img/borderTest2.png");
-  border-image-slice: 38%;
+  border-image-source: url("../img/borderTest3.png");
+  border-image-slice: 40%;
   border-image-outset: 4px;
 }
 .empty-unit {
@@ -797,6 +797,7 @@ progress::-webkit-progress-value {
 .unit-list {
   flex-shrink: 1;
   overflow-y: hidden;
+  border-collapse: collapse;
 }
 .unit-list .fixed-table-header-background {
   border: 0px solid transparent;
@@ -826,6 +827,24 @@ progress::-webkit-progress-value {
 }
 .unit-list .raised-stat {
   color: limegreen;
+}
+.unit-list-item {
+  position: relative;
+  height: 1em;
+}
+.unit-list-item-hovered > td:first-child::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  pointer-events: none;
+  z-index: 150;
+  width: calc(100% - 10px);
+  height: 1em;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  border-image-source: url("../img/uiBorder2.png");
+  border-image-slice: 10%;
+  border-image-outset: 3px;
 }
 .no-actions-left {
   background: red;
@@ -1244,6 +1263,9 @@ progress::-webkit-progress-value {
 .fleet-selection > * {
   pointer-events: auto;
 }
+.fleet-selection > .fleet-info:first-child {
+  border-top: 0;
+}
 .fleet-selection-controls {
   flex: 0 auto;
   background-color: #0c1615;
@@ -1252,6 +1274,7 @@ progress::-webkit-progress-value {
   border: 2px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
+  border-bottom: 0;
 }
 .fleet-selection-controls button {
   margin: 1px 2px;
@@ -1278,16 +1301,14 @@ progress::-webkit-progress-value {
 .fleet-selection-controls button.disabled * {
   pointer-events: none !important;
 }
-.fleet-selection-selected-wrapper {
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: 300px;
-}
 .fleet-selection-selected {
   display: inline-flex;
   flex-flow: column;
   width: 100%;
   margin-right: 25px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 300px;
 }
 .fleet-controls button {
   margin: 1px 2px;
@@ -1322,9 +1343,13 @@ progress::-webkit-progress-value {
   border: 3px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
+  padding: 2px;
 }
 .fleet-info > * {
   align-items: center;
+}
+.fleet-info + .fleet-info {
+  border-top: 0;
 }
 .fleet-info-header {
   display: flex;
@@ -1357,10 +1382,20 @@ progress::-webkit-progress-value {
   flex-shrink: 0;
   background-color: #0c1615;
   border: 1px solid #666;
+  color: #eeeeec;
+}
+.ship-info.dragging {
+  border-top: 1px solid #666 !important;
 }
 .ship-info .ship-info-name,
 .ship-info .unit-strength-amount {
   background-color: #0d2335;
+}
+.ship-info-name {
+  border: 0;
+  padding: 0;
+  color: #eeeeec;
+  width: 100%;
 }
 .ship-info-icon-container {
   display: flex;
@@ -1507,9 +1542,12 @@ progress::-webkit-progress-value {
   margin-top: auto;
   pointer-events: auto;
 }
+.possible-actions-container + .star-info {
+  border-top: 0;
+  padding-top: 2px;
+}
 .possible-actions {
   position: relative;
-  bottom: 0;
   display: flex;
   flex-flow: column;
   flex: 0 0 auto;
@@ -1554,7 +1592,6 @@ progress::-webkit-progress-value {
 .expanded-action {
   position: relative;
   left: -3px;
-  bottom: -3px;
   background-color: #0d2335;
   padding: 0 8px;
   color: #eeeeec;
@@ -1571,6 +1608,8 @@ progress::-webkit-progress-value {
   flex-flow: column;
   background-color: #0c1615;
   color: #eeeeec;
+  min-width: 107px;
+  box-sizing: border-box;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;

@@ -1,4 +1,5 @@
 /// <reference path="../unit/unitstrength.ts"/>
+/// <reference path="shipinfoname.ts"/>
 
 module Rance
 {
@@ -56,12 +57,10 @@ module Rance
             {
               className: "ship-info-info"
             },
-              React.DOM.div(
+              UIComponents.ShipInfoName(
               {
-                className: "ship-info-name"
-              },
-                ship.name
-              ),
+                unit: ship
+              }),
               React.DOM.div(
               {
                 className: "ship-info-type"

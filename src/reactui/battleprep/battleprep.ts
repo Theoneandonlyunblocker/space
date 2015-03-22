@@ -337,6 +337,7 @@ module Rance
               units: this.props.battlePrep.availableUnits,
               selectedUnit: this.state.selectedUnit,
               reservedUnits: this.props.battlePrep.alreadyPlaced,
+              hoveredUnit: this.state.hoveredUnit,
 
               checkTimesActed: true,
 

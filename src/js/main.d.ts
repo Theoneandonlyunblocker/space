@@ -304,6 +304,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var ShipInfoName: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var ShipInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -314,12 +319,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetReorganization: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetReorganization: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {

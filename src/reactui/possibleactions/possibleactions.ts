@@ -224,6 +224,11 @@ module Rance
           }
         }
 
+        if (allActions.length < 1)
+        {
+          return null;
+        }
+
         var possibleActions = React.DOM.div(
         {
           className: "possible-actions"
@@ -236,9 +241,7 @@ module Rance
           {
             className: "possible-actions-container"
           },
-            allActions.length > 0 ?
-              possibleActions :
-              null,
+            possibleActions,
             this.state.expandedActionElement
           )
         );

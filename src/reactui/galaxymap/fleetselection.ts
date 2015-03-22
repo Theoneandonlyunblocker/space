@@ -1,6 +1,7 @@
 /// <reference path="fleetinfo.ts"/>
 /// <reference path="fleetcontents.ts"/>
-/// 
+/// <reference path="fleetreorganization.ts"/>
+
 module Rance
 {
   export module UIComponents
@@ -105,6 +106,17 @@ module Rance
           });
         }
 
+        var reorganizeElement = null;
+        if (this.props.currentlyReorganizing.length > 0)
+        {
+          reorganizeElement = UIComponents.FleetReorganization(
+          {
+            currentlyReorganizing: this.props.currentlyReorganizing,
+            closeReorganization: this.props.closeReorganization
+          });
+        }
+        console.log(this.props.currentlyReorganizing, reorganizeElement)
+
         return(
           React.DOM.div(
           {
@@ -122,7 +134,8 @@ module Rance
               },
                 hasMultipleSelected ? fleetInfos : null,
                 fleetContents
-              )
+              ),
+              reorganizeElement
             )
           )
         );

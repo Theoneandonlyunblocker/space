@@ -39,6 +39,7 @@ module Rance
             isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
             noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
             isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
+            isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
 
             onMouseEnter: this.props.onMouseEnter,
             onMouseLeave: this.props.onMouseLeave,

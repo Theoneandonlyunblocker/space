@@ -2237,6 +2237,9 @@ var Rance;
                 if (this.props.isReserved) {
                     rowProps.className += " reserved-unit";
                 }
+                if (this.props.isHovered) {
+                    rowProps.className += " unit-list-item-hovered";
+                }
 
                 if (this.props.noActionsLeft) {
                     rowProps.className += " no-actions-left";
@@ -2282,6 +2285,7 @@ var Rance;
                         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
                         noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
                         isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
+                        isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
                         onMouseEnter: this.props.onMouseEnter,
                         onMouseLeave: this.props.onMouseLeave,
                         isDraggable: this.props.isDraggable,
@@ -3082,6 +3086,7 @@ var Rance;
                     units: this.props.battlePrep.availableUnits,
                     selectedUnit: this.state.selectedUnit,
                     reservedUnits: this.props.battlePrep.alreadyPlaced,
+                    hoveredUnit: this.state.hoveredUnit,
                     checkTimesActed: true,
                     isDraggable: this.state.leftLowerElement === "playerFleet",
                     onDragStart: this.handleDragStart,
@@ -4311,7 +4316,33 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ShipInfoName = React.createClass({
+            displayName: "ShipInfoName",
+            getInitialState: function () {
+                return ({
+                    value: this.props.unit.name
+                });
+            },
+            onChange: function (e) {
+                this.setState({ value: e.target.value });
+                this.props.unit.name = e.target.value;
+            },
+            render: function () {
+                return (React.DOM.input({
+                    className: "ship-info-name",
+                    value: this.state.value,
+                    onChange: this.onChange
+                }));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../unit/unitstrength.ts"/>
+/// <reference path="shipinfoname.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -4349,9 +4380,9 @@ var Rance;
                     src: ship.template.icon
                 })), React.DOM.div({
                     className: "ship-info-info"
-                }, React.DOM.div({
-                    className: "ship-info-name"
-                }, ship.name), React.DOM.div({
+                }, Rance.UIComponents.ShipInfoName({
+                    unit: ship
+                }), React.DOM.div({
                     className: "ship-info-type"
                 }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
                     maxHealth: ship.maxHealth,
@@ -4402,95 +4433,6 @@ var Rance;
                     className: "fleet-contents",
                     onMouseUp: this.handleMouseUp
                 }, shipInfos));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="fleetinfo.ts"/>
-/// <reference path="fleetcontents.ts"/>
-///
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.FleetSelection = React.createClass({
-            displayName: "FleetSelection",
-            mergeFleets: function () {
-                Rance.eventManager.dispatchEvent("mergeFleets", null);
-            },
-            reorganizeFleets: function () {
-                Rance.eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
-            },
-            render: function () {
-                var selectedFleets = this.props.selectedFleets;
-                if (!selectedFleets || selectedFleets.length <= 0) {
-                    return null;
-                }
-
-                var allFleetsInSameLocation = true;
-                var hasMultipleSelected = selectedFleets.length >= 2;
-
-                for (var i = 1; i < selectedFleets.length; i++) {
-                    if (selectedFleets[i].location !== selectedFleets[i - 1].location) {
-                        allFleetsInSameLocation = false;
-                        break;
-                    }
-                }
-                var fleetInfos = [];
-
-                for (var i = 0; i < selectedFleets.length; i++) {
-                    var infoProps = {
-                        key: selectedFleets[i].id,
-                        fleet: selectedFleets[i],
-                        hasMultipleSelected: hasMultipleSelected
-                    };
-
-                    fleetInfos.push(Rance.UIComponents.FleetInfo(infoProps));
-                }
-
-                var fleetSelectionControls = null;
-
-                if (hasMultipleSelected) {
-                    var mergeProps = {
-                        className: "fleet-selection-controls-merge"
-                    };
-                    if (allFleetsInSameLocation) {
-                        mergeProps.onClick = this.mergeFleets;
-                    } else {
-                        mergeProps.disabled = true;
-                        mergeProps.className += " disabled";
-                    }
-
-                    var reorganizeProps = {
-                        className: "fleet-selection-controls-reorganize"
-                    };
-                    if (allFleetsInSameLocation && selectedFleets.length === 2) {
-                        reorganizeProps.onClick = this.reorganizeFleets;
-                    } else {
-                        reorganizeProps.disabled = true;
-                        reorganizeProps.className += " disabled";
-                    }
-
-                    fleetSelectionControls = React.DOM.div({
-                        className: "fleet-selection-controls"
-                    }, React.DOM.button(reorganizeProps, "reorganize"), React.DOM.button(mergeProps, "merge"));
-                }
-
-                var fleetContents = null;
-
-                if (!hasMultipleSelected) {
-                    fleetContents = Rance.UIComponents.FleetContents({
-                        fleet: selectedFleets[0]
-                    });
-                }
-
-                return (React.DOM.div({
-                    className: "fleet-selection"
-                }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
-                    className: "fleet-selection-selected-wrapper"
-                }, React.DOM.div({
-                    className: "fleet-selection-selected"
-                }, hasMultipleSelected ? fleetInfos : null, fleetContents))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4567,6 +4509,104 @@ var Rance;
                     className: "close-reorganization",
                     onClick: this.props.closeReorganization
                 }, "Close"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="fleetinfo.ts"/>
+/// <reference path="fleetcontents.ts"/>
+/// <reference path="fleetreorganization.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FleetSelection = React.createClass({
+            displayName: "FleetSelection",
+            mergeFleets: function () {
+                Rance.eventManager.dispatchEvent("mergeFleets", null);
+            },
+            reorganizeFleets: function () {
+                Rance.eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
+            },
+            render: function () {
+                var selectedFleets = this.props.selectedFleets;
+                if (!selectedFleets || selectedFleets.length <= 0) {
+                    return null;
+                }
+
+                var allFleetsInSameLocation = true;
+                var hasMultipleSelected = selectedFleets.length >= 2;
+
+                for (var i = 1; i < selectedFleets.length; i++) {
+                    if (selectedFleets[i].location !== selectedFleets[i - 1].location) {
+                        allFleetsInSameLocation = false;
+                        break;
+                    }
+                }
+                var fleetInfos = [];
+
+                for (var i = 0; i < selectedFleets.length; i++) {
+                    var infoProps = {
+                        key: selectedFleets[i].id,
+                        fleet: selectedFleets[i],
+                        hasMultipleSelected: hasMultipleSelected
+                    };
+
+                    fleetInfos.push(Rance.UIComponents.FleetInfo(infoProps));
+                }
+
+                var fleetSelectionControls = null;
+
+                if (hasMultipleSelected) {
+                    var mergeProps = {
+                        className: "fleet-selection-controls-merge"
+                    };
+                    if (allFleetsInSameLocation) {
+                        mergeProps.onClick = this.mergeFleets;
+                    } else {
+                        mergeProps.disabled = true;
+                        mergeProps.className += " disabled";
+                    }
+
+                    var reorganizeProps = {
+                        className: "fleet-selection-controls-reorganize"
+                    };
+                    if (allFleetsInSameLocation && selectedFleets.length === 2) {
+                        reorganizeProps.onClick = this.reorganizeFleets;
+                    } else {
+                        reorganizeProps.disabled = true;
+                        reorganizeProps.className += " disabled";
+                    }
+
+                    fleetSelectionControls = React.DOM.div({
+                        className: "fleet-selection-controls"
+                    }, React.DOM.button(reorganizeProps, "reorganize"), React.DOM.button(mergeProps, "merge"));
+                }
+
+                var fleetContents = null;
+
+                if (!hasMultipleSelected) {
+                    fleetContents = Rance.UIComponents.FleetContents({
+                        fleet: selectedFleets[0]
+                    });
+                }
+
+                var reorganizeElement = null;
+                if (this.props.currentlyReorganizing.length > 0) {
+                    reorganizeElement = Rance.UIComponents.FleetReorganization({
+                        currentlyReorganizing: this.props.currentlyReorganizing,
+                        closeReorganization: this.props.closeReorganization
+                    });
+                }
+                console.log(this.props.currentlyReorganizing, reorganizeElement);
+
+                return (React.DOM.div({
+                    className: "fleet-selection"
+                }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
+                    className: "fleet-selection-selected-wrapper"
+                }, React.DOM.div({
+                    className: "fleet-selection-selected"
+                }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -10366,13 +10406,17 @@ var Rance;
                     }
                 }
 
+                if (allActions.length < 1) {
+                    return null;
+                }
+
                 var possibleActions = React.DOM.div({
                     className: "possible-actions"
                 }, allActions);
 
                 return (React.DOM.div({
                     className: "possible-actions-container"
-                }, allActions.length > 0 ? possibleActions : null, this.state.expandedActionElement));
+                }, possibleActions, this.state.expandedActionElement));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -10381,7 +10425,6 @@ var Rance;
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
-/// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
 var Rance;
@@ -10451,9 +10494,8 @@ var Rance;
                 }), React.DOM.div({
                     className: "fleet-selection-container"
                 }, Rance.UIComponents.FleetSelection({
-                    selectedFleets: this.state.selectedFleets
-                }), Rance.UIComponents.FleetReorganization({
-                    fleets: this.state.currentlyReorganizing,
+                    selectedFleets: this.state.selectedFleets,
+                    currentlyReorganizing: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
                 }))), React.DOM.div({
                     className: "galaxy-map-ui-bottom-left"
