@@ -1,6 +1,7 @@
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
+/// <reference path="fleetreorganization.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
 
@@ -101,8 +102,11 @@ module Rance
               },
                 UIComponents.FleetSelection(
                 {
-                  selectedFleets: this.state.selectedFleets,
-                  currentlyReorganizing: this.state.currentlyReorganizing,
+                  selectedFleets: this.state.selectedFleets
+                }),
+                UIComponents.FleetReorganization(
+                {
+                  fleets: this.state.currentlyReorganizing,
                   closeReorganization: this.closeReorganization
                 })
               )
