@@ -1911,6 +1911,17 @@ var Rance;
                 ownNode.style.height = "" + desiredHeight + "px";
                 innerNode.style.height = "" + desiredHeight + "px";
             },
+            handleScroll: function (e) {
+                // scrolls header to match list contents
+                var header = this.refs.header.getDOMNode();
+                var titles = header.getElementsByClassName("fixed-table-th-inner");
+
+                var marginString = "-" + e.target.scrollLeft + "px";
+
+                for (var i = 0; i < titles.length; i++) {
+                    titles[i].style.marginLeft = marginString;
+                }
+            },
             makeInitialSortingOrder: function (columns, initialColumn) {
                 var initialSortOrder = this.props.initialSortOrder;
                 if (!initialSortOrder || initialSortOrder.length < 1) {
@@ -2088,9 +2099,13 @@ var Rance;
                 return (React.DOM.div({
                     className: "fixed-table-container",
                     tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
-                }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({ className: "fixed-table-container-inner", ref: "inner" }, React.DOM.table({
+                }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({
+                    className: "fixed-table-container-inner",
+                    ref: "inner",
+                    onScroll: this.handleScroll
+                }, React.DOM.table({
                     className: "react-list"
-                }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
+                }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header", ref: "header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3416,7 +3431,7 @@ var Rance;
         UIComponents.LightBox = React.createClass({
             displayName: "LightBox",
             // far from ideal as it always triggers reflow twice
-            // cant figure out how to do resizing better since content can be dynamic
+            // cant figure out how to do resizing better since content size is dynamic
             handleResize: function () {
                 var container = this.refs.container.getDOMNode();
                 container.classList.remove("light-box-horizontal-padding");
@@ -8508,6 +8523,9 @@ var Rance;
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
         };
+        Player.prototype.setIcon = function (base64) {
+            this.icon = base64;
+        };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
         };
@@ -8815,7 +8833,11 @@ var Rance;
             data.isIndependent = this.isIndependent;
             data.isAI = this.isAI;
 
-            data.flag = this.flag.serialize();
+            if (this.flag) {
+                data.flag = this.flag.serialize();
+            } else {
+                data.icon = this.icon;
+            }
 
             data.unitIds = [];
             for (var id in this.units) {
@@ -14938,7 +14960,11 @@ var Rance;
                 player.secondaryColor = data.secondaryColor;
                 player.colorAlpha = data.colorAlpha;
 
-                player.makeFlag(data.flag.seed);
+                if (data.flag) {
+                    player.makeFlag(data.flag.seed);
+                } else {
+                    player.setIcon(data.icon);
+                }
             }
 
             for (var i = 0; i < data.fleets.length; i++) {
@@ -16975,7 +17001,10 @@ var Rance;
             uriParser.href = document.URL;
             var hash = uriParser.hash;
             if (hash) {
-                reactUI.currentScene = hash.slice(1);
+                if (hash === "demo") {
+                } else {
+                    reactUI.currentScene = hash.slice(1);
+                }
             } else {
                 reactUI.currentScene = "galaxyMap";
             }

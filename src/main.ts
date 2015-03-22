@@ -230,7 +230,14 @@ module Rance
       var hash = uriParser.hash;
       if (hash)
       {
-        reactUI.currentScene = hash.slice(1);
+        if (hash === "demo")
+        {
+
+        }
+        else
+        {
+          reactUI.currentScene = hash.slice(1);
+        }
       }
       else
       {

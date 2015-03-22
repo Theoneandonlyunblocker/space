@@ -1266,6 +1266,7 @@ declare module Rance {
         public setupAI(game: Rance.Game): void;
         public setupPirates(): void;
         public makeFlag(seed?: any): void;
+        public setIcon(base64: string): void;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public getAllUnits(): any[];

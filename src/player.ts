@@ -110,6 +110,10 @@ module Rance
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
     }
+    setIcon(base64: string)
+    {
+      this.icon = base64;
+    }
     addUnit(unit: Unit)
     {
       this.units[unit.id] = unit;
@@ -490,7 +494,14 @@ module Rance
       data.isIndependent = this.isIndependent;
       data.isAI = this.isAI;
 
-      data.flag = this.flag.serialize();
+      if (this.flag)
+      {
+        data.flag = this.flag.serialize();
+      }
+      else
+      {
+        data.icon = this.icon;
+      }
 
       data.unitIds = [];
       for (var id in this.units)

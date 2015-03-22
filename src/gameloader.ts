@@ -213,8 +213,14 @@ module Rance
         player.secondaryColor = data.secondaryColor;
         player.colorAlpha = data.colorAlpha;
 
-
-        player.makeFlag(data.flag.seed);
+        if (data.flag)
+        {
+          player.makeFlag(data.flag.seed);
+        }
+        else
+        {
+          player.setIcon(data.icon);
+        }
       }
 
       // fleets & ships
