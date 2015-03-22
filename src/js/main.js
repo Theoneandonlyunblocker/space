@@ -10628,6 +10628,404 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../../color.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ColorPicker = React.createClass({
+            displayName: "ColorPicker",
+            getInitialState: function () {
+                var hexColor = this.props.hexColor || 0xFFFFFF;
+                var hexString = "#" + Rance.hexToString(hexColor);
+                var hsvColor = Rance.colorFromScalars(Rance.hexToHsv(hexColor));
+
+                return ({
+                    hexColor: hexColor,
+                    hexString: hexString,
+                    lastValidHexString: hexString,
+                    hue: hsvColor[0],
+                    sat: hsvColor[1],
+                    val: hsvColor[2]
+                });
+            },
+            updateColor: function () {
+                var hsvColor;
+                var hexColor;
+                var hexString;
+
+                var newHexString = this.refs.hex.getDOMNode().value;
+                if (this.state.hexString === newHexString) {
+                    var hue = Math.round(this.refs.hue.getDOMNode().value % 360);
+                    if (hue < 0)
+                        hue = 360;
+                    var sat = Math.round(this.refs.sat.getDOMNode().value % 101);
+                    if (sat < 0)
+                        sat = 100;
+                    var val = Math.round(this.refs.val.getDOMNode().value % 101);
+                    if (val < 0)
+                        val = 100;
+
+                    hsvColor = [hue, sat, val];
+                    hexColor = Math.round(Rance.hsvToHex.apply(null, Rance.scalarsFromColor(hsvColor)));
+                    hexString = "#" + Rance.hexToString(hexColor);
+                } else {
+                    hexString = newHexString;
+                    hexColor = Rance.stringToHex(hexString);
+                    hsvColor = Rance.colorFromScalars(Rance.hexToHsv(hexColor));
+                    hsvColor = hsvColor.map(function (value, i) {
+                        var modulo = i > 0 ? 101 : 360;
+                        return Math.round(value % modulo);
+                    });
+                }
+
+                this.setState({
+                    hexColor: hexColor,
+                    hexString: hexString,
+                    hsvColor: hsvColor
+                });
+            },
+            updateFromHsv: function (hue, sat, val) {
+                var hsvColor = [hue, sat, val];
+                var hexColor = Math.round(Rance.hsvToHex.apply(null, Rance.scalarsFromColor(hsvColor)));
+                var hexString = "#" + Rance.hexToString(hexColor);
+
+                this.setState({
+                    hexColor: hexColor,
+                    hexString: hexString,
+                    lastValidHexString: hexString
+                });
+
+                if (this.props.onChange) {
+                    this.props.onChange(hexColor);
+                }
+            },
+            updateFromHex: function (hexColor) {
+                var hsvColor = Rance.colorFromScalars(Rance.hexToHsv(hexColor));
+
+                this.setState({
+                    hue: Math.round(hsvColor[0]),
+                    sat: Math.round(hsvColor[1]),
+                    val: Math.round(hsvColor[2])
+                });
+
+                if (this.props.onChange) {
+                    console.log("updateFromHex onChange", Rance.hexToString(hexColor));
+                    this.props.onChange(hexColor);
+                }
+            },
+            setHex: function (e) {
+                var hexString = e.target.value;
+                if (hexString[0] !== "#") {
+                    hexString = "#" + hexString;
+                }
+                var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
+                console.log("setHex", hexString, isValid);
+
+                var hexColor = Rance.stringToHex(hexString);
+
+                this.setState({
+                    hexString: hexString,
+                    lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
+                    hexColor: isValid ? hexColor : this.state.hexColor
+                });
+
+                if (isValid) {
+                    this.updateFromHex(hexColor);
+                }
+            },
+            setHue: function (e) {
+                var hue = Math.round(e.target.value % 360);
+                if (hue < 0)
+                    hue = 360;
+                this.setState({ hue: hue });
+                this.updateFromHsv(hue, this.state.sat, this.state.val);
+            },
+            setSat: function (e) {
+                var sat = Math.round(e.target.value % 101);
+                if (sat < 0)
+                    sat = 100;
+                this.setState({ sat: sat });
+                this.updateFromHsv(this.state.hue, sat, this.state.val);
+            },
+            setVal: function (e) {
+                var val = Math.round(e.target.value % 101);
+                if (val < 0)
+                    val = 100;
+                this.setState({ val: val });
+                this.updateFromHsv(this.state.hue, this.state.sat, val);
+            },
+            getHueGradientString: function () {
+                if (this.hueGradientString)
+                    return this.hueGradientString;
+
+                var steps = 10;
+                var gradeStep = 100 / (steps - 1);
+                var hueStep = 360 / steps;
+
+                var gradientString = "linear-gradient(to right, ";
+
+                for (var i = 0; i < steps; i++) {
+                    var hue = hueStep * i;
+                    var grade = gradeStep * i;
+                    var colorString = "hsl(" + hue + ", 100%, 50%) " + grade + "%";
+                    if (i < steps - 1) {
+                        colorString += ",";
+                    } else {
+                        colorString += ")";
+                    }
+
+                    gradientString += colorString;
+                }
+
+                this.hueGradientString = gradientString;
+                return gradientString;
+            },
+            makeGradientString: function (min, max) {
+                return ("linear-gradient(to right, " + min + " 0%, " + max + " 100%)");
+            },
+            makeGradientStyle: function (type) {
+                var hue = this.state.hue;
+                var sat = this.state.sat;
+                var val = this.state.val;
+
+                switch (type) {
+                    case "hue": {
+                        return ({
+                            background: this.getHueGradientString()
+                        });
+                    }
+                    case "sat": {
+                        var min = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, 0, val])));
+                        var max = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, 100, val])));
+                        return ({
+                            background: this.makeGradientString(min, max)
+                        });
+                    }
+                    case "val": {
+                        var min = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, sat, 0])));
+                        var max = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, sat, 100])));
+                        return ({
+                            background: this.makeGradientString(min, max)
+                        });
+                    }
+                    default: {
+                        return null;
+                    }
+                }
+            },
+            makeHsvInputs: function (type) {
+                var rootId = this._rootNodeID;
+                var label = "" + type[0].toUpperCase() + ":";
+
+                var max = type === "hue" ? 360 : 100;
+                var updateFunctions = {
+                    hue: this.setHue,
+                    sat: this.setSat,
+                    val: this.setVal
+                };
+
+                return (React.DOM.div({ className: "color-picker-input-container", key: type }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + type }, label), React.DOM.div({
+                    className: "color-picker-slider-background",
+                    style: this.makeGradientStyle(type)
+                }, React.DOM.input({
+                    className: "color-picker-slider",
+                    id: "" + rootId + type,
+                    ref: type,
+                    type: "range",
+                    min: 0,
+                    max: max,
+                    step: 1,
+                    value: this.state[type],
+                    onChange: updateFunctions[type]
+                })), React.DOM.input({
+                    className: "color-picker-input",
+                    type: "number",
+                    step: 1,
+                    value: this.state[type],
+                    onChange: updateFunctions[type]
+                })));
+            },
+            render: function () {
+                var rootId = this._rootNodeID;
+
+                return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + "hex" }, "Hex:"), React.DOM.input({
+                    className: "color-picker-slider",
+                    id: "" + rootId + "hex",
+                    ref: "hex",
+                    type: "color",
+                    step: 1,
+                    value: this.state.lastValidHexString,
+                    onChange: this.setHex
+                }), React.DOM.input({
+                    className: "color-picker-input",
+                    type: "string",
+                    step: 1,
+                    value: this.state.hexString,
+                    onChange: this.setHex
+                }))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="colorpicker.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ColorSetter = React.createClass({
+            displayName: "ColorSetter",
+            getInitialState: function () {
+                return ({
+                    hexColor: this.props.color || 0xFFFFFF,
+                    active: false
+                });
+            },
+            toggleActive: function () {
+                if (this.state.isActive) {
+                    this.setAsInactive();
+                } else {
+                    if (this.props.setActiveColorPicker) {
+                        this.props.setActiveColorPicker(this);
+                    }
+                    this.setState({ isActive: true });
+                }
+            },
+            setAsInactive: function () {
+                if (this.isMounted() && this.state.isActive) {
+                    this.setState({ isActive: false });
+                }
+            },
+            updateColor: function (hexColor) {
+                this.setState({ hexColor: hexColor });
+                if (this.props.onChange) {
+                    this.props.onChange(hexColor);
+                }
+            },
+            render: function () {
+                return (React.DOM.div({ className: "color-setter" }, React.DOM.div({
+                    className: "color-setter-display",
+                    style: {
+                        backgroundColor: "#" + Rance.hexToString(this.state.hexColor)
+                    },
+                    onClick: this.toggleActive
+                }), this.props.isActive || this.state.isActive ? Rance.UIComponents.ColorPicker({
+                    hexColor: this.state.hexColor,
+                    onChange: this.updateColor
+                }) : null));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FlagSetter = React.createClass({
+            displayName: "FlagSetter",
+            render: function () {
+                return (React.DOM.div({ className: "flag-setter" }, "flagSetter"));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="colorsetter.ts" />
+/// <reference path="flagsetter.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.PlayerSetup = React.createClass({
+            displayName: "PlayerSetup",
+            getInitialState: function () {
+                return ({
+                    mainColor: 0x000000,
+                    subColor: 0xFFFFFF,
+                    flagEmblem: null
+                });
+            },
+            setMainColor: function (color) {
+                this.setState({ mainColor: color });
+            },
+            setSubColor: function (color) {
+                this.setState({ subColor: color });
+            },
+            handleRemove: function () {
+                console.log(this.key, this.props.key);
+                this.props.removePlayer(this.props.key);
+            },
+            render: function () {
+                return (React.DOM.div({ className: "player-setup" }, React.DOM.div({ className: "player-setup-name" }, "playerName"), Rance.UIComponents.ColorSetter({
+                    ref: "mainColor",
+                    onChange: this.setMainColor,
+                    setActiveColorPicker: this.props.setActiveColorPicker
+                }), Rance.UIComponents.ColorSetter({
+                    ref: "subColor",
+                    onChange: this.setSubColor,
+                    setActiveColorPicker: this.props.setActiveColorPicker
+                }), Rance.UIComponents.FlagSetter({
+                    mainColor: this.state.mainColor,
+                    subColor: this.state.mainColor,
+                    flagEmblem: this.state.flagEmblem
+                }), React.DOM.div({
+                    className: "player-setup-remove-player",
+                    onClick: this.handleRemove
+                }, "X")));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="playersetup.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.SetupGame = React.createClass({
+            displayName: "SetupGame",
+            getInitialState: function () {
+                this.newPlayerId = 0;
+
+                return ({
+                    players: [],
+                    activeColorPicker: null
+                });
+            },
+            makeNewPlayer: function () {
+                this.setState({
+                    players: this.state.players.concat(this.newPlayerId++)
+                });
+            },
+            removePlayer: function (idToRemove) {
+                this.setState({
+                    players: this.state.players.filter(function (playerId) {
+                        return playerId !== idToRemove;
+                    })
+                });
+            },
+            setActiveColorPicker: function (colorPicker) {
+                if (this.state.activeColorPicker) {
+                    this.state.activeColorPicker.setAsInactive();
+                }
+
+                this.setState({ activeColorPicker: colorPicker });
+            },
+            render: function () {
+                var playerSetups = [];
+                for (var i = 0; i < this.state.players.length; i++) {
+                    playerSetups.push(Rance.UIComponents.PlayerSetup({
+                        key: this.state.players[i],
+                        removePlayer: this.removePlayer,
+                        setActiveColorPicker: this.setActiveColorPicker
+                    }));
+                }
+                return (React.DOM.div({ className: "setup-game" }, React.DOM.div({ className: "setup-game-players" }, playerSetups, React.DOM.div({
+                    className: "player-setup player-setup-add-new",
+                    onClick: this.makeNewPlayer
+                }, "Add new player"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -10814,6 +11212,7 @@ var Rance;
 /// <reference path="unitlist/itemequip.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
+/// <reference path="setupgame/setupgame.ts"/>
 /// <reference path="flagmaker.ts"/>
 /// <reference path="battlescenetester.ts"/>
 var Rance;
@@ -10874,6 +11273,12 @@ var Rance;
                     case "battleScene": {
                         elementsToRender.push(Rance.UIComponents.BattleSceneTester({
                             key: "battleScene"
+                        }));
+                        break;
+                    }
+                    case "setupGame": {
+                        elementsToRender.push(Rance.UIComponents.SetupGame({
+                            key: "setupGame"
                         }));
                         break;
                     }
@@ -16987,6 +17392,7 @@ var Rance;
             // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
         };
         App.prototype.initUI = function () {
+            214;
             var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
 
             this.playerControl.reactUI = reactUI;

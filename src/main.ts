@@ -213,7 +213,7 @@ module Rance
       // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
     }
     initUI()
-    {
+    {214
       var reactUI = this.reactUI = new ReactUI(
         document.getElementById("react-container"));
 

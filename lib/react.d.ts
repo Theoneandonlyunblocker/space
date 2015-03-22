@@ -428,7 +428,7 @@ declare module React {
         src?: string;
         step?: number;
         type?: string;
-        value?: string;
+        value?: any;
         width?: number;
     }
 

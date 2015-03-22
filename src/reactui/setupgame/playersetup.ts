@@ -1,4 +1,5 @@
 /// <reference path="colorsetter.ts" />
+/// <reference path="flagsetter.ts" />
 
 module Rance
 {
@@ -27,15 +28,26 @@ module Rance
       },
       handleRemove: function()
       {
-        this.props.removePlayer(this.key)
+        console.log(this.key, this.props.key);
+        this.props.removePlayer(this.props.key)
       },
       render: function()
       {
         return(
           React.DOM.div({className: "player-setup"},
             React.DOM.div({className: "player-setup-name"}, "playerName"),
-            UIComponents.ColorSetter({ref: "mainColor", onChange: this.setMainColor}),
-            UIComponents.ColorSetter({ref: "subColor", onChange: this.setSubColor}),
+            UIComponents.ColorSetter(
+            {
+              ref: "mainColor",
+              onChange: this.setMainColor,
+              setActiveColorPicker: this.props.setActiveColorPicker
+            }),
+            UIComponents.ColorSetter(
+            {
+              ref: "subColor",
+              onChange: this.setSubColor,
+              setActiveColorPicker: this.props.setActiveColorPicker
+            }),
             UIComponents.FlagSetter(
             {
               mainColor: this.state.mainColor,

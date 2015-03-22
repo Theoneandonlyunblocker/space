@@ -11,20 +11,39 @@ module Rance
       {
         return(
         {
-          hexColor: this.props.color || 0xFFFFFF
+          hexColor: this.props.color || 0xFFFFFF,
+          active: false
         });
       },
 
-      setAsActive: function()
+      toggleActive: function()
       {
-        this.props.setActiveColorPicker(this.key);
+        if (this.state.isActive)
+        {
+          this.setAsInactive();
+        }
+        else
+        {
+          if (this.props.setActiveColorPicker)
+          {
+            this.props.setActiveColorPicker(this);
+          }
+          this.setState({isActive: true});
+        }
+      },
+      setAsInactive: function()
+      {
+        if (this.isMounted() && this.state.isActive)
+        {
+          this.setState({isActive: false});
+        }
       },
       updateColor: function(hexColor: number)
       {
         this.setState({hexColor: hexColor});
-        if (this.onChange)
+        if (this.props.onChange)
         {
-          this.onChange(hexColor);
+          this.props.onChange(hexColor);
         }
       },
 
@@ -39,9 +58,9 @@ module Rance
               {
                 backgroundColor: "#" + hexToString(this.state.hexColor)
               },
-              onClick: this.setAsActive
+              onClick: this.toggleActive
             }),
-            this.props.isActive ?
+            this.props.isActive || this.state.isActive ?
               UIComponents.ColorPicker(
               {
                 hexColor: this.state.hexColor,

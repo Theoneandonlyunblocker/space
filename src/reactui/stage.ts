@@ -5,6 +5,7 @@
 /// <reference path="unitlist/itemequip.ts"/>
 /// <reference path="battleprep/battleprep.ts"/>
 /// <reference path="galaxymap/galaxymap.ts"/>
+/// <reference path="setupgame/setupgame.ts"/>
 
 /// <reference path="flagmaker.ts"/>
 /// <reference path="battlescenetester.ts"/>
@@ -96,6 +97,16 @@ module Rance
               UIComponents.BattleSceneTester(
               {
                 key: "battleScene"
+              })
+            );
+            break;
+          }
+          case "setupGame":
+          {
+            elementsToRender.push(
+              UIComponents.SetupGame(
+              {
+                key: "setupGame"
               })
             );
             break;
