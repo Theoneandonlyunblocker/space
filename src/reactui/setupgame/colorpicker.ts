@@ -29,7 +29,8 @@ module Rance
           var sat = parseInt(this.refs.sat.getDOMNode().value);
           var val = parseInt(this.refs.cal.getDOMNode().value);
 
-          var hexColor = hsvToHex(scalarsFromColor([hue, sat, val]));
+          var hsvColor = [hue, sat, val];
+          var hexColor = hsvToHex(scalarsFromColor(hsvColor));
           var hexString = "#" + hexToString(hexColor);
         }
         else
@@ -37,46 +38,55 @@ module Rance
           var hexString = newHexString;
           var hexColor = stringToHex(hexString);
           var hsvColor = colorFromScalars(hexToHsv(hexColor));
-          this.setState(
-          {
-            hexColor: hexColor,
-            hexString: hexString,
-            hsvColor: hsvColor
-          });
         }
 
+        this.setState(
+        {
+          hexColor: hexColor,
+          hexString: hexString,
+          hsvColor: hsvColor
+        });
+
+        if (this.onChange)
+        {
+          this.onChange(hexColor);
+        }
       },
 
       render: function()
       {
         return(
           React.DOM.div({className: "color-picker"},
-            React.DOM.div(
-            {
-              className: "color-picker-display",
-              style:
-              {
-                backgroundColor: this.state.hexString
-              }
-            }),
-            React.DOM.div({className: "color-picker-inputs-container"},
-              React.DOM.div({className: "color-picker-hsv"},
-                React.DOM.input(
-                {
-                  className: "color-picker-hsv-input",
-                  ref: "hue",
-                  value: this.
-                  onChange: this.updateColor
-                })
-              ),
+            React.DOM.div({className: "color-picker-hsv"},
               React.DOM.input(
               {
-                className: "color-picker-hex-input",
-                ref: "hex",
-                value: this.state.hexString,
+                className: "color-picker-hsv-input",
+                ref: "hue",
+                value: this.state.hsvColor[0]
                 onChange: this.updateColor
-              })
-            )
+              }),
+              React.DOM.input(
+              {
+                className: "color-picker-hsv-input",
+                ref: "sat",
+                value: this.state.hsvColor[1]
+                onChange: this.updateColor
+              }),
+              React.DOM.input(
+              {
+                className: "color-picker-hsv-input",
+                ref: "val",
+                value: this.state.hsvColor[2]
+                onChange: this.updateColor
+              }),
+            ),
+            React.DOM.input(
+            {
+              className: "color-picker-hex-input",
+              ref: "hex",
+              value: this.state.hexString,
+              onChange: this.updateColor
+            })
           )
         );
       }
