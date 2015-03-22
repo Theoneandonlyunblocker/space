@@ -95,6 +95,20 @@ module Rance
         innerNode.style.height = "" + desiredHeight + "px";
       },
 
+      handleScroll: function(e)
+      {
+        // scrolls header to match list contents
+        var header = this.refs.header.getDOMNode();
+        var titles = header.getElementsByClassName("fixed-table-th-inner");
+
+        var marginString = "-" + e.target.scrollLeft + "px";
+
+        for (var i = 0; i < titles.length; i++)
+        {
+          titles[i].style.marginLeft = marginString;
+        }
+      },
+
       makeInitialSortingOrder: function(columns, initialColumn)
       {
         var initialSortOrder = this.props.initialSortOrder;
@@ -324,7 +338,12 @@ module Rance
               tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
             },
             React.DOM.div({className: "fixed-table-header-background"}),
-            React.DOM.div({className: "fixed-table-container-inner", ref: "inner"},
+            React.DOM.div(
+            {
+              className: "fixed-table-container-inner",
+              ref: "inner",
+              onScroll: this.handleScroll
+            },
               React.DOM.table(
               {
                 className: "react-list"
@@ -333,7 +352,7 @@ module Rance
                   columns
                 ),
 
-                React.DOM.thead({className: "fixed-table-actual-header"},
+                React.DOM.thead({className: "fixed-table-actual-header", ref: "header"},
                   React.DOM.tr(null,
                     headerLabels
                   )
