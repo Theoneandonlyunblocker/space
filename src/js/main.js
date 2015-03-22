@@ -306,6 +306,8 @@ var Rance;
                 });
             },
             handleMouseDown: function (e) {
+                if (e.button)
+                    return;
                 e.preventDefault();
 
                 if (this.state.dragging)
@@ -3413,11 +3415,35 @@ var Rance;
     (function (UIComponents) {
         UIComponents.LightBox = React.createClass({
             displayName: "LightBox",
+            // far from ideal as it always triggers reflow twice
+            // cant figure out how to do resizing better since content can be dynamic
+            handleResize: function () {
+                var container = this.refs.container.getDOMNode();
+                container.classList.remove("light-box-horizontal-padding");
+                container.classList.remove("light-box-fill-horizontal");
+
+                if (container.getBoundingClientRect().width + 10 < window.innerWidth) {
+                    container.classList.add("light-box-horizontal-padding");
+                } else {
+                    container.classList.add("light-box-fill-horizontal");
+                }
+            },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.handleResize, false);
+                this.handleResize();
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+            },
+            componentDidUpdate: function () {
+                this.handleResize();
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "light-box-wrapper"
                 }, React.DOM.div({
-                    className: "light-box-container"
+                    className: "light-box-container",
+                    ref: "container"
                 }, React.DOM.button({
                     className: "light-box-close",
                     onClick: this.props.handleClose
@@ -4471,6 +4497,16 @@ var Rance;
 
                 this.handleDragEnd(true);
             },
+            handleClose: function () {
+                this.hasClosed = true;
+                this.props.closeReorganization();
+            },
+            componentWillUnmount: function () {
+                if (this.hasClosed)
+                    return;
+
+                Rance.eventManager.dispatchEvent("endReorganizingFleets");
+            },
             render: function () {
                 var selectedFleets = this.props.fleets;
                 if (!selectedFleets || selectedFleets.length < 1) {
@@ -4507,7 +4543,7 @@ var Rance;
                     className: "fleet-reorganization-footer"
                 }, React.DOM.button({
                     className: "close-reorganization",
-                    onClick: this.props.closeReorganization
+                    onClick: this.handleClose
                 }, "Close"))));
             }
         });
@@ -4591,21 +4627,21 @@ var Rance;
                     });
                 }
 
+                var isReorganizing = this.props.currentlyReorganizing.length > 0;
                 var reorganizeElement = null;
-                if (this.props.currentlyReorganizing.length > 0) {
+                if (isReorganizing) {
                     reorganizeElement = Rance.UIComponents.FleetReorganization({
-                        currentlyReorganizing: this.props.currentlyReorganizing,
+                        fleets: this.props.currentlyReorganizing,
                         closeReorganization: this.props.closeReorganization
                     });
                 }
-                console.log(this.props.currentlyReorganizing, reorganizeElement);
 
                 return (React.DOM.div({
                     className: "fleet-selection"
                 }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
                     className: "fleet-selection-selected-wrapper"
                 }, React.DOM.div({
-                    className: "fleet-selection-selected"
+                    className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : "")
                 }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
             }
         });
