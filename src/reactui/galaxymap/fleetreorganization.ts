@@ -45,6 +45,19 @@ module Rance
         this.handleDragEnd(true);
       },
 
+      handleClose: function()
+      {
+        this.hasClosed = true;
+        this.props.closeReorganization();
+      },
+
+      componentWillUnmount: function()
+      {
+        if (this.hasClosed) return;
+
+        eventManager.dispatchEvent("endReorganizingFleets");
+      },
+
       render: function()
       {
         var selectedFleets = this.props.fleets;
@@ -115,7 +128,7 @@ module Rance
               React.DOM.button(
               {
                 className: "close-reorganization",
-                onClick: this.props.closeReorganization
+                onClick: this.handleClose
               }, "Close")
             )
           )

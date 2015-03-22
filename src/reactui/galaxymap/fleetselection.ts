@@ -106,16 +106,16 @@ module Rance
           });
         }
 
+        var isReorganizing = this.props.currentlyReorganizing.length > 0;
         var reorganizeElement = null;
-        if (this.props.currentlyReorganizing.length > 0)
+        if (isReorganizing)
         {
           reorganizeElement = UIComponents.FleetReorganization(
           {
-            currentlyReorganizing: this.props.currentlyReorganizing,
+            fleets: this.props.currentlyReorganizing,
             closeReorganization: this.props.closeReorganization
           });
         }
-        console.log(this.props.currentlyReorganizing, reorganizeElement)
 
         return(
           React.DOM.div(
@@ -130,7 +130,7 @@ module Rance
             },
               React.DOM.div(
               {
-                className: "fleet-selection-selected"
+                className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : "")
               },
                 hasMultipleSelected ? fleetInfos : null,
                 fleetContents
