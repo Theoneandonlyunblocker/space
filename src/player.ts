@@ -89,9 +89,10 @@ module Rance
       {
         width: 46, // FLAG_SIZE
         mainColor: this.color,
-        secondaryColor: this.secondaryColor,
-        foregroundEmblem: foregroundEmblem
+        secondaryColor: this.secondaryColor
       });
+
+      this.flag.setForegroundEmblem(foregroundEmblem);
 
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();

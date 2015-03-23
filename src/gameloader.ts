@@ -213,7 +213,7 @@ module Rance
         player.secondaryColor = data.secondaryColor;
         player.colorAlpha = data.colorAlpha;
 
-        if (data.flag)
+        if (data.flag && data.flag.mainColor)
         {
           player.flag = this.deserializeFlag(data.flag);
           player.setIcon();
