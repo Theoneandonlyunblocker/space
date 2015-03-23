@@ -473,10 +473,6 @@ module Rance
         {
           h: 30,
           l: 30
-        },
-        maxDifference:
-        {
-          h: 80
         }
       });
       hexColor = stringToHex(HUSL.toHex.apply(null, contrastingColor));
@@ -505,10 +501,6 @@ module Rance
           {
             h: 20 * easing,
             s: 30 * easing
-          },
-          maxDifference:
-          {
-            h: 100
           }
         });
 
