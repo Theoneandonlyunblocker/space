@@ -5,6 +5,14 @@ module Rance
     export var FlagSetter = React.createClass(
     {
       displayName: "FlagSetter",
+      getInitialState: function()
+      {
+        return(
+        {
+          emblem: null,
+          active: false
+        });
+      },
       render: function()
       {
         return(

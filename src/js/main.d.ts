@@ -1149,6 +1149,7 @@ declare module Rance {
         public generateSubEmblems(rng: any): void;
         public draw(): HTMLCanvasElement;
         public drawSubEmblem(toDraw: Rance.Templates.ISubEmblemTemplate): HTMLCanvasElement;
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -1160,6 +1161,7 @@ declare module Rance {
         public tetriaryColor: number;
         public backgroundEmblem: Rance.Emblem;
         public foregroundEmblem: Rance.Emblem;
+        public customImage: string;
         public seed: any;
         constructor(props: {
             width: number;
@@ -1171,10 +1173,11 @@ declare module Rance {
             foregroundEmblem?: Rance.Emblem;
         });
         public generateRandom(seed?: any): void;
+        public setForegroundEmblem(emblem: Rance.Emblem): void;
+        public setBackgroundEmblem(emblem: Rance.Emblem): void;
+        public setCustomImage(imageSrc: string): void;
         public draw(): HTMLCanvasElement;
-        public serialize(): {
-            seed: any;
-        };
+        public serialize(): any;
     }
 }
 declare module Rance {

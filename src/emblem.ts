@@ -137,5 +137,18 @@ module Rance
 
       return canvas;
     }
+
+    serialize()
+    {
+      var data: any =
+      {
+        alpha: this.alpha,
+        innerSrc: this.inner.imageSrc
+      };
+
+      if (this.outer) data.outerSrc = this.outer.imageSrc
+
+      return(data);
+    }
   }
 }

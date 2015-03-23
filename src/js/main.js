@@ -6372,9 +6372,6 @@ var Rance;
                 minDifference: {
                     h: 30,
                     l: 30
-                },
-                maxDifference: {
-                    h: 80
                 }
             });
             hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
@@ -6394,9 +6391,6 @@ var Rance;
                     minDifference: {
                         h: 20 * easing,
                         s: 30 * easing
-                    },
-                    maxDifference: {
-                        h: 100
                     }
                 });
 
@@ -8117,6 +8111,18 @@ var Rance;
 
             return canvas;
         };
+
+        Emblem.prototype.serialize = function () {
+            var data = {
+                alpha: this.alpha,
+                innerSrc: this.inner.imageSrc
+            };
+
+            if (this.outer)
+                data.outerSrc = this.outer.imageSrc;
+
+            return (data);
+        };
         return Emblem;
     })();
     Rance.Emblem = Emblem;
@@ -8150,6 +8156,20 @@ var Rance;
                 this.backgroundEmblem.generateRandom(40, rng);
             }
         };
+        Flag.prototype.setForegroundEmblem = function (emblem) {
+            this.foregroundEmblem = emblem;
+            this.secondaryColor = emblem.color;
+            this.seed = null;
+        };
+        Flag.prototype.setBackgroundEmblem = function (emblem) {
+            this.backgroundEmblem = emblem;
+            this.tetriaryColor = emblem.color;
+            this.seed = null;
+        };
+        Flag.prototype.setCustomImage = function (imageSrc) {
+            this.customImage = imageSrc;
+            this.seed = null;
+        };
         Flag.prototype.draw = function () {
             var canvas = document.createElement("canvas");
             canvas.width = this.width;
@@ -8162,24 +8182,70 @@ var Rance;
             ctx.fillRect(0, 0, this.width, this.height);
             ctx.fillStyle = "#00FF00";
 
-            if (this.backgroundEmblem) {
-                var background = this.backgroundEmblem.draw();
-                var x = (this.width - background.width) / 2;
-                var y = (this.height - background.height) / 2;
-                ctx.drawImage(background, x, y);
-            }
+            if (this.customImage) {
+                var image = new Image();
+                image.src = this.customImage;
+                var xPos, xWidth, yPos, yHeight;
 
-            var foreground = this.foregroundEmblem.draw();
-            var x = (this.width - foreground.width) / 2;
-            var y = (this.height - foreground.height) / 2;
-            ctx.drawImage(foreground, x, y);
+                // center image if smaller than canvas we're drawing on
+                if (image.width < this.width) {
+                    xPos = (this.width - image.width) / 2;
+                    xWidth = image.width;
+                } else {
+                    xPos = 0;
+                    xWidth:
+                    this.width;
+                }
+
+                if (image.height < this.height) {
+                    yPos = (this.height - image.height) / 2;
+                    yHeight = image.height;
+                } else {
+                    yPos = 0;
+                    yHeight:
+                    this.height;
+                }
+
+                ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
+            } else {
+                if (this.backgroundEmblem) {
+                    var background = this.backgroundEmblem.draw();
+                    var x = (this.width - background.width) / 2;
+                    var y = (this.height - background.height) / 2;
+                    ctx.drawImage(background, x, y);
+                }
+
+                if (this.foregroundEmblem) {
+                    var foreground = this.foregroundEmblem.draw();
+                    var x = (this.width - foreground.width) / 2;
+                    var y = (this.height - foreground.height) / 2;
+                    ctx.drawImage(foreground, x, y);
+                }
+            }
 
             return canvas;
         };
         Flag.prototype.serialize = function () {
-            return ({
-                seed: this.seed
-            });
+            var data = {
+                mainColor: this.mainColor
+            };
+
+            if (this.customImage) {
+                data.customImage = this.customImage;
+            } else if (this.seed) {
+                data.seed = this.seed;
+            }
+
+            return data;
+            /*
+            return(
+            {
+            mainColor: this.mainColor,
+            secondaryColor: this.secondaryColor,
+            tetriaryColor: this.tetriaryColor,
+            foregroundEmblemType: this.foregroundEmblem
+            seed: this.seed
+            });*/
         };
         return Flag;
     })();
@@ -10645,43 +10711,8 @@ var Rance;
                     lastValidHexString: hexString,
                     hue: hsvColor[0],
                     sat: hsvColor[1],
-                    val: hsvColor[2]
-                });
-            },
-            updateColor: function () {
-                var hsvColor;
-                var hexColor;
-                var hexString;
-
-                var newHexString = this.refs.hex.getDOMNode().value;
-                if (this.state.hexString === newHexString) {
-                    var hue = Math.round(this.refs.hue.getDOMNode().value % 360);
-                    if (hue < 0)
-                        hue = 360;
-                    var sat = Math.round(this.refs.sat.getDOMNode().value % 101);
-                    if (sat < 0)
-                        sat = 100;
-                    var val = Math.round(this.refs.val.getDOMNode().value % 101);
-                    if (val < 0)
-                        val = 100;
-
-                    hsvColor = [hue, sat, val];
-                    hexColor = Math.round(Rance.hsvToHex.apply(null, Rance.scalarsFromColor(hsvColor)));
-                    hexString = "#" + Rance.hexToString(hexColor);
-                } else {
-                    hexString = newHexString;
-                    hexColor = Rance.stringToHex(hexString);
-                    hsvColor = Rance.colorFromScalars(Rance.hexToHsv(hexColor));
-                    hsvColor = hsvColor.map(function (value, i) {
-                        var modulo = i > 0 ? 101 : 360;
-                        return Math.round(value % modulo);
-                    });
-                }
-
-                this.setState({
-                    hexColor: hexColor,
-                    hexString: hexString,
-                    hsvColor: hsvColor
+                    val: hsvColor[2],
+                    isNull: true
                 });
             },
             updateFromHsv: function (hue, sat, val) {
@@ -10692,11 +10723,12 @@ var Rance;
                 this.setState({
                     hexColor: hexColor,
                     hexString: hexString,
-                    lastValidHexString: hexString
+                    lastValidHexString: hexString,
+                    isNull: false
                 });
 
                 if (this.props.onChange) {
-                    this.props.onChange(hexColor);
+                    this.props.onChange(hexColor, false);
                 }
             },
             updateFromHex: function (hexColor) {
@@ -10709,8 +10741,7 @@ var Rance;
                 });
 
                 if (this.props.onChange) {
-                    console.log("updateFromHex onChange", Rance.hexToString(hexColor));
-                    this.props.onChange(hexColor);
+                    this.props.onChange(hexColor, false);
                 }
             },
             setHex: function (e) {
@@ -10719,14 +10750,14 @@ var Rance;
                     hexString = "#" + hexString;
                 }
                 var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
-                console.log("setHex", hexString, isValid);
 
                 var hexColor = Rance.stringToHex(hexString);
 
                 this.setState({
                     hexString: hexString,
                     lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
-                    hexColor: isValid ? hexColor : this.state.hexColor
+                    hexColor: isValid ? hexColor : this.state.hexColor,
+                    isNull: !isValid
                 });
 
                 if (isValid) {
@@ -10734,7 +10765,7 @@ var Rance;
                 }
             },
             setHue: function (e) {
-                var hue = Math.round(e.target.value % 360);
+                var hue = Math.round(e.target.value % 361);
                 if (hue < 0)
                     hue = 360;
                 this.setState({ hue: hue });
@@ -10753,6 +10784,25 @@ var Rance;
                     val = 100;
                 this.setState({ val: val });
                 this.updateFromHsv(this.state.hue, this.state.sat, val);
+            },
+            autoGenerateColor: function () {
+                var hexColor = this.props.generateColor();
+                var hexString = "#" + Rance.hexToString(hexColor);
+
+                this.setState({
+                    hexString: hexString,
+                    lastValidHexString: hexString,
+                    hexColor: hexColor
+                });
+
+                this.updateFromHex(hexColor);
+            },
+            nullifyColor: function () {
+                this.setState({ isNull: true });
+
+                if (this.props.onChange) {
+                    this.props.onChange(this.state.hexColor, true);
+                }
             },
             getHueGradientString: function () {
                 if (this.hueGradientString)
@@ -10836,7 +10886,8 @@ var Rance;
                     max: max,
                     step: 1,
                     value: this.state[type],
-                    onChange: updateFunctions[type]
+                    onChange: updateFunctions[type],
+                    onMouseUp: updateFunctions[type]
                 })), React.DOM.input({
                     className: "color-picker-input",
                     type: "number",
@@ -10848,16 +10899,15 @@ var Rance;
             render: function () {
                 var rootId = this._rootNodeID;
 
-                return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + "hex" }, "Hex:"), React.DOM.input({
-                    className: "color-picker-slider",
-                    id: "" + rootId + "hex",
+                return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + "hex" }, "Hex:"), !this.props.generateColor ? null : React.DOM.button({
+                    className: "color-picker-button",
+                    onClick: this.autoGenerateColor
+                }, "Auto"), React.DOM.button({
+                    className: "color-picker-button",
+                    onClick: this.nullifyColor
+                }, "Clear"), React.DOM.input({
+                    className: "color-picker-input color-picker-input-hex",
                     ref: "hex",
-                    type: "color",
-                    step: 1,
-                    value: this.state.lastValidHexString,
-                    onChange: this.setHex
-                }), React.DOM.input({
-                    className: "color-picker-input",
                     type: "string",
                     step: 1,
                     value: this.state.hexString,
@@ -10877,6 +10927,7 @@ var Rance;
             getInitialState: function () {
                 return ({
                     hexColor: this.props.color || 0xFFFFFF,
+                    isNull: true,
                     active: false
                 });
             },
@@ -10895,21 +10946,34 @@ var Rance;
                     this.setState({ isActive: false });
                 }
             },
-            updateColor: function (hexColor) {
-                this.setState({ hexColor: hexColor });
+            updateColor: function (hexColor, isNull) {
+                if (isNull) {
+                    this.setState({ isNull: isNull });
+                } else {
+                    this.setState({ hexColor: hexColor, isNull: isNull });
+                }
+
                 if (this.props.onChange) {
-                    this.props.onChange(hexColor);
+                    this.props.onChange(hexColor, isNull);
                 }
             },
             render: function () {
-                return (React.DOM.div({ className: "color-setter" }, React.DOM.div({
+                var displayElement = this.state.isNull ? React.DOM.img({
+                    className: "color-setter-display",
+                    src: "img\/icons\/nullcolor.png",
+                    onClick: this.toggleActive
+                }) : React.DOM.div({
                     className: "color-setter-display",
                     style: {
                         backgroundColor: "#" + Rance.hexToString(this.state.hexColor)
                     },
                     onClick: this.toggleActive
-                }), this.props.isActive || this.state.isActive ? Rance.UIComponents.ColorPicker({
+                });
+
+                return (React.DOM.div({ className: "color-setter" }, displayElement, this.props.isActive || this.state.isActive ? Rance.UIComponents.ColorPicker({
+                    ref: "colorPicker",
                     hexColor: this.state.hexColor,
+                    generateColor: this.props.generateColor,
                     onChange: this.updateColor
                 }) : null));
             }
@@ -10922,6 +10986,12 @@ var Rance;
     (function (UIComponents) {
         UIComponents.FlagSetter = React.createClass({
             displayName: "FlagSetter",
+            getInitialState: function () {
+                return ({
+                    emblem: null,
+                    active: false
+                });
+            },
             render: function () {
                 return (React.DOM.div({ className: "flag-setter" }, "flagSetter"));
             }
@@ -10938,34 +11008,52 @@ var Rance;
             displayName: "PlayerSetup",
             getInitialState: function () {
                 return ({
-                    mainColor: 0x000000,
+                    mainColor: 0xFFFFFF,
+                    mainColorIsNull: true,
                     subColor: 0xFFFFFF,
+                    subColorIsNull: true,
                     flagEmblem: null
                 });
             },
-            setMainColor: function (color) {
-                this.setState({ mainColor: color });
+            generateMainColor: function () {
+                if (this.state.subColorIsNull) {
+                    return Rance.generateMainColor();
+                } else {
+                    return Rance.generateSecondaryColor(this.state.subColor);
+                }
             },
-            setSubColor: function (color) {
-                this.setState({ subColor: color });
+            generateSubColor: function () {
+                if (this.state.mainColorIsNull) {
+                    return Rance.generateMainColor();
+                } else {
+                    return Rance.generateSecondaryColor(this.state.mainColor);
+                }
+            },
+            setMainColor: function (color, isNull) {
+                this.setState({ mainColor: color, mainColorIsNull: isNull });
+            },
+            setSubColor: function (color, isNull) {
+                this.setState({ subColor: color, subColorIsNull: isNull });
             },
             handleRemove: function () {
-                console.log(this.key, this.props.key);
                 this.props.removePlayer(this.props.key);
             },
             render: function () {
                 return (React.DOM.div({ className: "player-setup" }, React.DOM.div({ className: "player-setup-name" }, "playerName"), Rance.UIComponents.ColorSetter({
                     ref: "mainColor",
                     onChange: this.setMainColor,
-                    setActiveColorPicker: this.props.setActiveColorPicker
+                    setActiveColorPicker: this.props.setActiveColorPicker,
+                    generateColor: this.generateMainColor
                 }), Rance.UIComponents.ColorSetter({
                     ref: "subColor",
                     onChange: this.setSubColor,
-                    setActiveColorPicker: this.props.setActiveColorPicker
+                    setActiveColorPicker: this.props.setActiveColorPicker,
+                    generateColor: this.generateSubColor
                 }), Rance.UIComponents.FlagSetter({
                     mainColor: this.state.mainColor,
                     subColor: this.state.mainColor,
-                    flagEmblem: this.state.flagEmblem
+                    flagEmblem: this.state.flagEmblem,
+                    setActiveColorPicker: this.props.setActiveColorPicker
                 }), React.DOM.div({
                     className: "player-setup-remove-player",
                     onClick: this.handleRemove
