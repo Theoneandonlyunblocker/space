@@ -2612,17 +2612,23 @@ progress::-webkit-progress-value {
   display: flex;
   box-sizing: border-box;
   width: 100%;
-  height: 2em;
+  height: 1.5em;
+  margin: 0.15em 0;
   background-color: #9a9a9a;
 }
 .color-picker-label {
-  width: 3em;
+  min-width: 2.25em;
 }
 .color-picker-slider {
   width: 8em;
+  height: 1.5em;
+  z-index: 5;
   box-sizing: border-box;
-  height: 2em;
 }
 .color-picker-input {
-  flex: 1 0 auto;
+  flex: 1 0 0%;
+  max-width: 5em;
+}
+.color-picker-input-hex {
+  margin-left: 8em;
 }

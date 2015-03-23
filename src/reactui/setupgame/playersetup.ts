@@ -13,22 +13,46 @@ module Rance
       {
         return(
         {
-          mainColor: 0x000000,
+          mainColor: 0xFFFFFF,
+          mainColorIsNull: true,
           subColor: 0xFFFFFF,
+          subColorIsNull: true,
           flagEmblem: null
         });
       },
-      setMainColor: function(color: number)
+      generateMainColor: function()
       {
-        this.setState({mainColor: color});
+        if (this.state.subColorIsNull)
+        {
+          return generateMainColor();
+        }
+        else
+        {
+          return generateSecondaryColor(this.state.subColor);
+        }
       },
-      setSubColor: function(color: number)
+      generateSubColor: function()
       {
-        this.setState({subColor: color});
+        if (this.state.mainColorIsNull)
+        {
+          return generateMainColor();
+        }
+        else
+        {
+          return generateSecondaryColor(this.state.mainColor);
+        }
+      },
+
+      setMainColor: function(color: number, isNull: boolean)
+      {
+        this.setState({mainColor: color, mainColorIsNull: isNull});
+      },
+      setSubColor: function(color: number, isNull: boolean)
+      {
+        this.setState({subColor: color, subColorIsNull: isNull});
       },
       handleRemove: function()
       {
-        console.log(this.key, this.props.key);
         this.props.removePlayer(this.props.key)
       },
       render: function()
@@ -40,19 +64,22 @@ module Rance
             {
               ref: "mainColor",
               onChange: this.setMainColor,
-              setActiveColorPicker: this.props.setActiveColorPicker
+              setActiveColorPicker: this.props.setActiveColorPicker,
+              generateColor: this.generateMainColor
             }),
             UIComponents.ColorSetter(
             {
               ref: "subColor",
               onChange: this.setSubColor,
-              setActiveColorPicker: this.props.setActiveColorPicker
+              setActiveColorPicker: this.props.setActiveColorPicker,
+              generateColor: this.generateSubColor
             }),
             UIComponents.FlagSetter(
             {
               mainColor: this.state.mainColor,
               subColor: this.state.mainColor,
-              flagEmblem: this.state.flagEmblem
+              flagEmblem: this.state.flagEmblem,
+              setActiveColorPicker: this.props.setActiveColorPicker
             }),
             React.DOM.div(
             {

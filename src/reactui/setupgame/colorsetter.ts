@@ -12,6 +12,7 @@ module Rance
         return(
         {
           hexColor: this.props.color || 0xFFFFFF,
+          isNull: true,
           active: false
         });
       },
@@ -38,32 +39,51 @@ module Rance
           this.setState({isActive: false});
         }
       },
-      updateColor: function(hexColor: number)
+      updateColor: function(hexColor: number, isNull: boolean)
       {
-        this.setState({hexColor: hexColor});
+        if (isNull)
+        {
+          this.setState({isNull: isNull});
+        }
+        else
+        {
+          this.setState({hexColor: hexColor, isNull: isNull});
+        }
+
         if (this.props.onChange)
         {
-          this.props.onChange(hexColor);
+          this.props.onChange(hexColor, isNull);
         }
       },
 
       render: function()
       {
+        var displayElement = this.state.isNull ?
+          React.DOM.img(
+          {
+            className: "color-setter-display",
+            src: "img\/icons\/nullcolor.png",
+            onClick: this.toggleActive
+          }) :
+          React.DOM.div(
+          {
+            className: "color-setter-display",
+            style:
+            {
+              backgroundColor: "#" + hexToString(this.state.hexColor)
+            },
+            onClick: this.toggleActive
+          });
+
         return(
           React.DOM.div({className: "color-setter"},
-            React.DOM.div(
-            {
-              className: "color-setter-display",
-              style:
-              {
-                backgroundColor: "#" + hexToString(this.state.hexColor)
-              },
-              onClick: this.toggleActive
-            }),
+            displayElement,
             this.props.isActive || this.state.isActive ?
               UIComponents.ColorPicker(
               {
+                ref: "colorPicker",
                 hexColor: this.state.hexColor,
+                generateColor: this.props.generateColor,
                 onChange: this.updateColor
               }) : null
           )

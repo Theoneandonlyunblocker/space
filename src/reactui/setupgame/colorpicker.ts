@@ -21,51 +21,11 @@ module Rance
           lastValidHexString: hexString,
           hue: hsvColor[0],
           sat: hsvColor[1],
-          val: hsvColor[2]
+          val: hsvColor[2],
+          isNull: true
         });
       },
 
-      updateColor: function()
-      {
-        var hsvColor: number[];
-        var hexColor: number;
-        var hexString: string;
-
-        var newHexString = this.refs.hex.getDOMNode().value;
-        if (this.state.hexString === newHexString)
-        {
-          var hue = Math.round(this.refs.hue.getDOMNode().value % 360);
-          if (hue < 0) hue = 360;
-          var sat = Math.round(this.refs.sat.getDOMNode().value % 101);
-          if (sat < 0) sat = 100;
-          var val = Math.round(this.refs.val.getDOMNode().value % 101);
-          if (val < 0) val = 100;
-
-          hsvColor = [hue, sat, val];
-          hexColor = Math.round(hsvToHex.apply(null, scalarsFromColor(hsvColor)));
-          hexString = "#" + hexToString(hexColor);
-        }
-        else
-        {
-          hexString = newHexString;
-          hexColor = stringToHex(hexString);
-          hsvColor = colorFromScalars(hexToHsv(hexColor));
-          hsvColor = hsvColor.map(function(value, i)
-          {
-            var modulo = i > 0 ? 101 : 360;
-            return Math.round(value % modulo);
-          });
-        }
-
-
-        this.setState(
-        {
-          hexColor: hexColor,
-          hexString: hexString,
-          hsvColor: hsvColor
-        });
-
-      },
       updateFromHsv: function(hue, sat, val)
       {
         var hsvColor = [hue, sat, val];
@@ -76,12 +36,13 @@ module Rance
         {
           hexColor: hexColor,
           hexString: hexString,
-          lastValidHexString: hexString
+          lastValidHexString: hexString,
+          isNull: false
         });
 
         if (this.props.onChange)
         {
-          this.props.onChange(hexColor);
+          this.props.onChange(hexColor, false);
         }
       },
       updateFromHex: function(hexColor: number)
@@ -97,8 +58,7 @@ module Rance
 
         if (this.props.onChange)
         {
-          console.log("updateFromHex onChange", hexToString(hexColor));
-          this.props.onChange(hexColor);
+          this.props.onChange(hexColor, false);
         }
       },
       setHex: function(e)
@@ -109,7 +69,6 @@ module Rance
           hexString = "#" + hexString;
         }
         var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
-        console.log("setHex", hexString, isValid);
 
         var hexColor = stringToHex(hexString);
 
@@ -118,7 +77,8 @@ module Rance
         {
           hexString: hexString,
           lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
-          hexColor: isValid ? hexColor : this.state.hexColor
+          hexColor: isValid ? hexColor : this.state.hexColor,
+          isNull: !isValid
         });
 
         if (isValid)
@@ -129,7 +89,7 @@ module Rance
       },
       setHue: function(e)
       {
-        var hue = Math.round(e.target.value % 360);
+        var hue = Math.round(e.target.value % 361);
         if (hue < 0) hue = 360;
         this.setState({hue: hue});
         this.updateFromHsv(hue, this.state.sat, this.state.val);
@@ -147,6 +107,31 @@ module Rance
         if (val < 0) val = 100;
         this.setState({val: val});
         this.updateFromHsv(this.state.hue, this.state.sat, val);
+      },
+
+      autoGenerateColor: function()
+      {
+        var hexColor = this.props.generateColor();
+        var hexString = "#" + hexToString(hexColor);
+
+        this.setState(
+        {
+          hexString: hexString,
+          lastValidHexString: hexString,
+          hexColor: hexColor
+        });
+
+        this.updateFromHex(hexColor);
+      },
+
+      nullifyColor: function()
+      {
+        this.setState({isNull: true});
+
+        if (this.props.onChange)
+        {
+          this.props.onChange(this.state.hexColor, true);
+        }
       },
 
       getHueGradientString: function()
@@ -260,7 +245,8 @@ module Rance
                 max: max,
                 step: 1,
                 value: this.state[type],
-                onChange: updateFunctions[type]
+                onChange: updateFunctions[type],
+                onMouseUp: updateFunctions[type] // ie doesnt fire onchange event
               })
             ),
             React.DOM.input(
@@ -274,7 +260,6 @@ module Rance
           )
         );
       },
-
       render: function()
       {
         var rootId = this._rootNodeID;
@@ -288,7 +273,7 @@ module Rance
             ),
             React.DOM.div({className: "color-picker-input-container", key: "hex"},
               React.DOM.label({className: "color-picker-label", htmlFor: "" + rootId + "hex"}, "Hex:"),
-              React.DOM.input(
+              /*React.DOM.input(
               {
                 className: "color-picker-slider",
                 id: "" + rootId + "hex",
@@ -297,10 +282,22 @@ module Rance
                 step: 1,
                 value: this.state.lastValidHexString,
                 onChange: this.setHex
-              }),
+              }),*/
+              !this.props.generateColor ? null :
+              React.DOM.button(
+              {
+                className: "color-picker-button",
+                onClick: this.autoGenerateColor
+              }, "Auto"),
+              React.DOM.button(
+              {
+                className: "color-picker-button",
+                onClick: this.nullifyColor
+              }, "Clear"),
               React.DOM.input(
               {
-                className: "color-picker-input",
+                className: "color-picker-input color-picker-input-hex",
+                ref: "hex",
                 type: "string",
                 step: 1,
                 value: this.state.hexString,
