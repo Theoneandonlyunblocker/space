@@ -156,7 +156,7 @@ module Rance
       for (var i = 0; i < 5; i++)
       {
         var player = new Player(true);
-        player.makeFlag();
+        player.makeRandomFlag();
 
         players.push(player);
       }

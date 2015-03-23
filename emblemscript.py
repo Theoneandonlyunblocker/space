@@ -7,9 +7,10 @@ result = open("emblems", "a")
 
 def makeEmblemTemplate(name):
   emblemTemplate = (
-    'export var ' + name +' =\n'
+    'export var ' + name + ' =\n'
     '{\n'
-    '  type: "both",\n'
+    '  type: ' + name + ',\n'
+    '  position: "both",\n'
     '  foregroundOnly: true,\n'
     '  imageSrc: "' + name + '.png"\n'
     '}\n'

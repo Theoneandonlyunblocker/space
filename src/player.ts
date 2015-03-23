@@ -79,14 +79,15 @@ module Rance
       var foregroundEmblem = new Emblem(this.secondaryColor);
       foregroundEmblem.inner = 
       {
-        type: "both",
+        type: "pirateEmblem",
+        position: "both",
         foregroundOnly: true,
         imageSrc: "pirateEmblem.png"
       };
 
       this.flag = new Flag(
       {
-        width: 46,
+        width: 46, // FLAG_SIZE
         mainColor: this.color,
         secondaryColor: this.secondaryColor,
         foregroundEmblem: foregroundEmblem
@@ -95,13 +96,13 @@ module Rance
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
     }
-    makeFlag(seed?: any)
+    makeRandomFlag(seed?: any)
     {
       if (!this.color || !this.secondaryColor) this.makeColorScheme();
 
       this.flag = new Flag(
       {
-        width: 46,
+        width: 46, // FLAG_SIZE
         mainColor: this.color,
         secondaryColor: this.secondaryColor
       });
@@ -110,9 +111,9 @@ module Rance
       var canvas = this.flag.draw();
       this.icon = canvas.toDataURL();
     }
-    setIcon(base64: string)
+    setIcon()
     {
-      this.icon = base64;
+      this.icon = this.flag.draw().toDataURL();
     }
     addUnit(unit: Unit)
     {
@@ -497,10 +498,6 @@ module Rance
       if (this.flag)
       {
         data.flag = this.flag.serialize();
-      }
-      else
-      {
-        data.icon = this.icon;
       }
 
       data.unitIds = [];

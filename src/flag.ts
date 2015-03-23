@@ -20,14 +20,10 @@ module Rance
     constructor(props:
     {
       width: number;
+      height?: number;
       mainColor?: number;
       secondaryColor?: number;
       tetriaryColor?: number;
-
-      height?: number;
-
-      backgroundEmblem?: Emblem;
-      foregroundEmblem?: Emblem;
     })
     {
       this.width = props.width;
@@ -36,9 +32,33 @@ module Rance
       this.mainColor = props.mainColor;
       this.secondaryColor = props.secondaryColor;
       this.tetriaryColor = props.tetriaryColor;
-      this.backgroundEmblem = props.backgroundEmblem;
-      this.foregroundEmblem = props.foregroundEmblem;
     }
+
+    setColorScheme(main, secondary?, tetriary?)
+    {
+      this.mainColor = main;
+
+      if (isFinite(secondary))
+      {
+        this.secondaryColor = secondary;
+      }
+      if (isFinite(this.secondaryColor) && this.foregroundEmblem)
+      {
+        this.foregroundEmblem.color = this.secondaryColor;
+      }
+
+
+      if (isFinite(tetriary))
+      {
+        this.tetriaryColor = tetriary;
+      }
+      if (isFinite(this.tetriaryColor) && this.backgroundEmblem)
+      {
+        this.backgroundEmblem.color = this.tetriaryColor;
+      }
+    }
+
+
     generateRandom(seed?: any)
     {
       this.seed = seed || Math.random();
@@ -46,13 +66,13 @@ module Rance
       var rng = new RNG(this.seed);
 
       this.foregroundEmblem = new Emblem(this.secondaryColor);
-      this.foregroundEmblem.generateRandom(100, rng);
+      this.foregroundEmblem.generateRandom(1, rng);
 
 
       if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5)
       {
         this.backgroundEmblem = new Emblem(this.tetriaryColor);
-        this.backgroundEmblem.generateRandom(40, rng);
+        this.backgroundEmblem.generateRandom(0.4, rng);
       }
     }
     setForegroundEmblem(emblem: Emblem)
@@ -146,6 +166,11 @@ module Rance
         mainColor: this.mainColor
       };
 
+      if (isFinite(this.secondaryColor)) data.secondaryColor = this.secondaryColor;
+      if (isFinite(this.tetriaryColor)) data.tetriaryColor = this.tetriaryColor;
+
+
+
       if (this.customImage)
       {
         data.customImage = this.customImage;
@@ -154,18 +179,13 @@ module Rance
       {
         data.seed = this.seed;
       }
+      else
+      {
+        if (this.foregroundEmblem) data.foregroundEmblem = this.foregroundEmblem.serialize();
+        if (this.backgroundEmblem) data.backgroundEmblem = this.backgroundEmblem.serialize();
+      }
 
       return data;
-
-      /*
-      return(
-      {
-        mainColor: this.mainColor,
-        secondaryColor: this.secondaryColor,
-        tetriaryColor: this.tetriaryColor,
-        foregroundEmblemType: this.foregroundEmblem
-        seed: this.seed
-      });*/
     }
   }
 }

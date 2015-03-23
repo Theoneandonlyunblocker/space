@@ -215,11 +215,12 @@ module Rance
 
         if (data.flag)
         {
-          player.makeFlag(data.flag.seed);
+          player.flag = this.deserializeFlag(data.flag);
+          player.setIcon();
         }
         else
         {
-          player.setIcon(data.icon);
+          player.makeRandomFlag();
         }
       }
 
@@ -249,6 +250,50 @@ module Rance
 
 
       return player;
+    }
+    deserializeFlag(data)
+    {
+      var deserializeEmblem = function(emblemData, color)
+      {
+        var inner = Templates.SubEmblems[emblemData.innerType];
+        var outer = emblemData.outerType ?
+          Templates.SubEmblems[emblemData.outerType] : null;
+
+        return new Emblem(color, emblemData.alpha, inner, outer);
+
+      };
+
+      var flag = new Flag(
+      {
+        width: 46, // FLAG_SIZE
+        mainColor: data.mainColor,
+        secondaryColor: data.secondaryColor,
+        tetriaryColor: data.tetriaryColor
+      });
+
+      if (data.customImage)
+      {
+        flag.setCustomImage(data.customImage);
+      }
+      else if (data.seed)
+      {
+        flag.generateRandom(data.seed);
+      }
+      else
+      {
+        if (data.foregroundEmblem)
+        {
+          var fgEmblem = deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
+          flag.setForegroundEmblem(fgEmblem);
+        }
+        if (data.backgroundEmblem)
+        {
+          var bgEmblem = deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
+          flag.setBackgroundEmblem(bgEmblem);
+        }
+      }
+
+      return flag;
     }
     deserializeFleet(player, data)
     {

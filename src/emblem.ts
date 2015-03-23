@@ -11,9 +11,12 @@ module Rance
     color: number;
     inner: Templates.ISubEmblemTemplate;
     outer: Templates.ISubEmblemTemplate;
-    constructor(color: number)
+    constructor(color: number, alpha?: number, inner?, outer?)
     {
       this.color = color;
+      this.alpha = alpha;
+      this.inner = inner;
+      this.outer = outer;
     }
 
     isForegroundOnly()
@@ -48,14 +51,14 @@ module Rance
 
       var mainEmblem = getSeededRandomArrayItem(allEmblems);
 
-      if (mainEmblem.type === "both")
+      if (mainEmblem.position === "both")
       {
         this.inner = mainEmblem;
         return;
       }
-      else if (mainEmblem.type === "inner" || mainEmblem.type === "outer")
+      else if (mainEmblem.position === "inner" || mainEmblem.position === "outer")
       {
-        this[mainEmblem.type] = mainEmblem;
+        this[mainEmblem.position] = mainEmblem;
       }
       else // inner-or-both || outer-or-both
       {
@@ -64,7 +67,7 @@ module Rance
           this.inner = mainEmblem;
           return;
         }
-        else if (mainEmblem.type === "inner-or-both")
+        else if (mainEmblem.position === "inner-or-both")
         {
           this.inner = mainEmblem;
         }
@@ -75,20 +78,20 @@ module Rance
       }
 
 
-      if (mainEmblem.type === "inner" || mainEmblem.type === "inner-or-both")
+      if (mainEmblem.position === "inner" || mainEmblem.position === "inner-or-both")
       {
         var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function(emblem)
         {
-          return (emblem.type === "outer" || emblem.type === "outer-or-both");
+          return (emblem.position === "outer" || emblem.position === "outer-or-both");
         }));
 
         this.outer = subEmblem;
       }
-      else if (mainEmblem.type === "outer" || mainEmblem.type === "outer-or-both")
+      else if (mainEmblem.position === "outer" || mainEmblem.position === "outer-or-both")
       {
         var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function(emblem)
         {
-          return (emblem.type === "inner" || emblem.type === "inner-or-both");
+          return (emblem.position === "inner" || emblem.position === "inner-or-both");
         }));
 
         this.inner = subEmblem;
@@ -143,10 +146,10 @@ module Rance
       var data: any =
       {
         alpha: this.alpha,
-        innerSrc: this.inner.imageSrc
+        innerType: this.inner.type
       };
 
-      if (this.outer) data.outerSrc = this.outer.imageSrc
+      if (this.outer) data.outerType = this.outer.type;
 
       return(data);
     }

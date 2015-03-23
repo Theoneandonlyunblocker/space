@@ -7855,147 +7855,176 @@ var Rance;
     (function (Templates) {
         (function (SubEmblems) {
             SubEmblems.emblem0 = {
-                type: "both",
+                type: "emblem0",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem0.png"
             };
             SubEmblems.emblem33 = {
-                type: "both",
+                type: "emblem33",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem33.png"
             };
             SubEmblems.emblem34 = {
-                type: "both",
+                type: "emblem34",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem34.png"
             };
             SubEmblems.emblem35 = {
-                type: "both",
+                type: "emblem35",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem35.png"
             };
             SubEmblems.emblem36 = {
-                type: "both",
+                type: "emblem36",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem36.png"
             };
             SubEmblems.emblem37 = {
-                type: "both",
+                type: "emblem37",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem37.png"
             };
             SubEmblems.emblem38 = {
-                type: "both",
+                type: "emblem38",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem38.png"
             };
             SubEmblems.emblem39 = {
-                type: "both",
+                type: "emblem39",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem39.png"
             };
             SubEmblems.emblem40 = {
-                type: "both",
+                type: "emblem40",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem40.png"
             };
             SubEmblems.emblem41 = {
-                type: "both",
+                type: "emblem41",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem41.png"
             };
             SubEmblems.emblem42 = {
-                type: "both",
+                type: "emblem42",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem42.png"
             };
             SubEmblems.emblem43 = {
-                type: "both",
+                type: "emblem43",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem43.png"
             };
             SubEmblems.emblem44 = {
-                type: "both",
+                type: "emblem44",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem44.png"
             };
             SubEmblems.emblem45 = {
-                type: "both",
+                type: "emblem45",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem45.png"
             };
             SubEmblems.emblem46 = {
-                type: "both",
+                type: "emblem46",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem46.png"
             };
             SubEmblems.emblem47 = {
-                type: "both",
+                type: "emblem47",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem47.png"
             };
             SubEmblems.emblem48 = {
-                type: "both",
+                type: "emblem48",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem48.png"
             };
             SubEmblems.emblem49 = {
-                type: "both",
+                type: "emblem49",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem49.png"
             };
             SubEmblems.emblem50 = {
-                type: "both",
+                type: "emblem50",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem50.png"
             };
             SubEmblems.emblem51 = {
-                type: "both",
+                type: "emblem51",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem51.png"
             };
             SubEmblems.emblem52 = {
-                type: "both",
+                type: "emblem52",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem52.png"
             };
             SubEmblems.emblem53 = {
-                type: "both",
+                type: "emblem53",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem53.png"
             };
             SubEmblems.emblem54 = {
-                type: "both",
+                type: "emblem54",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem54.png"
             };
             SubEmblems.emblem55 = {
-                type: "both",
+                type: "emblem55",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem55.png"
             };
             SubEmblems.emblem56 = {
-                type: "both",
+                type: "emblem56",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem56.png"
             };
             SubEmblems.emblem57 = {
-                type: "both",
+                type: "emblem57",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem57.png"
             };
             SubEmblems.emblem58 = {
-                type: "both",
+                type: "emblem58",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem58.png"
             };
             SubEmblems.emblem59 = {
-                type: "both",
+                type: "emblem59",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem59.png"
             };
             SubEmblems.emblem61 = {
-                type: "both",
+                type: "emblem61",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "emblem61.png"
             };
@@ -8010,8 +8039,11 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Emblem = (function () {
-        function Emblem(color) {
+        function Emblem(color, alpha, inner, outer) {
             this.color = color;
+            this.alpha = alpha;
+            this.inner = inner;
+            this.outer = outer;
         }
         Emblem.prototype.isForegroundOnly = function () {
             if (this.inner.foregroundOnly)
@@ -8042,31 +8074,31 @@ var Rance;
 
             var mainEmblem = getSeededRandomArrayItem(allEmblems);
 
-            if (mainEmblem.type === "both") {
+            if (mainEmblem.position === "both") {
                 this.inner = mainEmblem;
                 return;
-            } else if (mainEmblem.type === "inner" || mainEmblem.type === "outer") {
-                this[mainEmblem.type] = mainEmblem;
+            } else if (mainEmblem.position === "inner" || mainEmblem.position === "outer") {
+                this[mainEmblem.position] = mainEmblem;
             } else {
                 if (rng.uniform() > 0.5) {
                     this.inner = mainEmblem;
                     return;
-                } else if (mainEmblem.type === "inner-or-both") {
+                } else if (mainEmblem.position === "inner-or-both") {
                     this.inner = mainEmblem;
                 } else {
                     this.outer = mainEmblem;
                 }
             }
 
-            if (mainEmblem.type === "inner" || mainEmblem.type === "inner-or-both") {
+            if (mainEmblem.position === "inner" || mainEmblem.position === "inner-or-both") {
                 var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
-                    return (emblem.type === "outer" || emblem.type === "outer-or-both");
+                    return (emblem.position === "outer" || emblem.position === "outer-or-both");
                 }));
 
                 this.outer = subEmblem;
-            } else if (mainEmblem.type === "outer" || mainEmblem.type === "outer-or-both") {
+            } else if (mainEmblem.position === "outer" || mainEmblem.position === "outer-or-both") {
                 var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
-                    return (emblem.type === "inner" || emblem.type === "inner-or-both");
+                    return (emblem.position === "inner" || emblem.position === "inner-or-both");
                 }));
 
                 this.inner = subEmblem;
@@ -8115,11 +8147,11 @@ var Rance;
         Emblem.prototype.serialize = function () {
             var data = {
                 alpha: this.alpha,
-                innerSrc: this.inner.imageSrc
+                innerType: this.inner.type
             };
 
             if (this.outer)
-                data.outerSrc = this.outer.imageSrc;
+                data.outerType = this.outer.type;
 
             return (data);
         };
@@ -8140,20 +8172,36 @@ var Rance;
             this.mainColor = props.mainColor;
             this.secondaryColor = props.secondaryColor;
             this.tetriaryColor = props.tetriaryColor;
-            this.backgroundEmblem = props.backgroundEmblem;
-            this.foregroundEmblem = props.foregroundEmblem;
         }
+        Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
+            this.mainColor = main;
+
+            if (isFinite(secondary)) {
+                this.secondaryColor = secondary;
+            }
+            if (isFinite(this.secondaryColor) && this.foregroundEmblem) {
+                this.foregroundEmblem.color = this.secondaryColor;
+            }
+
+            if (isFinite(tetriary)) {
+                this.tetriaryColor = tetriary;
+            }
+            if (isFinite(this.tetriaryColor) && this.backgroundEmblem) {
+                this.backgroundEmblem.color = this.tetriaryColor;
+            }
+        };
+
         Flag.prototype.generateRandom = function (seed) {
             this.seed = seed || Math.random();
 
             var rng = new RNG(this.seed);
 
             this.foregroundEmblem = new Rance.Emblem(this.secondaryColor);
-            this.foregroundEmblem.generateRandom(100, rng);
+            this.foregroundEmblem.generateRandom(1, rng);
 
             if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem(this.tetriaryColor);
-                this.backgroundEmblem.generateRandom(40, rng);
+                this.backgroundEmblem.generateRandom(0.4, rng);
             }
         };
         Flag.prototype.setForegroundEmblem = function (emblem) {
@@ -8230,22 +8278,23 @@ var Rance;
                 mainColor: this.mainColor
             };
 
+            if (isFinite(this.secondaryColor))
+                data.secondaryColor = this.secondaryColor;
+            if (isFinite(this.tetriaryColor))
+                data.tetriaryColor = this.tetriaryColor;
+
             if (this.customImage) {
                 data.customImage = this.customImage;
             } else if (this.seed) {
                 data.seed = this.seed;
+            } else {
+                if (this.foregroundEmblem)
+                    data.foregroundEmblem = this.foregroundEmblem.serialize();
+                if (this.backgroundEmblem)
+                    data.backgroundEmblem = this.backgroundEmblem.serialize();
             }
 
             return data;
-            /*
-            return(
-            {
-            mainColor: this.mainColor,
-            secondaryColor: this.secondaryColor,
-            tetriaryColor: this.tetriaryColor,
-            foregroundEmblemType: this.foregroundEmblem
-            seed: this.seed
-            });*/
         };
         return Flag;
     })();
@@ -8560,7 +8609,8 @@ var Rance;
 
             var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             foregroundEmblem.inner = {
-                type: "both",
+                type: "pirateEmblem",
+                position: "both",
                 foregroundOnly: true,
                 imageSrc: "pirateEmblem.png"
             };
@@ -8575,7 +8625,7 @@ var Rance;
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
         };
-        Player.prototype.makeFlag = function (seed) {
+        Player.prototype.makeRandomFlag = function (seed) {
             if (!this.color || !this.secondaryColor)
                 this.makeColorScheme();
 
@@ -8589,8 +8639,8 @@ var Rance;
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
         };
-        Player.prototype.setIcon = function (base64) {
-            this.icon = base64;
+        Player.prototype.setIcon = function () {
+            this.icon = this.flag.draw().toDataURL();
         };
         Player.prototype.addUnit = function (unit) {
             this.units[unit.id] = unit;
@@ -8901,8 +8951,6 @@ var Rance;
 
             if (this.flag) {
                 data.flag = this.flag.serialize();
-            } else {
-                data.icon = this.icon;
             }
 
             data.unitIds = [];
@@ -15454,9 +15502,10 @@ var Rance;
                 player.colorAlpha = data.colorAlpha;
 
                 if (data.flag) {
-                    player.makeFlag(data.flag.seed);
+                    player.flag = this.deserializeFlag(data.flag);
+                    player.setIcon();
                 } else {
-                    player.setIcon(data.icon);
+                    player.makeRandomFlag();
                 }
             }
 
@@ -15479,6 +15528,38 @@ var Rance;
             }
 
             return player;
+        };
+        GameLoader.prototype.deserializeFlag = function (data) {
+            var deserializeEmblem = function (emblemData, color) {
+                var inner = Rance.Templates.SubEmblems[emblemData.innerType];
+                var outer = emblemData.outerType ? Rance.Templates.SubEmblems[emblemData.outerType] : null;
+
+                return new Rance.Emblem(color, emblemData.alpha, inner, outer);
+            };
+
+            var flag = new Rance.Flag({
+                width: 46,
+                mainColor: data.mainColor,
+                secondaryColor: data.secondaryColor,
+                tetriaryColor: data.tetriaryColor
+            });
+
+            if (data.customImage) {
+                flag.setCustomImage(data.customImage);
+            } else if (data.seed) {
+                flag.generateRandom(data.seed);
+            } else {
+                if (data.foregroundEmblem) {
+                    var fgEmblem = deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
+                    flag.setForegroundEmblem(fgEmblem);
+                }
+                if (data.backgroundEmblem) {
+                    var bgEmblem = deserializeEmblem(data.backgroundEmblem, data.tetriaryColor);
+                    flag.setBackgroundEmblem(bgEmblem);
+                }
+            }
+
+            return flag;
         };
         GameLoader.prototype.deserializeFleet = function (player, data) {
             var ships = [];
@@ -17428,7 +17509,7 @@ var Rance;
 
             for (var i = 0; i < 5; i++) {
                 var player = new Rance.Player(true);
-                player.makeFlag();
+                player.makeRandomFlag();
 
                 players.push(player);
             }

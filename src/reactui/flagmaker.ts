@@ -20,7 +20,7 @@ module Rance
 
           var flag = new Flag(
           {
-            width: 46,
+            width: 46, // FLAG_SIZE
             mainColor: colorScheme.main,
             secondaryColor: colorScheme.secondary
           });

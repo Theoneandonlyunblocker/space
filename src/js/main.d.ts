@@ -985,152 +985,182 @@ declare module Rance {
     module Templates {
         interface ISubEmblemTemplate {
             type: string;
+            position: string;
             foregroundOnly: boolean;
             imageSrc: string;
         }
         module SubEmblems {
             var emblem0: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem33: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem34: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem35: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem36: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem37: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem38: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem39: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem40: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem41: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem42: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem43: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem44: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem45: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem46: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem47: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem48: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem49: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem50: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem51: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem52: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem53: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem54: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem55: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem56: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem57: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem58: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem59: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
             var emblem61: {
                 type: string;
+                position: string;
                 foregroundOnly: boolean;
                 imageSrc: string;
             };
@@ -1143,7 +1173,7 @@ declare module Rance {
         public color: number;
         public inner: Rance.Templates.ISubEmblemTemplate;
         public outer: Rance.Templates.ISubEmblemTemplate;
-        constructor(color: number);
+        constructor(color: number, alpha?: number, inner?: any, outer?: any);
         public isForegroundOnly(): boolean;
         public generateRandom(minAlpha: number, rng?: any): void;
         public generateSubEmblems(rng: any): void;
@@ -1165,13 +1195,12 @@ declare module Rance {
         public seed: any;
         constructor(props: {
             width: number;
+            height?: number;
             mainColor?: number;
             secondaryColor?: number;
             tetriaryColor?: number;
-            height?: number;
-            backgroundEmblem?: Rance.Emblem;
-            foregroundEmblem?: Rance.Emblem;
         });
+        public setColorScheme(main: any, secondary?: any, tetriary?: any): void;
         public generateRandom(seed?: any): void;
         public setForegroundEmblem(emblem: Rance.Emblem): void;
         public setBackgroundEmblem(emblem: Rance.Emblem): void;
@@ -1268,8 +1297,8 @@ declare module Rance {
         public makeColorScheme(): void;
         public setupAI(game: Rance.Game): void;
         public setupPirates(): void;
-        public makeFlag(seed?: any): void;
-        public setIcon(base64: string): void;
+        public makeRandomFlag(seed?: any): void;
+        public setIcon(): void;
         public addUnit(unit: Rance.Unit): void;
         public removeUnit(unit: Rance.Unit): void;
         public getAllUnits(): any[];
@@ -2210,6 +2239,7 @@ declare module Rance {
         public deserializeBuildings(data: any): void;
         public deserializeBuilding(data: any): Rance.Building;
         public deserializePlayer(data: any): Rance.Player;
+        public deserializeFlag(data: any): Rance.Flag;
         public deserializeFleet(player: any, data: any): Rance.Fleet;
         public deserializeShip(data: any): Rance.Unit;
         public deserializeItem(data: any, player: Rance.Player): void;
