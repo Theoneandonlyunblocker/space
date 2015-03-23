@@ -6,21 +6,35 @@ module Rance
     {
       displayName: "LightBox",
 
-      // far from ideal as it always triggers reflow twice
+      // far from ideal as it always triggers reflow 4 times
       // cant figure out how to do resizing better since content size is dynamic
       handleResize: function()
       {
         var container = this.refs.container.getDOMNode();
+        var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
         container.classList.remove("light-box-horizontal-padding");
         container.classList.remove("light-box-fill-horizontal");
 
-        if (container.getBoundingClientRect().width + 10 < window.innerWidth)
+        container.classList.remove("light-box-vertical-padding");
+        container.classList.remove("light-box-fill-vertical");
+
+
+        if (container.getBoundingClientRect().width + 10 + wrapperRect.left < window.innerWidth)
         {
           container.classList.add("light-box-horizontal-padding");
         }
         else
         {
           container.classList.add("light-box-fill-horizontal");
+        }
+
+        if (container.getBoundingClientRect().height + 10 + wrapperRect.top < window.innerHeight)
+        {
+          container.classList.add("light-box-vertical-padding");
+        }
+        else
+        {
+          container.classList.add("light-box-fill-vertical");
         }
       },
 
@@ -43,7 +57,8 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "light-box-wrapper"
+            className: "light-box-wrapper",
+            ref: "wrapper"
           },
             React.DOM.div(
             {

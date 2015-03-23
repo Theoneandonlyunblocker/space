@@ -1118,6 +1118,9 @@ progress::-webkit-progress-value {
   position: relative;
   top: 0;
   left: 0;
+  height: 2em;
+  box-sizing: border-box;
+  align-items: center;
   display: flex;
   flex-flow: row;
   color: #eeeeec;
@@ -1156,7 +1159,6 @@ progress::-webkit-progress-value {
 }
 .top-menu {
   position: absolute;
-  z-index: 1001;
   top: 0;
   right: 0;
   border: 5px solid transparent;
@@ -1165,10 +1167,19 @@ progress::-webkit-progress-value {
   border-width: 0 0 5px 5px;
   background-color: #0c1615;
   padding: 6px 10px;
+  box-sizing: border-box;
   pointer-events: none;
 }
 .top-menu > * {
   pointer-events: auto;
+}
+@media (max-height: 600px) {
+  .top-menu {
+    height: 2em;
+    top: -1px;
+    padding: 0;
+    border-width: 0 0 5px 0;
+  }
 }
 .top-menu-items {
   display: inline-flex;
@@ -1202,11 +1213,12 @@ progress::-webkit-progress-value {
 .light-box-wrapper {
   position: fixed;
   display: flex;
-  z-index: -1;
+  z-index: -10;
   height: 100%;
   width: 100%;
-  top: 0;
+  top: 2em;
   left: 0;
+  box-sizing: border-box;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.4);
@@ -1214,15 +1226,12 @@ progress::-webkit-progress-value {
 .light-box-container {
   position: relative;
   background-color: #0d2335;
-  max-height: 90%;
-  padding: 25px;
+  padding: 5px;
+  box-sizing: border-box;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
-  padding-left: 0;
-  padding-right: 0;
-  border-left: 0;
-  border-right: 0;
+  border-width: 0px;
 }
 .light-box-fill-horizontal {
   width: 100%;
@@ -1233,6 +1242,15 @@ progress::-webkit-progress-value {
   border-left: 5px;
   border-right: 5px;
 }
+.light-box-fill-vertical {
+  height: 100%;
+}
+.light-box-vertical-padding {
+  padding-top: 25px;
+  padding-bottom: 25px;
+  border-top: 5px;
+  border-bottom: 5px;
+}
 .light-box-content {
   position: relative;
   background-color: #0c1615;
@@ -1240,6 +1258,7 @@ progress::-webkit-progress-value {
 }
 .light-box-close {
   position: absolute;
+  z-index: 999;
   top: 0;
   right: 0;
   color: #444;
@@ -1522,6 +1541,7 @@ progress::-webkit-progress-value {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: -201;
   width: 250px;
   height: 40px;
   font-size: 1.5em;

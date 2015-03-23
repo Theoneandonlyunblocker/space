@@ -3430,17 +3430,27 @@ var Rance;
     (function (UIComponents) {
         UIComponents.LightBox = React.createClass({
             displayName: "LightBox",
-            // far from ideal as it always triggers reflow twice
+            // far from ideal as it always triggers reflow 4 times
             // cant figure out how to do resizing better since content size is dynamic
             handleResize: function () {
                 var container = this.refs.container.getDOMNode();
+                var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
                 container.classList.remove("light-box-horizontal-padding");
                 container.classList.remove("light-box-fill-horizontal");
 
-                if (container.getBoundingClientRect().width + 10 < window.innerWidth) {
+                container.classList.remove("light-box-vertical-padding");
+                container.classList.remove("light-box-fill-vertical");
+
+                if (container.getBoundingClientRect().width + 10 + wrapperRect.left < window.innerWidth) {
                     container.classList.add("light-box-horizontal-padding");
                 } else {
                     container.classList.add("light-box-fill-horizontal");
+                }
+
+                if (container.getBoundingClientRect().height + 10 + wrapperRect.top < window.innerHeight) {
+                    container.classList.add("light-box-vertical-padding");
+                } else {
+                    container.classList.add("light-box-fill-vertical");
                 }
             },
             componentDidMount: function () {
@@ -3455,7 +3465,8 @@ var Rance;
             },
             render: function () {
                 return (React.DOM.div({
-                    className: "light-box-wrapper"
+                    className: "light-box-wrapper",
+                    ref: "wrapper"
                 }, React.DOM.div({
                     className: "light-box-container",
                     ref: "container"
@@ -5266,6 +5277,14 @@ var Rance;
         return null;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
+
+    function inspectSave(saveName) {
+        var saveKey = "Rance.Save." + saveName;
+        var save = localStorage.getItem(saveKey);
+
+        return JSON.parse(save);
+    }
+    Rance.inspectSave = inspectSave;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -8618,9 +8637,10 @@ var Rance;
             this.flag = new Rance.Flag({
                 width: 46,
                 mainColor: this.color,
-                secondaryColor: this.secondaryColor,
-                foregroundEmblem: foregroundEmblem
+                secondaryColor: this.secondaryColor
             });
+
+            this.flag.setForegroundEmblem(foregroundEmblem);
 
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
@@ -15501,7 +15521,7 @@ var Rance;
                 player.secondaryColor = data.secondaryColor;
                 player.colorAlpha = data.colorAlpha;
 
-                if (data.flag) {
+                if (data.flag && data.flag.mainColor) {
                     player.flag = this.deserializeFlag(data.flag);
                     player.setIcon();
                 } else {

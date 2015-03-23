@@ -1561,11 +1561,16 @@ progress::-webkit-progress-value { background: #080; }
   }
 }
 
+@top-bar-height: 2em;
+
 .top-bar
 {
   position: relative;
   top: 0;
   left: 0;
+  height: @top-bar-height;
+  box-sizing: border-box;
+  align-items: center;
   display: flex;
   flex-flow: row;
   color: @text-color;
@@ -1614,7 +1619,6 @@ progress::-webkit-progress-value { background: #080; }
 .top-menu
 {
   position: absolute;
-  z-index: 1001;
   top: 0;
   right: 0;
 
@@ -1623,11 +1627,20 @@ progress::-webkit-progress-value { background: #080; }
   border-width: 0 0 5px 5px;
   background-color: @bg-color;
   padding: 6px 10px;
+  box-sizing: border-box;
 
   pointer-events: none;
   >*
   {
     pointer-events: auto;
+  }
+
+  @media(max-height: 600px)
+  {
+    height: @top-bar-height;
+    top: -1px;
+    padding: 0;
+    border-width: 0 0 5px 0;
   }
 }
 
@@ -1647,11 +1660,12 @@ progress::-webkit-progress-value { background: #080; }
 {
   position: fixed;
   display: flex;
-  z-index: -1;
+  z-index: -10;
   height: 100%;
   width: 100%;
-  top: 0;
+  top: @top-bar-height;
   left: 0;
+  box-sizing: border-box;
 
   align-items: center;
   justify-content: center;
@@ -1662,16 +1676,13 @@ progress::-webkit-progress-value { background: #080; }
 .light-box-container
 {
   position: relative;
+
   background-color: @bg-color2;
-  max-height: 90%;
-  padding: 25px;
+  padding: 5px;
+  box-sizing: border-box;
 
   .full-border(5px);
-
-  padding-left: 0;
-  padding-right: 0;
-  border-left: 0;
-  border-right: 0;
+  border-width: 0px;
 }
 
 .light-box-fill-horizontal
@@ -1687,6 +1698,19 @@ progress::-webkit-progress-value { background: #080; }
   border-right: 5px;
 }
 
+.light-box-fill-vertical
+{
+  height: 100%;
+}
+
+.light-box-vertical-padding
+{
+  padding-top: 25px;
+  padding-bottom: 25px;
+  border-top: 5px;
+  border-bottom: 5px;
+}
+
 .light-box-content
 {
   position: relative;
@@ -1698,6 +1722,7 @@ progress::-webkit-progress-value { background: #080; }
 .light-box-close
 {
   position: absolute;
+  z-index: 999;
   top: 0;
   right: 0;
   color: #444;
@@ -1997,6 +2022,7 @@ progress::-webkit-progress-value { background: #080; }
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: -201;
 
   width: 250px;
   height: 40px;

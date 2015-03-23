@@ -394,6 +394,7 @@ declare module Rance {
     function shuffleArray(toShuffle: any[]): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
+    function inspectSave(saveName: string): any;
 }
 declare module Rance {
     interface TargetingFunction {
