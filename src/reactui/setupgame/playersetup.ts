@@ -13,16 +13,14 @@ module Rance
       {
         return(
         {
-          mainColor: 0xFFFFFF,
-          mainColorIsNull: true,
-          subColor: 0xFFFFFF,
-          subColorIsNull: true,
+          mainColor: null,
+          subColor: null,
           flagEmblem: null
         });
       },
       generateMainColor: function()
       {
-        if (this.state.subColorIsNull)
+        if (this.state.subColor === null)
         {
           return generateMainColor();
         }
@@ -33,7 +31,7 @@ module Rance
       },
       generateSubColor: function()
       {
-        if (this.state.mainColorIsNull)
+        if (this.state.mainColor === null)
         {
           return generateMainColor();
         }
@@ -45,15 +43,19 @@ module Rance
 
       setMainColor: function(color: number, isNull: boolean)
       {
-        this.setState({mainColor: color, mainColorIsNull: isNull});
+        this.setState({mainColor: isNull ? null : color});
       },
       setSubColor: function(color: number, isNull: boolean)
       {
-        this.setState({subColor: color, subColorIsNull: isNull});
+        this.setState({subColor: isNull ? null : color});
       },
       handleRemove: function()
       {
         this.props.removePlayer(this.props.key)
+      },
+      makePlayer: function()
+      {
+
       },
       render: function()
       {
@@ -76,9 +78,9 @@ module Rance
             }),
             UIComponents.FlagSetter(
             {
+              ref: "flagSetter",
               mainColor: this.state.mainColor,
-              subColor: this.state.mainColor,
-              flagEmblem: this.state.flagEmblem,
+              subColor: this.state.subColor,
               setActiveColorPicker: this.props.setActiveColorPicker
             }),
             React.DOM.div(

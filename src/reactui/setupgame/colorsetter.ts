@@ -17,6 +17,29 @@ module Rance
         });
       },
 
+      componentDidMount: function()
+      {
+        
+      },
+
+      componentWillUnmount: function()
+      {
+        
+      },
+
+      handleClick: function(e)
+      {
+        var node = this.refs.main.getDOMNode();
+        if (e.target === node || node.contains(e.target))
+        {
+          return;
+        }
+        else
+        {
+          this.setAsInactive();
+        }
+      },
+
       toggleActive: function()
       {
         if (this.state.isActive)
@@ -30,6 +53,7 @@ module Rance
             this.props.setActiveColorPicker(this);
           }
           this.setState({isActive: true});
+          document.addEventListener("click", this.handleClick, false);
         }
       },
       setAsInactive: function()
@@ -37,6 +61,7 @@ module Rance
         if (this.isMounted() && this.state.isActive)
         {
           this.setState({isActive: false});
+          document.removeEventListener("click", this.handleClick);
         }
       },
       updateColor: function(hexColor: number, isNull: boolean)
@@ -76,15 +101,15 @@ module Rance
           });
 
         return(
-          React.DOM.div({className: "color-setter"},
+          React.DOM.div({className: "color-setter", ref: "main"},
             displayElement,
             this.props.isActive || this.state.isActive ?
               UIComponents.ColorPicker(
               {
-                ref: "colorPicker",
                 hexColor: this.state.hexColor,
                 generateColor: this.props.generateColor,
-                onChange: this.updateColor
+                onChange: this.updateColor,
+                setAsInactive: this.setAsInactive
               }) : null
           )
         );

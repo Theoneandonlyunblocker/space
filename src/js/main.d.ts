@@ -1203,6 +1203,7 @@ declare module Rance {
         });
         public setColorScheme(main: any, secondary?: any, tetriary?: any): void;
         public generateRandom(seed?: any): void;
+        public clearContent(): void;
         public setForegroundEmblem(emblem: Rance.Emblem): void;
         public setBackgroundEmblem(emblem: Rance.Emblem): void;
         public setCustomImage(imageSrc: string): void;
@@ -1578,6 +1579,11 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var ColorSetter: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var FlagPicker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {

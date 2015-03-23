@@ -2684,9 +2684,18 @@ progress::-webkit-progress-value { background: #080; }
 {
   flex: 1 0 0%;
   max-width: 5em;
+  box-sizing: border-box;
 }
 
 .color-picker-input-hex
 {
-  margin-left: 8em;
+  right: 0;
+  position: absolute;
+}
+
+.flag-setter-display
+{
+  height: 2em;
+  width: 2em;
+  border: 1px solid green;
 }

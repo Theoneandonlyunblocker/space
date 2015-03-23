@@ -8195,17 +8195,13 @@ var Rance;
         Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
             this.mainColor = main;
 
-            if (isFinite(secondary)) {
-                this.secondaryColor = secondary;
-            }
-            if (isFinite(this.secondaryColor) && this.foregroundEmblem) {
+            this.secondaryColor = secondary;
+            if (this.foregroundEmblem && isFinite(secondary)) {
                 this.foregroundEmblem.color = this.secondaryColor;
             }
 
-            if (isFinite(tetriary)) {
-                this.tetriaryColor = tetriary;
-            }
-            if (isFinite(this.tetriaryColor) && this.backgroundEmblem) {
+            this.tetriaryColor = tetriary;
+            if (this.backgroundEmblem && isFinite(tetriary)) {
                 this.backgroundEmblem.color = this.tetriaryColor;
             }
         };
@@ -8223,24 +8219,34 @@ var Rance;
                 this.backgroundEmblem.generateRandom(0.4, rng);
             }
         };
+        Flag.prototype.clearContent = function () {
+            this.customImage = null;
+            this.foregroundEmblem = null;
+            this.backgroundEmblem = null;
+            this.seed = null;
+        };
         Flag.prototype.setForegroundEmblem = function (emblem) {
+            this.clearContent();
             this.foregroundEmblem = emblem;
             this.secondaryColor = emblem.color;
-            this.seed = null;
         };
         Flag.prototype.setBackgroundEmblem = function (emblem) {
+            this.clearContent();
             this.backgroundEmblem = emblem;
             this.tetriaryColor = emblem.color;
-            this.seed = null;
         };
         Flag.prototype.setCustomImage = function (imageSrc) {
+            this.clearContent();
             this.customImage = imageSrc;
-            this.seed = null;
         };
         Flag.prototype.draw = function () {
             var canvas = document.createElement("canvas");
             canvas.width = this.width;
             canvas.height = this.height;
+
+            if (!isFinite(this.mainColor))
+                return canvas;
+
             var ctx = canvas.getContext("2d");
 
             ctx.globalCompositeOperation = "source-over";
@@ -8260,8 +8266,7 @@ var Rance;
                     xWidth = image.width;
                 } else {
                     xPos = 0;
-                    xWidth:
-                    this.width;
+                    xWidth = this.width;
                 }
 
                 if (image.height < this.height) {
@@ -8269,20 +8274,21 @@ var Rance;
                     yHeight = image.height;
                 } else {
                     yPos = 0;
-                    yHeight:
-                    this.height;
+                    yHeight = this.height;
                 }
+
+                console.log(xPos, yPos, xWidth, yHeight);
 
                 ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
             } else {
-                if (this.backgroundEmblem) {
+                if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null) {
                     var background = this.backgroundEmblem.draw();
                     var x = (this.width - background.width) / 2;
                     var y = (this.height - background.height) / 2;
                     ctx.drawImage(background, x, y);
                 }
 
-                if (this.foregroundEmblem) {
+                if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null) {
                     var foreground = this.foregroundEmblem.draw();
                     var x = (this.width - foreground.width) / 2;
                     var y = (this.height - foreground.height) / 2;
@@ -10999,6 +11005,18 @@ var Rance;
                     active: false
                 });
             },
+            componentDidMount: function () {
+            },
+            componentWillUnmount: function () {
+            },
+            handleClick: function (e) {
+                var node = this.refs.main.getDOMNode();
+                if (e.target === node || node.contains(e.target)) {
+                    return;
+                } else {
+                    this.setAsInactive();
+                }
+            },
             toggleActive: function () {
                 if (this.state.isActive) {
                     this.setAsInactive();
@@ -11007,11 +11025,13 @@ var Rance;
                         this.props.setActiveColorPicker(this);
                     }
                     this.setState({ isActive: true });
+                    document.addEventListener("click", this.handleClick, false);
                 }
             },
             setAsInactive: function () {
                 if (this.isMounted() && this.state.isActive) {
                     this.setState({ isActive: false });
+                    document.removeEventListener("click", this.handleClick);
                 }
             },
             updateColor: function (hexColor, isNull) {
@@ -11038,11 +11058,11 @@ var Rance;
                     onClick: this.toggleActive
                 });
 
-                return (React.DOM.div({ className: "color-setter" }, displayElement, this.props.isActive || this.state.isActive ? Rance.UIComponents.ColorPicker({
-                    ref: "colorPicker",
+                return (React.DOM.div({ className: "color-setter", ref: "main" }, displayElement, this.props.isActive || this.state.isActive ? Rance.UIComponents.ColorPicker({
                     hexColor: this.state.hexColor,
                     generateColor: this.props.generateColor,
-                    onChange: this.updateColor
+                    onChange: this.updateColor,
+                    setAsInactive: this.setAsInactive
                 }) : null));
             }
         });
@@ -11052,16 +11072,114 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.FlagPicker = React.createClass({
+            displayName: "FlagPicker",
+            render: function () {
+                return (React.DOM.div({
+                    className: "flag-picker"
+                }, "flagPicker"));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="flagpicker.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.FlagSetter = React.createClass({
             displayName: "FlagSetter",
             getInitialState: function () {
+                var flag = new Rance.Flag({
+                    width: 46,
+                    mainColor: this.props.mainColor,
+                    subColor: this.props.subColor,
+                    tetriaryColor: this.props.tetriaryColor
+                });
+
+                flag.generateRandom();
+
                 return ({
-                    emblem: null,
+                    flag: flag,
+                    icon: flag.draw().toDataURL(),
                     active: false
                 });
             },
+            toggleActive: function () {
+                if (this.state.isActive) {
+                    this.setAsInactive();
+                } else {
+                    if (this.props.setActiveColorPicker) {
+                        this.props.setActiveColorPicker(this);
+                    }
+                    this.setState({ isActive: true });
+                }
+            },
+            setAsInactive: function () {
+                if (this.isMounted() && this.state.isActive) {
+                    this.setState({ isActive: false });
+                }
+            },
+            stopEvent: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            },
+            handleDrop: function (e) {
+                if (e.dataTransfer && e.dataTransfer.files) {
+                    this.stopEvent(e);
+
+                    var image;
+                    var files = e.dataTransfer.files;
+
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        if (file.type.indexOf("image") !== -1) {
+                            image = file;
+                            break;
+                        }
+                    }
+
+                    if (!image)
+                        throw new Error("None of the files provided are valid images");
+
+                    var reader = new FileReader();
+
+                    reader.onloadend = function () {
+                        this.state.flag.setCustomImage(reader.result);
+                        this.handleUpdate();
+                    }.bind(this);
+
+                    reader.readAsDataURL(image);
+                }
+            },
+            componentWillReceiveProps: function (newProps) {
+                var oldProps = this.props;
+
+                this.state.flag.setColorScheme(newProps.mainColor, newProps.subColor, newProps.tetriaryColor);
+
+                if (!this.state.flag.customImage) {
+                    this.handleUpdate();
+                }
+            },
+            handleUpdate: function () {
+                this.setState({
+                    icon: this.state.flag.draw().toDataURL()
+                });
+            },
             render: function () {
-                return (React.DOM.div({ className: "flag-setter" }, "flagSetter"));
+                return (React.DOM.div({
+                    className: "flag-setter",
+                    onDragEnter: this.stopEvent,
+                    onDragOver: this.stopEvent,
+                    onDrop: this.handleDrop
+                }, React.DOM.img({
+                    className: "flag-setter-display",
+                    src: this.state.icon,
+                    onClick: this.toggleActive
+                }), this.props.isActive || this.state.isActive ? Rance.UIComponents.FlagPicker({
+                    flag: this.state.flag,
+                    onChange: this.handleUpdate
+                }) : null));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -11076,35 +11194,35 @@ var Rance;
             displayName: "PlayerSetup",
             getInitialState: function () {
                 return ({
-                    mainColor: 0xFFFFFF,
-                    mainColorIsNull: true,
-                    subColor: 0xFFFFFF,
-                    subColorIsNull: true,
+                    mainColor: null,
+                    subColor: null,
                     flagEmblem: null
                 });
             },
             generateMainColor: function () {
-                if (this.state.subColorIsNull) {
+                if (this.state.subColor === null) {
                     return Rance.generateMainColor();
                 } else {
                     return Rance.generateSecondaryColor(this.state.subColor);
                 }
             },
             generateSubColor: function () {
-                if (this.state.mainColorIsNull) {
+                if (this.state.mainColor === null) {
                     return Rance.generateMainColor();
                 } else {
                     return Rance.generateSecondaryColor(this.state.mainColor);
                 }
             },
             setMainColor: function (color, isNull) {
-                this.setState({ mainColor: color, mainColorIsNull: isNull });
+                this.setState({ mainColor: isNull ? null : color });
             },
             setSubColor: function (color, isNull) {
-                this.setState({ subColor: color, subColorIsNull: isNull });
+                this.setState({ subColor: isNull ? null : color });
             },
             handleRemove: function () {
                 this.props.removePlayer(this.props.key);
+            },
+            makePlayer: function () {
             },
             render: function () {
                 return (React.DOM.div({ className: "player-setup" }, React.DOM.div({ className: "player-setup-name" }, "playerName"), Rance.UIComponents.ColorSetter({
@@ -11118,9 +11236,9 @@ var Rance;
                     setActiveColorPicker: this.props.setActiveColorPicker,
                     generateColor: this.generateSubColor
                 }), Rance.UIComponents.FlagSetter({
+                    ref: "flagSetter",
                     mainColor: this.state.mainColor,
-                    subColor: this.state.mainColor,
-                    flagEmblem: this.state.flagEmblem,
+                    subColor: this.state.subColor,
                     setActiveColorPicker: this.props.setActiveColorPicker
                 }), React.DOM.div({
                     className: "player-setup-remove-player",
@@ -17581,7 +17699,6 @@ var Rance;
             // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
         };
         App.prototype.initUI = function () {
-            214;
             var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
 
             this.playerControl.reactUI = reactUI;

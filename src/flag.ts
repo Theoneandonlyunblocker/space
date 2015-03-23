@@ -38,21 +38,16 @@ module Rance
     {
       this.mainColor = main;
 
-      if (isFinite(secondary))
-      {
-        this.secondaryColor = secondary;
-      }
-      if (isFinite(this.secondaryColor) && this.foregroundEmblem)
+      
+      this.secondaryColor = secondary;
+      if (this.foregroundEmblem && isFinite(secondary))
       {
         this.foregroundEmblem.color = this.secondaryColor;
       }
 
-
-      if (isFinite(tetriary))
-      {
-        this.tetriaryColor = tetriary;
-      }
-      if (isFinite(this.tetriaryColor) && this.backgroundEmblem)
+      
+      this.tetriaryColor = tetriary;
+      if (this.backgroundEmblem && isFinite(tetriary))
       {
         this.backgroundEmblem.color = this.tetriaryColor;
       }
@@ -75,28 +70,38 @@ module Rance
         this.backgroundEmblem.generateRandom(0.4, rng);
       }
     }
+    clearContent()
+    {
+      this.customImage = null;
+      this.foregroundEmblem = null;
+      this.backgroundEmblem = null;
+      this.seed = null;
+    }
     setForegroundEmblem(emblem: Emblem)
     {
+      this.clearContent();
       this.foregroundEmblem = emblem;
       this.secondaryColor = emblem.color;
-      this.seed = null;
     }
     setBackgroundEmblem(emblem: Emblem)
     {
+      this.clearContent();
       this.backgroundEmblem = emblem;
       this.tetriaryColor = emblem.color;
-      this.seed = null;
     }
     setCustomImage(imageSrc: string)
     {
+      this.clearContent();
       this.customImage = imageSrc;
-      this.seed = null;
     }
     draw()
     {
       var canvas = document.createElement("canvas");
       canvas.width = this.width;
       canvas.height = this.height;
+
+      if (!isFinite(this.mainColor)) return canvas;
+
       var ctx = canvas.getContext("2d");
 
       ctx.globalCompositeOperation = "source-over";
@@ -120,7 +125,7 @@ module Rance
         else
         {
           xPos = 0;
-          xWidth: this.width;
+          xWidth = this.width;
         }
 
         if (image.height < this.height)
@@ -131,15 +136,17 @@ module Rance
         else
         {
           yPos = 0;
-          yHeight: this.height;
+          yHeight = this.height;
         }
+
+        console.log(xPos, yPos, xWidth, yHeight);
 
 
         ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
       }
       else
       {
-        if (this.backgroundEmblem)
+        if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null)
         {
           var background = this.backgroundEmblem.draw();
           var x = (this.width - background.width) / 2;
@@ -147,7 +154,7 @@ module Rance
           ctx.drawImage(background, x, y);
         }
 
-        if (this.foregroundEmblem)
+        if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null)
         {
           var foreground = this.foregroundEmblem.draw();
           var x = (this.width - foreground.width) / 2;
