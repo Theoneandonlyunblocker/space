@@ -14,7 +14,7 @@ module Rance
     constructor(color: number, alpha?: number, inner?, outer?)
     {
       this.color = color;
-      this.alpha = alpha;
+      this.alpha = isFinite(alpha) ? alpha : 1;
       this.inner = inner;
       this.outer = outer;
     }

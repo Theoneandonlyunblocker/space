@@ -8060,7 +8060,7 @@ var Rance;
     var Emblem = (function () {
         function Emblem(color, alpha, inner, outer) {
             this.color = color;
-            this.alpha = alpha;
+            this.alpha = isFinite(alpha) ? alpha : 1;
             this.inner = inner;
             this.outer = outer;
         }
@@ -8228,12 +8228,20 @@ var Rance;
         Flag.prototype.setForegroundEmblem = function (emblem) {
             this.clearContent();
             this.foregroundEmblem = emblem;
-            this.secondaryColor = emblem.color;
+            if (isFinite(emblem.color) && emblem.color !== null) {
+                this.secondaryColor = emblem.color;
+            } else {
+                emblem.color = this.secondaryColor;
+            }
         };
         Flag.prototype.setBackgroundEmblem = function (emblem) {
             this.clearContent();
             this.backgroundEmblem = emblem;
-            this.tetriaryColor = emblem.color;
+            if (isFinite(emblem.color) && emblem.color !== null) {
+                this.tetriaryColor = emblem.color;
+            } else {
+                emblem.color = this.tetriaryColor;
+            }
         };
         Flag.prototype.setCustomImage = function (imageSrc) {
             this.clearContent();
@@ -11074,10 +11082,66 @@ var Rance;
     (function (UIComponents) {
         UIComponents.FlagPicker = React.createClass({
             displayName: "FlagPicker",
+            getInitialState: function () {
+                return ({
+                    selectedEmblem: null
+                });
+            },
+            handleSelectEmblem: function (emblemTemplate) {
+                this.props.handleSelectEmblem(emblemTemplate);
+                this.setState({ selectedEmblem: emblemTemplate });
+            },
             render: function () {
+                var emblems = [];
+
+                for (var emblemType in Rance.Templates.SubEmblems) {
+                    var template = Rance.Templates.SubEmblems[emblemType];
+                    var className = "emblem-picker";
+                    if (this.state.selectedEmblem === template)
+                        className += " selected-emblem";
+                    emblems.push(React.DOM.img({
+                        className: className,
+                        key: template.type,
+                        src: app.images["emblems"][template.imageSrc].src,
+                        onClick: this.handleSelectEmblem.bind(this, template)
+                    }));
+                }
+
+                var pirateTemplate = {
+                    type: "pirateEmblem",
+                    position: "both",
+                    foregroundOnly: true,
+                    imageSrc: "pirateEmblem.png"
+                };
+
+                var className = "emblem-picker";
+                if (this.state.selectedEmblem === pirateTemplate)
+                    className += " selected-emblem";
+                emblems.push(React.DOM.img({
+                    className: className,
+                    key: pirateTemplate.type,
+                    src: app.images["emblems"][pirateTemplate.imageSrc].src,
+                    onClick: this.handleSelectEmblem.bind(this, pirateTemplate)
+                }));
+
+                var imageInfoMessage;
+                if (this.props.hasImageFailMessage) {
+                    imageInfoMessage = React.DOM.span({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " + "and uploading it.");
+                } else {
+                    imageInfoMessage = React.DOM.span({ className: "image-info-message" }, "Click emblem or drag image here to set it as your flag");
+                }
+
                 return (React.DOM.div({
                     className: "flag-picker"
-                }, "flagPicker"));
+                }, React.DOM.div({
+                    className: "flag-image-uploader"
+                }, React.DOM.div({ className: "flag-picker-title" }, "Upload image"), React.DOM.input({
+                    className: "flag-image-upload-button",
+                    type: "file",
+                    ref: "imageUploader"
+                }, imageInfoMessage)), React.DOM.div({
+                    className: "emblem-picker"
+                }, React.DOM.div({ className: "flag-picker-title" }, "Emblems"), React.DOM.div({ className: "emblem-picker-emblem-list" }, emblems))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -11102,8 +11166,35 @@ var Rance;
                 return ({
                     flag: flag,
                     icon: flag.draw().toDataURL(),
+                    hasImageFailMessage: false,
                     active: false
                 });
+            },
+            componentWillUnmount: function () {
+                if (this.imageLoadingFailTimeout) {
+                    window.clearTimeout(this.imageLoadingFailTimeout);
+                }
+            },
+            displayImageLoadingFailMessage: function (error) {
+                this.setState({ hasImageFailMessage: true });
+
+                this.imageLoadingFailTimeout = window.setTimeout(function () {
+                    this.setState({ hasImageFailMessage: false });
+                }.bind(this), 5000);
+            },
+            clearImageLoadingFailMessage: function () {
+                if (this.imageLoadingFailTimeout) {
+                    window.clearTimeout(this.imageLoadingFailTimeout);
+                }
+                this.setState({ hasImageFailMessage: false });
+            },
+            handleClick: function (e) {
+                var node = this.refs.main.getDOMNode();
+                if (e.target === node || node.contains(e.target)) {
+                    return;
+                } else {
+                    this.setAsInactive();
+                }
             },
             toggleActive: function () {
                 if (this.state.isActive) {
@@ -11113,19 +11204,26 @@ var Rance;
                         this.props.setActiveColorPicker(this);
                     }
                     this.setState({ isActive: true });
+                    document.addEventListener("click", this.handleClick, false);
                 }
             },
             setAsInactive: function () {
                 if (this.isMounted() && this.state.isActive) {
                     this.setState({ isActive: false });
+                    document.removeEventListener("click", this.handleClick);
                 }
+            },
+            setForegroundEmblem: function (emblemTemplate) {
+                var emblem = new Rance.Emblem(undefined, 1, emblemTemplate);
+                this.state.flag.setForegroundEmblem(emblem);
+                this.handleUpdate();
             },
             stopEvent: function (e) {
                 e.stopPropagation();
                 e.preventDefault();
             },
             handleDrop: function (e) {
-                if (e.dataTransfer && e.dataTransfer.files) {
+                if (e.dataTransfer) {
                     this.stopEvent(e);
 
                     var image;
@@ -11139,17 +11237,54 @@ var Rance;
                         }
                     }
 
-                    if (!image)
-                        throw new Error("None of the files provided are valid images");
+                    if (!image) {
+                        var htmlContent = e.dataTransfer.getData("text\/html");
+                        var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
 
-                    var reader = new FileReader();
+                        if (!imageSource) {
+                            console.error("None of the files provided are valid images");
+                            return;
+                        } else {
+                            var getImageDataUrl = function (image) {
+                                var canvas = document.createElement("canvas");
+                                var ctx = canvas.getContext("2d");
 
-                    reader.onloadend = function () {
-                        this.state.flag.setCustomImage(reader.result);
-                        this.handleUpdate();
-                    }.bind(this);
+                                canvas.width = image.width;
+                                canvas.height = image.height;
 
-                    reader.readAsDataURL(image);
+                                ctx.drawImage(image, 0, 0);
+
+                                return canvas.toDataURL();
+                            };
+
+                            var img = new Image();
+                            img.crossOrigin = "Anonymous";
+                            img.onload = function (e) {
+                                this.state.flag.setCustomImage(getImageDataUrl(img));
+                                this.handleUpdate();
+                            }.bind(this);
+                            img.onerror = function (e) {
+                                this.displayImageLoadingFailMessage(e);
+                            }.bind(this);
+
+                            img.src = imageSource;
+
+                            // image was cached
+                            if (img.complete || img.complete === undefined) {
+                                this.state.flag.setCustomImage(getImageDataUrl(img));
+                                this.handleUpdate();
+                            }
+                        }
+                    } else {
+                        var reader = new FileReader();
+
+                        reader.onloadend = function () {
+                            this.state.flag.setCustomImage(reader.result);
+                            this.handleUpdate();
+                        }.bind(this);
+
+                        reader.readAsDataURL(image);
+                    }
                 }
             },
             componentWillReceiveProps: function (newProps) {
@@ -11162,6 +11297,7 @@ var Rance;
                 }
             },
             handleUpdate: function () {
+                this.clearImageLoadingFailMessage();
                 this.setState({
                     icon: this.state.flag.draw().toDataURL()
                 });
@@ -11169,6 +11305,7 @@ var Rance;
             render: function () {
                 return (React.DOM.div({
                     className: "flag-setter",
+                    ref: "main",
                     onDragEnter: this.stopEvent,
                     onDragOver: this.stopEvent,
                     onDrop: this.handleDrop
@@ -11178,6 +11315,8 @@ var Rance;
                     onClick: this.toggleActive
                 }), this.props.isActive || this.state.isActive ? Rance.UIComponents.FlagPicker({
                     flag: this.state.flag,
+                    handleSelectEmblem: this.setForegroundEmblem,
+                    hasImageFailMessage: this.state.hasImageFailMessage,
                     onChange: this.handleUpdate
                 }) : null));
             }
@@ -17713,7 +17852,7 @@ var Rance;
             uriParser.href = document.URL;
             var hash = uriParser.hash;
             if (hash) {
-                if (hash === "demo") {
+                if (hash === "#demo") {
                 } else {
                     reactUI.currentScene = hash.slice(1);
                 }

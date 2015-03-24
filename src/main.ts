@@ -230,7 +230,7 @@ module Rance
       var hash = uriParser.hash;
       if (hash)
       {
-        if (hash === "demo")
+        if (hash === "#demo")
         {
 
         }

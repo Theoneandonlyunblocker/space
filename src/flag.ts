@@ -81,13 +81,27 @@ module Rance
     {
       this.clearContent();
       this.foregroundEmblem = emblem;
-      this.secondaryColor = emblem.color;
+      if (isFinite(emblem.color) && emblem.color !== null)
+      {
+        this.secondaryColor = emblem.color;
+      }
+      else
+      {
+        emblem.color = this.secondaryColor
+      }
     }
     setBackgroundEmblem(emblem: Emblem)
     {
       this.clearContent();
       this.backgroundEmblem = emblem;
-      this.tetriaryColor = emblem.color;
+      if (isFinite(emblem.color) && emblem.color !== null)
+      {
+        this.tetriaryColor = emblem.color;
+      }
+      else
+      {
+        emblem.color = this.tetriaryColor
+      }
     }
     setCustomImage(imageSrc: string)
     {

@@ -23,9 +23,47 @@ module Rance
         {
           flag: flag,
           icon: flag.draw().toDataURL(),
+          hasImageFailMessage: false,
           active: false
         });
       },
+      componentWillUnmount: function()
+      {
+        if (this.imageLoadingFailTimeout)
+        {
+          window.clearTimeout(this.imageLoadingFailTimeout);
+        }
+      },
+      displayImageLoadingFailMessage: function(error)
+      {
+        this.setState({hasImageFailMessage: true});
+
+        this.imageLoadingFailTimeout = window.setTimeout(function()
+        {
+          this.setState({hasImageFailMessage: false});
+        }.bind(this), 5000);
+      },
+      clearImageLoadingFailMessage: function()
+      {
+        if (this.imageLoadingFailTimeout)
+        {
+          window.clearTimeout(this.imageLoadingFailTimeout);
+        }
+        this.setState({hasImageFailMessage: false});
+      },
+      handleClick: function(e)
+      {
+        var node = this.refs.main.getDOMNode();
+        if (e.target === node || node.contains(e.target))
+        {
+          return;
+        }
+        else
+        {
+          this.setAsInactive();
+        }
+      },
+
       toggleActive: function()
       {
         if (this.state.isActive)
@@ -39,6 +77,7 @@ module Rance
             this.props.setActiveColorPicker(this);
           }
           this.setState({isActive: true});
+          document.addEventListener("click", this.handleClick, false);
         }
       },
       setAsInactive: function()
@@ -46,7 +85,15 @@ module Rance
         if (this.isMounted() && this.state.isActive)
         {
           this.setState({isActive: false});
+          document.removeEventListener("click", this.handleClick);
         }
+      },
+
+      setForegroundEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
+      {
+        var emblem = new Emblem(undefined, 1, emblemTemplate);
+        this.state.flag.setForegroundEmblem(emblem);
+        this.handleUpdate();
       },
 
       stopEvent: function(e)
@@ -57,7 +104,7 @@ module Rance
 
       handleDrop: function(e)
       {
-        if (e.dataTransfer && e.dataTransfer.files)
+        if (e.dataTransfer)
         {
           this.stopEvent(e);
 
@@ -74,17 +121,66 @@ module Rance
             }
           }
 
-          if (!image) throw new Error("None of the files provided are valid images");
-
-          var reader = new FileReader();
-
-          reader.onloadend = function()
+          if (!image)
           {
-            this.state.flag.setCustomImage(reader.result);
-            this.handleUpdate();
-          }.bind(this);
+            var htmlContent = e.dataTransfer.getData("text\/html");
+            var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
 
-          reader.readAsDataURL(image);
+            if (!imageSource)
+            {
+              console.error("None of the files provided are valid images");
+              return;
+            }
+            else
+            {
+              var getImageDataUrl = function(image)
+              {
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+
+                canvas.width = image.width;
+                canvas.height = image.height;
+
+                ctx.drawImage(image, 0, 0);
+
+                return canvas.toDataURL();
+              };
+
+              var img = new Image();
+              img.crossOrigin = "Anonymous";
+              img.onload = function(e)
+              {
+                this.state.flag.setCustomImage(getImageDataUrl(img));
+                this.handleUpdate();
+              }.bind(this)
+              img.onerror = function(e)
+              {
+                this.displayImageLoadingFailMessage(e);
+              }.bind(this);
+
+              img.src = imageSource;
+
+              // image was cached
+              if (img.complete || img.complete === undefined)
+              {
+                this.state.flag.setCustomImage(getImageDataUrl(img));
+                this.handleUpdate();
+              }
+              
+            }
+          }
+          else
+          {
+            var reader = new FileReader();
+
+            reader.onloadend = function()
+            {
+              this.state.flag.setCustomImage(reader.result);
+              this.handleUpdate();
+            }.bind(this);
+
+            reader.readAsDataURL(image);
+          }
         }
       },
 
@@ -106,6 +202,7 @@ module Rance
 
       handleUpdate: function()
       {
+        this.clearImageLoadingFailMessage();
         this.setState(
         {
           icon: this.state.flag.draw().toDataURL()
@@ -118,6 +215,7 @@ module Rance
           React.DOM.div(
           {
             className: "flag-setter",
+            ref: "main",
             onDragEnter: this.stopEvent,
             onDragOver: this.stopEvent,
             onDrop: this.handleDrop
@@ -132,6 +230,8 @@ module Rance
               UIComponents.FlagPicker(
               {
                 flag: this.state.flag,
+                handleSelectEmblem: this.setForegroundEmblem,
+                hasImageFailMessage: this.state.hasImageFailMessage,
                 onChange: this.handleUpdate
               }) : null
           )
