@@ -1,5 +1,5 @@
 /// <reference path="flagpicker.ts" />
-
+/// <reference path="../mixins/focustimer.ts" />
 module Rance
 {
   export module UIComponents
@@ -7,6 +7,7 @@ module Rance
     export var FlagSetter = React.createClass(
     {
       displayName: "FlagSetter",
+      mixins: [FocusTimer],
       getInitialState: function()
       {
         var flag = new Flag(
@@ -29,10 +30,9 @@ module Rance
       },
       componentWillUnmount: function()
       {
-        if (this.imageLoadingFailTimeout)
-        {
-          window.clearTimeout(this.imageLoadingFailTimeout);
-        }
+        window.clearTimeout(this.imageLoadingFailTimeout);
+        document.removeEventListener("click", this.handleClick);
+        this.clearFocusTimerListener();
       },
       displayImageLoadingFailMessage: function(error)
       {
@@ -41,7 +41,7 @@ module Rance
         this.imageLoadingFailTimeout = window.setTimeout(function()
         {
           this.setState({hasImageFailMessage: false});
-        }.bind(this), 5000);
+        }.bind(this), 10000);
       },
       clearImageLoadingFailMessage: function()
       {
@@ -53,6 +53,9 @@ module Rance
       },
       handleClick: function(e)
       {
+        var focusGraceTime = 500;
+        console.log(Date.now() - this.lastFocusTime);
+        if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
         var node = this.refs.main.getDOMNode();
         if (e.target === node || node.contains(e.target))
         {
@@ -78,6 +81,7 @@ module Rance
           }
           this.setState({isActive: true});
           document.addEventListener("click", this.handleClick, false);
+          this.registerFocusTimerListener();
         }
       },
       setAsInactive: function()
@@ -86,6 +90,7 @@ module Rance
         {
           this.setState({isActive: false});
           document.removeEventListener("click", this.handleClick);
+          this.clearFocusTimerListener();
         }
       },
 
@@ -108,21 +113,13 @@ module Rance
         {
           this.stopEvent(e);
 
-          var image;
           var files = e.dataTransfer.files;
 
-          for (var i = 0; i < files.length; i++)
-          {
-            var file = files[i];
-            if (file.type.indexOf("image") !== -1)
-            {
-              image = file;
-              break;
-            }
-          }
+          var image = this.getFirstValidImageFromFiles(files);
 
           if (!image)
           {
+            // try to get image from any html img element dropped
             var htmlContent = e.dataTransfer.getData("text\/html");
             var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
 
@@ -171,17 +168,48 @@ module Rance
           }
           else
           {
-            var reader = new FileReader();
-
-            reader.onloadend = function()
-            {
-              this.state.flag.setCustomImage(reader.result);
-              this.handleUpdate();
-            }.bind(this);
-
-            reader.readAsDataURL(image);
+            this.setCustomImageFromFile(image);
           }
         }
+      },
+
+      handleUpload: function(files: any[])
+      {
+        var image = this.getFirstValidImageFromFiles(files);
+        if (!image) return false;
+
+        this.setCustomImageFromFile(image);
+        return true;
+      },
+
+      getFirstValidImageFromFiles: function(files: any[])
+      {
+        var image;
+
+        for (var i = 0; i < files.length; i++)
+        {
+          var file = files[i];
+          if (file.type.indexOf("image") !== -1)
+          {
+            image = file;
+            break;
+          }
+        }
+
+        return image;
+      },
+
+      setCustomImageFromFile: function(file)
+      {
+        var reader = new FileReader();
+
+        reader.onloadend = function()
+        {
+          this.state.flag.setCustomImage(reader.result);
+          this.handleUpdate();
+        }.bind(this);
+
+        reader.readAsDataURL(file);
       },
 
       componentWillReceiveProps: function(newProps: any)
@@ -194,10 +222,11 @@ module Rance
           newProps.tetriaryColor
         );
 
-        if (!this.state.flag.customImage)
-        {
-          this.handleUpdate();
-        }
+        // if (!this.state.flag.customImage)
+        // {
+        //   this.handleUpdate();
+        // }
+        this.handleUpdate();
       },
 
       handleUpdate: function()
@@ -232,7 +261,8 @@ module Rance
                 flag: this.state.flag,
                 handleSelectEmblem: this.setForegroundEmblem,
                 hasImageFailMessage: this.state.hasImageFailMessage,
-                onChange: this.handleUpdate
+                onChange: this.handleUpdate,
+                uploadFiles: this.handleUpload
               }) : null
           )
         );

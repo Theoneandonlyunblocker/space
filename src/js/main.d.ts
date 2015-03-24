@@ -1588,6 +1588,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var FocusTimer: {
+            componentDidMount: () => void;
+            registerFocusTimerListener: () => void;
+            clearFocusTimerListener: () => void;
+            setFocusTimer: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var FlagSetter: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

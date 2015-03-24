@@ -2666,3 +2666,19 @@ progress::-webkit-progress-value {
   background-color: grey;
   max-width: 40em;
 }
+.flag-picker-title {
+  background-color: white;
+}
+@keyframes flash-bg-red {
+  from {
+    background-color: red;
+  }
+  to {
+    background-color: initial;
+  }
+}
+.image-loading-fail-message {
+  animation-duration: 2s;
+  animation-name: flash-bg-red;
+  animation-timing-function: ease-in-quart;
+}

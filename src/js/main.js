@@ -11091,6 +11091,14 @@ var Rance;
                 this.props.handleSelectEmblem(emblemTemplate);
                 this.setState({ selectedEmblem: emblemTemplate });
             },
+            handleUpload: function (e) {
+                if (!this.props.uploadFiles)
+                    throw new Error();
+
+                var files = this.refs.imageUploader.getDOMNode().files;
+
+                this.props.uploadFiles(files);
+            },
             render: function () {
                 var emblems = [];
 
@@ -11126,20 +11134,23 @@ var Rance;
 
                 var imageInfoMessage;
                 if (this.props.hasImageFailMessage) {
-                    imageInfoMessage = React.DOM.span({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " + "and uploading it.");
+                    imageInfoMessage = React.DOM.div({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " + "and uploading it.");
                 } else {
-                    imageInfoMessage = React.DOM.span({ className: "image-info-message" }, "Click emblem or drag image here to set it as your flag");
+                    imageInfoMessage = React.DOM.div({ className: "image-info-message" }, "Click emblem or drag image here to set it as your flag");
                 }
 
                 return (React.DOM.div({
                     className: "flag-picker"
                 }, React.DOM.div({
                     className: "flag-image-uploader"
-                }, React.DOM.div({ className: "flag-picker-title" }, "Upload image"), React.DOM.input({
+                }, React.DOM.div({ className: "flag-picker-title" }, "Upload image"), React.DOM.div({
+                    className: "flag-image-uploader-content"
+                }, React.DOM.input({
                     className: "flag-image-upload-button",
                     type: "file",
-                    ref: "imageUploader"
-                }, imageInfoMessage)), React.DOM.div({
+                    ref: "imageUploader",
+                    onChange: this.handleUpload
+                }), imageInfoMessage)), React.DOM.div({
                     className: "emblem-picker"
                 }, React.DOM.div({ className: "flag-picker-title" }, "Emblems"), React.DOM.div({ className: "emblem-picker-emblem-list" }, emblems))));
             }
@@ -11147,12 +11158,36 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/react.d.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FocusTimer = {
+            componentDidMount: function () {
+                this.setFocusTimer();
+            },
+            registerFocusTimerListener: function () {
+                window.addEventListener("focus", this.setFocusTimer, false);
+            },
+            clearFocusTimerListener: function () {
+                window.removeEventListener("focus", this.setFocusTimer);
+            },
+            setFocusTimer: function () {
+                this.lastFocusTime = Date.now();
+                console.log(this.lastFocusTime);
+            }
+        };
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="flagpicker.ts" />
+/// <reference path="../mixins/focustimer.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.FlagSetter = React.createClass({
             displayName: "FlagSetter",
+            mixins: [Rance.UIComponents.FocusTimer],
             getInitialState: function () {
                 var flag = new Rance.Flag({
                     width: 46,
@@ -11171,16 +11206,16 @@ var Rance;
                 });
             },
             componentWillUnmount: function () {
-                if (this.imageLoadingFailTimeout) {
-                    window.clearTimeout(this.imageLoadingFailTimeout);
-                }
+                window.clearTimeout(this.imageLoadingFailTimeout);
+                document.removeEventListener("click", this.handleClick);
+                this.clearFocusTimerListener();
             },
             displayImageLoadingFailMessage: function (error) {
                 this.setState({ hasImageFailMessage: true });
 
                 this.imageLoadingFailTimeout = window.setTimeout(function () {
                     this.setState({ hasImageFailMessage: false });
-                }.bind(this), 5000);
+                }.bind(this), 10000);
             },
             clearImageLoadingFailMessage: function () {
                 if (this.imageLoadingFailTimeout) {
@@ -11189,6 +11224,10 @@ var Rance;
                 this.setState({ hasImageFailMessage: false });
             },
             handleClick: function (e) {
+                var focusGraceTime = 500;
+                console.log(Date.now() - this.lastFocusTime);
+                if (Date.now() - this.lastFocusTime <= focusGraceTime)
+                    return;
                 var node = this.refs.main.getDOMNode();
                 if (e.target === node || node.contains(e.target)) {
                     return;
@@ -11205,12 +11244,14 @@ var Rance;
                     }
                     this.setState({ isActive: true });
                     document.addEventListener("click", this.handleClick, false);
+                    this.registerFocusTimerListener();
                 }
             },
             setAsInactive: function () {
                 if (this.isMounted() && this.state.isActive) {
                     this.setState({ isActive: false });
                     document.removeEventListener("click", this.handleClick);
+                    this.clearFocusTimerListener();
                 }
             },
             setForegroundEmblem: function (emblemTemplate) {
@@ -11226,18 +11267,12 @@ var Rance;
                 if (e.dataTransfer) {
                     this.stopEvent(e);
 
-                    var image;
                     var files = e.dataTransfer.files;
 
-                    for (var i = 0; i < files.length; i++) {
-                        var file = files[i];
-                        if (file.type.indexOf("image") !== -1) {
-                            image = file;
-                            break;
-                        }
-                    }
+                    var image = this.getFirstValidImageFromFiles(files);
 
                     if (!image) {
+                        // try to get image from any html img element dropped
                         var htmlContent = e.dataTransfer.getData("text\/html");
                         var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
 
@@ -11276,25 +11311,51 @@ var Rance;
                             }
                         }
                     } else {
-                        var reader = new FileReader();
-
-                        reader.onloadend = function () {
-                            this.state.flag.setCustomImage(reader.result);
-                            this.handleUpdate();
-                        }.bind(this);
-
-                        reader.readAsDataURL(image);
+                        this.setCustomImageFromFile(image);
                     }
                 }
+            },
+            handleUpload: function (files) {
+                var image = this.getFirstValidImageFromFiles(files);
+                if (!image)
+                    return false;
+
+                this.setCustomImageFromFile(image);
+                return true;
+            },
+            getFirstValidImageFromFiles: function (files) {
+                var image;
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (file.type.indexOf("image") !== -1) {
+                        image = file;
+                        break;
+                    }
+                }
+
+                return image;
+            },
+            setCustomImageFromFile: function (file) {
+                var reader = new FileReader();
+
+                reader.onloadend = function () {
+                    this.state.flag.setCustomImage(reader.result);
+                    this.handleUpdate();
+                }.bind(this);
+
+                reader.readAsDataURL(file);
             },
             componentWillReceiveProps: function (newProps) {
                 var oldProps = this.props;
 
                 this.state.flag.setColorScheme(newProps.mainColor, newProps.subColor, newProps.tetriaryColor);
 
-                if (!this.state.flag.customImage) {
-                    this.handleUpdate();
-                }
+                // if (!this.state.flag.customImage)
+                // {
+                //   this.handleUpdate();
+                // }
+                this.handleUpdate();
             },
             handleUpdate: function () {
                 this.clearImageLoadingFailMessage();
@@ -11317,7 +11378,8 @@ var Rance;
                     flag: this.state.flag,
                     handleSelectEmblem: this.setForegroundEmblem,
                     hasImageFailMessage: this.state.hasImageFailMessage,
-                    onChange: this.handleUpdate
+                    onChange: this.handleUpdate,
+                    uploadFiles: this.handleUpload
                 }) : null));
             }
         });

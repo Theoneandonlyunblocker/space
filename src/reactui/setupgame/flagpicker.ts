@@ -19,6 +19,15 @@ module Rance
         this.setState({selectedEmblem: emblemTemplate});
       },
 
+      handleUpload: function(e)
+      {
+        if (!this.props.uploadFiles) throw new Error();
+
+        var files = this.refs.imageUploader.getDOMNode().files;
+
+        this.props.uploadFiles(files);
+      },
+
       render: function()
       {
         var emblems: any[] = [];
@@ -59,7 +68,7 @@ module Rance
         if (this.props.hasImageFailMessage)
         {
           imageInfoMessage =
-          React.DOM.span({className: "image-info-message image-loading-fail-message"},
+          React.DOM.div({className: "image-info-message image-loading-fail-message"},
             "Linked image failed to load. Try saving it to your own computer " + 
             "and uploading it."
           );
@@ -67,7 +76,7 @@ module Rance
         else
         {
           imageInfoMessage =
-          React.DOM.span({className: "image-info-message"},
+          React.DOM.div({className: "image-info-message"},
             "Click emblem or drag image here to set it as your flag"
           );
         }
@@ -85,12 +94,19 @@ module Rance
               React.DOM.div({className: "flag-picker-title"},
                 "Upload image"
               ),
-              React.DOM.input(
+              React.DOM.div(
               {
-                className: "flag-image-upload-button",
-                type: "file",
-                ref: "imageUploader"
-              }, imageInfoMessage)
+                className: "flag-image-uploader-content"
+              },
+                React.DOM.input(
+                {
+                  className: "flag-image-upload-button",
+                  type: "file",
+                  ref: "imageUploader",
+                  onChange: this.handleUpload
+                }),
+                imageInfoMessage
+              )
             ),
             React.DOM.div(
             {
