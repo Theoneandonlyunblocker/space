@@ -13,6 +13,7 @@ module Rance
       {
         return(
         {
+          name: this.props.initialName,
           mainColor: null,
           subColor: null,
           flagEmblem: null
@@ -40,6 +41,15 @@ module Rance
           return generateSecondaryColor(this.state.mainColor);
         }
       },
+      handleSetHuman: function(e)
+      {
+        this.props.setHuman(this.props.key);
+      },
+
+      handleNameChange: function(e)
+      {
+        this.setState({name: e.target.value});
+      },
 
       setMainColor: function(color: number, isNull: boolean)
       {
@@ -55,13 +65,26 @@ module Rance
       },
       makePlayer: function()
       {
-
+        //var player =
       },
       render: function()
       {
         return(
           React.DOM.div({className: "player-setup"},
-            React.DOM.div({className: "player-setup-name"}, "playerName"),
+            React.DOM.input(
+            {
+              ref: "isHuman",
+              className: "player-setup-is-human",
+              type: "checkbox",
+              checked: this.props.isHuman,
+              onChange: this.handleSetHuman
+            }),
+            React.DOM.input(
+            {
+              className: "player-setup-name",
+              value: this.state.name,
+              onChange: this.handleNameChange
+            }),
             UIComponents.ColorSetter(
             {
               ref: "mainColor",
@@ -83,7 +106,7 @@ module Rance
               subColor: this.state.subColor,
               setActiveColorPicker: this.props.setActiveColorPicker
             }),
-            React.DOM.div(
+            React.DOM.button(
             {
               className: "player-setup-remove-player",
               onClick: this.handleRemove

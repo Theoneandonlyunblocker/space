@@ -2612,8 +2612,40 @@ progress::-webkit-progress-value {
   flex-flow: row;
   border: 1px solid red;
   height: 2em;
+  align-items: center;
+  justify-content: space-between;
+}
+.player-setup > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+}
+.player-setup-is-human {
+  width: 1em;
+}
+.player-setup-name {
+  width: 8em;
+}
+.color-setter {
+  width: 4em;
+}
+.flag-setter {
+  width: 4em;
+}
+.player-setup-remove-player {
+  width: 4em;
+}
+.setup-game-players-header .player-setup-is-human::after {
+  content: "\f007";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
 }
 .color-setter-display {
+  cursor: pointer;
   height: 2em;
   width: 2em;
   border: 1px solid pink;
@@ -2623,6 +2655,8 @@ progress::-webkit-progress-value {
   position: absolute;
   z-index: 201;
   background-color: grey;
+  top: 2em;
+  left: 1em;
 }
 .color-picker-hsv {
   display: flex;
@@ -2655,6 +2689,7 @@ progress::-webkit-progress-value {
   position: absolute;
 }
 .flag-setter-display {
+  cursor: pointer;
   height: 2em;
   width: 2em;
   border: 1px solid green;
@@ -2664,7 +2699,8 @@ progress::-webkit-progress-value {
   position: absolute;
   z-index: 201;
   background-color: grey;
-  max-width: 40em;
+  top: 2em;
+  left: 1em;
 }
 .flag-picker-title {
   background-color: white;

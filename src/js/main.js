@@ -10776,6 +10776,27 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../../../lib/react.d.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.FocusTimer = {
+            componentDidMount: function () {
+                this.setFocusTimer();
+            },
+            registerFocusTimerListener: function () {
+                window.addEventListener("focus", this.setFocusTimer, false);
+            },
+            clearFocusTimerListener: function () {
+                window.removeEventListener("focus", this.setFocusTimer);
+            },
+            setFocusTimer: function () {
+                this.lastFocusTime = Date.now();
+            }
+        };
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../../color.ts" />
 var Rance;
 (function (Rance) {
@@ -11000,12 +11021,14 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../mixins/focustimer.ts" />
 /// <reference path="colorpicker.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
         UIComponents.ColorSetter = React.createClass({
             displayName: "ColorSetter",
+            mixins: [Rance.UIComponents.FocusTimer],
             getInitialState: function () {
                 return ({
                     hexColor: this.props.color || 0xFFFFFF,
@@ -11013,11 +11036,15 @@ var Rance;
                     active: false
                 });
             },
-            componentDidMount: function () {
-            },
             componentWillUnmount: function () {
+                document.removeEventListener("click", this.handleClick);
+                this.clearFocusTimerListener();
             },
             handleClick: function (e) {
+                var focusGraceTime = 500;
+                if (Date.now() - this.lastFocusTime <= focusGraceTime)
+                    return;
+
                 var node = this.refs.main.getDOMNode();
                 if (e.target === node || node.contains(e.target)) {
                     return;
@@ -11034,12 +11061,14 @@ var Rance;
                     }
                     this.setState({ isActive: true });
                     document.addEventListener("click", this.handleClick, false);
+                    this.registerFocusTimerListener();
                 }
             },
             setAsInactive: function () {
                 if (this.isMounted() && this.state.isActive) {
                     this.setState({ isActive: false });
                     document.removeEventListener("click", this.handleClick);
+                    this.clearFocusTimerListener();
                 }
             },
             updateColor: function (hexColor, isNull) {
@@ -11136,7 +11165,7 @@ var Rance;
                 if (this.props.hasImageFailMessage) {
                     imageInfoMessage = React.DOM.div({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " + "and uploading it.");
                 } else {
-                    imageInfoMessage = React.DOM.div({ className: "image-info-message" }, "Click emblem or drag image here to set it as your flag");
+                    imageInfoMessage = React.DOM.div({ className: "image-info-message" }, "Upload or drag image here to set it as your flag");
                 }
 
                 return (React.DOM.div({
@@ -11158,30 +11187,8 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="../../../lib/react.d.ts" />
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.FocusTimer = {
-            componentDidMount: function () {
-                this.setFocusTimer();
-            },
-            registerFocusTimerListener: function () {
-                window.addEventListener("focus", this.setFocusTimer, false);
-            },
-            clearFocusTimerListener: function () {
-                window.removeEventListener("focus", this.setFocusTimer);
-            },
-            setFocusTimer: function () {
-                this.lastFocusTime = Date.now();
-                console.log(this.lastFocusTime);
-            }
-        };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="flagpicker.ts" />
 /// <reference path="../mixins/focustimer.ts" />
+/// <reference path="flagpicker.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -11225,9 +11232,9 @@ var Rance;
             },
             handleClick: function (e) {
                 var focusGraceTime = 500;
-                console.log(Date.now() - this.lastFocusTime);
                 if (Date.now() - this.lastFocusTime <= focusGraceTime)
                     return;
+
                 var node = this.refs.main.getDOMNode();
                 if (e.target === node || node.contains(e.target)) {
                     return;
@@ -11395,6 +11402,7 @@ var Rance;
             displayName: "PlayerSetup",
             getInitialState: function () {
                 return ({
+                    name: this.props.initialName,
                     mainColor: null,
                     subColor: null,
                     flagEmblem: null
@@ -11414,6 +11422,12 @@ var Rance;
                     return Rance.generateSecondaryColor(this.state.mainColor);
                 }
             },
+            handleSetHuman: function (e) {
+                this.props.setHuman(this.props.key);
+            },
+            handleNameChange: function (e) {
+                this.setState({ name: e.target.value });
+            },
             setMainColor: function (color, isNull) {
                 this.setState({ mainColor: isNull ? null : color });
             },
@@ -11424,9 +11438,20 @@ var Rance;
                 this.props.removePlayer(this.props.key);
             },
             makePlayer: function () {
+                //var player =
             },
             render: function () {
-                return (React.DOM.div({ className: "player-setup" }, React.DOM.div({ className: "player-setup-name" }, "playerName"), Rance.UIComponents.ColorSetter({
+                return (React.DOM.div({ className: "player-setup" }, React.DOM.input({
+                    ref: "isHuman",
+                    className: "player-setup-is-human",
+                    type: "checkbox",
+                    checked: this.props.isHuman,
+                    onChange: this.handleSetHuman
+                }), React.DOM.input({
+                    className: "player-setup-name",
+                    value: this.state.name,
+                    onChange: this.handleNameChange
+                }), Rance.UIComponents.ColorSetter({
                     ref: "mainColor",
                     onChange: this.setMainColor,
                     setActiveColorPicker: this.props.setActiveColorPicker,
@@ -11441,7 +11466,7 @@ var Rance;
                     mainColor: this.state.mainColor,
                     subColor: this.state.subColor,
                     setActiveColorPicker: this.props.setActiveColorPicker
-                }), React.DOM.div({
+                }), React.DOM.button({
                     className: "player-setup-remove-player",
                     onClick: this.handleRemove
                 }, "X")));
@@ -11469,6 +11494,15 @@ var Rance;
                     players: this.state.players.concat(this.newPlayerId++)
                 });
             },
+            setHumanPlayer: function (playerId) {
+                var index = this.state.players.indexOf(playerId);
+
+                var newPlayerOrder = this.state.players.slice(0);
+
+                newPlayerOrder.unshift(newPlayerOrder.splice(index, 1));
+
+                this.setState({ players: newPlayerOrder });
+            },
             removePlayer: function (idToRemove) {
                 this.setState({
                     players: this.state.players.filter(function (playerId) {
@@ -11489,10 +11523,27 @@ var Rance;
                     playerSetups.push(Rance.UIComponents.PlayerSetup({
                         key: this.state.players[i],
                         removePlayer: this.removePlayer,
-                        setActiveColorPicker: this.setActiveColorPicker
+                        setActiveColorPicker: this.setActiveColorPicker,
+                        initialName: "Player " + this.state.players[i],
+                        isHuman: i === 0,
+                        setHuman: this.setHumanPlayer
                     }));
                 }
-                return (React.DOM.div({ className: "setup-game" }, React.DOM.div({ className: "setup-game-players" }, playerSetups, React.DOM.div({
+                return (React.DOM.div({ className: "setup-game" }, React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
+                    className: "player-setup setup-game-players-header"
+                }, React.DOM.div({
+                    className: "player-setup-is-human"
+                }), React.DOM.div({
+                    className: "player-setup-name"
+                }, "Name"), React.DOM.div({
+                    className: "color-setter"
+                }, "Color 1"), React.DOM.div({
+                    className: "color-setter"
+                }, "Color 2"), React.DOM.div({
+                    className: "flag-setter"
+                }, "Flag"), React.DOM.div({
+                    className: "player-setup-remove-player"
+                }, "Remove")), playerSetups, React.DOM.button({
                     className: "player-setup player-setup-add-new",
                     onClick: this.makeNewPlayer
                 }, "Add new player"))));

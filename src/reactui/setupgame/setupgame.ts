@@ -27,6 +27,17 @@ module Rance
         });
       },
 
+      setHumanPlayer: function(playerId: number)
+      {
+        var index = this.state.players.indexOf(playerId);
+
+        var newPlayerOrder = this.state.players.slice(0);
+
+        newPlayerOrder.unshift(newPlayerOrder.splice(index, 1));
+
+        this.setState({players: newPlayerOrder});
+      },
+
       removePlayer: function(idToRemove: number)
       {
         this.setState(
@@ -57,14 +68,46 @@ module Rance
           {
             key: this.state.players[i],
             removePlayer: this.removePlayer,
-            setActiveColorPicker: this.setActiveColorPicker
+            setActiveColorPicker: this.setActiveColorPicker,
+            initialName: "Player " + this.state.players[i],
+            isHuman: i === 0,
+            setHuman: this.setHumanPlayer
           }));
         }
         return(
           React.DOM.div({className: "setup-game"},
             React.DOM.div({className: "setup-game-players"},
-              playerSetups,
               React.DOM.div(
+              {
+                className: "player-setup setup-game-players-header"
+              },
+                React.DOM.div(
+                {
+                  className: "player-setup-is-human"
+                }),
+                React.DOM.div(
+                {
+                  className: "player-setup-name"
+                }, "Name"),
+                React.DOM.div(
+                {
+                  className: "color-setter"
+                }, "Color 1"),
+                React.DOM.div(
+                {
+                  className: "color-setter"
+                }, "Color 2"),
+                React.DOM.div(
+                {
+                  className: "flag-setter"
+                }, "Flag"),
+                React.DOM.div(
+                {
+                  className: "player-setup-remove-player"
+                }, "Remove")
+              ),
+              playerSetups,
+              React.DOM.button(
               {
                 className: "player-setup player-setup-add-new",
                 onClick: this.makeNewPlayer

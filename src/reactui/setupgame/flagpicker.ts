@@ -77,7 +77,7 @@ module Rance
         {
           imageInfoMessage =
           React.DOM.div({className: "image-info-message"},
-            "Click emblem or drag image here to set it as your flag"
+            "Upload or drag image here to set it as your flag"
           );
         }
         

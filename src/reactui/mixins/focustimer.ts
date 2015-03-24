@@ -21,7 +21,6 @@ module Rance
       setFocusTimer: function()
       {
         this.lastFocusTime = Date.now();
-        console.log(this.lastFocusTime);
       }
     }
   }

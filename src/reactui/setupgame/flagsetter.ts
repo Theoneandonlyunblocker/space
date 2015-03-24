@@ -1,5 +1,6 @@
-/// <reference path="flagpicker.ts" />
 /// <reference path="../mixins/focustimer.ts" />
+
+/// <reference path="flagpicker.ts" />
 module Rance
 {
   export module UIComponents
@@ -54,8 +55,8 @@ module Rance
       handleClick: function(e)
       {
         var focusGraceTime = 500;
-        console.log(Date.now() - this.lastFocusTime);
         if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
+
         var node = this.refs.main.getDOMNode();
         if (e.target === node || node.contains(e.target))
         {

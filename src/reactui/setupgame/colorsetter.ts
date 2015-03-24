@@ -1,3 +1,5 @@
+/// <reference path="../mixins/focustimer.ts" />
+
 /// <reference path="colorpicker.ts" />
 
 module Rance
@@ -7,6 +9,7 @@ module Rance
     export var ColorSetter = React.createClass(
     {
       displayName: "ColorSetter",
+      mixins: [FocusTimer],
       getInitialState: function()
       {
         return(
@@ -17,18 +20,17 @@ module Rance
         });
       },
 
-      componentDidMount: function()
-      {
-        
-      },
-
       componentWillUnmount: function()
       {
-        
+        document.removeEventListener("click", this.handleClick);
+        this.clearFocusTimerListener();
       },
 
       handleClick: function(e)
       {
+        var focusGraceTime = 500;
+        if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
+
         var node = this.refs.main.getDOMNode();
         if (e.target === node || node.contains(e.target))
         {
@@ -54,6 +56,7 @@ module Rance
           }
           this.setState({isActive: true});
           document.addEventListener("click", this.handleClick, false);
+          this.registerFocusTimerListener();
         }
       },
       setAsInactive: function()
@@ -62,6 +65,7 @@ module Rance
         {
           this.setState({isActive: false});
           document.removeEventListener("click", this.handleClick);
+          this.clearFocusTimerListener();
         }
       },
       updateColor: function(hexColor: number, isNull: boolean)

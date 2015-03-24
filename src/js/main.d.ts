@@ -1573,6 +1573,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var FocusTimer: {
+            componentDidMount: () => void;
+            registerFocusTimerListener: () => void;
+            clearFocusTimerListener: () => void;
+            setFocusTimer: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var ColorPicker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -1584,16 +1594,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var FlagPicker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var FocusTimer: {
-            componentDidMount: () => void;
-            registerFocusTimerListener: () => void;
-            clearFocusTimerListener: () => void;
-            setFocusTimer: () => void;
-        };
     }
 }
 declare module Rance {
