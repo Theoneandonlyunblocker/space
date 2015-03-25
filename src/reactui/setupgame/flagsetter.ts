@@ -202,15 +202,36 @@ module Rance
 
       setCustomImageFromFile: function(file)
       {
-        var reader = new FileReader();
-
-        reader.onloadend = function()
+        var setImageFN = function(file)
         {
-          this.state.flag.setCustomImage(reader.result);
-          this.handleUpdate();
-        }.bind(this);
+          var reader = new FileReader();
 
-        reader.readAsDataURL(file);
+          reader.onloadend = function()
+          {
+            this.state.flag.setCustomImage(reader.result);
+            this.handleUpdate();
+          }.bind(this);
+
+          reader.readAsDataURL(file);
+        }.bind(this, file);
+
+        var fileSizeInMegaBytes = file.size / 1024 / 1024;
+        if (fileSizeInMegaBytes > 20)
+        {
+          if (window.confirm(
+            "Are you sure you want to load an image that is " +
+            fileSizeInMegaBytes.toFixed(2) + "MB in size?\n"+
+            "(The image won't be stored online, " +
+            "but processing it might take a while)"
+          ))
+          {
+            setImageFN();
+          }
+        }
+        else
+        {
+          setImageFN();
+        }
       },
 
       componentWillReceiveProps: function(newProps: any)
