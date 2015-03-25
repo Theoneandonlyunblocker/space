@@ -97,9 +97,18 @@ module Rance
 
       setForegroundEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
       {
-        var emblem = new Emblem(undefined, 1, emblemTemplate);
+        var emblem = null;
+        if (emblemTemplate)
+        {
+          emblem = new Emblem(undefined, 1, emblemTemplate);
+        }
+
         this.state.flag.setForegroundEmblem(emblem);
-        this.handleUpdate();
+
+        if (emblemTemplate)
+        {
+          this.handleUpdate();
+        }
       },
 
       stopEvent: function(e)
@@ -248,12 +257,40 @@ module Rance
         // {
         //   this.handleUpdate();
         // }
-        this.handleUpdate();
+        var colorHasUpdated;
+        ["mainColor", "subColor", "tetriaryColor"].forEach(function(prop)
+        {
+          if (oldProps[prop] !== newProps[prop])
+          {
+            colorHasUpdated = true;
+            return;
+          }
+        });
+
+        if (colorHasUpdated)
+        {
+          this.handleUpdate(true);
+          return;
+        }
       },
 
-      handleUpdate: function()
+      handleUpdate: function(dontTriggerParentUpdates?: boolean)
       {
         this.clearImageLoadingFailMessage();
+
+        if (this.state.flag.customImage)
+        {
+          if (this.refs.flagPicker)
+          {
+            this.refs.flagPicker.clearSelectedEmblem();
+          }
+        }
+
+        if (!dontTriggerParentUpdates)
+        {
+          this.props.toggleCustomImage(this.state.flag.customImage);
+        }
+
         this.setState(
         {
           icon: this.state.flag.draw().toDataURL()
@@ -280,6 +317,7 @@ module Rance
             this.props.isActive || this.state.isActive ?
               UIComponents.FlagPicker(
               {
+                ref: "flagPicker",
                 flag: this.state.flag,
                 handleSelectEmblem: this.setForegroundEmblem,
                 hasImageFailMessage: this.state.hasImageFailMessage,
