@@ -33,7 +33,7 @@ module Rance
 
         var newPlayerOrder = this.state.players.slice(0);
 
-        newPlayerOrder.unshift(newPlayerOrder.splice(index, 1));
+        newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
 
         this.setState({players: newPlayerOrder});
       },
