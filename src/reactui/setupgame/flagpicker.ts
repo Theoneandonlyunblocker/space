@@ -7,9 +7,14 @@ module Rance
       displayName: "FlagPicker",
       getInitialState: function()
       {
+        var initialEmblem = null;
+        if (this.props.flag.foregroundEmblem)
+        {
+          initialEmblem = this.props.flag.foregroundEmblem.inner;
+        }
         return(
         {
-          selectedEmblem: null
+          selectedEmblem: initialEmblem
         });
       },
 
@@ -17,6 +22,11 @@ module Rance
       {
         this.props.handleSelectEmblem(emblemTemplate);
         this.setState({selectedEmblem: emblemTemplate});
+      },
+
+      clearSelectedEmblem: function()
+      {
+        this.handleSelectEmblem(null);
       },
 
       handleUpload: function(e)
