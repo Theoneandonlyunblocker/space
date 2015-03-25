@@ -46,18 +46,6 @@ module Rance
 
       this.stage.renderable = true;
     }
-    initRenderer()
-    {
-      var containerStyle = window.getComputedStyle(this.pixiContainer);
-      this.renderer = PIXI.autoDetectRenderer(
-        parseInt(containerStyle.width),
-        parseInt(containerStyle.height),
-        {
-          autoResize: false,
-          antialias: true
-        }
-      );
-    }
     destroy()
     {
       this.stage.renderable = false;
