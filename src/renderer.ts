@@ -3,6 +3,7 @@
 /// <reference path="camera.ts"/>
 /// <reference path="mouseeventhandler.ts"/>
 /// <reference path="shadermanager.ts"/>
+/// <reference path="pathfindingarrow.ts"/>
 
 module Rance
 {
@@ -23,6 +24,8 @@ module Rance
     backgroundIsDirty: boolean = true;
     isBattleBackground: boolean = false;
     blurProps: number[];
+
+    toCenterOn: Point;
 
     resizeListener: any;
 
@@ -57,6 +60,7 @@ module Rance
 
       //window.removeEventListener("resize", this.resizeListener);
 
+      this.pathfindingArrow.destroy();
       this.mouseEventHandler.destroy();
       this.camera.destroy();
 
@@ -143,9 +147,11 @@ module Rance
         this.camera.destroy();
       }
       this.camera = new Camera(this.layers["main"], 0.5);
-      this.camera.toCenterOn = oldToCenterOn;
+      this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
 
       this.mouseEventHandler = new MouseEventHandler(this, this.camera);
+
+      this.pathfindingArrow = new PathfindingArrow(this.layers["select"]);
     }
     addEventListeners()
     {
