@@ -36,6 +36,9 @@ module Rance
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
       this.stage = new PIXI.Stage(0x101060);
+
+      this.resizeListener = this.resize.bind(this);
+      window.addEventListener("resize", this.resizeListener, false);
     }
     init()
     {
@@ -50,8 +53,6 @@ module Rance
     {
       this.stage.renderable = false;
       this.pause();
-
-      //window.removeEventListener("resize", this.resizeListener);
 
       this.pathfindingArrow.destroy();
       this.pathfindingArrow = null;
@@ -158,8 +159,6 @@ module Rance
     addEventListeners()
     {
       var self = this;
-      this.resizeListener = this.resize.bind(this);
-      window.addEventListener("resize", this.resizeListener, false);
 
 
       this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
