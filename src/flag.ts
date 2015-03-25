@@ -15,6 +15,7 @@ module Rance
     foregroundEmblem: Emblem;
 
     customImage: string;
+    private _customImageToRender: HTMLCanvasElement;
 
     seed: any;
     constructor(props:
@@ -73,14 +74,22 @@ module Rance
     clearContent()
     {
       this.customImage = null;
+      this._customImageToRender = null;
       this.foregroundEmblem = null;
       this.backgroundEmblem = null;
       this.seed = null;
     }
     setForegroundEmblem(emblem: Emblem)
     {
+      if (!emblem)
+      {
+        this.foregroundEmblem = null;
+        return;
+      }
+
       this.clearContent();
       this.foregroundEmblem = emblem;
+
       if (isFinite(emblem.color) && emblem.color !== null)
       {
         this.secondaryColor = emblem.color;
@@ -92,8 +101,15 @@ module Rance
     }
     setBackgroundEmblem(emblem: Emblem)
     {
+      if (!emblem)
+      {
+        this.backgroundEmblem = null;
+        return;
+      }
+
       this.clearContent();
       this.backgroundEmblem = emblem;
+
       if (isFinite(emblem.color) && emblem.color !== null)
       {
         this.tetriaryColor = emblem.color;
@@ -107,6 +123,43 @@ module Rance
     {
       this.clearContent();
       this.customImage = imageSrc;
+
+      var canvas = document.createElement("canvas");
+      canvas.width = this.width;
+      canvas.height = this.height;
+
+      var ctx = canvas.getContext("2d");
+
+      var image = new Image();
+      image.src = imageSrc
+      var xPos, xWidth, yPos, yHeight;
+
+      // center image if smaller than canvas we're drawing on
+      if (image.width < this.width)
+      {
+        xPos = (this.width - image.width) / 2
+        xWidth = image.width;
+      }
+      else
+      {
+        xPos = 0;
+        xWidth = this.width;
+      }
+
+      if (image.height < this.height)
+      {
+        yPos = (this.height - image.height) / 2
+        yHeight = image.height;
+      }
+      else
+      {
+        yPos = 0;
+        yHeight = this.height;
+      }
+
+      ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
+
+      this._customImageToRender = canvas;
     }
     draw()
     {
@@ -124,39 +177,9 @@ module Rance
       ctx.fillRect(0, 0, this.width, this.height);
       ctx.fillStyle = "#00FF00";
 
-      if (this.customImage)
+      if (this._customImageToRender)
       {
-        var image = new Image();
-        image.src = this.customImage;
-        var xPos, xWidth, yPos, yHeight;
-
-        // center image if smaller than canvas we're drawing on
-        if (image.width < this.width)
-        {
-          xPos = (this.width - image.width) / 2
-          xWidth = image.width;
-        }
-        else
-        {
-          xPos = 0;
-          xWidth = this.width;
-        }
-
-        if (image.height < this.height)
-        {
-          yPos = (this.height - image.height) / 2
-          yHeight = image.height;
-        }
-        else
-        {
-          yPos = 0;
-          yHeight = this.height;
-        }
-
-        console.log(xPos, yPos, xWidth, yHeight);
-
-
-        ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
+        ctx.drawImage(this._customImageToRender, 0, 0);
       }
       else
       {
