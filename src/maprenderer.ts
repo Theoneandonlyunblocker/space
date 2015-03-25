@@ -76,12 +76,27 @@ module Rance
     destroy()
     {
       this.preventRender = true;
+      this.container.renderable = false;
 
       for (var name in this.listeners)
       {
         eventManager.removeEventListener(name, this.listeners[name]);
       }
 
+      this.game = null;
+      this.player = null;
+      this.container = null;
+      this.parent = null;
+      this.occupationShaders = null;
+      
+      for (var starId in this.fowSpriteCache)
+      {
+        this.fowSpriteCache[starId].renderable = false;
+        this.fowSpriteCache[starId] = null;
+      }
+
+      this.container.removeChildren();
+      this.parent.removeChild(this.container);
     }
     setMap(map: GalaxyMap)
     {
