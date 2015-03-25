@@ -50,6 +50,20 @@ module Rance
 
       this.addEventListeners();
     }
+    destroy()
+    {
+      this.active = false;
+
+      this.removeEventListeners();
+
+      this.parentContainer = null;
+      this.container = null;
+      this.currentTarget = null;
+
+      window.clearTimeout(this.clearTargetTimeout);
+      this.selectedFleets = null;
+      this.labelCache = null;
+    }
     removeEventListener(name: string)
     {
       eventManager.removeEventListener(name, this.listeners[name]);
