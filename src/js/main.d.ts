@@ -1193,6 +1193,7 @@ declare module Rance {
         public backgroundEmblem: Rance.Emblem;
         public foregroundEmblem: Rance.Emblem;
         public customImage: string;
+        private _customImageToRender;
         public seed: any;
         constructor(props: {
             width: number;

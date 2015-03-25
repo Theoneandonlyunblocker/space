@@ -113,7 +113,8 @@ module Rance
                 hexColor: this.state.hexColor,
                 generateColor: this.props.generateColor,
                 onChange: this.updateColor,
-                setAsInactive: this.setAsInactive
+                setAsInactive: this.setAsInactive,
+                flagHasCustomImage: this.props.flagHasCustomImage
               }) : null
           )
         );

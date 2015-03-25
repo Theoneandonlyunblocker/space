@@ -16,7 +16,7 @@ module Rance
           name: this.props.initialName,
           mainColor: null,
           subColor: null,
-          flagEmblem: null
+          flagHasCustomImage: false
         });
       },
       generateMainColor: function()
@@ -63,6 +63,10 @@ module Rance
       {
         this.props.removePlayer(this.props.key)
       },
+      handleSetCustomImage: function(image?)
+      {
+        this.setState({flagHasCustomImage: Boolean(image)});
+      },
       makePlayer: function()
       {
         //var player =
@@ -90,21 +94,24 @@ module Rance
               ref: "mainColor",
               onChange: this.setMainColor,
               setActiveColorPicker: this.props.setActiveColorPicker,
-              generateColor: this.generateMainColor
+              generateColor: this.generateMainColor,
+              flagHasCustomImage: this.state.flagHasCustomImage
             }),
             UIComponents.ColorSetter(
             {
               ref: "subColor",
               onChange: this.setSubColor,
               setActiveColorPicker: this.props.setActiveColorPicker,
-              generateColor: this.generateSubColor
+              generateColor: this.generateSubColor,
+              flagHasCustomImage: this.state.flagHasCustomImage
             }),
             UIComponents.FlagSetter(
             {
               ref: "flagSetter",
               mainColor: this.state.mainColor,
               subColor: this.state.subColor,
-              setActiveColorPicker: this.props.setActiveColorPicker
+              setActiveColorPicker: this.props.setActiveColorPicker,
+              toggleCustomImage: this.handleSetCustomImage
             }),
             React.DOM.button(
             {
