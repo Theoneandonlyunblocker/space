@@ -71,7 +71,19 @@ module Rance
       },
       setHex: function(e)
       {
-        var hexString = e.target.value;
+        e.stopPropagation();
+        e.preventDefault();
+        console.log(e.type);
+        var hexString;
+        if (e.type === "paste")
+        {
+          hexString = e.clipboardData.getData("text");
+        }
+        else
+        {
+          hexString = e.target.value;
+        }
+
         if (hexString[0] !== "#")
         {
           hexString = "#" + hexString;
@@ -310,7 +322,8 @@ module Rance
                 type: "string",
                 step: 1,
                 value: this.state.hexString,
-                onChange: this.setHex
+                onChange: this.setHex,
+                onPaste: this.setHex
               })
             )
           )
