@@ -241,8 +241,6 @@ module Rance
       {
         reactUI.currentScene = "galaxyMap";
       }
-
-      reactUI.render();
     }
   }
 }
