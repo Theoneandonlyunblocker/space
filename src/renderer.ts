@@ -19,6 +19,8 @@ module Rance
     camera: Camera;
     mouseEventHandler: MouseEventHandler;
     shaderManager: ShaderManager;
+    pathfindingArrow: PathfindingArrow;
+    
     isPaused: boolean = false;
     forceFrame: boolean = false;
     backgroundIsDirty: boolean = true;
@@ -34,13 +36,15 @@ module Rance
       PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       
       this.stage = new PIXI.Stage(0x101060);
-      this.shaderManager = new ShaderManager();
     }
     init()
     {
+      this.shaderManager = new ShaderManager();
       this.initLayers();
 
       this.addEventListeners();
+
+      this.stage.renderable = true;
     }
     initRenderer()
     {
@@ -56,13 +60,23 @@ module Rance
     }
     destroy()
     {
+      this.stage.renderable = false;
       this.pause();
 
       //window.removeEventListener("resize", this.resizeListener);
 
       this.pathfindingArrow.destroy();
+      this.pathfindingArrow = null;
+
       this.mouseEventHandler.destroy();
+      this.mouseEventHandler = null;
+
       this.camera.destroy();
+      this.camera = null;
+
+      this.shaderManager.destroy();
+      this.shaderManager = null;
+
 
       this.layers["bgFilter"].filters = null;
 
