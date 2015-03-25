@@ -19,8 +19,6 @@ module Rance
           tetriaryColor: this.props.tetriaryColor
         });
 
-        flag.generateRandom();
-
         return(
         {
           flag: flag,

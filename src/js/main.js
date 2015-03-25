@@ -11236,8 +11236,6 @@ var Rance;
                     tetriaryColor: this.props.tetriaryColor
                 });
 
-                flag.generateRandom();
-
                 return ({
                     flag: flag,
                     icon: flag.draw().toDataURL(),
@@ -11475,7 +11473,6 @@ var Rance;
         UIComponents.PlayerSetup = React.createClass({
             displayName: "PlayerSetup",
             getInitialState: function () {
-                console.log("player mount", this.props.key);
                 return ({
                     name: this.props.initialName,
                     mainColor: null,
@@ -11572,7 +11569,7 @@ var Rance;
             },
             makeNewPlayer: function () {
                 this.setState({
-                    players: this.state.players.concat([this.newPlayerId++])
+                    players: this.state.players.concat(this.newPlayerId++)
                 });
             },
             setHumanPlayer: function (playerId) {
