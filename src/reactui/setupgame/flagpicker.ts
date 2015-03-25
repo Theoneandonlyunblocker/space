@@ -20,6 +20,12 @@ module Rance
 
       handleSelectEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
       {
+        if (this.state.selectedEmblem === emblemTemplate && emblemTemplate !== null)
+        {
+          this.clearSelectedEmblem();
+          return;
+        }
+        this.refs.imageUploader.getDOMNode().value = null;
         this.props.handleSelectEmblem(emblemTemplate);
         this.setState({selectedEmblem: emblemTemplate});
       },

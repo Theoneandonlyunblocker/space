@@ -26,6 +26,19 @@ module Rance
         this.clearFocusTimerListener();
       },
 
+      componentWillReceiveProps: function(newProps: any)
+      {
+        console.log()
+        if (newProps.color !== this.state.hexColor)
+        {
+          this.setState(
+          {
+            hexColor: newProps.color,
+            isNull: newProps.color === null
+          });
+        }
+      },
+
       handleClick: function(e)
       {
         var focusGraceTime = 500;

@@ -95,6 +95,8 @@ module Rance
 
       setForegroundEmblem: function(emblemTemplate: Templates.ISubEmblemTemplate)
       {
+        var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
+
         var emblem = null;
         if (emblemTemplate)
         {
@@ -103,7 +105,7 @@ module Rance
 
         this.state.flag.setForegroundEmblem(emblem);
 
-        if (emblemTemplate)
+        if (shouldUpdate)
         {
           this.handleUpdate();
         }

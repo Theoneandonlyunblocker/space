@@ -19,26 +19,26 @@ module Rance
           flagHasCustomImage: false
         });
       },
-      generateMainColor: function()
+      generateMainColor: function(subColor = this.state.subColor)
       {
-        if (this.state.subColor === null)
+        if (subColor === null)
         {
           return generateMainColor();
         }
         else
         {
-          return generateSecondaryColor(this.state.subColor);
+          return generateSecondaryColor(subColor);
         }
       },
-      generateSubColor: function()
+      generateSubColor: function(mainColor = this.state.mainColor)
       {
-        if (this.state.mainColor === null)
+        if (mainColor === null)
         {
           return generateMainColor();
         }
         else
         {
-          return generateSecondaryColor(this.state.mainColor);
+          return generateSecondaryColor(mainColor);
         }
       },
       handleSetHuman: function(e)
@@ -69,12 +69,45 @@ module Rance
       },
       makePlayer: function()
       {
-        //var player =
+        var player = new Player(!this.props.isHuman);
+        
+        player.color = this.state.mainColor === null ?
+          this.generateMainColor() : this.state.mainColor;
+        player.secondaryColor = this.state.subColor === null ?
+          this.generateSubColor(player.color) : this.state.subColor;
+
+        var flag = this.refs.flagSetter.state.flag;
+
+        player.flag = flag;
+        player.flag.setColorScheme(
+          player.color,
+          player.secondaryColor,
+          flag.tetriaryColor
+        );
+
+        if (this.state.mainColor === null && this.state.subColor === null &&
+          !flag.customImage && !flag.foregroundEmblem)
+        {
+          flag.generateRandom();
+        }
+
+        player.setIcon();
+
+        this.setState(
+        {
+          mainColor: player.color,
+          subColor: player.secondaryColor
+        });
+
+        return player;
       },
       render: function()
       {
         return(
-          React.DOM.div({className: "player-setup"},
+          React.DOM.div(
+          {
+            className: "player-setup" + (this.props.isHuman ? " human-player-setup" : "")
+          },
             React.DOM.input(
             {
               ref: "isHuman",
@@ -95,7 +128,8 @@ module Rance
               onChange: this.setMainColor,
               setActiveColorPicker: this.props.setActiveColorPicker,
               generateColor: this.generateMainColor,
-              flagHasCustomImage: this.state.flagHasCustomImage
+              flagHasCustomImage: this.state.flagHasCustomImage,
+              color: this.state.mainColor
             }),
             UIComponents.ColorSetter(
             {
@@ -103,7 +137,8 @@ module Rance
               onChange: this.setSubColor,
               setActiveColorPicker: this.props.setActiveColorPicker,
               generateColor: this.generateSubColor,
-              flagHasCustomImage: this.state.flagHasCustomImage
+              flagHasCustomImage: this.state.flagHasCustomImage,
+              color: this.state.subColor
             }),
             UIComponents.FlagSetter(
             {
