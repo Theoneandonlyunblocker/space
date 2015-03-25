@@ -126,7 +126,7 @@ module Rance
       this.initDisplay();
       if (parsed.cameraLocation)
       {
-        this.renderer.camera.toCenterOn = parsed.cameraLocation;
+        this.renderer.toCenterOn = parsed.cameraLocation;
       }
 
 

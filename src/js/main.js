@@ -15828,6 +15828,9 @@ var Rance;
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0x101060);
+
+            this.resizeListener = this.resize.bind(this);
+            window.addEventListener("resize", this.resizeListener, false);
         }
         Renderer.prototype.init = function () {
             this.shaderManager = new Rance.ShaderManager();
@@ -15837,18 +15840,10 @@ var Rance;
 
             this.stage.renderable = true;
         };
-        Renderer.prototype.initRenderer = function () {
-            var containerStyle = window.getComputedStyle(this.pixiContainer);
-            this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
-                autoResize: false,
-                antialias: true
-            });
-        };
         Renderer.prototype.destroy = function () {
             this.stage.renderable = false;
             this.pause();
 
-            //window.removeEventListener("resize", this.resizeListener);
             this.pathfindingArrow.destroy();
             this.pathfindingArrow = null;
 
@@ -15937,8 +15932,6 @@ var Rance;
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
-            this.resizeListener = this.resize.bind(this);
-            window.addEventListener("resize", this.resizeListener, false);
 
             this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
                 self.mouseEventHandler.mouseDown(event, "stage");
@@ -18085,7 +18078,7 @@ var Rance;
 
             this.initDisplay();
             if (parsed.cameraLocation) {
-                this.renderer.camera.toCenterOn = parsed.cameraLocation;
+                this.renderer.toCenterOn = parsed.cameraLocation;
             }
 
             this.reactUI.render();

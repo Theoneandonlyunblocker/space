@@ -2209,7 +2209,6 @@ declare module Rance {
         public resizeListener: any;
         constructor();
         public init(): void;
-        public initRenderer(): void;
         public destroy(): void;
         public removeRendererView(): void;
         public bindRendererView(container: HTMLCanvasElement): void;
