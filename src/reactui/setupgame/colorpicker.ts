@@ -26,7 +26,7 @@ module Rance
         });
       },
 
-      updateFromHsv: function(hue, sat, val)
+      updateFromHsv: function(hue, sat, val, e?)
       {
         var hsvColor = [hue, sat, val];
         var hexColor = Math.round(hsvToHex.apply(null, scalarsFromColor(hsvColor)));
@@ -42,7 +42,15 @@ module Rance
 
         if (this.props.onChange)
         {
-          this.props.onChange(hexColor, false);
+          // prevent onchange events from constantly having to render custom image
+          // 
+          if (!this.props.limitUpdates ||
+            (!this.props.flagHasCustomImage ||
+            e.target.type !== "range" ||
+            e.type !== "input"))
+          {
+            this.props.onChange(hexColor, false);
+          }
         }
       },
       updateFromHex: function(hexColor: number)
@@ -92,21 +100,21 @@ module Rance
         var hue = Math.round(e.target.value % 361);
         if (hue < 0) hue = 360;
         this.setState({hue: hue});
-        this.updateFromHsv(hue, this.state.sat, this.state.val);
+        this.updateFromHsv(hue, this.state.sat, this.state.val, e);
       },
       setSat: function(e)
       {
         var sat = Math.round(e.target.value % 101);
         if (sat < 0) sat = 100;
         this.setState({sat: sat});
-        this.updateFromHsv(this.state.hue, sat, this.state.val);
+        this.updateFromHsv(this.state.hue, sat, this.state.val, e);
       },
       setVal: function(e)
       {
         var val = Math.round(e.target.value % 101);
         if (val < 0) val = 100;
         this.setState({val: val});
-        this.updateFromHsv(this.state.hue, this.state.sat, val);
+        this.updateFromHsv(this.state.hue, this.state.sat, val, e);
       },
 
       autoGenerateColor: function()
@@ -246,7 +254,8 @@ module Rance
                 step: 1,
                 value: this.state[type],
                 onChange: updateFunctions[type],
-                onMouseUp: updateFunctions[type] // ie doesnt fire onchange event
+                onMouseUp: updateFunctions[type],
+                onTouchEnd: updateFunctions[type]
               })
             ),
             React.DOM.input(
