@@ -226,6 +226,7 @@ module Rance
       var uriParser = document.createElement("a");
       uriParser.href = document.URL;
       var hash = uriParser.hash;
+
       if (hash)
       {
         if (hash === "#demo")

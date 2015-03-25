@@ -15821,6 +15821,7 @@ var Rance;
     var Renderer = (function () {
         function Renderer() {
             this.layers = {};
+            this.activeRenderLoopId = 0;
             this.isPaused = false;
             this.forceFrame = false;
             this.backgroundIsDirty = true;
@@ -15837,9 +15838,13 @@ var Rance;
             this.initLayers();
 
             this.addEventListeners();
+            this.activeRenderLoopId++;
 
             this.stage.renderable = true;
         };
+
+        // can't destroy everything because pixi stops working properly
+        // with more than 1 stage / PIXI.Renderer
         Renderer.prototype.destroy = function () {
             this.stage.renderable = false;
             this.pause();
@@ -16078,9 +16083,10 @@ var Rance;
         Renderer.prototype.resume = function () {
             this.isPaused = false;
             this.forceFrame = false;
-            this.render();
+            this.activeRenderLoopId = this.activeRenderLoopId++;
+            this.render(this.activeRenderLoopId);
         };
-        Renderer.prototype.render = function () {
+        Renderer.prototype.render = function (renderLoopId) {
             if (!document.body.contains(this.pixiContainer)) {
                 this.pause();
                 return;
@@ -16092,7 +16098,6 @@ var Rance;
                     return;
                 }
             }
-
             if (this.backgroundIsDirty) {
                 this.renderBackground();
             }
@@ -16101,7 +16106,9 @@ var Rance;
 
             this.renderer.render(this.stage);
 
-            requestAnimFrame(this.render.bind(this));
+            if (this.activeRenderLoopId === renderLoopId) {
+                requestAnimFrame(this.render.bind(this, renderLoopId));
+            }
         };
         return Renderer;
     })();
@@ -18167,6 +18174,7 @@ var Rance;
             var uriParser = document.createElement("a");
             uriParser.href = document.URL;
             var hash = uriParser.hash;
+
             if (hash) {
                 if (hash === "#demo") {
                 } else {

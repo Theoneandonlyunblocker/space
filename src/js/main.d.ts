@@ -2200,6 +2200,7 @@ declare module Rance {
         public mouseEventHandler: Rance.MouseEventHandler;
         public shaderManager: Rance.ShaderManager;
         public pathfindingArrow: Rance.PathfindingArrow;
+        private activeRenderLoopId;
         public isPaused: boolean;
         public forceFrame: boolean;
         public backgroundIsDirty: boolean;
@@ -2225,7 +2226,7 @@ declare module Rance {
         public renderOnce(): void;
         public pause(): void;
         public resume(): void;
-        public render(): void;
+        public render(renderLoopId?: number): void;
     }
 }
 declare module Rance {

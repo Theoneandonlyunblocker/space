@@ -21,6 +21,7 @@ module Rance
     shaderManager: ShaderManager;
     pathfindingArrow: PathfindingArrow;
     
+    private activeRenderLoopId: number = 0;
     isPaused: boolean = false;
     forceFrame: boolean = false;
     backgroundIsDirty: boolean = true;
@@ -46,9 +47,12 @@ module Rance
       this.initLayers();
 
       this.addEventListeners();
+      this.activeRenderLoopId++;
 
       this.stage.renderable = true;
     }
+    // can't destroy everything because pixi stops working properly
+    // with more than 1 stage / PIXI.Renderer
     destroy()
     {
       this.stage.renderable = false;
@@ -333,9 +337,10 @@ module Rance
     {
       this.isPaused = false;
       this.forceFrame = false;
-      this.render();
+      this.activeRenderLoopId = this.activeRenderLoopId++;
+      this.render(this.activeRenderLoopId);
     }
-    render()
+    render(renderLoopId?: number)
     {
       if (!document.body.contains(this.pixiContainer))
       {
@@ -353,7 +358,6 @@ module Rance
           return;
         }
       }
-
       if (this.backgroundIsDirty)
       {
         this.renderBackground();
@@ -363,7 +367,10 @@ module Rance
 
       this.renderer.render(this.stage);
 
-      requestAnimFrame( this.render.bind(this) );
+      if (this.activeRenderLoopId === renderLoopId)
+      {
+        requestAnimFrame( this.render.bind(this, renderLoopId) );
+      }
     }
   }
 }
