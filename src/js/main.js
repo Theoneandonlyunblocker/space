@@ -13618,6 +13618,9 @@ var Rance;
                 Rance.eventManager.removeEventListener(name, this.listeners[name]);
             }
 
+            this.container.removeChildren();
+            this.parent.removeChild(this.container);
+
             this.game = null;
             this.player = null;
             this.container = null;
@@ -13628,9 +13631,6 @@ var Rance;
                 this.fowSpriteCache[starId].renderable = false;
                 this.fowSpriteCache[starId] = null;
             }
-
-            this.container.removeChildren();
-            this.parent.removeChild(this.container);
         };
         MapRenderer.prototype.setMap = function (map) {
             this.galaxyMap = map;
@@ -18182,8 +18182,6 @@ var Rance;
             } else {
                 reactUI.currentScene = "galaxyMap";
             }
-
-            reactUI.render();
         };
         return App;
     })();

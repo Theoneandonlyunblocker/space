@@ -82,6 +82,9 @@ module Rance
       {
         eventManager.removeEventListener(name, this.listeners[name]);
       }
+      
+      this.container.removeChildren();
+      this.parent.removeChild(this.container);
 
       this.game = null;
       this.player = null;
@@ -95,8 +98,6 @@ module Rance
         this.fowSpriteCache[starId] = null;
       }
 
-      this.container.removeChildren();
-      this.parent.removeChild(this.container);
     }
     setMap(map: GalaxyMap)
     {
