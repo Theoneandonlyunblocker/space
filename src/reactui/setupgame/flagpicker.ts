@@ -27,6 +27,30 @@ module Rance
 
         this.props.uploadFiles(files);
       },
+      makeEmblemElement: function(template: Templates.ISubEmblemTemplate)
+      {
+        var className = "emblem-picker-image";
+        if (this.state.selectedEmblem &&
+          this.state.selectedEmblem.type === template.type)
+        {
+          className += " selected-emblem";
+        }
+
+        return(
+          React.DOM.div(
+          {
+            className: "emblem-picker-container",
+            key: template.type,
+            onClick: this.handleSelectEmblem.bind(this, template)
+          },
+            React.DOM.img(
+            {
+              className: className,
+              src: app.images["emblems"][template.imageSrc].src
+            })
+          )
+        );
+      },
 
       render: function()
       {
@@ -35,15 +59,7 @@ module Rance
         for (var emblemType in Templates.SubEmblems)
         {
           var template = Templates.SubEmblems[emblemType];
-          var className = "emblem-picker";
-          if (this.state.selectedEmblem === template) className += " selected-emblem";
-          emblems.push(React.DOM.img(
-          {
-            className: className,
-            key: template.type,
-            src: app.images["emblems"][template.imageSrc].src,
-            onClick: this.handleSelectEmblem.bind(this, template)
-          }));
+          emblems.push(this.makeEmblemElement(template));
         }
 
         var pirateTemplate =
@@ -54,15 +70,8 @@ module Rance
           imageSrc: "pirateEmblem.png"
         };
 
-        var className = "emblem-picker";
-        if (this.state.selectedEmblem === pirateTemplate) className += " selected-emblem";
-        emblems.push(React.DOM.img(
-        {
-          className: className,
-          key: pirateTemplate.type,
-          src: app.images["emblems"][pirateTemplate.imageSrc].src,
-          onClick: this.handleSelectEmblem.bind(this, pirateTemplate)
-        }));
+        emblems.push(this.makeEmblemElement(pirateTemplate));
+
 
         var imageInfoMessage;
         if (this.props.hasImageFailMessage)
