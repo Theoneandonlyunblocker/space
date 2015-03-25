@@ -1609,6 +1609,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var SetupGamePlayers: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var SetupGame: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -2129,6 +2134,61 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class PathfindingArrow {
+        public parentContainer: PIXI.DisplayObjectContainer;
+        public container: PIXI.DisplayObjectContainer;
+        public active: boolean;
+        public currentTarget: Rance.Star;
+        public clearTargetTimeout: any;
+        public selectedFleets: Rance.Fleet[];
+        public labelCache: {
+            [style: string]: {
+                [distance: number]: PIXI.Text;
+            };
+        };
+        public listeners: {
+            [name: string]: any;
+        };
+        public curveStyles: {
+            reachable: {
+                color: number;
+            };
+            unreachable: {
+                color: number;
+            };
+        };
+        constructor(parentContainer: PIXI.DisplayObjectContainer);
+        public destroy(): void;
+        public removeEventListener(name: string): void;
+        public removeEventListeners(): void;
+        public addEventListener(name: string, handler: any): void;
+        public addEventListeners(): void;
+        public startMove(): void;
+        public setTarget(star: Rance.Star): void;
+        public clearTarget(): void;
+        public endMove(): void;
+        public clearArrows(): void;
+        public makeLabel(style: string, distance: number): void;
+        public getLabel(style: string, distance: number): PIXI.Text;
+        public getAllCurrentPaths(): {
+            fleet: Rance.Fleet;
+            path: any;
+        }[];
+        public getAllCurrentCurves(): {
+            style: string;
+            curveData: number[][];
+        }[];
+        public drawAllCurrentCurves(): void;
+        public getCurveData(points: Rance.Star[]): number[][];
+        public drawCurve(points: number[][], style: any): PIXI.Graphics;
+        public drawArrowHead(gfx: PIXI.Graphics, color: number): void;
+        public getTargetOffset(target: Rance.Point, i: number, totalPaths: number, offsetPerOrbit: number): {
+            x: number;
+            y: number;
+        };
+    }
+}
+declare module Rance {
     class Renderer {
         public stage: PIXI.Stage;
         public renderer: any;
@@ -2139,11 +2199,13 @@ declare module Rance {
         public camera: Rance.Camera;
         public mouseEventHandler: Rance.MouseEventHandler;
         public shaderManager: Rance.ShaderManager;
+        public pathfindingArrow: Rance.PathfindingArrow;
         public isPaused: boolean;
         public forceFrame: boolean;
         public backgroundIsDirty: boolean;
         public isBattleBackground: boolean;
         public blurProps: number[];
+        public toCenterOn: Rance.Point;
         public resizeListener: any;
         constructor();
         public init(): void;
@@ -2265,60 +2327,6 @@ declare module Rance {
 }
 declare module Rance {
     function setAllDynamicTemplateProperties(): void;
-}
-declare module Rance {
-    class PathfindingArrow {
-        public parentContainer: PIXI.DisplayObjectContainer;
-        public container: PIXI.DisplayObjectContainer;
-        public active: boolean;
-        public currentTarget: Rance.Star;
-        public clearTargetTimeout: any;
-        public selectedFleets: Rance.Fleet[];
-        public labelCache: {
-            [style: string]: {
-                [distance: number]: PIXI.Text;
-            };
-        };
-        public listeners: {
-            [name: string]: any;
-        };
-        public curveStyles: {
-            reachable: {
-                color: number;
-            };
-            unreachable: {
-                color: number;
-            };
-        };
-        constructor(parentContainer: PIXI.DisplayObjectContainer);
-        public removeEventListener(name: string): void;
-        public removeEventListeners(): void;
-        public addEventListener(name: string, handler: any): void;
-        public addEventListeners(): void;
-        public startMove(): void;
-        public setTarget(star: Rance.Star): void;
-        public clearTarget(): void;
-        public endMove(): void;
-        public clearArrows(): void;
-        public makeLabel(style: string, distance: number): void;
-        public getLabel(style: string, distance: number): PIXI.Text;
-        public getAllCurrentPaths(): {
-            fleet: Rance.Fleet;
-            path: any;
-        }[];
-        public getAllCurrentCurves(): {
-            style: string;
-            curveData: number[][];
-        }[];
-        public drawAllCurrentCurves(): void;
-        public getCurveData(points: Rance.Star[]): number[][];
-        public drawCurve(points: number[][], style: any): PIXI.Graphics;
-        public drawArrowHead(gfx: PIXI.Graphics, color: number): void;
-        public getTargetOffset(target: Rance.Point, i: number, totalPaths: number, offsetPerOrbit: number): {
-            x: number;
-            y: number;
-        };
-    }
 }
 declare module Rance {
     function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
@@ -2579,7 +2587,6 @@ declare module Rance {
     }
     var Options: any;
 }
-declare var a: any, b: any, c: any;
 declare module Rance {
     var idGenerators: {
         fleet: number;
@@ -2616,7 +2623,7 @@ declare module Rance {
             independents: Rance.Player;
         };
         public makeMap(playerData: any): Rance.GalaxyMap;
-        public initGame(): Rance.Game;
+        public initGame(): void;
         public initDisplay(): void;
         public initUI(): void;
     }

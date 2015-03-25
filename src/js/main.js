@@ -10873,7 +10873,16 @@ var Rance;
                 }
             },
             setHex: function (e) {
-                var hexString = e.target.value;
+                e.stopPropagation();
+                e.preventDefault();
+                console.log(e.type);
+                var hexString;
+                if (e.type === "paste") {
+                    hexString = e.clipboardData.getData("text");
+                } else {
+                    hexString = e.target.value;
+                }
+
                 if (hexString[0] !== "#") {
                     hexString = "#" + hexString;
                 }
@@ -11040,7 +11049,8 @@ var Rance;
                     type: "string",
                     step: 1,
                     value: this.state.hexString,
-                    onChange: this.setHex
+                    onChange: this.setHex,
+                    onPaste: this.setHex
                 }))));
             }
         });
@@ -11065,6 +11075,15 @@ var Rance;
             componentWillUnmount: function () {
                 document.removeEventListener("click", this.handleClick);
                 this.clearFocusTimerListener();
+            },
+            componentWillReceiveProps: function (newProps) {
+                console.log();
+                if (newProps.color !== this.state.hexColor) {
+                    this.setState({
+                        hexColor: newProps.color,
+                        isNull: newProps.color === null
+                    });
+                }
             },
             handleClick: function (e) {
                 var focusGraceTime = 500;
@@ -11148,6 +11167,11 @@ var Rance;
                 });
             },
             handleSelectEmblem: function (emblemTemplate) {
+                if (this.state.selectedEmblem === emblemTemplate && emblemTemplate !== null) {
+                    this.clearSelectedEmblem();
+                    return;
+                }
+                this.refs.imageUploader.getDOMNode().value = null;
                 this.props.handleSelectEmblem(emblemTemplate);
                 this.setState({ selectedEmblem: emblemTemplate });
             },
@@ -11293,6 +11317,8 @@ var Rance;
                 }
             },
             setForegroundEmblem: function (emblemTemplate) {
+                var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
+
                 var emblem = null;
                 if (emblemTemplate) {
                     emblem = new Rance.Emblem(undefined, 1, emblemTemplate);
@@ -11300,7 +11326,7 @@ var Rance;
 
                 this.state.flag.setForegroundEmblem(emblem);
 
-                if (emblemTemplate) {
+                if (shouldUpdate) {
                     this.handleUpdate();
                 }
             },
@@ -11480,18 +11506,20 @@ var Rance;
                     flagHasCustomImage: false
                 });
             },
-            generateMainColor: function () {
-                if (this.state.subColor === null) {
+            generateMainColor: function (subColor) {
+                if (typeof subColor === "undefined") { subColor = this.state.subColor; }
+                if (subColor === null) {
                     return Rance.generateMainColor();
                 } else {
-                    return Rance.generateSecondaryColor(this.state.subColor);
+                    return Rance.generateSecondaryColor(subColor);
                 }
             },
-            generateSubColor: function () {
-                if (this.state.mainColor === null) {
+            generateSubColor: function (mainColor) {
+                if (typeof mainColor === "undefined") { mainColor = this.state.mainColor; }
+                if (mainColor === null) {
                     return Rance.generateMainColor();
                 } else {
-                    return Rance.generateSecondaryColor(this.state.mainColor);
+                    return Rance.generateSecondaryColor(mainColor);
                 }
             },
             handleSetHuman: function (e) {
@@ -11513,10 +11541,33 @@ var Rance;
                 this.setState({ flagHasCustomImage: Boolean(image) });
             },
             makePlayer: function () {
-                //var player =
+                var player = new Rance.Player(!this.props.isHuman);
+
+                player.color = this.state.mainColor === null ? this.generateMainColor() : this.state.mainColor;
+                player.secondaryColor = this.state.subColor === null ? this.generateSubColor(player.color) : this.state.subColor;
+
+                var flag = this.refs.flagSetter.state.flag;
+
+                player.flag = flag;
+                player.flag.setColorScheme(player.color, player.secondaryColor, flag.tetriaryColor);
+
+                if (this.state.mainColor === null && this.state.subColor === null && !flag.customImage && !flag.foregroundEmblem) {
+                    flag.generateRandom();
+                }
+
+                player.setIcon();
+
+                this.setState({
+                    mainColor: player.color,
+                    subColor: player.secondaryColor
+                });
+
+                return player;
             },
             render: function () {
-                return (React.DOM.div({ className: "player-setup" }, React.DOM.input({
+                return (React.DOM.div({
+                    className: "player-setup" + (this.props.isHuman ? " human-player-setup" : "")
+                }, React.DOM.input({
                     ref: "isHuman",
                     className: "player-setup-is-human",
                     type: "checkbox",
@@ -11531,13 +11582,15 @@ var Rance;
                     onChange: this.setMainColor,
                     setActiveColorPicker: this.props.setActiveColorPicker,
                     generateColor: this.generateMainColor,
-                    flagHasCustomImage: this.state.flagHasCustomImage
+                    flagHasCustomImage: this.state.flagHasCustomImage,
+                    color: this.state.mainColor
                 }), Rance.UIComponents.ColorSetter({
                     ref: "subColor",
                     onChange: this.setSubColor,
                     setActiveColorPicker: this.props.setActiveColorPicker,
                     generateColor: this.generateSubColor,
-                    flagHasCustomImage: this.state.flagHasCustomImage
+                    flagHasCustomImage: this.state.flagHasCustomImage,
+                    color: this.state.subColor
                 }), Rance.UIComponents.FlagSetter({
                     ref: "flagSetter",
                     mainColor: this.state.mainColor,
@@ -11557,8 +11610,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
-        UIComponents.SetupGame = React.createClass({
-            displayName: "SetupGame",
+        UIComponents.SetupGamePlayers = React.createClass({
+            displayName: "SetupGamePlayers",
             getInitialState: function () {
                 this.newPlayerId = 0;
 
@@ -11595,11 +11648,20 @@ var Rance;
 
                 this.setState({ activeColorPicker: colorPicker });
             },
+            makeAllPlayers: function () {
+                var players = [];
+                for (var id in this.refs) {
+                    players.push(this.refs[id].makePlayer());
+                }
+
+                return players;
+            },
             render: function () {
                 var playerSetups = [];
                 for (var i = 0; i < this.state.players.length; i++) {
                     playerSetups.push(Rance.UIComponents.PlayerSetup({
                         key: this.state.players[i],
+                        ref: this.state.players[i],
                         removePlayer: this.removePlayer,
                         setActiveColorPicker: this.setActiveColorPicker,
                         initialName: "Player " + this.state.players[i],
@@ -11607,7 +11669,7 @@ var Rance;
                         setHuman: this.setHumanPlayer
                     }));
                 }
-                return (React.DOM.div({ className: "setup-game" }, React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
+                return (React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
                     className: "player-setup setup-game-players-header"
                 }, React.DOM.div({
                     className: "player-setup-is-human"
@@ -11624,7 +11686,40 @@ var Rance;
                 }, "Remove")), playerSetups, React.DOM.button({
                     className: "player-setup player-setup-add-new",
                     onClick: this.makeNewPlayer
-                }, "Add new player"))));
+                }, "Add new player")));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="setupgameplayers.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.SetupGame = React.createClass({
+            displayName: "SetupGame",
+            startGame: function () {
+                var gameData = {};
+
+                var players = this.refs.players.makeAllPlayers();
+
+                var pirates = new Rance.Player(true);
+                pirates.setupPirates();
+
+                gameData.playerData = {
+                    players: players,
+                    independents: pirates
+                };
+                //app.makeGameFromSetup(gameData);
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "setup-game"
+                }, Rance.UIComponents.SetupGamePlayers({
+                    ref: "players"
+                }), React.DOM.button({
+                    onClick: this.startGame
+                }, "Start game")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13517,10 +13612,25 @@ var Rance;
         }
         MapRenderer.prototype.destroy = function () {
             this.preventRender = true;
+            this.container.renderable = false;
 
             for (var name in this.listeners) {
                 Rance.eventManager.removeEventListener(name, this.listeners[name]);
             }
+
+            this.game = null;
+            this.player = null;
+            this.container = null;
+            this.parent = null;
+            this.occupationShaders = null;
+
+            for (var starId in this.fowSpriteCache) {
+                this.fowSpriteCache[starId].renderable = false;
+                this.fowSpriteCache[starId] = null;
+            }
+
+            this.container.removeChildren();
+            this.parent.removeChild(this.container);
         };
         MapRenderer.prototype.setMap = function (map) {
             this.galaxyMap = map;
@@ -15335,9 +15445,377 @@ var Rance;
     Rance.ShaderManager = ShaderManager;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
+/// <reference path="eventmanager.ts"/>
+/// <reference path="fleet.ts" />
+/// <reference path="star.ts" />
+var Rance;
+(function (Rance) {
+    var PathfindingArrow = (function () {
+        function PathfindingArrow(parentContainer) {
+            this.labelCache = {};
+            this.listeners = {};
+            this.curveStyles = {
+                reachable: {
+                    color: 0xFFFFF0
+                },
+                unreachable: {
+                    color: 0xFF0000
+                }
+            };
+            this.parentContainer = parentContainer;
+            this.container = new PIXI.DisplayObjectContainer();
+            this.parentContainer.addChild(this.container);
+
+            this.addEventListeners();
+        }
+        PathfindingArrow.prototype.destroy = function () {
+            this.active = false;
+
+            this.removeEventListeners();
+
+            this.parentContainer = null;
+            this.container = null;
+            this.currentTarget = null;
+
+            window.clearTimeout(this.clearTargetTimeout);
+            this.selectedFleets = null;
+            this.labelCache = null;
+        };
+        PathfindingArrow.prototype.removeEventListener = function (name) {
+            Rance.eventManager.removeEventListener(name, this.listeners[name]);
+        };
+        PathfindingArrow.prototype.removeEventListeners = function () {
+            for (var name in this.listeners) {
+                this.removeEventListener(name);
+            }
+        };
+        PathfindingArrow.prototype.addEventListener = function (name, handler) {
+            this.listeners[name] = handler;
+
+            Rance.eventManager.addEventListener(name, handler);
+        };
+        PathfindingArrow.prototype.addEventListeners = function () {
+            var self = this;
+
+            this.addEventListener("startPotentialMove", function (e) {
+                self.startMove();
+                if (e.data) {
+                    self.setTarget(e.data);
+                }
+            });
+
+            this.addEventListener("setPotentialMoveTarget", function (e) {
+                self.setTarget(e.data);
+            });
+            this.addEventListener("clearPotentialMoveTarget", function (e) {
+                self.clearTarget();
+            });
+
+            this.addEventListener("endPotentialMove", function (e) {
+                self.endMove();
+            });
+
+            this.addEventListener("mouseUp", function (e) {
+                self.endMove();
+            });
+        };
+
+        PathfindingArrow.prototype.startMove = function () {
+            var fleets = app.playerControl.selectedFleets;
+
+            if (this.active || !fleets || fleets.length < 1) {
+                return;
+            }
+
+            this.active = true;
+            this.currentTarget = null;
+            this.selectedFleets = fleets;
+            this.clearArrows();
+        };
+
+        PathfindingArrow.prototype.setTarget = function (star) {
+            if (!this.active) {
+                return;
+            }
+
+            if (this.clearTargetTimeout) {
+                window.clearTimeout(this.clearTargetTimeout);
+            }
+
+            this.currentTarget = star;
+            this.drawAllCurrentCurves();
+        };
+
+        PathfindingArrow.prototype.clearTarget = function () {
+            if (!this.active) {
+                return;
+            }
+
+            var self = this;
+
+            if (this.clearTargetTimeout) {
+                window.clearTimeout(this.clearTargetTimeout);
+            }
+
+            this.clearTargetTimeout = window.setTimeout(function () {
+                self.currentTarget = null;
+                self.clearArrows();
+                self.clearTargetTimeout = null;
+            }, 10);
+        };
+
+        PathfindingArrow.prototype.endMove = function () {
+            this.active = false;
+            this.currentTarget = null;
+            this.selectedFleets = null;
+            this.clearArrows();
+        };
+
+        PathfindingArrow.prototype.clearArrows = function () {
+            this.container.removeChildren();
+        };
+
+        PathfindingArrow.prototype.makeLabel = function (style, distance) {
+            var textStyle;
+
+            switch (style) {
+                case "reachable": {
+                    textStyle = {
+                        fill: 0xFFFFF0
+                    };
+                    break;
+                }
+                case "unreachable": {
+                    textStyle = {
+                        fill: 0xFF0000
+                    };
+                    break;
+                }
+            }
+
+            if (!this.labelCache[style]) {
+                this.labelCache[style] = {};
+            }
+
+            this.labelCache[style][distance] = new PIXI.Text(distance, textStyle);
+        };
+
+        PathfindingArrow.prototype.getLabel = function (style, distance) {
+            if (!this.labelCache[style] || !this.labelCache[style][distance]) {
+                this.makeLabel(style, distance);
+            }
+
+            return this.labelCache[style][distance];
+        };
+
+        PathfindingArrow.prototype.getAllCurrentPaths = function () {
+            var paths = [];
+
+            for (var i = 0; i < this.selectedFleets.length; i++) {
+                var fleet = this.selectedFleets[i];
+
+                if (fleet.location.id === this.currentTarget.id)
+                    continue;
+
+                var path = fleet.getPathTo(this.currentTarget);
+
+                paths.push({
+                    fleet: fleet,
+                    path: path
+                });
+            }
+
+            return paths;
+        };
+
+        PathfindingArrow.prototype.getAllCurrentCurves = function () {
+            var paths = this.getAllCurrentPaths();
+            var self = this;
+
+            var curves = [];
+
+            var totalPathsPerStar = {};
+            var alreadyVisitedPathsPerStar = {};
+
+            for (var i = 0; i < paths.length; i++) {
+                for (var j = 0; j < paths[i].path.length; j++) {
+                    var star = paths[i].path[j].star;
+
+                    if (!totalPathsPerStar[star.id]) {
+                        totalPathsPerStar[star.id] = 0;
+                        alreadyVisitedPathsPerStar[star.id] = 0;
+                    }
+
+                    totalPathsPerStar[star.id]++;
+                }
+            }
+
+            for (var i = 0; i < paths.length; i++) {
+                var fleet = paths[i].fleet;
+                var path = paths[i].path;
+                var distance = path.length - 1;
+
+                var currentMovePoints = fleet.getMinCurrentMovePoints();
+                var canReach = currentMovePoints >= distance;
+
+                var style = canReach ? "reachable" : "unreachable";
+
+                var stars = path.map(function (pathPoint) {
+                    var star = pathPoint.star;
+                    if (totalPathsPerStar[star.id] > 1 && star !== self.currentTarget) {
+                        var visits = ++alreadyVisitedPathsPerStar[star.id];
+                        return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
+                    } else {
+                        return star;
+                    }
+                });
+                var curveData = this.getCurveData(stars);
+
+                curves.push({
+                    style: style,
+                    curveData: curveData
+                });
+            }
+
+            return curves;
+        };
+
+        PathfindingArrow.prototype.drawAllCurrentCurves = function () {
+            this.clearArrows();
+            var curves = this.getAllCurrentCurves();
+
+            for (var i = 0; i < curves.length; i++) {
+                var curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
+
+                this.container.addChild(curve);
+            }
+        };
+
+        PathfindingArrow.prototype.getCurveData = function (points) {
+            var i6 = 1.0 / 6.0;
+            var path = [];
+            var abababa = [points[0]].concat(points);
+            abababa.push(points[points.length - 1]);
+
+            for (var i = 3, n = abababa.length; i < n; i++) {
+                var p0 = abababa[i - 3];
+                var p1 = abababa[i - 2];
+                var p2 = abababa[i - 1];
+                var p3 = abababa[i];
+
+                path.push([
+                    p2.x * i6 + p1.x - p0.x * i6,
+                    p2.y * i6 + p1.y - p0.y * i6,
+                    p3.x * -i6 + p2.x + p1.x * i6,
+                    p3.y * -i6 + p2.y + p1.y * i6,
+                    p2.x,
+                    p2.y
+                ]);
+            }
+
+            path[0][0] = points[0].x;
+            path[0][1] = points[0].y;
+
+            return path;
+        };
+
+        PathfindingArrow.prototype.drawCurve = function (points, style) {
+            var gfx = new PIXI.Graphics();
+
+            gfx.lineStyle(12, style.color, 0.7);
+            gfx.moveTo(points[0][0], points[0][1]);
+
+            for (var i = 0; i < points.length; i++) {
+                gfx.bezierCurveTo.apply(gfx, points[i]);
+            }
+            gfx.height;
+
+            this.drawArrowHead(gfx, style.color);
+
+            return gfx;
+        };
+        PathfindingArrow.prototype.drawArrowHead = function (gfx, color) {
+            var points = gfx.graphicsData[0].shape.points;
+
+            var x1 = points[points.length - 12];
+            var y1 = points[points.length - 11];
+            var x2 = points[points.length - 2];
+            var y2 = points[points.length - 1];
+
+            var lineAngle = Math.atan2(y2 - y1, x2 - x1);
+            var headLength = 30;
+            var buttAngle = 27 * (Math.PI / 180);
+
+            var hypotenuseLength = Math.abs(headLength / Math.cos(buttAngle));
+
+            var angle1 = lineAngle + Math.PI + buttAngle;
+            var topX = x2 + Math.cos(angle1) * hypotenuseLength;
+            var topY = y2 + Math.sin(angle1) * hypotenuseLength;
+
+            var angle2 = lineAngle + Math.PI - buttAngle;
+            var botX = x2 + Math.cos(angle2) * hypotenuseLength;
+            var botY = y2 + Math.sin(angle2) * hypotenuseLength;
+
+            gfx.lineStyle(null);
+
+            gfx.moveTo(x2, y2);
+            gfx.beginFill(color, 0.7);
+            gfx.lineTo(topX, topY);
+            gfx.lineTo(botX, botY);
+            gfx.lineTo(x2, y2);
+            gfx.endFill();
+
+            var buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
+            var buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
+
+            for (var i = points.length - 1; i >= 0; i -= 2) {
+                var y = points[i];
+                var x = points[i - 1];
+                var distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+
+                if (distance >= headLength + 10) {
+                    points.push(buttMidX);
+                    points.push(buttMidY);
+                    break;
+                } else {
+                    points.pop();
+                    points.pop();
+                }
+            }
+
+            gfx.height;
+        };
+
+        PathfindingArrow.prototype.getTargetOffset = function (target, i, totalPaths, offsetPerOrbit) {
+            var maxPerOrbit = 6;
+
+            var currentOrbit = Math.ceil(i / maxPerOrbit);
+            var isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
+            var pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
+
+            var positionInOrbit = (i - 1) % pathsInCurrentOrbit;
+
+            var distance = currentOrbit * offsetPerOrbit;
+
+            var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
+
+            var x = Math.sin(angle) * distance;
+            var y = Math.cos(angle) * distance;
+
+            return ({
+                x: target.x + x,
+                y: target.y - y
+            });
+        };
+        return PathfindingArrow;
+    })();
+    Rance.PathfindingArrow = PathfindingArrow;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
 /// <reference path="camera.ts"/>
 /// <reference path="mouseeventhandler.ts"/>
 /// <reference path="shadermanager.ts"/>
+/// <reference path="pathfindingarrow.ts"/>
 var Rance;
 (function (Rance) {
     var Renderer = (function () {
@@ -15350,12 +15828,14 @@ var Rance;
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
             this.stage = new PIXI.Stage(0x101060);
-            this.shaderManager = new Rance.ShaderManager();
         }
         Renderer.prototype.init = function () {
+            this.shaderManager = new Rance.ShaderManager();
             this.initLayers();
 
             this.addEventListeners();
+
+            this.stage.renderable = true;
         };
         Renderer.prototype.initRenderer = function () {
             var containerStyle = window.getComputedStyle(this.pixiContainer);
@@ -15365,11 +15845,21 @@ var Rance;
             });
         };
         Renderer.prototype.destroy = function () {
+            this.stage.renderable = false;
             this.pause();
 
             //window.removeEventListener("resize", this.resizeListener);
+            this.pathfindingArrow.destroy();
+            this.pathfindingArrow = null;
+
             this.mouseEventHandler.destroy();
+            this.mouseEventHandler = null;
+
             this.camera.destroy();
+            this.camera = null;
+
+            this.shaderManager.destroy();
+            this.shaderManager = null;
 
             this.layers["bgFilter"].filters = null;
 
@@ -15439,9 +15929,11 @@ var Rance;
                 this.camera.destroy();
             }
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
-            this.camera.toCenterOn = oldToCenterOn;
+            this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
 
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
+
+            this.pathfindingArrow = new Rance.PathfindingArrow(this.layers["select"]);
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
@@ -16096,360 +16588,6 @@ var Rance;
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
         }
     }
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="eventmanager.ts"/>
-/// <reference path="fleet.ts" />
-/// <reference path="star.ts" />
-var Rance;
-(function (Rance) {
-    var PathfindingArrow = (function () {
-        function PathfindingArrow(parentContainer) {
-            this.labelCache = {};
-            this.listeners = {};
-            this.curveStyles = {
-                reachable: {
-                    color: 0xFFFFF0
-                },
-                unreachable: {
-                    color: 0xFF0000
-                }
-            };
-            this.parentContainer = parentContainer;
-            this.container = new PIXI.DisplayObjectContainer();
-            this.parentContainer.addChild(this.container);
-
-            this.addEventListeners();
-        }
-        PathfindingArrow.prototype.removeEventListener = function (name) {
-            Rance.eventManager.removeEventListener(name, this.listeners[name]);
-        };
-        PathfindingArrow.prototype.removeEventListeners = function () {
-            for (var name in this.listeners) {
-                this.removeEventListener(name);
-            }
-        };
-        PathfindingArrow.prototype.addEventListener = function (name, handler) {
-            this.listeners[name] = handler;
-
-            Rance.eventManager.addEventListener(name, handler);
-        };
-        PathfindingArrow.prototype.addEventListeners = function () {
-            var self = this;
-
-            this.addEventListener("startPotentialMove", function (e) {
-                self.startMove();
-                if (e.data) {
-                    self.setTarget(e.data);
-                }
-            });
-
-            this.addEventListener("setPotentialMoveTarget", function (e) {
-                self.setTarget(e.data);
-            });
-            this.addEventListener("clearPotentialMoveTarget", function (e) {
-                self.clearTarget();
-            });
-
-            this.addEventListener("endPotentialMove", function (e) {
-                self.endMove();
-            });
-
-            this.addEventListener("mouseUp", function (e) {
-                self.endMove();
-            });
-        };
-
-        PathfindingArrow.prototype.startMove = function () {
-            var fleets = app.playerControl.selectedFleets;
-
-            if (this.active || !fleets || fleets.length < 1) {
-                return;
-            }
-
-            this.active = true;
-            this.currentTarget = null;
-            this.selectedFleets = fleets;
-            this.clearArrows();
-        };
-
-        PathfindingArrow.prototype.setTarget = function (star) {
-            if (!this.active) {
-                return;
-            }
-
-            if (this.clearTargetTimeout) {
-                window.clearTimeout(this.clearTargetTimeout);
-            }
-
-            this.currentTarget = star;
-            this.drawAllCurrentCurves();
-        };
-
-        PathfindingArrow.prototype.clearTarget = function () {
-            if (!this.active) {
-                return;
-            }
-
-            var self = this;
-
-            if (this.clearTargetTimeout) {
-                window.clearTimeout(this.clearTargetTimeout);
-            }
-
-            this.clearTargetTimeout = window.setTimeout(function () {
-                self.currentTarget = null;
-                self.clearArrows();
-                self.clearTargetTimeout = null;
-            }, 10);
-        };
-
-        PathfindingArrow.prototype.endMove = function () {
-            this.active = false;
-            this.currentTarget = null;
-            this.selectedFleets = null;
-            this.clearArrows();
-        };
-
-        PathfindingArrow.prototype.clearArrows = function () {
-            this.container.removeChildren();
-        };
-
-        PathfindingArrow.prototype.makeLabel = function (style, distance) {
-            var textStyle;
-
-            switch (style) {
-                case "reachable": {
-                    textStyle = {
-                        fill: 0xFFFFF0
-                    };
-                    break;
-                }
-                case "unreachable": {
-                    textStyle = {
-                        fill: 0xFF0000
-                    };
-                    break;
-                }
-            }
-
-            if (!this.labelCache[style]) {
-                this.labelCache[style] = {};
-            }
-
-            this.labelCache[style][distance] = new PIXI.Text(distance, textStyle);
-        };
-
-        PathfindingArrow.prototype.getLabel = function (style, distance) {
-            if (!this.labelCache[style] || !this.labelCache[style][distance]) {
-                this.makeLabel(style, distance);
-            }
-
-            return this.labelCache[style][distance];
-        };
-
-        PathfindingArrow.prototype.getAllCurrentPaths = function () {
-            var paths = [];
-
-            for (var i = 0; i < this.selectedFleets.length; i++) {
-                var fleet = this.selectedFleets[i];
-
-                if (fleet.location.id === this.currentTarget.id)
-                    continue;
-
-                var path = fleet.getPathTo(this.currentTarget);
-
-                paths.push({
-                    fleet: fleet,
-                    path: path
-                });
-            }
-
-            return paths;
-        };
-
-        PathfindingArrow.prototype.getAllCurrentCurves = function () {
-            var paths = this.getAllCurrentPaths();
-            var self = this;
-
-            var curves = [];
-
-            var totalPathsPerStar = {};
-            var alreadyVisitedPathsPerStar = {};
-
-            for (var i = 0; i < paths.length; i++) {
-                for (var j = 0; j < paths[i].path.length; j++) {
-                    var star = paths[i].path[j].star;
-
-                    if (!totalPathsPerStar[star.id]) {
-                        totalPathsPerStar[star.id] = 0;
-                        alreadyVisitedPathsPerStar[star.id] = 0;
-                    }
-
-                    totalPathsPerStar[star.id]++;
-                }
-            }
-
-            for (var i = 0; i < paths.length; i++) {
-                var fleet = paths[i].fleet;
-                var path = paths[i].path;
-                var distance = path.length - 1;
-
-                var currentMovePoints = fleet.getMinCurrentMovePoints();
-                var canReach = currentMovePoints >= distance;
-
-                var style = canReach ? "reachable" : "unreachable";
-
-                var stars = path.map(function (pathPoint) {
-                    var star = pathPoint.star;
-                    if (totalPathsPerStar[star.id] > 1 && star !== self.currentTarget) {
-                        var visits = ++alreadyVisitedPathsPerStar[star.id];
-                        return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
-                    } else {
-                        return star;
-                    }
-                });
-                var curveData = this.getCurveData(stars);
-
-                curves.push({
-                    style: style,
-                    curveData: curveData
-                });
-            }
-
-            return curves;
-        };
-
-        PathfindingArrow.prototype.drawAllCurrentCurves = function () {
-            this.clearArrows();
-            var curves = this.getAllCurrentCurves();
-
-            for (var i = 0; i < curves.length; i++) {
-                var curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
-
-                this.container.addChild(curve);
-            }
-        };
-
-        PathfindingArrow.prototype.getCurveData = function (points) {
-            var i6 = 1.0 / 6.0;
-            var path = [];
-            var abababa = [points[0]].concat(points);
-            abababa.push(points[points.length - 1]);
-
-            for (var i = 3, n = abababa.length; i < n; i++) {
-                var p0 = abababa[i - 3];
-                var p1 = abababa[i - 2];
-                var p2 = abababa[i - 1];
-                var p3 = abababa[i];
-
-                path.push([
-                    p2.x * i6 + p1.x - p0.x * i6,
-                    p2.y * i6 + p1.y - p0.y * i6,
-                    p3.x * -i6 + p2.x + p1.x * i6,
-                    p3.y * -i6 + p2.y + p1.y * i6,
-                    p2.x,
-                    p2.y
-                ]);
-            }
-
-            path[0][0] = points[0].x;
-            path[0][1] = points[0].y;
-
-            return path;
-        };
-
-        PathfindingArrow.prototype.drawCurve = function (points, style) {
-            var gfx = new PIXI.Graphics();
-
-            gfx.lineStyle(12, style.color, 0.7);
-            gfx.moveTo(points[0][0], points[0][1]);
-
-            for (var i = 0; i < points.length; i++) {
-                gfx.bezierCurveTo.apply(gfx, points[i]);
-            }
-            gfx.height;
-
-            this.drawArrowHead(gfx, style.color);
-
-            return gfx;
-        };
-        PathfindingArrow.prototype.drawArrowHead = function (gfx, color) {
-            var points = gfx.graphicsData[0].shape.points;
-
-            var x1 = points[points.length - 12];
-            var y1 = points[points.length - 11];
-            var x2 = points[points.length - 2];
-            var y2 = points[points.length - 1];
-
-            var lineAngle = Math.atan2(y2 - y1, x2 - x1);
-            var headLength = 30;
-            var buttAngle = 27 * (Math.PI / 180);
-
-            var hypotenuseLength = Math.abs(headLength / Math.cos(buttAngle));
-
-            var angle1 = lineAngle + Math.PI + buttAngle;
-            var topX = x2 + Math.cos(angle1) * hypotenuseLength;
-            var topY = y2 + Math.sin(angle1) * hypotenuseLength;
-
-            var angle2 = lineAngle + Math.PI - buttAngle;
-            var botX = x2 + Math.cos(angle2) * hypotenuseLength;
-            var botY = y2 + Math.sin(angle2) * hypotenuseLength;
-
-            gfx.lineStyle(null);
-
-            gfx.moveTo(x2, y2);
-            gfx.beginFill(color, 0.7);
-            gfx.lineTo(topX, topY);
-            gfx.lineTo(botX, botY);
-            gfx.lineTo(x2, y2);
-            gfx.endFill();
-
-            var buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
-            var buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
-
-            for (var i = points.length - 1; i >= 0; i -= 2) {
-                var y = points[i];
-                var x = points[i - 1];
-                var distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
-
-                if (distance >= headLength + 10) {
-                    points.push(buttMidX);
-                    points.push(buttMidY);
-                    break;
-                } else {
-                    points.pop();
-                    points.pop();
-                }
-            }
-
-            gfx.height;
-        };
-
-        PathfindingArrow.prototype.getTargetOffset = function (target, i, totalPaths, offsetPerOrbit) {
-            var maxPerOrbit = 6;
-
-            var currentOrbit = Math.ceil(i / maxPerOrbit);
-            var isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
-            var pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
-
-            var positionInOrbit = (i - 1) % pathsInCurrentOrbit;
-
-            var distance = currentOrbit * offsetPerOrbit;
-
-            var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
-
-            var x = Math.sin(angle) * distance;
-            var y = Math.cos(angle) * distance;
-
-            return ({
-                x: target.x + x,
-                y: target.y - y
-            });
-        };
-        return PathfindingArrow;
-    })();
-    Rance.PathfindingArrow = PathfindingArrow;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -17869,14 +18007,12 @@ var Rance;
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
 /// <reference path="shadermanager.ts"/>
 /// <reference path="mctree.ts"/>
-/// <reference path="pathfindingarrow.ts"/>
 /// <reference path="borderpolygon.ts"/>
 /// <reference path="mapai/mapevaluator.ts"/>
 /// <reference path="mapai/aicontroller.ts"/>
 ///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
-var a, b, c;
 var Rance;
 (function (Rance) {
     Rance.idGenerators = {
@@ -17895,8 +18031,6 @@ var Rance;
             var self = this;
 
             this.seed = Math.random();
-
-            // cool star bg seed 232.0568699.92311426176160617;
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
             this.loader = new Rance.AppLoader(function () {
@@ -17911,18 +18045,24 @@ var Rance;
 
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
-            this.game = this.makeGame();
-            this.initGame();
-            this.initDisplay();
+
             this.initUI();
 
-            // TODO
-            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
-            b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-            c = new Rance.AIController(this.humanPlayer, this.game);
+            this.game = this.makeGame();
+            this.initGame();
+
+            this.initDisplay();
+
+            this.reactUI.render();
         };
         App.prototype.destroy = function () {
+            this.mapRenderer.destroy();
+            this.mapRenderer = null;
+
+            // renderer is kept for reusing the stage as
+            // pixi doesnt like creating more than one
             this.renderer.destroy();
+
             this.reactUI.destroy();
             this.reactUI = null;
         };
@@ -17931,33 +18071,24 @@ var Rance;
             var data = localStorage.getItem(itemName);
             if (!data)
                 return;
+
             var parsed = JSON.parse(data);
-            this.mapRenderer.preventRender = true;
+
+            Rance.idGenerators = Rance.extendObject(parsed.idGenerators);
 
             this.destroy();
 
-            this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
+            this.initUI();
 
+            this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
             this.initGame();
 
+            this.initDisplay();
             if (parsed.cameraLocation) {
                 this.renderer.camera.toCenterOn = parsed.cameraLocation;
             }
 
-            this.mapRenderer.preventRender = false;
-
-            this.mapRenderer.setParent(this.renderer.layers["map"]);
-            this.mapRenderer.setMap(this.game.galaxyMap);
-            this.mapRenderer.setAllLayersAsDirty();
-
-            Rance.idGenerators = Rance.extendObject(parsed.idGenerators);
-
-            // TODO
-            a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
-            b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-            c = new Rance.AIController(this.humanPlayer, this.game);
-
-            this.initUI();
+            this.reactUI.render();
         };
 
         App.prototype.makeGame = function () {
@@ -18001,6 +18132,9 @@ var Rance;
             return galaxyMap;
         };
         App.prototype.initGame = function () {
+            if (!this.game)
+                throw new Error("App tried to init game without " + "having one specified");
+
             this.humanPlayer = this.game.humanPlayer;
             this.humanPlayer.isAI = false;
 
@@ -18016,11 +18150,17 @@ var Rance;
                 }
             }
 
-            return this.game;
+            this.playerControl.reactUI = this.reactUI;
+
+            this.reactUI.player = this.humanPlayer;
+            this.reactUI.galaxyMap = this.game.galaxyMap;
+            this.reactUI.game = this.game;
+            this.reactUI.playerControl = this.playerControl;
         };
         App.prototype.initDisplay = function () {
-            this.renderer = new Rance.Renderer();
+            this.renderer = this.renderer || new Rance.Renderer();
             this.renderer.init();
+            this.reactUI.renderer = this.renderer;
 
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap);
             this.mapRenderer.setParent(this.renderer.layers["map"]);
@@ -18030,14 +18170,6 @@ var Rance;
         };
         App.prototype.initUI = function () {
             var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
-
-            this.playerControl.reactUI = reactUI;
-
-            reactUI.player = this.humanPlayer;
-            reactUI.galaxyMap = this.game.galaxyMap;
-            reactUI.game = this.game;
-            reactUI.renderer = this.renderer;
-            reactUI.playerControl = this.playerControl;
 
             var uriParser = document.createElement("a");
             uriParser.href = document.URL;

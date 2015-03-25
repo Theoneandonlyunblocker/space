@@ -23,7 +23,7 @@ module Rance
           independents: pirates
         }
 
-        app.makeGameFromSetup(gameData);
+        //app.makeGameFromSetup(gameData);
       },
 
       render: function()

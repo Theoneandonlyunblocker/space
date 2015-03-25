@@ -17,7 +17,6 @@
 /// <reference path="shadermanager.ts"/>
 
 /// <reference path="mctree.ts"/>
-/// <reference path="pathfindingarrow.ts"/>
 /// <reference path="borderpolygon.ts"/>
 
 /// <reference path="mapai/mapevaluator.ts"/>
@@ -27,7 +26,6 @@
 /// <reference path="../data/options.ts"/>
 
 
-var a, b, c; // TODO
 module Rance
 {
 
@@ -68,7 +66,6 @@ module Rance
       var self = this;
 
       this.seed = Math.random();
-      // cool star bg seed 232.0568699.92311426176160617;
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
@@ -85,19 +82,25 @@ module Rance
 
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();
-      this.game = this.makeGame();
-      this.initGame();
-      this.initDisplay();
+
       this.initUI();
 
-      // TODO
-      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
-      b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-      c = new Rance.AIController(this.humanPlayer, this.game);
+      this.game = this.makeGame();
+      this.initGame();
+
+      this.initDisplay();
+
+      this.reactUI.render();
     }
     destroy()
     {
+      this.mapRenderer.destroy();
+      this.mapRenderer = null;
+
+      // renderer is kept for reusing the stage as
+      // pixi doesnt like creating more than one
       this.renderer.destroy();
+
       this.reactUI.destroy();
       this.reactUI = null;
     }
@@ -106,34 +109,28 @@ module Rance
       var itemName = "Rance.Save." + saveName;
       var data = localStorage.getItem(itemName);
       if (!data) return;
+
       var parsed = JSON.parse(data);
-      this.mapRenderer.preventRender = true;
+
+      idGenerators = extendObject(parsed.idGenerators);
+
 
       this.destroy();
 
-      this.game = new GameLoader().deserializeGame(parsed.gameData);
 
+      this.initUI();
+
+      this.game = new GameLoader().deserializeGame(parsed.gameData);
       this.initGame();
 
+      this.initDisplay();
       if (parsed.cameraLocation)
       {
         this.renderer.camera.toCenterOn = parsed.cameraLocation;
       }
 
-      this.mapRenderer.preventRender = false;
 
-      this.mapRenderer.setParent(this.renderer.layers["map"]);
-      this.mapRenderer.setMap(this.game.galaxyMap);
-      this.mapRenderer.setAllLayersAsDirty();
-
-      idGenerators = extendObject(parsed.idGenerators);
-
-      // TODO
-      a = new Rance.MapEvaluator(this.game.galaxyMap, this.humanPlayer);
-      b = new Rance.PathfindingArrow(this.renderer.layers["select"]);
-      c = new Rance.AIController(this.humanPlayer, this.game);
-
-      this.initUI();
+      this.reactUI.render();
     }
 
     makeGame()
@@ -183,6 +180,9 @@ module Rance
     }
     initGame()
     {
+      if (!this.game) throw new Error("App tried to init game without " +
+        "having one specified");
+
       this.humanPlayer = this.game.humanPlayer;
       this.humanPlayer.isAI = false;
 
@@ -199,12 +199,18 @@ module Rance
         }
       }
 
-      return this.game;
+      this.playerControl.reactUI = this.reactUI;
+
+      this.reactUI.player = this.humanPlayer;
+      this.reactUI.galaxyMap = this.game.galaxyMap;
+      this.reactUI.game = this.game;
+      this.reactUI.playerControl = this.playerControl;
     }
     initDisplay()
     {
-      this.renderer = new Renderer();
+      this.renderer = this.renderer || new Renderer();
       this.renderer.init();
+      this.reactUI.renderer = this.renderer;
 
       this.mapRenderer = new MapRenderer(this.game.galaxyMap);
       this.mapRenderer.setParent(this.renderer.layers["map"]);
@@ -216,14 +222,6 @@ module Rance
     {
       var reactUI = this.reactUI = new ReactUI(
         document.getElementById("react-container"));
-
-      this.playerControl.reactUI = reactUI;
-
-      reactUI.player = this.humanPlayer;
-      reactUI.galaxyMap = this.game.galaxyMap;
-      reactUI.game = this.game;
-      reactUI.renderer = this.renderer;
-      reactUI.playerControl = this.playerControl;
 
       var uriParser = document.createElement("a");
       uriParser.href = document.URL;
