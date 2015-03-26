@@ -7,6 +7,7 @@
 /// <reference path="item.ts" />
 /// <reference path="battlesimulator.ts" />
 /// <reference path="battleprep.ts" />
+/// <reference path="diplomacystatus.ts" />
 
 /// <reference path="mapai/aicontroller.ts"/>
 
@@ -36,6 +37,8 @@ module Rance
     isAI: boolean = false;
     AIController: AIController;
     isIndependent: boolean = false;
+
+    diplomacyStatus: DiplomacyStatus;
 
     money: number;
     controlledLocations: Star[] = [];
@@ -498,6 +501,8 @@ module Rance
       data.secondaryColor = this.secondaryColor;
       data.isIndependent = this.isIndependent;
       data.isAI = this.isAI;
+
+      data.diplomacyStatus = this.diplomacyStatus.serialize();
 
       if (this.flag)
       {

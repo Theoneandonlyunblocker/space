@@ -17430,7 +17430,7 @@ var Rance;
                 oldToCenterOn = this.camera.toCenterOn;
                 this.camera.destroy();
             }
-            this.camera = new Rance.Camera(this.layers["map"], 0.5);
+            this.camera = new Rance.Camera(this.layers["main"], 0.5);
             this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
 
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
