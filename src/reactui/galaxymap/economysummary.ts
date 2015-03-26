@@ -53,7 +53,6 @@ module Rance
             key: "income",
             defaultOrder: "desc"
           }
-
         ];
 
         return(

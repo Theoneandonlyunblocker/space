@@ -1214,7 +1214,7 @@ progress::-webkit-progress-value {
 .light-box-wrapper {
   position: fixed;
   display: flex;
-  z-index: -10;
+  z-index: 10;
   height: 100%;
   width: 100%;
   top: 2em;

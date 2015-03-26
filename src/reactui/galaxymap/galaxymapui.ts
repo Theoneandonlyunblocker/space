@@ -93,7 +93,8 @@ module Rance
               }),
               UIComponents.TopMenu(
               {
-                player: this.props.player
+                player: this.props.player,
+                game: this.props.game
               }),
               React.DOM.div(
               {
