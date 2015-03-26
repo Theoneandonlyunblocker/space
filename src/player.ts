@@ -6,6 +6,9 @@
 /// <reference path="flag.ts" />
 /// <reference path="item.ts" />
 /// <reference path="battlesimulator.ts" />
+/// <reference path="battleprep.ts" />
+
+/// <reference path="mapai/aicontroller.ts"/>
 
 module Rance
 {

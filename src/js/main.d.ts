@@ -1268,6 +1268,549 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class BattlePrep {
+        public attacker: Rance.Player;
+        public defender: Rance.Player;
+        public battleData: Rance.IBattleData;
+        public attackerFormation: Rance.Unit[][];
+        public defenderFormation: Rance.Unit[][];
+        public availableUnits: Rance.Unit[];
+        public playerFormation: Rance.Unit[][];
+        public humanPlayer: Rance.Player;
+        public enemyFormation: Rance.Unit[][];
+        public enemyPlayer: Rance.Player;
+        public alreadyPlaced: {
+            [id: number]: number[];
+        };
+        constructor(battleData: Rance.IBattleData);
+        public makeEmptyFormation(): Rance.Unit[][];
+        public makeAIFormations(): void;
+        public setupPlayer(): void;
+        public makeAIFormation(units: Rance.Unit[]): Rance.Unit[][];
+        public getUnitPosition(unit: Rance.Unit): number[];
+        public getUnitAtPosition(position: number[]): Rance.Unit;
+        public clearPlayerFormation(): void;
+        public setupPlayerFormation(formation: Rance.Unit[][]): void;
+        public setUnit(unit: Rance.Unit, position: number[]): void;
+        public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
+        public removeUnit(unit: Rance.Unit): void;
+        public humanFormationIsValid(): boolean;
+        public forEachShipInFormation(formation: Rance.Unit[][], operator: (unit: Rance.Unit) => any): void;
+        public makeBattle(): Rance.Battle;
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
+            var defaultMap: {
+                mapOptions: {
+                    width: number;
+                    height: number;
+                };
+                starGeneration: {
+                    galaxyType: string;
+                    totalAmount: number;
+                    arms: number;
+                    centerSize: number;
+                    amountInCenter: number;
+                };
+                relaxation: {
+                    timesToRelax: number;
+                    dampeningFactor: number;
+                };
+            };
+        }
+    }
+}
+declare module Rance {
+    class Triangle {
+        public a: Rance.Point;
+        public b: Rance.Point;
+        public c: Rance.Point;
+        public circumCenterX: number;
+        public circumCenterY: number;
+        public circumRadius: number;
+        constructor(a: Rance.Point, b: Rance.Point, c: Rance.Point);
+        public getPoints(): Rance.Point[];
+        public getCircumCenter(): number[];
+        public calculateCircumCircle(tolerance?: number): void;
+        public circumCircleContainsPoint(point: Rance.Point): boolean;
+        public getEdges(): Rance.Point[][];
+        public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
+    }
+}
+declare module Rance {
+    function triangulate(vertices: Point[]): {
+        triangles: Triangle[];
+        superTriangle: Triangle;
+    };
+    function voronoiFromTriangles(triangles: Triangle[]): any;
+    function getCentroid(vertices: Point[]): Point;
+    function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
+    function pointsEqual(p1: Point, p2: Point): boolean;
+    function edgesEqual(e1: Point[], e2: Point[]): boolean;
+}
+declare module Rance {
+    class MapGen {
+        public maxWidth: number;
+        public maxHeight: number;
+        public points: Rance.Star[];
+        public players: Rance.Player[];
+        public independents: Rance.Player;
+        public regions: {
+            [id: string]: Rance.Region;
+        };
+        public sectors: {
+            [id: number]: Rance.Sector;
+        };
+        public triangles: Rance.Triangle[];
+        public voronoiDiagram: any;
+        public voronoiTreeMap: any;
+        public nonFillerVoronoiLines: {
+            [visibility: string]: any[];
+        };
+        public nonFillerPoints: Rance.Star[];
+        public galaxyConstructors: {
+            [type: string]: (any: any) => Rance.Star[];
+        };
+        public startLocations: Rance.Star[];
+        constructor();
+        public reset(): void;
+        public makeMap(options: {
+            mapOptions: {
+                width: number;
+                height?: number;
+            };
+            starGeneration: {
+                galaxyType: string;
+                totalAmount: number;
+                arms: number;
+                centerSize: number;
+                amountInCenter: number;
+            };
+            relaxation: {
+                timesToRelax: number;
+                dampeningFactor: number;
+            };
+        }): any;
+        public isConnected(): boolean;
+        public setPlayers(): void;
+        public setDistanceFromStartLocations(): void;
+        public setupPirates(): void;
+        public generatePoints(options: {
+            galaxyType: string;
+            totalAmount: number;
+            arms: number;
+            centerSize: number;
+            amountInCenter: number;
+        }): any;
+        public makeRegion(name: string, isFiller: boolean): Rance.Region;
+        public makeSpiralPoints(props: {
+            amountPerArm: number;
+            arms: number;
+            amountInCenter: number;
+            centerSize?: number;
+            armOffsetMax?: number;
+        }): any[];
+        public triangulate(): void;
+        public clearLinks(): void;
+        public makeLinks(): void;
+        public severArmLinks(): void;
+        public makeVoronoi(): void;
+        public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
+        public makeTreeMap(): void;
+        public getVerticesFromCell(cell: any): any[];
+        public relaxPointsOnce(dampeningFactor?: number): void;
+        public relaxPoints(options: {
+            timesToRelax: number;
+            dampeningFactor: number;
+        }): void;
+        public getNonFillerPoints(): Rance.Star[];
+        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
+        public getFurthestPointInRegion(region: Rance.Region): Rance.Star;
+        public partiallyCutConnections(minConnections: number): void;
+        public makeSectors(minSize: number, maxSize: number): {
+            [sectorId: number]: Rance.Sector;
+        };
+        public setResources(): void;
+    }
+}
+declare module Rance {
+    function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
+        [starId: number]: {
+            star: Star;
+            edges: any[];
+        };
+    };
+}
+declare module Rance {
+    interface IMapRendererLayer {
+        drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
+        container: PIXI.DisplayObjectContainer;
+        isDirty: boolean;
+    }
+    interface IMapRendererLayerMapMode {
+        name: string;
+        layers: {
+            layer: IMapRendererLayer;
+        }[];
+    }
+    class MapRenderer {
+        public container: PIXI.DisplayObjectContainer;
+        public parent: PIXI.DisplayObjectContainer;
+        public galaxyMap: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public game: Rance.Game;
+        public occupationShaders: {
+            [ownerId: string]: {
+                [occupierId: string]: any;
+            };
+        };
+        public layers: {
+            [name: string]: IMapRendererLayer;
+        };
+        public mapModes: {
+            [name: string]: IMapRendererLayerMapMode;
+        };
+        public fowTilingSprite: PIXI.TilingSprite;
+        public fowSpriteCache: {
+            [starId: number]: PIXI.Sprite;
+        };
+        public currentMapMode: IMapRendererLayerMapMode;
+        public isDirty: boolean;
+        public preventRender: boolean;
+        public listeners: {
+            [name: string]: any;
+        };
+        constructor(map: Rance.GalaxyMap);
+        public destroy(): void;
+        public setMap(map: Rance.GalaxyMap): void;
+        public init(): void;
+        public addEventListeners(): void;
+        public setPlayer(player: Rance.Player): void;
+        public updateShaderOffsets(x: number, y: number): void;
+        public updateShaderZoom(zoom: number): void;
+        public makeFowSprite(): void;
+        public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
+        public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
+        public initLayers(): void;
+        public initMapModes(): void;
+        public setParent(newParent: PIXI.DisplayObjectContainer): void;
+        public resetContainer(): void;
+        public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
+        public setLayerAsDirty(layerName: string): void;
+        public setAllLayersAsDirty(): void;
+        public drawLayer(layer: IMapRendererLayer): void;
+        public setMapMode(newMapMode: string): void;
+        public render(): void;
+    }
+}
+declare module Rance {
+    class GalaxyMap {
+        public allPoints: Rance.Star[];
+        public stars: Rance.Star[];
+        public sectors: {
+            [sectorId: number]: Rance.Sector;
+        };
+        public regions: {
+            [regionId: string]: Rance.Region;
+        };
+        public mapGen: Rance.MapGen;
+        public mapRenderer: Rance.MapRenderer;
+        public game: Rance.Game;
+        constructor();
+        public setMapGen(mapGen: Rance.MapGen): void;
+        public getIncomeBounds(): {
+            min: any;
+            max: any;
+        };
+        public serialize(): any;
+    }
+}
+declare module Rance {
+    class PlayerControl {
+        public player: Rance.Player;
+        public reactUI: Rance.ReactUI;
+        public selectedFleets: Rance.Fleet[];
+        public currentlyReorganizing: Rance.Fleet[];
+        public currentAttackTargets: any[];
+        public selectedStar: Rance.Star;
+        public preventingGhost: boolean;
+        public listeners: {
+            [listenerName: string]: any;
+        };
+        constructor(player: Rance.Player);
+        public removeEventListener(name: string): void;
+        public removeEventListeners(): void;
+        public addEventListener(name: string, handler: any): void;
+        public addEventListeners(): void;
+        public preventGhost(delay: number): void;
+        public clearSelection(): void;
+        public updateSelection(endReorganizingFleets?: boolean): void;
+        public areAllFleetsInSameLocation(): boolean;
+        public selectFleets(fleets: Rance.Fleet[]): void;
+        public deselectFleet(fleet: Rance.Fleet): void;
+        public getMasterFleetForMerge(): Rance.Fleet;
+        public mergeFleets(): void;
+        public selectStar(star: Rance.Star): void;
+        public moveFleets(star: Rance.Star): void;
+        public splitFleet(fleet: Rance.Fleet): void;
+        public startReorganizingFleets(fleets: Rance.Fleet[]): void;
+        public endReorganizingFleets(): void;
+        public getCurrentAttackTargets(): any[];
+        public attackTarget(target: any): boolean;
+    }
+}
+declare module Rance {
+    class Game {
+        public turnNumber: number;
+        public independents: Rance.Player[];
+        public playerOrder: Rance.Player[];
+        public galaxyMap: Rance.GalaxyMap;
+        public humanPlayer: Rance.Player;
+        public activePlayer: Rance.Player;
+        public playerControl: Rance.PlayerControl;
+        constructor(map: Rance.GalaxyMap, players: Rance.Player[], humanPlayer: Rance.Player);
+        public endTurn(): void;
+        public processPlayerStartTurn(player: Rance.Player): void;
+        public setNextPlayer(): void;
+        public serialize(): any;
+        public save(name: string): void;
+    }
+}
+declare module Rance {
+    var defaultEvaluationParameters: {
+        starDesirability: {
+            neighborRange: number;
+            neighborWeight: number;
+            totalIncomeWeight: number;
+            baseIncomeWeight: number;
+            infrastructureWeight: number;
+            productionWeight: number;
+        };
+    };
+    interface IExpansionTargetEvaluations {
+        [starId: number]: {
+            star: Rance.Star;
+            desirability: number;
+            independentStrength: number;
+            ownInfluence: number;
+        };
+    }
+    class MapEvaluator {
+        public map: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public evaluationParameters: {
+            starDesirability: {
+                neighborRange: number;
+                neighborWeight: number;
+                totalIncomeWeight: number;
+                baseIncomeWeight: number;
+                infrastructureWeight: number;
+                productionWeight: number;
+            };
+        };
+        constructor(map: Rance.GalaxyMap, player: Rance.Player);
+        public evaluateStarIncome(star: Rance.Star): number;
+        public evaluateStarInfrastructure(star: Rance.Star): number;
+        public evaluateStarProduction(star: Rance.Star): number;
+        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
+        public evaluateIndividualStarDesirability(star: Rance.Star): number;
+        public evaluateStarDesirability(star: Rance.Star): number;
+        public evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations;
+        public scoreExpansionTargets(evaluations: IExpansionTargetEvaluations): {
+            star: Rance.Star;
+            score: number;
+        }[];
+        public getScoredExpansionTargets(): {
+            star: Rance.Star;
+            score: number;
+        }[];
+        public getHostileShipsAtStar(star: Rance.Star): {
+            [playerId: number]: Rance.Unit[];
+        };
+        public getHostileStrengthAtStar(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getIndependentStrengthAtStar(star: Rance.Star): number;
+        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
+        public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
+            [playerId: number]: number;
+        };
+        public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
+        public evaluateFleetStrength(fleet: Rance.Fleet): number;
+        public getVisibleFleetsByPlayer(): {
+            [playerId: number]: Rance.Fleet[];
+        };
+        public buildPlayerInfluenceMap(player: Rance.Player): {
+            [starId: number]: number;
+        };
+    }
+}
+declare module Rance {
+    class Objective {
+        public id: number;
+        public type: string;
+        private _basePriority;
+        public priority : number;
+        public isOngoing: boolean;
+        public target: Rance.Star;
+        public data: any;
+        constructor(type: string, priority: number, target: Rance.Star, data?: any);
+    }
+}
+declare module Rance {
+    class ObjectivesAI {
+        public mapEvaluator: Rance.MapEvaluator;
+        public map: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public game: Rance.Game;
+        public objectivesByType: {
+            expansion: any[];
+            heal: any[];
+        };
+        public objectives: Rance.Objective[];
+        public maxActiveExpansionRequests: number;
+        public requests: any[];
+        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
+        public setAllObjectives(): void;
+        public addObjectives(objectives: Rance.Objective[]): void;
+        public getExpansionObjectives(): Rance.Objective[];
+        public getHealObjectives(): Rance.Objective[];
+        public processExpansionObjectives(objectives: Rance.Objective[]): void;
+    }
+}
+declare module Rance {
+    interface IPersonalityData {
+        expansiveness: number;
+        aggressiveness: number;
+        unitCompositionPreference: {
+            [archetype: string]: number;
+        };
+    }
+    module Templates {
+        module Personalities {
+            var testPersonality1: Rance.IPersonalityData;
+        }
+    }
+}
+declare module Rance {
+    class Front {
+        public id: number;
+        public objective: Rance.Objective;
+        public priority: number;
+        public units: Rance.Unit[];
+        public minUnitsDesired: number;
+        public idealUnitsDesired: number;
+        public targetLocation: Rance.Star;
+        public musterLocation: Rance.Star;
+        public hasMustered: boolean;
+        constructor(props: {
+            id: number;
+            objective: Rance.Objective;
+            priority: number;
+            units?: Rance.Unit[];
+            minUnitsDesired: number;
+            idealUnitsDesired: number;
+            targetLocation: Rance.Star;
+            musterLocation: Rance.Star;
+        });
+        public organizeFleets(): void;
+        public isFleetPure(fleet: Rance.Fleet): boolean;
+        public getAssociatedFleets(): Rance.Fleet[];
+        public getUnitIndex(unit: Rance.Unit): number;
+        public addUnit(unit: Rance.Unit): void;
+        public removeUnit(unit: Rance.Unit): void;
+        public getUnitCountByArchetype(): {
+            [archetype: string]: number;
+        };
+        public getUnitsByLocation(): {
+            [starId: number]: Rance.Unit[];
+        };
+        public moveFleets(afterMoveCallback: any): void;
+        public healMoveRoutine(afterMoveCallback: any): void;
+        public defaultMoveRoutine(afterMoveCallback: any): void;
+        public executeAction(afterExecutedCallback: any): void;
+    }
+}
+declare module Rance {
+    class FrontsAI {
+        public player: Rance.Player;
+        public map: Rance.GalaxyMap;
+        public mapEvaluator: Rance.MapEvaluator;
+        public objectivesAI: Rance.ObjectivesAI;
+        public personality: Rance.IPersonalityData;
+        public fronts: Rance.Front[];
+        public frontsRequestingUnits: Rance.Front[];
+        public frontsToMove: Rance.Front[];
+        constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI, personality: Rance.IPersonalityData);
+        public getTotalUnitCountByArchetype(): {};
+        public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
+            [archetype: string]: number;
+        };
+        public getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
+            [archetype: string]: number;
+        };
+        public getGlobalUnitArcheypeScores(): {
+            [archetype: string]: number;
+        };
+        public getFrontUnitArchetypeScores(front: Rance.Front): {
+            [archetype: string]: number;
+        };
+        public scoreUnitFitForFront(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
+        public getHealUnitFitScore(unit: Rance.Unit, front: Rance.Front): number;
+        public getDefaultUnitFitScore(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
+        public getUnitScoresForFront(units: Rance.Unit[], front: Rance.Front): {
+            unit: Rance.Unit;
+            score: number;
+            front: Rance.Front;
+        }[];
+        public assignUnits(): void;
+        public getFrontWithId(id: number): Rance.Front;
+        public createFront(objective: Rance.Objective): Rance.Front;
+        public removeInactiveFronts(): void;
+        public formFronts(): void;
+        public organizeFleets(): void;
+        public setFrontsToMove(): void;
+        public moveFleets(afterMovingAllCallback: any): void;
+        public getUnitsToFillObjective(objective: Rance.Objective): number;
+        public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
+        public setUnitRequests(): void;
+    }
+}
+declare module Rance {
+    class EconomicAI {
+        public objectivesAI: Rance.ObjectivesAI;
+        public frontsAI: Rance.FrontsAI;
+        public mapEvaluator: Rance.MapEvaluator;
+        public player: Rance.Player;
+        public personality: Rance.IPersonalityData;
+        constructor(props: {
+            objectivesAI: Rance.ObjectivesAI;
+            frontsAI: Rance.FrontsAI;
+            mapEvaluator: Rance.MapEvaluator;
+            personality: Rance.IPersonalityData;
+        });
+        public satisfyAllRequests(): void;
+        public satisfyFrontRequest(front: Rance.Front): void;
+    }
+}
+declare module Rance {
+    class AIController {
+        public player: Rance.Player;
+        public game: Rance.Game;
+        public personality: Rance.IPersonalityData;
+        public map: Rance.GalaxyMap;
+        public mapEvaluator: Rance.MapEvaluator;
+        public objectivesAI: Rance.ObjectivesAI;
+        public economicAI: Rance.EconomicAI;
+        public frontsAI: Rance.FrontsAI;
+        constructor(player: Rance.Player, game: Rance.Game);
+        public processTurn(afterFinishedCallback?: any): void;
+        public finishMovingFleets(afterFinishedCallback?: any): void;
+    }
+}
+declare module Rance {
     class Player {
         public id: number;
         public name: string;
@@ -1652,292 +2195,6 @@ declare module Rance {
         public render(): void;
     }
 }
-declare module Rance {
-    class PlayerControl {
-        public player: Rance.Player;
-        public reactUI: Rance.ReactUI;
-        public selectedFleets: Rance.Fleet[];
-        public currentlyReorganizing: Rance.Fleet[];
-        public currentAttackTargets: any[];
-        public selectedStar: Rance.Star;
-        public preventingGhost: boolean;
-        public listeners: {
-            [listenerName: string]: any;
-        };
-        constructor(player: Rance.Player);
-        public removeEventListener(name: string): void;
-        public removeEventListeners(): void;
-        public addEventListener(name: string, handler: any): void;
-        public addEventListeners(): void;
-        public preventGhost(delay: number): void;
-        public clearSelection(): void;
-        public updateSelection(endReorganizingFleets?: boolean): void;
-        public areAllFleetsInSameLocation(): boolean;
-        public selectFleets(fleets: Rance.Fleet[]): void;
-        public deselectFleet(fleet: Rance.Fleet): void;
-        public getMasterFleetForMerge(): Rance.Fleet;
-        public mergeFleets(): void;
-        public selectStar(star: Rance.Star): void;
-        public moveFleets(star: Rance.Star): void;
-        public splitFleet(fleet: Rance.Fleet): void;
-        public startReorganizingFleets(fleets: Rance.Fleet[]): void;
-        public endReorganizingFleets(): void;
-        public getCurrentAttackTargets(): any[];
-        public attackTarget(target: any): boolean;
-    }
-}
-declare module Rance {
-    class BattlePrep {
-        public attacker: Rance.Player;
-        public defender: Rance.Player;
-        public battleData: Rance.IBattleData;
-        public attackerFormation: Rance.Unit[][];
-        public defenderFormation: Rance.Unit[][];
-        public availableUnits: Rance.Unit[];
-        public playerFormation: Rance.Unit[][];
-        public humanPlayer: Rance.Player;
-        public enemyFormation: Rance.Unit[][];
-        public enemyPlayer: Rance.Player;
-        public alreadyPlaced: {
-            [id: number]: number[];
-        };
-        constructor(battleData: Rance.IBattleData);
-        public makeEmptyFormation(): Rance.Unit[][];
-        public makeAIFormations(): void;
-        public setupPlayer(): void;
-        public makeAIFormation(units: Rance.Unit[]): Rance.Unit[][];
-        public getUnitPosition(unit: Rance.Unit): number[];
-        public getUnitAtPosition(position: number[]): Rance.Unit;
-        public clearPlayerFormation(): void;
-        public setupPlayerFormation(formation: Rance.Unit[][]): void;
-        public setUnit(unit: Rance.Unit, position: number[]): void;
-        public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
-        public removeUnit(unit: Rance.Unit): void;
-        public humanFormationIsValid(): boolean;
-        public forEachShipInFormation(formation: Rance.Unit[][], operator: (unit: Rance.Unit) => any): void;
-        public makeBattle(): Rance.Battle;
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            var defaultMap: {
-                mapOptions: {
-                    width: number;
-                    height: number;
-                };
-                starGeneration: {
-                    galaxyType: string;
-                    totalAmount: number;
-                    arms: number;
-                    centerSize: number;
-                    amountInCenter: number;
-                };
-                relaxation: {
-                    timesToRelax: number;
-                    dampeningFactor: number;
-                };
-            };
-        }
-    }
-}
-declare module Rance {
-    class Triangle {
-        public a: Rance.Point;
-        public b: Rance.Point;
-        public c: Rance.Point;
-        public circumCenterX: number;
-        public circumCenterY: number;
-        public circumRadius: number;
-        constructor(a: Rance.Point, b: Rance.Point, c: Rance.Point);
-        public getPoints(): Rance.Point[];
-        public getCircumCenter(): number[];
-        public calculateCircumCircle(tolerance?: number): void;
-        public circumCircleContainsPoint(point: Rance.Point): boolean;
-        public getEdges(): Rance.Point[][];
-        public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
-    }
-}
-declare module Rance {
-    function triangulate(vertices: Point[]): {
-        triangles: Triangle[];
-        superTriangle: Triangle;
-    };
-    function voronoiFromTriangles(triangles: Triangle[]): any;
-    function getCentroid(vertices: Point[]): Point;
-    function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
-    function pointsEqual(p1: Point, p2: Point): boolean;
-    function edgesEqual(e1: Point[], e2: Point[]): boolean;
-}
-declare module Rance {
-    class MapGen {
-        public maxWidth: number;
-        public maxHeight: number;
-        public points: Rance.Star[];
-        public players: Rance.Player[];
-        public independents: Rance.Player;
-        public regions: {
-            [id: string]: Rance.Region;
-        };
-        public sectors: {
-            [id: number]: Rance.Sector;
-        };
-        public triangles: Rance.Triangle[];
-        public voronoiDiagram: any;
-        public voronoiTreeMap: any;
-        public nonFillerVoronoiLines: {
-            [visibility: string]: any[];
-        };
-        public nonFillerPoints: Rance.Star[];
-        public galaxyConstructors: {
-            [type: string]: (any: any) => Rance.Star[];
-        };
-        public startLocations: Rance.Star[];
-        constructor();
-        public reset(): void;
-        public makeMap(options: {
-            mapOptions: {
-                width: number;
-                height?: number;
-            };
-            starGeneration: {
-                galaxyType: string;
-                totalAmount: number;
-                arms: number;
-                centerSize: number;
-                amountInCenter: number;
-            };
-            relaxation: {
-                timesToRelax: number;
-                dampeningFactor: number;
-            };
-        }): any;
-        public isConnected(): boolean;
-        public setPlayers(): void;
-        public setDistanceFromStartLocations(): void;
-        public setupPirates(): void;
-        public generatePoints(options: {
-            galaxyType: string;
-            totalAmount: number;
-            arms: number;
-            centerSize: number;
-            amountInCenter: number;
-        }): any;
-        public makeRegion(name: string, isFiller: boolean): Rance.Region;
-        public makeSpiralPoints(props: {
-            amountPerArm: number;
-            arms: number;
-            amountInCenter: number;
-            centerSize?: number;
-            armOffsetMax?: number;
-        }): any[];
-        public triangulate(): void;
-        public clearLinks(): void;
-        public makeLinks(): void;
-        public severArmLinks(): void;
-        public makeVoronoi(): void;
-        public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
-        public makeTreeMap(): void;
-        public getVerticesFromCell(cell: any): any[];
-        public relaxPointsOnce(dampeningFactor?: number): void;
-        public relaxPoints(options: {
-            timesToRelax: number;
-            dampeningFactor: number;
-        }): void;
-        public getNonFillerPoints(): Rance.Star[];
-        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
-        public getFurthestPointInRegion(region: Rance.Region): Rance.Star;
-        public partiallyCutConnections(minConnections: number): void;
-        public makeSectors(minSize: number, maxSize: number): {
-            [sectorId: number]: Rance.Sector;
-        };
-        public setResources(): void;
-    }
-}
-declare module Rance {
-    interface IMapRendererLayer {
-        drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
-        container: PIXI.DisplayObjectContainer;
-        isDirty: boolean;
-    }
-    interface IMapRendererLayerMapMode {
-        name: string;
-        layers: {
-            layer: IMapRendererLayer;
-        }[];
-    }
-    class MapRenderer {
-        public container: PIXI.DisplayObjectContainer;
-        public parent: PIXI.DisplayObjectContainer;
-        public galaxyMap: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public occupationShaders: {
-            [ownerId: string]: {
-                [occupierId: string]: any;
-            };
-        };
-        public layers: {
-            [name: string]: IMapRendererLayer;
-        };
-        public mapModes: {
-            [name: string]: IMapRendererLayerMapMode;
-        };
-        public fowTilingSprite: PIXI.TilingSprite;
-        public fowSpriteCache: {
-            [starId: number]: PIXI.Sprite;
-        };
-        public currentMapMode: IMapRendererLayerMapMode;
-        public isDirty: boolean;
-        public preventRender: boolean;
-        public listeners: {
-            [name: string]: any;
-        };
-        constructor(map: Rance.GalaxyMap);
-        public destroy(): void;
-        public setMap(map: Rance.GalaxyMap): void;
-        public init(): void;
-        public addEventListeners(): void;
-        public setPlayer(player: Rance.Player): void;
-        public updateShaderOffsets(x: number, y: number): void;
-        public updateShaderZoom(zoom: number): void;
-        public makeFowSprite(): void;
-        public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
-        public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
-        public initLayers(): void;
-        public initMapModes(): void;
-        public setParent(newParent: PIXI.DisplayObjectContainer): void;
-        public resetContainer(): void;
-        public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
-        public setLayerAsDirty(layerName: string): void;
-        public setAllLayersAsDirty(): void;
-        public drawLayer(layer: IMapRendererLayer): void;
-        public setMapMode(newMapMode: string): void;
-        public render(): void;
-    }
-}
-declare module Rance {
-    class GalaxyMap {
-        public allPoints: Rance.Star[];
-        public stars: Rance.Star[];
-        public sectors: {
-            [sectorId: number]: Rance.Sector;
-        };
-        public regions: {
-            [regionId: string]: Rance.Region;
-        };
-        public mapGen: Rance.MapGen;
-        public mapRenderer: Rance.MapRenderer;
-        public game: Rance.Game;
-        constructor();
-        public setMapGen(mapGen: Rance.MapGen): void;
-        public getIncomeBounds(): {
-            min: any;
-            max: any;
-        };
-        public serialize(): any;
-    }
-}
 declare var tempCameraId: number;
 declare module Rance {
     /**
@@ -2230,23 +2487,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class Game {
-        public turnNumber: number;
-        public independents: Rance.Player[];
-        public playerOrder: Rance.Player[];
-        public galaxyMap: Rance.GalaxyMap;
-        public humanPlayer: Rance.Player;
-        public activePlayer: Rance.Player;
-        public playerControl: Rance.PlayerControl;
-        constructor(map: Rance.GalaxyMap, players: Rance.Player[], humanPlayer: Rance.Player);
-        public endTurn(): void;
-        public processPlayerStartTurn(player: Rance.Player): void;
-        public setNextPlayer(): void;
-        public serialize(): any;
-        public save(name: string): void;
-    }
-}
-declare module Rance {
     interface ISpritesheetData {
         frames: {
             [id: string]: {
@@ -2329,246 +2569,6 @@ declare module Rance {
     function setAllDynamicTemplateProperties(): void;
 }
 declare module Rance {
-    function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
-        [starId: number]: {
-            star: Star;
-            edges: any[];
-        };
-    };
-}
-declare module Rance {
-    var defaultEvaluationParameters: {
-        starDesirability: {
-            neighborRange: number;
-            neighborWeight: number;
-            totalIncomeWeight: number;
-            baseIncomeWeight: number;
-            infrastructureWeight: number;
-            productionWeight: number;
-        };
-    };
-    interface IExpansionTargetEvaluations {
-        [starId: number]: {
-            star: Rance.Star;
-            desirability: number;
-            independentStrength: number;
-            ownInfluence: number;
-        };
-    }
-    class MapEvaluator {
-        public map: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public evaluationParameters: {
-            starDesirability: {
-                neighborRange: number;
-                neighborWeight: number;
-                totalIncomeWeight: number;
-                baseIncomeWeight: number;
-                infrastructureWeight: number;
-                productionWeight: number;
-            };
-        };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player);
-        public evaluateStarIncome(star: Rance.Star): number;
-        public evaluateStarInfrastructure(star: Rance.Star): number;
-        public evaluateStarProduction(star: Rance.Star): number;
-        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
-        public evaluateIndividualStarDesirability(star: Rance.Star): number;
-        public evaluateStarDesirability(star: Rance.Star): number;
-        public evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations;
-        public scoreExpansionTargets(evaluations: IExpansionTargetEvaluations): {
-            star: Rance.Star;
-            score: number;
-        }[];
-        public getScoredExpansionTargets(): {
-            star: Rance.Star;
-            score: number;
-        }[];
-        public getHostileShipsAtStar(star: Rance.Star): {
-            [playerId: number]: Rance.Unit[];
-        };
-        public getHostileStrengthAtStar(star: Rance.Star): {
-            [playerId: number]: number;
-        };
-        public getIndependentStrengthAtStar(star: Rance.Star): number;
-        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
-        public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
-            [playerId: number]: number;
-        };
-        public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
-        public evaluateFleetStrength(fleet: Rance.Fleet): number;
-        public getVisibleFleetsByPlayer(): {
-            [playerId: number]: Rance.Fleet[];
-        };
-        public buildPlayerInfluenceMap(player: Rance.Player): {
-            [starId: number]: number;
-        };
-    }
-}
-declare module Rance {
-    class Objective {
-        public id: number;
-        public type: string;
-        private _basePriority;
-        public priority : number;
-        public isOngoing: boolean;
-        public target: Rance.Star;
-        public data: any;
-        constructor(type: string, priority: number, target: Rance.Star, data?: any);
-    }
-}
-declare module Rance {
-    class ObjectivesAI {
-        public mapEvaluator: Rance.MapEvaluator;
-        public map: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public objectivesByType: {
-            expansion: any[];
-            heal: any[];
-        };
-        public objectives: Rance.Objective[];
-        public maxActiveExpansionRequests: number;
-        public requests: any[];
-        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
-        public setAllObjectives(): void;
-        public addObjectives(objectives: Rance.Objective[]): void;
-        public getExpansionObjectives(): Rance.Objective[];
-        public getHealObjectives(): Rance.Objective[];
-        public processExpansionObjectives(objectives: Rance.Objective[]): void;
-    }
-}
-declare module Rance {
-    interface IPersonalityData {
-        expansiveness: number;
-        aggressiveness: number;
-        unitCompositionPreference: {
-            [archetype: string]: number;
-        };
-    }
-    module Templates {
-        module Personalities {
-            var testPersonality1: Rance.IPersonalityData;
-        }
-    }
-}
-declare module Rance {
-    class Front {
-        public id: number;
-        public objective: Rance.Objective;
-        public priority: number;
-        public units: Rance.Unit[];
-        public minUnitsDesired: number;
-        public idealUnitsDesired: number;
-        public targetLocation: Rance.Star;
-        public musterLocation: Rance.Star;
-        public hasMustered: boolean;
-        constructor(props: {
-            id: number;
-            objective: Rance.Objective;
-            priority: number;
-            units?: Rance.Unit[];
-            minUnitsDesired: number;
-            idealUnitsDesired: number;
-            targetLocation: Rance.Star;
-            musterLocation: Rance.Star;
-        });
-        public organizeFleets(): void;
-        public isFleetPure(fleet: Rance.Fleet): boolean;
-        public getAssociatedFleets(): Rance.Fleet[];
-        public getUnitIndex(unit: Rance.Unit): number;
-        public addUnit(unit: Rance.Unit): void;
-        public removeUnit(unit: Rance.Unit): void;
-        public getUnitCountByArchetype(): {
-            [archetype: string]: number;
-        };
-        public getUnitsByLocation(): {
-            [starId: number]: Rance.Unit[];
-        };
-        public moveFleets(afterMoveCallback: any): void;
-        public healMoveRoutine(afterMoveCallback: any): void;
-        public defaultMoveRoutine(afterMoveCallback: any): void;
-        public executeAction(afterExecutedCallback: any): void;
-    }
-}
-declare module Rance {
-    class FrontsAI {
-        public player: Rance.Player;
-        public map: Rance.GalaxyMap;
-        public mapEvaluator: Rance.MapEvaluator;
-        public objectivesAI: Rance.ObjectivesAI;
-        public personality: Rance.IPersonalityData;
-        public fronts: Rance.Front[];
-        public frontsRequestingUnits: Rance.Front[];
-        public frontsToMove: Rance.Front[];
-        constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI, personality: Rance.IPersonalityData);
-        public getTotalUnitCountByArchetype(): {};
-        public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
-            [archetype: string]: number;
-        };
-        public getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
-            [archetype: string]: number;
-        };
-        public getGlobalUnitArcheypeScores(): {
-            [archetype: string]: number;
-        };
-        public getFrontUnitArchetypeScores(front: Rance.Front): {
-            [archetype: string]: number;
-        };
-        public scoreUnitFitForFront(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
-        public getHealUnitFitScore(unit: Rance.Unit, front: Rance.Front): number;
-        public getDefaultUnitFitScore(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
-        public getUnitScoresForFront(units: Rance.Unit[], front: Rance.Front): {
-            unit: Rance.Unit;
-            score: number;
-            front: Rance.Front;
-        }[];
-        public assignUnits(): void;
-        public getFrontWithId(id: number): Rance.Front;
-        public createFront(objective: Rance.Objective): Rance.Front;
-        public removeInactiveFronts(): void;
-        public formFronts(): void;
-        public organizeFleets(): void;
-        public setFrontsToMove(): void;
-        public moveFleets(afterMovingAllCallback: any): void;
-        public getUnitsToFillObjective(objective: Rance.Objective): number;
-        public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
-        public setUnitRequests(): void;
-    }
-}
-declare module Rance {
-    class EconomicAI {
-        public objectivesAI: Rance.ObjectivesAI;
-        public frontsAI: Rance.FrontsAI;
-        public mapEvaluator: Rance.MapEvaluator;
-        public player: Rance.Player;
-        public personality: Rance.IPersonalityData;
-        constructor(props: {
-            objectivesAI: Rance.ObjectivesAI;
-            frontsAI: Rance.FrontsAI;
-            mapEvaluator: Rance.MapEvaluator;
-            personality: Rance.IPersonalityData;
-        });
-        public satisfyAllRequests(): void;
-        public satisfyFrontRequest(front: Rance.Front): void;
-    }
-}
-declare module Rance {
-    class AIController {
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public personality: Rance.IPersonalityData;
-        public map: Rance.GalaxyMap;
-        public mapEvaluator: Rance.MapEvaluator;
-        public objectivesAI: Rance.ObjectivesAI;
-        public economicAI: Rance.EconomicAI;
-        public frontsAI: Rance.FrontsAI;
-        constructor(player: Rance.Player, game: Rance.Game);
-        public processTurn(afterFinishedCallback?: any): void;
-        public finishMovingFleets(afterFinishedCallback?: any): void;
-    }
-}
-declare module Rance {
     module Tutorials {
         var uiTutorial: {
             pages: {}[];
@@ -2617,7 +2617,8 @@ declare module Rance {
         public makeApp(): void;
         public destroy(): void;
         public load(saveName: string): void;
-        public makeGame(): Rance.Game;
+        public makeGameFromSetup(gameData: any): void;
+        public makeGame(playerData?: any): Rance.Game;
         public makePlayers(): {
             players: any[];
             independents: Rance.Player;
@@ -2626,6 +2627,7 @@ declare module Rance {
         public initGame(): void;
         public initDisplay(): void;
         public initUI(): void;
+        public setInitialScene(): void;
     }
 }
 declare var app: Rance.App;

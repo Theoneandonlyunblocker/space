@@ -1,5 +1,5 @@
-// handles assignment of all dynamic properties for templates
-
+/// <reference path="../src/utility.ts" />
+/// <reference path="../src/unit.ts" />
 
 /// <reference path="templates/abilitytemplates.ts" />
 

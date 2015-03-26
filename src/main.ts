@@ -1,8 +1,6 @@
 /// <reference path="reactui/reactui.ts"/>
-/// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
-/// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
@@ -14,14 +12,6 @@
 
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
 
-/// <reference path="shadermanager.ts"/>
-
-/// <reference path="mctree.ts"/>
-/// <reference path="borderpolygon.ts"/>
-
-/// <reference path="mapai/mapevaluator.ts"/>
-/// <reference path="mapai/aicontroller.ts"/>
-/// 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
 
@@ -84,25 +74,42 @@ module Rance
       this.itemGenerator = new ItemGenerator();
 
       this.initUI();
+      this.setInitialScene();
 
-      this.game = this.makeGame();
-      this.initGame();
+      if (this.reactUI.currentScene === "galaxyMap")
+      {
+        this.game = this.makeGame();
+        this.initGame();
 
-      this.initDisplay();
+        this.initDisplay();
+      }
+
 
       this.reactUI.render();
     }
     destroy()
     {
-      this.mapRenderer.destroy();
-      this.mapRenderer = null;
+      if (this.mapRenderer)
+      {
+        this.mapRenderer.destroy();
+        this.mapRenderer = null;
+      }
 
-      // renderer is kept for reusing the stage as
-      // pixi doesnt like creating more than one
-      this.renderer.destroy();
-
-      this.reactUI.destroy();
-      this.reactUI = null;
+      // renderer is reused as pixi doesnt like creating
+      // more than 1 stage or renderer
+      // 
+      // renderer.destroy() just destroys peripheral stuff and
+      // prevents rendering until it's initialized again
+      if (this.renderer)
+      {
+        this.renderer.destroy();
+      }
+      
+      if (this.reactUI)
+      {
+        this.reactUI.destroy();
+        this.reactUI = null;
+      }
     }
     load(saveName: string)
     {
@@ -130,12 +137,26 @@ module Rance
       }
 
 
-      this.reactUI.render();
+      this.reactUI.switchScene("galaxyMap");
     }
 
-    makeGame()
+    makeGameFromSetup(gameData)
     {
-      var playerData = this.makePlayers();
+      this.destroy();
+
+      this.initUI();
+
+      this.game = this.makeGame(gameData.playerData);
+      this.initGame();
+
+      this.initDisplay();
+
+      this.reactUI.switchScene("galaxyMap");
+    }
+
+    makeGame(playerData?)
+    {
+      var playerData = playerData || this.makePlayers();
       var players = playerData.players;
       var independents = playerData.independents;
       var map = this.makeMap(playerData);
@@ -215,14 +236,17 @@ module Rance
       this.mapRenderer = new MapRenderer(this.game.galaxyMap);
       this.mapRenderer.setParent(this.renderer.layers["map"]);
       this.mapRenderer.init();
+
       // some initialization is done when the react component owning the
       // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
     }
     initUI()
     {
-      var reactUI = this.reactUI = new ReactUI(
+      this.reactUI = new ReactUI(
         document.getElementById("react-container"));
-
+    }
+    setInitialScene()
+    {
       var uriParser = document.createElement("a");
       uriParser.href = document.URL;
       var hash = uriParser.hash;
@@ -235,12 +259,12 @@ module Rance
         }
         else
         {
-          reactUI.currentScene = hash.slice(1);
+          this.reactUI.currentScene = hash.slice(1);
         }
       }
       else
       {
-        reactUI.currentScene = "galaxyMap";
+        this.reactUI.currentScene = "galaxyMap";
       }
     }
   }

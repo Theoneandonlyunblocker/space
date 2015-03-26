@@ -58,17 +58,29 @@ module Rance
       this.stage.renderable = false;
       this.pause();
 
-      this.pathfindingArrow.destroy();
-      this.pathfindingArrow = null;
+      if (this.pathfindingArrow)
+      {
+        this.pathfindingArrow.destroy();
+        this.pathfindingArrow = null;
+      }
 
-      this.mouseEventHandler.destroy();
-      this.mouseEventHandler = null;
+      if (this.mouseEventHandler)
+      {
+        this.mouseEventHandler.destroy();
+        this.mouseEventHandler = null;
+      }
 
-      this.camera.destroy();
-      this.camera = null;
+      if (this.camera)
+      {
+        this.camera.destroy();
+        this.camera = null;
+      }
 
-      this.shaderManager.destroy();
-      this.shaderManager = null;
+      if (this.shaderManager)
+      {
+        this.shaderManager.destroy();
+        this.shaderManager = null;
+      }
 
 
       this.layers["bgFilter"].filters = null;
@@ -78,7 +90,7 @@ module Rance
     }
     removeRendererView()
     {
-      if (this.renderer.view.parentNode)
+      if (this.renderer && this.renderer.view.parentNode)
       {
         this.renderer.view.parentNode.removeChild(this.renderer.view);
       }

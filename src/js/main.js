@@ -8616,6 +8616,4013 @@ var Rance;
     Rance.BattleSimulator = BattleSimulator;
 })(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
+/// <reference path="player.ts"/>
+/// <reference path="battle.ts"/>
+/// <reference path="battledata.ts"/>
+var Rance;
+(function (Rance) {
+    var BattlePrep = (function () {
+        function BattlePrep(battleData) {
+            this.alreadyPlaced = {};
+            this.attacker = battleData.attacker.player;
+            this.defender = battleData.defender.player;
+            this.battleData = battleData;
+
+            this.makeAIFormations();
+
+            this.setupPlayer();
+        }
+        BattlePrep.prototype.makeEmptyFormation = function () {
+            var COLUMNS_PER_FORMATION = 2;
+            var SHIPS_PER_COLUMN = 3;
+
+            var formation = [];
+            for (var i = 0; i < COLUMNS_PER_FORMATION; i++) {
+                var column = [];
+                for (var j = 0; j < SHIPS_PER_COLUMN; j++) {
+                    column.push(null);
+                }
+                formation.push(column);
+            }
+
+            return formation;
+        };
+
+        BattlePrep.prototype.makeAIFormations = function () {
+            if (this.attacker.isAI) {
+                this.attackerFormation = this.makeAIFormation(this.battleData.attacker.ships);
+            }
+            if (this.defender.isAI) {
+                this.defenderFormation = this.makeAIFormation(this.battleData.defender.ships);
+            }
+        };
+
+        BattlePrep.prototype.setupPlayer = function () {
+            if (!this.attacker.isAI) {
+                this.availableUnits = this.battleData.attacker.ships;
+                this.attackerFormation = this.makeEmptyFormation();
+                this.playerFormation = this.attackerFormation;
+                this.enemyFormation = this.defenderFormation;
+                this.humanPlayer = this.attacker;
+                this.enemyPlayer = this.defender;
+            } else if (!this.defender.isAI) {
+                this.availableUnits = this.battleData.defender.ships;
+                this.defenderFormation = this.makeEmptyFormation();
+                this.playerFormation = this.attackerFormation;
+                this.enemyFormation = this.attackerFormation;
+                this.humanPlayer = this.defender;
+                this.enemyPlayer = this.attacker;
+            }
+        };
+
+        BattlePrep.prototype.makeAIFormation = function (units) {
+            var MAX_UNITS_PER_SIDE = 6;
+            var MAX_UNITS_PER_ROW = 3;
+
+            var formation = this.makeEmptyFormation();
+            var unitsToPlace = units.slice(0);
+            var placedInFront = 0;
+            var placedInBack = 0;
+            var totalPlaced = 0;
+            var unitsPlacedByArchetype = {
+                combat: 0,
+                defence: 0,
+                magic: 0,
+                support: 0,
+                utility: 0
+            };
+
+            // these are overridden if we run out of units or if alternative
+            // units have significantly higher strength
+            var maxUnitsPerArchetype = {
+                combat: Math.ceil(MAX_UNITS_PER_SIDE / 1),
+                defence: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+                magic: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+                support: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
+                utility: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
+            };
+            var preferredColumnForArchetype = {
+                combat: "front",
+                defence: "front",
+                magic: "back",
+                support: "back",
+                utility: "back"
+            };
+
+            var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
+                var score = unit.getStrengthEvaluation();
+
+                if (unit.template.archetype === "defence" && row === "front") {
+                    score *= frontRowDefenceBonus;
+                }
+
+                var archetype = unit.template.archetype;
+                var overMax = Math.max(0, unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
+
+                score *= 1 - overMax * 0.15;
+
+                var rowModifier = preferredColumnForArchetype[archetype] === row ? 1 : 0.5;
+
+                score *= rowModifier;
+
+                return ({
+                    unit: unit,
+                    score: score,
+                    row: row
+                });
+            };
+
+            var getFrontRowDefenceBonusFN = function (threshhold) {
+                var totalDefenceUnderThreshhold = 0;
+                var alreadyHasDefender = false;
+
+                for (var i = 0; i < formation[1].length; i++) {
+                    var unit = formation[1][i];
+                    if (!unit) {
+                        continue;
+                    }
+
+                    totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
+
+                    if (alreadyHasDefender) {
+                        totalDefenceUnderThreshhold = 0;
+                    } else if (!alreadyHasDefender && unit.template.archetype === "defence") {
+                        alreadyHasDefender = true;
+                        totalDefenceUnderThreshhold += 0.5;
+                    }
+                }
+
+                return 1 + totalDefenceUnderThreshhold * 0.25;
+            };
+            while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE) {
+                var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
+
+                var positionScores = [];
+
+                for (var i = 0; i < unitsToPlace.length; i++) {
+                    var unit = unitsToPlace[i];
+
+                    if (placedInFront < MAX_UNITS_PER_ROW) {
+                        positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
+                    }
+                    if (placedInBack < MAX_UNITS_PER_ROW) {
+                        positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
+                    }
+                }
+
+                positionScores.sort(function (a, b) {
+                    return (b.score - a.score);
+                });
+                var topScore = positionScores[0];
+
+                if (topScore.row === "front") {
+                    placedInFront++;
+                    formation[1][placedInFront - 1] = topScore.unit;
+                } else {
+                    placedInBack++;
+                    formation[0][placedInBack - 1] = topScore.unit;
+                }
+
+                totalPlaced++;
+                unitsPlacedByArchetype[topScore.unit.template.archetype]++;
+                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
+            }
+
+            return formation;
+        };
+
+        // Human formation stuff
+        BattlePrep.prototype.getUnitPosition = function (unit) {
+            return this.alreadyPlaced[unit.id];
+        };
+        BattlePrep.prototype.getUnitAtPosition = function (position) {
+            return this.playerFormation[position[0]][position[1]];
+        };
+        BattlePrep.prototype.clearPlayerFormation = function () {
+            this.alreadyPlaced = {};
+            this.playerFormation = this.makeEmptyFormation();
+        };
+
+        // called after player formation is created automatically
+        BattlePrep.prototype.setupPlayerFormation = function (formation) {
+            for (var i = 0; i < formation.length; i++) {
+                for (var j = 0; j < formation[i].length; j++) {
+                    if (formation[i][j]) {
+                        this.setUnit(formation[i][j], [i, j]);
+                    }
+                }
+            }
+        };
+        BattlePrep.prototype.setUnit = function (unit, position) {
+            this.removeUnit(unit);
+
+            if (!position) {
+                return;
+            }
+
+            var oldUnitInPosition = this.getUnitAtPosition(position);
+
+            if (oldUnitInPosition) {
+                this.removeUnit(oldUnitInPosition);
+            }
+
+            this.playerFormation[position[0]][position[1]] = unit;
+            this.alreadyPlaced[unit.id] = position;
+        };
+        BattlePrep.prototype.swapUnits = function (unit1, unit2) {
+            if (unit1 === unit2)
+                return;
+
+            var new1Pos = this.getUnitPosition(unit2);
+            var new2Pos = this.getUnitPosition(unit1);
+
+            this.setUnit(unit1, new1Pos);
+            this.setUnit(unit2, new2Pos);
+        };
+        BattlePrep.prototype.removeUnit = function (unit) {
+            var currentPosition = this.getUnitPosition(unit);
+
+            if (!currentPosition)
+                return;
+
+            this.playerFormation[currentPosition[0]][currentPosition[1]] = null;
+
+            this.alreadyPlaced[unit.id] = null;
+            delete this.alreadyPlaced[unit.id];
+        };
+
+        BattlePrep.prototype.humanFormationIsValid = function () {
+            /*
+            invalid if
+            attacking and no ships placed
+            battle is in territority not controlled by either and ships placed
+            is smaller than requirement
+            */
+            var shipsPlaced = 0;
+
+            this.forEachShipInFormation(this.playerFormation, function (unit) {
+                if (unit)
+                    shipsPlaced++;
+            });
+
+            if (!this.attacker.isAI) {
+                if (shipsPlaced < 1)
+                    return false;
+            }
+
+            if (!this.battleData.building) {
+                var minShips = 1;
+
+                // TODO add passive ability that forces more enemy ships to stay and fight
+                if (shipsPlaced < minShips)
+                    return false;
+            }
+
+            return true;
+        };
+
+        // end player formation
+        BattlePrep.prototype.forEachShipInFormation = function (formation, operator) {
+            for (var i = 0; i < formation.length; i++) {
+                for (var j = 0; j < formation[i].length; j++) {
+                    operator(formation[i][j]);
+                }
+            }
+        };
+
+        BattlePrep.prototype.makeBattle = function () {
+            var side1Formation = this.playerFormation || this.attackerFormation;
+            var side2Formation = this.enemyFormation || this.defenderFormation;
+
+            var side1Player = this.humanPlayer || this.attacker;
+            var side2Player = this.enemyPlayer || this.defender;
+
+            var battle = new Rance.Battle({
+                battleData: this.battleData,
+                side1: side1Formation,
+                side2: side2Formation.reverse(),
+                side1Player: side1Player,
+                side2Player: side2Player
+            });
+
+            battle.init();
+
+            return battle;
+        };
+        return BattlePrep;
+    })();
+    Rance.BattlePrep = BattlePrep;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            MapGen.defaultMap = {
+                mapOptions: {
+                    width: 600,
+                    height: 600
+                },
+                starGeneration: {
+                    galaxyType: "spiral",
+                    totalAmount: 40,
+                    arms: 5,
+                    centerSize: 0.4,
+                    amountInCenter: 0.3
+                },
+                relaxation: {
+                    timesToRelax: 5,
+                    dampeningFactor: 2
+                }
+            };
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="point.ts"/>
+var Rance;
+(function (Rance) {
+    var Triangle = (function () {
+        function Triangle(a, b, c) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+        }
+        Triangle.prototype.getPoints = function () {
+            return [this.a, this.b, this.c];
+        };
+        Triangle.prototype.getCircumCenter = function () {
+            if (!this.circumRadius) {
+                this.calculateCircumCircle();
+            }
+
+            return [this.circumCenterX, this.circumCenterY];
+        };
+        Triangle.prototype.calculateCircumCircle = function (tolerance) {
+            if (typeof tolerance === "undefined") { tolerance = 0.00001; }
+            var pA = this.a;
+            var pB = this.b;
+            var pC = this.c;
+
+            var m1, m2;
+            var mx1, mx2;
+            var my1, my2;
+            var cX, cY;
+
+            if (Math.abs(pB.y - pA.y) < tolerance) {
+                m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                mx2 = (pB.x + pC.x) * 0.5;
+                my2 = (pB.y + pC.y) * 0.5;
+
+                cX = (pB.x + pA.x) * 0.5;
+                cY = m2 * (cX - mx2) + my2;
+            } else {
+                m1 = -(pB.x - pA.x) / (pB.y - pA.y);
+                mx1 = (pA.x + pB.x) * 0.5;
+                my1 = (pA.y + pB.y) * 0.5;
+
+                if (Math.abs(pC.y - pB.y) < tolerance) {
+                    cX = (pC.x + pB.x) * 0.5;
+                    cY = m1 * (cX - mx1) + my1;
+                } else {
+                    m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                    mx2 = (pB.x + pC.x) * 0.5;
+                    my2 = (pB.y + pC.y) * 0.5;
+
+                    cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+                    cY = m1 * (cX - mx1) + my1;
+                }
+            }
+
+            this.circumCenterX = cX;
+            this.circumCenterY = cY;
+
+            mx1 = pB.x - cX;
+            my1 = pB.y - cY;
+            this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
+        };
+        Triangle.prototype.circumCircleContainsPoint = function (point) {
+            this.calculateCircumCircle();
+            var x = point.x - this.circumCenterX;
+            var y = point.y - this.circumCenterY;
+
+            var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
+
+            return (contains);
+        };
+        Triangle.prototype.getEdges = function () {
+            var edges = [
+                [this.a, this.b],
+                [this.b, this.c],
+                [this.c, this.a]
+            ];
+
+            return edges;
+        };
+        Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
+            var ownPoints = this.getPoints();
+            var otherPoints = toCheckAgainst.getPoints();
+            var shared = 0;
+
+            for (var i = 0; i < ownPoints.length; i++) {
+                if (otherPoints.indexOf(ownPoints[i]) >= 0) {
+                    shared++;
+                }
+            }
+
+            return shared;
+        };
+        return Triangle;
+    })();
+    Rance.Triangle = Triangle;
+})(Rance || (Rance = {}));
+/// <reference path="triangle.ts" />
+/// <reference path="point.ts" />
+var Rance;
+(function (Rance) {
+    function triangulate(vertices) {
+        var triangles = [];
+
+        var superTriangle = makeSuperTriangle(vertices);
+        triangles.push(superTriangle);
+
+        for (var i = 0; i < vertices.length; i++) {
+            var vertex = vertices[i];
+            var edgeBuffer = [];
+
+            for (var j = 0; j < triangles.length; j++) {
+                var triangle = triangles[j];
+
+                if (triangle.circumCircleContainsPoint(vertex)) {
+                    var edges = triangle.getEdges();
+                    edgeBuffer = edgeBuffer.concat(edges);
+                    triangles.splice(j, 1);
+                    j--;
+                }
+            }
+            if (i >= vertices.length)
+                continue;
+
+            for (var j = edgeBuffer.length - 2; j >= 0; j--) {
+                for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
+                    if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
+                        edgeBuffer.splice(k, 1);
+                        edgeBuffer.splice(j, 1);
+                        k--;
+                        continue;
+                    }
+                }
+            }
+            for (var j = 0; j < edgeBuffer.length; j++) {
+                var newTriangle = new Rance.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
+
+                triangles.push(newTriangle);
+            }
+        }
+
+        /*
+        for (var i = triangles.length - 1; i >= 0; i--)
+        {
+        if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
+        {
+        triangles.splice(i, 1);
+        }
+        }*/
+        return ({
+            triangles: triangles,
+            superTriangle: superTriangle
+        });
+    }
+    Rance.triangulate = triangulate;
+
+    function voronoiFromTriangles(triangles) {
+        var trianglesPerPoint = {};
+        var voronoiData = {};
+
+        for (var i = 0; i < triangles.length; i++) {
+            var triangle = triangles[i];
+            var points = triangle.getPoints();
+
+            for (var j = 0; j < points.length; j++) {
+                if (!trianglesPerPoint[points[j]]) {
+                    trianglesPerPoint[points[j]] = [];
+                    voronoiData[points[j]] = {
+                        point: points[j]
+                    };
+                }
+
+                trianglesPerPoint[points[j]].push(triangle);
+            }
+        }
+        function makeTrianglePairs(triangles) {
+            var toMatch = triangles.slice(0);
+            var pairs = [];
+
+            for (var i = toMatch.length - 2; i >= 0; i--) {
+                for (var j = toMatch.length - 1; j >= i + 1; j--) {
+                    var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
+
+                    if (matchingVertices === 2) {
+                        pairs.push([toMatch[j], toMatch[i]]);
+                    }
+                }
+            }
+
+            return pairs;
+        }
+
+        for (var point in trianglesPerPoint) {
+            var pointTriangles = trianglesPerPoint[point];
+
+            var trianglePairs = makeTrianglePairs(pointTriangles);
+            voronoiData[point].lines = [];
+
+            for (var i = 0; i < trianglePairs.length; i++) {
+                voronoiData[point].lines.push([
+                    trianglePairs[i][0].getCircumCenter(),
+                    trianglePairs[i][1].getCircumCenter()
+                ]);
+            }
+        }
+
+        return voronoiData;
+    }
+    Rance.voronoiFromTriangles = voronoiFromTriangles;
+
+    function getCentroid(vertices) {
+        var signedArea = 0;
+        var x = 0;
+        var y = 0;
+        var x0;
+        var y0;
+        var x1;
+        var y1;
+        var a;
+
+        var i = 0;
+
+        for (i = 0; i < vertices.length - 1; i++) {
+            x0 = vertices[i].x;
+            y0 = vertices[i].y;
+            x1 = vertices[i + 1].x;
+            y1 = vertices[i + 1].y;
+            a = x0 * y1 - x1 * y0;
+            signedArea += a;
+            x += (x0 + x1) * a;
+            y += (y0 + y1) * a;
+        }
+
+        x0 = vertices[i].x;
+        y0 = vertices[i].y;
+        x1 = vertices[0].x;
+        y1 = vertices[0].y;
+        a = x0 * y1 - x1 * y0;
+        signedArea += a;
+        x += (x0 + x1) * a;
+        y += (y0 + y1) * a;
+
+        signedArea *= 0.5;
+        x /= (6.0 * signedArea);
+        y /= (6.0 * signedArea);
+
+        return ({
+            x: x,
+            y: y
+        });
+    }
+    Rance.getCentroid = getCentroid;
+
+    function makeSuperTriangle(vertices, highestCoordinateValue) {
+        var max;
+
+        if (highestCoordinateValue) {
+            max = highestCoordinateValue;
+        } else {
+            max = vertices[0].x;
+
+            for (var i = 0; i < vertices.length; i++) {
+                if (vertices[i].x > max) {
+                    max = vertices[i].x;
+                }
+                if (vertices[i].y > max) {
+                    max = vertices[i].y;
+                }
+            }
+        }
+
+        var triangle = new Rance.Triangle({
+            x: 3 * max,
+            y: 0
+        }, {
+            x: 0,
+            y: 3 * max
+        }, {
+            x: -3 * max,
+            y: -3 * max
+        });
+
+        return (triangle);
+    }
+    Rance.makeSuperTriangle = makeSuperTriangle;
+
+    function pointsEqual(p1, p2) {
+        return (p1.x === p2.x && p1.y === p2.y);
+    }
+    Rance.pointsEqual = pointsEqual;
+
+    function edgesEqual(e1, e2) {
+        return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
+    }
+    Rance.edgesEqual = edgesEqual;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/voronoi.d.ts" />
+/// <reference path="../lib/quadtree.d.ts" />
+/// <reference path="../data/templates/mapgentemplates.ts" />
+/// <reference path="triangulation.ts" />
+/// <reference path="triangle.ts" />
+/// <reference path="star.ts" />
+/// <reference path="region.ts" />
+/// <reference path="sector.ts" />
+/// <reference path="utility.ts" />
+/// <reference path="pathfinding.ts"/>
+var Rance;
+(function (Rance) {
+    var MapGen = (function () {
+        function MapGen() {
+            this.points = [];
+            this.regions = {};
+            this.triangles = [];
+            this.nonFillerVoronoiLines = {};
+            this.galaxyConstructors = {};
+            this.startLocations = [];
+            this.galaxyConstructors = {
+                spiral: this.makeSpiralPoints
+            };
+        }
+        MapGen.prototype.reset = function () {
+            this.points = [];
+            this.regions = {};
+            this.triangles = [];
+            this.voronoiDiagram = null;
+
+            this.nonFillerPoints = [];
+            this.nonFillerVoronoiLines = {};
+        };
+        MapGen.prototype.makeMap = function (options) {
+            this.reset();
+
+            this.maxWidth = options.mapOptions.width;
+            this.maxHeight = options.mapOptions.height || this.maxWidth;
+
+            this.points = this.generatePoints(options.starGeneration);
+
+            this.makeVoronoi();
+            this.relaxPoints(options.relaxation);
+
+            this.triangulate();
+            this.severArmLinks();
+            this.partiallyCutConnections(4);
+
+            var isConnected = this.isConnected();
+            if (!isConnected) {
+                return this.makeMap(options);
+            }
+
+            this.makeTreeMap();
+
+            this.sectors = this.makeSectors(3, 5);
+            this.setResources();
+
+            this.setPlayers();
+            this.setDistanceFromStartLocations();
+
+            this.setupPirates();
+
+            return this;
+        };
+        MapGen.prototype.isConnected = function () {
+            var initialPoint = this.getNonFillerPoints()[0];
+
+            return initialPoint.getLinkedInRange(9999).all.length === this.nonFillerPoints.length;
+        };
+        MapGen.prototype.setPlayers = function () {
+            var regionNames = Object.keys(this.regions);
+            var startRegions = regionNames.filter(function (name) {
+                return name.indexOf("arm") !== -1;
+            });
+
+            for (var i = 0; i < this.players.length; i++) {
+                var player = this.players[i];
+                var regionName = startRegions[i];
+
+                var location = this.getFurthestPointInRegion(this.regions[regionName]);
+
+                location.owner = player;
+                player.addStar(location);
+                var sectorCommand = new Rance.Building({
+                    template: Rance.Templates.Buildings.sectorCommand,
+                    location: location
+                });
+                location.addBuilding(sectorCommand);
+
+                location.addBuilding(new Rance.Building({
+                    template: Rance.Templates.Buildings.starBase,
+                    location: location
+                }));
+
+                this.startLocations.push(location);
+
+                var ship = new Rance.Unit(Rance.Templates.ShipTypes.battleCruiser);
+                player.addUnit(ship);
+
+                var fleet = new Rance.Fleet(player, [ship], location);
+            }
+        };
+        MapGen.prototype.setDistanceFromStartLocations = function () {
+            var nonFillerPoints = this.getNonFillerPoints();
+
+            for (var i = 0; i < this.startLocations.length; i++) {
+                var startLocation = this.startLocations[i];
+                for (var j = 0; j < nonFillerPoints.length; j++) {
+                    var star = nonFillerPoints[j];
+
+                    var distance = star.getDistanceToStar(startLocation);
+
+                    if (!isFinite(star.distanceFromNearestStartLocation)) {
+                        star.distanceFromNearestStartLocation = distance;
+                    } else {
+                        star.distanceFromNearestStartLocation = Math.min(distance, star.distanceFromNearestStartLocation);
+                    }
+                }
+            }
+        };
+
+        MapGen.prototype.setupPirates = function () {
+            var nonFillerPoints = this.getNonFillerPoints();
+            var minShips = 2;
+            var maxShips = 8;
+            var player = this.independents;
+
+            for (var i = 0; i < nonFillerPoints.length; i++) {
+                var star = nonFillerPoints[i];
+
+                if (!star.owner) {
+                    star.owner = player;
+                    player.addStar(star);
+                    var sectorCommand = new Rance.Building({
+                        template: Rance.Templates.Buildings.sectorCommand,
+                        location: star
+                    });
+                    star.addBuilding(sectorCommand);
+
+                    var shipAmount = minShips;
+                    var distance = star.distanceFromNearestStartLocation;
+
+                    for (var j = 2; j < distance; j++) {
+                        if (shipAmount >= maxShips)
+                            break;
+
+                        shipAmount += Rance.randInt(0, 1);
+                    }
+
+                    var ships = [];
+                    for (var j = 0; j < shipAmount; j++) {
+                        var ship = Rance.makeRandomShip();
+                        player.addUnit(ship);
+                        ships.push(ship);
+                    }
+                    var fleet = new Rance.Fleet(player, ships, star);
+                }
+            }
+        };
+
+        MapGen.prototype.generatePoints = function (options) {
+            var amountInArms = 1 - options.amountInCenter;
+
+            var starGenerationProps = {
+                amountPerArm: options.totalAmount / options.arms * amountInArms,
+                arms: options.arms,
+                amountInCenter: options.totalAmount * options.amountInCenter,
+                centerSize: options.centerSize
+            };
+
+            var galaxyConstructor = this.galaxyConstructors[options.galaxyType];
+
+            return galaxyConstructor.call(this, starGenerationProps);
+        };
+        MapGen.prototype.makeRegion = function (name, isFiller) {
+            this.regions[name] = new Rance.Region(name, [], isFiller);
+            return this.regions[name];
+        };
+        MapGen.prototype.makeSpiralPoints = function (props) {
+            var totalArms = props.arms * 2;
+            var amountPerArm = props.amountPerArm;
+            var amountPerFillerArm = amountPerArm / 2;
+
+            var amountInCenter = props.amountInCenter;
+            var centerThreshhold = props.centerSize || 0.35;
+
+            var points = [];
+            var armDistance = Math.PI * 2 / totalArms;
+            var armOffsetMax = props.armOffsetMax || 0.5;
+            var armRotationFactor = props.arms / 3;
+            var galaxyRotation = Rance.randRange(0, Math.PI * 2);
+            var minBound = Math.min(this.maxWidth, this.maxHeight);
+            var minBound2 = minBound / 2;
+
+            var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax) {
+                var distance = Rance.randRange(distanceMin, distanceMax);
+                var offset = Math.random() * armOffsetMax - armOffsetMax / 2;
+                offset *= (1 / distance);
+
+                if (offset < 0)
+                    offset = Math.pow(offset, 2) * -1;
+                else
+                    offset = Math.pow(offset, 2);
+
+                var armRotation = distance * armRotationFactor;
+                var angle = arm * armDistance + galaxyRotation + offset + armRotation;
+
+                var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
+                var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
+
+                var point = new Rance.Star(x, y);
+
+                point.distance = distance;
+                region.addStar(point);
+                point.baseIncome = Rance.randInt(2, 10) * 10;
+
+                return point;
+            }.bind(this);
+
+            var centerRegion = this.makeRegion("center", false);
+
+            var currentArmIsFiller = false;
+            for (var i = 0; i < totalArms; i++) {
+                var arm = i;
+                var regionName = (currentArmIsFiller ? "filler_" : "arm_") + arm;
+                var region = this.makeRegion(regionName, currentArmIsFiller);
+                var amountForThisArm = currentArmIsFiller ? amountPerFillerArm : amountPerArm;
+                var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
+
+                var amountForThisCenter = Math.round(amountInCenter / totalArms);
+
+                for (var j = 0; j < amountForThisArm; j++) {
+                    var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
+
+                    points.push(point);
+                }
+
+                for (var j = 0; j < amountForThisCenter; j++) {
+                    var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax);
+                    points.push(point);
+                }
+
+                currentArmIsFiller = !currentArmIsFiller;
+            }
+
+            return points;
+        };
+        MapGen.prototype.triangulate = function () {
+            if (!this.points || this.points.length < 3)
+                throw new Error();
+            var triangulationData = Rance.triangulate(this.points);
+            this.triangles = this.cleanTriangles(triangulationData.triangles, triangulationData.superTriangle);
+
+            this.makeLinks();
+        };
+        MapGen.prototype.clearLinks = function () {
+            for (var i = 0; i < this.points.length; i++) {
+                this.points[i].clearLinks();
+            }
+        };
+        MapGen.prototype.makeLinks = function () {
+            if (!this.triangles || this.triangles.length < 1)
+                throw new Error();
+
+            this.clearLinks();
+
+            for (var i = 0; i < this.triangles.length; i++) {
+                var edges = this.triangles[i].getEdges();
+                for (var j = 0; j < edges.length; j++) {
+                    edges[j][0].addLink(edges[j][1]);
+                }
+            }
+        };
+        MapGen.prototype.severArmLinks = function () {
+            for (var i = 0; i < this.points.length; i++) {
+                var star = this.points[i];
+                star.severLinksToFiller();
+                star.severLinksToNonAdjacent();
+
+                if (star.distance > 0.8) {
+                    star.severLinksToNonCenter();
+                }
+            }
+        };
+        MapGen.prototype.makeVoronoi = function () {
+            if (!this.points || this.points.length < 3)
+                throw new Error();
+
+            var boundingBox = {
+                xl: 0,
+                xr: this.maxWidth * 2,
+                yt: 0,
+                yb: this.maxHeight * 2
+            };
+
+            var voronoi = new Voronoi();
+
+            var diagram = voronoi.compute(this.points, boundingBox);
+
+            this.voronoiDiagram = diagram;
+
+            for (var i = 0; i < diagram.cells.length; i++) {
+                var cell = diagram.cells[i];
+                cell.site.voronoiCell = cell;
+                cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
+            }
+        };
+        MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
+            for (var i = triangles.length - 1; i >= 0; i--) {
+                if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
+                    triangles.splice(i, 1);
+                }
+            }
+
+            return triangles;
+        };
+        MapGen.prototype.makeTreeMap = function () {
+            var treeMap = new QuadTree({
+                x: 0,
+                y: 0,
+                width: this.maxWidth * 2,
+                height: this.maxHeight * 2
+            });
+
+            var points = this.getNonFillerPoints();
+
+            for (var i = 0; i < points.length; i++) {
+                var cell = points[i].voronoiCell;
+                var bbox = cell.getBbox();
+                bbox.cell = cell;
+                treeMap.insert(bbox);
+            }
+
+            this.voronoiTreeMap = treeMap;
+        };
+        MapGen.prototype.getVerticesFromCell = function (cell) {
+            var vertices = [];
+
+            for (var i = 0; i < cell.halfedges.length; i++) {
+                vertices.push(cell.halfedges[i].getStartpoint());
+            }
+
+            return vertices;
+        };
+        MapGen.prototype.relaxPointsOnce = function (dampeningFactor) {
+            if (typeof dampeningFactor === "undefined") { dampeningFactor = 0; }
+            var relaxedPoints = [];
+
+            for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
+                var cell = this.voronoiDiagram.cells[i];
+                var point = cell.site;
+                var vertices = this.getVerticesFromCell(cell);
+                var centroid = Rance.getCentroid(vertices);
+                var timesToDampen = point.distance * dampeningFactor;
+
+                for (var j = 0; j < timesToDampen; j++) {
+                    centroid.x = (centroid.x + point.x) / 2;
+                    centroid.y = (centroid.y + point.y) / 2;
+                }
+
+                point.setPosition(centroid.x, centroid.y);
+            }
+        };
+        MapGen.prototype.relaxPoints = function (options) {
+            if (!this.points)
+                throw new Error();
+
+            if (!this.voronoiDiagram)
+                this.makeVoronoi();
+
+            for (var i = 0; i < options.timesToRelax; i++) {
+                this.relaxPointsOnce(options.dampeningFactor);
+                this.makeVoronoi();
+            }
+        };
+        MapGen.prototype.getNonFillerPoints = function () {
+            if (!this.points)
+                return [];
+            if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
+                this.nonFillerPoints = this.points.filter(function (point) {
+                    return !point.region.isFiller;
+                });
+            }
+
+            return this.nonFillerPoints;
+        };
+        MapGen.prototype.getNonFillerVoronoiLines = function (visibleStars) {
+            if (!this.voronoiDiagram)
+                return [];
+
+            var indexString = "";
+            if (!visibleStars)
+                indexString = "all";
+            else {
+                var ids = visibleStars.map(function (star) {
+                    return star.id;
+                });
+                ids = ids.sort();
+
+                indexString = ids.join();
+            }
+
+            if (!this.nonFillerVoronoiLines[indexString] || this.nonFillerVoronoiLines[indexString].length <= 0) {
+                console.log("newEdgesIndex");
+                this.nonFillerVoronoiLines[indexString] = this.voronoiDiagram.edges.filter(function (edge) {
+                    var adjacentSites = [edge.lSite, edge.rSite];
+                    var adjacentFillerSites = 0;
+                    var maxAllowedFillerSites = 2;
+
+                    for (var i = 0; i < adjacentSites.length; i++) {
+                        var site = adjacentSites[i];
+
+                        if (!site) {
+                            // draw all border edges
+                            //return true;
+                            // draw all non filler border edges
+                            maxAllowedFillerSites--;
+                            if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                return false;
+                            }
+                            continue;
+                        }
+                        ;
+
+                        if (visibleStars && visibleStars.indexOf(site) < 0) {
+                            maxAllowedFillerSites--;
+                            if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                return false;
+                            }
+                            continue;
+                        }
+                        ;
+
+                        if (site.region.isFiller) {
+                            adjacentFillerSites++;
+                            if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                return false;
+                            }
+                        }
+                        ;
+                    }
+
+                    return true;
+                });
+            }
+
+            return this.nonFillerVoronoiLines[indexString];
+        };
+        MapGen.prototype.getFurthestPointInRegion = function (region) {
+            var furthestDistance = 0;
+            var furthestStar = null;
+
+            for (var i = 0; i < region.stars.length; i++) {
+                if (region.stars[i].distance > furthestDistance) {
+                    furthestStar = region.stars[i];
+                    furthestDistance = region.stars[i].distance;
+                }
+            }
+
+            return furthestStar;
+        };
+        MapGen.prototype.partiallyCutConnections = function (minConnections) {
+            var points = this.getNonFillerPoints();
+            var cuts = 0;
+            var noCuts = 0;
+            var reverts = 0;
+
+            for (var i = 0; i < points.length; i++) {
+                var point = points[i];
+
+                var neighbors = point.getAllLinks();
+
+                if (neighbors.length < minConnections)
+                    continue;
+
+                for (var j = 0; j < neighbors.length; j++) {
+                    var neighbor = neighbors[j];
+                    var neighborLinks = neighbor.getAllLinks();
+
+                    //if (neighborLinks.length < minConnections) continue;
+                    var totalLinks = neighbors.length + neighborLinks.length;
+
+                    var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - point.distance);
+                    var minMultipleCutThreshhold = 0.15;
+                    while (cutThreshhold > 0) {
+                        if (Math.random() < cutThreshhold) {
+                            point.removeLink(neighbor);
+                            cuts++;
+
+                            var path = Rance.aStar(point, neighbor);
+
+                            if (!path) {
+                                point.addLink(neighbor);
+                                cuts--;
+                                reverts++;
+                            }
+                        } else
+                            noCuts++;
+
+                        cutThreshhold -= minMultipleCutThreshhold;
+                    }
+                }
+            }
+
+            console.log(cuts, noCuts, reverts);
+        };
+
+        /*
+        while average size sectors left to assign && unassigned stars left
+        pick random unassigned star
+        if star cannot form island bigger than minsize
+        put from unassigned into leftovers & continue
+        else
+        add random neighbors into sector until minsize is met
+        
+        
+        while leftovers
+        pick random leftover
+        if leftover has no assigned neighbor pick, continue
+        
+        leftover gets assigned to smallest neighboring sector
+        if sizes equal, assign to sector with least neighboring leftovers
+        */
+        MapGen.prototype.makeSectors = function (minSize, maxSize) {
+            var totalStars = this.nonFillerPoints.length;
+            var unassignedStars = this.nonFillerPoints.slice(0);
+            var leftoverStars = [];
+
+            var averageSize = (minSize + maxSize) / 2;
+            var averageSectorsAmount = Math.round(totalStars / averageSize);
+
+            var sectorsById = {};
+
+            var sameSectorFN = function (a, b) {
+                return a.sector === b.sector;
+            };
+
+            while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
+                var seedStar = unassignedStars.pop();
+                var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+
+                if (canFormMinSizeSector) {
+                    var sector = new Rance.Sector();
+                    sectorsById[sector.id] = sector;
+
+                    var discoveryStarIndex = 0;
+                    sector.addStar(seedStar);
+
+                    while (sector.stars.length < minSize) {
+                        var discoveryStar = sector.stars[discoveryStarIndex];
+
+                        var frontier = discoveryStar.getLinkedInRange(1).all;
+                        frontier = frontier.filter(function (star) {
+                            return !star.sector;
+                        });
+
+                        while (sector.stars.length < minSize && frontier.length > 0) {
+                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
+                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+                            unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
+
+                            sector.addStar(toAdd);
+                        }
+
+                        discoveryStarIndex++;
+                    }
+                } else {
+                    leftoverStars.push(seedStar);
+                }
+            }
+
+            while (leftoverStars.length > 0) {
+                var star = leftoverStars.pop();
+
+                var neighbors = star.getLinkedInRange(1).all;
+                var alreadyAddedNeighborSectors = {};
+                var candidateSectors = [];
+
+                for (var j = 0; j < neighbors.length; j++) {
+                    if (!neighbors[j].sector)
+                        continue;
+                    else {
+                        if (!alreadyAddedNeighborSectors[neighbors[j].sector.id]) {
+                            alreadyAddedNeighborSectors[neighbors[j].sector.id] = true;
+                            candidateSectors.push(neighbors[j].sector);
+                        }
+                    }
+                }
+
+                // all neighboring stars don't have sectors
+                // put star at back of queue and try again later
+                if (candidateSectors.length < 1) {
+                    leftoverStars.unshift(star);
+                    continue;
+                }
+
+                var unclaimedNeighborsPerSector = {};
+
+                for (var j = 0; j < candidateSectors.length; j++) {
+                    var sectorNeighbors = candidateSectors[j].getNeighboringStars();
+                    var unclaimed = 0;
+                    for (var k = 0; k < sectorNeighbors.length; k++) {
+                        if (!sectorNeighbors[k].sector) {
+                            unclaimed++;
+                        }
+                    }
+
+                    unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
+                }
+
+                candidateSectors.sort(function (a, b) {
+                    var sizeSort = a.stars.length - b.stars.length;
+                    if (sizeSort)
+                        return sizeSort;
+
+                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] - unclaimedNeighborsPerSector[a.id];
+                    return unclaimedSort;
+                });
+
+                candidateSectors[0].addStar(star);
+            }
+
+            return sectorsById;
+        };
+
+        MapGen.prototype.setResources = function () {
+            // TODO
+            var getResourceDistributionFlags = function (region) {
+                switch (region.id) {
+                    case "center": {
+                        return ["rare"];
+                    }
+                    default: {
+                        return ["common"];
+                    }
+                }
+            };
+
+            var getResourcesForDistributionGroups = function (groupsToMatch) {
+                var allResources = Rance.Templates.Resources;
+                var matchingResources = [];
+
+                for (var resourceType in allResources) {
+                    var resourceGroups = allResources[resourceType].distributionGroups;
+                    for (var i = 0; i < resourceGroups.length; i++) {
+                        if (groupsToMatch.indexOf(resourceGroups[i]) !== -1) {
+                            matchingResources.push(allResources[resourceType]);
+                            break;
+                        }
+                    }
+                }
+
+                return matchingResources;
+            };
+
+            for (var sectorId in this.sectors) {
+                var sector = this.sectors[sectorId];
+
+                var majorityRegions = sector.getMajorityRegions();
+
+                var resourceDistributionFlags = [];
+                var resourcesAlreadyPresentInRegions = {};
+
+                for (var i = 0; i < majorityRegions.length; i++) {
+                    resourceDistributionFlags = resourceDistributionFlags.concat(getResourceDistributionFlags(majorityRegions[i]));
+
+                    for (var j = 0; j < majorityRegions[i].stars.length; j++) {
+                        var star = majorityRegions[i].stars[j];
+                        if (star.resource) {
+                            resourcesAlreadyPresentInRegions[star.resource.type] = true;
+                        }
+                    }
+                }
+
+                var candidateResources = getResourcesForDistributionGroups(resourceDistributionFlags);
+
+                var nonDuplicateResources = candidateResources.filter(function (resource) {
+                    return !resourcesAlreadyPresentInRegions[resource.type];
+                });
+
+                if (nonDuplicateResources.length > 0) {
+                    candidateResources = nonDuplicateResources;
+                }
+
+                var selectedResource = null;
+
+                while (!selectedResource) {
+                    var randomResource = Rance.getRandomArrayItem(candidateResources);
+                    if (Math.random() < randomResource.rarity) {
+                        selectedResource = randomResource;
+                    }
+                }
+
+                var star = Rance.getRandomArrayItem(sector.stars);
+                star.setResource(selectedResource);
+            }
+        };
+        return MapGen;
+    })();
+    Rance.MapGen = MapGen;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    function getAllBorderEdgesByStar(edges, revealedStars) {
+        var edgesByStar = {};
+
+        for (var i = 0; i < edges.length; i++) {
+            var edge = edges[i];
+
+            if (edge.lSite && edge.rSite && edge.lSite.owner === edge.rSite.owner) {
+                continue;
+            }
+
+            ["lSite", "rSite"].forEach(function (neighborDirection) {
+                var neighbor = edge[neighborDirection];
+
+                if (neighbor && neighbor.owner && !neighbor.owner.isIndependent) {
+                    if (!revealedStars || revealedStars.indexOf(neighbor) !== -1) {
+                        if (!edgesByStar[neighbor.id]) {
+                            edgesByStar[neighbor.id] = {
+                                star: neighbor,
+                                edges: []
+                            };
+                        }
+                        edgesByStar[neighbor.id].edges.push(edge);
+                    }
+                }
+            });
+        }
+
+        return edgesByStar;
+    }
+    Rance.getAllBorderEdgesByStar = getAllBorderEdgesByStar;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="eventmanager.ts"/>
+/// <reference path="utility.ts"/>
+/// <reference path="color.ts"/>
+/// <reference path="borderpolygon.ts"/>
+/// <reference path="galaxymap.ts" />
+/// <reference path="star.ts" />
+/// <reference path="fleet.ts" />
+/// <reference path="player.ts" />
+var Rance;
+(function (Rance) {
+    var MapRenderer = (function () {
+        function MapRenderer(map) {
+            this.occupationShaders = {};
+            this.layers = {};
+            this.mapModes = {};
+            this.fowSpriteCache = {};
+            this.isDirty = true;
+            this.preventRender = false;
+            this.listeners = {};
+            this.container = new PIXI.DisplayObjectContainer();
+
+            this.setMap(map);
+        }
+        MapRenderer.prototype.destroy = function () {
+            this.preventRender = true;
+            this.container.renderable = false;
+
+            for (var name in this.listeners) {
+                Rance.eventManager.removeEventListener(name, this.listeners[name]);
+            }
+
+            this.container.removeChildren();
+            this.parent.removeChild(this.container);
+
+            this.game = null;
+            this.player = null;
+            this.container = null;
+            this.parent = null;
+            this.occupationShaders = null;
+
+            for (var starId in this.fowSpriteCache) {
+                this.fowSpriteCache[starId].renderable = false;
+                this.fowSpriteCache[starId] = null;
+            }
+        };
+        MapRenderer.prototype.setMap = function (map) {
+            this.galaxyMap = map;
+            this.galaxyMap.mapRenderer = this;
+            this.game = map.game;
+            this.player = this.game.humanPlayer;
+        };
+        MapRenderer.prototype.init = function () {
+            this.makeFowSprite();
+
+            this.initLayers();
+            this.initMapModes();
+
+            this.addEventListeners();
+        };
+        MapRenderer.prototype.addEventListeners = function () {
+            var self = this;
+            this.listeners["renderMap"] = Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
+            this.listeners["renderLayer"] = Rance.eventManager.addEventListener("renderLayer", function (e) {
+                self.setLayerAsDirty(e.data);
+            });
+
+            var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
+            var boundUpdateZoom = this.updateShaderZoom.bind(this);
+
+            this.listeners["registerOnMoveCallback"] = Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
+                e.data.push(boundUpdateOffsets);
+            });
+            this.listeners["registerOnZoomCallback"] = Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
+                e.data.push(boundUpdateZoom);
+            });
+        };
+        MapRenderer.prototype.setPlayer = function (player) {
+            this.player = player;
+            this.setAllLayersAsDirty();
+        };
+        MapRenderer.prototype.updateShaderOffsets = function (x, y) {
+            for (var owner in this.occupationShaders) {
+                for (var occupier in this.occupationShaders[owner]) {
+                    var shader = this.occupationShaders[owner][occupier];
+                    shader.uniforms.offset.value = { x: -x, y: y };
+                }
+            }
+        };
+        MapRenderer.prototype.updateShaderZoom = function (zoom) {
+            for (var owner in this.occupationShaders) {
+                for (var occupier in this.occupationShaders[owner]) {
+                    var shader = this.occupationShaders[owner][occupier];
+                    shader.uniforms.zoom.value = zoom;
+                }
+            }
+        };
+        MapRenderer.prototype.makeFowSprite = function () {
+            if (!this.fowTilingSprite) {
+                var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
+                var w = this.galaxyMap.mapGen.maxWidth * 2;
+                var h = this.galaxyMap.mapGen.maxHeight * 2;
+
+                this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
+            }
+        };
+        MapRenderer.prototype.getFowSpriteForStar = function (star) {
+            // silly hack to make sure first texture gets created properly
+            if (!this.fowSpriteCache[star.id] || Object.keys(this.fowSpriteCache).length < 4) {
+                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                var gfx = new PIXI.Graphics();
+                gfx.beginFill();
+                gfx.drawShape(poly);
+                gfx.endFill();
+
+                this.fowTilingSprite.removeChildren();
+
+                this.fowTilingSprite.mask = gfx;
+                this.fowTilingSprite.addChild(gfx);
+
+                var rendered = this.fowTilingSprite.generateTexture();
+
+                var sprite = new PIXI.Sprite(rendered);
+
+                this.fowSpriteCache[star.id] = sprite;
+                this.fowTilingSprite.mask = null;
+            }
+
+            return this.fowSpriteCache[star.id];
+        };
+        MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
+            if (!this.occupationShaders[owner.id]) {
+                this.occupationShaders[owner.id] = {};
+            }
+
+            if (!this.occupationShaders[owner.id][occupier.id]) {
+                var baseColor = PIXI.hex2rgb(owner.color);
+                baseColor.push(1.0);
+                var occupierColor = PIXI.hex2rgb(occupier.color);
+                occupierColor.push(1.0);
+
+                var uniforms = {
+                    baseColor: { type: "4fv", value: baseColor },
+                    lineColor: { type: "4fv", value: occupierColor },
+                    gapSize: { type: "1f", value: 3.0 },
+                    offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
+                    zoom: { type: "1f", value: 1.0 }
+                };
+
+                var shaderSrc = [
+                    "precision mediump float;",
+                    "uniform sampler2D uSampler;",
+                    "varying vec2 vTextureCoord;",
+                    "varying vec4 vColor;",
+                    "uniform vec4 baseColor;",
+                    "uniform vec4 lineColor;",
+                    "uniform float gapSize;",
+                    "uniform vec2 offset;",
+                    "uniform float zoom;",
+                    "void main( void )",
+                    "{",
+                    "  vec2 position = gl_FragCoord.xy + offset;",
+                    "  position.x += position.y;",
+                    "  float scaled = floor(position.x * 0.1 / zoom);",
+                    "  float res = mod(scaled, gapSize);",
+                    "  if(res > 0.0)",
+                    "  {",
+                    "    gl_FragColor = mix(gl_FragColor, baseColor, 0.5);",
+                    "  }",
+                    "  else",
+                    "  {",
+                    "    gl_FragColor = mix(gl_FragColor, lineColor, 0.5);",
+                    "  }",
+                    "}"
+                ];
+
+                this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(shaderSrc, uniforms);
+            }
+
+            return this.occupationShaders[owner.id][occupier.id];
+        };
+        MapRenderer.prototype.initLayers = function () {
+            if (this.layers["nonFillerStars"])
+                return;
+            this.layers["nonFillerStars"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    var mouseDownFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseDown", event);
+                    };
+                    var mouseUpFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseUp", event);
+                    };
+                    var onClickFN = function (star) {
+                        Rance.eventManager.dispatchEvent("starClick", star);
+                    };
+                    var rightDownFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseDown", event);
+                    };
+                    var rightUpFN = function (star) {
+                        Rance.eventManager.dispatchEvent("mouseUp", null);
+                    };
+                    var mouseOverFN = function (star) {
+                        Rance.eventManager.dispatchEvent("hoverStar", star);
+                    };
+                    var mouseOutFN = function (event) {
+                        Rance.eventManager.dispatchEvent("clearHover");
+                    };
+                    var touchStartFN = function (event) {
+                        Rance.eventManager.dispatchEvent("touchStart", event);
+                    };
+                    var touchEndFN = function (event) {
+                        Rance.eventManager.dispatchEvent("touchEnd", event);
+                    };
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var starSize = 1;
+                        if (star.buildings["defence"]) {
+                            starSize += star.buildings["defence"].length * 2;
+                        }
+                        var gfx = new PIXI.Graphics();
+                        if (!star.owner.isIndependent) {
+                            gfx.lineStyle(starSize / 2, star.owner.color, 1);
+                        }
+                        gfx.star = star;
+                        gfx.beginFill(0xFFFFF0);
+                        gfx.drawEllipse(star.x, star.y, starSize, starSize);
+                        gfx.endFill;
+
+                        gfx.interactive = true;
+                        gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
+
+                        gfx.mousedown = mouseDownFN;
+                        gfx.mouseup = mouseUpFN;
+
+                        gfx.click = gfx.tap = function (event) {
+                            if (event.originalEvent.button)
+                                return;
+
+                            onClickFN(this.star);
+                        }.bind(gfx);
+
+                        gfx.rightdown = rightDownFN;
+                        gfx.rightup = rightUpFN.bind(gfx, star);
+
+                        gfx.mouseover = mouseOverFN.bind(gfx, star);
+                        gfx.mouseout = mouseOutFN;
+
+                        doc.addChild(gfx);
+                    }
+
+                    // gets set to 0 without this reference. no idea
+                    doc.height;
+
+                    doc.interactive = true;
+
+                    // cant be set on gfx as touchmove and touchend only register
+                    // on the object that had touchstart called on it
+                    doc.touchstart = touchStartFN;
+                    doc.touchend = touchEndFN;
+                    doc.touchmove = function (event) {
+                        var local = event.getLocalPosition(doc);
+                        var items = map.mapGen.voronoiTreeMap.retrieve(local);
+                        for (var i = 0; i < items.length; i++) {
+                            var cell = items[i].cell;
+
+                            if (cell.pointIntersection(local.x, local.y) > 0) {
+                                Rance.eventManager.dispatchEvent("hoverStar", cell.site);
+                                return;
+                            }
+                        }
+                    };
+
+                    return doc;
+                }
+            };
+            this.layers["starOwners"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (!star.owner)
+                            continue;
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        var alpha = 0.5;
+                        if (isFinite(star.owner.colorAlpha))
+                            alpha *= star.owner.colorAlpha;
+                        gfx.beginFill(star.owner.color, alpha);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+
+                        var occupier = star.getSecondaryController();
+                        if (occupier) {
+                            gfx.filters = [this.getOccupationShader(star.owner, occupier)];
+
+                            //gfx.filters = [testFilter];
+                            var mask = new PIXI.Graphics();
+                            mask.beginFill();
+                            mask.drawShape(poly);
+                            mask.endFill();
+                            gfx.mask = mask;
+                            gfx.addChild(mask);
+                        }
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["fogOfWar"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    if (!this.player)
+                        return doc;
+                    var points = this.player.getRevealedButNotVisibleStars();
+
+                    if (!points || points.length < 1)
+                        return doc;
+
+                    doc.alpha = 0.35;
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var sprite = this.getFowSpriteForStar(star);
+
+                        doc.addChild(sprite);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["starIncome"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+                    var incomeBounds = map.getIncomeBounds();
+
+                    function getRelativeValue(min, max, value) {
+                        var difference = max - min;
+                        if (difference < 1)
+                            difference = 1;
+
+                        // clamps to n different colors
+                        var threshhold = difference / 10;
+                        if (threshhold < 1)
+                            threshhold = 1;
+                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
+                        return relative;
+                    }
+
+                    var colorIndexes = {};
+
+                    function getRelativeColor(min, max, value) {
+                        if (!colorIndexes[value]) {
+                            if (value < 0)
+                                value = 0;
+                            else if (value > 1)
+                                value = 1;
+
+                            var deviation = Math.abs(0.5 - value) * 2;
+
+                            var hue = 110 * value;
+                            var saturation = 0.5 + 0.2 * deviation;
+                            var lightness = 0.6 + 0.25 * deviation;
+
+                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
+                        }
+                        return colorIndexes[value];
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var income = star.getIncome();
+                        var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
+                        var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["playerInfluence"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+                    var mapEvaluator = new Rance.MapEvaluator(map, this.player);
+                    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
+
+                    var minInfluence, maxInfluence;
+
+                    for (var starId in influenceByStar) {
+                        var influence = influenceByStar[starId];
+                        if (!isFinite(minInfluence) || influence < minInfluence) {
+                            minInfluence = influence;
+                        }
+                        if (!isFinite(maxInfluence) || influence > maxInfluence) {
+                            maxInfluence = influence;
+                        }
+                    }
+
+                    function getRelativeValue(min, max, value) {
+                        var difference = max - min;
+                        if (difference < 1)
+                            difference = 1;
+
+                        // clamps to n different colors
+                        var threshhold = difference / 10;
+                        if (threshhold < 1)
+                            threshhold = 1;
+                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
+                        return relative;
+                    }
+
+                    var colorIndexes = {};
+
+                    function getRelativeColor(min, max, value) {
+                        if (!colorIndexes[value]) {
+                            if (value < 0)
+                                value = 0;
+                            else if (value > 1)
+                                value = 1;
+
+                            var deviation = Math.abs(0.5 - value) * 2;
+
+                            var hue = 110 * value;
+                            var saturation = 0.5 + 0.2 * deviation;
+                            var lightness = 0.6 + 0.25 * deviation;
+
+                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
+                        }
+                        return colorIndexes[value];
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var influence = influenceByStar[star.id];
+
+                        if (!influence)
+                            continue;
+
+                        var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
+                        var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
+
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["nonFillerVoronoiLines"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var gfx = new PIXI.Graphics();
+                    doc.addChild(gfx);
+                    gfx.lineStyle(1, 0xA0A0A0, 0.5);
+
+                    var visible = this.player ? this.player.getRevealedStars() : null;
+
+                    var lines = map.mapGen.getNonFillerVoronoiLines(visible);
+
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i];
+                        gfx.moveTo(line.va.x, line.va.y);
+                        gfx.lineTo(line.vb.x, line.vb.y);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["ownerBorders"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+                    var gfx = new PIXI.Graphics();
+                    doc.addChild(gfx);
+
+                    var revealedStars = this.player.getRevealedStars();
+                    var borderEdges = Rance.getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges, revealedStars);
+
+                    for (var starId in borderEdges) {
+                        var edgeData = borderEdges[starId];
+
+                        var player = edgeData.star.owner;
+                        gfx.lineStyle(4, player.secondaryColor, 0.7);
+
+                        for (var i = 0; i < edgeData.edges.length; i++) {
+                            var edge = edgeData.edges[i];
+                            gfx.moveTo(edge.va.x, edge.va.y);
+                            gfx.lineTo(edge.vb.x, edge.vb.y);
+                        }
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["starLinks"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var gfx = new PIXI.Graphics();
+                    doc.addChild(gfx);
+                    gfx.lineStyle(1, 0xCCCCCC, 0.6);
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    var starsFullyConnected = {};
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (starsFullyConnected[star.id])
+                            continue;
+
+                        starsFullyConnected[star.id] = true;
+
+                        for (var j = 0; j < star.linksTo.length; j++) {
+                            gfx.moveTo(star.x, star.y);
+                            gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+                        }
+                        for (var j = 0; j < star.linksFrom.length; j++) {
+                            gfx.moveTo(star.linksFrom[j].x, star.linksFrom[j].y);
+                            gfx.lineTo(star.x, star.y);
+                        }
+                    }
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["sectors"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    var sectorsAmount = Object.keys(map.sectors).length;
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (!star.sector)
+                            break;
+
+                        var hue = (360 / sectorsAmount) * star.sector.id;
+                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
+
+                        //var color = star.sector.color;
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["regions"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    var regionIndexes = {};
+
+                    var i = 0;
+                    for (var regionId in map.mapGen.regions) {
+                        regionIndexes[regionId] = i++;
+                    }
+                    var regionsAmount = Object.keys(regionIndexes).length;
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+
+                        var hue = (360 / regionsAmount) * regionIndexes[star.region.id];
+                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
+                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(color, 0.6);
+                        gfx.drawShape(poly);
+                        gfx.endFill;
+                        doc.addChild(gfx);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["resources"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getRevealedStars();
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        if (!star.resource)
+                            continue;
+
+                        var text = new PIXI.Text(star.resource.displayName, {
+                            fill: "#FFFFFF",
+                            stroke: "#000000",
+                            strokeThickness: 2
+                        });
+
+                        text.x = star.x;
+                        text.x -= text.width / 2;
+                        text.y = star.y + 20;
+
+                        doc.addChild(text);
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+            this.layers["fleets"] = {
+                isDirty: true,
+                container: new PIXI.DisplayObjectContainer(),
+                drawingFunction: function (map) {
+                    var self = this;
+
+                    var doc = new PIXI.DisplayObjectContainer();
+
+                    var points;
+                    if (!this.player) {
+                        points = map.mapGen.getNonFillerPoints();
+                    } else {
+                        points = this.player.getVisibleStars();
+                    }
+
+                    var mouseDownFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseDown", event);
+                    };
+                    var mouseUpFN = function (event) {
+                        Rance.eventManager.dispatchEvent("mouseUp", event);
+                    };
+                    var mouseOverFN = function (fleet) {
+                        Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
+                    };
+
+                    function fleetClickFn(fleet) {
+                        Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
+                    }
+
+                    function singleFleetDrawFN(fleet) {
+                        var fleetContainer = new PIXI.DisplayObjectContainer();
+
+                        /*
+                        if (fleet.ships[0] && fleet.ships[0].front)
+                        {
+                        var front = fleet.ships[0].front;
+                        var frontHue = ((front.id * 20) % 360) / 360;
+                        var color = hslToHex(frontHue, 1, 0.5);
+                        }
+                        else
+                        {
+                        var color = fleet.player.color;
+                        }
+                        */
+                        var color = fleet.player.color;
+
+                        var text = new PIXI.Text(fleet.ships.length, {
+                            //fill: "#" + playerColor.toString(16)
+                            fill: "#FFFFFF",
+                            stroke: "#000000",
+                            strokeThickness: 3
+                        });
+
+                        var containerGfx = new PIXI.Graphics();
+                        containerGfx.lineStyle(1, 0x00000, 1);
+                        containerGfx.beginFill(color, 0.7);
+                        containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
+                        containerGfx.endFill();
+
+                        containerGfx.interactive = true;
+                        if (fleet.player.id === self.player.id) {
+                            containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
+                        }
+
+                        containerGfx.mousedown = mouseDownFN;
+                        containerGfx.mouseup = mouseUpFN;
+                        containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
+
+                        containerGfx.addChild(text);
+                        text.x += 2;
+                        text.y += 2;
+                        containerGfx.y -= 10;
+                        fleetContainer.addChild(containerGfx);
+
+                        return fleetContainer;
+                    }
+
+                    for (var i = 0; i < points.length; i++) {
+                        var star = points[i];
+                        var fleets = star.getAllFleets();
+                        if (!fleets || fleets.length <= 0)
+                            continue;
+
+                        var fleetsContainer = new PIXI.DisplayObjectContainer();
+                        fleetsContainer.x = star.x;
+                        fleetsContainer.y = star.y - 30;
+                        doc.addChild(fleetsContainer);
+
+                        for (var j = 0; j < fleets.length; j++) {
+                            var drawnFleet = singleFleetDrawFN(fleets[j]);
+                            drawnFleet.position.x = fleetsContainer.width;
+                            fleetsContainer.addChild(drawnFleet);
+                        }
+
+                        fleetsContainer.x -= fleetsContainer.width / 2;
+                    }
+
+                    doc.height;
+                    return doc;
+                }
+            };
+        };
+        MapRenderer.prototype.initMapModes = function () {
+            this.mapModes["default"] = {
+                name: "default",
+                layers: [
+                    { layer: this.layers["starOwners"] },
+                    { layer: this.layers["ownerBorders"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fogOfWar"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["noStatic"] = {
+                name: "noStatic",
+                layers: [
+                    { layer: this.layers["starOwners"] },
+                    { layer: this.layers["ownerBorders"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fogOfWar"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["income"] = {
+                name: "income",
+                layers: [
+                    { layer: this.layers["starIncome"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["influence"] = {
+                name: "influence",
+                layers: [
+                    { layer: this.layers["playerInfluence"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["sectors"] = {
+                name: "sectors",
+                layers: [
+                    { layer: this.layers["sectors"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["resources"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+            this.mapModes["regions"] = {
+                name: "regions",
+                layers: [
+                    { layer: this.layers["regions"] },
+                    { layer: this.layers["nonFillerVoronoiLines"] },
+                    { layer: this.layers["starLinks"] },
+                    { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fleets"] }
+                ]
+            };
+        };
+        MapRenderer.prototype.setParent = function (newParent) {
+            var oldParent = this.parent;
+            if (oldParent) {
+                oldParent.removeChild(this.container);
+            }
+
+            this.parent = newParent;
+            newParent.addChild(this.container);
+        };
+        MapRenderer.prototype.resetContainer = function () {
+            this.container.removeChildren();
+        };
+        MapRenderer.prototype.hasLayerInMapMode = function (layer) {
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                if (this.currentMapMode.layers[i].layer === layer) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+        MapRenderer.prototype.setLayerAsDirty = function (layerName) {
+            var layer = this.layers[layerName];
+            layer.isDirty = true;
+
+            this.isDirty = true;
+
+            // TODO
+            this.render();
+        };
+        MapRenderer.prototype.setAllLayersAsDirty = function () {
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                this.currentMapMode.layers[i].layer.isDirty = true;
+            }
+
+            this.isDirty = true;
+
+            // TODO
+            this.render();
+        };
+        MapRenderer.prototype.drawLayer = function (layer) {
+            if (!layer.isDirty)
+                return;
+            layer.container.removeChildren();
+            layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
+            layer.isDirty = false;
+        };
+        MapRenderer.prototype.setMapMode = function (newMapMode) {
+            if (!this.mapModes[newMapMode]) {
+                throw new Error("Invalid mapmode");
+                return;
+            }
+
+            if (this.currentMapMode && this.currentMapMode.name === newMapMode) {
+                return;
+            }
+
+            this.currentMapMode = this.mapModes[newMapMode];
+
+            this.resetContainer();
+
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                var layer = this.currentMapMode.layers[i].layer;
+                this.container.addChild(layer.container);
+            }
+
+            this.setAllLayersAsDirty();
+        };
+        MapRenderer.prototype.render = function () {
+            if (this.preventRender || !this.isDirty)
+                return;
+
+            console.log("render map");
+
+            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
+                var layer = this.currentMapMode.layers[i].layer;
+
+                this.drawLayer(layer);
+            }
+
+            this.isDirty = false;
+        };
+        return MapRenderer;
+    })();
+    Rance.MapRenderer = MapRenderer;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/voronoi.d.ts" />
+/// <reference path="star.ts" />
+/// <reference path="mapgen.ts" />
+/// <reference path="maprenderer.ts" />
+/// <reference path="region.ts" />
+/// <reference path="sector.ts" />
+var Rance;
+(function (Rance) {
+    var GalaxyMap = (function () {
+        function GalaxyMap() {
+        }
+        GalaxyMap.prototype.setMapGen = function (mapGen) {
+            this.mapGen = mapGen;
+
+            this.allPoints = mapGen.points;
+            this.stars = mapGen.getNonFillerPoints();
+            this.sectors = mapGen.sectors;
+            this.regions = mapGen.regions;
+        };
+        GalaxyMap.prototype.getIncomeBounds = function () {
+            var min, max;
+
+            for (var i = 0; i < this.stars.length; i++) {
+                var star = this.stars[i];
+                var income = star.getIncome();
+                if (!min)
+                    min = max = income;
+                else {
+                    if (income < min)
+                        min = income;
+                    else if (income > max)
+                        max = income;
+                }
+            }
+
+            return ({
+                min: min,
+                max: max
+            });
+        };
+        GalaxyMap.prototype.serialize = function () {
+            var data = {};
+
+            data.allPoints = this.allPoints.map(function (star) {
+                return star.serialize();
+            });
+
+            data.regions = [];
+
+            for (var regionId in this.regions) {
+                data.regions.push(this.regions[regionId].serialize());
+            }
+
+            data.sectors = [];
+
+            for (var sectorId in this.sectors) {
+                data.sectors.push(this.sectors[sectorId].serialize());
+            }
+
+            data.maxWidth = this.mapGen.maxWidth;
+            data.maxHeight = this.mapGen.maxHeight;
+
+            return data;
+        };
+        return GalaxyMap;
+    })();
+    Rance.GalaxyMap = GalaxyMap;
+})(Rance || (Rance = {}));
+/// <reference path="eventmanager.ts"/>
+/// <reference path="player.ts"/>
+/// <reference path="fleet.ts"/>
+/// <reference path="star.ts"/>
+/// <reference path="battledata.ts"/>
+var Rance;
+(function (Rance) {
+    var PlayerControl = (function () {
+        function PlayerControl(player) {
+            this.selectedFleets = [];
+            this.currentlyReorganizing = [];
+            this.preventingGhost = false;
+            this.listeners = {};
+            this.player = player;
+            this.addEventListeners();
+        }
+        PlayerControl.prototype.removeEventListener = function (name) {
+            Rance.eventManager.removeEventListener(name, this.listeners[name]);
+        };
+        PlayerControl.prototype.removeEventListeners = function () {
+            for (var name in this.listeners) {
+                this.removeEventListener(name);
+            }
+        };
+        PlayerControl.prototype.addEventListener = function (name, handler) {
+            this.listeners[name] = handler;
+
+            Rance.eventManager.addEventListener(name, handler);
+        };
+        PlayerControl.prototype.addEventListeners = function () {
+            var self = this;
+
+            this.addEventListener("updateSelection", function (e) {
+                self.updateSelection();
+            });
+
+            this.addEventListener("selectFleets", function (e) {
+                self.selectFleets(e.data);
+            });
+            this.addEventListener("deselectFleet", function (e) {
+                self.deselectFleet(e.data);
+            });
+            this.addEventListener("mergeFleets", function (e) {
+                self.mergeFleets();
+            });
+
+            this.addEventListener("splitFleet", function (e) {
+                self.splitFleet(e.data);
+            });
+            this.addEventListener("startReorganizingFleets", function (e) {
+                self.startReorganizingFleets(e.data);
+            });
+            this.addEventListener("endReorganizingFleets", function (e) {
+                self.endReorganizingFleets();
+            });
+
+            this.addEventListener("starClick", function (e) {
+                self.selectStar(e.data);
+            });
+            this.addEventListener("moveFleets", function (e) {
+                self.moveFleets(e.data);
+            });
+
+            this.addEventListener("setRectangleSelectTargetFN", function (e) {
+                e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
+            });
+
+            this.addEventListener("attackTarget", function (e) {
+                self.attackTarget(e.data);
+            });
+        };
+        PlayerControl.prototype.preventGhost = function (delay) {
+            this.preventingGhost = true;
+            var self = this;
+            var timeout = window.setTimeout(function () {
+                self.preventingGhost = false;
+                window.clearTimeout(timeout);
+            }, delay);
+        };
+        PlayerControl.prototype.clearSelection = function () {
+            this.selectedFleets = [];
+            this.selectedStar = null;
+        };
+        PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
+            if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
+            if (endReorganizingFleets)
+                this.endReorganizingFleets();
+            this.currentAttackTargets = this.getCurrentAttackTargets();
+
+            Rance.eventManager.dispatchEvent("playerControlUpdated", null);
+            Rance.eventManager.dispatchEvent("clearPossibleActions", null);
+        };
+
+        PlayerControl.prototype.areAllFleetsInSameLocation = function () {
+            if (this.selectedFleets.length <= 0)
+                return false;
+
+            for (var i = 1; i < this.selectedFleets.length; i++) {
+                if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+        PlayerControl.prototype.selectFleets = function (fleets) {
+            this.clearSelection();
+
+            for (var i = 0; i < fleets.length; i++) {
+                if (fleets[i].ships.length < 1) {
+                    if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
+                        continue;
+                    fleets[i].deleteFleet();
+                    fleets.splice(i, 1);
+                }
+            }
+
+            var oldFleets = this.selectedFleets.slice(0);
+
+            this.selectedFleets = fleets;
+
+            if (true || !Rance.arraysEqual(fleets, oldFleets)) {
+                this.updateSelection();
+            }
+
+            if (fleets.length > 0) {
+                this.preventGhost(15);
+            }
+        };
+        PlayerControl.prototype.deselectFleet = function (fleet) {
+            var fleetIndex = this.selectedFleets.indexOf(fleet);
+
+            if (fleetIndex < 0)
+                return;
+
+            this.selectedFleets.splice(fleetIndex, 1);
+
+            this.updateSelection();
+        };
+        PlayerControl.prototype.getMasterFleetForMerge = function () {
+            return this.selectedFleets[0];
+        };
+        PlayerControl.prototype.mergeFleets = function () {
+            var fleets = this.selectedFleets;
+            var master = this.getMasterFleetForMerge();
+
+            fleets.splice(fleets.indexOf(master), 1);
+            var slaves = fleets;
+
+            for (var i = 0; i < slaves.length; i++) {
+                slaves[i].mergeWith(master);
+            }
+
+            this.clearSelection();
+            this.selectedFleets = [master];
+            this.updateSelection();
+        };
+        PlayerControl.prototype.selectStar = function (star) {
+            if (this.preventingGhost)
+                return;
+            this.clearSelection();
+
+            this.selectedStar = star;
+
+            this.updateSelection();
+        };
+        PlayerControl.prototype.moveFleets = function (star) {
+            for (var i = 0; i < this.selectedFleets.length; i++) {
+                this.selectedFleets[i].pathFind(star);
+            }
+        };
+        PlayerControl.prototype.splitFleet = function (fleet) {
+            if (fleet.ships.length <= 0)
+                return;
+            this.endReorganizingFleets();
+            var newFleet = fleet.split();
+
+            this.currentlyReorganizing = [fleet, newFleet];
+            this.selectedFleets = [fleet, newFleet];
+
+            this.updateSelection(false);
+        };
+        PlayerControl.prototype.startReorganizingFleets = function (fleets) {
+            if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
+                throw new Error("cant reorganize fleets");
+            }
+            this.currentlyReorganizing = fleets;
+
+            this.updateSelection(false);
+        };
+        PlayerControl.prototype.endReorganizingFleets = function () {
+            for (var i = 0; i < this.currentlyReorganizing.length; i++) {
+                var fleet = this.currentlyReorganizing[i];
+                if (fleet.ships.length <= 0) {
+                    var selectedIndex = this.selectedFleets.indexOf(fleet);
+                    if (selectedIndex >= 0) {
+                        this.selectedFleets.splice(selectedIndex, 1);
+                    }
+                    fleet.deleteFleet();
+                }
+            }
+            this.currentlyReorganizing = [];
+        };
+        PlayerControl.prototype.getCurrentAttackTargets = function () {
+            if (this.selectedFleets.length < 1)
+                return [];
+            if (!this.areAllFleetsInSameLocation())
+                return [];
+
+            var location = this.selectedFleets[0].location;
+            var possibleTargets = location.getTargetsForPlayer(this.player);
+
+            return possibleTargets;
+        };
+
+        PlayerControl.prototype.attackTarget = function (target) {
+            if (this.currentAttackTargets.indexOf(target) < 0)
+                return false;
+
+            var currentLocation = this.selectedFleets[0].location;
+
+            this.player.attackTarget(currentLocation, target);
+        };
+        return PlayerControl;
+    })();
+    Rance.PlayerControl = PlayerControl;
+})(Rance || (Rance = {}));
+/// <reference path="player.ts"/>
+/// <reference path="playercontrol.ts"/>
+/// <reference path="galaxymap.ts"/>
+/// <reference path="eventmanager.ts"/>
+var Rance;
+(function (Rance) {
+    var Game = (function () {
+        function Game(map, players, humanPlayer) {
+            this.independents = [];
+            this.galaxyMap = map;
+            map.game = this;
+
+            this.playerOrder = players;
+            this.humanPlayer = humanPlayer;
+            this.turnNumber = 1;
+        }
+        Game.prototype.endTurn = function () {
+            this.setNextPlayer();
+            this.processPlayerStartTurn(this.activePlayer);
+
+            if (this.activePlayer.isAI) {
+                this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
+            } else {
+                this.turnNumber++;
+            }
+
+            Rance.eventManager.dispatchEvent("endTurn", null);
+            Rance.eventManager.dispatchEvent("updateSelection", null);
+        };
+        Game.prototype.processPlayerStartTurn = function (player) {
+            var shipStartTurnFN = function (ship) {
+                ship.resetMovePoints();
+                ship.heal();
+                ship.timesActedThisTurn = 0;
+            };
+
+            player.forEachUnit(shipStartTurnFN);
+            player.money += player.getIncome();
+
+            var allResourceIncomeData = player.getResourceIncome();
+            for (var resourceType in allResourceIncomeData) {
+                var resourceData = allResourceIncomeData[resourceType];
+                player.addResource(resourceData.resource, resourceData.amount);
+            }
+        };
+
+        Game.prototype.setNextPlayer = function () {
+            this.playerOrder.push(this.playerOrder.shift());
+
+            this.activePlayer = this.playerOrder[0];
+        };
+        Game.prototype.serialize = function () {
+            var data = {};
+
+            data.galaxyMap = this.galaxyMap.serialize();
+            data.players = this.playerOrder.map(function (player) {
+                return player.serialize();
+            });
+            data.players = data.players.concat(this.independents.map(function (player) {
+                return player.serialize();
+            }));
+            data.humanPlayerId = this.humanPlayer.id;
+
+            return data;
+        };
+        Game.prototype.save = function (name) {
+            var saveString = "Rance.Save." + name;
+
+            var date = new Date();
+
+            var gameData = this.serialize();
+
+            var stringified = JSON.stringify({
+                name: name,
+                date: date,
+                gameData: gameData,
+                idGenerators: Rance.extendObject(Rance.idGenerators),
+                cameraLocation: app.renderer.camera.getCenterPosition()
+            });
+
+            localStorage.setItem(saveString, stringified);
+        };
+        return Game;
+    })();
+    Rance.Game = Game;
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../player.ts"/>
+var Rance;
+(function (Rance) {
+    Rance.defaultEvaluationParameters = {
+        starDesirability: {
+            neighborRange: 1,
+            neighborWeight: 0.5,
+            totalIncomeWeight: 1,
+            baseIncomeWeight: 0.5,
+            infrastructureWeight: 1,
+            productionWeight: 1
+        }
+    };
+
+    var MapEvaluator = (function () {
+        function MapEvaluator(map, player) {
+            this.map = map;
+            this.player = player;
+
+            this.evaluationParameters = Rance.defaultEvaluationParameters;
+        }
+        MapEvaluator.prototype.evaluateStarIncome = function (star) {
+            var evaluation = 0;
+
+            evaluation += star.baseIncome;
+            evaluation += (star.getIncome() - star.baseIncome) * (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
+            var evaluation = 0;
+
+            for (var category in star.buildings) {
+                for (var i = 0; i < star.buildings[category].length; i++) {
+                    evaluation += star.buildings[category][i].totalCost;
+                }
+            }
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarProduction = function (star) {
+            var evaluation = 0;
+
+            evaluation += star.getItemManufactoryLevel();
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
+            var evaluation = 0;
+
+            var getDistanceFalloff = function (distance) {
+                return 1 / (distance + 1);
+            };
+            var inRange = star.getLinkedInRange(range).byRange;
+
+            for (var distanceString in inRange) {
+                var stars = inRange[distanceString];
+                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+
+                for (var i = 0; i < stars.length; i++) {
+                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
+                }
+            }
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+
+            evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
+            evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+            evaluation += this.evaluateStarProduction(star) * p.productionWeight;
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
+            var evaluation = 0;
+            var p = this.evaluationParameters.starDesirability;
+
+            evaluation += this.evaluateIndividualStarDesirability(star);
+            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) * p.neighborWeight;
+
+            return evaluation;
+        };
+
+        MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
+            var stars = this.player.getNeighboringStars();
+            stars = stars.filter(function (star) {
+                return star.owner.isIndependent;
+            });
+
+            var evaluationByStar = {};
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                var desirability = this.evaluateStarDesirability(star);
+                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+
+                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
+
+                evaluationByStar[star.id] = {
+                    star: star,
+                    desirability: desirability,
+                    independentStrength: independentStrength,
+                    ownInfluence: ownInfluenceAtStar
+                };
+            }
+
+            return evaluationByStar;
+        };
+
+        MapEvaluator.prototype.scoreExpansionTargets = function (evaluations) {
+            var scores = [];
+
+            for (var starId in evaluations) {
+                var evaluation = evaluations[starId];
+
+                var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
+
+                var score = evaluation.desirability * easeOfCapturing;
+
+                scores.push({
+                    star: evaluation.star,
+                    evaluation: evaluation,
+                    score: score
+                });
+            }
+
+            return scores.sort(function (a, b) {
+                return b.score - a.score;
+            });
+        };
+
+        MapEvaluator.prototype.getScoredExpansionTargets = function () {
+            var evaluations = this.evaluateImmediateExpansionTargets();
+            var scores = this.scoreExpansionTargets(evaluations);
+
+            return scores;
+        };
+
+        MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
+            var hostilePlayers = star.getEnemyFleetOwners(this.player);
+
+            var shipsByEnemy = {};
+
+            for (var i = 0; i < hostilePlayers.length; i++) {
+                shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+            }
+
+            return shipsByEnemy;
+        };
+
+        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+            var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
+
+            var strengthByEnemy = {};
+
+            for (var playerId in hostileShipsByPlayer) {
+                var strength = 0;
+
+                for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
+                    strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
+                }
+
+                strengthByEnemy[playerId] = strength;
+            }
+
+            return strengthByEnemy;
+        };
+
+        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+
+            var total = 0;
+
+            for (var playerId in byPlayer) {
+                // TODO
+                var isIndependent = false;
+                for (var i = 0; i < this.map.game.independents.length; i++) {
+                    if (this.map.game.independents[i].id === parseInt(playerId)) {
+                        isIndependent = true;
+                        break;
+                    }
+                }
+
+                // END
+                if (isIndependent) {
+                    total += byPlayer[playerId];
+                } else {
+                    continue;
+                }
+            }
+
+            return total;
+        };
+
+        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
+            var byPlayer = this.getHostileStrengthAtStar(star);
+
+            var total = 0;
+
+            for (var playerId in byPlayer) {
+                total += byPlayer[playerId];
+            }
+
+            return total;
+        };
+
+        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
+            var byPlayer = {};
+
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+
+                if (!byPlayer[building.controller.id]) {
+                    byPlayer[building.controller.id] = 0;
+                }
+
+                byPlayer[building.controller.id] += building.totalCost;
+            }
+
+            return byPlayer;
+        };
+
+        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
+            var strength = 0;
+
+            for (var i = 0; i < star.buildings["defence"].length; i++) {
+                var building = star.buildings["defence"][i];
+
+                if (building.controller.id === this.player.id)
+                    continue;
+
+                strength += building.totalCost;
+            }
+
+            return strength;
+        };
+
+        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
+            return fleet.getTotalStrengthEvaluation();
+        };
+
+        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
+            var stars = this.player.getVisibleStars();
+
+            var byPlayer = {};
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                for (var playerId in star.fleets) {
+                    var playerFleets = star.fleets[playerId];
+
+                    if (!byPlayer[playerId]) {
+                        byPlayer[playerId] = [];
+                    }
+
+                    for (var j = 0; j < playerFleets.length; j++) {
+                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+                    }
+                }
+            }
+
+            return byPlayer;
+        };
+
+        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
+            var playerIsImmobile = player.isIndependent;
+
+            var influenceByStar = {};
+
+            var stars = this.player.getRevealedStars();
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+
+                if (defenceBuildingStrengths[player.id]) {
+                    if (!isFinite(influenceByStar[star.id])) {
+                        influenceByStar[star.id] = 0;
+                    }
+                    ;
+
+                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
+                }
+            }
+
+            var fleets = this.getVisibleFleetsByPlayer()[player.id];
+
+            function getDistanceFalloff(distance) {
+                return 1 / (distance + 1);
+            }
+
+            for (var i = 0; i < fleets.length; i++) {
+                var fleet = fleets[i];
+                var strength = this.evaluateFleetStrength(fleet);
+                var location = fleet.location;
+
+                var range = fleet.getMinMaxMovePoints();
+                var turnsToCheck = 4;
+
+                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+
+                inFleetRange[0] = [location];
+
+                for (var distance in inFleetRange) {
+                    var numericDistance = parseInt(distance);
+                    var turnsToReach = Math.floor((numericDistance - 1) / range);
+                    if (turnsToReach < 0)
+                        turnsToReach = 0;
+                    var distanceFalloff = getDistanceFalloff(turnsToReach);
+                    var adjustedStrength = strength * distanceFalloff;
+
+                    for (var j = 0; j < inFleetRange[distance].length; j++) {
+                        var star = inFleetRange[distance][j];
+
+                        if (!isFinite(influenceByStar[star.id])) {
+                            influenceByStar[star.id] = 0;
+                        }
+                        ;
+
+                        influenceByStar[star.id] += adjustedStrength;
+                    }
+                }
+            }
+
+            return influenceByStar;
+        };
+        return MapEvaluator;
+    })();
+    Rance.MapEvaluator = MapEvaluator;
+})(Rance || (Rance = {}));
+/// <reference path="../star.ts"/>
+/*
+objectives:
+defend area
+attack player at area
+expand
+clean up pirates
+heal
+~~building
+*/
+var Rance;
+(function (Rance) {
+    var Objective = (function () {
+        function Objective(type, priority, target, data) {
+            this.isOngoing = false;
+            this.id = Rance.idGenerators.objective++;
+
+            this.type = type;
+            this.priority = priority;
+            this.target = target;
+            this.data = data;
+        }
+        Object.defineProperty(Objective.prototype, "priority", {
+            get: function () {
+                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
+            },
+            set: function (priority) {
+                this._basePriority = priority;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Objective;
+    })();
+    Rance.Objective = Objective;
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../game.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objective.ts"/>
+/*
+-- objectives ai
+get expansion targets
+create expansion objectives with priority based on score
+add flat amount of priority if objective is ongoing
+sort objectives by priority
+while under max active expansion objectives
+make highest priority expansion objective active
+-- fronts ai
+divide available units to fronts based on priority
+make requests for extra units if needed
+muster units at muster location
+when requested units arrive
+move units to target location
+execute action
+-- economy ai
+build units near request target
+*/
+var Rance;
+(function (Rance) {
+    var ObjectivesAI = (function () {
+        function ObjectivesAI(mapEvaluator, game) {
+            this.objectivesByType = {
+                expansion: [],
+                heal: []
+            };
+            this.objectives = [];
+            this.requests = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.game = game;
+        }
+        ObjectivesAI.prototype.setAllObjectives = function () {
+            this.objectives = [];
+
+            this.addObjectives(this.getExpansionObjectives());
+            this.addObjectives(this.getHealObjectives());
+        };
+
+        ObjectivesAI.prototype.addObjectives = function (objectives) {
+            this.objectives = this.objectives.concat(objectives);
+        };
+
+        ObjectivesAI.prototype.getExpansionObjectives = function () {
+            var objectivesByTarget = {};
+
+            var allObjectives = [];
+
+            for (var i = 0; i < this.objectivesByType.expansion.length; i++) {
+                var _o = this.objectivesByType.expansion[i];
+                _o.isOngoing = true;
+                objectivesByTarget[_o.target.id] = _o;
+            }
+
+            this.objectivesByType["expansion"] = [];
+
+            var minScore, maxScore;
+
+            var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
+
+            for (var i = 0; i < expansionScores.length; i++) {
+                var score = expansionScores[i].score;
+
+                //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+                maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+            }
+
+            for (var i = 0; i < expansionScores.length; i++) {
+                var star = expansionScores[i].star;
+                var relativeScore = Rance.getRelativeValue(expansionScores[i].score, 0, maxScore);
+                if (objectivesByTarget[star.id]) {
+                    objectivesByTarget[star.id].priority = relativeScore;
+                } else {
+                    objectivesByTarget[star.id] = new Rance.Objective("expansion", relativeScore, star, expansionScores[i]);
+                }
+
+                allObjectives.push(objectivesByTarget[star.id]);
+                this.objectivesByType["expansion"].push(objectivesByTarget[star.id]);
+            }
+
+            return allObjectives;
+        };
+
+        ObjectivesAI.prototype.getHealObjectives = function () {
+            var objective = new Rance.Objective("heal", 1, null);
+            this.objectivesByType["heal"] = [objective];
+
+            return [objective];
+        };
+
+        ObjectivesAI.prototype.processExpansionObjectives = function (objectives) {
+            var activeObjectives = [];
+        };
+        return ObjectivesAI;
+    })();
+    Rance.ObjectivesAI = ObjectivesAI;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (Personalities) {
+            Personalities.testPersonality1 = {
+                expansiveness: 1,
+                aggressiveness: 0.6,
+                unitCompositionPreference: {
+                    combat: 1,
+                    defence: 0.8,
+                    //magic: 0.3,
+                    //support: 0.3,
+                    utility: 0.3
+                }
+            };
+        })(Templates.Personalities || (Templates.Personalities = {}));
+        var Personalities = Templates.Personalities;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../unit.ts"/>
+/// <reference path="../star.ts"/>
+var Rance;
+(function (Rance) {
+    var Front = (function () {
+        function Front(props) {
+            this.hasMustered = false;
+            this.id = props.id;
+            this.objective = props.objective;
+            this.priority = props.priority;
+            this.units = props.units || [];
+
+            this.minUnitsDesired = props.minUnitsDesired;
+            this.idealUnitsDesired = props.idealUnitsDesired;
+
+            this.targetLocation = props.targetLocation;
+            this.musterLocation = props.musterLocation;
+        }
+        Front.prototype.organizeFleets = function () {
+            // pure fleet only has units belonging to this front in it
+            /*
+            get all pure fleets + location
+            get all ships in impure fleets + location
+            merge pure fleets at same location
+            move impure ships to pure fleets at location if possible
+            create new pure fleets with remaining impure units
+            */
+            var allFleets = this.getAssociatedFleets();
+
+            var pureFleetsByLocation = {};
+            var impureFleetMembersByLocation = {};
+
+            var ownUnitFilterFN = function (unit) {
+                return this.getUnitIndex(unit) >= 0;
+            }.bind(this);
+
+            for (var i = 0; i < allFleets.length; i++) {
+                var fleet = allFleets[i];
+                var star = fleet.location;
+
+                if (this.isFleetPure(fleet)) {
+                    if (!pureFleetsByLocation[star.id]) {
+                        pureFleetsByLocation[star.id] = [];
+                    }
+
+                    pureFleetsByLocation[star.id].push(fleet);
+                } else {
+                    var ownUnits = fleet.ships.filter(ownUnitFilterFN);
+
+                    for (var j = 0; j < ownUnits.length; j++) {
+                        if (!impureFleetMembersByLocation[star.id]) {
+                            impureFleetMembersByLocation[star.id] = [];
+                        }
+
+                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+                    }
+                }
+            }
+
+            var sortFleetsBySizeFN = function (a, b) {
+                return b.ships.length - a.ships.length;
+            };
+
+            for (var starId in pureFleetsByLocation) {
+                // combine pure fleets at same location
+                var fleets = pureFleetsByLocation[starId];
+                if (fleets.length > 1) {
+                    fleets.sort(sortFleetsBySizeFN);
+
+                    for (var i = fleets.length - 1; i >= 1; i--) {
+                        fleets[i].mergeWith(fleets[0]);
+                        fleets.splice(i, 1);
+                    }
+                }
+
+                // move impure ships to pure fleets at same location
+                if (impureFleetMembersByLocation[starId]) {
+                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
+                        var ship = impureFleetMembersByLocation[starId][i];
+                        ship.fleet.transferShip(fleets[0], ship);
+                        impureFleetMembersByLocation[starId].splice(i, 1);
+                    }
+                }
+            }
+
+            for (var starId in impureFleetMembersByLocation) {
+                var ships = impureFleetMembersByLocation[starId];
+                if (ships.length < 1)
+                    continue;
+                var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
+
+                for (var i = ships.length - 1; i >= 0; i--) {
+                    ships[i].fleet.transferShip(newFleet, ships[i]);
+                }
+            }
+        };
+        Front.prototype.isFleetPure = function (fleet) {
+            for (var i = 0; i < fleet.ships.length; i++) {
+                if (this.getUnitIndex(fleet.ships[i]) === -1) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+        Front.prototype.getAssociatedFleets = function () {
+            var fleetsById = {};
+
+            for (var i = 0; i < this.units.length; i++) {
+                if (!this.units[i].fleet)
+                    continue;
+
+                if (!fleetsById[this.units[i].fleet.id]) {
+                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+                }
+            }
+
+            var allFleets = [];
+
+            for (var fleetId in fleetsById) {
+                allFleets.push(fleetsById[fleetId]);
+            }
+
+            return allFleets;
+        };
+        Front.prototype.getUnitIndex = function (unit) {
+            return this.units.indexOf(unit);
+        };
+        Front.prototype.addUnit = function (unit) {
+            if (this.getUnitIndex(unit) === -1) {
+                if (unit.front) {
+                    unit.front.removeUnit(unit);
+                }
+
+                unit.front = this;
+                this.units.push(unit);
+            }
+        };
+        Front.prototype.removeUnit = function (unit) {
+            var unitIndex = this.getUnitIndex(unit);
+            if (unitIndex !== -1) {
+                unit.front = null;
+                this.units.splice(unitIndex, 1);
+            }
+        };
+        Front.prototype.getUnitCountByArchetype = function () {
+            var unitCountByArchetype = {};
+
+            for (var i = 0; i < this.units.length; i++) {
+                var archetype = this.units[i].template.archetype;
+
+                if (!unitCountByArchetype[archetype]) {
+                    unitCountByArchetype[archetype] = 0;
+                }
+
+                unitCountByArchetype[archetype]++;
+            }
+
+            return unitCountByArchetype;
+        };
+        Front.prototype.getUnitsByLocation = function () {
+            var byLocation = {};
+
+            for (var i = 0; i < this.units.length; i++) {
+                var star = this.units[i].fleet.location;
+                if (!byLocation[star.id]) {
+                    byLocation[star.id] = [];
+                }
+
+                byLocation[star.id].push(this.units[i]);
+            }
+
+            return byLocation;
+        };
+
+        Front.prototype.moveFleets = function (afterMoveCallback) {
+            switch (this.objective.type) {
+                case "heal": {
+                    this.healMoveRoutine(afterMoveCallback);
+                    break;
+                }
+                default: {
+                    this.defaultMoveRoutine(afterMoveCallback);
+                    break;
+                }
+            }
+        };
+
+        Front.prototype.healMoveRoutine = function (afterMoveCallback) {
+            var fleets = this.getAssociatedFleets();
+
+            if (fleets.length <= 0) {
+                afterMoveCallback();
+                return;
+            }
+
+            var finishedMovingCount = 0;
+            var finishFleetMoveFN = function () {
+                finishedMovingCount++;
+                if (finishedMovingCount >= fleets.length) {
+                    afterMoveCallback();
+                }
+            };
+
+            for (var i = 0; i < fleets.length; i++) {
+                var player = fleets[i].player;
+                var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
+
+                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+            }
+        };
+
+        Front.prototype.defaultMoveRoutine = function (afterMoveCallback) {
+            var shouldMoveToTarget;
+
+            var unitsByLocation = this.getUnitsByLocation();
+            var fleets = this.getAssociatedFleets();
+
+            var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
+
+            var inRangeOfTarget = 0;
+
+            for (var i = 0; i < fleets.length; i++) {
+                var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
+                if (fleets[i].getMinCurrentMovePoints() >= distance) {
+                    inRangeOfTarget += fleets[i].ships.length;
+                }
+            }
+
+            if (this.hasMustered) {
+                shouldMoveToTarget = true;
+            } else {
+                if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired) {
+                    this.hasMustered = true;
+                    shouldMoveToTarget = true;
+                } else {
+                    shouldMoveToTarget = false;
+                }
+            }
+
+            var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
+
+            var finishAllMoveFN = function () {
+                unitsByLocation = this.getUnitsByLocation();
+                var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
+
+                if (atTarget >= this.minUnitsDesired) {
+                    this.executeAction(afterMoveCallback);
+                } else {
+                    afterMoveCallback();
+                }
+            }.bind(this);
+
+            var finishedMovingCount = 0;
+            var finishFleetMoveFN = function () {
+                finishedMovingCount++;
+                if (finishedMovingCount >= fleets.length) {
+                    finishAllMoveFN();
+                }
+            };
+
+            for (var i = 0; i < fleets.length; i++) {
+                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+            }
+        };
+        Front.prototype.executeAction = function (afterExecutedCallback) {
+            var star = this.targetLocation;
+            var player = this.units[0].fleet.player;
+
+            if (this.objective.type === "expansion") {
+                var attackTargets = star.getTargetsForPlayer(player);
+
+                var target = attackTargets.filter(function (target) {
+                    return target.enemy.isIndependent;
+                })[0];
+
+                player.attackTarget(star, target, afterExecutedCallback);
+            }
+        };
+        return Front;
+    })();
+    Rance.Front = Front;
+})(Rance || (Rance = {}));
+/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../player.ts"/>
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="objectivesai.ts"/>
+/// <reference path="front.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
+var Rance;
+(function (Rance) {
+    var FrontsAI = (function () {
+        function FrontsAI(mapEvaluator, objectivesAI, personality) {
+            this.fronts = [];
+            this.frontsRequestingUnits = [];
+            this.frontsToMove = [];
+            this.mapEvaluator = mapEvaluator;
+            this.map = mapEvaluator.map;
+            this.player = mapEvaluator.player;
+            this.objectivesAI = objectivesAI;
+            this.personality = personality;
+        }
+        FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
+            var totalUnitCountByArchetype = {};
+
+            var units = this.player.getAllUnits();
+            for (var i = 0; i < units.length; i++) {
+                var unitArchetype = units[i].template.archetype;
+
+                if (!totalUnitCountByArchetype[unitArchetype]) {
+                    totalUnitCountByArchetype[unitArchetype] = 0;
+                }
+
+                totalUnitCountByArchetype[unitArchetype]++;
+            }
+
+            return totalUnitCountByArchetype;
+        };
+
+        FrontsAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
+            var min = 0;
+            var max;
+            for (var archetype in unitsByArchetype) {
+                var count = unitsByArchetype[archetype];
+                max = isFinite(max) ? Math.max(max, count) : count;
+            }
+
+            var relativeWeights = {};
+
+            for (var archetype in unitsByArchetype) {
+                var count = unitsByArchetype[archetype];
+                relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
+            }
+
+            return relativeWeights;
+        };
+
+        FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
+            var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
+
+            var deviationFromIdeal = {};
+
+            for (var archetype in idealWeights) {
+                var ideal = idealWeights[archetype];
+                var actual = relativeWeights[archetype] || 0;
+
+                deviationFromIdeal[archetype] = ideal - actual;
+            }
+
+            return deviationFromIdeal;
+        };
+
+        FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
+            var ideal = this.personality.unitCompositionPreference;
+            var actual = this.getTotalUnitCountByArchetype();
+            return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
+        };
+
+        FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
+            var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
+            var globalPreferenceWeight = relativeFrontSize;
+
+            var globalScores = this.getGlobalUnitArcheypeScores();
+
+            var scores = {};
+
+            var frontArchetypes = front.getUnitCountByArchetype();
+            var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
+
+            for (var archetype in globalScores) {
+                scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
+                scores[archetype] += frontScores[archetype];
+                scores[archetype] /= 2;
+            }
+
+            return scores;
+        };
+
+        FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
+            switch (front.objective.type) {
+                case "heal": {
+                    return this.getHealUnitFitScore(unit, front);
+                }
+                default: {
+                    return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+                }
+            }
+        };
+
+        FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
+            var healthPercentage = unit.currentHealth / unit.maxHealth;
+            if (healthPercentage > 0.75)
+                return -1;
+
+            return (1 - healthPercentage) * 2;
+        };
+
+        FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
+            // base score based on unit composition
+            var score = frontArchetypeScores[unit.template.archetype];
+
+            // add score based on front priority
+            // lower priority if front requirements already met
+            // more important fronts get priority but dont hog units
+            var unitsOverMinimum = front.units.length - front.minUnitsDesired;
+            var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
+
+            var priorityMultiplier = 1;
+            if (unitsOverMinimum > 0) {
+                priorityMultiplier -= unitsOverMinimum * 0.15;
+            }
+            if (unitsOverIdeal > 0) {
+                priorityMultiplier -= unitsOverIdeal * 0.4;
+            }
+
+            if (priorityMultiplier < 0)
+                priorityMultiplier = 0;
+
+            var adjustedPriority = front.priority * priorityMultiplier;
+            score += adjustedPriority * 2;
+
+            // penalize initial units for front
+            // inertia at beginning of adding units to front
+            // so ai prioritizes fully formed fronts to incomplete ones
+            var newUnitInertia = 0.5 - front.units.length * 0.1;
+            if (newUnitInertia > 0) {
+                score -= newUnitInertia;
+            }
+
+            // prefer units already part of this front
+            var alreadyInFront = unit.front && unit.front === front;
+            if (alreadyInFront) {
+                score += 0.2;
+                if (front.hasMustered) {
+                    score += 0.5;
+                }
+            }
+
+            // penalize fronts with high requirements
+            // reduce forming incomplete fronts even if they have high priority
+            // effect lessens as total unit count increases
+            // TODO
+            // penalize units on low health
+            var healthPercentage = unit.currentHealth / unit.maxHealth;
+
+            if (healthPercentage < 0.75) {
+                var lostHealthPercentage = 1 - healthPercentage;
+                score += lostHealthPercentage * -2.5;
+            }
+
+            // prioritize units closer to front target
+            var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
+            var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
+            var distanceAdjust = turnsToReach * -0.1;
+            score += distanceAdjust;
+
+            return score;
+        };
+
+        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
+            var scores = [];
+
+            var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
+
+            for (var i = 0; i < units.length; i++) {
+                scores.push({
+                    unit: units[i],
+                    score: this.scoreUnitFitForFront(units[i], front, frontArchetypeScores),
+                    front: front
+                });
+            }
+
+            return scores;
+        };
+
+        FrontsAI.prototype.assignUnits = function () {
+            var units = this.player.getAllUnits();
+
+            var allUnitScores = [];
+            var unitScoresByFront = {};
+
+            var recalculateScoresForFront = function (front) {
+                var archetypeScores = this.getFrontUnitArchetypeScores(front);
+                var frontScores = unitScoresByFront[front.id];
+
+                for (var i = 0; i < frontScores.length; i++) {
+                    var unit = frontScores[i].unit;
+                    frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
+                }
+            }.bind(this);
+
+            var removeUnit = function (unit) {
+                for (var frontId in unitScoresByFront) {
+                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
+                        return score.unit !== unit;
+                    });
+                }
+            };
+
+            // ascending
+            var sortByScoreFN = function (a, b) {
+                return a.score - b.score;
+            };
+
+            for (var i = 0; i < this.fronts.length; i++) {
+                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+                unitScoresByFront[this.fronts[i].id] = frontScores;
+                allUnitScores = allUnitScores.concat(frontScores);
+            }
+
+            var alreadyAdded = {};
+
+            while (allUnitScores.length > 0) {
+                // sorted in loop as scores get recalculated every iteration
+                allUnitScores.sort(sortByScoreFN);
+
+                var bestScore = allUnitScores.pop();
+                if (alreadyAdded[bestScore.unit.id]) {
+                    continue;
+                }
+
+                bestScore.front.addUnit(bestScore.unit);
+                console.log(bestScore.front.objective.type, bestScore.unit.currentHealth, bestScore.unit.maxHealth);
+
+                removeUnit(bestScore.unit);
+                alreadyAdded[bestScore.unit.id] = true;
+                recalculateScoresForFront(bestScore.front);
+            }
+        };
+
+        FrontsAI.prototype.getFrontWithId = function (id) {
+            for (var i = 0; i < this.fronts.length; i++) {
+                if (this.fronts[i].id === id) {
+                    return this.fronts[i];
+                }
+            }
+
+            return null;
+        };
+
+        FrontsAI.prototype.createFront = function (objective) {
+            var musterLocation = objective.target ? this.player.getNearestOwnedStarTo(objective.target) : null;
+            var unitsDesired = this.getUnitsToFillObjective(objective);
+
+            var front = new Rance.Front({
+                id: objective.id,
+                priority: objective.priority,
+                objective: objective,
+                minUnitsDesired: unitsDesired,
+                idealUnitsDesired: 6,
+                targetLocation: objective.target,
+                musterLocation: musterLocation
+            });
+
+            return front;
+        };
+
+        FrontsAI.prototype.removeInactiveFronts = function () {
+            for (var i = this.fronts.length - 1; i >= 0; i--) {
+                var front = this.fronts[i];
+                var hasActiveObjective = false;
+
+                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
+                    var objective = this.objectivesAI.objectives[j];
+                    if (objective.id === front.id && objective.priority > 0.04) {
+                        hasActiveObjective = true;
+                        break;
+                    }
+                }
+
+                if (!hasActiveObjective) {
+                    this.fronts.splice(i, 1);
+                }
+            }
+        };
+
+        FrontsAI.prototype.formFronts = function () {
+            /*
+            dissolve old fronts without an active objective
+            create new fronts for every objective not already assoicated with one
+            */
+            this.removeInactiveFronts();
+
+            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
+                var objective = this.objectivesAI.objectives[i];
+
+                if (objective.priority > 0.04) {
+                    if (!this.getFrontWithId(objective.id)) {
+                        var front = this.createFront(objective);
+                        this.fronts.push(front);
+                    }
+                }
+            }
+        };
+
+        FrontsAI.prototype.organizeFleets = function () {
+            for (var i = 0; i < this.fronts.length; i++) {
+                this.fronts[i].organizeFleets();
+            }
+        };
+
+        FrontsAI.prototype.setFrontsToMove = function () {
+            this.frontsToMove = this.fronts.slice(0);
+
+            var frontMovePriorities = {
+                expansion: 4,
+                heal: -1
+            };
+
+            this.frontsToMove.sort(function (a, b) {
+                return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
+            });
+        };
+
+        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
+            var front = this.frontsToMove.pop();
+
+            if (!front) {
+                afterMovingAllCallback();
+                return;
+            }
+
+            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+        };
+
+        FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
+            switch (objective.type) {
+                case "expansion": {
+                    return this.getUnitsToFillExpansionObjective(objective);
+                }
+                case "heal": {
+                    return 999;
+                }
+            }
+        };
+
+        FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
+            var star = objective.target;
+            var independentShips = star.getAllShipsOfPlayer(star.owner);
+
+            if (independentShips.length === 1)
+                return 2;
+            else {
+                var desired = independentShips.length + 2;
+                return Math.min(desired, 6);
+            }
+        };
+
+        FrontsAI.prototype.setUnitRequests = function () {
+            /*for each front that doesnt fulfill minimum unit requirement
+            make request with same priority of front
+            */
+            this.frontsRequestingUnits = [];
+
+            for (var i = 0; i < this.fronts.length; i++) {
+                var front = this.fronts[i];
+                if (front.units.length < front.idealUnitsDesired) {
+                    this.frontsRequestingUnits.push(front);
+                }
+            }
+        };
+        return FrontsAI;
+    })();
+    Rance.FrontsAI = FrontsAI;
+})(Rance || (Rance = {}));
+/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../game.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
+/// <reference path="frontsai.ts"/>
+var Rance;
+(function (Rance) {
+    var EconomicAI = (function () {
+        function EconomicAI(props) {
+            this.objectivesAI = props.objectivesAI;
+            this.frontsAI = props.frontsAI;
+
+            this.mapEvaluator = props.mapEvaluator;
+            this.player = props.mapEvaluator.player;
+
+            this.personality = props.personality;
+        }
+        EconomicAI.prototype.satisfyAllRequests = function () {
+            /*
+            get all requests from OAI and FAI
+            sort by priority
+            fulfill by priority
+            */
+            var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+            allRequests.sort(function (a, b) {
+                return b.priority - a.priority;
+            });
+
+            for (var i = 0; i < allRequests.length; i++) {
+                var request = allRequests[i];
+
+                // is front
+                if (request.targetLocation) {
+                    this.satisfyFrontRequest(request);
+                } else {
+                }
+            }
+        };
+
+        EconomicAI.prototype.satisfyFrontRequest = function (front) {
+            // TODO
+            var star = this.player.getNearestOwnedStarTo(front.musterLocation);
+
+            var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
+            var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
+
+            var buildableUnitTypesByArchetype = {};
+
+            var buildableUnitTypes = star.getBuildableShipTypes();
+
+            for (var i = 0; i < buildableUnitTypes.length; i++) {
+                var archetype = buildableUnitTypes[i].archetype;
+
+                if (!buildableUnitTypesByArchetype[archetype]) {
+                    buildableUnitTypesByArchetype[archetype] = [];
+                }
+
+                buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
+            }
+
+            var unitType;
+
+            for (var i = 0; i < sortedScores.length; i++) {
+                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                    unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                    break;
+                }
+            }
+            if (!unitType)
+                debugger;
+
+            var unit = this.player.buildUnit(unitType, star);
+
+            front.addUnit(unit);
+        };
+        return EconomicAI;
+    })();
+    Rance.EconomicAI = EconomicAI;
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap.ts"/>
+/// <reference path="../game.ts"/>
+/// <reference path="../player.ts"/>
+/// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
+/// <reference path="economicai.ts"/>
+/// <reference path="frontsai.ts"/>
+var Rance;
+(function (Rance) {
+    var AIController = (function () {
+        function AIController(player, game) {
+            this.personality = Rance.Templates.Personalities.testPersonality1;
+
+            this.player = player;
+            this.game = game;
+
+            this.map = game.galaxyMap;
+
+            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
+
+            this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
+            this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
+            this.economicAI = new Rance.EconomicAI({
+                objectivesAI: this.objectivesAI,
+                frontsAI: this.frontsAI,
+                mapEvaluator: this.mapEvaluator,
+                personality: this.personality
+            });
+        }
+        AIController.prototype.processTurn = function (afterFinishedCallback) {
+            // gsai evaluate grand strategy
+            // oai make objectives
+            this.objectivesAI.setAllObjectives();
+
+            // fai form fronts
+            this.frontsAI.formFronts();
+
+            // fai assign units
+            this.frontsAI.assignUnits();
+
+            // fai request units
+            this.frontsAI.setUnitRequests();
+
+            // eai fulfill requests
+            this.economicAI.satisfyAllRequests();
+
+            // fai organize fleets
+            this.frontsAI.organizeFleets();
+
+            // fai set fleets yet to move
+            this.frontsAI.setFrontsToMove();
+
+            // fai move fleets
+            // function param is called after all fronts have moved
+            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
+        };
+        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
+            this.frontsAI.organizeFleets();
+            if (afterFinishedCallback) {
+                afterFinishedCallback();
+            }
+            console.log("finish moving");
+        };
+        return AIController;
+    })();
+    Rance.AIController = AIController;
+})(Rance || (Rance = {}));
+/// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="building.ts" />
@@ -8623,6 +12630,8 @@ var Rance;
 /// <reference path="flag.ts" />
 /// <reference path="item.ts" />
 /// <reference path="battlesimulator.ts" />
+/// <reference path="battleprep.ts" />
+/// <reference path="mapai/aicontroller.ts"/>
 var Rance;
 (function (Rance) {
     var Player = (function () {
@@ -11540,6 +15549,18 @@ var Rance;
             handleSetCustomImage: function (image) {
                 this.setState({ flagHasCustomImage: Boolean(image) });
             },
+            randomize: function () {
+                if (!this.state.flagHasCustomImage) {
+                    this.refs.flagSetter.state.flag.generateRandom();
+                }
+
+                var mainColor = Rance.generateMainColor();
+
+                this.setState({
+                    mainColor: mainColor,
+                    subColor: Rance.generateSecondaryColor(mainColor)
+                });
+            },
             makePlayer: function () {
                 var player = new Rance.Player(!this.props.isHuman);
 
@@ -11615,12 +15636,21 @@ var Rance;
             getInitialState: function () {
                 this.newPlayerId = 0;
 
+                var players = [];
+                for (var i = 0; i < this.props.minPlayers; i++) {
+                    players.push(this.newPlayerId++);
+                }
+
                 return ({
-                    players: [],
+                    players: players,
                     activeColorPicker: null
                 });
             },
             makeNewPlayer: function () {
+                if (this.state.players.length >= this.props.maxPlayers) {
+                    return;
+                }
+
                 this.setState({
                     players: this.state.players.concat(this.newPlayerId++)
                 });
@@ -11635,6 +15665,10 @@ var Rance;
                 this.setState({ players: newPlayerOrder });
             },
             removePlayer: function (idToRemove) {
+                if (this.state.players.length <= this.props.minPlayers) {
+                    return;
+                }
+
                 this.setState({
                     players: this.state.players.filter(function (playerId) {
                         return playerId !== idToRemove;
@@ -11647,6 +15681,13 @@ var Rance;
                 }
 
                 this.setState({ activeColorPicker: colorPicker });
+            },
+            randomizeAllPlayers: function () {
+                for (var id in this.refs) {
+                    var player = this.refs[id];
+
+                    player.randomize();
+                }
             },
             makeAllPlayers: function () {
                 var players = [];
@@ -11669,6 +15710,9 @@ var Rance;
                         setHuman: this.setHumanPlayer
                     }));
                 }
+
+                var canAddPlayers = this.state.players.length < this.props.maxPlayers;
+
                 return (React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
                     className: "player-setup setup-game-players-header"
                 }, React.DOM.div({
@@ -11684,8 +15728,9 @@ var Rance;
                 }, "Flag"), React.DOM.div({
                     className: "player-setup-remove-player"
                 }, "Remove")), playerSetups, React.DOM.button({
-                    className: "player-setup player-setup-add-new",
-                    onClick: this.makeNewPlayer
+                    className: "player-setup player-setup-add-new" + (canAddPlayers ? "" : " disabled"),
+                    onClick: this.makeNewPlayer,
+                    disabled: !canAddPlayers
                 }, "Add new player")));
             }
         });
@@ -11698,6 +15743,12 @@ var Rance;
     (function (UIComponents) {
         UIComponents.SetupGame = React.createClass({
             displayName: "SetupGame",
+            getInitialState: function () {
+                return ({
+                    minPlayers: 1,
+                    maxPlayers: 5
+                });
+            },
             startGame: function () {
                 var gameData = {};
 
@@ -11710,14 +15761,22 @@ var Rance;
                     players: players,
                     independents: pirates
                 };
-                //app.makeGameFromSetup(gameData);
+
+                app.makeGameFromSetup(gameData);
+            },
+            randomizeAllPlayers: function () {
+                this.refs.players.randomizeAllPlayers();
             },
             render: function () {
                 return (React.DOM.div({
                     className: "setup-game"
                 }, Rance.UIComponents.SetupGamePlayers({
-                    ref: "players"
+                    ref: "players",
+                    minPlayers: this.state.minPlayers,
+                    maxPlayers: this.state.maxPlayers
                 }), React.DOM.button({
+                    onClick: this.randomizeAllPlayers
+                }, "Randomize all"), React.DOM.button({
                     onClick: this.startGame
                 }, "Start game")));
             }
@@ -12037,2579 +16096,6 @@ var Rance;
         return ReactUI;
     })();
     Rance.ReactUI = ReactUI;
-})(Rance || (Rance = {}));
-/// <reference path="eventmanager.ts"/>
-/// <reference path="player.ts"/>
-/// <reference path="fleet.ts"/>
-/// <reference path="star.ts"/>
-/// <reference path="battledata.ts"/>
-var Rance;
-(function (Rance) {
-    var PlayerControl = (function () {
-        function PlayerControl(player) {
-            this.selectedFleets = [];
-            this.currentlyReorganizing = [];
-            this.preventingGhost = false;
-            this.listeners = {};
-            this.player = player;
-            this.addEventListeners();
-        }
-        PlayerControl.prototype.removeEventListener = function (name) {
-            Rance.eventManager.removeEventListener(name, this.listeners[name]);
-        };
-        PlayerControl.prototype.removeEventListeners = function () {
-            for (var name in this.listeners) {
-                this.removeEventListener(name);
-            }
-        };
-        PlayerControl.prototype.addEventListener = function (name, handler) {
-            this.listeners[name] = handler;
-
-            Rance.eventManager.addEventListener(name, handler);
-        };
-        PlayerControl.prototype.addEventListeners = function () {
-            var self = this;
-
-            this.addEventListener("updateSelection", function (e) {
-                self.updateSelection();
-            });
-
-            this.addEventListener("selectFleets", function (e) {
-                self.selectFleets(e.data);
-            });
-            this.addEventListener("deselectFleet", function (e) {
-                self.deselectFleet(e.data);
-            });
-            this.addEventListener("mergeFleets", function (e) {
-                self.mergeFleets();
-            });
-
-            this.addEventListener("splitFleet", function (e) {
-                self.splitFleet(e.data);
-            });
-            this.addEventListener("startReorganizingFleets", function (e) {
-                self.startReorganizingFleets(e.data);
-            });
-            this.addEventListener("endReorganizingFleets", function (e) {
-                self.endReorganizingFleets();
-            });
-
-            this.addEventListener("starClick", function (e) {
-                self.selectStar(e.data);
-            });
-            this.addEventListener("moveFleets", function (e) {
-                self.moveFleets(e.data);
-            });
-
-            this.addEventListener("setRectangleSelectTargetFN", function (e) {
-                e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
-            });
-
-            this.addEventListener("attackTarget", function (e) {
-                self.attackTarget(e.data);
-            });
-        };
-        PlayerControl.prototype.preventGhost = function (delay) {
-            this.preventingGhost = true;
-            var self = this;
-            var timeout = window.setTimeout(function () {
-                self.preventingGhost = false;
-                window.clearTimeout(timeout);
-            }, delay);
-        };
-        PlayerControl.prototype.clearSelection = function () {
-            this.selectedFleets = [];
-            this.selectedStar = null;
-        };
-        PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
-            if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
-            if (endReorganizingFleets)
-                this.endReorganizingFleets();
-            this.currentAttackTargets = this.getCurrentAttackTargets();
-
-            Rance.eventManager.dispatchEvent("playerControlUpdated", null);
-            Rance.eventManager.dispatchEvent("clearPossibleActions", null);
-        };
-
-        PlayerControl.prototype.areAllFleetsInSameLocation = function () {
-            if (this.selectedFleets.length <= 0)
-                return false;
-
-            for (var i = 1; i < this.selectedFleets.length; i++) {
-                if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-        PlayerControl.prototype.selectFleets = function (fleets) {
-            this.clearSelection();
-
-            for (var i = 0; i < fleets.length; i++) {
-                if (fleets[i].ships.length < 1) {
-                    if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
-                        continue;
-                    fleets[i].deleteFleet();
-                    fleets.splice(i, 1);
-                }
-            }
-
-            var oldFleets = this.selectedFleets.slice(0);
-
-            this.selectedFleets = fleets;
-
-            if (true || !Rance.arraysEqual(fleets, oldFleets)) {
-                this.updateSelection();
-            }
-
-            if (fleets.length > 0) {
-                this.preventGhost(15);
-            }
-        };
-        PlayerControl.prototype.deselectFleet = function (fleet) {
-            var fleetIndex = this.selectedFleets.indexOf(fleet);
-
-            if (fleetIndex < 0)
-                return;
-
-            this.selectedFleets.splice(fleetIndex, 1);
-
-            this.updateSelection();
-        };
-        PlayerControl.prototype.getMasterFleetForMerge = function () {
-            return this.selectedFleets[0];
-        };
-        PlayerControl.prototype.mergeFleets = function () {
-            var fleets = this.selectedFleets;
-            var master = this.getMasterFleetForMerge();
-
-            fleets.splice(fleets.indexOf(master), 1);
-            var slaves = fleets;
-
-            for (var i = 0; i < slaves.length; i++) {
-                slaves[i].mergeWith(master);
-            }
-
-            this.clearSelection();
-            this.selectedFleets = [master];
-            this.updateSelection();
-        };
-        PlayerControl.prototype.selectStar = function (star) {
-            if (this.preventingGhost)
-                return;
-            this.clearSelection();
-
-            this.selectedStar = star;
-
-            this.updateSelection();
-        };
-        PlayerControl.prototype.moveFleets = function (star) {
-            for (var i = 0; i < this.selectedFleets.length; i++) {
-                this.selectedFleets[i].pathFind(star);
-            }
-        };
-        PlayerControl.prototype.splitFleet = function (fleet) {
-            if (fleet.ships.length <= 0)
-                return;
-            this.endReorganizingFleets();
-            var newFleet = fleet.split();
-
-            this.currentlyReorganizing = [fleet, newFleet];
-            this.selectedFleets = [fleet, newFleet];
-
-            this.updateSelection(false);
-        };
-        PlayerControl.prototype.startReorganizingFleets = function (fleets) {
-            if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
-                throw new Error("cant reorganize fleets");
-            }
-            this.currentlyReorganizing = fleets;
-
-            this.updateSelection(false);
-        };
-        PlayerControl.prototype.endReorganizingFleets = function () {
-            for (var i = 0; i < this.currentlyReorganizing.length; i++) {
-                var fleet = this.currentlyReorganizing[i];
-                if (fleet.ships.length <= 0) {
-                    var selectedIndex = this.selectedFleets.indexOf(fleet);
-                    if (selectedIndex >= 0) {
-                        this.selectedFleets.splice(selectedIndex, 1);
-                    }
-                    fleet.deleteFleet();
-                }
-            }
-            this.currentlyReorganizing = [];
-        };
-        PlayerControl.prototype.getCurrentAttackTargets = function () {
-            if (this.selectedFleets.length < 1)
-                return [];
-            if (!this.areAllFleetsInSameLocation())
-                return [];
-
-            var location = this.selectedFleets[0].location;
-            var possibleTargets = location.getTargetsForPlayer(this.player);
-
-            return possibleTargets;
-        };
-
-        PlayerControl.prototype.attackTarget = function (target) {
-            if (this.currentAttackTargets.indexOf(target) < 0)
-                return false;
-
-            var currentLocation = this.selectedFleets[0].location;
-
-            this.player.attackTarget(currentLocation, target);
-        };
-        return PlayerControl;
-    })();
-    Rance.PlayerControl = PlayerControl;
-})(Rance || (Rance = {}));
-/// <reference path="unit.ts"/>
-/// <reference path="player.ts"/>
-/// <reference path="battle.ts"/>
-/// <reference path="battledata.ts"/>
-var Rance;
-(function (Rance) {
-    var BattlePrep = (function () {
-        function BattlePrep(battleData) {
-            this.alreadyPlaced = {};
-            this.attacker = battleData.attacker.player;
-            this.defender = battleData.defender.player;
-            this.battleData = battleData;
-
-            this.makeAIFormations();
-
-            this.setupPlayer();
-        }
-        BattlePrep.prototype.makeEmptyFormation = function () {
-            var COLUMNS_PER_FORMATION = 2;
-            var SHIPS_PER_COLUMN = 3;
-
-            var formation = [];
-            for (var i = 0; i < COLUMNS_PER_FORMATION; i++) {
-                var column = [];
-                for (var j = 0; j < SHIPS_PER_COLUMN; j++) {
-                    column.push(null);
-                }
-                formation.push(column);
-            }
-
-            return formation;
-        };
-
-        BattlePrep.prototype.makeAIFormations = function () {
-            if (this.attacker.isAI) {
-                this.attackerFormation = this.makeAIFormation(this.battleData.attacker.ships);
-            }
-            if (this.defender.isAI) {
-                this.defenderFormation = this.makeAIFormation(this.battleData.defender.ships);
-            }
-        };
-
-        BattlePrep.prototype.setupPlayer = function () {
-            if (!this.attacker.isAI) {
-                this.availableUnits = this.battleData.attacker.ships;
-                this.attackerFormation = this.makeEmptyFormation();
-                this.playerFormation = this.attackerFormation;
-                this.enemyFormation = this.defenderFormation;
-                this.humanPlayer = this.attacker;
-                this.enemyPlayer = this.defender;
-            } else if (!this.defender.isAI) {
-                this.availableUnits = this.battleData.defender.ships;
-                this.defenderFormation = this.makeEmptyFormation();
-                this.playerFormation = this.attackerFormation;
-                this.enemyFormation = this.attackerFormation;
-                this.humanPlayer = this.defender;
-                this.enemyPlayer = this.attacker;
-            }
-        };
-
-        BattlePrep.prototype.makeAIFormation = function (units) {
-            var MAX_UNITS_PER_SIDE = 6;
-            var MAX_UNITS_PER_ROW = 3;
-
-            var formation = this.makeEmptyFormation();
-            var unitsToPlace = units.slice(0);
-            var placedInFront = 0;
-            var placedInBack = 0;
-            var totalPlaced = 0;
-            var unitsPlacedByArchetype = {
-                combat: 0,
-                defence: 0,
-                magic: 0,
-                support: 0,
-                utility: 0
-            };
-
-            // these are overridden if we run out of units or if alternative
-            // units have significantly higher strength
-            var maxUnitsPerArchetype = {
-                combat: Math.ceil(MAX_UNITS_PER_SIDE / 1),
-                defence: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-                magic: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-                support: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
-                utility: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
-            };
-            var preferredColumnForArchetype = {
-                combat: "front",
-                defence: "front",
-                magic: "back",
-                support: "back",
-                utility: "back"
-            };
-
-            var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
-                var score = unit.getStrengthEvaluation();
-
-                if (unit.template.archetype === "defence" && row === "front") {
-                    score *= frontRowDefenceBonus;
-                }
-
-                var archetype = unit.template.archetype;
-                var overMax = Math.max(0, unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
-
-                score *= 1 - overMax * 0.15;
-
-                var rowModifier = preferredColumnForArchetype[archetype] === row ? 1 : 0.5;
-
-                score *= rowModifier;
-
-                return ({
-                    unit: unit,
-                    score: score,
-                    row: row
-                });
-            };
-
-            var getFrontRowDefenceBonusFN = function (threshhold) {
-                var totalDefenceUnderThreshhold = 0;
-                var alreadyHasDefender = false;
-
-                for (var i = 0; i < formation[1].length; i++) {
-                    var unit = formation[1][i];
-                    if (!unit) {
-                        continue;
-                    }
-
-                    totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-
-                    if (alreadyHasDefender) {
-                        totalDefenceUnderThreshhold = 0;
-                    } else if (!alreadyHasDefender && unit.template.archetype === "defence") {
-                        alreadyHasDefender = true;
-                        totalDefenceUnderThreshhold += 0.5;
-                    }
-                }
-
-                return 1 + totalDefenceUnderThreshhold * 0.25;
-            };
-            while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE) {
-                var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
-
-                var positionScores = [];
-
-                for (var i = 0; i < unitsToPlace.length; i++) {
-                    var unit = unitsToPlace[i];
-
-                    if (placedInFront < MAX_UNITS_PER_ROW) {
-                        positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
-                    }
-                    if (placedInBack < MAX_UNITS_PER_ROW) {
-                        positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
-                    }
-                }
-
-                positionScores.sort(function (a, b) {
-                    return (b.score - a.score);
-                });
-                var topScore = positionScores[0];
-
-                if (topScore.row === "front") {
-                    placedInFront++;
-                    formation[1][placedInFront - 1] = topScore.unit;
-                } else {
-                    placedInBack++;
-                    formation[0][placedInBack - 1] = topScore.unit;
-                }
-
-                totalPlaced++;
-                unitsPlacedByArchetype[topScore.unit.template.archetype]++;
-                unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
-            }
-
-            return formation;
-        };
-
-        // Human formation stuff
-        BattlePrep.prototype.getUnitPosition = function (unit) {
-            return this.alreadyPlaced[unit.id];
-        };
-        BattlePrep.prototype.getUnitAtPosition = function (position) {
-            return this.playerFormation[position[0]][position[1]];
-        };
-        BattlePrep.prototype.clearPlayerFormation = function () {
-            this.alreadyPlaced = {};
-            this.playerFormation = this.makeEmptyFormation();
-        };
-
-        // called after player formation is created automatically
-        BattlePrep.prototype.setupPlayerFormation = function (formation) {
-            for (var i = 0; i < formation.length; i++) {
-                for (var j = 0; j < formation[i].length; j++) {
-                    if (formation[i][j]) {
-                        this.setUnit(formation[i][j], [i, j]);
-                    }
-                }
-            }
-        };
-        BattlePrep.prototype.setUnit = function (unit, position) {
-            this.removeUnit(unit);
-
-            if (!position) {
-                return;
-            }
-
-            var oldUnitInPosition = this.getUnitAtPosition(position);
-
-            if (oldUnitInPosition) {
-                this.removeUnit(oldUnitInPosition);
-            }
-
-            this.playerFormation[position[0]][position[1]] = unit;
-            this.alreadyPlaced[unit.id] = position;
-        };
-        BattlePrep.prototype.swapUnits = function (unit1, unit2) {
-            if (unit1 === unit2)
-                return;
-
-            var new1Pos = this.getUnitPosition(unit2);
-            var new2Pos = this.getUnitPosition(unit1);
-
-            this.setUnit(unit1, new1Pos);
-            this.setUnit(unit2, new2Pos);
-        };
-        BattlePrep.prototype.removeUnit = function (unit) {
-            var currentPosition = this.getUnitPosition(unit);
-
-            if (!currentPosition)
-                return;
-
-            this.playerFormation[currentPosition[0]][currentPosition[1]] = null;
-
-            this.alreadyPlaced[unit.id] = null;
-            delete this.alreadyPlaced[unit.id];
-        };
-
-        BattlePrep.prototype.humanFormationIsValid = function () {
-            /*
-            invalid if
-            attacking and no ships placed
-            battle is in territority not controlled by either and ships placed
-            is smaller than requirement
-            */
-            var shipsPlaced = 0;
-
-            this.forEachShipInFormation(this.playerFormation, function (unit) {
-                if (unit)
-                    shipsPlaced++;
-            });
-
-            if (!this.attacker.isAI) {
-                if (shipsPlaced < 1)
-                    return false;
-            }
-
-            if (!this.battleData.building) {
-                var minShips = 1;
-
-                // TODO add passive ability that forces more enemy ships to stay and fight
-                if (shipsPlaced < minShips)
-                    return false;
-            }
-
-            return true;
-        };
-
-        // end player formation
-        BattlePrep.prototype.forEachShipInFormation = function (formation, operator) {
-            for (var i = 0; i < formation.length; i++) {
-                for (var j = 0; j < formation[i].length; j++) {
-                    operator(formation[i][j]);
-                }
-            }
-        };
-
-        BattlePrep.prototype.makeBattle = function () {
-            var side1Formation = this.playerFormation || this.attackerFormation;
-            var side2Formation = this.enemyFormation || this.defenderFormation;
-
-            var side1Player = this.humanPlayer || this.attacker;
-            var side2Player = this.enemyPlayer || this.defender;
-
-            var battle = new Rance.Battle({
-                battleData: this.battleData,
-                side1: side1Formation,
-                side2: side2Formation.reverse(),
-                side1Player: side1Player,
-                side2Player: side2Player
-            });
-
-            battle.init();
-
-            return battle;
-        };
-        return BattlePrep;
-    })();
-    Rance.BattlePrep = BattlePrep;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (Templates) {
-        (function (MapGen) {
-            MapGen.defaultMap = {
-                mapOptions: {
-                    width: 600,
-                    height: 600
-                },
-                starGeneration: {
-                    galaxyType: "spiral",
-                    totalAmount: 40,
-                    arms: 5,
-                    centerSize: 0.4,
-                    amountInCenter: 0.3
-                },
-                relaxation: {
-                    timesToRelax: 5,
-                    dampeningFactor: 2
-                }
-            };
-        })(Templates.MapGen || (Templates.MapGen = {}));
-        var MapGen = Templates.MapGen;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-/// <reference path="point.ts"/>
-var Rance;
-(function (Rance) {
-    var Triangle = (function () {
-        function Triangle(a, b, c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-        Triangle.prototype.getPoints = function () {
-            return [this.a, this.b, this.c];
-        };
-        Triangle.prototype.getCircumCenter = function () {
-            if (!this.circumRadius) {
-                this.calculateCircumCircle();
-            }
-
-            return [this.circumCenterX, this.circumCenterY];
-        };
-        Triangle.prototype.calculateCircumCircle = function (tolerance) {
-            if (typeof tolerance === "undefined") { tolerance = 0.00001; }
-            var pA = this.a;
-            var pB = this.b;
-            var pC = this.c;
-
-            var m1, m2;
-            var mx1, mx2;
-            var my1, my2;
-            var cX, cY;
-
-            if (Math.abs(pB.y - pA.y) < tolerance) {
-                m2 = -(pC.x - pB.x) / (pC.y - pB.y);
-                mx2 = (pB.x + pC.x) * 0.5;
-                my2 = (pB.y + pC.y) * 0.5;
-
-                cX = (pB.x + pA.x) * 0.5;
-                cY = m2 * (cX - mx2) + my2;
-            } else {
-                m1 = -(pB.x - pA.x) / (pB.y - pA.y);
-                mx1 = (pA.x + pB.x) * 0.5;
-                my1 = (pA.y + pB.y) * 0.5;
-
-                if (Math.abs(pC.y - pB.y) < tolerance) {
-                    cX = (pC.x + pB.x) * 0.5;
-                    cY = m1 * (cX - mx1) + my1;
-                } else {
-                    m2 = -(pC.x - pB.x) / (pC.y - pB.y);
-                    mx2 = (pB.x + pC.x) * 0.5;
-                    my2 = (pB.y + pC.y) * 0.5;
-
-                    cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-                    cY = m1 * (cX - mx1) + my1;
-                }
-            }
-
-            this.circumCenterX = cX;
-            this.circumCenterY = cY;
-
-            mx1 = pB.x - cX;
-            my1 = pB.y - cY;
-            this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
-        };
-        Triangle.prototype.circumCircleContainsPoint = function (point) {
-            this.calculateCircumCircle();
-            var x = point.x - this.circumCenterX;
-            var y = point.y - this.circumCenterY;
-
-            var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
-
-            return (contains);
-        };
-        Triangle.prototype.getEdges = function () {
-            var edges = [
-                [this.a, this.b],
-                [this.b, this.c],
-                [this.c, this.a]
-            ];
-
-            return edges;
-        };
-        Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
-            var ownPoints = this.getPoints();
-            var otherPoints = toCheckAgainst.getPoints();
-            var shared = 0;
-
-            for (var i = 0; i < ownPoints.length; i++) {
-                if (otherPoints.indexOf(ownPoints[i]) >= 0) {
-                    shared++;
-                }
-            }
-
-            return shared;
-        };
-        return Triangle;
-    })();
-    Rance.Triangle = Triangle;
-})(Rance || (Rance = {}));
-/// <reference path="triangle.ts" />
-/// <reference path="point.ts" />
-var Rance;
-(function (Rance) {
-    function triangulate(vertices) {
-        var triangles = [];
-
-        var superTriangle = makeSuperTriangle(vertices);
-        triangles.push(superTriangle);
-
-        for (var i = 0; i < vertices.length; i++) {
-            var vertex = vertices[i];
-            var edgeBuffer = [];
-
-            for (var j = 0; j < triangles.length; j++) {
-                var triangle = triangles[j];
-
-                if (triangle.circumCircleContainsPoint(vertex)) {
-                    var edges = triangle.getEdges();
-                    edgeBuffer = edgeBuffer.concat(edges);
-                    triangles.splice(j, 1);
-                    j--;
-                }
-            }
-            if (i >= vertices.length)
-                continue;
-
-            for (var j = edgeBuffer.length - 2; j >= 0; j--) {
-                for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
-                    if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
-                        edgeBuffer.splice(k, 1);
-                        edgeBuffer.splice(j, 1);
-                        k--;
-                        continue;
-                    }
-                }
-            }
-            for (var j = 0; j < edgeBuffer.length; j++) {
-                var newTriangle = new Rance.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
-
-                triangles.push(newTriangle);
-            }
-        }
-
-        /*
-        for (var i = triangles.length - 1; i >= 0; i--)
-        {
-        if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
-        {
-        triangles.splice(i, 1);
-        }
-        }*/
-        return ({
-            triangles: triangles,
-            superTriangle: superTriangle
-        });
-    }
-    Rance.triangulate = triangulate;
-
-    function voronoiFromTriangles(triangles) {
-        var trianglesPerPoint = {};
-        var voronoiData = {};
-
-        for (var i = 0; i < triangles.length; i++) {
-            var triangle = triangles[i];
-            var points = triangle.getPoints();
-
-            for (var j = 0; j < points.length; j++) {
-                if (!trianglesPerPoint[points[j]]) {
-                    trianglesPerPoint[points[j]] = [];
-                    voronoiData[points[j]] = {
-                        point: points[j]
-                    };
-                }
-
-                trianglesPerPoint[points[j]].push(triangle);
-            }
-        }
-        function makeTrianglePairs(triangles) {
-            var toMatch = triangles.slice(0);
-            var pairs = [];
-
-            for (var i = toMatch.length - 2; i >= 0; i--) {
-                for (var j = toMatch.length - 1; j >= i + 1; j--) {
-                    var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
-
-                    if (matchingVertices === 2) {
-                        pairs.push([toMatch[j], toMatch[i]]);
-                    }
-                }
-            }
-
-            return pairs;
-        }
-
-        for (var point in trianglesPerPoint) {
-            var pointTriangles = trianglesPerPoint[point];
-
-            var trianglePairs = makeTrianglePairs(pointTriangles);
-            voronoiData[point].lines = [];
-
-            for (var i = 0; i < trianglePairs.length; i++) {
-                voronoiData[point].lines.push([
-                    trianglePairs[i][0].getCircumCenter(),
-                    trianglePairs[i][1].getCircumCenter()
-                ]);
-            }
-        }
-
-        return voronoiData;
-    }
-    Rance.voronoiFromTriangles = voronoiFromTriangles;
-
-    function getCentroid(vertices) {
-        var signedArea = 0;
-        var x = 0;
-        var y = 0;
-        var x0;
-        var y0;
-        var x1;
-        var y1;
-        var a;
-
-        var i = 0;
-
-        for (i = 0; i < vertices.length - 1; i++) {
-            x0 = vertices[i].x;
-            y0 = vertices[i].y;
-            x1 = vertices[i + 1].x;
-            y1 = vertices[i + 1].y;
-            a = x0 * y1 - x1 * y0;
-            signedArea += a;
-            x += (x0 + x1) * a;
-            y += (y0 + y1) * a;
-        }
-
-        x0 = vertices[i].x;
-        y0 = vertices[i].y;
-        x1 = vertices[0].x;
-        y1 = vertices[0].y;
-        a = x0 * y1 - x1 * y0;
-        signedArea += a;
-        x += (x0 + x1) * a;
-        y += (y0 + y1) * a;
-
-        signedArea *= 0.5;
-        x /= (6.0 * signedArea);
-        y /= (6.0 * signedArea);
-
-        return ({
-            x: x,
-            y: y
-        });
-    }
-    Rance.getCentroid = getCentroid;
-
-    function makeSuperTriangle(vertices, highestCoordinateValue) {
-        var max;
-
-        if (highestCoordinateValue) {
-            max = highestCoordinateValue;
-        } else {
-            max = vertices[0].x;
-
-            for (var i = 0; i < vertices.length; i++) {
-                if (vertices[i].x > max) {
-                    max = vertices[i].x;
-                }
-                if (vertices[i].y > max) {
-                    max = vertices[i].y;
-                }
-            }
-        }
-
-        var triangle = new Rance.Triangle({
-            x: 3 * max,
-            y: 0
-        }, {
-            x: 0,
-            y: 3 * max
-        }, {
-            x: -3 * max,
-            y: -3 * max
-        });
-
-        return (triangle);
-    }
-    Rance.makeSuperTriangle = makeSuperTriangle;
-
-    function pointsEqual(p1, p2) {
-        return (p1.x === p2.x && p1.y === p2.y);
-    }
-    Rance.pointsEqual = pointsEqual;
-
-    function edgesEqual(e1, e2) {
-        return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
-    }
-    Rance.edgesEqual = edgesEqual;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/voronoi.d.ts" />
-/// <reference path="../lib/quadtree.d.ts" />
-/// <reference path="../data/templates/mapgentemplates.ts" />
-/// <reference path="triangulation.ts" />
-/// <reference path="triangle.ts" />
-/// <reference path="star.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
-/// <reference path="utility.ts" />
-/// <reference path="pathfinding.ts"/>
-var Rance;
-(function (Rance) {
-    var MapGen = (function () {
-        function MapGen() {
-            this.points = [];
-            this.regions = {};
-            this.triangles = [];
-            this.nonFillerVoronoiLines = {};
-            this.galaxyConstructors = {};
-            this.startLocations = [];
-            this.galaxyConstructors = {
-                spiral: this.makeSpiralPoints
-            };
-        }
-        MapGen.prototype.reset = function () {
-            this.points = [];
-            this.regions = {};
-            this.triangles = [];
-            this.voronoiDiagram = null;
-
-            this.nonFillerPoints = [];
-            this.nonFillerVoronoiLines = {};
-        };
-        MapGen.prototype.makeMap = function (options) {
-            this.reset();
-
-            this.maxWidth = options.mapOptions.width;
-            this.maxHeight = options.mapOptions.height || this.maxWidth;
-
-            this.points = this.generatePoints(options.starGeneration);
-
-            this.makeVoronoi();
-            this.relaxPoints(options.relaxation);
-
-            this.triangulate();
-            this.severArmLinks();
-            this.partiallyCutConnections(4);
-
-            var isConnected = this.isConnected();
-            if (!isConnected) {
-                return this.makeMap(options);
-            }
-
-            this.makeTreeMap();
-
-            this.sectors = this.makeSectors(3, 5);
-            this.setResources();
-
-            this.setPlayers();
-            this.setDistanceFromStartLocations();
-
-            this.setupPirates();
-
-            return this;
-        };
-        MapGen.prototype.isConnected = function () {
-            var initialPoint = this.getNonFillerPoints()[0];
-
-            return initialPoint.getLinkedInRange(9999).all.length === this.nonFillerPoints.length;
-        };
-        MapGen.prototype.setPlayers = function () {
-            var regionNames = Object.keys(this.regions);
-            var startRegions = regionNames.filter(function (name) {
-                return name.indexOf("arm") !== -1;
-            });
-
-            for (var i = 0; i < this.players.length; i++) {
-                var player = this.players[i];
-                var regionName = startRegions[i];
-
-                var location = this.getFurthestPointInRegion(this.regions[regionName]);
-
-                location.owner = player;
-                player.addStar(location);
-                var sectorCommand = new Rance.Building({
-                    template: Rance.Templates.Buildings.sectorCommand,
-                    location: location
-                });
-                location.addBuilding(sectorCommand);
-
-                location.addBuilding(new Rance.Building({
-                    template: Rance.Templates.Buildings.starBase,
-                    location: location
-                }));
-
-                this.startLocations.push(location);
-
-                var ship = new Rance.Unit(Rance.Templates.ShipTypes.battleCruiser);
-                player.addUnit(ship);
-
-                var fleet = new Rance.Fleet(player, [ship], location);
-            }
-        };
-        MapGen.prototype.setDistanceFromStartLocations = function () {
-            var nonFillerPoints = this.getNonFillerPoints();
-
-            for (var i = 0; i < this.startLocations.length; i++) {
-                var startLocation = this.startLocations[i];
-                for (var j = 0; j < nonFillerPoints.length; j++) {
-                    var star = nonFillerPoints[j];
-
-                    var distance = star.getDistanceToStar(startLocation);
-
-                    if (!isFinite(star.distanceFromNearestStartLocation)) {
-                        star.distanceFromNearestStartLocation = distance;
-                    } else {
-                        star.distanceFromNearestStartLocation = Math.min(distance, star.distanceFromNearestStartLocation);
-                    }
-                }
-            }
-        };
-
-        MapGen.prototype.setupPirates = function () {
-            var nonFillerPoints = this.getNonFillerPoints();
-            var minShips = 2;
-            var maxShips = 8;
-            var player = this.independents;
-
-            for (var i = 0; i < nonFillerPoints.length; i++) {
-                var star = nonFillerPoints[i];
-
-                if (!star.owner) {
-                    star.owner = player;
-                    player.addStar(star);
-                    var sectorCommand = new Rance.Building({
-                        template: Rance.Templates.Buildings.sectorCommand,
-                        location: star
-                    });
-                    star.addBuilding(sectorCommand);
-
-                    var shipAmount = minShips;
-                    var distance = star.distanceFromNearestStartLocation;
-
-                    for (var j = 2; j < distance; j++) {
-                        if (shipAmount >= maxShips)
-                            break;
-
-                        shipAmount += Rance.randInt(0, 1);
-                    }
-
-                    var ships = [];
-                    for (var j = 0; j < shipAmount; j++) {
-                        var ship = Rance.makeRandomShip();
-                        player.addUnit(ship);
-                        ships.push(ship);
-                    }
-                    var fleet = new Rance.Fleet(player, ships, star);
-                }
-            }
-        };
-
-        MapGen.prototype.generatePoints = function (options) {
-            var amountInArms = 1 - options.amountInCenter;
-
-            var starGenerationProps = {
-                amountPerArm: options.totalAmount / options.arms * amountInArms,
-                arms: options.arms,
-                amountInCenter: options.totalAmount * options.amountInCenter,
-                centerSize: options.centerSize
-            };
-
-            var galaxyConstructor = this.galaxyConstructors[options.galaxyType];
-
-            return galaxyConstructor.call(this, starGenerationProps);
-        };
-        MapGen.prototype.makeRegion = function (name, isFiller) {
-            this.regions[name] = new Rance.Region(name, [], isFiller);
-            return this.regions[name];
-        };
-        MapGen.prototype.makeSpiralPoints = function (props) {
-            var totalArms = props.arms * 2;
-            var amountPerArm = props.amountPerArm;
-            var amountPerFillerArm = amountPerArm / 2;
-
-            var amountInCenter = props.amountInCenter;
-            var centerThreshhold = props.centerSize || 0.35;
-
-            var points = [];
-            var armDistance = Math.PI * 2 / totalArms;
-            var armOffsetMax = props.armOffsetMax || 0.5;
-            var armRotationFactor = props.arms / 3;
-            var galaxyRotation = Rance.randRange(0, Math.PI * 2);
-            var minBound = Math.min(this.maxWidth, this.maxHeight);
-            var minBound2 = minBound / 2;
-
-            var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax) {
-                var distance = Rance.randRange(distanceMin, distanceMax);
-                var offset = Math.random() * armOffsetMax - armOffsetMax / 2;
-                offset *= (1 / distance);
-
-                if (offset < 0)
-                    offset = Math.pow(offset, 2) * -1;
-                else
-                    offset = Math.pow(offset, 2);
-
-                var armRotation = distance * armRotationFactor;
-                var angle = arm * armDistance + galaxyRotation + offset + armRotation;
-
-                var x = Math.cos(angle) * distance * this.maxWidth + this.maxWidth;
-                var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
-
-                var point = new Rance.Star(x, y);
-
-                point.distance = distance;
-                region.addStar(point);
-                point.baseIncome = Rance.randInt(2, 10) * 10;
-
-                return point;
-            }.bind(this);
-
-            var centerRegion = this.makeRegion("center", false);
-
-            var currentArmIsFiller = false;
-            for (var i = 0; i < totalArms; i++) {
-                var arm = i;
-                var regionName = (currentArmIsFiller ? "filler_" : "arm_") + arm;
-                var region = this.makeRegion(regionName, currentArmIsFiller);
-                var amountForThisArm = currentArmIsFiller ? amountPerFillerArm : amountPerArm;
-                var maxOffsetForThisArm = currentArmIsFiller ? armOffsetMax / 2 : armOffsetMax;
-
-                var amountForThisCenter = Math.round(amountInCenter / totalArms);
-
-                for (var j = 0; j < amountForThisArm; j++) {
-                    var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
-
-                    points.push(point);
-                }
-
-                for (var j = 0; j < amountForThisCenter; j++) {
-                    var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax);
-                    points.push(point);
-                }
-
-                currentArmIsFiller = !currentArmIsFiller;
-            }
-
-            return points;
-        };
-        MapGen.prototype.triangulate = function () {
-            if (!this.points || this.points.length < 3)
-                throw new Error();
-            var triangulationData = Rance.triangulate(this.points);
-            this.triangles = this.cleanTriangles(triangulationData.triangles, triangulationData.superTriangle);
-
-            this.makeLinks();
-        };
-        MapGen.prototype.clearLinks = function () {
-            for (var i = 0; i < this.points.length; i++) {
-                this.points[i].clearLinks();
-            }
-        };
-        MapGen.prototype.makeLinks = function () {
-            if (!this.triangles || this.triangles.length < 1)
-                throw new Error();
-
-            this.clearLinks();
-
-            for (var i = 0; i < this.triangles.length; i++) {
-                var edges = this.triangles[i].getEdges();
-                for (var j = 0; j < edges.length; j++) {
-                    edges[j][0].addLink(edges[j][1]);
-                }
-            }
-        };
-        MapGen.prototype.severArmLinks = function () {
-            for (var i = 0; i < this.points.length; i++) {
-                var star = this.points[i];
-                star.severLinksToFiller();
-                star.severLinksToNonAdjacent();
-
-                if (star.distance > 0.8) {
-                    star.severLinksToNonCenter();
-                }
-            }
-        };
-        MapGen.prototype.makeVoronoi = function () {
-            if (!this.points || this.points.length < 3)
-                throw new Error();
-
-            var boundingBox = {
-                xl: 0,
-                xr: this.maxWidth * 2,
-                yt: 0,
-                yb: this.maxHeight * 2
-            };
-
-            var voronoi = new Voronoi();
-
-            var diagram = voronoi.compute(this.points, boundingBox);
-
-            this.voronoiDiagram = diagram;
-
-            for (var i = 0; i < diagram.cells.length; i++) {
-                var cell = diagram.cells[i];
-                cell.site.voronoiCell = cell;
-                cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
-            }
-        };
-        MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
-            for (var i = triangles.length - 1; i >= 0; i--) {
-                if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
-                    triangles.splice(i, 1);
-                }
-            }
-
-            return triangles;
-        };
-        MapGen.prototype.makeTreeMap = function () {
-            var treeMap = new QuadTree({
-                x: 0,
-                y: 0,
-                width: this.maxWidth * 2,
-                height: this.maxHeight * 2
-            });
-
-            var points = this.getNonFillerPoints();
-
-            for (var i = 0; i < points.length; i++) {
-                var cell = points[i].voronoiCell;
-                var bbox = cell.getBbox();
-                bbox.cell = cell;
-                treeMap.insert(bbox);
-            }
-
-            this.voronoiTreeMap = treeMap;
-        };
-        MapGen.prototype.getVerticesFromCell = function (cell) {
-            var vertices = [];
-
-            for (var i = 0; i < cell.halfedges.length; i++) {
-                vertices.push(cell.halfedges[i].getStartpoint());
-            }
-
-            return vertices;
-        };
-        MapGen.prototype.relaxPointsOnce = function (dampeningFactor) {
-            if (typeof dampeningFactor === "undefined") { dampeningFactor = 0; }
-            var relaxedPoints = [];
-
-            for (var i = 0; i < this.voronoiDiagram.cells.length; i++) {
-                var cell = this.voronoiDiagram.cells[i];
-                var point = cell.site;
-                var vertices = this.getVerticesFromCell(cell);
-                var centroid = Rance.getCentroid(vertices);
-                var timesToDampen = point.distance * dampeningFactor;
-
-                for (var j = 0; j < timesToDampen; j++) {
-                    centroid.x = (centroid.x + point.x) / 2;
-                    centroid.y = (centroid.y + point.y) / 2;
-                }
-
-                point.setPosition(centroid.x, centroid.y);
-            }
-        };
-        MapGen.prototype.relaxPoints = function (options) {
-            if (!this.points)
-                throw new Error();
-
-            if (!this.voronoiDiagram)
-                this.makeVoronoi();
-
-            for (var i = 0; i < options.timesToRelax; i++) {
-                this.relaxPointsOnce(options.dampeningFactor);
-                this.makeVoronoi();
-            }
-        };
-        MapGen.prototype.getNonFillerPoints = function () {
-            if (!this.points)
-                return [];
-            if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
-                this.nonFillerPoints = this.points.filter(function (point) {
-                    return !point.region.isFiller;
-                });
-            }
-
-            return this.nonFillerPoints;
-        };
-        MapGen.prototype.getNonFillerVoronoiLines = function (visibleStars) {
-            if (!this.voronoiDiagram)
-                return [];
-
-            var indexString = "";
-            if (!visibleStars)
-                indexString = "all";
-            else {
-                var ids = visibleStars.map(function (star) {
-                    return star.id;
-                });
-                ids = ids.sort();
-
-                indexString = ids.join();
-            }
-
-            if (!this.nonFillerVoronoiLines[indexString] || this.nonFillerVoronoiLines[indexString].length <= 0) {
-                console.log("newEdgesIndex");
-                this.nonFillerVoronoiLines[indexString] = this.voronoiDiagram.edges.filter(function (edge) {
-                    var adjacentSites = [edge.lSite, edge.rSite];
-                    var adjacentFillerSites = 0;
-                    var maxAllowedFillerSites = 2;
-
-                    for (var i = 0; i < adjacentSites.length; i++) {
-                        var site = adjacentSites[i];
-
-                        if (!site) {
-                            // draw all border edges
-                            //return true;
-                            // draw all non filler border edges
-                            maxAllowedFillerSites--;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
-                            }
-                            continue;
-                        }
-                        ;
-
-                        if (visibleStars && visibleStars.indexOf(site) < 0) {
-                            maxAllowedFillerSites--;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
-                            }
-                            continue;
-                        }
-                        ;
-
-                        if (site.region.isFiller) {
-                            adjacentFillerSites++;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
-                            }
-                        }
-                        ;
-                    }
-
-                    return true;
-                });
-            }
-
-            return this.nonFillerVoronoiLines[indexString];
-        };
-        MapGen.prototype.getFurthestPointInRegion = function (region) {
-            var furthestDistance = 0;
-            var furthestStar = null;
-
-            for (var i = 0; i < region.stars.length; i++) {
-                if (region.stars[i].distance > furthestDistance) {
-                    furthestStar = region.stars[i];
-                    furthestDistance = region.stars[i].distance;
-                }
-            }
-
-            return furthestStar;
-        };
-        MapGen.prototype.partiallyCutConnections = function (minConnections) {
-            var points = this.getNonFillerPoints();
-            var cuts = 0;
-            var noCuts = 0;
-            var reverts = 0;
-
-            for (var i = 0; i < points.length; i++) {
-                var point = points[i];
-
-                var neighbors = point.getAllLinks();
-
-                if (neighbors.length < minConnections)
-                    continue;
-
-                for (var j = 0; j < neighbors.length; j++) {
-                    var neighbor = neighbors[j];
-                    var neighborLinks = neighbor.getAllLinks();
-
-                    //if (neighborLinks.length < minConnections) continue;
-                    var totalLinks = neighbors.length + neighborLinks.length;
-
-                    var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - point.distance);
-                    var minMultipleCutThreshhold = 0.15;
-                    while (cutThreshhold > 0) {
-                        if (Math.random() < cutThreshhold) {
-                            point.removeLink(neighbor);
-                            cuts++;
-
-                            var path = Rance.aStar(point, neighbor);
-
-                            if (!path) {
-                                point.addLink(neighbor);
-                                cuts--;
-                                reverts++;
-                            }
-                        } else
-                            noCuts++;
-
-                        cutThreshhold -= minMultipleCutThreshhold;
-                    }
-                }
-            }
-
-            console.log(cuts, noCuts, reverts);
-        };
-
-        /*
-        while average size sectors left to assign && unassigned stars left
-        pick random unassigned star
-        if star cannot form island bigger than minsize
-        put from unassigned into leftovers & continue
-        else
-        add random neighbors into sector until minsize is met
-        
-        
-        while leftovers
-        pick random leftover
-        if leftover has no assigned neighbor pick, continue
-        
-        leftover gets assigned to smallest neighboring sector
-        if sizes equal, assign to sector with least neighboring leftovers
-        */
-        MapGen.prototype.makeSectors = function (minSize, maxSize) {
-            var totalStars = this.nonFillerPoints.length;
-            var unassignedStars = this.nonFillerPoints.slice(0);
-            var leftoverStars = [];
-
-            var averageSize = (minSize + maxSize) / 2;
-            var averageSectorsAmount = Math.round(totalStars / averageSize);
-
-            var sectorsById = {};
-
-            var sameSectorFN = function (a, b) {
-                return a.sector === b.sector;
-            };
-
-            while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
-                var seedStar = unassignedStars.pop();
-                var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
-
-                if (canFormMinSizeSector) {
-                    var sector = new Rance.Sector();
-                    sectorsById[sector.id] = sector;
-
-                    var discoveryStarIndex = 0;
-                    sector.addStar(seedStar);
-
-                    while (sector.stars.length < minSize) {
-                        var discoveryStar = sector.stars[discoveryStarIndex];
-
-                        var frontier = discoveryStar.getLinkedInRange(1).all;
-                        frontier = frontier.filter(function (star) {
-                            return !star.sector;
-                        });
-
-                        while (sector.stars.length < minSize && frontier.length > 0) {
-                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
-                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
-                            unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
-
-                            sector.addStar(toAdd);
-                        }
-
-                        discoveryStarIndex++;
-                    }
-                } else {
-                    leftoverStars.push(seedStar);
-                }
-            }
-
-            while (leftoverStars.length > 0) {
-                var star = leftoverStars.pop();
-
-                var neighbors = star.getLinkedInRange(1).all;
-                var alreadyAddedNeighborSectors = {};
-                var candidateSectors = [];
-
-                for (var j = 0; j < neighbors.length; j++) {
-                    if (!neighbors[j].sector)
-                        continue;
-                    else {
-                        if (!alreadyAddedNeighborSectors[neighbors[j].sector.id]) {
-                            alreadyAddedNeighborSectors[neighbors[j].sector.id] = true;
-                            candidateSectors.push(neighbors[j].sector);
-                        }
-                    }
-                }
-
-                // all neighboring stars don't have sectors
-                // put star at back of queue and try again later
-                if (candidateSectors.length < 1) {
-                    leftoverStars.unshift(star);
-                    continue;
-                }
-
-                var unclaimedNeighborsPerSector = {};
-
-                for (var j = 0; j < candidateSectors.length; j++) {
-                    var sectorNeighbors = candidateSectors[j].getNeighboringStars();
-                    var unclaimed = 0;
-                    for (var k = 0; k < sectorNeighbors.length; k++) {
-                        if (!sectorNeighbors[k].sector) {
-                            unclaimed++;
-                        }
-                    }
-
-                    unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
-                }
-
-                candidateSectors.sort(function (a, b) {
-                    var sizeSort = a.stars.length - b.stars.length;
-                    if (sizeSort)
-                        return sizeSort;
-
-                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] - unclaimedNeighborsPerSector[a.id];
-                    return unclaimedSort;
-                });
-
-                candidateSectors[0].addStar(star);
-            }
-
-            return sectorsById;
-        };
-
-        MapGen.prototype.setResources = function () {
-            // TODO
-            var getResourceDistributionFlags = function (region) {
-                switch (region.id) {
-                    case "center": {
-                        return ["rare"];
-                    }
-                    default: {
-                        return ["common"];
-                    }
-                }
-            };
-
-            var getResourcesForDistributionGroups = function (groupsToMatch) {
-                var allResources = Rance.Templates.Resources;
-                var matchingResources = [];
-
-                for (var resourceType in allResources) {
-                    var resourceGroups = allResources[resourceType].distributionGroups;
-                    for (var i = 0; i < resourceGroups.length; i++) {
-                        if (groupsToMatch.indexOf(resourceGroups[i]) !== -1) {
-                            matchingResources.push(allResources[resourceType]);
-                            break;
-                        }
-                    }
-                }
-
-                return matchingResources;
-            };
-
-            for (var sectorId in this.sectors) {
-                var sector = this.sectors[sectorId];
-
-                var majorityRegions = sector.getMajorityRegions();
-
-                var resourceDistributionFlags = [];
-                var resourcesAlreadyPresentInRegions = {};
-
-                for (var i = 0; i < majorityRegions.length; i++) {
-                    resourceDistributionFlags = resourceDistributionFlags.concat(getResourceDistributionFlags(majorityRegions[i]));
-
-                    for (var j = 0; j < majorityRegions[i].stars.length; j++) {
-                        var star = majorityRegions[i].stars[j];
-                        if (star.resource) {
-                            resourcesAlreadyPresentInRegions[star.resource.type] = true;
-                        }
-                    }
-                }
-
-                var candidateResources = getResourcesForDistributionGroups(resourceDistributionFlags);
-
-                var nonDuplicateResources = candidateResources.filter(function (resource) {
-                    return !resourcesAlreadyPresentInRegions[resource.type];
-                });
-
-                if (nonDuplicateResources.length > 0) {
-                    candidateResources = nonDuplicateResources;
-                }
-
-                var selectedResource = null;
-
-                while (!selectedResource) {
-                    var randomResource = Rance.getRandomArrayItem(candidateResources);
-                    if (Math.random() < randomResource.rarity) {
-                        selectedResource = randomResource;
-                    }
-                }
-
-                var star = Rance.getRandomArrayItem(sector.stars);
-                star.setResource(selectedResource);
-            }
-        };
-        return MapGen;
-    })();
-    Rance.MapGen = MapGen;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="eventmanager.ts"/>
-/// <reference path="utility.ts"/>
-/// <reference path="color.ts"/>
-/// <reference path="galaxymap.ts" />
-/// <reference path="star.ts" />
-/// <reference path="fleet.ts" />
-/// <reference path="player.ts" />
-var Rance;
-(function (Rance) {
-    var MapRenderer = (function () {
-        function MapRenderer(map) {
-            this.occupationShaders = {};
-            this.layers = {};
-            this.mapModes = {};
-            this.fowSpriteCache = {};
-            this.isDirty = true;
-            this.preventRender = false;
-            this.listeners = {};
-            this.container = new PIXI.DisplayObjectContainer();
-
-            this.setMap(map);
-        }
-        MapRenderer.prototype.destroy = function () {
-            this.preventRender = true;
-            this.container.renderable = false;
-
-            for (var name in this.listeners) {
-                Rance.eventManager.removeEventListener(name, this.listeners[name]);
-            }
-
-            this.container.removeChildren();
-            this.parent.removeChild(this.container);
-
-            this.game = null;
-            this.player = null;
-            this.container = null;
-            this.parent = null;
-            this.occupationShaders = null;
-
-            for (var starId in this.fowSpriteCache) {
-                this.fowSpriteCache[starId].renderable = false;
-                this.fowSpriteCache[starId] = null;
-            }
-        };
-        MapRenderer.prototype.setMap = function (map) {
-            this.galaxyMap = map;
-            this.galaxyMap.mapRenderer = this;
-            this.game = map.game;
-            this.player = this.game.humanPlayer;
-        };
-        MapRenderer.prototype.init = function () {
-            this.makeFowSprite();
-
-            this.initLayers();
-            this.initMapModes();
-
-            this.addEventListeners();
-        };
-        MapRenderer.prototype.addEventListeners = function () {
-            var self = this;
-            this.listeners["renderMap"] = Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
-            this.listeners["renderLayer"] = Rance.eventManager.addEventListener("renderLayer", function (e) {
-                self.setLayerAsDirty(e.data);
-            });
-
-            var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
-            var boundUpdateZoom = this.updateShaderZoom.bind(this);
-
-            this.listeners["registerOnMoveCallback"] = Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
-                e.data.push(boundUpdateOffsets);
-            });
-            this.listeners["registerOnZoomCallback"] = Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
-                e.data.push(boundUpdateZoom);
-            });
-        };
-        MapRenderer.prototype.setPlayer = function (player) {
-            this.player = player;
-            this.setAllLayersAsDirty();
-        };
-        MapRenderer.prototype.updateShaderOffsets = function (x, y) {
-            for (var owner in this.occupationShaders) {
-                for (var occupier in this.occupationShaders[owner]) {
-                    var shader = this.occupationShaders[owner][occupier];
-                    shader.uniforms.offset.value = { x: -x, y: y };
-                }
-            }
-        };
-        MapRenderer.prototype.updateShaderZoom = function (zoom) {
-            for (var owner in this.occupationShaders) {
-                for (var occupier in this.occupationShaders[owner]) {
-                    var shader = this.occupationShaders[owner][occupier];
-                    shader.uniforms.zoom.value = zoom;
-                }
-            }
-        };
-        MapRenderer.prototype.makeFowSprite = function () {
-            if (!this.fowTilingSprite) {
-                var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
-                var w = this.galaxyMap.mapGen.maxWidth * 2;
-                var h = this.galaxyMap.mapGen.maxHeight * 2;
-
-                this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
-            }
-        };
-        MapRenderer.prototype.getFowSpriteForStar = function (star) {
-            // silly hack to make sure first texture gets created properly
-            if (!this.fowSpriteCache[star.id] || Object.keys(this.fowSpriteCache).length < 4) {
-                var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                var gfx = new PIXI.Graphics();
-                gfx.beginFill();
-                gfx.drawShape(poly);
-                gfx.endFill();
-
-                this.fowTilingSprite.removeChildren();
-
-                this.fowTilingSprite.mask = gfx;
-                this.fowTilingSprite.addChild(gfx);
-
-                var rendered = this.fowTilingSprite.generateTexture();
-
-                var sprite = new PIXI.Sprite(rendered);
-
-                this.fowSpriteCache[star.id] = sprite;
-                this.fowTilingSprite.mask = null;
-            }
-
-            return this.fowSpriteCache[star.id];
-        };
-        MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
-            if (!this.occupationShaders[owner.id]) {
-                this.occupationShaders[owner.id] = {};
-            }
-
-            if (!this.occupationShaders[owner.id][occupier.id]) {
-                var baseColor = PIXI.hex2rgb(owner.color);
-                baseColor.push(1.0);
-                var occupierColor = PIXI.hex2rgb(occupier.color);
-                occupierColor.push(1.0);
-
-                var uniforms = {
-                    baseColor: { type: "4fv", value: baseColor },
-                    lineColor: { type: "4fv", value: occupierColor },
-                    gapSize: { type: "1f", value: 3.0 },
-                    offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
-                    zoom: { type: "1f", value: 1.0 }
-                };
-
-                var shaderSrc = [
-                    "precision mediump float;",
-                    "uniform sampler2D uSampler;",
-                    "varying vec2 vTextureCoord;",
-                    "varying vec4 vColor;",
-                    "uniform vec4 baseColor;",
-                    "uniform vec4 lineColor;",
-                    "uniform float gapSize;",
-                    "uniform vec2 offset;",
-                    "uniform float zoom;",
-                    "void main( void )",
-                    "{",
-                    "  vec2 position = gl_FragCoord.xy + offset;",
-                    "  position.x += position.y;",
-                    "  float scaled = floor(position.x * 0.1 / zoom);",
-                    "  float res = mod(scaled, gapSize);",
-                    "  if(res > 0.0)",
-                    "  {",
-                    "    gl_FragColor = mix(gl_FragColor, baseColor, 0.5);",
-                    "  }",
-                    "  else",
-                    "  {",
-                    "    gl_FragColor = mix(gl_FragColor, lineColor, 0.5);",
-                    "  }",
-                    "}"
-                ];
-
-                this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(shaderSrc, uniforms);
-            }
-
-            return this.occupationShaders[owner.id][occupier.id];
-        };
-        MapRenderer.prototype.initLayers = function () {
-            if (this.layers["nonFillerStars"])
-                return;
-            this.layers["nonFillerStars"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    var mouseDownFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseDown", event);
-                    };
-                    var mouseUpFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseUp", event);
-                    };
-                    var onClickFN = function (star) {
-                        Rance.eventManager.dispatchEvent("starClick", star);
-                    };
-                    var rightDownFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseDown", event);
-                    };
-                    var rightUpFN = function (star) {
-                        Rance.eventManager.dispatchEvent("mouseUp", null);
-                    };
-                    var mouseOverFN = function (star) {
-                        Rance.eventManager.dispatchEvent("hoverStar", star);
-                    };
-                    var mouseOutFN = function (event) {
-                        Rance.eventManager.dispatchEvent("clearHover");
-                    };
-                    var touchStartFN = function (event) {
-                        Rance.eventManager.dispatchEvent("touchStart", event);
-                    };
-                    var touchEndFN = function (event) {
-                        Rance.eventManager.dispatchEvent("touchEnd", event);
-                    };
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var starSize = 1;
-                        if (star.buildings["defence"]) {
-                            starSize += star.buildings["defence"].length * 2;
-                        }
-                        var gfx = new PIXI.Graphics();
-                        if (!star.owner.isIndependent) {
-                            gfx.lineStyle(starSize / 2, star.owner.color, 1);
-                        }
-                        gfx.star = star;
-                        gfx.beginFill(0xFFFFF0);
-                        gfx.drawEllipse(star.x, star.y, starSize, starSize);
-                        gfx.endFill;
-
-                        gfx.interactive = true;
-                        gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
-
-                        gfx.mousedown = mouseDownFN;
-                        gfx.mouseup = mouseUpFN;
-
-                        gfx.click = gfx.tap = function (event) {
-                            if (event.originalEvent.button)
-                                return;
-
-                            onClickFN(this.star);
-                        }.bind(gfx);
-
-                        gfx.rightdown = rightDownFN;
-                        gfx.rightup = rightUpFN.bind(gfx, star);
-
-                        gfx.mouseover = mouseOverFN.bind(gfx, star);
-                        gfx.mouseout = mouseOutFN;
-
-                        doc.addChild(gfx);
-                    }
-
-                    // gets set to 0 without this reference. no idea
-                    doc.height;
-
-                    doc.interactive = true;
-
-                    // cant be set on gfx as touchmove and touchend only register
-                    // on the object that had touchstart called on it
-                    doc.touchstart = touchStartFN;
-                    doc.touchend = touchEndFN;
-                    doc.touchmove = function (event) {
-                        var local = event.getLocalPosition(doc);
-                        var items = map.mapGen.voronoiTreeMap.retrieve(local);
-                        for (var i = 0; i < items.length; i++) {
-                            var cell = items[i].cell;
-
-                            if (cell.pointIntersection(local.x, local.y) > 0) {
-                                Rance.eventManager.dispatchEvent("hoverStar", cell.site);
-                                return;
-                            }
-                        }
-                    };
-
-                    return doc;
-                }
-            };
-            this.layers["starOwners"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (!star.owner)
-                            continue;
-
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                        var gfx = new PIXI.Graphics();
-                        var alpha = 0.5;
-                        if (isFinite(star.owner.colorAlpha))
-                            alpha *= star.owner.colorAlpha;
-                        gfx.beginFill(star.owner.color, alpha);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
-                        doc.addChild(gfx);
-
-                        var occupier = star.getSecondaryController();
-                        if (occupier) {
-                            gfx.filters = [this.getOccupationShader(star.owner, occupier)];
-
-                            //gfx.filters = [testFilter];
-                            var mask = new PIXI.Graphics();
-                            mask.beginFill();
-                            mask.drawShape(poly);
-                            mask.endFill();
-                            gfx.mask = mask;
-                            gfx.addChild(mask);
-                        }
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["fogOfWar"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    if (!this.player)
-                        return doc;
-                    var points = this.player.getRevealedButNotVisibleStars();
-
-                    if (!points || points.length < 1)
-                        return doc;
-
-                    doc.alpha = 0.35;
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var sprite = this.getFowSpriteForStar(star);
-
-                        doc.addChild(sprite);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["starIncome"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-                    var incomeBounds = map.getIncomeBounds();
-
-                    function getRelativeValue(min, max, value) {
-                        var difference = max - min;
-                        if (difference < 1)
-                            difference = 1;
-
-                        // clamps to n different colors
-                        var threshhold = difference / 10;
-                        if (threshhold < 1)
-                            threshhold = 1;
-                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
-                        return relative;
-                    }
-
-                    var colorIndexes = {};
-
-                    function getRelativeColor(min, max, value) {
-                        if (!colorIndexes[value]) {
-                            if (value < 0)
-                                value = 0;
-                            else if (value > 1)
-                                value = 1;
-
-                            var deviation = Math.abs(0.5 - value) * 2;
-
-                            var hue = 110 * value;
-                            var saturation = 0.5 + 0.2 * deviation;
-                            var lightness = 0.6 + 0.25 * deviation;
-
-                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
-                        }
-                        return colorIndexes[value];
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var income = star.getIncome();
-                        var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
-                        var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
-
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                        var gfx = new PIXI.Graphics();
-                        gfx.beginFill(color, 0.6);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
-                        doc.addChild(gfx);
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["playerInfluence"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-                    var mapEvaluator = new Rance.MapEvaluator(map, this.player);
-                    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
-
-                    var minInfluence, maxInfluence;
-
-                    for (var starId in influenceByStar) {
-                        var influence = influenceByStar[starId];
-                        if (!isFinite(minInfluence) || influence < minInfluence) {
-                            minInfluence = influence;
-                        }
-                        if (!isFinite(maxInfluence) || influence > maxInfluence) {
-                            maxInfluence = influence;
-                        }
-                    }
-
-                    function getRelativeValue(min, max, value) {
-                        var difference = max - min;
-                        if (difference < 1)
-                            difference = 1;
-
-                        // clamps to n different colors
-                        var threshhold = difference / 10;
-                        if (threshhold < 1)
-                            threshhold = 1;
-                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
-                        return relative;
-                    }
-
-                    var colorIndexes = {};
-
-                    function getRelativeColor(min, max, value) {
-                        if (!colorIndexes[value]) {
-                            if (value < 0)
-                                value = 0;
-                            else if (value > 1)
-                                value = 1;
-
-                            var deviation = Math.abs(0.5 - value) * 2;
-
-                            var hue = 110 * value;
-                            var saturation = 0.5 + 0.2 * deviation;
-                            var lightness = 0.6 + 0.25 * deviation;
-
-                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
-                        }
-                        return colorIndexes[value];
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var influence = influenceByStar[star.id];
-
-                        if (!influence)
-                            continue;
-
-                        var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
-                        var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
-
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                        var gfx = new PIXI.Graphics();
-                        gfx.beginFill(color, 0.6);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
-                        doc.addChild(gfx);
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["nonFillerVoronoiLines"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var gfx = new PIXI.Graphics();
-                    doc.addChild(gfx);
-                    gfx.lineStyle(1, 0xA0A0A0, 0.5);
-
-                    var visible = this.player ? this.player.getRevealedStars() : null;
-
-                    var lines = map.mapGen.getNonFillerVoronoiLines(visible);
-
-                    for (var i = 0; i < lines.length; i++) {
-                        var line = lines[i];
-                        gfx.moveTo(line.va.x, line.va.y);
-                        gfx.lineTo(line.vb.x, line.vb.y);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["ownerBorders"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var gfx = new PIXI.Graphics();
-                    doc.addChild(gfx);
-
-                    var revealedStars = this.player.getRevealedStars();
-                    var borderEdges = Rance.getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges, revealedStars);
-
-                    for (var starId in borderEdges) {
-                        var edgeData = borderEdges[starId];
-
-                        var player = edgeData.star.owner;
-                        gfx.lineStyle(4, player.secondaryColor, 0.7);
-
-                        for (var i = 0; i < edgeData.edges.length; i++) {
-                            var edge = edgeData.edges[i];
-                            gfx.moveTo(edge.va.x, edge.va.y);
-                            gfx.lineTo(edge.vb.x, edge.vb.y);
-                        }
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["starLinks"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var gfx = new PIXI.Graphics();
-                    doc.addChild(gfx);
-                    gfx.lineStyle(1, 0xCCCCCC, 0.6);
-
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    var starsFullyConnected = {};
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (starsFullyConnected[star.id])
-                            continue;
-
-                        starsFullyConnected[star.id] = true;
-
-                        for (var j = 0; j < star.linksTo.length; j++) {
-                            gfx.moveTo(star.x, star.y);
-                            gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
-                        }
-                        for (var j = 0; j < star.linksFrom.length; j++) {
-                            gfx.moveTo(star.linksFrom[j].x, star.linksFrom[j].y);
-                            gfx.lineTo(star.x, star.y);
-                        }
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["sectors"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var self = this;
-
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    var sectorsAmount = Object.keys(map.sectors).length;
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (!star.sector)
-                            break;
-
-                        var hue = (360 / sectorsAmount) * star.sector.id;
-                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
-
-                        //var color = star.sector.color;
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                        var gfx = new PIXI.Graphics();
-                        gfx.beginFill(color, 0.6);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
-                        doc.addChild(gfx);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["regions"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var self = this;
-
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    var regionIndexes = {};
-
-                    var i = 0;
-                    for (var regionId in map.mapGen.regions) {
-                        regionIndexes[regionId] = i++;
-                    }
-                    var regionsAmount = Object.keys(regionIndexes).length;
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-
-                        var hue = (360 / regionsAmount) * regionIndexes[star.region.id];
-                        var color = Rance.hslToHex(hue / 360, 1, 0.5);
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                        var gfx = new PIXI.Graphics();
-                        gfx.beginFill(color, 0.6);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
-                        doc.addChild(gfx);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["resources"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var self = this;
-
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (!star.resource)
-                            continue;
-
-                        var text = new PIXI.Text(star.resource.displayName, {
-                            fill: "#FFFFFF",
-                            stroke: "#000000",
-                            strokeThickness: 2
-                        });
-
-                        text.x = star.x;
-                        text.x -= text.width / 2;
-                        text.y = star.y + 20;
-
-                        doc.addChild(text);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["fleets"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var self = this;
-
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
-                    } else {
-                        points = this.player.getVisibleStars();
-                    }
-
-                    var mouseDownFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseDown", event);
-                    };
-                    var mouseUpFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseUp", event);
-                    };
-                    var mouseOverFN = function (fleet) {
-                        Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
-                    };
-
-                    function fleetClickFn(fleet) {
-                        Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
-                    }
-
-                    function singleFleetDrawFN(fleet) {
-                        var fleetContainer = new PIXI.DisplayObjectContainer();
-
-                        /*
-                        if (fleet.ships[0] && fleet.ships[0].front)
-                        {
-                        var front = fleet.ships[0].front;
-                        var frontHue = ((front.id * 20) % 360) / 360;
-                        var color = hslToHex(frontHue, 1, 0.5);
-                        }
-                        else
-                        {
-                        var color = fleet.player.color;
-                        }
-                        */
-                        var color = fleet.player.color;
-
-                        var text = new PIXI.Text(fleet.ships.length, {
-                            //fill: "#" + playerColor.toString(16)
-                            fill: "#FFFFFF",
-                            stroke: "#000000",
-                            strokeThickness: 3
-                        });
-
-                        var containerGfx = new PIXI.Graphics();
-                        containerGfx.lineStyle(1, 0x00000, 1);
-                        containerGfx.beginFill(color, 0.7);
-                        containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
-                        containerGfx.endFill();
-
-                        containerGfx.interactive = true;
-                        if (fleet.player.id === self.player.id) {
-                            containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
-                        }
-
-                        containerGfx.mousedown = mouseDownFN;
-                        containerGfx.mouseup = mouseUpFN;
-                        containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
-
-                        containerGfx.addChild(text);
-                        text.x += 2;
-                        text.y += 2;
-                        containerGfx.y -= 10;
-                        fleetContainer.addChild(containerGfx);
-
-                        return fleetContainer;
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var fleets = star.getAllFleets();
-                        if (!fleets || fleets.length <= 0)
-                            continue;
-
-                        var fleetsContainer = new PIXI.DisplayObjectContainer();
-                        fleetsContainer.x = star.x;
-                        fleetsContainer.y = star.y - 30;
-                        doc.addChild(fleetsContainer);
-
-                        for (var j = 0; j < fleets.length; j++) {
-                            var drawnFleet = singleFleetDrawFN(fleets[j]);
-                            drawnFleet.position.x = fleetsContainer.width;
-                            fleetsContainer.addChild(drawnFleet);
-                        }
-
-                        fleetsContainer.x -= fleetsContainer.width / 2;
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-        };
-        MapRenderer.prototype.initMapModes = function () {
-            this.mapModes["default"] = {
-                name: "default",
-                layers: [
-                    { layer: this.layers["starOwners"] },
-                    { layer: this.layers["ownerBorders"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["noStatic"] = {
-                name: "noStatic",
-                layers: [
-                    { layer: this.layers["starOwners"] },
-                    { layer: this.layers["ownerBorders"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["income"] = {
-                name: "income",
-                layers: [
-                    { layer: this.layers["starIncome"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["influence"] = {
-                name: "influence",
-                layers: [
-                    { layer: this.layers["playerInfluence"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["sectors"] = {
-                name: "sectors",
-                layers: [
-                    { layer: this.layers["sectors"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["resources"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["regions"] = {
-                name: "regions",
-                layers: [
-                    { layer: this.layers["regions"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-        };
-        MapRenderer.prototype.setParent = function (newParent) {
-            var oldParent = this.parent;
-            if (oldParent) {
-                oldParent.removeChild(this.container);
-            }
-
-            this.parent = newParent;
-            newParent.addChild(this.container);
-        };
-        MapRenderer.prototype.resetContainer = function () {
-            this.container.removeChildren();
-        };
-        MapRenderer.prototype.hasLayerInMapMode = function (layer) {
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                if (this.currentMapMode.layers[i].layer === layer) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-        MapRenderer.prototype.setLayerAsDirty = function (layerName) {
-            var layer = this.layers[layerName];
-            layer.isDirty = true;
-
-            this.isDirty = true;
-
-            // TODO
-            this.render();
-        };
-        MapRenderer.prototype.setAllLayersAsDirty = function () {
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                this.currentMapMode.layers[i].layer.isDirty = true;
-            }
-
-            this.isDirty = true;
-
-            // TODO
-            this.render();
-        };
-        MapRenderer.prototype.drawLayer = function (layer) {
-            if (!layer.isDirty)
-                return;
-            layer.container.removeChildren();
-            layer.container.addChild(layer.drawingFunction.call(this, this.galaxyMap));
-            layer.isDirty = false;
-        };
-        MapRenderer.prototype.setMapMode = function (newMapMode) {
-            if (!this.mapModes[newMapMode]) {
-                throw new Error("Invalid mapmode");
-                return;
-            }
-
-            if (this.currentMapMode && this.currentMapMode.name === newMapMode) {
-                return;
-            }
-
-            this.currentMapMode = this.mapModes[newMapMode];
-
-            this.resetContainer();
-
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                var layer = this.currentMapMode.layers[i].layer;
-                this.container.addChild(layer.container);
-            }
-
-            this.setAllLayersAsDirty();
-        };
-        MapRenderer.prototype.render = function () {
-            if (this.preventRender || !this.isDirty)
-                return;
-
-            console.log("render map");
-
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                var layer = this.currentMapMode.layers[i].layer;
-
-                this.drawLayer(layer);
-            }
-
-            this.isDirty = false;
-        };
-        return MapRenderer;
-    })();
-    Rance.MapRenderer = MapRenderer;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/voronoi.d.ts" />
-/// <reference path="star.ts" />
-/// <reference path="mapgen.ts" />
-/// <reference path="maprenderer.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
-var Rance;
-(function (Rance) {
-    var GalaxyMap = (function () {
-        function GalaxyMap() {
-        }
-        GalaxyMap.prototype.setMapGen = function (mapGen) {
-            this.mapGen = mapGen;
-
-            this.allPoints = mapGen.points;
-            this.stars = mapGen.getNonFillerPoints();
-            this.sectors = mapGen.sectors;
-            this.regions = mapGen.regions;
-        };
-        GalaxyMap.prototype.getIncomeBounds = function () {
-            var min, max;
-
-            for (var i = 0; i < this.stars.length; i++) {
-                var star = this.stars[i];
-                var income = star.getIncome();
-                if (!min)
-                    min = max = income;
-                else {
-                    if (income < min)
-                        min = income;
-                    else if (income > max)
-                        max = income;
-                }
-            }
-
-            return ({
-                min: min,
-                max: max
-            });
-        };
-        GalaxyMap.prototype.serialize = function () {
-            var data = {};
-
-            data.allPoints = this.allPoints.map(function (star) {
-                return star.serialize();
-            });
-
-            data.regions = [];
-
-            for (var regionId in this.regions) {
-                data.regions.push(this.regions[regionId].serialize());
-            }
-
-            data.sectors = [];
-
-            for (var sectorId in this.sectors) {
-                data.sectors.push(this.sectors[sectorId].serialize());
-            }
-
-            data.maxWidth = this.mapGen.maxWidth;
-            data.maxHeight = this.mapGen.maxHeight;
-
-            return data;
-        };
-        return GalaxyMap;
-    })();
-    Rance.GalaxyMap = GalaxyMap;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var tempCameraId = 0;
@@ -15849,17 +17335,25 @@ var Rance;
             this.stage.renderable = false;
             this.pause();
 
-            this.pathfindingArrow.destroy();
-            this.pathfindingArrow = null;
+            if (this.pathfindingArrow) {
+                this.pathfindingArrow.destroy();
+                this.pathfindingArrow = null;
+            }
 
-            this.mouseEventHandler.destroy();
-            this.mouseEventHandler = null;
+            if (this.mouseEventHandler) {
+                this.mouseEventHandler.destroy();
+                this.mouseEventHandler = null;
+            }
 
-            this.camera.destroy();
-            this.camera = null;
+            if (this.camera) {
+                this.camera.destroy();
+                this.camera = null;
+            }
 
-            this.shaderManager.destroy();
-            this.shaderManager = null;
+            if (this.shaderManager) {
+                this.shaderManager.destroy();
+                this.shaderManager = null;
+            }
 
             this.layers["bgFilter"].filters = null;
 
@@ -15867,7 +17361,7 @@ var Rance;
             this.removeRendererView();
         };
         Renderer.prototype.removeRendererView = function () {
-            if (this.renderer.view.parentNode) {
+            if (this.renderer && this.renderer.view.parentNode) {
                 this.renderer.view.parentNode.removeChild(this.renderer.view);
             }
         };
@@ -16113,92 +17607,6 @@ var Rance;
         return Renderer;
     })();
     Rance.Renderer = Renderer;
-})(Rance || (Rance = {}));
-/// <reference path="player.ts"/>
-/// <reference path="playercontrol.ts"/>
-/// <reference path="galaxymap.ts"/>
-/// <reference path="eventmanager.ts"/>
-var Rance;
-(function (Rance) {
-    var Game = (function () {
-        function Game(map, players, humanPlayer) {
-            this.independents = [];
-            this.galaxyMap = map;
-            map.game = this;
-
-            this.playerOrder = players;
-            this.humanPlayer = humanPlayer;
-            this.turnNumber = 1;
-        }
-        Game.prototype.endTurn = function () {
-            this.setNextPlayer();
-            this.processPlayerStartTurn(this.activePlayer);
-
-            if (this.activePlayer.isAI) {
-                this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
-            } else {
-                this.turnNumber++;
-            }
-
-            Rance.eventManager.dispatchEvent("endTurn", null);
-            Rance.eventManager.dispatchEvent("updateSelection", null);
-        };
-        Game.prototype.processPlayerStartTurn = function (player) {
-            var shipStartTurnFN = function (ship) {
-                ship.resetMovePoints();
-                ship.heal();
-                ship.timesActedThisTurn = 0;
-            };
-
-            player.forEachUnit(shipStartTurnFN);
-            player.money += player.getIncome();
-
-            var allResourceIncomeData = player.getResourceIncome();
-            for (var resourceType in allResourceIncomeData) {
-                var resourceData = allResourceIncomeData[resourceType];
-                player.addResource(resourceData.resource, resourceData.amount);
-            }
-        };
-
-        Game.prototype.setNextPlayer = function () {
-            this.playerOrder.push(this.playerOrder.shift());
-
-            this.activePlayer = this.playerOrder[0];
-        };
-        Game.prototype.serialize = function () {
-            var data = {};
-
-            data.galaxyMap = this.galaxyMap.serialize();
-            data.players = this.playerOrder.map(function (player) {
-                return player.serialize();
-            });
-            data.players = data.players.concat(this.independents.map(function (player) {
-                return player.serialize();
-            }));
-            data.humanPlayerId = this.humanPlayer.id;
-
-            return data;
-        };
-        Game.prototype.save = function (name) {
-            var saveString = "Rance.Save." + name;
-
-            var date = new Date();
-
-            var gameData = this.serialize();
-
-            var stringified = JSON.stringify({
-                name: name,
-                date: date,
-                gameData: gameData,
-                idGenerators: Rance.extendObject(Rance.idGenerators),
-                cameraLocation: app.renderer.camera.getCenterPosition()
-            });
-
-            localStorage.setItem(saveString, stringified);
-        };
-        return Game;
-    })();
-    Rance.Game = Game;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
@@ -16555,7 +17963,8 @@ var Rance;
     })();
     Rance.GameLoader = GameLoader;
 })(Rance || (Rance = {}));
-// handles assignment of all dynamic properties for templates
+/// <reference path="../src/utility.ts" />
+/// <reference path="../src/unit.ts" />
 /// <reference path="templates/abilitytemplates.ts" />
 var Rance;
 (function (Rance) {
@@ -16588,1353 +17997,6 @@ var Rance;
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
         }
     }
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    function getAllBorderEdgesByStar(edges, revealedStars) {
-        var edgesByStar = {};
-
-        for (var i = 0; i < edges.length; i++) {
-            var edge = edges[i];
-
-            if (edge.lSite && edge.rSite && edge.lSite.owner === edge.rSite.owner) {
-                continue;
-            }
-
-            ["lSite", "rSite"].forEach(function (neighborDirection) {
-                var neighbor = edge[neighborDirection];
-
-                if (neighbor && neighbor.owner && !neighbor.owner.isIndependent) {
-                    if (!revealedStars || revealedStars.indexOf(neighbor) !== -1) {
-                        if (!edgesByStar[neighbor.id]) {
-                            edgesByStar[neighbor.id] = {
-                                star: neighbor,
-                                edges: []
-                            };
-                        }
-                        edgesByStar[neighbor.id].edges.push(edge);
-                    }
-                }
-            });
-        }
-
-        return edgesByStar;
-    }
-    Rance.getAllBorderEdgesByStar = getAllBorderEdgesByStar;
-})(Rance || (Rance = {}));
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../player.ts"/>
-var Rance;
-(function (Rance) {
-    Rance.defaultEvaluationParameters = {
-        starDesirability: {
-            neighborRange: 1,
-            neighborWeight: 0.5,
-            totalIncomeWeight: 1,
-            baseIncomeWeight: 0.5,
-            infrastructureWeight: 1,
-            productionWeight: 1
-        }
-    };
-
-    var MapEvaluator = (function () {
-        function MapEvaluator(map, player) {
-            this.map = map;
-            this.player = player;
-
-            this.evaluationParameters = Rance.defaultEvaluationParameters;
-        }
-        MapEvaluator.prototype.evaluateStarIncome = function (star) {
-            var evaluation = 0;
-
-            evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) * (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
-            var evaluation = 0;
-
-            for (var category in star.buildings) {
-                for (var i = 0; i < star.buildings[category].length; i++) {
-                    evaluation += star.buildings[category][i].totalCost;
-                }
-            }
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateStarProduction = function (star) {
-            var evaluation = 0;
-
-            evaluation += star.getItemManufactoryLevel();
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
-            var evaluation = 0;
-
-            var getDistanceFalloff = function (distance) {
-                return 1 / (distance + 1);
-            };
-            var inRange = star.getLinkedInRange(range).byRange;
-
-            for (var distanceString in inRange) {
-                var stars = inRange[distanceString];
-                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-
-                for (var i = 0; i < stars.length; i++) {
-                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
-                }
-            }
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-
-            evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
-            evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
-            evaluation += this.evaluateStarProduction(star) * p.productionWeight;
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-
-            evaluation += this.evaluateIndividualStarDesirability(star);
-            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) * p.neighborWeight;
-
-            return evaluation;
-        };
-
-        MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
-            var stars = this.player.getNeighboringStars();
-            stars = stars.filter(function (star) {
-                return star.owner.isIndependent;
-            });
-
-            var evaluationByStar = {};
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                var desirability = this.evaluateStarDesirability(star);
-                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-
-                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
-                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
-
-                evaluationByStar[star.id] = {
-                    star: star,
-                    desirability: desirability,
-                    independentStrength: independentStrength,
-                    ownInfluence: ownInfluenceAtStar
-                };
-            }
-
-            return evaluationByStar;
-        };
-
-        MapEvaluator.prototype.scoreExpansionTargets = function (evaluations) {
-            var scores = [];
-
-            for (var starId in evaluations) {
-                var evaluation = evaluations[starId];
-
-                var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
-
-                var score = evaluation.desirability * easeOfCapturing;
-
-                scores.push({
-                    star: evaluation.star,
-                    evaluation: evaluation,
-                    score: score
-                });
-            }
-
-            return scores.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        };
-
-        MapEvaluator.prototype.getScoredExpansionTargets = function () {
-            var evaluations = this.evaluateImmediateExpansionTargets();
-            var scores = this.scoreExpansionTargets(evaluations);
-
-            return scores;
-        };
-
-        MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
-            var hostilePlayers = star.getEnemyFleetOwners(this.player);
-
-            var shipsByEnemy = {};
-
-            for (var i = 0; i < hostilePlayers.length; i++) {
-                shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
-            }
-
-            return shipsByEnemy;
-        };
-
-        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-            var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
-
-            var strengthByEnemy = {};
-
-            for (var playerId in hostileShipsByPlayer) {
-                var strength = 0;
-
-                for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
-                    strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
-                }
-
-                strengthByEnemy[playerId] = strength;
-            }
-
-            return strengthByEnemy;
-        };
-
-        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-
-            var total = 0;
-
-            for (var playerId in byPlayer) {
-                // TODO
-                var isIndependent = false;
-                for (var i = 0; i < this.map.game.independents.length; i++) {
-                    if (this.map.game.independents[i].id === parseInt(playerId)) {
-                        isIndependent = true;
-                        break;
-                    }
-                }
-
-                // END
-                if (isIndependent) {
-                    total += byPlayer[playerId];
-                } else {
-                    continue;
-                }
-            }
-
-            return total;
-        };
-
-        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-
-            var total = 0;
-
-            for (var playerId in byPlayer) {
-                total += byPlayer[playerId];
-            }
-
-            return total;
-        };
-
-        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
-            var byPlayer = {};
-
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-
-                if (!byPlayer[building.controller.id]) {
-                    byPlayer[building.controller.id] = 0;
-                }
-
-                byPlayer[building.controller.id] += building.totalCost;
-            }
-
-            return byPlayer;
-        };
-
-        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
-            var strength = 0;
-
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-
-                if (building.controller.id === this.player.id)
-                    continue;
-
-                strength += building.totalCost;
-            }
-
-            return strength;
-        };
-
-        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
-            return fleet.getTotalStrengthEvaluation();
-        };
-
-        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
-            var stars = this.player.getVisibleStars();
-
-            var byPlayer = {};
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                for (var playerId in star.fleets) {
-                    var playerFleets = star.fleets[playerId];
-
-                    if (!byPlayer[playerId]) {
-                        byPlayer[playerId] = [];
-                    }
-
-                    for (var j = 0; j < playerFleets.length; j++) {
-                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
-                    }
-                }
-            }
-
-            return byPlayer;
-        };
-
-        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
-            var playerIsImmobile = player.isIndependent;
-
-            var influenceByStar = {};
-
-            var stars = this.player.getRevealedStars();
-
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-
-                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-
-                if (defenceBuildingStrengths[player.id]) {
-                    if (!isFinite(influenceByStar[star.id])) {
-                        influenceByStar[star.id] = 0;
-                    }
-                    ;
-
-                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
-                }
-            }
-
-            var fleets = this.getVisibleFleetsByPlayer()[player.id];
-
-            function getDistanceFalloff(distance) {
-                return 1 / (distance + 1);
-            }
-
-            for (var i = 0; i < fleets.length; i++) {
-                var fleet = fleets[i];
-                var strength = this.evaluateFleetStrength(fleet);
-                var location = fleet.location;
-
-                var range = fleet.getMinMaxMovePoints();
-                var turnsToCheck = 4;
-
-                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
-
-                inFleetRange[0] = [location];
-
-                for (var distance in inFleetRange) {
-                    var numericDistance = parseInt(distance);
-                    var turnsToReach = Math.floor((numericDistance - 1) / range);
-                    if (turnsToReach < 0)
-                        turnsToReach = 0;
-                    var distanceFalloff = getDistanceFalloff(turnsToReach);
-                    var adjustedStrength = strength * distanceFalloff;
-
-                    for (var j = 0; j < inFleetRange[distance].length; j++) {
-                        var star = inFleetRange[distance][j];
-
-                        if (!isFinite(influenceByStar[star.id])) {
-                            influenceByStar[star.id] = 0;
-                        }
-                        ;
-
-                        influenceByStar[star.id] += adjustedStrength;
-                    }
-                }
-            }
-
-            return influenceByStar;
-        };
-        return MapEvaluator;
-    })();
-    Rance.MapEvaluator = MapEvaluator;
-})(Rance || (Rance = {}));
-/// <reference path="../star.ts"/>
-/*
-objectives:
-defend area
-attack player at area
-expand
-clean up pirates
-heal
-~~building
-*/
-var Rance;
-(function (Rance) {
-    var Objective = (function () {
-        function Objective(type, priority, target, data) {
-            this.isOngoing = false;
-            this.id = Rance.idGenerators.objective++;
-
-            this.type = type;
-            this.priority = priority;
-            this.target = target;
-            this.data = data;
-        }
-        Object.defineProperty(Objective.prototype, "priority", {
-            get: function () {
-                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
-            },
-            set: function (priority) {
-                this._basePriority = priority;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return Objective;
-    })();
-    Rance.Objective = Objective;
-})(Rance || (Rance = {}));
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../game.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objective.ts"/>
-/*
--- objectives ai
-get expansion targets
-create expansion objectives with priority based on score
-add flat amount of priority if objective is ongoing
-sort objectives by priority
-while under max active expansion objectives
-make highest priority expansion objective active
--- fronts ai
-divide available units to fronts based on priority
-make requests for extra units if needed
-muster units at muster location
-when requested units arrive
-move units to target location
-execute action
--- economy ai
-build units near request target
-*/
-var Rance;
-(function (Rance) {
-    var ObjectivesAI = (function () {
-        function ObjectivesAI(mapEvaluator, game) {
-            this.objectivesByType = {
-                expansion: [],
-                heal: []
-            };
-            this.objectives = [];
-            this.requests = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.game = game;
-        }
-        ObjectivesAI.prototype.setAllObjectives = function () {
-            this.objectives = [];
-
-            this.addObjectives(this.getExpansionObjectives());
-            this.addObjectives(this.getHealObjectives());
-        };
-
-        ObjectivesAI.prototype.addObjectives = function (objectives) {
-            this.objectives = this.objectives.concat(objectives);
-        };
-
-        ObjectivesAI.prototype.getExpansionObjectives = function () {
-            var objectivesByTarget = {};
-
-            var allObjectives = [];
-
-            for (var i = 0; i < this.objectivesByType.expansion.length; i++) {
-                var _o = this.objectivesByType.expansion[i];
-                _o.isOngoing = true;
-                objectivesByTarget[_o.target.id] = _o;
-            }
-
-            this.objectivesByType["expansion"] = [];
-
-            var minScore, maxScore;
-
-            var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
-
-            for (var i = 0; i < expansionScores.length; i++) {
-                var score = expansionScores[i].score;
-
-                //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
-                maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
-            }
-
-            for (var i = 0; i < expansionScores.length; i++) {
-                var star = expansionScores[i].star;
-                var relativeScore = Rance.getRelativeValue(expansionScores[i].score, 0, maxScore);
-                if (objectivesByTarget[star.id]) {
-                    objectivesByTarget[star.id].priority = relativeScore;
-                } else {
-                    objectivesByTarget[star.id] = new Rance.Objective("expansion", relativeScore, star, expansionScores[i]);
-                }
-
-                allObjectives.push(objectivesByTarget[star.id]);
-                this.objectivesByType["expansion"].push(objectivesByTarget[star.id]);
-            }
-
-            return allObjectives;
-        };
-
-        ObjectivesAI.prototype.getHealObjectives = function () {
-            var objective = new Rance.Objective("heal", 1, null);
-            this.objectivesByType["heal"] = [objective];
-
-            return [objective];
-        };
-
-        ObjectivesAI.prototype.processExpansionObjectives = function (objectives) {
-            var activeObjectives = [];
-        };
-        return ObjectivesAI;
-    })();
-    Rance.ObjectivesAI = ObjectivesAI;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (Templates) {
-        (function (Personalities) {
-            Personalities.testPersonality1 = {
-                expansiveness: 1,
-                aggressiveness: 0.6,
-                unitCompositionPreference: {
-                    combat: 1,
-                    defence: 0.8,
-                    //magic: 0.3,
-                    //support: 0.3,
-                    utility: 0.3
-                }
-            };
-        })(Templates.Personalities || (Templates.Personalities = {}));
-        var Personalities = Templates.Personalities;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-/// <reference path="../unit.ts"/>
-/// <reference path="../star.ts"/>
-var Rance;
-(function (Rance) {
-    var Front = (function () {
-        function Front(props) {
-            this.hasMustered = false;
-            this.id = props.id;
-            this.objective = props.objective;
-            this.priority = props.priority;
-            this.units = props.units || [];
-
-            this.minUnitsDesired = props.minUnitsDesired;
-            this.idealUnitsDesired = props.idealUnitsDesired;
-
-            this.targetLocation = props.targetLocation;
-            this.musterLocation = props.musterLocation;
-        }
-        Front.prototype.organizeFleets = function () {
-            // pure fleet only has units belonging to this front in it
-            /*
-            get all pure fleets + location
-            get all ships in impure fleets + location
-            merge pure fleets at same location
-            move impure ships to pure fleets at location if possible
-            create new pure fleets with remaining impure units
-            */
-            var allFleets = this.getAssociatedFleets();
-
-            var pureFleetsByLocation = {};
-            var impureFleetMembersByLocation = {};
-
-            var ownUnitFilterFN = function (unit) {
-                return this.getUnitIndex(unit) >= 0;
-            }.bind(this);
-
-            for (var i = 0; i < allFleets.length; i++) {
-                var fleet = allFleets[i];
-                var star = fleet.location;
-
-                if (this.isFleetPure(fleet)) {
-                    if (!pureFleetsByLocation[star.id]) {
-                        pureFleetsByLocation[star.id] = [];
-                    }
-
-                    pureFleetsByLocation[star.id].push(fleet);
-                } else {
-                    var ownUnits = fleet.ships.filter(ownUnitFilterFN);
-
-                    for (var j = 0; j < ownUnits.length; j++) {
-                        if (!impureFleetMembersByLocation[star.id]) {
-                            impureFleetMembersByLocation[star.id] = [];
-                        }
-
-                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
-                    }
-                }
-            }
-
-            var sortFleetsBySizeFN = function (a, b) {
-                return b.ships.length - a.ships.length;
-            };
-
-            for (var starId in pureFleetsByLocation) {
-                // combine pure fleets at same location
-                var fleets = pureFleetsByLocation[starId];
-                if (fleets.length > 1) {
-                    fleets.sort(sortFleetsBySizeFN);
-
-                    for (var i = fleets.length - 1; i >= 1; i--) {
-                        fleets[i].mergeWith(fleets[0]);
-                        fleets.splice(i, 1);
-                    }
-                }
-
-                // move impure ships to pure fleets at same location
-                if (impureFleetMembersByLocation[starId]) {
-                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
-                        var ship = impureFleetMembersByLocation[starId][i];
-                        ship.fleet.transferShip(fleets[0], ship);
-                        impureFleetMembersByLocation[starId].splice(i, 1);
-                    }
-                }
-            }
-
-            for (var starId in impureFleetMembersByLocation) {
-                var ships = impureFleetMembersByLocation[starId];
-                if (ships.length < 1)
-                    continue;
-                var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
-
-                for (var i = ships.length - 1; i >= 0; i--) {
-                    ships[i].fleet.transferShip(newFleet, ships[i]);
-                }
-            }
-        };
-        Front.prototype.isFleetPure = function (fleet) {
-            for (var i = 0; i < fleet.ships.length; i++) {
-                if (this.getUnitIndex(fleet.ships[i]) === -1) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-        Front.prototype.getAssociatedFleets = function () {
-            var fleetsById = {};
-
-            for (var i = 0; i < this.units.length; i++) {
-                if (!this.units[i].fleet)
-                    continue;
-
-                if (!fleetsById[this.units[i].fleet.id]) {
-                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
-                }
-            }
-
-            var allFleets = [];
-
-            for (var fleetId in fleetsById) {
-                allFleets.push(fleetsById[fleetId]);
-            }
-
-            return allFleets;
-        };
-        Front.prototype.getUnitIndex = function (unit) {
-            return this.units.indexOf(unit);
-        };
-        Front.prototype.addUnit = function (unit) {
-            if (this.getUnitIndex(unit) === -1) {
-                if (unit.front) {
-                    unit.front.removeUnit(unit);
-                }
-
-                unit.front = this;
-                this.units.push(unit);
-            }
-        };
-        Front.prototype.removeUnit = function (unit) {
-            var unitIndex = this.getUnitIndex(unit);
-            if (unitIndex !== -1) {
-                unit.front = null;
-                this.units.splice(unitIndex, 1);
-            }
-        };
-        Front.prototype.getUnitCountByArchetype = function () {
-            var unitCountByArchetype = {};
-
-            for (var i = 0; i < this.units.length; i++) {
-                var archetype = this.units[i].template.archetype;
-
-                if (!unitCountByArchetype[archetype]) {
-                    unitCountByArchetype[archetype] = 0;
-                }
-
-                unitCountByArchetype[archetype]++;
-            }
-
-            return unitCountByArchetype;
-        };
-        Front.prototype.getUnitsByLocation = function () {
-            var byLocation = {};
-
-            for (var i = 0; i < this.units.length; i++) {
-                var star = this.units[i].fleet.location;
-                if (!byLocation[star.id]) {
-                    byLocation[star.id] = [];
-                }
-
-                byLocation[star.id].push(this.units[i]);
-            }
-
-            return byLocation;
-        };
-
-        Front.prototype.moveFleets = function (afterMoveCallback) {
-            switch (this.objective.type) {
-                case "heal": {
-                    this.healMoveRoutine(afterMoveCallback);
-                    break;
-                }
-                default: {
-                    this.defaultMoveRoutine(afterMoveCallback);
-                    break;
-                }
-            }
-        };
-
-        Front.prototype.healMoveRoutine = function (afterMoveCallback) {
-            var fleets = this.getAssociatedFleets();
-
-            if (fleets.length <= 0) {
-                afterMoveCallback();
-                return;
-            }
-
-            var finishedMovingCount = 0;
-            var finishFleetMoveFN = function () {
-                finishedMovingCount++;
-                if (finishedMovingCount >= fleets.length) {
-                    afterMoveCallback();
-                }
-            };
-
-            for (var i = 0; i < fleets.length; i++) {
-                var player = fleets[i].player;
-                var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
-
-                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-            }
-        };
-
-        Front.prototype.defaultMoveRoutine = function (afterMoveCallback) {
-            var shouldMoveToTarget;
-
-            var unitsByLocation = this.getUnitsByLocation();
-            var fleets = this.getAssociatedFleets();
-
-            var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
-
-            var inRangeOfTarget = 0;
-
-            for (var i = 0; i < fleets.length; i++) {
-                var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
-                if (fleets[i].getMinCurrentMovePoints() >= distance) {
-                    inRangeOfTarget += fleets[i].ships.length;
-                }
-            }
-
-            if (this.hasMustered) {
-                shouldMoveToTarget = true;
-            } else {
-                if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired) {
-                    this.hasMustered = true;
-                    shouldMoveToTarget = true;
-                } else {
-                    shouldMoveToTarget = false;
-                }
-            }
-
-            var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
-
-            var finishAllMoveFN = function () {
-                unitsByLocation = this.getUnitsByLocation();
-                var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
-
-                if (atTarget >= this.minUnitsDesired) {
-                    this.executeAction(afterMoveCallback);
-                } else {
-                    afterMoveCallback();
-                }
-            }.bind(this);
-
-            var finishedMovingCount = 0;
-            var finishFleetMoveFN = function () {
-                finishedMovingCount++;
-                if (finishedMovingCount >= fleets.length) {
-                    finishAllMoveFN();
-                }
-            };
-
-            for (var i = 0; i < fleets.length; i++) {
-                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-            }
-        };
-        Front.prototype.executeAction = function (afterExecutedCallback) {
-            var star = this.targetLocation;
-            var player = this.units[0].fleet.player;
-
-            if (this.objective.type === "expansion") {
-                var attackTargets = star.getTargetsForPlayer(player);
-
-                var target = attackTargets.filter(function (target) {
-                    return target.enemy.isIndependent;
-                })[0];
-
-                player.attackTarget(star, target, afterExecutedCallback);
-            }
-        };
-        return Front;
-    })();
-    Rance.Front = Front;
-})(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalitytemplates.ts" />
-/// <reference path="../player.ts"/>
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="objectivesai.ts"/>
-/// <reference path="front.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
-var Rance;
-(function (Rance) {
-    var FrontsAI = (function () {
-        function FrontsAI(mapEvaluator, objectivesAI, personality) {
-            this.fronts = [];
-            this.frontsRequestingUnits = [];
-            this.frontsToMove = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-        }
-        FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
-            var totalUnitCountByArchetype = {};
-
-            var units = this.player.getAllUnits();
-            for (var i = 0; i < units.length; i++) {
-                var unitArchetype = units[i].template.archetype;
-
-                if (!totalUnitCountByArchetype[unitArchetype]) {
-                    totalUnitCountByArchetype[unitArchetype] = 0;
-                }
-
-                totalUnitCountByArchetype[unitArchetype]++;
-            }
-
-            return totalUnitCountByArchetype;
-        };
-
-        FrontsAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
-            var min = 0;
-            var max;
-            for (var archetype in unitsByArchetype) {
-                var count = unitsByArchetype[archetype];
-                max = isFinite(max) ? Math.max(max, count) : count;
-            }
-
-            var relativeWeights = {};
-
-            for (var archetype in unitsByArchetype) {
-                var count = unitsByArchetype[archetype];
-                relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
-            }
-
-            return relativeWeights;
-        };
-
-        FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
-            var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
-
-            var deviationFromIdeal = {};
-
-            for (var archetype in idealWeights) {
-                var ideal = idealWeights[archetype];
-                var actual = relativeWeights[archetype] || 0;
-
-                deviationFromIdeal[archetype] = ideal - actual;
-            }
-
-            return deviationFromIdeal;
-        };
-
-        FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
-            var ideal = this.personality.unitCompositionPreference;
-            var actual = this.getTotalUnitCountByArchetype();
-            return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
-        };
-
-        FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
-            var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
-            var globalPreferenceWeight = relativeFrontSize;
-
-            var globalScores = this.getGlobalUnitArcheypeScores();
-
-            var scores = {};
-
-            var frontArchetypes = front.getUnitCountByArchetype();
-            var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
-
-            for (var archetype in globalScores) {
-                scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
-                scores[archetype] += frontScores[archetype];
-                scores[archetype] /= 2;
-            }
-
-            return scores;
-        };
-
-        FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
-            switch (front.objective.type) {
-                case "heal": {
-                    return this.getHealUnitFitScore(unit, front);
-                }
-                default: {
-                    return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
-                }
-            }
-        };
-
-        FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
-            var healthPercentage = unit.currentHealth / unit.maxHealth;
-            if (healthPercentage > 0.75)
-                return -1;
-
-            return (1 - healthPercentage) * 2;
-        };
-
-        FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
-            // base score based on unit composition
-            var score = frontArchetypeScores[unit.template.archetype];
-
-            // add score based on front priority
-            // lower priority if front requirements already met
-            // more important fronts get priority but dont hog units
-            var unitsOverMinimum = front.units.length - front.minUnitsDesired;
-            var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
-
-            var priorityMultiplier = 1;
-            if (unitsOverMinimum > 0) {
-                priorityMultiplier -= unitsOverMinimum * 0.15;
-            }
-            if (unitsOverIdeal > 0) {
-                priorityMultiplier -= unitsOverIdeal * 0.4;
-            }
-
-            if (priorityMultiplier < 0)
-                priorityMultiplier = 0;
-
-            var adjustedPriority = front.priority * priorityMultiplier;
-            score += adjustedPriority * 2;
-
-            // penalize initial units for front
-            // inertia at beginning of adding units to front
-            // so ai prioritizes fully formed fronts to incomplete ones
-            var newUnitInertia = 0.5 - front.units.length * 0.1;
-            if (newUnitInertia > 0) {
-                score -= newUnitInertia;
-            }
-
-            // prefer units already part of this front
-            var alreadyInFront = unit.front && unit.front === front;
-            if (alreadyInFront) {
-                score += 0.2;
-                if (front.hasMustered) {
-                    score += 0.5;
-                }
-            }
-
-            // penalize fronts with high requirements
-            // reduce forming incomplete fronts even if they have high priority
-            // effect lessens as total unit count increases
-            // TODO
-            // penalize units on low health
-            var healthPercentage = unit.currentHealth / unit.maxHealth;
-
-            if (healthPercentage < 0.75) {
-                var lostHealthPercentage = 1 - healthPercentage;
-                score += lostHealthPercentage * -2.5;
-            }
-
-            // prioritize units closer to front target
-            var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-            var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
-            var distanceAdjust = turnsToReach * -0.1;
-            score += distanceAdjust;
-
-            return score;
-        };
-
-        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
-            var scores = [];
-
-            var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
-
-            for (var i = 0; i < units.length; i++) {
-                scores.push({
-                    unit: units[i],
-                    score: this.scoreUnitFitForFront(units[i], front, frontArchetypeScores),
-                    front: front
-                });
-            }
-
-            return scores;
-        };
-
-        FrontsAI.prototype.assignUnits = function () {
-            var units = this.player.getAllUnits();
-
-            var allUnitScores = [];
-            var unitScoresByFront = {};
-
-            var recalculateScoresForFront = function (front) {
-                var archetypeScores = this.getFrontUnitArchetypeScores(front);
-                var frontScores = unitScoresByFront[front.id];
-
-                for (var i = 0; i < frontScores.length; i++) {
-                    var unit = frontScores[i].unit;
-                    frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
-                }
-            }.bind(this);
-
-            var removeUnit = function (unit) {
-                for (var frontId in unitScoresByFront) {
-                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
-                        return score.unit !== unit;
-                    });
-                }
-            };
-
-            // ascending
-            var sortByScoreFN = function (a, b) {
-                return a.score - b.score;
-            };
-
-            for (var i = 0; i < this.fronts.length; i++) {
-                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
-                unitScoresByFront[this.fronts[i].id] = frontScores;
-                allUnitScores = allUnitScores.concat(frontScores);
-            }
-
-            var alreadyAdded = {};
-
-            while (allUnitScores.length > 0) {
-                // sorted in loop as scores get recalculated every iteration
-                allUnitScores.sort(sortByScoreFN);
-
-                var bestScore = allUnitScores.pop();
-                if (alreadyAdded[bestScore.unit.id]) {
-                    continue;
-                }
-
-                bestScore.front.addUnit(bestScore.unit);
-                console.log(bestScore.front.objective.type, bestScore.unit.currentHealth, bestScore.unit.maxHealth);
-
-                removeUnit(bestScore.unit);
-                alreadyAdded[bestScore.unit.id] = true;
-                recalculateScoresForFront(bestScore.front);
-            }
-        };
-
-        FrontsAI.prototype.getFrontWithId = function (id) {
-            for (var i = 0; i < this.fronts.length; i++) {
-                if (this.fronts[i].id === id) {
-                    return this.fronts[i];
-                }
-            }
-
-            return null;
-        };
-
-        FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = objective.target ? this.player.getNearestOwnedStarTo(objective.target) : null;
-            var unitsDesired = this.getUnitsToFillObjective(objective);
-
-            var front = new Rance.Front({
-                id: objective.id,
-                priority: objective.priority,
-                objective: objective,
-                minUnitsDesired: unitsDesired,
-                idealUnitsDesired: 6,
-                targetLocation: objective.target,
-                musterLocation: musterLocation
-            });
-
-            return front;
-        };
-
-        FrontsAI.prototype.removeInactiveFronts = function () {
-            for (var i = this.fronts.length - 1; i >= 0; i--) {
-                var front = this.fronts[i];
-                var hasActiveObjective = false;
-
-                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
-                    var objective = this.objectivesAI.objectives[j];
-                    if (objective.id === front.id && objective.priority > 0.04) {
-                        hasActiveObjective = true;
-                        break;
-                    }
-                }
-
-                if (!hasActiveObjective) {
-                    this.fronts.splice(i, 1);
-                }
-            }
-        };
-
-        FrontsAI.prototype.formFronts = function () {
-            /*
-            dissolve old fronts without an active objective
-            create new fronts for every objective not already assoicated with one
-            */
-            this.removeInactiveFronts();
-
-            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
-                var objective = this.objectivesAI.objectives[i];
-
-                if (objective.priority > 0.04) {
-                    if (!this.getFrontWithId(objective.id)) {
-                        var front = this.createFront(objective);
-                        this.fronts.push(front);
-                    }
-                }
-            }
-        };
-
-        FrontsAI.prototype.organizeFleets = function () {
-            for (var i = 0; i < this.fronts.length; i++) {
-                this.fronts[i].organizeFleets();
-            }
-        };
-
-        FrontsAI.prototype.setFrontsToMove = function () {
-            this.frontsToMove = this.fronts.slice(0);
-
-            var frontMovePriorities = {
-                expansion: 4,
-                heal: -1
-            };
-
-            this.frontsToMove.sort(function (a, b) {
-                return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
-            });
-        };
-
-        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
-            var front = this.frontsToMove.pop();
-
-            if (!front) {
-                afterMovingAllCallback();
-                return;
-            }
-
-            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
-        };
-
-        FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
-            switch (objective.type) {
-                case "expansion": {
-                    return this.getUnitsToFillExpansionObjective(objective);
-                }
-                case "heal": {
-                    return 999;
-                }
-            }
-        };
-
-        FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
-            var star = objective.target;
-            var independentShips = star.getAllShipsOfPlayer(star.owner);
-
-            if (independentShips.length === 1)
-                return 2;
-            else {
-                var desired = independentShips.length + 2;
-                return Math.min(desired, 6);
-            }
-        };
-
-        FrontsAI.prototype.setUnitRequests = function () {
-            /*for each front that doesnt fulfill minimum unit requirement
-            make request with same priority of front
-            */
-            this.frontsRequestingUnits = [];
-
-            for (var i = 0; i < this.fronts.length; i++) {
-                var front = this.fronts[i];
-                if (front.units.length < front.idealUnitsDesired) {
-                    this.frontsRequestingUnits.push(front);
-                }
-            }
-        };
-        return FrontsAI;
-    })();
-    Rance.FrontsAI = FrontsAI;
-})(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalitytemplates.ts" />
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../game.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
-/// <reference path="frontsai.ts"/>
-var Rance;
-(function (Rance) {
-    var EconomicAI = (function () {
-        function EconomicAI(props) {
-            this.objectivesAI = props.objectivesAI;
-            this.frontsAI = props.frontsAI;
-
-            this.mapEvaluator = props.mapEvaluator;
-            this.player = props.mapEvaluator.player;
-
-            this.personality = props.personality;
-        }
-        EconomicAI.prototype.satisfyAllRequests = function () {
-            /*
-            get all requests from OAI and FAI
-            sort by priority
-            fulfill by priority
-            */
-            var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
-            allRequests.sort(function (a, b) {
-                return b.priority - a.priority;
-            });
-
-            for (var i = 0; i < allRequests.length; i++) {
-                var request = allRequests[i];
-
-                // is front
-                if (request.targetLocation) {
-                    this.satisfyFrontRequest(request);
-                } else {
-                }
-            }
-        };
-
-        EconomicAI.prototype.satisfyFrontRequest = function (front) {
-            // TODO
-            var star = this.player.getNearestOwnedStarTo(front.musterLocation);
-
-            var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
-            var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
-
-            var buildableUnitTypesByArchetype = {};
-
-            var buildableUnitTypes = star.getBuildableShipTypes();
-
-            for (var i = 0; i < buildableUnitTypes.length; i++) {
-                var archetype = buildableUnitTypes[i].archetype;
-
-                if (!buildableUnitTypesByArchetype[archetype]) {
-                    buildableUnitTypesByArchetype[archetype] = [];
-                }
-
-                buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
-            }
-
-            var unitType;
-
-            for (var i = 0; i < sortedScores.length; i++) {
-                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                    unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                    break;
-                }
-            }
-            if (!unitType)
-                debugger;
-
-            var unit = this.player.buildUnit(unitType, star);
-
-            front.addUnit(unit);
-        };
-        return EconomicAI;
-    })();
-    Rance.EconomicAI = EconomicAI;
-})(Rance || (Rance = {}));
-/// <reference path="../galaxymap.ts"/>
-/// <reference path="../game.ts"/>
-/// <reference path="../player.ts"/>
-/// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
-/// <reference path="economicai.ts"/>
-/// <reference path="frontsai.ts"/>
-var Rance;
-(function (Rance) {
-    var AIController = (function () {
-        function AIController(player, game) {
-            this.personality = Rance.Templates.Personalities.testPersonality1;
-
-            this.player = player;
-            this.game = game;
-
-            this.map = game.galaxyMap;
-
-            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
-
-            this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
-            this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
-            this.economicAI = new Rance.EconomicAI({
-                objectivesAI: this.objectivesAI,
-                frontsAI: this.frontsAI,
-                mapEvaluator: this.mapEvaluator,
-                personality: this.personality
-            });
-        }
-        AIController.prototype.processTurn = function (afterFinishedCallback) {
-            // gsai evaluate grand strategy
-            // oai make objectives
-            this.objectivesAI.setAllObjectives();
-
-            // fai form fronts
-            this.frontsAI.formFronts();
-
-            // fai assign units
-            this.frontsAI.assignUnits();
-
-            // fai request units
-            this.frontsAI.setUnitRequests();
-
-            // eai fulfill requests
-            this.economicAI.satisfyAllRequests();
-
-            // fai organize fleets
-            this.frontsAI.organizeFleets();
-
-            // fai set fleets yet to move
-            this.frontsAI.setFrontsToMove();
-
-            // fai move fleets
-            // function param is called after all fronts have moved
-            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
-        };
-        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
-            this.frontsAI.organizeFleets();
-            if (afterFinishedCallback) {
-                afterFinishedCallback();
-            }
-            console.log("finish moving");
-        };
-        return AIController;
-    })();
-    Rance.AIController = AIController;
 })(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
@@ -17993,10 +18055,8 @@ var Rance;
     Rance.Options;
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
-/// <reference path="unit.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
-/// <reference path="battleprep.ts"/>
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
@@ -18005,12 +18065,6 @@ var Rance;
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
-/// <reference path="shadermanager.ts"/>
-/// <reference path="mctree.ts"/>
-/// <reference path="borderpolygon.ts"/>
-/// <reference path="mapai/mapevaluator.ts"/>
-/// <reference path="mapai/aicontroller.ts"/>
-///
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
 var Rance;
@@ -18047,24 +18101,36 @@ var Rance;
             this.itemGenerator = new Rance.ItemGenerator();
 
             this.initUI();
+            this.setInitialScene();
 
-            this.game = this.makeGame();
-            this.initGame();
+            if (this.reactUI.currentScene === "galaxyMap") {
+                this.game = this.makeGame();
+                this.initGame();
 
-            this.initDisplay();
+                this.initDisplay();
+            }
 
             this.reactUI.render();
         };
         App.prototype.destroy = function () {
-            this.mapRenderer.destroy();
-            this.mapRenderer = null;
+            if (this.mapRenderer) {
+                this.mapRenderer.destroy();
+                this.mapRenderer = null;
+            }
 
-            // renderer is kept for reusing the stage as
-            // pixi doesnt like creating more than one
-            this.renderer.destroy();
+            // renderer is reused as pixi doesnt like creating
+            // more than 1 stage or renderer
+            //
+            // renderer.destroy() just destroys peripheral stuff and
+            // prevents rendering until it's initialized again
+            if (this.renderer) {
+                this.renderer.destroy();
+            }
 
-            this.reactUI.destroy();
-            this.reactUI = null;
+            if (this.reactUI) {
+                this.reactUI.destroy();
+                this.reactUI = null;
+            }
         };
         App.prototype.load = function (saveName) {
             var itemName = "Rance.Save." + saveName;
@@ -18088,11 +18154,24 @@ var Rance;
                 this.renderer.toCenterOn = parsed.cameraLocation;
             }
 
-            this.reactUI.render();
+            this.reactUI.switchScene("galaxyMap");
         };
 
-        App.prototype.makeGame = function () {
-            var playerData = this.makePlayers();
+        App.prototype.makeGameFromSetup = function (gameData) {
+            this.destroy();
+
+            this.initUI();
+
+            this.game = this.makeGame(gameData.playerData);
+            this.initGame();
+
+            this.initDisplay();
+
+            this.reactUI.switchScene("galaxyMap");
+        };
+
+        App.prototype.makeGame = function (playerData) {
+            var playerData = playerData || this.makePlayers();
             var players = playerData.players;
             var independents = playerData.independents;
             var map = this.makeMap(playerData);
@@ -18169,8 +18248,9 @@ var Rance;
             // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
         };
         App.prototype.initUI = function () {
-            var reactUI = this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
-
+            this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
+        };
+        App.prototype.setInitialScene = function () {
             var uriParser = document.createElement("a");
             uriParser.href = document.URL;
             var hash = uriParser.hash;
@@ -18178,10 +18258,10 @@ var Rance;
             if (hash) {
                 if (hash === "#demo") {
                 } else {
-                    reactUI.currentScene = hash.slice(1);
+                    this.reactUI.currentScene = hash.slice(1);
                 }
             } else {
-                reactUI.currentScene = "galaxyMap";
+                this.reactUI.currentScene = "galaxyMap";
             }
         };
         return App;

@@ -5,6 +5,8 @@
 /// <reference path="utility.ts"/>
 /// <reference path="color.ts"/>
 
+/// <reference path="borderpolygon.ts"/>
+
 /// <reference path="galaxymap.ts" />
 /// <reference path="star.ts" />
 /// <reference path="fleet.ts" />
