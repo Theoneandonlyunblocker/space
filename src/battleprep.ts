@@ -96,7 +96,10 @@ module Rance
       var MAX_UNITS_PER_ROW = 3;
 
       var formation = this.makeEmptyFormation();
-      var unitsToPlace = units.slice(0);
+      var unitsToPlace = units.filter(function(unit: Unit)
+      {
+        return unit.canActThisTurn();
+      });
       var placedInFront = 0;
       var placedInBack = 0;
       var totalPlaced = 0;

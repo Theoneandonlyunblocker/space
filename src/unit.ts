@@ -489,6 +489,10 @@ module Rance
 
       this.uiDisplayIsDirty = true;
     }
+    canActThisTurn(): boolean
+    {
+      return this.timesActedThisTurn < 1;
+    }
     heal()
     {
       var location = this.fleet.location;
