@@ -1,5 +1,5 @@
 /// <reference path="abilitytemplates.ts"/>
-// /// <reference path="skilltemplates.ts"/>
+/// <reference path="skilltemplates.ts"/>
 /// <reference path="spritetemplate.d.ts"/>
 
 module Rance

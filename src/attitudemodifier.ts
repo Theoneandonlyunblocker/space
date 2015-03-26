@@ -7,9 +7,18 @@ module Rance
     endTurn: number;
     strength: number;
 
-    constructor(type: string)
+    constructor(props:
     {
-
+      type: string;
+      startTurn: number;
+      endTurn: number;
+      strength: number;
+    })
+    {
+      this.type: props.type;
+      this.startTurn: props.startTurn;
+      this.endTurn: props.endTurn;
+      this.strength: props.strength;
     }
 
     getFreshness(currentTurn: number)
@@ -19,6 +28,12 @@ module Rance
       {
         return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
       }
+    }
+    getAdjustedStrength(currentTurn: number)
+    {
+      var freshenss = this.getFreshness();
+
+      return this.strength * freshenss;
     }
   }
 }
