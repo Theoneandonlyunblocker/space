@@ -1239,7 +1239,7 @@ var Rance;
                     throw new Error("Invalid side");
             },
             getSceneProps: function (unit) {
-                var container = this.getUnitsContainerForSide(unit.battleStats.side);
+                var container = this.refs.scene.getDOMNode();
                 var boundingRect = container.getBoundingClientRect();
 
                 return ({
@@ -1251,7 +1251,8 @@ var Rance;
                     rotationAngle: 70,
                     scalingFactor: 0.04,
                     facesRight: unit.battleStats.side === "side1",
-                    maxHeight: boundingRect.height
+                    maxHeight: boundingRect.height,
+                    desiredHeight: boundingRect.height
                 });
             },
             addUnit: function (side, animate, unit) {
@@ -1299,7 +1300,8 @@ var Rance;
             },
             render: function () {
                 return (React.DOM.div({
-                    className: "battle-scene"
+                    className: "battle-scene",
+                    ref: "scene"
                 }, React.DOM.div({
                     className: "battle-scene-units-container",
                     ref: "unit1Scene"
@@ -14178,6 +14180,12 @@ var Rance;
 
             var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
 
+            if (props.desiredHeight) {
+                var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+                var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
+                zDistance = spaceToFill / maxUnitsPerColumn;
+            }
+
             for (var i = unitsToDraw - 1; i >= 0; i--) {
                 var column = Math.floor(i / maxUnitsPerColumn);
                 var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
@@ -15776,7 +15784,7 @@ var Rance;
                     maxPlayers: this.state.maxPlayers
                 }), React.DOM.button({
                     onClick: this.randomizeAllPlayers
-                }, "Randomize all"), React.DOM.button({
+                }, "Randomize"), React.DOM.button({
                     onClick: this.startGame
                 }, "Start game")));
             }
@@ -17422,7 +17430,7 @@ var Rance;
                 oldToCenterOn = this.camera.toCenterOn;
                 this.camera.destroy();
             }
-            this.camera = new Rance.Camera(this.layers["main"], 0.5);
+            this.camera = new Rance.Camera(this.layers["map"], 0.5);
             this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
 
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);

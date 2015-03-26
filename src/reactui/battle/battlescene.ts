@@ -50,7 +50,7 @@ module Rance
 
       getSceneProps: function(unit: Unit)
       {
-        var container = this.getUnitsContainerForSide(unit.battleStats.side);
+        var container = this.refs.scene.getDOMNode();
         var boundingRect = container.getBoundingClientRect();
 
         return(
@@ -63,7 +63,8 @@ module Rance
           rotationAngle: 70,
           scalingFactor: 0.04,
           facesRight: unit.battleStats.side === "side1",
-          maxHeight: boundingRect.height
+          maxHeight: boundingRect.height,
+          desiredHeight: boundingRect.height
         });
       },
 
@@ -130,7 +131,8 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "battle-scene"
+            className: "battle-scene",
+            ref: "scene"
           },
             React.DOM.div(
             {

@@ -2080,6 +2080,7 @@ declare module Rance {
             facesRight: boolean;
             maxWidth?: number;
             maxHeight?: number;
+            desiredHeight?: number;
         }): HTMLCanvasElement;
         public serialize(includeItems?: boolean): any;
         public makeVirtualClone(): Unit;

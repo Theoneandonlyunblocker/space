@@ -57,7 +57,7 @@ module Rance
             React.DOM.button(
             {
               onClick: this.randomizeAllPlayers
-            }, "Randomize all"),
+            }, "Randomize"),
             React.DOM.button(
             {
               onClick: this.startGame

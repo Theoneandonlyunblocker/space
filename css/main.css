@@ -275,11 +275,12 @@ progress::-webkit-progress-value {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;
+  bottom: 20px;
   left: 0;
   z-index: 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .battle-scene-units-container {
   position: relative;
@@ -485,7 +486,7 @@ progress::-webkit-progress-value {
 .enemy-unit .unit-container {
   border: 1px solid #999999;
   border-left: 0;
-  left: 1px;
+  left: 0.5px;
 }
 .active-unit.friendly-unit .unit-container {
   background: linear-gradient(to left, rgba(200, 200, 20, 0.5), rgba(200, 200, 20, 0.3));

@@ -519,6 +519,7 @@ module Rance
       facesRight: boolean;
       maxWidth?: number;
       maxHeight?: number;
+      desiredHeight?: number;
     })
     {
       //var unitsToDraw = props.unitsToDraw;
@@ -570,6 +571,13 @@ module Rance
       ];
 
       var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+
+      if (props.desiredHeight)
+      {
+        var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+        var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
+        zDistance = spaceToFill / maxUnitsPerColumn;
+      }
 
       for (var i = unitsToDraw - 1; i >= 0; i--)
       {
