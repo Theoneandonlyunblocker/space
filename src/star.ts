@@ -426,7 +426,11 @@ module Rance
       var targets = [];
 
       if (buildingTarget &&
-        diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))
+        (
+          player === this.owner ||
+          diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller)
+        )
+      )
       {
         targets.push(
         {

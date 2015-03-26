@@ -7173,7 +7173,7 @@ var Rance;
 
             var targets = [];
 
-            if (buildingTarget && diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller)) {
+            if (buildingTarget && (player === this.owner || diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
                 targets.push({
                     type: "building",
                     enemy: buildingTarget.controller,
