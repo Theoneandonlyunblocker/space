@@ -1376,6 +1376,8 @@ declare module Rance {
         public handleDiplomaticStatusUpdate(): void;
         public meetPlayer(player: Rance.Player): void;
         public declareWarOn(player: Rance.Player): void;
+        public canAttackFleetOfPlayer(player: Rance.Player): boolean;
+        public canAttackBuildingOfPlayer(player: Rance.Player): boolean;
         public serialize(): any;
     }
 }
@@ -2148,6 +2150,7 @@ declare module Rance {
         public removeGuard(amount: number): void;
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
+        public canActThisTurn(): boolean;
         public heal(): void;
         public getStrengthEvaluation(): number;
         public drawBattleScene(props: {

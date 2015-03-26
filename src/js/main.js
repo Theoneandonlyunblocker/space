@@ -2302,7 +2302,7 @@ var Rance;
                         rowConstructor: Rance.UIComponents.UnitListItem,
                         makeClone: true,
                         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
-                        noActionsLeft: (this.props.checkTimesActed && unit.timesActedThisTurn >= 1),
+                        noActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
                         isSelected: (this.props.selectedUnit && this.props.selectedUnit.id === unit.id),
                         isHovered: (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id),
                         onMouseEnter: this.props.onMouseEnter,
@@ -7169,9 +7169,11 @@ var Rance;
             var buildingController = buildingTarget ? buildingTarget.controller : null;
             var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
 
+            var diplomacyStatus = player.diplomacyStatus;
+
             var targets = [];
 
-            if (buildingTarget) {
+            if (buildingTarget && diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller)) {
                 targets.push({
                     type: "building",
                     enemy: buildingTarget.controller,
@@ -7180,12 +7182,14 @@ var Rance;
                 });
             }
             for (var i = 0; i < fleetOwners.length; i++) {
-                targets.push({
-                    type: "fleet",
-                    enemy: fleetOwners[i],
-                    building: null,
-                    ships: this.getAllShipsOfPlayer(fleetOwners[i])
-                });
+                if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i])) {
+                    targets.push({
+                        type: "fleet",
+                        enemy: fleetOwners[i],
+                        building: null,
+                        ships: this.getAllShipsOfPlayer(fleetOwners[i])
+                    });
+                }
             }
 
             return targets;
@@ -8804,7 +8808,9 @@ var Rance;
             var MAX_UNITS_PER_ROW = 3;
 
             var formation = this.makeEmptyFormation();
-            var unitsToPlace = units.slice(0);
+            var unitsToPlace = units.filter(function (unit) {
+                return unit.canActThisTurn();
+            });
             var placedInFront = 0;
             var placedInBack = 0;
             var totalPlaced = 0;
@@ -9147,6 +9153,27 @@ var Rance;
         DiplomacyStatus.prototype.declareWarOn = function (player) {
             this.statusByPlayer[player.id] = 2 /* war */;
             player.diplomacyStatus[this.player.id] = 2 /* war */;
+        };
+
+        DiplomacyStatus.prototype.canAttackFleetOfPlayer = function (player) {
+            if (player.isIndependent)
+                return true;
+
+            if (this.statusByPlayer[player.id] >= 1 /* coldWar */) {
+                return true;
+            }
+
+            return false;
+        };
+        DiplomacyStatus.prototype.canAttackBuildingOfPlayer = function (player) {
+            if (player.isIndependent)
+                return true;
+
+            if (this.statusByPlayer[player.id] >= 2 /* war */) {
+                return true;
+            }
+
+            return false;
         };
 
         DiplomacyStatus.prototype.serialize = function () {
@@ -14386,6 +14413,9 @@ var Rance;
             this.battleStats.guardCoverage = null;
 
             this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.canActThisTurn = function () {
+            return this.timesActedThisTurn < 1;
         };
         Unit.prototype.heal = function () {
             var location = this.fleet.location;

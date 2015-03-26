@@ -421,9 +421,12 @@ module Rance
       var buildingController = buildingTarget ? buildingTarget.controller : null;
       var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
 
+      var diplomacyStatus = player.diplomacyStatus;
+
       var targets = [];
 
-      if (buildingTarget)
+      if (buildingTarget &&
+        diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))
       {
         targets.push(
         {
@@ -435,13 +438,16 @@ module Rance
       }
       for (var i = 0; i < fleetOwners.length; i++)
       {
-        targets.push(
+        if (diplomacyStatus.canAttackFleetOfPlayer(fleetOwners[i]))
         {
-          type: "fleet",
-          enemy: fleetOwners[i],
-          building: null,
-          ships: this.getAllShipsOfPlayer(fleetOwners[i])
-        });
+          targets.push(
+          {
+            type: "fleet",
+            enemy: fleetOwners[i],
+            building: null,
+            ships: this.getAllShipsOfPlayer(fleetOwners[i])
+          });
+        }
       }
 
       return targets;

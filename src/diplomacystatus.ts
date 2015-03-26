@@ -57,6 +57,29 @@ module Rance
       player.diplomacyStatus[this.player.id] = DiplomaticState.war;
     }
 
+    canAttackFleetOfPlayer(player: Player)
+    {
+      if (player.isIndependent) return true;
+
+      if (this.statusByPlayer[player.id] >= DiplomaticState.coldWar)
+      {
+        return true;
+      }
+
+      return false;
+    }
+    canAttackBuildingOfPlayer(player: Player)
+    {
+      if (player.isIndependent) return true;
+
+      if (this.statusByPlayer[player.id] >= DiplomaticState.war)
+      {
+        return true;
+      }
+
+      return false;
+    }
+
     serialize()
     {
       var data: any = {};
