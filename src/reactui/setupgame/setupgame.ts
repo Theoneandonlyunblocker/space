@@ -8,6 +8,16 @@ module Rance
     {
       displayName: "SetupGame",
 
+      getInitialState: function()
+      {
+        return(
+        {
+          minPlayers: 1,
+          maxPlayers: 5
+        });
+      },
+
+
       startGame: function()
       {
         var gameData: any = {};
@@ -23,7 +33,12 @@ module Rance
           independents: pirates
         }
 
-        //app.makeGameFromSetup(gameData);
+        app.makeGameFromSetup(gameData);
+      },
+
+      randomizeAllPlayers: function()
+      {
+        this.refs.players.randomizeAllPlayers();
       },
 
       render: function()
@@ -35,8 +50,14 @@ module Rance
           },
             UIComponents.SetupGamePlayers(
             {
-              ref: "players"
+              ref: "players",
+              minPlayers: this.state.minPlayers,
+              maxPlayers: this.state.maxPlayers
             }),
+            React.DOM.button(
+            {
+              onClick: this.randomizeAllPlayers
+            }, "Randomize all"),
             React.DOM.button(
             {
               onClick: this.startGame

@@ -67,6 +67,21 @@ module Rance
       {
         this.setState({flagHasCustomImage: Boolean(image)});
       },
+      randomize: function()
+      {
+        if (!this.state.flagHasCustomImage)
+        {
+          this.refs.flagSetter.state.flag.generateRandom();
+        }
+
+        var mainColor = generateMainColor();
+
+        this.setState(
+        {
+          mainColor: mainColor,
+          subColor: generateSecondaryColor(mainColor)
+        });
+      },
       makePlayer: function()
       {
         var player = new Player(!this.props.isHuman);

@@ -12,15 +12,26 @@ module Rance
       {
         this.newPlayerId = 0;
 
+        var players = [];
+        for (var i = 0; i < this.props.minPlayers; i++)
+        {
+          players.push(this.newPlayerId++);
+        }
+
         return(
         {
-          players: [],
+          players: players,
           activeColorPicker: null
         });
       },
 
       makeNewPlayer: function()
       {
+        if (this.state.players.length >= this.props.maxPlayers)
+        {
+          return;
+        }
+
         this.setState(
         {
           players: this.state.players.concat(this.newPlayerId++)
@@ -40,6 +51,11 @@ module Rance
 
       removePlayer: function(idToRemove: number)
       {
+        if (this.state.players.length <= this.props.minPlayers)
+        {
+          return;
+        }
+
         this.setState(
         {
           players: this.state.players.filter(function(playerId)
@@ -57,6 +73,16 @@ module Rance
         }
 
         this.setState({activeColorPicker: colorPicker});
+      },
+
+      randomizeAllPlayers: function()
+      {
+        for (var id in this.refs)
+        {
+          var player = this.refs[id];
+
+          player.randomize();
+        }
       },
 
       makeAllPlayers: function()
@@ -86,6 +112,10 @@ module Rance
             setHuman: this.setHumanPlayer
           }));
         }
+
+
+        var canAddPlayers = this.state.players.length < this.props.maxPlayers;
+
         return(
           React.DOM.div({className: "setup-game-players"},
             React.DOM.div(
@@ -120,8 +150,9 @@ module Rance
             playerSetups,
             React.DOM.button(
             {
-              className: "player-setup player-setup-add-new",
-              onClick: this.makeNewPlayer
+              className: "player-setup player-setup-add-new" + (canAddPlayers ? "" : " disabled"),
+              onClick: this.makeNewPlayer,
+              disabled: !canAddPlayers
             },
               "Add new player"
             )
