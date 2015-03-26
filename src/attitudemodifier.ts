@@ -1,3 +1,5 @@
+/// <reference path="../data/templates/attitudemodifiers.ts" />
+
 module Rance
 {
   export class AttitudeModifier
@@ -15,10 +17,10 @@ module Rance
       strength: number;
     })
     {
-      this.type: props.type;
-      this.startTurn: props.startTurn;
-      this.endTurn: props.endTurn;
-      this.strength: props.strength;
+      this.type = props.type;
+      this.startTurn = props.startTurn;
+      this.endTurn = props.endTurn;
+      this.strength = props.strength;
     }
 
     getFreshness(currentTurn: number)
@@ -31,9 +33,16 @@ module Rance
     }
     getAdjustedStrength(currentTurn: number)
     {
-      var freshenss = this.getFreshness();
+      var freshenss = this.getFreshness(currentTurn);
 
       return this.strength * freshenss;
+    }
+
+    serialize()
+    {
+      var data: any = {};
+
+      return data;
     }
   }
 }
