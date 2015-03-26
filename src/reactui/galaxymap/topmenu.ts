@@ -7,6 +7,7 @@
 /// <reference path="../unitlist/itemequip.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
+/// <reference path="diplomacyoverview.ts"/>
 
 module Rance
 {
@@ -162,6 +163,32 @@ module Rance
         }
       },
 
+      handleDiplomacy: function()
+      {
+        if (this.state.opened === "diplomacy")
+        {
+          this.closeLightBox();
+        }
+        else
+        {
+          this.setState(
+          {
+            opened: "diplomacy",
+            lightBoxElement: UIComponents.LightBox(
+            {
+              handleClose: this.closeLightBox,
+              content: UIComponents.DiplomacyOverview(
+              {
+                handleClose: this.closeLightBox,
+                totalPlayerCount: this.props.game.playerOrder.length,
+                metPlayers: this.props.player.diplomacyStatus.metPlayers,
+                statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
+              })
+            })
+          });
+        }
+      },
+
       closeLightBox: function()
       {
         if (this.state.opened === "options")
@@ -203,6 +230,11 @@ module Rance
                 className: "top-menu-items-button",
                 onClick: this.handleOptions
               }, "Options"),
+              React.DOM.button(
+              {
+                className: "top-menu-items-button",
+                onClick: this.handleDiplomacy
+              }, "Diplomacy"),
               /*
               React.DOM.button(
               {
