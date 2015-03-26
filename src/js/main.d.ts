@@ -284,6 +284,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var DiplomaticStatusPlayer: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DiplomacyOverview: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopMenu: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -1301,6 +1311,76 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IDiplomacyEvaluation {
+            neighborStars: number;
+            opinion: number;
+        }
+        enum AttitudeModifierFamily {
+            geographic = 0,
+            history = 1,
+            current = 2,
+        }
+        interface IAttitudeModifierTemplate {
+            type: string;
+            family: AttitudeModifierFamily;
+            duration: number;
+            canBeOverriddenBy?: IAttitudeModifierTemplate[];
+            triggeredOnly?: boolean;
+            startCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
+            endCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
+            constantEffect?: number;
+            getEffectFromEvaluation?: (evaluation: IDiplomacyEvaluation) => number;
+        }
+        module AttitudeModifiers {
+            var neighborStars: IAttitudeModifierTemplate;
+            var atWar: IAttitudeModifierTemplate;
+            var declaredWar: IAttitudeModifierTemplate;
+        }
+    }
+}
+declare module Rance {
+    class AttitudeModifier {
+        public type: string;
+        public startTurn: number;
+        public endTurn: number;
+        public strength: number;
+        constructor(props: {
+            type: string;
+            startTurn: number;
+            endTurn: number;
+            strength: number;
+        });
+        public getFreshness(currentTurn: number): number;
+        public getAdjustedStrength(currentTurn: number): number;
+        public serialize(): any;
+    }
+}
+declare module Rance {
+    enum DiplomaticState {
+        peace = 0,
+        coldWar = 1,
+        war = 2,
+    }
+    class DiplomacyStatus {
+        public player: Rance.Player;
+        public metPlayers: {
+            [playerId: number]: Rance.Player;
+        };
+        public statusByPlayer: {
+            [playerId: number]: DiplomaticState;
+        };
+        public attitudeModifiersByPlayer: {
+            [playerId: number]: Rance.AttitudeModifier[];
+        };
+        constructor(player: Rance.Player);
+        public handleDiplomaticStatusUpdate(): void;
+        public meetPlayer(player: Rance.Player): void;
+        public declareWarOn(player: Rance.Player): void;
+        public serialize(): any;
+    }
+}
+declare module Rance {
+    module Templates {
         module MapGen {
             var defaultMap: {
                 mapOptions: {
@@ -1830,6 +1910,7 @@ declare module Rance {
         public isAI: boolean;
         public AIController: Rance.AIController;
         public isIndependent: boolean;
+        public diplomacyStatus: Rance.DiplomacyStatus;
         public money: number;
         public controlledLocations: Rance.Star[];
         public visionIsDirty: boolean;

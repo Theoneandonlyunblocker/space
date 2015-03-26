@@ -59,6 +59,7 @@ module Rance
       this.name = "Player " + this.id;
 
       this.isAI = isAI;
+      this.diplomacyStatus = new DiplomacyStatus(this);
 
       this.money = 1000;
     }
@@ -360,10 +361,18 @@ module Rance
       if (this.visionIsDirty) this.updateVisibleStars();
 
       var visible: Star[] = [];
+      var metPlayers = this.diplomacyStatus.metPlayers;
 
       for (var id in this.visibleStars)
       {
-        visible.push(this.visibleStars[id]);
+        var star = this.visibleStars[id];
+        visible.push(star);
+
+        if (!star.owner.isIndependent && star.owner !== this
+          && !metPlayers[star.owner.id])
+        {
+          this.diplomacyStatus.meetPlayer(star.owner);
+        }
       }
 
       return visible;

@@ -4124,6 +4124,107 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DiplomaticStatusPlayer = React.createClass({
+            displayName: "DiplomaticStatusPlayer",
+            makeCell: function (type) {
+                var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
+
+                return (React.DOM.td({
+                    key: type,
+                    className: className
+                }, this.props[type]));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                var rowProps = {
+                    className: "diplomatic-status-player",
+                    onClick: this.props.handleClick
+                };
+
+                if (this.props.isSelected) {
+                    rowProps.className += " selected";
+                }
+                ;
+
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="diplomaticstatusplayer.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DiplomacyOverview = React.createClass({
+            displayName: "DiplomacyOverview",
+            render: function () {
+                var unmetPlayerCount = this.props.totalPlayerCount - Object.keys(this.props.metPlayers).length - 1;
+
+                var rows = [];
+
+                for (var playerId in this.props.statusByPlayer) {
+                    var player = this.props.metPlayers[playerId];
+
+                    rows.push({
+                        key: player.id,
+                        data: {
+                            name: player.name,
+                            status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
+                            statusEnum: this.props.statusByPlayer[playerId],
+                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
+                        }
+                    });
+                }
+
+                for (var i = 0; i < unmetPlayerCount; i++) {
+                    rows.push({
+                        key: "unmet" + i,
+                        data: {
+                            name: "?????",
+                            status: "unmet",
+                            statusEnum: 99999,
+                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
+                        }
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Status",
+                        key: "status",
+                        defaultOrder: "asc",
+                        propToSortBy: "statusEnum"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[0]]
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
 /// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
@@ -4131,6 +4232,7 @@ var Rance;
 /// <reference path="../unitlist/itemequip.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
+/// <reference path="diplomacyoverview.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -4232,6 +4334,24 @@ var Rance;
                     });
                 }
             },
+            handleDiplomacy: function () {
+                if (this.state.opened === "diplomacy") {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        opened: "diplomacy",
+                        lightBoxElement: Rance.UIComponents.LightBox({
+                            handleClose: this.closeLightBox,
+                            content: Rance.UIComponents.DiplomacyOverview({
+                                handleClose: this.closeLightBox,
+                                totalPlayerCount: this.props.game.playerOrder.length,
+                                metPlayers: this.props.player.diplomacyStatus.metPlayers,
+                                statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
+                            })
+                        })
+                    });
+                }
+            },
             closeLightBox: function () {
                 if (this.state.opened === "options") {
                     Rance.saveOptions();
@@ -4257,6 +4377,9 @@ var Rance;
                     className: "top-menu-items-button",
                     onClick: this.handleOptions
                 }, "Options"), React.DOM.button({
+                    className: "top-menu-items-button",
+                    onClick: this.handleDiplomacy
+                }, "Diplomacy"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleBuyItems
                 }, "Buy items"), React.DOM.button({
@@ -5592,7 +5715,6 @@ var Rance;
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts"/>
-// /// <reference path="skilltemplates.ts"/>
 /// <reference path="spritetemplate.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -8914,6 +9036,142 @@ var Rance;
         return BattlePrep;
     })();
     Rance.BattlePrep = BattlePrep;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (AttitudeModifierFamily) {
+            AttitudeModifierFamily[AttitudeModifierFamily["geographic"] = 0] = "geographic";
+            AttitudeModifierFamily[AttitudeModifierFamily["history"] = 1] = "history";
+            AttitudeModifierFamily[AttitudeModifierFamily["current"] = 2] = "current";
+        })(Templates.AttitudeModifierFamily || (Templates.AttitudeModifierFamily = {}));
+        var AttitudeModifierFamily = Templates.AttitudeModifierFamily;
+
+        (function (AttitudeModifiers) {
+            AttitudeModifiers.neighborStars = {
+                type: "neighborStars",
+                family: 0 /* geographic */,
+                duration: -1,
+                startCondition: function (evaluation) {
+                    return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
+                },
+                getEffectFromEvaluation: function (evaluation) {
+                    return -evaluation.neighborStars;
+                }
+            };
+
+            AttitudeModifiers.atWar = {
+                type: "atWar",
+                family: 2 /* current */,
+                duration: -1,
+                triggeredOnly: true,
+                constantEffect: -50
+            };
+
+            AttitudeModifiers.declaredWar = {
+                type: "declaredWar",
+                family: 1 /* history */,
+                duration: 15,
+                triggeredOnly: true,
+                constantEffect: -35
+            };
+        })(Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
+        var AttitudeModifiers = Templates.AttitudeModifiers;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/attitudemodifiers.ts" />
+var Rance;
+(function (Rance) {
+    var AttitudeModifier = (function () {
+        function AttitudeModifier(props) {
+            this.type = props.type;
+            this.startTurn = props.startTurn;
+            this.endTurn = props.endTurn;
+            this.strength = props.strength;
+        }
+        AttitudeModifier.prototype.getFreshness = function (currentTurn) {
+            if (this.endTurn < 0)
+                return 1;
+            else {
+                return 1 - Rance.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
+            }
+        };
+        AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
+            var freshenss = this.getFreshness(currentTurn);
+
+            return this.strength * freshenss;
+        };
+
+        AttitudeModifier.prototype.serialize = function () {
+            var data = {};
+
+            return data;
+        };
+        return AttitudeModifier;
+    })();
+    Rance.AttitudeModifier = AttitudeModifier;
+})(Rance || (Rance = {}));
+/// <reference path="eventmanager.ts" />
+/// <reference path="player.ts" />
+/// <reference path="attitudemodifier.ts" />
+var Rance;
+(function (Rance) {
+    (function (DiplomaticState) {
+        DiplomaticState[DiplomaticState["peace"] = 0] = "peace";
+        DiplomaticState[DiplomaticState["coldWar"] = 1] = "coldWar";
+        DiplomaticState[DiplomaticState["war"] = 2] = "war";
+    })(Rance.DiplomaticState || (Rance.DiplomaticState = {}));
+    var DiplomaticState = Rance.DiplomaticState;
+    var DiplomacyStatus = (function () {
+        function DiplomacyStatus(player) {
+            this.metPlayers = {};
+            this.statusByPlayer = {};
+            this.attitudeModifiersByPlayer = {};
+            this.player = player;
+        }
+        DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
+            Rance.eventManager.dispatchEvent("diplomaticStatusUpdated");
+        };
+
+        DiplomacyStatus.prototype.meetPlayer = function (player) {
+            if (this.metPlayers[player.id])
+                return;
+            else {
+                this.metPlayers[player.id] = player;
+                this.statusByPlayer[player.id] = 1 /* coldWar */;
+                player.diplomacyStatus.meetPlayer(this.player);
+            }
+        };
+
+        DiplomacyStatus.prototype.declareWarOn = function (player) {
+            this.statusByPlayer[player.id] = 2 /* war */;
+            player.diplomacyStatus[this.player.id] = 2 /* war */;
+        };
+
+        DiplomacyStatus.prototype.serialize = function () {
+            var data = {};
+
+            data.metPlayerIds = [];
+            for (var playerId in this.metPlayers) {
+                data.metPlayerIds.push(this.metPlayers[playerId].id);
+            }
+
+            data.statusByPlayer = this.statusByPlayer;
+
+            data.attitudeModifiersByPlayer = [];
+            for (var playerId in this.attitudeModifiersByPlayer) {
+                var serializedModifiers = this.attitudeModifiersByPlayer[playerId].map(function (modifier) {
+                    return modifier.serialize();
+                });
+                data.attitudeModifiersByPlayer[playerId] = serializedModifiers;
+            }
+
+            return data;
+        };
+        return DiplomacyStatus;
+    })();
+    Rance.DiplomacyStatus = DiplomacyStatus;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -12633,6 +12891,7 @@ var Rance;
 /// <reference path="item.ts" />
 /// <reference path="battlesimulator.ts" />
 /// <reference path="battleprep.ts" />
+/// <reference path="diplomacystatus.ts" />
 /// <reference path="mapai/aicontroller.ts"/>
 var Rance;
 (function (Rance) {
@@ -12652,6 +12911,7 @@ var Rance;
             this.name = "Player " + this.id;
 
             this.isAI = isAI;
+            this.diplomacyStatus = new Rance.DiplomacyStatus(this);
 
             this.money = 1000;
         }
@@ -12896,9 +13156,15 @@ var Rance;
                 this.updateVisibleStars();
 
             var visible = [];
+            var metPlayers = this.diplomacyStatus.metPlayers;
 
             for (var id in this.visibleStars) {
-                visible.push(this.visibleStars[id]);
+                var star = this.visibleStars[id];
+                visible.push(star);
+
+                if (!star.owner.isIndependent && star.owner !== this && !metPlayers[star.owner.id]) {
+                    this.diplomacyStatus.meetPlayer(star.owner);
+                }
             }
 
             return visible;
@@ -13014,6 +13280,8 @@ var Rance;
             data.secondaryColor = this.secondaryColor;
             data.isIndependent = this.isIndependent;
             data.isAI = this.isAI;
+
+            data.diplomacyStatus = this.diplomacyStatus.serialize();
 
             if (this.flag) {
                 data.flag = this.flag.serialize();
@@ -14734,7 +15002,8 @@ var Rance;
                     player: this.props.player,
                     game: this.props.game
                 }), Rance.UIComponents.TopMenu({
-                    player: this.props.player
+                    player: this.props.player,
+                    game: this.props.game
                 }), React.DOM.div({
                     className: "fleet-selection-container"
                 }, Rance.UIComponents.FleetSelection({
@@ -17901,6 +18170,17 @@ var Rance;
             for (var i = 0; i < data.revealedStarIds.length; i++) {
                 var id = data.revealedStarIds[i];
                 player.revealedStars[id] = this.pointsById[id];
+            }
+
+            // diplomacy
+            var diplomacyData = data.diplomacyStatus;
+            if (diplomacyData) {
+                for (var i = 0; i < diplomacyData.metPlayerIds.length; i++) {
+                    var id = diplomacyData.metPlayerIds[i];
+                    player.diplomacyStatus.metPlayers[id] = this.playersById[id];
+                }
+
+                player.diplomacyStatus.statusByPlayer = diplomacyData.statusByPlayer;
             }
 
             return player;

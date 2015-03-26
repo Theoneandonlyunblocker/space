@@ -1,15 +1,28 @@
+/// <reference path="eventmanager.ts" />
+
 /// <reference path="player.ts" />
 /// <reference path="attitudemodifier.ts" />
 
 module Rance
 {
+  export enum DiplomaticState
+  {
+    peace,
+    coldWar,
+    war
+  }
   export class DiplomacyStatus
   {
     player: Player;
 
-    metPlayersById:
+    metPlayers:
     {
       [playerId: number]: Player;
+    } = {};
+
+    statusByPlayer:
+    {
+      [playerId: number]: DiplomaticState
     } = {};
 
     attitudeModifiersByPlayer:
@@ -20,6 +33,28 @@ module Rance
     constructor(player: Player)
     {
       this.player = player;
+    }
+
+    handleDiplomaticStatusUpdate()
+    {
+      eventManager.dispatchEvent("diplomaticStatusUpdated");
+    }
+
+    meetPlayer(player: Player)
+    {
+      if (this.metPlayers[player.id]) return;
+      else
+      {
+        this.metPlayers[player.id] = player;
+        this.statusByPlayer[player.id] = DiplomaticState.coldWar;
+        player.diplomacyStatus.meetPlayer(this.player);
+      }
+    }
+
+    declareWarOn(player: Player)
+    {
+      this.statusByPlayer[player.id] = DiplomaticState.war;
+      player.diplomacyStatus[this.player.id] = DiplomaticState.war;
     }
 
     serialize()
