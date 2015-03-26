@@ -248,6 +248,19 @@ module Rance
         player.revealedStars[id] = this.pointsById[id];
       }
 
+      // diplomacy
+      var diplomacyData = data.diplomacyStatus;
+      if (diplomacyData)
+      {
+        for (var i = 0; i < diplomacyData.metPlayerIds.length; i++)
+        {
+          var id = diplomacyData.metPlayerIds[i];
+          player.diplomacyStatus.metPlayers[id] = this.playersById[id];
+        }
+
+        player.diplomacyStatus.statusByPlayer = diplomacyData.statusByPlayer;
+      }
+
 
       return player;
     }

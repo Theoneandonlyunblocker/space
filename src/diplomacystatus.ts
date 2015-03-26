@@ -27,10 +27,12 @@ module Rance
       var data: any = {};
 
       data.metPlayerIds = [];
-      for (var playerId in this.metPlayersById)
+      for (var playerId in this.metPlayers)
       {
-        data.metPlayerIds.push(this.metPlayersById[playerId].id);
+        data.metPlayerIds.push(this.metPlayers[playerId].id);
       }
+
+      data.statusByPlayer = this.statusByPlayer;
 
       data.attitudeModifiersByPlayer = [];
       for (var playerId in this.attitudeModifiersByPlayer)
