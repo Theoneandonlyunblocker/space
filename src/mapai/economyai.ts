@@ -9,7 +9,7 @@
 
 module Rance
 {
-  export class EconomicAI
+  export class EconomyAI
   {
     objectivesAI: ObjectivesAI;
     frontsAI: FrontsAI;
