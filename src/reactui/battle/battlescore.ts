@@ -38,7 +38,7 @@ module Rance
                   className: "battle-score-bar-value battle-score-bar-side1",
                   style:
                   {
-                    flex: 100 - evaluationPercentage,
+                    width: "" + (100 - evaluationPercentage) + "%",
                     backgroundColor: "#" + hexToString(battle.side1Player.color),
                     borderColor: "#" + hexToString(battle.side1Player.secondaryColor)
                   }
@@ -48,7 +48,7 @@ module Rance
                   className: "battle-score-bar-value battle-score-bar-side2",
                   style:
                   {
-                    flex: evaluationPercentage,
+                    width: "" + evaluationPercentage + "%",
                     backgroundColor: "#" + hexToString(battle.side2Player.color),
                     borderColor: "#" + hexToString(battle.side2Player.secondaryColor)
                   }
