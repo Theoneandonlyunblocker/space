@@ -1180,14 +1180,14 @@ var Rance;
                 }, React.DOM.div({
                     className: "battle-score-bar-value battle-score-bar-side1",
                     style: {
-                        flex: 100 - evaluationPercentage,
+                        width: "" + (100 - evaluationPercentage) + "%",
                         backgroundColor: "#" + Rance.hexToString(battle.side1Player.color),
                         borderColor: "#" + Rance.hexToString(battle.side1Player.secondaryColor)
                     }
                 }), React.DOM.div({
                     className: "battle-score-bar-value battle-score-bar-side2",
                     style: {
-                        flex: evaluationPercentage,
+                        width: "" + evaluationPercentage + "%",
                         backgroundColor: "#" + Rance.hexToString(battle.side2Player.color),
                         borderColor: "#" + Rance.hexToString(battle.side2Player.secondaryColor)
                     }
@@ -1208,7 +1208,6 @@ var Rance;
         UIComponents.BattleScene = React.createClass({
             displayName: "BattleScene",
             componentWillReceiveProps: function (newProps) {
-                console.log(newProps.unit2, this.props.unit2);
                 if (newProps.unit1 !== this.props.unit1) {
                     this.renderScene("side1", true, newProps.unit1);
                 }
@@ -1274,12 +1273,15 @@ var Rance;
                 // has child. child will be removed with animation if specified, then fire callback
                 if (container.firstChild) {
                     if (animate) {
-                        container.firstChild.addEventListener("animationend", function () {
+                        var animationEndFN = function () {
+                            console.log("animationEnd", side);
                             if (container.firstChild) {
                                 container.removeChild(container.firstChild);
                             }
                             onComplete();
-                        });
+                        };
+                        container.firstChild.addEventListener("animationend", animationEndFN);
+                        container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
 
                         container.firstChild.classList.add("battle-scene-unit-leave-" + side);
                     } else {

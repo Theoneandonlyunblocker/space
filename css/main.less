@@ -380,7 +380,7 @@ progress::-webkit-progress-value { background: #080; }
   display: flex;
   border-style: solid;
   border-width: 0;
-  transition: flex 1s;
+  transition: all 1s;
 }
 .battle-score-bar-side1
 {
@@ -534,10 +534,12 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-scene-unit-enter-side1
 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-enter-side1;
   animation-name: battle-scene-unit-enter-side1;
 }
-@keyframes battle-scene-unit-enter-side1
+.unit-enter-side1-keyframes
 {
   from
   {
@@ -548,13 +550,19 @@ progress::-webkit-progress-value { background: #080; }
     left: 0;
   }
 }
+@keyframes battle-scene-unit-enter-side1 {.unit-enter-side1-keyframes;}
+@-webkit-keyframes battle-scene-unit-enter-side1 {.unit-enter-side1-keyframes;}
+
 
 .battle-scene-unit-leave-side1
 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-leave-side1;
   animation-name: battle-scene-unit-leave-side1;
 }
-@keyframes battle-scene-unit-leave-side1
+
+.unit-leave-side1-keyframes
 {
   from
   {
@@ -565,13 +573,17 @@ progress::-webkit-progress-value { background: #080; }
     right: 100%;
   }
 }
+@keyframes battle-scene-unit-leave-side1 {.unit-leave-side1-keyframes;}
+@-webkit-keyframes battle-scene-unit-leave-side1 {.unit-leave-side1-keyframes;}
 
 .battle-scene-unit-enter-side2
 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-enter-side2;
   animation-name: battle-scene-unit-enter-side2;
 }
-@keyframes battle-scene-unit-enter-side2
+.unit-enter-side2-keyframes
 {
   from
   {
@@ -582,13 +594,17 @@ progress::-webkit-progress-value { background: #080; }
     margin-left: 0;
   }
 }
+@keyframes battle-scene-unit-enter-side2 {.unit-enter-side2-keyframes;}
+@-webkit-keyframes battle-scene-unit-enter-side2 {.unit-enter-side2-keyframes;}
 
 .battle-scene-unit-leave-side2
 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-leave-side2;
   animation-name: battle-scene-unit-leave-side2;
 }
-@keyframes battle-scene-unit-leave-side2
+.unit-leave-side2-keyframes
 {
   from
   {
@@ -599,6 +615,8 @@ progress::-webkit-progress-value { background: #080; }
     margin-left: 100%;
   }
 }
+@keyframes battle-scene-unit-leave-side2 {.unit-leave-side2-keyframes;}
+@-webkit-keyframes battle-scene-unit-leave-side2 {.unit-leave-side2-keyframes;}
 
 .ability-tooltip
 {
@@ -769,6 +787,7 @@ progress::-webkit-progress-value { background: #080; }
 .empty-unit
 {
   .unit-style(@empty-unit-bg) !important;
+  -webkit-animation-name: none !important;
   animation-name: none !important;
 }
 
@@ -2797,8 +2816,11 @@ progress::-webkit-progress-value { background: #080; }
 
 .image-loading-fail-message
 {
+  -webkit-animation-duration: 2s;
   animation-duration: 2s;
+  -webkit-animation-name: flash-bg-red;
   animation-name: flash-bg-red;
+  -webkit-animation-timing-function: ease-in-quart;
   animation-timing-function: ease-in-quart;
 }
 

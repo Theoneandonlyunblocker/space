@@ -6,6 +6,8 @@ module Rance
     {
       displayName: "BattleScene",
 
+
+
       componentWillReceiveProps: function(newProps: any)
       {
         if (newProps.unit1 !== this.props.unit1)
@@ -93,14 +95,17 @@ module Rance
         {
           if (animate)
           {
-            container.firstChild.addEventListener("animationend", function()
+            var animationEndFN = function()
             {
+              console.log("animationEnd", side);
               if (container.firstChild)
               {
                 container.removeChild(container.firstChild);
               }
               onComplete();
-            });
+            }
+            container.firstChild.addEventListener("animationend", animationEndFN);
+            container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
 
             container.firstChild.classList.add("battle-scene-unit-leave-" + side);
           }

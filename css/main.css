@@ -180,7 +180,7 @@ progress::-webkit-progress-value {
   display: flex;
   border-style: solid;
   border-width: 0;
-  transition: flex 1s;
+  transition: all 1s;
 }
 .battle-score-bar-side1 {
   border-right-width: 1px;
@@ -289,8 +289,16 @@ progress::-webkit-progress-value {
   position: relative;
 }
 .battle-scene-unit-enter-side1 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-enter-side1;
   animation-name: battle-scene-unit-enter-side1;
+}
+.unit-enter-side1-keyframes from {
+  left: -100%;
+}
+.unit-enter-side1-keyframes to {
+  left: 0;
 }
 @keyframes battle-scene-unit-enter-side1 {
   from {
@@ -300,9 +308,25 @@ progress::-webkit-progress-value {
     left: 0;
   }
 }
+@-webkit-keyframes battle-scene-unit-enter-side1 {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 0;
+  }
+}
 .battle-scene-unit-leave-side1 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-leave-side1;
   animation-name: battle-scene-unit-leave-side1;
+}
+.unit-leave-side1-keyframes from {
+  right: 0;
+}
+.unit-leave-side1-keyframes to {
+  right: 100%;
 }
 @keyframes battle-scene-unit-leave-side1 {
   from {
@@ -312,9 +336,25 @@ progress::-webkit-progress-value {
     right: 100%;
   }
 }
+@-webkit-keyframes battle-scene-unit-leave-side1 {
+  from {
+    right: 0;
+  }
+  to {
+    right: 100%;
+  }
+}
 .battle-scene-unit-enter-side2 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-enter-side2;
   animation-name: battle-scene-unit-enter-side2;
+}
+.unit-enter-side2-keyframes from {
+  margin-left: 100%;
+}
+.unit-enter-side2-keyframes to {
+  margin-left: 0;
 }
 @keyframes battle-scene-unit-enter-side2 {
   from {
@@ -324,11 +364,35 @@ progress::-webkit-progress-value {
     margin-left: 0;
   }
 }
+@-webkit-keyframes battle-scene-unit-enter-side2 {
+  from {
+    margin-left: 100%;
+  }
+  to {
+    margin-left: 0;
+  }
+}
 .battle-scene-unit-leave-side2 {
+  -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
+  -webkit-animation-name: battle-scene-unit-leave-side2;
   animation-name: battle-scene-unit-leave-side2;
 }
+.unit-leave-side2-keyframes from {
+  margin-left: 0;
+}
+.unit-leave-side2-keyframes to {
+  margin-left: 100%;
+}
 @keyframes battle-scene-unit-leave-side2 {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: 100%;
+  }
+}
+@-webkit-keyframes battle-scene-unit-leave-side2 {
   from {
     margin-left: 0;
   }
@@ -447,6 +511,7 @@ progress::-webkit-progress-value {
   border-image-outset: 4px;
 }
 .empty-unit {
+  -webkit-animation-name: none !important;
   animation-name: none !important;
 }
 .empty-unit .unit-container {
@@ -2792,8 +2857,11 @@ progress::-webkit-progress-value {
   }
 }
 .image-loading-fail-message {
+  -webkit-animation-duration: 2s;
   animation-duration: 2s;
+  -webkit-animation-name: flash-bg-red;
   animation-name: flash-bg-red;
+  -webkit-animation-timing-function: ease-in-quart;
   animation-timing-function: ease-in-quart;
 }
 .emblem-picker-container {
