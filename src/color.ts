@@ -1,5 +1,4 @@
 /// <reference path="../lib/husl.d.ts" />
-/// <reference path="../data/templates/colorranges.ts" />
 
 module Rance
 {
