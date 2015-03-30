@@ -39,6 +39,10 @@ module Rance
       else
       {
         this.turnNumber++;
+        for (var i = 0; i < this.independents.length; i++)
+        {
+          this.processPlayerStartTurn(this.independents[i]);
+        }
       }
 
       eventManager.dispatchEvent("endTurn", null);
@@ -54,17 +58,19 @@ module Rance
       }
 
       player.forEachUnit(shipStartTurnFN);
-      player.money += player.getIncome();
 
-      var allResourceIncomeData = player.getResourceIncome();
-      for (var resourceType in allResourceIncomeData)
+      if (!player.isIndependent)
       {
-        var resourceData = allResourceIncomeData[resourceType];
-        player.addResource(resourceData.resource, resourceData.amount);
+        player.money += player.getIncome();
+
+        var allResourceIncomeData = player.getResourceIncome();
+        for (var resourceType in allResourceIncomeData)
+        {
+          var resourceData = allResourceIncomeData[resourceType];
+          player.addResource(resourceData.resource, resourceData.amount);
+        }
       }
     }
-
-
     setNextPlayer()
     {
       this.playerOrder.push(this.playerOrder.shift());
