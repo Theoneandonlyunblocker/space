@@ -8,6 +8,7 @@ module Rance
   export function setAllDynamicTemplateProperties()
   {
     setAbilityGuardAddition();
+    setAttitudeModifierOverride();
   }
   function setAbilityGuardAddition()
   {
@@ -38,6 +39,25 @@ module Rance
     {
       var ability = Templates.Abilities[abilityName];
       ability.addsGuard = checkIfAbilityAddsGuard(ability);
+    }
+  }
+  function setAttitudeModifierOverride()
+  {
+    for (var modifierType in Templates.AttitudeModifiers)
+    {
+      var modifier = Templates.AttitudeModifiers[modifierType];
+      if (modifier.canBeOverriddenBy)
+      {
+        for (var i = 0; i < modifier.canBeOverriddenBy.length; i++)
+        {
+          if (!modifier.canBeOverriddenBy[i].canOverride)
+          {
+            modifier.canBeOverriddenBy[i].canOverride = [];
+          }
+
+          modifier.canBeOverriddenBy[i].canOverride.push(modifier);
+        }
+      }
     }
   }
 }

@@ -31,6 +31,10 @@ module Rance
 
       constantEffect?: number;
       getEffectFromEvaluation?: (evaluation: IDiplomacyEvaluation) => number;
+      
+      
+
+      canOverride?: IAttitudeModifierTemplate[]; // set dynamically
     }
 
     export module AttitudeModifiers
