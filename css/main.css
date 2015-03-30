@@ -190,14 +190,14 @@ progress::-webkit-progress-value {
 }
 .battle-upper-footer-enter {
   opacity: 0.01;
-  transition: opacity 0.2s ease-in;
+  transition: opacity 1s ease-in;
 }
 .battle-upper-footer-enter.battle-upper-footer-enter-active {
   opacity: 1;
 }
 .battle-upper-footer-leave {
   opacity: 1;
-  transition: opacity 0.1s ease-in;
+  transition: opacity 1s ease-in;
 }
 .battle-upper-footer-leave.battle-upper-footer-leave-active {
   opacity: 0.01;
@@ -293,6 +293,8 @@ progress::-webkit-progress-value {
   animation-duration: 0.2s;
   -webkit-animation-name: battle-scene-unit-enter-side1;
   animation-name: battle-scene-unit-enter-side1;
+  -webkit-animation-timing: ease;
+  animation-timing: ease;
 }
 .unit-enter-side1-keyframes from {
   left: -100%;
@@ -321,6 +323,8 @@ progress::-webkit-progress-value {
   animation-duration: 0.2s;
   -webkit-animation-name: battle-scene-unit-leave-side1;
   animation-name: battle-scene-unit-leave-side1;
+  -webkit-animation-timing: ease;
+  animation-timing: ease;
 }
 .unit-leave-side1-keyframes from {
   right: 0;
@@ -349,6 +353,8 @@ progress::-webkit-progress-value {
   animation-duration: 0.2s;
   -webkit-animation-name: battle-scene-unit-enter-side2;
   animation-name: battle-scene-unit-enter-side2;
+  -webkit-animation-timing: ease;
+  animation-timing: ease;
 }
 .unit-enter-side2-keyframes from {
   margin-left: 100%;
@@ -377,6 +383,8 @@ progress::-webkit-progress-value {
   animation-duration: 0.2s;
   -webkit-animation-name: battle-scene-unit-leave-side2;
   animation-name: battle-scene-unit-leave-side2;
+  -webkit-animation-timing: ease;
+  animation-timing: ease;
 }
 .unit-leave-side2-keyframes from {
   margin-left: 0;
