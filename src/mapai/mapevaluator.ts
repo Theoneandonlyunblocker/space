@@ -445,5 +445,49 @@ module Rance
 
       return influenceByStar;
     }
+    getDiplomacyEvaluations(currentTurn: number)
+    {
+      var evaluationByPlayer:
+      {
+        [playerId: number]: IDiplomacyEvaluation;
+      } = {};
+
+      var neighborStarsCountByPlayer:
+      {
+        [playerId: number]: number;
+      } = {};
+
+      var allNeighbors = this.player.getNeighboringStars();
+      var neighborStarsForPlayer: Star[] = [];
+
+      for (var i = 0; i < allNeighbors.length; i++)
+      {
+        var star: Star = allNeighbors[i];
+        if (!star.owner.isIndependent)
+        {
+          if (!neighborStarsCountByPlayer[star.owner.id])
+          {
+            neighborStarsCountByPlayer[star.owner.id] = 0;
+          }
+
+          neighborStarsCountByPlayer[star.owner.id]++;
+        }
+      }
+
+
+      for (var playerId in this.player.diplomacyStatus.metPlayers)
+      {
+        var player = this.player.diplomacyStatus.metPlayers[playerId];
+
+        evaluationByPlayer[player.id] =
+        {
+          currentTurn: currentTurn,
+          opinion: this.player.diplomacyStatus.getOpinionOf(player),
+          neighborStars: neighborStarsCountByPlayer[player.id]
+        }
+      }
+
+      return evaluationByPlayer;
+    }
   }
 }

@@ -4132,6 +4132,10 @@ var Rance;
             makeCell: function (type) {
                 var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
 
+                if (type === "player") {
+                    className += " player-name";
+                }
+
                 return (React.DOM.td({
                     key: type,
                     className: className
@@ -4184,6 +4188,7 @@ var Rance;
                             name: player.name,
                             status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
                             statusEnum: this.props.statusByPlayer[playerId],
+                            opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
                             rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
                         }
                     });
@@ -4195,7 +4200,8 @@ var Rance;
                         data: {
                             name: "?????",
                             status: "unmet",
-                            statusEnum: 99999,
+                            statusEnum: 99999 + i,
+                            opinion: null,
                             rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
                         }
                     });
@@ -4212,6 +4218,11 @@ var Rance;
                         key: "status",
                         defaultOrder: "asc",
                         propToSortBy: "statusEnum"
+                    },
+                    {
+                        label: "Opinion",
+                        key: "opinion",
+                        defaultOrder: "desc"
                     }
                 ];
 
@@ -4344,6 +4355,7 @@ var Rance;
                             handleClose: this.closeLightBox,
                             content: Rance.UIComponents.DiplomacyOverview({
                                 handleClose: this.closeLightBox,
+                                player: this.props.player,
                                 totalPlayerCount: this.props.game.playerOrder.length,
                                 metPlayers: this.props.player.diplomacyStatus.metPlayers,
                                 statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
@@ -6103,7 +6115,6 @@ var Rance;
     Rance.Region = Region;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
-/// <reference path="../data/templates/colorranges.ts" />
 var Rance;
 (function (Rance) {
     function hex2rgb(hex) {
@@ -9091,12 +9102,38 @@ var Rance;
 (function (Rance) {
     var AttitudeModifier = (function () {
         function AttitudeModifier(props) {
-            this.type = props.type;
+            this.isOverRidden = false;
+            this.template = props.template;
             this.startTurn = props.startTurn;
-            this.endTurn = props.endTurn;
+
+            if (isFinite(props.endTurn)) {
+                this.endTurn = props.endTurn;
+            } else if (isFinite(this.template.duration)) {
+                if (this.template.duration < 0) {
+                    this.endTurn = -1;
+                } else {
+                    this.endTurn = this.startTurn + this.template.duration;
+                }
+            } else {
+                throw new Error("Attitude modifier has no duration or end turn set");
+            }
+
             this.strength = props.strength;
         }
+        AttitudeModifier.prototype.setStrength = function (evaluation) {
+            if (this.template.constantEffect) {
+                this.strength = this.template.constantEffect;
+            } else if (this.template.getEffectFromEvaluation) {
+                this.strength = this.template.getEffectFromEvaluation(evaluation);
+            } else {
+                throw new Error("Attitude modifier has no constant effect " + "or effect from evaluation defined");
+            }
+
+            return this.strength;
+        };
+
         AttitudeModifier.prototype.getFreshness = function (currentTurn) {
+            if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
             if (this.endTurn < 0)
                 return 1;
             else {
@@ -9104,13 +9141,35 @@ var Rance;
             }
         };
         AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
+            if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
             var freshenss = this.getFreshness(currentTurn);
 
             return this.strength * freshenss;
         };
+        AttitudeModifier.prototype.hasExpired = function (currentTurn) {
+            if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
+            return (this.endTurn >= 0 && currentTurn > this.endTurn);
+        };
+        AttitudeModifier.prototype.shouldEnd = function (evaluation) {
+            if (this.hasExpired(evaluation.currentTurn)) {
+                return true;
+            } else if (this.template.endCondition) {
+                if (this.template.endCondition(evaluation))
+                    return true;
+            } else if (!this.template.startCondition(evaluation)) {
+                return true;
+            } else {
+                return false;
+            }
+        };
 
         AttitudeModifier.prototype.serialize = function () {
             var data = {};
+
+            data.templateType = this.template.type;
+            data.startTurn = this.startTurn;
+            data.endTurn = this.endTurn;
+            data.strength = this.strength;
 
             return data;
         };
@@ -9136,8 +9195,32 @@ var Rance;
             this.attitudeModifiersByPlayer = {};
             this.player = player;
         }
+        DiplomacyStatus.prototype.getBaseOpinion = function () {
+            if (isFinite(this.baseOpinion))
+                return this.baseOpinion;
+
+            var friendliness = this.player.AIController.personality.friendliness;
+
+            this.baseOpinion = (friendliness - 0.5) * 10;
+
+            return this.baseOpinion;
+        };
+
         DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
             Rance.eventManager.dispatchEvent("diplomaticStatusUpdated");
+        };
+
+        DiplomacyStatus.prototype.getOpinionOf = function (player) {
+            var baseOpinion = this.getBaseOpinion();
+
+            var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
+            var modifierOpinion = 0;
+
+            for (var i = 0; i < attitudeModifiers.length; i++) {
+                modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
+            }
+
+            return Math.round(baseOpinion + modifierOpinion);
         };
 
         DiplomacyStatus.prototype.meetPlayer = function (player) {
@@ -9146,6 +9229,7 @@ var Rance;
             else {
                 this.metPlayers[player.id] = player;
                 this.statusByPlayer[player.id] = 1 /* coldWar */;
+                this.attitudeModifiersByPlayer[player.id] = [];
                 player.diplomacyStatus.meetPlayer(this.player);
             }
         };
@@ -9174,6 +9258,91 @@ var Rance;
             }
 
             return false;
+        };
+
+        DiplomacyStatus.prototype.hasModifierOfSameType = function (player, modifier) {
+            var modifiers = this.attitudeModifiersByPlayer[player.id];
+
+            for (var i = 0; i < modifiers.length; i++) {
+                if (modifiers[i].template.type === modifier.template.type) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        DiplomacyStatus.prototype.addAttitudeModifier = function (player, modifier) {
+            if (!this.attitudeModifiersByPlayer[player.id]) {
+                this.attitudeModifiersByPlayer[player.id] = [];
+            }
+
+            if (this.hasModifierOfSameType(player, modifier)) {
+                return;
+            }
+
+            this.attitudeModifiersByPlayer[player.id].push(modifier);
+        };
+
+        DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
+            /*
+            remove modifiers that should be removed
+            add modifiers that should be added. throw if type was already removed
+            set new strength for modifier
+            */
+            var modifiersByPlayer = this.attitudeModifiersByPlayer;
+            var allModifiers = Rance.Templates.AttitudeModifiers;
+
+            for (var playerId in modifiersByPlayer)
+                var playerModifiers = modifiersByPlayer[player.id];
+
+            var activeModifiers = {};
+
+            // debugging
+            var modifiersAdded = {};
+            var modifiersRemoved = {};
+
+            for (var i = playerModifiers.length - 1; i >= 0; i--) {
+                var modifier = playerModifiers[i];
+                if (modifier.shouldEnd(evaluation)) {
+                    playerModifiers.splice(i, 1);
+                    modifiersRemoved[modifier.template.type] = modifier;
+                } else {
+                    activeModifiers[modifier.template.type] = modifier;
+                }
+            }
+
+            for (var modifierType in allModifiers) {
+                var template = allModifiers[modifierType];
+
+                var modifier;
+                modifier = activeModifiers[template.type];
+                var alreadyHasModifierOfType = modifier;
+
+                if (!alreadyHasModifierOfType && !template.triggeredOnly) {
+                    if (!template.startCondition) {
+                        throw new Error("Attitude modifier is not trigger only despite " + "having no start condition specified");
+                    } else {
+                        var shouldStart = template.startCondition(evaluation);
+
+                        if (shouldStart) {
+                            modifier = new Rance.AttitudeModifier({
+                                template: template,
+                                startTurn: evaluation.currentTurn,
+                                strength: undefined
+                            });
+
+                            playerModifiers.push(modifier);
+                            modifiersAdded[template.type] = modifier;
+                        }
+                    }
+                }
+
+                if (modifier) {
+                    modifier.currentTurn = evaluation.currentTurn;
+                    modifier.setStrength(evaluation);
+                }
+            }
         };
 
         DiplomacyStatus.prototype.serialize = function () {
@@ -11533,6 +11702,9 @@ var Rance;
                 this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
             } else {
                 this.turnNumber++;
+                for (var i = 0; i < this.independents.length; i++) {
+                    this.processPlayerStartTurn(this.independents[i]);
+                }
             }
 
             Rance.eventManager.dispatchEvent("endTurn", null);
@@ -11546,15 +11718,17 @@ var Rance;
             };
 
             player.forEachUnit(shipStartTurnFN);
-            player.money += player.getIncome();
 
-            var allResourceIncomeData = player.getResourceIncome();
-            for (var resourceType in allResourceIncomeData) {
-                var resourceData = allResourceIncomeData[resourceType];
-                player.addResource(resourceData.resource, resourceData.amount);
+            if (!player.isIndependent) {
+                player.money += player.getIncome();
+
+                var allResourceIncomeData = player.getResourceIncome();
+                for (var resourceType in allResourceIncomeData) {
+                    var resourceData = allResourceIncomeData[resourceType];
+                    player.addResource(resourceData.resource, resourceData.amount);
+                }
             }
         };
-
         Game.prototype.setNextPlayer = function () {
             this.playerOrder.push(this.playerOrder.shift());
 
@@ -11934,6 +12108,37 @@ var Rance;
 
             return influenceByStar;
         };
+        MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
+            var evaluationByPlayer = {};
+
+            var neighborStarsCountByPlayer = {};
+
+            var allNeighbors = this.player.getNeighboringStars();
+            var neighborStarsForPlayer = [];
+
+            for (var i = 0; i < allNeighbors.length; i++) {
+                var star = allNeighbors[i];
+                if (!star.owner.isIndependent) {
+                    if (!neighborStarsCountByPlayer[star.owner.id]) {
+                        neighborStarsCountByPlayer[star.owner.id] = 0;
+                    }
+
+                    neighborStarsCountByPlayer[star.owner.id]++;
+                }
+            }
+
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+
+                evaluationByPlayer[player.id] = {
+                    currentTurn: currentTurn,
+                    opinion: this.player.diplomacyStatus.getOpinionOf(player),
+                    neighborStars: neighborStarsCountByPlayer[player.id]
+                };
+            }
+
+            return evaluationByPlayer;
+        };
         return MapEvaluator;
     })();
     Rance.MapEvaluator = MapEvaluator;
@@ -12083,6 +12288,7 @@ var Rance;
             Personalities.testPersonality1 = {
                 expansiveness: 1,
                 aggressiveness: 0.6,
+                friendliness: 0.4,
                 unitCompositionPreference: {
                     combat: 1,
                     defence: 0.8,
@@ -12770,8 +12976,8 @@ var Rance;
 /// <reference path="frontsai.ts"/>
 var Rance;
 (function (Rance) {
-    var EconomicAI = (function () {
-        function EconomicAI(props) {
+    var EconomyAI = (function () {
+        function EconomyAI(props) {
             this.objectivesAI = props.objectivesAI;
             this.frontsAI = props.frontsAI;
 
@@ -12780,7 +12986,7 @@ var Rance;
 
             this.personality = props.personality;
         }
-        EconomicAI.prototype.satisfyAllRequests = function () {
+        EconomyAI.prototype.satisfyAllRequests = function () {
             /*
             get all requests from OAI and FAI
             sort by priority
@@ -12802,7 +13008,7 @@ var Rance;
             }
         };
 
-        EconomicAI.prototype.satisfyFrontRequest = function (front) {
+        EconomyAI.prototype.satisfyFrontRequest = function (front) {
             // TODO
             var star = this.player.getNearestOwnedStarTo(front.musterLocation);
 
@@ -12838,17 +13044,47 @@ var Rance;
 
             front.addUnit(unit);
         };
-        return EconomicAI;
+        return EconomyAI;
     })();
-    Rance.EconomicAI = EconomicAI;
+    Rance.EconomyAI = EconomyAI;
+})(Rance || (Rance = {}));
+/// <reference path="../../data/templates/attitudemodifiers.ts" />
+/// <reference path="../game.ts"/>
+/// <reference path="../player.ts"/>
+/// <reference path="../diplomacystatus.ts"/>
+/// <reference path="mapevaluator.ts"/>
+var Rance;
+(function (Rance) {
+    var DiplomacyAI = (function () {
+        function DiplomacyAI(mapEvaluator, game, personality) {
+            this.game = game;
+
+            this.player = mapEvaluator.player;
+            this.diplomacyStatus = this.player.diplomacyStatus;
+
+            this.mapEvaluator = mapEvaluator;
+
+            this.personality = personality;
+        }
+        DiplomacyAI.prototype.setAttitudes = function () {
+            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+
+            for (var playerId in diplomacyEvaluations) {
+                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
+            }
+        };
+        return DiplomacyAI;
+    })();
+    Rance.DiplomacyAI = DiplomacyAI;
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="objectivesai.ts"/>
-/// <reference path="economicai.ts"/>
+/// <reference path="economyai.ts"/>
 /// <reference path="frontsai.ts"/>
+/// <reference path="diplomacyai.ts"/>
 var Rance;
 (function (Rance) {
     var AIController = (function () {
@@ -12864,15 +13100,19 @@ var Rance;
 
             this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
             this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
-            this.economicAI = new Rance.EconomicAI({
+            this.economicAI = new Rance.EconomyAI({
                 objectivesAI: this.objectivesAI,
                 frontsAI: this.frontsAI,
                 mapEvaluator: this.mapEvaluator,
                 personality: this.personality
             });
+            this.diplomacyAI = new Rance.DiplomacyAI(this.mapEvaluator, this.game, this.personality);
         }
         AIController.prototype.processTurn = function (afterFinishedCallback) {
             // gsai evaluate grand strategy
+            // dai set attitude
+            this.diplomacyAI.setAttitudes();
+
             // oai make objectives
             this.objectivesAI.setAllObjectives();
 
@@ -18049,6 +18289,10 @@ var Rance;
                     this.players.push(player);
                 }
             }
+            for (var i = 0; i < data.players.length; i++) {
+                var playerData = data.players[i];
+                this.deserializeDiplomacyStatus(this.playersById[playerData.id], playerData.diplomacyStatus);
+            }
 
             this.humanPlayer = this.playersById[data.humanPlayerId];
 
@@ -18202,18 +18446,35 @@ var Rance;
                 player.revealedStars[id] = this.pointsById[id];
             }
 
-            // diplomacy
-            var diplomacyData = data.diplomacyStatus;
-            if (diplomacyData) {
-                for (var i = 0; i < diplomacyData.metPlayerIds.length; i++) {
-                    var id = diplomacyData.metPlayerIds[i];
+            return player;
+        };
+        GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {
+            if (data) {
+                for (var i = 0; i < data.metPlayerIds.length; i++) {
+                    var id = data.metPlayerIds[i];
                     player.diplomacyStatus.metPlayers[id] = this.playersById[id];
                 }
 
-                player.diplomacyStatus.statusByPlayer = diplomacyData.statusByPlayer;
-            }
+                player.diplomacyStatus.statusByPlayer = data.statusByPlayer;
 
-            return player;
+                for (var playerId in data.attitudeModifiersByPlayer) {
+                    var modifiers = data.attitudeModifiersByPlayer[playerId];
+                    if (!modifiers) {
+                        continue;
+                    }
+                    for (var i = 0; i < modifiers.length; i++) {
+                        var template = Rance.Templates.AttitudeModifiers[modifiers[i].type];
+                        var modifier = new Rance.AttitudeModifier({
+                            template: template,
+                            startTurn: modifiers[i].startTurn,
+                            endTurn: modifiers[i].endTurn,
+                            strength: modifiers[i].strength
+                        });
+
+                        player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
+                    }
+                }
+            }
         };
         GameLoader.prototype.deserializeFlag = function (data) {
             var deserializeEmblem = function (emblemData, color) {
@@ -18288,6 +18549,7 @@ var Rance;
 (function (Rance) {
     function setAllDynamicTemplateProperties() {
         setAbilityGuardAddition();
+        setAttitudeModifierOverride();
     }
     Rance.setAllDynamicTemplateProperties = setAllDynamicTemplateProperties;
     function setAbilityGuardAddition() {
@@ -18313,6 +18575,20 @@ var Rance;
         for (var abilityName in Rance.Templates.Abilities) {
             var ability = Rance.Templates.Abilities[abilityName];
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
+        }
+    }
+    function setAttitudeModifierOverride() {
+        for (var modifierType in Rance.Templates.AttitudeModifiers) {
+            var modifier = Rance.Templates.AttitudeModifiers[modifierType];
+            if (modifier.canBeOverriddenBy) {
+                for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
+                    if (!modifier.canBeOverriddenBy[i].canOverride) {
+                        modifier.canBeOverriddenBy[i].canOverride = [];
+                    }
+
+                    modifier.canBeOverriddenBy[i].canOverride.push(modifier);
+                }
+            }
         }
     }
 })(Rance || (Rance = {}));
@@ -18504,7 +18780,7 @@ var Rance;
             var players = [];
 
             for (var i = 0; i < 5; i++) {
-                var player = new Rance.Player(true);
+                var player = new Rance.Player(i >= 1);
                 player.makeRandomFlag();
 
                 players.push(player);

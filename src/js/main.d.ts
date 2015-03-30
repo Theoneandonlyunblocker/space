@@ -591,14 +591,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        interface IColorRangeTemplate {
-        }
-        module ColorRanges {
-        }
-    }
-}
-declare module Rance {
     function hex2rgb(hex: number): number[];
     function rgb2hex(rgb: number[]): number;
     function hsvToRgb(h: number, s: number, v: number): number[];
@@ -1310,11 +1302,12 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IDiplomacyEvaluation {
+        currentTurn: number;
+        neighborStars: number;
+        opinion: number;
+    }
     module Templates {
-        interface IDiplomacyEvaluation {
-            neighborStars: number;
-            opinion: number;
-        }
         enum AttitudeModifierFamily {
             geographic = 0,
             history = 1,
@@ -1326,10 +1319,11 @@ declare module Rance {
             duration: number;
             canBeOverriddenBy?: IAttitudeModifierTemplate[];
             triggeredOnly?: boolean;
-            startCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
-            endCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
+            startCondition?: (evaluation: Rance.IDiplomacyEvaluation) => boolean;
+            endCondition?: (evaluation: Rance.IDiplomacyEvaluation) => boolean;
             constantEffect?: number;
-            getEffectFromEvaluation?: (evaluation: IDiplomacyEvaluation) => number;
+            getEffectFromEvaluation?: (evaluation: Rance.IDiplomacyEvaluation) => number;
+            canOverride?: IAttitudeModifierTemplate[];
         }
         module AttitudeModifiers {
             var neighborStars: IAttitudeModifierTemplate;
@@ -1340,18 +1334,23 @@ declare module Rance {
 }
 declare module Rance {
     class AttitudeModifier {
-        public type: string;
+        public template: Rance.Templates.IAttitudeModifierTemplate;
         public startTurn: number;
         public endTurn: number;
+        public currentTurn: number;
         public strength: number;
+        public isOverRidden: boolean;
         constructor(props: {
-            type: string;
+            template: Rance.Templates.IAttitudeModifierTemplate;
             startTurn: number;
-            endTurn: number;
+            endTurn?: number;
             strength: number;
         });
-        public getFreshness(currentTurn: number): number;
-        public getAdjustedStrength(currentTurn: number): number;
+        public setStrength(evaluation: Rance.IDiplomacyEvaluation): number;
+        public getFreshness(currentTurn?: number): number;
+        public getAdjustedStrength(currentTurn?: number): number;
+        public hasExpired(currentTurn?: number): boolean;
+        public shouldEnd(evaluation: Rance.IDiplomacyEvaluation): boolean;
         public serialize(): any;
     }
 }
@@ -1363,6 +1362,7 @@ declare module Rance {
     }
     class DiplomacyStatus {
         public player: Rance.Player;
+        public baseOpinion: number;
         public metPlayers: {
             [playerId: number]: Rance.Player;
         };
@@ -1373,11 +1373,16 @@ declare module Rance {
             [playerId: number]: Rance.AttitudeModifier[];
         };
         constructor(player: Rance.Player);
+        public getBaseOpinion(): number;
         public handleDiplomaticStatusUpdate(): void;
+        public getOpinionOf(player: Rance.Player): number;
         public meetPlayer(player: Rance.Player): void;
         public declareWarOn(player: Rance.Player): void;
         public canAttackFleetOfPlayer(player: Rance.Player): boolean;
         public canAttackBuildingOfPlayer(player: Rance.Player): boolean;
+        public hasModifierOfSameType(player: Rance.Player, modifier: Rance.AttitudeModifier): boolean;
+        public addAttitudeModifier(player: Rance.Player, modifier: Rance.AttitudeModifier): void;
+        public processAttitudeModifiersForPlayer(player: Rance.Player, evaluation: Rance.IDiplomacyEvaluation): void;
         public serialize(): any;
     }
 }
@@ -1727,6 +1732,9 @@ declare module Rance {
         public buildPlayerInfluenceMap(player: Rance.Player): {
             [starId: number]: number;
         };
+        public getDiplomacyEvaluations(currentTurn: number): {
+            [playerId: number]: Rance.IDiplomacyEvaluation;
+        };
     }
 }
 declare module Rance {
@@ -1766,6 +1774,7 @@ declare module Rance {
     interface IPersonalityData {
         expansiveness: number;
         aggressiveness: number;
+        friendliness: number;
         unitCompositionPreference: {
             [archetype: string]: number;
         };
@@ -1861,7 +1870,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class EconomicAI {
+    class EconomyAI {
         public objectivesAI: Rance.ObjectivesAI;
         public frontsAI: Rance.FrontsAI;
         public mapEvaluator: Rance.MapEvaluator;
@@ -1878,6 +1887,17 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class DiplomacyAI {
+        public game: Rance.Game;
+        public player: Rance.Player;
+        public diplomacyStatus: Rance.DiplomacyStatus;
+        public personality: Rance.IPersonalityData;
+        public mapEvaluator: Rance.MapEvaluator;
+        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game, personality: Rance.IPersonalityData);
+        public setAttitudes(): void;
+    }
+}
+declare module Rance {
     class AIController {
         public player: Rance.Player;
         public game: Rance.Game;
@@ -1885,8 +1905,9 @@ declare module Rance {
         public map: Rance.GalaxyMap;
         public mapEvaluator: Rance.MapEvaluator;
         public objectivesAI: Rance.ObjectivesAI;
-        public economicAI: Rance.EconomicAI;
+        public economicAI: Rance.EconomyAI;
         public frontsAI: Rance.FrontsAI;
+        public diplomacyAI: Rance.DiplomacyAI;
         constructor(player: Rance.Player, game: Rance.Game);
         public processTurn(afterFinishedCallback?: any): void;
         public finishMovingFleets(afterFinishedCallback?: any): void;
@@ -2644,6 +2665,7 @@ declare module Rance {
         public deserializeBuildings(data: any): void;
         public deserializeBuilding(data: any): Rance.Building;
         public deserializePlayer(data: any): Rance.Player;
+        public deserializeDiplomacyStatus(player: Rance.Player, data: any): void;
         public deserializeFlag(data: any): Rance.Flag;
         public deserializeFleet(player: any, data: any): Rance.Fleet;
         public deserializeShip(data: any): Rance.Unit;

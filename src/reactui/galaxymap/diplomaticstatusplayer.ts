@@ -10,6 +10,11 @@ module Rance
       {
         var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
 
+        if (type === "player")
+        {
+          className += " player-name";
+        }
+
         return(
           React.DOM.td(
           {

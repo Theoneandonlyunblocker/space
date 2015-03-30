@@ -180,6 +180,7 @@ module Rance
               content: UIComponents.DiplomacyOverview(
               {
                 handleClose: this.closeLightBox,
+                player: this.props.player,
                 totalPlayerCount: this.props.game.playerOrder.length,
                 metPlayers: this.props.player.diplomacyStatus.metPlayers,
                 statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer

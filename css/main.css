@@ -1115,6 +1115,11 @@ progress::-webkit-progress-value {
 .prevent-pointer-events * {
   pointer-events: none !important;
 }
+.player-name {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .top-bar {
   position: relative;
   top: 0;
@@ -2102,6 +2107,78 @@ progress::-webkit-progress-value {
   text-decoration: inherit;
   margin-left: 0.25em;
   color: #f3c620;
+}
+.diplomacy-status-list {
+  position: relative;
+}
+.diplomacy-status-list .fixed-table-header-background {
+  border: 0px solid transparent;
+  border-bottom-width: 3px;
+  border-top-width: 0px;
+  border-image-source: url("../img/uiBorderHorizontal.png");
+  border-image-slice: 10%;
+}
+.diplomacy-status-list .disabled,
+.diplomacy-status-list :disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.diplomacy-status-list .disabled *,
+.diplomacy-status-list :disabled * {
+  pointer-events: none !important;
+}
+.diplomacy-status-list tbody :first-child::after {
+  background-image: none;
+}
+.diplomacy-status-list tbody tr {
+  position: relative;
+  cursor: pointer;
+}
+.diplomacy-status-list tbody tr td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-width: 0;
+}
+.diplomacy-status-list tbody tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 2px;
+}
+.diplomacy-status-list tbody tr:hover {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+}
+.diplomacy-status-list tbody tr:hover:hover {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.diplomacy-status-list tbody tr:hover:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.diplomacy-status-list tbody tr:hover:disabled,
+.diplomacy-status-list tbody tr:hover.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.diplomacy-status-list tbody tr:hover:disabled *,
+.diplomacy-status-list tbody tr:hover.disabled * {
+  pointer-events: none !important;
+}
+.diplomatic-status-player {
+  margin: 5px 0;
+}
+.diplomatic-status-opinion {
+  text-align: center;
 }
 .save-game {
   position: relative;

@@ -26,6 +26,7 @@ module Rance
               name: player.name,
               status: DiplomaticState[this.props.statusByPlayer[playerId]],
               statusEnum: this.props.statusByPlayer[playerId],
+              opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
 
               rowConstructor: UIComponents.DiplomaticStatusPlayer
             }
@@ -41,7 +42,8 @@ module Rance
             {
               name: "?????",
               status: "unmet",
-              statusEnum: 99999,
+              statusEnum: 99999 + i,
+              opinion: null,
 
               rowConstructor: UIComponents.DiplomaticStatusPlayer
             }
@@ -60,6 +62,11 @@ module Rance
             key: "status",
             defaultOrder: "asc",
             propToSortBy: "statusEnum"
+          },
+          {
+            label: "Opinion",
+            key: "opinion",
+            defaultOrder: "desc"
           }
         ];
 

@@ -1562,6 +1562,13 @@ progress::-webkit-progress-value { background: #080; }
   }
 }
 
+.player-name
+{
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @top-bar-height: 2em;
 
 .top-bar
@@ -2383,9 +2390,19 @@ progress::-webkit-progress-value { background: #080; }
   .money-style;
 }
 
+.diplomacy-status-list
+{
+  .hover-only-fancy-table-style(2px, 0);
+}
+
 .diplomatic-status-player
 {
-  
+  margin: 5px 0;
+}
+
+.diplomatic-status-opinion
+{
+  text-align: center;
 }
 
 .save-game

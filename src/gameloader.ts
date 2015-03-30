@@ -61,6 +61,12 @@ module Rance
           this.players.push(player);
         }
       }
+      for (var i = 0; i < data.players.length; i++)
+      {
+        var playerData = data.players[i];
+        this.deserializeDiplomacyStatus(this.playersById[playerData.id], 
+          playerData.diplomacyStatus);
+      }
 
       this.humanPlayer = this.playersById[data.humanPlayerId];
 
@@ -248,21 +254,42 @@ module Rance
         player.revealedStars[id] = this.pointsById[id];
       }
 
-      // diplomacy
-      var diplomacyData = data.diplomacyStatus;
-      if (diplomacyData)
+      return player;
+    }
+    deserializeDiplomacyStatus(player: Player, data)
+    {
+      if (data)
       {
-        for (var i = 0; i < diplomacyData.metPlayerIds.length; i++)
+        for (var i = 0; i < data.metPlayerIds.length; i++)
         {
-          var id = diplomacyData.metPlayerIds[i];
+          var id = data.metPlayerIds[i];
           player.diplomacyStatus.metPlayers[id] = this.playersById[id];
         }
 
-        player.diplomacyStatus.statusByPlayer = diplomacyData.statusByPlayer;
+        player.diplomacyStatus.statusByPlayer = data.statusByPlayer;
+
+        for (var playerId in data.attitudeModifiersByPlayer)
+        {
+          var modifiers = data.attitudeModifiersByPlayer[playerId];
+          if (!modifiers)
+          {
+            continue;
+          }
+          for (var i = 0; i < modifiers.length; i++)
+          {
+            var template = Templates.AttitudeModifiers[modifiers[i].type];
+            var modifier = new AttitudeModifier(
+            {
+              template: template,
+              startTurn: modifiers[i].startTurn,
+              endTurn: modifiers[i].endTurn,
+              strength: modifiers[i].strength
+            });
+
+            player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
+          }
+        }
       }
-
-
-      return player;
     }
     deserializeFlag(data)
     {

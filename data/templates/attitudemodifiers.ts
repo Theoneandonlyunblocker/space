@@ -1,12 +1,13 @@
 module Rance
 {
+  export interface IDiplomacyEvaluation
+  {
+    currentTurn: number;
+    neighborStars: number;
+    opinion: number;
+  }
   export module Templates
   {
-    export interface IDiplomacyEvaluation
-    {
-      neighborStars: number;
-      opinion: number;
-    }
     export enum AttitudeModifierFamily
     {
       geographic,

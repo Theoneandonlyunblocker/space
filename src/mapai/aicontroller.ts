@@ -4,8 +4,9 @@
 
 /// <reference path="mapevaluator.ts"/>
 /// <reference path="objectivesai.ts"/>
-/// <reference path="economicai.ts"/>
+/// <reference path="economyai.ts"/>
 /// <reference path="frontsai.ts"/>
+/// <reference path="diplomacyai.ts"/>
 
 module Rance
 {
@@ -20,8 +21,9 @@ module Rance
     mapEvaluator: MapEvaluator;
 
     objectivesAI: ObjectivesAI;
-    economicAI: EconomicAI;
+    economicAI: EconomyAI;
     frontsAI: FrontsAI;
+    diplomacyAI: DiplomacyAI;
 
     constructor(player: Player, game: Game)
     {
@@ -37,19 +39,23 @@ module Rance
       this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.game);
       this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI,
         this.personality);
-      this.economicAI = new EconomicAI(
+      this.economicAI = new EconomyAI(
       {
         objectivesAI: this.objectivesAI,
         frontsAI: this.frontsAI,
         mapEvaluator: this.mapEvaluator,
         personality: this.personality
       });
+      this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.game, this.personality);
     }
 
     processTurn(afterFinishedCallback?: any)
     {
       // gsai evaluate grand strategy
 
+
+      // dai set attitude
+      this.diplomacyAI.setAttitudes();
 
       // oai make objectives
       this.objectivesAI.setAllObjectives();

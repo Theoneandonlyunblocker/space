@@ -64,7 +64,7 @@ module Rance
         modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
       }
 
-      return baseOpinion + modifierOpinion;
+      return Math.round(baseOpinion + modifierOpinion);
     }
 
     meetPlayer(player: Player)
@@ -74,6 +74,7 @@ module Rance
       {
         this.metPlayers[player.id] = player;
         this.statusByPlayer[player.id] = DiplomaticState.coldWar;
+        this.attitudeModifiersByPlayer[player.id] = [];
         player.diplomacyStatus.meetPlayer(this.player);
       }
     }
@@ -105,6 +106,129 @@ module Rance
       }
 
       return false;
+    }
+
+    hasModifierOfSameType(player: Player, modifier: AttitudeModifier)
+    {
+      var modifiers = this.attitudeModifiersByPlayer[player.id];
+
+      for (var i = 0; i < modifiers.length; i++)
+      {
+        if (modifiers[i].template.type === modifier.template.type)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    addAttitudeModifier(player: Player, modifier: AttitudeModifier)
+    {
+      if (!this.attitudeModifiersByPlayer[player.id])
+      {
+        this.attitudeModifiersByPlayer[player.id] = [];
+      }
+
+      if (this.hasModifierOfSameType(player, modifier))
+      {
+        return;
+      }
+
+      this.attitudeModifiersByPlayer[player.id].push(modifier);
+    }
+
+    processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation)
+    {
+      /*
+      remove modifiers that should be removed
+      add modifiers that should be added. throw if type was already removed
+      set new strength for modifier
+       */
+      var modifiersByPlayer = this.attitudeModifiersByPlayer;
+      var allModifiers = Templates.AttitudeModifiers;
+
+      for (var playerId in modifiersByPlayer)
+
+      var playerModifiers = modifiersByPlayer[player.id];
+
+      var activeModifiers:
+      {
+        [modifierType: string]: AttitudeModifier
+      } = {};
+
+      // debugging
+      var modifiersAdded:
+      {
+        [modifierType: string]: AttitudeModifier
+      } = {};
+      var modifiersRemoved:
+      {
+        [modifierType: string]: AttitudeModifier
+      } = {};
+
+      // remove modifiers & build active modifiers index
+      for (var i = playerModifiers.length - 1; i >= 0; i--)
+      {
+        var modifier = playerModifiers[i];
+        if (modifier.shouldEnd(evaluation))
+        {
+          playerModifiers.splice(i, 1);
+          modifiersRemoved[modifier.template.type] = modifier;
+        }
+        else
+        {
+          activeModifiers[modifier.template.type] = modifier;
+        }
+      }
+
+      // loop through all modifiers
+      // if modifier is not active and should start,
+      // add it and mark as active
+      // 
+      // if modifier is active, set strength based on evaluation
+      for (var modifierType in allModifiers)
+      {
+        var template = allModifiers[modifierType];
+
+        var modifier: AttitudeModifier;
+        modifier = activeModifiers[template.type];
+        var alreadyHasModifierOfType = modifier;
+
+        if (!alreadyHasModifierOfType && !template.triggeredOnly)
+        {
+          if (!template.startCondition)
+          {
+            throw new Error("Attitude modifier is not trigger only despite " +
+              "having no start condition specified");
+          }
+          else
+          {
+            var shouldStart = template.startCondition(evaluation);
+
+            if (shouldStart)
+            {
+              modifier = new AttitudeModifier(
+              {
+                template: template,
+                startTurn: evaluation.currentTurn,
+                strength: undefined
+              });
+
+              playerModifiers.push(modifier);
+              modifiersAdded[template.type] = modifier;
+            }
+          }
+        }
+
+
+        if (modifier)
+        {
+          modifier.currentTurn = evaluation.currentTurn;
+          modifier.setStrength(evaluation);
+        }
+      }
+      
     }
 
     serialize()
