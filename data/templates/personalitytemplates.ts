@@ -4,6 +4,7 @@ module Rance
   {
     expansiveness: number;
     aggressiveness: number;
+    friendliness: number;
 
     unitCompositionPreference:
     {
@@ -18,6 +19,7 @@ module Rance
       {
         expansiveness: 1,
         aggressiveness: 0.6,
+        friendliness: 0.4,
 
         unitCompositionPreference:
         {

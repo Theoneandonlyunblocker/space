@@ -14,6 +14,7 @@ module Rance
   export class DiplomacyStatus
   {
     player: Player;
+    baseOpinion: number;
 
     metPlayers:
     {
@@ -35,9 +36,35 @@ module Rance
       this.player = player;
     }
 
+    getBaseOpinion()
+    {
+      if (isFinite(this.baseOpinion)) return this.baseOpinion;
+
+      var friendliness = this.player.AIController.personality.friendliness;
+
+      this.baseOpinion = (friendliness - 0.5) * 10;
+
+      return this.baseOpinion;
+    }
+
     handleDiplomaticStatusUpdate()
     {
       eventManager.dispatchEvent("diplomaticStatusUpdated");
+    }
+
+    getOpinionOf(player: Player)
+    {
+      var baseOpinion = this.getBaseOpinion();
+
+      var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
+      var modifierOpinion = 0;
+
+      for (var i = 0; i < attitudeModifiers.length; i++)
+      {
+        modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
+      }
+
+      return baseOpinion + modifierOpinion;
     }
 
     meetPlayer(player: Player)
