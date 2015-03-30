@@ -271,13 +271,16 @@ module Rance
         for (var playerId in data.attitudeModifiersByPlayer)
         {
           var modifiers = data.attitudeModifiersByPlayer[playerId];
-          if (!modifiers)
+
+          if (!modifiers || modifiers.length === 0)
           {
+            player.diplomacyStatus.attitudeModifiersByPlayer[playerId] = [];
             continue;
           }
+
           for (var i = 0; i < modifiers.length; i++)
           {
-            var template = Templates.AttitudeModifiers[modifiers[i].type];
+            var template = Templates.AttitudeModifiers[modifiers[i].templateType];
             var modifier = new AttitudeModifier(
             {
               template: template,

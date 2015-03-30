@@ -1208,6 +1208,7 @@ var Rance;
         UIComponents.BattleScene = React.createClass({
             displayName: "BattleScene",
             componentWillReceiveProps: function (newProps) {
+                console.log(newProps.unit2, this.props.unit2);
                 if (newProps.unit1 !== this.props.unit1) {
                     this.renderScene("side1", true, newProps.unit1);
                 }
@@ -11702,6 +11703,7 @@ var Rance;
                 this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
             } else {
                 this.turnNumber++;
+
                 for (var i = 0; i < this.independents.length; i++) {
                     this.processPlayerStartTurn(this.independents[i]);
                 }
@@ -18459,11 +18461,14 @@ var Rance;
 
                 for (var playerId in data.attitudeModifiersByPlayer) {
                     var modifiers = data.attitudeModifiersByPlayer[playerId];
-                    if (!modifiers) {
+
+                    if (!modifiers || modifiers.length === 0) {
+                        player.diplomacyStatus.attitudeModifiersByPlayer[playerId] = [];
                         continue;
                     }
+
                     for (var i = 0; i < modifiers.length; i++) {
-                        var template = Rance.Templates.AttitudeModifiers[modifiers[i].type];
+                        var template = Rance.Templates.AttitudeModifiers[modifiers[i].templateType];
                         var modifier = new Rance.AttitudeModifier({
                             template: template,
                             startTurn: modifiers[i].startTurn,

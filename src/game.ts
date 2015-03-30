@@ -39,6 +39,7 @@ module Rance
       else
       {
         this.turnNumber++;
+        
         for (var i = 0; i < this.independents.length; i++)
         {
           this.processPlayerStartTurn(this.independents[i]);
