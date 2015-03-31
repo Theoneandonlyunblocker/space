@@ -25,6 +25,11 @@ module Rance
       {
         this.setState({hasAttitudeModifierTootlip: false});
       },
+
+      getOpinionTextNode: function()
+      {
+        return this.getDOMNode().firstChild;
+      },
       
       render: function()
       {
@@ -35,7 +40,11 @@ module Rance
           {
             attitudeModifiers: this.props.attitudeModifiers,
             onLeave: this.clearTooltip,
-            getParentNode: this.getDOMNode
+            getParentNode: this.getOpinionTextNode,
+            autoPosition: true,
+            ySide: "top",
+            xSide: "right",
+            yMargin: 10
           });
         }
         return(

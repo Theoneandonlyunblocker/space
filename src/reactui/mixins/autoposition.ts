@@ -89,31 +89,52 @@ module Rance
         try to fit prefered x alignment
           flip if doesnt fit
          */
-        var parentRect = this.getParentNode().getBoundingClientRect();
+        var parentRect = this.props.getParentNode().getBoundingClientRect();
         var ownNode = this.getDOMNode();
         var rect = ownNode.getBoundingClientRect();
 
-        var ySide = this.props.ySide;
-        var xSide = this.props.xSide;
+        var ySide = this.props.ySide || "top";
+        var xSide = this.props.xSide || "right";
 
-        if (!this.elementFitsYSide(ySide, rect, parentRect))
+        var yMargin = this.props.yMargin || 0;
+        var xMargin = this.props.xMargin || 0;
+
+        var fitsY = this.elementFitsYSide(ySide, rect, parentRect);
+        if (!fitsY)
         {
           ySide = this.flipSide(ySide);
         }
 
-        if (!this.elementFitsXSide(xSide, rect, parentRect))
+        var fitsX = this.elementFitsXSide(xSide, rect, parentRect);
+        if (!fitsX)
         {
           xSide = this.flipSide(xSide);
         }
+        var top = null;
+        var left = null;
 
-        var flipX = this.flipSide(xSide);
-        var flipY = this.flipSide(ySide);
+        if (ySide === "top")
+        {
+          top = parentRect.top - rect.height - yMargin;
+        }
+        else
+        {
+          top = parentRect.bottom + yMargin;
+        }
 
-        ownNode.style[flipY] = "" + parentRect[ySide] + "px";
-        ownNode.style[xSide] = "" + parentRect[xSide] + "px";
+        if (xSide === "left")
+        {
+          left = parentRect.left - xMargin;
+        }
+        else
+        {
+          left = parentRect.right - rect.width + xMargin;
+        }
 
-        ownNode.style[ySide] = null;
-        ownNode.style[flipX] = null;
+        ownNode.style.left = "" + left + "px";
+        ownNode.style.top = "" + top + "px";
+
+        console.log("setAutoPosition", fitsY, fitsX, ySide, xSide, parentRect);
       }
     }
   }

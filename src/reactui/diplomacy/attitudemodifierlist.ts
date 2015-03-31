@@ -56,7 +56,7 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "attitude-modifier-list"},
+          React.DOM.div({className: "attitude-modifier-list auto-position"},
             UIComponents.List(
             {
               listItems: rows,

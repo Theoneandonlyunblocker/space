@@ -264,6 +264,18 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var AutoPosition: {
+            componentDidMount: () => void;
+            componentDidUpdate: () => void;
+            flipSide: (side: any) => string;
+            elementFitsYSide: (side: any, ownRect: any, parentRect: any) => boolean;
+            elementFitsXSide: (side: any, ownRect: any, parentRect: any) => boolean;
+            setAutoPosition: () => void;
+        };
+    }
+}
+declare module Rance {
+    module UIComponents {
         var AttitudeModifierInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
