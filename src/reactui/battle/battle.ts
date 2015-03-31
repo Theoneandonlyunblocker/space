@@ -439,6 +439,16 @@ module Rance
           )
         }
 
+        // hack
+        // 
+        // transitiongroups dont work very well, especially in the older version
+        // of react we're using. seems to be mostly fine on webkit & ie though
+        // so just disable it on firefox for now
+        var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
+          React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
+            upperFooterElement
+          ) : upperFooterElement;
+
         return(
           UIComponents.BattleBackground(
           {
@@ -459,9 +469,7 @@ module Rance
                 {
                   battle: battle
                 }),
-                React.addons.CSSTransitionGroup({transitionName: "battle-upper-footer"},
-                  upperFooterElement
-                ),
+                upperFooter,
                 UIComponents.BattleScene(
                 {
                   unit1: this.state.battleSceneUnit1,

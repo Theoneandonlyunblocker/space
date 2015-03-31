@@ -1274,7 +1274,6 @@ var Rance;
                 if (container.firstChild) {
                     if (animate) {
                         var animationEndFN = function () {
-                            console.log("animationEnd", side);
                             if (container.firstChild) {
                                 container.removeChild(container.firstChild);
                             }
@@ -1772,6 +1771,13 @@ var Rance;
                     }) : null));
                 }
 
+                // hack
+                //
+                // transitiongroups dont work very well, especially in the older version
+                // of react we're using. seems to be mostly fine on webkit & ie though
+                // so just disable it on firefox for now
+                var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ? React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
+
                 return (Rance.UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
@@ -1783,7 +1789,7 @@ var Rance;
                     className: "battle-upper"
                 }, Rance.UIComponents.BattleScore({
                     battle: battle
-                }), React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement), Rance.UIComponents.BattleScene({
+                }), upperFooter, Rance.UIComponents.BattleScene({
                     unit1: this.state.battleSceneUnit1,
                     unit2: this.state.battleSceneUnit2
                 })), React.DOM.div({

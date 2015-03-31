@@ -97,7 +97,6 @@ module Rance
           {
             var animationEndFN = function()
             {
-              console.log("animationEnd", side);
               if (container.firstChild)
               {
                 container.removeChild(container.firstChild);
