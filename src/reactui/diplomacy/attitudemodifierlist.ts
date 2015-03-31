@@ -16,6 +16,20 @@ module Rance
         var modifiers = this.props.attitudeModifiers;
         var rows = [];
 
+        rows.push(
+        {
+          key: "baseOpinion",
+          data:
+          {
+            name: "AI Personality",
+            strength: this.props.baseOpinion,
+            endTurn: -1,
+            sortOrder: -1,
+
+            rowConstructor: UIComponents.AttitudeModifierInfo
+          }
+        });
+
         for (var i = 0; i < modifiers.length; i++)
         {
           var modifier = modifiers[i];
@@ -29,6 +43,7 @@ module Rance
               name: modifier.template.displayName,
               strength: modifier.getAdjustedStrength(),
               endTurn: modifier.endTurn,
+              sortOrder: 0,
 
               rowConstructor: UIComponents.AttitudeModifierInfo
             }
@@ -41,7 +56,8 @@ module Rance
           {
             label: "Name",
             key: "name",
-            defaultOrder: "asc"
+            defaultOrder: "asc",
+            propToSortBy: "sortOrder"
           },
           {
             label: "Effect",
@@ -61,7 +77,7 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              initialSortOrder: [columns[1]]
+              initialSortOrder: [columns[0], columns[1], columns[2]]
             })
           )
         );

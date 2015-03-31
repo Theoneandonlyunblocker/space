@@ -1240,6 +1240,21 @@ progress::-webkit-progress-value { background: #080; }
   overflow-x: hidden;
 }
 
+.no-header.fixed-table-container
+{
+  padding-top: 0;
+
+  .fixed-table-header-background
+  {
+    display: none;
+  }
+
+  thead
+  {
+    display: none;
+  }
+}
+
 .fixed-table-container-inner
 {
   overflow-x: auto;
@@ -2852,4 +2867,9 @@ progress::-webkit-progress-value { background: #080; }
 .auto-position
 {
   position: fixed;
+}
+
+.attitude-modifier-list
+{
+  background-color: @bg-color;
 }

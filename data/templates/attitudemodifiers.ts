@@ -55,7 +55,7 @@ module Rance
         
         getEffectFromEvaluation: function(evaluation: IDiplomacyEvaluation)
         {
-          return -evaluation.neighborStars;
+          return -20 * evaluation.neighborStars;
         }
       }
 

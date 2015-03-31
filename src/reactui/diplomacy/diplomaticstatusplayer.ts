@@ -32,7 +32,8 @@ module Rance
               UIComponents.Opinion(
               {
                 attitudeModifiers: this.props.attitudeModifiers,
-                opinion: this.props.opinion
+                opinion: this.props.opinion,
+                baseOpinion: this.props.baseOpinion
               })
             )
           );

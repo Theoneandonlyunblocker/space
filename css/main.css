@@ -841,6 +841,15 @@ progress::-webkit-progress-value {
   padding-top: 1.5em;
   overflow-x: hidden;
 }
+.no-header.fixed-table-container {
+  padding-top: 0;
+}
+.no-header.fixed-table-container .fixed-table-header-background {
+  display: none;
+}
+.no-header.fixed-table-container thead {
+  display: none;
+}
 .fixed-table-container-inner {
   overflow-x: auto;
   overflow-y: auto;
@@ -2887,4 +2896,7 @@ progress::-webkit-progress-value {
 }
 .auto-position {
   position: fixed;
+}
+.attitude-modifier-list {
+  background-color: #0c1615;
 }

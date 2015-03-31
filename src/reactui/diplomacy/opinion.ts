@@ -30,6 +30,25 @@ module Rance
       {
         return this.getDOMNode().firstChild;
       },
+
+      getColor: function()
+      {
+        var relativeValue = getRelativeValue(this.props.opinion, -50, 50);
+        relativeValue = clamp(relativeValue, 0, 1);
+
+        var deviation = Math.abs(0.5 - relativeValue) * 2;
+
+        var hue = 110 * relativeValue;
+        var saturation = 10 + 90 * deviation;
+        var lightness = 70 - 20 * deviation;
+
+        return(
+          "hsl(" +
+            hue + "," +
+            saturation + "%," +
+            lightness + "%)"
+        );
+      },
       
       render: function()
       {
@@ -39,7 +58,9 @@ module Rance
           tooltip = UIComponents.AttitudeModifierList(
           {
             attitudeModifiers: this.props.attitudeModifiers,
+            baseOpinion: this.props.baseOpinion,
             onLeave: this.clearTooltip,
+            
             getParentNode: this.getOpinionTextNode,
             autoPosition: true,
             ySide: "top",
@@ -54,7 +75,15 @@ module Rance
             onMouseEnter: this.setTooltip,
             onMouseLeave: this.clearTooltip
           },
-            this.props.opinion,
+            React.DOM.span(
+            {
+              style:
+              {
+                color: this.getColor()
+              }
+            },
+              this.props.opinion
+            ),
             tooltip
           )
         );

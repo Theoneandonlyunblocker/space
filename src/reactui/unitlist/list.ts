@@ -331,10 +331,12 @@ module Rance
           );
         });
 
+
+
         return(
           React.DOM.div(
             {
-              className: "fixed-table-container",
+              className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
               tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
             },
             React.DOM.div({className: "fixed-table-header-background"}),

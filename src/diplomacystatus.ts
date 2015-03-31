@@ -42,7 +42,7 @@ module Rance
 
       var friendliness = this.player.AIController.personality.friendliness;
 
-      this.baseOpinion = (friendliness - 0.5) * 10;
+      this.baseOpinion = Math.round((friendliness - 0.5) * 10);
 
       return this.baseOpinion;
     }

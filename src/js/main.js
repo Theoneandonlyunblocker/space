@@ -2108,7 +2108,7 @@ var Rance;
                 });
 
                 return (React.DOM.div({
-                    className: "fixed-table-container",
+                    className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
                     tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
                 }, React.DOM.div({ className: "fixed-table-header-background" }), React.DOM.div({
                     className: "fixed-table-container-inner",
@@ -4021,12 +4021,45 @@ var Rance;
         UIComponents.AttitudeModifierInfo = React.createClass({
             displayName: "AttitudeModifierInfo",
             makeCell: function (type) {
-                var className = "attitude-modifier-info-cell" + " attitude-modifier-info-" + type;
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "attitude-modifier-info-cell" + " attitude-modifier-info-" + type;
 
-                return (React.DOM.td({
-                    key: type,
-                    className: className
-                }, this.props[type]));
+                var cellContent;
+
+                switch (type) {
+                    case "endTurn": {
+                        if (this.props.endTurn < 0) {
+                            cellContent = null;
+                            return;
+                        }
+                    }
+                    case "strength": {
+                        var relativeValue = Rance.getRelativeValue(this.props.strength, -10, 10);
+                        relativeValue = Rance.clamp(relativeValue, 0, 1);
+
+                        var deviation = Math.abs(0.5 - relativeValue) * 2;
+
+                        var hue = 110 * relativeValue;
+                        var saturation = 10 + 80 * deviation;
+                        var lightness = 70 - 20 * deviation;
+
+                        cellProps.style = {
+                            color: "hsl(" + hue + "," + saturation + "%," + lightness + "%)"
+                        };
+                    }
+                    default: {
+                        cellContent = this.props[type];
+
+                        if (isFinite(cellContent)) {
+                            cellProps.className += " center-text";
+                        }
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var columns = this.props.activeColumns;
@@ -4062,6 +4095,17 @@ var Rance;
                 var modifiers = this.props.attitudeModifiers;
                 var rows = [];
 
+                rows.push({
+                    key: "baseOpinion",
+                    data: {
+                        name: "AI Personality",
+                        strength: this.props.baseOpinion,
+                        endTurn: -1,
+                        sortOrder: -1,
+                        rowConstructor: Rance.UIComponents.AttitudeModifierInfo
+                    }
+                });
+
                 for (var i = 0; i < modifiers.length; i++) {
                     var modifier = modifiers[i];
                     if (modifier.isOverRidden)
@@ -4073,6 +4117,7 @@ var Rance;
                             name: modifier.template.displayName,
                             strength: modifier.getAdjustedStrength(),
                             endTurn: modifier.endTurn,
+                            sortOrder: 0,
                             rowConstructor: Rance.UIComponents.AttitudeModifierInfo
                         }
                     });
@@ -4082,7 +4127,8 @@ var Rance;
                     {
                         label: "Name",
                         key: "name",
-                        defaultOrder: "asc"
+                        defaultOrder: "asc",
+                        propToSortBy: "sortOrder"
                     },
                     {
                         label: "Effect",
@@ -4099,7 +4145,7 @@ var Rance;
                 return (React.DOM.div({ className: "attitude-modifier-list auto-position" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialSortOrder: [columns[1]]
+                    initialSortOrder: [columns[0], columns[1], columns[2]]
                 })));
             }
         });
@@ -4126,11 +4172,24 @@ var Rance;
             getOpinionTextNode: function () {
                 return this.getDOMNode().firstChild;
             },
+            getColor: function () {
+                var relativeValue = Rance.getRelativeValue(this.props.opinion, -50, 50);
+                relativeValue = Rance.clamp(relativeValue, 0, 1);
+
+                var deviation = Math.abs(0.5 - relativeValue) * 2;
+
+                var hue = 110 * relativeValue;
+                var saturation = 10 + 90 * deviation;
+                var lightness = 70 - 20 * deviation;
+
+                return ("hsl(" + hue + "," + saturation + "%," + lightness + "%)");
+            },
             render: function () {
                 var tooltip = null;
                 if (this.state.hasAttitudeModifierTootlip) {
                     tooltip = Rance.UIComponents.AttitudeModifierList({
                         attitudeModifiers: this.props.attitudeModifiers,
+                        baseOpinion: this.props.baseOpinion,
                         onLeave: this.clearTooltip,
                         getParentNode: this.getOpinionTextNode,
                         autoPosition: true,
@@ -4143,7 +4202,11 @@ var Rance;
                     className: "player-opinion",
                     onMouseEnter: this.setTooltip,
                     onMouseLeave: this.clearTooltip
-                }, this.props.opinion, tooltip));
+                }, React.DOM.span({
+                    style: {
+                        color: this.getColor()
+                    }
+                }, this.props.opinion), tooltip));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4169,7 +4232,8 @@ var Rance;
                         className: className
                     }, Rance.UIComponents.Opinion({
                         attitudeModifiers: this.props.attitudeModifiers,
-                        opinion: this.props.opinion
+                        opinion: this.props.opinion,
+                        baseOpinion: this.props.baseOpinion
                     })));
                 }
 
@@ -4222,6 +4286,7 @@ var Rance;
                         key: player.id,
                         data: {
                             name: player.name,
+                            baseOpinion: player.diplomacyStatus.getBaseOpinion(),
                             status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
                             statusEnum: this.props.statusByPlayer[playerId],
                             opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
@@ -9338,7 +9403,7 @@ var Rance;
                     return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
                 },
                 getEffectFromEvaluation: function (evaluation) {
-                    return -evaluation.neighborStars;
+                    return -20 * evaluation.neighborStars;
                 }
             };
 
@@ -9468,7 +9533,7 @@ var Rance;
 
             var friendliness = this.player.AIController.personality.friendliness;
 
-            this.baseOpinion = (friendliness - 0.5) * 10;
+            this.baseOpinion = Math.round((friendliness - 0.5) * 10);
 
             return this.baseOpinion;
         };

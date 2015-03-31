@@ -24,6 +24,7 @@ module Rance
             data:
             {
               name: player.name,
+              baseOpinion: player.diplomacyStatus.getBaseOpinion(),
               status: DiplomaticState[this.props.statusByPlayer[playerId]],
               statusEnum: this.props.statusByPlayer[playerId],
               opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
