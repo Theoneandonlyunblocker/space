@@ -17,6 +17,7 @@ module Rance
     export interface IAttitudeModifierTemplate
     {
       type: string;
+      displayName: string;
       family: AttitudeModifierFamily;
       duration: number; // -1 === infinite;
 
@@ -43,6 +44,7 @@ module Rance
       export var neighborStars: IAttitudeModifierTemplate =
       {
         type: "neighborStars",
+        displayName: "neighborStars",
         family: AttitudeModifierFamily.geographic,
         duration: -1,
 
@@ -60,6 +62,7 @@ module Rance
       export var atWar: IAttitudeModifierTemplate =
       {
         type: "atWar",
+        displayName: "atWar",
         family: AttitudeModifierFamily.current,
         duration: -1,
 
@@ -71,6 +74,7 @@ module Rance
       export var declaredWar: IAttitudeModifierTemplate =
       {
         type: "declaredWar",
+        displayName: "declaredWar",
         family: AttitudeModifierFamily.history,
         duration: 15,
 
