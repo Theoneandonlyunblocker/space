@@ -264,6 +264,31 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var AttitudeModifierInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var AttitudeModifierList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Opinion: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DiplomaticStatusPlayer: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DiplomacyOverview: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var EconomySummaryItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -280,16 +305,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var OptionsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DiplomaticStatusPlayer: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DiplomacyOverview: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
@@ -1315,6 +1330,7 @@ declare module Rance {
         }
         interface IAttitudeModifierTemplate {
             type: string;
+            displayName: string;
             family: AttitudeModifierFamily;
             duration: number;
             canBeOverriddenBy?: IAttitudeModifierTemplate[];

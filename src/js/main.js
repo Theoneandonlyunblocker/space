@@ -3909,6 +3909,255 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.AttitudeModifierInfo = React.createClass({
+            displayName: "AttitudeModifierInfo",
+            makeCell: function (type) {
+                var className = "attitude-modifier-info-cell" + " attitude-modifier-info-" + type;
+
+                return (React.DOM.td({
+                    key: type,
+                    className: className
+                }, this.props[type]));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                var rowProps = {
+                    className: "diplomatic-status-player",
+                    onClick: this.props.handleClick
+                };
+
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="attitudemodifierinfo" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.AttitudeModifierList = React.createClass({
+            displayName: "AttitudeModifierList",
+            render: function () {
+                var modifiers = this.props.attitudeModifiers;
+                var rows = [];
+
+                for (var i = 0; i < modifiers.length; i++) {
+                    var modifier = modifiers[i];
+                    if (modifier.isOverRidden)
+                        continue;
+
+                    rows.push({
+                        key: modifier.template.type,
+                        data: {
+                            name: modifier.template.displayName,
+                            strength: modifier.getAdjustedStrength(),
+                            endTurn: modifier.endTurn,
+                            rowConstructor: Rance.UIComponents.AttitudeModifierInfo
+                        }
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Effect",
+                        key: "strength",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Ends on",
+                        key: "endTurn",
+                        defaultOrder: "desc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "attitude-modifier-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[1]]
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="attitudemodifierlist.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.Opinion = React.createClass({
+            displayName: "Opinion",
+            getInitialState: function () {
+                return ({
+                    hasAttitudeModifierTootlip: false
+                });
+            },
+            setTooltip: function () {
+                this.setState({ hasAttitudeModifierTootlip: true });
+            },
+            clearTooltip: function () {
+                this.setState({ hasAttitudeModifierTootlip: false });
+            },
+            render: function () {
+                var tooltip = null;
+                if (this.state.hasAttitudeModifierTootlip) {
+                    tooltip = Rance.UIComponents.AttitudeModifierList({
+                        attitudeModifiers: this.props.attitudeModifiers,
+                        onLeave: this.clearTooltip,
+                        getParentNode: this.getDOMNode
+                    });
+                }
+                return (React.DOM.div({
+                    className: "player-opinion",
+                    onMouseEnter: this.setTooltip,
+                    onMouseLeave: this.clearTooltip
+                }, this.props.opinion, tooltip));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="opinion.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DiplomaticStatusPlayer = React.createClass({
+            displayName: "DiplomaticStatusPlayer",
+            getInitialState: function () {
+                return ({
+                    hasAttitudeModifierTootlip: false
+                });
+            },
+            makeCell: function (type) {
+                var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
+
+                if (type === "opinion") {
+                    return (React.DOM.td({
+                        key: type,
+                        className: className
+                    }, Rance.UIComponents.Opinion({
+                        attitudeModifiers: this.props.attitudeModifiers,
+                        opinion: this.props.opinion
+                    })));
+                }
+
+                if (type === "player") {
+                    className += " player-name";
+                }
+
+                return (React.DOM.td({
+                    key: type,
+                    className: className
+                }, this.props[type]));
+            },
+            render: function () {
+                var columns = this.props.activeColumns;
+
+                var cells = [];
+
+                for (var i = 0; i < columns.length; i++) {
+                    var cell = this.makeCell(columns[i].key);
+
+                    cells.push(cell);
+                }
+
+                var rowProps = {
+                    className: "diplomatic-status-player",
+                    onClick: this.props.handleClick
+                };
+
+                return (React.DOM.tr(rowProps, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="diplomaticstatusplayer.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DiplomacyOverview = React.createClass({
+            displayName: "DiplomacyOverview",
+            render: function () {
+                var unmetPlayerCount = this.props.totalPlayerCount - Object.keys(this.props.metPlayers).length - 1;
+
+                var rows = [];
+
+                for (var playerId in this.props.statusByPlayer) {
+                    var player = this.props.metPlayers[playerId];
+
+                    rows.push({
+                        key: player.id,
+                        data: {
+                            name: player.name,
+                            status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
+                            statusEnum: this.props.statusByPlayer[playerId],
+                            opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
+                            attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
+                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
+                        }
+                    });
+                }
+
+                for (var i = 0; i < unmetPlayerCount; i++) {
+                    rows.push({
+                        key: "unmet" + i,
+                        data: {
+                            name: "?????",
+                            status: "unmet",
+                            statusEnum: 99999 + i,
+                            opinion: null,
+                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
+                        }
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Name",
+                        key: "name",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Status",
+                        key: "status",
+                        defaultOrder: "asc",
+                        propToSortBy: "statusEnum"
+                    },
+                    {
+                        label: "Opinion",
+                        key: "opinion",
+                        defaultOrder: "desc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[0]]
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.EconomySummaryItem = React.createClass({
             displayName: "EconomySummaryItem",
             makeCell: function (type) {
@@ -4133,126 +4382,14 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.DiplomaticStatusPlayer = React.createClass({
-            displayName: "DiplomaticStatusPlayer",
-            makeCell: function (type) {
-                var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
-
-                if (type === "player") {
-                    className += " player-name";
-                }
-
-                return (React.DOM.td({
-                    key: type,
-                    className: className
-                }, this.props[type]));
-            },
-            render: function () {
-                var columns = this.props.activeColumns;
-
-                var cells = [];
-
-                for (var i = 0; i < columns.length; i++) {
-                    var cell = this.makeCell(columns[i].key);
-
-                    cells.push(cell);
-                }
-
-                var rowProps = {
-                    className: "diplomatic-status-player",
-                    onClick: this.props.handleClick
-                };
-
-                if (this.props.isSelected) {
-                    rowProps.className += " selected";
-                }
-                ;
-
-                return (React.DOM.tr(rowProps, cells));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="diplomaticstatusplayer.ts" />
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.DiplomacyOverview = React.createClass({
-            displayName: "DiplomacyOverview",
-            render: function () {
-                var unmetPlayerCount = this.props.totalPlayerCount - Object.keys(this.props.metPlayers).length - 1;
-
-                var rows = [];
-
-                for (var playerId in this.props.statusByPlayer) {
-                    var player = this.props.metPlayers[playerId];
-
-                    rows.push({
-                        key: player.id,
-                        data: {
-                            name: player.name,
-                            status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
-                            statusEnum: this.props.statusByPlayer[playerId],
-                            opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
-                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
-                        }
-                    });
-                }
-
-                for (var i = 0; i < unmetPlayerCount; i++) {
-                    rows.push({
-                        key: "unmet" + i,
-                        data: {
-                            name: "?????",
-                            status: "unmet",
-                            statusEnum: 99999 + i,
-                            opinion: null,
-                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
-                        }
-                    });
-                }
-
-                var columns = [
-                    {
-                        label: "Name",
-                        key: "name",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Status",
-                        key: "status",
-                        defaultOrder: "asc",
-                        propToSortBy: "statusEnum"
-                    },
-                    {
-                        label: "Opinion",
-                        key: "opinion",
-                        defaultOrder: "desc"
-                    }
-                ];
-
-                return (React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[0]]
-                })));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
 /// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
+/// <reference path="../diplomacy/diplomacyoverview.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
-/// <reference path="diplomacyoverview.ts"/>
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -9076,6 +9213,7 @@ var Rance;
         (function (AttitudeModifiers) {
             AttitudeModifiers.neighborStars = {
                 type: "neighborStars",
+                displayName: "neighborStars",
                 family: 0 /* geographic */,
                 duration: -1,
                 startCondition: function (evaluation) {
@@ -9088,6 +9226,7 @@ var Rance;
 
             AttitudeModifiers.atWar = {
                 type: "atWar",
+                displayName: "atWar",
                 family: 2 /* current */,
                 duration: -1,
                 triggeredOnly: true,
@@ -9096,6 +9235,7 @@ var Rance;
 
             AttitudeModifiers.declaredWar = {
                 type: "declaredWar",
+                displayName: "declaredWar",
                 family: 1 /* history */,
                 duration: 15,
                 triggeredOnly: true,

@@ -5,9 +5,9 @@
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
 /// <reference path="../unitlist/itemequip.ts"/>
+/// <reference path="../diplomacy/diplomacyoverview.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
-/// <reference path="diplomacyoverview.ts"/>
 
 module Rance
 {
