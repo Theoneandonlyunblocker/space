@@ -2,18 +2,13 @@ module Rance
 {
   export module UIComponents
   {
-    export var DiplomaticStatusPlayer = React.createClass(
+    export var AttitudeModifierInfo = React.createClass(
     {
-      displayName: "DiplomaticStatusPlayer",
+      displayName: "AttitudeModifierInfo",
 
       makeCell: function(type: string)
       {
-        var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
-
-        if (type === "player")
-        {
-          className += " player-name";
-        }
+        var className = "attitude-modifier-info-cell" + " attitude-modifier-info-" + type;
 
         return(
           React.DOM.td(
@@ -23,7 +18,7 @@ module Rance
           }, this.props[type])
         );
       },
-      
+
       render: function()
       {
         var columns = this.props.activeColumns;
@@ -41,11 +36,6 @@ module Rance
         {
           className: "diplomatic-status-player",
           onClick : this.props.handleClick
-        };
-
-        if (this.props.isSelected)
-        {
-          rowProps.className += " selected";
         };
 
         return(

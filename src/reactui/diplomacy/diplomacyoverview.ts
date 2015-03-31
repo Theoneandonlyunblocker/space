@@ -27,6 +27,8 @@ module Rance
               status: DiplomaticState[this.props.statusByPlayer[playerId]],
               statusEnum: this.props.statusByPlayer[playerId],
               opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
+              attitudeModifiers:
+                player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
 
               rowConstructor: UIComponents.DiplomaticStatusPlayer
             }
