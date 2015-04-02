@@ -25,9 +25,9 @@ module Rance
     frontsAI: FrontsAI;
     diplomacyAI: DiplomacyAI;
 
-    constructor(player: Player, game: Game)
+    constructor(player: Player, game: Game, personality?: IPersonalityData)
     {
-      this.personality = Templates.Personalities.testPersonality1;
+      this.personality = personality || makeRandomPersonality();
 
       this.player = player;
       this.game = game;

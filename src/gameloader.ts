@@ -204,6 +204,13 @@ module Rance
     }
     deserializePlayer(data)
     {
+      var personality: IPersonalityData;
+
+      if (data.personality)
+      {
+        personality = extendObject(data.personality, makeRandomPersonality());
+      }
+
       var player = new Player(data.isAI, data.id);
 
       player.money = data.money;
@@ -215,6 +222,8 @@ module Rance
       }
       else
       {
+        player.personality = personality;
+        
         player.color = data.color;
         player.secondaryColor = data.secondaryColor;
         player.colorAlpha = data.colorAlpha;

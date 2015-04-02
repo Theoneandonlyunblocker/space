@@ -1807,6 +1807,7 @@ declare module Rance {
             [archetype: string]: number;
         };
     }
+    function makeRandomPersonality(): IPersonalityData;
     module Templates {
         module Personalities {
             var testPersonality1: Rance.IPersonalityData;
@@ -1936,7 +1937,7 @@ declare module Rance {
         public economicAI: Rance.EconomyAI;
         public frontsAI: Rance.FrontsAI;
         public diplomacyAI: Rance.DiplomacyAI;
-        constructor(player: Rance.Player, game: Rance.Game);
+        constructor(player: Rance.Player, game: Rance.Game, personality?: Rance.IPersonalityData);
         public processTurn(afterFinishedCallback?: any): void;
         public finishMovingFleets(afterFinishedCallback?: any): void;
     }
@@ -1959,6 +1960,7 @@ declare module Rance {
         public fleets: Rance.Fleet[];
         public items: Rance.Item[];
         public isAI: boolean;
+        public personality: Rance.IPersonalityData;
         public AIController: Rance.AIController;
         public isIndependent: boolean;
         public diplomacyStatus: Rance.DiplomacyStatus;

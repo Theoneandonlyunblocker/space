@@ -35,6 +35,7 @@ module Rance
     items: Item[] = [];
 
     isAI: boolean = false;
+    personality: IPersonalityData;
     AIController: AIController;
     isIndependent: boolean = false;
 
@@ -72,7 +73,7 @@ module Rance
     }
     setupAI(game: Game)
     {
-      this.AIController = new AIController(this, game);
+      this.AIController = new AIController(this, game, this.personality);
     }
     setupPirates()
     {
@@ -537,6 +538,12 @@ module Rance
       }
 
       data.buildings = [];
+
+
+      if (this.isAI && this.AIController)
+      {
+        data.personality = extendObject(this.AIController.personality);
+      }
       
 
       return data;

@@ -11,6 +11,26 @@ module Rance
       [archetype: string]: number;
     };
   }
+  export function makeRandomPersonality(): IPersonalityData
+  {
+    var unitCompositionPreference:
+    {
+      [archetype: string]: number;
+    } =
+    {
+      combat: Math.random(),
+      defence: Math.random(),
+      utility: Math.random()
+    }
+    return(
+    {
+      expansiveness: Math.random(),
+      aggressiveness: Math.random(),
+      friendliness: Math.random(),
+
+      unitCompositionPreference: unitCompositionPreference
+    });
+  }
   export module Templates
   {
     export module Personalities

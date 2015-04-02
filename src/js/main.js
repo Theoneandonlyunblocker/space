@@ -12616,6 +12616,20 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    function makeRandomPersonality() {
+        var unitCompositionPreference = {
+            combat: Math.random(),
+            defence: Math.random(),
+            utility: Math.random()
+        };
+        return ({
+            expansiveness: Math.random(),
+            aggressiveness: Math.random(),
+            friendliness: Math.random(),
+            unitCompositionPreference: unitCompositionPreference
+        });
+    }
+    Rance.makeRandomPersonality = makeRandomPersonality;
     (function (Templates) {
         (function (Personalities) {
             Personalities.testPersonality1 = {
@@ -13421,8 +13435,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     var AIController = (function () {
-        function AIController(player, game) {
-            this.personality = Rance.Templates.Personalities.testPersonality1;
+        function AIController(player, game, personality) {
+            this.personality = personality || Rance.makeRandomPersonality();
 
             this.player = player;
             this.game = game;
@@ -13522,7 +13536,7 @@ var Rance;
             this.secondaryColor = scheme.secondary;
         };
         Player.prototype.setupAI = function (game) {
-            this.AIController = new Rance.AIController(this, game);
+            this.AIController = new Rance.AIController(this, game, this.personality);
         };
         Player.prototype.setupPirates = function () {
             this.name = "Independent";
@@ -13909,6 +13923,10 @@ var Rance;
             }
 
             data.buildings = [];
+
+            if (this.isAI && this.AIController) {
+                data.personality = Rance.extendObject(this.AIController.personality);
+            }
 
             return data;
         };
@@ -18741,6 +18759,12 @@ var Rance;
             return building;
         };
         GameLoader.prototype.deserializePlayer = function (data) {
+            var personality;
+
+            if (data.personality) {
+                personality = Rance.extendObject(data.personality, Rance.makeRandomPersonality());
+            }
+
             var player = new Rance.Player(data.isAI, data.id);
 
             player.money = data.money;
@@ -18749,6 +18773,8 @@ var Rance;
             if (data.isIndependent) {
                 player.setupPirates();
             } else {
+                player.personality = personality;
+
                 player.color = data.color;
                 player.secondaryColor = data.secondaryColor;
                 player.colorAlpha = data.colorAlpha;
