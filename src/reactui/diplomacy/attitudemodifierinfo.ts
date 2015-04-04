@@ -27,13 +27,14 @@ module Rance
           }
           case "strength":
           {
-            var relativeValue = getRelativeValue(this.props.strength, -10, 10);
+            var relativeValue = getRelativeValue(this.props.strength, -20, 20);
             relativeValue = clamp(relativeValue, 0, 1);
 
             var deviation = Math.abs(0.5 - relativeValue) * 2;
 
             var hue = 110 * relativeValue;
-            var saturation = 10 + 80 * deviation;
+            var saturation = 0 + 50 * deviation;
+            if (deviation > 0.3) saturation += 40;
             var lightness = 70 - 20 * deviation;
 
             cellProps.style =

@@ -4035,13 +4035,15 @@ var Rance;
                         }
                     }
                     case "strength": {
-                        var relativeValue = Rance.getRelativeValue(this.props.strength, -10, 10);
+                        var relativeValue = Rance.getRelativeValue(this.props.strength, -20, 20);
                         relativeValue = Rance.clamp(relativeValue, 0, 1);
 
                         var deviation = Math.abs(0.5 - relativeValue) * 2;
 
                         var hue = 110 * relativeValue;
-                        var saturation = 10 + 80 * deviation;
+                        var saturation = 0 + 50 * deviation;
+                        if (deviation > 0.3)
+                            saturation += 40;
                         var lightness = 70 - 20 * deviation;
 
                         cellProps.style = {
@@ -4173,13 +4175,15 @@ var Rance;
                 return this.getDOMNode().firstChild;
             },
             getColor: function () {
-                var relativeValue = Rance.getRelativeValue(this.props.opinion, -50, 50);
+                var relativeValue = Rance.getRelativeValue(this.props.opinion, -30, 30);
                 relativeValue = Rance.clamp(relativeValue, 0, 1);
 
                 var deviation = Math.abs(0.5 - relativeValue) * 2;
 
                 var hue = 110 * relativeValue;
-                var saturation = 10 + 90 * deviation;
+                var saturation = 0 + 50 * deviation;
+                if (deviation > 0.3)
+                    saturation += 40;
                 var lightness = 70 - 20 * deviation;
 
                 return ("hsl(" + hue + "," + saturation + "%," + lightness + "%)");
@@ -9403,7 +9407,7 @@ var Rance;
                     return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
                 },
                 getEffectFromEvaluation: function (evaluation) {
-                    return -20 * evaluation.neighborStars;
+                    return -2 * evaluation.neighborStars;
                 }
             };
 

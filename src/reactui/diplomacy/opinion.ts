@@ -33,13 +33,14 @@ module Rance
 
       getColor: function()
       {
-        var relativeValue = getRelativeValue(this.props.opinion, -50, 50);
+        var relativeValue = getRelativeValue(this.props.opinion, -30, 30);
         relativeValue = clamp(relativeValue, 0, 1);
 
         var deviation = Math.abs(0.5 - relativeValue) * 2;
 
         var hue = 110 * relativeValue;
-        var saturation = 10 + 90 * deviation;
+        var saturation = 0 + 50 * deviation;
+        if (deviation > 0.3) saturation += 40;
         var lightness = 70 - 20 * deviation;
 
         return(
