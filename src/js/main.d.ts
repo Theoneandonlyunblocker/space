@@ -414,7 +414,7 @@ declare module Rance {
     function rectContains(rect: any, point: any): boolean;
     function hexToString(hex: number): string;
     function stringToHex(text: string): number;
-    function colorImageInPlayerColor(imageSrc: string, player: Player): string;
+    function colorImageInPlayerColor(image: HTMLImageElement, player: Player): string;
     function extendObject(from: any, to?: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
@@ -557,7 +557,7 @@ declare module Rance {
             category: string;
             family?: string;
             name: string;
-            icon: string;
+            iconSrc: string;
             buildCost: number;
             maxPerType: number;
             maxUpgradeLevel: number;
@@ -2641,6 +2641,7 @@ declare module Rance {
             DOM: boolean;
             emblems: boolean;
             units: boolean;
+            buildings: boolean;
             other: boolean;
         };
         public startTime: number;
@@ -2658,6 +2659,7 @@ declare module Rance {
         public loadImagesFN(identifier: string): void;
         public loadEmblems(): void;
         public loadUnits(): void;
+        public loadBuildings(): void;
         public loadOther(): void;
         public checkLoaded(): void;
     }

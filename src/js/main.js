@@ -4488,12 +4488,17 @@ var Rance;
             displayName: "OptionsList",
             makeBattleAnimationOption: function (stage) {
                 if (!isFinite(Rance.Options.battleAnimationTiming[stage])) {
-                    throw new Error("Option doesn't exist");
+                    console.warn("Invalid option", stage);
                     return;
                 }
 
                 var onChangeFN = function (e) {
                     var value = parseInt(e.target.value);
+                    if (!isFinite(value)) {
+                        console.warn("Invalid value", value, "for option", stage);
+                        return;
+                    }
+                    value = Rance.clamp(value, parseInt(e.target.min), parseInt(e.target.max));
                     Rance.Options.battleAnimationTiming[stage] = value;
                     this.forceUpdate();
                 }.bind(this);
@@ -4546,16 +4551,6 @@ var Rance;
                         this.forceUpdate();
                     }.bind(this),
                     key: "battleAnimationOptions"
-                }));
-
-                allOptions.push(Rance.UIComponents.OptionsGroup({
-                    header: "Battle animation timing2",
-                    options: battleAnimationOptions,
-                    resetFN: function () {
-                        Rance.extendObject(Rance.defaultOptions.battleAnimationTiming, Rance.Options.battleAnimationTiming);
-                        this.forceUpdate();
-                    }.bind(this),
-                    key: "battleAnimationOptions2"
                 }));
 
                 return (React.DOM.div({ className: "options" }, Rance.UIComponents.PopupManager({
@@ -4786,12 +4781,18 @@ var Rance;
                 Rance.eventManager.dispatchEvent("splitFleet", this.props.fleet);
             },
             render: function () {
+                var splitButtonProps = {
+                    className: "fleet-controls-split"
+                };
+                if (this.props.fleet.ships.length > 1) {
+                    splitButtonProps.onClick = this.splitFleet;
+                } else {
+                    splitButtonProps.className += " disabled";
+                    splitButtonProps.disabled = true;
+                }
                 return (React.DOM.div({
                     className: "fleet-controls"
-                }, React.DOM.button({
-                    className: "fleet-controls-split",
-                    onClick: this.splitFleet
-                }, "split"), React.DOM.button({
+                }, React.DOM.button(splitButtonProps, "split"), React.DOM.button({
                     className: "fleet-controls-deselect",
                     onClick: this.deselectFleet
                 }, "deselect"), !this.props.hasMultipleSelected ? null : React.DOM.button({
@@ -5151,14 +5152,18 @@ var Rance;
             displayName: "DefenceBuilding",
             render: function () {
                 var building = this.props.building;
+                var image = app.images["buildings"][building.template.iconSrc];
+
                 return (React.DOM.div({
                     className: "defence-building"
                 }, React.DOM.img({
                     className: "defence-building-icon",
-                    src: Rance.colorImageInPlayerColor(building.template.icon, building.controller)
+                    src: Rance.colorImageInPlayerColor(image, building.controller),
+                    title: building.template.name
                 }), React.DOM.img({
                     className: "defence-building-controller",
-                    src: building.controller.icon
+                    src: building.controller.icon,
+                    title: building.controller.name
                 })));
             }
         });
@@ -5519,9 +5524,7 @@ var Rance;
         return parseInt(text, 16);
     }
     Rance.stringToHex = stringToHex;
-    function colorImageInPlayerColor(imageSrc, player) {
-        var image = new Image();
-        image.src = imageSrc;
+    function colorImageInPlayerColor(image, player) {
         var canvas = document.createElement("canvas");
 
         canvas.width = image.width;
@@ -6070,7 +6073,7 @@ var Rance;
                 typeName: "Cheat Ship",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip.png",
+                    imageSrc: "testShip2.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -6122,7 +6125,7 @@ var Rance;
                 typeName: "Bomber Squadron",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip2.png",
+                    imageSrc: "testShip3.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -6147,7 +6150,7 @@ var Rance;
                 typeName: "Battlecruiser",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip2.png",
+                    imageSrc: "testShip4.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -6172,7 +6175,7 @@ var Rance;
                 typeName: "Scout",
                 archetype: "utility",
                 sprite: {
-                    imageSrc: "testShip3.png",
+                    imageSrc: "testShip5.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -6196,7 +6199,7 @@ var Rance;
                 typeName: "Shield Boat",
                 archetype: "defence",
                 sprite: {
-                    imageSrc: "testShip3.png",
+                    imageSrc: "testShip6.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -6269,7 +6272,7 @@ var Rance;
                 category: "defence",
                 family: "sectorCommand",
                 name: "Sector Command",
-                icon: "img\/buildings\/sectorCommand.png",
+                iconSrc: "sectorCommand.png",
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 1,
@@ -6289,7 +6292,7 @@ var Rance;
                 category: "defence",
                 family: "sectorCommand",
                 name: "Sector Command1",
-                icon: "img\/buildings\/sectorCommand.png",
+                iconSrc: "sectorCommand.png",
                 buildCost: 100,
                 maxPerType: 1,
                 maxUpgradeLevel: 1,
@@ -6300,7 +6303,7 @@ var Rance;
                 category: "defence",
                 family: "sectorCommand",
                 name: "Sector Command2",
-                icon: "img\/buildings\/sectorCommand.png",
+                iconSrc: "sectorCommand.png",
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 1,
@@ -6310,7 +6313,7 @@ var Rance;
                 type: "starBase",
                 category: "defence",
                 name: "Starbase",
-                icon: "img\/buildings\/starBase.png",
+                iconSrc: "starBase.png",
                 buildCost: 200,
                 maxPerType: 3,
                 maxUpgradeLevel: 1
@@ -6319,7 +6322,7 @@ var Rance;
                 type: "commercialPort",
                 category: "economy",
                 name: "Commercial Spaceport",
-                icon: "img\/buildings\/commercialPort.png",
+                iconSrc: "commercialPort.png",
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 4
@@ -6328,7 +6331,7 @@ var Rance;
                 type: "deepSpaceRadar",
                 category: "vision",
                 name: "Deep Space Radar",
-                icon: "img\/buildings\/commercialPort.png",
+                iconSrc: "commercialPort.png",
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 2
@@ -6337,7 +6340,7 @@ var Rance;
                 type: "itemManufactory",
                 category: "manufactory",
                 name: "Item Manufactory",
-                icon: "img\/buildings\/commercialPort.png",
+                iconSrc: "commercialPort.png",
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 3
@@ -6346,7 +6349,7 @@ var Rance;
                 type: "resourceMine",
                 category: "mine",
                 name: "Mine",
-                icon: "img\/buildings\/commercialPort.png",
+                iconSrc: "commercialPort.png",
                 buildCost: 500,
                 maxPerType: 1,
                 maxUpgradeLevel: 3
@@ -11923,6 +11926,10 @@ var Rance;
                 return;
 
             this.selectedFleets.splice(fleetIndex, 1);
+
+            if (this.selectedFleets.length < 1) {
+                this.selectedStar = fleet.location;
+            }
 
             this.updateSelection();
         };
@@ -18535,6 +18542,7 @@ var Rance;
                 DOM: false,
                 emblems: false,
                 units: false,
+                buildings: false,
                 other: false
             };
             this.imageCache = {};
@@ -18544,6 +18552,7 @@ var Rance;
 
             this.loadDOM();
             this.loadEmblems();
+            this.loadBuildings();
             this.loadUnits();
             this.loadOther();
         }
@@ -18603,6 +18612,9 @@ var Rance;
         };
         AppLoader.prototype.loadUnits = function () {
             this.loadImagesFN("units");
+        };
+        AppLoader.prototype.loadBuildings = function () {
+            this.loadImagesFN("buildings");
         };
         AppLoader.prototype.loadOther = function () {
             var self = this;

@@ -164,10 +164,8 @@ module Rance
 
     return parseInt(text, 16);
   }
-  export function colorImageInPlayerColor(imageSrc: string, player: Player)
+  export function colorImageInPlayerColor(image: HTMLImageElement, player: Player)
   {
-    var image = new Image();
-    image.src = imageSrc;
     var canvas = document.createElement("canvas");
 
     canvas.width = image.width;
