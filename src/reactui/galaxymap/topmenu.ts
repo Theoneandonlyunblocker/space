@@ -210,49 +210,54 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "top-menu"
+            className: "top-menu-wrapper"
           },
             React.DOM.div(
             {
-              className: "top-menu-items"
+              className: "top-menu"
             },
-              React.DOM.button(
+              React.DOM.div(
               {
-                className: "top-menu-items-button",
-                onClick: this.handleSaveGame
-              }, "Save"),
-              React.DOM.button(
-              {
-                className: "top-menu-items-button",
-                onClick: this.handleLoadGame
-              }, "Load"),
-              React.DOM.button(
-              {
-                className: "top-menu-items-button",
-                onClick: this.handleOptions
-              }, "Options"),
-              React.DOM.button(
-              {
-                className: "top-menu-items-button",
-                onClick: this.handleDiplomacy
-              }, "Diplomacy"),
-              /*
-              React.DOM.button(
-              {
-                className: "top-menu-items-button",
-                onClick: this.handleEconomySummary
-              }, "Economy"),
-*/
-              React.DOM.button(
-              {
-                className: "top-menu-items-button",
-                onClick: this.handleBuyItems
-              }, "Buy items"),
-              React.DOM.button(
-              {
-                className: "top-menu-items-button",
-                onClick: this.handleEquipItems
-              }, "Equip")
+                className: "top-menu-items"
+              },
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleSaveGame
+                }, "Save"),
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleLoadGame
+                }, "Load"),
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleOptions
+                }, "Options"),
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleDiplomacy
+                }, "Diplomacy"),
+                /*
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleEconomySummary
+                }, "Economy"),
+                */
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleBuyItems
+                }, "Buy items"),
+                React.DOM.button(
+                {
+                  className: "top-menu-items-button",
+                  onClick: this.handleEquipItems
+                }, "Equip")
+              )
             ),
             this.state.lightBoxElement
           )

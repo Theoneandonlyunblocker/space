@@ -4704,6 +4704,8 @@ var Rance;
             },
             render: function () {
                 return (React.DOM.div({
+                    className: "top-menu-wrapper"
+                }, React.DOM.div({
                     className: "top-menu"
                 }, React.DOM.div({
                     className: "top-menu-items"
@@ -4725,7 +4727,7 @@ var Rance;
                 }, "Buy items"), React.DOM.button({
                     className: "top-menu-items-button",
                     onClick: this.handleEquipItems
-                }, "Equip")), this.state.lightBoxElement));
+                }, "Equip"))), this.state.lightBoxElement));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4826,12 +4828,10 @@ var Rance;
                     className: "fleet-info-shipcount"
                 }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
-                }, totalHealth.current + "/" + totalHealth.max), React.DOM.div({
-                    className: "fleet-info-controls"
-                }, Rance.UIComponents.FleetControls({
+                }, totalHealth.current + "/" + totalHealth.max), Rance.UIComponents.FleetControls({
                     fleet: fleet,
                     hasMultipleSelected: this.props.hasMultipleSelected
-                }))), React.DOM.div({
+                })), React.DOM.div({
                     className: "fleet-info-move-points"
                 }, "Moves: " + fleet.getMinCurrentMovePoints() + "/" + fleet.getMinMaxMovePoints())));
             }

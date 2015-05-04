@@ -1666,8 +1666,14 @@ progress::-webkit-progress-value { background: #080; }
   color: @negative-color !important;
 }
 
+.top-menu-wrapper
+{
+  z-index: 2;
+}
+
 .top-menu
 {
+  z-index: 5;
   position: absolute;
   top: 0;
   right: 0;
@@ -1710,7 +1716,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   position: fixed;
   display: flex;
-  z-index: -1;
+  z-index: 2;
   height: 100%;
   width: 100%;
   top: @top-bar-height;
@@ -1812,6 +1818,7 @@ progress::-webkit-progress-value { background: #080; }
   >.fleet-info:first-child
   {
     border-top: 0;
+    border-left: 0;
   }
 }
 
@@ -2057,6 +2064,7 @@ progress::-webkit-progress-value { background: #080; }
 .galaxy-map-ui-bottom-left
 {
   position: absolute;
+  z-index: -1;
   bottom: 0;
   left: 0;
   flex-flow: column;
