@@ -4827,7 +4827,7 @@ var Rance;
                 }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
                 }, totalHealth.current + "/" + totalHealth.max), React.DOM.div({
-                    className: "fleet-info-contols"
+                    className: "fleet-info-controls"
                 }, Rance.UIComponents.FleetControls({
                     fleet: fleet,
                     hasMultipleSelected: this.props.hasMultipleSelected

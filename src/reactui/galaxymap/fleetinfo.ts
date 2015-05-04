@@ -36,7 +36,7 @@ module Rance
               }, totalHealth.current + "/" + totalHealth.max),
               React.DOM.div(
               {
-                className: "fleet-info-contols"
+                className: "fleet-info-controls"
               },
                 UIComponents.FleetControls(
                 {
