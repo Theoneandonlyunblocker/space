@@ -252,7 +252,6 @@ module Rance
     getAllCurrentCurves()
     {
       var paths = this.getAllCurrentPaths();
-      var self = this;
 
       var curves:
       {
@@ -299,20 +298,27 @@ module Rance
 
         var style = canReach ? "reachable" : "unreachable";
 
-        var stars = path.map(function(pathPoint)
+        var curvePoints: Point[] = [];
+
+        for (var j = path.length - 1; j >= 0; j--)
         {
-          var star = pathPoint.star;
-          if (totalPathsPerStar[star.id] > 1 && star !== self.currentTarget)
+          var star = path[j].star;
+
+          var sourceStar = j < path.length - 1 ? path[j + 1].star : null;
+
+          if (totalPathsPerStar[star.id] > 1 && star !== this.currentTarget)
           {
             var visits = ++alreadyVisitedPathsPerStar[star.id];
-            return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
+            curvePoints.unshift(this.getTargetOffset(star, sourceStar, visits,
+              totalPathsPerStar[star.id], 12));
           }
           else
           {
-            return star;
+            curvePoints.unshift(star);
           }
-        });
-        var curveData = this.getCurveData(stars);
+        }
+
+        var curveData = this.getCurveData(curvePoints);
 
         curves.push(
         {
@@ -338,7 +344,7 @@ module Rance
       }
     }
 
-    getCurveData(points: Star[]): number[][]
+    getCurveData(points: Point[]): number[][]
     {
       var i6 = 1.0 / 6.0;
       var path = [];
@@ -447,7 +453,8 @@ module Rance
       gfx.height;
     }
 
-    getTargetOffset(target: Point, i: number, totalPaths: number, offsetPerOrbit: number)
+    getTargetOffset(target: Point, sourcePoint: Point, i: number,
+      totalPaths: number, offsetPerOrbit: number)
     {
       var maxPerOrbit = 6;
 
@@ -460,6 +467,15 @@ module Rance
       var distance = currentOrbit * offsetPerOrbit;
 
       var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
+
+      if (sourcePoint)
+      {
+        var dx = sourcePoint.x - target.x;
+        var dy = sourcePoint.y - target.y;
+        var approachAngle = Math.atan2(dy, dx);
+
+        angle += approachAngle;
+      }
 
       var x = Math.sin(angle) * distance;
       var y = Math.cos(angle) * distance;

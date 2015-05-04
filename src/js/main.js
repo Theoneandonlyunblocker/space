@@ -18020,7 +18020,6 @@ var Rance;
 
         PathfindingArrow.prototype.getAllCurrentCurves = function () {
             var paths = this.getAllCurrentPaths();
-            var self = this;
 
             var curves = [];
 
@@ -18050,16 +18049,22 @@ var Rance;
 
                 var style = canReach ? "reachable" : "unreachable";
 
-                var stars = path.map(function (pathPoint) {
-                    var star = pathPoint.star;
-                    if (totalPathsPerStar[star.id] > 1 && star !== self.currentTarget) {
+                var curvePoints = [];
+
+                for (var j = path.length - 1; j >= 0; j--) {
+                    var star = path[j].star;
+
+                    var sourceStar = j < path.length - 1 ? path[j + 1].star : null;
+
+                    if (totalPathsPerStar[star.id] > 1 && star !== this.currentTarget) {
                         var visits = ++alreadyVisitedPathsPerStar[star.id];
-                        return self.getTargetOffset(star, visits, totalPathsPerStar[star.id], 12);
+                        curvePoints.unshift(this.getTargetOffset(star, sourceStar, visits, totalPathsPerStar[star.id], 12));
                     } else {
-                        return star;
+                        curvePoints.unshift(star);
                     }
-                });
-                var curveData = this.getCurveData(stars);
+                }
+
+                var curveData = this.getCurveData(curvePoints);
 
                 curves.push({
                     style: style,
@@ -18177,7 +18182,7 @@ var Rance;
             gfx.height;
         };
 
-        PathfindingArrow.prototype.getTargetOffset = function (target, i, totalPaths, offsetPerOrbit) {
+        PathfindingArrow.prototype.getTargetOffset = function (target, sourcePoint, i, totalPaths, offsetPerOrbit) {
             var maxPerOrbit = 6;
 
             var currentOrbit = Math.ceil(i / maxPerOrbit);
@@ -18189,6 +18194,14 @@ var Rance;
             var distance = currentOrbit * offsetPerOrbit;
 
             var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
+
+            if (sourcePoint) {
+                var dx = sourcePoint.x - target.x;
+                var dy = sourcePoint.y - target.y;
+                var approachAngle = Math.atan2(dy, dx);
+
+                angle += approachAngle;
+            }
 
             var x = Math.sin(angle) * distance;
             var y = Math.cos(angle) * distance;
