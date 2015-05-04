@@ -46,7 +46,7 @@ module Rance
         archetype: "combat",
         sprite:
         {
-          imageSrc: "testShip.png",
+          imageSrc: "testShip2.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: false,
@@ -106,7 +106,7 @@ module Rance
         archetype: "combat",
         sprite:
         {
-          imageSrc: "testShip2.png",
+          imageSrc: "testShip3.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: true,
@@ -135,7 +135,7 @@ module Rance
         archetype: "combat",
         sprite:
         {
-          imageSrc: "testShip2.png",
+          imageSrc: "testShip4.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: false,
@@ -164,7 +164,7 @@ module Rance
         archetype: "utility",
         sprite:
         {
-          imageSrc: "testShip3.png",
+          imageSrc: "testShip5.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: true,
@@ -192,7 +192,7 @@ module Rance
         archetype: "defence",
         sprite:
         {
-          imageSrc: "testShip3.png",
+          imageSrc: "testShip6.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: false,
