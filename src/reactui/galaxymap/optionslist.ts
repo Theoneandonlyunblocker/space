@@ -12,13 +12,19 @@ module Rance
       {
         if (!isFinite(Options.battleAnimationTiming[stage]))
         {
-          throw new Error("Option doesn't exist");
+          console.warn("Invalid option", stage);
           return;
         }
 
         var onChangeFN = function(e)
         {
           var value = parseInt(e.target.value);
+          if (!isFinite(value))
+          {
+            console.warn("Invalid value", value, "for option", stage);
+            return;
+          }
+          value = clamp(value, parseInt(e.target.min), parseInt(e.target.max));
           Options.battleAnimationTiming[stage] = value;
           this.forceUpdate();
         }.bind(this);
@@ -93,18 +99,6 @@ module Rance
             this.forceUpdate();
           }.bind(this),
           key: "battleAnimationOptions"
-        }));
-
-        allOptions.push(UIComponents.OptionsGroup(
-        {
-          header: "Battle animation timing2",
-          options: battleAnimationOptions,
-          resetFN: function()
-          {
-            extendObject(defaultOptions.battleAnimationTiming, Options.battleAnimationTiming);
-            this.forceUpdate();
-          }.bind(this),
-          key: "battleAnimationOptions2"
         }));
 
         return(
