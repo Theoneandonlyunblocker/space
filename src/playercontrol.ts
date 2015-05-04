@@ -174,6 +174,11 @@ module Rance
 
       this.selectedFleets.splice(fleetIndex, 1);
 
+      if (this.selectedFleets.length < 1)
+      {
+        this.selectedStar = fleet.location;
+      }
+
       this.updateSelection();
     }
     getMasterFleetForMerge()
