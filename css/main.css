@@ -1424,16 +1424,16 @@ progress::-webkit-progress-value {
   overflow-x: hidden;
   max-height: 300px;
   width: 100%;
-  pointer-events: none;
-}
-.fleet-selection-selected > * {
-  pointer-events: auto;
+  height: 100%;
 }
 .fleet-selection-selected.reorganizing {
   width: auto;
 }
 .fleet-selection-selected.reorganizing .fleet-info {
   border-right: 0;
+}
+.fleet-controls {
+  white-space: nowrap;
 }
 .fleet-controls button {
   margin: 1px 2px;

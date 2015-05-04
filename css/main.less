@@ -1849,11 +1849,7 @@ progress::-webkit-progress-value { background: #080; }
   overflow-x: hidden;
   max-height: 300px;
   width: 100%;
-  pointer-events: none;
-  >*
-  {
-    pointer-events: auto;
-  }
+  height: 100%;
 
   &.reorganizing
   {
@@ -1867,6 +1863,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .fleet-controls
 {
+  white-space: nowrap;
   button
   {
     margin: 1px 2px;
