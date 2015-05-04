@@ -17840,6 +17840,7 @@ var Rance;
 (function (Rance) {
     var PathfindingArrow = (function () {
         function PathfindingArrow(parentContainer) {
+            this.selectedFleets = [];
             this.labelCache = {};
             this.listeners = {};
             this.curveStyles = {
@@ -17931,7 +17932,8 @@ var Rance;
             }
 
             this.currentTarget = star;
-            this.drawAllCurrentCurves();
+            window.setTimeout(this.drawAllCurrentCurves.bind(this), 10);
+            //this.drawAllCurrentCurves();
         };
 
         PathfindingArrow.prototype.clearTarget = function () {
@@ -17955,7 +17957,7 @@ var Rance;
         PathfindingArrow.prototype.endMove = function () {
             this.active = false;
             this.currentTarget = null;
-            this.selectedFleets = null;
+            this.selectedFleets = [];
             this.clearArrows();
         };
 
@@ -18070,6 +18072,7 @@ var Rance;
 
         PathfindingArrow.prototype.drawAllCurrentCurves = function () {
             this.clearArrows();
+
             var curves = this.getAllCurrentCurves();
 
             for (var i = 0; i < curves.length; i++) {

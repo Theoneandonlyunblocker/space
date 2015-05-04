@@ -16,7 +16,7 @@ module Rance
 
     clearTargetTimeout: any;
 
-    selectedFleets: Fleet[];
+    selectedFleets: Fleet[] = [];
 
     labelCache:
     {
@@ -142,7 +142,8 @@ module Rance
       }
 
       this.currentTarget = star;
-      this.drawAllCurrentCurves();
+      window.setTimeout(this.drawAllCurrentCurves.bind(this), 10);
+      //this.drawAllCurrentCurves();
     }
 
     clearTarget()
@@ -171,7 +172,7 @@ module Rance
     {
       this.active = false;
       this.currentTarget = null;
-      this.selectedFleets = null;
+      this.selectedFleets = [];
       this.clearArrows();
     }
 
@@ -326,6 +327,7 @@ module Rance
     drawAllCurrentCurves()
     {
       this.clearArrows();
+
       var curves = this.getAllCurrentCurves();
 
       for (var i = 0; i < curves.length; i++)
@@ -334,7 +336,6 @@ module Rance
 
         this.container.addChild(curve);
       }
-
     }
 
     getCurveData(points: Star[]): number[][]
