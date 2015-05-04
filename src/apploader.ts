@@ -21,6 +21,7 @@ module Rance
       DOM: false,
       emblems: false,
       units: false,
+      buildings: false,
       other: false
     };
     startTime: number;
@@ -41,6 +42,7 @@ module Rance
 
       this.loadDOM();
       this.loadEmblems();
+      this.loadBuildings();
       this.loadUnits();
       this.loadOther();
     }
@@ -113,6 +115,10 @@ module Rance
     loadUnits()
     {
       this.loadImagesFN("units");
+    }
+    loadBuildings()
+    {
+      this.loadImagesFN("buildings");
     }
     loadOther()
     {

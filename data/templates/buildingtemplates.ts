@@ -9,7 +9,7 @@ module Rance
       family?: string; // all count towards maxPerType
       name: string;
 
-      icon: string;
+      iconSrc: string;
       buildCost: number;
 
       maxPerType: number;
@@ -35,7 +35,7 @@ module Rance
         family: "sectorCommand",
         name: "Sector Command",
 
-        icon: "img\/buildings\/sectorCommand.png",
+        iconSrc: "sectorCommand.png",
         buildCost: 200,
 
         maxPerType: 1,
@@ -61,7 +61,7 @@ module Rance
         family: "sectorCommand",
         name: "Sector Command1",
 
-        icon: "img\/buildings\/sectorCommand.png",
+        iconSrc: "sectorCommand.png",
         buildCost: 100,
 
         maxPerType: 1,
@@ -76,7 +76,7 @@ module Rance
         family: "sectorCommand",
         name: "Sector Command2",
 
-        icon: "img\/buildings\/sectorCommand.png",
+        iconSrc: "sectorCommand.png",
         buildCost: 200,
 
         maxPerType: 1,
@@ -90,7 +90,7 @@ module Rance
         category: "defence",
         name: "Starbase",
 
-        icon: "img\/buildings\/starBase.png",
+        iconSrc: "starBase.png",
         buildCost: 200,
 
         maxPerType: 3,
@@ -103,7 +103,7 @@ module Rance
         category: "economy",
         name: "Commercial Spaceport",
 
-        icon: "img\/buildings\/commercialPort.png",
+        iconSrc: "commercialPort.png",
         buildCost: 200,
 
         maxPerType: 1,
@@ -116,7 +116,7 @@ module Rance
         category: "vision",
         name: "Deep Space Radar",
 
-        icon: "img\/buildings\/commercialPort.png",
+        iconSrc: "commercialPort.png",
         buildCost: 200,
 
         maxPerType: 1,
@@ -129,7 +129,7 @@ module Rance
         category: "manufactory",
         name: "Item Manufactory",
 
-        icon: "img\/buildings\/commercialPort.png",
+        iconSrc: "commercialPort.png",
         buildCost: 200,
 
         maxPerType: 1,
@@ -142,7 +142,7 @@ module Rance
         category: "mine",
         name: "Mine",
 
-        icon: "img\/buildings\/commercialPort.png",
+        iconSrc: "commercialPort.png",
         buildCost: 500,
 
         maxPerType: 1,

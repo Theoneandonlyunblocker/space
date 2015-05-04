@@ -8,6 +8,8 @@ module Rance
       render: function()
       {
         var building = this.props.building;
+        var image = app.images["buildings"][building.template.iconSrc];
+
         return(
           React.DOM.div(
           {
@@ -16,13 +18,14 @@ module Rance
             React.DOM.img(
             {
               className: "defence-building-icon",
-              src: colorImageInPlayerColor( building.template.icon,
-                building.controller)
+              src: colorImageInPlayerColor(image, building.controller),
+              title: building.template.name
             }),
             React.DOM.img(
             {
               className: "defence-building-controller",
-              src: building.controller.icon
+              src: building.controller.icon,
+              title: building.controller.name
             })
           )
         );
