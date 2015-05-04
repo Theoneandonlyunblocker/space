@@ -939,7 +939,7 @@ progress::-webkit-progress-value {
   cursor: move;
 }
 .draggable {
-  cursor: move;
+  cursor: move !important;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -947,6 +947,7 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
 }
 .dragging {
   position: fixed !important;
@@ -962,6 +963,7 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
 }
 .battle-prep {
   display: flex;
@@ -976,6 +978,7 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
 }
 .battle-prep > * {
   background-color: #0c1615;
@@ -1180,6 +1183,7 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
   pointer-events: none;
 }
 .galaxy-map-ui > * {
@@ -1425,7 +1429,7 @@ progress::-webkit-progress-value {
 .fleet-selection-selected {
   display: inline-flex;
   flex-flow: column;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   max-height: 300px;
   width: 100%;
@@ -1433,12 +1437,17 @@ progress::-webkit-progress-value {
 }
 .fleet-selection-selected.reorganizing {
   width: auto;
+  overflow-y: auto;
 }
 .fleet-selection-selected.reorganizing .fleet-info {
   border-right: 0;
 }
 .fleet-controls {
   white-space: nowrap;
+  display: flex;
+  justify-content: flex-end;
+  flex: 1 0 auto;
+  flex-flow: row;
 }
 .fleet-controls button {
   margin: 1px 2px;
@@ -1483,12 +1492,20 @@ progress::-webkit-progress-value {
 }
 .fleet-info-header {
   display: flex;
+  position: relative;
   flex-flow: row;
   background: linear-gradient(to bottom, #0d2335, #0c1615);
 }
 .fleet-info-name {
   margin-right: 5px;
   flex: 1 0 auto;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #eeeeec;
+  max-width: 7em;
+  text-overflow: ellipsis;
+  cursor: text;
 }
 .fleet-info-shipcount {
   margin-right: 5px;
@@ -1526,6 +1543,7 @@ progress::-webkit-progress-value {
   padding: 0;
   color: #eeeeec;
   width: 100%;
+  text-overflow: ellipsis;
 }
 .ship-info-icon-container {
   display: flex;
@@ -1613,6 +1631,7 @@ progress::-webkit-progress-value {
   flex: 1;
   overflow-y: auto;
   max-height: 300px;
+  min-width: 250px;
 }
 .fleet-reorganization-contents-divider {
   border-left: 1px solid rgba(255, 255, 255, 0.4);
@@ -1895,6 +1914,7 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
 }
 .item-equip .item-list {
   border-top: 1px solid #c4e5fb;
@@ -2547,6 +2567,7 @@ progress::-webkit-progress-value {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
 }
 .item-purchase-list .fixed-table-header-background {
   border: 0px solid transparent;

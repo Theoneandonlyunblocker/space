@@ -4812,6 +4812,11 @@ var Rance;
     (function (UIComponents) {
         UIComponents.FleetInfo = React.createClass({
             displayName: "FleetInfo",
+            setFleetName: function (e) {
+                console.log("setFleetName", e.target.value);
+                this.props.fleet.name = e.target.value;
+                this.forceUpdate();
+            },
             render: function () {
                 var fleet = this.props.fleet;
                 if (!fleet)
@@ -4822,9 +4827,11 @@ var Rance;
                     className: "fleet-info"
                 }, React.DOM.div({
                     className: "fleet-info-header"
-                }, React.DOM.div({
-                    className: "fleet-info-name"
-                }, fleet.name), React.DOM.div({
+                }, React.DOM.input({
+                    className: "fleet-info-name",
+                    value: fleet.name,
+                    onChange: this.setFleetName
+                }), React.DOM.div({
                     className: "fleet-info-shipcount"
                 }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"

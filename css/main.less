@@ -1396,7 +1396,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .draggable
 {
-  .draggable-cursor;
+  .draggable-cursor !important;
   .prevent-user-select;
 }
 
@@ -1417,6 +1417,7 @@ progress::-webkit-progress-value { background: #080; }
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: default;
 }
 
 // BATTLE PREP
@@ -1852,7 +1853,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   display: inline-flex;
   flex-flow: column;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   max-height: 300px;
   width: 100%;
@@ -1861,6 +1862,7 @@ progress::-webkit-progress-value { background: #080; }
   &.reorganizing
   {
     width: auto;
+    overflow-y: auto;
     .fleet-info
     {
       border-right: 0;
@@ -1871,6 +1873,11 @@ progress::-webkit-progress-value { background: #080; }
 .fleet-controls
 {
   white-space: nowrap;
+  display: flex;
+  justify-content: flex-end;
+  flex: 1 0 auto;
+  flex-flow: row;
+
   button
   {
     margin: 1px 2px;
@@ -1901,6 +1908,7 @@ progress::-webkit-progress-value { background: #080; }
 .fleet-info-header
 {
   display: flex;
+  position: relative;
   flex-flow: row;
   background: linear-gradient(to bottom, @bg-color2, @bg-color);
 }
@@ -1909,6 +1917,14 @@ progress::-webkit-progress-value { background: #080; }
 {
   margin-right: 5px;
   flex: 1 0 auto;
+
+  background: none;
+  border: 0;
+  padding: 0;
+  color: @text-color;
+  max-width: 7em;
+  text-overflow: ellipsis;
+  cursor: text;
 }
 
 .fleet-info-shipcount
@@ -1964,6 +1980,7 @@ progress::-webkit-progress-value { background: #080; }
   padding: 0;
   color: @text-color;
   width: 100%;
+  text-overflow: ellipsis;
 }
 
 .ship-info-icon-container
@@ -2044,6 +2061,7 @@ progress::-webkit-progress-value { background: #080; }
     flex: 1;
     overflow-y: auto;
     max-height: 300px;
+    min-width: 250px;
   }
 }
 
