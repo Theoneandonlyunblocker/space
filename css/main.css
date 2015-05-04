@@ -1623,7 +1623,6 @@ progress::-webkit-progress-value {
   bottom: 0;
   left: 0;
   flex-flow: column;
-  pointer-events: none;
 }
 .end-turn-button {
   position: absolute;

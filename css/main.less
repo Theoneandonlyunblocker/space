@@ -1350,7 +1350,7 @@ progress::-webkit-progress-value { background: #080; }
   height: @unit-list-item-height;
 }
 
-
+// creates border around unit when hovered in unit list
 // using ::after element to preserve table layout
 // applied to first td inside the row to avoid adding the ::after element
 // to table row, messing up the table width
@@ -2063,8 +2063,6 @@ progress::-webkit-progress-value { background: #080; }
   bottom: 0;
   left: 0;
   flex-flow: column;
-
-  pointer-events: none;
 }
 
 .end-turn-button
