@@ -23,16 +23,25 @@ module Rance
 
       render: function()
       {
+        var splitButtonProps: any =
+        {
+          className: "fleet-controls-split"
+        };
+        if (this.props.fleet.ships.length > 1)
+        {
+          splitButtonProps.onClick = this.splitFleet;
+        }
+        else
+        {
+          splitButtonProps.className += " disabled";
+          splitButtonProps.disabled = true;
+        }
         return(
           React.DOM.div(
           {
             className: "fleet-controls"
           },
-            React.DOM.button(
-            {
-              className: "fleet-controls-split",
-              onClick: this.splitFleet
-            },
+            React.DOM.button(splitButtonProps,
               "split"
             ),
             React.DOM.button(
