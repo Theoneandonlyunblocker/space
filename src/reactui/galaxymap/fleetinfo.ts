@@ -7,6 +7,13 @@ module Rance
     export var FleetInfo = React.createClass(
     {
       displayName: "FleetInfo",
+      setFleetName: function(e)
+      {
+        console.log("setFleetName", e.target.value);
+        this.props.fleet.name = e.target.value;
+        this.forceUpdate();
+      },
+
       render: function()
       {
         var fleet = this.props.fleet;
@@ -22,10 +29,12 @@ module Rance
             {
               className: "fleet-info-header"
             },
-              React.DOM.div(
+              React.DOM.input(
               {
-                className: "fleet-info-name"
-              }, fleet.name),
+                className: "fleet-info-name",
+                value: fleet.name,
+                onChange: this.setFleetName
+              }),
               React.DOM.div(
               {
                 className: "fleet-info-shipcount"
@@ -34,16 +43,11 @@ module Rance
               {
                 className: "fleet-info-strength"
               }, totalHealth.current + "/" + totalHealth.max),
-              React.DOM.div(
+              UIComponents.FleetControls(
               {
-                className: "fleet-info-controls"
-              },
-                UIComponents.FleetControls(
-                {
-                  fleet: fleet,
-                  hasMultipleSelected: this.props.hasMultipleSelected
-                })
-              )
+                fleet: fleet,
+                hasMultipleSelected: this.props.hasMultipleSelected
+              })
             ),
             React.DOM.div(
             {
