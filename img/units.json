@@ -6,11 +6,26 @@
 		"sourceSize": {"w":73,"h":34}
 	},
 	"testShip2.png": {
-		"frame": {"x":0, "y":35, "w":73, "h":34},
+		"frame": {"x":74, "y":0, "w":73, "h":34},
 		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
 		"sourceSize": {"w":73,"h":34}
 	},
 	"testShip3.png": {
+		"frame": {"x":0, "y":105, "w":73, "h":34},
+		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
+		"sourceSize": {"w":73,"h":34}
+	},
+	"testShip4.png": {
+		"frame": {"x":74, "y":35, "w":73, "h":34},
+		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
+		"sourceSize": {"w":73,"h":34}
+	},
+	"testShip5.png": {
+		"frame": {"x":0, "y":35, "w":73, "h":34},
+		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
+		"sourceSize": {"w":73,"h":34}
+	},
+	"testShip6.png": {
 		"frame": {"x":0, "y":0, "w":73, "h":34},
 		"spriteSourceSize": {"x":0,"y":0,"w":73,"h":34},
 		"sourceSize": {"w":73,"h":34}
@@ -19,7 +34,7 @@
 },
 "meta": {
 	"image": "units.png",
-	"size": {"w": 74, "h": 105},
+	"size": {"w": 148, "h": 140},
 	"scale": "1"
 }
 }
