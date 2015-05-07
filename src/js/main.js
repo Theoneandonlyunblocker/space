@@ -2878,6 +2878,94 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DefenceBuilding = React.createClass({
+            displayName: "DefenceBuilding",
+            render: function () {
+                var building = this.props.building;
+                var image = app.images["buildings"][building.template.iconSrc];
+
+                return (React.DOM.div({
+                    className: "defence-building"
+                }, React.DOM.img({
+                    className: "defence-building-icon",
+                    src: Rance.colorImageInPlayerColor(image, building.controller),
+                    title: building.template.name
+                }), React.DOM.img({
+                    className: "defence-building-controller",
+                    src: building.controller.icon,
+                    title: building.controller.name
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="defencebuilding.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DefenceBuildingList = React.createClass({
+            displayName: "DefenceBuildingList",
+            render: function () {
+                if (!this.props.buildings)
+                    return null;
+
+                var buildings = [];
+
+                for (var i = 0; i < this.props.buildings.length; i++) {
+                    buildings.push(Rance.UIComponents.DefenceBuilding({
+                        key: i,
+                        building: this.props.buildings[i]
+                    }));
+                }
+
+                if (this.props.reverse) {
+                    buildings.reverse();
+                }
+
+                return (React.DOM.div({
+                    className: "defence-building-list"
+                }, buildings));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../galaxymap/defencebuildinglist.ts"/>
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BattleInfo = React.createClass({
+            displayName: "BattleInfo",
+            render: function () {
+                var battlePrep = this.props.battlePrep;
+                var star = battlePrep.battleData.location;
+                var isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
+
+                return (React.DOM.div({
+                    className: "battle-info"
+                }, React.DOM.div({
+                    className: "battle-info-opponent"
+                }, React.DOM.img({
+                    className: "battle-info-opponent-icon",
+                    src: battlePrep.enemyPlayer.icon
+                }), React.DOM.div({
+                    className: "battle-info-opponent-name"
+                }, battlePrep.enemyPlayer.name)), React.DOM.div({
+                    className: "battle-info-summary"
+                }, star.name + ": " + (isAttacker ? "Attacking" : "Defending")), Rance.UIComponents.DefenceBuildingList({
+                    buildings: star.buildings["defence"],
+                    reverse: isAttacker
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="battleinfo.ts"/>
 /// <reference path="../unitlist/menuunitinfo.ts"/>
 var Rance;
 (function (Rance) {
@@ -3035,7 +3123,10 @@ var Rance;
                         currentDragItem: this.state.currentDragItem
                     });
                 } else {
-                    leftUpperElement = React.DOM.div(null, "battle info todo");
+                    leftUpperElement = Rance.UIComponents.BattleInfo({
+                        battlePrep: this.props.battlePrep
+                    });
+                    //leftUpperElement = React.DOM.div(null, "battle info todo");
                 }
 
                 var leftLowerElement;
@@ -5092,7 +5183,6 @@ var Rance;
             },
             componentDidMount: function () {
                 this.setElementPosition();
-                //window.addEventListener("resize", this.setElementPosition);
             },
             componentDidUpdate: function () {
                 this.setElementPosition();
@@ -5177,58 +5267,6 @@ var Rance;
                     className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
                     ref: "selected"
                 }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.DefenceBuilding = React.createClass({
-            displayName: "DefenceBuilding",
-            render: function () {
-                var building = this.props.building;
-                var image = app.images["buildings"][building.template.iconSrc];
-
-                return (React.DOM.div({
-                    className: "defence-building"
-                }, React.DOM.img({
-                    className: "defence-building-icon",
-                    src: Rance.colorImageInPlayerColor(image, building.controller),
-                    title: building.template.name
-                }), React.DOM.img({
-                    className: "defence-building-controller",
-                    src: building.controller.icon,
-                    title: building.controller.name
-                })));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="defencebuilding.ts"/>
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.DefenceBuildingList = React.createClass({
-            displayName: "DefenceBuildingList",
-            render: function () {
-                if (!this.props.buildings)
-                    return null;
-
-                var buildings = [];
-
-                for (var i = 0; i < this.props.buildings.length; i++) {
-                    buildings.push(Rance.UIComponents.DefenceBuilding({
-                        key: i,
-                        building: this.props.buildings[i]
-                    }));
-                }
-
-                return (React.DOM.div({
-                    className: "defence-building-list"
-                }, buildings));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

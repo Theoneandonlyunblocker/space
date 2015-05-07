@@ -22,6 +22,11 @@ module Rance
           }));
         }
 
+        if (this.props.reverse)
+        {
+          buildings.reverse();
+        }
+
         return(
           React.DOM.div(
           {

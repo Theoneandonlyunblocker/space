@@ -199,6 +199,21 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var DefenceBuilding: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var DefenceBuildingList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var BattleInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BattlePrep: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -362,16 +377,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DefenceBuilding: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var DefenceBuildingList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {

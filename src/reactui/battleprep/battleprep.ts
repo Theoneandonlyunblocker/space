@@ -1,3 +1,4 @@
+/// <reference path="battleinfo.ts"/>
 /// <reference path="../unitlist/menuunitinfo.ts"/>
 
 module Rance
@@ -216,7 +217,11 @@ module Rance
         }
         else
         {
-          leftUpperElement = React.DOM.div(null, "battle info todo");
+          leftUpperElement = UIComponents.BattleInfo(
+          {
+            battlePrep: this.props.battlePrep
+          });
+          //leftUpperElement = React.DOM.div(null, "battle info todo");
         }
 
 
