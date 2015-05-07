@@ -296,17 +296,20 @@ module Rance
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: this.setLeftLowerElement.bind(this, "itemEquip")
+                  onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
+                  disabled: this.state.leftLowerElement === "itemEquip"
                 }, "Equip"),
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: this.setLeftLowerElement.bind(this, "playerFleet")
+                  onClick: this.setLeftLowerElement.bind(this, "playerFleet"),
+                  disabled: this.state.leftLowerElement === "playerFleet"
                 }, "Own"),
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
-                  onClick: this.setLeftLowerElement.bind(this, "enemyFleet")
+                  onClick: this.setLeftLowerElement.bind(this, "enemyFleet"),
+                  disabled: this.state.leftLowerElement === "enemyFleet"
                 }, "Enemy"),
                 React.DOM.button(
                 {
