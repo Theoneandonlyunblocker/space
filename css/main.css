@@ -1130,6 +1130,18 @@ progress::-webkit-progress-value {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
+.battle-info-opponent {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+.battle-info-opponent-icon {
+  height: 32px;
+  width: 32px;
+}
+.battle-info .defence-building-list {
+  background: linear-gradient();
+}
 .battle-prep-left-controls {
   flex: 0 0 auto;
   min-height: 1.5em;
