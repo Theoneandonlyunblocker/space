@@ -5068,6 +5068,31 @@ var Rance;
             reorganizeFleets: function () {
                 Rance.eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
             },
+            setElementPosition: function () {
+                if (!this.refs.selected)
+                    return;
+                var domNode = this.refs.selected.getDOMNode();
+
+                if (!this.props.selectedStar) {
+                    domNode.style.left = 0;
+                } else {
+                    var actionsNode = document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+                    var actionsRect = actionsNode.getBoundingClientRect();
+                    var ownBottom = domNode.getBoundingClientRect().bottom;
+
+                    if (ownBottom > actionsRect.top) {
+                        domNode.style.left = "" + (actionsRect.right - 2) + "px";
+                    } else {
+                        domNode.style.left = 0;
+                    }
+                }
+            },
+            componentDidMount: function () {
+                this.setElementPosition();
+            },
+            componentDidUpdate: function () {
+                this.setElementPosition();
+            },
             render: function () {
                 var selectedFleets = this.props.selectedFleets;
                 if (!selectedFleets || selectedFleets.length <= 0) {
@@ -5145,7 +5170,8 @@ var Rance;
                 }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
                     className: "fleet-selection-selected-wrapper"
                 }, React.DOM.div({
-                    className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : "")
+                    className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
+                    ref: "selected"
                 }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
             }
         });
@@ -8138,15 +8164,19 @@ var Rance;
         Fleet.prototype.hasShip = function (ship) {
             return this.getShipIndex(ship) >= 0;
         };
-        Fleet.prototype.deleteFleet = function () {
+        Fleet.prototype.deleteFleet = function (shouldRender) {
+            if (typeof shouldRender === "undefined") { shouldRender = true; }
             this.location.removeFleet(this);
             this.player.removeFleet(this);
 
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+            if (shouldRender) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+            }
         };
-        Fleet.prototype.mergeWith = function (fleet) {
+        Fleet.prototype.mergeWith = function (fleet, shouldRender) {
+            if (typeof shouldRender === "undefined") { shouldRender = true; }
             fleet.addShips(this.ships);
-            this.deleteFleet();
+            this.deleteFleet(shouldRender);
         };
         Fleet.prototype.addShip = function (ship) {
             if (this.hasShip(ship))
@@ -11951,7 +11981,7 @@ var Rance;
             var slaves = fleets;
 
             for (var i = 0; i < slaves.length; i++) {
-                slaves[i].mergeWith(master);
+                slaves[i].mergeWith(master, i === slaves.length - 1);
             }
 
             this.clearSelection();
@@ -15633,6 +15663,11 @@ var Rance;
                     endTurnButtonProps.className += " disabled";
                 }
 
+                var selectionContainerClassName = "fleet-selection-container";
+                if (this.state.currentlyReorganizing.length > 0) {
+                    selectionContainerClassName += " reorganizing";
+                }
+
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, React.DOM.div({
@@ -15644,9 +15679,10 @@ var Rance;
                     player: this.props.player,
                     game: this.props.game
                 }), React.DOM.div({
-                    className: "fleet-selection-container"
+                    className: selectionContainerClassName
                 }, Rance.UIComponents.FleetSelection({
                     selectedFleets: this.state.selectedFleets,
+                    selectedStar: this.state.selectedStar,
                     currentlyReorganizing: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
                 }))), React.DOM.div({

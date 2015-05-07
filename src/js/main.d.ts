@@ -982,8 +982,8 @@ declare module Rance {
         constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star, id?: number);
         public getShipIndex(ship: Rance.Unit): number;
         public hasShip(ship: Rance.Unit): boolean;
-        public deleteFleet(): void;
-        public mergeWith(fleet: Fleet): void;
+        public deleteFleet(shouldRender?: boolean): void;
+        public mergeWith(fleet: Fleet, shouldRender?: boolean): void;
         public addShip(ship: Rance.Unit): boolean;
         public addShips(ships: Rance.Unit[]): void;
         public removeShip(ship: Rance.Unit): boolean;

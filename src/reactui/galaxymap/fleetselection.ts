@@ -18,6 +18,42 @@ module Rance
         eventManager.dispatchEvent("startReorganizingFleets", this.props.selectedFleets);
       },
 
+      setElementPosition: function()
+      {
+        if (!this.refs.selected) return;
+        var domNode = this.refs.selected.getDOMNode();
+
+        if (!this.props.selectedStar)
+        {
+          domNode.style.left = 0;
+        }
+        else
+        {
+          var actionsNode = <HTMLElement> document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+          var actionsRect = actionsNode.getBoundingClientRect();
+          var ownBottom = domNode.getBoundingClientRect().bottom;
+
+          if (ownBottom > actionsRect.top)
+          {
+            domNode.style.left = "" + (actionsRect.right) + "px";
+          }
+          else
+          {
+            domNode.style.left = 0;
+          }
+        }
+      },
+
+      componentDidMount: function()
+      {
+        this.setElementPosition();
+      },
+
+      componentDidUpdate: function()
+      {
+        this.setElementPosition()
+      },
+
       render: function()
       {
         var selectedFleets: Fleet[] = this.props.selectedFleets;
@@ -130,7 +166,8 @@ module Rance
             },
               React.DOM.div(
               {
-                className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : "")
+                className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
+                ref: "selected"
               },
                 hasMultipleSelected ? fleetInfos : null,
                 fleetContents

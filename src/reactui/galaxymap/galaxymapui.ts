@@ -77,6 +77,12 @@ module Rance
           endTurnButtonProps.className += " disabled";
         }
 
+        var selectionContainerClassName = "fleet-selection-container";
+        if (this.state.currentlyReorganizing.length > 0)
+        {
+          selectionContainerClassName += " reorganizing";
+        }
+
         return(
           React.DOM.div(
           {
@@ -98,11 +104,12 @@ module Rance
               }),
               React.DOM.div(
               {
-                className: "fleet-selection-container"
+                className: selectionContainerClassName
               },
                 UIComponents.FleetSelection(
                 {
                   selectedFleets: this.state.selectedFleets,
+                  selectedStar: this.state.selectedStar,
                   currentlyReorganizing: this.state.currentlyReorganizing,
                   closeReorganization: this.closeReorganization
                 })
