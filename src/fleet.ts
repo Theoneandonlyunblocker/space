@@ -40,17 +40,20 @@ module Rance
     {
       return this.getShipIndex(ship) >= 0;
     }
-    deleteFleet()
+    deleteFleet(shouldRender: boolean = true)
     {
       this.location.removeFleet(this);
       this.player.removeFleet(this);
 
-      eventManager.dispatchEvent("renderLayer", "fleets");
+      if (shouldRender)
+      {
+        eventManager.dispatchEvent("renderLayer", "fleets");
+      }
     }
-    mergeWith(fleet: Fleet)
+    mergeWith(fleet: Fleet, shouldRender: boolean = true)
     {
       fleet.addShips(this.ships);
-      this.deleteFleet();
+      this.deleteFleet(shouldRender);
     }
     addShip(ship: Unit)
     {

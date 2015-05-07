@@ -195,7 +195,7 @@ module Rance
 
       for (var i = 0; i < slaves.length; i++)
       {
-        slaves[i].mergeWith(master);
+        slaves[i].mergeWith(master, i === slaves.length - 1);
       }
 
       this.clearSelection();
