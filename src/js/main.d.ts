@@ -1648,40 +1648,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class PlayerControl {
-        public player: Rance.Player;
-        public reactUI: Rance.ReactUI;
-        public selectedFleets: Rance.Fleet[];
-        public currentlyReorganizing: Rance.Fleet[];
-        public currentAttackTargets: any[];
-        public selectedStar: Rance.Star;
-        public preventingGhost: boolean;
-        public listeners: {
-            [listenerName: string]: any;
-        };
-        constructor(player: Rance.Player);
-        public removeEventListener(name: string): void;
-        public removeEventListeners(): void;
-        public addEventListener(name: string, handler: any): void;
-        public addEventListeners(): void;
-        public preventGhost(delay: number): void;
-        public clearSelection(): void;
-        public updateSelection(endReorganizingFleets?: boolean): void;
-        public areAllFleetsInSameLocation(): boolean;
-        public selectFleets(fleets: Rance.Fleet[]): void;
-        public deselectFleet(fleet: Rance.Fleet): void;
-        public getMasterFleetForMerge(): Rance.Fleet;
-        public mergeFleets(): void;
-        public selectStar(star: Rance.Star): void;
-        public moveFleets(star: Rance.Star): void;
-        public splitFleet(fleet: Rance.Fleet): void;
-        public startReorganizingFleets(fleets: Rance.Fleet[]): void;
-        public endReorganizingFleets(): void;
-        public getCurrentAttackTargets(): any[];
-        public attackTarget(target: any): boolean;
-    }
-}
-declare module Rance {
     class Game {
         public turnNumber: number;
         public independents: Rance.Player[];
@@ -1689,7 +1655,6 @@ declare module Rance {
         public galaxyMap: Rance.GalaxyMap;
         public humanPlayer: Rance.Player;
         public activePlayer: Rance.Player;
-        public playerControl: Rance.PlayerControl;
         constructor(map: Rance.GalaxyMap, players: Rance.Player[], humanPlayer: Rance.Player);
         public endTurn(): void;
         public processPlayerStartTurn(player: Rance.Player): void;
@@ -2077,7 +2042,6 @@ declare module Rance {
         public updateTurnOrder(): void;
         public setActiveUnit(): void;
         public endTurn(): void;
-        public getFleetsForSide(side: string): any;
         public getPlayerForSide(side: string): Rance.Player;
         public getSideForPlayer(player: Rance.Player): string;
         public getActivePlayer(): Rance.Player;
@@ -2093,7 +2057,7 @@ declare module Rance {
             max: number;
         };
         public getEvaluation(): number;
-        public swapFleetColumnsForSide(side: string): void;
+        public swapColumnsForSide(side: string): void;
         public swapColumnsIfNeeded(): void;
         public checkBattleEnd(): boolean;
         public makeVirtualClone(): Battle;
@@ -2334,6 +2298,40 @@ declare module Rance {
         public switchScene(newScene: string): void;
         public destroy(): void;
         public render(): void;
+    }
+}
+declare module Rance {
+    class PlayerControl {
+        public player: Rance.Player;
+        public reactUI: Rance.ReactUI;
+        public selectedFleets: Rance.Fleet[];
+        public currentlyReorganizing: Rance.Fleet[];
+        public currentAttackTargets: any[];
+        public selectedStar: Rance.Star;
+        public preventingGhost: boolean;
+        public listeners: {
+            [listenerName: string]: any;
+        };
+        constructor(player: Rance.Player);
+        public removeEventListener(name: string): void;
+        public removeEventListeners(): void;
+        public addEventListener(name: string, handler: any): void;
+        public addEventListeners(): void;
+        public preventGhost(delay: number): void;
+        public clearSelection(): void;
+        public updateSelection(endReorganizingFleets?: boolean): void;
+        public areAllFleetsInSameLocation(): boolean;
+        public selectFleets(fleets: Rance.Fleet[]): void;
+        public deselectFleet(fleet: Rance.Fleet): void;
+        public getMasterFleetForMerge(): Rance.Fleet;
+        public mergeFleets(): void;
+        public selectStar(star: Rance.Star): void;
+        public moveFleets(star: Rance.Star): void;
+        public splitFleet(fleet: Rance.Fleet): void;
+        public startReorganizingFleets(fleets: Rance.Fleet[]): void;
+        public endReorganizingFleets(): void;
+        public getCurrentAttackTargets(): any[];
+        public attackTarget(target: any): boolean;
     }
 }
 declare var tempCameraId: number;

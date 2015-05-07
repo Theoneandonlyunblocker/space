@@ -145,6 +145,8 @@ module Rance
     }
     updateTurnOrder()
     {
+      //Sorting function is in utility.ts for reusing in turn order UI.
+      //Maybe should make separate TurnOrder class?
       this.turnOrder.sort(turnOrderSortFunction);
 
       function turnOrderFilterFunction(unit: Unit)
@@ -195,21 +197,6 @@ module Rance
       else
       {
         this.swapColumnsIfNeeded();
-      }
-    }
-    getFleetsForSide(side: string)
-    {
-      switch (side)
-      {
-        case "all":
-        {
-          return this.side1.concat(this.side2);
-        }
-        case "side1":
-        case "side2":
-        {
-          return this[side];
-        }
       }
     }
     getPlayerForSide(side: string)
@@ -270,9 +257,9 @@ module Rance
     }
     getDeadUnits(capturedUnits: Unit[], victor: Player)
     {
-      var INDEPENDENT_DEATH_CHANCE = 1;
-      var PLAYER_DEATH_CHANCE = 0.4;
-      var LOSER_DEATH_CHANCE = 0.25;
+      var INDEPENDENT_DEATH_CHANCE = 1; // base chance for independents
+      var PLAYER_DEATH_CHANCE = 0.4; // base chance for players
+      var LOSER_DEATH_CHANCE = 0.25; // extra chance for losing side
 
       var winningSide = this.getSideForPlayer(victor);
       var losingSide = reverseSide(winningSide);
@@ -283,7 +270,6 @@ module Rance
 
       this.forEachUnit(function(unit)
       {
-        
         if (unit.currentHealth <= 0)
         {
           var wasCaptured = capturedUnits.indexOf(unit) >= 0;
@@ -473,7 +459,7 @@ module Rance
 
       return this.evaluation[this.currentTurn];
     }
-    swapFleetColumnsForSide(side: string)
+    swapColumnsForSide(side: string)
     {
       this[side] = this[side].reverse();
 
@@ -496,12 +482,12 @@ module Rance
       var side1Front = this.getTotalHealthForColumn(1);
       if (side1Front <= 0)
       {
-        this.swapFleetColumnsForSide("side1");
+        this.swapColumnsForSide("side1");
       }
       var side2Front = this.getTotalHealthForColumn(2);
       if (side2Front <= 0)
       {
-        this.swapFleetColumnsForSide("side2");
+        this.swapColumnsForSide("side2");
       }
     }
     checkBattleEnd()

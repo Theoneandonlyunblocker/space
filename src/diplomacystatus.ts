@@ -7,9 +7,9 @@ module Rance
 {
   export enum DiplomaticState
   {
-    peace,
-    coldWar,
-    war
+    peace, // no fighting
+    coldWar, // fighting on neutral ground only
+    war // any fighting
   }
   export class DiplomacyStatus
   {

@@ -1,5 +1,4 @@
 /// <reference path="player.ts"/>
-/// <reference path="playercontrol.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="eventmanager.ts"/>
 
@@ -14,7 +13,6 @@ module Rance
     humanPlayer: Player;
     activePlayer: Player;
 
-    playerControl: PlayerControl;
 
     constructor(map: GalaxyMap,
       players: Player[], humanPlayer: Player)

@@ -11869,239 +11869,7 @@ var Rance;
     })();
     Rance.GalaxyMap = GalaxyMap;
 })(Rance || (Rance = {}));
-/// <reference path="eventmanager.ts"/>
 /// <reference path="player.ts"/>
-/// <reference path="fleet.ts"/>
-/// <reference path="star.ts"/>
-/// <reference path="battledata.ts"/>
-var Rance;
-(function (Rance) {
-    var PlayerControl = (function () {
-        function PlayerControl(player) {
-            this.selectedFleets = [];
-            this.currentlyReorganizing = [];
-            this.preventingGhost = false;
-            this.listeners = {};
-            this.player = player;
-            this.addEventListeners();
-        }
-        PlayerControl.prototype.removeEventListener = function (name) {
-            Rance.eventManager.removeEventListener(name, this.listeners[name]);
-        };
-        PlayerControl.prototype.removeEventListeners = function () {
-            for (var name in this.listeners) {
-                this.removeEventListener(name);
-            }
-        };
-        PlayerControl.prototype.addEventListener = function (name, handler) {
-            this.listeners[name] = handler;
-
-            Rance.eventManager.addEventListener(name, handler);
-        };
-        PlayerControl.prototype.addEventListeners = function () {
-            var self = this;
-
-            this.addEventListener("updateSelection", function (e) {
-                self.updateSelection();
-            });
-
-            this.addEventListener("selectFleets", function (e) {
-                self.selectFleets(e.data);
-            });
-            this.addEventListener("deselectFleet", function (e) {
-                self.deselectFleet(e.data);
-            });
-            this.addEventListener("mergeFleets", function (e) {
-                self.mergeFleets();
-            });
-
-            this.addEventListener("splitFleet", function (e) {
-                self.splitFleet(e.data);
-            });
-            this.addEventListener("startReorganizingFleets", function (e) {
-                self.startReorganizingFleets(e.data);
-            });
-            this.addEventListener("endReorganizingFleets", function (e) {
-                self.endReorganizingFleets();
-            });
-
-            this.addEventListener("starClick", function (e) {
-                self.selectStar(e.data);
-            });
-            this.addEventListener("moveFleets", function (e) {
-                self.moveFleets(e.data);
-            });
-
-            this.addEventListener("setRectangleSelectTargetFN", function (e) {
-                e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
-            });
-
-            this.addEventListener("attackTarget", function (e) {
-                self.attackTarget(e.data);
-            });
-        };
-        PlayerControl.prototype.preventGhost = function (delay) {
-            this.preventingGhost = true;
-            var self = this;
-            var timeout = window.setTimeout(function () {
-                self.preventingGhost = false;
-                window.clearTimeout(timeout);
-            }, delay);
-        };
-        PlayerControl.prototype.clearSelection = function () {
-            this.selectedFleets = [];
-            this.selectedStar = null;
-        };
-        PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
-            if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
-            if (endReorganizingFleets)
-                this.endReorganizingFleets();
-            this.currentAttackTargets = this.getCurrentAttackTargets();
-
-            Rance.eventManager.dispatchEvent("playerControlUpdated", null);
-            Rance.eventManager.dispatchEvent("clearPossibleActions", null);
-        };
-
-        PlayerControl.prototype.areAllFleetsInSameLocation = function () {
-            if (this.selectedFleets.length <= 0)
-                return false;
-
-            for (var i = 1; i < this.selectedFleets.length; i++) {
-                if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-        PlayerControl.prototype.selectFleets = function (fleets) {
-            this.clearSelection();
-
-            for (var i = 0; i < fleets.length; i++) {
-                if (fleets[i].ships.length < 1) {
-                    if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
-                        continue;
-                    fleets[i].deleteFleet();
-                    fleets.splice(i, 1);
-                }
-            }
-
-            var oldFleets = this.selectedFleets.slice(0);
-
-            this.selectedFleets = fleets;
-
-            if (true || !Rance.arraysEqual(fleets, oldFleets)) {
-                this.updateSelection();
-            }
-
-            if (fleets.length > 0) {
-                this.preventGhost(15);
-            }
-        };
-        PlayerControl.prototype.deselectFleet = function (fleet) {
-            var fleetIndex = this.selectedFleets.indexOf(fleet);
-
-            if (fleetIndex < 0)
-                return;
-
-            this.selectedFleets.splice(fleetIndex, 1);
-
-            if (this.selectedFleets.length < 1) {
-                this.selectedStar = fleet.location;
-            }
-
-            this.updateSelection();
-        };
-        PlayerControl.prototype.getMasterFleetForMerge = function () {
-            return this.selectedFleets[0];
-        };
-        PlayerControl.prototype.mergeFleets = function () {
-            var fleets = this.selectedFleets;
-            var master = this.getMasterFleetForMerge();
-
-            fleets.splice(fleets.indexOf(master), 1);
-            var slaves = fleets;
-
-            for (var i = 0; i < slaves.length; i++) {
-                slaves[i].mergeWith(master, i === slaves.length - 1);
-            }
-
-            this.clearSelection();
-            this.selectedFleets = [master];
-            this.updateSelection();
-        };
-        PlayerControl.prototype.selectStar = function (star) {
-            if (this.preventingGhost)
-                return;
-            this.clearSelection();
-
-            this.selectedStar = star;
-
-            this.updateSelection();
-        };
-        PlayerControl.prototype.moveFleets = function (star) {
-            for (var i = 0; i < this.selectedFleets.length; i++) {
-                this.selectedFleets[i].pathFind(star);
-            }
-        };
-        PlayerControl.prototype.splitFleet = function (fleet) {
-            if (fleet.ships.length <= 0)
-                return;
-            this.endReorganizingFleets();
-            var newFleet = fleet.split();
-
-            this.currentlyReorganizing = [fleet, newFleet];
-            this.selectedFleets = [fleet, newFleet];
-
-            this.updateSelection(false);
-        };
-        PlayerControl.prototype.startReorganizingFleets = function (fleets) {
-            if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
-                throw new Error("cant reorganize fleets");
-            }
-            this.currentlyReorganizing = fleets;
-
-            this.updateSelection(false);
-        };
-        PlayerControl.prototype.endReorganizingFleets = function () {
-            for (var i = 0; i < this.currentlyReorganizing.length; i++) {
-                var fleet = this.currentlyReorganizing[i];
-                if (fleet.ships.length <= 0) {
-                    var selectedIndex = this.selectedFleets.indexOf(fleet);
-                    if (selectedIndex >= 0) {
-                        this.selectedFleets.splice(selectedIndex, 1);
-                    }
-                    fleet.deleteFleet();
-                }
-            }
-            this.currentlyReorganizing = [];
-        };
-        PlayerControl.prototype.getCurrentAttackTargets = function () {
-            if (this.selectedFleets.length < 1)
-                return [];
-            if (!this.areAllFleetsInSameLocation())
-                return [];
-
-            var location = this.selectedFleets[0].location;
-            var possibleTargets = location.getTargetsForPlayer(this.player);
-
-            return possibleTargets;
-        };
-
-        PlayerControl.prototype.attackTarget = function (target) {
-            if (this.currentAttackTargets.indexOf(target) < 0)
-                return false;
-
-            var currentLocation = this.selectedFleets[0].location;
-
-            this.player.attackTarget(currentLocation, target);
-        };
-        return PlayerControl;
-    })();
-    Rance.PlayerControl = PlayerControl;
-})(Rance || (Rance = {}));
-/// <reference path="player.ts"/>
-/// <reference path="playercontrol.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="eventmanager.ts"/>
 var Rance;
@@ -14115,6 +13883,8 @@ var Rance;
             this.turnOrder.push(unit);
         };
         Battle.prototype.updateTurnOrder = function () {
+            //Sorting function is in utility.ts for reusing in turn order UI.
+            //Maybe should make separate TurnOrder class?
             this.turnOrder.sort(Rance.turnOrderSortFunction);
 
             function turnOrderFilterFunction(unit) {
@@ -14154,17 +13924,6 @@ var Rance;
                 this.endBattle();
             } else {
                 this.swapColumnsIfNeeded();
-            }
-        };
-        Battle.prototype.getFleetsForSide = function (side) {
-            switch (side) {
-                case "all": {
-                    return this.side1.concat(this.side2);
-                }
-                case "side1":
-                case "side2": {
-                    return this[side];
-                }
             }
         };
         Battle.prototype.getPlayerForSide = function (side) {
@@ -14395,7 +14154,7 @@ var Rance;
 
             return this.evaluation[this.currentTurn];
         };
-        Battle.prototype.swapFleetColumnsForSide = function (side) {
+        Battle.prototype.swapColumnsForSide = function (side) {
             this[side] = this[side].reverse();
 
             for (var i = 0; i < this[side].length; i++) {
@@ -14412,11 +14171,11 @@ var Rance;
         Battle.prototype.swapColumnsIfNeeded = function () {
             var side1Front = this.getTotalHealthForColumn(1);
             if (side1Front <= 0) {
-                this.swapFleetColumnsForSide("side1");
+                this.swapColumnsForSide("side1");
             }
             var side2Front = this.getTotalHealthForColumn(2);
             if (side2Front <= 0) {
-                this.swapFleetColumnsForSide("side2");
+                this.swapColumnsForSide("side2");
             }
         };
         Battle.prototype.checkBattleEnd = function () {
@@ -14551,6 +14310,8 @@ var Rance;
         return data;
     }
     Rance.getAbilityUseData = getAbilityUseData;
+
+    // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
     function useAbility(battle, user, ability, target) {
         var abilityData = getAbilityUseData(battle, user, ability, target);
 
@@ -17090,6 +16851,237 @@ var Rance;
         return ReactUI;
     })();
     Rance.ReactUI = ReactUI;
+})(Rance || (Rance = {}));
+/// <reference path="eventmanager.ts"/>
+/// <reference path="player.ts"/>
+/// <reference path="fleet.ts"/>
+/// <reference path="star.ts"/>
+/// <reference path="battledata.ts"/>
+var Rance;
+(function (Rance) {
+    var PlayerControl = (function () {
+        function PlayerControl(player) {
+            this.selectedFleets = [];
+            this.currentlyReorganizing = [];
+            this.preventingGhost = false;
+            this.listeners = {};
+            this.player = player;
+            this.addEventListeners();
+        }
+        PlayerControl.prototype.removeEventListener = function (name) {
+            Rance.eventManager.removeEventListener(name, this.listeners[name]);
+        };
+        PlayerControl.prototype.removeEventListeners = function () {
+            for (var name in this.listeners) {
+                this.removeEventListener(name);
+            }
+        };
+        PlayerControl.prototype.addEventListener = function (name, handler) {
+            this.listeners[name] = handler;
+
+            Rance.eventManager.addEventListener(name, handler);
+        };
+        PlayerControl.prototype.addEventListeners = function () {
+            var self = this;
+
+            this.addEventListener("updateSelection", function (e) {
+                self.updateSelection();
+            });
+
+            this.addEventListener("selectFleets", function (e) {
+                self.selectFleets(e.data);
+            });
+            this.addEventListener("deselectFleet", function (e) {
+                self.deselectFleet(e.data);
+            });
+            this.addEventListener("mergeFleets", function (e) {
+                self.mergeFleets();
+            });
+
+            this.addEventListener("splitFleet", function (e) {
+                self.splitFleet(e.data);
+            });
+            this.addEventListener("startReorganizingFleets", function (e) {
+                self.startReorganizingFleets(e.data);
+            });
+            this.addEventListener("endReorganizingFleets", function (e) {
+                self.endReorganizingFleets();
+            });
+
+            this.addEventListener("starClick", function (e) {
+                self.selectStar(e.data);
+            });
+            this.addEventListener("moveFleets", function (e) {
+                self.moveFleets(e.data);
+            });
+
+            this.addEventListener("setRectangleSelectTargetFN", function (e) {
+                e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
+            });
+
+            this.addEventListener("attackTarget", function (e) {
+                self.attackTarget(e.data);
+            });
+        };
+        PlayerControl.prototype.preventGhost = function (delay) {
+            this.preventingGhost = true;
+            var self = this;
+            var timeout = window.setTimeout(function () {
+                self.preventingGhost = false;
+                window.clearTimeout(timeout);
+            }, delay);
+        };
+        PlayerControl.prototype.clearSelection = function () {
+            this.selectedFleets = [];
+            this.selectedStar = null;
+        };
+        PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
+            if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
+            if (endReorganizingFleets)
+                this.endReorganizingFleets();
+            this.currentAttackTargets = this.getCurrentAttackTargets();
+
+            Rance.eventManager.dispatchEvent("playerControlUpdated", null);
+            Rance.eventManager.dispatchEvent("clearPossibleActions", null);
+        };
+
+        PlayerControl.prototype.areAllFleetsInSameLocation = function () {
+            if (this.selectedFleets.length <= 0)
+                return false;
+
+            for (var i = 1; i < this.selectedFleets.length; i++) {
+                if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+        PlayerControl.prototype.selectFleets = function (fleets) {
+            this.clearSelection();
+
+            for (var i = 0; i < fleets.length; i++) {
+                if (fleets[i].ships.length < 1) {
+                    if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
+                        continue;
+                    fleets[i].deleteFleet();
+                    fleets.splice(i, 1);
+                }
+            }
+
+            var oldFleets = this.selectedFleets.slice(0);
+
+            this.selectedFleets = fleets;
+
+            if (true || !Rance.arraysEqual(fleets, oldFleets)) {
+                this.updateSelection();
+            }
+
+            if (fleets.length > 0) {
+                this.preventGhost(15);
+            }
+        };
+        PlayerControl.prototype.deselectFleet = function (fleet) {
+            var fleetIndex = this.selectedFleets.indexOf(fleet);
+
+            if (fleetIndex < 0)
+                return;
+
+            this.selectedFleets.splice(fleetIndex, 1);
+
+            if (this.selectedFleets.length < 1) {
+                this.selectedStar = fleet.location;
+            }
+
+            this.updateSelection();
+        };
+        PlayerControl.prototype.getMasterFleetForMerge = function () {
+            return this.selectedFleets[0];
+        };
+        PlayerControl.prototype.mergeFleets = function () {
+            var fleets = this.selectedFleets;
+            var master = this.getMasterFleetForMerge();
+
+            fleets.splice(fleets.indexOf(master), 1);
+            var slaves = fleets;
+
+            for (var i = 0; i < slaves.length; i++) {
+                slaves[i].mergeWith(master, i === slaves.length - 1);
+            }
+
+            this.clearSelection();
+            this.selectedFleets = [master];
+            this.updateSelection();
+        };
+        PlayerControl.prototype.selectStar = function (star) {
+            if (this.preventingGhost)
+                return;
+            this.clearSelection();
+
+            this.selectedStar = star;
+
+            this.updateSelection();
+        };
+        PlayerControl.prototype.moveFleets = function (star) {
+            for (var i = 0; i < this.selectedFleets.length; i++) {
+                this.selectedFleets[i].pathFind(star);
+            }
+        };
+        PlayerControl.prototype.splitFleet = function (fleet) {
+            if (fleet.ships.length <= 0)
+                return;
+            this.endReorganizingFleets();
+            var newFleet = fleet.split();
+
+            this.currentlyReorganizing = [fleet, newFleet];
+            this.selectedFleets = [fleet, newFleet];
+
+            this.updateSelection(false);
+        };
+        PlayerControl.prototype.startReorganizingFleets = function (fleets) {
+            if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
+                throw new Error("cant reorganize fleets");
+            }
+            this.currentlyReorganizing = fleets;
+
+            this.updateSelection(false);
+        };
+        PlayerControl.prototype.endReorganizingFleets = function () {
+            for (var i = 0; i < this.currentlyReorganizing.length; i++) {
+                var fleet = this.currentlyReorganizing[i];
+                if (fleet.ships.length <= 0) {
+                    var selectedIndex = this.selectedFleets.indexOf(fleet);
+                    if (selectedIndex >= 0) {
+                        this.selectedFleets.splice(selectedIndex, 1);
+                    }
+                    fleet.deleteFleet();
+                }
+            }
+            this.currentlyReorganizing = [];
+        };
+        PlayerControl.prototype.getCurrentAttackTargets = function () {
+            if (this.selectedFleets.length < 1)
+                return [];
+            if (!this.areAllFleetsInSameLocation())
+                return [];
+
+            var location = this.selectedFleets[0].location;
+            var possibleTargets = location.getTargetsForPlayer(this.player);
+
+            return possibleTargets;
+        };
+
+        PlayerControl.prototype.attackTarget = function (target) {
+            if (this.currentAttackTargets.indexOf(target) < 0)
+                return false;
+
+            var currentLocation = this.selectedFleets[0].location;
+
+            this.player.attackTarget(currentLocation, target);
+        };
+        return PlayerControl;
+    })();
+    Rance.PlayerControl = PlayerControl;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var tempCameraId = 0;

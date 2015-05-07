@@ -66,6 +66,7 @@ module Rance
 
     return data;
   }
+  // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
   export function useAbility(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
   {
