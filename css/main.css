@@ -1458,7 +1458,6 @@ progress::-webkit-progress-value {
   max-height: 300px;
   width: 100%;
   height: 100%;
-  top: -1px;
 }
 .fleet-selection-selected.reorganizing {
   left: auto;

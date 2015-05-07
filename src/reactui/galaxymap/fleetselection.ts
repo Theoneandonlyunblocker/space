@@ -33,7 +33,7 @@ module Rance
           var actionsRect = actionsNode.getBoundingClientRect();
           var ownBottom = domNode.getBoundingClientRect().bottom;
 
-          if (ownBottom > actionsRect.top)
+          if (ownBottom > actionsRect.top + 3)
           {
             domNode.style.left = "" + (actionsRect.right) + "px";
           }

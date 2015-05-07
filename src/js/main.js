@@ -3090,13 +3090,16 @@ var Rance;
                     backgroundSeed: this.props.battlePrep.battleData.location.getBackgroundSeed()
                 }, React.DOM.div({ className: "battle-prep-left-upper-inner" }, leftUpperElement))), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: this.setLeftLowerElement.bind(this, "itemEquip")
+                    onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
+                    disabled: this.state.leftLowerElement === "itemEquip"
                 }, "Equip"), React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: this.setLeftLowerElement.bind(this, "playerFleet")
+                    onClick: this.setLeftLowerElement.bind(this, "playerFleet"),
+                    disabled: this.state.leftLowerElement === "playerFleet"
                 }, "Own"), React.DOM.button({
                     className: "battle-prep-controls-button",
-                    onClick: this.setLeftLowerElement.bind(this, "enemyFleet")
+                    onClick: this.setLeftLowerElement.bind(this, "enemyFleet"),
+                    disabled: this.state.leftLowerElement === "enemyFleet"
                 }, "Enemy"), React.DOM.button({
                     onClick: this.autoMakeFormation
                 }, "Auto formation"), React.DOM.button({
@@ -5080,8 +5083,8 @@ var Rance;
                     var actionsRect = actionsNode.getBoundingClientRect();
                     var ownBottom = domNode.getBoundingClientRect().bottom;
 
-                    if (ownBottom > actionsRect.top) {
-                        domNode.style.left = "" + (actionsRect.right - 2) + "px";
+                    if (ownBottom > actionsRect.top + 3) {
+                        domNode.style.left = "" + (actionsRect.right) + "px";
                     } else {
                         domNode.style.left = 0;
                     }
@@ -5089,6 +5092,7 @@ var Rance;
             },
             componentDidMount: function () {
                 this.setElementPosition();
+                //window.addEventListener("resize", this.setElementPosition);
             },
             componentDidUpdate: function () {
                 this.setElementPosition();
