@@ -71,7 +71,8 @@ module Rance
           },
             UIComponents.PopupManager(
             {
-              ref: "popupManager"
+              ref: "popupManager",
+              onlyAllowOne: true
             }),
             UIComponents.SaveList(
             {

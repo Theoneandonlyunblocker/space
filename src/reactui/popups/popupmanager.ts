@@ -104,17 +104,33 @@ module Rance
         contentProps: any;
       })
       {
-        var popups = this.state.popups.concat(
+        if (this.props.onlyAllowOne)
         {
-          contentConstructor: props.contentConstructor,
-          contentProps: props.contentProps,
-          id: this.getPopupId()
-        });
+          this.setState(
+          {
+            popups: [
+            {
+              contentConstructor: props.contentConstructor,
+              contentProps: props.contentProps,
+              id: this.getPopupId()
+            }]
+          });
+        }
+        else
+        {
+          var popups = this.state.popups.concat(
+          {
+            contentConstructor: props.contentConstructor,
+            contentProps: props.contentProps,
+            id: this.getPopupId()
+          });
 
-        this.setState(
-        {
-          popups: popups
-        });
+          this.setState(
+          {
+            popups: popups
+          });
+        }
+        
       },
 
       setPopupContent: function(popupId: number, newContent: any)

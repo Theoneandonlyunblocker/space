@@ -107,7 +107,8 @@ module Rance
 
             UIComponents.PopupManager(
             {
-              ref: "popupManager"
+              ref: "popupManager",
+              onlyAllowOne: true
             }),
 
             React.DOM.div({className: "options-header"},

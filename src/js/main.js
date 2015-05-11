@@ -3696,15 +3696,25 @@ var Rance;
                 this.setState({ popups: newPopups });
             },
             makePopup: function (props) {
-                var popups = this.state.popups.concat({
-                    contentConstructor: props.contentConstructor,
-                    contentProps: props.contentProps,
-                    id: this.getPopupId()
-                });
+                if (this.props.onlyAllowOne) {
+                    this.setState({
+                        popups: [{
+                                contentConstructor: props.contentConstructor,
+                                contentProps: props.contentProps,
+                                id: this.getPopupId()
+                            }]
+                    });
+                } else {
+                    var popups = this.state.popups.concat({
+                        contentConstructor: props.contentConstructor,
+                        contentProps: props.contentProps,
+                        id: this.getPopupId()
+                    });
 
-                this.setState({
-                    popups: popups
-                });
+                    this.setState({
+                        popups: popups
+                    });
+                }
             },
             setPopupContent: function (popupId, newContent) {
                 var popup = this.getPopup(popupId);
@@ -3906,7 +3916,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "save-game"
                 }, Rance.UIComponents.PopupManager({
-                    ref: "popupManager"
+                    ref: "popupManager",
+                    onlyAllowOne: true
                 }), Rance.UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
                     autoSelect: true
@@ -3977,7 +3988,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "save-game"
                 }, Rance.UIComponents.PopupManager({
-                    ref: "popupManager"
+                    ref: "popupManager",
+                    onlyAllowOne: true
                 }), Rance.UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
                     autoSelect: true,
@@ -3997,6 +4009,43 @@ var Rance;
                     className: "save-game-button",
                     onClick: this.handleClose
                 }, "Cancel"))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.DiplomacyActions = React.createClass({
+            displayName: "DiplomacyActions",
+            handleDeclareWar: function () {
+                this.props.player.declareWarOn(this.props.targetPlayer);
+            },
+            render: function () {
+                var player = this.props.player;
+                var targetPlayer = this.props.targetPlayer;
+
+                var declareWarProps = {
+                    className: "diplomacy-action-button"
+                };
+
+                if (player.diplomacyStatus.canDeclareWarOn(targetPlayer)) {
+                    declareWarProps.onClick = this.handleDeclareWar;
+                } else {
+                    declareWarProps.disabled = true;
+                    declareWarProps.className += " disabled";
+                }
+
+                return (React.DOM.div({
+                    className: "diplomacy-actions"
+                }, React.DOM.button(declareWarProps, "Declare war"), React.DOM.button({
+                    className: "diplomacy-action-button"
+                }, "Dummy"), React.DOM.button({
+                    className: "diplomacy-action-button"
+                }, "Dummy"), React.DOM.button({
+                    className: "diplomacy-action-button"
+                }, "Dummy")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4368,6 +4417,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="diplomacyactions.ts" />
 /// <reference path="diplomaticstatusplayer.ts" />
 var Rance;
 (function (Rance) {
@@ -4428,11 +4478,13 @@ var Rance;
                     }
                 ];
 
-                return (React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "diplomacy-overview" }, Rance.UIComponents.PopupManager({
+                    ref: "popupManager"
+                }), React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[0]]
-                })));
+                }))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4651,7 +4703,8 @@ var Rance;
                 }));
 
                 return (React.DOM.div({ className: "options" }, Rance.UIComponents.PopupManager({
-                    ref: "popupManager"
+                    ref: "popupManager",
+                    onlyAllowOne: true
                 }), React.DOM.div({ className: "options-header" }, "Options", React.DOM.button({
                     className: "reset-options-button reset-all-options-button",
                     onClick: this.handleResetAllOptions

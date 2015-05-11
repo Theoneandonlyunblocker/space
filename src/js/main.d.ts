@@ -279,6 +279,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var DiplomacyActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var AutoPosition: {
             componentDidMount: () => void;
             componentDidUpdate: () => void;

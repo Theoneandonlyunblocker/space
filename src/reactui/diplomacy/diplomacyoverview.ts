@@ -1,3 +1,4 @@
+/// <reference path="diplomacyactions.ts" />
 /// <reference path="diplomaticstatusplayer.ts" />
 
 module Rance
@@ -74,13 +75,20 @@ module Rance
         ];
 
         return(
-          React.DOM.div({className: "diplomacy-status-list"},
-            UIComponents.List(
+          React.DOM.div({className: "diplomacy-overview"},
+            UIComponents.PopupManager(
             {
-              listItems: rows,
-              initialColumns: columns,
-              initialSortOrder: [columns[0]]
-            })
+              ref: "popupManager",
+              onlyAllowOne: true
+            }),
+            React.DOM.div({className: "diplomacy-status-list"},
+              UIComponents.List(
+              {
+                listItems: rows,
+                initialColumns: columns,
+                initialSortOrder: [columns[0]]
+              })
+            )
           )
         );
       }
