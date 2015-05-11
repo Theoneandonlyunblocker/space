@@ -1517,6 +1517,14 @@ progress::-webkit-progress-value { background: #080; }
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.battle-info
+{
+  display: flex;
+  flex-flow: column;
+  margin-bottom: 5px;
+  justify-content: space-between;
+}
+
 .battle-info-opponent
 {
   display: flex;
@@ -1532,7 +1540,13 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-info .defence-building-list
 {
-  background: linear-gradient()
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0%,
+    fadeout(@bg-color2, 30%) 40%,
+    fadeout(@bg-color2, 30%) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .battle-prep-left-controls
