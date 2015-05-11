@@ -72,7 +72,8 @@ module Rance
               initialColumns: columns,
               initialSortOrder: [columns[1]], //date
               onRowChange: this.props.onRowChange,
-              autoSelect: this.props.autoSelect
+              autoSelect: this.props.autoSelect,
+              keyboardSelect: true
             })
           )
         );

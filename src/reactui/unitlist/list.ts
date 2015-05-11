@@ -31,26 +31,29 @@ module Rance
 
         window.addEventListener("resize", this.setDesiredHeight, false);
 
-        this.getDOMNode().addEventListener("keydown", function(event)
+        if (this.props.keyboardSelect)
         {
-          switch (event.keyCode)
+          this.getDOMNode().addEventListener("keydown", function(event)
           {
-            case 40:
+            switch (event.keyCode)
             {
-              self.shiftSelection(1);
-              break;
+              case 40:
+              {
+                self.shiftSelection(1);
+                break;
+              }
+              case 38:
+              {
+                self.shiftSelection(-1);
+                break;
+              }
+              default:
+              {
+                return;
+              }
             }
-            case 38:
-            {
-              self.shiftSelection(-1);
-              break;
-            }
-            default:
-            {
-              return;
-            }
-          }
-        });
+          });
+        }
 
         if (this.props.autoSelect)
         {

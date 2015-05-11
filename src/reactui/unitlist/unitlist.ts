@@ -112,7 +112,8 @@ module Rance
               listItems: rows,
               initialColumns: columns,
               onRowChange: this.props.onRowChange,
-              autoSelect: this.props.autoSelect
+              autoSelect: this.props.autoSelect,
+              keyboardSelect: true
             })
           )
         );

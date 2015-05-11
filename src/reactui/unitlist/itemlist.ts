@@ -162,7 +162,8 @@ module Rance
               initialColumns: columns,
               initialSortOrder: [columns[1], columns[2]], // slot, unit
               onRowChange: this.props.onRowChange,
-              tabIndex: 2
+              tabIndex: 2,
+              keyboardSelect: true
             })
           )
         );
