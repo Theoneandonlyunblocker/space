@@ -1,3 +1,4 @@
+/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="optionsgroup.ts"/>
 
 module Rance

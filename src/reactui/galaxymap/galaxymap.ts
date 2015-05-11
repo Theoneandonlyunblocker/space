@@ -1,4 +1,3 @@
-/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="galaxymapui.ts"/>
 
 module Rance
@@ -22,7 +21,6 @@ module Rance
             {
               className: "galaxy-map"  
             },
-            UIComponents.PopupManager(),
             React.DOM.div(
             {
               ref: "pixiContainer",
