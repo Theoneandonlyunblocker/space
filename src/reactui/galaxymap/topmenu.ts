@@ -207,6 +207,7 @@ module Rance
 
       render: function()
       {
+        var menuItemTabIndex = this.state.opened ? -1 : 0;
         return(
           React.DOM.div(
           {
@@ -223,39 +224,46 @@ module Rance
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleSaveGame
+                  onClick: this.handleSaveGame,
+                  tabIndex: menuItemTabIndex
                 }, "Save"),
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleLoadGame
+                  onClick: this.handleLoadGame,
+                  tabIndex: menuItemTabIndex
                 }, "Load"),
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleOptions
+                  onClick: this.handleOptions,
+                  tabIndex: menuItemTabIndex
                 }, "Options"),
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleDiplomacy
+                  onClick: this.handleDiplomacy,
+                  tabIndex: menuItemTabIndex
                 }, "Diplomacy"),
                 /*
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleEconomySummary
+                  onClick: this.handleEconomySummary,
+                  tabIndex: menuItemTabIndex
                 }, "Economy"),
                 */
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleBuyItems
+                  onClick: this.handleBuyItems,
+                  tabIndex: menuItemTabIndex
                 }, "Buy items"),
                 React.DOM.button(
                 {
                   className: "top-menu-items-button",
-                  onClick: this.handleEquipItems
+                  onClick: this.handleEquipItems,
+                  tabIndex: menuItemTabIndex
                 }, "Equip")
               )
             ),
