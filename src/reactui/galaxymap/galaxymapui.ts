@@ -70,7 +70,8 @@ module Rance
         var endTurnButtonProps =
         {
           className: "end-turn-button",
-          onClick: this.endTurn
+          onClick: this.endTurn,
+          tabIndex: -1
         }
         if (!this.state.isPlayerTurn)
         {
