@@ -219,26 +219,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var Popup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var TutorialPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var ConfirmPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var PopupManager: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var LightBox: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -255,6 +235,26 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var BuyItems: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Popup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TutorialPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var ConfirmPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var PopupManager: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {
@@ -1410,6 +1410,7 @@ declare module Rance {
         public handleDiplomaticStatusUpdate(): void;
         public getOpinionOf(player: Rance.Player): number;
         public meetPlayer(player: Rance.Player): void;
+        public canDeclareWarOn(player: Rance.Player): boolean;
         public declareWarOn(player: Rance.Player): void;
         public canAttackFleetOfPlayer(player: Rance.Player): boolean;
         public canAttackBuildingOfPlayer(player: Rance.Player): boolean;

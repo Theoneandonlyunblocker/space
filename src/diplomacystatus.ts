@@ -79,6 +79,16 @@ module Rance
       }
     }
 
+    canDeclareWarOn(player: Player)
+    {
+      if (this.statusByPlayer[player.id] >= DiplomaticState.war)
+      {
+        return false;
+      }
+
+      return true;
+    }
+
     declareWarOn(player: Player)
     {
       this.statusByPlayer[player.id] = DiplomaticState.war;

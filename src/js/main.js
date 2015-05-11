@@ -3222,6 +3222,221 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.LightBox = React.createClass({
+            displayName: "LightBox",
+            // far from ideal as it always triggers reflow 4 times
+            // cant figure out how to do resizing better since content size is dynamic
+            handleResize: function () {
+                var container = this.refs.container.getDOMNode();
+                var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
+                container.classList.remove("light-box-horizontal-padding");
+                container.classList.remove("light-box-fill-horizontal");
+
+                container.classList.remove("light-box-vertical-padding");
+                container.classList.remove("light-box-fill-vertical");
+
+                if (container.getBoundingClientRect().width + 10 + wrapperRect.left < window.innerWidth) {
+                    container.classList.add("light-box-horizontal-padding");
+                } else {
+                    container.classList.add("light-box-fill-horizontal");
+                }
+
+                if (container.getBoundingClientRect().height + 10 + wrapperRect.top < window.innerHeight) {
+                    container.classList.add("light-box-vertical-padding");
+                } else {
+                    container.classList.add("light-box-fill-vertical");
+                }
+            },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.handleResize, false);
+                this.handleResize();
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+            },
+            componentDidUpdate: function () {
+                this.handleResize();
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "light-box-wrapper",
+                    ref: "wrapper"
+                }, React.DOM.div({
+                    className: "light-box-container",
+                    ref: "container"
+                }, React.DOM.button({
+                    className: "light-box-close",
+                    onClick: this.props.handleClose
+                }, "X"), React.DOM.div({
+                    className: "light-box-content"
+                }, this.props.content))));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ItemPurchaseListItem = React.createClass({
+            displayName: "ItemPurchaseListItem",
+            makeCell: function (type) {
+                var cellProps = {};
+                cellProps.key = type;
+                cellProps.className = "item-purchase-list-item-cell " + "item-purchase-list-" + type;
+
+                var cellContent;
+
+                switch (type) {
+                    case ("buildCost"): {
+                        if (this.props.playerMoney < this.props.buildCost) {
+                            cellProps.className += " negative";
+                        }
+                    }
+                    default: {
+                        cellContent = this.props[type];
+                        if (isFinite(cellContent)) {
+                            cellProps.className += " center-text";
+                        }
+
+                        break;
+                    }
+                }
+
+                return (React.DOM.td(cellProps, cellContent));
+            },
+            render: function () {
+                var cells = [];
+                var columns = this.props.activeColumns;
+
+                for (var i = 0; i < columns.length; i++) {
+                    cells.push(this.makeCell(columns[i].key));
+                }
+
+                var props = {
+                    className: "item-purchase-list-item",
+                    onClick: this.props.handleClick
+                };
+                if (this.props.playerMoney < this.props.buildCost) {
+                    props.onClick = null;
+                    props.disabled = true;
+                    props.className += " disabled";
+                }
+
+                return (React.DOM.tr(props, cells));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="itempurchaselistitem.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.ItemPurchaseList = React.createClass({
+            displayName: "ItemPurchaseList",
+            getSlotIndex: function (slot) {
+                if (slot === "high") {
+                    return 2;
+                } else if (slot === "mid") {
+                    return 1;
+                } else
+                    return 0;
+            },
+            render: function () {
+                var rows = [];
+
+                for (var i = 0; i < this.props.items.length; i++) {
+                    var item = this.props.items[i];
+
+                    var data = {
+                        item: item,
+                        typeName: item.template.displayName,
+                        slot: item.template.slot,
+                        slotIndex: this.getSlotIndex(item.template.slot),
+                        techLevel: item.template.techLevel,
+                        buildCost: item.template.cost,
+                        playerMoney: this.props.playerMoney,
+                        rowConstructor: Rance.UIComponents.ItemPurchaseListItem
+                    };
+
+                    rows.push({
+                        key: item.template.type,
+                        data: data
+                    });
+                }
+
+                var columns = [
+                    {
+                        label: "Type",
+                        key: "typeName",
+                        defaultOrder: "asc"
+                    },
+                    {
+                        label: "Slot",
+                        key: "slot",
+                        propToSortBy: "slotIndex",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Tech",
+                        key: "techLevel",
+                        defaultOrder: "desc"
+                    },
+                    {
+                        label: "Cost",
+                        key: "buildCost",
+                        defaultOrder: "asc"
+                    }
+                ];
+
+                return (React.DOM.div({ className: "item-purchase-list" }, Rance.UIComponents.List({
+                    listItems: rows,
+                    initialColumns: columns,
+                    initialSortOrder: [columns[1], columns[2]],
+                    onRowChange: this.props.onRowChange
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="itempurchaselist.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BuyItems = React.createClass({
+            displayName: "BuyItems",
+            handleSelectRow: function (row) {
+                var template = row.data.item.template;
+                var item = new Rance.Item(template);
+
+                this.props.player.addItem(item);
+                this.props.player.money -= template.cost;
+
+                Rance.eventManager.dispatchEvent("playerControlUpdated");
+            },
+            render: function () {
+                var player = this.props.player;
+                var items = player.getAllBuildableItems();
+
+                if (items.length < 1) {
+                    return (React.DOM.div({ className: "buy-items" }, "You need to construct an item manufactory first"));
+                }
+
+                return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemPurchaseList({
+                    items: items,
+                    onRowChange: this.handleSelectRow,
+                    playerMoney: this.props.player.money
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
 var Rance;
 (function (Rance) {
@@ -3533,221 +3748,6 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
-        UIComponents.LightBox = React.createClass({
-            displayName: "LightBox",
-            // far from ideal as it always triggers reflow 4 times
-            // cant figure out how to do resizing better since content size is dynamic
-            handleResize: function () {
-                var container = this.refs.container.getDOMNode();
-                var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
-                container.classList.remove("light-box-horizontal-padding");
-                container.classList.remove("light-box-fill-horizontal");
-
-                container.classList.remove("light-box-vertical-padding");
-                container.classList.remove("light-box-fill-vertical");
-
-                if (container.getBoundingClientRect().width + 10 + wrapperRect.left < window.innerWidth) {
-                    container.classList.add("light-box-horizontal-padding");
-                } else {
-                    container.classList.add("light-box-fill-horizontal");
-                }
-
-                if (container.getBoundingClientRect().height + 10 + wrapperRect.top < window.innerHeight) {
-                    container.classList.add("light-box-vertical-padding");
-                } else {
-                    container.classList.add("light-box-fill-vertical");
-                }
-            },
-            componentDidMount: function () {
-                window.addEventListener("resize", this.handleResize, false);
-                this.handleResize();
-            },
-            componentWillUnmount: function () {
-                window.removeEventListener("resize", this.handleResize);
-            },
-            componentDidUpdate: function () {
-                this.handleResize();
-            },
-            render: function () {
-                return (React.DOM.div({
-                    className: "light-box-wrapper",
-                    ref: "wrapper"
-                }, React.DOM.div({
-                    className: "light-box-container",
-                    ref: "container"
-                }, React.DOM.button({
-                    className: "light-box-close",
-                    onClick: this.props.handleClose
-                }, "X"), React.DOM.div({
-                    className: "light-box-content"
-                }, this.props.content))));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.ItemPurchaseListItem = React.createClass({
-            displayName: "ItemPurchaseListItem",
-            makeCell: function (type) {
-                var cellProps = {};
-                cellProps.key = type;
-                cellProps.className = "item-purchase-list-item-cell " + "item-purchase-list-" + type;
-
-                var cellContent;
-
-                switch (type) {
-                    case ("buildCost"): {
-                        if (this.props.playerMoney < this.props.buildCost) {
-                            cellProps.className += " negative";
-                        }
-                    }
-                    default: {
-                        cellContent = this.props[type];
-                        if (isFinite(cellContent)) {
-                            cellProps.className += " center-text";
-                        }
-
-                        break;
-                    }
-                }
-
-                return (React.DOM.td(cellProps, cellContent));
-            },
-            render: function () {
-                var cells = [];
-                var columns = this.props.activeColumns;
-
-                for (var i = 0; i < columns.length; i++) {
-                    cells.push(this.makeCell(columns[i].key));
-                }
-
-                var props = {
-                    className: "item-purchase-list-item",
-                    onClick: this.props.handleClick
-                };
-                if (this.props.playerMoney < this.props.buildCost) {
-                    props.onClick = null;
-                    props.disabled = true;
-                    props.className += " disabled";
-                }
-
-                return (React.DOM.tr(props, cells));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="itempurchaselistitem.ts" />
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.ItemPurchaseList = React.createClass({
-            displayName: "ItemPurchaseList",
-            getSlotIndex: function (slot) {
-                if (slot === "high") {
-                    return 2;
-                } else if (slot === "mid") {
-                    return 1;
-                } else
-                    return 0;
-            },
-            render: function () {
-                var rows = [];
-
-                for (var i = 0; i < this.props.items.length; i++) {
-                    var item = this.props.items[i];
-
-                    var data = {
-                        item: item,
-                        typeName: item.template.displayName,
-                        slot: item.template.slot,
-                        slotIndex: this.getSlotIndex(item.template.slot),
-                        techLevel: item.template.techLevel,
-                        buildCost: item.template.cost,
-                        playerMoney: this.props.playerMoney,
-                        rowConstructor: Rance.UIComponents.ItemPurchaseListItem
-                    };
-
-                    rows.push({
-                        key: item.template.type,
-                        data: data
-                    });
-                }
-
-                var columns = [
-                    {
-                        label: "Type",
-                        key: "typeName",
-                        defaultOrder: "asc"
-                    },
-                    {
-                        label: "Slot",
-                        key: "slot",
-                        propToSortBy: "slotIndex",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Tech",
-                        key: "techLevel",
-                        defaultOrder: "desc"
-                    },
-                    {
-                        label: "Cost",
-                        key: "buildCost",
-                        defaultOrder: "asc"
-                    }
-                ];
-
-                return (React.DOM.div({ className: "item-purchase-list" }, Rance.UIComponents.List({
-                    listItems: rows,
-                    initialColumns: columns,
-                    initialSortOrder: [columns[1], columns[2]],
-                    onRowChange: this.props.onRowChange
-                })));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-/// <reference path="itempurchaselist.ts" />
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.BuyItems = React.createClass({
-            displayName: "BuyItems",
-            handleSelectRow: function (row) {
-                var template = row.data.item.template;
-                var item = new Rance.Item(template);
-
-                this.props.player.addItem(item);
-                this.props.player.money -= template.cost;
-
-                Rance.eventManager.dispatchEvent("playerControlUpdated");
-            },
-            render: function () {
-                var player = this.props.player;
-                var items = player.getAllBuildableItems();
-
-                if (items.length < 1) {
-                    return (React.DOM.div({ className: "buy-items" }, "You need to construct an item manufactory first"));
-                }
-
-                return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemPurchaseList({
-                    items: items,
-                    onRowChange: this.handleSelectRow,
-                    playerMoney: this.props.player.money
-                })));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
         UIComponents.SaveListItem = React.createClass({
             displayName: "SaveListItem",
             makeCell: function (type) {
@@ -3859,6 +3859,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 var Rance;
 (function (Rance) {
@@ -3929,6 +3930,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 var Rance;
 (function (Rance) {
@@ -4574,6 +4576,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="optionsgroup.ts"/>
 var Rance;
 (function (Rance) {
@@ -9650,6 +9653,14 @@ var Rance;
                 this.attitudeModifiersByPlayer[player.id] = [];
                 player.diplomacyStatus.meetPlayer(this.player);
             }
+        };
+
+        DiplomacyStatus.prototype.canDeclareWarOn = function (player) {
+            if (this.statusByPlayer[player.id] >= 2 /* war */) {
+                return false;
+            }
+
+            return true;
         };
 
         DiplomacyStatus.prototype.declareWarOn = function (player) {
@@ -15512,7 +15523,6 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
-/// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="galaxymapui.ts"/>
 var Rance;
 (function (Rance) {
@@ -15527,7 +15537,7 @@ var Rance;
             render: function () {
                 return (React.DOM.div({
                     className: "galaxy-map"
-                }, Rance.UIComponents.PopupManager(), React.DOM.div({
+                }, React.DOM.div({
                     ref: "pixiContainer",
                     id: "pixi-container"
                 }, Rance.UIComponents.GalaxyMapUI({
