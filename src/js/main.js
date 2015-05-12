@@ -13802,8 +13802,6 @@ var Rance;
                 }
             }
 
-            debugger;
-
             return allBuildable;
         };
         Player.prototype.getNearestOwnedStarTo = function (star) {
