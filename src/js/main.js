@@ -4436,7 +4436,6 @@ var Rance;
         UIComponents.DiplomacyOverview = React.createClass({
             displayName: "DiplomacyOverview",
             makeDiplomacyActionsPopup: function (rowItem) {
-                console.log("makeDiplomacyActionsPopup");
                 var player = rowItem.data.player;
 
                 this.refs.popupManager.makePopup({
@@ -6238,7 +6237,7 @@ var Rance;
                 typeName: "Cheat Ship",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip2.png",
+                    imageSrc: "cheatShip.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -6265,7 +6264,7 @@ var Rance;
                 typeName: "Fighter Squadron",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip.png",
+                    imageSrc: "fighter.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -6290,7 +6289,7 @@ var Rance;
                 typeName: "Bomber Squadron",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip3.png",
+                    imageSrc: "bomber.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -6315,7 +6314,7 @@ var Rance;
                 typeName: "Battlecruiser",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "testShip4.png",
+                    imageSrc: "battleCruiser.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -6340,7 +6339,7 @@ var Rance;
                 typeName: "Scout",
                 archetype: "utility",
                 sprite: {
-                    imageSrc: "testShip5.png",
+                    imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: true,
@@ -6364,7 +6363,7 @@ var Rance;
                 typeName: "Shield Boat",
                 archetype: "defence",
                 sprite: {
-                    imageSrc: "testShip6.png",
+                    imageSrc: "shieldBoat.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -7227,7 +7226,7 @@ var Rance;
             Items.bombLauncher1 = {
                 type: "bombLauncher1",
                 displayName: "Bomb Launcher 1",
-                icon: "img\/items\/25711_64.png",
+                icon: "img\/items\/cannon.png",
                 techLevel: 1,
                 cost: 100,
                 slot: "high",
@@ -7236,7 +7235,7 @@ var Rance;
             Items.bombLauncher2 = {
                 type: "bombLauncher2",
                 displayName: "Bomb Launcher 2",
-                icon: "img\/items\/25711_64.png",
+                icon: "img\/items\/cannon.png",
                 techLevel: 2,
                 cost: 200,
                 attributes: {
@@ -7248,7 +7247,7 @@ var Rance;
             Items.bombLauncher3 = {
                 type: "bombLauncher3",
                 displayName: "Bomb Launcher 3",
-                icon: "img\/items\/25711_64.png",
+                icon: "img\/items\/cannon.png",
                 techLevel: 3,
                 cost: 300,
                 attributes: {
@@ -7261,7 +7260,7 @@ var Rance;
             Items.afterBurner1 = {
                 type: "afterBurner1",
                 displayName: "Afterburner 1",
-                icon: "img\/items\/12066_64.png",
+                icon: "img\/items\/blueThing.png",
                 techLevel: 1,
                 cost: 100,
                 attributes: {
@@ -7272,7 +7271,7 @@ var Rance;
             Items.afterBurner2 = {
                 type: "afterBurner2",
                 displayName: "Afterburner 2",
-                icon: "img\/items\/12066_64.png",
+                icon: "img\/items\/blueThing.png",
                 techLevel: 2,
                 cost: 200,
                 attributes: {
@@ -7283,7 +7282,7 @@ var Rance;
             Items.afterBurner3 = {
                 type: "afterBurner3",
                 displayName: "Afterburner 3",
-                icon: "img\/items\/12066_64.png",
+                icon: "img\/items\/blueThing.png",
                 techLevel: 3,
                 cost: 300,
                 attributes: {
@@ -7295,7 +7294,7 @@ var Rance;
             Items.shieldPlating1 = {
                 type: "shieldPlating1",
                 displayName: "Shield Plating 1",
-                icon: "img\/items\/578_64.png",
+                icon: "img\/items\/armor1.png",
                 techLevel: 1,
                 cost: 100,
                 attributes: {
@@ -7306,7 +7305,7 @@ var Rance;
             Items.shieldPlating2 = {
                 type: "shieldPlating2",
                 displayName: "Shield Plating 2",
-                icon: "img\/items\/578_64.png",
+                icon: "img\/items\/armor1.png",
                 techLevel: 2,
                 cost: 200,
                 attributes: {
@@ -7317,7 +7316,7 @@ var Rance;
             Items.shieldPlating3 = {
                 type: "shieldPlating3",
                 displayName: "Shield Plating 3",
-                icon: "img\/items\/578_64.png",
+                icon: "img\/items\/armor1.png",
                 techLevel: 3,
                 cost: 300,
                 attributes: {
@@ -13803,6 +13802,8 @@ var Rance;
                 }
             }
 
+            debugger;
+
             return allBuildable;
         };
         Player.prototype.getNearestOwnedStarTo = function (star) {
@@ -14990,12 +14991,16 @@ var Rance;
 
             var ctx = canvas.getContext("2d");
 
-            var unitsToDraw = Math.round(this.currentHealth * 0.05);
-            unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
-
             var spriteTemplate = this.template.sprite;
-
             var image = app.images["units"][spriteTemplate.imageSrc];
+
+            var unitsToDraw = Math.round(this.currentHealth * 0.05);
+            var heightRatio = 34 / image.height;
+
+            maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+
+            unitsToDraw *= heightRatio;
+            unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
             var xMin, xMax, yMin, yMax;
 

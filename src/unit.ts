@@ -545,13 +545,18 @@ module Rance
 
       var ctx = canvas.getContext("2d");
 
+      var spriteTemplate = this.template.sprite;
+      var image = app.images["units"][spriteTemplate.imageSrc];
       
       var unitsToDraw = Math.round(this.currentHealth * 0.05);
+      var heightRatio = 34 / image.height;
+
+      maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+
+      unitsToDraw *= heightRatio;
       unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
-      var spriteTemplate = this.template.sprite;
 
-      var image = app.images["units"][spriteTemplate.imageSrc];
 
       var xMin, xMax, yMin, yMax;
 
