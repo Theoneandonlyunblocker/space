@@ -1872,21 +1872,23 @@ var Rance;
 
                 window.addEventListener("resize", this.setDesiredHeight, false);
 
-                this.getDOMNode().addEventListener("keydown", function (event) {
-                    switch (event.keyCode) {
-                        case 40: {
-                            self.shiftSelection(1);
-                            break;
+                if (this.props.keyboardSelect) {
+                    this.getDOMNode().addEventListener("keydown", function (event) {
+                        switch (event.keyCode) {
+                            case 40: {
+                                self.shiftSelection(1);
+                                break;
+                            }
+                            case 38: {
+                                self.shiftSelection(-1);
+                                break;
+                            }
+                            default: {
+                                return;
+                            }
                         }
-                        case 38: {
-                            self.shiftSelection(-1);
-                            break;
-                        }
-                        default: {
-                            return;
-                        }
-                    }
-                });
+                    });
+                }
 
                 if (this.props.autoSelect) {
                     this.handleSelectRow(this.props.sortedItems[0]);
@@ -2377,7 +2379,8 @@ var Rance;
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.props.onRowChange,
-                    autoSelect: this.props.autoSelect
+                    autoSelect: this.props.autoSelect,
+                    keyboardSelect: true
                 })));
             }
         });
@@ -2612,7 +2615,8 @@ var Rance;
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
                     onRowChange: this.props.onRowChange,
-                    tabIndex: 2
+                    tabIndex: 2,
+                    keyboardSelect: true
                 })));
             }
         });
@@ -3862,7 +3866,8 @@ var Rance;
                     initialColumns: columns,
                     initialSortOrder: [columns[1]],
                     onRowChange: this.props.onRowChange,
-                    autoSelect: this.props.autoSelect
+                    autoSelect: this.props.autoSelect,
+                    keyboardSelect: true
                 })));
             }
         });
@@ -4020,7 +4025,8 @@ var Rance;
         UIComponents.DiplomacyActions = React.createClass({
             displayName: "DiplomacyActions",
             handleDeclareWar: function () {
-                this.props.player.declareWarOn(this.props.targetPlayer);
+                this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
+                this.props.onUpdate();
             },
             render: function () {
                 var player = this.props.player;
@@ -4038,14 +4044,21 @@ var Rance;
                 }
 
                 return (React.DOM.div({
+                    className: "diplomacy-actions-container"
+                }, React.DOM.button({
+                    className: "light-box-close",
+                    onClick: this.props.closePopup
+                }, "X"), React.DOM.div({
                     className: "diplomacy-actions"
-                }, React.DOM.button(declareWarProps, "Declare war"), React.DOM.button({
+                }, React.DOM.div({
+                    className: "diplomacy-actions-header"
+                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button({
                     className: "diplomacy-action-button"
                 }, "Dummy"), React.DOM.button({
                     className: "diplomacy-action-button"
                 }, "Dummy"), React.DOM.button({
                     className: "diplomacy-action-button"
-                }, "Dummy")));
+                }, "Dummy"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4153,8 +4166,6 @@ var Rance;
 
                 ownNode.style.left = "" + left + "px";
                 ownNode.style.top = "" + top + "px";
-
-                console.log("setAutoPosition", fitsY, fitsX, ySide, xSide, parentRect);
             }
         };
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4424,6 +4435,19 @@ var Rance;
     (function (UIComponents) {
         UIComponents.DiplomacyOverview = React.createClass({
             displayName: "DiplomacyOverview",
+            makeDiplomacyActionsPopup: function (rowItem) {
+                console.log("makeDiplomacyActionsPopup");
+                var player = rowItem.data.player;
+
+                this.refs.popupManager.makePopup({
+                    contentConstructor: Rance.UIComponents.DiplomacyActions,
+                    contentProps: {
+                        player: this.props.player,
+                        targetPlayer: player,
+                        onUpdate: this.forceUpdate.bind(this)
+                    }
+                });
+            },
             render: function () {
                 var unmetPlayerCount = this.props.totalPlayerCount - Object.keys(this.props.metPlayers).length - 1;
 
@@ -4435,6 +4459,7 @@ var Rance;
                     rows.push({
                         key: player.id,
                         data: {
+                            player: player,
                             name: player.name,
                             baseOpinion: player.diplomacyStatus.getBaseOpinion(),
                             status: Rance.DiplomaticState[this.props.statusByPlayer[playerId]],
@@ -4479,11 +4504,13 @@ var Rance;
                 ];
 
                 return (React.DOM.div({ className: "diplomacy-overview" }, Rance.UIComponents.PopupManager({
-                    ref: "popupManager"
+                    ref: "popupManager",
+                    onlyAllowOne: true
                 }), React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    initialSortOrder: [columns[0]]
+                    initialSortOrder: [columns[0]],
+                    onRowChange: this.makeDiplomacyActionsPopup
                 }))));
             }
         });
@@ -4853,6 +4880,7 @@ var Rance;
                 });
             },
             render: function () {
+                var menuItemTabIndex = this.state.opened ? -1 : 0;
                 return (React.DOM.div({
                     className: "top-menu-wrapper"
                 }, React.DOM.div({
@@ -4861,22 +4889,28 @@ var Rance;
                     className: "top-menu-items"
                 }, React.DOM.button({
                     className: "top-menu-items-button",
-                    onClick: this.handleSaveGame
+                    onClick: this.handleSaveGame,
+                    tabIndex: menuItemTabIndex
                 }, "Save"), React.DOM.button({
                     className: "top-menu-items-button",
-                    onClick: this.handleLoadGame
+                    onClick: this.handleLoadGame,
+                    tabIndex: menuItemTabIndex
                 }, "Load"), React.DOM.button({
                     className: "top-menu-items-button",
-                    onClick: this.handleOptions
+                    onClick: this.handleOptions,
+                    tabIndex: menuItemTabIndex
                 }, "Options"), React.DOM.button({
                     className: "top-menu-items-button",
-                    onClick: this.handleDiplomacy
+                    onClick: this.handleDiplomacy,
+                    tabIndex: menuItemTabIndex
                 }, "Diplomacy"), React.DOM.button({
                     className: "top-menu-items-button",
-                    onClick: this.handleBuyItems
+                    onClick: this.handleBuyItems,
+                    tabIndex: menuItemTabIndex
                 }, "Buy items"), React.DOM.button({
                     className: "top-menu-items-button",
-                    onClick: this.handleEquipItems
+                    onClick: this.handleEquipItems,
+                    tabIndex: menuItemTabIndex
                 }, "Equip"))), this.state.lightBoxElement));
             }
         });
@@ -15524,7 +15558,8 @@ var Rance;
             render: function () {
                 var endTurnButtonProps = {
                     className: "end-turn-button",
-                    onClick: this.endTurn
+                    onClick: this.endTurn,
+                    tabIndex: -1
                 };
                 if (!this.state.isPlayerTurn) {
                     endTurnButtonProps.className += " disabled";

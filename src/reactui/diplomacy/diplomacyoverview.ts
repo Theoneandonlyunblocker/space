@@ -8,6 +8,23 @@ module Rance
     export var DiplomacyOverview = React.createClass(
     {
       displayName: "DiplomacyOverview",
+
+      makeDiplomacyActionsPopup: function(rowItem)
+      {
+        var player = rowItem.data.player;
+
+        this.refs.popupManager.makePopup(
+        {
+          contentConstructor: UIComponents.DiplomacyActions,
+          contentProps:
+          {
+            player: this.props.player,
+            targetPlayer: player,
+            onUpdate: this.forceUpdate.bind(this)
+          }
+        });
+      },
+
       render: function()
       {
         var unmetPlayerCount = this.props.totalPlayerCount -
@@ -24,6 +41,7 @@ module Rance
             key: player.id,
             data:
             {
+              player: player,
               name: player.name,
               baseOpinion: player.diplomacyStatus.getBaseOpinion(),
               status: DiplomaticState[this.props.statusByPlayer[playerId]],
@@ -31,7 +49,6 @@ module Rance
               opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
               attitudeModifiers:
                 player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
-
               rowConstructor: UIComponents.DiplomaticStatusPlayer
             }
           });
@@ -86,7 +103,8 @@ module Rance
               {
                 listItems: rows,
                 initialColumns: columns,
-                initialSortOrder: [columns[0]]
+                initialSortOrder: [columns[0]],
+                onRowChange: this.makeDiplomacyActionsPopup
               })
             )
           )

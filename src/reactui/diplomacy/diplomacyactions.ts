@@ -8,7 +8,8 @@ module Rance
 
       handleDeclareWar: function()
       {
-        this.props.player.declareWarOn(this.props.targetPlayer);
+        this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
+        this.props.onUpdate();
       },
 
       render: function()
@@ -34,28 +35,44 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "diplomacy-actions"
+            className: "diplomacy-actions-container"
           },
-            React.DOM.button(declareWarProps,
-              "Declare war"
-            ),
             React.DOM.button(
             {
-              className: "diplomacy-action-button"
-            },
-              "Dummy"
-            ),
-            React.DOM.button(
+              className: "light-box-close",
+              onClick: this.props.closePopup
+            }, "X"),
+            React.DOM.div(
             {
-              className: "diplomacy-action-button"
+              className: "diplomacy-actions"
             },
-              "Dummy"
-            ),
-            React.DOM.button(
-            {
-              className: "diplomacy-action-button"
-            },
-              "Dummy"
+              React.DOM.div(
+              {
+                className: "diplomacy-actions-header"
+              },
+                targetPlayer.name
+              ),
+              React.DOM.button(declareWarProps,
+                "Declare war"
+              ),
+              React.DOM.button(
+              {
+                className: "diplomacy-action-button"
+              },
+                "Dummy"
+              ),
+              React.DOM.button(
+              {
+                className: "diplomacy-action-button"
+              },
+                "Dummy"
+              ),
+              React.DOM.button(
+              {
+                className: "diplomacy-action-button"
+              },
+                "Dummy"
+              )
             )
           )
         );

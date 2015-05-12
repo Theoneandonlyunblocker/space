@@ -40,7 +40,8 @@ ul {
   color: #eeeeec;
   cursor: pointer;
 }
-.button-style-no-border:hover {
+.button-style-no-border:hover,
+.button-style-no-border:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .button-style-no-border:active {
@@ -64,7 +65,8 @@ ul {
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
-.button-style:hover {
+.button-style:hover,
+.button-style:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .button-style:active {
@@ -431,7 +433,8 @@ progress::-webkit-progress-value {
 .ability-tooltip-faces-left .ability-tooltip-ability {
   background: linear-gradient(to right, rgba(113, 113, 5, 0.9), rgba(113, 113, 5, 0.7));
 }
-.ability-tooltip-ability:hover {
+.ability-tooltip-ability:hover,
+.ability-tooltip-ability:focus {
   background-color: #c8c814;
 }
 .fleets-container {
@@ -1317,7 +1320,8 @@ progress::-webkit-progress-value {
   border-radius: 5px;
   margin: 5px;
 }
-.top-menu-items-button:hover {
+.top-menu-items-button:hover,
+.top-menu-items-button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .top-menu-items-button:active {
@@ -1388,7 +1392,8 @@ progress::-webkit-progress-value {
   color: #444;
   text-decoration: none;
 }
-.light-box-close:hover {
+.light-box-close:hover,
+.light-box-close:focus {
   text-decoration: underline;
 }
 .fleet-selection-container {
@@ -1438,7 +1443,8 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
-.fleet-selection-controls button:hover {
+.fleet-selection-controls button:hover,
+.fleet-selection-controls button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .fleet-selection-controls button:active {
@@ -1505,7 +1511,8 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
-.fleet-controls button:hover {
+.fleet-controls button:hover,
+.fleet-controls button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .fleet-controls button:active {
@@ -1617,7 +1624,8 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
-.fleet-reorganization button:hover {
+.fleet-reorganization button:hover,
+.fleet-reorganization button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .fleet-reorganization button:active {
@@ -1713,7 +1721,8 @@ progress::-webkit-progress-value {
   border: 1px solid #c4e5fb;
   border-radius: 5px;
 }
-.end-turn-button:hover {
+.end-turn-button:hover,
+.end-turn-button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .end-turn-button:active {
@@ -1766,7 +1775,8 @@ progress::-webkit-progress-value {
   margin: 6px 0;
   padding: 6px;
 }
-.possible-action:hover {
+.possible-action:hover,
+.possible-action:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .possible-action:active {
@@ -1907,7 +1917,8 @@ progress::-webkit-progress-value {
   cursor: pointer;
   position: relative;
 }
-.buildable-item-list tbody tr:hover {
+.buildable-item-list tbody tr:hover,
+.buildable-item-list tbody tr:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .buildable-item-list tbody tr:active {
@@ -1940,7 +1951,8 @@ progress::-webkit-progress-value {
   background-position: center bottom;
   background-size: 100% 2px;
 }
-.buildable-item-list tbody tr:hover {
+.buildable-item-list tbody tr:hover,
+.buildable-item-list tbody tr:focus {
   background-color: grey;
 }
 .buildable-item .buildCost {
@@ -2315,26 +2327,35 @@ progress::-webkit-progress-value {
   background-position: center bottom;
   background-size: 100% 2px;
 }
-.diplomacy-status-list tbody tr:hover {
+.diplomacy-status-list tbody tr:hover,
+.diplomacy-status-list tbody tr:focus {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
 }
-.diplomacy-status-list tbody tr:hover:hover {
+.diplomacy-status-list tbody tr:hover:hover,
+.diplomacy-status-list tbody tr:focus:hover,
+.diplomacy-status-list tbody tr:hover:focus,
+.diplomacy-status-list tbody tr:focus:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
-.diplomacy-status-list tbody tr:hover:active {
+.diplomacy-status-list tbody tr:hover:active,
+.diplomacy-status-list tbody tr:focus:active {
   background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .diplomacy-status-list tbody tr:hover:disabled,
-.diplomacy-status-list tbody tr:hover.disabled {
+.diplomacy-status-list tbody tr:focus:disabled,
+.diplomacy-status-list tbody tr:hover.disabled,
+.diplomacy-status-list tbody tr:focus.disabled {
   pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .diplomacy-status-list tbody tr:hover:disabled *,
-.diplomacy-status-list tbody tr:hover.disabled * {
+.diplomacy-status-list tbody tr:focus:disabled *,
+.diplomacy-status-list tbody tr:hover.disabled *,
+.diplomacy-status-list tbody tr:focus.disabled * {
   pointer-events: none !important;
 }
 .diplomatic-status-player {
@@ -2342,6 +2363,42 @@ progress::-webkit-progress-value {
 }
 .diplomatic-status-opinion {
   text-align: center;
+}
+.diplomacy-actions-container {
+  padding: 8px;
+}
+.diplomacy-actions {
+  display: flex;
+  flex-flow: column;
+}
+.diplomacy-actions-header {
+  margin-bottom: 0.5em;
+}
+.diplomacy-action-button {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  border: 1px solid #c4e5fb;
+  border-radius: 5px;
+  margin: 5px;
+}
+.diplomacy-action-button:hover,
+.diplomacy-action-button:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.diplomacy-action-button:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.diplomacy-action-button:disabled,
+.diplomacy-action-button.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.diplomacy-action-button:disabled *,
+.diplomacy-action-button.disabled * {
+  pointer-events: none !important;
 }
 .save-game {
   position: relative;
@@ -2410,7 +2467,8 @@ progress::-webkit-progress-value {
   border-radius: 5px;
   margin: 5px 20px;
 }
-.save-game-button:hover {
+.save-game-button:hover,
+.save-game-button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .save-game-button:active {
@@ -2474,26 +2532,35 @@ progress::-webkit-progress-value {
   background-position: center bottom;
   background-size: 100% 2px;
 }
-.save-list tbody tr:hover {
+.save-list tbody tr:hover,
+.save-list tbody tr:focus {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
 }
-.save-list tbody tr:hover:hover {
+.save-list tbody tr:hover:hover,
+.save-list tbody tr:focus:hover,
+.save-list tbody tr:hover:focus,
+.save-list tbody tr:focus:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
-.save-list tbody tr:hover:active {
+.save-list tbody tr:hover:active,
+.save-list tbody tr:focus:active {
   background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .save-list tbody tr:hover:disabled,
-.save-list tbody tr:hover.disabled {
+.save-list tbody tr:focus:disabled,
+.save-list tbody tr:hover.disabled,
+.save-list tbody tr:focus.disabled {
   pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .save-list tbody tr:hover:disabled *,
-.save-list tbody tr:hover.disabled * {
+.save-list tbody tr:focus:disabled *,
+.save-list tbody tr:hover.disabled *,
+.save-list tbody tr:focus.disabled * {
   pointer-events: none !important;
 }
 .save-list-name {
@@ -2509,7 +2576,8 @@ progress::-webkit-progress-value {
   border-radius: 5px;
   text-align: center;
 }
-.save-list-delete:hover {
+.save-list-delete:hover,
+.save-list-delete:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .save-list-delete:active {
@@ -2544,9 +2612,10 @@ progress::-webkit-progress-value {
   cursor: pointer;
   border: 1px solid #c4e5fb;
   border-radius: 5px;
-  margin: 5px 20px;
+  margin: 5px 20px 0px 20px;
 }
-.popup-button:hover {
+.popup-button:hover,
+.popup-button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .popup-button:active {
@@ -2666,26 +2735,35 @@ progress::-webkit-progress-value {
   background-position: center bottom;
   background-size: 100% 2px;
 }
-.item-purchase-list tbody tr:hover {
+.item-purchase-list tbody tr:hover,
+.item-purchase-list tbody tr:focus {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
 }
-.item-purchase-list tbody tr:hover:hover {
+.item-purchase-list tbody tr:hover:hover,
+.item-purchase-list tbody tr:focus:hover,
+.item-purchase-list tbody tr:hover:focus,
+.item-purchase-list tbody tr:focus:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
-.item-purchase-list tbody tr:hover:active {
+.item-purchase-list tbody tr:hover:active,
+.item-purchase-list tbody tr:focus:active {
   background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
 }
 .item-purchase-list tbody tr:hover:disabled,
-.item-purchase-list tbody tr:hover.disabled {
+.item-purchase-list tbody tr:focus:disabled,
+.item-purchase-list tbody tr:hover.disabled,
+.item-purchase-list tbody tr:focus.disabled {
   pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
 .item-purchase-list tbody tr:hover:disabled *,
-.item-purchase-list tbody tr:hover.disabled * {
+.item-purchase-list tbody tr:focus:disabled *,
+.item-purchase-list tbody tr:hover.disabled *,
+.item-purchase-list tbody tr:focus.disabled * {
   pointer-events: none !important;
 }
 .item-purchase-list .sort-icon {
@@ -2826,7 +2904,8 @@ progress::-webkit-progress-value {
   border-radius: 5px;
   margin-left: 1em;
 }
-.reset-options-button:hover {
+.reset-options-button:hover,
+.reset-options-button:focus {
   background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
 }
 .reset-options-button:active {

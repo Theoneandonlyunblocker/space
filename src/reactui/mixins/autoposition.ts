@@ -133,8 +133,6 @@ module Rance
 
         ownNode.style.left = "" + left + "px";
         ownNode.style.top = "" + top + "px";
-
-        console.log("setAutoPosition", fitsY, fitsX, ySide, xSide, parentRect);
       }
     }
   }
