@@ -47,6 +47,16 @@ module Rance
       return this.baseOpinion;
     }
 
+    updateAttitudes()
+    {
+      if (!this.player.AIController)
+      {
+        return;
+      }
+
+      this.player.AIController.diplomacyAI.setAttitudes();
+    }
+
     handleDiplomaticStatusUpdate()
     {
       eventManager.dispatchEvent("diplomaticStatusUpdated");
