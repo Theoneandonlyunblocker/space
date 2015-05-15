@@ -5280,9 +5280,14 @@ var Rance;
             },
             componentDidMount: function () {
                 this.setElementPosition();
+
+                window.addEventListener("resize", this.setElementPosition, false);
             },
             componentDidUpdate: function () {
                 this.setElementPosition();
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.setElementPosition);
             },
             render: function () {
                 var selectedFleets = this.props.selectedFleets;
@@ -15693,6 +15698,8 @@ var Rance;
                 this.props.galaxyMap.mapRenderer.setMapMode("default");
 
                 this.props.renderer.resume();
+
+                this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
                 var centerLocation = this.props.renderer.camera.toCenterOn || this.props.toCenterOn || this.props.galaxyMap.game.humanPlayer.controlledLocations[0];
 

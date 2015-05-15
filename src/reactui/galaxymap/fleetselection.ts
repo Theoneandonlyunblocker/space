@@ -47,11 +47,18 @@ module Rance
       componentDidMount: function()
       {
         this.setElementPosition();
+
+        window.addEventListener("resize", this.setElementPosition, false);
       },
 
       componentDidUpdate: function()
       {
         this.setElementPosition()
+      },
+
+      componentWillUnmount: function()
+      {
+        window.removeEventListener("resize", this.setElementPosition)
       },
 
       render: function()
