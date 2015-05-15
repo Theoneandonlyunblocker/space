@@ -81,6 +81,12 @@ module Rance
 
     canDeclareWarOn(player: Player)
     {
+      return (this.statusByPlayer[player.id] < DiplomaticState.war);
+    }
+    canMakePeaceWith(player: Player)
+    {
+      return (this.statusByPlayer[player.id] > DiplomaticState.peace);
+    }
       if (this.statusByPlayer[player.id] >= DiplomaticState.war)
       {
         return false;

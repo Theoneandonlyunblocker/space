@@ -99,11 +99,11 @@ module Rance
       }
       else if (this.template.endCondition)
       {
-        if (this.template.endCondition(evaluation)) return true;
+        return this.template.endCondition(evaluation);
       }
-      else if (!this.template.startCondition(evaluation))
+      else if (this.template.startCondition)
       {
-        return true;
+        return !this.template.startCondition(evaluation);
       }
       else
       {
