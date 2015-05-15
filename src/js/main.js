@@ -14991,15 +14991,20 @@ var Rance;
             var spriteTemplate = this.template.sprite;
             var image = app.images["units"][spriteTemplate.imageSrc];
 
-            var unitsToDraw = Math.round(this.currentHealth * 0.05);
+            var unitsToDraw;
 
-            var heightRatio = 25 / image.height;
-            heightRatio = Math.min(heightRatio, 1.25);
-            maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
-            unitsToDraw *= heightRatio;
-            zDistance *= (1 / heightRatio);
+            if (isFinite(props.unitsToDraw)) {
+                unitsToDraw = props.unitsToDraw;
+            } else {
+                unitsToDraw = Math.round(this.currentHealth * 0.05);
+                var heightRatio = 25 / image.height;
+                heightRatio = Math.min(heightRatio, 1.25);
+                maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+                unitsToDraw = Math.round(unitsToDraw * heightRatio);
+                zDistance *= (1 / heightRatio);
 
-            unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+                unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+            }
 
             var xMin, xMax, yMin, yMax;
 
@@ -16726,9 +16731,11 @@ var Rance;
                 facesRight: true
             },
             componentDidMount: function () {
+                app.game = app.makeGame();
+                app.initGame();
                 var unit = app.humanPlayer.getAllUnits()[0];
                 var image = new Image();
-                image.src = "img\/ships\/testShip.png";
+                image.src = "img\/ships\/battleCruiser.png";
                 image.onload = this.renderScene;
             },
             renderScene: function () {

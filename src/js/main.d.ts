@@ -2180,6 +2180,7 @@ declare module Rance {
         public heal(): void;
         public getStrengthEvaluation(): number;
         public drawBattleScene(props: {
+            unitsToDraw?: number;
             maxUnitsPerColumn: number;
             degree: number;
             rotationAngle: number;

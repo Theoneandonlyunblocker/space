@@ -21,9 +21,11 @@ module Rance
 
       componentDidMount: function()
       {
+        app.game = app.makeGame();
+        app.initGame();
         var unit = app.humanPlayer.getAllUnits()[0];
         var image = new Image();
-        image.src = "img\/ships\/testShip.png";
+        image.src = "img\/ships\/battleCruiser.png";
         image.onload = this.renderScene;
       },
 

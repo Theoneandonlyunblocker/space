@@ -513,6 +513,7 @@ module Rance
     }
     drawBattleScene(props:
     {
+      unitsToDraw?: number;
       maxUnitsPerColumn: number;
       degree: number;
       rotationAngle: number;
@@ -546,18 +547,24 @@ module Rance
 
       var spriteTemplate = this.template.sprite;
       var image = app.images["units"][spriteTemplate.imageSrc];
-      
-      var unitsToDraw = Math.round(this.currentHealth * 0.05);
 
-      var heightRatio = 25 / image.height;
-      heightRatio = Math.min(heightRatio, 1.25);
-      maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
-      unitsToDraw *= heightRatio;
-      zDistance *= (1 / heightRatio);
+      var unitsToDraw;
 
-      unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+      if (isFinite(props.unitsToDraw))
+      {
+        unitsToDraw = props.unitsToDraw;
+      }
+      else
+      {
+        unitsToDraw = Math.round(this.currentHealth * 0.05);
+        var heightRatio = 25 / image.height;
+        heightRatio = Math.min(heightRatio, 1.25);
+        maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+        unitsToDraw = Math.round(unitsToDraw * heightRatio);
+        zDistance *= (1 / heightRatio);
 
-
+        unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+      }
 
       var xMin, xMax, yMin, yMax;
 
