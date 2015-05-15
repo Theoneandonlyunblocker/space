@@ -78,18 +78,6 @@ module Rance
               ),
               React.DOM.button(makePeaceProps,
                 "Make peace"
-              ),
-              React.DOM.button(
-              {
-                className: "diplomacy-action-button"
-              },
-                "Dummy"
-              ),
-              React.DOM.button(
-              {
-                className: "diplomacy-action-button"
-              },
-                "Dummy"
               )
             )
           )

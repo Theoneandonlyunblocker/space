@@ -4066,11 +4066,7 @@ var Rance;
                     className: "diplomacy-actions"
                 }, React.DOM.div({
                     className: "diplomacy-actions-header"
-                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
-                    className: "diplomacy-action-button"
-                }, "Dummy"), React.DOM.button({
-                    className: "diplomacy-action-button"
-                }, "Dummy"))));
+                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
