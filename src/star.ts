@@ -868,7 +868,7 @@ module Rance
 
         var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
 
-        itemsByTechLevel = shuffleArray(itemsByTechLevel);
+        itemsByTechLevel = shuffleArray(itemsByTechLevel, this.getSeed());
 
         for (var i = 0; i < maxItemsForTechLevel; i++)
         {
