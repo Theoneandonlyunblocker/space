@@ -1341,6 +1341,7 @@ declare module Rance {
 declare module Rance {
     interface IDiplomacyEvaluation {
         currentTurn: number;
+        currentStatus: Rance.DiplomaticState;
         neighborStars: number;
         opinion: number;
     }
@@ -1382,7 +1383,7 @@ declare module Rance {
             template: Rance.Templates.IAttitudeModifierTemplate;
             startTurn: number;
             endTurn?: number;
-            strength: number;
+            strength?: number;
         });
         public setStrength(evaluation: Rance.IDiplomacyEvaluation): number;
         public getFreshness(currentTurn?: number): number;
@@ -1412,11 +1413,14 @@ declare module Rance {
         };
         constructor(player: Rance.Player);
         public getBaseOpinion(): number;
+        public updateAttitudes(): void;
         public handleDiplomaticStatusUpdate(): void;
         public getOpinionOf(player: Rance.Player): number;
         public meetPlayer(player: Rance.Player): void;
         public canDeclareWarOn(player: Rance.Player): boolean;
+        public canMakePeaceWith(player: Rance.Player): boolean;
         public declareWarOn(player: Rance.Player): void;
+        public makePeaceWith(player: Rance.Player): void;
         public canAttackFleetOfPlayer(player: Rance.Player): boolean;
         public canAttackBuildingOfPlayer(player: Rance.Player): boolean;
         public hasModifierOfSameType(player: Rance.Player, modifier: Rance.AttitudeModifier): boolean;

@@ -4027,6 +4027,10 @@ var Rance;
                 this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
                 this.props.onUpdate();
             },
+            handleMakePeace: function () {
+                this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
+                this.props.onUpdate();
+            },
             render: function () {
                 var player = this.props.player;
                 var targetPlayer = this.props.targetPlayer;
@@ -4042,6 +4046,17 @@ var Rance;
                     declareWarProps.className += " disabled";
                 }
 
+                var makePeaceProps = {
+                    className: "diplomacy-action-button"
+                };
+
+                if (player.diplomacyStatus.canMakePeaceWith(targetPlayer)) {
+                    makePeaceProps.onClick = this.handleMakePeace;
+                } else {
+                    makePeaceProps.disabled = true;
+                    makePeaceProps.className += " disabled";
+                }
+
                 return (React.DOM.div({
                     className: "diplomacy-actions-container"
                 }, React.DOM.button({
@@ -4051,9 +4066,7 @@ var Rance;
                     className: "diplomacy-actions"
                 }, React.DOM.div({
                     className: "diplomacy-actions-header"
-                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button({
-                    className: "diplomacy-action-button"
-                }, "Dummy"), React.DOM.button({
+                }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"), React.DOM.button({
                     className: "diplomacy-action-button"
                 }, "Dummy"), React.DOM.button({
                     className: "diplomacy-action-button"
@@ -9583,19 +9596,23 @@ var Rance;
 
             AttitudeModifiers.atWar = {
                 type: "atWar",
-                displayName: "atWar",
+                displayName: "At war",
                 family: 2 /* current */,
                 duration: -1,
-                triggeredOnly: true,
-                constantEffect: -50
+                startCondition: function (evaluation) {
+                    return (evaluation.currentStatus >= 2 /* war */);
+                },
+                constantEffect: -30
             };
 
             AttitudeModifiers.declaredWar = {
                 type: "declaredWar",
-                displayName: "declaredWar",
+                displayName: "Declared war",
                 family: 1 /* history */,
                 duration: 15,
-                triggeredOnly: true,
+                startCondition: function (evaluation) {
+                    return (evaluation.currentStatus >= 2 /* war */);
+                },
                 constantEffect: -35
             };
         })(Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
@@ -9611,6 +9628,7 @@ var Rance;
             this.isOverRidden = false;
             this.template = props.template;
             this.startTurn = props.startTurn;
+            this.currentTurn = this.startTurn;
 
             if (isFinite(props.endTurn)) {
                 this.endTurn = props.endTurn;
@@ -9624,7 +9642,11 @@ var Rance;
                 throw new Error("Attitude modifier has no duration or end turn set");
             }
 
-            this.strength = props.strength;
+            if (isFinite(this.template.constantEffect)) {
+                this.strength = this.template.constantEffect;
+            } else {
+                this.strength = props.strength;
+            }
         }
         AttitudeModifier.prototype.setStrength = function (evaluation) {
             if (this.template.constantEffect) {
@@ -9650,7 +9672,7 @@ var Rance;
             if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
             var freshenss = this.getFreshness(currentTurn);
 
-            return this.strength * freshenss;
+            return Math.round(this.strength * freshenss);
         };
         AttitudeModifier.prototype.hasExpired = function (currentTurn) {
             if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
@@ -9660,10 +9682,9 @@ var Rance;
             if (this.hasExpired(evaluation.currentTurn)) {
                 return true;
             } else if (this.template.endCondition) {
-                if (this.template.endCondition(evaluation))
-                    return true;
-            } else if (!this.template.startCondition(evaluation)) {
-                return true;
+                return this.template.endCondition(evaluation);
+            } else if (this.template.startCondition) {
+                return !this.template.startCondition(evaluation);
             } else {
                 return false;
             }
@@ -9712,6 +9733,14 @@ var Rance;
             return this.baseOpinion;
         };
 
+        DiplomacyStatus.prototype.updateAttitudes = function () {
+            if (!this.player.AIController) {
+                return;
+            }
+
+            this.player.AIController.diplomacyAI.setAttitudes();
+        };
+
         DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
             Rance.eventManager.dispatchEvent("diplomaticStatusUpdated");
         };
@@ -9741,16 +9770,31 @@ var Rance;
         };
 
         DiplomacyStatus.prototype.canDeclareWarOn = function (player) {
-            if (this.statusByPlayer[player.id] >= 2 /* war */) {
-                return false;
-            }
-
-            return true;
+            return (this.statusByPlayer[player.id] < 2 /* war */);
+        };
+        DiplomacyStatus.prototype.canMakePeaceWith = function (player) {
+            return (this.statusByPlayer[player.id] > 0 /* peace */);
         };
 
         DiplomacyStatus.prototype.declareWarOn = function (player) {
+            if (this.statusByPlayer[player.id] >= 2 /* war */) {
+                throw new Error("Players " + this.player.id + " and " + player.id + " are already at war");
+            }
             this.statusByPlayer[player.id] = 2 /* war */;
-            player.diplomacyStatus[this.player.id] = 2 /* war */;
+            player.diplomacyStatus.statusByPlayer[this.player.id] = 2 /* war */;
+
+            player.diplomacyStatus.updateAttitudes();
+        };
+
+        DiplomacyStatus.prototype.makePeaceWith = function (player) {
+            if (this.statusByPlayer[player.id] <= 0 /* peace */) {
+                throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
+            }
+
+            this.statusByPlayer[player.id] = 0 /* peace */;
+            player.diplomacyStatus.statusByPlayer[this.player.id] = 0 /* peace */;
+
+            player.diplomacyStatus.updateAttitudes();
         };
 
         DiplomacyStatus.prototype.canAttackFleetOfPlayer = function (player) {
@@ -9842,8 +9886,7 @@ var Rance;
                         if (shouldStart) {
                             modifier = new Rance.AttitudeModifier({
                                 template: template,
-                                startTurn: evaluation.currentTurn,
-                                strength: undefined
+                                startTurn: evaluation.currentTurn
                             });
 
                             playerModifiers.push(modifier);
@@ -12420,7 +12463,8 @@ var Rance;
                 evaluationByPlayer[player.id] = {
                     currentTurn: currentTurn,
                     opinion: this.player.diplomacyStatus.getOpinionOf(player),
-                    neighborStars: neighborStarsCountByPlayer[player.id]
+                    neighborStars: neighborStarsCountByPlayer[player.id],
+                    currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
                 };
             }
 

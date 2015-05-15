@@ -249,8 +249,7 @@ module Rance
               modifier = new AttitudeModifier(
               {
                 template: template,
-                startTurn: evaluation.currentTurn,
-                strength: undefined
+                startTurn: evaluation.currentTurn
               });
 
               playerModifiers.push(modifier);

@@ -483,7 +483,8 @@ module Rance
         {
           currentTurn: currentTurn,
           opinion: this.player.diplomacyStatus.getOpinionOf(player),
-          neighborStars: neighborStarsCountByPlayer[player.id]
+          neighborStars: neighborStarsCountByPlayer[player.id],
+          currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
         }
       }
 
