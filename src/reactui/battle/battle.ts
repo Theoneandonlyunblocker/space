@@ -453,7 +453,7 @@ module Rance
           UIComponents.BattleBackground(
           {
             renderer: this.props.renderer,
-            backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
+            backgroundSeed: this.props.battle.battleData.location.getSeed(),
             getBlurArea: this.getBlurArea
           },
             React.DOM.div(

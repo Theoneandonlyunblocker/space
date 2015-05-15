@@ -290,7 +290,7 @@ module Rance
                 {
                   renderer: this.props.renderer,
                   getBlurArea: this.getBackgroundBlurArea,
-                  backgroundSeed: this.props.battlePrep.battleData.location.getBackgroundSeed()
+                  backgroundSeed: this.props.battlePrep.battleData.location.getSeed()
                 },
                   React.DOM.div({className: "battle-prep-left-upper-inner"},
                     leftUpperElement

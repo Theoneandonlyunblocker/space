@@ -831,13 +831,13 @@ module Rance
 
       return factor;
     }
-    getBackgroundSeed()
+    getSeed()
     {
       if (!this.seed)
       {
         var bgString = "";
-        bgString += this.x.toFixed(4);
-        bgString += this.y.toFixed(4);
+        bgString += Math.round(this.x);
+        bgString += Math.round(this.y);
         bgString += new Date().getTime();
         this.seed = bgString;
       }
