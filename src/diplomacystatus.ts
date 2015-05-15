@@ -97,18 +97,30 @@ module Rance
     {
       return (this.statusByPlayer[player.id] > DiplomaticState.peace);
     }
-      if (this.statusByPlayer[player.id] >= DiplomaticState.war)
-      {
-        return false;
-      }
-
-      return true;
-    }
 
     declareWarOn(player: Player)
     {
+      if (this.statusByPlayer[player.id] >= DiplomaticState.war)
+      {
+        throw new Error("Players " + this.player.id + " and " + player.id + " are already at war");
+      }
       this.statusByPlayer[player.id] = DiplomaticState.war;
-      player.diplomacyStatus[this.player.id] = DiplomaticState.war;
+      player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
+
+      player.diplomacyStatus.updateAttitudes();
+    }
+
+    makePeaceWith(player: Player)
+    {
+      if (this.statusByPlayer[player.id] <= DiplomaticState.peace)
+      {
+        throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
+      }
+
+      this.statusByPlayer[player.id] = DiplomaticState.peace;
+      player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.peace;
+
+      player.diplomacyStatus.updateAttitudes();
     }
 
     canAttackFleetOfPlayer(player: Player)
