@@ -16,11 +16,12 @@ module Rance
       template: Templates.IAttitudeModifierTemplate;
       startTurn: number;
       endTurn?: number;
-      strength: number;
+      strength?: number;
     })
     {
       this.template = props.template;
       this.startTurn = props.startTurn;
+      this.currentTurn = this.startTurn;
 
       if (isFinite(props.endTurn))
       {
@@ -42,7 +43,15 @@ module Rance
         throw new Error("Attitude modifier has no duration or end turn set");
       }
 
-      this.strength = props.strength;
+      if (isFinite(this.template.constantEffect))
+      {
+        this.strength = this.template.constantEffect;
+      }
+      else
+      {
+        this.strength = props.strength;
+      }
+
     }
 
     setStrength(evaluation: IDiplomacyEvaluation)
