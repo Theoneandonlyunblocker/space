@@ -59,6 +59,9 @@ module Rance
         
         this.props.renderer.resume();
 
+        // hack. transparency isn't properly rendered without this
+        this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
+
         var centerLocation = this.props.renderer.camera.toCenterOn ||
           this.props.toCenterOn ||
           this.props.galaxyMap.game.humanPlayer.controlledLocations[0];
