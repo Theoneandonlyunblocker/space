@@ -76,7 +76,7 @@ module Rance
     {
       var freshenss = this.getFreshness(currentTurn);
 
-      return this.strength * freshenss;
+      return Math.round(this.strength * freshenss);
     }
     hasExpired(currentTurn: number = this.currentTurn)
     {
