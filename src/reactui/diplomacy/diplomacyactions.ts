@@ -11,11 +11,17 @@ module Rance
         this.props.player.diplomacyStatus.declareWarOn(this.props.targetPlayer);
         this.props.onUpdate();
       },
+      handleMakePeace: function()
+      {
+        this.props.player.diplomacyStatus.makePeaceWith(this.props.targetPlayer);
+        this.props.onUpdate();
+      },
 
       render: function()
       {
         var player = this.props.player;
         var targetPlayer = this.props.targetPlayer;
+
 
         var declareWarProps: any =
         {
@@ -30,6 +36,21 @@ module Rance
         {
           declareWarProps.disabled = true;
           declareWarProps.className += " disabled";
+        }
+
+        var makePeaceProps: any =
+        {
+          className: "diplomacy-action-button"
+        };
+
+        if (player.diplomacyStatus.canMakePeaceWith(targetPlayer))
+        {
+          makePeaceProps.onClick = this.handleMakePeace;
+        }
+        else
+        {
+          makePeaceProps.disabled = true;
+          makePeaceProps.className += " disabled";
         }
 
         return(
@@ -55,11 +76,8 @@ module Rance
               React.DOM.button(declareWarProps,
                 "Declare war"
               ),
-              React.DOM.button(
-              {
-                className: "diplomacy-action-button"
-              },
-                "Dummy"
+              React.DOM.button(makePeaceProps,
+                "Make peace"
               ),
               React.DOM.button(
               {
