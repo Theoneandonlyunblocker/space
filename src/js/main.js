@@ -1779,7 +1779,7 @@ var Rance;
 
                 return (Rance.UIComponents.BattleBackground({
                     renderer: this.props.renderer,
-                    backgroundSeed: this.props.battle.battleData.location.getBackgroundSeed(),
+                    backgroundSeed: this.props.battle.battleData.location.getSeed(),
                     getBlurArea: this.getBlurArea
                 }, React.DOM.div({
                     className: "battle-container",
@@ -3181,7 +3181,7 @@ var Rance;
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, Rance.UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     getBlurArea: this.getBackgroundBlurArea,
-                    backgroundSeed: this.props.battlePrep.battleData.location.getBackgroundSeed()
+                    backgroundSeed: this.props.battlePrep.battleData.location.getSeed()
                 }, React.DOM.div({ className: "battle-prep-left-upper-inner" }, leftUpperElement))), React.DOM.div({ className: "battle-prep-left-controls" }, React.DOM.button({
                     className: "battle-prep-controls-button",
                     onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
@@ -5878,14 +5878,15 @@ var Rance;
         return matchingItems;
     }
     Rance.getMatchingLocalstorageItemsByDate = getMatchingLocalstorageItemsByDate;
-    function shuffleArray(toShuffle) {
+    function shuffleArray(toShuffle, seed) {
+        var rng = new RNG(seed);
         var resultArray = toShuffle.slice(0);
 
         var i = resultArray.length;
 
         while (i > 0) {
             i--;
-            var n = randInt(0, i);
+            var n = rng.random(0, i);
 
             var temp = resultArray[i];
             resultArray[i] = resultArray[n];
@@ -7389,10 +7390,6 @@ var Rance;
                 this.itemsByTechLevel[item.techLevel].push(item);
             }
         };
-
-        ItemGenerator.prototype.getRandomItemOfTechLevel = function (techLevel) {
-            return Rance.getRandomArrayItem(this.itemsByTechLevel[techLevel]);
-        };
         return ItemGenerator;
     })();
     Rance.ItemGenerator = ItemGenerator;
@@ -8018,16 +8015,16 @@ var Rance;
 
             return factor;
         };
-        Star.prototype.getBackgroundSeed = function () {
-            if (!this.backgroundSeed) {
+        Star.prototype.getSeed = function () {
+            if (!this.seed) {
                 var bgString = "";
-                bgString += this.x.toFixed(4);
-                bgString += this.y.toFixed(4);
+                bgString += Math.round(this.x);
+                bgString += Math.round(this.y);
                 bgString += new Date().getTime();
-                this.backgroundSeed = bgString;
+                this.seed = bgString;
             }
 
-            return this.backgroundSeed;
+            return this.seed;
         };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
@@ -8046,12 +8043,9 @@ var Rance;
             for (var techLevel in this.buildableItems) {
                 var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
 
-                if (!itemsByTechLevel)
-                    continue;
-
                 var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
 
-                itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel);
+                itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel, this.getSeed());
 
                 for (var i = 0; i < maxItemsForTechLevel; i++) {
                     this.buildableItems[techLevel].push(itemsByTechLevel.pop());
@@ -8127,7 +8121,7 @@ var Rance;
                 return star.id;
             });
 
-            data.backgroundSeed = this.backgroundSeed;
+            data.seed = this.seed;
             if (this.resource) {
                 data.resourceType = this.resource.type;
             }
@@ -8138,16 +8132,6 @@ var Rance;
                 data.buildings[category] = [];
                 for (var i = 0; i < this.buildings[category].length; i++) {
                     data.buildings[category].push(this.buildings[category][i].serialize());
-                }
-            }
-
-            data.buildableItems = {};
-
-            for (var techLevel in this.buildableItems) {
-                for (var i = 0; i < this.buildableItems[techLevel].length; i++) {
-                    data.buildableItems[techLevel] = this.buildableItems[techLevel].map(function (template) {
-                        return template.type;
-                    });
                 }
             }
 
@@ -15699,6 +15683,7 @@ var Rance;
 
                 this.props.renderer.resume();
 
+                // hack. transparency isn't properly rendered without this
                 this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
 
                 var centerLocation = this.props.renderer.camera.toCenterOn || this.props.toCenterOn || this.props.galaxyMap.game.humanPlayer.controlledLocations[0];
@@ -18973,7 +18958,7 @@ var Rance;
             star.name = data.name;
             star.distance = data.distance;
             star.baseIncome = data.baseIncome;
-            star.backgroundSeed = data.backgroundSeed;
+            star.seed = data.seed;
 
             this.regions[data.regionId].addStar(star);
             if (this.sectors[data.sectorId])
@@ -18982,16 +18967,6 @@ var Rance;
             if (data.resourceType) {
                 star.setResource(Rance.Templates.Resources[data.resourceType]);
             }
-
-            var buildableItems = {};
-
-            for (var techLevel in data.buildableItems) {
-                buildableItems[techLevel] = data.buildableItems[techLevel].map(function (templateType) {
-                    return Rance.Templates.Items[templateType];
-                });
-            }
-
-            star.buildableItems = buildableItems;
 
             return star;
         };

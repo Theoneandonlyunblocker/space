@@ -438,7 +438,7 @@ declare module Rance {
     function arraysEqual(a1: any[], a2: any[]): boolean;
     function prettifyDate(date: Date): string;
     function getMatchingLocalstorageItemsByDate(stringToMatch: string): any[];
-    function shuffleArray(toShuffle: any[]): any[];
+    function shuffleArray(toShuffle: any[], seed?: any): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
     function inspectSave(saveName: string): any;
@@ -837,7 +837,6 @@ declare module Rance {
         };
         constructor();
         public indexItemsByTechLevel(): void;
-        public getRandomItemOfTechLevel(techLevel: number): any;
     }
 }
 declare module Rance {
@@ -849,7 +848,7 @@ declare module Rance {
         public linksFrom: Star[];
         public distance: number;
         public region: Rance.Region;
-        public backgroundSeed: string;
+        public seed: string;
         public baseIncome: number;
         public name: string;
         public owner: Rance.Player;
@@ -945,7 +944,7 @@ declare module Rance {
         public getVisionRange(): number;
         public getVision(): Star[];
         public getHealingFactor(player: Rance.Player): number;
-        public getBackgroundSeed(): string;
+        public getSeed(): string;
         public severLinksToNonAdjacent(): void;
         public seedBuildableItems(): void;
         public getItemManufactoryLevel(): number;

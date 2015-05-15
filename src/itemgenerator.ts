@@ -30,10 +30,5 @@ module Rance
         this.itemsByTechLevel[item.techLevel].push(item);
       }
     }
-
-    getRandomItemOfTechLevel(techLevel: number)
-    {
-      return getRandomArrayItem(this.itemsByTechLevel[techLevel]);
-    }
   }
 }
