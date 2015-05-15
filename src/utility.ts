@@ -354,8 +354,9 @@ module Rance
 
     return matchingItems;
   }
-  export function shuffleArray(toShuffle: any[])
+  export function shuffleArray(toShuffle: any[], seed?: any)
   {
+    var rng = new RNG(seed);
     var resultArray = toShuffle.slice(0);
 
     var i = resultArray.length;
@@ -363,7 +364,7 @@ module Rance
     while (i > 0)
     {
       i--;
-      var n = randInt(0, i);
+      var n = rng.random(0, i);
 
       var temp = resultArray[i];
       resultArray[i] = resultArray[n];
