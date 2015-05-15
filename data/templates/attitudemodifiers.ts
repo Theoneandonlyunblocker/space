@@ -3,6 +3,7 @@ module Rance
   export interface IDiplomacyEvaluation
   {
     currentTurn: number;
+    currentStatus: DiplomaticState;
     neighborStars: number;
     opinion: number;
   }
@@ -62,23 +63,29 @@ module Rance
       export var atWar: IAttitudeModifierTemplate =
       {
         type: "atWar",
-        displayName: "atWar",
+        displayName: "At war",
         family: AttitudeModifierFamily.current,
         duration: -1,
 
-        triggeredOnly: true,
+        startCondition: function(evaluation: IDiplomacyEvaluation)
+        {
+          return (evaluation.currentStatus >= DiplomaticState.war)
+        },
 
-        constantEffect: -50
+        constantEffect: -30
       }
 
       export var declaredWar: IAttitudeModifierTemplate =
       {
         type: "declaredWar",
-        displayName: "declaredWar",
+        displayName: "Declared war",
         family: AttitudeModifierFamily.history,
         duration: 15,
 
-        triggeredOnly: true,
+        startCondition: function(evaluation: IDiplomacyEvaluation)
+        {
+          return (evaluation.currentStatus >= DiplomaticState.war)
+        },
 
         constantEffect: -35
       }
