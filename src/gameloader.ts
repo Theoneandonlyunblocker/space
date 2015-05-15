@@ -141,7 +141,7 @@ module Rance
       star.name = data.name;
       star.distance = data.distance;
       star.baseIncome = data.baseIncome;
-      star.backgroundSeed = data.backgroundSeed;
+      star.seed = data.seed;
 
       this.regions[data.regionId].addStar(star);
       if (this.sectors[data.sectorId]) this.sectors[data.sectorId].addStar(star);

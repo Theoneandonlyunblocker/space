@@ -22,7 +22,7 @@ module Rance
     distance: number;
     region: Region;
 
-    backgroundSeed: string;
+    seed: string;
 
     baseIncome: number;
 
@@ -833,16 +833,16 @@ module Rance
     }
     getBackgroundSeed()
     {
-      if (!this.backgroundSeed)
+      if (!this.seed)
       {
         var bgString = "";
         bgString += this.x.toFixed(4);
         bgString += this.y.toFixed(4);
         bgString += new Date().getTime();
-        this.backgroundSeed = bgString;
+        this.seed = bgString;
       }
 
-      return this.backgroundSeed;
+      return this.seed;
     }
     severLinksToNonAdjacent()
     {
@@ -865,8 +865,6 @@ module Rance
       for (var techLevel in this.buildableItems)
       {
         var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
-
-        if (!itemsByTechLevel) continue; // temporary until more items are added
 
         var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
 
@@ -950,7 +948,7 @@ module Rance
       data.linksToIds = this.linksTo.map(function(star){return star.id});
       data.linksFromIds = this.linksFrom.map(function(star){return star.id});
 
-      data.backgroundSeed = this.backgroundSeed;
+      data.seed = this.seed;
       if (this.resource)
       {
         data.resourceType = this.resource.type;
