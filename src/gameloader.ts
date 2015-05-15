@@ -150,18 +150,6 @@ module Rance
       {
         star.setResource(Templates.Resources[data.resourceType]);
       }
-      
-      var buildableItems: any = {};
-
-      for (var techLevel in data.buildableItems)
-      {
-        buildableItems[techLevel] = data.buildableItems[techLevel].map(function(templateType)
-        {
-          return Templates.Items[templateType];
-        });
-      }
-
-      star.buildableItems = buildableItems;
 
       return star;
     }

@@ -967,19 +967,6 @@ module Rance
         }
       }
 
-      data.buildableItems = {};
-
-      for (var techLevel in this.buildableItems)
-      {
-        for (var i = 0; i < this.buildableItems[techLevel].length; i++)
-        {
-          data.buildableItems[techLevel] = this.buildableItems[techLevel].map(function(template)
-          {
-            return template.type;
-          });
-        }
-      }
-
       return data;
     }
   }
