@@ -59,8 +59,7 @@ module Rance
         {
           zDistance: 8,
           xDistance: 5,
-          unitsToDraw: 20,
-          maxUnitsPerColumn: 8,
+          maxUnitsPerColumn: 7,
           degree: -0.5,
           rotationAngle: 70,
           scalingFactor: 0.04,

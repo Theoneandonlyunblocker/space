@@ -1245,8 +1245,7 @@ var Rance;
                 return ({
                     zDistance: 8,
                     xDistance: 5,
-                    unitsToDraw: 20,
-                    maxUnitsPerColumn: 8,
+                    maxUnitsPerColumn: 7,
                     degree: -0.5,
                     rotationAngle: 70,
                     scalingFactor: 0.04,
@@ -6237,7 +6236,7 @@ var Rance;
                 typeName: "Cheat Ship",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "cheatShip.png",
+                    imageSrc: "fighter.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -14993,11 +14992,13 @@ var Rance;
             var image = app.images["units"][spriteTemplate.imageSrc];
 
             var unitsToDraw = Math.round(this.currentHealth * 0.05);
-            var heightRatio = 34 / image.height;
 
+            var heightRatio = 25 / image.height;
+            heightRatio = Math.min(heightRatio, 1.25);
             maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
-
             unitsToDraw *= heightRatio;
+            zDistance *= (1 / heightRatio);
+
             unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
 
             var xMin, xMax, yMin, yMax;

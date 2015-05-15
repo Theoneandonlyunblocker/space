@@ -46,7 +46,7 @@ module Rance
         archetype: "combat",
         sprite:
         {
-          imageSrc: "cheatShip.png",
+          imageSrc: "fighter.png",
           anchor: {x: 0.5, y: 0.5}
         },
         isSquadron: false,
