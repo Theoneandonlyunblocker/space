@@ -643,8 +643,11 @@ progress::-webkit-progress-value {
   flex: 1;
 }
 .unit-info-inner {
-  display: block;
+  display: flex;
   position: relative;
+  flex-flow: column;
+  justify-content: flex-end;
+  height: 4.2em;
 }
 .unit-info-name {
   white-space: nowrap;
