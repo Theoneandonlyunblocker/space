@@ -30,7 +30,7 @@ module Rance
     }
     export module Items
     {
-      export var bombLauncher1 =
+      export var bombLauncher1: IItemTemplate =
       {
         type: "bombLauncher1",
         displayName: "Bomb Launcher 1",
@@ -43,7 +43,7 @@ module Rance
         slot: "high",
         ability: Abilities.bombAttack
       }
-      export var bombLauncher2 =
+      export var bombLauncher2: IItemTemplate =
       {
         type: "bombLauncher2",
         displayName: "Bomb Launcher 2",
@@ -61,7 +61,7 @@ module Rance
         slot: "high",
         ability: Abilities.bombAttack
       }
-      export var bombLauncher3 =
+      export var bombLauncher3: IItemTemplate =
       {
         type: "bombLauncher3",
         displayName: "Bomb Launcher 3",
@@ -80,7 +80,7 @@ module Rance
         ability: Abilities.bombAttack
       }
 
-      export var afterBurner1 =
+      export var afterBurner1: IItemTemplate =
       {
         type: "afterBurner1",
         displayName: "Afterburner 1",
@@ -97,7 +97,7 @@ module Rance
 
         slot: "mid"
       }
-      export var afterBurner2 =
+      export var afterBurner2: IItemTemplate =
       {
         type: "afterBurner2",
         displayName: "Afterburner 2",
@@ -114,7 +114,7 @@ module Rance
 
         slot: "mid"
       }
-      export var afterBurner3 =
+      export var afterBurner3: IItemTemplate =
       {
         type: "afterBurner3",
         displayName: "Afterburner 3",
@@ -132,7 +132,7 @@ module Rance
 
         slot: "mid"
       }
-      export var shieldPlating1 =
+      export var shieldPlating1: IItemTemplate =
       {
         type: "shieldPlating1",
         displayName: "Shield Plating 1",
@@ -149,7 +149,7 @@ module Rance
 
         slot: "low"
       }
-      export var shieldPlating2 =
+      export var shieldPlating2: IItemTemplate =
       {
         type: "shieldPlating2",
         displayName: "Shield Plating 2",
@@ -166,7 +166,7 @@ module Rance
 
         slot: "low"
       }
-      export var shieldPlating3 =
+      export var shieldPlating3: IItemTemplate =
       {
         type: "shieldPlating3",
         displayName: "Shield Plating 3",
