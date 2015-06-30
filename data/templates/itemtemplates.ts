@@ -20,6 +20,7 @@ module Rance
       ability?: IAbilityTemplate;
       attributes?:
       {
+        maxActionPoints?: number;
         attack?: number;
         defence?: number;
         intelligence?: number;
