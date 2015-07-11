@@ -1,6 +1,7 @@
 /// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 
+/// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
@@ -24,23 +25,18 @@ module Rance
 
     timesActedThisTurn: number;
 
-    baseAttributes:
+    baseAttributes: IUnitAttributes;
+    attributesAreDirty: boolean;
+    cachedAttributes: IUnitAttributes;
+    get attributes(): IUnitAttributes
     {
-      maxActionPoints: number;
-      attack: number;
-      defence: number;
-      intelligence: number;
-      speed: number;
-    };
-    
-    attributes:
-    {
-      maxActionPoints: number;
-      attack: number;
-      defence: number;
-      intelligence: number;
-      speed: number;
-    };
+      if (this.attributesAreDirty || !this.cachedAttributes)
+      {
+        this.updateCachedAttributes();
+      }
+
+      return this.cachedAttributes;
+    }
 
     battleStats:
     {
@@ -312,10 +308,7 @@ module Rance
 
       if (item.template.attributes)
       {
-        for (var attribute in item.template.attributes)
-        {
-          this.adjustAttribute(attribute, item.template.attributes[attribute]);
-        }
+        this.attributesAreDirty = true;
       }
     }
     removeItem(item: Item)
@@ -329,10 +322,7 @@ module Rance
 
         if (item.template.attributes)
         {
-          for (var attribute in item.template.attributes)
-          {
-            this.adjustAttribute(attribute, -item.template.attributes[attribute]);
-          }
+          this.attributesAreDirty = true;
         }
 
         return true;
@@ -340,11 +330,36 @@ module Rance
 
       return false;
     }
-    adjustAttribute(attribute: string, amount: number)
+    getAttributesWithItems()
     {
-      if (!this.attributes[attribute]) throw new Error("Invalid attribute");
+      var attributes = extendObject(this.baseAttributes);
 
-      this.attributes[attribute] = clamp(this.attributes[attribute] + amount, 0, 9);
+      for (var itemSlot in this.items)
+      {
+        if (this.items[itemSlot])
+        {
+          var item = this.items[itemSlot];
+          for (var attribute in item.template.attributes)
+          {
+            attributes[attribute] = clamp(
+              attributes[attribute] + item.templates.attributes[attribute], 0, 9);
+          }
+        }
+      }
+
+      return attributes;
+    }
+    /*
+    sort by attribute, positive/negative, additive vs multiplicative
+    apply +additive -additive +multiplicative -multiplicative
+     */
+    getAttributesWithEffects()
+    {
+      var withItems = this.getAttributesWithItems();
+    }
+    updateCachedAttributes()
+    {
+      this.cachedAttributes = this.getAttributesWithEffects();
     }
     removeItemAtSlot(slot: string)
     {
