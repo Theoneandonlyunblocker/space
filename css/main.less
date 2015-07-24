@@ -2205,6 +2205,7 @@ progress::-webkit-progress-value { background: #080; }
   display: flex;
   flex-flow: column;
   flex: 0 0 auto;
+  height: 100%;
 
   .full-border(5px);
 
@@ -2244,14 +2245,6 @@ progress::-webkit-progress-value { background: #080; }
   .full-border(5px);
 
   border-width: 5px;
-
-  @media(max-height: 600px)
-  {
-    position: fixed;
-    bottom: 0;
-    left: auto;
-    border-width: 5px 5px 0 0;
-  }
 }
 
 .star-info

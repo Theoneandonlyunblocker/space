@@ -1769,6 +1769,7 @@ progress::-webkit-progress-value {
   display: flex;
   flex-flow: column;
   flex: 0 0 auto;
+  height: 100%;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1821,14 +1822,6 @@ progress::-webkit-progress-value {
 }
 .expanded-action > * {
   background-color: #0c1615;
-}
-@media (max-height: 600px) {
-  .expanded-action {
-    position: fixed;
-    bottom: 0;
-    left: auto;
-    border-width: 5px 5px 0 0;
-  }
 }
 .star-info {
   display: inline-flex;
