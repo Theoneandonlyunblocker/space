@@ -511,6 +511,7 @@ module Rance
       data.secondaryColor = this.secondaryColor;
       data.isIndependent = this.isIndependent;
       data.isAI = this.isAI;
+      data.resources = extendObject(this.resources);
 
       data.diplomacyStatus = this.diplomacyStatus.serialize();
 

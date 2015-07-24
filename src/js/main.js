@@ -13931,6 +13931,7 @@ var Rance;
             data.secondaryColor = this.secondaryColor;
             data.isIndependent = this.isIndependent;
             data.isAI = this.isAI;
+            data.resources = Rance.extendObject(this.resources);
 
             data.diplomacyStatus = this.diplomacyStatus.serialize();
 
@@ -19092,6 +19093,10 @@ var Rance;
             var player = new Rance.Player(data.isAI, data.id);
 
             player.money = data.money;
+
+            if (data.resources) {
+                player.resources = Rance.extendObject(data.resources);
+            }
 
             // color scheme & flag
             if (data.isIndependent) {

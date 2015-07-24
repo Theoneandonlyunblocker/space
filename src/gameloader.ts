@@ -203,6 +203,11 @@ module Rance
 
       player.money = data.money;
 
+      if (data.resources)
+      {
+        player.resources = extendObject(data.resources);
+      }
+
       // color scheme & flag
       if (data.isIndependent)
       {
