@@ -1282,6 +1282,21 @@ progress::-webkit-progress-value {
 .negative {
   color: #ff3c3c !important;
 }
+.top-bar-resources {
+  display: flex;
+  flex-flow: row;
+}
+.top-bar-resources .resource-icon {
+  height: 1em;
+  width: 1em;
+  margin-right: 0.333em;
+}
+.resource-icon {
+  float: left;
+}
+.resource-amount {
+  float: left;
+}
 .top-menu-wrapper {
   z-index: 2;
 }

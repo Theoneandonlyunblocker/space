@@ -346,6 +346,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var Resource: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopBarResources: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var TopBar: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -538,10 +548,20 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IUnitAttributes {
+        maxActionPoints: number;
+        attack: number;
+        defence: number;
+        intelligence: number;
+        speed: number;
+    }
+}
+declare module Rance {
     module Templates {
         interface IResourceTemplate {
             type: string;
             displayName: string;
+            icon: string;
             rarity: number;
             distributionGroups: string[];
         }
@@ -709,6 +729,7 @@ declare module Rance {
             cost: number;
             ability?: Templates.IAbilityTemplate;
             attributes?: {
+                maxActionPoints?: number;
                 attack?: number;
                 defence?: number;
                 intelligence?: number;
@@ -716,108 +737,15 @@ declare module Rance {
             };
         }
         module Items {
-            var bombLauncher1: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                slot: string;
-                ability: Templates.IAbilityTemplate;
-            };
-            var bombLauncher2: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    attack: number;
-                };
-                slot: string;
-                ability: Templates.IAbilityTemplate;
-            };
-            var bombLauncher3: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    attack: number;
-                };
-                slot: string;
-                ability: Templates.IAbilityTemplate;
-            };
-            var afterBurner1: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    speed: number;
-                };
-                slot: string;
-            };
-            var afterBurner2: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    speed: number;
-                };
-                slot: string;
-            };
-            var afterBurner3: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    maxActionPoints: number;
-                    speed: number;
-                };
-                slot: string;
-            };
-            var shieldPlating1: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    defence: number;
-                };
-                slot: string;
-            };
-            var shieldPlating2: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    defence: number;
-                };
-                slot: string;
-            };
-            var shieldPlating3: {
-                type: string;
-                displayName: string;
-                icon: string;
-                techLevel: number;
-                cost: number;
-                attributes: {
-                    defence: number;
-                    speed: number;
-                };
-                slot: string;
-                ability: Templates.IAbilityTemplate;
-            };
+            var bombLauncher1: IItemTemplate;
+            var bombLauncher2: IItemTemplate;
+            var bombLauncher3: IItemTemplate;
+            var afterBurner1: IItemTemplate;
+            var afterBurner2: IItemTemplate;
+            var afterBurner3: IItemTemplate;
+            var shieldPlating1: IItemTemplate;
+            var shieldPlating2: IItemTemplate;
+            var shieldPlating3: IItemTemplate;
         }
     }
 }
@@ -2114,20 +2042,10 @@ declare module Rance {
         public currentMovePoints: number;
         public maxMovePoints: number;
         public timesActedThisTurn: number;
-        public baseAttributes: {
-            maxActionPoints: number;
-            attack: number;
-            defence: number;
-            intelligence: number;
-            speed: number;
-        };
-        public attributes: {
-            maxActionPoints: number;
-            attack: number;
-            defence: number;
-            intelligence: number;
-            speed: number;
-        };
+        public baseAttributes: Rance.IUnitAttributes;
+        public attributesAreDirty: boolean;
+        public cachedAttributes: Rance.IUnitAttributes;
+        public attributes : Rance.IUnitAttributes;
         public battleStats: {
             moveDelay: number;
             side: string;
@@ -2165,7 +2083,9 @@ declare module Rance {
         public isActiveInBattle(): boolean;
         public addItem(item: Rance.Item): boolean;
         public removeItem(item: Rance.Item): boolean;
-        public adjustAttribute(attribute: string, amount: number): void;
+        public getAttributesWithItems(): any;
+        public getAttributesWithEffects(): any;
+        public updateCachedAttributes(): void;
         public removeItemAtSlot(slot: string): boolean;
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.IAbilityTemplate[];

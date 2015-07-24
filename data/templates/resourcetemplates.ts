@@ -6,6 +6,7 @@ module Rance
     {
       type: string;
       displayName: string;
+      icon: string;
       rarity: number; // 0 to 1; random candidate is picked from available resources
                       // and if Math.random() < rarity, it's chosen. Else pick another
       distributionGroups: string[]; // sector needs to have any of these flags
@@ -18,6 +19,7 @@ module Rance
       {
         type: "testResource1",
         displayName: "Test Resource 1",
+        icon: "img\/resources\/test1.png",
         rarity: 1,
         distributionGroups: ["common"]
       }
@@ -25,6 +27,7 @@ module Rance
       {
         type: "testResource2",
         displayName: "Test Resource 2",
+        icon: "img\/resources\/test2.png",
         rarity: 1,
         distributionGroups: ["common"]
       }
@@ -32,6 +35,7 @@ module Rance
       {
         type: "testResource3",
         displayName: "Test Resource 3",
+        icon: "img\/resources\/test3.png",
         rarity: 1,
         distributionGroups: ["common"]
       }
@@ -39,6 +43,7 @@ module Rance
       {
         type: "testResource4",
         displayName: "Test Resource 4",
+        icon: "img\/resources\/test4.png",
         rarity: 1,
         distributionGroups: ["rare"]
       }
@@ -46,6 +51,7 @@ module Rance
       {
         type: "testResource5",
         displayName: "Test Resource 5",
+        icon: "img\/resources\/test5.png",
         rarity: 1,
         distributionGroups: ["rare"]
       }

@@ -356,6 +356,8 @@ module Rance
     getAttributesWithEffects()
     {
       var withItems = this.getAttributesWithItems();
+
+      return withItems;
     }
     updateCachedAttributes()
     {

@@ -1,3 +1,5 @@
+/// <reference path="topbarresources.ts" />
+
 module Rance
 {
   export module UIComponents
@@ -49,8 +51,11 @@ module Rance
               },
                 "(+" + player.getIncome() + ")"
               )
-            )
-            
+            ),
+            UIComponents.TopBarResources(
+            {
+              player: player  
+            })
           )
         );
       }

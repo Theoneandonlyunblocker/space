@@ -4927,6 +4927,53 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.Resource = React.createClass({
+            displayName: "Resource",
+            render: function () {
+                return (React.DOM.div({
+                    className: "resource",
+                    title: this.props.resource.displayName
+                }, React.DOM.img({
+                    className: "resource-icon",
+                    src: this.props.resource.icon
+                }, null), React.DOM.div({
+                    className: "resource-amount"
+                }, this.props.amount)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="resource.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.TopBarResources = React.createClass({
+            displayName: "TopBarResources",
+            render: function () {
+                var resources = [];
+
+                for (var resourceType in this.props.player.resources) {
+                    var resourceData = {
+                        resource: Rance.Templates.Resources[resourceType],
+                        amount: this.props.player.resources[resourceType],
+                        key: resourceType
+                    };
+                    resources.push(Rance.UIComponents.Resource(resourceData));
+                }
+
+                return (React.DOM.div({
+                    className: "top-bar-resources"
+                }, resources));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="topbarresources.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.TopBar = React.createClass({
             displayName: "TopBar",
             render: function () {
@@ -4953,7 +5000,9 @@ var Rance;
                     className: "top-bar-money-current"
                 }, "Money: " + player.money), React.DOM.div({
                     className: incomeClass
-                }, "(+" + player.getIncome() + ")"))));
+                }, "(+" + player.getIncome() + ")")), Rance.UIComponents.TopBarResources({
+                    player: player
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6409,30 +6458,35 @@ var Rance;
             Resources.testResource1 = {
                 type: "testResource1",
                 displayName: "Test Resource 1",
+                icon: "img\/resources\/test1.png",
                 rarity: 1,
                 distributionGroups: ["common"]
             };
             Resources.testResource2 = {
                 type: "testResource2",
                 displayName: "Test Resource 2",
+                icon: "img\/resources\/test2.png",
                 rarity: 1,
                 distributionGroups: ["common"]
             };
             Resources.testResource3 = {
                 type: "testResource3",
                 displayName: "Test Resource 3",
+                icon: "img\/resources\/test3.png",
                 rarity: 1,
                 distributionGroups: ["common"]
             };
             Resources.testResource4 = {
                 type: "testResource4",
                 displayName: "Test Resource 4",
+                icon: "img\/resources\/test4.png",
                 rarity: 1,
                 distributionGroups: ["rare"]
             };
             Resources.testResource5 = {
                 type: "testResource5",
                 displayName: "Test Resource 5",
+                icon: "img\/resources\/test5.png",
                 rarity: 1,
                 distributionGroups: ["rare"]
             };
@@ -14619,6 +14673,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
@@ -14648,6 +14703,18 @@ var Rance;
                 isAnnihilated: false
             };
         }
+        Object.defineProperty(Unit.prototype, "attributes", {
+            get: function () {
+                if (this.attributesAreDirty || !this.cachedAttributes) {
+                    this.updateCachedAttributes();
+                }
+
+                return this.cachedAttributes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Unit.prototype.makeFromData = function (data) {
             var items = {};
 
@@ -14830,9 +14897,7 @@ var Rance;
             item.unit = this;
 
             if (item.template.attributes) {
-                for (var attribute in item.template.attributes) {
-                    this.adjustAttribute(attribute, item.template.attributes[attribute]);
-                }
+                this.attributesAreDirty = true;
             }
         };
         Unit.prototype.removeItem = function (item) {
@@ -14843,9 +14908,7 @@ var Rance;
                 item.unit = null;
 
                 if (item.template.attributes) {
-                    for (var attribute in item.template.attributes) {
-                        this.adjustAttribute(attribute, -item.template.attributes[attribute]);
-                    }
+                    this.attributesAreDirty = true;
                 }
 
                 return true;
@@ -14853,11 +14916,32 @@ var Rance;
 
             return false;
         };
-        Unit.prototype.adjustAttribute = function (attribute, amount) {
-            if (!this.attributes[attribute])
-                throw new Error("Invalid attribute");
+        Unit.prototype.getAttributesWithItems = function () {
+            var attributes = Rance.extendObject(this.baseAttributes);
 
-            this.attributes[attribute] = Rance.clamp(this.attributes[attribute] + amount, 0, 9);
+            for (var itemSlot in this.items) {
+                if (this.items[itemSlot]) {
+                    var item = this.items[itemSlot];
+                    for (var attribute in item.template.attributes) {
+                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.templates.attributes[attribute], 0, 9);
+                    }
+                }
+            }
+
+            return attributes;
+        };
+
+        /*
+        sort by attribute, positive/negative, additive vs multiplicative
+        apply +additive -additive +multiplicative -multiplicative
+        */
+        Unit.prototype.getAttributesWithEffects = function () {
+            var withItems = this.getAttributesWithItems();
+
+            return withItems;
+        };
+        Unit.prototype.updateCachedAttributes = function () {
+            this.cachedAttributes = this.getAttributesWithEffects();
         };
         Unit.prototype.removeItemAtSlot = function (slot) {
             if (this.items[slot]) {
