@@ -30,42 +30,6 @@ module Rance
 
         switch (this.props.sceneToRender)
         {
-          case "battle":
-          {
-            elementsToRender.push(
-              UIComponents.Battle(
-              {
-                battle: this.props.battle,
-                humanPlayer: this.props.player,
-                renderer: this.props.renderer,
-                key: "battle"
-              })
-            );
-            break;
-          }
-          case "itemEquip":
-          {
-            elementsToRender.push(
-              UIComponents.ItemEquip(
-              {
-                player: this.props.player,
-                key: "itemEquip"
-              })
-            );
-            break;
-          }
-          case "battlePrep":
-          {
-            elementsToRender.push(
-              UIComponents.BattlePrep(
-              {
-                battlePrep: this.props.battlePrep,
-                renderer: this.props.renderer,
-                key: "battlePrep"
-              })
-            );
-            break;
-          }
           case "galaxyMap":
           {
             elementsToRender.push(
@@ -123,11 +87,9 @@ module Rance
                 onChange: this.changeScene
               },
               React.DOM.option({value: "galaxyMap"}, "map"),
-              React.DOM.option({value: "itemEquip"}, "equip items"),
-              React.DOM.option({value: "battlePrep"}, "battle setup"),
-              React.DOM.option({value: "battle"}, "battle"),
               React.DOM.option({value: "flagMaker"}, "make flags"),
-              React.DOM.option({value: "battleScene"}, "battle scene test")
+              React.DOM.option({value: "battleScene"}, "battle scene"),
+              React.DOM.option({value: "setupGame"}, "setup game")
             )
           )
         );
