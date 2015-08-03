@@ -1,5 +1,7 @@
 /// <reference path="../lib/husl.d.ts" />
 
+/// <reference path="range.ts" />
+
 module Rance
 {
   export function hex2rgb(hex: number): number[]
@@ -138,12 +140,6 @@ module Rance
   export function hexToHsv(hex: number): number[]
   {
     return rgbToHsv.apply(null, hex2rgb(hex));
-  }
-
-  export interface IRange
-  {
-    min?: number;
-    max?: number;
   }
 
   export function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[]
