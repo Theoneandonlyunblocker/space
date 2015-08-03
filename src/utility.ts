@@ -220,6 +220,19 @@ module Rance
     else if (value > max) return max;
     else return value;
   }
+  // http://stackoverflow.com/a/3254334
+  export function roundToNearestMultiple(value: number, multiple: number)
+  {
+    var resto = value % multiple;
+    if (resto <= (multiple / 2))
+    { 
+      return value - resto;
+    }
+    else
+    {
+      return value + multiple - resto;
+    }
+  }
   export function getAngleBetweenDegrees(degA: number, degB: number)
   {
     var angle = Math.abs(degB - degA) % 360;
