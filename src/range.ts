@@ -4,5 +4,6 @@ module Rance
   {
     min?: number;
     max?: number;
+    step?: number;
   }
 }

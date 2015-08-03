@@ -865,7 +865,7 @@ module Rance
 
             text.x = star.x;
             text.x -= text.width / 2;
-            text.y = star.y + 20;
+            text.y = star.y + 8;
 
             doc.addChild(text);
           }

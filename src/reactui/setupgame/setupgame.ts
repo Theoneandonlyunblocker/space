@@ -1,4 +1,5 @@
 /// <reference path="setupgameplayers.ts" />
+/// <reference path="mapsetup.ts" />
 
 module Rance
 {
@@ -48,12 +49,21 @@ module Rance
           {
             className: "setup-game"
           },
-            UIComponents.SetupGamePlayers(
+            React.DOM.div(
             {
-              ref: "players",
-              minPlayers: this.state.minPlayers,
-              maxPlayers: this.state.maxPlayers
-            }),
+              className: "setup-game-options"
+            },
+              UIComponents.SetupGamePlayers(
+              {
+                ref: "players",
+                minPlayers: this.state.minPlayers,
+                maxPlayers: this.state.maxPlayers
+              }),
+              UIComponents.MapSetup(
+              {
+                
+              })
+            ),
             React.DOM.button(
             {
               onClick: this.randomizeAllPlayers

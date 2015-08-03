@@ -438,6 +438,7 @@ declare module Rance {
     function extendObject(from: any, to?: any): any;
     function recursiveRemoveAttribute(parent: any, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
+    function roundToNearestMultiple(value: number, multiple: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
     function shiftPolygon(polygon: Point[], amount: number): {
         x: number;
@@ -648,6 +649,13 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IRange {
+        min?: number;
+        max?: number;
+        step?: number;
+    }
+}
+declare module Rance {
     function hex2rgb(hex: number): number[];
     function rgb2hex(rgb: number[]): number;
     function hsvToRgb(h: number, s: number, v: number): number[];
@@ -658,10 +666,6 @@ declare module Rance {
     function hsvToHex(h: number, s: number, v: number): number;
     function hexToHsl(hex: number): number[];
     function hexToHsv(hex: number): number[];
-    interface IRange {
-        min?: number;
-        max?: number;
-    }
     function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[];
     function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
     function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
@@ -1358,7 +1362,25 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IMapGenTemplate {
+            key: string;
+            displayName: string;
+            description?: string;
+            defaultOptions: MapGen.IDefaultOptions;
+            basicOptions?: MapGen.IMapSpecificOptions;
+        }
         module MapGen {
+            interface IDefaultOptions {
+                height: Rance.IRange;
+                width: Rance.IRange;
+                starDenstity: Rance.IRange;
+                playerAmount: Rance.IRange;
+            }
+            interface IMapSpecificOptions {
+                [optionName: string]: Rance.IRange;
+            }
+            var newTest: IMapGenTemplate;
+            var newTestSmall: IMapGenTemplate;
             var defaultMap: {
                 mapOptions: {
                     width: number;
@@ -2187,6 +2209,21 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var SetupGamePlayers: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapGenOption: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapGenOptions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapSetup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
 declare module Rance {

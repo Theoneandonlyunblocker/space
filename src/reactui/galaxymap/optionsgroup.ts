@@ -27,6 +27,11 @@ module Rance
           ));
         }
 
+        if (rows.length < 1 && this.props.collapsedElement)
+        {
+          rows = this.props.collapsedElement
+        }
+
         var resetButton = null;
         if (this.props.resetFN)
         {
@@ -37,12 +42,16 @@ module Rance
           }, "reset")
         }
 
+        var header = this.props.header || resetButton ?
+          React.DOM.div({className: "option-group-header"},
+            this.props.header,
+            resetButton
+          ) :
+          null
+
         return(
           React.DOM.div({className: "option-group"},
-            React.DOM.div({className: "option-group-header"},
-              this.props.header,
-              resetButton
-              ),
+            header,
             rows
           )
         );

@@ -2942,6 +2942,11 @@ progress::-webkit-progress-value {
 .reset-options-button.disabled * {
   pointer-events: none !important;
 }
+.setup-game-options {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
 .setup-game-players {
   display: flex;
   flex-flow: column;
@@ -3074,6 +3079,10 @@ progress::-webkit-progress-value {
 .selected-emblem {
   box-shadow: 0px 0px 12px #fff inset, 0px 0px 10px #ff0;
   z-index: 99;
+}
+.map-setup {
+  border: 1px solid green;
+  width: 400px;
 }
 .auto-position {
   position: fixed;

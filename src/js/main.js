@@ -4648,6 +4648,10 @@ var Rance;
                     }, option.content)));
                 }
 
+                if (rows.length < 1 && this.props.collapsedElement) {
+                    rows = this.props.collapsedElement;
+                }
+
                 var resetButton = null;
                 if (this.props.resetFN) {
                     resetButton = React.DOM.button({
@@ -4656,7 +4660,9 @@ var Rance;
                     }, "reset");
                 }
 
-                return (React.DOM.div({ className: "option-group" }, React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton), rows));
+                var header = this.props.header || resetButton ? React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton) : null;
+
+                return (React.DOM.div({ className: "option-group" }, header, rows));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -5808,6 +5814,17 @@ var Rance;
             return value;
     }
     Rance.clamp = clamp;
+
+    // http://stackoverflow.com/a/3254334
+    function roundToNearestMultiple(value, multiple) {
+        var resto = value % multiple;
+        if (resto <= (multiple / 2)) {
+            return value - resto;
+        } else {
+            return value + multiple - resto;
+        }
+    }
+    Rance.roundToNearestMultiple = roundToNearestMultiple;
     function getAngleBetweenDegrees(degA, degB) {
         var angle = Math.abs(degB - degA) % 360;
         var distance = Math.min(360 - angle, angle);
@@ -6683,6 +6700,7 @@ var Rance;
     Rance.Region = Region;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
+/// <reference path="range.ts" />
 var Rance;
 (function (Rance) {
     function hex2rgb(hex) {
@@ -9965,10 +9983,81 @@ var Rance;
     })();
     Rance.DiplomacyStatus = DiplomacyStatus;
 })(Rance || (Rance = {}));
+/// <reference path="../../src/range.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (MapGen) {
+            MapGen.newTest = {
+                key: "newTest",
+                displayName: "Test Map",
+                description: "just testing",
+                defaultOptions: {
+                    height: {
+                        min: 400,
+                        max: 800,
+                        step: 1
+                    },
+                    width: {
+                        min: 400,
+                        max: 800,
+                        step: 1
+                    },
+                    starDenstity: {
+                        min: 0.1,
+                        max: 0.12,
+                        step: 0.001
+                    },
+                    playerAmount: {
+                        min: 2,
+                        max: 5,
+                        step: 1
+                    }
+                },
+                basicOptions: {
+                    arms: {
+                        min: 3,
+                        max: 5,
+                        step: 1
+                    }
+                }
+            };
+
+            MapGen.newTestSmall = {
+                key: "newTestSmall",
+                displayName: "Small Test Map",
+                description: "just testing but small",
+                defaultOptions: {
+                    height: {
+                        min: 200,
+                        max: 400,
+                        step: 1
+                    },
+                    width: {
+                        min: 200,
+                        max: 400,
+                        step: 1
+                    },
+                    starDenstity: {
+                        min: 0.1,
+                        max: 0.12,
+                        step: 0.001
+                    },
+                    playerAmount: {
+                        min: 2,
+                        max: 4,
+                        step: 1
+                    }
+                },
+                basicOptions: {
+                    tinyness: {
+                        min: 69,
+                        max: 420,
+                        step: 1
+                    }
+                }
+            };
+
             MapGen.defaultMap = {
                 mapOptions: {
                     width: 600,
@@ -11717,7 +11806,7 @@ var Rance;
 
                         text.x = star.x;
                         text.x -= text.width / 2;
-                        text.y = star.y + 20;
+                        text.y = star.y + 8;
 
                         doc.addChild(text);
                     }
@@ -16716,7 +16805,225 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MapGenOption = React.createClass({
+            displayName: "MapGenOption",
+            handleChange: function (e) {
+                var option = this.props.option;
+                var newValue = Rance.clamp(parseFloat(e.target.value), option.min, option.max);
+                this.props.onChange(this.props.id, newValue);
+            },
+            shouldComponentUpdate: function (newProps) {
+                return newProps.value !== this.props.value;
+            },
+            render: function () {
+                var option = this.props.option;
+                var id = "mapGenOption_" + this.props.id;
+
+                ["min", "max", "step"].forEach(function (prop) {
+                    if (!option[prop]) {
+                        throw new Error("No property " + prop + " specified on map gen option " + this.props.id);
+                    }
+                }.bind(this));
+
+                // console.log(this.props.id, this.props.value);
+                return (React.DOM.div({
+                    className: "map-gen-option"
+                }, React.DOM.label({
+                    className: "map-gen-option-label",
+                    htmlFor: id
+                }, this.props.id), React.DOM.input({
+                    className: "map-gen-option-slider",
+                    id: id,
+                    type: "range",
+                    min: option.min,
+                    max: option.max,
+                    step: option.step,
+                    value: this.props.value,
+                    onChange: this.handleChange
+                }), React.DOM.input({
+                    className: "map-gen-option-value",
+                    type: "number",
+                    min: option.min,
+                    max: option.max,
+                    step: option.step,
+                    value: this.props.value,
+                    onChange: this.handleChange
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../../utility.ts" />
+/// <reference path="../galaxymap/optionsgroup.ts" />
+/// <reference path="mapgenoption.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MapGenOptions = React.createClass({
+            displayName: "MapGenOptions",
+            getInitialState: function () {
+                var defaultValues = this.getUnsetDefaultValues(this.props.mapGenTemplate);
+
+                var state = {
+                    defaultOptionsVisible: true,
+                    basicOptionsVisible: true,
+                    advancedOptionsVisible: false
+                };
+
+                state = Rance.extendObject(state, defaultValues);
+
+                return (state);
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key) {
+                    this.setState(this.getUnsetDefaultValues(newProps.mapGenTemplate));
+                }
+            },
+            getUnsetDefaultValues: function (mapGenTemplate) {
+                var defaultValues = {};
+
+                ["defaultOptions", "basicOptions"].forEach(function (optionGroup) {
+                    var options = mapGenTemplate[optionGroup];
+                    if (!options)
+                        return;
+
+                    for (var optionName in options) {
+                        var option = options[optionName];
+                        var avg = (option.min + option.max) / 2;
+                        avg = Rance.roundToNearestMultiple(avg, option.step);
+                        defaultValues["optionValue_" + optionName] = avg;
+                    }
+                }.bind(this));
+
+                return defaultValues;
+            },
+            toggleOptionGroupVisibility: function (visibilityProp) {
+                var newState = {};
+                newState[visibilityProp] = !this.state[visibilityProp];
+                this.setState(newState);
+            },
+            makeFoldedOptionGroupElement: function (visibilityProp) {
+                return (React.DOM.div({
+                    className: "map-gen-option-group-folded",
+                    onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
+                }));
+            },
+            handleOptionChange: function (optionName, newValue) {
+                var changedState = {};
+                changedState["optionValue_" + optionName] = newValue;
+
+                this.setState(changedState);
+            },
+            getOptionValue: function (optionName) {
+                return this.state["optionValue_" + optionName];
+            },
+            render: function () {
+                var optionGroups = [];
+
+                var optionGroupsInfo = {
+                    defaultOptions: {
+                        header: "Default Options",
+                        visibilityProp: "defaultOptionsVisible"
+                    },
+                    basicOptions: {
+                        header: "Basic Options",
+                        visibilityProp: "basicOptionsVisible"
+                    }
+                };
+
+                for (var groupName in optionGroupsInfo) {
+                    var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
+
+                    var options = [];
+
+                    for (var optionName in this.props.mapGenTemplate[groupName]) {
+                        var option = this.props.mapGenTemplate[groupName][optionName];
+
+                        options.push({
+                            content: Rance.UIComponents.MapGenOption({
+                                key: optionName,
+                                id: optionName,
+                                option: option,
+                                value: this.getOptionValue(optionName),
+                                onChange: this.handleOptionChange
+                            })
+                        });
+                    }
+                    optionGroups.push(Rance.UIComponents.OptionsGroup({
+                        key: groupName,
+                        header: optionGroupsInfo[groupName].header,
+                        collapsedElement: this.state.visibilityProp ? null : this.makeFoldedOptionGroupElement(visibilityProp),
+                        options: options
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "map-gen-options"
+                }, "options label", optionGroups));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="mapgenoptions.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.MapSetup = React.createClass({
+            displayName: "MapSetup",
+            getInitialState: function () {
+                var mapGenTemplates = [];
+
+                for (var template in Rance.Templates.MapGen) {
+                    if (Rance.Templates.MapGen[template].key) {
+                        mapGenTemplates.push(Rance.Templates.MapGen[template]);
+                    }
+                }
+
+                return ({
+                    templates: mapGenTemplates,
+                    selectedTemplate: mapGenTemplates[0]
+                });
+            },
+            setTemplate: function (e) {
+                this.setState({
+                    selectedTemplate: Rance.Templates.MapGen[e.target.value]
+                });
+            },
+            render: function () {
+                var mapGenTemplateOptions = [];
+                for (var i = 0; i < this.state.templates.length; i++) {
+                    var template = this.state.templates[i];
+
+                    mapGenTemplateOptions.push(React.DOM.option({
+                        value: template.key,
+                        key: template.key,
+                        title: template.description
+                    }, template.displayName));
+                }
+
+                return (React.DOM.div({
+                    className: "map-setup"
+                }, React.DOM.select({
+                    className: "map-setup-template-selector",
+                    value: this.state.selectedTemplate.key,
+                    onChange: this.setTemplate
+                }, mapGenTemplateOptions), React.DOM.div({
+                    className: "map-setup-description"
+                }, this.state.selectedTemplate.description), Rance.UIComponents.MapGenOptions({
+                    mapGenTemplate: this.state.selectedTemplate
+                })));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="setupgameplayers.ts" />
+/// <reference path="mapsetup.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -16749,11 +17056,13 @@ var Rance;
             render: function () {
                 return (React.DOM.div({
                     className: "setup-game"
+                }, React.DOM.div({
+                    className: "setup-game-options"
                 }, Rance.UIComponents.SetupGamePlayers({
                     ref: "players",
                     minPlayers: this.state.minPlayers,
                     maxPlayers: this.state.maxPlayers
-                }), React.DOM.button({
+                }), Rance.UIComponents.MapSetup({})), React.DOM.button({
                     onClick: this.randomizeAllPlayers
                 }, "Randomize"), React.DOM.button({
                     onClick: this.startGame
@@ -16968,30 +17277,6 @@ var Rance;
                 var elementsToRender = [];
 
                 switch (this.props.sceneToRender) {
-                    case "battle": {
-                        elementsToRender.push(Rance.UIComponents.Battle({
-                            battle: this.props.battle,
-                            humanPlayer: this.props.player,
-                            renderer: this.props.renderer,
-                            key: "battle"
-                        }));
-                        break;
-                    }
-                    case "itemEquip": {
-                        elementsToRender.push(Rance.UIComponents.ItemEquip({
-                            player: this.props.player,
-                            key: "itemEquip"
-                        }));
-                        break;
-                    }
-                    case "battlePrep": {
-                        elementsToRender.push(Rance.UIComponents.BattlePrep({
-                            battlePrep: this.props.battlePrep,
-                            renderer: this.props.renderer,
-                            key: "battlePrep"
-                        }));
-                        break;
-                    }
                     case "galaxyMap": {
                         elementsToRender.push(Rance.UIComponents.GalaxyMap({
                             renderer: this.props.renderer,
@@ -17027,7 +17312,7 @@ var Rance;
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "itemEquip" }, "equip items"), React.DOM.option({ value: "battlePrep" }, "battle setup"), React.DOM.option({ value: "battle" }, "battle"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene test"))));
+                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game"))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
