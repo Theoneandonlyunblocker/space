@@ -19,7 +19,7 @@ module Rance
       {
         height: IRange; // pixels
         width: IRange; // pixels
-        starDenstity: IRange; // stars per 1000 pixels
+        starDensity: IRange; // stars per 1000 pixels
         playerAmount: IRange;
       }
       export interface IMapSpecificOptions
@@ -47,7 +47,7 @@ module Rance
             max: 800,
             step: 1
           },
-          starDenstity:
+          starDensity:
           {
             min: 0.1,
             max: 0.12,
@@ -91,7 +91,7 @@ module Rance
             max: 400,
             step: 1
           },
-          starDenstity:
+          starDensity:
           {
             min: 0.1,
             max: 0.12,
