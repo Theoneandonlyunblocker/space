@@ -1373,7 +1373,7 @@ declare module Rance {
             interface IDefaultOptions {
                 height: Rance.IRange;
                 width: Rance.IRange;
-                starDenstity: Rance.IRange;
+                starDensity: Rance.IRange;
                 playerAmount: Rance.IRange;
             }
             interface IMapSpecificOptions {

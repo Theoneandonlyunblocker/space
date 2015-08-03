@@ -10003,7 +10003,7 @@ var Rance;
                         max: 800,
                         step: 1
                     },
-                    starDenstity: {
+                    starDensity: {
                         min: 0.1,
                         max: 0.12,
                         step: 0.001
@@ -10038,7 +10038,7 @@ var Rance;
                         max: 400,
                         step: 1
                     },
-                    starDenstity: {
+                    starDensity: {
                         min: 0.1,
                         max: 0.12,
                         step: 0.001
@@ -16893,9 +16893,22 @@ var Rance;
 
                     for (var optionName in options) {
                         var option = options[optionName];
-                        var avg = (option.min + option.max) / 2;
-                        avg = Rance.roundToNearestMultiple(avg, option.step);
-                        defaultValues["optionValue_" + optionName] = avg;
+                        var value;
+
+                        if (this.state && isFinite(this.getOptionValue(optionName))) {
+                            var oldOption = this.props.mapGenTemplate[optionGroup][optionName];
+
+                            if (!oldOption)
+                                break;
+
+                            var oldValuePercentage = Rance.getRelativeValue(this.getOptionValue(optionName), oldOption.min, oldOption.max);
+                            value = option.min + (option.max - option.min) * oldValuePercentage;
+                        } else {
+                            value = (option.min + option.max) / 2;
+                        }
+
+                        value = Rance.roundToNearestMultiple(value, option.step);
+                        defaultValues["optionValue_" + optionName] = value;
                     }
                 }.bind(this));
 

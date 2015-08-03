@@ -46,9 +46,25 @@ module Rance
           for (var optionName in options)
           {
             var option = options[optionName];
-            var avg = (option.min + option.max) / 2;
-            avg = roundToNearestMultiple(avg, option.step);
-            defaultValues["optionValue_" + optionName] = avg; 
+            var value: number;
+
+            if (this.state && isFinite(this.getOptionValue(optionName)))
+            {
+              var oldOption = this.props.mapGenTemplate[optionGroup][optionName];
+
+              if (!oldOption) break;
+
+              var oldValuePercentage = getRelativeValue(
+                this.getOptionValue(optionName), oldOption.min, oldOption.max);
+              value = option.min + (option.max - option.min) * oldValuePercentage;
+            }
+            else
+            {
+              value = (option.min + option.max) / 2;
+            }
+
+            value = roundToNearestMultiple(value, option.step);
+            defaultValues["optionValue_" + optionName] = value; 
           }
         }.bind(this));
 
