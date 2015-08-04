@@ -21,6 +21,8 @@ module Rance
       [regionId: string]: Region;
     };
     mapGen: MapGen;
+    width: number;
+    height: number;
     mapRenderer: MapRenderer;
     game: Game;
     constructor()
@@ -30,6 +32,9 @@ module Rance
     setMapGen(mapGen: MapGen)
     {
       this.mapGen = mapGen;
+
+      this.width = mapGen.maxWidth * 2;
+      this.height = mapGen.maxHeight * 2;
 
       this.allPoints = mapGen.points;
       this.stars = mapGen.getNonFillerPoints();

@@ -174,8 +174,8 @@ module Rance
       if (!this.fowTilingSprite)
       {
         var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
-        var w = this.galaxyMap.mapGen.maxWidth * 2;
-        var h = this.galaxyMap.mapGen.maxHeight * 2;
+        var w = this.galaxyMap.width;
+        var h = this.galaxyMap.height;
 
         this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
       }
@@ -282,7 +282,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -403,7 +403,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -478,7 +478,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -548,7 +548,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -704,7 +704,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -751,7 +751,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -794,7 +794,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -844,7 +844,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
@@ -887,7 +887,7 @@ module Rance
           var points: Star[];
           if (!this.player)
           {
-            points = map.mapGen.getNonFillerPoints();
+            points = map.stars;
           }
           else
           {
