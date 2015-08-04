@@ -8,7 +8,7 @@ module Rance
     {
       export var spiralGalaxy: IMapGenTemplate =
       {
-        key: "newTest",
+        key: "spiralGalaxy",
         displayName: "Test Map",
         description: "(not implemented yet) just testing",
 

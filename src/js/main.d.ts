@@ -1406,6 +1406,20 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        module MapGen {
+            var spiralGalaxy: IMapGenTemplate;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
+            var newTestSmall: IMapGenTemplate;
+        }
+    }
+}
+declare module Rance {
     class Triangle {
         public a: Rance.Point;
         public b: Rance.Point;
@@ -1599,6 +1613,8 @@ declare module Rance {
             [regionId: string]: Rance.Region;
         };
         public mapGen: Rance.MapGen;
+        public width: number;
+        public height: number;
         public mapRenderer: Rance.MapRenderer;
         public game: Rance.Game;
         constructor();

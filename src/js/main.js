@@ -10011,6 +10011,94 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
+/// <reference path="mapgentemplate.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            MapGen.spiralGalaxy = {
+                key: "spiralGalaxy",
+                displayName: "Test Map",
+                description: "(not implemented yet) just testing",
+                defaultOptions: {
+                    height: {
+                        min: 400,
+                        max: 800,
+                        step: 1
+                    },
+                    width: {
+                        min: 400,
+                        max: 800,
+                        step: 1
+                    },
+                    starDensity: {
+                        min: 0.1,
+                        max: 0.12,
+                        step: 0.001
+                    },
+                    playerAmount: {
+                        min: 2,
+                        max: 5,
+                        step: 1
+                    }
+                },
+                basicOptions: {
+                    arms: {
+                        min: 3,
+                        max: 5,
+                        step: 1
+                    }
+                }
+            };
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="mapgentemplate.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            MapGen.newTestSmall = {
+                key: "newTestSmall",
+                displayName: "Small Test Map",
+                description: "(not implemented yet) just testing but small",
+                defaultOptions: {
+                    height: {
+                        min: 200,
+                        max: 400,
+                        step: 1
+                    },
+                    width: {
+                        min: 200,
+                        max: 400,
+                        step: 1
+                    },
+                    starDensity: {
+                        min: 0.1,
+                        max: 0.12,
+                        step: 0.001
+                    },
+                    playerAmount: {
+                        min: 2,
+                        max: 4,
+                        step: 1
+                    }
+                },
+                basicOptions: {
+                    tinyness: {
+                        min: 69,
+                        max: 420,
+                        step: 1
+                    }
+                }
+            };
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
 /// <reference path="point.ts"/>
 var Rance;
 (function (Rance) {
@@ -10309,7 +10397,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="../lib/quadtree.d.ts" />
-/// <reference path="../data/mapgen/defaultmap.ts" />
+/// <reference path="../data/mapgen/builtinmaps.ts" />
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
@@ -11142,8 +11230,8 @@ var Rance;
         MapRenderer.prototype.makeFowSprite = function () {
             if (!this.fowTilingSprite) {
                 var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
-                var w = this.galaxyMap.mapGen.maxWidth * 2;
-                var h = this.galaxyMap.mapGen.maxHeight * 2;
+                var w = this.galaxyMap.width;
+                var h = this.galaxyMap.height;
 
                 this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
             }
@@ -11234,7 +11322,7 @@ var Rance;
 
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11335,7 +11423,7 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11404,7 +11492,7 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11467,7 +11555,7 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11604,7 +11692,7 @@ var Rance;
 
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11641,7 +11729,7 @@ var Rance;
 
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11679,7 +11767,7 @@ var Rance;
 
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11719,7 +11807,7 @@ var Rance;
 
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getRevealedStars();
                     }
@@ -11756,7 +11844,7 @@ var Rance;
 
                     var points;
                     if (!this.player) {
-                        points = map.mapGen.getNonFillerPoints();
+                        points = map.stars;
                     } else {
                         points = this.player.getVisibleStars();
                     }
@@ -12012,6 +12100,9 @@ var Rance;
         }
         GalaxyMap.prototype.setMapGen = function (mapGen) {
             this.mapGen = mapGen;
+
+            this.width = mapGen.maxWidth * 2;
+            this.height = mapGen.maxHeight * 2;
 
             this.allPoints = mapGen.points;
             this.stars = mapGen.getNonFillerPoints();
@@ -16935,6 +17026,8 @@ var Rance;
                 });
             },
             setTemplate: function (e) {
+                console.log(e.target.value);
+
                 this.setState({
                     selectedTemplate: Rance.Templates.MapGen[e.target.value]
                 });
