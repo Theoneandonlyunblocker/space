@@ -1,3 +1,4 @@
+/// <reference path="../../../data/mapgen/mapgentemplate.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance

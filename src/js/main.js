@@ -9984,80 +9984,11 @@ var Rance;
     Rance.DiplomacyStatus = DiplomacyStatus;
 })(Rance || (Rance = {}));
 /// <reference path="../../src/range.ts" />
+/// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (MapGen) {
-            MapGen.newTest = {
-                key: "newTest",
-                displayName: "Test Map",
-                description: "just testing",
-                defaultOptions: {
-                    height: {
-                        min: 400,
-                        max: 800,
-                        step: 1
-                    },
-                    width: {
-                        min: 400,
-                        max: 800,
-                        step: 1
-                    },
-                    starDensity: {
-                        min: 0.1,
-                        max: 0.12,
-                        step: 0.001
-                    },
-                    playerAmount: {
-                        min: 2,
-                        max: 5,
-                        step: 1
-                    }
-                },
-                basicOptions: {
-                    arms: {
-                        min: 3,
-                        max: 5,
-                        step: 1
-                    }
-                }
-            };
-
-            MapGen.newTestSmall = {
-                key: "newTestSmall",
-                displayName: "Small Test Map",
-                description: "just testing but small",
-                defaultOptions: {
-                    height: {
-                        min: 200,
-                        max: 400,
-                        step: 1
-                    },
-                    width: {
-                        min: 200,
-                        max: 400,
-                        step: 1
-                    },
-                    starDensity: {
-                        min: 0.1,
-                        max: 0.12,
-                        step: 0.001
-                    },
-                    playerAmount: {
-                        min: 2,
-                        max: 4,
-                        step: 1
-                    }
-                },
-                basicOptions: {
-                    tinyness: {
-                        min: 69,
-                        max: 420,
-                        step: 1
-                    }
-                }
-            };
-
             MapGen.defaultMap = {
                 mapOptions: {
                     width: 600,
@@ -10378,7 +10309,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="../lib/quadtree.d.ts" />
-/// <reference path="../data/templates/mapgentemplates.ts" />
+/// <reference path="../data/mapgen/defaultmap.ts" />
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />
 /// <reference path="star.ts" />
@@ -16976,12 +16907,13 @@ var Rance;
 
                 return (React.DOM.div({
                     className: "map-gen-options"
-                }, "options label", optionGroups));
+                }, optionGroups));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../../../data/mapgen/mapgentemplate.ts" />
 /// <reference path="mapgenoptions.ts" />
 var Rance;
 (function (Rance) {

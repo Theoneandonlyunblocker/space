@@ -1,7 +1,7 @@
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="../lib/quadtree.d.ts" />
 
-/// <reference path="../data/templates/mapgentemplates.ts" />
+/// <reference path="../data/mapgen/defaultmap.ts" />
 
 /// <reference path="triangulation.ts" />
 /// <reference path="triangle.ts" />

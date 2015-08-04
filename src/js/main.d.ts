@@ -1379,8 +1379,12 @@ declare module Rance {
             interface IMapSpecificOptions {
                 [optionName: string]: Rance.IRange;
             }
-            var newTest: IMapGenTemplate;
-            var newTestSmall: IMapGenTemplate;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
             var defaultMap: {
                 mapOptions: {
                     width: number;

@@ -158,7 +158,6 @@ module Rance
           {
             className: "map-gen-options"
           },
-            "options label",
             optionGroups
           )
         );
