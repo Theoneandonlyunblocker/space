@@ -159,11 +159,19 @@ module Rance
      * @method move
      * @param {number[]} currPos [description]
      */
-    move( currPos: number[] )
+    move( currPos: number[] ) // used for mouse scrolling
     {
       var delta = this.getDelta(currPos);
       this.container.position.x = this.startPos[0] + delta[0];
       this.container.position.y = this.startPos[1] + delta[1];
+      this.clampEdges();
+
+      this.onMove();
+    }
+    deltaMove(delta: number[]) // used for keyboard scrolling
+    {
+      this.container.position.x += delta[0];
+      this.container.position.y += delta[1];
       this.clampEdges();
 
       this.onMove();

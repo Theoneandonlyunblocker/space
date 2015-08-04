@@ -2385,6 +2385,7 @@ declare module Rance {
         * @param {number[]} currPos [description]
         */
         public move(currPos: number[]): void;
+        public deltaMove(delta: number[]): void;
         private onMove();
         public getScreenCenter(): {
             x: number;

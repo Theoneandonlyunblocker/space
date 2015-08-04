@@ -17026,8 +17026,6 @@ var Rance;
                 });
             },
             setTemplate: function (e) {
-                console.log(e.target.value);
-
                 this.setState({
                     selectedTemplate: Rance.Templates.MapGen[e.target.value]
                 });
@@ -17771,6 +17769,13 @@ var Rance;
             var delta = this.getDelta(currPos);
             this.container.position.x = this.startPos[0] + delta[0];
             this.container.position.y = this.startPos[1] + delta[1];
+            this.clampEdges();
+
+            this.onMove();
+        };
+        Camera.prototype.deltaMove = function (delta) {
+            this.container.position.x += delta[0];
+            this.container.position.y += delta[1];
             this.clampEdges();
 
             this.onMove();
