@@ -14,13 +14,19 @@ module Rance
 
   export class Star implements Point
   {
+    // toRemove
+    sector: Sector;
+    region: Region;
+    distanceFromNearestStartLocation: number;
+    voronoiId: number;
+    // end
+    
     id: number;
     x: number;
     y: number;
     linksTo: Star[] = [];
     linksFrom: Star[] = [];
     distance: number;
-    region: Region;
 
     seed: string;
 
@@ -29,7 +35,6 @@ module Rance
     name: string;
     owner: Player;
 
-    sector: Sector;
     resource: Templates.IResourceTemplate;
     
     fleets:
@@ -42,10 +47,6 @@ module Rance
       [category: string] : Building[];
     } = {};
 
-    distanceFromNearestStartLocation: number;
-
-
-    voronoiId: number;
     voronoiCell: any;
 
     indexedNeighborsInRange:
