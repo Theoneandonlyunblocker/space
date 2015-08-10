@@ -107,7 +107,6 @@ progress::-webkit-progress-value {
   height: 100%;
 }
 .reactui-selector {
-  display: none;
   max-width: 200px;
   flex: 0 0 auto;
 }
@@ -3089,4 +3088,7 @@ progress::-webkit-progress-value {
 }
 .attitude-modifier-list {
   background-color: #0c1615;
+}
+.debug-hidden {
+  display: none;
 }

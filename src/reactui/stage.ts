@@ -81,7 +81,7 @@ module Rance
             elementsToRender,
             React.DOM.select(
               {
-                className: "reactui-selector",
+                className: "reactui-selector debug debug-hidden",
                 ref: "sceneSelector",
                 value: this.props.sceneToRender,
                 onChange: this.changeScene

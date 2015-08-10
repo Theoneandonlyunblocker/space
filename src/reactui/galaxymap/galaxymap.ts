@@ -35,7 +35,7 @@ module Rance
             ),
             React.DOM.select(
             {
-              className: "reactui-selector",
+              className: "reactui-selector debug debug-hidden",
               ref: "mapModeSelector",
               onChange: this.switchMapMode
             },

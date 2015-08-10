@@ -422,12 +422,4 @@ module Rance
 
     return null;
   }
-
-  export function inspectSave(saveName: string)
-  {
-    var saveKey = "Rance.Save." + saveName;
-    var save = localStorage.getItem(saveKey);
-
-    return JSON.parse(save);
-  }
 }
