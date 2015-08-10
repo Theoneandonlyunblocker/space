@@ -27,11 +27,6 @@ module Rance
           ));
         }
 
-        if (rows.length < 1 && this.props.collapsedElement)
-        {
-          rows = this.props.collapsedElement
-        }
-
         var resetButton = null;
         if (this.props.resetFN)
         {

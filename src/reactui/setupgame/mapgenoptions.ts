@@ -38,7 +38,7 @@ module Rance
       {
         var defaultValues = {};
 
-        ["defaultOptions", "basicOptions"].forEach(function(optionGroup)
+        ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup)
         {
           var options = mapGenTemplate[optionGroup];
           if (!options) return;
@@ -50,9 +50,11 @@ module Rance
 
             if (this.state && isFinite(this.getOptionValue(optionName)))
             {
+              if (!this.props.mapGenTemplate[optionGroup]) continue;
+
               var oldOption = this.props.mapGenTemplate[optionGroup][optionName];
 
-              if (!oldOption) break;
+              if (!oldOption) continue;
 
               var oldValuePercentage = getRelativeValue(
                 this.getOptionValue(optionName), oldOption.min, oldOption.max);
@@ -77,17 +79,6 @@ module Rance
         newState[visibilityProp] = !this.state[visibilityProp];
         this.setState(newState);
       },
-      
-      makeFoldedOptionGroupElement: function(visibilityProp: string)
-      {
-        return(
-          React.DOM.div(
-          {
-            className: "map-gen-option-group-folded",
-            onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
-          })
-        )
-      },
 
       handleOptionChange: function(optionName: string, newValue: number)
       {
@@ -110,45 +101,73 @@ module Rance
         {
           defaultOptions:
           {
-            header: "Default Options",
+            title: "Default Options",
             visibilityProp: "defaultOptionsVisible"
           },
           basicOptions:
           {
-            header: "Basic Options",
+            title: "Basic Options",
             visibilityProp: "basicOptionsVisible"
+          },
+          advancedOptions:
+          {
+            title: "Advanced Options",
+            visibilityProp: "advancedOptionsVisible"
           }
         };
 
         for (var groupName in optionGroupsInfo)
         {
+          if (!this.props.mapGenTemplate[groupName]) continue;
+          
           var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
+          var groupIsVisible = this.state[visibilityProp];
 
           var options = [];
 
-          for (var optionName in this.props.mapGenTemplate[groupName])
+          if (groupIsVisible)
           {
-            var option = this.props.mapGenTemplate[groupName][optionName];
-
-            options.push(
+            for (var optionName in this.props.mapGenTemplate[groupName])
             {
-              content: UIComponents.MapGenOption(
+              var option = this.props.mapGenTemplate[groupName][optionName];
+
+              options.push(
               {
-                key: optionName,
-                id: optionName,
-                option: option,
-                value: this.getOptionValue(optionName),
-                onChange: this.handleOptionChange
-              })
-            });
+                content: UIComponents.MapGenOption(
+                {
+                  key: optionName,
+                  id: optionName,
+                  option: option,
+                  value: this.getOptionValue(optionName),
+                  onChange: this.handleOptionChange
+                })
+              });
+            }
           }
+
+          var headerProps: any =
+          {
+            className: "map-gen-options-group-header",
+            onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
+          }
+
+          if (groupIsVisible)
+          {
+            headerProps.className += " collapsable";
+          }
+          else
+          {
+            headerProps.className += " collapsed";
+          }
+
+          var header = React.DOM.div(headerProps,
+            optionGroupsInfo[groupName].title
+          )
+          
           optionGroups.push(UIComponents.OptionsGroup(
           {
             key: groupName,
-            header: optionGroupsInfo[groupName].header,
-            collapsedElement: this.state.visibilityProp ?
-              null :
-              this.makeFoldedOptionGroupElement(visibilityProp),
+            header: header,
             options: options
           }));
         }
