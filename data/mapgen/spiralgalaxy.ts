@@ -47,6 +47,15 @@ module Rance
             max: 5,
             step: 1
           }
+        },
+        advancedOptions:
+        {
+          funnyNumber:
+          {
+            min: 69,
+            max: 420,
+            step: 351
+          }
         }
       }
     }

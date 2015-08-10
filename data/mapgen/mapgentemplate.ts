@@ -12,6 +12,7 @@ module Rance
 
       defaultOptions: MapGen.IDefaultOptions;
       basicOptions?: MapGen.IMapSpecificOptions;
+      advancedOptions?: MapGen.IMapSpecificOptions;
     }
     export module MapGen
     {
