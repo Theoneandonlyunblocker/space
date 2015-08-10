@@ -119,7 +119,7 @@ module Rance
         for (var groupName in optionGroupsInfo)
         {
           if (!this.props.mapGenTemplate[groupName]) continue;
-          
+
           var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
           var groupIsVisible = this.state[visibilityProp];
 
@@ -147,15 +147,11 @@ module Rance
 
           var headerProps: any =
           {
-            className: "map-gen-options-group-header",
+            className: "map-gen-options-group-header collapsible",
             onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
           }
 
-          if (groupIsVisible)
-          {
-            headerProps.className += " collapsable";
-          }
-          else
+          if (!groupIsVisible)
           {
             headerProps.className += " collapsed";
           }

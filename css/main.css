@@ -2909,6 +2909,7 @@ progress::-webkit-progress-value {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  width: 100%;
   font-size: 1.33em;
   margin-bottom: 0.33em;
 }
@@ -3082,6 +3083,44 @@ progress::-webkit-progress-value {
 .map-setup {
   border: 1px solid green;
   width: 400px;
+}
+.map-gen-options-group-header {
+  width: 100%;
+}
+.map-gen-option {
+  width: 100%;
+  display: flex;
+}
+.map-gen-option-label {
+  flex: 1 1 40%;
+}
+.map-gen-option-slider {
+  flex: 0 1 45%;
+}
+.map-gen-option-value {
+  margin: 0 1em;
+  flex: 0 0 15%;
+}
+.collapsible {
+  cursor: pointer;
+}
+.collapsible::after {
+  content: "\f077";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  position: absolute;
+  right: 1em;
+  color: #666;
+  font-size: 0.8em;
+}
+.collapsed::after {
+  content: "\f078" !important;
+  font-family: FontAwesome !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  text-decoration: inherit !important;
 }
 .auto-position {
   position: fixed;
