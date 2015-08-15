@@ -85,6 +85,8 @@ module Rance
       makePlayer: function()
       {
         var player = new Player(!this.props.isHuman);
+
+        player.name = this.state.name;
         
         player.color = this.state.mainColor === null ?
           this.generateMainColor() : this.state.mainColor;

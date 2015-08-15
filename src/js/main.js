@@ -16751,6 +16751,8 @@ var Rance;
             makePlayer: function () {
                 var player = new Rance.Player(!this.props.isHuman);
 
+                player.name = this.state.name;
+
                 player.color = this.state.mainColor === null ? this.generateMainColor() : this.state.mainColor;
                 player.secondaryColor = this.state.subColor === null ? this.generateSubColor(player.color) : this.state.subColor;
 
