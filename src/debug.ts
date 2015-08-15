@@ -1,6 +1,6 @@
 module Rance
 {
-  export function debug()
+  export function toggleDebugElements()
   {
     var debugElements = document.getElementsByClassName("debug");
 

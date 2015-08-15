@@ -42,6 +42,7 @@ module Rance
       effectDuration: 1500,
       after: 250
     }
+    export var debugMode = false;
   }
 
   export var Options: any;
