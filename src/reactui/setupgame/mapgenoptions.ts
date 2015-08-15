@@ -100,11 +100,12 @@ module Rance
 
       getOptionValuesForTemplate: function()
       {
-        var optionsObject = extendObject(this.props.mapGenTemplate.options);
+        var optionValues: Templates.MapGen.IMapGenOptionValues =
+          extendObject(this.props.mapGenTemplate.options);
 
-        for (var groupName in optionsObject)
+        for (var groupName in optionValues)
         {
-          var optionsGroup = optionsObject[groupName];
+          var optionsGroup = optionValues[groupName];
 
           for (var optionName in optionsGroup)
           {
@@ -114,11 +115,11 @@ module Rance
               throw new Error("Value " + optionValue + " for option " + optionName + " is invalid.");
             }
 
-            optionsObject[groupName][optionName] = optionValue;
+            optionValues[groupName][optionName] = optionValue;
           }
         }
 
-        return optionsObject;
+        return optionValues;
       },
 
       render: function()

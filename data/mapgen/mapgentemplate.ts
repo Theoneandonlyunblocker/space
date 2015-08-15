@@ -1,4 +1,4 @@
-/// <reference path="../../src/range.ts" />
+/// <reference path="mapgenoptions.ts" />
 
 module Rance
 {
@@ -12,27 +12,7 @@ module Rance
 
       options: MapGen.IMapGenOptions;
 
-      mapGenFunction?: (any) => Star[]; // TODO remove ?. shouldnt be optional
-    }
-    export module MapGen
-    {
-      export interface IMapGenOptions
-      {
-        defaultOptions: IDefaultOptions;
-        basicOptions?: IMapSpecificOptions;
-        advancedOptions?: IMapSpecificOptions;
-      }
-      export interface IDefaultOptions
-      {
-        height: IRange; // pixels
-        width: IRange; // pixels
-        starDensity: IRange; // stars per 1000 pixels
-        playerAmount: IRange;
-      }
-      export interface IMapSpecificOptions
-      {
-        [optionName: string]: IRange;
-      }
+      mapGenFunction?: (options: MapGen.IMapGenOptionValues) => Star[]; // TODO remove ?. shouldnt be optional
     }
   }
 }
