@@ -18,12 +18,7 @@ module Rance
             className: "option-container",
             key: "" + i
           },
-            React.DOM.div(
-            {
-              className: "option-content"
-            },
-              option.content
-            )
+            option.content
           ));
         }
 
