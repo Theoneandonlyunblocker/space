@@ -79,9 +79,9 @@ module Rance
         return(
           React.DOM.div({className: "react-stage"},
             elementsToRender,
-            React.DOM.select(
+            !Options.debugMode ? null : React.DOM.select(
               {
-                className: "reactui-selector debug debug-hidden",
+                className: "reactui-selector debug",
                 ref: "sceneSelector",
                 value: this.props.sceneToRender,
                 onChange: this.changeScene

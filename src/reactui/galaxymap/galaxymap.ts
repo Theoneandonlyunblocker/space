@@ -33,9 +33,9 @@ module Rance
                 game: this.props.game
               })
             ),
-            React.DOM.select(
+            !Options.debugMode ? null : React.DOM.select(
             {
-              className: "reactui-selector debug debug-hidden",
+              className: "reactui-selector debug",
               ref: "mapModeSelector",
               onChange: this.switchMapMode
             },
