@@ -93,6 +93,34 @@ module Rance
         return this.state["optionValue_" + optionName];
       },
 
+      logOptions: function()
+      {
+        console.log(this.getOptionValuesForTemplate());
+      },
+
+      getOptionValuesForTemplate: function()
+      {
+        var optionsObject = extendObject(this.props.mapGenTemplate.options);
+
+        for (var groupName in optionsObject)
+        {
+          var optionsGroup = optionsObject[groupName];
+
+          for (var optionName in optionsGroup)
+          {
+            var optionValue = this.getOptionValue(optionName);
+            if (!isFinite(optionValue))
+            {
+              throw new Error("Value " + optionValue + " for option " + optionName + " is invalid.");
+            }
+
+            optionsObject[groupName][optionName] = optionValue;
+          }
+        }
+
+        return optionsObject;
+      },
+
       render: function()
       {
         var optionGroups = [];
@@ -173,7 +201,13 @@ module Rance
           {
             className: "map-gen-options"
           },
-            optionGroups
+            optionGroups,
+            React.DOM.button(
+            {
+              onClick: this.logOptions
+            },
+              "log option values"
+            )
           )
         );
       }
