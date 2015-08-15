@@ -1,5 +1,6 @@
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="optionsgroup.ts"/>
+/// <reference path="optionscheckbox.ts" />
 
 module Rance
 {
@@ -100,6 +101,30 @@ module Rance
             this.forceUpdate();
           }.bind(this),
           key: "battleAnimationOptions"
+        }));
+
+        var debugOptions: any[] = [];
+        debugOptions.push(
+        {
+          content:
+            UIComponents.OptionsCheckbox(
+            {
+              isChecked: Options.debugMode,
+              label: "Debug mode",
+              onChangeFN: toggleDebugMode
+            })
+        });
+
+        allOptions.push(UIComponents.OptionsGroup(
+        {
+          header: "Debug",
+          options: debugOptions,
+          resetFN: function()
+          {
+            extendObject(defaultOptions.debugMode, Options.debugMode);
+            this.forceUpdate();
+          }.bind(this),
+          key: "debug"
         }));
 
         return(

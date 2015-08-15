@@ -1,14 +1,9 @@
 module Rance
 {
-  export function toggleDebugElements()
+  export function toggleDebugMode()
   {
-    var debugElements = document.getElementsByClassName("debug");
-
-    for (var i = 0; i < debugElements.length; i++)
-    {
-      var debugElement = <HTMLElement> debugElements[i];
-      debugElement.classList.toggle("debug-hidden");
-    }
+    Options.debugMode = !Options.debugMode;
+    app.reactUI.render();
   }
   export function inspectSave(saveName: string)
   {
