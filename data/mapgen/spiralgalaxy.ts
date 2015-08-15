@@ -1,3 +1,4 @@
+/// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 
 module Rance
@@ -11,6 +12,8 @@ module Rance
         key: "spiralGalaxy",
         displayName: "Test Map",
         description: "(not implemented yet) just testing",
+
+        mapGenFunction: spiralGalaxyGeneration,
 
         options:
         {
