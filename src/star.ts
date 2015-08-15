@@ -31,6 +31,13 @@ module Rance
     linksTo: Star[] = [];
     linksFrom: Star[] = [];
 
+    // can be used during map gen to attach temporary variables for easier debugging
+    // nulled and deleted after map gen is done
+    mapGenData:
+    {
+      [propName: string]: any;
+    };
+
     seed: string;
 
     name: string;
