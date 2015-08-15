@@ -40,7 +40,7 @@ module Rance
 
         ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup)
         {
-          var options = mapGenTemplate[optionGroup];
+          var options = mapGenTemplate.options[optionGroup];
           if (!options) return;
 
           for (var optionName in options)
@@ -50,9 +50,9 @@ module Rance
 
             if (this.state && isFinite(this.getOptionValue(optionName)))
             {
-              if (!this.props.mapGenTemplate[optionGroup]) continue;
+              if (!this.props.mapGenTemplate.options[optionGroup]) continue;
 
-              var oldOption = this.props.mapGenTemplate[optionGroup][optionName];
+              var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
 
               if (!oldOption) continue;
 
@@ -118,7 +118,7 @@ module Rance
 
         for (var groupName in optionGroupsInfo)
         {
-          if (!this.props.mapGenTemplate[groupName]) continue;
+          if (!this.props.mapGenTemplate.options[groupName]) continue;
 
           var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
           var groupIsVisible = this.state[visibilityProp];
@@ -127,9 +127,9 @@ module Rance
 
           if (groupIsVisible)
           {
-            for (var optionName in this.props.mapGenTemplate[groupName])
+            for (var optionName in this.props.mapGenTemplate.options[groupName])
             {
-              var option = this.props.mapGenTemplate[groupName][optionName];
+              var option = this.props.mapGenTemplate.options[groupName][optionName];
 
               options.push(
               {

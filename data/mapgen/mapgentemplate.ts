@@ -10,12 +10,18 @@ module Rance
       displayName: string;
       description?: string;
 
-      defaultOptions: MapGen.IDefaultOptions;
-      basicOptions?: MapGen.IMapSpecificOptions;
-      advancedOptions?: MapGen.IMapSpecificOptions;
+      options: MapGen.IMapGenOptions;
+
+      mapGenFunction?: (any) => Star[]; // TODO remove ?. shouldnt be optional
     }
     export module MapGen
     {
+      export interface IMapGenOptions
+      {
+        defaultOptions: IDefaultOptions;
+        basicOptions?: IMapSpecificOptions;
+        advancedOptions?: IMapSpecificOptions;
+      }
       export interface IDefaultOptions
       {
         height: IRange; // pixels

@@ -12,40 +12,43 @@ module Rance
         displayName: "Small Test Map",
         description: "(not implemented yet) just testing but small",
 
-        defaultOptions:
+        options:
         {
-          height:
+          defaultOptions:
           {
-            min: 200,
-            max: 400,
-            step: 1
+            height:
+            {
+              min: 200,
+              max: 400,
+              step: 1
+            },
+            width:
+            {
+              min: 200,
+              max: 400,
+              step: 1
+            },
+            starDensity:
+            {
+              min: 0.1,
+              max: 0.12,
+              step: 0.001
+            },
+            playerAmount:
+            {
+              min: 2,
+              max: 4,
+              step: 1
+            }
           },
-          width:
+          basicOptions:
           {
-            min: 200,
-            max: 400,
-            step: 1
-          },
-          starDensity:
-          {
-            min: 0.1,
-            max: 0.12,
-            step: 0.001
-          },
-          playerAmount:
-          {
-            min: 2,
-            max: 4,
-            step: 1
-          }
-        },
-        basicOptions:
-        {
-          tinyness:
-          {
-            min: 69,
-            max: 420,
-            step: 1
+            tinyness:
+            {
+              min: 69,
+              max: 420,
+              step: 1
+            }
           }
         }
       }
