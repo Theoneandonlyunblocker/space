@@ -14,27 +14,29 @@ module Rance
 
   export class Star implements Point
   {
-    // toRemove
+    // TO REMOVE
     sector: Sector;
     region: Region;
     distanceFromNearestStartLocation: number;
     voronoiId: number;
-    // end
+    distance: number;
+    // END TO REMOVE
     
     id: number;
     x: number;
     y: number;
+
+    // separated so we can iterate through star[].linksTo to only get each connection once
+    // use star.getAllLinks() for individual star connections
     linksTo: Star[] = [];
     linksFrom: Star[] = [];
-    distance: number;
 
     seed: string;
-
-    baseIncome: number;
 
     name: string;
     owner: Player;
 
+    baseIncome: number;
     resource: Templates.IResourceTemplate;
     
     fleets:
@@ -65,6 +67,7 @@ module Rance
       [id: number]: number;
     } = {};
 
+    // TODO rework items building
     buildableItems:
     {
       1: Templates.IItemTemplate[];
@@ -85,13 +88,107 @@ module Rance
       this.x = x;
       this.y = y;
     }
-
+    // TO REMOVE
     setResource(resource: Templates.IResourceTemplate)
     {
       this.resource = resource;
       this.sector.resourceType = resource;
       this.sector.resourceLocation = this;
     }
+    clearLinks()
+    {
+      this.linksTo = [];
+      this.linksFrom = [];
+    }
+    getLinksByRegion()
+    {
+      var linksByRegion:
+      {
+        [regionId: string]:
+        {
+          links: Star[];
+          region: Region;
+        };
+      } = {};
+
+      var allLinks = this.getAllLinks();
+
+      for (var i = 0; i < allLinks.length; i++)
+      {
+        var star = allLinks[i];
+        var region = star.region;
+
+        if (!linksByRegion[region.id])
+        {
+          linksByRegion[region.id] =
+          {
+            links: [],
+            region: region
+          }
+        }
+
+        linksByRegion[region.id].links.push(star);
+      }
+
+      return linksByRegion;
+    }
+    severLinksToRegion(regionToSever: string)
+    {
+      var linksByRegion = this.getLinksByRegion();
+      var links = linksByRegion[regionToSever].links;
+
+      for (var i = 0; i < links.length; i++)
+      {
+        var star = links[i];
+
+        this.removeLink(star);
+      }
+    }
+    severLinksToFiller()
+    {
+      var linksByRegion = this.getLinksByRegion();
+      
+      for (var regionId in linksByRegion)
+      {
+        if (linksByRegion[regionId].region.isFiller)
+        {
+          this.severLinksToRegion(regionId);
+        }
+      }
+    }
+    severLinksToNonCenter()
+    {
+      var self = this;
+
+      var linksByRegion = this.getLinksByRegion();
+      var nonCenterRegions = Object.keys(linksByRegion).filter(function(regionId)
+      {
+        return regionId !== self.region.id && regionId !== "center";
+      });
+
+      for (var i = 0; i < nonCenterRegions.length; i++)
+      {
+        this.severLinksToRegion(nonCenterRegions[i]);      
+      }
+    }
+    severLinksToNonAdjacent()
+    {
+      var allLinks = this.getAllLinks();
+
+      var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+
+      for (var i = 0; i < allLinks.length; i++)
+      {
+        var star = allLinks[i];
+
+        if (neighborVoronoiIds.indexOf(star.voronoiId) < 0)
+        {
+          this.removeLink(star);
+        }
+      }
+    }
+
+    // END TO REMOVE
 
     // BUILDINGS
     addBuilding(building: Building)
@@ -500,6 +597,7 @@ module Rance
     {
       return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
     }
+    // could maybe use adding / removing links as a gameplay mechanic
     addLink(linkTo: Star)
     {
       if (this.hasLink(linkTo)) return;
@@ -527,82 +625,7 @@ module Rance
     {
       return this.linksTo.concat(this.linksFrom);
     }
-    clearLinks()
-    {
-      this.linksTo = [];
-      this.linksFrom = [];
-    }
-    getLinksByRegion()
-    {
-      var linksByRegion:
-      {
-        [regionId: string]:
-        {
-          links: Star[];
-          region: Region;
-        };
-      } = {};
-
-      var allLinks = this.getAllLinks();
-
-      for (var i = 0; i < allLinks.length; i++)
-      {
-        var star = allLinks[i];
-        var region = star.region;
-
-        if (!linksByRegion[region.id])
-        {
-          linksByRegion[region.id] =
-          {
-            links: [],
-            region: region
-          }
-        }
-
-        linksByRegion[region.id].links.push(star);
-      }
-
-      return linksByRegion;
-    }
-    severLinksToRegion(regionToSever: string)
-    {
-      var linksByRegion = this.getLinksByRegion();
-      var links = linksByRegion[regionToSever].links;
-
-      for (var i = 0; i < links.length; i++)
-      {
-        var star = links[i];
-
-        this.removeLink(star);
-      }
-    }
-    severLinksToFiller()
-    {
-      var linksByRegion = this.getLinksByRegion();
-      
-      for (var regionId in linksByRegion)
-      {
-        if (linksByRegion[regionId].region.isFiller)
-        {
-          this.severLinksToRegion(regionId);
-        }
-      }
-    }
-    severLinksToNonCenter()
-    {
-      var self = this;
-
-      var linksByRegion = this.getLinksByRegion();
-      var nonCenterRegions = Object.keys(linksByRegion).filter(function(regionId)
-      {
-        return regionId !== self.region.id && regionId !== "center";
-      });
-
-      for (var i = 0; i < nonCenterRegions.length; i++)
-      {
-        this.severLinksToRegion(nonCenterRegions[i]);      
-      }
-    }
+    // return adjacent stars whether they're linked to this or not
     getNeighbors(): Star[]
     {
       var neighbors: Star[] = [];
@@ -845,22 +868,7 @@ module Rance
 
       return this.seed;
     }
-    severLinksToNonAdjacent()
-    {
-      var allLinks = this.getAllLinks();
-
-      var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-
-      for (var i = 0; i < allLinks.length; i++)
-      {
-        var star = allLinks[i];
-
-        if (neighborVoronoiIds.indexOf(star.voronoiId) < 0)
-        {
-          this.removeLink(star);
-        }
-      }
-    }
+    
     seedBuildableItems()
     {
       for (var techLevel in this.buildableItems)
@@ -937,9 +945,11 @@ module Rance
       data.x = this.x;
       data.y = this.y;
 
+      // TO REMOVE
       data.distance = this.distance;
       data.regionId = this.region ? this.region.id : null;
       data.sectorId = this.sector ? this.sector.id : null;
+      // END TO REMOVE
 
       data.baseIncome = this.baseIncome;
 
