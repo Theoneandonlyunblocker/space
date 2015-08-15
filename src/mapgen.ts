@@ -283,8 +283,6 @@ module Rance
       var armOffsetMax = props.armOffsetMax || 0.5;
       var armRotationFactor = props.arms / 3;
       var galaxyRotation = randRange(0, Math.PI * 2);
-      var minBound = Math.min(this.maxWidth, this.maxHeight);
-      var minBound2 = minBound / 2;
 
 
       var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax)
