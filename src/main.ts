@@ -6,6 +6,7 @@
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
 /// <reference path="itemgenerator.ts" />
+/// <reference path="debug.ts"/>
 
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>

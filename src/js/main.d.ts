@@ -452,7 +452,6 @@ declare module Rance {
     function shuffleArray(toShuffle: any[], seed?: any): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
-    function inspectSave(saveName: string): any;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -773,18 +772,20 @@ declare module Rance {
 }
 declare module Rance {
     class Star implements Rance.Point {
+        public sector: Rance.Sector;
+        public region: Rance.Region;
+        public distanceFromNearestStartLocation: number;
+        public voronoiId: number;
+        public distance: number;
         public id: number;
         public x: number;
         public y: number;
         public linksTo: Star[];
         public linksFrom: Star[];
-        public distance: number;
-        public region: Rance.Region;
         public seed: string;
-        public baseIncome: number;
         public name: string;
         public owner: Rance.Player;
-        public sector: Rance.Sector;
+        public baseIncome: number;
         public resource: Rance.Templates.IResourceTemplate;
         public fleets: {
             [playerId: string]: Rance.Fleet[];
@@ -792,8 +793,6 @@ declare module Rance {
         public buildings: {
             [category: string]: Rance.Building[];
         };
-        public distanceFromNearestStartLocation: number;
-        public voronoiId: number;
         public voronoiCell: any;
         public indexedNeighborsInRange: {
             [range: number]: {
@@ -813,6 +812,17 @@ declare module Rance {
         };
         constructor(x: number, y: number, id?: number);
         public setResource(resource: Rance.Templates.IResourceTemplate): void;
+        public clearLinks(): void;
+        public getLinksByRegion(): {
+            [regionId: string]: {
+                links: Star[];
+                region: Rance.Region;
+            };
+        };
+        public severLinksToRegion(regionToSever: string): void;
+        public severLinksToFiller(): void;
+        public severLinksToNonCenter(): void;
+        public severLinksToNonAdjacent(): void;
         public addBuilding(building: Rance.Building): void;
         public removeBuilding(building: Rance.Building): void;
         public sortDefenceBuildings(): void;
@@ -853,16 +863,6 @@ declare module Rance {
         public addLink(linkTo: Star): void;
         public removeLink(linkTo: Star): void;
         public getAllLinks(): Star[];
-        public clearLinks(): void;
-        public getLinksByRegion(): {
-            [regionId: string]: {
-                links: Star[];
-                region: Rance.Region;
-            };
-        };
-        public severLinksToRegion(regionToSever: string): void;
-        public severLinksToFiller(): void;
-        public severLinksToNonCenter(): void;
         public getNeighbors(): Star[];
         public getLinkedInRange(range: number): {
             all: Star[];
@@ -877,7 +877,6 @@ declare module Rance {
         public getVision(): Star[];
         public getHealingFactor(player: Rance.Player): number;
         public getSeed(): string;
-        public severLinksToNonAdjacent(): void;
         public seedBuildableItems(): void;
         public getItemManufactoryLevel(): number;
         public getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
@@ -1366,10 +1365,15 @@ declare module Rance {
             key: string;
             displayName: string;
             description?: string;
-            defaultOptions: MapGen.IDefaultOptions;
-            basicOptions?: MapGen.IMapSpecificOptions;
+            options: MapGen.IMapGenOptions;
+            mapGenFunction?: (any: any) => Rance.Star[];
         }
         module MapGen {
+            interface IMapGenOptions {
+                defaultOptions: IDefaultOptions;
+                basicOptions?: IMapSpecificOptions;
+                advancedOptions?: IMapSpecificOptions;
+            }
             interface IDefaultOptions {
                 height: Rance.IRange;
                 width: Rance.IRange;
@@ -2611,6 +2615,10 @@ declare module Rance {
         public resume(): void;
         public render(renderLoopId?: number): void;
     }
+}
+declare module Rance {
+    function debug(): void;
+    function inspectSave(saveName: string): any;
 }
 declare module Rance {
     interface ISpritesheetData {

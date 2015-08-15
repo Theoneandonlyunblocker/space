@@ -4643,13 +4643,7 @@ var Rance;
                     rows.push(React.DOM.div({
                         className: "option-container",
                         key: "" + i
-                    }, React.DOM.div({
-                        className: "option-content"
-                    }, option.content)));
-                }
-
-                if (rows.length < 1 && this.props.collapsedElement) {
-                    rows = this.props.collapsedElement;
+                    }, option.content));
                 }
 
                 var resetButton = null;
@@ -4668,8 +4662,32 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.OptionsCheckbox = React.createClass({
+            displayName: "OptionsCheckbox",
+            render: function () {
+                var key = "options-checkbox-" + this.props.label;
+
+                return (React.DOM.div({
+                    className: "options-checkbox-container"
+                }, React.DOM.input({
+                    type: "checkbox",
+                    id: key,
+                    checked: this.props.isChecked,
+                    onChange: this.props.onChangeFN
+                }), React.DOM.label({
+                    htmlFor: key
+                }, this.props.label)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="optionsgroup.ts"/>
+/// <reference path="optionscheckbox.ts" />
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -4740,6 +4758,25 @@ var Rance;
                         this.forceUpdate();
                     }.bind(this),
                     key: "battleAnimationOptions"
+                }));
+
+                var debugOptions = [];
+                debugOptions.push({
+                    content: Rance.UIComponents.OptionsCheckbox({
+                        isChecked: Rance.Options.debugMode,
+                        label: "Debug mode",
+                        onChangeFN: Rance.toggleDebugMode
+                    })
+                });
+
+                allOptions.push(Rance.UIComponents.OptionsGroup({
+                    header: "Debug",
+                    options: debugOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.debugMode, Rance.Options.debugMode);
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "debug"
                 }));
 
                 return (React.DOM.div({ className: "options" }, Rance.UIComponents.PopupManager({
@@ -5994,14 +6031,6 @@ var Rance;
         return null;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
-
-    function inspectSave(saveName) {
-        var saveKey = "Rance.Save." + saveName;
-        var save = localStorage.getItem(saveKey);
-
-        return JSON.parse(save);
-    }
-    Rance.inspectSave = inspectSave;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -7478,12 +7507,15 @@ var Rance;
 (function (Rance) {
     var Star = (function () {
         function Star(x, y, id) {
+            // separated so we can iterate through star[].linksTo to only get each connection once
+            // use star.getAllLinks() for individual star connections
             this.linksTo = [];
             this.linksFrom = [];
             this.fleets = {};
             this.buildings = {};
             this.indexedNeighborsInRange = {};
             this.indexedDistanceToStar = {};
+            // TODO rework items building
             this.buildableItems = {
                 1: [],
                 2: [],
@@ -7495,12 +7527,83 @@ var Rance;
             this.x = x;
             this.y = y;
         }
+        // TO REMOVE
         Star.prototype.setResource = function (resource) {
             this.resource = resource;
             this.sector.resourceType = resource;
             this.sector.resourceLocation = this;
         };
+        Star.prototype.clearLinks = function () {
+            this.linksTo = [];
+            this.linksFrom = [];
+        };
+        Star.prototype.getLinksByRegion = function () {
+            var linksByRegion = {};
 
+            var allLinks = this.getAllLinks();
+
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+                var region = star.region;
+
+                if (!linksByRegion[region.id]) {
+                    linksByRegion[region.id] = {
+                        links: [],
+                        region: region
+                    };
+                }
+
+                linksByRegion[region.id].links.push(star);
+            }
+
+            return linksByRegion;
+        };
+        Star.prototype.severLinksToRegion = function (regionToSever) {
+            var linksByRegion = this.getLinksByRegion();
+            var links = linksByRegion[regionToSever].links;
+
+            for (var i = 0; i < links.length; i++) {
+                var star = links[i];
+
+                this.removeLink(star);
+            }
+        };
+        Star.prototype.severLinksToFiller = function () {
+            var linksByRegion = this.getLinksByRegion();
+
+            for (var regionId in linksByRegion) {
+                if (linksByRegion[regionId].region.isFiller) {
+                    this.severLinksToRegion(regionId);
+                }
+            }
+        };
+        Star.prototype.severLinksToNonCenter = function () {
+            var self = this;
+
+            var linksByRegion = this.getLinksByRegion();
+            var nonCenterRegions = Object.keys(linksByRegion).filter(function (regionId) {
+                return regionId !== self.region.id && regionId !== "center";
+            });
+
+            for (var i = 0; i < nonCenterRegions.length; i++) {
+                this.severLinksToRegion(nonCenterRegions[i]);
+            }
+        };
+        Star.prototype.severLinksToNonAdjacent = function () {
+            var allLinks = this.getAllLinks();
+
+            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+
+                if (neighborVoronoiIds.indexOf(star.voronoiId) < 0) {
+                    this.removeLink(star);
+                }
+            }
+        };
+
+        // END TO REMOVE
         // BUILDINGS
         Star.prototype.addBuilding = function (building) {
             if (!this.buildings[building.template.category]) {
@@ -7828,6 +7931,8 @@ var Rance;
         Star.prototype.hasLink = function (linkTo) {
             return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
         };
+
+        // could maybe use adding / removing links as a gameplay mechanic
         Star.prototype.addLink = function (linkTo) {
             if (this.hasLink(linkTo))
                 return;
@@ -7851,62 +7956,8 @@ var Rance;
         Star.prototype.getAllLinks = function () {
             return this.linksTo.concat(this.linksFrom);
         };
-        Star.prototype.clearLinks = function () {
-            this.linksTo = [];
-            this.linksFrom = [];
-        };
-        Star.prototype.getLinksByRegion = function () {
-            var linksByRegion = {};
 
-            var allLinks = this.getAllLinks();
-
-            for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-                var region = star.region;
-
-                if (!linksByRegion[region.id]) {
-                    linksByRegion[region.id] = {
-                        links: [],
-                        region: region
-                    };
-                }
-
-                linksByRegion[region.id].links.push(star);
-            }
-
-            return linksByRegion;
-        };
-        Star.prototype.severLinksToRegion = function (regionToSever) {
-            var linksByRegion = this.getLinksByRegion();
-            var links = linksByRegion[regionToSever].links;
-
-            for (var i = 0; i < links.length; i++) {
-                var star = links[i];
-
-                this.removeLink(star);
-            }
-        };
-        Star.prototype.severLinksToFiller = function () {
-            var linksByRegion = this.getLinksByRegion();
-
-            for (var regionId in linksByRegion) {
-                if (linksByRegion[regionId].region.isFiller) {
-                    this.severLinksToRegion(regionId);
-                }
-            }
-        };
-        Star.prototype.severLinksToNonCenter = function () {
-            var self = this;
-
-            var linksByRegion = this.getLinksByRegion();
-            var nonCenterRegions = Object.keys(linksByRegion).filter(function (regionId) {
-                return regionId !== self.region.id && regionId !== "center";
-            });
-
-            for (var i = 0; i < nonCenterRegions.length; i++) {
-                this.severLinksToRegion(nonCenterRegions[i]);
-            }
-        };
+        // return adjacent stars whether they're linked to this or not
         Star.prototype.getNeighbors = function () {
             var neighbors = [];
 
@@ -8098,19 +8149,7 @@ var Rance;
 
             return this.seed;
         };
-        Star.prototype.severLinksToNonAdjacent = function () {
-            var allLinks = this.getAllLinks();
 
-            var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-
-            for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-
-                if (neighborVoronoiIds.indexOf(star.voronoiId) < 0) {
-                    this.removeLink(star);
-                }
-            }
-        };
         Star.prototype.seedBuildableItems = function () {
             for (var techLevel in this.buildableItems) {
                 var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
@@ -8177,10 +8216,12 @@ var Rance;
             data.x = this.x;
             data.y = this.y;
 
+            // TO REMOVE
             data.distance = this.distance;
             data.regionId = this.region ? this.region.id : null;
             data.sectorId = this.sector ? this.sector.id : null;
 
+            // END TO REMOVE
             data.baseIncome = this.baseIncome;
 
             data.name = this.name;
@@ -9984,6 +10025,7 @@ var Rance;
     Rance.DiplomacyStatus = DiplomacyStatus;
 })(Rance || (Rance = {}));
 /// <reference path="../../src/range.ts" />
+/// <reference path="mapgenoptions.ts" />
 /// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
@@ -10011,6 +10053,51 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
+/// <reference path="mapgenoptions.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            function spiralGalaxyGeneration(options) {
+                // generate points
+                // in closure because tons of temporary variables we dont really care about
+                var starGenerationProps = (function setStarGenerationProps(options) {
+                    var totalSize = options.defaultOptions.width * options.defaultOptions.height;
+                    var totalStars = totalSize * options.defaultOptions.starDensity / 1000;
+
+                    var actualArms = options.basicOptions["arms"];
+                    var totalArms = actualArms * 2;
+
+                    var percentageInCenter = 0.3;
+                    var percentageInArms = 1 - percentageInCenter;
+                    var amountPerArm = totalStars / actualArms * percentageInArms;
+                    var amountInCenter = totalStars * percentageInCenter;
+
+                    return ({
+                        totalStars: totalStars,
+                        amountPerArm: Math.round(amountPerArm),
+                        amountInCenter: Math.round(amountInCenter),
+                        centerSize: 0.4,
+                        totalArms: totalArms,
+                        amountPerFillerArm: Math.round(amountPerArm / 2),
+                        armDistance: Math.PI * 2 / totalArms,
+                        armOffsetMax: 0.5,
+                        armRotationFactor: actualArms / 3,
+                        galaxyRotation: Rance.randRange(0, Math.PI * 2)
+                    });
+                })(options);
+
+                console.log(starGenerationProps);
+                // make voronoi
+                // relax voronoi
+            }
+            MapGen.spiralGalaxyGeneration = spiralGalaxyGeneration;
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
@@ -10020,33 +10107,43 @@ var Rance;
                 key: "spiralGalaxy",
                 displayName: "Test Map",
                 description: "(not implemented yet) just testing",
-                defaultOptions: {
-                    height: {
-                        min: 400,
-                        max: 800,
-                        step: 1
+                mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
+                options: {
+                    defaultOptions: {
+                        height: {
+                            min: 400,
+                            max: 800,
+                            step: 1
+                        },
+                        width: {
+                            min: 400,
+                            max: 800,
+                            step: 1
+                        },
+                        starDensity: {
+                            min: 0.1,
+                            max: 0.12,
+                            step: 0.001
+                        },
+                        playerAmount: {
+                            min: 2,
+                            max: 5,
+                            step: 1
+                        }
                     },
-                    width: {
-                        min: 400,
-                        max: 800,
-                        step: 1
+                    basicOptions: {
+                        arms: {
+                            min: 3,
+                            max: 5,
+                            step: 1
+                        }
                     },
-                    starDensity: {
-                        min: 0.1,
-                        max: 0.12,
-                        step: 0.001
-                    },
-                    playerAmount: {
-                        min: 2,
-                        max: 5,
-                        step: 1
-                    }
-                },
-                basicOptions: {
-                    arms: {
-                        min: 3,
-                        max: 5,
-                        step: 1
+                    advancedOptions: {
+                        funnyNumber: {
+                            min: 69,
+                            max: 420,
+                            step: 351
+                        }
                     }
                 }
             };
@@ -10064,33 +10161,35 @@ var Rance;
                 key: "newTestSmall",
                 displayName: "Small Test Map",
                 description: "(not implemented yet) just testing but small",
-                defaultOptions: {
-                    height: {
-                        min: 200,
-                        max: 400,
-                        step: 1
+                options: {
+                    defaultOptions: {
+                        height: {
+                            min: 200,
+                            max: 400,
+                            step: 1
+                        },
+                        width: {
+                            min: 200,
+                            max: 400,
+                            step: 1
+                        },
+                        starDensity: {
+                            min: 0.1,
+                            max: 0.12,
+                            step: 0.001
+                        },
+                        playerAmount: {
+                            min: 2,
+                            max: 4,
+                            step: 1
+                        }
                     },
-                    width: {
-                        min: 200,
-                        max: 400,
-                        step: 1
-                    },
-                    starDensity: {
-                        min: 0.1,
-                        max: 0.12,
-                        step: 0.001
-                    },
-                    playerAmount: {
-                        min: 2,
-                        max: 4,
-                        step: 1
-                    }
-                },
-                basicOptions: {
-                    tinyness: {
-                        min: 69,
-                        max: 420,
-                        step: 1
+                    basicOptions: {
+                        tinyness: {
+                            min: 69,
+                            max: 420,
+                            step: 1
+                        }
                     }
                 }
             };
@@ -10587,8 +10686,6 @@ var Rance;
             var armOffsetMax = props.armOffsetMax || 0.5;
             var armRotationFactor = props.arms / 3;
             var galaxyRotation = Rance.randRange(0, Math.PI * 2);
-            var minBound = Math.min(this.maxWidth, this.maxHeight);
-            var minBound2 = minBound / 2;
 
             var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax) {
                 var distance = Rance.randRange(distanceMin, distanceMax);
@@ -15866,8 +15963,8 @@ var Rance;
                     playerControl: this.props.playerControl,
                     player: this.props.player,
                     game: this.props.game
-                })), React.DOM.select({
-                    className: "reactui-selector",
+                })), !Rance.Options.debugMode ? null : React.DOM.select({
+                    className: "reactui-selector debug",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
                 }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"), React.DOM.option({ value: "sectors" }, "sectors"), React.DOM.option({ value: "regions" }, "regions"))));
@@ -16908,8 +17005,8 @@ var Rance;
             getUnsetDefaultValues: function (mapGenTemplate) {
                 var defaultValues = {};
 
-                ["defaultOptions", "basicOptions"].forEach(function (optionGroup) {
-                    var options = mapGenTemplate[optionGroup];
+                ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function (optionGroup) {
+                    var options = mapGenTemplate.options[optionGroup];
                     if (!options)
                         return;
 
@@ -16918,10 +17015,13 @@ var Rance;
                         var value;
 
                         if (this.state && isFinite(this.getOptionValue(optionName))) {
-                            var oldOption = this.props.mapGenTemplate[optionGroup][optionName];
+                            if (!this.props.mapGenTemplate.options[optionGroup])
+                                continue;
+
+                            var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
 
                             if (!oldOption)
-                                break;
+                                continue;
 
                             var oldValuePercentage = Rance.getRelativeValue(this.getOptionValue(optionName), oldOption.min, oldOption.max);
                             value = option.min + (option.max - option.min) * oldValuePercentage;
@@ -16941,12 +17041,6 @@ var Rance;
                 newState[visibilityProp] = !this.state[visibilityProp];
                 this.setState(newState);
             },
-            makeFoldedOptionGroupElement: function (visibilityProp) {
-                return (React.DOM.div({
-                    className: "map-gen-option-group-folded",
-                    onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
-                }));
-            },
             handleOptionChange: function (optionName, newValue) {
                 var changedState = {};
                 changedState["optionValue_" + optionName] = newValue;
@@ -16956,49 +17050,93 @@ var Rance;
             getOptionValue: function (optionName) {
                 return this.state["optionValue_" + optionName];
             },
+            logOptions: function () {
+                console.log(this.getOptionValuesForTemplate());
+            },
+            getOptionValuesForTemplate: function () {
+                var optionValues = Rance.extendObject(this.props.mapGenTemplate.options);
+
+                for (var groupName in optionValues) {
+                    var optionsGroup = optionValues[groupName];
+
+                    for (var optionName in optionsGroup) {
+                        var optionValue = this.getOptionValue(optionName);
+                        if (!isFinite(optionValue)) {
+                            throw new Error("Value " + optionValue + " for option " + optionName + " is invalid.");
+                        }
+
+                        optionValues[groupName][optionName] = optionValue;
+                    }
+                }
+
+                return optionValues;
+            },
             render: function () {
                 var optionGroups = [];
 
                 var optionGroupsInfo = {
                     defaultOptions: {
-                        header: "Default Options",
+                        title: "Default Options",
                         visibilityProp: "defaultOptionsVisible"
                     },
                     basicOptions: {
-                        header: "Basic Options",
+                        title: "Basic Options",
                         visibilityProp: "basicOptionsVisible"
+                    },
+                    advancedOptions: {
+                        title: "Advanced Options",
+                        visibilityProp: "advancedOptionsVisible"
                     }
                 };
 
                 for (var groupName in optionGroupsInfo) {
+                    if (!this.props.mapGenTemplate.options[groupName])
+                        continue;
+
                     var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
+                    var groupIsVisible = this.state[visibilityProp];
 
                     var options = [];
 
-                    for (var optionName in this.props.mapGenTemplate[groupName]) {
-                        var option = this.props.mapGenTemplate[groupName][optionName];
+                    if (groupIsVisible) {
+                        for (var optionName in this.props.mapGenTemplate.options[groupName]) {
+                            var option = this.props.mapGenTemplate.options[groupName][optionName];
 
-                        options.push({
-                            content: Rance.UIComponents.MapGenOption({
-                                key: optionName,
-                                id: optionName,
-                                option: option,
-                                value: this.getOptionValue(optionName),
-                                onChange: this.handleOptionChange
-                            })
-                        });
+                            options.push({
+                                content: Rance.UIComponents.MapGenOption({
+                                    key: optionName,
+                                    id: optionName,
+                                    option: option,
+                                    value: this.getOptionValue(optionName),
+                                    onChange: this.handleOptionChange
+                                })
+                            });
+                        }
                     }
+
+                    var headerProps = {
+                        className: "map-gen-options-group-header collapsible",
+                        onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
+                    };
+
+                    if (!groupIsVisible) {
+                        headerProps.className += " collapsed";
+                    }
+
+                    var header = React.DOM.div(headerProps, optionGroupsInfo[groupName].title);
+
                     optionGroups.push(Rance.UIComponents.OptionsGroup({
                         key: groupName,
-                        header: optionGroupsInfo[groupName].header,
-                        collapsedElement: this.state.visibilityProp ? null : this.makeFoldedOptionGroupElement(visibilityProp),
+                        header: header,
                         options: options
                     }));
                 }
 
                 return (React.DOM.div({
                     className: "map-gen-options"
-                }, optionGroups));
+                }, optionGroups, React.DOM.button({
+                    onClick: this.logOptions
+                }, "log option values")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -17343,8 +17481,8 @@ var Rance;
                         break;
                     }
                 }
-                return (React.DOM.div({ className: "react-stage" }, elementsToRender, React.DOM.select({
-                    className: "reactui-selector",
+                return (React.DOM.div({ className: "react-stage" }, elementsToRender, !Rance.Options.debugMode ? null : React.DOM.select({
+                    className: "reactui-selector debug",
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
@@ -19164,6 +19302,21 @@ var Rance;
     })();
     Rance.Renderer = Renderer;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    function toggleDebugMode() {
+        Rance.Options.debugMode = !Rance.Options.debugMode;
+        app.reactUI.render();
+    }
+    Rance.toggleDebugMode = toggleDebugMode;
+    function inspectSave(saveName) {
+        var saveKey = "Rance.Save." + saveName;
+        var save = localStorage.getItem(saveKey);
+
+        return JSON.parse(save);
+    }
+    Rance.inspectSave = inspectSave;
+})(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
@@ -19662,6 +19815,7 @@ var Rance;
             effectDuration: 1500,
             after: 250
         };
+        defaultOptions.debugMode = false;
     })(Rance.defaultOptions || (Rance.defaultOptions = {}));
     var defaultOptions = Rance.defaultOptions;
 
@@ -19675,6 +19829,7 @@ var Rance;
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
 /// <reference path="itemgenerator.ts" />
+/// <reference path="debug.ts"/>
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>

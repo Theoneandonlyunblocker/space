@@ -33,12 +33,12 @@ module Rance
             centerSize: 0.4,
 
             totalArms: totalArms,
+            amountPerFillerArm: Math.round(amountPerArm / 2),
+            
             armDistance: Math.PI * 2 / totalArms, // distance between arms
             armOffsetMax: 0.5, // how far stars are allowed to move from arm center
             armRotationFactor: actualArms / 3, // how twisty the arms are. bigger number = twistier
-            amountPerFillerArm: Math.round(amountPerArm / 2),
             galaxyRotation: randRange(0, Math.PI * 2) // rotation of entire galaxy
-
           });
         })(options);
 
