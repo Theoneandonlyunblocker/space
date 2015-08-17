@@ -23,39 +23,44 @@ module Rance
           },
             React.DOM.div(
             {
-              className: "top-bar-player"
-            },
-              React.DOM.img(
-              {
-                className: "top-bar-player-icon",
-                src: player.icon
-              }),
-              React.DOM.div(
-              {
-                className: "top-bar-turn-number"
-              }, "Turn " + this.props.game.turnNumber)
-            ),
-            React.DOM.div(
-            {
-              className: "top-bar-money"
+              className: "top-bar-info"
             },
               React.DOM.div(
               {
-                className: "top-bar-money-current"
+                className: "top-bar-player"
               },
-                "Money: " + player.money
+                React.DOM.img(
+                {
+                  className: "top-bar-player-icon",
+                  src: player.icon
+                }),
+                React.DOM.div(
+                {
+                  className: "top-bar-turn-number"
+                }, "Turn " + this.props.game.turnNumber)
               ),
               React.DOM.div(
               {
-                className: incomeClass
+                className: "top-bar-money"
               },
-                "(+" + player.getIncome() + ")"
-              )
-            ),
-            UIComponents.TopBarResources(
-            {
-              player: player  
-            })
+                React.DOM.div(
+                {
+                  className: "top-bar-money-current"
+                },
+                  "Money: " + player.money
+                ),
+                React.DOM.div(
+                {
+                  className: incomeClass
+                },
+                  "(+" + player.getIncome() + ")"
+                )
+              ),
+              UIComponents.TopBarResources(
+              {
+                player: player  
+              })
+            )
           )
         );
       }

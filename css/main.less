@@ -1659,12 +1659,19 @@ progress::-webkit-progress-value { background: #080; }
   left: 0;
   height: @top-bar-height;
   box-sizing: border-box;
-  align-items: center;
-  display: flex;
-  flex-flow: row;
+  
   color: @text-color;
   background-color: darken(@bg-color, 0%);
   .horizontal-border(0, 5px);
+}
+
+.top-bar-info
+{
+  display: inline-flex;
+  align-items: center;
+  flex-flow: row;
+
+  height: 100%;
 
   >*
   {
@@ -1758,16 +1765,6 @@ progress::-webkit-progress-value { background: #080; }
     top: -1px;
     padding: 0;
     border-width: 0 0 5px 0;
-  }
-
-  @media(max-width: 750px)
-  {
-    position: relative;
-    float: right;
-    clear: both;
-    height: auto;
-    padding: 0;
-    border-width: 0 0 5px 5px !important;
   }
 }
 

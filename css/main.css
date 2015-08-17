@@ -1244,9 +1244,6 @@ progress::-webkit-progress-value {
   left: 0;
   height: 2em;
   box-sizing: border-box;
-  align-items: center;
-  display: flex;
-  flex-flow: row;
   color: #eeeeec;
   background-color: #0c1615;
   border: 0px solid transparent;
@@ -1255,7 +1252,13 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
-.top-bar > * {
+.top-bar-info {
+  display: inline-flex;
+  align-items: center;
+  flex-flow: row;
+  height: 100%;
+}
+.top-bar-info > * {
   margin-top: 4px;
   margin-left: 10px;
   margin-bottom: 2px;
@@ -1322,16 +1325,6 @@ progress::-webkit-progress-value {
     top: -1px;
     padding: 0;
     border-width: 0 0 5px 0;
-  }
-}
-@media (max-width: 750px) {
-  .top-menu {
-    position: relative;
-    float: right;
-    clear: both;
-    height: auto;
-    padding: 0;
-    border-width: 0 0 5px 5px !important;
   }
 }
 .top-menu-items {
