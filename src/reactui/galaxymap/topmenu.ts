@@ -30,7 +30,7 @@ module Rance
           lightBoxElement: null,
           hasCondensedMenu: false,
           buttonsToPlace: 999,
-          condensedMenuOpened: false
+          condensedMenuOpened: Options.ui.noHamburger
         });
       },
 
@@ -98,10 +98,10 @@ module Rance
 
         if (hasCondensedMenu)
         {
-          var spaceLeft = spaceAvailable - this.cachedMenuButtonWidth;
-          var padding = 60;
-
-          var buttonsLeftToPlace = this.cachedButtonWidths.slice(0);
+          if (!Options.ui.noHamburger)
+          {
+            spaceAvailable -= this.cachedMenuButtonWidth;
+          }
           var padding = 25;
 
           for (var i = 0; i < this.cachedButtonWidths.length; i++)
@@ -386,7 +386,7 @@ module Rance
         var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
         var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
 
-        if (this.state.hasCondensedMenu)
+        if (this.state.hasCondensedMenu && !Options.ui.noHamburger)
         {
           topMenuItems.push(React.DOM.button(
           {

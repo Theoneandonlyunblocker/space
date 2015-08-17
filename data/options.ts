@@ -43,6 +43,10 @@ module Rance
       after: 250
     }
     export var debugMode = false;
+    export var ui =
+    {
+      noHamburger: false
+    };
   }
 
   export var Options: any;

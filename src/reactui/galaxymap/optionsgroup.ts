@@ -16,7 +16,7 @@ module Rance
           rows.push(React.DOM.div(
           {
             className: "option-container",
-            key: "" + i
+            key: option.key
           },
             option.content
           ));

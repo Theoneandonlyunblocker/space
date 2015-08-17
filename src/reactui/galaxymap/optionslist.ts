@@ -35,6 +35,7 @@ module Rance
 
         return(
         {
+          key: stage,
           content: React.DOM.div(
           {
 
@@ -106,14 +107,20 @@ module Rance
         var debugOptions: any[] = [];
         debugOptions.push(
         {
+          key: "debugMode",
           content:
             UIComponents.OptionsCheckbox(
             {
               isChecked: Options.debugMode,
               label: "Debug mode",
-              onChangeFN: toggleDebugMode
+              onChangeFN: function()
+              {
+                toggleDebugMode();
+                this.forceUpdate();
+              }.bind(this)
             })
         });
+
 
         allOptions.push(UIComponents.OptionsGroup(
         {
@@ -125,6 +132,36 @@ module Rance
             this.forceUpdate();
           }.bind(this),
           key: "debug"
+        }));
+
+        var uiOptions: any[] = [];
+        uiOptions.push(
+        {
+          key: "noHamburger",
+          content:
+            UIComponents.OptionsCheckbox(
+            {
+              isChecked: Options.ui.noHamburger,
+              label: "Always expand top right menu on low resolution",
+              onChangeFN: function()
+              {
+                Options.ui.noHamburger = !Options.ui.noHamburger;
+                eventManager.dispatchEvent("playerControlUpdated"); // toggles hamburger menu update
+                this.forceUpdate();
+              }.bind(this)
+            })
+        });
+
+        allOptions.push(UIComponents.OptionsGroup(
+        {
+          header: "UI",
+          options: uiOptions,
+          resetFN: function()
+          {
+            extendObject(defaultOptions.ui, Options.ui);
+            this.forceUpdate();
+          }.bind(this),
+          key: "ui"
         }));
 
         return(
