@@ -354,7 +354,7 @@ module Rance
             onClick: this.handleBuyItems,
             tabIndex: menuItemTabIndex
           }, "Buy items"),
-          ///*
+          /*
           React.DOM.button(
           {
             className: "top-menu-items-button",
@@ -362,7 +362,7 @@ module Rance
             onClick: this.handleEconomySummary,
             tabIndex: menuItemTabIndex
           }, "Economy"),
-          //*/
+          */
           React.DOM.button(
           {
             className: "top-menu-items-button",
