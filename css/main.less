@@ -1740,6 +1740,7 @@ progress::-webkit-progress-value { background: #080; }
 }
 
 @top-menu-height: 50px;
+@top-menu-flatten-breakpoint: 600px;
 
 .top-menu
 {
@@ -1762,7 +1763,7 @@ progress::-webkit-progress-value { background: #080; }
     pointer-events: auto;
   }
 
-  @media(max-height: 600px)
+  @media(max-height: @top-menu-flatten-breakpoint)
   {
     height: @top-bar-height;
     top: -1px;
@@ -1800,7 +1801,7 @@ progress::-webkit-progress-value { background: #080; }
   .full-border(5px);
   border-width: 0 0 5px 5px;
 
-  @media(max-height: 600px)
+  @media(max-height: @top-menu-flatten-breakpoint)
   {
     top: @top-bar-height;
   }
