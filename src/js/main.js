@@ -4836,7 +4836,7 @@ var Rance;
             mixins: [React.addons.PureRenderMixin],
             cachedTopMenuWidth: undefined,
             cachedButtonWidths: [],
-            cachedMenuButtonWidth: 27,
+            cachedMenuButtonWidth: 37,
             getInitialState: function () {
                 return ({
                     opened: null,
@@ -4868,8 +4868,10 @@ var Rance;
 
                     var buttons = this.refs.topMenuItems.getDOMNode().children;
 
+                    var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
+
                     for (var i = 0; i < buttons.length; i++) {
-                        var buttonWidth = buttons[i].getBoundingClientRect().width + 10;
+                        var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
                         this.cachedButtonWidths.push(buttonWidth);
                     }
                 }
@@ -4905,11 +4907,11 @@ var Rance;
                     if (!Rance.Options.ui.noHamburger) {
                         spaceAvailable -= this.cachedMenuButtonWidth;
                     }
-                    var padding = 25;
+                    var padding = window.innerHeight > 600 ? 25 : 0;
 
                     for (var i = 0; i < this.cachedButtonWidths.length; i++) {
                         var buttonWidthToCheck = this.cachedButtonWidths[i];
-                        if (spaceAvailable > buttonWidthToCheck) {
+                        if (spaceAvailable > buttonWidthToCheck + padding) {
                             amountOfButtonsToPlace++;
                             spaceAvailable -= buttonWidthToCheck;
                         } else {
@@ -13669,7 +13671,6 @@ var Rance;
         FrontsAI.prototype.setFrontsToMove = function () {
             this.frontsToMove = this.fronts.slice(0);
 
-            // order in which types of fronts execute their moves. higher first
             var frontMovePriorities = {
                 expansion: 4,
                 heal: -1
