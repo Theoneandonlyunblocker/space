@@ -4642,7 +4642,7 @@ var Rance;
 
                     rows.push(React.DOM.div({
                         className: "option-container",
-                        key: "" + i
+                        key: option.key
                     }, option.content));
                 }
 
@@ -4713,6 +4713,7 @@ var Rance;
                 var key = "battle-animation-option-" + stage;
 
                 return ({
+                    key: stage,
                     content: React.DOM.div({}, React.DOM.input({
                         type: "number",
                         id: key,
@@ -4762,10 +4763,14 @@ var Rance;
 
                 var debugOptions = [];
                 debugOptions.push({
+                    key: "debugMode",
                     content: Rance.UIComponents.OptionsCheckbox({
                         isChecked: Rance.Options.debugMode,
                         label: "Debug mode",
-                        onChangeFN: Rance.toggleDebugMode
+                        onChangeFN: function () {
+                            Rance.toggleDebugMode();
+                            this.forceUpdate();
+                        }.bind(this)
                     })
                 });
 
@@ -4777,6 +4782,30 @@ var Rance;
                         this.forceUpdate();
                     }.bind(this),
                     key: "debug"
+                }));
+
+                var uiOptions = [];
+                uiOptions.push({
+                    key: "noHamburger",
+                    content: Rance.UIComponents.OptionsCheckbox({
+                        isChecked: Rance.Options.ui.noHamburger,
+                        label: "Always expand top right menu on low resolution",
+                        onChangeFN: function () {
+                            Rance.Options.ui.noHamburger = !Rance.Options.ui.noHamburger;
+                            Rance.eventManager.dispatchEvent("updateHamburgerMenu");
+                            this.forceUpdate();
+                        }.bind(this)
+                    })
+                });
+
+                allOptions.push(Rance.UIComponents.OptionsGroup({
+                    header: "UI",
+                    options: uiOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.ui, Rance.Options.ui);
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "ui"
                 }));
 
                 return (React.DOM.div({ className: "options" }, Rance.UIComponents.PopupManager({
@@ -4804,8 +4833,104 @@ var Rance;
     (function (UIComponents) {
         UIComponents.TopMenu = React.createClass({
             displayName: "TopMenu",
+            mixins: [React.addons.PureRenderMixin],
+            cachedTopMenuWidth: undefined,
+            cachedButtonWidths: [],
+            cachedMenuButtonWidth: 27,
             getInitialState: function () {
                 return ({
+                    opened: null,
+                    lightBoxElement: null,
+                    hasCondensedMenu: false,
+                    buttonsToPlace: 999,
+                    condensedMenuOpened: Rance.Options.ui.noHamburger
+                });
+            },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.handleResize, false);
+                Rance.eventManager.addEventListener("playerControlUpdated", this.handleResize);
+                Rance.eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+
+                this.handleResize();
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+                Rance.eventManager.removeEventListener("playerControlUpdated", this.handleResize);
+                Rance.eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+            },
+            handleToggleHamburger: function () {
+                this.handleResize();
+                this.forceUpdate();
+            },
+            handleResize: function () {
+                if (!this.cachedTopMenuWidth) {
+                    this.cachedTopMenuWidth = this.refs.topMenu.getDOMNode().getBoundingClientRect().width;
+
+                    var buttons = this.refs.topMenuItems.getDOMNode().children;
+
+                    for (var i = 0; i < buttons.length; i++) {
+                        var buttonWidth = buttons[i].getBoundingClientRect().width + 10;
+                        this.cachedButtonWidths.push(buttonWidth);
+                    }
+                }
+
+                var topBar = document.getElementsByClassName("top-bar-info")[0];
+                var topBarRect = topBar.getBoundingClientRect();
+
+                var rightmostElement = topBar;
+                var rightmostRect = topBarRect;
+
+                var fleetContainer = document.getElementsByClassName("fleet-selection-container")[0];
+                if (fleetContainer) {
+                    var fleetElementToCheckAgainst;
+                    if (fleetContainer.classList.contains("reorganizing")) {
+                        fleetElementToCheckAgainst = document.getElementsByClassName("fleet-selection-selected-wrapper")[0];
+                    } else {
+                        fleetElementToCheckAgainst = fleetContainer;
+                    }
+
+                    var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
+
+                    if (fleetRect.right > topBarRect.right) {
+                        rightmostElement = fleetElementToCheckAgainst;
+                        rightmostRect = fleetRect;
+                    }
+                }
+
+                var spaceAvailable = window.innerWidth - rightmostRect.right;
+                var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
+                var amountOfButtonsToPlace = 0;
+
+                if (hasCondensedMenu) {
+                    if (!Rance.Options.ui.noHamburger) {
+                        spaceAvailable -= this.cachedMenuButtonWidth;
+                    }
+                    var padding = 25;
+
+                    for (var i = 0; i < this.cachedButtonWidths.length; i++) {
+                        var buttonWidthToCheck = this.cachedButtonWidths[i];
+                        if (spaceAvailable > buttonWidthToCheck) {
+                            amountOfButtonsToPlace++;
+                            spaceAvailable -= buttonWidthToCheck;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    amountOfButtonsToPlace = this.cachedButtonWidths.length;
+                }
+
+                this.setState({
+                    hasCondensedMenu: hasCondensedMenu,
+                    buttonsToPlace: amountOfButtonsToPlace
+                });
+            },
+            closeLightBox: function () {
+                if (this.state.opened === "options") {
+                    Rance.saveOptions();
+                }
+
+                this.setState({
                     opened: null,
                     lightBoxElement: null
                 });
@@ -4919,49 +5044,92 @@ var Rance;
                     });
                 }
             },
-            closeLightBox: function () {
-                if (this.state.opened === "options") {
-                    Rance.saveOptions();
+            toggleCondensedMenu: function () {
+                if (this.state.opened) {
+                    this.closeLightBox();
+                } else {
+                    this.setState({
+                        condensedMenuOpened: !this.state.condensedMenuOpened
+                    });
                 }
-
-                this.setState({
-                    opened: null,
-                    lightBoxElement: null
-                });
             },
             render: function () {
                 var menuItemTabIndex = this.state.opened ? -1 : 0;
+
+                var topMenuButtons = [
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "equipItems",
+                        onClick: this.handleEquipItems,
+                        tabIndex: menuItemTabIndex
+                    }, "Equip"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "buyItems",
+                        onClick: this.handleBuyItems,
+                        tabIndex: menuItemTabIndex
+                    }, "Buy items"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "economySummary",
+                        onClick: this.handleEconomySummary,
+                        tabIndex: menuItemTabIndex
+                    }, "Economy"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "diplomacy",
+                        onClick: this.handleDiplomacy,
+                        tabIndex: menuItemTabIndex
+                    }, "Diplomacy"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "options",
+                        onClick: this.handleOptions,
+                        tabIndex: menuItemTabIndex
+                    }, "Options"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "loadGame",
+                        onClick: this.handleLoadGame,
+                        tabIndex: menuItemTabIndex
+                    }, "Load"),
+                    React.DOM.button({
+                        className: "top-menu-items-button",
+                        key: "saveGame",
+                        onClick: this.handleSaveGame,
+                        tabIndex: menuItemTabIndex
+                    }, "Save")
+                ];
+
+                var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
+                var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
+
+                if (this.state.hasCondensedMenu && !Rance.Options.ui.noHamburger) {
+                    topMenuItems.push(React.DOM.button({
+                        className: "top-menu-items-button top-menu-open-condensed-button",
+                        key: "openCondensedMenu",
+                        onClick: this.toggleCondensedMenu,
+                        tabIndex: menuItemTabIndex
+                    }));
+                }
+
+                var openedCondensedMenu = null;
+                if (this.state.condensedMenuOpened && leftoverButtons.length > 0) {
+                    openedCondensedMenu = React.DOM.div({
+                        className: "top-menu-opened-condensed-menu"
+                    }, leftoverButtons);
+                }
+                ;
+
                 return (React.DOM.div({
                     className: "top-menu-wrapper"
                 }, React.DOM.div({
-                    className: "top-menu"
+                    className: "top-menu",
+                    ref: "topMenu"
                 }, React.DOM.div({
-                    className: "top-menu-items"
-                }, React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleSaveGame,
-                    tabIndex: menuItemTabIndex
-                }, "Save"), React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleLoadGame,
-                    tabIndex: menuItemTabIndex
-                }, "Load"), React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleOptions,
-                    tabIndex: menuItemTabIndex
-                }, "Options"), React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleDiplomacy,
-                    tabIndex: menuItemTabIndex
-                }, "Diplomacy"), React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleBuyItems,
-                    tabIndex: menuItemTabIndex
-                }, "Buy items"), React.DOM.button({
-                    className: "top-menu-items-button",
-                    onClick: this.handleEquipItems,
-                    tabIndex: menuItemTabIndex
-                }, "Equip"))), this.state.lightBoxElement));
+                    className: "top-menu-items",
+                    ref: "topMenuItems"
+                }, topMenuItems)), openedCondensedMenu, this.state.lightBoxElement));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -5031,6 +5199,8 @@ var Rance;
                 return (React.DOM.div({
                     className: "top-bar"
                 }, React.DOM.div({
+                    className: "top-bar-info"
+                }, React.DOM.div({
                     className: "top-bar-player"
                 }, React.DOM.img({
                     className: "top-bar-player-icon",
@@ -5045,7 +5215,7 @@ var Rance;
                     className: incomeClass
                 }, "(+" + player.getIncome() + ")")), Rance.UIComponents.TopBarResources({
                     player: player
-                })));
+                }))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -13499,6 +13669,7 @@ var Rance;
         FrontsAI.prototype.setFrontsToMove = function () {
             this.frontsToMove = this.fronts.slice(0);
 
+            // order in which types of fronts execute their moves. higher first
             var frontMovePriorities = {
                 expansion: 4,
                 heal: -1
@@ -19818,6 +19989,9 @@ var Rance;
             after: 250
         };
         defaultOptions.debugMode = false;
+        defaultOptions.ui = {
+            noHamburger: false
+        };
     })(Rance.defaultOptions || (Rance.defaultOptions = {}));
     var defaultOptions = Rance.defaultOptions;
 

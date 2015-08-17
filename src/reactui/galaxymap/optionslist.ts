@@ -146,7 +146,7 @@ module Rance
               onChangeFN: function()
               {
                 Options.ui.noHamburger = !Options.ui.noHamburger;
-                eventManager.dispatchEvent("playerControlUpdated"); // toggles hamburger menu update
+                eventManager.dispatchEvent("updateHamburgerMenu");
                 this.forceUpdate();
               }.bind(this)
             })

@@ -38,6 +38,7 @@ module Rance
       {
         window.addEventListener("resize", this.handleResize, false);
         eventManager.addEventListener("playerControlUpdated", this.handleResize);
+        eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
 
         this.handleResize();
       },
@@ -46,6 +47,13 @@ module Rance
       {
         window.removeEventListener("resize", this.handleResize);
         eventManager.removeEventListener("playerControlUpdated", this.handleResize);
+        eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
+      },
+
+      handleToggleHamburger: function()
+      {
+        this.handleResize();
+        this.forceUpdate();
       },
 
       handleResize: function()
