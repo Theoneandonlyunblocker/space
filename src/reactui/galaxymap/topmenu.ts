@@ -408,7 +408,7 @@ module Rance
         }
 
         var openedCondensedMenu = null;
-        if (this.state.condensedMenuOpened && leftoverButtons.length > 0)
+        if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
         {
           openedCondensedMenu = React.DOM.div(
           {
