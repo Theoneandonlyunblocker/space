@@ -1307,6 +1307,7 @@ progress::-webkit-progress-value {
   position: absolute;
   top: 0;
   right: 0;
+  height: 50px;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
@@ -1356,6 +1357,30 @@ progress::-webkit-progress-value {
 .top-menu-items-button:disabled *,
 .top-menu-items-button.disabled * {
   pointer-events: none !important;
+}
+.top-menu-open-condensed-button::after {
+  content: "\f0c9";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.top-menu-opened-condensed-menu {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  display: flex;
+  flex-flow: column;
+  background-color: #0c1615;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  border-width: 0 0 5px 5px;
+}
+@media (max-height: 600px) {
+  .top-menu-opened-condensed-menu {
+    top: 2em;
+  }
 }
 .light-box-wrapper {
   position: fixed;

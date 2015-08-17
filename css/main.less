@@ -1739,12 +1739,15 @@ progress::-webkit-progress-value { background: #080; }
   z-index: 2;
 }
 
+@top-menu-height: 50px;
+
 .top-menu
 {
   z-index: 5;
   position: absolute;
   top: 0;
   right: 0;
+  height: @top-menu-height;
 
   .full-border(5px);
 
@@ -1778,6 +1781,29 @@ progress::-webkit-progress-value { background: #080; }
 {
   .button-style;
   margin: 5px;
+}
+
+.top-menu-open-condensed-button::after
+{
+  .fa("\f0c9");
+}
+
+.top-menu-opened-condensed-menu
+{
+  position: absolute;
+  right: 0;
+  top: @top-menu-height;
+
+  display: flex;
+  flex-flow: column;
+  background-color: @bg-color;
+  .full-border(5px);
+  border-width: 0 0 5px 5px;
+
+  @media(max-height: 600px)
+  {
+    top: @top-bar-height;
+  }
 }
 
 .light-box-wrapper

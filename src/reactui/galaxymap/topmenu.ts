@@ -16,9 +16,128 @@ module Rance
     export var TopMenu = React.createClass(
     {
       displayName: "TopMenu",
+      mixins: [React.addons.PureRenderMixin],
+
+      cachedTopMenuWidth: undefined,
+      cachedButtonWidths: [],
+      cachedMenuButtonWidth: 27,
+
       getInitialState: function()
       {
         return(
+        {
+          opened: null,
+          lightBoxElement: null,
+          hasCondensedMenu: false,
+          buttonsToPlace: 999,
+          condensedMenuOpened: false
+        });
+      },
+
+      componentDidMount: function()
+      {
+        window.addEventListener("resize", this.handleResize, false);
+        eventManager.addEventListener("playerControlUpdated", this.handleResize);
+
+        this.handleResize();
+      },
+
+      componentWillUnmount: function()
+      {
+        window.removeEventListener("resize", this.handleResize);
+        eventManager.removeEventListener("playerControlUpdated", this.handleResize);
+      },
+
+      handleResize: function()
+      {
+        if (!this.cachedTopMenuWidth)
+        {
+          this.cachedTopMenuWidth = this.refs.topMenu.getDOMNode().getBoundingClientRect().width;
+
+          var buttons = this.refs.topMenuItems.getDOMNode().children;
+
+          for (var i = 0; i < buttons.length; i++)
+          {
+            var buttonWidth = buttons[i].getBoundingClientRect().width + 10; // 10 = margin;
+            this.cachedButtonWidths.push(buttonWidth);
+          }
+        }
+
+        var topBar = <HTMLElement> document.getElementsByClassName("top-bar-info")[0];
+        var topBarRect = topBar.getBoundingClientRect();
+
+        var rightmostElement = topBar;
+        var rightmostRect = topBarRect;
+
+        var fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection-container")[0];
+        if (fleetContainer)
+        {
+          var fleetElementToCheckAgainst;
+          if (fleetContainer.classList.contains("reorganizing"))
+          {
+            fleetElementToCheckAgainst = <HTMLElement> document.getElementsByClassName(
+              "fleet-selection-selected-wrapper")[0];
+          }
+          else
+          {
+            fleetElementToCheckAgainst = fleetContainer;
+          }
+
+          var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
+
+          if (fleetRect.right > topBarRect.right)
+          {
+            rightmostElement = fleetElementToCheckAgainst;
+            rightmostRect = fleetRect;
+          }
+        }
+
+        var spaceAvailable = window.innerWidth - rightmostRect.right;
+        var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
+        var amountOfButtonsToPlace = 0;
+
+        if (hasCondensedMenu)
+        {
+          var spaceLeft = spaceAvailable - this.cachedMenuButtonWidth;
+          var padding = 60;
+
+          var buttonsLeftToPlace = this.cachedButtonWidths.slice(0);
+
+          for (var i = buttonsLeftToPlace.length - 1; i >= 0; i--)
+          {
+            var buttonWidthToCheck = buttonsLeftToPlace.pop();
+            if (spaceLeft > buttonWidthToCheck + padding)
+            {
+              console.log(spaceLeft, buttonWidthToCheck + padding, buttonWidthToCheck);
+              amountOfButtonsToPlace++;
+              spaceLeft -= buttonWidthToCheck;
+            }
+            else
+            {
+              break;
+            }
+          }
+        }
+        else
+        {
+          amountOfButtonsToPlace = this.cachedButtonWidths.length;
+        }
+
+        this.setState(
+        {
+          hasCondensedMenu: hasCondensedMenu,
+          buttonsToPlace: amountOfButtonsToPlace
+        });
+      },
+
+      closeLightBox: function()
+      {
+        if (this.state.opened === "options")
+        {
+          saveOptions();
+        }
+        
+        this.setState(
         {
           opened: null,
           lightBoxElement: null
@@ -190,24 +309,105 @@ module Rance
         }
       },
 
-      closeLightBox: function()
+      toggleCondensedMenu: function()
       {
-        if (this.state.opened === "options")
+        if (this.state.opened)
         {
-          saveOptions();
+          this.closeLightBox();
         }
-        
-        this.setState(
+        else
         {
-          opened: null,
-          lightBoxElement: null
-        });
+          this.setState(
+          {
+            condensedMenuOpened: !this.state.condensedMenuOpened
+          });
+        }
       },
-
 
       render: function()
       {
         var menuItemTabIndex = this.state.opened ? -1 : 0;
+
+        var topMenuButtons =
+        [
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "equipItems",
+            onClick: this.handleEquipItems,
+            tabIndex: menuItemTabIndex
+          }, "Equip"),
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "buyItems",
+            onClick: this.handleBuyItems,
+            tabIndex: menuItemTabIndex
+          }, "Buy items"),
+          ///*
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "economySummary",
+            onClick: this.handleEconomySummary,
+            tabIndex: menuItemTabIndex
+          }, "Economy"),
+          //*/
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "diplomacy",
+            onClick: this.handleDiplomacy,
+            tabIndex: menuItemTabIndex
+          }, "Diplomacy"),
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "options",
+            onClick: this.handleOptions,
+            tabIndex: menuItemTabIndex
+          }, "Options"),
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "loadGame",
+            onClick: this.handleLoadGame,
+            tabIndex: menuItemTabIndex
+          }, "Load"),
+          React.DOM.button(
+          {
+            className: "top-menu-items-button",
+            key: "saveGame",
+            onClick: this.handleSaveGame,
+            tabIndex: menuItemTabIndex
+          }, "Save")
+        ]
+
+        var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
+        var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
+
+        if (this.state.hasCondensedMenu)
+        {
+          topMenuItems.push(React.DOM.button(
+          {
+            className: "top-menu-items-button top-menu-open-condensed-button",
+            key: "openCondensedMenu",
+            onClick: this.toggleCondensedMenu,
+            tabIndex: menuItemTabIndex
+          }));
+        }
+
+        var openedCondensedMenu = null;
+        if (this.state.condensedMenuOpened && leftoverButtons.length > 0)
+        {
+          openedCondensedMenu = React.DOM.div(
+          {
+            className: "top-menu-opened-condensed-menu"
+          },
+            leftoverButtons
+          )
+        };
+
         return(
           React.DOM.div(
           {
@@ -215,58 +415,18 @@ module Rance
           },
             React.DOM.div(
             {
-              className: "top-menu"
+              className: "top-menu",
+              ref: "topMenu"
             },
               React.DOM.div(
               {
-                className: "top-menu-items"
+                className: "top-menu-items",
+                ref: "topMenuItems"
               },
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleSaveGame,
-                  tabIndex: menuItemTabIndex
-                }, "Save"),
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleLoadGame,
-                  tabIndex: menuItemTabIndex
-                }, "Load"),
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleOptions,
-                  tabIndex: menuItemTabIndex
-                }, "Options"),
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleDiplomacy,
-                  tabIndex: menuItemTabIndex
-                }, "Diplomacy"),
-                /*
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleEconomySummary,
-                  tabIndex: menuItemTabIndex
-                }, "Economy"),
-                */
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleBuyItems,
-                  tabIndex: menuItemTabIndex
-                }, "Buy items"),
-                React.DOM.button(
-                {
-                  className: "top-menu-items-button",
-                  onClick: this.handleEquipItems,
-                  tabIndex: menuItemTabIndex
-                }, "Equip")
+                topMenuItems
               )
             ),
+            openedCondensedMenu,
             this.state.lightBoxElement
           )
         );
