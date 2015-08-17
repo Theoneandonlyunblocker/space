@@ -102,15 +102,15 @@ module Rance
           var padding = 60;
 
           var buttonsLeftToPlace = this.cachedButtonWidths.slice(0);
+          var padding = 25;
 
-          for (var i = buttonsLeftToPlace.length - 1; i >= 0; i--)
+          for (var i = 0; i < this.cachedButtonWidths.length; i++)
           {
-            var buttonWidthToCheck = buttonsLeftToPlace.pop();
-            if (spaceLeft > buttonWidthToCheck + padding)
+            var buttonWidthToCheck = this.cachedButtonWidths[i];
+            if (spaceAvailable > buttonWidthToCheck)
             {
-              console.log(spaceLeft, buttonWidthToCheck + padding, buttonWidthToCheck);
               amountOfButtonsToPlace++;
-              spaceLeft -= buttonWidthToCheck;
+              spaceAvailable -= buttonWidthToCheck;
             }
             else
             {
