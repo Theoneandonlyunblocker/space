@@ -84,6 +84,7 @@ module Rance
         this.initGame();
 
         this.initDisplay();
+        this.hookUI();
       }
 
 
@@ -133,6 +134,7 @@ module Rance
       this.initGame();
 
       this.initDisplay();
+      this.hookUI();
       if (parsed.cameraLocation)
       {
         this.renderer.toCenterOn = parsed.cameraLocation;
@@ -152,6 +154,7 @@ module Rance
       this.initGame();
 
       this.initDisplay();
+      this.hookUI();
 
       this.reactUI.switchScene("galaxyMap");
     }
@@ -221,19 +224,11 @@ module Rance
           player.setupAI(this.game);
         }
       }
-
-      this.playerControl.reactUI = this.reactUI;
-
-      this.reactUI.player = this.humanPlayer;
-      this.reactUI.galaxyMap = this.game.galaxyMap;
-      this.reactUI.game = this.game;
-      this.reactUI.playerControl = this.playerControl;
     }
     initDisplay()
     {
       this.renderer = this.renderer || new Renderer();
       this.renderer.init();
-      this.reactUI.renderer = this.renderer;
 
       this.mapRenderer = new MapRenderer(this.game.galaxyMap);
       this.mapRenderer.setParent(this.renderer.layers["map"]);
@@ -246,6 +241,16 @@ module Rance
     {
       this.reactUI = new ReactUI(
         document.getElementById("react-container"));
+    }
+    hookUI()
+    {
+      this.playerControl.reactUI = this.reactUI;
+
+      this.reactUI.game = this.game;
+      this.reactUI.player = this.humanPlayer;
+      this.reactUI.playerControl = this.playerControl;
+      this.reactUI.renderer = this.renderer;
+      this.reactUI.mapRenderer = this.mapRenderer;
     }
     setInitialScene()
     {
