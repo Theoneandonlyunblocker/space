@@ -1,10 +1,7 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
 /// <reference path="star.ts" />
-/// <reference path="mapgen.ts" />
 /// <reference path="maprenderer.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
 
 module Rance
 {
@@ -12,14 +9,6 @@ module Rance
   {
     allPoints: Star[];
     stars: Star[];
-    sectors:
-    {
-      [sectorId: number]: Sector;
-    };
-    regions:
-    {
-      [regionId: string]: Region;
-    };
     mapGen: MapGen;
     width: number;
     height: number;
@@ -38,8 +27,6 @@ module Rance
 
       this.allPoints = mapGen.points;
       this.stars = mapGen.getNonFillerPoints();
-      this.sectors = mapGen.sectors;
-      this.regions = mapGen.regions;
     }
     getIncomeBounds()
     {
@@ -71,20 +58,6 @@ module Rance
       {
         return star.serialize();
       });
-
-      data.regions = [];
-
-      for (var regionId in this.regions)
-      {
-        data.regions.push(this.regions[regionId].serialize());
-      }
-
-      data.sectors = [];
-
-      for (var sectorId in this.sectors)
-      {
-        data.sectors.push(this.sectors[sectorId].serialize());
-      }
 
       data.maxWidth = this.mapGen.maxWidth;
       data.maxHeight = this.mapGen.maxHeight;

@@ -738,6 +738,7 @@ module Rance
           return doc;
         }
       }
+      /*
       this.layers["sectors"] =
       {
         isDirty: true,
@@ -831,6 +832,7 @@ module Rance
           return doc;
         }
       }
+      */
       this.layers["resources"] =
       {
         isDirty: true,
