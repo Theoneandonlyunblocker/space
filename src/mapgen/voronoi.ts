@@ -4,7 +4,7 @@
 
 module Rance
 {
-  export module MapGen
+  export module MapGen2
   {
     export function makeVoronoi(points: Point[], width: number, height: number)
     {

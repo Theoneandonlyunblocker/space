@@ -28,7 +28,7 @@ module Rance
     {
       [id: number]: Sector;
     };
-    triangles: MapGen.Triangle[] = [];
+    triangles: MapGen2.Triangle[] = [];
 
     voronoiDiagram: any;
     voronoiTreeMap: any;
@@ -344,7 +344,7 @@ module Rance
     triangulate()
     {
       if (!this.points || this.points.length < 3) throw new Error();
-      var triangulationData = MapGen.triangulate(this.points);
+      var triangulationData = MapGen2.triangulate(this.points);
       this.triangles = this.cleanTriangles(triangulationData.triangles,
         triangulationData.superTriangle);
 
@@ -412,7 +412,7 @@ module Rance
         cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
       }
     }
-    cleanTriangles(triangles: MapGen.Triangle[], superTriangle: MapGen.Triangle)
+    cleanTriangles(triangles: MapGen2.Triangle[], superTriangle: MapGen2.Triangle)
     {
       for (var i = triangles.length - 1; i >= 0; i--)
       {
@@ -466,7 +466,7 @@ module Rance
         var cell = this.voronoiDiagram.cells[i];
         var point = cell.site;
         var vertices = this.getVerticesFromCell(cell);
-        var centroid = MapGen.getCentroid(vertices);
+        var centroid = MapGen2.getCentroid(vertices);
         var timesToDampen = point.distance * dampeningFactor;
 
         for (var j = 0; j < timesToDampen; j++)

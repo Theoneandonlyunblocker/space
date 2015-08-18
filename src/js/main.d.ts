@@ -336,6 +336,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var OptionsCheckbox: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var OptionsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -782,6 +787,9 @@ declare module Rance {
         public y: number;
         public linksTo: Star[];
         public linksFrom: Star[];
+        public mapGenData: {
+            [propName: string]: any;
+        };
         public seed: string;
         public name: string;
         public owner: Rance.Player;
@@ -1360,183 +1368,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        interface IMapGenTemplate {
-            key: string;
-            displayName: string;
-            description?: string;
-            options: MapGen.IMapGenOptions;
-            mapGenFunction?: (any: any) => Rance.Star[];
-        }
-        module MapGen {
-            interface IMapGenOptions {
-                defaultOptions: IDefaultOptions;
-                basicOptions?: IMapSpecificOptions;
-                advancedOptions?: IMapSpecificOptions;
-            }
-            interface IDefaultOptions {
-                height: Rance.IRange;
-                width: Rance.IRange;
-                starDensity: Rance.IRange;
-                playerAmount: Rance.IRange;
-            }
-            interface IMapSpecificOptions {
-                [optionName: string]: Rance.IRange;
-            }
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            var defaultMap: {
-                mapOptions: {
-                    width: number;
-                    height: number;
-                };
-                starGeneration: {
-                    galaxyType: string;
-                    totalAmount: number;
-                    arms: number;
-                    centerSize: number;
-                    amountInCenter: number;
-                };
-                relaxation: {
-                    timesToRelax: number;
-                    dampeningFactor: number;
-                };
-            };
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            var spiralGalaxy: IMapGenTemplate;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            var newTestSmall: IMapGenTemplate;
-        }
-    }
-}
-declare module Rance {
-    class Triangle {
-        public a: Rance.Point;
-        public b: Rance.Point;
-        public c: Rance.Point;
-        public circumCenterX: number;
-        public circumCenterY: number;
-        public circumRadius: number;
-        constructor(a: Rance.Point, b: Rance.Point, c: Rance.Point);
-        public getPoints(): Rance.Point[];
-        public getCircumCenter(): number[];
-        public calculateCircumCircle(tolerance?: number): void;
-        public circumCircleContainsPoint(point: Rance.Point): boolean;
-        public getEdges(): Rance.Point[][];
-        public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
-    }
-}
-declare module Rance {
-    function triangulate(vertices: Point[]): {
-        triangles: Triangle[];
-        superTriangle: Triangle;
-    };
-    function voronoiFromTriangles(triangles: Triangle[]): any;
-    function getCentroid(vertices: Point[]): Point;
-    function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number): Triangle;
-    function pointsEqual(p1: Point, p2: Point): boolean;
-    function edgesEqual(e1: Point[], e2: Point[]): boolean;
-}
-declare module Rance {
-    class MapGen {
-        public maxWidth: number;
-        public maxHeight: number;
-        public points: Rance.Star[];
-        public players: Rance.Player[];
-        public independents: Rance.Player;
-        public regions: {
-            [id: string]: Rance.Region;
-        };
-        public sectors: {
-            [id: number]: Rance.Sector;
-        };
-        public triangles: Rance.Triangle[];
-        public voronoiDiagram: any;
-        public voronoiTreeMap: any;
-        public nonFillerVoronoiLines: {
-            [visibility: string]: any[];
-        };
-        public nonFillerPoints: Rance.Star[];
-        public galaxyConstructors: {
-            [type: string]: (any: any) => Rance.Star[];
-        };
-        public startLocations: Rance.Star[];
-        constructor();
-        public reset(): void;
-        public makeMap(options: {
-            mapOptions: {
-                width: number;
-                height?: number;
-            };
-            starGeneration: {
-                galaxyType: string;
-                totalAmount: number;
-                arms: number;
-                centerSize: number;
-                amountInCenter: number;
-            };
-            relaxation: {
-                timesToRelax: number;
-                dampeningFactor: number;
-            };
-        }): any;
-        public isConnected(): boolean;
-        public setPlayers(): void;
-        public setDistanceFromStartLocations(): void;
-        public setupPirates(): void;
-        public generatePoints(options: {
-            galaxyType: string;
-            totalAmount: number;
-            arms: number;
-            centerSize: number;
-            amountInCenter: number;
-        }): any;
-        public makeRegion(name: string, isFiller: boolean): Rance.Region;
-        public makeSpiralPoints(props: {
-            amountPerArm: number;
-            arms: number;
-            amountInCenter: number;
-            centerSize?: number;
-            armOffsetMax?: number;
-        }): any[];
-        public triangulate(): void;
-        public clearLinks(): void;
-        public makeLinks(): void;
-        public severArmLinks(): void;
-        public makeVoronoi(): void;
-        public cleanTriangles(triangles: Rance.Triangle[], superTriangle: Rance.Triangle): Rance.Triangle[];
-        public makeTreeMap(): void;
-        public getVerticesFromCell(cell: any): any[];
-        public relaxPointsOnce(dampeningFactor?: number): void;
-        public relaxPoints(options: {
-            timesToRelax: number;
-            dampeningFactor: number;
-        }): void;
-        public getNonFillerPoints(): Rance.Star[];
-        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
-        public getFurthestPointInRegion(region: Rance.Region): Rance.Star;
-        public partiallyCutConnections(minConnections: number): void;
-        public makeSectors(minSize: number, maxSize: number): {
-            [sectorId: number]: Rance.Sector;
-        };
-        public setResources(): void;
-    }
-}
-declare module Rance {
     function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
         [starId: number]: {
             star: Star;
@@ -1610,16 +1441,9 @@ declare module Rance {
     class GalaxyMap {
         public allPoints: Rance.Star[];
         public stars: Rance.Star[];
-        public sectors: {
-            [sectorId: number]: Rance.Sector;
-        };
-        public regions: {
-            [regionId: string]: Rance.Region;
-        };
         public mapGen: Rance.MapGen;
         public width: number;
         public height: number;
-        public mapRenderer: Rance.MapRenderer;
         public game: Rance.Game;
         constructor();
         public setMapGen(mapGen: Rance.MapGen): void;
@@ -2236,6 +2060,51 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        module MapGen {
+            interface IMapGenOptions {
+                defaultOptions: IDefaultOptions;
+                basicOptions?: IMapSpecificOptions;
+                advancedOptions?: IMapSpecificOptions;
+            }
+            interface IDefaultOptions {
+                height: Rance.IRange;
+                width: Rance.IRange;
+                starDensity: Rance.IRange;
+                playerAmount: Rance.IRange;
+            }
+            interface IMapSpecificOptions {
+                [optionName: string]: Rance.IRange;
+            }
+            interface IMapGenOptionValues {
+                defaultOptions: {
+                    height: number;
+                    width: number;
+                    starDensity: number;
+                    playerAmount: number;
+                };
+                basicOptions?: {
+                    [optionName: string]: number;
+                };
+                advancedOptions?: {
+                    [optionName: string]: number;
+                };
+            }
+        }
+    }
+}
+declare module Rance {
+    module Templates {
+        interface IMapGenTemplate {
+            key: string;
+            displayName: string;
+            description?: string;
+            options: Templates.MapGen.IMapGenOptions;
+            mapGenFunction?: (options: Templates.MapGen.IMapGenOptionValues) => Rance.Star[];
+        }
+    }
+}
+declare module Rance {
     module UIComponents {
         var MapGenOption: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
@@ -2278,7 +2147,7 @@ declare module Rance {
         public battle: Rance.Battle;
         public battlePrep: Rance.BattlePrep;
         public renderer: Rance.Renderer;
-        public galaxyMap: Rance.GalaxyMap;
+        public mapRenderer: Rance.MapRenderer;
         public playerControl: Rance.PlayerControl;
         public player: Rance.Player;
         public game: Rance.Game;
@@ -2322,6 +2191,160 @@ declare module Rance {
         public endReorganizingFleets(): void;
         public getCurrentAttackTargets(): any[];
         public attackTarget(target: any): boolean;
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
+            var defaultMap: {
+                mapOptions: {
+                    width: number;
+                    height: number;
+                };
+                starGeneration: {
+                    galaxyType: string;
+                    totalAmount: number;
+                    arms: number;
+                    centerSize: number;
+                    amountInCenter: number;
+                };
+                relaxation: {
+                    timesToRelax: number;
+                    dampeningFactor: number;
+                };
+            };
+        }
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
+            var spiralGalaxy: Templates.IMapGenTemplate;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
+        module MapGen {
+            var newTestSmall: Templates.IMapGenTemplate;
+        }
+    }
+}
+declare module Rance {
+    module MapGen2 {
+        class Triangle {
+            public a: Rance.Point;
+            public b: Rance.Point;
+            public c: Rance.Point;
+            public circumCenterX: number;
+            public circumCenterY: number;
+            public circumRadius: number;
+            constructor(a: Rance.Point, b: Rance.Point, c: Rance.Point);
+            public getPoints(): Rance.Point[];
+            public getCircumCenter(): number[];
+            public calculateCircumCircle(tolerance?: number): void;
+            public circumCircleContainsPoint(point: Rance.Point): boolean;
+            public getEdges(): Rance.Point[][];
+            public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
+        }
+    }
+}
+declare module Rance {
+    module MapGen2 {
+        function triangulate(vertices: Rance.Point[]): {
+            triangles: Triangle[];
+            superTriangle: Triangle;
+        };
+        function voronoiFromTriangles(triangles: Triangle[]): any;
+        function getCentroid(vertices: Rance.Point[]): Rance.Point;
+        function makeSuperTriangle(vertices: Rance.Point[], highestCoordinateValue?: number): Triangle;
+        function pointsEqual(p1: Rance.Point, p2: Rance.Point): boolean;
+        function edgesEqual(e1: Rance.Point[], e2: Rance.Point[]): boolean;
+    }
+}
+declare module Rance {
+    class MapGen {
+        public maxWidth: number;
+        public maxHeight: number;
+        public points: Rance.Star[];
+        public players: Rance.Player[];
+        public independents: Rance.Player;
+        public regions: {
+            [id: string]: Rance.Region;
+        };
+        public sectors: {
+            [id: number]: Rance.Sector;
+        };
+        public triangles: Rance.MapGen2.Triangle[];
+        public voronoiDiagram: any;
+        public voronoiTreeMap: any;
+        public nonFillerVoronoiLines: {
+            [visibility: string]: any[];
+        };
+        public nonFillerPoints: Rance.Star[];
+        public galaxyConstructors: {
+            [type: string]: (any: any) => Rance.Star[];
+        };
+        public startLocations: Rance.Star[];
+        constructor();
+        public reset(): void;
+        public makeMap(options: {
+            mapOptions: {
+                width: number;
+                height?: number;
+            };
+            starGeneration: {
+                galaxyType: string;
+                totalAmount: number;
+                arms: number;
+                centerSize: number;
+                amountInCenter: number;
+            };
+            relaxation: {
+                timesToRelax: number;
+                dampeningFactor: number;
+            };
+        }): any;
+        public isConnected(): boolean;
+        public setPlayers(): void;
+        public setDistanceFromStartLocations(): void;
+        public setupPirates(): void;
+        public generatePoints(options: {
+            galaxyType: string;
+            totalAmount: number;
+            arms: number;
+            centerSize: number;
+            amountInCenter: number;
+        }): any;
+        public makeRegion(name: string, isFiller: boolean): Rance.Region;
+        public makeSpiralPoints(props: {
+            amountPerArm: number;
+            arms: number;
+            amountInCenter: number;
+            centerSize?: number;
+            armOffsetMax?: number;
+        }): any[];
+        public triangulate(): void;
+        public clearLinks(): void;
+        public makeLinks(): void;
+        public severArmLinks(): void;
+        public makeVoronoi(): void;
+        public cleanTriangles(triangles: Rance.MapGen2.Triangle[], superTriangle: Rance.MapGen2.Triangle): Rance.MapGen2.Triangle[];
+        public makeTreeMap(): void;
+        public getVerticesFromCell(cell: any): any[];
+        public relaxPointsOnce(dampeningFactor?: number): void;
+        public relaxPoints(options: {
+            timesToRelax: number;
+            dampeningFactor: number;
+        }): void;
+        public getNonFillerPoints(): Rance.Star[];
+        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
+        public getFurthestPointInRegion(region: Rance.Region): Rance.Star;
+        public partiallyCutConnections(minConnections: number): void;
+        public makeSectors(minSize: number, maxSize: number): {
+            [sectorId: number]: Rance.Sector;
+        };
+        public setResources(): void;
     }
 }
 declare var tempCameraId: number;
@@ -2617,7 +2640,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function debug(): void;
+    function toggleDebugMode(): void;
     function inspectSave(saveName: string): any;
 }
 declare module Rance {
@@ -2721,6 +2744,10 @@ declare module Rance {
             effectDuration: number;
             after: number;
         };
+        var debugMode: boolean;
+        var ui: {
+            noHamburger: boolean;
+        };
     }
     var Options: any;
 }
@@ -2764,6 +2791,7 @@ declare module Rance {
         public initGame(): void;
         public initDisplay(): void;
         public initUI(): void;
+        public hookUI(): void;
         public setInitialScene(): void;
     }
 }
