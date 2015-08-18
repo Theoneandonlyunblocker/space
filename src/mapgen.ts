@@ -3,8 +3,8 @@
 
 /// <reference path="../data/mapgen/builtinmaps.ts" />
 
-/// <reference path="triangulation.ts" />
-/// <reference path="triangle.ts" />
+/// <reference path="mapgen/triangulation.ts" />
+/// <reference path="mapgen/triangle.ts" />
 /// <reference path="star.ts" />
 /// <reference path="region.ts" />
 /// <reference path="sector.ts" />
@@ -28,7 +28,7 @@ module Rance
     {
       [id: number]: Sector;
     };
-    triangles: Triangle[] = [];
+    triangles: MapGen.Triangle[] = [];
 
     voronoiDiagram: any;
     voronoiTreeMap: any;
@@ -344,7 +344,7 @@ module Rance
     triangulate()
     {
       if (!this.points || this.points.length < 3) throw new Error();
-      var triangulationData = triangulate(this.points);
+      var triangulationData = MapGen.triangulate(this.points);
       this.triangles = this.cleanTriangles(triangulationData.triangles,
         triangulationData.superTriangle);
 
@@ -412,7 +412,7 @@ module Rance
         cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
       }
     }
-    cleanTriangles(triangles: Triangle[], superTriangle: Triangle)
+    cleanTriangles(triangles: MapGen.Triangle[], superTriangle: MapGen.Triangle)
     {
       for (var i = triangles.length - 1; i >= 0; i--)
       {
@@ -466,7 +466,7 @@ module Rance
         var cell = this.voronoiDiagram.cells[i];
         var point = cell.site;
         var vertices = this.getVerticesFromCell(cell);
-        var centroid = getCentroid(vertices);
+        var centroid = MapGen.getCentroid(vertices);
         var timesToDampen = point.distance * dampeningFactor;
 
         for (var j = 0; j < timesToDampen; j++)

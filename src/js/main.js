@@ -5073,12 +5073,6 @@ var Rance;
                     }, "Buy items"),
                     React.DOM.button({
                         className: "top-menu-items-button",
-                        key: "economySummary",
-                        onClick: this.handleEconomySummary,
-                        tabIndex: menuItemTabIndex
-                    }, "Economy"),
-                    React.DOM.button({
-                        className: "top-menu-items-button",
                         key: "diplomacy",
                         onClick: this.handleDiplomacy,
                         tabIndex: menuItemTabIndex
@@ -10225,51 +10219,7 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
-/// <reference path="mapgenoptions.ts" />
-var Rance;
-(function (Rance) {
-    (function (Templates) {
-        (function (MapGen) {
-            function spiralGalaxyGeneration(options) {
-                // generate points
-                // in closure because tons of temporary variables we dont really care about
-                var starGenerationProps = (function setStarGenerationProps(options) {
-                    var totalSize = options.defaultOptions.width * options.defaultOptions.height;
-                    var totalStars = totalSize * options.defaultOptions.starDensity / 1000;
-
-                    var actualArms = options.basicOptions["arms"];
-                    var totalArms = actualArms * 2;
-
-                    var percentageInCenter = 0.3;
-                    var percentageInArms = 1 - percentageInCenter;
-                    var amountPerArm = totalStars / actualArms * percentageInArms;
-                    var amountInCenter = totalStars * percentageInCenter;
-
-                    return ({
-                        totalStars: totalStars,
-                        amountPerArm: Math.round(amountPerArm),
-                        amountInCenter: Math.round(amountInCenter),
-                        centerSize: 0.4,
-                        totalArms: totalArms,
-                        amountPerFillerArm: Math.round(amountPerArm / 2),
-                        armDistance: Math.PI * 2 / totalArms,
-                        armOffsetMax: 0.5,
-                        armRotationFactor: actualArms / 3,
-                        galaxyRotation: Rance.randRange(0, Math.PI * 2)
-                    });
-                })(options);
-
-                console.log(starGenerationProps);
-                // make voronoi
-                // relax voronoi
-            }
-            MapGen.spiralGalaxyGeneration = spiralGalaxyGeneration;
-        })(Templates.MapGen || (Templates.MapGen = {}));
-        var MapGen = Templates.MapGen;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
-})(Rance || (Rance = {}));
-/// <reference path="spiralgalaxygeneration.ts" />
+// /// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
@@ -10279,7 +10229,7 @@ var Rance;
                 key: "spiralGalaxy",
                 displayName: "Test Map",
                 description: "(not implemented yet) just testing",
-                mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
+                //mapGenFunction: spiralGalaxyGeneration,
                 options: {
                     defaultOptions: {
                         height: {
@@ -10370,307 +10320,313 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
-/// <reference path="point.ts"/>
+/// <reference path="../point.ts"/>
 var Rance;
 (function (Rance) {
-    var Triangle = (function () {
-        function Triangle(a, b, c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-        Triangle.prototype.getPoints = function () {
-            return [this.a, this.b, this.c];
-        };
-        Triangle.prototype.getCircumCenter = function () {
-            if (!this.circumRadius) {
-                this.calculateCircumCircle();
+    (function (MapGen) {
+        var Triangle = (function () {
+            function Triangle(a, b, c) {
+                this.a = a;
+                this.b = b;
+                this.c = c;
             }
+            Triangle.prototype.getPoints = function () {
+                return [this.a, this.b, this.c];
+            };
+            Triangle.prototype.getCircumCenter = function () {
+                if (!this.circumRadius) {
+                    this.calculateCircumCircle();
+                }
 
-            return [this.circumCenterX, this.circumCenterY];
-        };
-        Triangle.prototype.calculateCircumCircle = function (tolerance) {
-            if (typeof tolerance === "undefined") { tolerance = 0.00001; }
-            var pA = this.a;
-            var pB = this.b;
-            var pC = this.c;
+                return [this.circumCenterX, this.circumCenterY];
+            };
+            Triangle.prototype.calculateCircumCircle = function (tolerance) {
+                if (typeof tolerance === "undefined") { tolerance = 0.00001; }
+                var pA = this.a;
+                var pB = this.b;
+                var pC = this.c;
 
-            var m1, m2;
-            var mx1, mx2;
-            var my1, my2;
-            var cX, cY;
+                var m1, m2;
+                var mx1, mx2;
+                var my1, my2;
+                var cX, cY;
 
-            if (Math.abs(pB.y - pA.y) < tolerance) {
-                m2 = -(pC.x - pB.x) / (pC.y - pB.y);
-                mx2 = (pB.x + pC.x) * 0.5;
-                my2 = (pB.y + pC.y) * 0.5;
-
-                cX = (pB.x + pA.x) * 0.5;
-                cY = m2 * (cX - mx2) + my2;
-            } else {
-                m1 = -(pB.x - pA.x) / (pB.y - pA.y);
-                mx1 = (pA.x + pB.x) * 0.5;
-                my1 = (pA.y + pB.y) * 0.5;
-
-                if (Math.abs(pC.y - pB.y) < tolerance) {
-                    cX = (pC.x + pB.x) * 0.5;
-                    cY = m1 * (cX - mx1) + my1;
-                } else {
+                if (Math.abs(pB.y - pA.y) < tolerance) {
                     m2 = -(pC.x - pB.x) / (pC.y - pB.y);
                     mx2 = (pB.x + pC.x) * 0.5;
                     my2 = (pB.y + pC.y) * 0.5;
 
-                    cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-                    cY = m1 * (cX - mx1) + my1;
+                    cX = (pB.x + pA.x) * 0.5;
+                    cY = m2 * (cX - mx2) + my2;
+                } else {
+                    m1 = -(pB.x - pA.x) / (pB.y - pA.y);
+                    mx1 = (pA.x + pB.x) * 0.5;
+                    my1 = (pA.y + pB.y) * 0.5;
+
+                    if (Math.abs(pC.y - pB.y) < tolerance) {
+                        cX = (pC.x + pB.x) * 0.5;
+                        cY = m1 * (cX - mx1) + my1;
+                    } else {
+                        m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                        mx2 = (pB.x + pC.x) * 0.5;
+                        my2 = (pB.y + pC.y) * 0.5;
+
+                        cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+                        cY = m1 * (cX - mx1) + my1;
+                    }
                 }
-            }
 
-            this.circumCenterX = cX;
-            this.circumCenterY = cY;
+                this.circumCenterX = cX;
+                this.circumCenterY = cY;
 
-            mx1 = pB.x - cX;
-            my1 = pB.y - cY;
-            this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
-        };
-        Triangle.prototype.circumCircleContainsPoint = function (point) {
-            this.calculateCircumCircle();
-            var x = point.x - this.circumCenterX;
-            var y = point.y - this.circumCenterY;
+                mx1 = pB.x - cX;
+                my1 = pB.y - cY;
+                this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
+            };
+            Triangle.prototype.circumCircleContainsPoint = function (point) {
+                this.calculateCircumCircle();
+                var x = point.x - this.circumCenterX;
+                var y = point.y - this.circumCenterY;
 
-            var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
+                var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
 
-            return (contains);
-        };
-        Triangle.prototype.getEdges = function () {
-            var edges = [
-                [this.a, this.b],
-                [this.b, this.c],
-                [this.c, this.a]
-            ];
+                return (contains);
+            };
+            Triangle.prototype.getEdges = function () {
+                var edges = [
+                    [this.a, this.b],
+                    [this.b, this.c],
+                    [this.c, this.a]
+                ];
 
-            return edges;
-        };
-        Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
-            var ownPoints = this.getPoints();
-            var otherPoints = toCheckAgainst.getPoints();
-            var shared = 0;
+                return edges;
+            };
+            Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
+                var ownPoints = this.getPoints();
+                var otherPoints = toCheckAgainst.getPoints();
+                var shared = 0;
 
-            for (var i = 0; i < ownPoints.length; i++) {
-                if (otherPoints.indexOf(ownPoints[i]) >= 0) {
-                    shared++;
+                for (var i = 0; i < ownPoints.length; i++) {
+                    if (otherPoints.indexOf(ownPoints[i]) >= 0) {
+                        shared++;
+                    }
                 }
-            }
 
-            return shared;
-        };
-        return Triangle;
-    })();
-    Rance.Triangle = Triangle;
+                return shared;
+            };
+            return Triangle;
+        })();
+        MapGen.Triangle = Triangle;
+    })(Rance.MapGen || (Rance.MapGen = {}));
+    var MapGen = Rance.MapGen;
 })(Rance || (Rance = {}));
 /// <reference path="triangle.ts" />
-/// <reference path="point.ts" />
+/// <reference path="../point.ts" />
 var Rance;
 (function (Rance) {
-    function triangulate(vertices) {
-        var triangles = [];
+    (function (MapGen) {
+        function triangulate(vertices) {
+            var triangles = [];
 
-        var superTriangle = makeSuperTriangle(vertices);
-        triangles.push(superTriangle);
+            var superTriangle = makeSuperTriangle(vertices);
+            triangles.push(superTriangle);
 
-        for (var i = 0; i < vertices.length; i++) {
-            var vertex = vertices[i];
-            var edgeBuffer = [];
+            for (var i = 0; i < vertices.length; i++) {
+                var vertex = vertices[i];
+                var edgeBuffer = [];
 
-            for (var j = 0; j < triangles.length; j++) {
-                var triangle = triangles[j];
+                for (var j = 0; j < triangles.length; j++) {
+                    var triangle = triangles[j];
 
-                if (triangle.circumCircleContainsPoint(vertex)) {
-                    var edges = triangle.getEdges();
-                    edgeBuffer = edgeBuffer.concat(edges);
-                    triangles.splice(j, 1);
-                    j--;
-                }
-            }
-            if (i >= vertices.length)
-                continue;
-
-            for (var j = edgeBuffer.length - 2; j >= 0; j--) {
-                for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
-                    if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
-                        edgeBuffer.splice(k, 1);
-                        edgeBuffer.splice(j, 1);
-                        k--;
-                        continue;
+                    if (triangle.circumCircleContainsPoint(vertex)) {
+                        var edges = triangle.getEdges();
+                        edgeBuffer = edgeBuffer.concat(edges);
+                        triangles.splice(j, 1);
+                        j--;
                     }
                 }
-            }
-            for (var j = 0; j < edgeBuffer.length; j++) {
-                var newTriangle = new Rance.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
+                if (i >= vertices.length)
+                    continue;
 
-                triangles.push(newTriangle);
-            }
-        }
-
-        /*
-        for (var i = triangles.length - 1; i >= 0; i--)
-        {
-        if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
-        {
-        triangles.splice(i, 1);
-        }
-        }*/
-        return ({
-            triangles: triangles,
-            superTriangle: superTriangle
-        });
-    }
-    Rance.triangulate = triangulate;
-
-    function voronoiFromTriangles(triangles) {
-        var trianglesPerPoint = {};
-        var voronoiData = {};
-
-        for (var i = 0; i < triangles.length; i++) {
-            var triangle = triangles[i];
-            var points = triangle.getPoints();
-
-            for (var j = 0; j < points.length; j++) {
-                if (!trianglesPerPoint[points[j]]) {
-                    trianglesPerPoint[points[j]] = [];
-                    voronoiData[points[j]] = {
-                        point: points[j]
-                    };
-                }
-
-                trianglesPerPoint[points[j]].push(triangle);
-            }
-        }
-        function makeTrianglePairs(triangles) {
-            var toMatch = triangles.slice(0);
-            var pairs = [];
-
-            for (var i = toMatch.length - 2; i >= 0; i--) {
-                for (var j = toMatch.length - 1; j >= i + 1; j--) {
-                    var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
-
-                    if (matchingVertices === 2) {
-                        pairs.push([toMatch[j], toMatch[i]]);
+                for (var j = edgeBuffer.length - 2; j >= 0; j--) {
+                    for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
+                        if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
+                            edgeBuffer.splice(k, 1);
+                            edgeBuffer.splice(j, 1);
+                            k--;
+                            continue;
+                        }
                     }
                 }
+                for (var j = 0; j < edgeBuffer.length; j++) {
+                    var newTriangle = new Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
+
+                    triangles.push(newTriangle);
+                }
             }
 
-            return pairs;
-        }
-
-        for (var point in trianglesPerPoint) {
-            var pointTriangles = trianglesPerPoint[point];
-
-            var trianglePairs = makeTrianglePairs(pointTriangles);
-            voronoiData[point].lines = [];
-
-            for (var i = 0; i < trianglePairs.length; i++) {
-                voronoiData[point].lines.push([
-                    trianglePairs[i][0].getCircumCenter(),
-                    trianglePairs[i][1].getCircumCenter()
-                ]);
+            /*
+            for (var i = triangles.length - 1; i >= 0; i--)
+            {
+            if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
+            {
+            triangles.splice(i, 1);
             }
+            }*/
+            return ({
+                triangles: triangles,
+                superTriangle: superTriangle
+            });
         }
+        MapGen.triangulate = triangulate;
 
-        return voronoiData;
-    }
-    Rance.voronoiFromTriangles = voronoiFromTriangles;
+        function voronoiFromTriangles(triangles) {
+            var trianglesPerPoint = {};
+            var voronoiData = {};
 
-    function getCentroid(vertices) {
-        var signedArea = 0;
-        var x = 0;
-        var y = 0;
-        var x0;
-        var y0;
-        var x1;
-        var y1;
-        var a;
+            for (var i = 0; i < triangles.length; i++) {
+                var triangle = triangles[i];
+                var points = triangle.getPoints();
 
-        var i = 0;
+                for (var j = 0; j < points.length; j++) {
+                    if (!trianglesPerPoint[points[j]]) {
+                        trianglesPerPoint[points[j]] = [];
+                        voronoiData[points[j]] = {
+                            point: points[j]
+                        };
+                    }
 
-        for (i = 0; i < vertices.length - 1; i++) {
+                    trianglesPerPoint[points[j]].push(triangle);
+                }
+            }
+            function makeTrianglePairs(triangles) {
+                var toMatch = triangles.slice(0);
+                var pairs = [];
+
+                for (var i = toMatch.length - 2; i >= 0; i--) {
+                    for (var j = toMatch.length - 1; j >= i + 1; j--) {
+                        var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
+
+                        if (matchingVertices === 2) {
+                            pairs.push([toMatch[j], toMatch[i]]);
+                        }
+                    }
+                }
+
+                return pairs;
+            }
+
+            for (var point in trianglesPerPoint) {
+                var pointTriangles = trianglesPerPoint[point];
+
+                var trianglePairs = makeTrianglePairs(pointTriangles);
+                voronoiData[point].lines = [];
+
+                for (var i = 0; i < trianglePairs.length; i++) {
+                    voronoiData[point].lines.push([
+                        trianglePairs[i][0].getCircumCenter(),
+                        trianglePairs[i][1].getCircumCenter()
+                    ]);
+                }
+            }
+
+            return voronoiData;
+        }
+        MapGen.voronoiFromTriangles = voronoiFromTriangles;
+
+        function getCentroid(vertices) {
+            var signedArea = 0;
+            var x = 0;
+            var y = 0;
+            var x0;
+            var y0;
+            var x1;
+            var y1;
+            var a;
+
+            var i = 0;
+
+            for (i = 0; i < vertices.length - 1; i++) {
+                x0 = vertices[i].x;
+                y0 = vertices[i].y;
+                x1 = vertices[i + 1].x;
+                y1 = vertices[i + 1].y;
+                a = x0 * y1 - x1 * y0;
+                signedArea += a;
+                x += (x0 + x1) * a;
+                y += (y0 + y1) * a;
+            }
+
             x0 = vertices[i].x;
             y0 = vertices[i].y;
-            x1 = vertices[i + 1].x;
-            y1 = vertices[i + 1].y;
+            x1 = vertices[0].x;
+            y1 = vertices[0].y;
             a = x0 * y1 - x1 * y0;
             signedArea += a;
             x += (x0 + x1) * a;
             y += (y0 + y1) * a;
+
+            signedArea *= 0.5;
+            x /= (6.0 * signedArea);
+            y /= (6.0 * signedArea);
+
+            return ({
+                x: x,
+                y: y
+            });
         }
+        MapGen.getCentroid = getCentroid;
 
-        x0 = vertices[i].x;
-        y0 = vertices[i].y;
-        x1 = vertices[0].x;
-        y1 = vertices[0].y;
-        a = x0 * y1 - x1 * y0;
-        signedArea += a;
-        x += (x0 + x1) * a;
-        y += (y0 + y1) * a;
+        function makeSuperTriangle(vertices, highestCoordinateValue) {
+            var max;
 
-        signedArea *= 0.5;
-        x /= (6.0 * signedArea);
-        y /= (6.0 * signedArea);
+            if (highestCoordinateValue) {
+                max = highestCoordinateValue;
+            } else {
+                max = vertices[0].x;
 
-        return ({
-            x: x,
-            y: y
-        });
-    }
-    Rance.getCentroid = getCentroid;
-
-    function makeSuperTriangle(vertices, highestCoordinateValue) {
-        var max;
-
-        if (highestCoordinateValue) {
-            max = highestCoordinateValue;
-        } else {
-            max = vertices[0].x;
-
-            for (var i = 0; i < vertices.length; i++) {
-                if (vertices[i].x > max) {
-                    max = vertices[i].x;
-                }
-                if (vertices[i].y > max) {
-                    max = vertices[i].y;
+                for (var i = 0; i < vertices.length; i++) {
+                    if (vertices[i].x > max) {
+                        max = vertices[i].x;
+                    }
+                    if (vertices[i].y > max) {
+                        max = vertices[i].y;
+                    }
                 }
             }
+
+            var triangle = new Triangle({
+                x: 3 * max,
+                y: 0
+            }, {
+                x: 0,
+                y: 3 * max
+            }, {
+                x: -3 * max,
+                y: -3 * max
+            });
+
+            return (triangle);
         }
+        MapGen.makeSuperTriangle = makeSuperTriangle;
 
-        var triangle = new Rance.Triangle({
-            x: 3 * max,
-            y: 0
-        }, {
-            x: 0,
-            y: 3 * max
-        }, {
-            x: -3 * max,
-            y: -3 * max
-        });
+        function pointsEqual(p1, p2) {
+            return (p1.x === p2.x && p1.y === p2.y);
+        }
+        MapGen.pointsEqual = pointsEqual;
 
-        return (triangle);
-    }
-    Rance.makeSuperTriangle = makeSuperTriangle;
-
-    function pointsEqual(p1, p2) {
-        return (p1.x === p2.x && p1.y === p2.y);
-    }
-    Rance.pointsEqual = pointsEqual;
-
-    function edgesEqual(e1, e2) {
-        return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
-    }
-    Rance.edgesEqual = edgesEqual;
+        function edgesEqual(e1, e2) {
+            return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
+        }
+        MapGen.edgesEqual = edgesEqual;
+    })(Rance.MapGen || (Rance.MapGen = {}));
+    var MapGen = Rance.MapGen;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="../lib/quadtree.d.ts" />
 /// <reference path="../data/mapgen/builtinmaps.ts" />
-/// <reference path="triangulation.ts" />
-/// <reference path="triangle.ts" />
+/// <reference path="mapgen/triangulation.ts" />
+/// <reference path="mapgen/triangle.ts" />
 /// <reference path="star.ts" />
 /// <reference path="region.ts" />
 /// <reference path="sector.ts" />
@@ -10915,7 +10871,7 @@ var Rance;
         MapGen.prototype.triangulate = function () {
             if (!this.points || this.points.length < 3)
                 throw new Error();
-            var triangulationData = Rance.triangulate(this.points);
+            var triangulationData = Rance.MapGen.triangulate(this.points);
             this.triangles = this.cleanTriangles(triangulationData.triangles, triangulationData.superTriangle);
 
             this.makeLinks();
@@ -11017,7 +10973,7 @@ var Rance;
                 var cell = this.voronoiDiagram.cells[i];
                 var point = cell.site;
                 var vertices = this.getVerticesFromCell(cell);
-                var centroid = Rance.getCentroid(vertices);
+                var centroid = Rance.MapGen.getCentroid(vertices);
                 var timesToDampen = point.distance * dampeningFactor;
 
                 for (var j = 0; j < timesToDampen; j++) {
