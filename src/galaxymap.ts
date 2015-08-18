@@ -12,7 +12,6 @@ module Rance
     mapGen: MapGen;
     width: number;
     height: number;
-    mapRenderer: MapRenderer;
     game: Game;
     constructor()
     {

@@ -11,7 +11,7 @@ module Rance
       {
         var newMode = this.refs.mapModeSelector.getDOMNode().value;
 
-        this.props.galaxyMap.mapRenderer.setMapMode(newMode);
+        this.props.mapRenderer.setMapMode(newMode);
       },
     
       render: function()
@@ -55,16 +55,16 @@ module Rance
       {
         this.props.renderer.isBattleBackground = false;
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
-        this.props.galaxyMap.mapRenderer.setMapMode("default");
+        this.props.mapRenderer.setMapMode("default");
         
         this.props.renderer.resume();
 
         // hack. transparency isn't properly rendered without this
-        this.props.galaxyMap.mapRenderer.setAllLayersAsDirty();
+        this.props.mapRenderer.setAllLayersAsDirty();
 
         var centerLocation = this.props.renderer.camera.toCenterOn ||
           this.props.toCenterOn ||
-          this.props.galaxyMap.game.humanPlayer.controlledLocations[0];
+          this.props.player.controlledLocations[0];
 
         console.log(Date.now(),
           "galaxy map mount",

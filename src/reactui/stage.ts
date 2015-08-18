@@ -36,7 +36,7 @@ module Rance
               UIComponents.GalaxyMap(
               {
                 renderer: this.props.renderer,
-                galaxyMap: this.props.galaxyMap,
+                mapRenderer: this.props.mapRenderer,
                 playerControl: this.props.playerControl,
                 player: this.props.player,
                 game: this.props.game,

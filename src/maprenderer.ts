@@ -104,7 +104,6 @@ module Rance
     setMap(map: GalaxyMap)
     {
       this.galaxyMap = map;
-      this.galaxyMap.mapRenderer = this;
       this.game = map.game;
       this.player = this.game.humanPlayer;
     }
