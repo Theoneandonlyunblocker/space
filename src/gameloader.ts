@@ -2,7 +2,6 @@
 /// <reference path="mapgen.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
-/// <reference path="sector.ts"/>
 
 module Rance
 {
@@ -27,14 +26,6 @@ module Rance
     buildingsByControllerId:
     {
       [id: number]: Building;
-    } = {};
-    regions:
-    {
-      [id: string]: Region;
-    } = {};
-    sectors:
-    {
-      [id: number]: Sector;
     } = {};
 
     constructor()
@@ -82,16 +73,6 @@ module Rance
       var mapGen = new MapGen();
       mapGen.maxWidth = data.maxWidth;
       mapGen.maxHeight = data.maxHeight;
-
-      for (var i = 0; i < data.regions.length; i++)
-      {
-        this.regions[data.regions[i].id] = this.deserializeRegion(data.regions[i]);
-      }
-      for (var i = 0; i < data.sectors.length; i++)
-      {
-        this.sectors[data.sectors[i].id] = this.deserializeSector(data.sectors[i]);
-      }
-
       var allPoints = [];
 
       for (var i = 0; i < data.allPoints.length; i++)
@@ -116,24 +97,12 @@ module Rance
 
 
       mapGen.points = allPoints;
-      mapGen.regions = this.regions;
-      mapGen.sectors = this.sectors;
       mapGen.makeVoronoi();
 
       var galaxyMap = new GalaxyMap();
       galaxyMap.setMapGen(mapGen);
 
       return galaxyMap;
-    }
-    deserializeRegion(data)
-    {
-      var region = new Region(data.id, [], data.isFiller)
-      return region;
-    }
-    deserializeSector(data)
-    {
-      var sector = new Sector(data.id, data.color);
-      return sector;
     }
     deserializePoint(data)
     {
@@ -142,9 +111,6 @@ module Rance
       star.distance = data.distance;
       star.baseIncome = data.baseIncome;
       star.seed = data.seed;
-
-      this.regions[data.regionId].addStar(star);
-      if (this.sectors[data.sectorId]) this.sectors[data.sectorId].addStar(star);
 
       if (data.resourceType)
       {
