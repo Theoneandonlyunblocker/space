@@ -116,7 +116,7 @@ module Rance
       });
     }
 
-    export function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)
+    function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)
     {
       var max;
 
@@ -159,12 +159,12 @@ module Rance
       return(triangle);
     }
 
-    export function pointsEqual(p1: Point, p2: Point)
+    function pointsEqual(p1: Point, p2: Point)
     {
       return (p1.x === p2.x && p1.y === p2.y);
     }
 
-    export function edgesEqual(e1: Point[], e2: Point[])
+    function edgesEqual(e1: Point[], e2: Point[])
     {
       return(
         (
