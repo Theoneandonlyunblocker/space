@@ -16,6 +16,8 @@ module Rance
     x: number;
     y: number;
 
+    isFiller: boolean; // TODO Remove and use empty points for filler stars
+
     // separated so we can iterate through star[].linksTo to only get each connection once
     // use star.getAllLinks() for individual star connections
     linksTo: Star[] = [];

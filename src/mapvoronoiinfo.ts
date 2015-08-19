@@ -68,7 +68,7 @@ module Rance
             };
 
 
-            if (site.region.isFiller)
+            if (site.isFiller)
             {
               adjacentFillerSites++;
               if (adjacentFillerSites >= maxAllowedFillerSites)

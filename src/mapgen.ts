@@ -295,7 +295,7 @@ module Rance
       var galaxyRotation = randRange(0, Math.PI * 2);
 
 
-      var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax)
+      var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax, isFiller)
       {
         var distance = randRange(distanceMin, distanceMax);
         var offset = Math.random() * armOffsetMax - armOffsetMax / 2;
@@ -316,6 +316,7 @@ module Rance
         point.mapGenData.distance = distance;
         region.addStar(point);
         point.baseIncome = randInt(2, 10) * 10;
+        point.isFiller = isFiller;
 
         return point;
       }.bind(this);
@@ -336,14 +337,14 @@ module Rance
 
         for (var j = 0; j < amountForThisArm; j++)
         {
-          var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
+          var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm, currentArmIsFiller);
 
           points.push(point);
         }
 
         for (var j = 0; j < amountForThisCenter; j++)
         {
-          var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax);
+          var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax, currentArmIsFiller);
           points.push(point);
         }
 
@@ -502,7 +503,7 @@ module Rance
       {
         this.nonFillerPoints = this.points.filter(function(point)
         {
-          return !point.region.isFiller;
+          return !point.isFiller;
         });
       }
 
@@ -563,7 +564,7 @@ module Rance
             };
 
 
-            if (site.region.isFiller)
+            if (site.isFiller)
             {
               adjacentFillerSites++;
               if (adjacentFillerSites >= maxAllowedFillerSites)
