@@ -4729,8 +4729,16 @@ var Rance;
             },
             handleResetAllOptions: function () {
                 var resetFN = function () {
+                    var shouldToggleDebug = false;
+                    if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode)
+                        shouldToggleDebug = true;
                     Rance.Options = Rance.extendObject(Rance.defaultOptions);
-                    this.forceUpdate();
+
+                    if (shouldToggleDebug) {
+                        app.reactUI.render();
+                    } else {
+                        this.forceUpdate();
+                    }
                 }.bind(this);
 
                 var confirmProps = {
@@ -4778,8 +4786,10 @@ var Rance;
                     header: "Debug",
                     options: debugOptions,
                     resetFN: function () {
-                        Rance.extendObject(Rance.defaultOptions.debugMode, Rance.Options.debugMode);
-                        this.forceUpdate();
+                        if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode) {
+                            Rance.toggleDebugMode();
+                            this.forceUpdate();
+                        }
                     }.bind(this),
                     key: "debug"
                 }));
@@ -5643,19 +5653,29 @@ var Rance;
                 if (!star)
                     return null;
 
+                var dumpDebugInfoButton = null;
+
+                if (Rance.Options.debugMode) {
+                    dumpDebugInfoButton = React.DOM.button({
+                        className: "star-info-dump-debug-button",
+                        onClick: function (star) {
+                            console.log(star);
+                            console.log(star.mapGenData);
+                        }.bind(null, star)
+                    }, "Debug");
+                }
+
                 return (React.DOM.div({
                     className: "star-info"
                 }, React.DOM.div({
                     className: "star-info-name"
                 }, star.name), React.DOM.div({
                     className: "star-info-owner"
-                }, star.owner ? star.owner.name : null), React.DOM.div({
+                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
                     className: "star-info-location"
                 }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed()), React.DOM.div({
                     className: "star-info-income"
-                }, "Income: " + star.getIncome()), React.DOM.div({
-                    className: "star-info-sector"
-                }, "Sector: " + star.sector.id), Rance.UIComponents.DefenceBuildingList({
+                }, "Income: " + star.getIncome()), Rance.UIComponents.DefenceBuildingList({
                     buildings: star.buildings["defence"]
                 })));
             }
@@ -6869,636 +6889,6 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
-/// <reference path="star.ts" />
-var Rance;
-(function (Rance) {
-    var Region = (function () {
-        function Region(id, stars, isFiller) {
-            this.id = id;
-            this.stars = stars;
-            this.isFiller = isFiller;
-        }
-        Region.prototype.addStar = function (star) {
-            this.stars.push(star);
-            star.region = this;
-        };
-        Region.prototype.serialize = function () {
-            var data = {};
-
-            data.id = this.id;
-            data.isFiller = this.isFiller;
-
-            return data;
-        };
-        return Region;
-    })();
-    Rance.Region = Region;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/husl.d.ts" />
-/// <reference path="range.ts" />
-var Rance;
-(function (Rance) {
-    function hex2rgb(hex) {
-        return ([
-            (hex >> 16 & 0xFF) / 255,
-            (hex >> 8 & 0xFF) / 255,
-            (hex & 0xFF) / 255
-        ]);
-    }
-    Rance.hex2rgb = hex2rgb;
-
-    function rgb2hex(rgb) {
-        return ((rgb[0] * 255 << 16) + (rgb[1] * 255 << 8) + rgb[2] * 255);
-    }
-    Rance.rgb2hex = rgb2hex;
-
-    //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-    /* accepts parameters
-    * h  Object = {h:x, s:y, v:z}
-    * OR
-    * h, s, v
-    */
-    function hsvToRgb(h, s, v) {
-        var r, g, b, i, f, p, q, t;
-
-        i = Math.floor(h * 6);
-        f = h * 6 - i;
-        p = v * (1 - s);
-        q = v * (1 - f * s);
-        t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-            case 0:
-                r = v, g = t, b = p;
-                break;
-            case 1:
-                r = q, g = v, b = p;
-                break;
-            case 2:
-                r = p, g = v, b = t;
-                break;
-            case 3:
-                r = p, g = q, b = v;
-                break;
-            case 4:
-                r = t, g = p, b = v;
-                break;
-            case 5:
-                r = v, g = p, b = q;
-                break;
-        }
-        return [r, g, b];
-    }
-    Rance.hsvToRgb = hsvToRgb;
-    function hslToRgb(h, s, l) {
-        var r, g, b;
-
-        if (s == 0) {
-            r = g = b = l; // achromatic
-        } else {
-            function hue2rgb(p, q, t) {
-                if (t < 0)
-                    t += 1;
-                if (t > 1)
-                    t -= 1;
-                if (t < 1 / 6)
-                    return p + (q - p) * 6 * t;
-                if (t < 1 / 2)
-                    return q;
-                if (t < 2 / 3)
-                    return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            }
-
-            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            var p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1 / 3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1 / 3);
-        }
-
-        return [r, g, b];
-    }
-    Rance.hslToRgb = hslToRgb;
-    function rgbToHsv(r, g, b) {
-        var max = Math.max(r, g, b), min = Math.min(r, g, b);
-        var h, s, v = max;
-
-        var d = max - min;
-        s = max == 0 ? 0 : d / max;
-
-        if (max == min) {
-            h = 0; // achromatic
-        } else {
-            switch (max) {
-                case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                case g:
-                    h = (b - r) / d + 2;
-                    break;
-                case b:
-                    h = (r - g) / d + 4;
-                    break;
-            }
-            h /= 6;
-        }
-
-        return [h, s, v];
-    }
-    Rance.rgbToHsv = rgbToHsv;
-    function rgbToHsl(r, g, b) {
-        var max = Math.max(r, g, b), min = Math.min(r, g, b);
-        var h, s, l = (max + min) / 2;
-
-        if (max == min) {
-            h = s = 0; // achromatic
-        } else {
-            var d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch (max) {
-                case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                case g:
-                    h = (b - r) / d + 2;
-                    break;
-                case b:
-                    h = (r - g) / d + 4;
-                    break;
-            }
-            h /= 6;
-        }
-
-        return [h, s, l];
-    }
-    Rance.rgbToHsl = rgbToHsl;
-
-    function hslToHex(h, s, l) {
-        return rgb2hex(hslToRgb(h, s, l));
-    }
-    Rance.hslToHex = hslToHex;
-    function hsvToHex(h, s, v) {
-        return rgb2hex(hsvToRgb(h, s, v));
-    }
-    Rance.hsvToHex = hsvToHex;
-
-    function hexToHsl(hex) {
-        return rgbToHsl.apply(null, hex2rgb(hex));
-    }
-    Rance.hexToHsl = hexToHsl;
-    function hexToHsv(hex) {
-        return rgbToHsv.apply(null, hex2rgb(hex));
-    }
-    Rance.hexToHsv = hexToHsv;
-
-    function excludeFromRanges(ranges, toExclude) {
-        var intersecting = getIntersectingRanges(ranges, toExclude);
-
-        var newRanges = ranges.slice(0);
-
-        for (var i = 0; i < intersecting.length; i++) {
-            newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
-
-            var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
-
-            if (intersectedRanges) {
-                newRanges = newRanges.concat(intersectedRanges);
-            }
-        }
-
-        return newRanges;
-    }
-    Rance.excludeFromRanges = excludeFromRanges;
-
-    function getIntersectingRanges(ranges, toIntersectWith) {
-        var intersecting = [];
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
-                continue;
-            }
-
-            intersecting.push(range);
-        }
-        return intersecting;
-    }
-    Rance.getIntersectingRanges = getIntersectingRanges;
-
-    function excludeFromRange(range, toExclude) {
-        if (toExclude.max < range.min || toExclude.min > range.max) {
-            return null;
-        } else if (toExclude.min < range.min && toExclude.max > range.max) {
-            return null;
-        }
-
-        if (toExclude.min <= range.min) {
-            return ([{ min: toExclude.max, max: range.max }]);
-        } else if (toExclude.max >= range.max) {
-            return ([{ min: range.min, max: toExclude.min }]);
-        }
-
-        var a = {
-            min: range.min,
-            max: toExclude.min
-        };
-        var b = {
-            min: toExclude.max,
-            max: range.max
-        };
-
-        return [a, b];
-    }
-    Rance.excludeFromRange = excludeFromRange;
-
-    function randomSelectFromRanges(ranges) {
-        var totalWeight = 0;
-        var rangesByRelativeWeight = {};
-        var currentRelativeWeight = 0;
-
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            if (!isFinite(range.max))
-                range.max = 1;
-            if (!isFinite(range.min))
-                range.min = 0;
-            var weight = range.max - range.min;
-
-            totalWeight += weight;
-        }
-        for (var i = 0; i < ranges.length; i++) {
-            var range = ranges[i];
-            var relativeWeight = (range.max - range.min) / totalWeight;
-            if (totalWeight === 0)
-                relativeWeight = 1;
-            currentRelativeWeight += relativeWeight;
-            rangesByRelativeWeight[currentRelativeWeight] = range;
-        }
-
-        var rand = Math.random();
-        var selectedRange;
-
-        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
-            return parseFloat(w);
-        });
-
-        var sortedWeights = sortedWeights.sort();
-
-        for (var i = 0; i < sortedWeights.length; i++) {
-            if (rand < sortedWeights[i]) {
-                selectedRange = rangesByRelativeWeight[sortedWeights[i]];
-                break;
-            }
-        }
-        if (!selectedRange)
-            console.log(rangesByRelativeWeight);
-
-        return Rance.randRange(selectedRange.min, selectedRange.max);
-    }
-    Rance.randomSelectFromRanges = randomSelectFromRanges;
-
-    function makeRandomVibrantColor() {
-        var hRanges = [
-            { min: 0, max: 90 / 360 },
-            { min: 120 / 360, max: 150 / 360 },
-            { min: 180 / 360, max: 290 / 360 },
-            { min: 320 / 360, max: 1 }
-        ];
-        return [randomSelectFromRanges(hRanges), Rance.randRange(0.8, 0.9), Rance.randRange(0.88, 0.92)];
-    }
-    Rance.makeRandomVibrantColor = makeRandomVibrantColor;
-    function makeRandomDeepColor() {
-        // yellow
-        if (Math.random() < 0.1) {
-            return [Rance.randRange(15 / 360, 80 / 360), Rance.randRange(0.92, 1), Rance.randRange(0.92, 1)];
-        }
-        var hRanges = [
-            { min: 0, max: 15 / 360 },
-            { min: 100 / 360, max: 195 / 360 },
-            { min: 210 / 360, max: 1 }
-        ];
-        return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
-    }
-    Rance.makeRandomDeepColor = makeRandomDeepColor;
-    function makeRandomLightColor() {
-        return [Rance.randRange(0, 360), Rance.randRange(0.55, 0.65), 1];
-    }
-    Rance.makeRandomLightColor = makeRandomLightColor;
-
-    function makeRandomColor(values) {
-        values = values || {};
-        var color = {};
-
-        ["h", "s", "l"].forEach(function (v) {
-            if (!values[v])
-                values[v] = [];
-        });
-
-        for (var value in values) {
-            if (values[value].length < 1) {
-                values[value] = [{ min: 0, max: 1 }];
-            }
-
-            color[value] = randomSelectFromRanges(values[value]);
-        }
-
-        return [color.h, color.s, color.l];
-    }
-    Rance.makeRandomColor = makeRandomColor;
-    function colorFromScalars(color) {
-        return [color[0] * 360, color[1] * 100, color[2] * 100];
-    }
-    Rance.colorFromScalars = colorFromScalars;
-    function scalarsFromColor(scalars) {
-        return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
-    }
-    Rance.scalarsFromColor = scalarsFromColor;
-
-    function makeContrastingColor(props) {
-        var initialRanges = props.initialRanges || {};
-        var exclusions = props.minDifference || {};
-        var maxDifference = props.maxDifference || {};
-        var color = props.color;
-        var hMaxDiffernece = isFinite(maxDifference.h) ? maxDifference.h : 360;
-        var sMaxDiffernece = isFinite(maxDifference.s) ? maxDifference.s : 100;
-        var lMaxDiffernece = isFinite(maxDifference.l) ? maxDifference.l : 100;
-
-        var hRange = initialRanges.h || { min: 0, max: 360 };
-        var sRange = initialRanges.s || { min: 50, max: 100 };
-        var lRange = initialRanges.l || { min: 0, max: 100 };
-
-        var hExclusion = exclusions.h || 30;
-
-        var hMin = (color[0] - hExclusion) % 360;
-        var hMax = (color[0] + hExclusion) % 360;
-
-        var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
-
-        var h = randomSelectFromRanges(hRange2);
-        h = Rance.clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
-        var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
-        var relativeHDistance = 1 / (180 / hDistance);
-
-        var lExclusion = exclusions.l || 30;
-
-        // if (relativeHDistance < 0.2)
-        // {
-        //   lExclusion /= 2;
-        //   clamp(lExclusion, 0, 100);
-        // }
-        //
-        var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
-        var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
-
-        var sExclusion = exclusions.s || 0;
-        var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
-        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
-
-        var ranges = {
-            h: [{ min: h, max: h }],
-            s: excludeFromRange(sRange, { min: sMin, max: sMax }),
-            l: excludeFromRange(lRange, { min: lMin, max: lMax })
-        };
-
-        return makeRandomColor(ranges);
-    }
-    Rance.makeContrastingColor = makeContrastingColor;
-    function hexToHusl(hex) {
-        return HUSL.fromHex(Rance.hexToString(hex));
-    }
-    Rance.hexToHusl = hexToHusl;
-    function generateMainColor() {
-        var color;
-        var hexColor;
-        var genType;
-        if (Math.random() < 0.6) {
-            color = makeRandomDeepColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "deep";
-        } else if (Math.random() < 0.25) {
-            color = makeRandomLightColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "light";
-        } else if (Math.random() < 0.3) {
-            color = makeRandomVibrantColor();
-            hexColor = hsvToHex.apply(null, color);
-            genType = "vibrant";
-        } else {
-            color = makeRandomColor({
-                s: [{ min: 1, max: 1 }],
-                l: [{ min: 0.88, max: 1 }]
-            });
-            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
-            genType = "husl";
-        }
-
-        var huslColor = hexToHusl(hexColor);
-        huslColor[2] = Rance.clamp(huslColor[2], 30, 100);
-        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, huslColor));
-        return hexColor;
-    }
-    Rance.generateMainColor = generateMainColor;
-    function generateSecondaryColor(mainColor) {
-        var huslColor = hexToHusl(mainColor);
-        var hexColor;
-
-        if (huslColor[2] < 0.3 || Math.random() < 0.4) {
-            var contrastingColor = makeContrastingColor({
-                color: huslColor,
-                minDifference: {
-                    h: 30,
-                    l: 30
-                }
-            });
-            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
-        } else {
-            function contrasts(c1, c2) {
-                return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
-            }
-            function makeColor(c1, easing) {
-                var hsvColor = hexToHsv(c1);
-
-                hsvColor = colorFromScalars(hsvColor);
-                var contrastingColor = makeContrastingColor({
-                    color: hsvColor,
-                    initialRanges: {
-                        l: { min: 60 * easing, max: 100 }
-                    },
-                    minDifference: {
-                        h: 20 * easing,
-                        s: 30 * easing
-                    }
-                });
-
-                var hex = hsvToHex.apply(null, scalarsFromColor(contrastingColor));
-
-                return hexToHusl(hex);
-            }
-
-            var huslBg = hexToHusl(mainColor);
-            var easing = 1;
-            var candidateColor = makeColor(mainColor, easing);
-
-            while (!contrasts(huslBg, candidateColor)) {
-                easing -= 0.1;
-                candidateColor = makeColor(mainColor, easing);
-            }
-
-            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
-        }
-
-        return hexColor;
-    }
-    Rance.generateSecondaryColor = generateSecondaryColor;
-    function generateColorScheme(mainColor) {
-        var mainColor = mainColor !== null && isFinite(mainColor) ? mainColor : generateMainColor();
-        var secondaryColor = generateSecondaryColor(mainColor);
-
-        return ({
-            main: mainColor,
-            secondary: secondaryColor
-        });
-    }
-    Rance.generateColorScheme = generateColorScheme;
-
-    function checkRandomGenHues(amt) {
-        var maxBarSize = 80;
-        var hues = {};
-        for (var i = 0; i < amt; i++) {
-            var color = generateMainColor();
-            var hue = colorFromScalars(hexToHsv(color))[0];
-            var roundedHue = Math.round(hue / 10) * 10;
-
-            if (!hues[roundedHue])
-                hues[roundedHue] = 0;
-            hues[roundedHue]++;
-        }
-
-        var min;
-        var max;
-
-        for (var _hue in hues) {
-            var count = hues[_hue];
-
-            if (!min) {
-                min = count;
-            }
-            if (!max) {
-                max = count;
-            }
-
-            min = Math.min(min, count);
-            max = Math.max(max, count);
-        }
-
-        var args = [""];
-        var toPrint = "";
-
-        for (var _hue in hues) {
-            var hue = parseInt(_hue);
-            var color = hsvToHex(hue / 360, 1, 1);
-            var count = hues[_hue];
-
-            var difference = max - min;
-            var relative = (count - min) / difference;
-
-            var chars = relative * maxBarSize;
-
-            var line = "\n%c ";
-            for (var i = 0; i < chars; i++) {
-                line += "#";
-            }
-            toPrint += line;
-            args.push("color: " + "#" + Rance.hexToString(color));
-        }
-
-        args[0] = toPrint;
-
-        console.log.apply(console, args);
-    }
-    Rance.checkRandomGenHues = checkRandomGenHues;
-})(Rance || (Rance = {}));
-/// <reference path="../data/templates/resourcetemplates.ts" />
-/// <reference path="star.ts" />
-/// <reference path="color.ts" />
-var Rance;
-(function (Rance) {
-    var Sector = (function () {
-        function Sector(id, color) {
-            this.stars = [];
-            this.id = isFinite(id) ? id : Rance.idGenerators.sector++;
-
-            this.color = isFinite(color) ? color : Rance.hslToHex.apply(null, [Rance.randRange(0, 1), Rance.randRange(0.8, 1), Rance.randRange(0.4, 0.6)]);
-        }
-        Sector.prototype.addStar = function (star) {
-            if (star.sector) {
-                throw new Error("Star already part of a sector");
-            }
-
-            this.stars.push(star);
-            star.sector = this;
-        };
-
-        Sector.prototype.getNeighboringStars = function () {
-            var neighbors = [];
-            var alreadyAdded = {};
-
-            for (var i = 0; i < this.stars.length; i++) {
-                var frontier = this.stars[i].getLinkedInRange(1).all;
-                for (var j = 0; j < frontier.length; j++) {
-                    if (frontier[j].sector !== this && !alreadyAdded[frontier[j].id]) {
-                        neighbors.push(frontier[j]);
-                        alreadyAdded[frontier[j].id] = true;
-                    }
-                }
-            }
-
-            return neighbors;
-        };
-
-        Sector.prototype.getMajorityRegions = function () {
-            var regionsByStars = {};
-
-            var biggestRegionStarCount = 0;
-            for (var i = 0; i < this.stars.length; i++) {
-                var star = this.stars[i];
-                var region = star.region;
-
-                if (!regionsByStars[region.id]) {
-                    regionsByStars[region.id] = {
-                        count: 0,
-                        region: region
-                    };
-                }
-
-                regionsByStars[region.id].count++;
-
-                if (regionsByStars[region.id].count > biggestRegionStarCount) {
-                    biggestRegionStarCount = regionsByStars[region.id].count;
-                }
-            }
-
-            var majorityRegions = [];
-            for (var regionId in regionsByStars) {
-                if (regionsByStars[regionId].count >= biggestRegionStarCount) {
-                    majorityRegions.push(regionsByStars[regionId].region);
-                }
-            }
-
-            return majorityRegions;
-        };
-
-        Sector.prototype.serialize = function () {
-            var data = {};
-
-            data.id = this.id;
-            data.color = this.color;
-
-            return data;
-        };
-        return Sector;
-    })();
-    Rance.Sector = Sector;
-})(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts" />
 var Rance;
 (function (Rance) {
@@ -7666,8 +7056,6 @@ var Rance;
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
 /// <reference path="itemgenerator.ts" />
 var Rance;
 (function (Rance) {
@@ -7694,72 +7082,24 @@ var Rance;
             this.y = y;
         }
         // TODO REMOVE
-        Star.prototype.setResource = function (resource) {
-            this.resource = resource;
-            this.sector.resourceType = resource;
-            this.sector.resourceLocation = this;
-        };
-        Star.prototype.clearLinks = function () {
-            this.linksTo = [];
-            this.linksFrom = [];
-        };
-        Star.prototype.getLinksByRegion = function () {
-            var linksByRegion = {};
-
-            var allLinks = this.getAllLinks();
-
-            for (var i = 0; i < allLinks.length; i++) {
-                var star = allLinks[i];
-                var region = star.region;
-
-                if (!linksByRegion[region.id]) {
-                    linksByRegion[region.id] = {
-                        links: [],
-                        region: region
-                    };
-                }
-
-                linksByRegion[region.id].links.push(star);
-            }
-
-            return linksByRegion;
-        };
-        Star.prototype.severLinksToRegion = function (regionToSever) {
-            var linksByRegion = this.getLinksByRegion();
-            var links = linksByRegion[regionToSever].links;
-
-            for (var i = 0; i < links.length; i++) {
-                var star = links[i];
-
-                this.removeLink(star);
-            }
-        };
         Star.prototype.severLinksToFiller = function () {
-            var linksByRegion = this.getLinksByRegion();
-
-            for (var regionId in linksByRegion) {
-                if (linksByRegion[regionId].region.isFiller) {
-                    this.severLinksToRegion(regionId);
-                }
-            }
+            this.mapGenData.region.severLinksToFiller();
         };
         Star.prototype.severLinksToNonCenter = function () {
-            var self = this;
-
-            var linksByRegion = this.getLinksByRegion();
-            var nonCenterRegions = Object.keys(linksByRegion).filter(function (regionId) {
-                return regionId !== self.region.id && regionId !== "center";
-            });
-
-            for (var i = 0; i < nonCenterRegions.length; i++) {
-                this.severLinksToRegion(nonCenterRegions[i]);
-            }
+            this.mapGenData.region.severLinksToNonCenter();
         };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
 
             var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-            console.log(neighborVoronoiIds);
+
+            for (var i = 0; i < allLinks.length; i++) {
+                var star = allLinks[i];
+
+                if (neighborVoronoiIds.indexOf(star.voronoiCell.id) < 0) {
+                    this.removeLink(star);
+                }
+            }
         };
 
         // END TO REMOVE
@@ -8087,6 +7427,9 @@ var Rance;
             this.x = x;
             this.y = y;
         };
+        Star.prototype.setResource = function (resource) {
+            this.resource = resource;
+        };
         Star.prototype.hasLink = function (linkTo) {
             return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
         };
@@ -8375,11 +7718,6 @@ var Rance;
             data.x = this.x;
             data.y = this.y;
 
-            // TO REMOVE
-            data.regionId = this.region ? this.region.id : null;
-            data.sectorId = this.sector ? this.sector.id : null;
-
-            // END TO REMOVE
             data.baseIncome = this.baseIncome;
 
             data.name = this.name;
@@ -8962,6 +8300,529 @@ var Rance;
         var SubEmblems = Templates.SubEmblems;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/husl.d.ts" />
+/// <reference path="range.ts" />
+var Rance;
+(function (Rance) {
+    function hex2rgb(hex) {
+        return ([
+            (hex >> 16 & 0xFF) / 255,
+            (hex >> 8 & 0xFF) / 255,
+            (hex & 0xFF) / 255
+        ]);
+    }
+    Rance.hex2rgb = hex2rgb;
+
+    function rgb2hex(rgb) {
+        return ((rgb[0] * 255 << 16) + (rgb[1] * 255 << 8) + rgb[2] * 255);
+    }
+    Rance.rgb2hex = rgb2hex;
+
+    //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+    /* accepts parameters
+    * h  Object = {h:x, s:y, v:z}
+    * OR
+    * h, s, v
+    */
+    function hsvToRgb(h, s, v) {
+        var r, g, b, i, f, p, q, t;
+
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0:
+                r = v, g = t, b = p;
+                break;
+            case 1:
+                r = q, g = v, b = p;
+                break;
+            case 2:
+                r = p, g = v, b = t;
+                break;
+            case 3:
+                r = p, g = q, b = v;
+                break;
+            case 4:
+                r = t, g = p, b = v;
+                break;
+            case 5:
+                r = v, g = p, b = q;
+                break;
+        }
+        return [r, g, b];
+    }
+    Rance.hsvToRgb = hsvToRgb;
+    function hslToRgb(h, s, l) {
+        var r, g, b;
+
+        if (s == 0) {
+            r = g = b = l; // achromatic
+        } else {
+            function hue2rgb(p, q, t) {
+                if (t < 0)
+                    t += 1;
+                if (t > 1)
+                    t -= 1;
+                if (t < 1 / 6)
+                    return p + (q - p) * 6 * t;
+                if (t < 1 / 2)
+                    return q;
+                if (t < 2 / 3)
+                    return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
+
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [r, g, b];
+    }
+    Rance.hslToRgb = hslToRgb;
+    function rgbToHsv(r, g, b) {
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max == 0 ? 0 : d / max;
+
+        if (max == min) {
+            h = 0; // achromatic
+        } else {
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, v];
+    }
+    Rance.rgbToHsv = rgbToHsv;
+    function rgbToHsl(r, g, b) {
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if (max == min) {
+            h = s = 0; // achromatic
+        } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, l];
+    }
+    Rance.rgbToHsl = rgbToHsl;
+
+    function hslToHex(h, s, l) {
+        return rgb2hex(hslToRgb(h, s, l));
+    }
+    Rance.hslToHex = hslToHex;
+    function hsvToHex(h, s, v) {
+        return rgb2hex(hsvToRgb(h, s, v));
+    }
+    Rance.hsvToHex = hsvToHex;
+
+    function hexToHsl(hex) {
+        return rgbToHsl.apply(null, hex2rgb(hex));
+    }
+    Rance.hexToHsl = hexToHsl;
+    function hexToHsv(hex) {
+        return rgbToHsv.apply(null, hex2rgb(hex));
+    }
+    Rance.hexToHsv = hexToHsv;
+
+    function excludeFromRanges(ranges, toExclude) {
+        var intersecting = getIntersectingRanges(ranges, toExclude);
+
+        var newRanges = ranges.slice(0);
+
+        for (var i = 0; i < intersecting.length; i++) {
+            newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
+
+            var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
+
+            if (intersectedRanges) {
+                newRanges = newRanges.concat(intersectedRanges);
+            }
+        }
+
+        return newRanges;
+    }
+    Rance.excludeFromRanges = excludeFromRanges;
+
+    function getIntersectingRanges(ranges, toIntersectWith) {
+        var intersecting = [];
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
+                continue;
+            }
+
+            intersecting.push(range);
+        }
+        return intersecting;
+    }
+    Rance.getIntersectingRanges = getIntersectingRanges;
+
+    function excludeFromRange(range, toExclude) {
+        if (toExclude.max < range.min || toExclude.min > range.max) {
+            return null;
+        } else if (toExclude.min < range.min && toExclude.max > range.max) {
+            return null;
+        }
+
+        if (toExclude.min <= range.min) {
+            return ([{ min: toExclude.max, max: range.max }]);
+        } else if (toExclude.max >= range.max) {
+            return ([{ min: range.min, max: toExclude.min }]);
+        }
+
+        var a = {
+            min: range.min,
+            max: toExclude.min
+        };
+        var b = {
+            min: toExclude.max,
+            max: range.max
+        };
+
+        return [a, b];
+    }
+    Rance.excludeFromRange = excludeFromRange;
+
+    function randomSelectFromRanges(ranges) {
+        var totalWeight = 0;
+        var rangesByRelativeWeight = {};
+        var currentRelativeWeight = 0;
+
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            if (!isFinite(range.max))
+                range.max = 1;
+            if (!isFinite(range.min))
+                range.min = 0;
+            var weight = range.max - range.min;
+
+            totalWeight += weight;
+        }
+        for (var i = 0; i < ranges.length; i++) {
+            var range = ranges[i];
+            var relativeWeight = (range.max - range.min) / totalWeight;
+            if (totalWeight === 0)
+                relativeWeight = 1;
+            currentRelativeWeight += relativeWeight;
+            rangesByRelativeWeight[currentRelativeWeight] = range;
+        }
+
+        var rand = Math.random();
+        var selectedRange;
+
+        var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
+            return parseFloat(w);
+        });
+
+        var sortedWeights = sortedWeights.sort();
+
+        for (var i = 0; i < sortedWeights.length; i++) {
+            if (rand < sortedWeights[i]) {
+                selectedRange = rangesByRelativeWeight[sortedWeights[i]];
+                break;
+            }
+        }
+        if (!selectedRange)
+            console.log(rangesByRelativeWeight);
+
+        return Rance.randRange(selectedRange.min, selectedRange.max);
+    }
+    Rance.randomSelectFromRanges = randomSelectFromRanges;
+
+    function makeRandomVibrantColor() {
+        var hRanges = [
+            { min: 0, max: 90 / 360 },
+            { min: 120 / 360, max: 150 / 360 },
+            { min: 180 / 360, max: 290 / 360 },
+            { min: 320 / 360, max: 1 }
+        ];
+        return [randomSelectFromRanges(hRanges), Rance.randRange(0.8, 0.9), Rance.randRange(0.88, 0.92)];
+    }
+    Rance.makeRandomVibrantColor = makeRandomVibrantColor;
+    function makeRandomDeepColor() {
+        // yellow
+        if (Math.random() < 0.1) {
+            return [Rance.randRange(15 / 360, 80 / 360), Rance.randRange(0.92, 1), Rance.randRange(0.92, 1)];
+        }
+        var hRanges = [
+            { min: 0, max: 15 / 360 },
+            { min: 100 / 360, max: 195 / 360 },
+            { min: 210 / 360, max: 1 }
+        ];
+        return [randomSelectFromRanges(hRanges), 1, Rance.randRange(0.55, 0.65)];
+    }
+    Rance.makeRandomDeepColor = makeRandomDeepColor;
+    function makeRandomLightColor() {
+        return [Rance.randRange(0, 360), Rance.randRange(0.55, 0.65), 1];
+    }
+    Rance.makeRandomLightColor = makeRandomLightColor;
+
+    function makeRandomColor(values) {
+        values = values || {};
+        var color = {};
+
+        ["h", "s", "l"].forEach(function (v) {
+            if (!values[v])
+                values[v] = [];
+        });
+
+        for (var value in values) {
+            if (values[value].length < 1) {
+                values[value] = [{ min: 0, max: 1 }];
+            }
+
+            color[value] = randomSelectFromRanges(values[value]);
+        }
+
+        return [color.h, color.s, color.l];
+    }
+    Rance.makeRandomColor = makeRandomColor;
+    function colorFromScalars(color) {
+        return [color[0] * 360, color[1] * 100, color[2] * 100];
+    }
+    Rance.colorFromScalars = colorFromScalars;
+    function scalarsFromColor(scalars) {
+        return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
+    }
+    Rance.scalarsFromColor = scalarsFromColor;
+
+    function makeContrastingColor(props) {
+        var initialRanges = props.initialRanges || {};
+        var exclusions = props.minDifference || {};
+        var maxDifference = props.maxDifference || {};
+        var color = props.color;
+        var hMaxDiffernece = isFinite(maxDifference.h) ? maxDifference.h : 360;
+        var sMaxDiffernece = isFinite(maxDifference.s) ? maxDifference.s : 100;
+        var lMaxDiffernece = isFinite(maxDifference.l) ? maxDifference.l : 100;
+
+        var hRange = initialRanges.h || { min: 0, max: 360 };
+        var sRange = initialRanges.s || { min: 50, max: 100 };
+        var lRange = initialRanges.l || { min: 0, max: 100 };
+
+        var hExclusion = exclusions.h || 30;
+
+        var hMin = (color[0] - hExclusion) % 360;
+        var hMax = (color[0] + hExclusion) % 360;
+
+        var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
+
+        var h = randomSelectFromRanges(hRange2);
+        h = Rance.clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
+        var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
+        var relativeHDistance = 1 / (180 / hDistance);
+
+        var lExclusion = exclusions.l || 30;
+
+        // if (relativeHDistance < 0.2)
+        // {
+        //   lExclusion /= 2;
+        //   clamp(lExclusion, 0, 100);
+        // }
+        //
+        var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
+        var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
+
+        var sExclusion = exclusions.s || 0;
+        var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
+        var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
+
+        var ranges = {
+            h: [{ min: h, max: h }],
+            s: excludeFromRange(sRange, { min: sMin, max: sMax }),
+            l: excludeFromRange(lRange, { min: lMin, max: lMax })
+        };
+
+        return makeRandomColor(ranges);
+    }
+    Rance.makeContrastingColor = makeContrastingColor;
+    function hexToHusl(hex) {
+        return HUSL.fromHex(Rance.hexToString(hex));
+    }
+    Rance.hexToHusl = hexToHusl;
+    function generateMainColor() {
+        var color;
+        var hexColor;
+        var genType;
+        if (Math.random() < 0.6) {
+            color = makeRandomDeepColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "deep";
+        } else if (Math.random() < 0.25) {
+            color = makeRandomLightColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "light";
+        } else if (Math.random() < 0.3) {
+            color = makeRandomVibrantColor();
+            hexColor = hsvToHex.apply(null, color);
+            genType = "vibrant";
+        } else {
+            color = makeRandomColor({
+                s: [{ min: 1, max: 1 }],
+                l: [{ min: 0.88, max: 1 }]
+            });
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
+            genType = "husl";
+        }
+
+        var huslColor = hexToHusl(hexColor);
+        huslColor[2] = Rance.clamp(huslColor[2], 30, 100);
+        hexColor = Rance.stringToHex(HUSL.toHex.apply(null, huslColor));
+        return hexColor;
+    }
+    Rance.generateMainColor = generateMainColor;
+    function generateSecondaryColor(mainColor) {
+        var huslColor = hexToHusl(mainColor);
+        var hexColor;
+
+        if (huslColor[2] < 0.3 || Math.random() < 0.4) {
+            var contrastingColor = makeContrastingColor({
+                color: huslColor,
+                minDifference: {
+                    h: 30,
+                    l: 30
+                }
+            });
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
+        } else {
+            function contrasts(c1, c2) {
+                return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
+            }
+            function makeColor(c1, easing) {
+                var hsvColor = hexToHsv(c1);
+
+                hsvColor = colorFromScalars(hsvColor);
+                var contrastingColor = makeContrastingColor({
+                    color: hsvColor,
+                    initialRanges: {
+                        l: { min: 60 * easing, max: 100 }
+                    },
+                    minDifference: {
+                        h: 20 * easing,
+                        s: 30 * easing
+                    }
+                });
+
+                var hex = hsvToHex.apply(null, scalarsFromColor(contrastingColor));
+
+                return hexToHusl(hex);
+            }
+
+            var huslBg = hexToHusl(mainColor);
+            var easing = 1;
+            var candidateColor = makeColor(mainColor, easing);
+
+            while (!contrasts(huslBg, candidateColor)) {
+                easing -= 0.1;
+                candidateColor = makeColor(mainColor, easing);
+            }
+
+            hexColor = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
+        }
+
+        return hexColor;
+    }
+    Rance.generateSecondaryColor = generateSecondaryColor;
+    function generateColorScheme(mainColor) {
+        var mainColor = mainColor !== null && isFinite(mainColor) ? mainColor : generateMainColor();
+        var secondaryColor = generateSecondaryColor(mainColor);
+
+        return ({
+            main: mainColor,
+            secondary: secondaryColor
+        });
+    }
+    Rance.generateColorScheme = generateColorScheme;
+
+    function checkRandomGenHues(amt) {
+        var maxBarSize = 80;
+        var hues = {};
+        for (var i = 0; i < amt; i++) {
+            var color = generateMainColor();
+            var hue = colorFromScalars(hexToHsv(color))[0];
+            var roundedHue = Math.round(hue / 10) * 10;
+
+            if (!hues[roundedHue])
+                hues[roundedHue] = 0;
+            hues[roundedHue]++;
+        }
+
+        var min;
+        var max;
+
+        for (var _hue in hues) {
+            var count = hues[_hue];
+
+            if (!min) {
+                min = count;
+            }
+            if (!max) {
+                max = count;
+            }
+
+            min = Math.min(min, count);
+            max = Math.max(max, count);
+        }
+
+        var args = [""];
+        var toPrint = "";
+
+        for (var _hue in hues) {
+            var hue = parseInt(_hue);
+            var color = hsvToHex(hue / 360, 1, 1);
+            var count = hues[_hue];
+
+            var difference = max - min;
+            var relative = (count - min) / difference;
+
+            var chars = relative * maxBarSize;
+
+            var line = "\n%c ";
+            for (var i = 0; i < chars; i++) {
+                line += "#";
+            }
+            toPrint += line;
+            args.push("color: " + "#" + Rance.hexToString(color));
+        }
+
+        args[0] = toPrint;
+
+        console.log.apply(console, args);
+    }
+    Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
 /// <reference path="../data/templates/subemblemtemplates.ts" />
@@ -10326,7 +10187,7 @@ var Rance;
                         }
                         ;
 
-                        if (site.region.isFiller) {
+                        if (site.isFiller) {
                             adjacentFillerSites++;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;
@@ -14011,6 +13872,15 @@ var Rance;
                 this.props.mapRenderer.setMapMode(newMode);
             },
             render: function () {
+                var mapModeOptions = [];
+
+                for (var mapModeName in this.props.mapRenderer.mapModes) {
+                    mapModeOptions.push(React.DOM.option({
+                        value: mapModeName,
+                        key: mapModeName
+                    }, this.props.mapRenderer.mapModes[mapModeName].name));
+                }
+
                 return (React.DOM.div({
                     className: "galaxy-map"
                 }, React.DOM.div({
@@ -14024,7 +13894,7 @@ var Rance;
                     className: "reactui-selector debug",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, React.DOM.option({ value: "default" }, "default"), React.DOM.option({ value: "noStatic" }, "no static layers"), React.DOM.option({ value: "income" }, "income"), React.DOM.option({ value: "influence" }, "influence"), React.DOM.option({ value: "sectors" }, "sectors"), React.DOM.option({ value: "regions" }, "regions"))));
+                }, mapModeOptions)));
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = false;
@@ -16592,6 +16462,7 @@ var Rance;
         MapRenderer.prototype.initMapModes = function () {
             this.mapModes["default"] = {
                 name: "default",
+                displayName: "Default",
                 layers: [
                     { layer: this.layers["starOwners"] },
                     { layer: this.layers["ownerBorders"] },
@@ -16604,6 +16475,7 @@ var Rance;
             };
             this.mapModes["noStatic"] = {
                 name: "noStatic",
+                displayName: "No Static Layers",
                 layers: [
                     { layer: this.layers["starOwners"] },
                     { layer: this.layers["ownerBorders"] },
@@ -16614,6 +16486,7 @@ var Rance;
             };
             this.mapModes["income"] = {
                 name: "income",
+                displayName: "Income",
                 layers: [
                     { layer: this.layers["starIncome"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
@@ -16624,6 +16497,7 @@ var Rance;
             };
             this.mapModes["influence"] = {
                 name: "influence",
+                displayName: "Player Influence",
                 layers: [
                     { layer: this.layers["playerInfluence"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
@@ -16632,24 +16506,17 @@ var Rance;
                     { layer: this.layers["fleets"] }
                 ]
             };
-            this.mapModes["sectors"] = {
-                name: "sectors",
+            this.mapModes["resources"] = {
+                name: "resources",
+                displayName: "Resources",
                 layers: [
-                    { layer: this.layers["sectors"] },
+                    { layer: this.layers["starOwners"] },
+                    { layer: this.layers["ownerBorders"] },
                     { layer: this.layers["nonFillerVoronoiLines"] },
                     { layer: this.layers["starLinks"] },
                     { layer: this.layers["nonFillerStars"] },
+                    { layer: this.layers["fogOfWar"] },
                     { layer: this.layers["resources"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["regions"] = {
-                name: "regions",
-                layers: [
-                    { layer: this.layers["regions"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
                     { layer: this.layers["fleets"] }
                 ]
             };
@@ -17028,60 +16895,6 @@ var Rance;
         }
         MapGen2.triangulate = triangulate;
 
-        function voronoiFromTriangles(triangles) {
-            var trianglesPerPoint = {};
-            var voronoiData = {};
-
-            for (var i = 0; i < triangles.length; i++) {
-                var triangle = triangles[i];
-                var points = triangle.getPoints();
-
-                for (var j = 0; j < points.length; j++) {
-                    if (!trianglesPerPoint[points[j]]) {
-                        trianglesPerPoint[points[j]] = [];
-                        voronoiData[points[j]] = {
-                            point: points[j]
-                        };
-                    }
-
-                    trianglesPerPoint[points[j]].push(triangle);
-                }
-            }
-            function makeTrianglePairs(triangles) {
-                var toMatch = triangles.slice(0);
-                var pairs = [];
-
-                for (var i = toMatch.length - 2; i >= 0; i--) {
-                    for (var j = toMatch.length - 1; j >= i + 1; j--) {
-                        var matchingVertices = toMatch[i].getAmountOfSharedVerticesWith(toMatch[j]);
-
-                        if (matchingVertices === 2) {
-                            pairs.push([toMatch[j], toMatch[i]]);
-                        }
-                    }
-                }
-
-                return pairs;
-            }
-
-            for (var point in trianglesPerPoint) {
-                var pointTriangles = trianglesPerPoint[point];
-
-                var trianglePairs = makeTrianglePairs(pointTriangles);
-                voronoiData[point].lines = [];
-
-                for (var i = 0; i < trianglePairs.length; i++) {
-                    voronoiData[point].lines.push([
-                        trianglePairs[i][0].getCircumCenter(),
-                        trianglePairs[i][1].getCircumCenter()
-                    ]);
-                }
-            }
-
-            return voronoiData;
-        }
-        MapGen2.voronoiFromTriangles = voronoiFromTriangles;
-
         function getCentroid(vertices) {
             var signedArea = 0;
             var x = 0;
@@ -17156,17 +16969,135 @@ var Rance;
 
             return (triangle);
         }
-        MapGen2.makeSuperTriangle = makeSuperTriangle;
 
         function pointsEqual(p1, p2) {
             return (p1.x === p2.x && p1.y === p2.y);
         }
-        MapGen2.pointsEqual = pointsEqual;
 
         function edgesEqual(e1, e2) {
             return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
         }
-        MapGen2.edgesEqual = edgesEqual;
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
+/// <reference path="../star.ts" />
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        var Region2 = (function () {
+            function Region2(id, isFiller) {
+                this.stars = [];
+                this.id = id;
+                this.isFiller = isFiller;
+            }
+            Region2.prototype.addStar = function (star) {
+                this.stars.push(star);
+                star.mapGenData.region = this;
+            };
+            Region2.prototype.severLinksByQualifier = function (qualifierFN) {
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    var links = star.getAllLinks();
+                    for (var j = 0; j < links.length; j++) {
+                        if (qualifierFN(star, links[j])) {
+                            star.removeLink(links[j]);
+                        }
+                    }
+                }
+            };
+            Region2.prototype.severLinksToFiller = function () {
+                this.severLinksByQualifier(function (a, b) {
+                    return b.isFiller;
+                });
+            };
+            Region2.prototype.severLinksToRegionsExcept = function (exemptRegions) {
+                this.severLinksByQualifier(function (a, b) {
+                    return exemptRegions.indexOf(b.mapGenData.region) !== -1;
+                });
+            };
+
+            // TODO REMOVE
+            Region2.prototype.severLinksToNonCenter = function () {
+                this.severLinksByQualifier(function (a, b) {
+                    return (a.mapGenData.region !== b.mapGenData.region && b.mapGenData.region.id.indexOf("center") < 0);
+                });
+            };
+            return Region2;
+        })();
+        MapGen2.Region2 = Region2;
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
+/// <reference path="../../data/templates/resourcetemplates.ts" />
+/// <reference path="../star.ts" />
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        var Sector2 = (function () {
+            function Sector2(id) {
+                this.stars = [];
+                this.id = id;
+            }
+            Sector2.prototype.addStar = function (star) {
+                if (star.mapGenData.sector) {
+                    throw new Error("Star already part of a sector");
+                }
+
+                this.stars.push(star);
+                star.mapGenData.sector = this;
+            };
+
+            Sector2.prototype.getNeighboringStars = function () {
+                var neighbors = [];
+                var alreadyAdded = {};
+
+                for (var i = 0; i < this.stars.length; i++) {
+                    var frontier = this.stars[i].getLinkedInRange(1).all;
+                    for (var j = 0; j < frontier.length; j++) {
+                        if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id]) {
+                            neighbors.push(frontier[j]);
+                            alreadyAdded[frontier[j].id] = true;
+                        }
+                    }
+                }
+
+                return neighbors;
+            };
+
+            Sector2.prototype.getMajorityRegions = function () {
+                var regionsByStars = {};
+
+                var biggestRegionStarCount = 0;
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    var region = star.mapGenData.region;
+
+                    if (!regionsByStars[region.id]) {
+                        regionsByStars[region.id] = {
+                            count: 0,
+                            region: region
+                        };
+                    }
+
+                    regionsByStars[region.id].count++;
+
+                    if (regionsByStars[region.id].count > biggestRegionStarCount) {
+                        biggestRegionStarCount = regionsByStars[region.id].count;
+                    }
+                }
+
+                var majorityRegions = [];
+                for (var regionId in regionsByStars) {
+                    if (regionsByStars[regionId].count >= biggestRegionStarCount) {
+                        majorityRegions.push(regionsByStars[regionId].region);
+                    }
+                }
+
+                return majorityRegions;
+            };
+            return Sector2;
+        })();
+        MapGen2.Sector2 = Sector2;
     })(Rance.MapGen2 || (Rance.MapGen2 = {}));
     var MapGen2 = Rance.MapGen2;
 })(Rance || (Rance = {}));
@@ -17175,9 +17106,9 @@ var Rance;
 /// <reference path="../data/mapgen/builtinmaps.ts" />
 /// <reference path="mapgen/triangulation.ts" />
 /// <reference path="mapgen/triangle.ts" />
+/// <reference path="mapgen/region2.ts" />
+/// <reference path="mapgen/sector2.ts" />
 /// <reference path="star.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
 var Rance;
@@ -17215,7 +17146,8 @@ var Rance;
             this.relaxPoints(options.relaxation);
 
             this.triangulate();
-            this.severArmLinks();
+
+            this.severUnWantedLinks();
             this.partiallyCutConnections(4);
 
             var isConnected = this.isConnected();
@@ -17238,9 +17170,14 @@ var Rance;
             return this;
         };
         MapGen.prototype.clearMapGenData = function () {
+            if (Rance.Options.debugMode) {
+                console.warn("Skipped cleaning map gen data due to debug mode being enabled");
+                return;
+            }
             for (var i = 0; i < this.points.length; i++) {
                 this.points[i].mapGenData = null;
                 delete this.points[i].mapGenData;
+                delete this.points[i].voronoiId;
             }
         };
         MapGen.prototype.isConnected = function () {
@@ -17354,7 +17291,7 @@ var Rance;
             return galaxyConstructor.call(this, starGenerationProps);
         };
         MapGen.prototype.makeRegion = function (name, isFiller) {
-            this.regions[name] = new Rance.Region(name, [], isFiller);
+            this.regions[name] = new Rance.MapGen2.Region2(name, isFiller);
             return this.regions[name];
         };
         MapGen.prototype.makeSpiralPoints = function (props) {
@@ -17371,7 +17308,7 @@ var Rance;
             var armRotationFactor = props.arms / 3;
             var galaxyRotation = Rance.randRange(0, Math.PI * 2);
 
-            var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax) {
+            var makePoint = function makePointFN(distanceMin, distanceMax, region, armOffsetMax, isFiller) {
                 var distance = Rance.randRange(distanceMin, distanceMax);
                 var offset = Math.random() * armOffsetMax - armOffsetMax / 2;
                 offset *= (1 / distance);
@@ -17393,6 +17330,7 @@ var Rance;
                 point.mapGenData.distance = distance;
                 region.addStar(point);
                 point.baseIncome = Rance.randInt(2, 10) * 10;
+                point.isFiller = isFiller;
 
                 return point;
             }.bind(this);
@@ -17410,13 +17348,13 @@ var Rance;
                 var amountForThisCenter = Math.round(amountInCenter / totalArms);
 
                 for (var j = 0; j < amountForThisArm; j++) {
-                    var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm);
+                    var point = makePoint(centerThreshhold, 1, region, maxOffsetForThisArm, currentArmIsFiller);
 
                     points.push(point);
                 }
 
                 for (var j = 0; j < amountForThisCenter; j++) {
-                    var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax);
+                    var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax, false);
                     points.push(point);
                 }
 
@@ -17433,16 +17371,9 @@ var Rance;
 
             this.makeLinks();
         };
-        MapGen.prototype.clearLinks = function () {
-            for (var i = 0; i < this.points.length; i++) {
-                this.points[i].clearLinks();
-            }
-        };
         MapGen.prototype.makeLinks = function () {
             if (!this.triangles || this.triangles.length < 1)
                 throw new Error();
-
-            this.clearLinks();
 
             for (var i = 0; i < this.triangles.length; i++) {
                 var edges = this.triangles[i].getEdges();
@@ -17451,13 +17382,13 @@ var Rance;
                 }
             }
         };
-        MapGen.prototype.severArmLinks = function () {
+        MapGen.prototype.severUnWantedLinks = function () {
             for (var i = 0; i < this.points.length; i++) {
                 var star = this.points[i];
                 star.severLinksToFiller();
                 star.severLinksToNonAdjacent();
 
-                if (star.mapGenData.distance > 0.8) {
+                if (star.mapGenData.distance > 0.7) {
                     star.severLinksToNonCenter();
                 }
             }
@@ -17482,7 +17413,8 @@ var Rance;
             for (var i = 0; i < diagram.cells.length; i++) {
                 var cell = diagram.cells[i];
                 cell.site.voronoiCell = cell;
-                cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
+                cell.id = cell.site.voronoiId;
+                cell.vertices = this.getVerticesFromCell(cell);
             }
         };
         MapGen.prototype.cleanTriangles = function (triangles, superTriangle) {
@@ -17558,7 +17490,7 @@ var Rance;
                 return [];
             if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
                 this.nonFillerPoints = this.points.filter(function (point) {
-                    return !point.region.isFiller;
+                    return !point.isFiller;
                 });
             }
 
@@ -17611,7 +17543,7 @@ var Rance;
                         }
                         ;
 
-                        if (site.region.isFiller) {
+                        if (site.isFiller) {
                             adjacentFillerSites++;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;
@@ -17710,9 +17642,10 @@ var Rance;
             var averageSectorsAmount = Math.round(totalStars / averageSize);
 
             var sectorsById = {};
+            var sectorIdGen = 0;
 
             var sameSectorFN = function (a, b) {
-                return a.sector === b.sector;
+                return a.mapGenData.sector === b.mapGenData.sector;
             };
 
             while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
@@ -17720,7 +17653,7 @@ var Rance;
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
 
                 if (canFormMinSizeSector) {
-                    var sector = new Rance.Sector();
+                    var sector = new Rance.MapGen2.Sector2(sectorIdGen++);
                     sectorsById[sector.id] = sector;
 
                     var discoveryStarIndex = 0;
@@ -17731,7 +17664,7 @@ var Rance;
 
                         var frontier = discoveryStar.getLinkedInRange(1).all;
                         frontier = frontier.filter(function (star) {
-                            return !star.sector;
+                            return !star.mapGenData.sector;
                         });
 
                         while (sector.stars.length < minSize && frontier.length > 0) {
@@ -17757,12 +17690,12 @@ var Rance;
                 var candidateSectors = [];
 
                 for (var j = 0; j < neighbors.length; j++) {
-                    if (!neighbors[j].sector)
+                    if (!neighbors[j].mapGenData.sector)
                         continue;
                     else {
-                        if (!alreadyAddedNeighborSectors[neighbors[j].sector.id]) {
-                            alreadyAddedNeighborSectors[neighbors[j].sector.id] = true;
-                            candidateSectors.push(neighbors[j].sector);
+                        if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id]) {
+                            alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
+                            candidateSectors.push(neighbors[j].mapGenData.sector);
                         }
                     }
                 }
@@ -17780,7 +17713,7 @@ var Rance;
                     var sectorNeighbors = candidateSectors[j].getNeighboringStars();
                     var unclaimed = 0;
                     for (var k = 0; k < sectorNeighbors.length; k++) {
-                        if (!sectorNeighbors[k].sector) {
+                        if (!sectorNeighbors[k].mapGenData.sector) {
                             unclaimed++;
                         }
                     }
@@ -17873,6 +17806,8 @@ var Rance;
 
                 var star = Rance.getRandomArrayItem(sector.stars);
                 star.setResource(selectedResource);
+                sector.resourceType = selectedResource;
+                sector.resourceLocation = star;
             }
         };
         return MapGen;

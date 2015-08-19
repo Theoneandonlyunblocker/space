@@ -390,7 +390,7 @@ module Rance
         star.severLinksToFiller();
         star.severLinksToNonAdjacent();
 
-        if (star.mapGenData.distance > 0.6)
+        if (star.mapGenData.distance > 0.7)
         {
           star.severLinksToNonCenter();
         }

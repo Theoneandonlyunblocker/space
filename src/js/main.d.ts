@@ -643,89 +643,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    class Region {
-        public id: string;
-        public stars: Rance.Star[];
-        public isFiller: boolean;
-        constructor(id: string, stars: Rance.Star[], isFiller: boolean);
-        public addStar(star: Rance.Star): void;
-        public serialize(): any;
-    }
-}
-declare module Rance {
-    interface IRange {
-        min?: number;
-        max?: number;
-        step?: number;
-    }
-}
-declare module Rance {
-    function hex2rgb(hex: number): number[];
-    function rgb2hex(rgb: number[]): number;
-    function hsvToRgb(h: number, s: number, v: number): number[];
-    function hslToRgb(h: number, s: number, l: number): number[];
-    function rgbToHsv(r: any, g: any, b: any): any[];
-    function rgbToHsl(r: number, g: number, b: number): number[];
-    function hslToHex(h: number, s: number, l: number): number;
-    function hsvToHex(h: number, s: number, v: number): number;
-    function hexToHsl(hex: number): number[];
-    function hexToHsv(hex: number): number[];
-    function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[];
-    function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
-    function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
-    function randomSelectFromRanges(ranges: IRange[]): any;
-    function makeRandomVibrantColor(): any[];
-    function makeRandomDeepColor(): any[];
-    function makeRandomLightColor(): any[];
-    function makeRandomColor(values?: {
-        h?: IRange[];
-        s?: IRange[];
-        l?: IRange[];
-    }): any[];
-    function colorFromScalars(color: number[]): number[];
-    function scalarsFromColor(scalars: number[]): number[];
-    function makeContrastingColor(props: {
-        color: number[];
-        initialRanges?: {
-            h?: IRange;
-            s?: IRange;
-            l?: IRange;
-        };
-        minDifference?: {
-            h?: number;
-            s?: number;
-            l?: number;
-        };
-        maxDifference?: {
-            h?: number;
-            s?: number;
-            l?: number;
-        };
-    }): number[];
-    function hexToHusl(hex: number): number[];
-    function generateMainColor(): number;
-    function generateSecondaryColor(mainColor: number): number;
-    function generateColorScheme(mainColor?: number): {
-        main: number;
-        secondary: number;
-    };
-    function checkRandomGenHues(amt: number): void;
-}
-declare module Rance {
-    class Sector {
-        public id: number;
-        public stars: Rance.Star[];
-        public color: number;
-        public resourceType: Rance.Templates.IResourceTemplate;
-        public resourceLocation: Rance.Star;
-        constructor(id?: number, color?: number);
-        public addStar(star: Rance.Star): void;
-        public getNeighboringStars(): Rance.Star[];
-        public getMajorityRegions(): any[];
-        public serialize(): any;
-    }
-}
-declare module Rance {
     module Templates {
         interface IItemTemplate {
             type: string;
@@ -777,14 +694,14 @@ declare module Rance {
 }
 declare module Rance {
     class Star implements Rance.Point {
-        public sector: Rance.Sector;
-        public region: Rance.Region;
         public id: number;
         public x: number;
         public y: number;
+        public isFiller: boolean;
         public linksTo: Star[];
         public linksFrom: Star[];
         public mapGenData: any;
+        public voronoiId: number;
         public seed: string;
         public name: string;
         public owner: Rance.Player;
@@ -814,15 +731,6 @@ declare module Rance {
             3: Rance.Templates.IItemTemplate[];
         };
         constructor(x: number, y: number, id?: number);
-        public setResource(resource: Rance.Templates.IResourceTemplate): void;
-        public clearLinks(): void;
-        public getLinksByRegion(): {
-            [regionId: string]: {
-                links: Star[];
-                region: Rance.Region;
-            };
-        };
-        public severLinksToRegion(regionToSever: string): void;
         public severLinksToFiller(): void;
         public severLinksToNonCenter(): void;
         public severLinksToNonAdjacent(): void;
@@ -862,6 +770,7 @@ declare module Rance {
         public getFirstEnemyDefenceBuilding(player: Rance.Player): Rance.Building;
         public getEnemyFleetOwners(player: Rance.Player, excludedTarget?: Rance.Player): Rance.Player[];
         public setPosition(x: number, y: number): void;
+        public setResource(resource: Rance.Templates.IResourceTemplate): void;
         public hasLink(linkTo: Star): boolean;
         public addLink(linkTo: Star): void;
         public removeLink(linkTo: Star): void;
@@ -1139,6 +1048,65 @@ declare module Rance {
             };
         }
     }
+}
+declare module Rance {
+    interface IRange {
+        min?: number;
+        max?: number;
+        step?: number;
+    }
+}
+declare module Rance {
+    function hex2rgb(hex: number): number[];
+    function rgb2hex(rgb: number[]): number;
+    function hsvToRgb(h: number, s: number, v: number): number[];
+    function hslToRgb(h: number, s: number, l: number): number[];
+    function rgbToHsv(r: any, g: any, b: any): any[];
+    function rgbToHsl(r: number, g: number, b: number): number[];
+    function hslToHex(h: number, s: number, l: number): number;
+    function hsvToHex(h: number, s: number, v: number): number;
+    function hexToHsl(hex: number): number[];
+    function hexToHsv(hex: number): number[];
+    function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[];
+    function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
+    function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
+    function randomSelectFromRanges(ranges: IRange[]): any;
+    function makeRandomVibrantColor(): any[];
+    function makeRandomDeepColor(): any[];
+    function makeRandomLightColor(): any[];
+    function makeRandomColor(values?: {
+        h?: IRange[];
+        s?: IRange[];
+        l?: IRange[];
+    }): any[];
+    function colorFromScalars(color: number[]): number[];
+    function scalarsFromColor(scalars: number[]): number[];
+    function makeContrastingColor(props: {
+        color: number[];
+        initialRanges?: {
+            h?: IRange;
+            s?: IRange;
+            l?: IRange;
+        };
+        minDifference?: {
+            h?: number;
+            s?: number;
+            l?: number;
+        };
+        maxDifference?: {
+            h?: number;
+            s?: number;
+            l?: number;
+        };
+    }): number[];
+    function hexToHusl(hex: number): number[];
+    function generateMainColor(): number;
+    function generateSecondaryColor(mainColor: number): number;
+    function generateColorScheme(mainColor?: number): {
+        main: number;
+        secondary: number;
+    };
+    function checkRandomGenHues(amt: number): void;
 }
 declare module Rance {
     class Emblem {
@@ -2261,11 +2229,36 @@ declare module Rance {
             triangles: Triangle[];
             superTriangle: Triangle;
         };
-        function voronoiFromTriangles(triangles: Triangle[]): any;
         function getCentroid(vertices: Rance.Point[]): Rance.Point;
-        function makeSuperTriangle(vertices: Rance.Point[], highestCoordinateValue?: number): Triangle;
-        function pointsEqual(p1: Rance.Point, p2: Rance.Point): boolean;
-        function edgesEqual(e1: Rance.Point[], e2: Rance.Point[]): boolean;
+    }
+}
+declare module Rance {
+    module MapGen2 {
+        class Region2 {
+            public id: string;
+            public isFiller: boolean;
+            public stars: Rance.Star[];
+            constructor(id: string, isFiller: boolean);
+            public addStar(star: Rance.Star): void;
+            public severLinksByQualifier(qualifierFN: (a: Rance.Star, b: Rance.Star) => boolean): void;
+            public severLinksToFiller(): void;
+            public severLinksToRegionsExcept(exemptRegions: Region2[]): void;
+            public severLinksToNonCenter(): void;
+        }
+    }
+}
+declare module Rance {
+    module MapGen2 {
+        class Sector2 {
+            public id: number;
+            public stars: Rance.Star[];
+            public resourceType: Rance.Templates.IResourceTemplate;
+            public resourceLocation: Rance.Star;
+            constructor(id: number);
+            public addStar(star: Rance.Star): void;
+            public getNeighboringStars(): Rance.Star[];
+            public getMajorityRegions(): any[];
+        }
     }
 }
 declare module Rance {
@@ -2276,10 +2269,10 @@ declare module Rance {
         public players: Rance.Player[];
         public independents: Rance.Player;
         public regions: {
-            [id: string]: Rance.Region;
+            [id: string]: Rance.MapGen2.Region2;
         };
         public sectors: {
-            [id: number]: Rance.Sector;
+            [id: number]: Rance.MapGen2.Sector2;
         };
         public triangles: Rance.MapGen2.Triangle[];
         public voronoiDiagram: any;
@@ -2323,7 +2316,7 @@ declare module Rance {
             centerSize: number;
             amountInCenter: number;
         }): any;
-        public makeRegion(name: string, isFiller: boolean): Rance.Region;
+        public makeRegion(name: string, isFiller: boolean): Rance.MapGen2.Region2;
         public makeSpiralPoints(props: {
             amountPerArm: number;
             arms: number;
@@ -2332,9 +2325,8 @@ declare module Rance {
             armOffsetMax?: number;
         }): any[];
         public triangulate(): void;
-        public clearLinks(): void;
         public makeLinks(): void;
-        public severArmLinks(): void;
+        public severUnWantedLinks(): void;
         public makeVoronoi(): void;
         public cleanTriangles(triangles: Rance.MapGen2.Triangle[], superTriangle: Rance.MapGen2.Triangle): Rance.MapGen2.Triangle[];
         public makeTreeMap(): void;
@@ -2346,10 +2338,10 @@ declare module Rance {
         }): void;
         public getNonFillerPoints(): Rance.Star[];
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
-        public getFurthestPointInRegion(region: Rance.Region): Rance.Star;
+        public getFurthestPointInRegion(region: Rance.MapGen2.Region2): Rance.Star;
         public partiallyCutConnections(minConnections: number): void;
         public makeSectors(minSize: number, maxSize: number): {
-            [sectorId: number]: Rance.Sector;
+            [sectorId: number]: Rance.MapGen2.Sector2;
         };
         public setResources(): void;
     }
