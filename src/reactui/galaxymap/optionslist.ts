@@ -65,8 +65,18 @@ module Rance
       {
         var resetFN = function()
         {
+          var shouldToggleDebug = false;
+          if (Options.debugMode !== defaultOptions.debugMode) shouldToggleDebug = true;
           Options = extendObject(defaultOptions);
-          this.forceUpdate();
+
+          if (shouldToggleDebug)
+          {
+            app.reactUI.render();
+          }
+          else
+          {
+            this.forceUpdate();
+          }
         }.bind(this);
 
         var confirmProps =
@@ -128,8 +138,11 @@ module Rance
           options: debugOptions,
           resetFN: function()
           {
-            extendObject(defaultOptions.debugMode, Options.debugMode);
-            this.forceUpdate();
+            if (Options.debugMode !== defaultOptions.debugMode)
+            {
+              toggleDebugMode();
+              this.forceUpdate();
+            }
           }.bind(this),
           key: "debug"
         }));
