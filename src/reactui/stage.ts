@@ -30,6 +30,31 @@ module Rance
 
         switch (this.props.sceneToRender)
         {
+          case "battle":
+          {
+            elementsToRender.push(
+              UIComponents.Battle(
+              {
+                battle: this.props.battle,
+                humanPlayer: this.props.player,
+                renderer: this.props.renderer,
+                key: "battle"
+              })
+            );
+            break;
+          }
+          case "battlePrep":
+          {
+            elementsToRender.push(
+              UIComponents.BattlePrep(
+              {
+                battlePrep: this.props.battlePrep,
+                renderer: this.props.renderer,
+                key: "battlePrep"
+              })
+            );
+            break;
+          }
           case "galaxyMap":
           {
             elementsToRender.push(
