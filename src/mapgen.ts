@@ -115,7 +115,17 @@ module Rance
 
       this.setupPirates();
 
+      this.clearMapGenData();
+
       return this;
+    }
+    clearMapGenData()
+    {
+      for (var i = 0; i < this.points.length; i++)
+      {
+        this.points[i].mapGenData = null;
+        delete this.points[i].mapGenData;
+      }
     }
     isConnected()
     {
@@ -301,6 +311,7 @@ module Rance
         var y = Math.sin(angle) * distance * this.maxHeight + this.maxHeight;
 
         var point = new Star(x, y);
+        point.mapGenData = {};
 
         point.mapGenData.distance = distance;
         region.addStar(point);

@@ -31,10 +31,10 @@ module Rance
 
     // can be used during map gen to attach temporary variables for easier debugging
     // nulled and deleted after map gen is done
-    mapGenData:
-    {
-      [propName: string]: any;
-    };
+    mapGenData: any;
+    // {
+    //   [propName: string]: any;
+    // };
 
     seed: string;
 
