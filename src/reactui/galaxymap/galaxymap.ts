@@ -16,10 +16,23 @@ module Rance
     
       render: function()
       {
+        var mapModeOptions = [];
+
+        for (var mapModeName in this.props.mapRenderer.mapModes)
+        {
+          mapModeOptions.push(React.DOM.option(
+          {
+            value: mapModeName,
+            key: mapModeName
+          },
+            this.props.mapRenderer.mapModes[mapModeName].name
+          ));
+        }
+
         return(
           React.DOM.div(
             {
-              className: "galaxy-map"  
+              className: "galaxy-map"
             },
             React.DOM.div(
             {
@@ -39,12 +52,7 @@ module Rance
               ref: "mapModeSelector",
               onChange: this.switchMapMode
             },
-              React.DOM.option({value: "default"}, "default"),
-              React.DOM.option({value: "noStatic"}, "no static layers"),
-              React.DOM.option({value: "income"}, "income"),
-              React.DOM.option({value: "influence"}, "influence"),
-              React.DOM.option({value: "sectors"}, "sectors"),
-              React.DOM.option({value: "regions"}, "regions")
+              mapModeOptions
             )
           )
         );

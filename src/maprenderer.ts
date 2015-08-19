@@ -901,6 +901,7 @@ module Rance
       this.mapModes["default"] =
       {
         name: "default",
+        displayName: "Default",
         layers:
         [
           {layer: this.layers["starOwners"]},
@@ -915,6 +916,7 @@ module Rance
       this.mapModes["noStatic"] =
       {
         name: "noStatic",
+        displayName: "No Static Layers",
         layers:
         [
           {layer: this.layers["starOwners"]},
@@ -927,6 +929,7 @@ module Rance
       this.mapModes["income"] =
       {
         name: "income",
+        displayName: "Income",
         layers:
         [
           {layer: this.layers["starIncome"]},
@@ -939,6 +942,7 @@ module Rance
       this.mapModes["influence"] =
       {
         name: "influence",
+        displayName: "Player Influence",
         layers:
         [
           {layer: this.layers["playerInfluence"]},
