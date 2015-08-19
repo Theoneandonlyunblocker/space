@@ -1,7 +1,9 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
+/// <reference path="game.ts" />
 /// <reference path="star.ts" />
-/// <reference path="maprenderer.ts" />
+/// <reference path="mapvoronoiinfo.ts" />
+
 
 module Rance
 {
@@ -9,23 +11,29 @@ module Rance
   {
     allPoints: Star[];
     stars: Star[];
-    mapGen: MapGen;
     width: number;
     height: number;
+
+    voronoi: MapVoronoiInfo;
+
+    // TODO remove
     game: Game;
+    // TODO end
     constructor()
     {
     }
 
     setMapGen(mapGen: MapGen)
     {
-      this.mapGen = mapGen;
-
       this.width = mapGen.maxWidth * 2;
       this.height = mapGen.maxHeight * 2;
 
       this.allPoints = mapGen.points;
       this.stars = mapGen.getNonFillerPoints();
+
+      this.voronoi = new MapVoronoiInfo();
+      this.voronoi.treeMap = mapGen.voronoiTreeMap;
+      this.voronoi.diagram = mapGen.voronoiDiagram;
     }
     getIncomeBounds()
     {
@@ -58,8 +66,8 @@ module Rance
         return star.serialize();
       });
 
-      data.maxWidth = this.mapGen.maxWidth;
-      data.maxHeight = this.mapGen.maxHeight;
+      data.maxWidth = this.width / 2;
+      data.maxHeight = this.height / 2;
 
       return data;
     }

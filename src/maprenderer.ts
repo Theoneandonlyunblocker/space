@@ -376,7 +376,7 @@ module Rance
           doc.touchmove = function(event: any)
           {
             var local = event.getLocalPosition(doc);
-            var items = map.mapGen.voronoiTreeMap.retrieve(local);
+            var items = map.voronoi.treeMap.retrieve(local);
             for (var i = 0; i < items.length; i++)
             {
               var cell = items[i].cell;
@@ -640,7 +640,7 @@ module Rance
 
           var visible = this.player ? this.player.getRevealedStars() : null;
 
-          var lines = map.mapGen.getNonFillerVoronoiLines(visible);
+          var lines = map.voronoi.getNonFillerVoronoiLines(visible);
 
           for (var i = 0; i < lines.length; i++)
           {
@@ -665,7 +665,7 @@ module Rance
 
           var revealedStars = this.player.getRevealedStars();
           var borderEdges =
-            getAllBorderEdgesByStar(map.mapGen.voronoiDiagram.edges, revealedStars);
+            getAllBorderEdgesByStar(map.voronoi.diagram.edges, revealedStars);
 
           for (var starId in borderEdges)
           {
@@ -737,101 +737,6 @@ module Rance
           return doc;
         }
       }
-      /*
-      this.layers["sectors"] =
-      {
-        isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
-        drawingFunction: function(map: GalaxyMap)
-        {
-          var self = this;
-
-          var doc = new PIXI.DisplayObjectContainer();
-
-          var points: Star[];
-          if (!this.player)
-          {
-            points = map.stars;
-          }
-          else
-          {
-            points = this.player.getRevealedStars();
-          }
-
-          var sectorsAmount = Object.keys(map.sectors).length;
-
-          for (var i = 0; i < points.length; i++)
-          {
-            var star = points[i];
-            if (!star.sector) break;
-
-            var hue = (360 / sectorsAmount) * star.sector.id;
-            var color = hslToHex(hue / 360, 1, 0.5)
-            //var color = star.sector.color;
-
-            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-            var gfx = new PIXI.Graphics();
-            gfx.beginFill(color, 0.6);
-            gfx.drawShape(poly);
-            gfx.endFill;
-            doc.addChild(gfx);
-          }
-
-          doc.height;
-          return doc;
-        }
-      }
-      this.layers["regions"] =
-      {
-        isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
-        drawingFunction: function(map: GalaxyMap)
-        {
-          var self = this;
-
-          var doc = new PIXI.DisplayObjectContainer();
-
-          var points: Star[];
-          if (!this.player)
-          {
-            points = map.stars;
-          }
-          else
-          {
-            points = this.player.getRevealedStars();
-          }
-
-          var regionIndexes:
-          {
-            [regionId: string]: number;
-          } = {};
-
-          var i = 0;
-          for (var regionId in map.mapGen.regions)
-          {
-            regionIndexes[regionId] = i++;
-          }
-          var regionsAmount = Object.keys(regionIndexes).length;
-
-          for (var i = 0; i < points.length; i++)
-          {
-            var star = points[i];
-
-            var hue = (360 / regionsAmount) * regionIndexes[star.region.id];
-            var color = hslToHex(hue / 360, 1, 0.5)
-            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-            var gfx = new PIXI.Graphics();
-            gfx.beginFill(color, 0.6);
-            gfx.drawShape(poly);
-            gfx.endFill;
-            doc.addChild(gfx);
-          }
-
-          doc.height;
-          return doc;
-        }
-      }
-      */
       this.layers["resources"] =
       {
         isDirty: true,
