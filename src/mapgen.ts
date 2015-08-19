@@ -389,7 +389,6 @@ module Rance
       {
         var star = this.points[i];
         star.severLinksToFiller();
-        star.severLinksToNonAdjacent();
 
         if (star.mapGenData.distance > 0.8)
         {

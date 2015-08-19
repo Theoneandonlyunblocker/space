@@ -17,7 +17,6 @@ module Rance
     // TO REMOVE
     sector: Sector;
     region: Region;
-    voronoiId: number;
     // END TO REMOVE
     
     id: number;
@@ -93,7 +92,7 @@ module Rance
       this.x = x;
       this.y = y;
     }
-    // TO REMOVE
+    // TODO REMOVE
     setResource(resource: Templates.IResourceTemplate)
     {
       this.resource = resource;
@@ -174,22 +173,6 @@ module Rance
       for (var i = 0; i < nonCenterRegions.length; i++)
       {
         this.severLinksToRegion(nonCenterRegions[i]);      
-      }
-    }
-    severLinksToNonAdjacent()
-    {
-      var allLinks = this.getAllLinks();
-
-      var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-
-      for (var i = 0; i < allLinks.length; i++)
-      {
-        var star = allLinks[i];
-
-        if (neighborVoronoiIds.indexOf(star.voronoiId) < 0)
-        {
-          this.removeLink(star);
-        }
       }
     }
 
