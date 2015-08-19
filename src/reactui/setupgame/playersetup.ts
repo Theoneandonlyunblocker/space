@@ -61,7 +61,7 @@ module Rance
       },
       handleRemove: function()
       {
-        this.props.removePlayer(this.props.key)
+        this.props.removePlayers([this.props.key]);
       },
       handleSetCustomImage: function(image?)
       {

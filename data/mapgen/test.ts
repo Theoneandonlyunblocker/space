@@ -12,6 +12,9 @@ module Rance
         displayName: "Small Test Map",
         description: "(not implemented yet) just testing but small",
 
+        minPlayers: 2,
+        maxPlayers: 4,
+
         options:
         {
           defaultOptions:
@@ -33,12 +36,6 @@ module Rance
               min: 0.1,
               max: 0.12,
               step: 0.001
-            },
-            playerAmount:
-            {
-              min: 2,
-              max: 4,
-              step: 1
             }
           },
           basicOptions:

@@ -162,6 +162,7 @@ module Rance
 
               options.push(
               {
+                key: optionName,
                 content: UIComponents.MapGenOption(
                 {
                   key: optionName,

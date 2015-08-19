@@ -17,7 +17,6 @@ module Rance
         height: IRange; // pixels
         width: IRange; // pixels
         starDensity: IRange; // stars per 1000 pixels
-        playerAmount: IRange;
       }
       export interface IMapSpecificOptions
       {

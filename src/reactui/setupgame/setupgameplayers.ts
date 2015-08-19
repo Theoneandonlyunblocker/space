@@ -25,16 +25,36 @@ module Rance
         });
       },
 
-      makeNewPlayer: function()
+      componentWillReceiveProps: function(newProps: any)
+      {
+        if (newProps.minPlayers > this.state.players.length)
+        {
+          this.makeNewPlayers(newProps.minPlayers - this.state.players.length);
+        }
+        else if (newProps.maxPlayers < this.state.players.length)
+        {
+          var overflowCount = this.state.players.length - newProps.maxPlayers;
+          this.removePlayers(this.state.players.slice(-overflowCount));
+        }
+      },
+
+      makeNewPlayers: function(amountToMake: number = 1)
       {
         if (this.state.players.length >= this.props.maxPlayers)
         {
           return;
         }
 
+        var newIds: number[] = [];
+
+        for (var i = 0; i < amountToMake; i++)
+        {
+          newIds.push(this.newPlayerId++);
+        }
+
         this.setState(
         {
-          players: this.state.players.concat(this.newPlayerId++)
+          players: this.state.players.concat(newIds)
         });
       },
 
@@ -49,7 +69,7 @@ module Rance
         this.setState({players: newPlayerOrder});
       },
 
-      removePlayer: function(idToRemove: number)
+      removePlayers: function(toRemove: number[])
       {
         if (this.state.players.length <= this.props.minPlayers)
         {
@@ -60,7 +80,7 @@ module Rance
         {
           players: this.state.players.filter(function(playerId)
           {
-            return playerId !== idToRemove;
+            return toRemove.indexOf(playerId) === -1;
           })
         });
       },
@@ -105,7 +125,7 @@ module Rance
           {
             key: this.state.players[i],
             ref: this.state.players[i],
-            removePlayer: this.removePlayer,
+            removePlayers: this.removePlayers,
             setActiveColorPicker: this.setActiveColorPicker,
             initialName: "Player " + this.state.players[i],
             isHuman: i === 0,
@@ -151,7 +171,7 @@ module Rance
             React.DOM.button(
             {
               className: "player-setup player-setup-add-new" + (canAddPlayers ? "" : " disabled"),
-              onClick: this.makeNewPlayer,
+              onClick: this.makeNewPlayers.bind(this, 1),
               disabled: !canAddPlayers
             },
               "Add new player"

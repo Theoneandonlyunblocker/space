@@ -18,6 +18,19 @@ module Rance
         });
       },
 
+      setPlayerLimits: function(props:
+      {
+        min: number;
+        max: number;
+      })
+      {
+        this.setState(
+        {
+          minPlayers: props.min,
+          maxPlayers: props.max
+        });
+      },
+
 
       startGame: function()
       {
@@ -61,7 +74,7 @@ module Rance
               }),
               UIComponents.MapSetup(
               {
-                
+                setPlayerLimits: this.setPlayerLimits
               })
             ),
             React.DOM.button(

@@ -13,6 +13,9 @@ module Rance
         displayName: "Test Map",
         description: "(not implemented yet) just testing",
 
+        minPlayers: 2,
+        maxPlayers: 5,
+
         //mapGenFunction: spiralGalaxyGeneration,
 
         options:
@@ -36,12 +39,6 @@ module Rance
               min: 0.1,
               max: 0.12,
               step: 0.001
-            },
-            playerAmount:
-            {
-              min: 2,
-              max: 5,
-              step: 1
             }
           },
           basicOptions:

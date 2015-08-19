@@ -10,6 +10,9 @@ module Rance
       displayName: string;
       description?: string;
 
+      minPlayers: number;
+      maxPlayers: number;
+
       options: MapGen.IMapGenOptions;
 
       mapGenFunction?: (options: MapGen.IMapGenOptionValues) => Star[]; // TODO remove ?. shouldnt be optional

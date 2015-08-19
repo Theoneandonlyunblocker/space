@@ -29,12 +29,26 @@ module Rance
         });
       },
 
+      componentDidMount: function()
+      {
+        this.updatePlayerLimits();
+      },
+
+      updatePlayerLimits: function()
+      {
+        this.props.setPlayerLimits(
+        {
+          min: this.state.selectedTemplate.minPlayers,
+          max: this.state.selectedTemplate.maxPlayers
+        });
+      },
+
       setTemplate: function(e)
       {
         this.setState(
         {
           selectedTemplate: Templates.MapGen[e.target.value]
-        });
+        }, this.updatePlayerLimits);
       },
       
       render: function()
@@ -68,6 +82,13 @@ module Rance
               onChange: this.setTemplate
             },
               mapGenTemplateOptions
+            ),
+            React.DOM.div(
+            {
+              className: "map-setup-player-limit"
+            },
+              "Players: " + this.state.selectedTemplate.minPlayers + "-" +
+                this.state.selectedTemplate.maxPlayers
             ),
             React.DOM.div(
             {
