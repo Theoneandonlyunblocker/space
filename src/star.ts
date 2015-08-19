@@ -26,6 +26,8 @@ module Rance
     // can be used during map gen to attach temporary variables for easier debugging
     // nulled and deleted after map gen is done
     mapGenData: any;
+    // set by voronoi library and deleted after mapgen
+    voronoiId: number;
 
     seed: string;
 
@@ -93,6 +95,23 @@ module Rance
     {
       this.mapGenData.region.severLinksToNonCenter();
     }
+    severLinksToNonAdjacent()
+    {
+      var allLinks = this.getAllLinks();
+
+      var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
+
+      for (var i = 0; i < allLinks.length; i++)
+      {
+        var star = allLinks[i];
+
+        if (neighborVoronoiIds.indexOf(star.voronoiCell.id) < 0)
+        {
+          this.removeLink(star);
+        }
+      }
+    }
+
 
     // END TO REMOVE
 

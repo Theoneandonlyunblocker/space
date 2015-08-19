@@ -97,8 +97,7 @@ module Rance
 
       this.triangulate();
 
-      this.severFiller();
-      this.severArmLinks();
+      this.severUnWantedLinks();
       this.partiallyCutConnections(4);
 
       var isConnected = this.isConnected();
@@ -132,6 +131,7 @@ module Rance
       {
         this.points[i].mapGenData = null;
         delete this.points[i].mapGenData;
+        delete this.points[i].voronoiId;
       }
     }
     isConnected()
@@ -382,19 +382,14 @@ module Rance
         }
       }
     }
-    severFiller()
+    severUnWantedLinks()
     {
       for (var i = 0; i < this.points.length; i++)
       {
         var star = this.points[i];
         star.severLinksToFiller();
-      }
-    }
-    severArmLinks()
-    {
-      for (var i = 0; i < this.points.length; i++)
-      {
-        var star = this.points[i];
+        star.severLinksToNonAdjacent();
+
         if (star.mapGenData.distance > 0.6)
         {
           star.severLinksToNonCenter();
@@ -424,7 +419,8 @@ module Rance
       {
         var cell = diagram.cells[i];
         cell.site.voronoiCell = cell;
-        cell.site.voronoiCell.vertices = this.getVerticesFromCell(cell);
+        cell.id = cell.site.voronoiId;
+        cell.vertices = this.getVerticesFromCell(cell);
       }
     }
     cleanTriangles(triangles: MapGen2.Triangle[], superTriangle: MapGen2.Triangle)
