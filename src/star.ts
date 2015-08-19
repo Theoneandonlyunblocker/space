@@ -17,7 +17,6 @@ module Rance
     // TO REMOVE
     sector: Sector;
     region: Region;
-    distanceFromNearestStartLocation: number;
     voronoiId: number;
     distance: number;
     // END TO REMOVE

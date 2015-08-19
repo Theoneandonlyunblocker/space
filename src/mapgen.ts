@@ -176,14 +176,14 @@ module Rance
           var distance = star.getDistanceToStar(startLocation);
 
 
-          if (!isFinite(star.distanceFromNearestStartLocation))
+          if (!isFinite(star.mapGenData.distanceFromNearestStartLocation))
           {
-            star.distanceFromNearestStartLocation = distance;
+            star.mapGenData.distanceFromNearestStartLocation = distance;
           }
           else
           {
-            star.distanceFromNearestStartLocation =
-              Math.min(distance, star.distanceFromNearestStartLocation)
+            star.mapGenData.distanceFromNearestStartLocation =
+              Math.min(distance, star.mapGenData.distanceFromNearestStartLocation)
           }
         }
       }
@@ -212,7 +212,7 @@ module Rance
           star.addBuilding(sectorCommand);
 
           var shipAmount = minShips;
-          var distance = star.distanceFromNearestStartLocation;
+          var distance = star.mapGenData.distanceFromNearestStartLocation;
 
           for (var j = 2; j < distance; j++)
           {
