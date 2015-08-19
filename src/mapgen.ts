@@ -96,6 +96,8 @@ module Rance
       this.relaxPoints(options.relaxation);
 
       this.triangulate();
+
+      this.severFiller();
       this.severArmLinks();
       this.partiallyCutConnections(4);
 
@@ -121,6 +123,11 @@ module Rance
     }
     clearMapGenData()
     {
+      if (Options.debugMode)
+      {
+        console.warn("Skipped cleaning map gen data due to debug mode being enabled");
+        return;
+      }
       for (var i = 0; i < this.points.length; i++)
       {
         this.points[i].mapGenData = null;
@@ -344,7 +351,7 @@ module Rance
 
         for (var j = 0; j < amountForThisCenter; j++)
         {
-          var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax, currentArmIsFiller);
+          var point = makePoint(0, centerThreshhold, centerRegion, armOffsetMax, false);
           points.push(point);
         }
 
@@ -375,13 +382,19 @@ module Rance
         }
       }
     }
-    severArmLinks()
+    severFiller()
     {
       for (var i = 0; i < this.points.length; i++)
       {
         var star = this.points[i];
         star.severLinksToFiller();
-
+      }
+    }
+    severArmLinks()
+    {
+      for (var i = 0; i < this.points.length; i++)
+      {
+        var star = this.points[i];
         if (star.mapGenData.distance > 0.6)
         {
           star.severLinksToNonCenter();

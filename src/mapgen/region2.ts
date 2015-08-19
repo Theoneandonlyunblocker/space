@@ -39,7 +39,7 @@ module Rance
       {
         this.severLinksByQualifier(function(a: Star, b: Star)
         {
-          return b.mapGenData.region.isFiller;
+          return b.isFiller;
         });
       }
       severLinksToRegionsExcept(exemptRegions: Region2[])
