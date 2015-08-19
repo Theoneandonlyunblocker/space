@@ -30,9 +30,6 @@ module Rance
     // can be used during map gen to attach temporary variables for easier debugging
     // nulled and deleted after map gen is done
     mapGenData: any;
-    // {
-    //   [propName: string]: any;
-    // };
 
     seed: string;
 
@@ -92,11 +89,6 @@ module Rance
       this.y = y;
     }
     // TODO REMOVE
-    clearLinks()
-    {
-      this.linksTo = [];
-      this.linksFrom = [];
-    }
     getLinksByRegion()
     {
       var linksByRegion:

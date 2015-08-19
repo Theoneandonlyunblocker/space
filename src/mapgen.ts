@@ -361,18 +361,9 @@ module Rance
 
       this.makeLinks();
     }
-    clearLinks()
-    {
-      for (var i = 0; i < this.points.length; i++)
-      {
-        this.points[i].clearLinks();
-      }
-    }
     makeLinks()
     {
       if (!this.triangles || this.triangles.length < 1) throw new Error();
-
-      this.clearLinks();
 
       for (var i = 0; i < this.triangles.length; i++)
       {
