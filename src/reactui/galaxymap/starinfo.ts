@@ -12,6 +12,22 @@ module Rance
         var star: Star = this.props.selectedStar;
         if (!star) return null;
 
+        var dumpDebugInfoButton = null;
+
+        if (Options.debugMode)
+        {
+          dumpDebugInfoButton = React.DOM.button(
+          {
+            className: "star-info-dump-debug-button",
+            onClick: function(star)
+            {
+              console.log(star);
+              console.log(star.mapGenData)
+            }.bind(null, star)
+          },
+            "Debug"
+          )
+        }
         
         return(
           React.DOM.div(
@@ -30,7 +46,7 @@ module Rance
             },
               star.owner ? star.owner.name : null
             ),
-
+            dumpDebugInfoButton,
             React.DOM.div(
             {
               className: "star-info-location"
