@@ -1,6 +1,7 @@
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
+/// <reference path="maprenderer.ts" />
 /// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
@@ -29,7 +30,7 @@ module Rance
     star: 0,
     unit: 0,
     building: 0,
-    sector: 0,
+    sector: 0, // TODO remove
 
     objective: 0
   }

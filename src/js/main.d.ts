@@ -779,17 +779,12 @@ declare module Rance {
     class Star implements Rance.Point {
         public sector: Rance.Sector;
         public region: Rance.Region;
-        public distanceFromNearestStartLocation: number;
-        public voronoiId: number;
-        public distance: number;
         public id: number;
         public x: number;
         public y: number;
         public linksTo: Star[];
         public linksFrom: Star[];
-        public mapGenData: {
-            [propName: string]: any;
-        };
+        public mapGenData: any;
         public seed: string;
         public name: string;
         public owner: Rance.Player;
@@ -1368,93 +1363,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
-        [starId: number]: {
-            star: Star;
-            edges: any[];
-        };
-    };
-}
-declare module Rance {
-    interface IMapRendererLayer {
-        drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
-        container: PIXI.DisplayObjectContainer;
-        isDirty: boolean;
-    }
-    interface IMapRendererLayerMapMode {
-        name: string;
-        layers: {
-            layer: IMapRendererLayer;
-        }[];
-    }
-    class MapRenderer {
-        public container: PIXI.DisplayObjectContainer;
-        public parent: PIXI.DisplayObjectContainer;
-        public galaxyMap: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public occupationShaders: {
-            [ownerId: string]: {
-                [occupierId: string]: any;
-            };
-        };
-        public layers: {
-            [name: string]: IMapRendererLayer;
-        };
-        public mapModes: {
-            [name: string]: IMapRendererLayerMapMode;
-        };
-        public fowTilingSprite: PIXI.TilingSprite;
-        public fowSpriteCache: {
-            [starId: number]: PIXI.Sprite;
-        };
-        public currentMapMode: IMapRendererLayerMapMode;
-        public isDirty: boolean;
-        public preventRender: boolean;
-        public listeners: {
-            [name: string]: any;
-        };
-        constructor(map: Rance.GalaxyMap);
-        public destroy(): void;
-        public setMap(map: Rance.GalaxyMap): void;
-        public init(): void;
-        public addEventListeners(): void;
-        public setPlayer(player: Rance.Player): void;
-        public updateShaderOffsets(x: number, y: number): void;
-        public updateShaderZoom(zoom: number): void;
-        public makeFowSprite(): void;
-        public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
-        public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
-        public initLayers(): void;
-        public initMapModes(): void;
-        public setParent(newParent: PIXI.DisplayObjectContainer): void;
-        public resetContainer(): void;
-        public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
-        public setLayerAsDirty(layerName: string): void;
-        public setAllLayersAsDirty(): void;
-        public drawLayer(layer: IMapRendererLayer): void;
-        public setMapMode(newMapMode: string): void;
-        public render(): void;
-    }
-}
-declare module Rance {
-    class GalaxyMap {
-        public allPoints: Rance.Star[];
-        public stars: Rance.Star[];
-        public mapGen: Rance.MapGen;
-        public width: number;
-        public height: number;
-        public game: Rance.Game;
-        constructor();
-        public setMapGen(mapGen: Rance.MapGen): void;
-        public getIncomeBounds(): {
-            min: any;
-            max: any;
-        };
-        public serialize(): any;
-    }
-}
-declare module Rance {
     class Game {
         public turnNumber: number;
         public independents: Rance.Player[];
@@ -1468,6 +1376,34 @@ declare module Rance {
         public setNextPlayer(): void;
         public serialize(): any;
         public save(name: string): void;
+    }
+}
+declare module Rance {
+    class MapVoronoiInfo {
+        public treeMap: any;
+        public diagram: any;
+        public nonFillerLines: {
+            [visibility: string]: any[];
+        };
+        constructor();
+        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
+    }
+}
+declare module Rance {
+    class GalaxyMap {
+        public allPoints: Rance.Star[];
+        public stars: Rance.Star[];
+        public width: number;
+        public height: number;
+        public voronoi: Rance.MapVoronoiInfo;
+        public game: Rance.Game;
+        constructor();
+        public setMapGen(mapGen: Rance.MapGen): void;
+        public getIncomeBounds(): {
+            min: any;
+            max: any;
+        };
+        public serialize(): any;
     }
 }
 declare module Rance {
@@ -2194,6 +2130,76 @@ declare module Rance {
     }
 }
 declare module Rance {
+    function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
+        [starId: number]: {
+            star: Star;
+            edges: any[];
+        };
+    };
+}
+declare module Rance {
+    interface IMapRendererLayer {
+        drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
+        container: PIXI.DisplayObjectContainer;
+        isDirty: boolean;
+    }
+    interface IMapRendererLayerMapMode {
+        name: string;
+        layers: {
+            layer: IMapRendererLayer;
+        }[];
+    }
+    class MapRenderer {
+        public container: PIXI.DisplayObjectContainer;
+        public parent: PIXI.DisplayObjectContainer;
+        public galaxyMap: Rance.GalaxyMap;
+        public player: Rance.Player;
+        public game: Rance.Game;
+        public occupationShaders: {
+            [ownerId: string]: {
+                [occupierId: string]: any;
+            };
+        };
+        public layers: {
+            [name: string]: IMapRendererLayer;
+        };
+        public mapModes: {
+            [name: string]: IMapRendererLayerMapMode;
+        };
+        public fowTilingSprite: PIXI.TilingSprite;
+        public fowSpriteCache: {
+            [starId: number]: PIXI.Sprite;
+        };
+        public currentMapMode: IMapRendererLayerMapMode;
+        public isDirty: boolean;
+        public preventRender: boolean;
+        public listeners: {
+            [name: string]: any;
+        };
+        constructor(map: Rance.GalaxyMap);
+        public destroy(): void;
+        public setMap(map: Rance.GalaxyMap): void;
+        public init(): void;
+        public addEventListeners(): void;
+        public setPlayer(player: Rance.Player): void;
+        public updateShaderOffsets(x: number, y: number): void;
+        public updateShaderZoom(zoom: number): void;
+        public makeFowSprite(): void;
+        public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
+        public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
+        public initLayers(): void;
+        public initMapModes(): void;
+        public setParent(newParent: PIXI.DisplayObjectContainer): void;
+        public resetContainer(): void;
+        public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
+        public setLayerAsDirty(layerName: string): void;
+        public setAllLayersAsDirty(): void;
+        public drawLayer(layer: IMapRendererLayer): void;
+        public setMapMode(newMapMode: string): void;
+        public render(): void;
+    }
+}
+declare module Rance {
     module Templates {
         module MapGen {
             var defaultMap: {
@@ -2305,6 +2311,7 @@ declare module Rance {
                 dampeningFactor: number;
             };
         }): any;
+        public clearMapGenData(): void;
         public isConnected(): boolean;
         public setPlayers(): void;
         public setDistanceFromStartLocations(): void;
@@ -2703,17 +2710,9 @@ declare module Rance {
         public buildingsByControllerId: {
             [id: number]: Rance.Building;
         };
-        public regions: {
-            [id: string]: Rance.Region;
-        };
-        public sectors: {
-            [id: number]: Rance.Sector;
-        };
         constructor();
         public deserializeGame(data: any): Rance.Game;
         public deserializeMap(data: any): Rance.GalaxyMap;
-        public deserializeRegion(data: any): Rance.Region;
-        public deserializeSector(data: any): Rance.Sector;
         public deserializePoint(data: any): Rance.Star;
         public deserializeBuildings(data: any): void;
         public deserializeBuilding(data: any): Rance.Building;

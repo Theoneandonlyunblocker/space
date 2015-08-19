@@ -110,6 +110,16 @@ module Rance
 
         var allStars = stars.concat(fillerStars);
 
+        // link stars
+
+        // make sectors
+
+        // set resources
+
+        // set players
+
+        
+
         /*
         // make voronoi
         var voronoi = makeVoronoi(allStars, options.defaultOptions.width,

@@ -7,8 +7,8 @@ module Rance
       type: string;
       displayName: string;
       icon: string;
-      rarity: number; // 0 to 1; random candidate is picked from available resources
-                      // and if Math.random() < rarity, it's chosen. Else pick another
+      rarity: number; // relative probability resource is picked from pool of
+                      // available resources
       distributionGroups: string[]; // sector needs to have any of these flags
                                     // to possibly spawn resource there
       
