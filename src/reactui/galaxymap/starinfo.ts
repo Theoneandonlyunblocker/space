@@ -44,12 +44,6 @@ module Rance
             },
               "Income: " + star.getIncome()
             ),
-            React.DOM.div(
-            {
-              className: "star-info-sector"
-            },
-              "Sector: " + star.sector.id
-            ),
             UIComponents.DefenceBuildingList(
             {
               buildings: star.buildings["defence"]
