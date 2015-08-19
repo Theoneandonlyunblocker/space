@@ -948,31 +948,6 @@ module Rance
           {layer: this.layers["fleets"]}
         ]
       }
-      this.mapModes["sectors"] =
-      {
-        name: "sectors",
-        layers:
-        [
-          {layer: this.layers["sectors"]},
-          {layer: this.layers["nonFillerVoronoiLines"]},
-          {layer: this.layers["starLinks"]},
-          {layer: this.layers["nonFillerStars"]},
-          {layer: this.layers["resources"]},
-          {layer: this.layers["fleets"]}
-        ]
-      }
-      this.mapModes["regions"] =
-      {
-        name: "regions",
-        layers:
-        [
-          {layer: this.layers["regions"]},
-          {layer: this.layers["nonFillerVoronoiLines"]},
-          {layer: this.layers["starLinks"]},
-          {layer: this.layers["nonFillerStars"]},
-          {layer: this.layers["fleets"]}
-        ]
-      }
     }
     setParent(newParent: PIXI.DisplayObjectContainer)
     {
