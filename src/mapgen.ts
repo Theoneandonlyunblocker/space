@@ -390,7 +390,7 @@ module Rance
         var star = this.points[i];
         star.severLinksToFiller();
 
-        if (star.mapGenData.distance > 0.8)
+        if (star.mapGenData.distance > 0.6)
         {
           star.severLinksToNonCenter();
         }
