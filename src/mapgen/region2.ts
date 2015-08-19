@@ -42,7 +42,7 @@ module Rance
           return b.mapGenData.region.isFiller;
         });
       }
-      severLinksToRegionsExcept(exemptRegions: Region[])
+      severLinksToRegionsExcept(exemptRegions: Region2[])
       {
         this.severLinksByQualifier(function(a: Star, b: Star)
         {

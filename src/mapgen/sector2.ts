@@ -41,7 +41,7 @@ module Rance
           var frontier = this.stars[i].getLinkedInRange(1).all;
           for (var j = 0; j < frontier.length; j++)
           {
-            if (frontier[j].sector !== this && !alreadyAdded[frontier[j].id])
+            if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id])
             {
               neighbors.push(frontier[j]);
               alreadyAdded[frontier[j].id] = true;
@@ -59,7 +59,7 @@ module Rance
           [regionId: string]:
           {
             count: number;
-            region: Region;
+            region: Region2;
           };
         } = {};
 
@@ -67,7 +67,7 @@ module Rance
         for (var i = 0; i < this.stars.length; i++)
         {
           var star = this.stars[i];
-          var region = star.region;
+          var region = star.mapGenData.region;
 
           if (!regionsByStars[region.id])
           {
@@ -96,16 +96,6 @@ module Rance
         }
 
         return majorityRegions;
-      }
-
-      serialize()
-      {
-        var data: any = {};
-
-        data.id = this.id;
-        data.color = this.color;
-
-        return data;
       }
     }
   }

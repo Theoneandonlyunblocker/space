@@ -22,11 +22,11 @@ module Rance
     independents: Player;
     regions:
     {
-      [id: string]: Region;
+      [id: string]: MapGen2.Region2;
     } = {};
     sectors:
     {
-      [id: number]: Sector;
+      [id: number]: MapGen2.Sector2;
     };
     triangles: MapGen2.Triangle[] = [];
 
@@ -269,7 +269,7 @@ module Rance
     }
     makeRegion(name: string, isFiller: boolean)
     {
-      this.regions[name] = new Region(name, [], isFiller);
+      this.regions[name] = new MapGen2.Region2(name, isFiller);
       return this.regions[name];
     }
     makeSpiralPoints(props:
@@ -579,7 +579,7 @@ module Rance
 
       return this.nonFillerVoronoiLines[indexString];
     }
-    getFurthestPointInRegion(region: Region): Star
+    getFurthestPointInRegion(region: MapGen2.Region2): Star
     {
       var furthestDistance = 0;
       var furthestStar: Star = null;
@@ -673,8 +673,9 @@ module Rance
 
       var sectorsById:
       {
-        [sectorId: number]: Sector;
+        [sectorId: number]: MapGen2.Sector2;
       } = {};
+      var sectorIdGen = 0;
 
       var sameSectorFN = function(a, b)
       {
@@ -688,7 +689,7 @@ module Rance
 
         if (canFormMinSizeSector)
         {
-          var sector = new Sector();
+          var sector = new MapGen2.Sector2(sectorIdGen++);
           sectorsById[sector.id] = sector;
 
           var discoveryStarIndex = 0;
@@ -731,7 +732,7 @@ module Rance
         {
           [sectorId: number]: boolean;
         } = {};
-        var candidateSectors: Sector[] = [];
+        var candidateSectors: MapGen2.Sector2[] = [];
 
         for (var j = 0; j < neighbors.length; j++)
         {
@@ -793,7 +794,7 @@ module Rance
     setResources()
     {
       // TODO
-      var getResourceDistributionFlags = function(region: Region)
+      var getResourceDistributionFlags = function(region: MapGen2.Region2)
       {
         switch (region.id)
         {

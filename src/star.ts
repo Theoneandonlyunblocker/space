@@ -85,11 +85,11 @@ module Rance
     // TODO REMOVE
     severLinksToFiller()
     {
-      this.mapGenData.region2.severLinksToFiller();
+      this.mapGenData.region.severLinksToFiller();
     }
     severLinksToNonCenter()
     {
-      this.mapGenData.region2.severLinksToNonCenter();
+      this.mapGenData.region.severLinksToNonCenter();
     }
 
     // END TO REMOVE
