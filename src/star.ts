@@ -4,8 +4,6 @@
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
 
 /// <reference path="itemgenerator.ts" />
 
@@ -14,10 +12,6 @@ module Rance
 
   export class Star implements Point
   {
-    // TO REMOVE
-    region: Region;
-    // END TO REMOVE
-    
     id: number;
     x: number;
     y: number;
@@ -858,10 +852,6 @@ module Rance
       data.id = this.id;
       data.x = this.x;
       data.y = this.y;
-
-      // TO REMOVE
-      data.regionId = this.region ? this.region.id : null;
-      // END TO REMOVE
 
       data.baseIncome = this.baseIncome;
 
