@@ -342,7 +342,7 @@ module Rance
           for (var attribute in item.template.attributes)
           {
             attributes[attribute] = clamp(
-              attributes[attribute] + item.templates.attributes[attribute], 0, 9);
+              attributes[attribute] + item.template.attributes[attribute], 0, 9);
           }
         }
       }
