@@ -302,7 +302,7 @@ module Rance
 
         var point = new Star(x, y);
 
-        point.distance = distance;
+        point.mapGenData.distance = distance;
         region.addStar(point);
         point.baseIncome = randInt(2, 10) * 10;
 
@@ -380,7 +380,7 @@ module Rance
         star.severLinksToFiller();
         star.severLinksToNonAdjacent();
 
-        if (star.distance > 0.8)
+        if (star.mapGenData.distance > 0.8)
         {
           star.severLinksToNonCenter();
         }
@@ -467,7 +467,7 @@ module Rance
         var point = cell.site;
         var vertices = this.getVerticesFromCell(cell);
         var centroid = MapGen2.getCentroid(vertices);
-        var timesToDampen = point.distance * dampeningFactor;
+        var timesToDampen = point.mapGenData.distance * dampeningFactor;
 
         for (var j = 0; j < timesToDampen; j++)
         {
@@ -585,10 +585,10 @@ module Rance
 
       for (var i = 0; i < region.stars.length; i++)
       {
-        if (region.stars[i].distance > furthestDistance)
+        if (region.stars[i].mapGenData.distance > furthestDistance)
         {
           furthestStar = region.stars[i];
-          furthestDistance = region.stars[i].distance;
+          furthestDistance = region.stars[i].mapGenData.distance;
         }
       }
 
@@ -618,7 +618,7 @@ module Rance
 
           var totalLinks = neighbors.length + neighborLinks.length;
 
-          var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - point.distance);
+          var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - point.mapGenData.distance);
           var minMultipleCutThreshhold = 0.15;
           while (cutThreshhold > 0)
           {

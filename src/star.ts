@@ -18,7 +18,6 @@ module Rance
     sector: Sector;
     region: Region;
     voronoiId: number;
-    distance: number;
     // END TO REMOVE
     
     id: number;
@@ -952,7 +951,6 @@ module Rance
       data.y = this.y;
 
       // TO REMOVE
-      data.distance = this.distance;
       data.regionId = this.region ? this.region.id : null;
       data.sectorId = this.sector ? this.sector.id : null;
       // END TO REMOVE

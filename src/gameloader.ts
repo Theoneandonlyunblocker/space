@@ -108,7 +108,6 @@ module Rance
     {
       var star = new Star(data.x, data.y, data.id);
       star.name = data.name;
-      star.distance = data.distance;
       star.baseIncome = data.baseIncome;
       star.seed = data.seed;
 
