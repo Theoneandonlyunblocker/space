@@ -89,76 +89,13 @@ module Rance
       this.y = y;
     }
     // TODO REMOVE
-    getLinksByRegion()
-    {
-      var linksByRegion:
-      {
-        [regionId: string]:
-        {
-          links: Star[];
-          region: Region;
-        };
-      } = {};
-
-      var allLinks = this.getAllLinks();
-
-      for (var i = 0; i < allLinks.length; i++)
-      {
-        var star = allLinks[i];
-        var region = star.region;
-
-        if (!linksByRegion[region.id])
-        {
-          linksByRegion[region.id] =
-          {
-            links: [],
-            region: region
-          }
-        }
-
-        linksByRegion[region.id].links.push(star);
-      }
-
-      return linksByRegion;
-    }
-    severLinksToRegion(regionToSever: string)
-    {
-      var linksByRegion = this.getLinksByRegion();
-      var links = linksByRegion[regionToSever].links;
-
-      for (var i = 0; i < links.length; i++)
-      {
-        var star = links[i];
-
-        this.removeLink(star);
-      }
-    }
     severLinksToFiller()
     {
-      var linksByRegion = this.getLinksByRegion();
-      
-      for (var regionId in linksByRegion)
-      {
-        if (linksByRegion[regionId].region.isFiller)
-        {
-          this.severLinksToRegion(regionId);
-        }
-      }
+      this.mapGenData.region2.severLinksToFiller();
     }
     severLinksToNonCenter()
     {
-      var self = this;
-
-      var linksByRegion = this.getLinksByRegion();
-      var nonCenterRegions = Object.keys(linksByRegion).filter(function(regionId)
-      {
-        return regionId !== self.region.id && regionId !== "center";
-      });
-
-      for (var i = 0; i < nonCenterRegions.length; i++)
-      {
-        this.severLinksToRegion(nonCenterRegions[i]);      
-      }
+      this.mapGenData.region2.severLinksToNonCenter();
     }
 
     // END TO REMOVE
