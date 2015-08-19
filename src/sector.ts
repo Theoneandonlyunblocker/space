@@ -22,13 +22,13 @@ module Rance
     }
     addStar(star: Star)
     {
-      if (star.sector)
+      if (star.mapGenData.sector)
       {
         throw new Error("Star already part of a sector");
       }
 
       this.stars.push(star);
-      star.sector = this;
+      star.mapGenData.sector = this;
     }
 
     getNeighboringStars()
@@ -44,7 +44,7 @@ module Rance
         var frontier = this.stars[i].getLinkedInRange(1).all;
         for (var j = 0; j < frontier.length; j++)
         {
-          if (frontier[j].sector !== this && !alreadyAdded[frontier[j].id])
+          if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id])
           {
             neighbors.push(frontier[j]);
             alreadyAdded[frontier[j].id] = true;

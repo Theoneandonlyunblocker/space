@@ -15,7 +15,6 @@ module Rance
   export class Star implements Point
   {
     // TO REMOVE
-    sector: Sector;
     region: Region;
     // END TO REMOVE
     
@@ -93,12 +92,6 @@ module Rance
       this.y = y;
     }
     // TODO REMOVE
-    setResource(resource: Templates.IResourceTemplate)
-    {
-      this.resource = resource;
-      this.sector.resourceType = resource;
-      this.sector.resourceLocation = this;
-    }
     clearLinks()
     {
       this.linksTo = [];
@@ -581,6 +574,10 @@ module Rance
       this.x = x;
       this.y = y;
     }
+    setResource(resource: Templates.IResourceTemplate)
+    {
+      this.resource = resource;
+    }
     hasLink(linkTo: Star)
     {
       return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
@@ -935,7 +932,6 @@ module Rance
 
       // TO REMOVE
       data.regionId = this.region ? this.region.id : null;
-      data.sectorId = this.sector ? this.sector.id : null;
       // END TO REMOVE
 
       data.baseIncome = this.baseIncome;

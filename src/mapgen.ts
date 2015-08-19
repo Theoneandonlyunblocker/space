@@ -687,7 +687,7 @@ module Rance
 
       var sameSectorFN = function(a, b)
       {
-        return a.sector === b.sector;
+        return a.mapGenData.sector === b.mapGenData.sector;
       };
 
       while (averageSectorsAmount > 0 && unassignedStars.length > 0)
@@ -710,7 +710,7 @@ module Rance
             var frontier = discoveryStar.getLinkedInRange(1).all;
             frontier = frontier.filter(function(star)
             {
-              return !star.sector;
+              return !star.mapGenData.sector;
             });
 
             while (sector.stars.length < minSize && frontier.length > 0)
@@ -744,13 +744,13 @@ module Rance
 
         for (var j = 0; j < neighbors.length; j++)
         {
-          if (!neighbors[j].sector) continue;
+          if (!neighbors[j].mapGenData.sector) continue;
           else
           {
-            if (!alreadyAddedNeighborSectors[neighbors[j].sector.id])
+            if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id])
             {
-              alreadyAddedNeighborSectors[neighbors[j].sector.id] = true;
-              candidateSectors.push(neighbors[j].sector);
+              alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
+              candidateSectors.push(neighbors[j].mapGenData.sector);
             }
           }
         }
@@ -774,7 +774,7 @@ module Rance
           var unclaimed = 0;
           for (var k = 0; k < sectorNeighbors.length; k++)
           {
-            if (!sectorNeighbors[k].sector)
+            if (!sectorNeighbors[k].mapGenData.sector)
             {
               unclaimed++;
             }
@@ -893,6 +893,8 @@ module Rance
 
         var star = getRandomArrayItem(sector.stars);
         star.setResource(selectedResource);
+        sector.resourceType = selectedResource;
+        sector.resourceLocation = star;
       }
     }
   }
