@@ -1975,7 +1975,6 @@ declare module Rance {
                 height: Rance.IRange;
                 width: Rance.IRange;
                 starDensity: Rance.IRange;
-                playerAmount: Rance.IRange;
             }
             interface IMapSpecificOptions {
                 [optionName: string]: Rance.IRange;
@@ -2003,6 +2002,8 @@ declare module Rance {
             key: string;
             displayName: string;
             description?: string;
+            minPlayers: number;
+            maxPlayers: number;
             options: Templates.MapGen.IMapGenOptions;
             mapGenFunction?: (options: Templates.MapGen.IMapGenOptionValues) => Rance.Star[];
         }

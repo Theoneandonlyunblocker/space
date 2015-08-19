@@ -535,7 +535,6 @@ module Rance
       if (!this.nonFillerVoronoiLines[indexString] ||
         this.nonFillerVoronoiLines[indexString].length <= 0)
       {
-        console.log("newEdgesIndex")
         this.nonFillerVoronoiLines[indexString] =
           this.voronoiDiagram.edges.filter(function(edge)
         {
@@ -653,8 +652,6 @@ module Rance
           }
         }
       }
-
-      console.log(cuts, noCuts, reverts)
     }
     /*
     while average size sectors left to assign && unassigned stars left

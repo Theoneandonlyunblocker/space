@@ -70,6 +70,8 @@ module Rance
     }
     makeApp()
     {
+      var startTime = new Date().getTime();
+
       Options = extendObject(defaultOptions);
       loadOptions();
 
@@ -90,6 +92,8 @@ module Rance
 
 
       this.reactUI.render();
+
+      console.log("Init in " + (new Date().getTime() - startTime) + " ms");
     }
     destroy()
     {

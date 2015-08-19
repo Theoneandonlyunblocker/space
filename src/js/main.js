@@ -13050,7 +13050,7 @@ var Rance;
                 if (this.items[itemSlot]) {
                     var item = this.items[itemSlot];
                     for (var attribute in item.template.attributes) {
-                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.templates.attributes[attribute], 0, 9);
+                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 0, 9);
                     }
                 }
             }
@@ -14658,7 +14658,7 @@ var Rance;
                 this.setState({ subColor: isNull ? null : color });
             },
             handleRemove: function () {
-                this.props.removePlayer(this.props.key);
+                this.props.removePlayers([this.props.key]);
             },
             handleSetCustomImage: function (image) {
                 this.setState({ flagHasCustomImage: Boolean(image) });
@@ -14762,13 +14762,28 @@ var Rance;
                     activeColorPicker: null
                 });
             },
-            makeNewPlayer: function () {
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.minPlayers > this.state.players.length) {
+                    this.makeNewPlayers(newProps.minPlayers - this.state.players.length);
+                } else if (newProps.maxPlayers < this.state.players.length) {
+                    var overflowCount = this.state.players.length - newProps.maxPlayers;
+                    this.removePlayers(this.state.players.slice(-overflowCount));
+                }
+            },
+            makeNewPlayers: function (amountToMake) {
+                if (typeof amountToMake === "undefined") { amountToMake = 1; }
                 if (this.state.players.length >= this.props.maxPlayers) {
                     return;
                 }
 
+                var newIds = [];
+
+                for (var i = 0; i < amountToMake; i++) {
+                    newIds.push(this.newPlayerId++);
+                }
+
                 this.setState({
-                    players: this.state.players.concat(this.newPlayerId++)
+                    players: this.state.players.concat(newIds)
                 });
             },
             setHumanPlayer: function (playerId) {
@@ -14780,14 +14795,14 @@ var Rance;
 
                 this.setState({ players: newPlayerOrder });
             },
-            removePlayer: function (idToRemove) {
+            removePlayers: function (toRemove) {
                 if (this.state.players.length <= this.props.minPlayers) {
                     return;
                 }
 
                 this.setState({
                     players: this.state.players.filter(function (playerId) {
-                        return playerId !== idToRemove;
+                        return toRemove.indexOf(playerId) === -1;
                     })
                 });
             },
@@ -14819,7 +14834,7 @@ var Rance;
                     playerSetups.push(Rance.UIComponents.PlayerSetup({
                         key: this.state.players[i],
                         ref: this.state.players[i],
-                        removePlayer: this.removePlayer,
+                        removePlayers: this.removePlayers,
                         setActiveColorPicker: this.setActiveColorPicker,
                         initialName: "Player " + this.state.players[i],
                         isHuman: i === 0,
@@ -14845,7 +14860,7 @@ var Rance;
                     className: "player-setup-remove-player"
                 }, "Remove")), playerSetups, React.DOM.button({
                     className: "player-setup player-setup-add-new" + (canAddPlayers ? "" : " disabled"),
-                    onClick: this.makeNewPlayer,
+                    onClick: this.makeNewPlayers.bind(this, 1),
                     disabled: !canAddPlayers
                 }, "Add new player")));
             }
@@ -15034,6 +15049,7 @@ var Rance;
                             var option = this.props.mapGenTemplate.options[groupName][optionName];
 
                             options.push({
+                                key: optionName,
                                 content: Rance.UIComponents.MapGenOption({
                                     key: optionName,
                                     id: optionName,
@@ -15094,10 +15110,19 @@ var Rance;
                     selectedTemplate: mapGenTemplates[0]
                 });
             },
+            componentDidMount: function () {
+                this.updatePlayerLimits();
+            },
+            updatePlayerLimits: function () {
+                this.props.setPlayerLimits({
+                    min: this.state.selectedTemplate.minPlayers,
+                    max: this.state.selectedTemplate.maxPlayers
+                });
+            },
             setTemplate: function (e) {
                 this.setState({
                     selectedTemplate: Rance.Templates.MapGen[e.target.value]
-                });
+                }, this.updatePlayerLimits);
             },
             render: function () {
                 var mapGenTemplateOptions = [];
@@ -15118,6 +15143,8 @@ var Rance;
                     value: this.state.selectedTemplate.key,
                     onChange: this.setTemplate
                 }, mapGenTemplateOptions), React.DOM.div({
+                    className: "map-setup-player-limit"
+                }, "Players: " + this.state.selectedTemplate.minPlayers + "-" + this.state.selectedTemplate.maxPlayers), React.DOM.div({
                     className: "map-setup-description"
                 }, this.state.selectedTemplate.description), Rance.UIComponents.MapGenOptions({
                     mapGenTemplate: this.state.selectedTemplate
@@ -15138,6 +15165,12 @@ var Rance;
                 return ({
                     minPlayers: 1,
                     maxPlayers: 5
+                });
+            },
+            setPlayerLimits: function (props) {
+                this.setState({
+                    minPlayers: props.min,
+                    maxPlayers: props.max
                 });
             },
             startGame: function () {
@@ -15167,7 +15200,9 @@ var Rance;
                     ref: "players",
                     minPlayers: this.state.minPlayers,
                     maxPlayers: this.state.maxPlayers
-                }), Rance.UIComponents.MapSetup({})), React.DOM.button({
+                }), Rance.UIComponents.MapSetup({
+                    setPlayerLimits: this.setPlayerLimits
+                })), React.DOM.button({
                     onClick: this.randomizeAllPlayers
                 }, "Randomize"), React.DOM.button({
                     onClick: this.startGame
@@ -15382,6 +15417,23 @@ var Rance;
                 var elementsToRender = [];
 
                 switch (this.props.sceneToRender) {
+                    case "battle": {
+                        elementsToRender.push(Rance.UIComponents.Battle({
+                            battle: this.props.battle,
+                            humanPlayer: this.props.player,
+                            renderer: this.props.renderer,
+                            key: "battle"
+                        }));
+                        break;
+                    }
+                    case "battlePrep": {
+                        elementsToRender.push(Rance.UIComponents.BattlePrep({
+                            battlePrep: this.props.battlePrep,
+                            renderer: this.props.renderer,
+                            key: "battlePrep"
+                        }));
+                        break;
+                    }
                     case "galaxyMap": {
                         elementsToRender.push(Rance.UIComponents.GalaxyMap({
                             renderer: this.props.renderer,
@@ -16644,6 +16696,8 @@ var Rance;
                 key: "spiralGalaxy",
                 displayName: "Test Map",
                 description: "(not implemented yet) just testing",
+                minPlayers: 2,
+                maxPlayers: 5,
                 //mapGenFunction: spiralGalaxyGeneration,
                 options: {
                     defaultOptions: {
@@ -16661,11 +16715,6 @@ var Rance;
                             min: 0.1,
                             max: 0.12,
                             step: 0.001
-                        },
-                        playerAmount: {
-                            min: 2,
-                            max: 5,
-                            step: 1
                         }
                     },
                     basicOptions: {
@@ -16698,6 +16747,8 @@ var Rance;
                 key: "newTestSmall",
                 displayName: "Small Test Map",
                 description: "(not implemented yet) just testing but small",
+                minPlayers: 2,
+                maxPlayers: 4,
                 options: {
                     defaultOptions: {
                         height: {
@@ -16714,11 +16765,6 @@ var Rance;
                             min: 0.1,
                             max: 0.12,
                             step: 0.001
-                        },
-                        playerAmount: {
-                            min: 2,
-                            max: 4,
-                            step: 1
                         }
                     },
                     basicOptions: {
@@ -17513,7 +17559,6 @@ var Rance;
             }
 
             if (!this.nonFillerVoronoiLines[indexString] || this.nonFillerVoronoiLines[indexString].length <= 0) {
-                console.log("newEdgesIndex");
                 this.nonFillerVoronoiLines[indexString] = this.voronoiDiagram.edges.filter(function (edge) {
                     var adjacentSites = [edge.lSite, edge.rSite];
                     var adjacentFillerSites = 0;
@@ -17613,8 +17658,6 @@ var Rance;
                     }
                 }
             }
-
-            console.log(cuts, noCuts, reverts);
         };
 
         /*
@@ -19886,6 +19929,8 @@ var Rance;
             Rance.setAllDynamicTemplateProperties();
         }
         App.prototype.makeApp = function () {
+            var startTime = new Date().getTime();
+
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
 
@@ -19904,6 +19949,8 @@ var Rance;
             }
 
             this.reactUI.render();
+
+            console.log("Init in " + (new Date().getTime() - startTime) + " ms");
         };
         App.prototype.destroy = function () {
             if (this.mapRenderer) {
