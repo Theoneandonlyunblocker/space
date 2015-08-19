@@ -6,7 +6,7 @@ module Rance
 {
   export module MapGen2
   {
-    export class Sector
+    export class Sector2
     {
       id: number;
       stars: Star[] = [];

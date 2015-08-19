@@ -5,9 +5,9 @@
 
 /// <reference path="mapgen/triangulation.ts" />
 /// <reference path="mapgen/triangle.ts" />
+/// <reference path="mapgen/region2.ts" />
+/// <reference path="mapgen/sector2.ts" />
 /// <reference path="star.ts" />
-/// <reference path="region.ts" />
-/// <reference path="sector.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
 

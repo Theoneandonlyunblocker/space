@@ -2,7 +2,7 @@
 
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/star.ts" />
-/// <reference path="../../src/mapgen/region.ts" />
+/// <reference path="../../src/mapgen/region2.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
