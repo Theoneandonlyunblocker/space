@@ -1,3 +1,4 @@
+/// <reference path="../../src/mapgen/mapgenresult.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
@@ -15,7 +16,7 @@ module Rance
 
       options: MapGen.IMapGenOptions;
 
-      mapGenFunction?: (options: MapGen.IMapGenOptionValues) => Star[]; // TODO remove ?. shouldnt be optional
+      mapGenFunction?: (options: MapGen2.IMapGenOptionValues) => MapGen.MapGenResult; // TODO remove ?
     }
   }
 }
