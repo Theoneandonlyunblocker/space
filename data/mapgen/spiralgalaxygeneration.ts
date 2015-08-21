@@ -139,7 +139,6 @@ module Rance
         // sever links
         for (var i = 0; i < regions.length; i++)
         {
-          region.severLinksToFiller();
           region.severLinksToNonCenter();
 
           for (var j = 0; j < regions[i].stars.length; j++)

@@ -16,8 +16,6 @@ module Rance
     x: number;
     y: number;
 
-    isFiller: boolean; // TODO Remove and use empty points for filler stars
-
     // separated so we can iterate through star[].linksTo to only get each connection once
     // use star.getAllLinks() for individual star connections
     linksTo: Star[] = [];
@@ -25,7 +23,7 @@ module Rance
 
     // can be used during map gen to attach temporary variables for easier debugging
     // nulled and deleted after map gen is done
-    mapGenData: any;
+    mapGenData: any = {};
     // set by voronoi library and deleted after mapgen
     voronoiId: number;
 
@@ -87,14 +85,6 @@ module Rance
       this.y = y;
     }
     // TODO REMOVE
-    severLinksToFiller()
-    {
-      this.mapGenData.region.severLinksToFiller();
-    }
-    severLinksToNonCenter()
-    {
-      this.mapGenData.region.severLinksToNonCenter();
-    }
     severLinksToNonAdjacent()
     {
       var allLinks = this.getAllLinks();
@@ -111,8 +101,6 @@ module Rance
         }
       }
     }
-
-
     // END TO REMOVE
 
     // BUILDINGS

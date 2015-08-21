@@ -35,13 +35,6 @@ module Rance
           }
         }
       }
-      severLinksToFiller()
-      {
-        this.severLinksByQualifier(function(a: Star, b: Star)
-        {
-          return b.isFiller;
-        });
-      }
       severLinksToRegionsExcept(exemptRegions: Region2[])
       {
         this.severLinksByQualifier(function(a: Star, b: Star)

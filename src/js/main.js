@@ -7065,6 +7065,9 @@ var Rance;
             // use star.getAllLinks() for individual star connections
             this.linksTo = [];
             this.linksFrom = [];
+            // can be used during map gen to attach temporary variables for easier debugging
+            // nulled and deleted after map gen is done
+            this.mapGenData = {};
             this.fleets = {};
             this.buildings = {};
             this.indexedNeighborsInRange = {};
@@ -7082,12 +7085,6 @@ var Rance;
             this.y = y;
         }
         // TODO REMOVE
-        Star.prototype.severLinksToFiller = function () {
-            this.mapGenData.region.severLinksToFiller();
-        };
-        Star.prototype.severLinksToNonCenter = function () {
-            this.mapGenData.region.severLinksToNonCenter();
-        };
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
 
@@ -10096,7 +10093,7 @@ var Rance;
                         }
                         ;
 
-                        if (site.isFiller) {
+                        if (!isFinite(site.id)) {
                             adjacentFillerSites++;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
                                 return false;
@@ -10115,8 +10112,249 @@ var Rance;
     })();
     Rance.MapVoronoiInfo = MapVoronoiInfo;
 })(Rance || (Rance = {}));
+/// <reference path="../point.ts"/>
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        var Triangle = (function () {
+            function Triangle(a, b, c) {
+                this.a = a;
+                this.b = b;
+                this.c = c;
+            }
+            Triangle.prototype.getPoints = function () {
+                return [this.a, this.b, this.c];
+            };
+            Triangle.prototype.getCircumCenter = function () {
+                if (!this.circumRadius) {
+                    this.calculateCircumCircle();
+                }
+
+                return [this.circumCenterX, this.circumCenterY];
+            };
+            Triangle.prototype.calculateCircumCircle = function (tolerance) {
+                if (typeof tolerance === "undefined") { tolerance = 0.00001; }
+                var pA = this.a;
+                var pB = this.b;
+                var pC = this.c;
+
+                var m1, m2;
+                var mx1, mx2;
+                var my1, my2;
+                var cX, cY;
+
+                if (Math.abs(pB.y - pA.y) < tolerance) {
+                    m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                    mx2 = (pB.x + pC.x) * 0.5;
+                    my2 = (pB.y + pC.y) * 0.5;
+
+                    cX = (pB.x + pA.x) * 0.5;
+                    cY = m2 * (cX - mx2) + my2;
+                } else {
+                    m1 = -(pB.x - pA.x) / (pB.y - pA.y);
+                    mx1 = (pA.x + pB.x) * 0.5;
+                    my1 = (pA.y + pB.y) * 0.5;
+
+                    if (Math.abs(pC.y - pB.y) < tolerance) {
+                        cX = (pC.x + pB.x) * 0.5;
+                        cY = m1 * (cX - mx1) + my1;
+                    } else {
+                        m2 = -(pC.x - pB.x) / (pC.y - pB.y);
+                        mx2 = (pB.x + pC.x) * 0.5;
+                        my2 = (pB.y + pC.y) * 0.5;
+
+                        cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+                        cY = m1 * (cX - mx1) + my1;
+                    }
+                }
+
+                this.circumCenterX = cX;
+                this.circumCenterY = cY;
+
+                mx1 = pB.x - cX;
+                my1 = pB.y - cY;
+                this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
+            };
+            Triangle.prototype.circumCircleContainsPoint = function (point) {
+                this.calculateCircumCircle();
+                var x = point.x - this.circumCenterX;
+                var y = point.y - this.circumCenterY;
+
+                var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
+
+                return (contains);
+            };
+            Triangle.prototype.getEdges = function () {
+                var edges = [
+                    [this.a, this.b],
+                    [this.b, this.c],
+                    [this.c, this.a]
+                ];
+
+                return edges;
+            };
+            Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
+                var ownPoints = this.getPoints();
+                var otherPoints = toCheckAgainst.getPoints();
+                var shared = 0;
+
+                for (var i = 0; i < ownPoints.length; i++) {
+                    if (otherPoints.indexOf(ownPoints[i]) >= 0) {
+                        shared++;
+                    }
+                }
+
+                return shared;
+            };
+            return Triangle;
+        })();
+        MapGen2.Triangle = Triangle;
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
+/// <reference path="triangle.ts" />
+/// <reference path="../point.ts" />
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        function triangulate(vertices) {
+            var triangles = [];
+
+            var superTriangle = makeSuperTriangle(vertices);
+            triangles.push(superTriangle);
+
+            for (var i = 0; i < vertices.length; i++) {
+                var vertex = vertices[i];
+                var edgeBuffer = [];
+
+                for (var j = 0; j < triangles.length; j++) {
+                    var triangle = triangles[j];
+
+                    if (triangle.circumCircleContainsPoint(vertex)) {
+                        var edges = triangle.getEdges();
+                        edgeBuffer = edgeBuffer.concat(edges);
+                        triangles.splice(j, 1);
+                        j--;
+                    }
+                }
+                if (i >= vertices.length)
+                    continue;
+
+                for (var j = edgeBuffer.length - 2; j >= 0; j--) {
+                    for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
+                        if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
+                            edgeBuffer.splice(k, 1);
+                            edgeBuffer.splice(j, 1);
+                            k--;
+                            continue;
+                        }
+                    }
+                }
+                for (var j = 0; j < edgeBuffer.length; j++) {
+                    var newTriangle = new Rance.MapGen2.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
+
+                    triangles.push(newTriangle);
+                }
+            }
+
+            for (var i = triangles.length - 1; i >= 0; i--) {
+                if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
+                    triangles.splice(i, 1);
+                }
+            }
+
+            return triangles;
+        }
+        MapGen2.triangulate = triangulate;
+
+        function getCentroid(vertices) {
+            var signedArea = 0;
+            var x = 0;
+            var y = 0;
+            var x0;
+            var y0;
+            var x1;
+            var y1;
+            var a;
+
+            var i = 0;
+
+            for (i = 0; i < vertices.length - 1; i++) {
+                x0 = vertices[i].x;
+                y0 = vertices[i].y;
+                x1 = vertices[i + 1].x;
+                y1 = vertices[i + 1].y;
+                a = x0 * y1 - x1 * y0;
+                signedArea += a;
+                x += (x0 + x1) * a;
+                y += (y0 + y1) * a;
+            }
+
+            x0 = vertices[i].x;
+            y0 = vertices[i].y;
+            x1 = vertices[0].x;
+            y1 = vertices[0].y;
+            a = x0 * y1 - x1 * y0;
+            signedArea += a;
+            x += (x0 + x1) * a;
+            y += (y0 + y1) * a;
+
+            signedArea *= 0.5;
+            x /= (6.0 * signedArea);
+            y /= (6.0 * signedArea);
+
+            return ({
+                x: x,
+                y: y
+            });
+        }
+        MapGen2.getCentroid = getCentroid;
+
+        function makeSuperTriangle(vertices, highestCoordinateValue) {
+            var max;
+
+            if (highestCoordinateValue) {
+                max = highestCoordinateValue;
+            } else {
+                max = vertices[0].x;
+
+                for (var i = 0; i < vertices.length; i++) {
+                    if (vertices[i].x > max) {
+                        max = vertices[i].x;
+                    }
+                    if (vertices[i].y > max) {
+                        max = vertices[i].y;
+                    }
+                }
+            }
+
+            var triangle = new Rance.MapGen2.Triangle({
+                x: 3 * max,
+                y: 0
+            }, {
+                x: 0,
+                y: 3 * max
+            }, {
+                x: -3 * max,
+                y: -3 * max
+            });
+
+            return (triangle);
+        }
+
+        function pointsEqual(p1, p2) {
+            return (p1.x === p2.x && p1.y === p2.y);
+        }
+
+        function edgesEqual(e1, e2) {
+            return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
+        }
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../point.ts" />
+/// <reference path="triangulation.ts" />
 var Rance;
 (function (Rance) {
     (function (MapGen2) {
@@ -10152,7 +10390,7 @@ var Rance;
             for (var i = 0; i < diagram.cells.length; i++) {
                 var cell = diagram.cells[i];
                 var point = cell.site;
-                var centroid = getCentroid(cell.vertices);
+                var centroid = Rance.MapGen2.getCentroid(cell.vertices);
                 if (dampeningFunction) {
                     var dampeningValue = dampeningFunction(point);
 
@@ -10179,6 +10417,7 @@ var Rance;
     })(Rance.MapGen2 || (Rance.MapGen2 = {}));
     var MapGen2 = Rance.MapGen2;
 })(Rance || (Rance = {}));
+/// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../mapvoronoiinfo.ts" />
 /// <reference path="../galaxymap.ts" />
 /// <reference path="../star.ts" />
@@ -15007,10 +15246,532 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../star.ts" />
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        var Region2 = (function () {
+            function Region2(id, isFiller) {
+                this.stars = [];
+                this.id = id;
+                this.isFiller = isFiller;
+            }
+            Region2.prototype.addStar = function (star) {
+                this.stars.push(star);
+                star.mapGenData.region = this;
+            };
+            Region2.prototype.severLinksByQualifier = function (qualifierFN) {
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    var links = star.getAllLinks();
+                    for (var j = 0; j < links.length; j++) {
+                        if (qualifierFN(star, links[j])) {
+                            star.removeLink(links[j]);
+                        }
+                    }
+                }
+            };
+            Region2.prototype.severLinksToRegionsExcept = function (exemptRegions) {
+                this.severLinksByQualifier(function (a, b) {
+                    return exemptRegions.indexOf(b.mapGenData.region) !== -1;
+                });
+            };
+
+            // TODO REMOVE
+            Region2.prototype.severLinksToNonCenter = function () {
+                this.severLinksByQualifier(function (a, b) {
+                    return (a.mapGenData.region !== b.mapGenData.region && b.mapGenData.region.id.indexOf("center") < 0);
+                });
+            };
+            return Region2;
+        })();
+        MapGen2.Region2 = Region2;
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
+/// <reference path="../../data/templates/resourcetemplates.ts" />
+/// <reference path="../star.ts" />
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        var Sector2 = (function () {
+            function Sector2(id) {
+                this.stars = [];
+                this.id = id;
+            }
+            Sector2.prototype.addStar = function (star) {
+                if (star.mapGenData.sector) {
+                    throw new Error("Star already part of a sector");
+                }
+
+                this.stars.push(star);
+                star.mapGenData.sector = this;
+            };
+
+            Sector2.prototype.getNeighboringStars = function () {
+                var neighbors = [];
+                var alreadyAdded = {};
+
+                for (var i = 0; i < this.stars.length; i++) {
+                    var frontier = this.stars[i].getLinkedInRange(1).all;
+                    for (var j = 0; j < frontier.length; j++) {
+                        if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id]) {
+                            neighbors.push(frontier[j]);
+                            alreadyAdded[frontier[j].id] = true;
+                        }
+                    }
+                }
+
+                return neighbors;
+            };
+
+            Sector2.prototype.getMajorityRegions = function () {
+                var regionsByStars = {};
+
+                var biggestRegionStarCount = 0;
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    var region = star.mapGenData.region;
+
+                    if (!regionsByStars[region.id]) {
+                        regionsByStars[region.id] = {
+                            count: 0,
+                            region: region
+                        };
+                    }
+
+                    regionsByStars[region.id].count++;
+
+                    if (regionsByStars[region.id].count > biggestRegionStarCount) {
+                        biggestRegionStarCount = regionsByStars[region.id].count;
+                    }
+                }
+
+                var majorityRegions = [];
+                for (var regionId in regionsByStars) {
+                    if (regionsByStars[regionId].count >= biggestRegionStarCount) {
+                        majorityRegions.push(regionsByStars[regionId].region);
+                    }
+                }
+
+                return majorityRegions;
+            };
+            return Sector2;
+        })();
+        MapGen2.Sector2 = Sector2;
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
+/// <reference path="../star.ts" />
+/// <reference path="sector2.ts" />
+/// <reference path="triangulation.ts" />
+var Rance;
+(function (Rance) {
+    (function (MapGen2) {
+        function linkAllStars(stars) {
+            if (stars.length < 3) {
+                if (stars.length === 2) {
+                    stars[0].addLink(stars[1]);
+                }
+
+                return;
+            }
+
+            var triangles = Rance.MapGen2.triangulate(stars);
+
+            for (var i = 0; i < triangles.length; i++) {
+                var edges = triangles[i].getEdges();
+                for (var j = 0; j < edges.length; j++) {
+                    edges[j][0].addLink(edges[j][1]);
+                }
+            }
+        }
+        MapGen2.linkAllStars = linkAllStars;
+        function partiallyCutLinks(stars, minConnections) {
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                var neighbors = star.getAllLinks();
+
+                if (neighbors.length < minConnections)
+                    continue;
+
+                for (var j = 0; j < neighbors.length; j++) {
+                    var neighbor = neighbors[j];
+                    var neighborLinks = neighbor.getAllLinks();
+
+                    //if (neighborLinks.length < minConnections) continue;
+                    var totalLinks = neighbors.length + neighborLinks.length;
+
+                    var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
+                    var minMultipleCutThreshhold = 0.15;
+                    while (cutThreshhold > 0) {
+                        if (Math.random() < cutThreshhold) {
+                            star.removeLink(neighbor);
+
+                            var path = Rance.aStar(star, neighbor);
+
+                            if (!path) {
+                                star.addLink(neighbor);
+                            }
+                        }
+
+                        cutThreshhold -= minMultipleCutThreshhold;
+                    }
+                }
+            }
+        }
+        MapGen2.partiallyCutLinks = partiallyCutLinks;
+        function makeSectors(stars, minSize, maxSize) {
+            var totalStars = stars.length;
+            var unassignedStars = stars.slice(0);
+            var leftoverStars = [];
+
+            var averageSize = (minSize + maxSize) / 2;
+            var averageSectorsAmount = Math.round(totalStars / averageSize);
+
+            var sectorsById = {};
+            var sectorIdGen = 0;
+
+            var sameSectorFN = function (a, b) {
+                return a.mapGenData.sector === b.mapGenData.sector;
+            };
+
+            while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
+                var seedStar = unassignedStars.pop();
+                var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+
+                if (canFormMinSizeSector) {
+                    var sector = new Rance.MapGen2.Sector2(sectorIdGen++);
+                    sectorsById[sector.id] = sector;
+
+                    var discoveryStarIndex = 0;
+                    sector.addStar(seedStar);
+
+                    while (sector.stars.length < minSize) {
+                        var discoveryStar = sector.stars[discoveryStarIndex];
+
+                        var frontier = discoveryStar.getLinkedInRange(1).all;
+                        frontier = frontier.filter(function (star) {
+                            return !star.mapGenData.sector;
+                        });
+
+                        while (sector.stars.length < minSize && frontier.length > 0) {
+                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
+                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+                            unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
+
+                            sector.addStar(toAdd);
+                        }
+
+                        discoveryStarIndex++;
+                    }
+                } else {
+                    leftoverStars.push(seedStar);
+                }
+            }
+
+            while (leftoverStars.length > 0) {
+                var star = leftoverStars.pop();
+
+                var neighbors = star.getLinkedInRange(1).all;
+                var alreadyAddedNeighborSectors = {};
+                var candidateSectors = [];
+
+                for (var j = 0; j < neighbors.length; j++) {
+                    if (!neighbors[j].mapGenData.sector)
+                        continue;
+                    else {
+                        if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id]) {
+                            alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
+                            candidateSectors.push(neighbors[j].mapGenData.sector);
+                        }
+                    }
+                }
+
+                // all neighboring stars don't have sectors
+                // put star at back of queue and try again later
+                if (candidateSectors.length < 1) {
+                    leftoverStars.unshift(star);
+                    continue;
+                }
+
+                var unclaimedNeighborsPerSector = {};
+
+                for (var j = 0; j < candidateSectors.length; j++) {
+                    var sectorNeighbors = candidateSectors[j].getNeighboringStars();
+                    var unclaimed = 0;
+                    for (var k = 0; k < sectorNeighbors.length; k++) {
+                        if (!sectorNeighbors[k].mapGenData.sector) {
+                            unclaimed++;
+                        }
+                    }
+
+                    unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
+                }
+
+                candidateSectors.sort(function (a, b) {
+                    var sizeSort = a.stars.length - b.stars.length;
+                    if (sizeSort)
+                        return sizeSort;
+
+                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] - unclaimedNeighborsPerSector[a.id];
+                    return unclaimedSort;
+                });
+
+                candidateSectors[0].addStar(star);
+            }
+
+            return sectorsById;
+        }
+        MapGen2.makeSectors = makeSectors;
+    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
+    var MapGen2 = Rance.MapGen2;
+})(Rance || (Rance = {}));
 /// <reference path="../../src/range.ts" />
+/// <reference path="../../src/utility.ts" />
+/// <reference path="../../src/point.ts" />
+/// <reference path="../../src/player.ts" />
+/// <reference path="../../src/star.ts" />
+/// <reference path="../../src/mapgen/region2.ts" />
+/// <reference path="../../src/mapgen/mapgenutils.ts" />
+/// <reference path="../../src/mapgen/mapgenresult.ts" />
+/// <reference path="mapgenoptions.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            function spiralGalaxyGeneration(options, players, independents) {
+                // generate points
+                // in closure because tons of temporary variables we dont really care about
+                var sg = (function setStarGenerationProps(options) {
+                    var totalSize = options.defaultOptions.width * options.defaultOptions.height;
+                    var totalStars = totalSize * options.defaultOptions.starDensity / 1000;
+
+                    var actualArms = options.basicOptions["arms"];
+                    var totalArms = actualArms * 2;
+
+                    var percentageInCenter = 0.3;
+                    var percentageInArms = 1 - percentageInCenter;
+                    var amountPerArm = totalStars / actualArms * percentageInArms;
+                    var amountInCenter = totalStars * percentageInCenter;
+
+                    return ({
+                        totalStars: totalStars,
+                        totalArms: totalArms,
+                        amountPerArm: Math.round(amountPerArm),
+                        amountPerFillerArm: Math.round(amountPerArm / 2),
+                        amountPerCenter: Math.round(amountInCenter / totalArms),
+                        centerSize: 0.4,
+                        armDistance: Math.PI * 2 / totalArms,
+                        armOffsetMax: 0.5,
+                        armRotationFactor: actualArms / 3,
+                        galaxyRotation: Rance.randRange(0, Math.PI * 2)
+                    });
+                })(options);
+
+                function makeStar(distanceMin, distanceMax, arm, maxOffset) {
+                    var distance = Rance.randRange(distanceMin, distanceMax);
+                    var offset = Math.random() * maxOffset - maxOffset / 2;
+                    offset *= (1 / distance);
+
+                    if (offset < 0)
+                        offset = Math.pow(offset, 2) * -1;
+                    else
+                        offset = Math.pow(offset, 2);
+
+                    var armRotation = distance * sg.armRotationFactor;
+                    var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotation;
+
+                    var width = options.defaultOptions.width / 2;
+                    var height = options.defaultOptions.height / 2;
+
+                    var x = Math.cos(angle) * distance * width + width;
+                    var y = Math.sin(angle) * distance * height + height;
+
+                    var star = new Rance.Star(x, y);
+
+                    star.mapGenData.distance = distance;
+
+                    return star;
+                }
+
+                var stars = [];
+                var fillerPoints = [];
+                var regions = [];
+
+                var centerRegion = new Rance.MapGen2.Region2("center", false);
+                regions.push(centerRegion);
+
+                for (var i = 0; i < sg.totalArms; i++) {
+                    var isFiller = i % 2 !== 0;
+                    var regionName = isFiller ? "filler_" + i : "arm_" + i;
+                    var region = new Rance.MapGen2.Region2(regionName, isFiller);
+                    regions.push(region);
+
+                    var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
+                    var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
+
+                    for (var j = 0; j < amountForThisArm; j++) {
+                        var star = makeStar(sg.centerSize, 1, i, maxOffsetForThisArm);
+
+                        region.addStar(star);
+
+                        if (isFiller) {
+                            fillerPoints.push(star);
+                        } else {
+                            stars.push(star);
+                        }
+                    }
+
+                    for (var j = 0; j < sg.amountPerCenter; j++) {
+                        var star = makeStar(0, sg.centerSize, i, maxOffsetForThisArm);
+
+                        centerRegion.addStar(star);
+                        stars.push(star);
+                    }
+                }
+
+                var allPoints = fillerPoints.concat(stars);
+
+                // make voronoi
+                var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+
+                // relax voronoi
+                Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
+                    return star.mapGenData.distance;
+                });
+
+                // recalculate after relaxing;
+                voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+
+                // link stars
+                Rance.MapGen2.linkAllStars(stars);
+
+                for (var i = 0; i < regions.length; i++) {
+                    region.severLinksToNonCenter();
+
+                    for (var j = 0; j < regions[i].stars.length; j++) {
+                        regions[i].stars[j].severLinksToNonAdjacent();
+                    }
+                }
+
+                Rance.MapGen2.partiallyCutLinks(stars, 4);
+
+                // make sectors
+                // set resources
+                // set players
+                return new Rance.MapGen2.MapGenResult({
+                    stars: stars,
+                    fillerPoints: fillerPoints,
+                    width: options.defaultOptions.width,
+                    height: options.defaultOptions.height
+                });
+            }
+            MapGen.spiralGalaxyGeneration = spiralGalaxyGeneration;
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
 /// <reference path="../../src/mapgen/mapgenresult.ts" />
 /// <reference path="../../src/player.ts" />
 /// <reference path="mapgenoptions.ts" />
+/// <reference path="spiralgalaxygeneration.ts" />
+/// <reference path="mapgentemplate.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            MapGen.spiralGalaxy = {
+                key: "spiralGalaxy",
+                displayName: "Test Map",
+                description: "(not implemented yet) just testing",
+                minPlayers: 2,
+                maxPlayers: 5,
+                //mapGenFunction: spiralGalaxyGeneration,
+                options: {
+                    defaultOptions: {
+                        height: {
+                            min: 400,
+                            max: 800,
+                            step: 1
+                        },
+                        width: {
+                            min: 400,
+                            max: 800,
+                            step: 1
+                        },
+                        starDensity: {
+                            min: 0.1,
+                            max: 0.12,
+                            step: 0.001
+                        }
+                    },
+                    basicOptions: {
+                        arms: {
+                            min: 3,
+                            max: 5,
+                            step: 1
+                        }
+                    },
+                    advancedOptions: {
+                        funnyNumber: {
+                            min: 69,
+                            max: 420,
+                            step: 351
+                        }
+                    }
+                }
+            };
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+/// <reference path="mapgentemplate.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (MapGen) {
+            MapGen.newTestSmall = {
+                key: "newTestSmall",
+                displayName: "Small Test Map",
+                description: "(not implemented yet) just testing but small",
+                minPlayers: 2,
+                maxPlayers: 4,
+                options: {
+                    defaultOptions: {
+                        height: {
+                            min: 200,
+                            max: 400,
+                            step: 1
+                        },
+                        width: {
+                            min: 200,
+                            max: 400,
+                            step: 1
+                        },
+                        starDensity: {
+                            min: 0.1,
+                            max: 0.12,
+                            step: 0.001
+                        }
+                    },
+                    basicOptions: {
+                        tinyness: {
+                            min: 69,
+                            max: 420,
+                            step: 1
+                        }
+                    }
+                }
+            };
+        })(Templates.MapGen || (Templates.MapGen = {}));
+        var MapGen = Templates.MapGen;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
@@ -15230,6 +15991,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../../../data/mapgen/builtinmaps.ts" />
 /// <reference path="../../../data/mapgen/mapgentemplate.ts" />
 /// <reference path="mapgenoptions.ts" />
 var Rance;
@@ -18518,7 +19280,7 @@ var Rance;
                 }
             }
 
-            var mapGenResult = new MapGen.MapGenResult({
+            var mapGenResult = new Rance.MapGen2.MapGenResult({
                 stars: stars,
                 fillerPoints: data.fillerPoints.slice(0),
                 width: data.width,
@@ -18841,6 +19603,7 @@ var Rance;
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
+/// <reference path="../data/mapgen/builtinmaps.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
 var Rance;
