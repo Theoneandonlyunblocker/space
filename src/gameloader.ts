@@ -1,5 +1,4 @@
 /// <reference path="game.ts"/>
-/// <reference path="mapgen.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
 
@@ -70,10 +69,6 @@ module Rance
     }
     deserializeMap(data)
     {
-      var mapGen = new MapGen();
-      mapGen.maxWidth = data.maxWidth;
-      mapGen.maxHeight = data.maxHeight;
-
       var stars: Star[] = [];
 
       for (var i = 0; i < data.stars.length; i++)
@@ -96,11 +91,15 @@ module Rance
         }
       }
 
-
-      mapGen.points = data.fillerPoints.concat(stars);
-      mapGen.makeVoronoi();
-
-      var galaxyMap = mapGen.makeMapGenResult().makeMap();
+      var mapGenResult = new MapGen.MapGenResult(
+      {
+        stars: stars,
+        fillerPoints: data.fillerPoints.slice(0),
+        width: data.width,
+        height: data.height
+      });
+      
+      var galaxyMap = mapGenResult.makeMap();
 
       return galaxyMap;
     }

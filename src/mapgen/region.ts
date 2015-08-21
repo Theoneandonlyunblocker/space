@@ -2,9 +2,9 @@
 
 module Rance
 {
-  export module MapGen2
+  export module MapGen
   {
-    export class Region2
+    export class Region
     {
       id: string;
       isFiller: boolean;
@@ -42,7 +42,7 @@ module Rance
           return b.isFiller;
         });
       }
-      severLinksToRegionsExcept(exemptRegions: Region2[])
+      severLinksToRegionsExcept(exemptRegions: Region[])
       {
         this.severLinksByQualifier(function(a: Star, b: Star)
         {

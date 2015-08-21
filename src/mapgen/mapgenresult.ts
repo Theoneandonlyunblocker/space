@@ -7,7 +7,7 @@
 
 module Rance
 {
-  export module MapGen2
+  export module MapGen
   {
     export class MapGenResult
     {
@@ -25,8 +25,6 @@ module Rance
 
         width: number;
         height: number;
-
-        voronoiInfo?: MapVoronoiInfo;
       })
       {
         this.stars = props.stars;
@@ -34,8 +32,6 @@ module Rance
 
         this.width = props.width;
         this.height = props.height;
-
-        this.voronoiInfo = props.voronoiInfo;
       }
 
       getAllPoints(): Point[]
@@ -60,7 +56,7 @@ module Rance
       makeVoronoiInfo(): MapVoronoiInfo
       {
         var voronoiInfo = new MapVoronoiInfo();
-        voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
+        voronoiInfo.diagram = MapGen.makeVoronoi(this.getAllPoints(), this.width, this.height);
         voronoiInfo.treeMap = this.makeVoronoiTreeMap();
 
         return voronoiInfo;

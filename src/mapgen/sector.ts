@@ -4,9 +4,9 @@
 
 module Rance
 {
-  export module MapGen2
+  export module MapGen
   {
-    export class Sector2
+    export class Sector
     {
       id: number;
       stars: Star[] = [];
@@ -59,7 +59,7 @@ module Rance
           [regionId: string]:
           {
             count: number;
-            region: Region2;
+            region: Region;
           };
         } = {};
 

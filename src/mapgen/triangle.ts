@@ -2,7 +2,7 @@
 
 module Rance
 {
-  export module MapGen2
+  export module MapGen
   {
     export class Triangle
     {
