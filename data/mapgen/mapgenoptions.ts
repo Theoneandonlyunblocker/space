@@ -30,7 +30,6 @@ module Rance
           height: number;
           width: number;
           starDensity: number;
-          playerAmount: number;
         };
         basicOptions?:
         {
