@@ -91,7 +91,7 @@ module Rance
         }
       }
 
-      var mapGenResult = new MapGen.MapGenResult(
+      var mapGenResult = new MapGen2.MapGenResult(
       {
         stars: stars,
         fillerPoints: data.fillerPoints.slice(0),

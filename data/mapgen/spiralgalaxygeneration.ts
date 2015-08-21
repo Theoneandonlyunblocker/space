@@ -15,7 +15,7 @@ module Rance
     export module MapGen
     {
       export function spiralGalaxyGeneration(options: IMapGenOptionValues,
-        players: Player[], independents: Player[]): MapGen.MapGenResult
+        players: Player[], independents: Player[]): MapGen2.MapGenResult
       {
         // generate points
         
@@ -156,7 +156,7 @@ module Rance
 
         // set players
 
-        return new MapGen.MapGenResult(
+        return new MapGen2.MapGenResult(
         {
           stars: stars,
           fillerPoints: fillerPoints,
