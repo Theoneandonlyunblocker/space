@@ -17,10 +17,8 @@
 /// <reference path="../data/options.ts"/>
 
 
-
 module Rance
 {
-
   export var idGenerators =
   {
     fleet: 0,
