@@ -15671,7 +15671,7 @@ var Rance;
 
                 for (var i = 0; i < 2; i++) {
                     Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
-                        return 0.5 + (1 - star.mapGenData.distance) / 2;
+                        return 0.25 + 0.75 * star.mapGenData.distance;
                     });
 
                     voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
@@ -16453,7 +16453,22 @@ var Rance;
                     ref: "sceneSelector",
                     value: this.props.sceneToRender,
                     onChange: this.changeScene
-                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game"))));
+                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), !Rance.Options.debugMode ? null : React.DOM.button({
+                    className: "debug",
+                    onClick: function () {
+                        app.destroy();
+
+                        app.initUI();
+
+                        app.game = app.makeGame();
+                        app.initGame();
+
+                        app.initDisplay();
+                        app.hookUI();
+
+                        app.reactUI.switchScene("galaxyMap");
+                    }
+                }, "Reset app")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));

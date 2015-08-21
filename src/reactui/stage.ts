@@ -115,6 +115,26 @@ module Rance
               React.DOM.option({value: "flagMaker"}, "make flags"),
               React.DOM.option({value: "battleScene"}, "battle scene"),
               React.DOM.option({value: "setupGame"}, "setup game")
+            ),
+            !Options.debugMode ? null : React.DOM.button(
+            {
+              className: "debug",
+              onClick: function()
+              {
+                app.destroy();
+
+                app.initUI();
+
+                app.game = app.makeGame();
+                app.initGame();
+
+                app.initDisplay();
+                app.hookUI();
+
+                app.reactUI.switchScene("galaxyMap");
+              }
+            },
+              "Reset app"
             )
           )
         );

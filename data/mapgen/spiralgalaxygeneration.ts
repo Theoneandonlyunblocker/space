@@ -132,7 +132,7 @@ module Rance
         {
           MapGen2.relaxVoronoi(voronoi, function(star: Star)
           {
-            return 0.5 + (1 - star.mapGenData.distance) / 2;
+            return 0.25 + 0.75 * star.mapGenData.distance;
           });
 
           voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,

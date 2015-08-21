@@ -131,7 +131,6 @@ module Rance
 
       this.destroy();
 
-
       this.initUI();
 
       this.game = new GameLoader().deserializeGame(parsed.gameData);
