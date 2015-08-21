@@ -77,7 +77,7 @@ module Rance
         }
 
         var stars: Star[] = [];
-        var fillerStars: Star[] = [];
+        var fillerPoints: Point[] = [];
         var regions: MapGen2.Region2[] = [];
 
         var centerRegion = new MapGen2.Region2("center", false);
@@ -101,7 +101,7 @@ module Rance
 
             if (isFiller)
             {
-              fillerStars.push(star);
+              fillerPoints.push(star);
             }
             else
             {
@@ -118,10 +118,10 @@ module Rance
           }
         }
 
-        var allStars = stars.concat(fillerStars);
+        var allPoints: Point[] = fillerPoints.concat(stars);
 
         // make voronoi
-        var voronoi = MapGen2.makeVoronoi(allStars, options.defaultOptions.width,
+        var voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,
           options.defaultOptions.height);
 
         // relax voronoi
@@ -130,7 +130,7 @@ module Rance
           return star.mapGenData.distance;
         });
         // recalculate after relaxing;
-        voronoi = MapGen2.makeVoronoi(allStars, options.defaultOptions.width,
+        voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,
           options.defaultOptions.height);
 
         // link stars
