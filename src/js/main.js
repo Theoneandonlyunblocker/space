@@ -10198,8 +10198,7 @@ var Rance;
                 this.voronoiInfo = props.voronoiInfo;
             }
             MapGenResult.prototype.getAllPoints = function () {
-                var points = this.fillerPoints.concat(this.stars);
-                return points;
+                return this.fillerPoints.concat(this.stars);
             };
 
             MapGenResult.prototype.makeMap = function () {
@@ -10367,9 +10366,6 @@ var Rance;
 
             this.voronoi = mapGen.voronoiInfo;
         }
-        GalaxyMap.prototype.getAllPoints = function () {
-            return this.fillerPoints.concat(this.stars);
-        };
         GalaxyMap.prototype.getIncomeBounds = function () {
             var min, max;
 
@@ -10394,9 +10390,11 @@ var Rance;
         GalaxyMap.prototype.serialize = function () {
             var data = {};
 
-            data.allPoints = this.getAllPoints().map(function (star) {
+            data.stars = this.stars.map(function (star) {
                 return star.serialize();
             });
+
+            data.fillerPoints = this.fillerPoints;
 
             data.maxWidth = this.width / 2;
             data.maxHeight = this.height / 2;
@@ -13145,7 +13143,7 @@ var Rance;
             this.battleStats.moveDelay += amount;
         };
 
-        // redundant for now
+        // redundant until stealth mechanics are added
         Unit.prototype.isTargetable = function () {
             return this.currentHealth > 0;
         };
@@ -17594,6 +17592,7 @@ var Rance;
 /// <reference path="mapgen/triangle.ts" />
 /// <reference path="mapgen/region2.ts" />
 /// <reference path="mapgen/sector2.ts" />
+/// <reference path="point.ts" />
 /// <reference path="star.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
@@ -17601,6 +17600,8 @@ var Rance;
 (function (Rance) {
     var MapGen = (function () {
         function MapGen() {
+            this.stars = [];
+            this.fillerPoints = [];
             this.points = [];
             this.regions = {};
             this.triangles = [];
@@ -17612,13 +17613,11 @@ var Rance;
             };
         }
         MapGen.prototype.reset = function () {
-            this.points = [];
+            this.stars = [];
+            this.fillerPoints = [];
             this.regions = {};
             this.triangles = [];
             this.voronoiDiagram = null;
-
-            this.nonFillerPoints = [];
-            this.nonFillerVoronoiLines = {};
         };
         MapGen.prototype.makeMap = function (options) {
             this.reset();
@@ -17651,8 +17650,6 @@ var Rance;
 
             this.setupPirates();
 
-            this.clearMapGenData();
-
             return this;
         };
         MapGen.prototype.makeMapGenResult = function () {
@@ -17662,17 +17659,6 @@ var Rance;
                 stars: this.getNonFillerPoints(),
                 fillerPoints: this.getFillerPoints()
             });
-        };
-        MapGen.prototype.clearMapGenData = function () {
-            if (Rance.Options.debugMode) {
-                console.warn("Skipped cleaning map gen data due to debug mode being enabled");
-                return;
-            }
-            for (var i = 0; i < this.points.length; i++) {
-                this.points[i].mapGenData = null;
-                delete this.points[i].mapGenData;
-                delete this.points[i].voronoiId;
-            }
         };
         MapGen.prototype.isConnected = function () {
             var initialPoint = this.getNonFillerPoints()[0];
@@ -17980,76 +17966,7 @@ var Rance;
             return fillerPoints;
         };
         MapGen.prototype.getNonFillerPoints = function () {
-            if (!this.points)
-                return [];
-            if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0) {
-                this.nonFillerPoints = this.points.filter(function (point) {
-                    return !point.isFiller;
-                });
-            }
-
-            return this.nonFillerPoints;
-        };
-        MapGen.prototype.getNonFillerVoronoiLines = function (visibleStars) {
-            if (!this.voronoiDiagram)
-                return [];
-
-            var indexString = "";
-            if (!visibleStars)
-                indexString = "all";
-            else {
-                var ids = visibleStars.map(function (star) {
-                    return star.id;
-                });
-                ids = ids.sort();
-
-                indexString = ids.join();
-            }
-
-            if (!this.nonFillerVoronoiLines[indexString] || this.nonFillerVoronoiLines[indexString].length <= 0) {
-                this.nonFillerVoronoiLines[indexString] = this.voronoiDiagram.edges.filter(function (edge) {
-                    var adjacentSites = [edge.lSite, edge.rSite];
-                    var adjacentFillerSites = 0;
-                    var maxAllowedFillerSites = 2;
-
-                    for (var i = 0; i < adjacentSites.length; i++) {
-                        var site = adjacentSites[i];
-
-                        if (!site) {
-                            // draw all border edges
-                            //return true;
-                            // draw all non filler border edges
-                            maxAllowedFillerSites--;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
-                            }
-                            continue;
-                        }
-                        ;
-
-                        if (visibleStars && visibleStars.indexOf(site) < 0) {
-                            maxAllowedFillerSites--;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
-                            }
-                            continue;
-                        }
-                        ;
-
-                        if (site.isFiller) {
-                            adjacentFillerSites++;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
-                            }
-                        }
-                        ;
-                    }
-
-                    return true;
-                });
-            }
-
-            return this.nonFillerVoronoiLines[indexString];
+            return this.stars;
         };
         MapGen.prototype.getFurthestPointInRegion = function (region) {
             var furthestDistance = 0;
@@ -19973,7 +19890,7 @@ var Rance;
             this.players = [];
             this.independents = [];
             this.playersById = {};
-            this.pointsById = {};
+            this.starsById = {};
             this.unitsById = {};
             this.buildingsByControllerId = {};
         }
@@ -20008,33 +19925,34 @@ var Rance;
             var mapGen = new Rance.MapGen();
             mapGen.maxWidth = data.maxWidth;
             mapGen.maxHeight = data.maxHeight;
-            var allPoints = [];
 
-            for (var i = 0; i < data.allPoints.length; i++) {
-                var point = this.deserializePoint(data.allPoints[i]);
-                allPoints.push(point);
-                this.pointsById[point.id] = point;
+            var stars = [];
+
+            for (var i = 0; i < data.stars.length; i++) {
+                var star = this.deserializeStar(data.stars[i]);
+                stars.push(star);
+                this.starsById[star.id] = star;
             }
 
-            for (var i = 0; i < data.allPoints.length; i++) {
-                var dataPoint = data.allPoints[i];
-                var realPoint = this.pointsById[dataPoint.id];
+            for (var i = 0; i < data.stars.length; i++) {
+                var dataStar = data.stars[i];
+                var realStar = this.starsById[dataStar.id];
 
-                for (var j = 0; j < dataPoint.linksToIds.length; j++) {
-                    var linkId = dataPoint.linksToIds[j];
-                    var linkPoint = this.pointsById[linkId];
-                    realPoint.addLink(linkPoint);
+                for (var j = 0; j < dataStar.linksToIds.length; j++) {
+                    var linkId = dataStar.linksToIds[j];
+                    var linkStar = this.starsById[linkId];
+                    realStar.addLink(linkStar);
                 }
             }
 
-            mapGen.points = allPoints;
+            mapGen.points = data.fillerPoints.concat(stars);
             mapGen.makeVoronoi();
 
             var galaxyMap = mapGen.makeMapGenResult().makeMap();
 
             return galaxyMap;
         };
-        GameLoader.prototype.deserializePoint = function (data) {
+        GameLoader.prototype.deserializeStar = function (data) {
             var star = new Rance.Star(data.x, data.y, data.id);
             star.name = data.name;
             star.baseIncome = data.baseIncome;
@@ -20047,9 +19965,9 @@ var Rance;
             return star;
         };
         GameLoader.prototype.deserializeBuildings = function (data) {
-            for (var i = 0; i < data.allPoints.length; i++) {
-                var starData = data.allPoints[i];
-                var star = this.pointsById[starData.id];
+            for (var i = 0; i < data.stars.length; i++) {
+                var starData = data.stars[i];
+                var star = this.starsById[starData.id];
 
                 for (var category in starData.buildings) {
                     for (var j = 0; j < starData.buildings[category].length; j++) {
@@ -20065,7 +19983,7 @@ var Rance;
             var template = Rance.Templates.Buildings[data.templateType];
             var building = new Rance.Building({
                 template: template,
-                location: this.pointsById[data.locationId],
+                location: this.starsById[data.locationId],
                 controller: this.playersById[data.controllerId],
                 upgradeLevel: data.upgradeLevel,
                 totalCost: data.totalCost,
@@ -20113,7 +20031,7 @@ var Rance;
             }
 
             for (var i = 0; i < data.controlledLocationIds.length; i++) {
-                player.addStar(this.pointsById[data.controlledLocationIds[i]]);
+                player.addStar(this.starsById[data.controlledLocationIds[i]]);
             }
 
             for (var i = 0; i < data.items.length; i++) {
@@ -20122,7 +20040,7 @@ var Rance;
 
             for (var i = 0; i < data.revealedStarIds.length; i++) {
                 var id = data.revealedStarIds[i];
-                player.revealedStars[id] = this.pointsById[id];
+                player.revealedStars[id] = this.starsById[id];
             }
 
             return player;
@@ -20199,7 +20117,7 @@ var Rance;
                 ships.push(ship);
             }
 
-            return new Rance.Fleet(player, ships, this.pointsById[data.locationId], data.id);
+            return new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id);
         };
         GameLoader.prototype.deserializeShip = function (data) {
             var template = Rance.Templates.ShipTypes[data.templateType];

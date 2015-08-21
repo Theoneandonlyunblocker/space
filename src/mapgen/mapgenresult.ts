@@ -12,7 +12,7 @@ module Rance
     export class MapGenResult
     {
       stars: Star[];
-      fillerPoints: Star[]; // TODO change filler points to Star
+      fillerPoints: Point[];
       width: number;
       height: number;
 
@@ -21,7 +21,7 @@ module Rance
       constructor(props:
       {
         stars: Star[];
-        fillerPoints: Star[];
+        fillerPoints: Point[];
 
         width: number;
         height: number;
@@ -38,10 +38,9 @@ module Rance
         this.voronoiInfo = props.voronoiInfo;
       }
 
-      getAllPoints(): Star[]
+      getAllPoints(): Point[]
       {
-        var points = this.fillerPoints.concat(this.stars);
-        return points;
+        return this.fillerPoints.concat(this.stars);
       }
 
       makeMap(): GalaxyMap

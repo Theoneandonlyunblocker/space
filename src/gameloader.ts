@@ -15,7 +15,7 @@ module Rance
     {
       [id: number]: Player;
     } = {};
-    pointsById:
+    starsById:
     {
       [id: number]: Star;
     } = {};
@@ -73,37 +73,38 @@ module Rance
       var mapGen = new MapGen();
       mapGen.maxWidth = data.maxWidth;
       mapGen.maxHeight = data.maxHeight;
-      var allPoints = [];
 
-      for (var i = 0; i < data.allPoints.length; i++)
+      var stars: Star[] = [];
+
+      for (var i = 0; i < data.stars.length; i++)
       {
-        var point = this.deserializePoint(data.allPoints[i]);
-        allPoints.push(point);
-        this.pointsById[point.id] = point;
+        var star = this.deserializeStar(data.stars[i]);
+        stars.push(star);
+        this.starsById[star.id] = star;
       }
 
-      for (var i = 0; i < data.allPoints.length; i++)
+      for (var i = 0; i < data.stars.length; i++)
       {
-        var dataPoint = data.allPoints[i];
-        var realPoint = this.pointsById[dataPoint.id];
+        var dataStar = data.stars[i];
+        var realStar = this.starsById[dataStar.id];
 
-        for (var j = 0; j < dataPoint.linksToIds.length; j++)
+        for (var j = 0; j < dataStar.linksToIds.length; j++)
         {
-          var linkId = dataPoint.linksToIds[j];
-          var linkPoint = this.pointsById[linkId]
-          realPoint.addLink(linkPoint);
+          var linkId = dataStar.linksToIds[j];
+          var linkStar = this.starsById[linkId]
+          realStar.addLink(linkStar);
         }
       }
 
 
-      mapGen.points = allPoints;
+      mapGen.points = data.fillerPoints.concat(stars);
       mapGen.makeVoronoi();
 
       var galaxyMap = mapGen.makeMapGenResult().makeMap();
 
       return galaxyMap;
     }
-    deserializePoint(data)
+    deserializeStar(data)
     {
       var star = new Star(data.x, data.y, data.id);
       star.name = data.name;
@@ -119,10 +120,10 @@ module Rance
     }
     deserializeBuildings(data)
     {
-      for (var i = 0; i < data.allPoints.length; i++)
+      for (var i = 0; i < data.stars.length; i++)
       {
-        var starData = data.allPoints[i];
-        var star = this.pointsById[starData.id];
+        var starData = data.stars[i];
+        var star = this.starsById[starData.id];
 
         for (var category in starData.buildings)
         {
@@ -144,7 +145,7 @@ module Rance
       var building = new Building(
       {
         template: template,
-        location: this.pointsById[data.locationId],
+        location: this.starsById[data.locationId],
         controller: this.playersById[data.controllerId],
 
         upgradeLevel: data.upgradeLevel,
@@ -206,7 +207,7 @@ module Rance
       // stars
       for (var i = 0; i < data.controlledLocationIds.length; i++)
       {
-        player.addStar(this.pointsById[data.controlledLocationIds[i]]);
+        player.addStar(this.starsById[data.controlledLocationIds[i]]);
       }
 
       for (var i = 0; i < data.items.length; i++)
@@ -217,7 +218,7 @@ module Rance
       for (var i = 0; i < data.revealedStarIds.length; i++)
       {
         var id = data.revealedStarIds[i];
-        player.revealedStars[id] = this.pointsById[id];
+        player.revealedStars[id] = this.starsById[id];
       }
 
       return player;
@@ -315,7 +316,7 @@ module Rance
         ships.push(ship);
       }
 
-      return new Fleet(player, ships, this.pointsById[data.locationId], data.id);
+      return new Fleet(player, ships, this.starsById[data.locationId], data.id);
     }
     deserializeShip(data)
     {

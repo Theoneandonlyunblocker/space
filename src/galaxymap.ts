@@ -12,7 +12,7 @@ module Rance
   export class GalaxyMap
   {
     stars: Star[];
-    fillerPoints: Star[]; // TODO change filler points to Point
+    fillerPoints: Point[];
     width: number;
     height: number;
 
@@ -30,10 +30,6 @@ module Rance
       this.fillerPoints = mapGen.fillerPoints;
 
       this.voronoi = mapGen.voronoiInfo;
-    }
-    getAllPoints(): Star[]
-    {
-      return this.fillerPoints.concat(this.stars);
     }
     getIncomeBounds()
     {
@@ -61,10 +57,12 @@ module Rance
     {
       var data: any = {};
 
-      data.allPoints = this.getAllPoints().map(function(star)
+      data.stars = this.stars.map(function(star)
       {
         return star.serialize();
       });
+
+      data.fillerPoints = this.fillerPoints;
 
       data.maxWidth = this.width / 2;
       data.maxHeight = this.height / 2;

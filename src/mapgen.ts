@@ -7,6 +7,7 @@
 /// <reference path="mapgen/triangle.ts" />
 /// <reference path="mapgen/region2.ts" />
 /// <reference path="mapgen/sector2.ts" />
+/// <reference path="point.ts" />
 /// <reference path="star.ts" />
 /// <reference path="utility.ts" />
 /// <reference path="pathfinding.ts"/>
@@ -17,7 +18,10 @@ module Rance
   {
     maxWidth: number;
     maxHeight: number;
+    stars: Star[] = [];
+    fillerPoints: Point[] = [];
     points: Star[] = [];
+
     players: Player[];
     independents: Player;
     regions:
@@ -32,8 +36,6 @@ module Rance
 
     voronoiDiagram: any;
     voronoiTreeMap: any;
-
-    nonFillerPoints: Star[];
 
     galaxyConstructors:
     {
@@ -51,12 +53,11 @@ module Rance
     }
     reset()
     {
-      this.points = [];
+      this.stars = [];
+      this.fillerPoints = [];
       this.regions = {};
       this.triangles = [];
       this.voronoiDiagram = null;
-
-      this.nonFillerPoints = [];
     }
     makeMap(options:
     {
@@ -111,8 +112,6 @@ module Rance
 
       this.setupPirates();
 
-      this.clearMapGenData();
-
       return this;
     }
     makeMapGenResult()
@@ -124,20 +123,6 @@ module Rance
         stars: this.getNonFillerPoints(),
         fillerPoints: this.getFillerPoints()
       });
-    }
-    clearMapGenData()
-    {
-      if (Options.debugMode)
-      {
-        console.warn("Skipped cleaning map gen data due to debug mode being enabled");
-        return;
-      }
-      for (var i = 0; i < this.points.length; i++)
-      {
-        this.points[i].mapGenData = null;
-        delete this.points[i].mapGenData;
-        delete this.points[i].voronoiId;
-      }
     }
     isConnected()
     {
@@ -507,19 +492,7 @@ module Rance
 
       return fillerPoints;
     }
-    getNonFillerPoints()
-    {
-      if (!this.points) return [];
-      if (!this.nonFillerPoints || this.nonFillerPoints.length <= 0)
-      {
-        this.nonFillerPoints = this.points.filter(function(point)
-        {
-          return !point.isFiller;
-        });
-      }
-
-      return this.nonFillerPoints;
-    }
+    
     getFurthestPointInRegion(region: MapGen2.Region2): Star
     {
       var furthestDistance = 0;
