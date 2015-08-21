@@ -1,5 +1,6 @@
 /// <reference path="../star.ts" />
 
+/// <reference path="sector2.ts" />
 /// <reference path="triangulation.ts" />
 
 module Rance

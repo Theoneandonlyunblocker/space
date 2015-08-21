@@ -13,6 +13,8 @@
 
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
 
+/// <reference path="../data/mapgen/builtinmaps.ts"/>
+
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
 

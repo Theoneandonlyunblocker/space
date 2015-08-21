@@ -1,3 +1,5 @@
+/// <reference path="../../lib/quadtree.d.ts" />
+
 /// <reference path="../mapvoronoiinfo.ts" />
 /// <reference path="../galaxymap.ts" />
 /// <reference path="../star.ts" />

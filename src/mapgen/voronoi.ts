@@ -1,6 +1,7 @@
 /// <reference path="../../lib/voronoi.d.ts" />
 
 /// <reference path="../point.ts" />
+/// <reference path="triangulation.ts" />
 
 module Rance
 {
