@@ -1,6 +1,7 @@
 /// <reference path="../../src/utility.ts" />
 
 /// <reference path="../../src/point.ts" />
+/// <reference path="../../src/player.ts" />
 /// <reference path="../../src/star.ts" />
 /// <reference path="../../src/mapgen/region2.ts" />
 /// <reference path="../../src/mapgen/mapgenutils.ts" />
@@ -12,7 +13,8 @@ module Rance
   {
     export module MapGen
     {
-      export function spiralGalaxyGeneration(options: IMapGenOptionValues): Star[]
+      export function spiralGalaxyGeneration(options: IMapGenOptionValues,
+        players: Player[], independents: Player[]): MapGen.MapGenResult
       {
         // generate points
         
