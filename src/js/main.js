@@ -12307,6 +12307,9 @@ var Rance;
             Rance.eventManager.dispatchEvent("renderMap");
         };
         Player.prototype.getVisibleStars = function () {
+            if (!this.isAI && Rance.Options.debugMode) {
+                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
 
@@ -12325,6 +12328,9 @@ var Rance;
             return visible;
         };
         Player.prototype.getRevealedStars = function () {
+            if (!this.isAI && Rance.Options.debugMode) {
+                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
 

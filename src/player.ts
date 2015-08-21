@@ -361,6 +361,10 @@ module Rance
     }
     getVisibleStars(): Star[]
     {
+      if (!this.isAI && Options.debugMode)
+      {
+        return this.controlledLocations[0].getLinkedInRange(9999).all;
+      }
       if (this.visionIsDirty) this.updateVisibleStars();
 
       var visible: Star[] = [];
@@ -382,6 +386,10 @@ module Rance
     }
     getRevealedStars(): Star[]
     {
+      if (!this.isAI && Options.debugMode)
+      {
+        return this.controlledLocations[0].getLinkedInRange(9999).all;
+      }
       if (this.visionIsDirty) this.updateVisibleStars();
 
       var toReturn: Star[] = [];
