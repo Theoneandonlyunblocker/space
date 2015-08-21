@@ -95,7 +95,7 @@ module Rance
       {
         var star = allLinks[i];
 
-        if (neighborVoronoiIds.indexOf(star.voronoiCell.id) < 0)
+        if (neighborVoronoiIds.indexOf(star.voronoiId) === -1)
         {
           this.removeLink(star);
         }
