@@ -72,6 +72,22 @@ module Rance
     }
     export function makeSectors(stars: Star[], minSize: number, maxSize: number)
     {
+      /*
+      while average size sectors left to assign && unassigned stars left
+        pick random unassigned star
+        if star cannot form island bigger than minsize
+          put from unassigned into leftovers & continue
+        else
+          add random neighbors into sector until minsize is met
+
+
+      while leftovers
+        pick random leftover
+        if leftover has no assigned neighbor pick, continue
+
+        leftover gets assigned to smallest neighboring sector
+        if sizes equal, assign to sector with least neighboring leftovers
+       */
       var totalStars = stars.length;
       var unassignedStars: Star[] = stars.slice(0);
       var leftoverStars: Star[] = [];
