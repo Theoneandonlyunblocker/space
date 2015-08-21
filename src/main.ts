@@ -194,7 +194,7 @@ module Rance
       return(
       {
         players: players,
-        independents: pirates
+        independents: [pirates]
       });
     }
     makeMap(playerData)
@@ -203,9 +203,9 @@ module Rance
       {
         defaultOptions:
         {
-          height: 600,
-          width: 600,
-          starDensity: 0.11
+          height: 1200,
+          width: 1200,
+          starCount: 40
         },
         basicOptions:
         {

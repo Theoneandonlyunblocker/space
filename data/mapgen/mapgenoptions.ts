@@ -16,7 +16,7 @@ module Rance
       {
         height: IRange; // pixels
         width: IRange; // pixels
-        starDensity: IRange; // stars per 1000 pixels
+        starCount: IRange;
       }
       export interface IMapSpecificOptions
       {
@@ -29,7 +29,7 @@ module Rance
         {
           height: number;
           width: number;
-          starDensity: number;
+          starCount: number;
         };
         basicOptions?:
         {

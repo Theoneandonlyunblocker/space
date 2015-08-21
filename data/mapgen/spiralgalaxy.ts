@@ -24,21 +24,21 @@ module Rance
           {
             height:
             {
-              min: 400,
-              max: 800,
+              min: 800,
+              max: 1600,
               step: 1
             },
             width:
             {
-              min: 400,
-              max: 800,
+              min: 800,
+              max: 1600,
               step: 1
             },
-            starDensity:
+            starCount:
             {
-              min: 0.1,
-              max: 0.12,
-              step: 0.001
+              min: 30,
+              max: 50,
+              step: 1
             }
           },
           basicOptions:
