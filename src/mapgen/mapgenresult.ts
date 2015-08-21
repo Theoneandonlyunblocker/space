@@ -25,8 +25,6 @@ module Rance
 
         width: number;
         height: number;
-
-        voronoiInfo?: MapVoronoiInfo;
       })
       {
         this.stars = props.stars;
@@ -34,8 +32,6 @@ module Rance
 
         this.width = props.width;
         this.height = props.height;
-
-        this.voronoiInfo = props.voronoiInfo;
       }
 
       getAllPoints(): Point[]
