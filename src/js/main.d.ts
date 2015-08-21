@@ -2054,6 +2054,7 @@ declare module Rance {
         function makeSectors(stars: Rance.Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector2;
         };
+        function setupPirates(stars: Rance.Star[], player: Rance.Player, intensity: number): void;
     }
 }
 declare module Rance {
@@ -2067,7 +2068,7 @@ declare module Rance {
             interface IDefaultOptions {
                 height: Rance.IRange;
                 width: Rance.IRange;
-                starDensity: Rance.IRange;
+                starCount: Rance.IRange;
             }
             interface IMapSpecificOptions {
                 [optionName: string]: Rance.IRange;
@@ -2076,7 +2077,7 @@ declare module Rance {
                 defaultOptions: {
                     height: number;
                     width: number;
-                    starDensity: number;
+                    starCount: number;
                 };
                 basicOptions?: {
                     [optionName: string]: number;
@@ -2711,7 +2712,7 @@ declare module Rance {
         public makeGame(playerData?: any): Rance.Game;
         public makePlayers(): {
             players: any[];
-            independents: Rance.Player;
+            independents: Rance.Player[];
         };
         public makeMap(playerData: any): Rance.GalaxyMap;
         public initGame(): void;

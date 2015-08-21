@@ -23,8 +23,8 @@ module Rance
         var sg = (function setStarGenerationProps(options: IMapGenOptionValues)
         {
           var totalSize = options.defaultOptions.width * options.defaultOptions.height;
-          var totalStars = totalSize * options.defaultOptions.starDensity / 1000;
-
+          var totalStars = options.defaultOptions.starCount;
+          
           var actualArms = options.basicOptions["arms"];
           var totalArms = actualArms * 2 // includes filler arms
 
@@ -128,13 +128,16 @@ module Rance
           options.defaultOptions.height);
 
         // relax voronoi
-        MapGen2.relaxVoronoi(voronoi, function(star: Star)
+        for (var i = 0; i < 2; i++)
         {
-          return star.mapGenData.distance;
-        });
-        // recalculate after relaxing;
-        voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,
-          options.defaultOptions.height);
+          MapGen2.relaxVoronoi(voronoi, function(star: Star)
+          {
+            return 0.5 + (1 - star.mapGenData.distance) / 2;
+          });
+
+          voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,
+            options.defaultOptions.height);
+        }
 
         // link stars
         MapGen2.linkAllStars(stars);
@@ -142,7 +145,14 @@ module Rance
         // sever links
         for (var i = 0; i < regions.length; i++)
         {
-          region.severLinksToNonCenter();
+          regions[i].severLinksByQualifier(function(a, b)
+          {
+            return(
+              a.mapGenData.region !== b.mapGenData.region &&
+              a.mapGenData.region !== regions[0] &&
+              b.mapGenData.region !== regions[0]
+            );
+          });
 
           for (var j = 0; j < regions[i].stars.length; j++)
           {
@@ -209,7 +219,7 @@ module Rance
           player.addStar(star);
         }
 
-        debugger;
+        MapGen2.setupPirates(stars, independents[0], 1);
 
         return new MapGen2.MapGenResult(
         {

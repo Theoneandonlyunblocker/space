@@ -7093,7 +7093,7 @@ var Rance;
             for (var i = 0; i < allLinks.length; i++) {
                 var star = allLinks[i];
 
-                if (neighborVoronoiIds.indexOf(star.voronoiCell.id) < 0) {
+                if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
                     this.removeLink(star);
                 }
             }
@@ -7175,8 +7175,6 @@ var Rance;
             var newOwner = this.buildings["defence"][0].controller;
 
             newOwner.addStar(this);
-
-            this.owner = newOwner;
 
             Rance.eventManager.dispatchEvent("renderMap");
         };
@@ -12184,6 +12182,7 @@ var Rance;
             if (this.hasStar(star))
                 return false;
 
+            star.owner = this;
             this.controlledLocations.push(star);
             this.visionIsDirty = true;
         };
@@ -12193,6 +12192,7 @@ var Rance;
             if (index < 0)
                 return false;
 
+            star.owner = null;
             this.controlledLocations.splice(index, 1);
             this.visionIsDirty = true;
         };
@@ -15541,6 +15541,19 @@ var Rance;
             return sectorsById;
         }
         MapGen2.makeSectors = makeSectors;
+        function setupPirates(stars, player, intensity) {
+            var minShips = 2;
+            var maxShips = 8;
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+
+                if (!star.owner) {
+                    player.addStar(star);
+                }
+            }
+        }
+        MapGen2.setupPirates = setupPirates;
     })(Rance.MapGen2 || (Rance.MapGen2 = {}));
     var MapGen2 = Rance.MapGen2;
 })(Rance || (Rance = {}));
@@ -15562,7 +15575,7 @@ var Rance;
                 // in closure because tons of temporary variables we dont really care about
                 var sg = (function setStarGenerationProps(options) {
                     var totalSize = options.defaultOptions.width * options.defaultOptions.height;
-                    var totalStars = totalSize * options.defaultOptions.starDensity / 1000;
+                    var totalStars = options.defaultOptions.starCount;
 
                     var actualArms = options.basicOptions["arms"];
                     var totalArms = actualArms * 2;
@@ -15656,19 +15669,21 @@ var Rance;
                 // make voronoi
                 var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
 
-                // relax voronoi
-                Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
-                    return star.mapGenData.distance;
-                });
+                for (var i = 0; i < 2; i++) {
+                    Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
+                        return 0.5 + (1 - star.mapGenData.distance) / 2;
+                    });
 
-                // recalculate after relaxing;
-                voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+                    voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+                }
 
                 // link stars
                 Rance.MapGen2.linkAllStars(stars);
 
                 for (var i = 0; i < regions.length; i++) {
-                    region.severLinksToNonCenter();
+                    regions[i].severLinksByQualifier(function (a, b) {
+                        return (a.mapGenData.region !== b.mapGenData.region && a.mapGenData.region !== regions[0] && b.mapGenData.region !== regions[0]);
+                    });
 
                     for (var j = 0; j < regions[i].stars.length; j++) {
                         regions[i].stars[j].severLinksToNonAdjacent();
@@ -15718,7 +15733,14 @@ var Rance;
                     return startPositions;
                 })(startRegions);
 
-                debugger;
+                for (var i = 0; i < players.length; i++) {
+                    var star = startPositions[i];
+                    var player = players[i];
+
+                    player.addStar(star);
+                }
+
+                Rance.MapGen2.setupPirates(stars, independents[0], 1);
 
                 return new Rance.MapGen2.MapGenResult({
                     stars: stars,
@@ -15752,19 +15774,19 @@ var Rance;
                 options: {
                     defaultOptions: {
                         height: {
-                            min: 400,
-                            max: 800,
+                            min: 800,
+                            max: 1600,
                             step: 1
                         },
                         width: {
-                            min: 400,
-                            max: 800,
+                            min: 800,
+                            max: 1600,
                             step: 1
                         },
-                        starDensity: {
-                            min: 0.1,
-                            max: 0.12,
-                            step: 0.001
+                        starCount: {
+                            min: 30,
+                            max: 50,
+                            step: 1
                         }
                     },
                     basicOptions: {
@@ -15802,19 +15824,19 @@ var Rance;
                 options: {
                     defaultOptions: {
                         height: {
-                            min: 200,
-                            max: 400,
+                            min: 400,
+                            max: 800,
                             step: 1
                         },
                         width: {
-                            min: 200,
-                            max: 400,
+                            min: 400,
+                            max: 800,
                             step: 1
                         },
-                        starDensity: {
-                            min: 0.1,
-                            max: 0.12,
-                            step: 0.001
+                        starCount: {
+                            min: 20,
+                            max: 40,
+                            step: 1
                         }
                     },
                     basicOptions: {
@@ -19802,15 +19824,15 @@ var Rance;
 
             return ({
                 players: players,
-                independents: pirates
+                independents: [pirates]
             });
         };
         App.prototype.makeMap = function (playerData) {
             var optionValues = {
                 defaultOptions: {
-                    height: 600,
-                    width: 600,
-                    starDensity: 0.11
+                    height: 1200,
+                    width: 1200,
+                    starCount: 40
                 },
                 basicOptions: {
                     arms: 5
