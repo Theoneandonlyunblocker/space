@@ -33,10 +33,6 @@ module Rance
     voronoiDiagram: any;
     voronoiTreeMap: any;
 
-    nonFillerVoronoiLines:
-    {
-      [visibility: string]: any[];
-    } = {};
     nonFillerPoints: Star[];
 
     galaxyConstructors:
@@ -61,7 +57,6 @@ module Rance
       this.voronoiDiagram = null;
 
       this.nonFillerPoints = [];
-      this.nonFillerVoronoiLines = {};
     }
     makeMap(options:
     {
@@ -524,76 +519,6 @@ module Rance
       }
 
       return this.nonFillerPoints;
-    }
-    getNonFillerVoronoiLines(visibleStars?: Star[])
-    {
-      if (!this.voronoiDiagram) return [];
-
-      var indexString = "";
-      if (!visibleStars) indexString = "all";
-      else
-      {
-        var ids: number[] = visibleStars.map(function(star){return star.id});
-        ids = ids.sort();
-
-        indexString = ids.join();
-      }
-
-      if (!this.nonFillerVoronoiLines[indexString] ||
-        this.nonFillerVoronoiLines[indexString].length <= 0)
-      {
-        this.nonFillerVoronoiLines[indexString] =
-          this.voronoiDiagram.edges.filter(function(edge)
-        {
-          var adjacentSites = [edge.lSite, edge.rSite];
-          var adjacentFillerSites = 0;
-          var maxAllowedFillerSites = 2;
-
-          for (var i = 0; i < adjacentSites.length; i++)
-          {
-            var site = adjacentSites[i];
-
-            if (!site)
-            {
-              // draw all border edges
-              //return true;
-
-              // draw all non filler border edges
-              maxAllowedFillerSites--;
-              if (adjacentFillerSites >= maxAllowedFillerSites)
-              {
-                return false;
-              }
-              continue;
-            };
-
-
-            if (visibleStars && visibleStars.indexOf(site) < 0)
-            {
-              maxAllowedFillerSites--;
-              if (adjacentFillerSites >= maxAllowedFillerSites)
-              {
-                return false;
-              }
-              continue;
-            };
-
-
-            if (site.isFiller)
-            {
-              adjacentFillerSites++;
-              if (adjacentFillerSites >= maxAllowedFillerSites)
-              {
-                return false;
-              }
-            };
-          }
-
-          return true;
-        });
-      }
-
-      return this.nonFillerVoronoiLines[indexString];
     }
     getFurthestPointInRegion(region: MapGen2.Region2): Star
     {
