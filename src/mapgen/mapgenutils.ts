@@ -214,5 +214,20 @@ module Rance
 
       return sectorsById;
     }
+    export function setupPirates(stars: Star[], player: Player, intensity: number)
+    {
+      var minShips = 2;
+      var maxShips = 8;
+
+      for (var i = 0; i < stars.length; i++)
+      {
+        var star = stars[i];
+
+        if (!star.owner)
+        {
+          player.addStar(star);
+        }
+      }
+    }
   }
 }
