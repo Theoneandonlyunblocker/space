@@ -3,7 +3,7 @@
 
 module Rance
 {
-  export module MapGen
+  export module MapGen2
   {
     export function triangulate(vertices: Point[])
     {

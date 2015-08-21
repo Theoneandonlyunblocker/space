@@ -1,11 +1,9 @@
 /// <reference path="../../src/utility.ts" />
 
 /// <reference path="../../src/point.ts" />
-/// <reference path="../../src/player.ts" />
 /// <reference path="../../src/star.ts" />
-/// <reference path="../../src/mapgen/region.ts" />
+/// <reference path="../../src/mapgen/region2.ts" />
 /// <reference path="../../src/mapgen/mapgenutils.ts" />
-/// <reference path="../../src/mapgen/mapgenresult.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
@@ -14,8 +12,7 @@ module Rance
   {
     export module MapGen
     {
-      export function spiralGalaxyGeneration(options: IMapGenOptionValues,
-        players: Player[], independents: Player[]): MapGen.MapGenResult
+      export function spiralGalaxyGeneration(options: IMapGenOptionValues): Star[]
       {
         // generate points
         
@@ -78,16 +75,16 @@ module Rance
 
         var stars: Star[] = [];
         var fillerStars: Star[] = [];
-        var regions: MapGen.Region[] = [];
+        var regions: MapGen2.Region2[] = [];
 
-        var centerRegion = new MapGen.Region("center", false);
+        var centerRegion = new MapGen2.Region2("center", false);
         regions.push(centerRegion);
 
         for (var i = 0; i < sg.totalArms; i++)
         {
           var isFiller = i % 2 !== 0;
           var regionName = isFiller ? "filler_" + i : "arm_" + i;
-          var region = new MapGen.Region(regionName, isFiller);
+          var region = new MapGen2.Region2(regionName, isFiller);
           regions.push(region);
 
           var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
@@ -121,20 +118,20 @@ module Rance
         var allStars = stars.concat(fillerStars);
 
         // make voronoi
-        var voronoi = MapGen.makeVoronoi(allStars, options.defaultOptions.width,
+        var voronoi = MapGen2.makeVoronoi(allStars, options.defaultOptions.width,
           options.defaultOptions.height);
 
         // relax voronoi
-        MapGen.relaxVoronoi(voronoi, function(star: Star)
+        MapGen2.relaxVoronoi(voronoi, function(star: Star)
         {
           return star.mapGenData.distance;
         });
         // recalculate after relaxing;
-        voronoi = MapGen.makeVoronoi(allStars, options.defaultOptions.width,
+        voronoi = MapGen2.makeVoronoi(allStars, options.defaultOptions.width,
           options.defaultOptions.height);
 
         // link stars
-        MapGen.linkAllStars(stars);
+        MapGen2.linkAllStars(stars);
 
         // sever links
         for (var i = 0; i < regions.length; i++)
@@ -148,21 +145,13 @@ module Rance
           }
         }
 
-        MapGen.partiallyCutLinks(stars, 4);
+        MapGen2.partiallyCutLinks(stars, 4);
 
         // make sectors
 
         // set resources
 
         // set players
-
-        return new MapGen.MapGenResult(
-        {
-          stars: stars,
-          fillerPoints: fillerPoints,
-          width: options.defaultOptions.width,
-          height: options.defaultOptions.height
-        });
       }
     }
   }

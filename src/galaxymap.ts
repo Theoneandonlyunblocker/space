@@ -21,7 +21,7 @@ module Rance
     // TODO remove
     game: Game;
     // TODO end
-    constructor(mapGen: MapGen.MapGenResult)
+    constructor(mapGen: MapGen2.MapGenResult)
     {
       this.width = mapGen.width;
       this.height = mapGen.height;
@@ -64,8 +64,8 @@ module Rance
 
       data.fillerPoints = this.fillerPoints;
 
-      data.width = this.width;
-      data.height = this.height;
+      data.maxWidth = this.width / 2;
+      data.maxHeight = this.height / 2;
 
       return data;
     }

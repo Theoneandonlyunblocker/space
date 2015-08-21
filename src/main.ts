@@ -2,6 +2,7 @@
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
 /// <reference path="maprenderer.ts" />
+/// <reference path="mapgen.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
@@ -199,27 +200,11 @@ module Rance
     }
     makeMap(playerData)
     {
-      var optionValues: Templates.MapGen.IMapGenOptionValues =
-      {
-        defaultOptions:
-        {
-          height: 600,
-          width: 600,
-          starDensity: 0.11
-        },
-        basicOptions:
-        {
-          arms: 5
-        }
-      }
-
-      var mapGenResult = Templates.MapGen.spiralGalaxyGeneration(
-        optionValues,
-        playerData.player,
-        playerData.independents
-      );
-
-      var galaxyMap = mapGenResult.makeMap();
+      var mapGen = new MapGen();
+      mapGen.players = playerData.players;
+      mapGen.independents = playerData.independents;
+      mapGen.makeMap(Templates.MapGen.defaultMap);
+      var galaxyMap = mapGen.makeMapGenResult().makeMap();
       return galaxyMap;
     }
     initGame()

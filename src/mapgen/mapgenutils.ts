@@ -4,7 +4,7 @@
 
 module Rance
 {
-  export module MapGen
+  export module MapGen2
   {
     export function linkAllStars(stars: Star[])
     {
@@ -80,7 +80,7 @@ module Rance
 
       var sectorsById:
       {
-        [sectorId: number]: Sector;
+        [sectorId: number]: Sector2;
       } = {};
       var sectorIdGen = 0;
 
@@ -96,7 +96,7 @@ module Rance
 
         if (canFormMinSizeSector)
         {
-          var sector = new Sector(sectorIdGen++);
+          var sector = new Sector2(sectorIdGen++);
           sectorsById[sector.id] = sector;
 
           var discoveryStarIndex = 0;
@@ -139,7 +139,7 @@ module Rance
         {
           [sectorId: number]: boolean;
         } = {};
-        var candidateSectors: Sector[] = [];
+        var candidateSectors: Sector2[] = [];
 
         for (var j = 0; j < neighbors.length; j++)
         {
