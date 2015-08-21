@@ -38,8 +38,6 @@ module Rance
      */
     export function relaxVoronoi(diagram: any, dampeningFunction?: (any) => number)
     {
-      var relaxedPoints = [];
-
       for (var i = 0; i < diagram.cells.length; i++)
       {
         var cell = diagram.cells[i];

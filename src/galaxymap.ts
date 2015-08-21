@@ -1,6 +1,8 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
+/// <reference path="mapgen/mapgenresult.ts" />
 /// <reference path="game.ts" />
+/// <reference path="point.ts" />
 /// <reference path="star.ts" />
 /// <reference path="mapvoronoiinfo.ts" />
 
@@ -9,8 +11,8 @@ module Rance
 {
   export class GalaxyMap
   {
-    allPoints: Star[];
     stars: Star[];
+    fillerPoints: Star[]; // TODO change filler points to Point
     width: number;
     height: number;
 
@@ -19,21 +21,19 @@ module Rance
     // TODO remove
     game: Game;
     // TODO end
-    constructor()
+    constructor(mapGen: MapGen2.MapGenResult)
     {
+      this.width = mapGen.width;
+      this.height = mapGen.height;
+
+      this.stars = mapGen.stars;
+      this.fillerPoints = mapGen.fillerPoints;
+
+      this.voronoi = mapGen.voronoiInfo;
     }
-
-    setMapGen(mapGen: MapGen)
+    getAllPoints(): Star[]
     {
-      this.width = mapGen.maxWidth * 2;
-      this.height = mapGen.maxHeight * 2;
-
-      this.allPoints = mapGen.points;
-      this.stars = mapGen.getNonFillerPoints();
-
-      this.voronoi = new MapVoronoiInfo();
-      this.voronoi.treeMap = mapGen.voronoiTreeMap;
-      this.voronoi.diagram = mapGen.voronoiDiagram;
+      return this.fillerPoints.concat(this.stars);
     }
     getIncomeBounds()
     {
@@ -61,7 +61,7 @@ module Rance
     {
       var data: any = {};
 
-      data.allPoints = this.allPoints.map(function(star)
+      data.allPoints = this.getAllPoints().map(function(star)
       {
         return star.serialize();
       });

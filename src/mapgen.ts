@@ -120,6 +120,16 @@ module Rance
 
       return this;
     }
+    makeMapGenResult()
+    {
+      return new MapGen2.MapGenResult(
+      {
+        width: this.maxWidth * 2,
+        height: this.maxHeight * 2,
+        stars: this.getNonFillerPoints(),
+        fillerPoints: this.getFillerPoints()
+      });
+    }
     clearMapGenData()
     {
       if (Options.debugMode)
@@ -363,9 +373,7 @@ module Rance
     triangulate()
     {
       if (!this.points || this.points.length < 3) throw new Error();
-      var triangulationData = MapGen2.triangulate(this.points);
-      this.triangles = this.cleanTriangles(triangulationData.triangles,
-        triangulationData.superTriangle);
+      this.triangles = MapGen2.triangulate(this.points);
 
       this.makeLinks();
     }
@@ -422,18 +430,6 @@ module Rance
         cell.id = cell.site.voronoiId;
         cell.vertices = this.getVerticesFromCell(cell);
       }
-    }
-    cleanTriangles(triangles: MapGen2.Triangle[], superTriangle: MapGen2.Triangle)
-    {
-      for (var i = triangles.length - 1; i >= 0; i--)
-      {
-        if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
-        {
-          triangles.splice(i, 1);
-        }
-      }
-
-      return triangles;
     }
     makeTreeMap()
     {
@@ -504,6 +500,17 @@ module Rance
         this.relaxPointsOnce(options.dampeningFactor);
         this.makeVoronoi();
       }
+    }
+    getFillerPoints()
+    {
+      if (!this.points) return [];
+
+      var fillerPoints = this.points.filter(function(point)
+      {
+        return !point.isFiller;
+      });
+
+      return fillerPoints;
     }
     getNonFillerPoints()
     {

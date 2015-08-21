@@ -99,8 +99,7 @@ module Rance
       mapGen.points = allPoints;
       mapGen.makeVoronoi();
 
-      var galaxyMap = new GalaxyMap();
-      galaxyMap.setMapGen(mapGen);
+      var galaxyMap = mapGen.makeMapGenResult().makeMap();
 
       return galaxyMap;
     }

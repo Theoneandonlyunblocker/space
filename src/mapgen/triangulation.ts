@@ -56,19 +56,15 @@ module Rance
         }
       }
 
-      /*
       for (var i = triangles.length - 1; i >= 0; i--)
       {
         if (triangles[i].getAmountOfSharedVerticesWith(superTriangle))
         {
           triangles.splice(i, 1);
         }
-      }*/
-      return(
-      {
-        triangles: triangles,
-        superTriangle: superTriangle
-      });
+      }
+
+      return triangles;
     }
 
     export function getCentroid(vertices: Point[]): Point

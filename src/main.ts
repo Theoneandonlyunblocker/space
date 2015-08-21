@@ -204,9 +204,7 @@ module Rance
       mapGen.players = playerData.players;
       mapGen.independents = playerData.independents;
       mapGen.makeMap(Templates.MapGen.defaultMap);
-      var galaxyMap = new GalaxyMap();
-      galaxyMap.setMapGen(mapGen);
-
+      var galaxyMap = mapGen.makeMapGenResult().makeMap();
       return galaxyMap;
     }
     initGame()
