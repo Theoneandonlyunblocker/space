@@ -5,6 +5,7 @@
 /// <reference path="../../src/star.ts" />
 /// <reference path="../../src/mapgen/region2.ts" />
 /// <reference path="../../src/mapgen/mapgenutils.ts" />
+/// <reference path="../../src/mapgen/mapgenresult.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
@@ -154,6 +155,14 @@ module Rance
         // set resources
 
         // set players
+
+        return new MapGen.MapGenResult(
+        {
+          stars: stars,
+          fillerPoints: fillerPoints,
+          width: options.defaultOptions.width,
+          height: options.defaultOptions.height
+        });
       }
     }
   }
