@@ -3,6 +3,7 @@
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/star.ts" />
 /// <reference path="../../src/mapgen/region2.ts" />
+/// <reference path="../../src/mapgen/mapgenutils.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
@@ -57,7 +58,7 @@ module Rance
           else offset = Math.pow(offset, 2);
 
           var armRotation = distance * sg.armRotationFactor;
-          var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotatation;
+          var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotation;
 
           var width = options.defaultOptions.width / 2;
           var height = options.defaultOptions.height / 2;
@@ -74,16 +75,16 @@ module Rance
 
         var stars: Star[] = [];
         var fillerStars: Star[] = [];
-        var regions: Region[] = [];
+        var regions: MapGen2.Region2[] = [];
 
-        var centerRegion = new Region("center", false);
+        var centerRegion = new MapGen2.Region2("center", false);
         regions.push(centerRegion);
 
         for (var i = 0; i < sg.totalArms; i++)
         {
           var isFiller = i % 2 !== 0;
           var regionName = isFiller ? "filler_" + i : "arm_" + i;
-          var region = new Region(regionName, isFiller);
+          var region = new MapGen2.Region2(regionName, isFiller);
           regions.push(region);
 
           var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
@@ -91,17 +92,23 @@ module Rance
 
           for (var j = 0; j < amountForThisArm; j++)
           {
-            var star = makeStar(centerThreshhold, 1, i, maxOffsetForThisArm);
+            var star = makeStar(sg.centerSize, 1, i, maxOffsetForThisArm);
 
             region.addStar(star);
 
-            if (isFiller) fillerStars.push(star);
-            else stars.push(star);
+            if (isFiller)
+            {
+              fillerStars.push(star);
+            }
+            else
+            {
+              stars.push(star);
+            }
           }
 
           for (var j = 0; j < sg.amountPerCenter; j++)
           {
-            var star = makeStar(0, centerThreshhold, i, maxOffsetForThisArm);
+            var star = makeStar(0, sg.centerSize, i, maxOffsetForThisArm);
             
             centerRegion.addStar(star);
             stars.push(star);
@@ -110,27 +117,41 @@ module Rance
 
         var allStars = stars.concat(fillerStars);
 
+        // make voronoi
+        var voronoi = MapGen2.makeVoronoi(allStars, options.defaultOptions.width,
+          options.defaultOptions.height);
+
+        // relax voronoi
+        MapGen2.relaxVoronoi(voronoi, function(star: Star)
+        {
+          return star.mapGenData.distance;
+        });
+        // recalculate after relaxing;
+        voronoi = MapGen2.makeVoronoi(allStars, options.defaultOptions.width,
+          options.defaultOptions.height);
+
         // link stars
+        MapGen2.linkAllStars(stars);
+
+        // sever links
+        for (var i = 0; i < regions.length; i++)
+        {
+          region.severLinksToFiller();
+          region.severLinksToNonCenter();
+
+          for (var j = 0; j < regions[i].stars.length; j++)
+          {
+            regions[i].stars[j].severLinksToNonAdjacent();
+          }
+        }
+
+        MapGen2.partiallyCutLinks(stars, 4);
 
         // make sectors
 
         // set resources
 
         // set players
-
-        
-
-        /*
-        // make voronoi
-        var voronoi = makeVoronoi(allStars, options.defaultOptions.width,
-          options.defaultOptions.height);
-
-        // relax voronoi
-        relaxVoronoi(voronoi, function(star: Star)
-        {
-          return star.mapGenData.distance;
-        });
-        */
       }
     }
   }

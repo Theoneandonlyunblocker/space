@@ -1,4 +1,4 @@
-// /// <reference path="spiralgalaxygeneration.ts" />
+/// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 
 module Rance
