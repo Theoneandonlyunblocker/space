@@ -25,7 +25,7 @@ module Rance
           var totalSize = options.defaultOptions.width * options.defaultOptions.height;
           var totalStars = totalSize * options.defaultOptions.starDensity / 1000;
 
-          var actualArms = options.basicOptions["arms"]
+          var actualArms = options.basicOptions["arms"];
           var totalArms = actualArms * 2 // includes filler arms
 
           var percentageInCenter = 0.3;
@@ -83,10 +83,13 @@ module Rance
         var centerRegion = new MapGen2.Region2("center", false);
         regions.push(centerRegion);
 
+        var fillerRegionId = 0;
+        var regionId = 0;
+
         for (var i = 0; i < sg.totalArms; i++)
         {
           var isFiller = i % 2 !== 0;
-          var regionName = isFiller ? "filler_" + i : "arm_" + i;
+          var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
           var region = new MapGen2.Region2(regionName, isFiller);
           regions.push(region);
 
@@ -150,10 +153,63 @@ module Rance
         MapGen2.partiallyCutLinks(stars, 4);
 
         // make sectors
+        //MapGen2.makeSectors(stars, 3, 5);
 
         // set resources
 
         // set players
+        var startRegions: MapGen2.Region2[] = (function setStartingRegions()
+        {
+          var armCount = options.basicOptions["arms"];
+          var playerCount = players.length;
+
+          var playerArmStep = armCount / playerCount;
+
+          var startRegions: MapGen2.Region2[] = [];
+          var candidateRegions = regions.filter(function(region: MapGen2.Region2)
+          {
+            return region.id.indexOf("arm") !== -1;
+          });
+
+          for (var i = 0; i < playerCount; i++)
+          {
+            var regionNumber = Math.floor(i * playerArmStep);
+            var regionToAdd = candidateRegions[regionNumber];
+
+            startRegions.push(regionToAdd);
+          }
+
+          return startRegions;
+        })();
+
+        var startPositions: Star[] = (function getStartPoints(regions: MapGen2.Region2[])
+        {
+          var startPositions: Star[] = [];
+
+          for (var i = 0; i < regions.length; i++)
+          {
+            var region = regions[i];
+
+            var starsByDistance = region.stars.slice(0).sort(function(a: Star, b: Star)
+            {
+              return b.mapGenData.distance - a.mapGenData.distance;
+            });
+
+            startPositions.push(starsByDistance[0]);
+          }
+
+          return startPositions
+        })(startRegions);
+
+        for (var i = 0; i < players.length; i++)
+        {
+          var star = startPositions[i];
+          var player = players[i];
+
+          player.addStar(star);
+        }
+
+        debugger;
 
         return new MapGen2.MapGenResult(
         {

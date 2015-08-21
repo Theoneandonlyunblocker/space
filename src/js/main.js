@@ -15423,6 +15423,22 @@ var Rance;
         }
         MapGen2.partiallyCutLinks = partiallyCutLinks;
         function makeSectors(stars, minSize, maxSize) {
+            /*
+            while average size sectors left to assign && unassigned stars left
+            pick random unassigned star
+            if star cannot form island bigger than minsize
+            put from unassigned into leftovers & continue
+            else
+            add random neighbors into sector until minsize is met
+            
+            
+            while leftovers
+            pick random leftover
+            if leftover has no assigned neighbor pick, continue
+            
+            leftover gets assigned to smallest neighboring sector
+            if sizes equal, assign to sector with least neighboring leftovers
+            */
             var totalStars = stars.length;
             var unassignedStars = stars.slice(0);
             var leftoverStars = [];
@@ -15603,9 +15619,12 @@ var Rance;
                 var centerRegion = new Rance.MapGen2.Region2("center", false);
                 regions.push(centerRegion);
 
+                var fillerRegionId = 0;
+                var regionId = 0;
+
                 for (var i = 0; i < sg.totalArms; i++) {
                     var isFiller = i % 2 !== 0;
-                    var regionName = isFiller ? "filler_" + i : "arm_" + i;
+                    var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
                     var region = new Rance.MapGen2.Region2(regionName, isFiller);
                     regions.push(region);
 
@@ -15659,8 +15678,48 @@ var Rance;
                 Rance.MapGen2.partiallyCutLinks(stars, 4);
 
                 // make sectors
+                //MapGen2.makeSectors(stars, 3, 5);
                 // set resources
                 // set players
+                var startRegions = (function setStartingRegions() {
+                    var armCount = options.basicOptions["arms"];
+                    var playerCount = players.length;
+
+                    var playerArmStep = armCount / playerCount;
+
+                    var startRegions = [];
+                    var candidateRegions = regions.filter(function (region) {
+                        return region.id.indexOf("arm") !== -1;
+                    });
+
+                    for (var i = 0; i < playerCount; i++) {
+                        var regionNumber = Math.floor(i * playerArmStep);
+                        var regionToAdd = candidateRegions[regionNumber];
+
+                        startRegions.push(regionToAdd);
+                    }
+
+                    return startRegions;
+                })();
+
+                var startPositions = (function getStartPoints(regions) {
+                    var startPositions = [];
+
+                    for (var i = 0; i < regions.length; i++) {
+                        var region = regions[i];
+
+                        var starsByDistance = region.stars.slice(0).sort(function (a, b) {
+                            return b.mapGenData.distance - a.mapGenData.distance;
+                        });
+
+                        startPositions.push(starsByDistance[0]);
+                    }
+
+                    return startPositions;
+                })(startRegions);
+
+                debugger;
+
                 return new Rance.MapGen2.MapGenResult({
                     stars: stars,
                     fillerPoints: fillerPoints,
@@ -19758,7 +19817,7 @@ var Rance;
                 }
             };
 
-            var mapGenResult = Rance.Templates.MapGen.spiralGalaxyGeneration(optionValues, playerData.player, playerData.independents);
+            var mapGenResult = Rance.Templates.MapGen.spiralGalaxyGeneration(optionValues, playerData.players, playerData.independents);
 
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;

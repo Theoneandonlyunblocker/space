@@ -215,7 +215,7 @@ module Rance
 
       var mapGenResult = Templates.MapGen.spiralGalaxyGeneration(
         optionValues,
-        playerData.player,
+        playerData.players,
         playerData.independents
       );
 
