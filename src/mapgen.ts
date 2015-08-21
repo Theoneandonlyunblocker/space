@@ -120,13 +120,13 @@ module Rance
       {
         width: this.maxWidth * 2,
         height: this.maxHeight * 2,
-        stars: this.getNonFillerPoints(),
+        stars: this.stars,
         fillerPoints: this.getFillerPoints()
       });
     }
     isConnected()
     {
-      var initialPoint = this.getNonFillerPoints()[0];
+      var initialPoint = this.stars[0];
 
       return initialPoint.getLinkedInRange(9999).all.length === this.nonFillerPoints.length;
     }
@@ -171,7 +171,7 @@ module Rance
     }
     setDistanceFromStartLocations()
     {
-      var nonFillerPoints = this.getNonFillerPoints();
+      var nonFillerPoints = this.stars;
 
       for (var i = 0; i < this.startLocations.length; i++)
       {
@@ -198,7 +198,7 @@ module Rance
 
     setupPirates()
     {
-      var nonFillerPoints = this.getNonFillerPoints();
+      var nonFillerPoints = this.stars;
       var minShips = 2;
       var maxShips = 8;
       var player = this.independents;
@@ -421,7 +421,7 @@ module Rance
         height: this.maxHeight * 2
       });
 
-      var points = this.getNonFillerPoints();
+      var points = this.stars;
 
       for (var i = 0; i < points.length; i++)
       {
@@ -511,7 +511,7 @@ module Rance
     }
     partiallyCutConnections(minConnections: number)
     {
-      var points = this.getNonFillerPoints();
+      var points = this.stars;
       var cuts = 0;
       var noCuts = 0;
       var reverts = 0;
