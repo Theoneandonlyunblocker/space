@@ -198,6 +198,7 @@ module Rance
     {
       if (this.hasStar(star)) return false;
 
+      star.owner = this;
       this.controlledLocations.push(star);
       this.visionIsDirty = true;
     }
@@ -207,6 +208,7 @@ module Rance
 
       if (index < 0) return false;
 
+      star.owner = null;
       this.controlledLocations.splice(index, 1);
       this.visionIsDirty = true;
     }

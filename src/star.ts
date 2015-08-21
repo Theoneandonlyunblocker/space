@@ -198,8 +198,6 @@ module Rance
 
       newOwner.addStar(this);
 
-      this.owner = newOwner;
-
       eventManager.dispatchEvent("renderMap");
     }
     getIncome()
