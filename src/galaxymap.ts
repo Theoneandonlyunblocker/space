@@ -2,7 +2,7 @@
 
 /// <reference path="mapgen/mapgenresult.ts" />
 /// <reference path="game.ts" />
-/// <reference path="point.ts" />
+/// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
 /// <reference path="mapvoronoiinfo.ts" />
 
@@ -12,7 +12,7 @@ module Rance
   export class GalaxyMap
   {
     stars: Star[];
-    fillerPoints: Point[];
+    fillerPoints: FillerPoint[];
     width: number;
     height: number;
 
@@ -62,10 +62,13 @@ module Rance
         return star.serialize();
       });
 
-      data.fillerPoints = this.fillerPoints;
+      data.fillerPoints = this.fillerPoints.map(function(fillerPoint)
+      {
+        return fillerPoint.serialize();
+      });
 
-      data.maxWidth = this.width / 2;
-      data.maxHeight = this.height / 2;
+      data.width = this.width;
+      data.height = this.height;
 
       return data;
     }

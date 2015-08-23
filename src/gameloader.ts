@@ -1,6 +1,8 @@
 /// <reference path="game.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
+/// <reference path="star.ts" />
+/// <reference path="fillerpoint.ts" />
 
 module Rance
 {
@@ -91,10 +93,18 @@ module Rance
         }
       }
 
+      var fillerPoints: FillerPoint[] = [];
+
+      for (var i = 0; i < data.fillerPoints.length; i++)
+      {
+        var dataPoint = data.fillerPoints[i];
+        fillerPoints.push(new FillerPoint(dataPoint.x, dataPoint.y));
+      }
+
       var mapGenResult = new MapGen2.MapGenResult(
       {
         stars: stars,
-        fillerPoints: data.fillerPoints.slice(0),
+        fillerPoints: fillerPoints,
         width: data.width,
         height: data.height
       });

@@ -10110,6 +10110,29 @@ var Rance;
     })();
     Rance.MapVoronoiInfo = MapVoronoiInfo;
 })(Rance || (Rance = {}));
+/// <reference path="point.ts" />
+var Rance;
+(function (Rance) {
+    var FillerPoint = (function () {
+        function FillerPoint(x, y) {
+            this.mapGenData = {};
+            this.x = x;
+            this.y = y;
+        }
+        FillerPoint.prototype.setPosition = function (x, y) {
+            this.x = x;
+            this.y = y;
+        };
+        FillerPoint.prototype.serialize = function () {
+            return ({
+                x: this.x,
+                y: this.y
+            });
+        };
+        return FillerPoint;
+    })();
+    Rance.FillerPoint = FillerPoint;
+})(Rance || (Rance = {}));
 /// <reference path="../point.ts"/>
 var Rance;
 (function (Rance) {
@@ -10419,6 +10442,7 @@ var Rance;
 /// <reference path="../mapvoronoiinfo.ts" />
 /// <reference path="../galaxymap.ts" />
 /// <reference path="../star.ts" />
+/// <reference path="../fillerpoint.ts" />
 /// <reference path="../player.ts" />
 /// <reference path="voronoi.ts" />
 var Rance;
@@ -10585,7 +10609,7 @@ var Rance;
 /// <reference path="../lib/voronoi.d.ts" />
 /// <reference path="mapgen/mapgenresult.ts" />
 /// <reference path="game.ts" />
-/// <reference path="point.ts" />
+/// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
 /// <reference path="mapvoronoiinfo.ts" />
 var Rance;
@@ -10629,10 +10653,12 @@ var Rance;
                 return star.serialize();
             });
 
-            data.fillerPoints = this.fillerPoints;
+            data.fillerPoints = this.fillerPoints.map(function (fillerPoint) {
+                return fillerPoint.serialize();
+            });
 
-            data.maxWidth = this.width / 2;
-            data.maxHeight = this.height / 2;
+            data.width = this.width;
+            data.height = this.height;
 
             return data;
         };
@@ -10938,7 +10964,7 @@ var Rance;
                 }
             }
 
-            var fleets = this.getVisibleFleetsByPlayer()[player.id];
+            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
 
             function getDistanceFalloff(distance) {
                 return 1 / (distance + 1);
@@ -15252,6 +15278,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="../fillerpoint.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
@@ -15259,12 +15286,17 @@ var Rance;
         var Region2 = (function () {
             function Region2(id, isFiller) {
                 this.stars = [];
+                this.fillerPoints = [];
                 this.id = id;
                 this.isFiller = isFiller;
             }
             Region2.prototype.addStar = function (star) {
                 this.stars.push(star);
                 star.mapGenData.region = this;
+            };
+            Region2.prototype.addFillerPoint = function (point) {
+                this.fillerPoints.push(point);
+                point.mapGenData.region;
             };
             Region2.prototype.severLinksByQualifier = function (qualifierFN) {
                 for (var i = 0; i < this.stars.length; i++) {
@@ -15396,6 +15428,7 @@ var Rance;
         function partiallyCutLinks(stars, minConnections) {
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
+                var regionsAlreadyCut = {};
 
                 var neighbors = star.getAllLinks();
 
@@ -15404,9 +15437,16 @@ var Rance;
 
                 for (var j = 0; j < neighbors.length; j++) {
                     var neighbor = neighbors[j];
+
+                    if (regionsAlreadyCut[neighbor.mapGenData.region.id]) {
+                        continue;
+                    }
+
                     var neighborLinks = neighbor.getAllLinks();
 
-                    //if (neighborLinks.length < minConnections) continue;
+                    if (neighborLinks.length < minConnections)
+                        continue;
+
                     var totalLinks = neighbors.length + neighborLinks.length;
 
                     var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
@@ -15414,11 +15454,13 @@ var Rance;
                     while (cutThreshhold > 0) {
                         if (Math.random() < cutThreshhold) {
                             star.removeLink(neighbor);
+                            regionsAlreadyCut[neighbor.mapGenData.region.id] = true;
 
                             var path = Rance.aStar(star, neighbor);
 
                             if (!path) {
                                 star.addLink(neighbor);
+                                regionsAlreadyCut[neighbor.mapGenData.region.id] = false;
                             }
                         }
 
@@ -15547,15 +15589,86 @@ var Rance;
             return sectorsById;
         }
         MapGen2.makeSectors = makeSectors;
+        function addDefenceBuildings(star, amount) {
+            if (typeof amount === "undefined") { amount = 1; }
+            if (!star.owner) {
+                console.warn("Tried to add defence buildings to star without owner.");
+                return;
+            }
+            if (amount < 1) {
+                return;
+            }
+
+            star.addBuilding(new Rance.Building({
+                template: Rance.Templates.Buildings.sectorCommand,
+                location: star
+            }));
+
+            for (var i = 1; i < amount; i++) {
+                star.addBuilding(new Rance.Building({
+                    template: Rance.Templates.Buildings.sectorCommand,
+                    location: star
+                }));
+            }
+        }
+        MapGen2.addDefenceBuildings = addDefenceBuildings;
+        function setDistancesFromNearestPlayerOwnedStar(stars) {
+            var playerOwnedStars = [];
+
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                if (star.owner && !star.owner.isIndependent) {
+                    playerOwnedStars.push(star);
+                }
+            }
+
+            for (var i = 0; i < playerOwnedStars.length; i++) {
+                var ownedStarToCheck = playerOwnedStars[i];
+                for (var j = 0; j < stars.length; j++) {
+                    var star = stars[j];
+                    var distance = star.getDistanceToStar(ownedStarToCheck);
+
+                    if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar)) {
+                        star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
+                    } else {
+                        star.mapGenData.distanceFromNearestPlayerOwnedStar = Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar);
+                    }
+                }
+            }
+        }
+        MapGen2.setDistancesFromNearestPlayerOwnedStar = setDistancesFromNearestPlayerOwnedStar;
         function setupPirates(stars, player, intensity) {
+            if (typeof intensity === "undefined") { intensity = 1; }
             var minShips = 2;
-            var maxShips = 8;
+            var maxShips = 6;
+
+            setDistancesFromNearestPlayerOwnedStar(stars);
 
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
 
                 if (!star.owner) {
                     player.addStar(star);
+                    addDefenceBuildings(star, 1);
+
+                    var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
+
+                    var shipAmount = minShips;
+
+                    for (var j = 2; j < distance; j++) {
+                        if (shipAmount >= maxShips)
+                            break;
+
+                        shipAmount = Math.round(shipAmount + Math.random() * intensity);
+                    }
+
+                    var ships = [];
+                    for (var j = 0; j < shipAmount; j++) {
+                        var ship = Rance.makeRandomShip();
+                        player.addUnit(ship);
+                        ships.push(ship);
+                    }
+                    var fleet = new Rance.Fleet(player, ships, star);
                 }
             }
         }
@@ -15605,7 +15718,7 @@ var Rance;
                     });
                 })(options);
 
-                function makeStar(distanceMin, distanceMax, arm, maxOffset) {
+                function makePoint(distanceMin, distanceMax, arm, maxOffset) {
                     var distance = Rance.randRange(distanceMin, distanceMax);
                     var offset = Math.random() * maxOffset - maxOffset / 2;
                     offset *= (1 / distance);
@@ -15624,9 +15737,19 @@ var Rance;
                     var x = Math.cos(angle) * distance * width + width;
                     var y = Math.sin(angle) * distance * height + height;
 
-                    var star = new Rance.Star(x, y);
+                    return ({
+                        pos: {
+                            x: x,
+                            y: y
+                        },
+                        distance: distance
+                    });
+                }
 
+                function makeStar(point, distance) {
+                    var star = new Rance.Star(point.x, point.y);
                     star.mapGenData.distance = distance;
+                    star.baseIncome = Rance.randInt(4, 10) * 10;
 
                     return star;
                 }
@@ -15651,19 +15774,25 @@ var Rance;
                     var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
 
                     for (var j = 0; j < amountForThisArm; j++) {
-                        var star = makeStar(sg.centerSize, 1, i, maxOffsetForThisArm);
-
-                        region.addStar(star);
+                        var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
 
                         if (isFiller) {
-                            fillerPoints.push(star);
+                            var fillerPoint = new Rance.FillerPoint(point.pos.x, point.pos.y);
+                            region.addFillerPoint(fillerPoint);
+                            fillerPoint.mapGenData.distance = point.distance;
+
+                            fillerPoints.push(fillerPoint);
                         } else {
+                            var star = makeStar(point.pos, point.distance);
+                            region.addStar(star);
+
                             stars.push(star);
                         }
                     }
 
                     for (var j = 0; j < sg.amountPerCenter; j++) {
-                        var star = makeStar(0, sg.centerSize, i, maxOffsetForThisArm);
+                        var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
+                        var star = makeStar(point.pos, point.distance);
 
                         centerRegion.addStar(star);
                         stars.push(star);
@@ -15694,6 +15823,13 @@ var Rance;
                     for (var j = 0; j < regions[i].stars.length; j++) {
                         regions[i].stars[j].severLinksToNonAdjacent();
                     }
+                }
+
+                var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
+                if (!isConnected) {
+                    if (Rance.Options.debugMode)
+                        console.log("Regenerated map due to insufficient connections");
+                    return spiralGalaxyGeneration(options, players, independents);
                 }
 
                 Rance.MapGen2.partiallyCutLinks(stars, 4);
@@ -15744,6 +15880,8 @@ var Rance;
                     var player = players[i];
 
                     player.addStar(star);
+
+                    Rance.MapGen2.addDefenceBuildings(star, 2);
                 }
 
                 Rance.MapGen2.setupPirates(stars, independents[0], 1);
@@ -19324,6 +19462,8 @@ var Rance;
 /// <reference path="game.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
+/// <reference path="star.ts" />
+/// <reference path="fillerpoint.ts" />
 var Rance;
 (function (Rance) {
     var GameLoader = (function () {
@@ -19382,9 +19522,16 @@ var Rance;
                 }
             }
 
+            var fillerPoints = [];
+
+            for (var i = 0; i < data.fillerPoints.length; i++) {
+                var dataPoint = data.fillerPoints[i];
+                fillerPoints.push(new Rance.FillerPoint(dataPoint.x, dataPoint.y));
+            }
+
             var mapGenResult = new Rance.MapGen2.MapGenResult({
                 stars: stars,
-                fillerPoints: data.fillerPoints.slice(0),
+                fillerPoints: fillerPoints,
                 width: data.width,
                 height: data.height
             });
@@ -19825,7 +19972,7 @@ var Rance;
             var map = this.makeMap(playerData);
 
             var game = new Rance.Game(map, players, players[0]);
-            game.independents.push(independents);
+            game.independents = game.independents.concat(independents);
 
             return game;
         };

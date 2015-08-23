@@ -51,7 +51,7 @@ module Rance
           });
         })(options);
 
-        function makeStar(distanceMin: number, distanceMax: number, arm: number, maxOffset: number): Star
+        function makePoint(distanceMin: number, distanceMax: number, arm: number, maxOffset: number)
         {
           var distance = randRange(distanceMin, distanceMax);
           var offset = Math.random() * maxOffset - maxOffset / 2;
@@ -69,15 +69,28 @@ module Rance
           var x = Math.cos(angle) * distance * width + width;
           var y = Math.sin(angle) * distance * height + height;
 
-          var star = new Star(x, y);
+          return(
+          {
+            pos:
+            {
+              x: x,
+              y: y
+            },
+            distance: distance
+          });
+        }
 
+        function makeStar(point: Point, distance: number)
+        {
+          var star = new Star(point.x, point.y);
           star.mapGenData.distance = distance;
+          star.baseIncome = randInt(4, 10) * 10;
 
           return star;
         }
 
         var stars: Star[] = [];
-        var fillerPoints: Point[] = [];
+        var fillerPoints: FillerPoint[] = [];
         var regions: MapGen2.Region2[] = [];
 
         var centerRegion = new MapGen2.Region2("center", false);
@@ -98,23 +111,29 @@ module Rance
 
           for (var j = 0; j < amountForThisArm; j++)
           {
-            var star = makeStar(sg.centerSize, 1, i, maxOffsetForThisArm);
-
-            region.addStar(star);
+            var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
 
             if (isFiller)
             {
-              fillerPoints.push(star);
+              var fillerPoint = new FillerPoint(point.pos.x, point.pos.y);
+              region.addFillerPoint(fillerPoint);
+              fillerPoint.mapGenData.distance = point.distance;
+
+              fillerPoints.push(fillerPoint);
             }
             else
             {
+              var star = makeStar(point.pos, point.distance);
+              region.addStar(star);
+
               stars.push(star);
             }
           }
 
           for (var j = 0; j < sg.amountPerCenter; j++)
           {
-            var star = makeStar(0, sg.centerSize, i, maxOffsetForThisArm);
+            var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
+            var star = makeStar(point.pos, point.distance);
             
             centerRegion.addStar(star);
             stars.push(star);

@@ -1339,6 +1339,21 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class FillerPoint implements Rance.Point {
+        public x: number;
+        public y: number;
+        public mapGenData: any;
+        public voronoiCell: any;
+        public voronoiId: number;
+        constructor(x: number, y: number);
+        public setPosition(x: number, y: number): void;
+        public serialize(): {
+            x: number;
+            y: number;
+        };
+    }
+}
+declare module Rance {
     module MapGen2 {
         class Triangle {
             public a: Rance.Point;
@@ -1380,13 +1395,13 @@ declare module Rance {
     module MapGen2 {
         class MapGenResult {
             public stars: Rance.Star[];
-            public fillerPoints: Rance.Point[];
+            public fillerPoints: Rance.FillerPoint[];
             public width: number;
             public height: number;
             public voronoiInfo: Rance.MapVoronoiInfo;
             constructor(props: {
                 stars: Rance.Star[];
-                fillerPoints: Rance.Point[];
+                fillerPoints: Rance.FillerPoint[];
                 width: number;
                 height: number;
             });
@@ -1417,7 +1432,7 @@ declare module Rance {
 declare module Rance {
     class GalaxyMap {
         public stars: Rance.Star[];
-        public fillerPoints: Rance.Point[];
+        public fillerPoints: Rance.FillerPoint[];
         public width: number;
         public height: number;
         public voronoi: Rance.MapVoronoiInfo;
@@ -2025,8 +2040,10 @@ declare module Rance {
             public id: string;
             public isFiller: boolean;
             public stars: Rance.Star[];
+            public fillerPoints: Rance.FillerPoint[];
             constructor(id: string, isFiller: boolean);
             public addStar(star: Rance.Star): void;
+            public addFillerPoint(point: Rance.FillerPoint): void;
             public severLinksByQualifier(qualifierFN: (a: Rance.Star, b: Rance.Star) => boolean): void;
             public severLinksToRegionsExcept(exemptRegions: Region2[]): void;
             public severLinksToNonCenter(): void;
@@ -2054,7 +2071,9 @@ declare module Rance {
         function makeSectors(stars: Rance.Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector2;
         };
-        function setupPirates(stars: Rance.Star[], player: Rance.Player, intensity: number): void;
+        function addDefenceBuildings(star: Rance.Star, amount?: number): void;
+        function setDistancesFromNearestPlayerOwnedStar(stars: Rance.Star[]): void;
+        function setupPirates(stars: Rance.Star[], player: Rance.Player, intensity?: number): void;
     }
 }
 declare module Rance {

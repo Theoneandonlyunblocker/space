@@ -1,4 +1,4 @@
-/// <reference path="../fillerpoints.ts" />
+/// <reference path="../fillerpoint.ts" />
 /// <reference path="../star.ts" />
 
 module Rance

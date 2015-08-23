@@ -3,6 +3,7 @@
 /// <reference path="../mapvoronoiinfo.ts" />
 /// <reference path="../galaxymap.ts" />
 /// <reference path="../star.ts" />
+/// <reference path="../fillerpoint.ts" />
 /// <reference path="../player.ts" />
 
 /// <reference path="voronoi.ts" />
@@ -14,7 +15,7 @@ module Rance
     export class MapGenResult
     {
       stars: Star[];
-      fillerPoints: Point[];
+      fillerPoints: FillerPoint[];
       width: number;
       height: number;
 
@@ -23,7 +24,7 @@ module Rance
       constructor(props:
       {
         stars: Star[];
-        fillerPoints: Point[];
+        fillerPoints: FillerPoint[];
 
         width: number;
         height: number;
