@@ -217,6 +217,8 @@ module Rance
           var player = players[i];
 
           player.addStar(star);
+
+          MapGen2.addDefenceBuildings(star, 2);
         }
 
         MapGen2.setupPirates(stars, independents[0], 1);
