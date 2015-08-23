@@ -16679,6 +16679,15 @@ var Rance;
             this.player = player;
             this.addEventListeners();
         }
+        PlayerControl.prototype.destroy = function () {
+            this.removeEventListeners();
+
+            this.player = null;
+            this.selectedFleets = null;
+            this.currentlyReorganizing = null;
+            this.currentAttackTargets = null;
+            this.selectedStar = null;
+        };
         PlayerControl.prototype.removeEventListener = function (name) {
             Rance.eventManager.removeEventListener(name, this.listeners[name]);
         };
@@ -18086,6 +18095,12 @@ var Rance;
 
             this.addEventListeners();
         }
+        RectangleSelect.prototype.destroy = function () {
+            this.parentContainer = null;
+            this.graphics = null;
+            this.toSelectFrom = null;
+            this.getSelectionTargetsFN = null;
+        };
         RectangleSelect.prototype.addEventListeners = function () {
             var self = this;
 
@@ -18199,7 +18214,7 @@ var Rance;
             this.listeners = {};
             this.renderer = renderer;
             this.camera = camera;
-            this.rectangleselect = new Rance.RectangleSelect(renderer.layers["select"]);
+            this.rectangleSelect = new Rance.RectangleSelect(renderer.layers["select"]);
             this.currentAction = undefined;
 
             window.oncontextmenu = function (event) {
@@ -18212,6 +18227,16 @@ var Rance;
 
             this.addEventListeners();
         }
+        MouseEventHandler.prototype.destroy = function () {
+            for (var name in this.listeners) {
+                Rance.eventManager.removeEventListener(name, this.listeners[name]);
+            }
+
+            this.hoveredStar = null;
+
+            this.rectangleSelect.destroy();
+            this.rectangleSelect = null;
+        };
         MouseEventHandler.prototype.addEventListeners = function () {
             var self = this;
 
@@ -18251,11 +18276,6 @@ var Rance;
             this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function (e) {
                 self.clearHoveredStar();
             });
-        };
-        MouseEventHandler.prototype.destroy = function () {
-            for (var name in this.listeners) {
-                Rance.eventManager.removeEventListener(name, this.listeners[name]);
-            }
         };
         MouseEventHandler.prototype.preventGhost = function (delay, type) {
             if (this.preventingGhost[type]) {
@@ -18405,13 +18425,13 @@ var Rance;
         };
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currentAction = "select";
-            this.rectangleselect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
-            this.rectangleselect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.endSelect = function (event) {
-            this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
             this.currentAction = undefined;
         };
         return MouseEventHandler;
@@ -19918,6 +19938,11 @@ var Rance;
             // prevents rendering until it's initialized again
             if (this.renderer) {
                 this.renderer.destroy();
+            }
+
+            if (this.playerControl) {
+                this.playerControl.destroy();
+                this.playerControl = null;
             }
 
             if (this.reactUI) {

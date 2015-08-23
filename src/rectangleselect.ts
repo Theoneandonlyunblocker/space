@@ -26,6 +26,13 @@ module Rance
 
       this.addEventListeners();
     }
+    destroy()
+    {
+      this.parentContainer = null;
+      this.graphics = null;
+      this.toSelectFrom = null;
+      this.getSelectionTargetsFN = null;
+    }
     addEventListeners()
     {
       var self = this;

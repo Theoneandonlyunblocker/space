@@ -2209,6 +2209,7 @@ declare module Rance {
             [listenerName: string]: any;
         };
         constructor(player: Rance.Player);
+        public destroy(): void;
         public removeEventListener(name: string): void;
         public removeEventListeners(): void;
         public addEventListener(name: string, handler: any): void;
@@ -2409,6 +2410,7 @@ declare module Rance {
             data: any;
         }[];
         constructor(parentContainer: PIXI.DisplayObjectContainer);
+        public destroy(): void;
         public addEventListeners(): void;
         public startSelection(point: Rance.Point): void;
         public moveSelection(point: Rance.Point): void;
@@ -2431,7 +2433,7 @@ declare module Rance {
     class MouseEventHandler {
         public renderer: Rance.Renderer;
         public camera: Rance.Camera;
-        public rectangleselect: Rance.RectangleSelect;
+        public rectangleSelect: Rance.RectangleSelect;
         public startPoint: number[];
         public currPoint: number[];
         public currentAction: string;
@@ -2444,8 +2446,8 @@ declare module Rance {
             [name: string]: any;
         };
         constructor(renderer: Rance.Renderer, camera: Rance.Camera);
-        public addEventListeners(): void;
         public destroy(): void;
+        public addEventListeners(): void;
         public preventGhost(delay: number, type: string): void;
         public mouseDown(event: any, targetType: string): void;
         public touchStart(event: any, targetType: string): void;

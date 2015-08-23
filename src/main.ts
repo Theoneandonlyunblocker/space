@@ -111,6 +111,12 @@ module Rance
       {
         this.renderer.destroy();
       }
+
+      if (this.playerControl)
+      {
+        this.playerControl.destroy();
+        this.playerControl = null;
+      }
       
       if (this.reactUI)
       {

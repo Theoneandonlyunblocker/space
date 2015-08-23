@@ -28,6 +28,16 @@ module Rance
       this.player = player;
       this.addEventListeners();
     }
+    destroy()
+    {
+      this.removeEventListeners();
+      
+      this.player = null;
+      this.selectedFleets = null;
+      this.currentlyReorganizing = null;
+      this.currentAttackTargets = null;
+      this.selectedStar = null;
+    }
     removeEventListener(name: string)
     {
       eventManager.removeEventListener(name, this.listeners[name]);

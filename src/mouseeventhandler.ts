@@ -9,7 +9,7 @@ module Rance
   {
     renderer: Renderer;
     camera: Camera;
-    rectangleselect: RectangleSelect;
+    rectangleSelect: RectangleSelect;
 
     startPoint: number[];
     currPoint: number[];
@@ -33,7 +33,7 @@ module Rance
     {
       this.renderer = renderer;
       this.camera = camera;
-      this.rectangleselect = new RectangleSelect(renderer.layers["select"]);
+      this.rectangleSelect = new RectangleSelect(renderer.layers["select"]);
       this.currentAction = undefined;
 
       window.oncontextmenu = function(event)
@@ -45,6 +45,18 @@ module Rance
       };
 
       this.addEventListeners();
+    }
+    destroy()
+    {
+      for (var name in this.listeners)
+      {
+        eventManager.removeEventListener(name, this.listeners[name]);
+      }
+
+      this.hoveredStar = null;
+
+      this.rectangleSelect.destroy();
+      this.rectangleSelect = null;
     }
     addEventListeners()
     {
@@ -92,13 +104,6 @@ module Rance
       {
         self.clearHoveredStar();
       });
-    }
-    destroy()
-    {
-      for (var name in this.listeners)
-      {
-        eventManager.removeEventListener(name, this.listeners[name]);
-      }
     }
     preventGhost(delay: number, type: string)
     {
@@ -302,15 +307,15 @@ module Rance
     startSelect(event)
     {
       this.currentAction = "select";
-      this.rectangleselect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
+      this.rectangleSelect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
     }
     dragSelect(event)
     {
-      this.rectangleselect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
+      this.rectangleSelect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
     }
     endSelect(event)
     {
-      this.rectangleselect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
+      this.rectangleSelect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
       this.currentAction = undefined;
     }
 
