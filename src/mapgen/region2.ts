@@ -1,3 +1,4 @@
+/// <reference path="../fillerpoints.ts" />
 /// <reference path="../star.ts" />
 
 module Rance
@@ -9,6 +10,7 @@ module Rance
       id: string;
       isFiller: boolean;
       stars: Star[] = [];
+      fillerPoints: FillerPoint[] = [];
 
       constructor(id: string, isFiller: boolean)
       {
@@ -19,6 +21,11 @@ module Rance
       {
         this.stars.push(star);
         star.mapGenData.region = this;
+      }
+      addFillerPoint(point: FillerPoint)
+      {
+        this.fillerPoints.push(point);
+        point.mapGenData.region
       }
       severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean)
       {
