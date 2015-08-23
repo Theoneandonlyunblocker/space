@@ -170,7 +170,7 @@ module Rance
       var map = this.makeMap(playerData);
 
       var game = new Game(map, players, players[0]);
-      game.independents.push(independents);
+      game.independents = game.independents.concat(independents);
 
       return game;
     }
