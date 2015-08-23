@@ -401,7 +401,7 @@ module Rance
         }
       }
 
-      var fleets = this.getVisibleFleetsByPlayer()[player.id];
+      var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
 
       function getDistanceFalloff(distance: number)
       {
