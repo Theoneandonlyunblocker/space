@@ -35,6 +35,7 @@ module Rance
       for (var i = 0; i < stars.length; i++)
       {
         var star = stars[i];
+        var regionsAlreadyCut: any = {};
 
         var neighbors = star.getAllLinks();
 
@@ -43,9 +44,15 @@ module Rance
         for (var j = 0; j < neighbors.length; j++)
         {
           var neighbor = neighbors[j];
+
+          if (regionsAlreadyCut[neighbor.mapGenData.region.id])
+          {
+            continue;
+          }
+
           var neighborLinks = neighbor.getAllLinks();
 
-          //if (neighborLinks.length < minConnections) continue;
+          if (neighborLinks.length < minConnections) continue;
 
           var totalLinks = neighbors.length + neighborLinks.length;
 
@@ -56,12 +63,14 @@ module Rance
             if (Math.random() < cutThreshhold)
             {
               star.removeLink(neighbor);
+              regionsAlreadyCut[neighbor.mapGenData.region.id] = true;
 
               var path = aStar(star, neighbor);
 
               if (!path) // left star inaccesible
               {
                 star.addLink(neighbor);
+                regionsAlreadyCut[neighbor.mapGenData.region.id] = false;
               }
             }
 
