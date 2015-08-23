@@ -223,10 +223,72 @@ module Rance
 
       return sectorsById;
     }
-    export function setupPirates(stars: Star[], player: Player, intensity: number)
+    export function addDefenceBuildings(star: Star, amount: number = 1)
+    {
+      if (!star.owner)
+      {
+        console.warn("Tried to add defence buildings to star without owner.");
+        return;
+      }
+      if (amount < 1)
+      {
+        return;
+      }
+
+      star.addBuilding(new Building(
+      {
+        template: Templates.Buildings.sectorCommand,
+        location: star
+      }));
+
+      for (var i = 1; i < amount; i++)
+      {
+        star.addBuilding(new Building(
+        {
+          template: Templates.Buildings.sectorCommand,
+          location: star
+        }));
+      }
+    }
+    export function setDistancesFromNearestPlayerOwnedStar(stars: Star[])
+    {
+      var playerOwnedStars: Star[] = [];
+
+      for (var i = 0; i < stars.length; i++)
+      {
+        var star = stars[i];
+        if (star.owner && !star.owner.isIndependent)
+        {
+          playerOwnedStars.push(star);
+        }
+      }
+
+      for (var i = 0; i < playerOwnedStars.length; i++)
+      {
+        var ownedStarToCheck = playerOwnedStars[i];
+        for (var j = 0; j < stars.length; j++)
+        {
+          var star = stars[j];
+          var distance = star.getDistanceToStar(ownedStarToCheck);
+
+          if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar))
+          {
+            star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
+          }
+          else
+          {
+            star.mapGenData.distanceFromNearestPlayerOwnedStar =
+              Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar)
+          }
+        }
+      }
+    }
+    export function setupPirates(stars: Star[], player: Player, intensity: number = 1)
     {
       var minShips = 2;
-      var maxShips = 8;
+      var maxShips = 6;
+
+      setDistancesFromNearestPlayerOwnedStar(stars);
 
       for (var i = 0; i < stars.length; i++)
       {
@@ -235,6 +297,27 @@ module Rance
         if (!star.owner)
         {
           player.addStar(star);
+          addDefenceBuildings(star, 1);
+
+          var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
+
+          var shipAmount = minShips;
+
+          for (var j = 2; j < distance; j++)
+          {
+            if (shipAmount >= maxShips) break;
+
+            shipAmount = Math.round(shipAmount + Math.random() * intensity);
+          }
+
+          var ships = [];
+          for (var j = 0; j < shipAmount; j++)
+          {
+            var ship = makeRandomShip();
+            player.addUnit(ship);
+            ships.push(ship);
+          }
+          var fleet = new Fleet(player, ships, star);
         }
       }
     }
