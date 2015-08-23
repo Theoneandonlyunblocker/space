@@ -9,7 +9,6 @@ module Rance
   export class PlayerControl
   {
     player: Player;
-    reactUI: ReactUI;
 
     selectedFleets: Fleet[] = [];
     currentlyReorganizing: Fleet[] = [];

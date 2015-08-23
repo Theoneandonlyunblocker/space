@@ -261,8 +261,6 @@ module Rance
     }
     hookUI()
     {
-      this.playerControl.reactUI = this.reactUI;
-
       this.reactUI.game = this.game;
       this.reactUI.player = this.humanPlayer;
       this.reactUI.playerControl = this.playerControl;

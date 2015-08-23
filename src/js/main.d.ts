@@ -2200,7 +2200,6 @@ declare module Rance {
 declare module Rance {
     class PlayerControl {
         public player: Rance.Player;
-        public reactUI: Rance.ReactUI;
         public selectedFleets: Rance.Fleet[];
         public currentlyReorganizing: Rance.Fleet[];
         public currentAttackTargets: any[];

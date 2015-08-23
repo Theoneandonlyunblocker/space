@@ -20045,8 +20045,6 @@ var Rance;
             this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));
         };
         App.prototype.hookUI = function () {
-            this.playerControl.reactUI = this.reactUI;
-
             this.reactUI.game = this.game;
             this.reactUI.player = this.humanPlayer;
             this.reactUI.playerControl = this.playerControl;
