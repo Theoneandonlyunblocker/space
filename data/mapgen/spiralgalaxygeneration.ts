@@ -160,6 +160,13 @@ module Rance
           }
         }
 
+        var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
+        if (!isConnected)
+        {
+          if (Options.debugMode) console.log("Regenerated map due to insufficient connections");
+          return spiralGalaxyGeneration(options, players, independents);
+        }
+
         MapGen2.partiallyCutLinks(stars, 4);
 
         // make sectors
