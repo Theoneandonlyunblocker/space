@@ -5658,10 +5658,10 @@ var Rance;
                 if (Rance.Options.debugMode) {
                     dumpDebugInfoButton = React.DOM.button({
                         className: "star-info-dump-debug-button",
-                        onClick: function (star) {
+                        onClick: function (e) {
                             console.log(star);
                             console.log(star.mapGenData);
-                        }.bind(null, star)
+                        }
                     }, "Debug");
                 }
 
