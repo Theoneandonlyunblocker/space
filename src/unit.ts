@@ -6,6 +6,7 @@
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="item.ts"/>
+/// <reference path="statuseffect.ts" />
 
 module Rance
 {
@@ -47,6 +48,7 @@ module Rance
       guardAmount: number;
       guardCoverage: string;
       captureChance: number;
+      statusEffects: StatusEffect[];
       //queuedAction: Action;
     };
 
@@ -137,6 +139,7 @@ module Rance
       battleStats.guardAmount = data.battleStats.guardAmount;
       battleStats.guardCoverage = data.battleStats.guardCoverage;
       battleStats.captureChance = data.battleStats.captureChance;
+      battleStats.statusEffects = [];
 
       this.battleStats = battleStats;
 
@@ -224,7 +227,8 @@ module Rance
         position: null,
         guardAmount: 0,
         guardCoverage: null,
-        captureChance: 0.1 // BASE_CAPTURE_CHANCE
+        captureChance: 0.1, // BASE_CAPTURE_CHANCE
+        statusEffects: []
       };
 
       this.displayFlags =
@@ -280,6 +284,17 @@ module Rance
     addMoveDelay(amount: number)
     {
       this.battleStats.moveDelay += amount;
+    }
+    updateStatusEffects()
+    {
+      for (var i = 0; i < this.battleStats.statusEffects.length; i++)
+      {
+        this.battleStats.statusEffects[i].processTurnEnd();
+        if (this.battleStats.statusEffects[i].duration === 0)
+        {
+          this.removeStatusEffect(this.battleStats.statusEffects[i]);
+        }
+      }
     }
     
     // redundant until stealth mechanics are added
@@ -349,13 +364,86 @@ module Rance
 
       return attributes;
     }
+    addStatusEffect(statusEffect: StatusEffect)
+    {
+      if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1)
+      {
+        throw new Error("Tried to add duplicate status effect to unit " + this.name);
+      }
+      else if (statusEffect.duration === 0)
+      {
+        if (Options.debugMode) console.warn("Tried to add status effect", statusEffect, "with 0 duration");
+        return;
+      }
+
+      this.battleStats.statusEffects.push(statusEffect);
+      if (statusEffect.attributes)
+      {
+        this.attributesAreDirty = true;
+      }
+    }
+    removeStatusEffect(statusEffect: StatusEffect)
+    {
+      var index = this.battleStats.statusEffects.indexOf(statusEffect);
+      if (index === -1)
+      {
+        throw new Error("Tried to remove status effect not active on unit " + this.name);
+      }
+
+      this.battleStats.statusEffects.splice(index, 1);
+      if (statusEffect.attributes)
+      {
+        this.attributesAreDirty = true;
+      }
+    }
     /*
     sort by attribute, positive/negative, additive vs multiplicative
-    apply +additive -additive +multiplicative -multiplicative
+    apply additive, multiplicative
      */
+    getTotalStatusEffectAttributeAdjustments()
+    {
+      if (!this.battleStats || !this.battleStats.statusEffects)
+      {
+        return null;
+      }
+
+      var adjustments: IStatusEffectAttributes = {};
+      for (var i = 0; i < this.battleStats.statusEffects.length; i++)
+      {
+        var statusEffect = this.battleStats.statusEffects[i];
+        for (var attribute in statusEffect.attributes)
+        {
+          adjustments[attribute] = {};
+          for (var type in statusEffect.attributes[attribute])
+          {
+            if (!adjustments[attribute][type])
+            {
+              adjustments[attribute][type] = 0;
+            }
+
+            adjustments[attribute][type] += statusEffect.attributes[attribute][type];
+          }
+        }
+      }
+
+      return adjustments;
+    }
     getAttributesWithEffects()
     {
       var withItems = this.getAttributesWithItems();
+
+      var adjustments = this.getTotalStatusEffectAttributeAdjustments();
+      for (var attribute in adjustments)
+      {
+        if (adjustments[attribute].flat)
+        {
+          withItems[attribute] += adjustments[attribute].flat;
+        }
+        if (adjustments[attribute].multiplier)
+        {
+          withItems[attribute] *= 1 + adjustments[attribute].multiplier;
+        }
+      }
 
       return withItems;
     }
@@ -720,6 +808,10 @@ module Rance
       data.battleStats.guardAmount = this.battleStats.guardAmount;
       data.battleStats.guardCoverage = this.battleStats.guardCoverage;
       data.battleStats.captureChance = this.battleStats.captureChance;
+      data.battleStats.statusEffects = this.battleStats.statusEffects.map(function(statusEffect)
+      {
+        return statusEffect.clone();
+      });
 
       if (this.fleet)
       {
