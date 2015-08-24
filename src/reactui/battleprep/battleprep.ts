@@ -67,7 +67,6 @@ module Rance
 
       handleMouseEnterUnit: function(unit)
       {
-        console.log("handleMouseEnterUnit", unit.id);
         this.setState(
         {
           hoveredUnit: unit
@@ -91,7 +90,6 @@ module Rance
       },
       handleDragEnd: function(dropSuccesful: boolean = false)
       {
-        console.log("handleDragEnd", dropSuccesful);
         if (!dropSuccesful && this.state.currentDragUnit)
         {
           this.props.battlePrep.removeUnit(this.state.currentDragUnit);
