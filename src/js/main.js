@@ -4886,6 +4886,8 @@ var Rance;
                     }
                 }
 
+                var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
+
                 var topBar = document.getElementsByClassName("top-bar-info")[0];
                 var topBarRect = topBar.getBoundingClientRect();
 
@@ -4903,7 +4905,7 @@ var Rance;
 
                     var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
 
-                    if (fleetRect.right > topBarRect.right) {
+                    if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right) {
                         rightmostElement = fleetElementToCheckAgainst;
                         rightmostRect = fleetRect;
                     }
