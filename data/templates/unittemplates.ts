@@ -42,7 +42,7 @@ module Rance
       export var cheatShip: IUnitTemplate =
       {
         type: "cheatShip",
-        typeName: "Cheat Ship",
+        typeName: "Debug Ship",
         archetype: "combat",
         sprite:
         {

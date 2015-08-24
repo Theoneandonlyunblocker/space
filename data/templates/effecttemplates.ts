@@ -131,6 +131,18 @@ module Rance
 
           target.recieveDamage(damage, damageType);
           target.battleStats.captureChance += 1;
+
+          user.addStatusEffect(new StatusEffect(
+          {
+            attack:
+            {
+              flat: 3
+            },
+            defence:
+            {
+              flat: -3
+            }
+          }, 1));
         }
       }
 
