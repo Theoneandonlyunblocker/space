@@ -44,7 +44,7 @@ module Rance
         gameData.playerData =
         {
           players: players,
-          independents: pirates
+          independents: [pirates]
         }
 
         app.makeGameFromSetup(gameData);
