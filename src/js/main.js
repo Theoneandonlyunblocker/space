@@ -15613,7 +15613,7 @@ var Rance;
 
             for (var i = 1; i < amount; i++) {
                 star.addBuilding(new Rance.Building({
-                    template: Rance.Templates.Buildings.sectorCommand,
+                    template: Rance.Templates.Buildings.starBase,
                     location: star
                 }));
             }

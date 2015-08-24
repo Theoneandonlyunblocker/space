@@ -245,7 +245,7 @@ module Rance
       {
         star.addBuilding(new Building(
         {
-          template: Templates.Buildings.sectorCommand,
+          template: Templates.Buildings.starBase,
           location: star
         }));
       }
