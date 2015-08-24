@@ -628,14 +628,21 @@ progress::-webkit-progress-value {
     margin-right: 0%;
   }
 }
+.unit-left-container {
+  width: 64px;
+}
+@media (max-width: 800px) {
+  .unit-left-container {
+    display: none;
+  }
+}
 .unit-image {
   width: 64px;
   height: 64px;
 }
-@media (max-width: 800px) {
-  .unit-image {
-    display: none;
-  }
+.unit-status-effects-container {
+  width: 64px;
+  height: 16px;
 }
 .unit-info {
   display: block;

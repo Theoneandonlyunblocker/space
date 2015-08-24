@@ -1,5 +1,6 @@
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
+/// <reference path="unitstatuseffects.ts" />
 /// <reference path="../mixins/draggable.ts" />
 
 module Rance
@@ -133,7 +134,14 @@ module Rance
 
         var containerElements =
         [
-          React.DOM.div({className: "unit-image", key: "image"}), // UNIT IMAGE TODO
+          React.DOM.div(
+          {
+            className: "unit-left-container",
+            key: "leftContainer"
+          },
+            React.DOM.div({className: "unit-image", key: "image"}), // UNIT IMAGE TODO
+            UIComponents.UnitStatusEffects({unit: unit})
+          ),
           UIComponents.UnitInfo(infoProps),
         ];
 
