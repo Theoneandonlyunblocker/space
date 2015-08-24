@@ -276,6 +276,50 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.UnitStatusEffects = React.createClass({
+            displayName: "UnitStatusEffects",
+            render: function () {
+                var statusEffects = [];
+
+                var withItems = this.props.unit.getAttributesWithItems();
+                var withEffects = this.props.unit.getAttributesWithEffects();
+
+                for (var attribute in withEffects) {
+                    if (attribute === "maxActionPoints")
+                        continue;
+
+                    var ite = withItems[attribute];
+                    var eff = withEffects[attribute];
+
+                    if (ite === eff)
+                        continue;
+
+                    var polarityString = eff > ite ? "positive" : "negative";
+                    var polaritySign = eff > ite ? " +" : " ";
+
+                    var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
+
+                    var titleString = "" + attribute + polaritySign + (eff - ite);
+
+                    statusEffects.push(React.DOM.img({
+                        className: "status-effect-icon",
+                        src: imageSrc,
+                        key: attribute,
+                        title: titleString
+                    }));
+                }
+
+                return (React.DOM.div({
+                    className: "unit-status-effects-container"
+                }, statusEffects));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
 /// <reference path="../../../lib/react.d.ts" />
 var Rance;
 (function (Rance) {
@@ -543,6 +587,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
+/// <reference path="unitstatuseffects.ts" />
 /// <reference path="../mixins/draggable.ts" />
 var Rance;
 (function (Rance) {
@@ -645,7 +690,10 @@ var Rance;
                 };
 
                 var containerElements = [
-                    React.DOM.div({ className: "unit-image", key: "image" }),
+                    React.DOM.div({
+                        className: "unit-left-container",
+                        key: "leftContainer"
+                    }, React.DOM.div({ className: "unit-image", key: "image" }), Rance.UIComponents.UnitStatusEffects({ unit: unit })),
                     Rance.UIComponents.UnitInfo(infoProps)
                 ];
 
@@ -3018,7 +3066,6 @@ var Rance;
                 });
             },
             handleMouseEnterUnit: function (unit) {
-                console.log("handleMouseEnterUnit", unit.id);
                 this.setState({
                     hoveredUnit: unit
                 });
@@ -3035,7 +3082,6 @@ var Rance;
             },
             handleDragEnd: function (dropSuccesful) {
                 if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
-                console.log("handleDragEnd", dropSuccesful);
                 if (!dropSuccesful && this.state.currentDragUnit) {
                     this.props.battlePrep.removeUnit(this.state.currentDragUnit);
                 }
@@ -6428,6 +6474,15 @@ var Rance;
 
                     target.recieveDamage(damage, damageType);
                     target.battleStats.captureChance += 1;
+
+                    user.addStatusEffect(new Rance.StatusEffect({
+                        attack: {
+                            flat: 3
+                        },
+                        defence: {
+                            flat: -3
+                        }
+                    }, 1));
                 }
             };
 
@@ -6533,7 +6588,7 @@ var Rance;
         (function (ShipTypes) {
             ShipTypes.cheatShip = {
                 type: "cheatShip",
-                typeName: "Cheat Ship",
+                typeName: "Debug Ship",
                 archetype: "combat",
                 sprite: {
                     imageSrc: "fighter.png",
@@ -13212,6 +13267,29 @@ var Rance;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var StatusEffect = (function () {
+        // effects that trigger when using an ability
+        // effects that trigger when targeted
+        // effects that trigger at start of turn
+        // effects that trigger at end of turn
+        function StatusEffect(attributes, duration) {
+            this.attributes = attributes;
+            this.duration = duration;
+        }
+        StatusEffect.prototype.processTurnEnd = function () {
+            if (this.duration > 0) {
+                this.duration--;
+            }
+        };
+        StatusEffect.prototype.clone = function () {
+            return new StatusEffect(this.attributes, this.duration);
+        };
+        return StatusEffect;
+    })();
+    Rance.StatusEffect = StatusEffect;
+})(Rance || (Rance = {}));
 /// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 /// <reference path="unitattributes.ts"/>
@@ -13219,6 +13297,7 @@ var Rance;
 /// <reference path="ability.ts"/>
 /// <reference path="battle.ts"/>
 /// <reference path="item.ts"/>
+/// <reference path="statuseffect.ts" />
 var Rance;
 (function (Rance) {
     var Unit = (function () {
@@ -13295,6 +13374,7 @@ var Rance;
             battleStats.guardAmount = data.battleStats.guardAmount;
             battleStats.guardCoverage = data.battleStats.guardCoverage;
             battleStats.captureChance = data.battleStats.captureChance;
+            battleStats.statusEffects = [];
 
             this.battleStats = battleStats;
 
@@ -13370,7 +13450,8 @@ var Rance;
                 position: null,
                 guardAmount: 0,
                 guardCoverage: null,
-                captureChance: 0.1
+                captureChance: 0.1,
+                statusEffects: []
             };
 
             this.displayFlags = {
@@ -13414,6 +13495,14 @@ var Rance;
         };
         Unit.prototype.addMoveDelay = function (amount) {
             this.battleStats.moveDelay += amount;
+        };
+        Unit.prototype.updateStatusEffects = function () {
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                this.battleStats.statusEffects[i].processTurnEnd();
+                if (this.battleStats.statusEffects[i].duration === 0) {
+                    this.removeStatusEffect(this.battleStats.statusEffects[i]);
+                }
+            }
         };
 
         // redundant until stealth mechanics are added
@@ -13464,20 +13553,79 @@ var Rance;
                 if (this.items[itemSlot]) {
                     var item = this.items[itemSlot];
                     for (var attribute in item.template.attributes) {
-                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 0, 9);
+                        attributes[attribute] = Rance.clamp(attributes[attribute] + item.template.attributes[attribute], 1, 9);
                     }
                 }
             }
 
             return attributes;
         };
+        Unit.prototype.addStatusEffect = function (statusEffect) {
+            if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
+                throw new Error("Tried to add duplicate status effect to unit " + this.name);
+            } else if (statusEffect.duration === 0) {
+                if (Rance.Options.debugMode)
+                    console.warn("Tried to add status effect", statusEffect, "with 0 duration");
+                return;
+            }
+
+            this.battleStats.statusEffects.push(statusEffect);
+            if (statusEffect.attributes) {
+                this.attributesAreDirty = true;
+            }
+        };
+        Unit.prototype.removeStatusEffect = function (statusEffect) {
+            var index = this.battleStats.statusEffects.indexOf(statusEffect);
+            if (index === -1) {
+                throw new Error("Tried to remove status effect not active on unit " + this.name);
+            }
+
+            this.battleStats.statusEffects.splice(index, 1);
+            if (statusEffect.attributes) {
+                this.attributesAreDirty = true;
+            }
+        };
 
         /*
         sort by attribute, positive/negative, additive vs multiplicative
-        apply +additive -additive +multiplicative -multiplicative
+        apply additive, multiplicative
         */
+        Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
+            if (!this.battleStats || !this.battleStats.statusEffects) {
+                return null;
+            }
+
+            var adjustments = {};
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                var statusEffect = this.battleStats.statusEffects[i];
+                for (var attribute in statusEffect.attributes) {
+                    adjustments[attribute] = {};
+                    for (var type in statusEffect.attributes[attribute]) {
+                        if (!adjustments[attribute][type]) {
+                            adjustments[attribute][type] = 0;
+                        }
+
+                        adjustments[attribute][type] += statusEffect.attributes[attribute][type];
+                    }
+                }
+            }
+
+            return adjustments;
+        };
         Unit.prototype.getAttributesWithEffects = function () {
             var withItems = this.getAttributesWithItems();
+
+            var adjustments = this.getTotalStatusEffectAttributeAdjustments();
+            for (var attribute in adjustments) {
+                if (adjustments[attribute].flat) {
+                    withItems[attribute] += adjustments[attribute].flat;
+                }
+                if (adjustments[attribute].multiplier) {
+                    withItems[attribute] *= 1 + adjustments[attribute].multiplier;
+                }
+
+                withItems[attribute] = Rance.clamp(withItems[attribute], -5, 20);
+            }
 
             return withItems;
         };
@@ -13780,6 +13928,9 @@ var Rance;
             data.battleStats.guardAmount = this.battleStats.guardAmount;
             data.battleStats.guardCoverage = this.battleStats.guardCoverage;
             data.battleStats.captureChance = this.battleStats.captureChance;
+            data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
+                return statusEffect.clone();
+            });
 
             if (this.fleet) {
                 data.fleetId = this.fleet.id;

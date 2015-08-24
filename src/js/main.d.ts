@@ -39,6 +39,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var UnitStatusEffects: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Draggable: {
             getDefaultProps: () => {
                 dragThreshhold: number;
@@ -1877,6 +1882,25 @@ declare module Rance {
     };
 }
 declare module Rance {
+    interface IStatusEffectAttributeAdjustment {
+        flat?: number;
+        multiplier?: number;
+    }
+    interface IStatusEffectAttributes {
+        attack?: IStatusEffectAttributeAdjustment;
+        defence?: IStatusEffectAttributeAdjustment;
+        intelligence?: IStatusEffectAttributeAdjustment;
+        speed?: IStatusEffectAttributeAdjustment;
+    }
+    class StatusEffect {
+        public attributes: IStatusEffectAttributes;
+        public duration: number;
+        constructor(attributes: IStatusEffectAttributes, duration: number);
+        public processTurnEnd(): void;
+        public clone(): StatusEffect;
+    }
+}
+declare module Rance {
     class Unit {
         public template: Rance.Templates.IUnitTemplate;
         public id: number;
@@ -1899,6 +1923,7 @@ declare module Rance {
             guardAmount: number;
             guardCoverage: string;
             captureChance: number;
+            statusEffects: Rance.StatusEffect[];
         };
         public displayFlags: {
             isAnnihilated: boolean;
@@ -1924,11 +1949,15 @@ declare module Rance {
         public removeStrength(amount: number): void;
         public removeActionPoints(amount: any): void;
         public addMoveDelay(amount: number): void;
+        public updateStatusEffects(): void;
         public isTargetable(): boolean;
         public isActiveInBattle(): boolean;
         public addItem(item: Rance.Item): boolean;
         public removeItem(item: Rance.Item): boolean;
         public getAttributesWithItems(): any;
+        public addStatusEffect(statusEffect: Rance.StatusEffect): void;
+        public removeStatusEffect(statusEffect: Rance.StatusEffect): void;
+        public getTotalStatusEffectAttributeAdjustments(): Rance.IStatusEffectAttributes;
         public getAttributesWithEffects(): any;
         public updateCachedAttributes(): void;
         public removeItemAtSlot(slot: string): boolean;
