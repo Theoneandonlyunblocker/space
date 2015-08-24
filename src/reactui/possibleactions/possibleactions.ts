@@ -28,7 +28,7 @@ module Rance
           {
             expandedAction: null,
             expandedActionElement: null
-          });
+          }, this.updateActions);
         }
       },
 
@@ -41,13 +41,18 @@ module Rance
           {
             expandedAction: null,
             expandedActionElement: null
-          });
+          }, self.updateActions);
         });
       },
 
       componentWillUnmount: function()
       {
         eventManager.removeAllListeners("clearPossibleActions");
+      },
+
+      updateActions: function()
+      {
+        eventManager.dispatchEvent("possibleActionsUpdated");
       },
 
       buildBuildings: function()
@@ -59,7 +64,7 @@ module Rance
           {
             expandedAction: null,
             expandedActionElement: null
-          });
+          }, this.updateActions);
         }
         else
         {
@@ -78,7 +83,7 @@ module Rance
           {
             expandedAction: "buildBuildings",
             expandedActionElement: element
-          });
+          }, this.updateActions);
         }
       },
 
@@ -91,7 +96,7 @@ module Rance
           {
             expandedAction: null,
             expandedActionElement: null
-          });
+          }, this.updateActions);
         }
         else
         {
@@ -110,7 +115,7 @@ module Rance
           {
             expandedAction: "buildShips",
             expandedActionElement: element
-          });
+          }, this.updateActions);
         }
       },
 
@@ -123,7 +128,7 @@ module Rance
           {
             expandedAction: null,
             expandedActionElement: null
-          });
+          }, this.updateActions);
         }
         else
         {
@@ -142,7 +147,7 @@ module Rance
           {
             expandedAction: "upgradeBuildings",
             expandedActionElement: element
-          });
+          }, this.updateActions);
         }
       },
 

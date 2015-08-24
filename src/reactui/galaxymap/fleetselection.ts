@@ -48,6 +48,7 @@ module Rance
       {
         this.setElementPosition();
 
+        eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
         window.addEventListener("resize", this.setElementPosition, false);
       },
 
@@ -58,6 +59,7 @@ module Rance
 
       componentWillUnmount: function()
       {
+        eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
         window.removeEventListener("resize", this.setElementPosition)
       },
 

@@ -5551,12 +5551,14 @@ var Rance;
             componentDidMount: function () {
                 this.setElementPosition();
 
+                Rance.eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
                 window.addEventListener("resize", this.setElementPosition, false);
             },
             componentDidUpdate: function () {
                 this.setElementPosition();
             },
             componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("possibleActionsUpdated", this.setElementPosition);
                 window.removeEventListener("resize", this.setElementPosition);
             },
             render: function () {
@@ -14027,7 +14029,7 @@ var Rance;
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
-                    });
+                    }, this.updateActions);
                 }
             },
             componentDidMount: function () {
@@ -14036,18 +14038,21 @@ var Rance;
                     self.setState({
                         expandedAction: null,
                         expandedActionElement: null
-                    });
+                    }, self.updateActions);
                 });
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeAllListeners("clearPossibleActions");
+            },
+            updateActions: function () {
+                Rance.eventManager.dispatchEvent("possibleActionsUpdated");
             },
             buildBuildings: function () {
                 if (!this.props.selectedStar || this.state.expandedAction === "buildBuildings") {
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
-                    });
+                    }, this.updateActions);
                 } else {
                     var element = React.DOM.div({
                         className: "expanded-action"
@@ -14059,7 +14064,7 @@ var Rance;
                     this.setState({
                         expandedAction: "buildBuildings",
                         expandedActionElement: element
-                    });
+                    }, this.updateActions);
                 }
             },
             buildShips: function () {
@@ -14067,7 +14072,7 @@ var Rance;
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
-                    });
+                    }, this.updateActions);
                 } else {
                     var element = React.DOM.div({
                         className: "expanded-action"
@@ -14079,7 +14084,7 @@ var Rance;
                     this.setState({
                         expandedAction: "buildShips",
                         expandedActionElement: element
-                    });
+                    }, this.updateActions);
                 }
             },
             upgradeBuildings: function () {
@@ -14087,7 +14092,7 @@ var Rance;
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
-                    });
+                    }, this.updateActions);
                 } else {
                     var element = React.DOM.div({
                         className: "expanded-action"
@@ -14099,7 +14104,7 @@ var Rance;
                     this.setState({
                         expandedAction: "upgradeBuildings",
                         expandedActionElement: element
-                    });
+                    }, this.updateActions);
                 }
             },
             render: function () {
