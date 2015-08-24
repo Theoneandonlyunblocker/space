@@ -60,6 +60,11 @@ module Rance
       [starId: number]: PIXI.Sprite;
     } = {};
 
+    fleetTextTextureCache:
+    {
+      [fleetSize: number]: PIXI.Texture;
+    } = {};
+
     currentMapMode: IMapRendererLayerMapMode;
     isDirty: boolean = true;
     preventRender: boolean = false;
@@ -96,8 +101,15 @@ module Rance
       
       for (var starId in this.fowSpriteCache)
       {
-        this.fowSpriteCache[starId].renderable = false;
+        var sprite = this.fowSpriteCache[starId];
+        sprite.renderable = false;
+        sprite.texture.destroy(true);
         this.fowSpriteCache[starId] = null;
+      }
+      for (var fleetSize in this.fleetTextTextureCache)
+      {
+        var texture = this.fleetTextTextureCache[fleetSize];
+        texture.destroy(true);
       }
 
     }
@@ -266,6 +278,25 @@ module Rance
       }
 
       return this.occupationShaders[owner.id][occupier.id]
+    }
+    getFleetTextTexture(fleet: Fleet)
+    {
+      var fleetSize = fleet.ships.length;
+
+      if (!this.fleetTextTextureCache[fleetSize])
+      {
+        var text = new PIXI.Text(fleet.ships.length,
+        {
+          fill: "#FFFFFF",
+          stroke: "#000000",
+          strokeThickness: 3
+        });
+
+        this.fleetTextTextureCache[fleetSize] = text.generateTexture();
+        text.texture.destroy(true);
+      }
+
+      return this.fleetTextTextureCache[fleetSize];
     }
     initLayers()
     {
@@ -817,12 +848,11 @@ module Rance
           {
             eventManager.dispatchEvent("selectFleets", [fleet]);
           }
-
+          /*
           function singleFleetDrawFN(fleet: Fleet)
           {
             var fleetContainer = new PIXI.DisplayObjectContainer();
 
-            /*
             if (fleet.ships[0] && fleet.ships[0].front)
             {
               var front = fleet.ships[0].front;
@@ -833,7 +863,6 @@ module Rance
             {
               var color = fleet.player.color;
             }
-            */
 
             var color = fleet.player.color;
 
@@ -868,6 +897,40 @@ module Rance
             fleetContainer.addChild(containerGfx);
 
             return fleetContainer;
+          }*/
+          function singleFleetDrawFN(fleet: Fleet)
+          {
+            var fleetContainer = new PIXI.DisplayObjectContainer();
+
+            var color = fleet.player.color;
+
+            var textTexture = self.getFleetTextTexture(fleet);
+            var text = new PIXI.Sprite(textTexture);
+
+            var containerGfx = new PIXI.Graphics();
+            containerGfx.lineStyle(1, 0x00000, 1);
+            containerGfx.beginFill(color, 0.7);
+            containerGfx.drawRect(0, 0, text.width+4, text.height+4);
+            containerGfx.endFill();
+
+
+            fleetContainer.addChild(containerGfx);
+            fleetContainer.addChild(text);
+            text.x += 2;
+            text.y += 2;
+            
+
+            fleetContainer.interactive = true;
+            if (fleet.player.id === self.player.id)
+            {
+              fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
+            }
+
+            fleetContainer.mousedown = mouseDownFN;
+            fleetContainer.mouseup = mouseUpFN;
+            fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
+
+            return fleetContainer;
           }
 
           for (var i = 0; i < points.length; i++)
@@ -889,6 +952,7 @@ module Rance
             }
 
             fleetsContainer.x -= fleetsContainer.width / 2;
+            fleetsContainer.y -= 10;
           }
 
           doc.height;

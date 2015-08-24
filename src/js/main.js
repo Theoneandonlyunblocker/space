@@ -16311,7 +16311,7 @@ var Rance;
 
                 gameData.playerData = {
                     players: players,
-                    independents: pirates
+                    independents: [pirates]
                 };
 
                 app.makeGameFromSetup(gameData);
@@ -16953,6 +16953,7 @@ var Rance;
             this.layers = {};
             this.mapModes = {};
             this.fowSpriteCache = {};
+            this.fleetTextTextureCache = {};
             this.isDirty = true;
             this.preventRender = false;
             this.listeners = {};
@@ -16978,8 +16979,14 @@ var Rance;
             this.occupationShaders = null;
 
             for (var starId in this.fowSpriteCache) {
-                this.fowSpriteCache[starId].renderable = false;
+                var sprite = this.fowSpriteCache[starId];
+                sprite.renderable = false;
+                sprite.texture.destroy(true);
                 this.fowSpriteCache[starId] = null;
+            }
+            for (var fleetSize in this.fleetTextTextureCache) {
+                var texture = this.fleetTextTextureCache[fleetSize];
+                texture.destroy(true);
             }
         };
         MapRenderer.prototype.setMap = function (map) {
@@ -17115,6 +17122,22 @@ var Rance;
             }
 
             return this.occupationShaders[owner.id][occupier.id];
+        };
+        MapRenderer.prototype.getFleetTextTexture = function (fleet) {
+            var fleetSize = fleet.ships.length;
+
+            if (!this.fleetTextTextureCache[fleetSize]) {
+                var text = new PIXI.Text(fleet.ships.length, {
+                    fill: "#FFFFFF",
+                    stroke: "#000000",
+                    strokeThickness: 3
+                });
+
+                this.fleetTextTextureCache[fleetSize] = text.generateTexture();
+                text.texture.destroy(true);
+            }
+
+            return this.fleetTextTextureCache[fleetSize];
         };
         MapRenderer.prototype.initLayers = function () {
             if (this.layers["nonFillerStars"])
@@ -17590,29 +17613,63 @@ var Rance;
                         Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
                     }
 
+                    /*
+                    function singleFleetDrawFN(fleet: Fleet)
+                    {
+                    var fleetContainer = new PIXI.DisplayObjectContainer();
+                    
+                    if (fleet.ships[0] && fleet.ships[0].front)
+                    {
+                    var front = fleet.ships[0].front;
+                    var frontHue = ((front.id * 20) % 360) / 360;
+                    var color = hslToHex(frontHue, 1, 0.5);
+                    }
+                    else
+                    {
+                    var color = fleet.player.color;
+                    }
+                    
+                    var color = fleet.player.color;
+                    
+                    var text = new PIXI.Text(fleet.ships.length,
+                    {
+                    //fill: "#" + playerColor.toString(16)
+                    fill: "#FFFFFF",
+                    stroke: "#000000",
+                    strokeThickness: 3
+                    });
+                    
+                    var containerGfx = new PIXI.Graphics();
+                    containerGfx.lineStyle(1, 0x00000, 1);
+                    containerGfx.beginFill(color, 0.7);
+                    containerGfx.drawRect(0, 0, text.width+4, text.height+4);
+                    containerGfx.endFill();
+                    
+                    containerGfx.interactive = true;
+                    if (fleet.player.id === self.player.id)
+                    {
+                    containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
+                    }
+                    
+                    containerGfx.mousedown = mouseDownFN;
+                    containerGfx.mouseup = mouseUpFN;
+                    containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
+                    
+                    containerGfx.addChild(text);
+                    text.x += 2;
+                    text.y += 2;
+                    containerGfx.y -= 10;
+                    fleetContainer.addChild(containerGfx);
+                    
+                    return fleetContainer;
+                    }*/
                     function singleFleetDrawFN(fleet) {
                         var fleetContainer = new PIXI.DisplayObjectContainer();
 
-                        /*
-                        if (fleet.ships[0] && fleet.ships[0].front)
-                        {
-                        var front = fleet.ships[0].front;
-                        var frontHue = ((front.id * 20) % 360) / 360;
-                        var color = hslToHex(frontHue, 1, 0.5);
-                        }
-                        else
-                        {
-                        var color = fleet.player.color;
-                        }
-                        */
                         var color = fleet.player.color;
 
-                        var text = new PIXI.Text(fleet.ships.length, {
-                            //fill: "#" + playerColor.toString(16)
-                            fill: "#FFFFFF",
-                            stroke: "#000000",
-                            strokeThickness: 3
-                        });
+                        var textTexture = self.getFleetTextTexture(fleet);
+                        var text = new PIXI.Sprite(textTexture);
 
                         var containerGfx = new PIXI.Graphics();
                         containerGfx.lineStyle(1, 0x00000, 1);
@@ -17620,20 +17677,19 @@ var Rance;
                         containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
                         containerGfx.endFill();
 
-                        containerGfx.interactive = true;
-                        if (fleet.player.id === self.player.id) {
-                            containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
-                        }
-
-                        containerGfx.mousedown = mouseDownFN;
-                        containerGfx.mouseup = mouseUpFN;
-                        containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
-
-                        containerGfx.addChild(text);
+                        fleetContainer.addChild(containerGfx);
+                        fleetContainer.addChild(text);
                         text.x += 2;
                         text.y += 2;
-                        containerGfx.y -= 10;
-                        fleetContainer.addChild(containerGfx);
+
+                        fleetContainer.interactive = true;
+                        if (fleet.player.id === self.player.id) {
+                            fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
+                        }
+
+                        fleetContainer.mousedown = mouseDownFN;
+                        fleetContainer.mouseup = mouseUpFN;
+                        fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
 
                         return fleetContainer;
                     }
@@ -17656,6 +17712,7 @@ var Rance;
                         }
 
                         fleetsContainer.x -= fleetsContainer.width / 2;
+                        fleetsContainer.y -= 10;
                     }
 
                     doc.height;

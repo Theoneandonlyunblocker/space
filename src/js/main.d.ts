@@ -2272,6 +2272,9 @@ declare module Rance {
         public fowSpriteCache: {
             [starId: number]: PIXI.Sprite;
         };
+        public fleetTextTextureCache: {
+            [fleetSize: number]: PIXI.Texture;
+        };
         public currentMapMode: IMapRendererLayerMapMode;
         public isDirty: boolean;
         public preventRender: boolean;
@@ -2289,6 +2292,7 @@ declare module Rance {
         public makeFowSprite(): void;
         public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
         public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
+        public getFleetTextTexture(fleet: Rance.Fleet): PIXI.Texture;
         public initLayers(): void;
         public initMapModes(): void;
         public setParent(newParent: PIXI.DisplayObjectContainer): void;
