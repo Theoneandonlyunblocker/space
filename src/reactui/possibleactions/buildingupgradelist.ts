@@ -8,6 +8,12 @@ module Rance
     {
       displayName: "BuildingUpgradeList",
 
+      hasAvailableUpgrades: function()
+      {
+        var possibleUpgrades = this.props.star.getBuildingUpgrades();
+        return Object.keys(possibleUpgrades).length > 0;
+      },
+
       upgradeBuilding: function(upgradeData)
       {
         var star = upgradeData.parentBuilding.location
@@ -28,13 +34,18 @@ module Rance
         upgradeData.parentBuilding.controller.money -= upgradeData.cost;
 
         eventManager.dispatchEvent("playerControlUpdated");
+
+        if (!this.hasAvailableUpgrades())
+        {
+          this.props.clearExpandedAction();
+        }
       },
 
       render: function()
       {
-        var possibleUpgrades = this.props.star.getBuildingUpgrades();
-        if (Object.keys(possibleUpgrades).length < 1) return null;
+        if (!this.hasAvailableUpgrades()) return null;
 
+        var possibleUpgrades = this.props.star.getBuildingUpgrades();
         var upgradeGroups = [];
 
         for (var parentBuildingId in possibleUpgrades)

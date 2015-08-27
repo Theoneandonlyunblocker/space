@@ -18,12 +18,17 @@ module Rance
 
       updateBuildings: function()
       {
+        var buildingTemplates = this.props.star.getBuildableBuildings();
         this.setState(
         {
-          buildingTemplates: this.props.star.getBuildableBuildings()
+          buildingTemplates: buildingTemplates
         });
 
         eventManager.dispatchEvent("playerControlUpdated");
+        if (buildingTemplates.length < 1)
+        {
+          this.props.clearExpandedAction();
+        }
       },
 
       buildBuilding: function(rowItem)

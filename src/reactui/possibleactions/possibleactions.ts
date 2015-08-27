@@ -35,14 +35,7 @@ module Rance
       componentDidMount: function()
       {
         var self = this;
-        eventManager.addEventListener("clearPossibleActions", function()
-        {
-          self.setState(
-          {
-            expandedAction: null,
-            expandedActionElement: null
-          }, self.updateActions);
-        });
+        eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
       },
 
       componentWillUnmount: function()
@@ -55,16 +48,21 @@ module Rance
         eventManager.dispatchEvent("possibleActionsUpdated");
       },
 
+      clearExpandedAction: function()
+      {
+        this.setState(
+        {
+          expandedAction: null,
+          expandedActionElement: null
+        }, this.updateActions);
+      },
+
       buildBuildings: function()
       {
         if (!this.props.selectedStar ||
           this.state.expandedAction === "buildBuildings")
         {
-          this.setState(
-          {
-            expandedAction: null,
-            expandedActionElement: null
-          }, this.updateActions);
+          this.clearExpandedAction();
         }
         else
         {
@@ -75,7 +73,8 @@ module Rance
             UIComponents.BuildableBuildingList(
             {
               player: this.props.player,
-              star: this.props.selectedStar
+              star: this.props.selectedStar,
+              clearExpandedAction: this.clearExpandedAction
             })
           );
 
@@ -92,11 +91,7 @@ module Rance
         if (!this.props.selectedStar ||
           this.state.expandedAction === "buildShips")
         {
-          this.setState(
-          {
-            expandedAction: null,
-            expandedActionElement: null
-          }, this.updateActions);
+          this.clearExpandedAction();
         }
         else
         {
@@ -107,7 +102,8 @@ module Rance
             UIComponents.BuildableShipsList(
             {
               player: this.props.player,
-              star: this.props.selectedStar
+              star: this.props.selectedStar,
+              clearExpandedAction: this.clearExpandedAction
             })
           );
 
@@ -124,11 +120,7 @@ module Rance
         if (!this.props.selectedStar ||
           this.state.expandedAction === "upgradeBuildings")
         {
-          this.setState(
-          {
-            expandedAction: null,
-            expandedActionElement: null
-          }, this.updateActions);
+          this.clearExpandedAction();
         }
         else
         {
@@ -139,7 +131,8 @@ module Rance
             UIComponents.BuildingUpgradeList(
             {
               player: this.props.player,
-              star: this.props.selectedStar
+              star: this.props.selectedStar,
+              clearExpandedAction: this.clearExpandedAction
             })
           );
           
