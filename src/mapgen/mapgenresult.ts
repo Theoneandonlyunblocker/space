@@ -44,10 +44,7 @@ module Rance
 
       makeMap(): GalaxyMap
       {
-        if (!this.voronoiInfo)
-        {
-          this.voronoiInfo = this.makeVoronoiInfo();
-        }
+        this.voronoiInfo = this.makeVoronoiInfo();
 
         this.clearMapGenData()
 
@@ -59,8 +56,21 @@ module Rance
       makeVoronoiInfo(): MapVoronoiInfo
       {
         var voronoiInfo = new MapVoronoiInfo();
+        console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
         voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
         voronoiInfo.treeMap = this.makeVoronoiTreeMap();
+
+        // move all stars to centroid of their voronoi cell. store original position for serialization
+        for (var i = 0; i < this.stars.length; i++)
+        {
+          var star = this.stars[i];
+          star.basisX = star.x;
+          star.basisY = star.y;
+        }
+
+        MapGen2.relaxVoronoi(voronoiInfo.diagram);
+
+        console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
 
         return voronoiInfo;
       }

@@ -7769,8 +7769,8 @@ var Rance;
             var data = {};
 
             data.id = this.id;
-            data.x = this.x;
-            data.y = this.y;
+            data.x = this.basisX;
+            data.y = this.basisY;
 
             data.baseIncome = this.baseIncome;
 
@@ -10520,9 +10520,7 @@ var Rance;
             };
 
             MapGenResult.prototype.makeMap = function () {
-                if (!this.voronoiInfo) {
-                    this.voronoiInfo = this.makeVoronoiInfo();
-                }
+                this.voronoiInfo = this.makeVoronoiInfo();
 
                 this.clearMapGenData();
 
@@ -10533,8 +10531,19 @@ var Rance;
 
             MapGenResult.prototype.makeVoronoiInfo = function () {
                 var voronoiInfo = new Rance.MapVoronoiInfo();
+                console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
                 voronoiInfo.diagram = Rance.MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
                 voronoiInfo.treeMap = this.makeVoronoiTreeMap();
+
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    star.basisX = star.x;
+                    star.basisY = star.y;
+                }
+
+                Rance.MapGen2.relaxVoronoi(voronoiInfo.diagram);
+
+                console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
 
                 return voronoiInfo;
             };
@@ -14476,8 +14485,6 @@ var Rance;
                 this.props.mapRenderer.setAllLayersAsDirty();
 
                 var centerLocation = this.props.renderer.camera.toCenterOn || this.props.toCenterOn || this.props.player.controlledLocations[0];
-
-                console.log(Date.now(), "galaxy map mount", this.props.renderer.camera.toCenterOn, this.props.renderer.camera.tempCameraId);
 
                 this.props.renderer.camera.centerOnPosition(centerLocation);
             },
@@ -20291,7 +20298,8 @@ var Rance;
                     starCount: 40
                 },
                 basicOptions: {
-                    arms: 5
+                    arms: 5,
+                    centerDensity: 40
                 }
             };
 

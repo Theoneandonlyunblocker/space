@@ -702,6 +702,8 @@ declare module Rance {
         public id: number;
         public x: number;
         public y: number;
+        public basisX: number;
+        public basisY: number;
         public linksTo: Star[];
         public linksFrom: Star[];
         public mapGenData: any;

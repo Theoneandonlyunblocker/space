@@ -16,6 +16,11 @@ module Rance
     x: number;
     y: number;
 
+    // position voronoi cell is calculated from. after voronoi is calculated, star is moved
+    // to the centroid of its cell and these are stored to calculate voronoi after loading map
+    basisX: number;
+    basisY: number;
+
     // separated so we can iterate through star[].linksTo to only get each connection once
     // use star.getAllLinks() for individual star connections
     linksTo: Star[] = [];
@@ -857,8 +862,8 @@ module Rance
       var data: any = {};
 
       data.id = this.id;
-      data.x = this.x;
-      data.y = this.y;
+      data.x = this.basisX;
+      data.y = this.basisY;
 
       data.baseIncome = this.baseIncome;
 

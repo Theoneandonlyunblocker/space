@@ -215,7 +215,8 @@ module Rance
         },
         basicOptions:
         {
-          arms: 5
+          arms: 5,
+          centerDensity: 40
         }
       }
 
