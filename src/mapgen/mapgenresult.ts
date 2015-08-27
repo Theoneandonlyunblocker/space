@@ -56,7 +56,6 @@ module Rance
       makeVoronoiInfo(): MapVoronoiInfo
       {
         var voronoiInfo = new MapVoronoiInfo();
-        console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
         voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
         voronoiInfo.treeMap = this.makeVoronoiTreeMap();
 
@@ -68,9 +67,11 @@ module Rance
           star.basisY = star.y;
         }
 
-        MapGen2.relaxVoronoi(voronoiInfo.diagram);
-
-        console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
+        MapGen2.relaxVoronoi(voronoiInfo.diagram, function(point)
+        {
+          // dont move filler points
+          return isFinite(point.id) ? 1 : 0;
+        });
 
         return voronoiInfo;
       }

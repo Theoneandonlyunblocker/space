@@ -10531,7 +10531,6 @@ var Rance;
 
             MapGenResult.prototype.makeVoronoiInfo = function () {
                 var voronoiInfo = new Rance.MapVoronoiInfo();
-                console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
                 voronoiInfo.diagram = Rance.MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
                 voronoiInfo.treeMap = this.makeVoronoiTreeMap();
 
@@ -10541,9 +10540,10 @@ var Rance;
                     star.basisY = star.y;
                 }
 
-                Rance.MapGen2.relaxVoronoi(voronoiInfo.diagram);
-
-                console.log(this.stars[0].id, [this.stars[0].x, this.stars[0].y], [this.stars[0].basisX, this.stars[0].basisY]);
+                Rance.MapGen2.relaxVoronoi(voronoiInfo.diagram, function (point) {
+                    // dont move filler points
+                    return isFinite(point.id) ? 1 : 0;
+                });
 
                 return voronoiInfo;
             };
