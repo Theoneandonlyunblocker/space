@@ -15860,15 +15860,36 @@ var Rance;
 
                     var percentageInCenter = 0.3;
                     var percentageInArms = 1 - percentageInCenter;
-                    var amountPerArm = totalStars / actualArms * percentageInArms;
                     var amountInCenter = totalStars * percentageInCenter;
+                    var amountPerArm = Math.round(totalStars / actualArms * percentageInArms);
+                    var amountPerFillerArm = Math.round(amountPerArm / 2);
+                    var amountPerCenter = Math.round(amountInCenter / totalArms);
+
+                    // to prevent rounding issues, probably a better way to do this
+                    var actualStarsInArms = actualArms * amountPerArm;
+                    var actualStarsInCenter = totalArms * amountPerCenter;
+                    var actualStars = actualStarsInCenter + actualStarsInArms;
+                    var starsDeficit = totalStars - actualStars;
+
+                    var armsToMakeUpDeficit = [];
+                    var starsToAddPerDeficitArm = 0;
+
+                    if (starsDeficit !== 0) {
+                        starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
+                        var deficitStep = totalArms / Math.abs(starsDeficit);
+
+                        for (var i = 0; i < totalArms; i += deficitStep) {
+                            armsToMakeUpDeficit.push(Math.round(i));
+                        }
+                    }
 
                     return ({
-                        totalStars: totalStars,
                         totalArms: totalArms,
-                        amountPerArm: Math.round(amountPerArm),
-                        amountPerFillerArm: Math.round(amountPerArm / 2),
-                        amountPerCenter: Math.round(amountInCenter / totalArms),
+                        armsToMakeUpDeficit: armsToMakeUpDeficit,
+                        starsToAddPerDeficitArm: starsToAddPerDeficitArm,
+                        amountPerArm: amountPerArm,
+                        amountPerFillerArm: amountPerFillerArm,
+                        amountPerCenter: amountPerCenter,
                         centerSize: 0.4,
                         armDistance: Math.PI * 2 / totalArms,
                         armOffsetMax: 0.5,
@@ -15930,6 +15951,11 @@ var Rance;
                     regions.push(region);
 
                     var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
+                    var amountForThisCenter = sg.amountPerCenter;
+                    if (sg.armsToMakeUpDeficit.indexOf(i) !== -1) {
+                        amountForThisCenter += sg.starsToAddPerDeficitArm;
+                    }
+
                     var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
 
                     for (var j = 0; j < amountForThisArm; j++) {
@@ -15949,7 +15975,7 @@ var Rance;
                         }
                     }
 
-                    for (var j = 0; j < sg.amountPerCenter; j++) {
+                    for (var j = 0; j < amountForThisCenter; j++) {
                         var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
                         var star = makeStar(point.pos, point.distance);
 
@@ -16094,8 +16120,13 @@ var Rance;
                     },
                     basicOptions: {
                         arms: {
-                            min: 3,
-                            max: 5,
+                            min: 4,
+                            max: 6,
+                            step: 1
+                        },
+                        centerDensity: {
+                            min: 1,
+                            max: 75,
                             step: 1
                         }
                     },
@@ -16103,7 +16134,8 @@ var Rance;
                         funnyNumber: {
                             min: 69,
                             max: 420,
-                            step: 351
+                            step: 351,
+                            defaultValue: 69
                         }
                     }
                 }
@@ -16258,10 +16290,10 @@ var Rance;
                             var oldValuePercentage = Rance.getRelativeValue(this.getOptionValue(optionName), oldOption.min, oldOption.max);
                             value = option.min + (option.max - option.min) * oldValuePercentage;
                         } else {
-                            value = (option.min + option.max) / 2;
+                            value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                         }
 
-                        value = Rance.roundToNearestMultiple(value, option.step);
+                        value = Rance.clamp(Rance.roundToNearestMultiple(value, option.step), option.min, option.max);
                         defaultValues["optionValue_" + optionName] = value;
                     }
                 }.bind(this));
