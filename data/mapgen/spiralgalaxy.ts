@@ -45,8 +45,8 @@ module Rance
           {
             arms:
             {
-              min: 3,
-              max: 5,
+              min: 4,
+              max: 6,
               step: 1
             }
           },
@@ -56,7 +56,8 @@ module Rance
             {
               min: 69,
               max: 420,
-              step: 351
+              step: 351,
+              defaultValue: 69
             }
           }
         }

@@ -1056,6 +1056,7 @@ declare module Rance {
         min?: number;
         max?: number;
         step?: number;
+        defaultValue?: number;
     }
 }
 declare module Rance {

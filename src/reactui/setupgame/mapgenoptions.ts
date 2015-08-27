@@ -62,10 +62,10 @@ module Rance
             }
             else
             {
-              value = (option.min + option.max) / 2;
+              value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
             }
 
-            value = roundToNearestMultiple(value, option.step);
+            value = clamp(roundToNearestMultiple(value, option.step), option.min, option.max);
             defaultValues["optionValue_" + optionName] = value; 
           }
         }.bind(this));
