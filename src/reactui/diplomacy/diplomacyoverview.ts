@@ -12,6 +12,7 @@ module Rance
       makeDiplomacyActionsPopup: function(rowItem)
       {
         var player = rowItem.data.player;
+        if (!player) return;
 
         this.refs.popupManager.makePopup(
         {

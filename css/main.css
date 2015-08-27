@@ -1401,6 +1401,10 @@ progress::-webkit-progress-value {
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+.light-box-wrapper > * {
+  pointer-events: auto;
 }
 .light-box-container {
   position: relative;

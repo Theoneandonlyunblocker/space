@@ -4452,7 +4452,7 @@ var Rance;
                         key: type,
                         className: className
                     }, React.DOM.img({
-                        className: "diplomacy-status-player-flag",
+                        className: "diplomacy-status-player-icon",
                         src: this.props.player.icon
                     })));
                 }
@@ -4507,6 +4507,8 @@ var Rance;
             displayName: "DiplomacyOverview",
             makeDiplomacyActionsPopup: function (rowItem) {
                 var player = rowItem.data.player;
+                if (!player)
+                    return;
 
                 this.refs.popupManager.makePopup({
                     contentConstructor: Rance.UIComponents.DiplomacyActions,
