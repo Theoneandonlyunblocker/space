@@ -1799,10 +1799,6 @@ progress::-webkit-progress-value {
   margin-top: auto;
   pointer-events: auto;
 }
-.possible-actions-container + .star-info {
-  border-top: 0;
-  padding-top: 2px;
-}
 .possible-actions {
   position: relative;
   display: flex;
@@ -1812,7 +1808,7 @@ progress::-webkit-progress-value {
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
-  border-width: 5px 5px 5px 0;
+  border-width: 5px 5px 0 0;
   background-color: #0c1615;
   padding: 6px 10px;
 }
@@ -1851,6 +1847,7 @@ progress::-webkit-progress-value {
 .expanded-action {
   position: relative;
   left: -3px;
+  top: 3px;
   background-color: #0d2335;
   padding: 0 8px;
   color: #eeeeec;

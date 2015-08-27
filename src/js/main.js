@@ -5823,11 +5823,15 @@ var Rance;
                 });
             },
             updateBuildings: function () {
+                var buildingTemplates = this.props.star.getBuildableBuildings();
                 this.setState({
-                    buildingTemplates: this.props.star.getBuildableBuildings()
+                    buildingTemplates: buildingTemplates
                 });
 
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
+                if (buildingTemplates.length < 1) {
+                    this.props.clearExpandedAction();
+                }
             },
             buildBuilding: function (rowItem) {
                 var template = rowItem.data.template;
@@ -14090,6 +14094,10 @@ var Rance;
     (function (UIComponents) {
         UIComponents.BuildingUpgradeList = React.createClass({
             displayName: "BuildingUpgradeList",
+            hasAvailableUpgrades: function () {
+                var possibleUpgrades = this.props.star.getBuildingUpgrades();
+                return Object.keys(possibleUpgrades).length > 0;
+            },
             upgradeBuilding: function (upgradeData) {
                 var star = upgradeData.parentBuilding.location;
 
@@ -14108,12 +14116,16 @@ var Rance;
                 upgradeData.parentBuilding.controller.money -= upgradeData.cost;
 
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
+
+                if (!this.hasAvailableUpgrades()) {
+                    this.props.clearExpandedAction();
+                }
             },
             render: function () {
-                var possibleUpgrades = this.props.star.getBuildingUpgrades();
-                if (Object.keys(possibleUpgrades).length < 1)
+                if (!this.hasAvailableUpgrades())
                     return null;
 
+                var possibleUpgrades = this.props.star.getBuildingUpgrades();
                 var upgradeGroups = [];
 
                 for (var parentBuildingId in possibleUpgrades) {
@@ -14195,12 +14207,7 @@ var Rance;
             },
             componentDidMount: function () {
                 var self = this;
-                Rance.eventManager.addEventListener("clearPossibleActions", function () {
-                    self.setState({
-                        expandedAction: null,
-                        expandedActionElement: null
-                    }, self.updateActions);
-                });
+                Rance.eventManager.addEventListener("clearPossibleActions", this.clearExpandedAction);
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeAllListeners("clearPossibleActions");
@@ -14208,18 +14215,22 @@ var Rance;
             updateActions: function () {
                 Rance.eventManager.dispatchEvent("possibleActionsUpdated");
             },
+            clearExpandedAction: function () {
+                this.setState({
+                    expandedAction: null,
+                    expandedActionElement: null
+                }, this.updateActions);
+            },
             buildBuildings: function () {
                 if (!this.props.selectedStar || this.state.expandedAction === "buildBuildings") {
-                    this.setState({
-                        expandedAction: null,
-                        expandedActionElement: null
-                    }, this.updateActions);
+                    this.clearExpandedAction();
                 } else {
                     var element = React.DOM.div({
                         className: "expanded-action"
                     }, Rance.UIComponents.BuildableBuildingList({
                         player: this.props.player,
-                        star: this.props.selectedStar
+                        star: this.props.selectedStar,
+                        clearExpandedAction: this.clearExpandedAction
                     }));
 
                     this.setState({
@@ -14230,16 +14241,14 @@ var Rance;
             },
             buildShips: function () {
                 if (!this.props.selectedStar || this.state.expandedAction === "buildShips") {
-                    this.setState({
-                        expandedAction: null,
-                        expandedActionElement: null
-                    }, this.updateActions);
+                    this.clearExpandedAction();
                 } else {
                     var element = React.DOM.div({
                         className: "expanded-action"
                     }, Rance.UIComponents.BuildableShipsList({
                         player: this.props.player,
-                        star: this.props.selectedStar
+                        star: this.props.selectedStar,
+                        clearExpandedAction: this.clearExpandedAction
                     }));
 
                     this.setState({
@@ -14250,16 +14259,14 @@ var Rance;
             },
             upgradeBuildings: function () {
                 if (!this.props.selectedStar || this.state.expandedAction === "upgradeBuildings") {
-                    this.setState({
-                        expandedAction: null,
-                        expandedActionElement: null
-                    }, this.updateActions);
+                    this.clearExpandedAction();
                 } else {
                     var element = React.DOM.div({
                         className: "expanded-action"
                     }, Rance.UIComponents.BuildingUpgradeList({
                         player: this.props.player,
-                        star: this.props.selectedStar
+                        star: this.props.selectedStar,
+                        clearExpandedAction: this.clearExpandedAction
                     }));
 
                     this.setState({

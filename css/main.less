@@ -2247,11 +2247,6 @@ progress::-webkit-progress-value { background: #080; }
     margin-top: auto;
     pointer-events: auto;
   }
-  +.star-info
-  {
-    border-top: 0;
-    padding-top: 2px;
-  }
 }
 
 .possible-actions
@@ -2264,7 +2259,7 @@ progress::-webkit-progress-value { background: #080; }
 
   .full-border(5px);
 
-  border-width: 5px 5px 5px 0;
+  border-width: 5px 5px 0 0;
   background-color: @bg-color;
   padding: 6px 10px;
 
@@ -2290,6 +2285,7 @@ progress::-webkit-progress-value { background: #080; }
 {
   position: relative;
   left: -3px;
+  top: 3px;
   background-color: @bg-color2;
   padding: 0 8px;
   color: @text-color;
