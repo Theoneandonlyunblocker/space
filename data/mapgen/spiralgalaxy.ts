@@ -48,6 +48,13 @@ module Rance
               min: 4,
               max: 6,
               step: 1
+            },
+            centerDensity:
+            {
+              min: 1,
+              max: 75,
+              step: 1,
+              defaultValue: 40
             }
           },
           advancedOptions:

@@ -175,11 +175,13 @@ module Rance
           options.defaultOptions.height);
 
         // relax voronoi
+        var centerDensity = options.basicOptions["centerDensity"] / 100;
+        var inverseCenterDensity = 1 - centerDensity;
         for (var i = 0; i < 2; i++)
         {
           MapGen2.relaxVoronoi(voronoi, function(star: Star)
           {
-            return 0.25 + 0.75 * star.mapGenData.distance;
+            return centerDensity + inverseCenterDensity * star.mapGenData.distance;
           });
 
           voronoi = MapGen2.makeVoronoi(allPoints, options.defaultOptions.width,

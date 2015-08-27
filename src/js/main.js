@@ -15989,9 +15989,12 @@ var Rance;
                 // make voronoi
                 var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
 
+                // relax voronoi
+                var centerDensity = options.basicOptions["centerDensity"] / 100;
+                var inverseCenterDensity = 1 - centerDensity;
                 for (var i = 0; i < 2; i++) {
                     Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
-                        return 0.25 + 0.75 * star.mapGenData.distance;
+                        return centerDensity + inverseCenterDensity * star.mapGenData.distance;
                     });
 
                     voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
@@ -16127,7 +16130,8 @@ var Rance;
                         centerDensity: {
                             min: 1,
                             max: 75,
-                            step: 1
+                            step: 1,
+                            defaultValue: 40
                         }
                     },
                     advancedOptions: {
