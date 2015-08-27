@@ -98,6 +98,25 @@ module Rance
         console.log(this.getOptionValuesForTemplate());
       },
 
+      randomizeOptions: function()
+      {
+        var newValues: any = {};
+
+        var optionGroups = this.props.mapGenTemplate.options;
+        for (var optionGroupName in optionGroups)
+        {
+          var optionGroup = optionGroups[optionGroupName];
+          for (var optionName in optionGroup)
+          {
+            var option = optionGroup[optionName];
+            var optionValue = clamp(roundToNearestMultiple(randInt(option.min, option.max), option.step), option.min, option.max);
+            newValues["optionValue_" + optionName] = optionValue;
+          }
+        }
+
+        this.setState(newValues);
+      },
+
       getOptionValuesForTemplate: function(): Templates.MapGen.IMapGenOptionValues
       {
         var optionValues: Templates.MapGen.IMapGenOptionValues =
@@ -209,6 +228,12 @@ module Rance
               onClick: this.logOptions
             },
               "log option values"
+            ),
+            React.DOM.button(
+            {
+              onClick: this.randomizeOptions
+            },
+              "randomize option values"
             )
           )
         );
