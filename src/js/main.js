@@ -16282,7 +16282,7 @@ var Rance;
         UIComponents.MapGenOptions = React.createClass({
             displayName: "MapGenOptions",
             getInitialState: function () {
-                var defaultValues = this.getUnsetDefaultValues(this.props.mapGenTemplate);
+                var defaultValues = this.getDefaultValues(this.props.mapGenTemplate);
 
                 var state = {
                     defaultOptionsVisible: true,
@@ -16296,10 +16296,11 @@ var Rance;
             },
             componentWillReceiveProps: function (newProps) {
                 if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key) {
-                    this.setState(this.getUnsetDefaultValues(newProps.mapGenTemplate));
+                    this.setState(this.getDefaultValues(newProps.mapGenTemplate));
                 }
             },
-            getUnsetDefaultValues: function (mapGenTemplate) {
+            getDefaultValues: function (mapGenTemplate, unsetOnly) {
+                if (typeof unsetOnly === "undefined") { unsetOnly = true; }
                 var defaultValues = {};
 
                 ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function (optionGroup) {
@@ -16311,7 +16312,7 @@ var Rance;
                         var option = options[optionName];
                         var value;
 
-                        if (this.state && isFinite(this.getOptionValue(optionName))) {
+                        if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName))) {
                             if (!this.props.mapGenTemplate.options[optionGroup])
                                 continue;
 
@@ -16332,6 +16333,9 @@ var Rance;
                 }.bind(this));
 
                 return defaultValues;
+            },
+            resetValuesToDefault: function () {
+                this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
             },
             toggleOptionGroupVisibility: function (visibilityProp) {
                 var newState = {};
@@ -16451,7 +16455,9 @@ var Rance;
                     onClick: this.logOptions
                 }, "log option values"), React.DOM.button({
                     onClick: this.randomizeOptions
-                }, "randomize option values")));
+                }, "randomize"), React.DOM.button({
+                    onClick: this.resetValuesToDefault
+                }, "reset")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -16566,8 +16572,9 @@ var Rance;
 
                 app.makeGameFromSetup(map, players, [pirates]);
             },
-            randomizeAllPlayers: function () {
+            randomize: function () {
                 this.refs.players.randomizeAllPlayers();
+                this.refs.mapSetup.refs.mapGenOptions.randomizeOptions();
             },
             render: function () {
                 return (React.DOM.div({
@@ -16582,7 +16589,7 @@ var Rance;
                     setPlayerLimits: this.setPlayerLimits,
                     ref: "mapSetup"
                 })), React.DOM.button({
-                    onClick: this.randomizeAllPlayers
+                    onClick: this.randomize
                 }, "Randomize"), React.DOM.button({
                     onClick: this.startGame
                 }, "Start game")));

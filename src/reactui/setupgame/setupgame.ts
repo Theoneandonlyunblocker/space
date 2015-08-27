@@ -50,9 +50,10 @@ module Rance
         app.makeGameFromSetup(map, players, [pirates]);
       },
 
-      randomizeAllPlayers: function()
+      randomize: function()
       {
         this.refs.players.randomizeAllPlayers();
+        this.refs.mapSetup.refs.mapGenOptions.randomizeOptions();
       },
 
       render: function()
@@ -80,7 +81,7 @@ module Rance
             ),
             React.DOM.button(
             {
-              onClick: this.randomizeAllPlayers
+              onClick: this.randomize
             }, "Randomize"),
             React.DOM.button(
             {

@@ -12,7 +12,7 @@ module Rance
 
       getInitialState: function()
       {
-        var defaultValues: any = this.getUnsetDefaultValues(this.props.mapGenTemplate);
+        var defaultValues: any = this.getDefaultValues(this.props.mapGenTemplate);
 
         var state: any =
         {
@@ -30,11 +30,11 @@ module Rance
       {
         if (newProps.mapGenTemplate.key !== this.props.mapGenTemplate.key)
         {
-          this.setState(this.getUnsetDefaultValues(newProps.mapGenTemplate));
+          this.setState(this.getDefaultValues(newProps.mapGenTemplate));
         }
       },
 
-      getUnsetDefaultValues: function(mapGenTemplate)
+      getDefaultValues: function(mapGenTemplate: Templates.IMapGenTemplate, unsetOnly: boolean = true)
       {
         var defaultValues = {};
 
@@ -48,7 +48,7 @@ module Rance
             var option = options[optionName];
             var value: number;
 
-            if (this.state && isFinite(this.getOptionValue(optionName)))
+            if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName)))
             {
               if (!this.props.mapGenTemplate.options[optionGroup]) continue;
 
@@ -71,6 +71,11 @@ module Rance
         }.bind(this));
 
         return defaultValues;
+      },
+
+      resetValuesToDefault: function()
+      {
+        this.setState(this.getDefaultValues(this.props.mapGenTemplate, false));
       },
 
       toggleOptionGroupVisibility: function(visibilityProp: string)
@@ -233,7 +238,13 @@ module Rance
             {
               onClick: this.randomizeOptions
             },
-              "randomize option values"
+              "randomize"
+            ),
+            React.DOM.button(
+            {
+              onClick: this.resetValuesToDefault
+            },
+              "reset"
             )
           )
         );
