@@ -16,7 +16,7 @@ module Rance
         minPlayers: 2,
         maxPlayers: 5,
 
-        //mapGenFunction: spiralGalaxyGeneration,
+        mapGenFunction: spiralGalaxyGeneration,
 
         options:
         {

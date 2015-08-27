@@ -18,6 +18,7 @@ module Rance
 
     duration: number; // -1 === infinite
 
+    // effects that trigger at start of battle
     // effects that trigger when using an ability
     // effects that trigger when targeted
     // effects that trigger at start of turn

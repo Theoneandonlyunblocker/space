@@ -51,6 +51,15 @@ module Rance
           selectedTemplate: Templates.MapGen[e.target.value]
         }, this.updatePlayerLimits);
       },
+
+      getMapSetupInfo: function()
+      {
+        return(
+        {
+          template: this.state.selectedTemplate,
+          optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
+        });
+      },
       
       render: function()
       {
@@ -99,7 +108,8 @@ module Rance
             ),
             UIComponents.MapGenOptions(
             {
-              mapGenTemplate: this.state.selectedTemplate
+              mapGenTemplate: this.state.selectedTemplate,
+              ref: "mapGenOptions"
             })
           )
         );

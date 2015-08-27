@@ -98,7 +98,7 @@ module Rance
         console.log(this.getOptionValuesForTemplate());
       },
 
-      getOptionValuesForTemplate: function()
+      getOptionValuesForTemplate: function(): Templates.MapGen.IMapGenOptionValues
       {
         var optionValues: Templates.MapGen.IMapGenOptionValues =
           extendObject(this.props.mapGenTemplate.options);

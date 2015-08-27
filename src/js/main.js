@@ -13270,6 +13270,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var StatusEffect = (function () {
+        // effects that trigger at start of battle
         // effects that trigger when using an ability
         // effects that trigger when targeted
         // effects that trigger at start of turn
@@ -16072,7 +16073,7 @@ var Rance;
                 description: "(not implemented yet) just testing",
                 minPlayers: 2,
                 maxPlayers: 5,
-                //mapGenFunction: spiralGalaxyGeneration,
+                mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
                 options: {
                     defaultOptions: {
                         height: {
@@ -16410,6 +16411,12 @@ var Rance;
                     selectedTemplate: Rance.Templates.MapGen[e.target.value]
                 }, this.updatePlayerLimits);
             },
+            getMapSetupInfo: function () {
+                return ({
+                    template: this.state.selectedTemplate,
+                    optionValues: this.refs.mapGenOptions.getOptionValuesForTemplate()
+                });
+            },
             render: function () {
                 var mapGenTemplateOptions = [];
                 for (var i = 0; i < this.state.templates.length; i++) {
@@ -16433,7 +16440,8 @@ var Rance;
                 }, "Players: " + this.state.selectedTemplate.minPlayers + "-" + this.state.selectedTemplate.maxPlayers), React.DOM.div({
                     className: "map-setup-description"
                 }, this.state.selectedTemplate.description), Rance.UIComponents.MapGenOptions({
-                    mapGenTemplate: this.state.selectedTemplate
+                    mapGenTemplate: this.state.selectedTemplate,
+                    ref: "mapGenOptions"
                 })));
             }
         });
@@ -16460,19 +16468,21 @@ var Rance;
                 });
             },
             startGame: function () {
-                var gameData = {};
+                var playerData = {};
 
                 var players = this.refs.players.makeAllPlayers();
 
                 var pirates = new Rance.Player(true);
                 pirates.setupPirates();
 
-                gameData.playerData = {
-                    players: players,
-                    independents: [pirates]
-                };
+                var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
 
-                app.makeGameFromSetup(gameData);
+                var mapGenFunction = mapSetupInfo.template.mapGenFunction;
+
+                var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players, [pirates]);
+                var map = mapGenResult.makeMap();
+
+                app.makeGameFromSetup(map, players, [pirates]);
             },
             randomizeAllPlayers: function () {
                 this.refs.players.randomizeAllPlayers();
@@ -16487,7 +16497,8 @@ var Rance;
                     minPlayers: this.state.minPlayers,
                     maxPlayers: this.state.maxPlayers
                 }), Rance.UIComponents.MapSetup({
-                    setPlayerLimits: this.setPlayerLimits
+                    setPlayerLimits: this.setPlayerLimits,
+                    ref: "mapSetup"
                 })), React.DOM.button({
                     onClick: this.randomizeAllPlayers
                 }, "Randomize"), React.DOM.button({
@@ -20191,12 +20202,13 @@ var Rance;
             this.reactUI.switchScene("galaxyMap");
         };
 
-        App.prototype.makeGameFromSetup = function (gameData) {
+        App.prototype.makeGameFromSetup = function (map, players, independents) {
             this.destroy();
 
             this.initUI();
 
-            this.game = this.makeGame(gameData.playerData);
+            this.game = new Rance.Game(map, players, players[0]);
+            this.game.independents = independents;
             this.initGame();
 
             this.initDisplay();
@@ -20205,8 +20217,8 @@ var Rance;
             this.reactUI.switchScene("galaxyMap");
         };
 
-        App.prototype.makeGame = function (playerData) {
-            var playerData = playerData || this.makePlayers();
+        App.prototype.makeGame = function () {
+            var playerData = this.makePlayers();
             var players = playerData.players;
             var independents = playerData.independents;
             var map = this.makeMap(playerData);

@@ -2761,8 +2761,8 @@ declare module Rance {
         public makeApp(): void;
         public destroy(): void;
         public load(saveName: string): void;
-        public makeGameFromSetup(gameData: any): void;
-        public makeGame(playerData?: any): Rance.Game;
+        public makeGameFromSetup(map: Rance.GalaxyMap, players: Rance.Player[], independents: Rance.Player[]): void;
+        public makeGame(): Rance.Game;
         public makePlayers(): {
             players: any[];
             independents: Rance.Player[];

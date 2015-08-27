@@ -153,13 +153,14 @@ module Rance
       this.reactUI.switchScene("galaxyMap");
     }
 
-    makeGameFromSetup(gameData)
+    makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[])
     {
       this.destroy();
 
       this.initUI();
 
-      this.game = this.makeGame(gameData.playerData);
+      this.game = new Game(map, players, players[0]);
+      this.game.independents = independents;
       this.initGame();
 
       this.initDisplay();
@@ -168,9 +169,9 @@ module Rance
       this.reactUI.switchScene("galaxyMap");
     }
 
-    makeGame(playerData?)
+    makeGame()
     {
-      var playerData = playerData || this.makePlayers();
+      var playerData = this.makePlayers();
       var players = playerData.players;
       var independents = playerData.independents;
       var map = this.makeMap(playerData);

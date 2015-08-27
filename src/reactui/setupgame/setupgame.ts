@@ -31,23 +31,23 @@ module Rance
         });
       },
 
-
       startGame: function()
       {
-        var gameData: any = {};
+        var playerData: any = {};
 
         var players = this.refs.players.makeAllPlayers();
 
         var pirates = new Player(true);
         pirates.setupPirates();
 
-        gameData.playerData =
-        {
-          players: players,
-          independents: [pirates]
-        }
+        var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
 
-        app.makeGameFromSetup(gameData);
+        var mapGenFunction = mapSetupInfo.template.mapGenFunction;
+
+        var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players, [pirates]);
+        var map = mapGenResult.makeMap();
+
+        app.makeGameFromSetup(map, players, [pirates]);
       },
 
       randomizeAllPlayers: function()
@@ -74,7 +74,8 @@ module Rance
               }),
               UIComponents.MapSetup(
               {
-                setPlayerLimits: this.setPlayerLimits
+                setPlayerLimits: this.setPlayerLimits,
+                ref: "mapSetup"
               })
             ),
             React.DOM.button(
