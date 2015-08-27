@@ -21,6 +21,35 @@ module Rance
       {
         var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
 
+        if (type === "flag")
+        {
+          if (!this.props.player)
+          {
+            return(
+              React.DOM.td(
+              {
+                key: type,
+                className: className
+              },
+                null
+              )
+            );
+          }
+
+          return(
+            React.DOM.td(
+            {
+              key: type,
+              className: className
+            },
+              React.DOM.img(
+              {
+                className: "diplomacy-status-player-icon",
+                src: this.props.player.icon
+              })
+            )
+          );
+        }
         if (type === "opinion")
         {
           return(

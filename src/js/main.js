@@ -4440,6 +4440,22 @@ var Rance;
             makeCell: function (type) {
                 var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
 
+                if (type === "flag") {
+                    if (!this.props.player) {
+                        return (React.DOM.td({
+                            key: type,
+                            className: className
+                        }, null));
+                    }
+
+                    return (React.DOM.td({
+                        key: type,
+                        className: className
+                    }, React.DOM.img({
+                        className: "diplomacy-status-player-flag",
+                        src: this.props.player.icon
+                    })));
+                }
                 if (type === "opinion") {
                     return (React.DOM.td({
                         key: type,
@@ -4538,6 +4554,12 @@ var Rance;
                 }
 
                 var columns = [
+                    {
+                        label: "",
+                        key: "flag",
+                        defaultOrder: "asc",
+                        propToSortBy: "name"
+                    },
                     {
                         label: "Name",
                         key: "name",

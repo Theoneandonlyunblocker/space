@@ -74,6 +74,12 @@ module Rance
         var columns: any =
         [
           {
+            label: "",
+            key: "flag",
+            defaultOrder: "asc",
+            propToSortBy: "name"
+          },
+          {
             label: "Name",
             key: "name",
             defaultOrder: "asc"

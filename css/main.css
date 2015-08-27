@@ -2402,6 +2402,14 @@ progress::-webkit-progress-value {
 .diplomatic-status-player {
   margin: 5px 0;
 }
+.diplomatic-status-flag {
+  width: 1em;
+  height: 1em;
+}
+.diplomatic-status-flag > * {
+  width: 1em;
+  height: 1em;
+}
 .diplomatic-status-opinion {
   text-align: center;
 }

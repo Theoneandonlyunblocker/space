@@ -1832,6 +1832,12 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: center;
 
   background-color: rgba(0, 0, 0, 0.4);
+
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
 }
 
 .light-box-container
@@ -2587,6 +2593,17 @@ progress::-webkit-progress-value { background: #080; }
 .diplomatic-status-player
 {
   margin: 5px 0;
+}
+
+.diplomatic-status-flag
+{
+  width: 1em;
+  height: 1em;
+  >*
+  {
+    width: 1em;
+    height: 1em;
+  }
 }
 
 .diplomatic-status-opinion
