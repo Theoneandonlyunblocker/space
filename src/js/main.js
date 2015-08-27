@@ -16001,7 +16001,7 @@ var Rance;
                 var inverseCenterDensity = 1 - centerDensity;
                 for (var i = 0; i < 2; i++) {
                     Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
-                        return centerDensity + inverseCenterDensity * star.mapGenData.distance;
+                        return inverseCenterDensity + centerDensity * star.mapGenData.distance;
                     });
 
                     voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
@@ -16105,8 +16105,8 @@ var Rance;
         (function (MapGen) {
             MapGen.spiralGalaxy = {
                 key: "spiralGalaxy",
-                displayName: "Test Map",
-                description: "(not implemented yet) just testing",
+                displayName: "Spiral galaxy",
+                description: "Create a spiral galaxy with arms",
                 minPlayers: 2,
                 maxPlayers: 5,
                 mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
@@ -16136,9 +16136,9 @@ var Rance;
                         },
                         centerDensity: {
                             min: 1,
-                            max: 75,
+                            max: 90,
                             step: 1,
-                            defaultValue: 40
+                            defaultValue: 50
                         }
                     },
                     advancedOptions: {
@@ -16156,40 +16156,49 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
+/// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (MapGen) {
-            MapGen.newTestSmall = {
-                key: "newTestSmall",
-                displayName: "Small Test Map",
-                description: "(not implemented yet) just testing but small",
+            MapGen.tinierSpiralGalaxy = {
+                key: "tinierSpiralGalaxy",
+                displayName: "Tinier Spiral galaxy",
+                description: "Create a spiral galaxy with arms but tinier (just for testing)",
                 minPlayers: 2,
-                maxPlayers: 4,
+                maxPlayers: 5,
+                mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
                 options: {
                     defaultOptions: {
                         height: {
-                            min: 400,
-                            max: 800,
+                            min: 500,
+                            max: 1000,
                             step: 1
                         },
                         width: {
-                            min: 400,
-                            max: 800,
+                            min: 500,
+                            max: 1000,
                             step: 1
                         },
                         starCount: {
-                            min: 20,
-                            max: 40,
+                            min: 15,
+                            max: 35,
                             step: 1
                         }
                     },
                     basicOptions: {
-                        tinyness: {
-                            min: 69,
-                            max: 420,
-                            step: 1
+                        arms: {
+                            min: 2,
+                            max: 5,
+                            step: 1,
+                            defaultValue: 4
+                        },
+                        centerDensity: {
+                            min: 1,
+                            max: 90,
+                            step: 1,
+                            defaultValue: 50
                         }
                     }
                 }

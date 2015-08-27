@@ -2156,7 +2156,7 @@ declare module Rance {
             minPlayers: number;
             maxPlayers: number;
             options: Templates.MapGen.IMapGenOptions;
-            mapGenFunction?: (options: Templates.MapGen.IMapGenOptionValues, players: Rance.Player[], independents: Rance.Player[]) => Rance.MapGen2.MapGenResult;
+            mapGenFunction: (options: Templates.MapGen.IMapGenOptionValues, players: Rance.Player[], independents: Rance.Player[]) => Rance.MapGen2.MapGenResult;
         }
     }
 }
@@ -2170,7 +2170,7 @@ declare module Rance {
 declare module Rance {
     module Templates {
         module MapGen {
-            var newTestSmall: Templates.IMapGenTemplate;
+            var tinierSpiralGalaxy: Templates.IMapGenTemplate;
         }
     }
 }

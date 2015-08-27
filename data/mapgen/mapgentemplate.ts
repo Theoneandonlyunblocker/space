@@ -17,8 +17,8 @@ module Rance
 
       options: MapGen.IMapGenOptions;
 
-      mapGenFunction?: (options: MapGen.IMapGenOptionValues,
-        players: Player[], independents: Player[]) => MapGen2.MapGenResult; // TODO remove ?
+      mapGenFunction: (options: MapGen.IMapGenOptionValues,
+        players: Player[], independents: Player[]) => MapGen2.MapGenResult;
     }
   }
 }

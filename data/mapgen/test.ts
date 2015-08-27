@@ -1,3 +1,4 @@
+/// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 
 module Rance
@@ -6,14 +7,16 @@ module Rance
   {
     export module MapGen
     {
-      export var newTestSmall: IMapGenTemplate =
+      export var tinierSpiralGalaxy: IMapGenTemplate =
       {
-        key: "newTestSmall",
-        displayName: "Small Test Map",
-        description: "(not implemented yet) just testing but small",
+        key: "tinierSpiralGalaxy",
+        displayName: "Tinier Spiral galaxy",
+        description: "Create a spiral galaxy with arms but tinier (just for testing)",
 
         minPlayers: 2,
-        maxPlayers: 4,
+        maxPlayers: 5,
+
+        mapGenFunction: spiralGalaxyGeneration,
 
         options:
         {
@@ -21,30 +24,38 @@ module Rance
           {
             height:
             {
-              min: 400,
-              max: 800,
+              min: 500,
+              max: 1000,
               step: 1
             },
             width:
             {
-              min: 400,
-              max: 800,
+              min: 500,
+              max: 1000,
               step: 1
             },
             starCount:
             {
-              min: 20,
-              max: 40,
+              min: 15,
+              max: 35,
               step: 1
             }
           },
           basicOptions:
           {
-            tinyness:
+            arms:
             {
-              min: 69,
-              max: 420,
-              step: 1
+              min: 2,
+              max: 5,
+              step: 1,
+              defaultValue: 4
+            },
+            centerDensity:
+            {
+              min: 1,
+              max: 90,
+              step: 1,
+              defaultValue: 50
             }
           }
         }

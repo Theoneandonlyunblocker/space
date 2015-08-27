@@ -10,8 +10,8 @@ module Rance
       export var spiralGalaxy: IMapGenTemplate =
       {
         key: "spiralGalaxy",
-        displayName: "Test Map",
-        description: "(not implemented yet) just testing",
+        displayName: "Spiral galaxy",
+        description: "Create a spiral galaxy with arms",
 
         minPlayers: 2,
         maxPlayers: 5,
@@ -52,9 +52,9 @@ module Rance
             centerDensity:
             {
               min: 1,
-              max: 75,
+              max: 90,
               step: 1,
-              defaultValue: 40
+              defaultValue: 50
             }
           },
           advancedOptions:
