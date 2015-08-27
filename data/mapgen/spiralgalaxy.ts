@@ -49,6 +49,13 @@ module Rance
               max: 6,
               step: 1
             },
+            starSizeRegularity:
+            {
+              min: 1,
+              max: 100,
+              step: 1,
+              defaultValue: 100
+            },
             centerDensity:
             {
               min: 1,

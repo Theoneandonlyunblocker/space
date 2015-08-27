@@ -15997,11 +15997,12 @@ var Rance;
                 var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
 
                 // relax voronoi
+                var regularity = options.basicOptions["starSizeRegularity"] / 100;
                 var centerDensity = options.basicOptions["centerDensity"] / 100;
                 var inverseCenterDensity = 1 - centerDensity;
                 for (var i = 0; i < 2; i++) {
                     Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
-                        return inverseCenterDensity + centerDensity * star.mapGenData.distance;
+                        return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
                     });
 
                     voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
@@ -16134,6 +16135,12 @@ var Rance;
                             max: 6,
                             step: 1
                         },
+                        starSizeRegularity: {
+                            min: 1,
+                            max: 100,
+                            step: 1,
+                            defaultValue: 100
+                        },
                         centerDensity: {
                             min: 1,
                             max: 90,
@@ -16193,6 +16200,12 @@ var Rance;
                             max: 5,
                             step: 1,
                             defaultValue: 4
+                        },
+                        starSizeRegularity: {
+                            min: 1,
+                            max: 100,
+                            step: 1,
+                            defaultValue: 100
                         },
                         centerDensity: {
                             min: 1,
@@ -16337,6 +16350,21 @@ var Rance;
             logOptions: function () {
                 console.log(this.getOptionValuesForTemplate());
             },
+            randomizeOptions: function () {
+                var newValues = {};
+
+                var optionGroups = this.props.mapGenTemplate.options;
+                for (var optionGroupName in optionGroups) {
+                    var optionGroup = optionGroups[optionGroupName];
+                    for (var optionName in optionGroup) {
+                        var option = optionGroup[optionName];
+                        var optionValue = Rance.clamp(Rance.roundToNearestMultiple(Rance.randInt(option.min, option.max), option.step), option.min, option.max);
+                        newValues["optionValue_" + optionName] = optionValue;
+                    }
+                }
+
+                this.setState(newValues);
+            },
             getOptionValuesForTemplate: function () {
                 var optionValues = Rance.extendObject(this.props.mapGenTemplate.options);
 
@@ -16421,7 +16449,9 @@ var Rance;
                     className: "map-gen-options"
                 }, optionGroups, React.DOM.button({
                     onClick: this.logOptions
-                }, "log option values")));
+                }, "log option values"), React.DOM.button({
+                    onClick: this.randomizeOptions
+                }, "randomize option values")));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -20308,7 +20338,8 @@ var Rance;
                 },
                 basicOptions: {
                     arms: 5,
-                    centerDensity: 40
+                    centerDensity: 40,
+                    starSizeRegularity: 100
                 }
             };
 

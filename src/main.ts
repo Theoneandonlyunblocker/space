@@ -216,7 +216,8 @@ module Rance
         basicOptions:
         {
           arms: 5,
-          centerDensity: 40
+          centerDensity: 40,
+          starSizeRegularity: 100
         }
       }
 
