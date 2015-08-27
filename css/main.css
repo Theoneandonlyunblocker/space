@@ -2685,6 +2685,12 @@ progress::-webkit-progress-value {
 .popup-button.disabled * {
   pointer-events: none !important;
 }
+.popup-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+}
 .dont-show-again-wrapper {
   display: flex;
   align-items: center;

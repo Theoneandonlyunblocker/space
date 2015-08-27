@@ -42,6 +42,7 @@ module Rance
       {
         if (e.button) return;
         e.preventDefault();
+        e.stopPropagation();
 
         if (this.state.dragging) return;
 

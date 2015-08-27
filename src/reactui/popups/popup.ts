@@ -1,4 +1,5 @@
 /// <reference path="../mixins/draggable.ts" />
+/// <reference path="resizehandle.ts" />
 
 module Rance
 {
@@ -15,6 +16,11 @@ module Rance
         {
           zIndex: this.props.incrementZIndex()
         });
+      },
+
+      componentDidMount: function()
+      {
+        this.setInitialPosition();
       },
 
       onDragStart: function()
@@ -46,13 +52,19 @@ module Rance
           {
             top: top,
             left: left
-          }
+          },
+          width: undefined,
+          height: undefined
         });
       },
 
-      componentDidMount: function()
+      handleResizeMove: function(x: number, y: number)
       {
-        this.setInitialPosition();
+        this.setState(
+        {
+          width: x - this.state.dragPos.left,
+          height: y - this.state.dragPos.top
+        });
       },
 
       render: function()
@@ -60,12 +72,15 @@ module Rance
         var divProps: any =
         {
           className: "popup draggable",
+          ref: "test",
           onTouchStart: this.handleMouseDown,
           onMouseDown: this.handleMouseDown,
           style:
           {
             top: this.state.dragPos ? this.state.dragPos.top : 0,
             left: this.state.dragPos ? this.state.dragPos.left : 0,
+            width: this.state.width,
+            height: this.state.height,
             zIndex: this.state.zIndex
           }
         };
@@ -79,9 +94,15 @@ module Rance
 
         contentProps.closePopup = this.props.closePopup
 
+        var resizeHandle = !this.resizable ? null : UIComponents.PopupResizeHandle(
+        {
+          handleResize: this.handleResizeMove
+        });
+
         return(
           React.DOM.div(divProps,
-            this.props.contentConstructor(contentProps)
+            this.props.contentConstructor(contentProps),
+            resizeHandle
           )
         );
       }

@@ -244,6 +244,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var PopupResizeHandle: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var Popup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }

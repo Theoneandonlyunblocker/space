@@ -83,7 +83,7 @@ module Rance
 
       closePopup: function(id: number)
       {
-        if (!this.hasPopup) throw new Error("No such popup");
+        if (!this.hasPopup(id)) throw new Error("No such popup");
 
         var newPopups = [];
 

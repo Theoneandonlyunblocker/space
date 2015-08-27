@@ -353,6 +353,7 @@ var Rance;
                 if (e.button)
                     return;
                 e.preventDefault();
+                e.stopPropagation();
 
                 if (this.state.dragging)
                     return;
@@ -3490,6 +3491,39 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.PopupResizeHandle = React.createClass({
+            displayName: "PopupResizeHandle",
+            mixins: [Rance.UIComponents.Draggable],
+            // originBottom: undefined,
+            // originRight: undefined,
+            // onDragStart: function()
+            // {
+            //   var rect = this.getDOMNode().getBoundingClientRect();
+            //   this.originBottom = rect.bottom;
+            //   this.originRight = rect.right;
+            // },
+            onDragMove: function (x, y) {
+                var rect = this.getDOMNode().getBoundingClientRect();
+                var offset = this.state.dragOffset;
+                this.props.handleResize(x + rect.width, y + rect.height);
+            },
+            render: function () {
+                return (React.DOM.img({
+                    className: "popup-resize-handle",
+                    src: "img\/icons\/resizeHandle.png",
+                    onTouchStart: this.handleMouseDown,
+                    onMouseDown: this.handleMouseDown
+                }));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="../mixins/draggable.ts" />
+/// <reference path="resizehandle.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.Popup = React.createClass({
             displayName: "Popup",
             mixins: [Rance.UIComponents.Draggable],
@@ -3497,6 +3531,9 @@ var Rance;
                 return ({
                     zIndex: this.props.incrementZIndex()
                 });
+            },
+            componentDidMount: function () {
+                this.setInitialPosition();
             },
             onDragStart: function () {
                 this.setState({
@@ -3520,20 +3557,28 @@ var Rance;
                     dragPos: {
                         top: top,
                         left: left
-                    }
+                    },
+                    width: undefined,
+                    height: undefined
                 });
             },
-            componentDidMount: function () {
-                this.setInitialPosition();
+            handleResizeMove: function (x, y) {
+                this.setState({
+                    width: x - this.state.dragPos.left,
+                    height: y - this.state.dragPos.top
+                });
             },
             render: function () {
                 var divProps = {
                     className: "popup draggable",
+                    ref: "test",
                     onTouchStart: this.handleMouseDown,
                     onMouseDown: this.handleMouseDown,
                     style: {
                         top: this.state.dragPos ? this.state.dragPos.top : 0,
                         left: this.state.dragPos ? this.state.dragPos.left : 0,
+                        width: this.state.width,
+                        height: this.state.height,
                         zIndex: this.state.zIndex
                     }
                 };
@@ -3546,7 +3591,11 @@ var Rance;
 
                 contentProps.closePopup = this.props.closePopup;
 
-                return (React.DOM.div(divProps, this.props.contentConstructor(contentProps)));
+                var resizeHandle = !this.resizable ? null : Rance.UIComponents.PopupResizeHandle({
+                    handleResize: this.handleResizeMove
+                });
+
+                return (React.DOM.div(divProps, this.props.contentConstructor(contentProps), resizeHandle));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3731,7 +3780,7 @@ var Rance;
                 return false;
             },
             closePopup: function (id) {
-                if (!this.hasPopup)
+                if (!this.hasPopup(id))
                     throw new Error("No such popup");
 
                 var newPopups = [];
