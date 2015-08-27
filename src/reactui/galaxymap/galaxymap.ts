@@ -74,12 +74,6 @@ module Rance
           this.props.toCenterOn ||
           this.props.player.controlledLocations[0];
 
-        console.log(Date.now(),
-          "galaxy map mount",
-          this.props.renderer.camera.toCenterOn,
-          this.props.renderer.camera.tempCameraId
-          );
-
         this.props.renderer.camera.centerOnPosition(centerLocation);
       },
       componentWillUnmount: function()
