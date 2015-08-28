@@ -128,7 +128,6 @@ module Rance
       if (building.template.category === "defence")
       {
         this.sortDefenceBuildings();
-        this.updateController();
       }
       if (building.template.category === "vision")
       {
@@ -194,7 +193,7 @@ module Rance
 
       var oldOwner = this.owner;
       var newOwner = this.buildings["defence"][0].controller;
-      
+
       if (oldOwner)
       {
         if (oldOwner === newOwner) return;

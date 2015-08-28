@@ -7277,7 +7277,6 @@ var Rance;
 
             if (building.template.category === "defence") {
                 this.sortDefenceBuildings();
-                this.updateController();
             }
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
