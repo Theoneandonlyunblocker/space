@@ -1495,6 +1495,14 @@ declare module Rance {
     class MapEvaluator {
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
+        public game: Rance.Game;
+        public cachedInfluenceMaps: {
+            [turnNumber: number]: {
+                [playerId: number]: {
+                    [starId: number]: number;
+                };
+            };
+        };
         public evaluationParameters: {
             starDesirability: {
                 neighborRange: number;
@@ -1505,7 +1513,8 @@ declare module Rance {
                 productionWeight: number;
             };
         };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player);
+        constructor(map: Rance.GalaxyMap, player: Rance.Player, game?: Rance.Game);
+        public processTurnStart(): void;
         public evaluateStarIncome(star: Rance.Star): number;
         public evaluateStarInfrastructure(star: Rance.Star): number;
         public evaluateStarProduction(star: Rance.Star): number;
@@ -1542,6 +1551,9 @@ declare module Rance {
             [playerId: number]: Rance.Fleet[];
         };
         public buildPlayerInfluenceMap(player: Rance.Player): {
+            [starId: number]: number;
+        };
+        public getPlayerInfluenceMap(player: Rance.Player): {
             [starId: number]: number;
         };
         public getPerceivedThreatOfPlayer(player: Rance.Player): number;

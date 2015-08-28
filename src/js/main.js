@@ -10902,12 +10902,18 @@ var Rance;
     };
 
     var MapEvaluator = (function () {
-        function MapEvaluator(map, player) {
+        function MapEvaluator(map, player, game) {
+            this.cachedInfluenceMaps = {};
             this.map = map;
             this.player = player;
+            this.game = game;
 
             this.evaluationParameters = Rance.defaultEvaluationParameters;
         }
+        MapEvaluator.prototype.processTurnStart = function () {
+            this.cachedInfluenceMaps = {};
+        };
+
         MapEvaluator.prototype.evaluateStarIncome = function (star) {
             var evaluation = 0;
 
@@ -10987,7 +10993,7 @@ var Rance;
                 var desirability = this.evaluateStarDesirability(star);
                 var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
 
-                var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+                var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
                 var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
 
                 evaluationByStar[star.id] = {
@@ -11223,13 +11229,28 @@ var Rance;
 
             return influenceByStar;
         };
+        MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
+            if (!this.game) {
+                throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
+            }
+
+            if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
+                this.cachedInfluenceMaps[this.game.turnNumber] = {};
+            }
+
+            if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
+                this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
+            }
+
+            return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
+        };
         MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
             if (!this.player.diplomacyStatus.metPlayers[player.id]) {
                 throw new Error(this.player.name + " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
             }
 
-            var otherInfluenceMap = this.buildPlayerInfluenceMap(player);
-            var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+            var otherInfluenceMap = this.getPlayerInfluenceMap(player);
+            var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
 
             var totalInfluenceInOwnStars = 0;
 
@@ -12249,7 +12270,7 @@ var Rance;
 
             this.map = game.galaxyMap;
 
-            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
+            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player, this.game);
 
             this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.personality);
             this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
@@ -12262,9 +12283,10 @@ var Rance;
             this.diplomacyAI = new Rance.DiplomacyAI(this.mapEvaluator, this.game, this.personality);
         }
         AIController.prototype.processTurn = function (afterFinishedCallback) {
-            // gsai evaluate grand strategy
-            console.log(this.player.id, this.mapEvaluator.getPerceivedThreatOfAllKnownPlayers());
+            // clear cached stuff from mapevaluator
+            this.mapEvaluator.processTurnStart();
 
+            // gsai evaluate grand strategy
             // dai set attitude
             this.diplomacyAI.setAttitudes();
 

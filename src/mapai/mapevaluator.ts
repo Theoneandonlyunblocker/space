@@ -31,6 +31,17 @@ module Rance
   {
     map: GalaxyMap;
     player: Player;
+    game: Game;
+    cachedInfluenceMaps:
+    {
+      [turnNumber: number]:
+      {
+        [playerId: number]:
+        {
+          [starId: number]: number;
+        }
+      }
+    } = {};
     evaluationParameters:
     {
       starDesirability:
@@ -46,12 +57,18 @@ module Rance
       };
     };
 
-    constructor(map: GalaxyMap, player: Player)
+    constructor(map: GalaxyMap, player: Player, game?: Game)
     {
       this.map = map;
       this.player = player;
+      this.game = game;
 
       this.evaluationParameters = defaultEvaluationParameters;
+    }
+
+    processTurnStart()
+    {
+      this.cachedInfluenceMaps = {};
     }
 
     evaluateStarIncome(star: Star): number
@@ -148,7 +165,7 @@ module Rance
         var desirability = this.evaluateStarDesirability(star);
         var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
 
-        var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+        var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
         var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
 
         evaluationByStar[star.id] =
@@ -442,6 +459,25 @@ module Rance
 
       return influenceByStar;
     }
+    getPlayerInfluenceMap(player: Player)
+    {
+      if (!this.game)
+      {
+        throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
+      }
+
+      if (!this.cachedInfluenceMaps[this.game.turnNumber])
+      {
+        this.cachedInfluenceMaps[this.game.turnNumber] = {};
+      }
+
+      if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id])
+      {
+        this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
+      }
+
+      return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
+    }
     getPerceivedThreatOfPlayer(player: Player)
     {
       if (!this.player.diplomacyStatus.metPlayers[player.id])
@@ -450,8 +486,8 @@ module Rance
           " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
       }
 
-      var otherInfluenceMap = this.buildPlayerInfluenceMap(player);
-      var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+      var otherInfluenceMap = this.getPlayerInfluenceMap(player);
+      var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
 
       var totalInfluenceInOwnStars = 0;
 

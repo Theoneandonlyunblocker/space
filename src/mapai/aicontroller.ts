@@ -36,7 +36,7 @@ module Rance
 
       this.map = game.galaxyMap;
 
-      this.mapEvaluator = new MapEvaluator(this.map, this.player);
+      this.mapEvaluator = new MapEvaluator(this.map, this.player, this.game);
 
       this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.personality);
       this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI,
@@ -53,8 +53,10 @@ module Rance
 
     processTurn(afterFinishedCallback?: any)
     {
-      // gsai evaluate grand strategy
+      // clear cached stuff from mapevaluator
+      this.mapEvaluator.processTurnStart();
 
+      // gsai evaluate grand strategy
 
       // dai set attitude
       this.diplomacyAI.setAttitudes();
