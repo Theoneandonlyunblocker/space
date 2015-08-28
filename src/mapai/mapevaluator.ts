@@ -17,7 +17,7 @@ module Rance
       productionWeight: 1,
     }
   }
-  export interface IExpansionTargetEvaluations
+  export interface IIndependentTargetEvaluations
   {
     [starId: number]:
     {
@@ -137,15 +137,12 @@ module Rance
       return evaluation;
     }
 
-    evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations
+    evaluateIndependentTargets(targetFilter: (star: Star) => boolean): IIndependentTargetEvaluations
     {
       var stars = this.player.getNeighboringStars();
-      stars = stars.filter(function(star)
-      {
-        return star.owner.isIndependent;
-      });
+      stars = stars.filter(targetFilter);
 
-      var evaluationByStar: IExpansionTargetEvaluations = {};
+      var evaluationByStar: IIndependentTargetEvaluations = {};
 
       for (var i = 0; i < stars.length; i++)
       {
@@ -169,7 +166,7 @@ module Rance
       return evaluationByStar;
     }
 
-    scoreExpansionTargets(evaluations: IExpansionTargetEvaluations)
+    scoreIndependentTargets(evaluations: IIndependentTargetEvaluations)
     {
       var scores:
       {
@@ -201,8 +198,12 @@ module Rance
 
     getScoredExpansionTargets()
     {
-      var evaluations = this.evaluateImmediateExpansionTargets();
-      var scores = this.scoreExpansionTargets(evaluations);
+      var expansionTargetFilter = function(star: Star)
+      {
+        return star.owner.isIndependent;
+      }
+      var evaluations = this.evaluateIndependentTargets(expansionTargetFilter);
+      var scores = this.scoreIndependentTargets(evaluations);
 
       return scores;
     }
