@@ -81,7 +81,9 @@ module Rance
 
       data.galaxyMap = this.galaxyMap.serialize();
       data.players = this.playerOrder.map(function(player)
-        {return player.serialize()})
+      {
+        return player.serialize()
+      });
       data.players = data.players.concat(this.independents.map(function(player)
       {
         return player.serialize();

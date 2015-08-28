@@ -34,7 +34,7 @@ module Rance
 
       this.map = game.galaxyMap;
 
-      this.mapEvaluator = new MapEvaluator(this.map, this.player);
+      this.mapEvaluator = new MapEvaluator(this.map, this.player, this.game);
 
       this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.game);
       this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI,

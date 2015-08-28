@@ -315,8 +315,6 @@ module Rance
         }
 
         bestScore.front.addUnit(bestScore.unit);
-        console.log(bestScore.front.objective.type, 
-          bestScore.unit.currentHealth, bestScore.unit.maxHealth);
 
         removeUnit(bestScore.unit);
         alreadyAdded[bestScore.unit.id] = true;

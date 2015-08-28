@@ -7471,6 +7471,10 @@ var Rance;
                 return false;
 
             this.fleets[fleet.player.id].splice(fleetIndex, 1);
+
+            if (this.fleets[fleet.player.id].length === 0) {
+                delete this.fleets[fleet.player.id];
+            }
         };
         Star.prototype.removeFleets = function (fleets) {
             for (var i = 0; i < fleets.length; i++) {
@@ -10669,7 +10673,6 @@ var Rance;
         function Game(map, players, humanPlayer) {
             this.independents = [];
             this.galaxyMap = map;
-            map.game = this;
 
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
@@ -10760,7 +10763,6 @@ var Rance;
 var Rance;
 (function (Rance) {
     var GalaxyMap = (function () {
-        // TODO end
         function GalaxyMap(mapGen) {
             this.width = mapGen.width;
             this.height = mapGen.height;
@@ -10827,9 +10829,10 @@ var Rance;
     };
 
     var MapEvaluator = (function () {
-        function MapEvaluator(map, player) {
+        function MapEvaluator(map, player, game) {
             this.map = map;
             this.player = player;
+            this.game = game;
 
             this.evaluationParameters = Rance.defaultEvaluationParameters;
         }
@@ -10903,14 +10906,11 @@ var Rance;
             return evaluation;
         };
 
-        MapEvaluator.prototype.evaluateIndependentTargets = function (targetFilter) {
-            var stars = this.player.getNeighboringStars();
-            stars = stars.filter(targetFilter);
-
+        MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
             var evaluationByStar = {};
 
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
+            for (var i = 0; i < targetStars.length; i++) {
+                var star = targetStars[i];
 
                 var desirability = this.evaluateStarDesirability(star);
                 var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
@@ -10952,20 +10952,31 @@ var Rance;
         };
 
         MapEvaluator.prototype.getScoredExpansionTargets = function () {
-            var expansionTargetFilter = function (star) {
+            var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
                 return star.owner.isIndependent;
-            };
-            var evaluations = this.evaluateIndependentTargets(expansionTargetFilter);
+            });
+            var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
             var scores = this.scoreIndependentTargets(evaluations);
 
             return scores;
         };
 
         MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
-            var cleanPiratesTargetFilter = function (star) {
-                return star.owner === this.player;
-            }.bind(this);
-            var evaluations = this.evaluateIndependentTargets(cleanPiratesTargetFilter);
+            var independentIds = this.game.independents.map(function (independent) {
+                return independent.id;
+            });
+
+            var ownedStarsWithPirates = this.player.controlledLocations.filter(function (star) {
+                for (var i = 0; i < independentIds.length; i++) {
+                    if (star.fleets[independentIds[i]]) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+            var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
             var scores = this.scoreIndependentTargets(evaluations);
 
             return scores;
@@ -11009,8 +11020,8 @@ var Rance;
             for (var playerId in byPlayer) {
                 // TODO
                 var isIndependent = false;
-                for (var i = 0; i < this.map.game.independents.length; i++) {
-                    if (this.map.game.independents[i].id === parseInt(playerId)) {
+                for (var i = 0; i < this.game.independents.length; i++) {
+                    if (this.game.independents[i].id === parseInt(playerId)) {
                         isIndependent = true;
                         break;
                     }
@@ -11901,7 +11912,6 @@ var Rance;
                 }
 
                 bestScore.front.addUnit(bestScore.unit);
-                console.log(bestScore.front.objective.type, bestScore.unit.currentHealth, bestScore.unit.maxHealth);
 
                 removeUnit(bestScore.unit);
                 alreadyAdded[bestScore.unit.id] = true;
@@ -12173,7 +12183,7 @@ var Rance;
 
             this.map = game.galaxyMap;
 
-            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
+            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player, this.game);
 
             this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
             this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
@@ -17305,7 +17315,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var MapRenderer = (function () {
-        function MapRenderer(map) {
+        function MapRenderer(map, player) {
             this.occupationShaders = {};
             this.layers = {};
             this.mapModes = {};
@@ -17316,7 +17326,8 @@ var Rance;
             this.listeners = {};
             this.container = new PIXI.DisplayObjectContainer();
 
-            this.setMap(map);
+            this.galaxyMap = map;
+            this.player = player;
         }
         MapRenderer.prototype.destroy = function () {
             this.preventRender = true;
@@ -17329,7 +17340,6 @@ var Rance;
             this.container.removeChildren();
             this.parent.removeChild(this.container);
 
-            this.game = null;
             this.player = null;
             this.container = null;
             this.parent = null;
@@ -17345,11 +17355,6 @@ var Rance;
                 var texture = this.fleetTextTextureCache[fleetSize];
                 texture.destroy(true);
             }
-        };
-        MapRenderer.prototype.setMap = function (map) {
-            this.galaxyMap = map;
-            this.game = map.game;
-            this.player = this.game.humanPlayer;
         };
         MapRenderer.prototype.init = function () {
             this.makeFowSprite();
@@ -20475,7 +20480,7 @@ var Rance;
             this.renderer = this.renderer || new Rance.Renderer();
             this.renderer.init();
 
-            this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap);
+            this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap, this.humanPlayer);
             this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.init();
             // some initialization is done when the react component owning the

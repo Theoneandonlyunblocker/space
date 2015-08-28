@@ -31,6 +31,7 @@ module Rance
   {
     map: GalaxyMap;
     player: Player;
+    game: Game;
     evaluationParameters:
     {
       starDesirability:
@@ -46,10 +47,11 @@ module Rance
       };
     };
 
-    constructor(map: GalaxyMap, player: Player)
+    constructor(map: GalaxyMap, player: Player, game?: Game)
     {
       this.map = map;
       this.player = player;
+      this.game = game;
 
       this.evaluationParameters = defaultEvaluationParameters;
     }
@@ -137,16 +139,13 @@ module Rance
       return evaluation;
     }
 
-    evaluateIndependentTargets(targetFilter: (star: Star) => boolean): IIndependentTargetEvaluations
+    evaluateIndependentTargets(targetStars: Star[]): IIndependentTargetEvaluations
     {
-      var stars = this.player.getNeighboringStars();
-      stars = stars.filter(targetFilter);
-
       var evaluationByStar: IIndependentTargetEvaluations = {};
 
-      for (var i = 0; i < stars.length; i++)
+      for (var i = 0; i < targetStars.length; i++)
       {
-        var star = stars[i];
+        var star = targetStars[i];
 
         var desirability = this.evaluateStarDesirability(star);
         var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
@@ -198,11 +197,11 @@ module Rance
 
     getScoredExpansionTargets()
     {
-      var expansionTargetFilter = function(star: Star)
+      var independentNeighborStars = this.player.getNeighboringStars().filter(function(star)
       {
         return star.owner.isIndependent;
-      }
-      var evaluations = this.evaluateIndependentTargets(expansionTargetFilter);
+      });
+      var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
       var scores = this.scoreIndependentTargets(evaluations);
 
       return scores;
@@ -210,11 +209,30 @@ module Rance
 
     getScoredCleanPiratesTargets()
     {
-      var cleanPiratesTargetFilter = function(star: Star)
+      var independentIds = this.game.independents.map(function(independent: Player)
       {
-        return star.owner === this.player;
-      }.bind(this);
-      var evaluations = this.evaluateIndependentTargets(cleanPiratesTargetFilter);
+        return independent.id;
+      });
+
+      var ownedStarsWithPirates = this.player.controlledLocations.filter(function(star: Star)
+      {
+        // we could filter out stars with secondary controllers as cleaning up in
+        // contested areas probably isnt smart, but clean up objectives should get
+        // overridden in objective priority. maybe do it later if minimizing the
+        // amount of objectives generated is important for performance
+
+        for (var i = 0; i < independentIds.length; i++)
+        {
+          if (star.fleets[independentIds[i]])
+          {
+            return true;
+          }
+        }
+
+        return false;
+      });
+
+      var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
       var scores = this.scoreIndependentTargets(evaluations);
 
       return scores;
@@ -271,9 +289,9 @@ module Rance
       {
         // TODO
         var isIndependent = false;
-        for (var i = 0; i < this.map.game.independents.length; i++)
+        for (var i = 0; i < this.game.independents.length; i++)
         {
-          if (this.map.game.independents[i].id === parseInt(playerId))
+          if (this.game.independents[i].id === parseInt(playerId))
           {
             isIndependent = true;
             break;

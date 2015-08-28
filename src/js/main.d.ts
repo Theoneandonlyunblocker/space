@@ -1449,7 +1449,6 @@ declare module Rance {
         public width: number;
         public height: number;
         public voronoi: Rance.MapVoronoiInfo;
-        public game: Rance.Game;
         constructor(mapGen: Rance.MapGen2.MapGenResult);
         public getIncomeBounds(): {
             min: any;
@@ -1480,6 +1479,7 @@ declare module Rance {
     class MapEvaluator {
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
+        public game: Rance.Game;
         public evaluationParameters: {
             starDesirability: {
                 neighborRange: number;
@@ -1490,14 +1490,14 @@ declare module Rance {
                 productionWeight: number;
             };
         };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player);
+        constructor(map: Rance.GalaxyMap, player: Rance.Player, game?: Rance.Game);
         public evaluateStarIncome(star: Rance.Star): number;
         public evaluateStarInfrastructure(star: Rance.Star): number;
         public evaluateStarProduction(star: Rance.Star): number;
         public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
         public evaluateIndividualStarDesirability(star: Rance.Star): number;
         public evaluateStarDesirability(star: Rance.Star): number;
-        public evaluateIndependentTargets(targetFilter: (star: Rance.Star) => boolean): IIndependentTargetEvaluations;
+        public evaluateIndependentTargets(targetStars: Rance.Star[]): IIndependentTargetEvaluations;
         public scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
             star: Rance.Star;
             score: number;
@@ -2299,7 +2299,6 @@ declare module Rance {
         public parent: PIXI.DisplayObjectContainer;
         public galaxyMap: Rance.GalaxyMap;
         public player: Rance.Player;
-        public game: Rance.Game;
         public occupationShaders: {
             [ownerId: string]: {
                 [occupierId: string]: any;
@@ -2324,9 +2323,8 @@ declare module Rance {
         public listeners: {
             [name: string]: any;
         };
-        constructor(map: Rance.GalaxyMap);
+        constructor(map: Rance.GalaxyMap, player: Rance.Player);
         public destroy(): void;
-        public setMap(map: Rance.GalaxyMap): void;
         public init(): void;
         public addEventListeners(): void;
         public setPlayer(player: Rance.Player): void;
