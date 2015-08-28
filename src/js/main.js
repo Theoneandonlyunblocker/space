@@ -11223,6 +11223,40 @@ var Rance;
 
             return influenceByStar;
         };
+        MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
+            if (!this.player.diplomacyStatus.metPlayers[player.id]) {
+                throw new Error(this.player.name + " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
+            }
+
+            var otherInfluenceMap = this.buildPlayerInfluenceMap(player);
+            var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+
+            var totalInfluenceInOwnStars = 0;
+
+            for (var starId in otherInfluenceMap) {
+                for (var i = 0; i < this.player.controlledLocations.length; i++) {
+                    var star = this.player.controlledLocations[i];
+                    if (star.id === parseInt(starId)) {
+                        var otherInfluence = otherInfluenceMap[starId];
+                        var ownInfluence = ownInfluenceMap[starId];
+                        totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
+                        break;
+                    }
+                }
+            }
+
+            return totalInfluenceInOwnStars;
+        };
+        MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
+            var byPlayer = {};
+
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
+            }
+
+            return byPlayer;
+        };
         MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
             var evaluationByPlayer = {};
 
@@ -12229,6 +12263,8 @@ var Rance;
         }
         AIController.prototype.processTurn = function (afterFinishedCallback) {
             // gsai evaluate grand strategy
+            console.log(this.player.id, this.mapEvaluator.getPerceivedThreatOfAllKnownPlayers());
+
             // dai set attitude
             this.diplomacyAI.setAttitudes();
 
@@ -12471,6 +12507,9 @@ var Rance;
             var templates = [];
 
             for (var type in Rance.Templates.ShipTypes) {
+                if (type === "cheatShip" && (this.isAI || !Rance.Options.debugMode)) {
+                    continue;
+                }
                 templates.push(Rance.Templates.ShipTypes[type]);
             }
 
@@ -17224,7 +17263,6 @@ var Rance;
         };
         PlayerControl.prototype.selectOtherFleets = function (fleets) {
             this.inspectedFleets = fleets;
-            console.log(fleets, this.inspectedFleets);
         };
         PlayerControl.prototype.deselectFleet = function (fleet) {
             var fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;

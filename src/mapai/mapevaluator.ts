@@ -442,6 +442,51 @@ module Rance
 
       return influenceByStar;
     }
+    getPerceivedThreatOfPlayer(player: Player)
+    {
+      if (!this.player.diplomacyStatus.metPlayers[player.id])
+      {
+        throw new Error(this.player.name +
+          " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
+      }
+
+      var otherInfluenceMap = this.buildPlayerInfluenceMap(player);
+      var ownInfluenceMap = this.buildPlayerInfluenceMap(this.player);
+
+      var totalInfluenceInOwnStars = 0;
+
+      for (var starId in otherInfluenceMap)
+      {
+        for (var i = 0; i < this.player.controlledLocations.length; i++)
+        {
+          var star = this.player.controlledLocations[i];
+          if (star.id === parseInt(starId))
+          {
+            var otherInfluence = otherInfluenceMap[starId];
+            var ownInfluence = ownInfluenceMap[starId];
+            totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
+            break;
+          }
+        }
+      }
+
+      return totalInfluenceInOwnStars;
+    }
+    getPerceivedThreatOfAllKnownPlayers()
+    {
+      var byPlayer:
+      {
+        [playerId: number]: number;
+      } = {};
+
+      for (var playerId in this.player.diplomacyStatus.metPlayers)
+      {
+        var player = this.player.diplomacyStatus.metPlayers[playerId];
+        byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
+      }
+
+      return byPlayer;
+    }
     getDiplomacyEvaluations(currentTurn: number)
     {
       var evaluationByPlayer:

@@ -1544,6 +1544,10 @@ declare module Rance {
         public buildPlayerInfluenceMap(player: Rance.Player): {
             [starId: number]: number;
         };
+        public getPerceivedThreatOfPlayer(player: Rance.Player): number;
+        public getPerceivedThreatOfAllKnownPlayers(): {
+            [playerId: number]: number;
+        };
         public getDiplomacyEvaluations(currentTurn: number): {
             [playerId: number]: Rance.IDiplomacyEvaluation;
         };
