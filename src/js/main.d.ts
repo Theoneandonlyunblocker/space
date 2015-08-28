@@ -1341,6 +1341,22 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IPersonalityData {
+        expansiveness: number;
+        aggressiveness: number;
+        friendliness: number;
+        unitCompositionPreference: {
+            [archetype: string]: number;
+        };
+    }
+    function makeRandomPersonality(): IPersonalityData;
+    module Templates {
+        module Personalities {
+            var testPersonality1: Rance.IPersonalityData;
+        }
+    }
+}
+declare module Rance {
     class MapVoronoiInfo {
         public treeMap: any;
         public diagram: any;
@@ -1550,7 +1566,7 @@ declare module Rance {
         public mapEvaluator: Rance.MapEvaluator;
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
-        public game: Rance.Game;
+        public personality: Rance.IPersonalityData;
         public objectivesByType: {
             expansion: any[];
             cleanPirates: any[];
@@ -1559,29 +1575,13 @@ declare module Rance {
         public objectives: Rance.Objective[];
         public maxActiveExpansionRequests: number;
         public requests: any[];
-        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
+        constructor(mapEvaluator: Rance.MapEvaluator, personality: Rance.IPersonalityData);
         public setAllObjectives(): void;
         public addObjectives(objectives: Rance.Objective[]): void;
         public getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Rance.Objective[];
         public getExpansionObjectives(): Rance.Objective[];
         public getCleanPiratesObjectives(): Rance.Objective[];
         public getHealObjectives(): Rance.Objective[];
-    }
-}
-declare module Rance {
-    interface IPersonalityData {
-        expansiveness: number;
-        aggressiveness: number;
-        friendliness: number;
-        unitCompositionPreference: {
-            [archetype: string]: number;
-        };
-    }
-    function makeRandomPersonality(): IPersonalityData;
-    module Templates {
-        module Personalities {
-            var testPersonality1: Rance.IPersonalityData;
-        }
     }
 }
 declare module Rance {
@@ -1663,7 +1663,10 @@ declare module Rance {
         public organizeFleets(): void;
         public setFrontsToMove(): void;
         public moveFleets(afterMovingAllCallback: any): void;
-        public getUnitsToFillObjective(objective: Rance.Objective): number;
+        public getUnitsToFillObjective(objective: Rance.Objective): {
+            min: number;
+            ideal: number;
+        };
         public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
         public setUnitRequests(): void;
     }

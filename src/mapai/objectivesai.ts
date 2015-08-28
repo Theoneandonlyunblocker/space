@@ -31,7 +31,7 @@ module Rance
     mapEvaluator: MapEvaluator;
     map: GalaxyMap;
     player: Player;
-    game: Game;
+    personality: IPersonalityData;
 
     objectivesByType =
     {
@@ -45,12 +45,12 @@ module Rance
 
     requests: any[] = [];
 
-    constructor(mapEvaluator: MapEvaluator, game: Game)
+    constructor(mapEvaluator: MapEvaluator, personality: IPersonalityData)
     {
       this.mapEvaluator = mapEvaluator;
       this.map = mapEvaluator.map;
       this.player = mapEvaluator.player;
-      this.game = game;
+      this.personality = personality;
     }
 
     setAllObjectives()
@@ -121,12 +121,14 @@ module Rance
     getExpansionObjectives()
     {
       var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-      return this.getIndependentFightingObjectives("expansion", evaluationScores, 1);
+      var basePriority = this.personality.expansiveness;
+      return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
     }
     getCleanPiratesObjectives()
     {
       var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-      return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.2);
+      var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
+      return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
     }
     getHealObjectives()
     {

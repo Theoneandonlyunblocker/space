@@ -1,3 +1,5 @@
+/// <reference path="../../data/templates/personalitytemplates.ts" />
+
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
@@ -36,7 +38,7 @@ module Rance
 
       this.mapEvaluator = new MapEvaluator(this.map, this.player);
 
-      this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.game);
+      this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.personality);
       this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI,
         this.personality);
       this.economicAI = new EconomyAI(

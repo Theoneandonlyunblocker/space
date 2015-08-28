@@ -10216,6 +10216,41 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    function makeRandomPersonality() {
+        var unitCompositionPreference = {
+            combat: Math.random(),
+            defence: Math.random(),
+            utility: Math.random()
+        };
+        return ({
+            expansiveness: Math.random(),
+            aggressiveness: Math.random(),
+            friendliness: Math.random(),
+            unitCompositionPreference: unitCompositionPreference
+        });
+    }
+    Rance.makeRandomPersonality = makeRandomPersonality;
+    (function (Templates) {
+        (function (Personalities) {
+            Personalities.testPersonality1 = {
+                expansiveness: 1,
+                aggressiveness: 0.6,
+                friendliness: 0.4,
+                unitCompositionPreference: {
+                    combat: 1,
+                    defence: 0.8,
+                    //magic: 0.3,
+                    //support: 0.3,
+                    utility: 0.3
+                }
+            };
+        })(Templates.Personalities || (Templates.Personalities = {}));
+        var Personalities = Templates.Personalities;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
     var MapVoronoiInfo = (function () {
         function MapVoronoiInfo() {
             this.nonFillerLines = {};
@@ -11283,7 +11318,7 @@ build units near request target
 var Rance;
 (function (Rance) {
     var ObjectivesAI = (function () {
-        function ObjectivesAI(mapEvaluator, game) {
+        function ObjectivesAI(mapEvaluator, personality) {
             this.objectivesByType = {
                 expansion: [],
                 cleanPirates: [],
@@ -11294,7 +11329,7 @@ var Rance;
             this.mapEvaluator = mapEvaluator;
             this.map = mapEvaluator.map;
             this.player = mapEvaluator.player;
-            this.game = game;
+            this.personality = personality;
         }
         ObjectivesAI.prototype.setAllObjectives = function () {
             this.objectives = [];
@@ -11351,11 +11386,13 @@ var Rance;
 
         ObjectivesAI.prototype.getExpansionObjectives = function () {
             var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-            return this.getIndependentFightingObjectives("expansion", evaluationScores, 1);
+            var basePriority = this.personality.expansiveness;
+            return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
         };
         ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
             var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-            return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.2);
+            var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
+            return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
         };
         ObjectivesAI.prototype.getHealObjectives = function () {
             var objective = new Rance.Objective("heal", 1, null);
@@ -11366,41 +11403,6 @@ var Rance;
         return ObjectivesAI;
     })();
     Rance.ObjectivesAI = ObjectivesAI;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    function makeRandomPersonality() {
-        var unitCompositionPreference = {
-            combat: Math.random(),
-            defence: Math.random(),
-            utility: Math.random()
-        };
-        return ({
-            expansiveness: Math.random(),
-            aggressiveness: Math.random(),
-            friendliness: Math.random(),
-            unitCompositionPreference: unitCompositionPreference
-        });
-    }
-    Rance.makeRandomPersonality = makeRandomPersonality;
-    (function (Templates) {
-        (function (Personalities) {
-            Personalities.testPersonality1 = {
-                expansiveness: 1,
-                aggressiveness: 0.6,
-                friendliness: 0.4,
-                unitCompositionPreference: {
-                    combat: 1,
-                    defence: 0.8,
-                    //magic: 0.3,
-                    //support: 0.3,
-                    utility: 0.3
-                }
-            };
-        })(Templates.Personalities || (Templates.Personalities = {}));
-        var Personalities = Templates.Personalities;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="../unit.ts"/>
 /// <reference path="../star.ts"/>
@@ -11950,8 +11952,8 @@ var Rance;
                 id: objective.id,
                 priority: objective.priority,
                 objective: objective,
-                minUnitsDesired: unitsDesired,
-                idealUnitsDesired: 6,
+                minUnitsDesired: unitsDesired.min,
+                idealUnitsDesired: unitsDesired.ideal,
                 targetLocation: objective.target,
                 musterLocation: musterLocation
             });
@@ -12030,12 +12032,25 @@ var Rance;
 
         FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
             switch (objective.type) {
-                case "expansion":
+                case "expansion": {
+                    var min = this.getUnitsToFillExpansionObjective(objective);
+                    return ({
+                        min: min,
+                        ideal: 6
+                    });
+                }
                 case "cleanPirates": {
-                    return this.getUnitsToFillExpansionObjective(objective);
+                    var min = this.getUnitsToFillExpansionObjective(objective);
+                    return ({
+                        min: min,
+                        ideal: min
+                    });
                 }
                 case "heal": {
-                    return 999;
+                    return ({
+                        min: 999,
+                        ideal: 999
+                    });
                 }
             }
         };
@@ -12178,6 +12193,7 @@ var Rance;
     })();
     Rance.DiplomacyAI = DiplomacyAI;
 })(Rance || (Rance = {}));
+/// <reference path="../../data/templates/personalitytemplates.ts" />
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
@@ -12199,7 +12215,7 @@ var Rance;
 
             this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
 
-            this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
+            this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.personality);
             this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
             this.economicAI = new Rance.EconomyAI({
                 objectivesAI: this.objectivesAI,
