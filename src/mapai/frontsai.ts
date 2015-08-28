@@ -348,8 +348,8 @@ module Rance
         priority: objective.priority,
         objective: objective,
 
-        minUnitsDesired: unitsDesired,
-        idealUnitsDesired: 6,
+        minUnitsDesired: unitsDesired.min,
+        idealUnitsDesired: unitsDesired.ideal,
 
         targetLocation: objective.target,
         musterLocation: musterLocation
@@ -449,13 +449,30 @@ module Rance
       switch (objective.type)
       {
         case "expansion":
+        {
+          var min = this.getUnitsToFillExpansionObjective(objective);
+          return(
+          {
+            min: min,
+            ideal: 6
+          });
+        }
         case "cleanPirates":
         {
-          return this.getUnitsToFillExpansionObjective(objective);
+          var min = this.getUnitsToFillExpansionObjective(objective);
+          return(
+          {
+            min: min,
+            ideal: min
+            });
         }
         case "heal":
         {
-          return 999;
+          return(
+          {
+            min: 999,
+            ideal: 999
+          });
         }
       }
     }
