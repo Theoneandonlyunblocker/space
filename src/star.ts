@@ -193,13 +193,14 @@ module Rance
       if (!this.buildings["defence"]) return null;
 
       var oldOwner = this.owner;
+      var newOwner = this.buildings["defence"][0].controller;
+      
       if (oldOwner)
       {
         if (oldOwner === newOwner) return;
 
         oldOwner.removeStar(this);
       }
-      var newOwner = this.buildings["defence"][0].controller;
 
       newOwner.addStar(this);
 
