@@ -4907,7 +4907,7 @@ var Rance;
                             type: "number",
                             id: "battle-simulation-depth-input",
                             value: Rance.Options.debugOptions.battleSimulationDepth,
-                            min: 10,
+                            min: 1,
                             max: 500,
                             step: 1,
                             onChange: function (e) {
@@ -7518,6 +7518,18 @@ var Rance;
             }
 
             return allShips;
+        };
+        Star.prototype.getIndependentShips = function () {
+            var ships = [];
+
+            for (var playerId in this.fleets) {
+                var player = this.fleets[playerId][0].player;
+                if (player.isIndependent) {
+                    ships = ships.concat(this.getAllShipsOfPlayer(player));
+                }
+            }
+
+            return ships;
         };
         Star.prototype.getTargetsForPlayer = function (player) {
             var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
@@ -10853,10 +10865,9 @@ var Rance;
     };
 
     var MapEvaluator = (function () {
-        function MapEvaluator(map, player, game) {
+        function MapEvaluator(map, player) {
             this.map = map;
             this.player = player;
-            this.game = game;
 
             this.evaluationParameters = Rance.defaultEvaluationParameters;
         }
@@ -10986,18 +10997,12 @@ var Rance;
         };
 
         MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
-            var independentIds = this.game.independents.map(function (independent) {
-                return independent.id;
-            });
-
             var ownedStarsWithPirates = this.player.controlledLocations.filter(function (star) {
-                for (var i = 0; i < independentIds.length; i++) {
-                    if (star.fleets[independentIds[i]]) {
-                        return true;
-                    }
-                }
-
-                return false;
+                // we could filter out stars with secondary controllers as cleaning up in
+                // contested areas probably isnt smart, but clean up objectives should get
+                // overridden in objective priority. maybe do it later if minimizing the
+                // amount of objectives generated is important for performance
+                return star.getIndependentShips().length > 0;
             });
 
             var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
@@ -11037,26 +11042,11 @@ var Rance;
         };
 
         MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-
+            var ships = star.getIndependentShips();
             var total = 0;
 
-            for (var playerId in byPlayer) {
-                // TODO
-                var isIndependent = false;
-                for (var i = 0; i < this.game.independents.length; i++) {
-                    if (this.game.independents[i].id === parseInt(playerId)) {
-                        isIndependent = true;
-                        break;
-                    }
-                }
-
-                // END
-                if (isIndependent) {
-                    total += byPlayer[playerId];
-                } else {
-                    continue;
-                }
+            for (var i = 0; i < ships.length; i++) {
+                total += ships[i].getStrengthEvaluation();
             }
 
             return total;
@@ -11365,7 +11355,7 @@ var Rance;
         };
         ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
             var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-            return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.1);
+            return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.2);
         };
         ObjectivesAI.prototype.getHealObjectives = function () {
             var objective = new Rance.Objective("heal", 1, null);
@@ -11681,7 +11671,7 @@ var Rance;
             var star = this.targetLocation;
             var player = this.units[0].fleet.player;
 
-            if (this.objective.type === "expansion") {
+            if (this.objective.type === "expansion" || this.objective.type === "cleanPirates") {
                 var attackTargets = star.getTargetsForPlayer(player);
 
                 var target = attackTargets.filter(function (target) {
@@ -11869,8 +11859,6 @@ var Rance;
             var distanceAdjust = turnsToReach * -0.1;
             score += distanceAdjust;
 
-            console.log(score, front.objective.type);
-
             return score;
         };
 
@@ -12020,6 +12008,7 @@ var Rance;
 
             var frontMovePriorities = {
                 expansion: 4,
+                cleanPirates: 3,
                 heal: -1
             };
 
@@ -12053,7 +12042,7 @@ var Rance;
 
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
             var star = objective.target;
-            var independentShips = star.getAllShipsOfPlayer(star.owner);
+            var independentShips = star.getIndependentShips();
 
             if (independentShips.length === 1)
                 return 2;
@@ -12208,7 +12197,7 @@ var Rance;
 
             this.map = game.galaxyMap;
 
-            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player, this.game);
+            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player);
 
             this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.game);
             this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);

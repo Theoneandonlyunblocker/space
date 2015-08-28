@@ -380,7 +380,7 @@ module Rance
       var star = this.targetLocation;
       var player = this.units[0].fleet.player;
 
-      if (this.objective.type === "expansion")
+      if (this.objective.type === "expansion" || this.objective.type === "cleanPirates")
       {
         var attackTargets = star.getTargetsForPlayer(player);
 

@@ -775,6 +775,7 @@ declare module Rance {
         public removeFleet(fleet: Rance.Fleet): boolean;
         public removeFleets(fleets: Rance.Fleet[]): void;
         public getAllShipsOfPlayer(player: Rance.Player): Rance.Unit[];
+        public getIndependentShips(): Rance.Unit[];
         public getTargetsForPlayer(player: Rance.Player): any[];
         public getFirstEnemyDefenceBuilding(player: Rance.Player): Rance.Building;
         public getEnemyFleetOwners(player: Rance.Player, excludedTarget?: Rance.Player): Rance.Player[];
@@ -1478,7 +1479,6 @@ declare module Rance {
     class MapEvaluator {
         public map: Rance.GalaxyMap;
         public player: Rance.Player;
-        public game: Rance.Game;
         public evaluationParameters: {
             starDesirability: {
                 neighborRange: number;
@@ -1489,7 +1489,7 @@ declare module Rance {
                 productionWeight: number;
             };
         };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player, game?: Rance.Game);
+        constructor(map: Rance.GalaxyMap, player: Rance.Player);
         public evaluateStarIncome(star: Rance.Star): number;
         public evaluateStarInfrastructure(star: Rance.Star): number;
         public evaluateStarProduction(star: Rance.Star): number;

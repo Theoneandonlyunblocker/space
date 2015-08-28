@@ -223,8 +223,6 @@ module Rance
       );
       var distanceAdjust = turnsToReach * -0.1;
       score += distanceAdjust;
-
-      console.log(score, front.objective.type);
       
       return score;
     }
@@ -423,6 +421,7 @@ module Rance
       var frontMovePriorities =
       {
         expansion: 4,
+        cleanPirates: 3,
         heal: -1
       }
 
@@ -464,7 +463,7 @@ module Rance
     getUnitsToFillExpansionObjective(objective: Objective)
     {
       var star = objective.target;
-      var independentShips = star.getAllShipsOfPlayer(star.owner);
+      var independentShips = star.getIndependentShips();
 
       if (independentShips.length === 1) return 2;
       else

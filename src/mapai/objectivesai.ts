@@ -126,7 +126,7 @@ module Rance
     getCleanPiratesObjectives()
     {
       var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-      return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.1);
+      return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.2);
     }
     getHealObjectives()
     {
