@@ -208,6 +208,18 @@ module Rance
       return scores;
     }
 
+    getScoredCleanPiratesTargets()
+    {
+      var cleanPiratesTargetFilter = function(star: Star)
+      {
+        return star.owner === this.player;
+      }.bind(this);
+      var evaluations = this.evaluateIndependentTargets(cleanPiratesTargetFilter);
+      var scores = this.scoreIndependentTargets(evaluations);
+
+      return scores;
+    }
+
     getHostileShipsAtStar(star: Star)
     {
       var hostilePlayers = star.getEnemyFleetOwners(this.player);
