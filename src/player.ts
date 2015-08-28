@@ -271,6 +271,10 @@ module Rance
 
       for (var type in Templates.ShipTypes)
       {
+        if (type === "cheatShip" && (this.isAI || !Options.debugMode))
+        {
+          continue;
+        }
         templates.push(Templates.ShipTypes[type]);
       }
 
