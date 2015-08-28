@@ -407,6 +407,11 @@ module Rance
       if (fleetIndex < 0) return false;
 
       this.fleets[fleet.player.id].splice(fleetIndex, 1);
+
+      if (this.fleets[fleet.player.id].length === 0)
+      {
+        delete this.fleets[fleet.player.id];
+      }
     }
     removeFleets(fleets: Fleet[])
     {
