@@ -121,7 +121,7 @@ module Rance
     getExpansionObjectives()
     {
       var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-      var basePriority = this.personality.expansiveness;
+      var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
       return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
     }
     getCleanPiratesObjectives()
