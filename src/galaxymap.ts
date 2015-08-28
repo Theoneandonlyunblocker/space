@@ -18,9 +18,6 @@ module Rance
 
     voronoi: MapVoronoiInfo;
 
-    // TODO remove
-    game: Game;
-    // TODO end
     constructor(mapGen: MapGen2.MapGenResult)
     {
       this.width = mapGen.width;
