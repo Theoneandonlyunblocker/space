@@ -209,10 +209,6 @@ module Rance
 
     getScoredCleanPiratesTargets()
     {
-      var independentIds = this.game.independents.map(function(independent: Player)
-      {
-        return independent.id;
-      });
 
       var ownedStarsWithPirates = this.player.controlledLocations.filter(function(star: Star)
       {
@@ -221,15 +217,7 @@ module Rance
         // overridden in objective priority. maybe do it later if minimizing the
         // amount of objectives generated is important for performance
 
-        for (var i = 0; i < independentIds.length; i++)
-        {
-          if (star.fleets[independentIds[i]])
-          {
-            return true;
-          }
-        }
-
-        return false;
+        return star.getIndependentShips().length > 0;
       });
 
       var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
@@ -281,32 +269,12 @@ module Rance
 
     getIndependentStrengthAtStar(star: Star): number
     {
-      var byPlayer = this.getHostileStrengthAtStar(star);
-
+      var ships = star.getIndependentShips();
       var total = 0;
 
-      for (var playerId in byPlayer)
+      for (var i = 0; i < ships.length; i++)
       {
-        // TODO
-        var isIndependent = false;
-        for (var i = 0; i < this.game.independents.length; i++)
-        {
-          if (this.game.independents[i].id === parseInt(playerId))
-          {
-            isIndependent = true;
-            break;
-          }
-        }
-        // END
-
-        if (isIndependent)
-        {
-          total += byPlayer[playerId];
-        }
-        else
-        {
-          continue;
-        }
+        total += ships[i].getStrengthEvaluation();
       }
 
       return total;

@@ -434,6 +434,21 @@ module Rance
 
       return allShips;
     }
+    getIndependentShips(): Unit[]
+    {
+      var ships: Unit[] = [];
+
+      for (var playerId in this.fleets)
+      {
+        var player = this.fleets[playerId][0].player;
+        if (player.isIndependent)
+        {
+          ships = ships.concat(this.getAllShipsOfPlayer(player));
+        }
+      }
+
+      return ships;
+    }
     getTargetsForPlayer(player: Player)
     {
       var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
