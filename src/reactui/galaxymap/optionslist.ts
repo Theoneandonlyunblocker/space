@@ -23,10 +23,9 @@ module Rance
           var value = parseInt(e.target.value);
           if (!isFinite(value))
           {
-            console.warn("Invalid value", value, "for option", stage);
             return;
           }
-          value = clamp(value, parseInt(e.target.min), parseInt(e.target.max));
+          value = clamp(value, e.target.min, e.target.max);
           Options.battleAnimationTiming[stage] = value;
           this.forceUpdate();
         }.bind(this);
@@ -131,6 +130,45 @@ module Rance
             })
         });
 
+        if (Options.debugMode)
+        {
+          debugOptions.push(
+          {
+            key: "battleSimulationDepth",
+            content: React.DOM.div(
+            {
+
+            },
+              React.DOM.input(
+              {
+                type: "number",
+                id: "battle-simulation-depth-input",
+                value: Options.debugOptions.battleSimulationDepth,
+                min: 10,
+                max: 500,
+                step: 1,
+                onChange: function(e)
+                {
+                  var value = parseInt(e.target.value);
+                  if (!isFinite(value))
+                  {
+                    return;
+                  }
+                  value = clamp(value, e.target.min, e.target.max);
+                  Options.debugOptions.battleSimulationDepth = value;
+                  this.forceUpdate();
+                }.bind(this)
+              }),
+              React.DOM.label(
+              {
+                htmlFor: "battle-simulation-depth-input"
+              },
+                "AI vs. AI Battle simulation depth"
+              )
+            )
+          });
+        }
+
 
         allOptions.push(UIComponents.OptionsGroup(
         {
@@ -138,6 +176,7 @@ module Rance
           options: debugOptions,
           resetFN: function()
           {
+            extendObject(defaultOptions.debugOptions, Options.debugOptions);
             if (Options.debugMode !== defaultOptions.debugMode)
             {
               toggleDebugMode();

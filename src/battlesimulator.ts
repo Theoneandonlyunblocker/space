@@ -6,13 +6,11 @@ module Rance
   export class BattleSimulator
   {
     battle: Battle;
-    moveSimulationDepth: number;
 
-    constructor(battle: Battle, moveSimulationDepth: number)
+    constructor(battle: Battle)
     {
       this.battle = battle;
       battle.isSimulated = true;
-      this.moveSimulationDepth = moveSimulationDepth;
     }
 
     simulateBattle()
@@ -32,7 +30,7 @@ module Rance
 
       var tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side);
 
-      var move = tree.evaluate(this.moveSimulationDepth).move;
+      var move = tree.evaluate(Options.debugOptions.battleSimulationDepth).move;
       var target = this.battle.unitsById[move.targetId];
 
       this.simulateAbility(move.ability, target);

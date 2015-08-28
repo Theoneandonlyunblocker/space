@@ -505,7 +505,7 @@ module Rance
       {
         var battle = battlePrep.makeBattle();
         battle.afterFinishCallbacks.push(battleFinishCallback);
-        var simulator = new BattleSimulator(battle, 50);
+        var simulator = new BattleSimulator(battle);
         simulator.simulateBattle();
         simulator.finishBattle();
       }

@@ -43,6 +43,10 @@ module Rance
       after: 250
     }
     export var debugMode = false;
+    export var debugOptions =
+    {
+      battleSimulationDepth: 33
+    };
     export var ui =
     {
       noHamburger: false

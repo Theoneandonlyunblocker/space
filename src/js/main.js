@@ -4821,10 +4821,9 @@ var Rance;
                 var onChangeFN = function (e) {
                     var value = parseInt(e.target.value);
                     if (!isFinite(value)) {
-                        console.warn("Invalid value", value, "for option", stage);
                         return;
                     }
-                    value = Rance.clamp(value, parseInt(e.target.min), parseInt(e.target.max));
+                    value = Rance.clamp(value, e.target.min, e.target.max);
                     Rance.Options.battleAnimationTiming[stage] = value;
                     this.forceUpdate();
                 }.bind(this);
@@ -4901,10 +4900,36 @@ var Rance;
                     })
                 });
 
+                if (Rance.Options.debugMode) {
+                    debugOptions.push({
+                        key: "battleSimulationDepth",
+                        content: React.DOM.div({}, React.DOM.input({
+                            type: "number",
+                            id: "battle-simulation-depth-input",
+                            value: Rance.Options.debugOptions.battleSimulationDepth,
+                            min: 10,
+                            max: 500,
+                            step: 1,
+                            onChange: function (e) {
+                                var value = parseInt(e.target.value);
+                                if (!isFinite(value)) {
+                                    return;
+                                }
+                                value = Rance.clamp(value, e.target.min, e.target.max);
+                                Rance.Options.debugOptions.battleSimulationDepth = value;
+                                this.forceUpdate();
+                            }.bind(this)
+                        }), React.DOM.label({
+                            htmlFor: "battle-simulation-depth-input"
+                        }, "AI vs. AI Battle simulation depth"))
+                    });
+                }
+
                 allOptions.push(Rance.UIComponents.OptionsGroup({
                     header: "Debug",
                     options: debugOptions,
                     resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.debugOptions, Rance.Options.debugOptions);
                         if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode) {
                             Rance.toggleDebugMode();
                             this.forceUpdate();
@@ -9476,10 +9501,9 @@ var Rance;
 var Rance;
 (function (Rance) {
     var BattleSimulator = (function () {
-        function BattleSimulator(battle, moveSimulationDepth) {
+        function BattleSimulator(battle) {
             this.battle = battle;
             battle.isSimulated = true;
-            this.moveSimulationDepth = moveSimulationDepth;
         }
         BattleSimulator.prototype.simulateBattle = function () {
             while (!this.battle.ended) {
@@ -9494,7 +9518,7 @@ var Rance;
 
             var tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side);
 
-            var move = tree.evaluate(this.moveSimulationDepth).move;
+            var move = tree.evaluate(Rance.Options.debugOptions.battleSimulationDepth).move;
             var target = this.battle.unitsById[move.targetId];
 
             this.simulateAbility(move.ability, target);
@@ -11341,7 +11365,6 @@ var Rance;
         };
         ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
             var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-            console.log(evaluationScores);
             return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.1);
         };
         ObjectivesAI.prototype.getHealObjectives = function () {
@@ -11845,6 +11868,8 @@ var Rance;
             var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
             var distanceAdjust = turnsToReach * -0.1;
             score += distanceAdjust;
+
+            console.log(score, front.objective.type);
 
             return score;
         };
@@ -12626,7 +12651,7 @@ var Rance;
             } else {
                 var battle = battlePrep.makeBattle();
                 battle.afterFinishCallbacks.push(battleFinishCallback);
-                var simulator = new Rance.BattleSimulator(battle, 50);
+                var simulator = new Rance.BattleSimulator(battle);
                 simulator.simulateBattle();
                 simulator.finishBattle();
             }
@@ -20269,6 +20294,9 @@ var Rance;
             after: 250
         };
         defaultOptions.debugMode = false;
+        defaultOptions.debugOptions = {
+            battleSimulationDepth: 33
+        };
         defaultOptions.ui = {
             noHamburger: false
         };

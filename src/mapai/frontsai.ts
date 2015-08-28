@@ -223,6 +223,8 @@ module Rance
       );
       var distanceAdjust = turnsToReach * -0.1;
       score += distanceAdjust;
+
+      console.log(score, front.objective.type);
       
       return score;
     }

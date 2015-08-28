@@ -1208,8 +1208,7 @@ declare module Rance {
 declare module Rance {
     class BattleSimulator {
         public battle: Rance.Battle;
-        public moveSimulationDepth: number;
-        constructor(battle: Rance.Battle, moveSimulationDepth: number);
+        constructor(battle: Rance.Battle);
         public simulateBattle(): void;
         public simulateMove(): void;
         public simulateAbility(ability: Rance.Templates.IAbilityTemplate, target: Rance.Unit): void;
@@ -2737,6 +2736,9 @@ declare module Rance {
             after: number;
         };
         var debugMode: boolean;
+        var debugOptions: {
+            battleSimulationDepth: number;
+        };
         var ui: {
             noHamburger: boolean;
         };
