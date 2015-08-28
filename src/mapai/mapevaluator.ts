@@ -31,7 +31,6 @@ module Rance
   {
     map: GalaxyMap;
     player: Player;
-    game: Game;
     evaluationParameters:
     {
       starDesirability:
@@ -47,11 +46,10 @@ module Rance
       };
     };
 
-    constructor(map: GalaxyMap, player: Player, game?: Game)
+    constructor(map: GalaxyMap, player: Player)
     {
       this.map = map;
       this.player = player;
-      this.game = game;
 
       this.evaluationParameters = defaultEvaluationParameters;
     }
