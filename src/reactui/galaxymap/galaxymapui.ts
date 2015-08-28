@@ -19,6 +19,7 @@ module Rance
         return(
         {
           selectedFleets: pc.selectedFleets,
+          inspectedFleets: pc.inspectedFleets,
           currentlyReorganizing: pc.currentlyReorganizing,
           selectedStar: pc.selectedStar,
           attackTargets: pc.currentAttackTargets,
@@ -53,6 +54,7 @@ module Rance
         this.setState(
         {
           selectedFleets: pc.selectedFleets,
+          inspectedFleets: pc.inspectedFleets,
           currentlyReorganizing: pc.currentlyReorganizing,
           selectedStar: star,
           attackTargets: pc.currentAttackTargets
@@ -84,6 +86,8 @@ module Rance
           selectionContainerClassName += " reorganizing";
         }
 
+        var isInspecting = this.state.inspectedFleets.length > 0;
+
         return(
           React.DOM.div(
           {
@@ -109,7 +113,9 @@ module Rance
               },
                 UIComponents.FleetSelection(
                 {
-                  selectedFleets: this.state.selectedFleets,
+                  selectedFleets: (isInspecting ?
+                    this.state.inspectedFleets : this.state.selectedFleets),
+                  isInspecting: isInspecting,
                   selectedStar: this.state.selectedStar,
                   currentlyReorganizing: this.state.currentlyReorganizing,
                   closeReorganization: this.closeReorganization

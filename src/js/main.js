@@ -5391,7 +5391,7 @@ var Rance;
                 var splitButtonProps = {
                     className: "fleet-controls-split"
                 };
-                if (this.props.fleet.ships.length > 1) {
+                if (this.props.fleet.ships.length > 1 && !this.props.isInspecting) {
                     splitButtonProps.onClick = this.splitFleet;
                 } else {
                     splitButtonProps.className += " disabled";
@@ -5442,7 +5442,8 @@ var Rance;
                     className: "fleet-info-strength"
                 }, totalHealth.current + "/" + totalHealth.max), Rance.UIComponents.FleetControls({
                     fleet: fleet,
-                    hasMultipleSelected: this.props.hasMultipleSelected
+                    hasMultipleSelected: this.props.hasMultipleSelected,
+                    isInspecting: this.props.isInspecting
                 })), React.DOM.div({
                     className: "fleet-info-move-points"
                 }, "Moves: " + fleet.getMinCurrentMovePoints() + "/" + fleet.getMinMaxMovePoints())));
@@ -5726,7 +5727,8 @@ var Rance;
                     var infoProps = {
                         key: selectedFleets[i].id,
                         fleet: selectedFleets[i],
-                        hasMultipleSelected: hasMultipleSelected
+                        hasMultipleSelected: hasMultipleSelected,
+                        isInspecting: this.props.isInspecting
                     };
 
                     fleetInfos.push(Rance.UIComponents.FleetInfo(infoProps));
@@ -5738,7 +5740,7 @@ var Rance;
                     var mergeProps = {
                         className: "fleet-selection-controls-merge"
                     };
-                    if (allFleetsInSameLocation) {
+                    if (allFleetsInSameLocation && !this.props.isInspecting) {
                         mergeProps.onClick = this.mergeFleets;
                     } else {
                         mergeProps.disabled = true;
@@ -5748,7 +5750,7 @@ var Rance;
                     var reorganizeProps = {
                         className: "fleet-selection-controls-reorganize"
                     };
-                    if (allFleetsInSameLocation && selectedFleets.length === 2) {
+                    if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting) {
                         reorganizeProps.onClick = this.reorganizeFleets;
                     } else {
                         reorganizeProps.disabled = true;
@@ -14485,6 +14487,7 @@ var Rance;
 
                 return ({
                     selectedFleets: pc.selectedFleets,
+                    inspectedFleets: pc.inspectedFleets,
                     currentlyReorganizing: pc.currentlyReorganizing,
                     selectedStar: pc.selectedStar,
                     attackTargets: pc.currentAttackTargets,
@@ -14512,6 +14515,7 @@ var Rance;
 
                 this.setState({
                     selectedFleets: pc.selectedFleets,
+                    inspectedFleets: pc.inspectedFleets,
                     currentlyReorganizing: pc.currentlyReorganizing,
                     selectedStar: star,
                     attackTargets: pc.currentAttackTargets
@@ -14536,6 +14540,8 @@ var Rance;
                     selectionContainerClassName += " reorganizing";
                 }
 
+                var isInspecting = this.state.inspectedFleets.length > 0;
+
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, React.DOM.div({
@@ -14549,7 +14555,8 @@ var Rance;
                 }), React.DOM.div({
                     className: selectionContainerClassName
                 }, Rance.UIComponents.FleetSelection({
-                    selectedFleets: this.state.selectedFleets,
+                    selectedFleets: (isInspecting ? this.state.inspectedFleets : this.state.selectedFleets),
+                    isInspecting: isInspecting,
                     selectedStar: this.state.selectedStar,
                     currentlyReorganizing: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
@@ -17070,6 +17077,7 @@ var Rance;
     var PlayerControl = (function () {
         function PlayerControl(player) {
             this.selectedFleets = [];
+            this.inspectedFleets = [];
             this.currentlyReorganizing = [];
             this.preventingGhost = false;
             this.listeners = {};
@@ -17150,6 +17158,7 @@ var Rance;
         };
         PlayerControl.prototype.clearSelection = function () {
             this.selectedFleets = [];
+            this.inspectedFleets = [];
             this.selectedStar = null;
         };
         PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
@@ -17175,6 +17184,29 @@ var Rance;
             return true;
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
+            var playerFleets = [];
+            var otherFleets = [];
+            for (var i = 0; i < fleets.length; i++) {
+                if (fleets[i].player === this.player) {
+                    playerFleets.push(fleets[i]);
+                } else {
+                    otherFleets.push(fleets[i]);
+                }
+            }
+
+            if (playerFleets.length > 0) {
+                this.selectPlayerFleets(playerFleets);
+            } else {
+                this.selectOtherFleets(otherFleets);
+            }
+
+            this.updateSelection();
+
+            if (fleets.length > 0) {
+                this.preventGhost(15);
+            }
+        };
+        PlayerControl.prototype.selectPlayerFleets = function (fleets) {
             this.clearSelection();
 
             for (var i = 0; i < fleets.length; i++) {
@@ -17189,24 +17221,21 @@ var Rance;
             var oldFleets = this.selectedFleets.slice(0);
 
             this.selectedFleets = fleets;
-
-            if (true || !Rance.arraysEqual(fleets, oldFleets)) {
-                this.updateSelection();
-            }
-
-            if (fleets.length > 0) {
-                this.preventGhost(15);
-            }
+        };
+        PlayerControl.prototype.selectOtherFleets = function (fleets) {
+            this.inspectedFleets = fleets;
+            console.log(fleets, this.inspectedFleets);
         };
         PlayerControl.prototype.deselectFleet = function (fleet) {
-            var fleetIndex = this.selectedFleets.indexOf(fleet);
+            var fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
+            var fleetIndex = fleetsContainer.indexOf(fleet);
 
             if (fleetIndex < 0)
                 return;
 
-            this.selectedFleets.splice(fleetIndex, 1);
+            fleetsContainer.splice(fleetIndex, 1);
 
-            if (this.selectedFleets.length < 1) {
+            if (fleetsContainer.length < 1) {
                 this.selectedStar = fleet.location;
             }
 
@@ -18004,57 +18033,6 @@ var Rance;
                     function fleetClickFn(fleet) {
                         Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
                     }
-
-                    /*
-                    function singleFleetDrawFN(fleet: Fleet)
-                    {
-                    var fleetContainer = new PIXI.DisplayObjectContainer();
-                    
-                    if (fleet.ships[0] && fleet.ships[0].front)
-                    {
-                    var front = fleet.ships[0].front;
-                    var frontHue = ((front.id * 20) % 360) / 360;
-                    var color = hslToHex(frontHue, 1, 0.5);
-                    }
-                    else
-                    {
-                    var color = fleet.player.color;
-                    }
-                    
-                    var color = fleet.player.color;
-                    
-                    var text = new PIXI.Text(fleet.ships.length,
-                    {
-                    //fill: "#" + playerColor.toString(16)
-                    fill: "#FFFFFF",
-                    stroke: "#000000",
-                    strokeThickness: 3
-                    });
-                    
-                    var containerGfx = new PIXI.Graphics();
-                    containerGfx.lineStyle(1, 0x00000, 1);
-                    containerGfx.beginFill(color, 0.7);
-                    containerGfx.drawRect(0, 0, text.width+4, text.height+4);
-                    containerGfx.endFill();
-                    
-                    containerGfx.interactive = true;
-                    if (fleet.player.id === self.player.id)
-                    {
-                    containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
-                    }
-                    
-                    containerGfx.mousedown = mouseDownFN;
-                    containerGfx.mouseup = mouseUpFN;
-                    containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
-                    
-                    containerGfx.addChild(text);
-                    text.x += 2;
-                    text.y += 2;
-                    containerGfx.y -= 10;
-                    fleetContainer.addChild(containerGfx);
-                    
-                    return fleetContainer;
-                    }*/
                     function singleFleetDrawFN(fleet) {
                         var fleetContainer = new PIXI.DisplayObjectContainer();
 
@@ -18075,10 +18053,8 @@ var Rance;
                         text.y += 2;
 
                         fleetContainer.interactive = true;
-                        if (fleet.player.id === self.player.id) {
-                            fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
-                        }
 
+                        fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
                         fleetContainer.mousedown = mouseDownFN;
                         fleetContainer.mouseup = mouseUpFN;
                         fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);

@@ -2246,6 +2246,7 @@ declare module Rance {
     class PlayerControl {
         public player: Rance.Player;
         public selectedFleets: Rance.Fleet[];
+        public inspectedFleets: Rance.Fleet[];
         public currentlyReorganizing: Rance.Fleet[];
         public currentAttackTargets: any[];
         public selectedStar: Rance.Star;
@@ -2264,6 +2265,8 @@ declare module Rance {
         public updateSelection(endReorganizingFleets?: boolean): void;
         public areAllFleetsInSameLocation(): boolean;
         public selectFleets(fleets: Rance.Fleet[]): void;
+        public selectPlayerFleets(fleets: Rance.Fleet[]): void;
+        public selectOtherFleets(fleets: Rance.Fleet[]): void;
         public deselectFleet(fleet: Rance.Fleet): void;
         public getMasterFleetForMerge(): Rance.Fleet;
         public mergeFleets(): void;

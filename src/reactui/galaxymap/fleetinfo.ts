@@ -46,7 +46,8 @@ module Rance
               UIComponents.FleetControls(
               {
                 fleet: fleet,
-                hasMultipleSelected: this.props.hasMultipleSelected
+                hasMultipleSelected: this.props.hasMultipleSelected,
+                isInspecting: this.props.isInspecting
               })
             ),
             React.DOM.div(

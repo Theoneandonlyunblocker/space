@@ -11,6 +11,7 @@ module Rance
     player: Player;
 
     selectedFleets: Fleet[] = [];
+    inspectedFleets: Fleet[] = [];
     currentlyReorganizing: Fleet[] = [];
 
     currentAttackTargets: any[];
@@ -122,6 +123,7 @@ module Rance
     clearSelection()
     {
       this.selectedFleets = [];
+      this.inspectedFleets = [];
       this.selectedStar = null;
     }
     updateSelection(endReorganizingFleets: boolean = true)
@@ -149,6 +151,38 @@ module Rance
     }
     selectFleets(fleets: Fleet[])
     {
+      var playerFleets: Fleet[] = [];
+      var otherFleets: Fleet[] = [];
+      for (var i = 0; i < fleets.length; i++)
+      {
+        if (fleets[i].player === this.player)
+        {
+          playerFleets.push(fleets[i]);
+        }
+        else
+        {
+          otherFleets.push(fleets[i]);
+        }
+      }
+
+      if (playerFleets.length > 0)
+      {
+        this.selectPlayerFleets(playerFleets);
+      }
+      else
+      {
+        this.selectOtherFleets(otherFleets);
+      }
+
+      this.updateSelection();
+
+      if (fleets.length > 0)
+      {
+        this.preventGhost(15);
+      }
+    }
+    selectPlayerFleets(fleets: Fleet[])
+    {
       this.clearSelection();
 
       for (var i = 0; i < fleets.length; i++)
@@ -164,26 +198,21 @@ module Rance
       var oldFleets = this.selectedFleets.slice(0);
 
       this.selectedFleets = fleets;
-
-      if (true || !arraysEqual(fleets, oldFleets)) //todo
-      {
-        this.updateSelection();
-      }
-
-      if (fleets.length > 0)
-      {
-        this.preventGhost(15);
-      }
+    }
+    selectOtherFleets(fleets: Fleet[])
+    {
+      this.inspectedFleets = fleets;
     }
     deselectFleet(fleet: Fleet)
     {
-      var fleetIndex = this.selectedFleets.indexOf(fleet);
+      var fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
+      var fleetIndex = fleetsContainer.indexOf(fleet);
 
       if (fleetIndex < 0) return;
 
-      this.selectedFleets.splice(fleetIndex, 1);
+      fleetsContainer.splice(fleetIndex, 1);
 
-      if (this.selectedFleets.length < 1)
+      if (fleetsContainer.length < 1)
       {
         this.selectedStar = fleet.location;
       }

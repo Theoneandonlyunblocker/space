@@ -8,17 +8,17 @@ module Rance
 
       deselectFleet: function()
       {
-        eventManager.dispatchEvent("deselectFleet", this.props.fleet)
+        eventManager.dispatchEvent("deselectFleet", this.props.fleet);
       },
 
       selectFleet: function()
       {
-        eventManager.dispatchEvent("selectFleets", [this.props.fleet])
+        eventManager.dispatchEvent("selectFleets", [this.props.fleet]);
       },
 
       splitFleet: function()
       {
-        eventManager.dispatchEvent("splitFleet", this.props.fleet)
+        eventManager.dispatchEvent("splitFleet", this.props.fleet);
       },
 
       render: function()
@@ -27,7 +27,7 @@ module Rance
         {
           className: "fleet-controls-split"
         };
-        if (this.props.fleet.ships.length > 1)
+        if (this.props.fleet.ships.length > 1 && !this.props.isInspecting)
         {
           splitButtonProps.onClick = this.splitFleet;
         }

@@ -90,7 +90,8 @@ module Rance
           {
             key: selectedFleets[i].id,
             fleet: selectedFleets[i],
-            hasMultipleSelected: hasMultipleSelected
+            hasMultipleSelected: hasMultipleSelected,
+            isInspecting: this.props.isInspecting
           };
 
           fleetInfos.push(UIComponents.FleetInfo(infoProps));
@@ -104,7 +105,7 @@ module Rance
           {
             className: "fleet-selection-controls-merge"
           }
-          if (allFleetsInSameLocation)
+          if (allFleetsInSameLocation && !this.props.isInspecting)
           {
             mergeProps.onClick = this.mergeFleets;
           }
@@ -118,7 +119,7 @@ module Rance
           {
             className: "fleet-selection-controls-reorganize"
           }
-          if (allFleetsInSameLocation && selectedFleets.length === 2)
+          if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting)
           {
             reorganizeProps.onClick = this.reorganizeFleets;
           }

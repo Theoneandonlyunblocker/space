@@ -840,56 +840,6 @@ module Rance
           {
             eventManager.dispatchEvent("selectFleets", [fleet]);
           }
-          /*
-          function singleFleetDrawFN(fleet: Fleet)
-          {
-            var fleetContainer = new PIXI.DisplayObjectContainer();
-
-            if (fleet.ships[0] && fleet.ships[0].front)
-            {
-              var front = fleet.ships[0].front;
-              var frontHue = ((front.id * 20) % 360) / 360;
-              var color = hslToHex(frontHue, 1, 0.5);
-            }
-            else
-            {
-              var color = fleet.player.color;
-            }
-
-            var color = fleet.player.color;
-
-            var text = new PIXI.Text(fleet.ships.length,
-            {
-              //fill: "#" + playerColor.toString(16)
-              fill: "#FFFFFF",
-              stroke: "#000000",
-              strokeThickness: 3
-            });
-
-            var containerGfx = new PIXI.Graphics();
-            containerGfx.lineStyle(1, 0x00000, 1);
-            containerGfx.beginFill(color, 0.7);
-            containerGfx.drawRect(0, 0, text.width+4, text.height+4);
-            containerGfx.endFill();
-
-            containerGfx.interactive = true;
-            if (fleet.player.id === self.player.id)
-            {
-              containerGfx.click = containerGfx.tap = fleetClickFn.bind(containerGfx, fleet);
-            }
-
-            containerGfx.mousedown = mouseDownFN;
-            containerGfx.mouseup = mouseUpFN;
-            containerGfx.mouseover = mouseOverFN.bind(containerGfx, fleet);
-
-            containerGfx.addChild(text);
-            text.x += 2;
-            text.y += 2;
-            containerGfx.y -= 10;
-            fleetContainer.addChild(containerGfx);
-
-            return fleetContainer;
-          }*/
           function singleFleetDrawFN(fleet: Fleet)
           {
             var fleetContainer = new PIXI.DisplayObjectContainer();
@@ -913,11 +863,8 @@ module Rance
             
 
             fleetContainer.interactive = true;
-            if (Options.debugMode || fleet.player.id === self.player.id)
-            {
-              fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
-            }
-
+            
+            fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
             fleetContainer.mousedown = mouseDownFN;
             fleetContainer.mouseup = mouseUpFN;
             fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
