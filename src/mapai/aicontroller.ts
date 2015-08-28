@@ -89,7 +89,6 @@ module Rance
       {
         afterFinishedCallback();
       }
-      console.log("finish moving");
     }
   }
 }

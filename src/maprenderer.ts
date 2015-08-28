@@ -1119,8 +1119,6 @@ module Rance
     {
       if (this.preventRender || !this.isDirty) return;
 
-      console.log("render map")
-
       for (var i = 0; i < this.currentMapMode.layers.length; i++)
       {
         var layer = this.currentMapMode.layers[i].layer;
