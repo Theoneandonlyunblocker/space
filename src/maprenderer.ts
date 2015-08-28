@@ -913,7 +913,7 @@ module Rance
             
 
             fleetContainer.interactive = true;
-            if (fleet.player.id === self.player.id)
+            if (Options.debugMode || fleet.player.id === self.player.id)
             {
               fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
             }
