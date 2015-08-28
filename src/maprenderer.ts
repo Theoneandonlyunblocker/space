@@ -35,8 +35,6 @@ module Rance
     galaxyMap: GalaxyMap;
     player: Player;
 
-    game: Game;
-
     occupationShaders:
     {
       [ownerId: string]:
@@ -74,11 +72,12 @@ module Rance
       [name: string]: any;
     } = {};
 
-    constructor(map: GalaxyMap)
+    constructor(map: GalaxyMap, player: Player)
     {
       this.container = new PIXI.DisplayObjectContainer();
 
-      this.setMap(map);
+      this.galaxyMap = map;
+      this.player = player;
     }
     destroy()
     {
@@ -93,7 +92,6 @@ module Rance
       this.container.removeChildren();
       this.parent.removeChild(this.container);
 
-      this.game = null;
       this.player = null;
       this.container = null;
       this.parent = null;
@@ -112,12 +110,6 @@ module Rance
         texture.destroy(true);
       }
 
-    }
-    setMap(map: GalaxyMap)
-    {
-      this.galaxyMap = map;
-      this.game = map.game;
-      this.player = this.game.humanPlayer;
     }
     init()
     {

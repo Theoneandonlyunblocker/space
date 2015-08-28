@@ -256,7 +256,7 @@ module Rance
       this.renderer = this.renderer || new Renderer();
       this.renderer.init();
 
-      this.mapRenderer = new MapRenderer(this.game.galaxyMap);
+      this.mapRenderer = new MapRenderer(this.game.galaxyMap, this.humanPlayer);
       this.mapRenderer.setParent(this.renderer.layers["map"]);
       this.mapRenderer.init();
 
