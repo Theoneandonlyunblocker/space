@@ -450,6 +450,7 @@ module Rance
       switch (objective.type)
       {
         case "expansion":
+        case "cleanPirates":
         {
           return this.getUnitsToFillExpansionObjective(objective);
         }

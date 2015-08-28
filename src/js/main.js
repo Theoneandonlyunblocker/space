@@ -10903,11 +10903,9 @@ var Rance;
             return evaluation;
         };
 
-        MapEvaluator.prototype.evaluateImmediateExpansionTargets = function () {
+        MapEvaluator.prototype.evaluateIndependentTargets = function (targetFilter) {
             var stars = this.player.getNeighboringStars();
-            stars = stars.filter(function (star) {
-                return star.owner.isIndependent;
-            });
+            stars = stars.filter(targetFilter);
 
             var evaluationByStar = {};
 
@@ -10931,7 +10929,7 @@ var Rance;
             return evaluationByStar;
         };
 
-        MapEvaluator.prototype.scoreExpansionTargets = function (evaluations) {
+        MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
             var scores = [];
 
             for (var starId in evaluations) {
@@ -10954,8 +10952,21 @@ var Rance;
         };
 
         MapEvaluator.prototype.getScoredExpansionTargets = function () {
-            var evaluations = this.evaluateImmediateExpansionTargets();
-            var scores = this.scoreExpansionTargets(evaluations);
+            var expansionTargetFilter = function (star) {
+                return star.owner.isIndependent;
+            };
+            var evaluations = this.evaluateIndependentTargets(expansionTargetFilter);
+            var scores = this.scoreIndependentTargets(evaluations);
+
+            return scores;
+        };
+
+        MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
+            var cleanPiratesTargetFilter = function (star) {
+                return star.owner === this.player;
+            }.bind(this);
+            var evaluations = this.evaluateIndependentTargets(cleanPiratesTargetFilter);
+            var scores = this.scoreIndependentTargets(evaluations);
 
             return scores;
         };
@@ -11250,6 +11261,7 @@ var Rance;
         function ObjectivesAI(mapEvaluator, game) {
             this.objectivesByType = {
                 expansion: [],
+                cleanPirates: [],
                 heal: []
             };
             this.objectives = [];
@@ -11263,6 +11275,7 @@ var Rance;
             this.objectives = [];
 
             this.addObjectives(this.getExpansionObjectives());
+            this.addObjectives(this.getCleanPiratesObjectives());
             this.addObjectives(this.getHealObjectives());
         };
 
@@ -11270,55 +11283,61 @@ var Rance;
             this.objectives = this.objectives.concat(objectives);
         };
 
-        ObjectivesAI.prototype.getExpansionObjectives = function () {
+        // base method used for getting expansion & cleanPirates objectives
+        ObjectivesAI.prototype.getIndependentFightingObjectives = function (objectiveType, evaluationScores, basePriority) {
             var objectivesByTarget = {};
 
             var allObjectives = [];
 
-            for (var i = 0; i < this.objectivesByType.expansion.length; i++) {
-                var _o = this.objectivesByType.expansion[i];
-                _o.isOngoing = true;
-                objectivesByTarget[_o.target.id] = _o;
+            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
+                var objective = this.objectivesByType[objectiveType][i];
+                objective.isOngoing = true;
+                objectivesByTarget[objective.target.id] = objective;
             }
 
-            this.objectivesByType["expansion"] = [];
+            this.objectivesByType[objectiveType] = [];
 
             var minScore, maxScore;
 
-            var expansionScores = this.mapEvaluator.getScoredExpansionTargets();
-
-            for (var i = 0; i < expansionScores.length; i++) {
-                var score = expansionScores[i].score;
+            for (var i = 0; i < evaluationScores.length; i++) {
+                var score = evaluationScores[i].score;
 
                 //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
                 maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
             }
 
-            for (var i = 0; i < expansionScores.length; i++) {
-                var star = expansionScores[i].star;
-                var relativeScore = Rance.getRelativeValue(expansionScores[i].score, 0, maxScore);
+            for (var i = 0; i < evaluationScores.length; i++) {
+                var star = evaluationScores[i].star;
+                var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, 0, maxScore);
+                var priority = relativeScore * basePriority;
+
                 if (objectivesByTarget[star.id]) {
-                    objectivesByTarget[star.id].priority = relativeScore;
+                    objectivesByTarget[star.id].priority = priority;
                 } else {
-                    objectivesByTarget[star.id] = new Rance.Objective("expansion", relativeScore, star, expansionScores[i]);
+                    objectivesByTarget[star.id] = new Rance.Objective(objectiveType, priority, star, evaluationScores[i]);
                 }
 
                 allObjectives.push(objectivesByTarget[star.id]);
-                this.objectivesByType["expansion"].push(objectivesByTarget[star.id]);
+                this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
             }
 
             return allObjectives;
         };
 
+        ObjectivesAI.prototype.getExpansionObjectives = function () {
+            var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
+            return this.getIndependentFightingObjectives("expansion", evaluationScores, 1);
+        };
+        ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
+            var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
+            console.log(evaluationScores);
+            return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.1);
+        };
         ObjectivesAI.prototype.getHealObjectives = function () {
             var objective = new Rance.Objective("heal", 1, null);
             this.objectivesByType["heal"] = [objective];
 
             return [objective];
-        };
-
-        ObjectivesAI.prototype.processExpansionObjectives = function (objectives) {
-            var activeObjectives = [];
         };
         return ObjectivesAI;
     })();
@@ -11987,7 +12006,8 @@ var Rance;
 
         FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
             switch (objective.type) {
-                case "expansion": {
+                case "expansion":
+                case "cleanPirates": {
                     return this.getUnitsToFillExpansionObjective(objective);
                 }
                 case "heal": {
@@ -12200,7 +12220,6 @@ var Rance;
             if (afterFinishedCallback) {
                 afterFinishedCallback();
             }
-            console.log("finish moving");
         };
         return AIController;
     })();
@@ -18191,8 +18210,6 @@ var Rance;
         MapRenderer.prototype.render = function () {
             if (this.preventRender || !this.isDirty)
                 return;
-
-            console.log("render map");
 
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 var layer = this.currentMapMode.layers[i].layer;

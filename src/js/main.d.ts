@@ -1469,7 +1469,7 @@ declare module Rance {
             productionWeight: number;
         };
     };
-    interface IExpansionTargetEvaluations {
+    interface IIndependentTargetEvaluations {
         [starId: number]: {
             star: Rance.Star;
             desirability: number;
@@ -1497,12 +1497,16 @@ declare module Rance {
         public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
         public evaluateIndividualStarDesirability(star: Rance.Star): number;
         public evaluateStarDesirability(star: Rance.Star): number;
-        public evaluateImmediateExpansionTargets(): IExpansionTargetEvaluations;
-        public scoreExpansionTargets(evaluations: IExpansionTargetEvaluations): {
+        public evaluateIndependentTargets(targetFilter: (star: Rance.Star) => boolean): IIndependentTargetEvaluations;
+        public scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
             star: Rance.Star;
             score: number;
         }[];
         public getScoredExpansionTargets(): {
+            star: Rance.Star;
+            score: number;
+        }[];
+        public getScoredCleanPiratesTargets(): {
             star: Rance.Star;
             score: number;
         }[];
@@ -1550,6 +1554,7 @@ declare module Rance {
         public game: Rance.Game;
         public objectivesByType: {
             expansion: any[];
+            cleanPirates: any[];
             heal: any[];
         };
         public objectives: Rance.Objective[];
@@ -1558,9 +1563,10 @@ declare module Rance {
         constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game);
         public setAllObjectives(): void;
         public addObjectives(objectives: Rance.Objective[]): void;
+        public getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Rance.Objective[];
         public getExpansionObjectives(): Rance.Objective[];
+        public getCleanPiratesObjectives(): Rance.Objective[];
         public getHealObjectives(): Rance.Objective[];
-        public processExpansionObjectives(objectives: Rance.Objective[]): void;
     }
 }
 declare module Rance {
