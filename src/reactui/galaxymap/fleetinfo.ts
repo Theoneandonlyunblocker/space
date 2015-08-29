@@ -20,6 +20,20 @@ module Rance
         if (!fleet) return null;
         var totalHealth = fleet.getTotalHealth();
 
+        var healthRatio = totalHealth.current / totalHealth.max;
+        var critThreshhold = 0.3;
+
+        var healthStatus = "";
+
+        if (healthRatio <= critThreshhold)
+        {
+          healthStatus += " critical";
+        }
+        else if (totalHealth.current < totalHealth.max)
+        {
+          healthStatus += " wounded";
+        }
+
         return(
           React.DOM.div(
           {
@@ -42,7 +56,20 @@ module Rance
               React.DOM.div(
               {
                 className: "fleet-info-strength"
-              }, totalHealth.current + "/" + totalHealth.max),
+              }, 
+                React.DOM.span(
+                {
+                  className: "fleet-info-strength-current" + healthStatus
+                },
+                  totalHealth.current
+                ),
+                React.DOM.span(
+                {
+                  className: "fleet-info-strength-max"
+                },
+                  "/" + totalHealth.max
+                )
+              ),
               UIComponents.FleetControls(
               {
                 fleet: fleet,

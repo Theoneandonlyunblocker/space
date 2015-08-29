@@ -2098,6 +2098,14 @@ progress::-webkit-progress-value { background: #080; }
   border: 1px solid #666;
   color: @text-color;
 
+  &.draggable
+  {
+    .ship-info-name
+    {
+      cursor: move;
+    }
+  }
+
   &.dragging
   {
     border-top: 1px solid #666 !important;
