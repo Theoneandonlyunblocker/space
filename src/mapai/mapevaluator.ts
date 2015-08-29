@@ -523,6 +523,30 @@ module Rance
 
       return byPlayer;
     }
+    getRelativePerceivedThreatOfAllKnownPlayers()
+    {
+      var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
+      var relative:
+      {
+        [playerId: number]: number;
+      } = {};
+
+      var min, max;
+
+      for (var playerId in byPlayer)
+      {
+        var threat = byPlayer[playerId];
+        min = isFinite(min) ? Math.min(min, threat) : threat;
+        max = isFinite(max) ? Math.max(max, threat) : threat;
+      }
+
+      for (var playerId in byPlayer)
+      {
+        relative[playerId] = getRelativeValue(byPlayer[playerId], min, max);
+      }
+
+      return relative;
+    }
     getDiplomacyEvaluations(currentTurn: number)
     {
       var evaluationByPlayer:

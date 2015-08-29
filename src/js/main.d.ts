@@ -1560,6 +1560,9 @@ declare module Rance {
         public getPerceivedThreatOfAllKnownPlayers(): {
             [playerId: number]: number;
         };
+        public getRelativePerceivedThreatOfAllKnownPlayers(): {
+            [playerId: number]: number;
+        };
         public getDiplomacyEvaluations(currentTurn: number): {
             [playerId: number]: Rance.IDiplomacyEvaluation;
         };

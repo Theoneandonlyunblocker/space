@@ -5428,6 +5428,17 @@ var Rance;
                     return null;
                 var totalHealth = fleet.getTotalHealth();
 
+                var healthRatio = totalHealth.current / totalHealth.max;
+                var critThreshhold = 0.3;
+
+                var healthStatus = "";
+
+                if (healthRatio <= critThreshhold) {
+                    healthStatus += " critical";
+                } else if (totalHealth.current < totalHealth.max) {
+                    healthStatus += " wounded";
+                }
+
                 return (React.DOM.div({
                     className: "fleet-info"
                 }, React.DOM.div({
@@ -5440,7 +5451,11 @@ var Rance;
                     className: "fleet-info-shipcount"
                 }, fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
-                }, totalHealth.current + "/" + totalHealth.max), Rance.UIComponents.FleetControls({
+                }, React.DOM.span({
+                    className: "fleet-info-strength-current" + healthStatus
+                }, totalHealth.current), React.DOM.span({
+                    className: "fleet-info-strength-max"
+                }, "/" + totalHealth.max)), Rance.UIComponents.FleetControls({
                     fleet: fleet,
                     hasMultipleSelected: this.props.hasMultipleSelected,
                     isInspecting: this.props.isInspecting
@@ -11277,6 +11292,24 @@ var Rance;
             }
 
             return byPlayer;
+        };
+        MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
+            var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
+            var relative = {};
+
+            var min, max;
+
+            for (var playerId in byPlayer) {
+                var threat = byPlayer[playerId];
+                min = isFinite(min) ? Math.min(min, threat) : threat;
+                max = isFinite(max) ? Math.max(max, threat) : threat;
+            }
+
+            for (var playerId in byPlayer) {
+                relative[playerId] = Rance.getRelativeValue(byPlayer[playerId], min, max);
+            }
+
+            return relative;
         };
         MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
             var evaluationByPlayer = {};
