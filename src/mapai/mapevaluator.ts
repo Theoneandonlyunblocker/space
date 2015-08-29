@@ -1,5 +1,8 @@
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../player.ts"/>
+/// <reference path="../star.ts" />
+/// <reference path="../game.ts" />
+/// <reference path="../fleet.ts" />
 
 module Rance
 {
@@ -42,6 +45,13 @@ module Rance
         }
       }
     } = {};
+    cachedVisibleFleets:
+    {
+      [turnNumber: number]:
+      {
+        [playerId: number]: Fleet[];
+      }
+    } = {};
     evaluationParameters:
     {
       starDesirability:
@@ -69,6 +79,7 @@ module Rance
     processTurnStart()
     {
       this.cachedInfluenceMaps = {};
+      this.cachedVisibleFleets = {};
     }
 
     evaluateStarIncome(star: Star): number
@@ -352,10 +363,13 @@ module Rance
       return fleet.getTotalStrengthEvaluation();
     }
 
-
-
     getVisibleFleetsByPlayer()
     {
+      if (this.game && this.cachedVisibleFleets[this.game.turnNumber])
+      {
+        return this.cachedVisibleFleets[this.game.turnNumber];
+      }
+
       var stars = this.player.getVisibleStars();
 
       var byPlayer:
@@ -381,6 +395,11 @@ module Rance
             byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
           }
         }
+      }
+
+      if (this.game)
+      {
+        this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
       }
 
       return byPlayer;
