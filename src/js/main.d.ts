@@ -1503,6 +1503,11 @@ declare module Rance {
                 };
             };
         };
+        public cachedVisibleFleets: {
+            [turnNumber: number]: {
+                [playerId: number]: Rance.Fleet[];
+            };
+        };
         public evaluationParameters: {
             starDesirability: {
                 neighborRange: number;
@@ -1556,6 +1561,8 @@ declare module Rance {
         public getPlayerInfluenceMap(player: Rance.Player): {
             [starId: number]: number;
         };
+        public estimateUnrevealedStarCountForPlayer(player: Rance.Player): void;
+        public estimateGlobalStrength(player: Rance.Player): number;
         public getPerceivedThreatOfPlayer(player: Rance.Player): number;
         public getPerceivedThreatOfAllKnownPlayers(): {
             [playerId: number]: number;
@@ -2131,13 +2138,13 @@ declare module Rance {
 declare module Rance {
     module MapGen2 {
         function linkAllStars(stars: Rance.Star[]): void;
-        function partiallyCutLinks(stars: Rance.Star[], minConnections: number): void;
+        function partiallyCutLinks(stars: Rance.Star[], minConnections: number, maxCutsPerRegion: number): void;
         function makeSectors(stars: Rance.Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector2;
         };
         function addDefenceBuildings(star: Rance.Star, amount?: number): void;
         function setDistancesFromNearestPlayerOwnedStar(stars: Rance.Star[]): void;
-        function setupPirates(stars: Rance.Star[], player: Rance.Player, intensity?: number): void;
+        function setupPirates(stars: Rance.Star[], player: Rance.Player, variance?: number, intensity?: number): void;
     }
 }
 declare module Rance {

@@ -497,6 +497,29 @@ module Rance
 
       return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
     }
+    estimateUnrevealedStarCountForPlayer(player: Player)
+    {
+      
+    }
+    estimateGlobalStrength(player: Player)
+    {
+      // TODO
+      var visibleStrength = 0;
+      var invisibleStrength = 0;
+
+      var fleets = this.getVisibleFleetsByPlayer()[player.id];
+      for (var i = 0; i < fleets.length; i++)
+      {
+        visibleStrength += this.evaluateFleetStrength(fleets[i]);
+      }
+
+      if (player !== this.player)
+      {
+        invisibleStrength = visibleStrength * 0.5; // TODO
+      }
+
+      return visibleStrength + invisibleStrength;
+    }
     getPerceivedThreatOfPlayer(player: Player)
     {
       if (!this.player.diplomacyStatus.metPlayers[player.id])

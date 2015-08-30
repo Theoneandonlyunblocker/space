@@ -4061,7 +4061,11 @@ var Rance;
 
                 this.handleClose();
 
-                app.load(saveName);
+                // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+                // without this react will keep a reference to this element causing a big memory leak
+                window.setTimeout(function () {
+                    app.load(saveName);
+                }, 0);
             },
             handleClose: function () {
                 this.props.handleClose();
@@ -10903,6 +10907,9 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../player.ts"/>
+/// <reference path="../star.ts" />
+/// <reference path="../game.ts" />
+/// <reference path="../fleet.ts" />
 var Rance;
 (function (Rance) {
     Rance.defaultEvaluationParameters = {
@@ -10919,6 +10926,7 @@ var Rance;
     var MapEvaluator = (function () {
         function MapEvaluator(map, player, game) {
             this.cachedInfluenceMaps = {};
+            this.cachedVisibleFleets = {};
             this.map = map;
             this.player = player;
             this.game = game;
@@ -10927,6 +10935,7 @@ var Rance;
         }
         MapEvaluator.prototype.processTurnStart = function () {
             this.cachedInfluenceMaps = {};
+            this.cachedVisibleFleets = {};
         };
 
         MapEvaluator.prototype.evaluateStarIncome = function (star) {
@@ -11158,6 +11167,10 @@ var Rance;
         };
 
         MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
+            if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
+                return this.cachedVisibleFleets[this.game.turnNumber];
+            }
+
             var stars = this.player.getVisibleStars();
 
             var byPlayer = {};
@@ -11176,6 +11189,10 @@ var Rance;
                         byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
                     }
                 }
+            }
+
+            if (this.game) {
+                this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
             }
 
             return byPlayer;
@@ -11258,6 +11275,24 @@ var Rance;
             }
 
             return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
+        };
+        MapEvaluator.prototype.estimateUnrevealedStarCountForPlayer = function (player) {
+        };
+        MapEvaluator.prototype.estimateGlobalStrength = function (player) {
+            // TODO
+            var visibleStrength = 0;
+            var invisibleStrength = 0;
+
+            var fleets = this.getVisibleFleetsByPlayer()[player.id];
+            for (var i = 0; i < fleets.length; i++) {
+                visibleStrength += this.evaluateFleetStrength(fleets[i]);
+            }
+
+            if (player !== this.player) {
+                invisibleStrength = visibleStrength * 0.5; // TODO
+            }
+
+            return visibleStrength + invisibleStrength;
         };
         MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
             if (!this.player.diplomacyStatus.metPlayers[player.id]) {
@@ -15831,42 +15866,48 @@ var Rance;
             }
         }
         MapGen2.linkAllStars = linkAllStars;
-        function partiallyCutLinks(stars, minConnections) {
+        function partiallyCutLinks(stars, minConnections, maxCutsPerRegion) {
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
                 var regionsAlreadyCut = {};
 
                 var neighbors = star.getAllLinks();
 
-                if (neighbors.length < minConnections)
+                if (neighbors.length <= minConnections)
                     continue;
 
-                for (var j = 0; j < neighbors.length; j++) {
+                for (var j = neighbors.length - 1; j >= 0; j--) {
                     var neighbor = neighbors[j];
 
-                    if (regionsAlreadyCut[neighbor.mapGenData.region.id]) {
+                    if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion) {
                         continue;
                     }
 
                     var neighborLinks = neighbor.getAllLinks();
 
-                    if (neighborLinks.length < minConnections)
+                    if (neighbors.length <= minConnections || neighborLinks.length <= minConnections)
                         continue;
 
                     var totalLinks = neighbors.length + neighborLinks.length;
 
                     var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
                     var minMultipleCutThreshhold = 0.15;
-                    while (cutThreshhold > 0) {
+                    if (cutThreshhold > 0) {
                         if (Math.random() < cutThreshhold) {
                             star.removeLink(neighbor);
-                            regionsAlreadyCut[neighbor.mapGenData.region.id] = true;
+                            neighbors.pop();
+
+                            if (!regionsAlreadyCut[neighbor.mapGenData.region.id]) {
+                                regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
+                            }
+                            regionsAlreadyCut[neighbor.mapGenData.region.id]++;
 
                             var path = Rance.aStar(star, neighbor);
 
                             if (!path) {
                                 star.addLink(neighbor);
-                                regionsAlreadyCut[neighbor.mapGenData.region.id] = false;
+                                regionsAlreadyCut[neighbor.mapGenData.region.id]--;
+                                neighbors.push(neighbor);
                             }
                         }
 
@@ -16043,7 +16084,8 @@ var Rance;
             }
         }
         MapGen2.setDistancesFromNearestPlayerOwnedStar = setDistancesFromNearestPlayerOwnedStar;
-        function setupPirates(stars, player, intensity) {
+        function setupPirates(stars, player, variance, intensity) {
+            if (typeof variance === "undefined") { variance = 0.33; }
             if (typeof intensity === "undefined") { intensity = 1; }
             var minShips = 2;
             var maxShips = 6;
@@ -16062,10 +16104,12 @@ var Rance;
                     var shipAmount = minShips;
 
                     for (var j = 2; j < distance; j++) {
-                        if (shipAmount >= maxShips)
-                            break;
+                        shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
 
-                        shipAmount = Math.round(shipAmount + Math.random() * intensity);
+                        if (shipAmount >= maxShips) {
+                            shipAmount = maxShips;
+                            break;
+                        }
                     }
 
                     var ships = [];
@@ -16268,7 +16312,7 @@ var Rance;
                     return spiralGalaxyGeneration(options, players, independents);
                 }
 
-                Rance.MapGen2.partiallyCutLinks(stars, 4);
+                Rance.MapGen2.partiallyCutLinks(stars, 3, 2);
 
                 // make sectors
                 //MapGen2.makeSectors(stars, 3, 5);
@@ -16320,7 +16364,7 @@ var Rance;
                     Rance.MapGen2.addDefenceBuildings(star, 2);
                 }
 
-                Rance.MapGen2.setupPirates(stars, independents[0], 1);
+                Rance.MapGen2.setupPirates(stars, independents[0], 0.08, 1);
 
                 return new Rance.MapGen2.MapGenResult({
                     stars: stars,
@@ -17098,17 +17142,26 @@ var Rance;
                 }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), !Rance.Options.debugMode ? null : React.DOM.button({
                     className: "debug",
                     onClick: function () {
-                        app.destroy();
+                        // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+                        // without this react will keep a reference to this element causing a big memory leak
+                        window.setTimeout(function () {
+                            var cameraPosition = app.renderer.camera.getCenterPosition();
+                            var zoom = app.renderer.camera.currZoom;
+                            app.destroy();
 
-                        app.initUI();
+                            app.initUI();
 
-                        app.game = app.makeGame();
-                        app.initGame();
+                            app.game = app.makeGame();
+                            app.initGame();
 
-                        app.initDisplay();
-                        app.hookUI();
+                            app.initDisplay();
+                            app.hookUI();
 
-                        app.reactUI.switchScene("galaxyMap");
+                            app.renderer.toCenterOn = cameraPosition;
+
+                            app.reactUI.switchScene("galaxyMap");
+                            app.renderer.camera.zoom(zoom);
+                        }, 0);
                     }
                 }, "Reset app")));
             }
@@ -18752,6 +18805,9 @@ var Rance;
 
             this.rectangleSelect.destroy();
             this.rectangleSelect = null;
+
+            this.renderer = null;
+            this.camera = null;
         };
         MouseEventHandler.prototype.addEventListeners = function () {
             var self = this;
