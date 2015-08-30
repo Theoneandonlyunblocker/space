@@ -30,47 +30,57 @@ module Rance
         }
       }
     }
-    export function partiallyCutLinks(stars: Star[], minConnections: number)
+    export function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number)
     {
       for (var i = 0; i < stars.length; i++)
       {
         var star = stars[i];
-        var regionsAlreadyCut: any = {};
+        var regionsAlreadyCut:
+        {
+          [regionId: number]: number;
+        } = {};
 
         var neighbors = star.getAllLinks();
 
-        if (neighbors.length < minConnections) continue;
+        if (neighbors.length <= minConnections) continue;
 
-        for (var j = 0; j < neighbors.length; j++)
+        for (var j = neighbors.length - 1; j >= 0; j--)
         {
           var neighbor = neighbors[j];
 
-          if (regionsAlreadyCut[neighbor.mapGenData.region.id])
+          if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion)
           {
             continue;
           }
 
           var neighborLinks = neighbor.getAllLinks();
 
-          if (neighborLinks.length < minConnections) continue;
+          if (neighbors.length <= minConnections || neighborLinks.length <= minConnections) continue;
 
           var totalLinks = neighbors.length + neighborLinks.length;
 
           var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
           var minMultipleCutThreshhold = 0.15;
-          while (cutThreshhold > 0)
+          if (cutThreshhold > 0)
           {
             if (Math.random() < cutThreshhold)
             {
               star.removeLink(neighbor);
-              regionsAlreadyCut[neighbor.mapGenData.region.id] = true;
+              neighbors.pop();
+
+              if (!regionsAlreadyCut[neighbor.mapGenData.region.id])
+              {
+                regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
+              }
+              regionsAlreadyCut[neighbor.mapGenData.region.id]++;
 
               var path = aStar(star, neighbor);
 
               if (!path) // left star inaccesible
               {
                 star.addLink(neighbor);
-                regionsAlreadyCut[neighbor.mapGenData.region.id] = false;
+                regionsAlreadyCut[neighbor.mapGenData.region.id]--;
+                neighbors.push(neighbor);
               }
             }
 
