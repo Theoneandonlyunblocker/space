@@ -30,7 +30,13 @@ module Rance
 
         this.handleClose();
 
-        app.load(saveName);
+        // https://github.com/facebook/react/issues/2988
+        // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+        // without this react will keep a reference to this element causing a big memory leak
+        window.setTimeout(function()
+        {
+          app.load(saveName);
+        }, 0);
       },
       handleClose: function()
       {

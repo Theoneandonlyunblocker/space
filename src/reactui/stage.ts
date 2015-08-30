@@ -121,17 +121,28 @@ module Rance
               className: "debug",
               onClick: function()
               {
-                app.destroy();
+                // https://github.com/facebook/react/issues/2988
+                // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+                // without this react will keep a reference to this element causing a big memory leak
+                window.setTimeout(function()
+                {
+                  var cameraPosition = app.renderer.camera.getCenterPosition();
+                  var zoom = app.renderer.camera.currZoom;
+                  app.destroy();
 
-                app.initUI();
+                  app.initUI();
 
-                app.game = app.makeGame();
-                app.initGame();
+                  app.game = app.makeGame();
+                  app.initGame();
 
-                app.initDisplay();
-                app.hookUI();
+                  app.initDisplay();
+                  app.hookUI();
 
-                app.reactUI.switchScene("galaxyMap");
+                  app.renderer.toCenterOn = cameraPosition;
+
+                  app.reactUI.switchScene("galaxyMap");
+                  app.renderer.camera.zoom(zoom);
+                }, 0);
               }
             },
               "Reset app"
