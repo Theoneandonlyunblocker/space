@@ -24,7 +24,7 @@ module Rance
         this.setInputText(row.data.name)
       },
 
-      handleLoad: function()
+      handleLoad: function(e: any)
       {
         var saveName = this.refs.saveName.getDOMNode().value
 
@@ -33,6 +33,7 @@ module Rance
         // https://github.com/facebook/react/issues/2988
         // https://github.com/facebook/react/issues/2605#issuecomment-118398797
         // without this react will keep a reference to this element causing a big memory leak
+        e.target.blur();
         window.setTimeout(function()
         {
           app.load(saveName);

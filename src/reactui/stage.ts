@@ -119,15 +119,14 @@ module Rance
             !Options.debugMode ? null : React.DOM.button(
             {
               className: "debug",
-              onClick: function()
+              onClick: function(e:any)
               {
                 // https://github.com/facebook/react/issues/2988
                 // https://github.com/facebook/react/issues/2605#issuecomment-118398797
                 // without this react will keep a reference to this element causing a big memory leak
+                e.target.blur();
                 window.setTimeout(function()
                 {
-                  var cameraPosition = app.renderer.camera.getCenterPosition();
-                  var zoom = app.renderer.camera.currZoom;
                   app.destroy();
 
                   app.initUI();
@@ -137,11 +136,7 @@ module Rance
 
                   app.initDisplay();
                   app.hookUI();
-
-                  app.renderer.toCenterOn = cameraPosition;
-
                   app.reactUI.switchScene("galaxyMap");
-                  app.renderer.camera.zoom(zoom);
                 }, 0);
               }
             },

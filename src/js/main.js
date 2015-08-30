@@ -4056,13 +4056,15 @@ var Rance;
             handleRowChange: function (row) {
                 this.setInputText(row.data.name);
             },
-            handleLoad: function () {
+            handleLoad: function (e) {
                 var saveName = this.refs.saveName.getDOMNode().value;
 
                 this.handleClose();
 
+                // https://github.com/facebook/react/issues/2988
                 // https://github.com/facebook/react/issues/2605#issuecomment-118398797
                 // without this react will keep a reference to this element causing a big memory leak
+                e.target.blur();
                 window.setTimeout(function () {
                     app.load(saveName);
                 }, 0);
@@ -17141,12 +17143,14 @@ var Rance;
                     onChange: this.changeScene
                 }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), !Rance.Options.debugMode ? null : React.DOM.button({
                     className: "debug",
-                    onClick: function () {
+                    onClick: function (e) {
+                        // https://github.com/facebook/react/issues/2988
                         // https://github.com/facebook/react/issues/2605#issuecomment-118398797
                         // without this react will keep a reference to this element causing a big memory leak
+                        e.target.blur();
+                        var position = app.renderer.camera.getCenterPosition();
+                        var zoom = app.renderer.camera.currZoom;
                         window.setTimeout(function () {
-                            var cameraPosition = app.renderer.camera.getCenterPosition();
-                            var zoom = app.renderer.camera.currZoom;
                             app.destroy();
 
                             app.initUI();
@@ -17156,11 +17160,10 @@ var Rance;
 
                             app.initDisplay();
                             app.hookUI();
-
-                            app.renderer.toCenterOn = cameraPosition;
-
                             app.reactUI.switchScene("galaxyMap");
+
                             app.renderer.camera.zoom(zoom);
+                            app.renderer.camera.centerOnPosition(position);
                         }, 0);
                     }
                 }, "Reset app")));
