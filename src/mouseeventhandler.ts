@@ -57,6 +57,9 @@ module Rance
 
       this.rectangleSelect.destroy();
       this.rectangleSelect = null;
+
+      this.renderer = null;
+      this.camera = null;
     }
     addEventListeners()
     {
