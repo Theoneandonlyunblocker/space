@@ -278,7 +278,7 @@ module Rance
           MapGen2.addDefenceBuildings(star, 2);
         }
 
-        MapGen2.setupPirates(stars, independents[0], 1);
+        MapGen2.setupPirates(stars, independents[0], 0.08, 1);
 
         return new MapGen2.MapGenResult(
         {

@@ -293,7 +293,8 @@ module Rance
         }
       }
     }
-    export function setupPirates(stars: Star[], player: Player, intensity: number = 1)
+    export function setupPirates(stars: Star[], player: Player,
+      variance: number = 0.33, intensity: number = 1)
     {
       var minShips = 2;
       var maxShips = 6;
@@ -315,9 +316,13 @@ module Rance
 
           for (var j = 2; j < distance; j++)
           {
-            if (shipAmount >= maxShips) break;
+            shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
 
-            shipAmount = Math.round(shipAmount + Math.random() * intensity);
+            if (shipAmount >= maxShips)
+            {
+              shipAmount = maxShips;
+              break;
+            }
           }
 
           var ships = [];
