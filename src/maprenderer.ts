@@ -697,15 +697,6 @@ module Rance
             gfx.lineStyle(8, player.secondaryColor, 1);
 
             gfx.drawPolygon(polyLine);
-
-            gfx.beginFill(0xFF0000);
-            gfx.lineStyle();
-            for (var j = 0; j < polyLine.length; j++)
-            {
-              var v = polyLine[j];
-              gfx.drawEllipse(v.x, v.y, 5, 5);
-            }
-            gfx.endFill();
           }
 
           doc.height;

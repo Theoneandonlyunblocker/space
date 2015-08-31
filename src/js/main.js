@@ -3254,7 +3254,17 @@ var Rance;
                         app.reactUI.battle = battle;
                         app.reactUI.switchScene("battle");
                     }.bind(this)
-                }, "Start battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), Rance.UIComponents.UnitList({
+                }, "Start battle"), !Rance.Options.debugMode ? null : React.DOM.button({
+                    className: "battle-prep-controls-button",
+                    onClick: function () {
+                        var battle = this.props.battlePrep.makeBattle();
+                        var simulator = new Rance.BattleSimulator(battle);
+                        simulator.simulateBattle();
+                        simulator.finishBattle();
+                        Rance.eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
+                        Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+                    }.bind(this)
+                }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), Rance.UIComponents.UnitList({
                     units: this.props.battlePrep.availableUnits,
                     selectedUnit: this.state.selectedUnit,
                     reservedUnits: this.props.battlePrep.alreadyPlaced,
@@ -16425,7 +16435,7 @@ var Rance;
                 key: "tinierSpiralGalaxy",
                 displayName: "Tinier Spiral galaxy",
                 description: "Create a spiral galaxy with arms but tinier (just for testing)",
-                minPlayers: 2,
+                minPlayers: 1,
                 maxPlayers: 5,
                 mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
                 options: {
@@ -17613,6 +17623,10 @@ var Rance;
                         }
                         offsetted.splice(jj, 1);
                     } else {
+                        // stupid hack to fix pixi bug with drawing polygons
+                        // without this consecutive edges with the same angle disappear
+                        offsetted[jj].x += (jj % 2) * 0.1;
+                        offsetted[jj].y += (jj % 2) * 0.1;
                         currentPolyLine.push(offsetted[jj]);
                         processedStarsById[offsetted[jj].data.id] = true;
                     }
@@ -18184,14 +18198,14 @@ var Rance;
                         gfx.lineStyle(8, player.secondaryColor, 1);
 
                         gfx.drawPolygon(polyLine);
-
-                        gfx.beginFill(0xFF0000);
-                        gfx.lineStyle();
-                        for (var j = 0; j < polyLine.length; j++) {
-                            var v = polyLine[j];
-                            gfx.drawEllipse(v.x, v.y, 5, 5);
-                        }
-                        gfx.endFill();
+                        // gfx.beginFill(0xFF0000);
+                        // gfx.lineStyle();
+                        // for (var j = 0; j < polyLine.length; j++)
+                        // {
+                        //   var v = polyLine[j];
+                        //   gfx.drawEllipse(v.x, v.y, 5, 5);
+                        // }
+                        // gfx.endFill();
                     }
 
                     doc.height;
