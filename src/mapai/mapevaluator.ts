@@ -497,6 +497,24 @@ module Rance
 
       return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
     }
+    getInfluenceMapsForKnownPlayers()
+    {
+      var byPlayer:
+      {
+        [playerId: number]:
+        {
+          [starId: number]: number
+        }
+      } = {};
+
+      for (var playerId in this.player.diplomacyStatus.metPlayers)
+      {
+        var player = this.player.diplomacyStatus.metPlayers[playerId];
+        byPlayer[playerId] = this.getPlayerInfluenceMap(player);
+      }
+
+      return byPlayer;
+    }
     estimateUnrevealedStarCountForPlayer(player: Player)
     {
       
