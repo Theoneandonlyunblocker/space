@@ -6017,7 +6017,6 @@ var Rance;
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
-/// <reference path="../lib/clipper.d.ts" />
 var Rance;
 (function (Rance) {
     function randInt(min, max) {
@@ -6210,53 +6209,6 @@ var Rance;
         return distance;
     }
     Rance.getAngleBetweenDegrees = getAngleBetweenDegrees;
-    function convertPointsCase(polygon) {
-        if (isFinite(polygon[0].x)) {
-            return polygon.map(function (point) {
-                return ({
-                    X: point.x,
-                    Y: point.y
-                });
-            });
-        } else {
-            return polygon.map(function (point) {
-                return ({
-                    x: point.X,
-                    y: point.Y
-                });
-            });
-        }
-    }
-    Rance.convertPointsCase = convertPointsCase;
-    function offsetPolygon(polygon, amount) {
-        polygon = convertPointsCase(polygon);
-        var scale = 100;
-        ClipperLib.JS.ScaleUpPath(polygon, scale);
-
-        ClipperLib.Clipper.SimplifyPolygon(polygon, ClipperLib.PolyFillType.pftNonZero);
-        ClipperLib.Clipper.CleanPolygon(polygon, 0.1 * scale);
-
-        var co = new ClipperLib.ClipperOffset(2, 0.01);
-        co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
-        var offsetted = new ClipperLib.Path();
-
-        co.Execute(offsetted, amount * scale);
-
-        if (offsetted.length < 1) {
-            console.warn("couldn't offset polygon");
-            return null;
-        }
-
-        var converted = convertPointsCase(offsetted[0]);
-
-        return converted.map(function (point) {
-            return ({
-                x: point.x / scale,
-                y: point.y / scale
-            });
-        });
-    }
-    Rance.offsetPolygon = offsetPolygon;
     function prettifyDate(date) {
         return ([
             [
@@ -17491,38 +17443,189 @@ var Rance;
     })();
     Rance.PlayerControl = PlayerControl;
 })(Rance || (Rance = {}));
+/// <reference path="../lib/offset.d.ts" />
 var Rance;
 (function (Rance) {
-    function getAllBorderEdgesByStar(edges, revealedStars) {
-        var edgesByStar = {};
+    function getBorderingHalfEdges(stars) {
+        var borderingHalfEdges = [];
 
-        for (var i = 0; i < edges.length; i++) {
-            var edge = edges[i];
+        function getHalfEdgeOppositeSite(halfEdge) {
+            return halfEdge.edge.lSite === halfEdge.site ? halfEdge.edge.rSite : halfEdge.edge.lSite;
+        }
 
-            if (edge.lSite && edge.rSite && edge.lSite.owner === edge.rSite.owner) {
+        function halfEdgeIsBorder(halfEdge) {
+            var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
+            return !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
+        }
+
+        function halfEdgeSharesOwner(halfEdge) {
+            var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
+            return Boolean(oppositeSite) && Boolean(oppositeSite.owner) && (oppositeSite.owner === halfEdge.site.owner);
+        }
+
+        function getContiguousHalfEdgeBetweenSharedSites(sharedEdge) {
+            var contiguousEdgeEndPoint = sharedEdge.getStartpoint();
+            var oppositeSite = getHalfEdgeOppositeSite(sharedEdge);
+            for (var i = 0; i < oppositeSite.voronoiCell.halfedges.length; i++) {
+                var halfEdge = oppositeSite.voronoiCell.halfedges[i];
+                if (halfEdge.getStartpoint() === contiguousEdgeEndPoint) {
+                    return halfEdge;
+                }
+            }
+
+            return false;
+        }
+
+        var startEdge;
+        var star;
+        for (var i = 0; i < stars.length; i++) {
+            if (star)
+                break;
+
+            for (var j = 0; j < stars[i].voronoiCell.halfedges.length; j++) {
+                var halfEdge = stars[i].voronoiCell.halfedges[j];
+                if (halfEdgeIsBorder(halfEdge)) {
+                    star = stars[i];
+                    startEdge = halfEdge;
+                    break;
+                }
+            }
+        }
+
+        if (!star)
+            throw new Error("Couldn't find starting location for border polygon");
+
+        var hasProcessedStartEdge = false;
+        var contiguousEdge = null;
+
+        for (var j = 0; j < stars.length * 20; j++) {
+            var indexShift = 0;
+            for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++) {
+                if (!hasProcessedStartEdge) {
+                    contiguousEdge = startEdge;
+                }
+                if (contiguousEdge) {
+                    indexShift = star.voronoiCell.halfedges.indexOf(contiguousEdge);
+                    contiguousEdge = null;
+                }
+                var i = (_i + indexShift) % (star.voronoiCell.halfedges.length);
+
+                var halfEdge = star.voronoiCell.halfedges[i];
+                if (halfEdgeIsBorder(halfEdge)) {
+                    borderingHalfEdges.push({
+                        star: star,
+                        halfEdge: halfEdge
+                    });
+
+                    if (!startEdge) {
+                        startEdge = halfEdge;
+                    } else if (halfEdge === startEdge) {
+                        if (!hasProcessedStartEdge) {
+                            hasProcessedStartEdge = true;
+                        } else {
+                            return borderingHalfEdges;
+                        }
+                    }
+                } else if (halfEdgeSharesOwner(halfEdge)) {
+                    contiguousEdge = getContiguousHalfEdgeBetweenSharedSites(halfEdge);
+                    star = contiguousEdge.site;
+                    break;
+                }
+            }
+        }
+
+        throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
+        return borderingHalfEdges;
+    }
+    Rance.getBorderingHalfEdges = getBorderingHalfEdges;
+    function joinPointsWithin(points, maxDistance) {
+        for (var i = points.length - 2; i >= 0; i--) {
+            var x1 = points[i].x;
+            var y1 = points[i].y;
+
+            var x2 = points[i + 1].x;
+            var y2 = points[i + 1].y;
+
+            if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
+                var newPoint = {
+                    x: (x1 + x2) / 2,
+                    y: (y1 + y2) / 2,
+                    data: points[i].data
+                };
+
+                console.log("joined points at", points[i].data.id);
+
+                points.splice(i, 2, newPoint);
+            }
+        }
+    }
+    Rance.joinPointsWithin = joinPointsWithin;
+    function convertHalfEdgeDataToOffset(halfEdgeData) {
+        var convertedToPoints = halfEdgeData.map(function (data) {
+            var v1 = data.halfEdge.getStartpoint();
+            return ({
+                x: v1.x,
+                y: v1.y,
+                data: data.star
+            });
+        });
+
+        joinPointsWithin(convertedToPoints, 5);
+
+        var offset = new Offset(halfEdgeData[0].star);
+        offset.arcSegments(0);
+        var convertedToOffset = offset.data(convertedToPoints).padding(4);
+
+        return convertedToOffset;
+    }
+    Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
+    function getRevealedBorderEdges(revealedStars) {
+        var polyLines = [];
+
+        var processedStarsById = {};
+
+        for (var ii = 0; ii < revealedStars.length; ii++) {
+            var star = revealedStars[ii];
+            if (processedStarsById[star.id]) {
                 continue;
             }
 
-            ["lSite", "rSite"].forEach(function (neighborDirection) {
-                var neighbor = edge[neighborDirection];
+            if (!star.owner.isIndependent) {
+                var ownedIsland = star.getIslandForQualifier(function (a, b) {
+                    return b.owner === a.owner;
+                });
 
-                if (neighbor && neighbor.owner && !neighbor.owner.isIndependent) {
-                    if (!revealedStars || revealedStars.indexOf(neighbor) !== -1) {
-                        if (!edgesByStar[neighbor.id]) {
-                            edgesByStar[neighbor.id] = {
-                                star: neighbor,
-                                edges: []
-                            };
+                // console.log("island", ownedIsland[0].owner.id);
+                var currentPolyLine = [];
+
+                var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
+
+                // console.log("halfEdgeData", halfEdgesDataForIsland[0].star.owner.id);
+                var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
+
+                for (var jj = offsetted.length - 1; jj >= 0; jj--) {
+                    if (!offsetted[jj].data)
+                        console.log("!!!NODATA");
+                    if (revealedStars.indexOf(offsetted[jj].data) === -1) {
+                        if (currentPolyLine.length > 0) {
+                            polyLines.push(currentPolyLine);
+                            currentPolyLine = [];
                         }
-                        edgesByStar[neighbor.id].edges.push(edge);
+                        offsetted.splice(jj, 1);
+                    } else {
+                        currentPolyLine.push(offsetted[jj]);
+                        processedStarsById[offsetted[jj].data.id] = true;
                     }
                 }
-            });
+                if (currentPolyLine.length > 0) {
+                    polyLines.push(currentPolyLine);
+                }
+            }
         }
 
-        return edgesByStar;
+        return polyLines;
     }
-    Rance.getAllBorderEdgesByStar = getAllBorderEdgesByStar;
+    Rance.getRevealedBorderEdges = getRevealedBorderEdges;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 /// <reference path="eventmanager.ts"/>
@@ -18068,23 +18171,27 @@ var Rance;
                 container: new PIXI.DisplayObjectContainer(),
                 drawingFunction: function (map) {
                     var doc = new PIXI.DisplayObjectContainer();
-                    var gfx = new PIXI.Graphics();
-                    doc.addChild(gfx);
 
                     var revealedStars = this.player.getRevealedStars();
-                    var borderEdges = Rance.getAllBorderEdgesByStar(map.voronoi.diagram.edges, revealedStars);
+                    var borderEdges = Rance.getRevealedBorderEdges(revealedStars);
 
-                    for (var starId in borderEdges) {
-                        var edgeData = borderEdges[starId];
+                    for (var i = 0; i < borderEdges.length; i++) {
+                        var gfx = new PIXI.Graphics();
+                        gfx.alpha = 0.6;
+                        doc.addChild(gfx);
+                        var polyLine = borderEdges[i];
+                        var player = polyLine[0].data.owner;
+                        gfx.lineStyle(8, player.secondaryColor, 1);
 
-                        var player = edgeData.star.owner;
-                        gfx.lineStyle(4, player.secondaryColor, 0.7);
+                        gfx.drawPolygon(polyLine);
 
-                        for (var i = 0; i < edgeData.edges.length; i++) {
-                            var edge = edgeData.edges[i];
-                            gfx.moveTo(edge.va.x, edge.va.y);
-                            gfx.lineTo(edge.vb.x, edge.vb.y);
+                        gfx.beginFill(0xFF0000);
+                        gfx.lineStyle();
+                        for (var j = 0; j < polyLine.length; j++) {
+                            var v = polyLine[j];
+                            gfx.drawEllipse(v.x, v.y, 5, 5);
                         }
+                        gfx.endFill();
                     }
 
                     doc.height;
@@ -20475,7 +20582,6 @@ var Rance;
         star: 0,
         unit: 0,
         building: 0,
-        sector: 0,
         objective: 0
     };
 

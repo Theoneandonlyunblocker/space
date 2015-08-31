@@ -29,7 +29,6 @@ module Rance
     star: 0,
     unit: 0,
     building: 0,
-    sector: 0, // TODO remove
 
     objective: 0
   }

@@ -1,5 +1,4 @@
 /// <reference path="../lib/pixi.d.ts" />
-/// <reference path="../lib/clipper.d.ts" />
 
 module Rance
 {
@@ -218,63 +217,6 @@ module Rance
     var distance = Math.min(360 - angle, angle);
     //console.log(degA, degB, distance);
     return distance;
-  }
-  export function convertPointsCase(polygon: any[]): any[]
-  {
-    if (isFinite(polygon[0].x))
-    {
-      return polygon.map(function(point)
-      {
-        return(
-        {
-          X: point.x,
-          Y: point.y
-        });
-      })
-    }
-    else
-    {
-      return polygon.map(function(point)
-      {
-        return(
-        {
-          x: point.X,
-          y: point.Y
-        });
-      })
-    }
-  }
-  export function offsetPolygon(polygon: Point[], amount: number)
-  {
-    polygon = convertPointsCase(polygon);
-    var scale = 100;
-    ClipperLib.JS.ScaleUpPath(polygon, scale);
-
-    ClipperLib.Clipper.SimplifyPolygon(polygon, ClipperLib.PolyFillType.pftNonZero);
-    ClipperLib.Clipper.CleanPolygon(polygon, 0.1 * scale);
-
-    var co = new ClipperLib.ClipperOffset(2, 0.01);
-    co.AddPath(polygon, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
-    var offsetted = new ClipperLib.Path();
-
-    co.Execute(offsetted, amount * scale);
-
-    if (offsetted.length < 1)
-    {
-      console.warn("couldn't offset polygon");
-      return null;
-    }
-
-    var converted = convertPointsCase(offsetted[0]);
-
-    return converted.map(function(point)
-    {
-      return(
-      {
-        x: point.x / scale,
-        y: point.y / scale
-      });
-    });
   }
   export function prettifyDate(date: Date)
   {

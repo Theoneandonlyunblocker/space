@@ -683,29 +683,30 @@ module Rance
         drawingFunction: function(map: GalaxyMap)
         {
           var doc = new PIXI.DisplayObjectContainer();
-          var gfx = new PIXI.Graphics();
-          doc.addChild(gfx);
 
           var revealedStars = this.player.getRevealedStars();
-          var borderEdges =
-            getAllBorderEdgesByStar(map.voronoi.diagram.edges, revealedStars);
+          var borderEdges = getRevealedBorderEdges(revealedStars);
 
-          for (var starId in borderEdges)
+          for (var i = 0; i < borderEdges.length; i++)
           {
-            var edgeData = borderEdges[starId];
+            var gfx = new PIXI.Graphics();
+            gfx.alpha = 0.6;
+            doc.addChild(gfx);
+            var polyLine = borderEdges[i];
+            var player = polyLine[0].data.owner;
+            gfx.lineStyle(8, player.secondaryColor, 1);
 
-            var player = edgeData.star.owner;
-            gfx.lineStyle(4, player.secondaryColor, 0.7);
+            gfx.drawPolygon(polyLine);
 
-            for (var i = 0; i < edgeData.edges.length; i++)
+            gfx.beginFill(0xFF0000);
+            gfx.lineStyle();
+            for (var j = 0; j < polyLine.length; j++)
             {
-              var edge = edgeData.edges[i];
-              gfx.moveTo(edge.va.x, edge.va.y);
-              gfx.lineTo(edge.vb.x, edge.vb.y);
+              var v = polyLine[j];
+              gfx.drawEllipse(v.x, v.y, 5, 5);
             }
-
+            gfx.endFill();
           }
-          
 
           doc.height;
           return doc;

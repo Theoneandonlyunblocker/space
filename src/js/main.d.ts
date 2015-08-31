@@ -1,12 +1,12 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
-/// <reference path="../../lib/clipper.d.ts" />
 /// <reference path="../../data/templates/spritetemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
+/// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
 declare module Rance {
     function EventManager(): void;
@@ -452,11 +452,6 @@ declare module Rance {
     function clamp(value: number, min: number, max: number): number;
     function roundToNearestMultiple(value: number, multiple: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
-    function convertPointsCase(polygon: any[]): any[];
-    function offsetPolygon(polygon: Point[], amount: number): {
-        x: number;
-        y: number;
-    }[];
     function prettifyDate(date: Date): string;
     function getMatchingLocalstorageItemsByDate(stringToMatch: string): any[];
     function shuffleArray(toShuffle: any[], seed?: any): any[];
@@ -2309,12 +2304,13 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function getAllBorderEdgesByStar(edges: any[], revealedStars?: Star[]): {
-        [starId: number]: {
-            star: Star;
-            edges: any[];
-        };
-    };
+    function getBorderingHalfEdges(stars: Star[]): {
+        star: Star;
+        halfEdge: any;
+    }[];
+    function joinPointsWithin(points: any[], maxDistance: number): void;
+    function convertHalfEdgeDataToOffset(halfEdgeData: any): Point[];
+    function getRevealedBorderEdges(revealedStars: Star[]): any[][];
 }
 declare module Rance {
     interface IMapRendererLayer {
@@ -2788,7 +2784,6 @@ declare module Rance {
         star: number;
         unit: number;
         building: number;
-        sector: number;
         objective: number;
     };
     class App {
