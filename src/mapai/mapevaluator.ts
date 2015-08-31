@@ -548,7 +548,10 @@ module Rance
         }
       }
 
-      return totalInfluenceInOwnStars;
+      var globalStrengthDifference =
+        this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
+
+      return totalInfluenceInOwnStars + globalStrengthDifference;
     }
     getPerceivedThreatOfAllKnownPlayers()
     {
