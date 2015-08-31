@@ -6112,21 +6112,6 @@ var Rance;
         }
     }
     Rance.turnOrderSortFunction = turnOrderSortFunction;
-
-    function makeRandomShip() {
-        var allTypes = Object.keys(Rance.Templates.ShipTypes);
-        var type = getRandomArrayItem(allTypes);
-
-        var unit = new Rance.Unit(Rance.Templates.ShipTypes[type]);
-
-        return unit;
-    }
-    Rance.makeRandomShip = makeRandomShip;
-
-    function centerDisplayObjectContainer(toCenter) {
-        toCenter.x -= toCenter.width / 2;
-    }
-    Rance.centerDisplayObjectContainer = centerDisplayObjectContainer;
     function rectContains(rect, point) {
         var x = point.x;
         var y = point.y;
@@ -11278,6 +11263,16 @@ var Rance;
 
             return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
         };
+        MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
+            var byPlayer = {};
+
+            for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                var player = this.player.diplomacyStatus.metPlayers[playerId];
+                byPlayer[playerId] = this.getPlayerInfluenceMap(player);
+            }
+
+            return byPlayer;
+        };
         MapEvaluator.prototype.estimateUnrevealedStarCountForPlayer = function (player) {
         };
         MapEvaluator.prototype.estimateGlobalStrength = function (player) {
@@ -11318,7 +11313,9 @@ var Rance;
                 }
             }
 
-            return totalInfluenceInOwnStars;
+            var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
+
+            return totalInfluenceInOwnStars + globalStrengthDifference;
         };
         MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
             var byPlayer = {};
@@ -16094,6 +16091,11 @@ var Rance;
 
             setDistancesFromNearestPlayerOwnedStar(stars);
 
+            var shipTypes = Object.keys(Rance.Templates.ShipTypes);
+            shipTypes = shipTypes.filter(function (shipType) {
+                return shipType !== "cheatShip";
+            });
+
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
 
@@ -16116,7 +16118,7 @@ var Rance;
 
                     var ships = [];
                     for (var j = 0; j < shipAmount; j++) {
-                        var ship = Rance.makeRandomShip();
+                        var ship = new Rance.Unit(Rance.Templates.ShipTypes[Rance.getRandomArrayItem(shipTypes)]);
                         player.addUnit(ship);
                         ships.push(ship);
                     }
@@ -17148,8 +17150,6 @@ var Rance;
                         // https://github.com/facebook/react/issues/2605#issuecomment-118398797
                         // without this react will keep a reference to this element causing a big memory leak
                         e.target.blur();
-                        var position = app.renderer.camera.getCenterPosition();
-                        var zoom = app.renderer.camera.currZoom;
                         window.setTimeout(function () {
                             app.destroy();
 
@@ -17161,9 +17161,6 @@ var Rance;
                             app.initDisplay();
                             app.hookUI();
                             app.reactUI.switchScene("galaxyMap");
-
-                            app.renderer.camera.zoom(zoom);
-                            app.renderer.camera.centerOnPosition(position);
                         }, 0);
                     }
                 }, "Reset app")));

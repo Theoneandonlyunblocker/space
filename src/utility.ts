@@ -69,12 +69,6 @@ module Rance
     };
     return result;
   }
-  export function divmod(x, y)
-  {
-    var a = Math.floor(x / y);
-    var b = x % y;
-    return [a, b];
-  }
   export function flatten2dArray(toFlatten: any[][]): any[]
   {
     var flattened = [];
@@ -117,21 +111,6 @@ module Rance
     {
       return a.id - b.id;
     }
-  }
-
-  export function makeRandomShip()
-  {
-    var allTypes = Object.keys(Templates.ShipTypes);
-    var type = getRandomArrayItem(allTypes);
-
-    var unit = new Unit(Templates.ShipTypes[type]);
-
-    return unit;
-  }
-
-  export function centerDisplayObjectContainer(toCenter: PIXI.DisplayObjectContainer)
-  {
-    toCenter.x -= toCenter.width / 2;
   }
   export function rectContains(rect, point)
   {
@@ -240,18 +219,7 @@ module Rance
     //console.log(degA, degB, distance);
     return distance;
   }
-  export function shiftPolygon(polygon: Point[], amount: number)
-  {
-    return polygon.map(function(point)
-    {
-      return(
-      {
-        x: point.x + amount,
-        y: point.y + amount
-      });
-    });
-  }
-  export function convertCase(polygon: any[]): any
+  export function convertPointsCase(polygon: any[]): any[]
   {
     if (isFinite(polygon[0].x))
     {
@@ -278,7 +246,7 @@ module Rance
   }
   export function offsetPolygon(polygon: Point[], amount: number)
   {
-    polygon = convertCase(polygon);
+    polygon = convertPointsCase(polygon);
     var scale = 100;
     ClipperLib.JS.ScaleUpPath(polygon, scale);
 
@@ -297,7 +265,7 @@ module Rance
       return null;
     }
 
-    var converted = convertCase(offsetted[0]);
+    var converted = convertPointsCase(offsetted[0]);
 
     return converted.map(function(point)
     {
@@ -307,23 +275,6 @@ module Rance
         y: point.y / scale
       });
     });
-  }
-
-  export function arraysEqual(a1: any[], a2: any[])
-  {
-    if (a1 === a2) return true;
-    if (!a1 || !a2) return false;
-    if (a1.length !== a2.length) return false;
-
-    a1.sort();
-    a2.sort();
-
-    for (var i = 0; i < a1.length; i++)
-    {
-      if (a1[i] !== a2[i]) return false;
-    }
-
-    return true;
   }
   export function prettifyDate(date: Date)
   {

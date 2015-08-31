@@ -444,8 +444,6 @@ declare module Rance {
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
-    function makeRandomShip(): Unit;
-    function centerDisplayObjectContainer(toCenter: PIXI.DisplayObjectContainer): void;
     function rectContains(rect: any, point: any): boolean;
     function hexToString(hex: number): string;
     function stringToHex(text: string): number;
@@ -1560,6 +1558,11 @@ declare module Rance {
         };
         public getPlayerInfluenceMap(player: Rance.Player): {
             [starId: number]: number;
+        };
+        public getInfluenceMapsForKnownPlayers(): {
+            [playerId: number]: {
+                [starId: number]: number;
+            };
         };
         public estimateUnrevealedStarCountForPlayer(player: Rance.Player): void;
         public estimateGlobalStrength(player: Rance.Player): number;
