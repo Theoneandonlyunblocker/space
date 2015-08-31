@@ -301,6 +301,12 @@ module Rance
 
       setDistancesFromNearestPlayerOwnedStar(stars);
 
+      var shipTypes: string[] = Object.keys(Templates.ShipTypes);
+      shipTypes = shipTypes.filter(function(shipType: string)
+      {
+        return shipType !== "cheatShip";
+      });
+
       for (var i = 0; i < stars.length; i++)
       {
         var star = stars[i];
@@ -328,7 +334,7 @@ module Rance
           var ships = [];
           for (var j = 0; j < shipAmount; j++)
           {
-            var ship = makeRandomShip();
+            var ship = new Unit(Templates.ShipTypes[getRandomArrayItem(shipTypes)]);
             player.addUnit(ship);
             ships.push(ship);
           }
