@@ -1473,6 +1473,7 @@ declare module Rance {
         starDesirability: {
             neighborRange: number;
             neighborWeight: number;
+            defendabilityWeight: number;
             totalIncomeWeight: number;
             baseIncomeWeight: number;
             infrastructureWeight: number;
@@ -1503,10 +1504,12 @@ declare module Rance {
                 [playerId: number]: Rance.Fleet[];
             };
         };
+        public cachedOwnIncome: number;
         public evaluationParameters: {
             starDesirability: {
                 neighborRange: number;
                 neighborWeight: number;
+                defendabilityWeight: number;
                 totalIncomeWeight: number;
                 baseIncomeWeight: number;
                 infrastructureWeight: number;
@@ -1518,8 +1521,9 @@ declare module Rance {
         public evaluateStarIncome(star: Rance.Star): number;
         public evaluateStarInfrastructure(star: Rance.Star): number;
         public evaluateStarProduction(star: Rance.Star): number;
-        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
+        public evaluateStarDefendability(star: Rance.Star): number;
         public evaluateIndividualStarDesirability(star: Rance.Star): number;
+        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
         public evaluateStarDesirability(star: Rance.Star): number;
         public evaluateIndependentTargets(targetStars: Rance.Star[]): IIndependentTargetEvaluations;
         public scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
@@ -1561,7 +1565,6 @@ declare module Rance {
                 [starId: number]: number;
             };
         };
-        public estimateUnrevealedStarCountForPlayer(player: Rance.Player): void;
         public estimateGlobalStrength(player: Rance.Player): number;
         public getPerceivedThreatOfPlayer(player: Rance.Player): number;
         public getPerceivedThreatOfAllKnownPlayers(): {

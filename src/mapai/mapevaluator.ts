@@ -12,6 +12,7 @@ module Rance
     {
       neighborRange: 1,
       neighborWeight: 0.5,
+      defendabilityWeight: 1,
 
       totalIncomeWeight: 1,
       baseIncomeWeight: 0.5,
@@ -52,12 +53,14 @@ module Rance
         [playerId: number]: Fleet[];
       }
     } = {};
+    cachedOwnIncome: number;
     evaluationParameters:
     {
       starDesirability:
       {
         neighborRange: number;
         neighborWeight: number;
+        defendabilityWeight: number;
 
         totalIncomeWeight: number;
         baseIncomeWeight: number;
@@ -80,6 +83,7 @@ module Rance
     {
       this.cachedInfluenceMaps = {};
       this.cachedVisibleFleets = {};
+      this.cachedOwnIncome = undefined;
     }
 
     evaluateStarIncome(star: Star): number
@@ -101,7 +105,7 @@ module Rance
       {
         for (var i = 0; i < star.buildings[category].length; i++)
         {
-          evaluation += star.buildings[category][i].totalCost;
+          evaluation += star.buildings[category][i].totalCost / 25;
         }
       }
 
@@ -113,6 +117,76 @@ module Rance
       var evaluation = 0;
 
       evaluation += star.getItemManufactoryLevel();
+
+      return evaluation;
+    }
+
+    evaluateStarDefendability(star: Star): number
+    {
+      var evaluation = 0;
+
+      // neighboring own stars ++
+      // neighboring neutral stars -
+      // neighboring other player stars --
+      // neighboring other player with low trust stars --- TODO
+      var nearbyStars = star.getLinkedInRange(2).byRange;
+      for (var rangeString in nearbyStars)
+      {
+        var distanceMultiplier = 1 / parseInt(rangeString);
+        var starsInRange = nearbyStars[rangeString];
+        for (var i = 0; i < starsInRange.length; i++)
+        {
+          var neighbor = starsInRange[i];
+          var neighborDefendability: number;
+          if (neighbor.owner === this.player)
+          {
+            neighborDefendability = 3;
+          }
+          else if (neighbor.owner.isIndependent)
+          {
+            neighborDefendability = -0.75;
+          }
+          else
+          {
+            neighborDefendability = -2;
+          }
+
+          evaluation += neighborDefendability * distanceMultiplier;
+        }
+      }
+
+      if (star.owner === this.player)
+      {
+        evaluation += 3;
+      }
+
+      return evaluation * 5;
+    }
+
+    evaluateIndividualStarDesirability(star: Star): number
+    {
+      var evaluation = 0;
+      var p = this.evaluationParameters.starDesirability;
+
+      if (!isFinite(this.cachedOwnIncome))
+      {
+        this.cachedOwnIncome = this.player.getIncome();
+      }
+
+      var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
+      // prioritize income when would make big relative boost, penalize when opposite
+      incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
+      evaluation += incomeEvaluation;
+
+      var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+      evaluation += infrastructureEvaluation;
+
+      var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
+      evaluation += productionEvaluation;
+
+      var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
+      evaluation += defendabilityEvaluation;
+
 
       return evaluation;
     }
@@ -137,18 +211,6 @@ module Rance
           evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff
         }
       }
-
-      return evaluation;
-    }
-
-    evaluateIndividualStarDesirability(star: Star): number
-    {
-      var evaluation = 0;
-      var p = this.evaluationParameters.starDesirability;
-
-      evaluation += this.evaluateStarIncome(star) * p.totalIncomeWeight;
-      evaluation += this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
-      evaluation += this.evaluateStarProduction(star) * p.productionWeight;
 
       return evaluation;
     }
@@ -515,13 +577,8 @@ module Rance
 
       return byPlayer;
     }
-    estimateUnrevealedStarCountForPlayer(player: Player)
-    {
-      
-    }
     estimateGlobalStrength(player: Player)
     {
-      // TODO
       var visibleStrength = 0;
       var invisibleStrength = 0;
 
