@@ -10252,6 +10252,17 @@ var Rance;
 
             return this.nonFillerLines[indexString];
         };
+        MapVoronoiInfo.prototype.getStarAtPoint = function (point) {
+            var items = this.treeMap.retrieve(point);
+            for (var i = 0; i < items.length; i++) {
+                var cell = items[i].cell;
+                if (cell.pointIntersection(point.x, point.y) > -1) {
+                    return cell.site;
+                }
+            }
+
+            return false;
+        };
         return MapVoronoiInfo;
     })();
     Rance.MapVoronoiInfo = MapVoronoiInfo;
@@ -16435,7 +16446,7 @@ var Rance;
                 key: "tinierSpiralGalaxy",
                 displayName: "Tinier Spiral galaxy",
                 description: "Create a spiral galaxy with arms but tinier (just for testing)",
-                minPlayers: 1,
+                minPlayers: 2,
                 maxPlayers: 5,
                 mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
                 options: {
@@ -17559,11 +17570,8 @@ var Rance;
             if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
                 var newPoint = {
                     x: (x1 + x2) / 2,
-                    y: (y1 + y2) / 2,
-                    data: points[i].data
+                    y: (y1 + y2) / 2
                 };
-
-                console.log("joined points at", points[i].data.id);
 
                 points.splice(i, 2, newPoint);
             }
@@ -17575,21 +17583,20 @@ var Rance;
             var v1 = data.halfEdge.getStartpoint();
             return ({
                 x: v1.x,
-                y: v1.y,
-                data: data.star
+                y: v1.y
             });
         });
 
         joinPointsWithin(convertedToPoints, 5);
 
-        var offset = new Offset(halfEdgeData[0].star);
+        var offset = new Offset();
         offset.arcSegments(0);
         var convertedToOffset = offset.data(convertedToPoints).padding(4);
 
         return convertedToOffset;
     }
     Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
-    function getRevealedBorderEdges(revealedStars) {
+    function getRevealedBorderEdges(revealedStars, voronoiInfo) {
         var polyLines = [];
 
         var processedStarsById = {};
@@ -17604,31 +17611,36 @@ var Rance;
                 var ownedIsland = star.getIslandForQualifier(function (a, b) {
                     return b.owner === a.owner;
                 });
-
-                // console.log("island", ownedIsland[0].owner.id);
                 var currentPolyLine = [];
 
                 var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
 
-                // console.log("halfEdgeData", halfEdgesDataForIsland[0].star.owner.id);
                 var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
 
                 for (var jj = offsetted.length - 1; jj >= 0; jj--) {
-                    if (!offsetted[jj].data)
-                        console.log("!!!NODATA");
-                    if (revealedStars.indexOf(offsetted[jj].data) === -1) {
+                    var point = offsetted[jj];
+                    var nextPoint = jj === 0 ? offsetted[offsetted.length - 1] : offsetted[jj - 1];
+
+                    var edgeCenter = {
+                        x: (point.x + nextPoint.x) / 2,
+                        y: (point.y + nextPoint.y) / 2
+                    };
+                    var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+                    point.star = pointStar;
+
+                    if (revealedStars.indexOf(point.star) === -1) {
                         if (currentPolyLine.length > 0) {
                             polyLines.push(currentPolyLine);
                             currentPolyLine = [];
                         }
-                        offsetted.splice(jj, 1);
                     } else {
                         // stupid hack to fix pixi bug with drawing polygons
                         // without this consecutive edges with the same angle disappear
-                        offsetted[jj].x += (jj % 2) * 0.1;
-                        offsetted[jj].y += (jj % 2) * 0.1;
-                        currentPolyLine.push(offsetted[jj]);
-                        processedStarsById[offsetted[jj].data.id] = true;
+                        point.x += (jj % 2) * 0.1;
+                        point.y += (jj % 2) * 0.1;
+
+                        currentPolyLine.push(point);
+                        processedStarsById[star.id] = true;
                     }
                 }
                 if (currentPolyLine.length > 0) {
@@ -17930,14 +17942,9 @@ var Rance;
                     doc.touchend = touchEndFN;
                     doc.touchmove = function (event) {
                         var local = event.getLocalPosition(doc);
-                        var items = map.voronoi.treeMap.retrieve(local);
-                        for (var i = 0; i < items.length; i++) {
-                            var cell = items[i].cell;
-
-                            if (cell.pointIntersection(local.x, local.y) > 0) {
-                                Rance.eventManager.dispatchEvent("hoverStar", cell.site);
-                                return;
-                            }
+                        var starAtLocal = map.voronoi.getStarAtPoint(local);
+                        if (starAtLocal) {
+                            Rance.eventManager.dispatchEvent("hoverStar", starAtLocal);
                         }
                     };
 
@@ -18187,25 +18194,27 @@ var Rance;
                     var doc = new PIXI.DisplayObjectContainer();
 
                     var revealedStars = this.player.getRevealedStars();
-                    var borderEdges = Rance.getRevealedBorderEdges(revealedStars);
+                    var borderEdges = Rance.getRevealedBorderEdges(revealedStars, map.voronoi);
 
                     for (var i = 0; i < borderEdges.length; i++) {
                         var gfx = new PIXI.Graphics();
                         gfx.alpha = 0.7;
                         doc.addChild(gfx);
                         var polyLine = borderEdges[i];
-                        var player = polyLine[0].data.owner;
+                        var player = polyLine[0].star.owner;
                         gfx.lineStyle(8, player.secondaryColor, 1);
 
                         gfx.drawPolygon(polyLine);
-                        // gfx.beginFill(0xFF0000);
-                        // gfx.lineStyle();
-                        // for (var j = 0; j < polyLine.length; j++)
+                        // for (var i = 1; i < polyLine.length; i++)
                         // {
-                        //   var v = polyLine[j];
-                        //   gfx.drawEllipse(v.x, v.y, 5, 5);
+                        //   var hue = i / polyLine.length / 2;
+                        //   var color = hslToHex.apply(null, [hue, 1, 0.5]);
+                        //   gfx.lineStyle(8, color, 1);
+                        //   var v1 = polyLine[i-1];
+                        //   var v2 = polyLine[i];
+                        //   gfx.moveTo(v1.x, v1.y);
+                        //   gfx.lineTo(v2.x, v2.y);
                         // }
-                        // gfx.endFill();
                     }
 
                     doc.height;

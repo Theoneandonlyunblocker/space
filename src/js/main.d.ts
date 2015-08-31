@@ -1355,6 +1355,7 @@ declare module Rance {
         };
         constructor();
         public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
+        public getStarAtPoint(point: Rance.Point): any;
     }
 }
 declare module Rance {
@@ -2308,9 +2309,9 @@ declare module Rance {
         star: Star;
         halfEdge: any;
     }[];
-    function joinPointsWithin(points: any[], maxDistance: number): void;
+    function joinPointsWithin(points: Point[], maxDistance: number): void;
     function convertHalfEdgeDataToOffset(halfEdgeData: any): Point[];
-    function getRevealedBorderEdges(revealedStars: Star[]): any[][];
+    function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): any[][];
 }
 declare module Rance {
     interface IMapRendererLayer {

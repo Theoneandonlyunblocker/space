@@ -687,7 +687,7 @@ module Rance
             gfx.alpha = 0.7;
             doc.addChild(gfx);
             var polyLine = borderEdges[i];
-            var player = polyLine[0].data.owner;
+            var player = polyLine[0].star.owner;
             gfx.lineStyle(8, player.secondaryColor, 1);
 
             gfx.drawPolygon(polyLine);

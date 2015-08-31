@@ -123,7 +123,7 @@ module Rance
     throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
     return borderingHalfEdges;
   }
-  export function joinPointsWithin(points: any[], maxDistance: number)
+  export function joinPointsWithin(points: Point[], maxDistance: number)
   {
     for (var i = points.length - 2; i >= 0; i--)
     {
@@ -135,14 +135,11 @@ module Rance
 
       if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance)
       {
-        var newPoint =
+        var newPoint: Point =
         {
           x: (x1 + x2) / 2,
-          y: (y1 + y2) / 2,
-          data: points[i].data
+          y: (y1 + y2) / 2
         }
-
-        console.log("joined points at", points[i].data.id);
 
         points.splice(i, 2, newPoint);
       }
@@ -156,20 +153,19 @@ module Rance
       return(
       {
         x: v1.x,
-        y: v1.y,
-        data: data.star
+        y: v1.y
       });
     });
 
     joinPointsWithin(convertedToPoints, 5);
 
-    var offset = new Offset(halfEdgeData[0].star);
+    var offset = new Offset();
     offset.arcSegments(0);
     var convertedToOffset = offset.data(convertedToPoints).padding(4);
 
     return convertedToOffset;
   }
-  export function getRevealedBorderEdges(revealedStars: Star[])
+  export function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo)
   {
     var polyLines: any[][] = [];
 
@@ -192,33 +188,47 @@ module Rance
         {
           return b.owner === a.owner;
         });
-        // console.log("island", ownedIsland[0].owner.id);
         var currentPolyLine = [];
 
         var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
-        // console.log("halfEdgeData", halfEdgesDataForIsland[0].star.owner.id);
+
         var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
-        // console.log("offsetted", offsetted[0].data.owner.id);
+
         for (var jj = offsetted.length - 1; jj >= 0; jj--)
         {
-          if (!offsetted[jj].data) console.log("!!!NODATA")
-          if (revealedStars.indexOf(offsetted[jj].data) === -1)
+          var point:
+          {
+            x: number;
+            y: number;
+            star: Star;
+          } = <any> offsetted[jj];
+          var nextPoint = jj === 0 ? offsetted[offsetted.length-1] : offsetted[jj - 1];
+
+          var edgeCenter: Point =
+          {
+            x: (point.x + nextPoint.x) / 2,
+            y: (point.y + nextPoint.y) / 2
+          }
+          var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+          point.star = pointStar;
+
+          if (revealedStars.indexOf(point.star) === -1)
           {
             if (currentPolyLine.length > 0)
             {
               polyLines.push(currentPolyLine);
               currentPolyLine = [];
             }
-            offsetted.splice(jj, 1);
           }
           else
           {
             // stupid hack to fix pixi bug with drawing polygons
             // without this consecutive edges with the same angle disappear
-            offsetted[jj].x += (jj % 2) * 0.1;
-            offsetted[jj].y += (jj % 2) * 0.1;
-            currentPolyLine.push(offsetted[jj]);
-            processedStarsById[offsetted[jj].data.id] = true;
+            point.x += (jj % 2) * 0.1;
+            point.y += (jj % 2) * 0.1;
+
+            currentPolyLine.push(point);
+            processedStarsById[star.id] = true;
           }
         }
         if (currentPolyLine.length > 0)
