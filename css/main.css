@@ -1812,16 +1812,18 @@ progress::-webkit-progress-value {
   flex-flow: column;
   flex: 0 0 auto;
   height: 100%;
+  top: 3px;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
-  border-width: 5px 5px 0 0;
+  border-width: 5px 5px 5px 0;
   background-color: #0c1615;
   padding: 6px 10px;
 }
 .possible-action {
   display: flex;
   flex-flow: row;
+  justify-content: center;
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;
