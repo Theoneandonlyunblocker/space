@@ -213,6 +213,10 @@ module Rance
           }
           else
           {
+            // stupid hack to fix pixi bug with drawing polygons
+            // without this consecutive edges with the same angle disappear
+            offsetted[jj].x += (jj % 2) * 0.1;
+            offsetted[jj].y += (jj % 2) * 0.1;
             currentPolyLine.push(offsetted[jj]);
             processedStarsById[offsetted[jj].data.id] = true;
           }
