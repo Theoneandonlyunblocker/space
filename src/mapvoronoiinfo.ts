@@ -84,5 +84,19 @@ module Rance
 
       return this.nonFillerLines[indexString];
     }
+    getStarAtPoint(point: Point)
+    {
+      var items = this.treeMap.retrieve(point);
+      for (var i = 0; i < items.length; i++)
+      {
+        var cell = items[i].cell;
+        if (cell.pointIntersection(point.x, point.y) > -1)
+        {
+          return cell.site;
+        }
+      }
+
+      return false
+    }
   }
 }

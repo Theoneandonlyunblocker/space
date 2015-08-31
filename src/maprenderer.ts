@@ -399,16 +399,10 @@ module Rance
           doc.touchmove = function(event: any)
           {
             var local = event.getLocalPosition(doc);
-            var items = map.voronoi.treeMap.retrieve(local);
-            for (var i = 0; i < items.length; i++)
+            var starAtLocal = map.voronoi.getStarAtPoint(local);
+            if (starAtLocal)
             {
-              var cell = items[i].cell;
-
-              if (cell.pointIntersection(local.x, local.y) > 0)
-              {
-                eventManager.dispatchEvent("hoverStar", cell.site);
-                return;
-              }
+              eventManager.dispatchEvent("hoverStar", starAtLocal);
             }
           }
 
@@ -685,7 +679,7 @@ module Rance
           var doc = new PIXI.DisplayObjectContainer();
 
           var revealedStars = this.player.getRevealedStars();
-          var borderEdges = getRevealedBorderEdges(revealedStars);
+          var borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
 
           for (var i = 0; i < borderEdges.length; i++)
           {
