@@ -334,7 +334,20 @@ module Rance
                     app.reactUI.battle = battle;
                     app.reactUI.switchScene("battle");
                   }.bind(this)
-                }, "Start battle")
+                }, "Start battle"),
+                !Options.debugMode ? null: React.DOM.button(
+                {
+                  className: "battle-prep-controls-button",
+                  onClick: function()
+                  {
+                    var battle = this.props.battlePrep.makeBattle();
+                    var simulator = new BattleSimulator(battle);
+                    simulator.simulateBattle();
+                    simulator.finishBattle();
+                    eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
+                    eventManager.dispatchEvent("switchScene", "galaxyMap");
+                  }.bind(this)
+                }, "Simulate battle")
               ),
               React.DOM.div({className: "battle-prep-left-lower"}, leftLowerElement)
             ),
