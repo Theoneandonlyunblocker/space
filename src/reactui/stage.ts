@@ -127,6 +127,8 @@ module Rance
                 e.target.blur();
                 window.setTimeout(function()
                 {
+                  var position = extendObject(app.renderer.camera.container.position);
+                  var zoom = app.renderer.camera.currZoom;
                   app.destroy();
 
                   app.initUI();
@@ -137,6 +139,8 @@ module Rance
                   app.initDisplay();
                   app.hookUI();
                   app.reactUI.switchScene("galaxyMap");
+                  app.renderer.camera.zoom(zoom);
+                  app.renderer.camera.container.position = position;
                 }, 0);
               }
             },

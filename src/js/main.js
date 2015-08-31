@@ -6072,12 +6072,6 @@ var Rance;
         return result;
     }
     Rance.getFrom2dArray = getFrom2dArray;
-    function divmod(x, y) {
-        var a = Math.floor(x / y);
-        var b = x % y;
-        return [a, b];
-    }
-    Rance.divmod = divmod;
     function flatten2dArray(toFlatten) {
         var flattened = [];
         for (var i = 0; i < toFlatten.length; i++) {
@@ -6216,16 +6210,7 @@ var Rance;
         return distance;
     }
     Rance.getAngleBetweenDegrees = getAngleBetweenDegrees;
-    function shiftPolygon(polygon, amount) {
-        return polygon.map(function (point) {
-            return ({
-                x: point.x + amount,
-                y: point.y + amount
-            });
-        });
-    }
-    Rance.shiftPolygon = shiftPolygon;
-    function convertCase(polygon) {
+    function convertPointsCase(polygon) {
         if (isFinite(polygon[0].x)) {
             return polygon.map(function (point) {
                 return ({
@@ -6242,9 +6227,9 @@ var Rance;
             });
         }
     }
-    Rance.convertCase = convertCase;
+    Rance.convertPointsCase = convertPointsCase;
     function offsetPolygon(polygon, amount) {
-        polygon = convertCase(polygon);
+        polygon = convertPointsCase(polygon);
         var scale = 100;
         ClipperLib.JS.ScaleUpPath(polygon, scale);
 
@@ -6262,7 +6247,7 @@ var Rance;
             return null;
         }
 
-        var converted = convertCase(offsetted[0]);
+        var converted = convertPointsCase(offsetted[0]);
 
         return converted.map(function (point) {
             return ({
@@ -6272,26 +6257,6 @@ var Rance;
         });
     }
     Rance.offsetPolygon = offsetPolygon;
-
-    function arraysEqual(a1, a2) {
-        if (a1 === a2)
-            return true;
-        if (!a1 || !a2)
-            return false;
-        if (a1.length !== a2.length)
-            return false;
-
-        a1.sort();
-        a2.sort();
-
-        for (var i = 0; i < a1.length; i++) {
-            if (a1[i] !== a2[i])
-                return false;
-        }
-
-        return true;
-    }
-    Rance.arraysEqual = arraysEqual;
     function prettifyDate(date) {
         return ([
             [
@@ -10291,7 +10256,8 @@ var Rance;
 
                         if (!site) {
                             // draw all border edges
-                            //return true;
+                            return true;
+
                             // draw all non filler border edges
                             maxAllowedFillerSites--;
                             if (adjacentFillerSites >= maxAllowedFillerSites) {
@@ -16316,7 +16282,7 @@ var Rance;
                     return spiralGalaxyGeneration(options, players, independents);
                 }
 
-                Rance.MapGen2.partiallyCutLinks(stars, 3, 2);
+                Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
 
                 // make sectors
                 //MapGen2.makeSectors(stars, 3, 5);
@@ -17151,6 +17117,8 @@ var Rance;
                         // without this react will keep a reference to this element causing a big memory leak
                         e.target.blur();
                         window.setTimeout(function () {
+                            var position = Rance.extendObject(app.renderer.camera.container.position);
+                            var zoom = app.renderer.camera.currZoom;
                             app.destroy();
 
                             app.initUI();
@@ -17161,6 +17129,8 @@ var Rance;
                             app.initDisplay();
                             app.hookUI();
                             app.reactUI.switchScene("galaxyMap");
+                            app.renderer.camera.zoom(zoom);
+                            app.renderer.camera.container.position = position;
                         }, 0);
                     }
                 }, "Reset app")));

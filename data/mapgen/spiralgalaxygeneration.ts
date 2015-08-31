@@ -217,7 +217,7 @@ module Rance
           return spiralGalaxyGeneration(options, players, independents);
         }
 
-        MapGen2.partiallyCutLinks(stars, 3, 2);
+        MapGen2.partiallyCutLinks(stars, 4, 2);
 
         // make sectors
         //MapGen2.makeSectors(stars, 3, 5);

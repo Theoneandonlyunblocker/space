@@ -440,7 +440,6 @@ declare module Rance {
     }, order: string): string[];
     function getRandomProperty(target: any): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
-    function divmod(x: any, y: any): number[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
@@ -453,13 +452,11 @@ declare module Rance {
     function clamp(value: number, min: number, max: number): number;
     function roundToNearestMultiple(value: number, multiple: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
-    function shiftPolygon(polygon: Point[], amount: number): {
+    function convertPointsCase(polygon: any[]): any[];
+    function offsetPolygon(polygon: Point[], amount: number): {
         x: number;
         y: number;
     }[];
-    function convertCase(polygon: any[]): any;
-    function offsetPolygon(polygon: Point[], amount: number): any;
-    function arraysEqual(a1: any[], a2: any[]): boolean;
     function prettifyDate(date: Date): string;
     function getMatchingLocalstorageItemsByDate(stringToMatch: string): any[];
     function shuffleArray(toShuffle: any[], seed?: any): any[];
