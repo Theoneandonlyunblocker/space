@@ -18177,7 +18177,7 @@ var Rance;
 
                     for (var i = 0; i < borderEdges.length; i++) {
                         var gfx = new PIXI.Graphics();
-                        gfx.alpha = 0.6;
+                        gfx.alpha = 0.7;
                         doc.addChild(gfx);
                         var polyLine = borderEdges[i];
                         var player = polyLine[0].data.owner;
@@ -18313,13 +18313,13 @@ var Rance;
                         var containerGfx = new PIXI.Graphics();
                         containerGfx.lineStyle(1, 0x00000, 1);
                         containerGfx.beginFill(color, 0.7);
-                        containerGfx.drawRect(0, 0, text.width + 4, text.height + 4);
+                        containerGfx.drawRect(0, 0, text.width + 4, text.height - 7);
                         containerGfx.endFill();
 
                         fleetContainer.addChild(containerGfx);
                         fleetContainer.addChild(text);
                         text.x += 2;
-                        text.y += 2;
+                        text.y -= 1;
 
                         fleetContainer.interactive = true;
 
