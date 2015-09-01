@@ -23,8 +23,15 @@ module Rance
       };
       actionsUse: number;
 
+      // determines targeting range of function, called first
       mainEffect: IAbilityTemplateEffect;
+      // combined with mainEffect, determines target area of function, called second
+      // uses same user and target as maineffect, can have own target area
       secondaryEffects?: IAbilityTemplateEffect[];
+
+      // called once for each other effect called
+      // uses same user and effect target as the effect it's attached to
+      attachedEffects?: IAbilityTemplateEffect[];
       
 
       addsGuard?: boolean; // set dynamically
@@ -137,6 +144,12 @@ module Rance
           }
         },
         secondaryEffects:
+        [
+          {
+            template: Effects.bombAttack
+          }
+        ],
+        attachedEffects:
         [
           {
             template: Effects.increaseCaptureChance,

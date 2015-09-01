@@ -14,7 +14,7 @@ module Rance
     beforeUse: {(): void;}[];
     effectsToCall:
     {
-      effect: {(): void;};
+      effects: {(): void;}[]; // primary effect and attached effects
       user: Unit;
       target: Unit;
     }[];
@@ -40,6 +40,7 @@ module Rance
     {
       effectsToCall = effectsToCall.concat(ability.secondaryEffects);
     }
+    
 
     for (var i = 0; i < effectsToCall.length; i++)
     {
@@ -51,9 +52,23 @@ module Rance
       {
         var effectTarget = targetsInArea[j];
 
+        var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+
+        if (ability.attachedEffects)
+        {
+          for (var k = 0; k < ability.attachedEffects.length; k++)
+          {
+            var attachedEffect = ability.attachedEffects[k];
+
+            boundEffects.push(
+              attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data)
+            );
+          }
+        }
+
         data.effectsToCall.push(
         {
-          effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
+          effects: boundEffects,
           user: user,
           target: effectTarget
         });
@@ -79,7 +94,10 @@ module Rance
 
     for (var i = 0; i < abilityData.effectsToCall.length; i++)
     {
-      abilityData.effectsToCall[i].effect();
+      for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++)
+      {
+        abilityData.effectsToCall[i].effects[j]();
+      }
     }
 
     for (var i = 0; i < abilityData.afterUse.length; i++)

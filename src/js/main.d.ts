@@ -517,6 +517,7 @@ declare module Rance {
             actionsUse: number;
             mainEffect: IAbilityTemplateEffect;
             secondaryEffects?: IAbilityTemplateEffect[];
+            attachedEffects?: IAbilityTemplateEffect[];
             addsGuard?: boolean;
         }
         module Abilities {
@@ -1911,7 +1912,9 @@ declare module Rance {
             (): void;
         }[];
         effectsToCall: {
-            effect: () => void;
+            effects: {
+                (): void;
+            }[];
             user: Rance.Unit;
             target: Rance.Unit;
         }[];

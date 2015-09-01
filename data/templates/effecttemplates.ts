@@ -128,7 +128,6 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit, data?: any)
         {
-          console.log("increaseCaptureChance", user.id);
           if (!data) return;
           if (data.flat)
           {
@@ -149,7 +148,6 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          console.log("buffTest", user.id);
           user.addStatusEffect(new StatusEffect(
           {
             attack:

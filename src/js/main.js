@@ -1682,7 +1682,9 @@ var Rance;
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
                 var startEffectFN = function () {
-                    effectData[i].effect();
+                    for (var j = 0; j < effectData[i].effects.length; j++) {
+                        effectData[i].effects[j]();
+                    }
 
                     this.setState({
                         playingBattleEffectActive: true
@@ -6516,7 +6518,6 @@ var Rance;
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
                 effect: function (user, target, data) {
-                    console.log("increaseCaptureChance", user.id);
                     if (!data)
                         return;
                     if (data.flat) {
@@ -6533,7 +6534,6 @@ var Rance;
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
                 effect: function (user, target) {
-                    console.log("buffTest", user.id);
                     user.addStatusEffect(new Rance.StatusEffect({
                         attack: {
                             flat: 3
@@ -6650,6 +6650,11 @@ var Rance;
                     }
                 },
                 secondaryEffects: [
+                    {
+                        template: Rance.Templates.Effects.bombAttack
+                    }
+                ],
+                attachedEffects: [
                     {
                         template: Rance.Templates.Effects.increaseCaptureChance,
                         data: {
@@ -13402,8 +13407,18 @@ var Rance;
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
 
+                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+
+                if (ability.attachedEffects) {
+                    for (var k = 0; k < ability.attachedEffects.length; k++) {
+                        var attachedEffect = ability.attachedEffects[k];
+
+                        boundEffects.push(attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data));
+                    }
+                }
+
                 data.effectsToCall.push({
-                    effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
+                    effects: boundEffects,
                     user: user,
                     target: effectTarget
                 });
@@ -13427,7 +13442,9 @@ var Rance;
         }
 
         for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-            abilityData.effectsToCall[i].effect();
+            for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++) {
+                abilityData.effectsToCall[i].effects[j]();
+            }
         }
 
         for (var i = 0; i < abilityData.afterUse.length; i++) {

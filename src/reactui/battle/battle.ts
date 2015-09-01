@@ -251,7 +251,10 @@ module Rance
 
         var startEffectFN = function()
         {
-          effectData[i].effect();
+          for (var j = 0; j < effectData[i].effects.length; j++)
+          {
+            effectData[i].effects[j]();
+          }
 
           this.setState(
           {
