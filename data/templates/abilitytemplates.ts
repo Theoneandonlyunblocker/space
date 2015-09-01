@@ -63,7 +63,12 @@ module Rance
         actionsUse: 1,
         mainEffect:
         {
-          template: Effects.rangedAttack
+          template: Effects.singleTargetDamage,
+          data:
+          {
+            baseDamage: 100,
+            damageType: DamageType.physical
+          }
         }
       }
       export var closeAttack: IAbilityTemplate =
@@ -124,8 +129,26 @@ module Rance
         actionsUse: 1,
         mainEffect:
         {
-          template: Effects.boardingHook
-        }
+          template: Effects.singleTargetDamage,
+          data:
+          {
+            baseDamage: 1000,
+            damageType: DamageType.physical
+          }
+        },
+        secondaryEffects:
+        [
+          {
+            template: Effects.increaseCaptureChance,
+            data:
+            {
+              flat: 1
+            }
+          },
+          {
+            template: Effects.buffTest
+          }
+        ]
       }
 
       export var standBy: IAbilityTemplate =

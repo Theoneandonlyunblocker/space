@@ -470,6 +470,12 @@ declare module Rance {
     var targetNeighbors: TargetingFunction;
 }
 declare module Rance {
+    enum DamageType {
+        physical = 0,
+        magical = 1,
+    }
+}
+declare module Rance {
     module Templates {
         interface IEffectTemplate {
             name: string;
@@ -481,12 +487,13 @@ declare module Rance {
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
             var dummyTargetAll: IEffectTemplate;
-            var rangedAttack: IEffectTemplate;
+            var singleTargetDamage: IEffectTemplate;
             var closeAttack: IEffectTemplate;
             var wholeRowAttack: IEffectTemplate;
             var bombAttack: IEffectTemplate;
             var guardColumn: IEffectTemplate;
-            var boardingHook: IEffectTemplate;
+            var increaseCaptureChance: IEffectTemplate;
+            var buffTest: IEffectTemplate;
             var standBy: IEffectTemplate;
         }
     }
@@ -2008,9 +2015,9 @@ declare module Rance {
         public removeItemAtSlot(slot: string): boolean;
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.IAbilityTemplate[];
-        public recieveDamage(amount: number, damageType: string): void;
-        public getAttackDamageIncrease(damageType: string): number;
-        public getReducedDamageFactor(damageType: string): number;
+        public recieveDamage(amount: number, damageType: Rance.DamageType): void;
+        public getAttackDamageIncrease(damageType: Rance.DamageType): number;
+        public getReducedDamageFactor(damageType: Rance.DamageType): number;
         public addToFleet(fleet: Rance.Fleet): void;
         public removeFromFleet(): void;
         public removeFromPlayer(): void;

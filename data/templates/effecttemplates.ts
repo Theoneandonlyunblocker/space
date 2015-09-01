@@ -34,17 +34,20 @@ module Rance
         targetRange: "all",
         effect: function(){}
       }
-      export var rangedAttack: IEffectTemplate =
+      export var singleTargetDamage: IEffectTemplate =
       {
-        name: "rangedAttack",
+        name: "singleTargetDamage",
         targetFleets: "enemy",
         targetingFunction: targetSingle,
         targetRange: "all",
-        effect: function(user: Unit, target: Unit)
+        effect: function(user: Unit, target: Unit, data?: any)
         {
-          var baseDamage = 100;
-          var damageType = "physical";
-          var damageType = DamageType.physical;
+          var data = data || {};
+          data.baseDamage = data.baseDamage || 100;
+          data.damageType = data.damageType || DamageType.physical;
+
+          var baseDamage = data.baseDamage;
+          var damageType = data.damageType;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
@@ -117,23 +120,36 @@ module Rance
           user.addGuard(guardAmount, "column");
         }
       }
-      export var boardingHook: IEffectTemplate =
+      export var increaseCaptureChance: IEffectTemplate =
       {
-        name: "boardingHook",
+        name: "increaseCaptureChance",
         targetFleets: "enemy",
+        targetingFunction: targetSingle,
+        targetRange: "all",
+        effect: function(user: Unit, target: Unit, data?: any)
+        {
+          console.log("increaseCaptureChance", user.id);
+          if (!data) return;
+          if (data.flat)
+          {
+            target.battleStats.captureChance += data.flat;
+          }
+          if (isFinite(data.multiplier))
+          {
+            target.battleStats.captureChance *= data.multiplier;
+          }
+
+        }
+      }
+      export var buffTest: IEffectTemplate =
+      {
+        name: "buffTest",
+        targetFleets: "all",
         targetingFunction: targetSingle,
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 80;
-          var damageType = DamageType.physical;
-
-          var damageIncrease = user.getAttackDamageIncrease(damageType);
-          var damage = baseDamage * damageIncrease;
-
-          target.recieveDamage(damage, damageType);
-          target.battleStats.captureChance += 1;
-
+          console.log("buffTest", user.id);
           user.addStatusEffect(new StatusEffect(
           {
             attack:

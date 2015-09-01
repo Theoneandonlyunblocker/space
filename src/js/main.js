@@ -6403,8 +6403,17 @@ var Rance;
         return Rance.getFrom2dArray(fleets, allTargets);
     };
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (DamageType) {
+        DamageType[DamageType["physical"] = 0] = "physical";
+        DamageType[DamageType["magical"] = 1] = "magical";
+    })(Rance.DamageType || (Rance.DamageType = {}));
+    var DamageType = Rance.DamageType;
+})(Rance || (Rance = {}));
 /// <reference path="../../src/targeting.ts" />
 /// <reference path="../../src/unit.ts" />
+/// <reference path="../../src/damagetype.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
@@ -6425,14 +6434,18 @@ var Rance;
                 effect: function () {
                 }
             };
-            Effects.rangedAttack = {
-                name: "rangedAttack",
+            Effects.singleTargetDamage = {
+                name: "singleTargetDamage",
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
-                effect: function (user, target) {
-                    var baseDamage = 100;
-                    var damageType = "physical";
+                effect: function (user, target, data) {
+                    var data = data || {};
+                    data.baseDamage = data.baseDamage || 100;
+                    data.damageType = data.damageType || 0 /* physical */;
+
+                    var baseDamage = data.baseDamage;
+                    var damageType = data.damageType;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
@@ -6447,7 +6460,7 @@ var Rance;
                 targetRange: "close",
                 effect: function (user, target) {
                     var baseDamage = 100;
-                    var damageType = "physical";
+                    var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
@@ -6462,7 +6475,7 @@ var Rance;
                 targetRange: "all",
                 effect: function (user, target) {
                     var baseDamage = 100;
-                    var damageType = "magical";
+                    var damageType = 1 /* magical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
@@ -6478,7 +6491,7 @@ var Rance;
                 targetRange: "all",
                 effect: function (user, target) {
                     var baseDamage = 100;
-                    var damageType = "physical";
+                    var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
@@ -6497,21 +6510,30 @@ var Rance;
                     user.addGuard(guardAmount, "column");
                 }
             };
-            Effects.boardingHook = {
-                name: "boardingHook",
+            Effects.increaseCaptureChance = {
+                name: "increaseCaptureChance",
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
+                effect: function (user, target, data) {
+                    console.log("increaseCaptureChance", user.id);
+                    if (!data)
+                        return;
+                    if (data.flat) {
+                        target.battleStats.captureChance += data.flat;
+                    }
+                    if (isFinite(data.multiplier)) {
+                        target.battleStats.captureChance *= data.multiplier;
+                    }
+                }
+            };
+            Effects.buffTest = {
+                name: "buffTest",
+                targetFleets: "all",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 80;
-                    var damageType = "physical";
-
-                    var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease;
-
-                    target.recieveDamage(damage, damageType);
-                    target.battleStats.captureChance += 1;
-
+                    console.log("buffTest", user.id);
                     user.addStatusEffect(new Rance.StatusEffect({
                         attack: {
                             flat: 3
@@ -6566,7 +6588,11 @@ var Rance;
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.rangedAttack
+                    template: Rance.Templates.Effects.singleTargetDamage,
+                    data: {
+                        baseDamage: 100,
+                        damageType: 0 /* physical */
+                    }
                 }
             };
             Abilities.closeAttack = {
@@ -6617,8 +6643,23 @@ var Rance;
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.boardingHook
-                }
+                    template: Rance.Templates.Effects.singleTargetDamage,
+                    data: {
+                        baseDamage: 1000,
+                        damageType: 0 /* physical */
+                    }
+                },
+                secondaryEffects: [
+                    {
+                        template: Rance.Templates.Effects.increaseCaptureChance,
+                        data: {
+                            flat: 1
+                        }
+                    },
+                    {
+                        template: Rance.Templates.Effects.buffTest
+                    }
+                ]
             };
 
             Abilities.standBy = {
@@ -13584,6 +13625,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
@@ -13957,12 +13999,12 @@ var Rance;
             var attackStat, attackFactor;
 
             switch (damageType) {
-                case "physical": {
+                case 0 /* physical */: {
                     attackStat = this.attributes.attack;
                     attackFactor = 0.1;
                     break;
                 }
-                case "magical": {
+                case 1 /* magical */: {
                     attackStat = this.attributes.intelligence;
                     attackFactor = 0.1;
                     break;
@@ -13976,7 +14018,7 @@ var Rance;
             var finalDamageMultiplier = 1;
 
             switch (damageType) {
-                case "physical": {
+                case 0 /* physical */: {
                     defensiveStat = this.attributes.defence;
                     defenceFactor = 0.08;
 
@@ -13984,7 +14026,7 @@ var Rance;
                     finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
                     break;
                 }
-                case "magical": {
+                case 1 /* magical */: {
                     defensiveStat = this.attributes.intelligence;
                     defenceFactor = 0.07;
                     break;
