@@ -6647,22 +6647,22 @@ var Rance;
                     data: {
                         baseDamage: 1000,
                         damageType: 0 /* physical */
-                    }
+                    },
+                    attachedEffects: [
+                        {
+                            template: Rance.Templates.Effects.increaseCaptureChance,
+                            data: {
+                                flat: 1
+                            }
+                        },
+                        {
+                            template: Rance.Templates.Effects.buffTest
+                        }
+                    ]
                 },
                 secondaryEffects: [
                     {
                         template: Rance.Templates.Effects.bombAttack
-                    }
-                ],
-                attachedEffects: [
-                    {
-                        template: Rance.Templates.Effects.increaseCaptureChance,
-                        data: {
-                            flat: 1
-                        }
-                    },
-                    {
-                        template: Rance.Templates.Effects.buffTest
                     }
                 ]
             };
@@ -13409,9 +13409,9 @@ var Rance;
 
                 var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
 
-                if (ability.attachedEffects) {
-                    for (var k = 0; k < ability.attachedEffects.length; k++) {
-                        var attachedEffect = ability.attachedEffects[k];
+                if (effect.attachedEffects) {
+                    for (var k = 0; k < effect.attachedEffects.length; k++) {
+                        var attachedEffect = effect.attachedEffects[k];
 
                         boundEffects.push(attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data));
                     }

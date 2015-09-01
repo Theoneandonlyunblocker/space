@@ -503,6 +503,7 @@ declare module Rance {
         interface IAbilityTemplateEffect {
             template: Templates.IEffectTemplate;
             data?: any;
+            attachedEffects?: IAbilityTemplateEffect[];
         }
         interface IAbilityTemplate {
             type: string;
@@ -517,7 +518,6 @@ declare module Rance {
             actionsUse: number;
             mainEffect: IAbilityTemplateEffect;
             secondaryEffects?: IAbilityTemplateEffect[];
-            attachedEffects?: IAbilityTemplateEffect[];
             addsGuard?: boolean;
         }
         module Abilities {

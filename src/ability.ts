@@ -40,7 +40,7 @@ module Rance
     {
       effectsToCall = effectsToCall.concat(ability.secondaryEffects);
     }
-    
+
 
     for (var i = 0; i < effectsToCall.length; i++)
     {
@@ -54,11 +54,11 @@ module Rance
 
         var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
 
-        if (ability.attachedEffects)
+        if (effect.attachedEffects)
         {
-          for (var k = 0; k < ability.attachedEffects.length; k++)
+          for (var k = 0; k < effect.attachedEffects.length; k++)
           {
-            var attachedEffect = ability.attachedEffects[k];
+            var attachedEffect = effect.attachedEffects[k];
 
             boundEffects.push(
               attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data)
