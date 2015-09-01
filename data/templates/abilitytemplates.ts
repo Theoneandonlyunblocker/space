@@ -161,15 +161,16 @@ module Rance
             },
             {
               template: Effects.buffTest
+            },
+            {
+              template: Effects.receiveCounterAttack,
+              data:
+              {
+                baseDamage: 0.5
+              }
             }
           ]
-        },
-        secondaryEffects:
-        [
-          {
-            template: Effects.bombAttack
-          }
-        ]
+        }
       }
 
       export var standBy: IAbilityTemplate =

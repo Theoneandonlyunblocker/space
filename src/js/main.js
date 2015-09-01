@@ -6457,7 +6457,7 @@ var Rance;
                 targetingFunction: Rance.targetColumnNeighbors,
                 targetRange: "close",
                 effect: function (user, target) {
-                    var baseDamage = 0.5;
+                    var baseDamage = 0.33;
                     var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6472,7 +6472,7 @@ var Rance;
                 targetingFunction: Rance.targetRow,
                 targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 0.5;
+                    var baseDamage = 0.4;
                     var damageType = 1 /* magical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6488,7 +6488,7 @@ var Rance;
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 0.5;
+                    var baseDamage = 0.25;
                     var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6509,7 +6509,7 @@ var Rance;
                 }
             };
             Effects.receiveCounterAttack = {
-                name: "guardColumn",
+                name: "receiveCounterAttack",
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
@@ -6547,10 +6547,16 @@ var Rance;
                 effect: function (user, target) {
                     user.addStatusEffect(new Rance.StatusEffect({
                         attack: {
-                            flat: 3
+                            flat: 9
                         },
                         defence: {
-                            flat: -3
+                            flat: 9
+                        },
+                        intelligence: {
+                            flat: -9
+                        },
+                        speed: {
+                            flat: 9
                         }
                     }, 1));
                 }
@@ -6676,14 +6682,15 @@ var Rance;
                         },
                         {
                             template: Rance.Templates.Effects.buffTest
+                        },
+                        {
+                            template: Rance.Templates.Effects.receiveCounterAttack,
+                            data: {
+                                baseDamage: 0.5
+                            }
                         }
                     ]
-                },
-                secondaryEffects: [
-                    {
-                        template: Rance.Templates.Effects.bombAttack
-                    }
-                ]
+                }
             };
 
             Abilities.standBy = {
@@ -6721,10 +6728,10 @@ var Rance;
                 maxMovePoints: 999,
                 visionRange: 999,
                 attributeLevels: {
-                    attack: 0.7,
-                    defence: 0.4,
-                    intelligence: 0.5,
-                    speed: 0.8
+                    attack: 9,
+                    defence: 9,
+                    intelligence: 9,
+                    speed: 9
                 },
                 abilities: [
                     Rance.Templates.Abilities.rangedAttack,
@@ -13753,7 +13760,8 @@ var Rance;
             battleStats.guardAmount = data.battleStats.guardAmount;
             battleStats.guardCoverage = data.battleStats.guardCoverage;
             battleStats.captureChance = data.battleStats.captureChance;
-            battleStats.statusEffects = [];
+            battleStats.statusEffects = data.battleStats.statusEffects;
+            battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
 
             this.battleStats = battleStats;
 
@@ -13830,7 +13838,8 @@ var Rance;
                 guardAmount: 0,
                 guardCoverage: null,
                 captureChance: 0.1,
-                statusEffects: []
+                statusEffects: [],
+                lastHealthBeforeReceivingDamage: this.currentHealth
             };
 
             this.displayFlags = {
@@ -13852,11 +13861,11 @@ var Rance;
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentHealth -= Math.round(amount);
-            if (this.currentHealth < 0) {
-                this.currentHealth = 0;
-            }
+            this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
 
-            this.removeGuard(50);
+            if (amount > 0) {
+                this.removeGuard(50);
+            }
 
             this.uiDisplayIsDirty = true;
         };
@@ -14042,14 +14051,19 @@ var Rance;
             return abilities;
         };
         Unit.prototype.recieveDamage = function (amount, damageType) {
-            var damageReduction = this.getReducedDamageFactor(damageType);
+            var damageReduction = amount > 0 ? this.getReducedDamageFactor(damageType) : 1;
 
             var adjustedDamage = amount * damageReduction;
 
+            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
             this.removeStrength(adjustedDamage);
         };
         Unit.prototype.getAdjustedTroopSize = function () {
-            var currentHealth = this.isSquadron ? this.currentHealth : Math.min(this.maxHealth, this.currentHealth + this.maxHealth * 0.2);
+            // used so unit will always counter with at least 1/3 strength it had before being attacked
+            var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
+            this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+
+            var currentHealth = this.isSquadron ? balancedHealth : Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
 
             if (currentHealth <= 500) {
                 return currentHealth;
@@ -14086,7 +14100,7 @@ var Rance;
             switch (damageType) {
                 case 0 /* physical */: {
                     defensiveStat = this.attributes.defence;
-                    defenceFactor = 0.08;
+                    defenceFactor = 0.045;
 
                     var guardAmount = Math.min(this.battleStats.guardAmount, 100);
                     finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
@@ -14094,7 +14108,7 @@ var Rance;
                 }
                 case 1 /* magical */: {
                     defensiveStat = this.attributes.intelligence;
-                    defenceFactor = 0.07;
+                    defenceFactor = 0.045;
                     break;
                 }
             }

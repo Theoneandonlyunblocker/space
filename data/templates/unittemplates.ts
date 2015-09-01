@@ -57,10 +57,10 @@ module Rance
         visionRange: 999,
         attributeLevels:
         {
-          attack: 0.7,
-          defence: 0.4,
-          intelligence: 0.5,
-          speed: 0.8
+          attack: 9,
+          defence: 9,
+          intelligence: 9,
+          speed: 9
         },
         abilities:
         [

@@ -1981,6 +1981,7 @@ declare module Rance {
             guardCoverage: string;
             captureChance: number;
             statusEffects: Rance.StatusEffect[];
+            lastHealthBeforeReceivingDamage: number;
         };
         public displayFlags: {
             isAnnihilated: boolean;

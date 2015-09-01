@@ -59,7 +59,7 @@ module Rance
         targetRange: "close",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 0.5;
+          var baseDamage = 0.33;
           var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -76,7 +76,7 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 0.5;
+          var baseDamage = 0.4;
           var damageType = DamageType.magical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -94,7 +94,7 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 0.5;
+          var baseDamage = 0.25;
           var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -118,7 +118,7 @@ module Rance
       }
       export var receiveCounterAttack: IEffectTemplate =
       {
-        name: "guardColumn",
+        name: "receiveCounterAttack",
         targetFleets: "all",
         targetingFunction: targetSingle,
         targetRange: "self",
@@ -167,11 +167,19 @@ module Rance
           {
             attack:
             {
-              flat: 3
+              flat: 9
             },
             defence:
             {
-              flat: -3
+              flat: 9
+            },
+            intelligence:
+            {
+              flat: -9
+            },
+            speed:
+            {
+              flat: 9
             }
           }, 1));
         }
