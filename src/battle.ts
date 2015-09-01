@@ -258,8 +258,8 @@ module Rance
     getDeadUnits(capturedUnits: Unit[], victor: Player)
     {
       var INDEPENDENT_DEATH_CHANCE = 1; // base chance for independents
-      var PLAYER_DEATH_CHANCE = 0.4; // base chance for players
-      var LOSER_DEATH_CHANCE = 0.25; // extra chance for losing side
+      var PLAYER_DEATH_CHANCE = 0.65; // base chance for players
+      var LOSER_DEATH_CHANCE = 0.35; // extra chance for losing side
 
       if (victor)
       {
@@ -280,9 +280,12 @@ module Rance
           {
             var isIndependent = unit.fleet.player.isIndependent;
             var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
-            if (unit.fleet.player.id === losingPlayer) deathChance += LOSER_DEATH_CHANCE;
+            if (unit.fleet.player === losingPlayer)
+            {
+              deathChance += LOSER_DEATH_CHANCE;
+            }
 
-            if (Math.random() <= deathChance)
+            if (Math.random() < deathChance)
             {
               deadUnits.push(unit);
             }

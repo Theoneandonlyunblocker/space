@@ -13122,8 +13122,8 @@ var Rance;
         };
         Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
             var INDEPENDENT_DEATH_CHANCE = 1;
-            var PLAYER_DEATH_CHANCE = 0.4;
-            var LOSER_DEATH_CHANCE = 0.25;
+            var PLAYER_DEATH_CHANCE = 0.65;
+            var LOSER_DEATH_CHANCE = 0.35;
 
             if (victor) {
                 var winningSide = this.getSideForPlayer(victor);
@@ -13139,10 +13139,11 @@ var Rance;
                     if (!wasCaptured) {
                         var isIndependent = unit.fleet.player.isIndependent;
                         var deathChance = isIndependent ? INDEPENDENT_DEATH_CHANCE : PLAYER_DEATH_CHANCE;
-                        if (unit.fleet.player.id === losingPlayer)
+                        if (unit.fleet.player === losingPlayer) {
                             deathChance += LOSER_DEATH_CHANCE;
+                        }
 
-                        if (Math.random() <= deathChance) {
+                        if (Math.random() < deathChance) {
                             deadUnits.push(unit);
                         }
                     }
