@@ -8,7 +8,7 @@ module Rance
     {
       template: IEffectTemplate;
       data?: any;
-      // called once with same user and effect target as parent effect
+      // called after parent effect with same user and effect target
       // nesting these wont work and wouldnt do anything anyway
       attachedEffects?: IAbilityTemplateEffect[];
     }
@@ -73,7 +73,17 @@ module Rance
           {
             baseDamage: 100,
             damageType: DamageType.physical
-          }
+          },
+          attachedEffects:
+          [
+            {
+              template: Effects.receiveCounterAttack,
+              data:
+              {
+                baseDamage: 100
+              }
+            }
+          ]
         }
       }
       export var closeAttack: IAbilityTemplate =

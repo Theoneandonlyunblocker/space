@@ -42,10 +42,6 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit, data?: any)
         {
-          var data = data || {};
-          data.baseDamage = data.baseDamage || 100;
-          data.damageType = data.damageType || DamageType.physical;
-
           var baseDamage = data.baseDamage;
           var damageType = data.damageType;
 
@@ -118,6 +114,25 @@ module Rance
           var guardPerInt = 20;
           var guardAmount = guardPerInt * user.attributes.intelligence;
           user.addGuard(guardAmount, "column");
+        }
+      }
+      export var receiveCounterAttack: IEffectTemplate =
+      {
+        name: "guardColumn",
+        targetFleets: "all",
+        targetingFunction: targetSingle,
+        targetRange: "self",
+        effect: function(user: Unit, target: Unit, data?: any)
+        {
+          var counterStrength = target.getCounterAttackStrength();
+          if (counterStrength)
+          {
+            Templates.Effects.singleTargetDamage.effect(target, user,
+            {
+              baseDamage: data.baseDamage * counterStrength,
+              damageType: DamageType.physical
+            });
+          }
         }
       }
       export var increaseCaptureChance: IEffectTemplate =

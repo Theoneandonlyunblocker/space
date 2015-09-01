@@ -590,6 +590,10 @@ module Rance
 
       this.uiDisplayIsDirty = true;
     }
+    getCounterAttackStrength()
+    {
+      return 1; // TODO
+    }
     canActThisTurn(): boolean
     {
       return this.timesActedThisTurn < 1;

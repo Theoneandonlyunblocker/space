@@ -6442,10 +6442,6 @@ var Rance;
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
                 effect: function (user, target, data) {
-                    var data = data || {};
-                    data.baseDamage = data.baseDamage || 100;
-                    data.damageType = data.damageType || 0 /* physical */;
-
                     var baseDamage = data.baseDamage;
                     var damageType = data.damageType;
 
@@ -6510,6 +6506,21 @@ var Rance;
                     var guardPerInt = 20;
                     var guardAmount = guardPerInt * user.attributes.intelligence;
                     user.addGuard(guardAmount, "column");
+                }
+            };
+            Effects.receiveCounterAttack = {
+                name: "guardColumn",
+                targetFleets: "all",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "self",
+                effect: function (user, target, data) {
+                    var counterStrength = target.getCounterAttackStrength();
+                    if (counterStrength) {
+                        Rance.Templates.Effects.singleTargetDamage.effect(target, user, {
+                            baseDamage: data.baseDamage * counterStrength,
+                            damageType: 0 /* physical */
+                        });
+                    }
                 }
             };
             Effects.increaseCaptureChance = {
@@ -6592,7 +6603,15 @@ var Rance;
                     data: {
                         baseDamage: 100,
                         damageType: 0 /* physical */
-                    }
+                    },
+                    attachedEffects: [
+                        {
+                            template: Rance.Templates.Effects.receiveCounterAttack,
+                            data: {
+                                baseDamage: 100
+                            }
+                        }
+                    ]
                 }
             };
             Abilities.closeAttack = {
@@ -14101,6 +14120,9 @@ var Rance;
 
             this.uiDisplayIsDirty = true;
         };
+        Unit.prototype.getCounterAttackStrength = function () {
+            return 1;
+        };
         Unit.prototype.canActThisTurn = function () {
             return this.timesActedThisTurn < 1;
         };
@@ -20572,7 +20594,7 @@ var Rance;
             var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
 
             for (var i = 0; i < effects.length; i++) {
-                effects[i].template.effect(dummyUser, dummyTarget);
+                effects[i].template.effect(dummyUser, dummyTarget, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
                     return true;
                 }

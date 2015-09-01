@@ -492,6 +492,7 @@ declare module Rance {
             var wholeRowAttack: IEffectTemplate;
             var bombAttack: IEffectTemplate;
             var guardColumn: IEffectTemplate;
+            var receiveCounterAttack: IEffectTemplate;
             var increaseCaptureChance: IEffectTemplate;
             var buffTest: IEffectTemplate;
             var standBy: IEffectTemplate;
@@ -2028,6 +2029,7 @@ declare module Rance {
         public removeGuard(amount: number): void;
         public addGuard(amount: number, coverage: string): void;
         public removeAllGuard(): void;
+        public getCounterAttackStrength(): number;
         public canActThisTurn(): boolean;
         public heal(): void;
         public getStrengthEvaluation(): number;
