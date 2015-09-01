@@ -6457,7 +6457,7 @@ var Rance;
                 targetingFunction: Rance.targetColumnNeighbors,
                 targetRange: "close",
                 effect: function (user, target) {
-                    var baseDamage = 100;
+                    var baseDamage = 0.5;
                     var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6472,7 +6472,7 @@ var Rance;
                 targetingFunction: Rance.targetRow,
                 targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 100;
+                    var baseDamage = 0.5;
                     var damageType = 1 /* magical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6488,7 +6488,7 @@ var Rance;
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 100;
+                    var baseDamage = 0.5;
                     var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6601,14 +6601,14 @@ var Rance;
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
                     data: {
-                        baseDamage: 100,
+                        baseDamage: 0.5,
                         damageType: 0 /* physical */
                     },
                     attachedEffects: [
                         {
                             template: Rance.Templates.Effects.receiveCounterAttack,
                             data: {
-                                baseDamage: 100
+                                baseDamage: 0.5
                             }
                         }
                     ]
@@ -6664,7 +6664,7 @@ var Rance;
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
                     data: {
-                        baseDamage: 1000,
+                        baseDamage: 5,
                         damageType: 0 /* physical */
                     },
                     attachedEffects: [
@@ -12810,6 +12810,14 @@ var Rance;
         Player.prototype.addItem = function (item) {
             this.items.push(item);
         };
+        Player.prototype.removeItem = function (item) {
+            var index = this.items.indexOf(item);
+            if (index === -1) {
+                throw new Error("Player " + this.name + " has no item " + item.id);
+            }
+
+            this.items.splice(index, 1);
+        };
         Player.prototype.getAllBuildableItems = function () {
             var alreadyAdded = {};
             var allBuildable = [];
@@ -13912,6 +13920,14 @@ var Rance;
 
             return false;
         };
+        Unit.prototype.destroyAllItems = function () {
+            for (var slot in this.items) {
+                var item = this.items[slot];
+                if (item) {
+                    this.fleet.player.removeItem(item);
+                }
+            }
+        };
         Unit.prototype.getAttributesWithItems = function () {
             var attributes = Rance.extendObject(this.baseAttributes);
 
@@ -14031,6 +14047,17 @@ var Rance;
 
             this.removeStrength(adjustedDamage);
         };
+        Unit.prototype.getAdjustedTroopSize = function () {
+            var currentHealth = this.isSquadron ? this.currentHealth : Math.min(this.maxHealth, this.currentHealth + this.maxHealth * 0.2);
+
+            if (currentHealth <= 500) {
+                return currentHealth;
+            } else if (currentHealth <= 2000) {
+                return currentHealth / 2 + 250;
+            } else {
+                return currentHealth / 4 + 750;
+            }
+        };
         Unit.prototype.getAttackDamageIncrease = function (damageType) {
             var attackStat, attackFactor;
 
@@ -14047,7 +14074,9 @@ var Rance;
                 }
             }
 
-            return 1 + attackStat * attackFactor;
+            var troopSize = this.getAdjustedTroopSize();
+
+            return (1 + attackStat * attackFactor) * troopSize;
         };
         Unit.prototype.getReducedDamageFactor = function (damageType) {
             var defensiveStat, defenceFactor;
@@ -14083,6 +14112,7 @@ var Rance;
         Unit.prototype.removeFromPlayer = function () {
             var player = this.fleet.player;
 
+            this.destroyAllItems();
             player.removeUnit(this);
             this.fleet.removeShip(this);
 

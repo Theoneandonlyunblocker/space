@@ -497,6 +497,25 @@ module Rance
 
       this.removeStrength(adjustedDamage);
     }
+    getAdjustedTroopSize()
+    {
+      var currentHealth = this.isSquadron ?
+        this.currentHealth :
+        Math.min(this.maxHealth, this.currentHealth + this.maxHealth * 0.2);
+
+      if (currentHealth <= 500)
+      {
+        return currentHealth;
+      }
+      else if (currentHealth <= 2000)
+      {
+        return currentHealth / 2 + 250;
+      }
+      else
+      {
+        return currentHealth / 4 + 750;
+      }
+    }
     getAttackDamageIncrease(damageType: DamageType)
     {
       var attackStat, attackFactor;
@@ -517,7 +536,9 @@ module Rance
         }
       }
 
-      return 1 + attackStat * attackFactor;
+      var troopSize = this.getAdjustedTroopSize();
+
+      return (1 + attackStat * attackFactor) * troopSize;
     }
     getReducedDamageFactor(damageType: DamageType)
     {

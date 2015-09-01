@@ -59,7 +59,7 @@ module Rance
         targetRange: "close",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 100;
+          var baseDamage = 0.5;
           var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -76,7 +76,7 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 100;
+          var baseDamage = 0.5;
           var damageType = DamageType.magical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -94,7 +94,7 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          var baseDamage = 100;
+          var baseDamage = 0.5;
           var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);

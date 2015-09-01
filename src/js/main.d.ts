@@ -1817,6 +1817,7 @@ declare module Rance {
         public getRevealedButNotVisibleStars(): Rance.Star[];
         public buildUnit(template: Rance.Templates.IUnitTemplate, location: Rance.Star): Rance.Unit;
         public addItem(item: Rance.Item): void;
+        public removeItem(item: Rance.Item): void;
         public getAllBuildableItems(): any[];
         public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;
         public attackTarget(location: Rance.Star, target: any, battleFinishCallback?: any): void;
@@ -2010,6 +2011,7 @@ declare module Rance {
         public isActiveInBattle(): boolean;
         public addItem(item: Rance.Item): boolean;
         public removeItem(item: Rance.Item): boolean;
+        public destroyAllItems(): void;
         public getAttributesWithItems(): any;
         public addStatusEffect(statusEffect: Rance.StatusEffect): void;
         public removeStatusEffect(statusEffect: Rance.StatusEffect): void;
@@ -2020,6 +2022,7 @@ declare module Rance {
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.IAbilityTemplate[];
         public recieveDamage(amount: number, damageType: Rance.DamageType): void;
+        public getAdjustedTroopSize(): number;
         public getAttackDamageIncrease(damageType: Rance.DamageType): number;
         public getReducedDamageFactor(damageType: Rance.DamageType): number;
         public addToFleet(fleet: Rance.Fleet): void;
