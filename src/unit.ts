@@ -50,6 +50,7 @@ module Rance
       guardCoverage: string;
       captureChance: number;
       statusEffects: StatusEffect[];
+      lastHealthBeforeReceivingDamage: number;
       //queuedAction: Action;
     };
 
@@ -140,7 +141,8 @@ module Rance
       battleStats.guardAmount = data.battleStats.guardAmount;
       battleStats.guardCoverage = data.battleStats.guardCoverage;
       battleStats.captureChance = data.battleStats.captureChance;
-      battleStats.statusEffects = [];
+      battleStats.statusEffects = data.battleStats.statusEffects;
+      battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
 
       this.battleStats = battleStats;
 
@@ -229,7 +231,8 @@ module Rance
         guardAmount: 0,
         guardCoverage: null,
         captureChance: 0.1, // BASE_CAPTURE_CHANCE
-        statusEffects: []
+        statusEffects: [],
+        lastHealthBeforeReceivingDamage: this.currentHealth
       };
 
       this.displayFlags =
@@ -256,12 +259,12 @@ module Rance
     removeStrength(amount: number)
     {
       this.currentHealth -= Math.round(amount);
-      if (this.currentHealth < 0)
-      {
-        this.currentHealth = 0;
-      }
+      this.currentHealth = clamp(this.currentHealth, 0, this.maxHealth);
 
-      this.removeGuard(50);
+      if (amount > 0)
+      {
+        this.removeGuard(50);
+      }
 
       this.uiDisplayIsDirty = true;
     }
@@ -490,18 +493,22 @@ module Rance
     }
     recieveDamage(amount: number, damageType: DamageType)
     {
-      var damageReduction = this.getReducedDamageFactor(damageType);
+      var damageReduction = amount > 0 ? this.getReducedDamageFactor(damageType) : 1;
 
       var adjustedDamage = amount * damageReduction;
 
-
+      this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
       this.removeStrength(adjustedDamage);
     }
     getAdjustedTroopSize()
     {
+      // used so unit will always counter with at least 1/3 strength it had before being attacked
+      var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
+      this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+
       var currentHealth = this.isSquadron ?
-        this.currentHealth :
-        Math.min(this.maxHealth, this.currentHealth + this.maxHealth * 0.2);
+        balancedHealth :
+        Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
 
       if (currentHealth <= 500)
       {
