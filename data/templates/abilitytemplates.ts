@@ -4,6 +4,11 @@ module Rance
 {
   export module Templates
   {
+    export interface IAbilityTemplateEffect
+    {
+      template: IEffectTemplate;
+      data?: any;
+    }
     export interface IAbilityTemplate
     {
       type: string;
@@ -18,9 +23,8 @@ module Rance
       };
       actionsUse: number;
 
-      mainEffect: IEffectTemplate;
-      secondaryEffects?: IEffectTemplate[];
-
+      mainEffect: IAbilityTemplateEffect;
+      secondaryEffects?: IAbilityTemplateEffect[];
       
 
       addsGuard?: boolean; // set dynamically
@@ -34,7 +38,10 @@ module Rance
         displayName: "dummyTargetColumn",
         moveDelay: 0,
         actionsUse: 0,
-        mainEffect: Effects.dummyTargetColumn
+        mainEffect:
+        {
+          template: Effects.dummyTargetColumn
+        }
       }
       export var dummyTargetAll: IAbilityTemplate =
       {
@@ -42,7 +49,10 @@ module Rance
         displayName: "dummyTargetAll",
         moveDelay: 0,
         actionsUse: 0,
-        mainEffect: Effects.dummyTargetAll
+        mainEffect:
+        {
+          template: Effects.dummyTargetAll
+        }
       }
       export var rangedAttack: IAbilityTemplate =
       {
@@ -51,7 +61,10 @@ module Rance
         description: "Standard ranged attack",
         moveDelay: 100,
         actionsUse: 1,
-        mainEffect: Effects.rangedAttack
+        mainEffect:
+        {
+          template: Effects.rangedAttack
+        }
       }
       export var closeAttack: IAbilityTemplate =
       {
@@ -60,7 +73,10 @@ module Rance
         description: "Close range attack that hits adjacent targets in same row as well",
         moveDelay: 90,
         actionsUse: 2,
-        mainEffect: Effects.closeAttack
+        mainEffect:
+        {
+          template: Effects.closeAttack
+        }
       }
       export var wholeRowAttack: IAbilityTemplate =
       {
@@ -69,7 +85,10 @@ module Rance
         description: "Attack entire row of units",
         moveDelay: 300,
         actionsUse: 1,
-        mainEffect: Effects.wholeRowAttack
+        mainEffect:
+        {
+          template: Effects.wholeRowAttack
+        }
       }
 
       export var bombAttack: IAbilityTemplate =
@@ -79,7 +98,10 @@ module Rance
         description: "Ranged attack that hits all adjacent enemy units",
         moveDelay: 120,
         actionsUse: 1,
-        mainEffect: Effects.bombAttack
+        mainEffect:
+        {
+          template: Effects.bombAttack
+        }
       }
       export var guardColumn: IAbilityTemplate =
       {
@@ -88,7 +110,10 @@ module Rance
         description: "Protect allies in the same row and boost defence up to 2x",
         moveDelay: 100,
         actionsUse: 1,
-        mainEffect: Effects.guardColumn
+        mainEffect:
+        {
+          template: Effects.guardColumn
+        }
       }
       export var boardingHook: IAbilityTemplate =
       {
@@ -97,7 +122,10 @@ module Rance
         description: "0.8x damage but increases target capture chance",
         moveDelay: 100,
         actionsUse: 1,
-        mainEffect: Effects.boardingHook
+        mainEffect:
+        {
+          template: Effects.boardingHook
+        }
       }
 
       export var standBy: IAbilityTemplate =
@@ -106,7 +134,10 @@ module Rance
         displayName: "Standby",
         moveDelay: 50,
         actionsUse: 999,
-        mainEffect: Effects.standBy
+        mainEffect:
+        {
+          template: Effects.standBy
+        }
       }
     }
   }

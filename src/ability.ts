@@ -44,7 +44,7 @@ module Rance
     for (var i = 0; i < effectsToCall.length; i++)
     {
       var effect = effectsToCall[i];
-      var targetsInArea = getUnitsInEffectArea(battle, user, effect,
+      var targetsInArea = getUnitsInEffectArea(battle, user, effect.template,
         data.actualTarget.battleStats.position);
 
       for (var j = 0; j < targetsInArea.length; j++)
@@ -53,7 +53,7 @@ module Rance
 
         data.effectsToCall.push(
         {
-          effect: effect.effect.bind(null, user, effectTarget),
+          effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
           user: user,
           target: effectTarget
         });
@@ -141,13 +141,13 @@ module Rance
   export function getPotentialTargets(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate): Unit[]
   {
-    if (ability.mainEffect.targetRange === "self")
+    if (ability.mainEffect.template.targetRange === "self")
     {
       return [user];
     }
-    var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect);
+    var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
 
-    if (ability.mainEffect.targetRange === "close")
+    if (ability.mainEffect.template.targetRange === "close")
     {
       var farColumnForSide =
       {
@@ -240,7 +240,7 @@ module Rance
   export function getUnitsInAbilityArea(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: number[]): Unit[]
   {
-    return getUnitsInEffectArea(battle, user, ability.mainEffect, target);
+    return getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
   }
   export function getUnitsInEffectArea(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate, target: number[]): Unit[]

@@ -12,7 +12,7 @@ module Rance
       targetFleets: string; // ally, enemy, all
       targetingFunction: TargetingFunction;
       targetRange: string; // self, close, all
-      effect: (user: Unit, target: Unit) => void;
+      effect: (user: Unit, target: Unit, data?: any) => void;
     }
 
     export module Effects

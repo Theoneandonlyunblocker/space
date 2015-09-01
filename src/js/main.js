@@ -6546,14 +6546,18 @@ var Rance;
                 displayName: "dummyTargetColumn",
                 moveDelay: 0,
                 actionsUse: 0,
-                mainEffect: Rance.Templates.Effects.dummyTargetColumn
+                mainEffect: {
+                    template: Rance.Templates.Effects.dummyTargetColumn
+                }
             };
             Abilities.dummyTargetAll = {
                 type: "dummyTargetAll",
                 displayName: "dummyTargetAll",
                 moveDelay: 0,
                 actionsUse: 0,
-                mainEffect: Rance.Templates.Effects.dummyTargetAll
+                mainEffect: {
+                    template: Rance.Templates.Effects.dummyTargetAll
+                }
             };
             Abilities.rangedAttack = {
                 type: "rangedAttack",
@@ -6561,7 +6565,9 @@ var Rance;
                 description: "Standard ranged attack",
                 moveDelay: 100,
                 actionsUse: 1,
-                mainEffect: Rance.Templates.Effects.rangedAttack
+                mainEffect: {
+                    template: Rance.Templates.Effects.rangedAttack
+                }
             };
             Abilities.closeAttack = {
                 type: "closeAttack",
@@ -6569,7 +6575,9 @@ var Rance;
                 description: "Close range attack that hits adjacent targets in same row as well",
                 moveDelay: 90,
                 actionsUse: 2,
-                mainEffect: Rance.Templates.Effects.closeAttack
+                mainEffect: {
+                    template: Rance.Templates.Effects.closeAttack
+                }
             };
             Abilities.wholeRowAttack = {
                 type: "wholeRowAttack",
@@ -6577,7 +6585,9 @@ var Rance;
                 description: "Attack entire row of units",
                 moveDelay: 300,
                 actionsUse: 1,
-                mainEffect: Rance.Templates.Effects.wholeRowAttack
+                mainEffect: {
+                    template: Rance.Templates.Effects.wholeRowAttack
+                }
             };
 
             Abilities.bombAttack = {
@@ -6586,7 +6596,9 @@ var Rance;
                 description: "Ranged attack that hits all adjacent enemy units",
                 moveDelay: 120,
                 actionsUse: 1,
-                mainEffect: Rance.Templates.Effects.bombAttack
+                mainEffect: {
+                    template: Rance.Templates.Effects.bombAttack
+                }
             };
             Abilities.guardColumn = {
                 type: "guardColumn",
@@ -6594,7 +6606,9 @@ var Rance;
                 description: "Protect allies in the same row and boost defence up to 2x",
                 moveDelay: 100,
                 actionsUse: 1,
-                mainEffect: Rance.Templates.Effects.guardColumn
+                mainEffect: {
+                    template: Rance.Templates.Effects.guardColumn
+                }
             };
             Abilities.boardingHook = {
                 type: "boardingHook",
@@ -6602,7 +6616,9 @@ var Rance;
                 description: "0.8x damage but increases target capture chance",
                 moveDelay: 100,
                 actionsUse: 1,
-                mainEffect: Rance.Templates.Effects.boardingHook
+                mainEffect: {
+                    template: Rance.Templates.Effects.boardingHook
+                }
             };
 
             Abilities.standBy = {
@@ -6610,7 +6626,9 @@ var Rance;
                 displayName: "Standby",
                 moveDelay: 50,
                 actionsUse: 999,
-                mainEffect: Rance.Templates.Effects.standBy
+                mainEffect: {
+                    template: Rance.Templates.Effects.standBy
+                }
             };
         })(Templates.Abilities || (Templates.Abilities = {}));
         var Abilities = Templates.Abilities;
@@ -13338,13 +13356,13 @@ var Rance;
 
         for (var i = 0; i < effectsToCall.length; i++) {
             var effect = effectsToCall[i];
-            var targetsInArea = getUnitsInEffectArea(battle, user, effect, data.actualTarget.battleStats.position);
+            var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
 
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
 
                 data.effectsToCall.push({
-                    effect: effect.effect.bind(null, user, effectTarget),
+                    effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
                     user: user,
                     target: effectTarget
                 });
@@ -13417,12 +13435,12 @@ var Rance;
     }
     Rance.getGuarders = getGuarders;
     function getPotentialTargets(battle, user, ability) {
-        if (ability.mainEffect.targetRange === "self") {
+        if (ability.mainEffect.template.targetRange === "self") {
             return [user];
         }
-        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect);
+        var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
 
-        if (ability.mainEffect.targetRange === "close") {
+        if (ability.mainEffect.template.targetRange === "close") {
             var farColumnForSide = {
                 side1: 0,
                 side2: 3
@@ -13495,7 +13513,7 @@ var Rance;
     }
     Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
     function getUnitsInAbilityArea(battle, user, ability, target) {
-        return getUnitsInEffectArea(battle, user, ability.mainEffect, target);
+        return getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
     }
     Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
     function getUnitsInEffectArea(battle, user, effect, target) {
@@ -20495,7 +20513,7 @@ var Rance;
             var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
 
             for (var i = 0; i < effects.length; i++) {
-                effects[i].effect(dummyUser, dummyTarget);
+                effects[i].template.effect(dummyUser, dummyTarget);
                 if (dummyUser.battleStats.guardAmount) {
                     return true;
                 }

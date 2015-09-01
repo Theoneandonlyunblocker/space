@@ -476,7 +476,7 @@ declare module Rance {
             targetFleets: string;
             targetingFunction: Rance.TargetingFunction;
             targetRange: string;
-            effect: (user: Rance.Unit, target: Rance.Unit) => void;
+            effect: (user: Rance.Unit, target: Rance.Unit, data?: any) => void;
         }
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
@@ -493,6 +493,10 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IAbilityTemplateEffect {
+            template: Templates.IEffectTemplate;
+            data?: any;
+        }
         interface IAbilityTemplate {
             type: string;
             displayName: string;
@@ -504,8 +508,8 @@ declare module Rance {
                 interruptsNeeded: number;
             };
             actionsUse: number;
-            mainEffect: Templates.IEffectTemplate;
-            secondaryEffects?: Templates.IEffectTemplate[];
+            mainEffect: IAbilityTemplateEffect;
+            secondaryEffects?: IAbilityTemplateEffect[];
             addsGuard?: boolean;
         }
         module Abilities {

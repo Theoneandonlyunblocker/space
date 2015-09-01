@@ -25,7 +25,7 @@ module Rance
 
       for (var i = 0; i < effects.length; i++)
       {
-        effects[i].effect(dummyUser, dummyTarget);
+        effects[i].template.effect(dummyUser, dummyTarget);
         if (dummyUser.battleStats.guardAmount)
         {
           return true;
