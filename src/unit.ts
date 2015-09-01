@@ -1,6 +1,7 @@
 /// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
 
+/// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
 /// <reference path="ability.ts"/>
@@ -476,7 +477,7 @@ module Rance
 
       return abilities;
     }
-    recieveDamage(amount: number, damageType: string)
+    recieveDamage(amount: number, damageType: DamageType)
     {
       var damageReduction = this.getReducedDamageFactor(damageType);
 
@@ -485,19 +486,19 @@ module Rance
 
       this.removeStrength(adjustedDamage);
     }
-    getAttackDamageIncrease(damageType: string)
+    getAttackDamageIncrease(damageType: DamageType)
     {
       var attackStat, attackFactor;
 
       switch (damageType)
       {
-        case "physical":
+        case DamageType.physical:
         {
           attackStat = this.attributes.attack;
           attackFactor = 0.1;
           break;
         }
-        case "magical":
+        case DamageType.magical:
         {
           attackStat = this.attributes.intelligence;
           attackFactor = 0.1;
@@ -507,14 +508,14 @@ module Rance
 
       return 1 + attackStat * attackFactor;
     }
-    getReducedDamageFactor(damageType: string)
+    getReducedDamageFactor(damageType: DamageType)
     {
       var defensiveStat, defenceFactor;
       var finalDamageMultiplier = 1;
 
       switch (damageType)
       {
-        case "physical":
+        case DamageType.physical:
         {
           defensiveStat = this.attributes.defence;
           defenceFactor = 0.08;
@@ -523,7 +524,7 @@ module Rance
           finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
           break;
         }
-        case "magical":
+        case DamageType.magical:
         {
           defensiveStat = this.attributes.intelligence;
           defenceFactor = 0.07;

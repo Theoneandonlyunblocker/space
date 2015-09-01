@@ -1,5 +1,6 @@
 /// <reference path="../../src/targeting.ts" />
 /// <reference path="../../src/unit.ts" />
+/// <reference path="../../src/damagetype.ts" />
 
 module Rance
 {
@@ -43,6 +44,7 @@ module Rance
         {
           var baseDamage = 100;
           var damageType = "physical";
+          var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
@@ -59,7 +61,7 @@ module Rance
         effect: function(user: Unit, target: Unit)
         {
           var baseDamage = 100;
-          var damageType = "physical";
+          var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
@@ -76,7 +78,7 @@ module Rance
         effect: function(user: Unit, target: Unit)
         {
           var baseDamage = 100;
-          var damageType = "magical";
+          var damageType = DamageType.magical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
@@ -94,7 +96,7 @@ module Rance
         effect: function(user: Unit, target: Unit)
         {
           var baseDamage = 100;
-          var damageType = "physical";
+          var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
@@ -124,7 +126,7 @@ module Rance
         effect: function(user: Unit, target: Unit)
         {
           var baseDamage = 80;
-          var damageType = "physical";
+          var damageType = DamageType.physical;
 
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
