@@ -255,6 +255,11 @@ module Rance
 
     moveFleets(afterMoveCallback: any)
     {
+      if (this.units.length < 1)
+      {
+        afterMoveCallback();
+        return;
+      }
       switch (this.objective.type)
       {
         case "heal":
