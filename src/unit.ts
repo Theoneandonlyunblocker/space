@@ -550,7 +550,7 @@ module Rance
         case DamageType.physical:
         {
           defensiveStat = this.attributes.defence;
-          defenceFactor = 0.08;
+          defenceFactor = 0.045;
 
           var guardAmount = Math.min(this.battleStats.guardAmount, 100);
           finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
@@ -559,7 +559,7 @@ module Rance
         case DamageType.magical:
         {
           defensiveStat = this.attributes.intelligence;
-          defenceFactor = 0.07;
+          defenceFactor = 0.045;
           break;
         }
       }
