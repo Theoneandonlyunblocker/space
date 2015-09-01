@@ -170,7 +170,13 @@ module Rance
               }
             }
           ]
-        }
+        },
+        secondaryEffects:
+        [
+          {
+            template: Effects.bombAttack
+          }
+        ]
       }
 
       export var standBy: IAbilityTemplate =

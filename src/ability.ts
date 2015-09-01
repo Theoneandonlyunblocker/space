@@ -258,7 +258,25 @@ module Rance
   export function getUnitsInAbilityArea(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: number[]): Unit[]
   {
-    return getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+    var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+
+    if (ability.secondaryEffects)
+    {
+      for (var i = 0; i < ability.secondaryEffects.length; i++)
+      {
+        var inSecondary = getUnitsInEffectArea(
+          battle, user, ability.secondaryEffects[i].template, target);
+        for (var j = 0; j < inSecondary.length; j++)
+        {
+          if (inArea.indexOf(inSecondary[j]) === -1)
+          {
+            inArea.push(inSecondary[j]);
+          }
+        }
+      }
+    }
+
+    return inArea;
   }
   export function getUnitsInEffectArea(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate, target: number[]): Unit[]

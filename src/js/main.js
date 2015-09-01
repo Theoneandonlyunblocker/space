@@ -6690,7 +6690,12 @@ var Rance;
                             }
                         }
                     ]
-                }
+                },
+                secondaryEffects: [
+                    {
+                        template: Rance.Templates.Effects.bombAttack
+                    }
+                ]
             };
 
             Abilities.standBy = {
@@ -13606,7 +13611,20 @@ var Rance;
     }
     Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
     function getUnitsInAbilityArea(battle, user, ability, target) {
-        return getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+        var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
+
+        if (ability.secondaryEffects) {
+            for (var i = 0; i < ability.secondaryEffects.length; i++) {
+                var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
+                for (var j = 0; j < inSecondary.length; j++) {
+                    if (inArea.indexOf(inSecondary[j]) === -1) {
+                        inArea.push(inSecondary[j]);
+                    }
+                }
+            }
+        }
+
+        return inArea;
     }
     Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
     function getUnitsInEffectArea(battle, user, effect, target) {
