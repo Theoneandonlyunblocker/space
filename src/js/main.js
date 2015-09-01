@@ -6457,7 +6457,7 @@ var Rance;
                 targetingFunction: Rance.targetColumnNeighbors,
                 targetRange: "close",
                 effect: function (user, target) {
-                    var baseDamage = 0.33;
+                    var baseDamage = 0.66;
                     var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6472,7 +6472,7 @@ var Rance;
                 targetingFunction: Rance.targetRow,
                 targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 0.4;
+                    var baseDamage = 0.75;
                     var damageType = 1 /* magical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6488,7 +6488,7 @@ var Rance;
                 targetingFunction: Rance.targetNeighbors,
                 targetRange: "all",
                 effect: function (user, target) {
-                    var baseDamage = 0.25;
+                    var baseDamage = 0.5;
                     var damageType = 0 /* physical */;
 
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
@@ -6607,14 +6607,14 @@ var Rance;
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
                     data: {
-                        baseDamage: 0.5,
+                        baseDamage: 1,
                         damageType: 0 /* physical */
                     },
                     attachedEffects: [
                         {
                             template: Rance.Templates.Effects.receiveCounterAttack,
                             data: {
-                                baseDamage: 0.5
+                                baseDamage: 1
                             }
                         }
                     ]
@@ -6670,20 +6670,20 @@ var Rance;
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
                     data: {
-                        baseDamage: 0.5,
+                        baseDamage: 0.8,
                         damageType: 0 /* physical */
                     },
                     attachedEffects: [
                         {
                             template: Rance.Templates.Effects.increaseCaptureChance,
                             data: {
-                                flat: 1
+                                flat: 0.5
                             }
                         },
                         {
                             template: Rance.Templates.Effects.receiveCounterAttack,
                             data: {
-                                baseDamage: 0.5
+                                baseDamage: 1
                             }
                         }
                     ]
@@ -6706,7 +6706,7 @@ var Rance;
                         {
                             template: Rance.Templates.Effects.receiveCounterAttack,
                             data: {
-                                baseDamage: 0.5
+                                baseDamage: 1
                             }
                         }
                     ]
@@ -14148,7 +14148,7 @@ var Rance;
                 }
             }
 
-            var troopSize = this.getAdjustedTroopSize();
+            var troopSize = this.getAdjustedTroopSize() / 4;
 
             return (1 + attackStat * attackFactor) * troopSize;
         };

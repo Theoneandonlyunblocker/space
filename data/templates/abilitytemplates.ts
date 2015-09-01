@@ -74,7 +74,7 @@ module Rance
           template: Effects.singleTargetDamage,
           data:
           {
-            baseDamage: 0.5,
+            baseDamage: 1,
             damageType: DamageType.physical
           },
           attachedEffects:
@@ -83,7 +83,7 @@ module Rance
               template: Effects.receiveCounterAttack,
               data:
               {
-                baseDamage: 0.5
+                baseDamage: 1
               }
             }
           ]
@@ -150,7 +150,7 @@ module Rance
           template: Effects.singleTargetDamage,
           data:
           {
-            baseDamage: 0.5,
+            baseDamage: 0.8,
             damageType: DamageType.physical
           },
           attachedEffects:
@@ -159,14 +159,14 @@ module Rance
               template: Effects.increaseCaptureChance,
               data:
               {
-                flat: 1
+                flat: 0.5
               }
             },
             {
               template: Effects.receiveCounterAttack,
               data:
               {
-                baseDamage: 0.5
+                baseDamage: 1
               }
             }
           ]
@@ -194,7 +194,7 @@ module Rance
               template: Effects.receiveCounterAttack,
               data:
               {
-                baseDamage: 0.5
+                baseDamage: 1
               }
             }
           ]

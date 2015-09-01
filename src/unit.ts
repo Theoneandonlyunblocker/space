@@ -543,7 +543,7 @@ module Rance
         }
       }
 
-      var troopSize = this.getAdjustedTroopSize();
+      var troopSize = this.getAdjustedTroopSize() / 4;
 
       return (1 + attackStat * attackFactor) * troopSize;
     }
