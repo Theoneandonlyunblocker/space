@@ -17532,6 +17532,12 @@ var Rance;
             return true;
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
+            if (fleets.length < 1) {
+                this.clearSelection();
+                this.updateSelection();
+                return;
+            }
+
             var playerFleets = [];
             var otherFleets = [];
             for (var i = 0; i < fleets.length; i++) {
@@ -17550,9 +17556,7 @@ var Rance;
 
             this.updateSelection();
 
-            if (fleets.length > 0) {
-                this.preventGhost(15);
-            }
+            this.preventGhost(15);
         };
         PlayerControl.prototype.selectPlayerFleets = function (fleets) {
             this.clearSelection();
