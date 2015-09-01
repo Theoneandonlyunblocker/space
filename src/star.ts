@@ -357,7 +357,8 @@ module Rance
 
     getBuildableShipTypes()
     {
-      return this.owner.getBuildableShips();
+      // TODO add local unit types similar to dominions independents
+      return this.owner.getGloballyBuildableShips();
     }
 
     // FLEETS

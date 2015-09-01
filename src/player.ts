@@ -265,7 +265,7 @@ module Rance
 
       return incomeByResource;
     }
-    getBuildableShips()
+    getGloballyBuildableShips()
     {
       var templates = [];
 

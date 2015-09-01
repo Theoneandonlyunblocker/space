@@ -15,7 +15,7 @@ module Rance
       {
         return(
         {
-          shipTemplates: this.props.player.getBuildableShips()
+          shipTemplates: this.props.star.getBuildableShipTypes()
         });
       },
 

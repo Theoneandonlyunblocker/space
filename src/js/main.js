@@ -13023,9 +13023,11 @@ var Rance;
             var PLAYER_DEATH_CHANCE = 0.4;
             var LOSER_DEATH_CHANCE = 0.25;
 
-            var winningSide = this.getSideForPlayer(victor);
-            var losingSide = Rance.reverseSide(winningSide);
-            var losingPlayer = this.getPlayerForSide(losingSide);
+            if (victor) {
+                var winningSide = this.getSideForPlayer(victor);
+                var losingSide = Rance.reverseSide(winningSide);
+                var losingPlayer = this.getPlayerForSide(losingSide);
+            }
 
             var deadUnits = [];
 
@@ -18205,16 +18207,6 @@ var Rance;
                         gfx.lineStyle(8, player.secondaryColor, 1);
 
                         gfx.drawPolygon(polyLine);
-                        // for (var i = 1; i < polyLine.length; i++)
-                        // {
-                        //   var hue = i / polyLine.length / 2;
-                        //   var color = hslToHex.apply(null, [hue, 1, 0.5]);
-                        //   gfx.lineStyle(8, color, 1);
-                        //   var v1 = polyLine[i-1];
-                        //   var v2 = polyLine[i];
-                        //   gfx.moveTo(v1.x, v1.y);
-                        //   gfx.lineTo(v2.x, v2.y);
-                        // }
                     }
 
                     doc.height;
