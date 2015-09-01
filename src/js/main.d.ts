@@ -2022,7 +2022,7 @@ declare module Rance {
         public removeItemAtSlot(slot: string): boolean;
         public getItemAbilities(): any[];
         public getAllAbilities(): Rance.Templates.IAbilityTemplate[];
-        public recieveDamage(amount: number, damageType: Rance.DamageType): void;
+        public receiveDamage(amount: number, damageType: Rance.DamageType): void;
         public getAdjustedTroopSize(): number;
         public getAttackDamageIncrease(damageType: Rance.DamageType): number;
         public getReducedDamageFactor(damageType: Rance.DamageType): number;

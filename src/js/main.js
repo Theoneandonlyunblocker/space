@@ -6448,7 +6448,7 @@ var Rance;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
 
-                    target.recieveDamage(damage, damageType);
+                    target.receiveDamage(damage, damageType);
                 }
             };
             Effects.closeAttack = {
@@ -6463,7 +6463,7 @@ var Rance;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
 
-                    target.recieveDamage(damage, damageType);
+                    target.receiveDamage(damage, damageType);
                 }
             };
             Effects.wholeRowAttack = {
@@ -6478,7 +6478,7 @@ var Rance;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
 
-                    target.recieveDamage(damage, damageType);
+                    target.receiveDamage(damage, damageType);
                 }
             };
 
@@ -6494,7 +6494,7 @@ var Rance;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
 
-                    target.recieveDamage(damage, damageType);
+                    target.receiveDamage(damage, damageType);
                 }
             };
             Effects.guardColumn = {
@@ -14068,7 +14068,7 @@ var Rance;
 
             return abilities;
         };
-        Unit.prototype.recieveDamage = function (amount, damageType) {
+        Unit.prototype.receiveDamage = function (amount, damageType) {
             var damageReduction = amount > 0 ? this.getReducedDamageFactor(damageType) : 1;
 
             var adjustedDamage = amount * damageReduction;

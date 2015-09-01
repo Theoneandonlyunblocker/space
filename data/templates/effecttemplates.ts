@@ -48,7 +48,7 @@ module Rance
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
 
-          target.recieveDamage(damage, damageType);
+          target.receiveDamage(damage, damageType);
         }
       }
       export var closeAttack: IEffectTemplate =
@@ -65,7 +65,7 @@ module Rance
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
 
-          target.recieveDamage(damage, damageType);
+          target.receiveDamage(damage, damageType);
         }
       }
       export var wholeRowAttack: IEffectTemplate =
@@ -82,7 +82,7 @@ module Rance
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
 
-          target.recieveDamage(damage, damageType);
+          target.receiveDamage(damage, damageType);
         }
       }
 
@@ -100,7 +100,7 @@ module Rance
           var damageIncrease = user.getAttackDamageIncrease(damageType);
           var damage = baseDamage * damageIncrease;
 
-          target.recieveDamage(damage, damageType);
+          target.receiveDamage(damage, damageType);
         }
       }
       export var guardColumn: IEffectTemplate =

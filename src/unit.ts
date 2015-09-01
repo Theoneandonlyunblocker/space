@@ -491,7 +491,7 @@ module Rance
 
       return abilities;
     }
-    recieveDamage(amount: number, damageType: DamageType)
+    receiveDamage(amount: number, damageType: DamageType)
     {
       var damageReduction = amount > 0 ? this.getReducedDamageFactor(damageType) : 1;
 
