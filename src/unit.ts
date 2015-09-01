@@ -264,19 +264,12 @@ module Rance
 
       this.uiDisplayIsDirty = true;
     }
-    removeActionPoints(amount: any)
+    removeActionPoints(amount: number)
     {
-      if (amount === "all")
+      this.battleStats.currentActionPoints -= amount;
+      if (this.battleStats.currentActionPoints < 0)
       {
         this.battleStats.currentActionPoints = 0;
-      }
-      else if (isFinite(amount))
-      {
-        this.battleStats.currentActionPoints -= amount;
-        if (this.battleStats.currentActionPoints < 0)
-        {
-          this.battleStats.currentActionPoints = 0;
-        }
       }
 
       this.uiDisplayIsDirty = true;

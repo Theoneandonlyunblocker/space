@@ -16,7 +16,7 @@ module Rance
         prepDelay: number;
         interruptsNeeded: number;
       };
-      actionsUse: any; // number or "all"
+      actionsUse: number;
 
       mainEffect: IEffectTemplate;
       secondaryEffects?: IEffectTemplate[];
@@ -105,7 +105,7 @@ module Rance
         type: "standBy",
         displayName: "Standby",
         moveDelay: 50,
-        actionsUse: "all",
+        actionsUse: 999,
         mainEffect: Effects.standBy
       }
     }

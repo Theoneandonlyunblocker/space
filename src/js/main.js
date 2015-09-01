@@ -6609,7 +6609,7 @@ var Rance;
                 type: "standBy",
                 displayName: "Standby",
                 moveDelay: 50,
-                actionsUse: "all",
+                actionsUse: 999,
                 mainEffect: Rance.Templates.Effects.standBy
             };
         })(Templates.Abilities || (Templates.Abilities = {}));
@@ -13756,13 +13756,9 @@ var Rance;
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeActionPoints = function (amount) {
-            if (amount === "all") {
+            this.battleStats.currentActionPoints -= amount;
+            if (this.battleStats.currentActionPoints < 0) {
                 this.battleStats.currentActionPoints = 0;
-            } else if (isFinite(amount)) {
-                this.battleStats.currentActionPoints -= amount;
-                if (this.battleStats.currentActionPoints < 0) {
-                    this.battleStats.currentActionPoints = 0;
-                }
             }
 
             this.uiDisplayIsDirty = true;

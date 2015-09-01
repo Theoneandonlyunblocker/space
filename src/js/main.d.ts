@@ -503,7 +503,7 @@ declare module Rance {
                 prepDelay: number;
                 interruptsNeeded: number;
             };
-            actionsUse: any;
+            actionsUse: number;
             mainEffect: Templates.IEffectTemplate;
             secondaryEffects?: Templates.IEffectTemplate[];
             addsGuard?: boolean;
@@ -1988,7 +1988,7 @@ declare module Rance {
         public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
         public addStrength(amount: number): void;
         public removeStrength(amount: number): void;
-        public removeActionPoints(amount: any): void;
+        public removeActionPoints(amount: number): void;
         public addMoveDelay(amount: number): void;
         public updateStatusEffects(): void;
         public isTargetable(): boolean;
