@@ -6670,7 +6670,7 @@ var Rance;
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
                     data: {
-                        baseDamage: 5,
+                        baseDamage: 0.5,
                         damageType: 0 /* physical */
                     },
                     attachedEffects: [
@@ -6681,8 +6681,28 @@ var Rance;
                             }
                         },
                         {
-                            template: Rance.Templates.Effects.buffTest
-                        },
+                            template: Rance.Templates.Effects.receiveCounterAttack,
+                            data: {
+                                baseDamage: 0.5
+                            }
+                        }
+                    ]
+                }
+            };
+
+            Abilities.debugAbility = {
+                type: "debugAbility",
+                displayName: "Debug Ability",
+                description: "who knows what its going to do today",
+                moveDelay: 20,
+                actionsUse: 1,
+                mainEffect: {
+                    template: Rance.Templates.Effects.singleTargetDamage,
+                    data: {
+                        baseDamage: 5,
+                        damageType: 0 /* physical */
+                    },
+                    attachedEffects: [
                         {
                             template: Rance.Templates.Effects.receiveCounterAttack,
                             data: {
@@ -6695,14 +6715,19 @@ var Rance;
                     {
                         template: Rance.Templates.Effects.bombAttack
                     }
+                ],
+                afterUse: [
+                    {
+                        template: Rance.Templates.Effects.buffTest
+                    }
                 ]
             };
 
             Abilities.standBy = {
                 type: "standBy",
                 displayName: "Standby",
-                moveDelay: 50,
-                actionsUse: 999,
+                moveDelay: 500,
+                actionsUse: 1,
                 mainEffect: {
                     template: Rance.Templates.Effects.standBy
                 }
@@ -6729,7 +6754,7 @@ var Rance;
                 isSquadron: false,
                 buildCost: 0,
                 icon: "img\/icons\/f.png",
-                maxHealth: 0.5,
+                maxHealth: 1,
                 maxMovePoints: 999,
                 visionRange: 999,
                 attributeLevels: {
@@ -6739,10 +6764,12 @@ var Rance;
                     speed: 9
                 },
                 abilities: [
+                    Rance.Templates.Abilities.debugAbility,
                     Rance.Templates.Abilities.rangedAttack,
                     Rance.Templates.Abilities.bombAttack,
                     Rance.Templates.Abilities.boardingHook,
-                    Rance.Templates.Abilities.guardColumn
+                    Rance.Templates.Abilities.guardColumn,
+                    Rance.Templates.Abilities.standBy
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -6803,7 +6830,7 @@ var Rance;
                     imageSrc: "battleCruiser.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
-                isSquadron: false,
+                isSquadron: true,
                 buildCost: 200,
                 icon: "img\/icons\/bc.png",
                 maxHealth: 1,
@@ -6852,7 +6879,7 @@ var Rance;
                     imageSrc: "shieldBoat.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
-                isSquadron: false,
+                isSquadron: true,
                 buildCost: 200,
                 icon: "img\/icons\/sh.png",
                 maxHealth: 0.9,
@@ -13429,6 +13456,13 @@ var Rance;
         data.originalTarget = target;
         data.actualTarget = getTargetOrGuard(battle, user, ability, target);
         data.beforeUse = [];
+
+        if (ability.beforeUse) {
+            for (var i = 0; i < ability.beforeUse.length; i++) {
+                data.beforeUse.push(ability.beforeUse[i].template.effect.bind(null, user, data.actualTarget, ability.beforeUse[i].data));
+            }
+        }
+
         if (!ability.addsGuard) {
             data.beforeUse.push(user.removeAllGuard.bind(user));
         }
@@ -13466,6 +13500,13 @@ var Rance;
         }
 
         data.afterUse = [];
+
+        if (ability.afterUse) {
+            for (var i = 0; i < ability.afterUse.length; i++) {
+                data.afterUse.push(ability.afterUse[i].template.effect.bind(null, user, data.actualTarget, ability.afterUse[i].data));
+            }
+        }
+
         data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
 

@@ -52,7 +52,7 @@ module Rance
         isSquadron: false,
         buildCost: 0,
         icon: "img\/icons\/f.png",
-        maxHealth: 0.5,
+        maxHealth: 1,
         maxMovePoints: 999,
         visionRange: 999,
         attributeLevels:
@@ -64,10 +64,12 @@ module Rance
         },
         abilities:
         [
+          Abilities.debugAbility,
           Abilities.rangedAttack,
           Abilities.bombAttack,
           Abilities.boardingHook,
-          Abilities.guardColumn
+          Abilities.guardColumn,
+          Abilities.standBy
         ]
       }
       export var fighterSquadron: IUnitTemplate =
@@ -138,7 +140,7 @@ module Rance
           imageSrc: "battleCruiser.png",
           anchor: {x: 0.5, y: 0.5}
         },
-        isSquadron: false,
+        isSquadron: true,
         buildCost: 200,
         icon: "img\/icons\/bc.png",
         maxHealth: 1,
@@ -195,7 +197,7 @@ module Rance
           imageSrc: "shieldBoat.png",
           anchor: {x: 0.5, y: 0.5}
         },
-        isSquadron: false,
+        isSquadron: true,
         buildCost: 200,
         icon: "img\/icons\/sh.png",
         maxHealth: 0.9,

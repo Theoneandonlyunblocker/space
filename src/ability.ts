@@ -28,6 +28,16 @@ module Rance
     data.originalTarget = target;
     data.actualTarget = getTargetOrGuard(battle, user, ability, target);
     data.beforeUse = [];
+
+    if (ability.beforeUse)
+    {
+      for (var i = 0; i < ability.beforeUse.length; i++)
+      {
+        data.beforeUse.push(ability.beforeUse[i].template.effect.bind(null, user, data.actualTarget,
+          ability.beforeUse[i].data));
+      }
+    }
+
     if (!ability.addsGuard)
     {
       data.beforeUse.push(user.removeAllGuard.bind(user));
@@ -76,6 +86,16 @@ module Rance
     }
 
     data.afterUse = [];
+
+    if (ability.afterUse)
+    {
+      for (var i = 0; i < ability.afterUse.length; i++)
+      {
+        data.afterUse.push(ability.afterUse[i].template.effect.bind(null, user, data.actualTarget,
+          ability.afterUse[i].data));
+      }
+    }
+
     data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
     data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
 

@@ -32,6 +32,9 @@ module Rance
       // uses same user and target as maineffect, can have own target area
       secondaryEffects?: IAbilityTemplateEffect[];
 
+      beforeUse?: IAbilityTemplateEffect[];
+      afterUse?: IAbilityTemplateEffect[];
+
       addsGuard?: boolean; // set dynamically
     }
 
@@ -147,7 +150,7 @@ module Rance
           template: Effects.singleTargetDamage,
           data:
           {
-            baseDamage: 5,
+            baseDamage: 0.5,
             damageType: DamageType.physical
           },
           attachedEffects:
@@ -160,8 +163,33 @@ module Rance
               }
             },
             {
-              template: Effects.buffTest
-            },
+              template: Effects.receiveCounterAttack,
+              data:
+              {
+                baseDamage: 0.5
+              }
+            }
+          ]
+        }
+      }
+
+      export var debugAbility: IAbilityTemplate =
+      {
+        type: "debugAbility",
+        displayName: "Debug Ability",
+        description: "who knows what its going to do today",
+        moveDelay: 20,
+        actionsUse: 1,
+        mainEffect:
+        {
+          template: Effects.singleTargetDamage,
+          data:
+          {
+            baseDamage: 5,
+            damageType: DamageType.physical
+          },
+          attachedEffects:
+          [
             {
               template: Effects.receiveCounterAttack,
               data:
@@ -176,6 +204,12 @@ module Rance
           {
             template: Effects.bombAttack
           }
+        ],
+        afterUse:
+        [
+          {
+            template: Effects.buffTest
+          }
         ]
       }
 
@@ -183,8 +217,8 @@ module Rance
       {
         type: "standBy",
         displayName: "Standby",
-        moveDelay: 50,
-        actionsUse: 999,
+        moveDelay: 500,
+        actionsUse: 1,
         mainEffect:
         {
           template: Effects.standBy

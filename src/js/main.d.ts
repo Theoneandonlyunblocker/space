@@ -519,6 +519,8 @@ declare module Rance {
             actionsUse: number;
             mainEffect: IAbilityTemplateEffect;
             secondaryEffects?: IAbilityTemplateEffect[];
+            beforeUse?: IAbilityTemplateEffect[];
+            afterUse?: IAbilityTemplateEffect[];
             addsGuard?: boolean;
         }
         module Abilities {
@@ -530,6 +532,7 @@ declare module Rance {
             var bombAttack: IAbilityTemplate;
             var guardColumn: IAbilityTemplate;
             var boardingHook: IAbilityTemplate;
+            var debugAbility: IAbilityTemplate;
             var standBy: IAbilityTemplate;
         }
     }
