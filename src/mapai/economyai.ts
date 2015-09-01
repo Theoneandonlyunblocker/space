@@ -99,7 +99,16 @@ module Rance
         if (buildableUnitTypesByArchetype[sortedScores[i]])
         {
           unitType = getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-          break;
+          if (this.player.money < unitType.buildCost)
+          {
+            // TODO AI should actually try to figure out which individual unit would
+            // be the best
+            return;
+          }
+          else
+          {
+            break;
+          }
         }
       }
       if (!unitType) debugger;
