@@ -261,9 +261,12 @@ module Rance
       var PLAYER_DEATH_CHANCE = 0.4; // base chance for players
       var LOSER_DEATH_CHANCE = 0.25; // extra chance for losing side
 
-      var winningSide = this.getSideForPlayer(victor);
-      var losingSide = reverseSide(winningSide);
-      var losingPlayer = this.getPlayerForSide(losingSide);
+      if (victor)
+      {
+        var winningSide = this.getSideForPlayer(victor);
+        var losingSide = reverseSide(winningSide);
+        var losingPlayer = this.getPlayerForSide(losingSide);
+      }
 
       var deadUnits: Unit[] = [];
 
