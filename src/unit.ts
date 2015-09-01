@@ -339,6 +339,17 @@ module Rance
 
       return false;
     }
+    destroyAllItems()
+    {
+      for (var slot in this.items)
+      {
+        var item = this.items[slot];
+        if (item)
+        {
+          this.fleet.player.removeItem(item);
+        }
+      }
+    }
     getAttributesWithItems()
     {
       var attributes = extendObject(this.baseAttributes);
@@ -549,6 +560,7 @@ module Rance
     {
       var player = this.fleet.player;
 
+      this.destroyAllItems();
       player.removeUnit(this);
       this.fleet.removeShip(this);
 

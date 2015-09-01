@@ -438,6 +438,16 @@ module Rance
     {
       this.items.push(item);
     }
+    removeItem(item: Item)
+    {
+      var index = this.items.indexOf(item);
+      if (index === -1)
+      {
+        throw new Error("Player " + this.name + " has no item " + item.id);
+      }
+
+      this.items.splice(index, 1);
+    }
     getAllBuildableItems()
     {
       var alreadyAdded: any = {};
