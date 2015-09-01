@@ -19,7 +19,16 @@ module Rance
     function halfEdgeIsBorder(halfEdge: any)
     {
       var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-      return !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
+      var isBorderWithOtherOwner =
+        !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
+
+      var isBorderWithSameOwner = false;
+      if (!isBorderWithOtherOwner)
+      {
+        isBorderWithSameOwner = halfEdge.site.getDistanceToStar(oppositeSite) > 2;
+      }
+
+      return isBorderWithOtherOwner || isBorderWithSameOwner;
     }
 
     function halfEdgeSharesOwner(halfEdge: any)

@@ -1796,7 +1796,7 @@ declare module Rance {
                 amount: number;
             };
         };
-        public getBuildableShips(): any[];
+        public getGloballyBuildableShips(): any[];
         public getNeighboringStars(): Rance.Star[];
         public updateVisibleStars(): void;
         public getVisibleStars(): Rance.Star[];

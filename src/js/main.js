@@ -7387,7 +7387,8 @@ var Rance;
         };
 
         Star.prototype.getBuildableShipTypes = function () {
-            return this.owner.getBuildableShips();
+            // TODO add local unit types similar to dominions independents
+            return this.owner.getGloballyBuildableShips();
         };
 
         // FLEETS
@@ -11689,6 +11690,10 @@ var Rance;
         };
 
         Front.prototype.moveFleets = function (afterMoveCallback) {
+            if (this.units.length < 1) {
+                afterMoveCallback();
+                return;
+            }
             switch (this.objective.type) {
                 case "heal": {
                     this.healMoveRoutine(afterMoveCallback);
@@ -12259,7 +12264,13 @@ var Rance;
             for (var i = 0; i < sortedScores.length; i++) {
                 if (buildableUnitTypesByArchetype[sortedScores[i]]) {
                     unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                    break;
+                    if (this.player.money < unitType.buildCost) {
+                        // TODO AI should actually try to figure out which individual unit would
+                        // be the best
+                        return;
+                    } else {
+                        break;
+                    }
                 }
             }
             if (!unitType)
@@ -12577,7 +12588,7 @@ var Rance;
 
             return incomeByResource;
         };
-        Player.prototype.getBuildableShips = function () {
+        Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
 
             for (var type in Rance.Templates.ShipTypes) {
@@ -14282,7 +14293,7 @@ var Rance;
             displayName: "BuildableShipsList",
             getInitialState: function () {
                 return ({
-                    shipTemplates: this.props.player.getBuildableShips()
+                    shipTemplates: this.props.star.getBuildableShipTypes()
                 });
             },
             buildShip: function (rowItem) {
@@ -17478,7 +17489,14 @@ var Rance;
 
         function halfEdgeIsBorder(halfEdge) {
             var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-            return !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
+            var isBorderWithOtherOwner = !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
+
+            var isBorderWithSameOwner = false;
+            if (!isBorderWithOtherOwner) {
+                isBorderWithSameOwner = halfEdge.site.getDistanceToStar(oppositeSite) > 2;
+            }
+
+            return isBorderWithOtherOwner || isBorderWithSameOwner;
         }
 
         function halfEdgeSharesOwner(halfEdge) {
