@@ -495,6 +495,8 @@ declare module Rance {
             var receiveCounterAttack: IEffectTemplate;
             var increaseCaptureChance: IEffectTemplate;
             var buffTest: IEffectTemplate;
+            var healTarget: IEffectTemplate;
+            var healSelf: IEffectTemplate;
             var standBy: IEffectTemplate;
         }
     }
@@ -539,6 +541,20 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IPassiveSkillTemplate {
+            type: string;
+            displayName: string;
+            description: string;
+            beforeAbilityUse?: Templates.IAbilityTemplateEffect[];
+            afterAbilityUse?: Templates.IAbilityTemplateEffect[];
+        }
+        module PassiveSkills {
+            var autoHeal: IPassiveSkillTemplate;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
         interface IUnitTemplate {
             type: string;
             archetype: string;
@@ -557,6 +573,7 @@ declare module Rance {
                 speed: number;
             };
             abilities: Templates.IAbilityTemplate[];
+            passiveSkills?: Templates.IPassiveSkillTemplate[];
         }
         module ShipTypes {
             var cheatShip: IUnitTemplate;

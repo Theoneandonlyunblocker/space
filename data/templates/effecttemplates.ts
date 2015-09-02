@@ -185,6 +185,44 @@ module Rance
         }
       }
 
+      export var healTarget: IEffectTemplate =
+      {
+        name: "healTarget",
+        targetFleets: "ally",
+        targetingFunction: targetSingle,
+        targetRange: "all",
+        effect: function(user: Unit, target: Unit, data?)
+        {
+          var healAmount = 0;
+          if (data.flat)
+          {
+            healAmount += data.flat;
+          }
+          if (data.maxHealthPercentage)
+          {
+            healAmount += target.maxHealth * data.maxHealthPercentage;
+          }
+          if (data.perUserUnit)
+          {
+            healAmount += data.perUserUnit * user.getAttackDamageIncrease(DamageType.magical);
+          }
+
+          target.removeStrength(-healAmount);
+        }
+      }
+
+      export var healSelf: IEffectTemplate =
+      {
+        name: "healSelf",
+        targetFleets: "ally",
+        targetingFunction: targetSingle,
+        targetRange: "self",
+        effect: function(user: Unit, target: Unit, data?)
+        {
+          Templates.Effects.healTarget.effect(user, user, data)
+        }
+      }
+
       export var standBy: IEffectTemplate =
       {
         name: "standBy",

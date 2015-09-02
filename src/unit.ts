@@ -487,7 +487,7 @@ module Rance
     }
     receiveDamage(amount: number, damageType: DamageType)
     {
-      var damageReduction = amount > 0 ? this.getReducedDamageFactor(damageType) : 1;
+      var damageReduction = this.getReducedDamageFactor(damageType);
 
       var adjustedDamage = amount * damageReduction;
 

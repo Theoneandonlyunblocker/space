@@ -6562,6 +6562,37 @@ var Rance;
                 }
             };
 
+            Effects.healTarget = {
+                name: "healTarget",
+                targetFleets: "ally",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "all",
+                effect: function (user, target, data) {
+                    var healAmount = 0;
+                    if (data.flat) {
+                        healAmount += data.flat;
+                    }
+                    if (data.maxHealthPercentage) {
+                        healAmount += target.maxHealth * data.maxHealthPercentage;
+                    }
+                    if (data.perUserUnit) {
+                        healAmount += data.perUserUnit * user.getAttackDamageIncrease(1 /* magical */);
+                    }
+
+                    target.removeStrength(-healAmount);
+                }
+            };
+
+            Effects.healSelf = {
+                name: "healSelf",
+                targetFleets: "ally",
+                targetingFunction: Rance.targetSingle,
+                targetRange: "self",
+                effect: function (user, target, data) {
+                    Rance.Templates.Effects.healTarget.effect(user, user, data);
+                }
+            };
+
             Effects.standBy = {
                 name: "standBy",
                 targetFleets: "all",
@@ -6737,7 +6768,31 @@ var Rance;
     })(Rance.Templates || (Rance.Templates = {}));
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
+/// <reference path="abilitytemplates.ts" />
+var Rance;
+(function (Rance) {
+    (function (Templates) {
+        (function (PassiveSkills) {
+            PassiveSkills.autoHeal = {
+                type: "autoHeal",
+                displayName: "Auto heal",
+                description: "hin hin",
+                afterAbilityUse: [
+                    {
+                        template: Rance.Templates.Effects.healSelf,
+                        data: {
+                            flat: 50
+                        }
+                    }
+                ]
+            };
+        })(Templates.PassiveSkills || (Templates.PassiveSkills = {}));
+        var PassiveSkills = Templates.PassiveSkills;
+    })(Rance.Templates || (Rance.Templates = {}));
+    var Templates = Rance.Templates;
+})(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts"/>
+/// <reference path="passiveskilltemplates.ts" />
 /// <reference path="spritetemplate.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -13848,11 +13903,8 @@ var Rance;
             var min = 500 * this.template.maxHealth;
             var max = 1000 * this.template.maxHealth;
             this.maxHealth = Rance.randInt(min, max);
-            if (true) {
-                this.currentHealth = this.maxHealth;
-            } else {
-                this.currentHealth = Rance.randInt(this.maxHealth / 10, this.maxHealth);
-            }
+
+            this.currentHealth = this.maxHealth;
         };
         Unit.prototype.setAttributes = function (experience, variance) {
             if (typeof experience === "undefined") { experience = 1; }
@@ -14110,7 +14162,7 @@ var Rance;
             return abilities;
         };
         Unit.prototype.receiveDamage = function (amount, damageType) {
-            var damageReduction = amount > 0 ? this.getReducedDamageFactor(damageType) : 1;
+            var damageReduction = this.getReducedDamageFactor(damageType);
 
             var adjustedDamage = amount * damageReduction;
 
