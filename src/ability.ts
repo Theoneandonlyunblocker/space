@@ -15,7 +15,7 @@ module Rance
     beforeUse: {(): void;}[];
     effectsToCall:
     {
-      effect: {(): void;};
+      effects: {(): void;}[];
       user: Unit;
       target: Unit;
       sfx: Templates.IBattleEffectSFX;
@@ -57,8 +57,8 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effect: beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
-            beforeUseEffects[i].data),
+          effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+            beforeUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
           sfx: beforeUseEffects[i].sfx
@@ -95,30 +95,47 @@ module Rance
       {
         var effectTarget = targetsInArea[j];
 
-        data.effectsToCall.push(
-        {
-          effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
-          user: user,
-          target: effectTarget,
-          sfx: effect.sfx
-        });
+        var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+        var attachedEffectsToAddAfter = [];
+
 
         if (effect.attachedEffects)
         {
           for (var k = 0; k < effect.attachedEffects.length; k++)
           {
             var attachedEffect = effect.attachedEffects[k];
+            var boundAttachedEffect =
+              attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
 
-            data.effectsToCall.push(
+            if (attachedEffect.sfx)
             {
-              effect: attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data),
-              user: user,
-              target: effectTarget,
-              sfx: effect.sfx
-            });
+              attachedEffectsToAddAfter.push(
+              {
+                effects: [boundAttachedEffect],
+                user: user,
+                target: effectTarget,
+                sfx: attachedEffect.sfx
+              });
+            }
+            else
+            {
+              boundEffects.push(boundAttachedEffect);
+            }
           }
         }
 
+        data.effectsToCall.push(
+        {
+          effects: boundEffects,
+          user: user,
+          target: effectTarget,
+          sfx: effect.sfx
+        });
+
+        if (attachedEffectsToAddAfter.length > 0)
+        {
+          data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
+        }
         
       }
     }
@@ -147,8 +164,8 @@ module Rance
       {
         data.effectsToCall.push(
         {
-          effect: afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
-            afterUseEffects[i].data),
+          effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+            afterUseEffects[i].data)],
           user: user,
           target: data.actualTarget,
           sfx: afterUseEffects[i].sfx
@@ -179,7 +196,10 @@ module Rance
 
     for (var i = 0; i < abilityData.effectsToCall.length; i++)
     {
-      abilityData.effectsToCall[i].effect();
+      for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++)
+      {
+        abilityData.effectsToCall[i].effects[j]();
+      }
     }
 
     for (var i = 0; i < abilityData.afterUse.length; i++)

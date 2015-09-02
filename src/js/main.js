@@ -1685,7 +1685,9 @@ var Rance;
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
                 var startEffectFN = function () {
-                    effectData[i].effect();
+                    for (var j = 0; j < effectData[i].effects.length; j++) {
+                        effectData[i].effects[j]();
+                    }
 
                     this.setState({
                         playingBattleEffectActive: true
@@ -13636,7 +13638,7 @@ var Rance;
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effect: beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data),
+                    effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: beforeUseEffects[i].sfx
@@ -13662,24 +13664,36 @@ var Rance;
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
 
+                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+                var attachedEffectsToAddAfter = [];
+
+                if (effect.attachedEffects) {
+                    for (var k = 0; k < effect.attachedEffects.length; k++) {
+                        var attachedEffect = effect.attachedEffects[k];
+                        var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
+
+                        if (attachedEffect.sfx) {
+                            attachedEffectsToAddAfter.push({
+                                effects: [boundAttachedEffect],
+                                user: user,
+                                target: effectTarget,
+                                sfx: attachedEffect.sfx
+                            });
+                        } else {
+                            boundEffects.push(boundAttachedEffect);
+                        }
+                    }
+                }
+
                 data.effectsToCall.push({
-                    effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
+                    effects: boundEffects,
                     user: user,
                     target: effectTarget,
                     sfx: effect.sfx
                 });
 
-                if (effect.attachedEffects) {
-                    for (var k = 0; k < effect.attachedEffects.length; k++) {
-                        var attachedEffect = effect.attachedEffects[k];
-
-                        data.effectsToCall.push({
-                            effect: attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data),
-                            user: user,
-                            target: effectTarget,
-                            sfx: effect.sfx
-                        });
-                    }
+                if (attachedEffectsToAddAfter.length > 0) {
+                    data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
                 }
             }
         }
@@ -13702,7 +13716,7 @@ var Rance;
             var hasSfx = Boolean(afterUseEffects[i].sfx);
             if (hasSfx) {
                 data.effectsToCall.push({
-                    effect: afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data),
+                    effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
                     sfx: afterUseEffects[i].sfx
@@ -13728,7 +13742,9 @@ var Rance;
         }
 
         for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-            abilityData.effectsToCall[i].effect();
+            for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++) {
+                abilityData.effectsToCall[i].effects[j]();
+            }
         }
 
         for (var i = 0; i < abilityData.afterUse.length; i++) {

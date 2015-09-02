@@ -1951,7 +1951,9 @@ declare module Rance {
             (): void;
         }[];
         effectsToCall: {
-            effect: () => void;
+            effects: {
+                (): void;
+            }[];
             user: Rance.Unit;
             target: Rance.Unit;
             sfx: Rance.Templates.IBattleEffectSFX;
