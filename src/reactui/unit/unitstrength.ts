@@ -22,8 +22,9 @@ module Rance
           (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)
           )
         {
+          var animateDuration = newProps.animateDuration || 0;
           this.animateDisplayedStrength(
-            newProps.currentHealth, Options.battleAnimationTiming.effectDuration);
+            newProps.currentHealth, animateDuration);
         }
         else
         {

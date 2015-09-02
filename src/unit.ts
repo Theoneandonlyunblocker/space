@@ -81,6 +81,7 @@ module Rance
     } = {};
     passiveSkillsByPhaseAreDirty: boolean = true;
 
+    sfxDuration: number;
     uiDisplayIsDirty: boolean = true;
     front: Front;
 

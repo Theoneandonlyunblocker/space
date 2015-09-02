@@ -57,7 +57,8 @@ module Rance
                 maxHealth: this.props.maxHealth,
                 currentHealth: this.props.currentHealth,
                 isSquadron: this.props.isSquadron,
-                animateStrength: true
+                animateStrength: true,
+                animateDuration: this.props.animateDuration
               }),
               UIComponents.UnitActions(
               {

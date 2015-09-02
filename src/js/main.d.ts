@@ -2036,6 +2036,7 @@ declare module Rance {
             afterAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
         };
         public passiveSkillsByPhaseAreDirty: boolean;
+        public sfxDuration: number;
         public uiDisplayIsDirty: boolean;
         public front: Rance.Front;
         constructor(template: Rance.Templates.IUnitTemplate, id?: number, data?: any);

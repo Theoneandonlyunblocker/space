@@ -129,7 +129,9 @@ module Rance
           currentActionPoints: unit.battleStats.currentActionPoints,
 
           isDead: this.props.isDead,
-          isCaptured: this.props.isCaptured
+          isCaptured: this.props.isCaptured,
+
+          animateDuration: unit.sfxDuration
         }
 
         var containerElements =

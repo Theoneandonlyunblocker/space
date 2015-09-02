@@ -26,7 +26,8 @@ var Rance;
             },
             componentWillReceiveProps: function (newProps) {
                 if (newProps.animateStrength && newProps.currentHealth !== this.props.currentHealth && (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
-                    this.animateDisplayedStrength(newProps.currentHealth, Rance.Options.battleAnimationTiming.effectDuration);
+                    var animateDuration = newProps.animateDuration || 0;
+                    this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
                 } else {
                     this.updateDisplayStrength(newProps.currentHealth);
                 }
@@ -225,7 +226,8 @@ var Rance;
                     maxHealth: this.props.maxHealth,
                     currentHealth: this.props.currentHealth,
                     isSquadron: this.props.isSquadron,
-                    animateStrength: true
+                    animateStrength: true,
+                    animateDuration: this.props.animateDuration
                 }), Rance.UIComponents.UnitActions({
                     maxActionPoints: this.props.maxActionPoints,
                     currentActionPoints: this.props.currentActionPoints
@@ -687,7 +689,8 @@ var Rance;
                     maxActionPoints: unit.attributes.maxActionPoints,
                     currentActionPoints: unit.battleStats.currentActionPoints,
                     isDead: this.props.isDead,
-                    isCaptured: this.props.isCaptured
+                    isCaptured: this.props.isCaptured,
+                    animateDuration: unit.sfxDuration
                 };
 
                 var containerElements = [
@@ -1641,6 +1644,8 @@ var Rance;
                 }
                 ;
 
+                effectData[i].target.sfxDuration = null;
+
                 var side1Unit = null;
                 var side2Unit = null;
                 [effectData[i].user, effectData[i].target].forEach(function (unit) {
@@ -1680,12 +1685,14 @@ var Rance;
                 if (effectData[i].sfx) {
                     effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
                 }
+
                 var afterDelay = 250 * Rance.Options.battleAnimationTiming["after"];
 
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
                 var startEffectFN = function () {
                     for (var j = 0; j < effectData[i].effects.length; j++) {
+                        effectData[i].target.sfxDuration = effectDuration;
                         effectData[i].effects[j]();
                     }
 

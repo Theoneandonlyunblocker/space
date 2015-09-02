@@ -202,6 +202,8 @@ module Rance
           return;
         };
 
+        effectData[i].target.sfxDuration = null;
+
         var side1Unit = null;
         var side2Unit = null;
         [effectData[i].user, effectData[i].target].forEach(function(unit)
@@ -249,6 +251,7 @@ module Rance
         {
           effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
         }
+
         var afterDelay = 250 * Options.battleAnimationTiming["after"];
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
@@ -257,6 +260,7 @@ module Rance
         {
           for (var j = 0; j < effectData[i].effects.length; j++)
           {
+            effectData[i].target.sfxDuration = effectDuration;
             effectData[i].effects[j]();
           }
 
