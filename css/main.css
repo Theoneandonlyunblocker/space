@@ -2209,6 +2209,9 @@ progress::-webkit-progress-value {
 .menu-unit-info-abilities {
   flex: 1;
 }
+.passive-skill {
+  color: yellow;
+}
 .redundant-ability {
   color: grey;
 }

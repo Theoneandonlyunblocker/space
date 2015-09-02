@@ -71,6 +71,10 @@ module Rance
           Abilities.boardingHook,
           Abilities.guardColumn,
           Abilities.standBy
+        ],
+        passiveSkills:
+        [
+          PassiveSkills.autoHeal
         ]
       }
       export var fighterSquadron: IUnitTemplate =

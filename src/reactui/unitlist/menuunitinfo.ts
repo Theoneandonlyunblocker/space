@@ -1,3 +1,4 @@
+/// <reference path="abilitylist.ts" />
 /// <reference path="unititemwrapper.ts"/>
 
 module Rance
@@ -32,48 +33,6 @@ module Rance
           }));
         }
 
-        var abilityElements = [];
-        var addedAbilityTypes:
-        {
-          [abilityType: string]: number;
-        } = {};
-
-        var abilities = unit.getAllAbilities();
-
-        abilities.sort(function(a, b)
-        {
-          return a.displayName.toLowerCase() > b.displayName.toLowerCase();
-        });
-
-        for (var i = 0; i < abilities.length; i++)
-        {
-          var ability = abilities[i];
-          if (!addedAbilityTypes[ability.type])
-          {
-            addedAbilityTypes[ability.type] = 0;
-          }
-
-          var className = "unit-info-ability";
-
-          if (addedAbilityTypes[ability.type] >= 1)
-          {
-            className += " redundant-ability";
-          }
-
-          abilityElements.push(
-            React.DOM.li(
-            {
-              className: className,
-              title: ability.description,
-              key: ability.type + addedAbilityTypes[ability.type]
-            },
-              "[" + ability.displayName + "]"
-            )
-          );
-
-          addedAbilityTypes[ability.type]++;
-        }
-      
         return(
           React.DOM.div(
           {
@@ -89,11 +48,20 @@ module Rance
             },
               null
             ),
-            React.DOM.ul(
+            React.DOM.div(
             {
               className: "menu-unit-info-abilities"
             },
-              abilityElements
+              UIComponents.AbilityList(
+              {
+                unit: unit,
+                listPassiveSkills: false
+              }),
+              UIComponents.AbilityList(
+              {
+                unit: unit,
+                listPassiveSkills: true
+              })
             ),
             React.DOM.div(
             {

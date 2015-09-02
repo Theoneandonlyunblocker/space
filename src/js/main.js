@@ -2676,6 +2676,69 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
+        UIComponents.AbilityList = React.createClass({
+            displayName: "AbilityList",
+            render: function () {
+                var abilities = [];
+                var baseClassName = "unit-info-ability";
+
+                if (this.props.listPassiveSkills) {
+                    abilities = this.props.unit.getAllPassiveSkills();
+                    baseClassName += " passive-skill";
+                } else {
+                    abilities = this.props.unit.getAllAbilities();
+                }
+
+                if (abilities.length < 1)
+                    return null;
+
+                var abilityElements = [];
+                var addedAbilityTypes = {};
+
+                abilities.sort(function (_a, _b) {
+                    var a = _a.displayName.toLowerCase();
+                    var b = _b.displayName.toLowerCase();
+
+                    if (a > b)
+                        return 1;
+                    else if (a < b)
+                        return 1;
+                    else
+                        return 0;
+                });
+
+                for (var i = 0; i < abilities.length; i++) {
+                    var ability = abilities[i];
+                    if (!addedAbilityTypes[ability.type]) {
+                        addedAbilityTypes[ability.type] = 0;
+                    }
+
+                    var className = baseClassName;
+
+                    if (addedAbilityTypes[ability.type] >= 1) {
+                        className += " redundant-ability";
+                    }
+
+                    abilityElements.push(React.DOM.li({
+                        className: className,
+                        title: ability.description,
+                        key: ability.type + addedAbilityTypes[ability.type]
+                    }, "[" + ability.displayName + "]"));
+
+                    addedAbilityTypes[ability.type]++;
+                }
+
+                return (React.DOM.ul({
+                    className: "ability-list"
+                }, abilityElements));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
         UIComponents.UnitItem = React.createClass({
             displayName: "UnitItem",
             mixins: [Rance.UIComponents.Draggable],
@@ -2778,6 +2841,7 @@ var Rance;
     })(Rance.UIComponents || (Rance.UIComponents = {}));
     var UIComponents = Rance.UIComponents;
 })(Rance || (Rance = {}));
+/// <reference path="abilitylist.ts" />
 /// <reference path="unititemwrapper.ts"/>
 var Rance;
 (function (Rance) {
@@ -2804,45 +2868,21 @@ var Rance;
                     }));
                 }
 
-                var abilityElements = [];
-                var addedAbilityTypes = {};
-
-                var abilities = unit.getAllAbilities();
-
-                abilities.sort(function (a, b) {
-                    return a.displayName.toLowerCase() > b.displayName.toLowerCase();
-                });
-
-                for (var i = 0; i < abilities.length; i++) {
-                    var ability = abilities[i];
-                    if (!addedAbilityTypes[ability.type]) {
-                        addedAbilityTypes[ability.type] = 0;
-                    }
-
-                    var className = "unit-info-ability";
-
-                    if (addedAbilityTypes[ability.type] >= 1) {
-                        className += " redundant-ability";
-                    }
-
-                    abilityElements.push(React.DOM.li({
-                        className: className,
-                        title: ability.description,
-                        key: ability.type + addedAbilityTypes[ability.type]
-                    }, "[" + ability.displayName + "]"));
-
-                    addedAbilityTypes[ability.type]++;
-                }
-
                 return (React.DOM.div({
                     className: "menu-unit-info"
                 }, React.DOM.div({
                     className: "menu-unit-info-name"
                 }, unit.name), React.DOM.div({
                     className: "menu-unit-info-image unit-image"
-                }, null), React.DOM.ul({
+                }, null), React.DOM.div({
                     className: "menu-unit-info-abilities"
-                }, abilityElements), React.DOM.div({
+                }, Rance.UIComponents.AbilityList({
+                    unit: unit,
+                    listPassiveSkills: false
+                }), Rance.UIComponents.AbilityList({
+                    unit: unit,
+                    listPassiveSkills: true
+                })), React.DOM.div({
                     className: "menu-unit-info-items-wrapper"
                 }, itemSlots)));
             }
@@ -6614,6 +6654,7 @@ var Rance;
             Abilities.dummyTargetColumn = {
                 type: "dummyTargetColumn",
                 displayName: "dummyTargetColumn",
+                description: "you shouldnt see this",
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: {
@@ -6623,6 +6664,7 @@ var Rance;
             Abilities.dummyTargetAll = {
                 type: "dummyTargetAll",
                 displayName: "dummyTargetAll",
+                description: "you shouldnt see this",
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: {
@@ -6757,7 +6799,8 @@ var Rance;
             Abilities.standBy = {
                 type: "standBy",
                 displayName: "Standby",
-                moveDelay: 500,
+                description: "Skip a turn but next one comes faster",
+                moveDelay: 50,
                 actionsUse: 1,
                 mainEffect: {
                     template: Rance.Templates.Effects.standBy
@@ -6835,6 +6878,9 @@ var Rance;
                     Rance.Templates.Abilities.boardingHook,
                     Rance.Templates.Abilities.guardColumn,
                     Rance.Templates.Abilities.standBy
+                ],
+                passiveSkills: [
+                    Rance.Templates.PassiveSkills.autoHeal
                 ]
             };
             ShipTypes.fighterSquadron = {

@@ -184,6 +184,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var AbilityList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var UnitItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -511,7 +516,7 @@ declare module Rance {
         interface IAbilityTemplate {
             type: string;
             displayName: string;
-            description?: string;
+            description: string;
             moveDelay: number;
             preparation?: {
                 turnsToPrep: number;
