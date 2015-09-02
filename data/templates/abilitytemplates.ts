@@ -16,7 +16,7 @@ module Rance
     {
       type: string;
       displayName: string;
-      description?: string;
+      description: string;
       moveDelay: number;
       preparation?:
       {
@@ -44,6 +44,7 @@ module Rance
       {
         type: "dummyTargetColumn",
         displayName: "dummyTargetColumn",
+        description: "you shouldnt see this",
         moveDelay: 0,
         actionsUse: 0,
         mainEffect:
@@ -55,6 +56,7 @@ module Rance
       {
         type: "dummyTargetAll",
         displayName: "dummyTargetAll",
+        description: "you shouldnt see this",
         moveDelay: 0,
         actionsUse: 0,
         mainEffect:
@@ -217,7 +219,8 @@ module Rance
       {
         type: "standBy",
         displayName: "Standby",
-        moveDelay: 500,
+        description: "Skip a turn but next one comes faster",
+        moveDelay: 50,
         actionsUse: 1,
         mainEffect:
         {
