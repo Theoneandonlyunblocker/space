@@ -6786,6 +6786,16 @@ var Rance;
                     }
                 ]
             };
+            PassiveSkills.overdrive = {
+                type: "overdrive",
+                displayName: "Overdrive",
+                description: "o-o",
+                atBattleStart: [
+                    {
+                        template: Rance.Templates.Effects.buffTest
+                    }
+                ]
+            };
         })(Templates.PassiveSkills || (Templates.PassiveSkills = {}));
         var PassiveSkills = Templates.PassiveSkills;
     })(Rance.Templates || (Rance.Templates = {}));
@@ -7163,6 +7173,7 @@ var Rance;
     Rance.Building = Building;
 })(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts" />
+/// <reference path="passiveskilltemplates.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
@@ -7210,7 +7221,8 @@ var Rance;
                 attributes: {
                     speed: 1
                 },
-                slot: "mid"
+                slot: "mid",
+                passiveSkill: Rance.Templates.PassiveSkills.overdrive
             };
             Items.afterBurner2 = {
                 type: "afterBurner2",
@@ -13807,6 +13819,7 @@ var Rance;
                 mid: null,
                 high: null
             };
+            this.passiveSkillsByPhase = {};
             this.uiDisplayIsDirty = true;
             this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
 
@@ -14295,6 +14308,11 @@ var Rance;
         Unit.prototype.getStrengthEvaluation = function () {
             // TODO
             return this.currentHealth;
+        };
+        Unit.prototype.getAllPassiveSkills = function () {
+            var allSkills = [];
+        };
+        Unit.prototype.updatePassiveSkills = function () {
         };
         Unit.prototype.drawBattleScene = function (props) {
             //var unitsToDraw = props.unitsToDraw;

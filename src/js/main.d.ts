@@ -545,11 +545,13 @@ declare module Rance {
             type: string;
             displayName: string;
             description: string;
+            atBattleStart?: Templates.IAbilityTemplateEffect[];
             beforeAbilityUse?: Templates.IAbilityTemplateEffect[];
             afterAbilityUse?: Templates.IAbilityTemplateEffect[];
         }
         module PassiveSkills {
             var autoHeal: IPassiveSkillTemplate;
+            var overdrive: IPassiveSkillTemplate;
         }
     }
 }
@@ -686,6 +688,7 @@ declare module Rance {
             slot: string;
             cost: number;
             ability?: Templates.IAbilityTemplate;
+            passiveSkill?: Templates.IPassiveSkillTemplate;
             attributes?: {
                 maxActionPoints?: number;
                 attack?: number;
@@ -2012,6 +2015,11 @@ declare module Rance {
             mid: Rance.Item;
             high: Rance.Item;
         };
+        public passiveSkillsByPhase: {
+            atBattleStart?: Rance.Templates.IPassiveSkillTemplate[];
+            beforeAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
+            afterAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
+        };
         public uiDisplayIsDirty: boolean;
         public front: Rance.Front;
         constructor(template: Rance.Templates.IUnitTemplate, id?: number, data?: any);
@@ -2057,6 +2065,8 @@ declare module Rance {
         public canActThisTurn(): boolean;
         public heal(): void;
         public getStrengthEvaluation(): number;
+        public getAllPassiveSkills(): void;
+        public updatePassiveSkills(): void;
         public drawBattleScene(props: {
             unitsToDraw?: number;
             maxUnitsPerColumn: number;

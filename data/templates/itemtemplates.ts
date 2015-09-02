@@ -1,4 +1,5 @@
 /// <reference path="abilitytemplates.ts" />
+/// <reference path="passiveskilltemplates.ts" />
 
 module Rance
 {
@@ -18,6 +19,7 @@ module Rance
       cost: number;
 
       ability?: IAbilityTemplate;
+      passiveSkill?: IPassiveSkillTemplate;
       attributes?:
       {
         maxActionPoints?: number;
@@ -34,7 +36,6 @@ module Rance
       {
         type: "bombLauncher1",
         displayName: "Bomb Launcher 1",
-
         icon: "img\/items\/cannon.png",
         
         techLevel: 1,
@@ -47,7 +48,6 @@ module Rance
       {
         type: "bombLauncher2",
         displayName: "Bomb Launcher 2",
-
         icon: "img\/items\/cannon.png",
         
         techLevel: 2,
@@ -65,7 +65,6 @@ module Rance
       {
         type: "bombLauncher3",
         displayName: "Bomb Launcher 3",
-
         icon: "img\/items\/cannon.png",
         
         techLevel: 3,
@@ -84,7 +83,6 @@ module Rance
       {
         type: "afterBurner1",
         displayName: "Afterburner 1",
-
         icon: "img\/items\/blueThing.png",
         
         techLevel: 1,
@@ -95,13 +93,13 @@ module Rance
           speed: 1
         },
 
-        slot: "mid"
+        slot: "mid",
+        passiveSkill: PassiveSkills.overdrive
       }
       export var afterBurner2: IItemTemplate =
       {
         type: "afterBurner2",
         displayName: "Afterburner 2",
-
         icon: "img\/items\/blueThing.png",
         
         techLevel: 2,
@@ -118,7 +116,6 @@ module Rance
       {
         type: "afterBurner3",
         displayName: "Afterburner 3",
-
         icon: "img\/items\/blueThing.png",
         
         techLevel: 3,
@@ -136,7 +133,6 @@ module Rance
       {
         type: "shieldPlating1",
         displayName: "Shield Plating 1",
-
         icon: "img\/items\/armor1.png",
         
         techLevel: 1,
@@ -153,7 +149,6 @@ module Rance
       {
         type: "shieldPlating2",
         displayName: "Shield Plating 2",
-
         icon: "img\/items\/armor1.png",
         
         techLevel: 2,
@@ -170,7 +165,6 @@ module Rance
       {
         type: "shieldPlating3",
         displayName: "Shield Plating 3",
-
         icon: "img\/items\/armor1.png",
         
         techLevel: 3,

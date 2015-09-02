@@ -10,6 +10,7 @@ module Rance
       displayName: string;
       description: string;
 
+      atBattleStart?: IAbilityTemplateEffect[];
       beforeAbilityUse?: IAbilityTemplateEffect[];
       afterAbilityUse?: IAbilityTemplateEffect[];
     }
@@ -29,6 +30,19 @@ module Rance
             {
               flat: 50
             }
+          }
+        ]
+      }
+      export var overdrive: IPassiveSkillTemplate =
+      {
+        type: "overdrive",
+        displayName: "Overdrive",
+        description: "o-o",
+
+        atBattleStart:
+        [
+          {
+            template: Effects.buffTest
           }
         ]
       }

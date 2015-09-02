@@ -73,6 +73,13 @@ module Rance
       high: null
     };
 
+    passiveSkillsByPhase:
+    {
+      atBattleStart?: Templates.IPassiveSkillTemplate[]
+      beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
+      afterAbilityUse?: Templates.IPassiveSkillTemplate[];
+    } = {};
+
     uiDisplayIsDirty: boolean = true;
     front: Front;
 
@@ -649,6 +656,15 @@ module Rance
       // TODO
       
       return this.currentHealth;
+    }
+    getAllPassiveSkills()
+    {
+      var allSkills: Templates.IPassiveSkillTemplate[] = [];
+
+    }
+    updatePassiveSkills()
+    {
+
     }
     drawBattleScene(props:
     {
