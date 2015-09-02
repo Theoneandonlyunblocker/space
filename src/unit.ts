@@ -175,14 +175,8 @@ module Rance
       var min = 500 * this.template.maxHealth;
       var max = 1000 * this.template.maxHealth;
       this.maxHealth = randInt(min, max);
-      if (true)//(Math.random() > 0.5)
-      {
-        this.currentHealth = this.maxHealth;
-      }
-      else
-      {
-        this.currentHealth = randInt(this.maxHealth / 10, this.maxHealth);
-      }
+      
+      this.currentHealth = this.maxHealth;
     }
     setAttributes(experience: number = 1, variance: number = 1)
     {
