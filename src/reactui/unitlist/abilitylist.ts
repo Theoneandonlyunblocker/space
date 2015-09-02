@@ -35,7 +35,7 @@ module Rance
           var b = _b.displayName.toLowerCase();
           
           if (a > b) return 1;
-          else if (a < b) return 1;
+          else if (a < b) return -1;
           else return 0;
         });
 
