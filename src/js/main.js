@@ -13820,6 +13820,7 @@ var Rance;
                 high: null
             };
             this.passiveSkillsByPhase = {};
+            this.passiveSkillsByPhaseAreDirty = true;
             this.uiDisplayIsDirty = true;
             this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
 
@@ -14174,6 +14175,56 @@ var Rance;
 
             return abilities;
         };
+        Unit.prototype.getItemPassiveSkills = function () {
+            var itemPassiveSkills = [];
+
+            for (var slot in this.items) {
+                if (!this.items[slot] || !this.items[slot].template.passiveSkill)
+                    continue;
+                itemPassiveSkills.push(this.items[slot].template.passiveSkill);
+            }
+
+            return itemPassiveSkills;
+        };
+        Unit.prototype.getAllPassiveSkills = function () {
+            var allSkills = [];
+            if (this.template.passiveSkills) {
+                allSkills = allSkills.concat(this.template.passiveSkills);
+            }
+
+            allSkills = allSkills.concat(this.getItemPassiveSkills());
+
+            return allSkills;
+        };
+        Unit.prototype.updatePassiveSkillsByPhase = function () {
+            var updatedSkills = {};
+
+            var allSkills = this.getAllPassiveSkills();
+
+            for (var i = 0; i < allSkills.length; i++) {
+                var skill = allSkills[i];
+                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse"].forEach(function (phase) {
+                    if (skill[phase]) {
+                        if (!updatedSkills[phase]) {
+                            updatedSkills[phase] = [];
+                        }
+
+                        if (updatedSkills[phase].indexOf(skill) === -1) {
+                            updatedSkills[phase].push(skill);
+                        }
+                    }
+                });
+            }
+
+            this.passiveSkillsByPhase = updatedSkills;
+        };
+        Unit.prototype.getPassiveSkillsByPhase = function () {
+            if (this.passiveSkillsByPhaseAreDirty) {
+                this.updatePassiveSkillsByPhase();
+            }
+
+            return this.passiveSkillsByPhase;
+        };
         Unit.prototype.receiveDamage = function (amount, damageType) {
             var damageReduction = this.getReducedDamageFactor(damageType);
 
@@ -14308,11 +14359,6 @@ var Rance;
         Unit.prototype.getStrengthEvaluation = function () {
             // TODO
             return this.currentHealth;
-        };
-        Unit.prototype.getAllPassiveSkills = function () {
-            var allSkills = [];
-        };
-        Unit.prototype.updatePassiveSkills = function () {
         };
         Unit.prototype.drawBattleScene = function (props) {
             //var unitsToDraw = props.unitsToDraw;

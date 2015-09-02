@@ -2020,6 +2020,7 @@ declare module Rance {
             beforeAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
             afterAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
         };
+        public passiveSkillsByPhaseAreDirty: boolean;
         public uiDisplayIsDirty: boolean;
         public front: Rance.Front;
         constructor(template: Rance.Templates.IUnitTemplate, id?: number, data?: any);
@@ -2048,8 +2049,16 @@ declare module Rance {
         public getAttributesWithEffects(): any;
         public updateCachedAttributes(): void;
         public removeItemAtSlot(slot: string): boolean;
-        public getItemAbilities(): any[];
+        public getItemAbilities(): Rance.Templates.IAbilityTemplate[];
         public getAllAbilities(): Rance.Templates.IAbilityTemplate[];
+        public getItemPassiveSkills(): Rance.Templates.IPassiveSkillTemplate[];
+        public getAllPassiveSkills(): Rance.Templates.IPassiveSkillTemplate[];
+        public updatePassiveSkillsByPhase(): void;
+        public getPassiveSkillsByPhase(): {
+            atBattleStart?: Rance.Templates.IPassiveSkillTemplate[];
+            beforeAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
+            afterAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
+        };
         public receiveDamage(amount: number, damageType: Rance.DamageType): void;
         public getAdjustedTroopSize(): number;
         public getAttackDamageIncrease(damageType: Rance.DamageType): number;
@@ -2065,8 +2074,6 @@ declare module Rance {
         public canActThisTurn(): boolean;
         public heal(): void;
         public getStrengthEvaluation(): number;
-        public getAllPassiveSkills(): void;
-        public updatePassiveSkills(): void;
         public drawBattleScene(props: {
             unitsToDraw?: number;
             maxUnitsPerColumn: number;

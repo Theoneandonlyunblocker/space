@@ -79,6 +79,7 @@ module Rance
       beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
       afterAbilityUse?: Templates.IPassiveSkillTemplate[];
     } = {};
+    passiveSkillsByPhaseAreDirty: boolean = true;
 
     uiDisplayIsDirty: boolean = true;
     front: Front;
@@ -472,7 +473,7 @@ module Rance
 
       return false;
     }
-    getItemAbilities()
+    getItemAbilities(): Templates.IAbilityTemplate[]
     {
       var itemAbilities = [];
 
@@ -491,6 +492,67 @@ module Rance
       abilities = abilities.concat(this.getItemAbilities());
 
       return abilities;
+    }
+    getItemPassiveSkills(): Templates.IPassiveSkillTemplate[]
+    {
+      var itemPassiveSkills = [];
+
+      for (var slot in this.items)
+      {
+        if (!this.items[slot] || !this.items[slot].template.passiveSkill) continue;
+        itemPassiveSkills.push(this.items[slot].template.passiveSkill);
+      }
+
+      return itemPassiveSkills;
+    }
+    getAllPassiveSkills(): Templates.IPassiveSkillTemplate[]
+    {
+      var allSkills: Templates.IPassiveSkillTemplate[] = [];
+      if (this.template.passiveSkills)
+      {
+        allSkills = allSkills.concat(this.template.passiveSkills)
+      }
+
+      allSkills = allSkills.concat(this.getItemPassiveSkills());
+
+      return allSkills;
+    }
+    updatePassiveSkillsByPhase(): void
+    {
+      var updatedSkills = {};
+
+      var allSkills = this.getAllPassiveSkills();
+
+      for (var i = 0; i < allSkills.length; i++)
+      {
+        var skill = allSkills[i];
+        ["atBattleStart", "beforeAbilityUse", "afterAbilityUse"].forEach(function(phase)
+        {
+          if (skill[phase])
+          {
+            if (!updatedSkills[phase])
+            {
+              updatedSkills[phase] = [];
+            }
+
+            if (updatedSkills[phase].indexOf(skill) === -1)
+            {
+              updatedSkills[phase].push(skill);
+            }
+          }
+        });
+      }
+
+      this.passiveSkillsByPhase = updatedSkills;
+    }
+    getPassiveSkillsByPhase()
+    {
+      if (this.passiveSkillsByPhaseAreDirty)
+      {
+        this.updatePassiveSkillsByPhase();
+      }
+
+      return this.passiveSkillsByPhase;
     }
     receiveDamage(amount: number, damageType: DamageType)
     {
@@ -656,15 +718,6 @@ module Rance
       // TODO
       
       return this.currentHealth;
-    }
-    getAllPassiveSkills()
-    {
-      var allSkills: Templates.IPassiveSkillTemplate[] = [];
-
-    }
-    updatePassiveSkills()
-    {
-
     }
     drawBattleScene(props:
     {
