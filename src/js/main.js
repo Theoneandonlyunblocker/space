@@ -1517,6 +1517,7 @@ var Rance;
                     battleSceneUnit1: null,
                     battleSceneUnit2: null,
                     playingBattleEffect: false,
+                    battleEffectDuration: null,
                     playingBattleEffectActive: false
                 });
             },
@@ -1664,21 +1665,6 @@ var Rance;
                     this.tempHoveredUnit = this.state.hoveredUnit;
                 }
 
-                this.setState({
-                    battleSceneUnit1StartingStrength: previousUnit1Strength,
-                    battleSceneUnit2StartingStrength: previousUnit2Strength,
-                    battleSceneUnit1: side1Unit,
-                    battleSceneUnit2: side2Unit,
-                    playingBattleEffect: true,
-                    hoveredUnit: abilityData.originalTarget,
-                    abilityTooltip: {
-                        parentElement: null
-                    },
-                    hoveredAbility: null,
-                    potentialDelay: null,
-                    targetsInPotentialArea: []
-                });
-
                 var baseBeforeDelay = 250 * Rance.Options.battleAnimationTiming["before"];
                 var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
 
@@ -1687,7 +1673,23 @@ var Rance;
                     effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
                 }
 
-                var afterDelay = 250 * Rance.Options.battleAnimationTiming["after"];
+                var afterDelay = 500 * Rance.Options.battleAnimationTiming["after"];
+
+                this.setState({
+                    battleSceneUnit1StartingStrength: previousUnit1Strength,
+                    battleSceneUnit2StartingStrength: previousUnit2Strength,
+                    battleSceneUnit1: side1Unit,
+                    battleSceneUnit2: side2Unit,
+                    playingBattleEffect: true,
+                    battleEffectDuration: effectDuration,
+                    hoveredUnit: abilityData.originalTarget,
+                    abilityTooltip: {
+                        parentElement: null
+                    },
+                    hoveredAbility: null,
+                    potentialDelay: null,
+                    targetsInPotentialArea: []
+                });
 
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
@@ -1710,6 +1712,7 @@ var Rance;
             clearBattleEffect: function () {
                 this.setState({
                     playingBattleEffect: false,
+                    battleEffectDuration: null,
                     hoveredUnit: null
                 });
 
@@ -1820,14 +1823,14 @@ var Rance;
                         className: "battle-display-strength battle-display-strength-side1"
                     }, this.state.battleSceneUnit1 ? Rance.UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit1.id + Date.now(),
-                        delay: Rance.Options.battleAnimationTiming["effectDuration"],
+                        delay: this.state.battleEffectDuration,
                         from: this.state.battleSceneUnit1StartingStrength,
                         to: this.state.battleSceneUnit1.currentHealth
                     }) : null), React.DOM.div({
                         className: "battle-display-strength battle-display-strength-side2"
                     }, this.state.battleSceneUnit2 ? Rance.UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit2.id + Date.now(),
-                        delay: Rance.Options.battleAnimationTiming["effectDuration"],
+                        delay: this.state.battleEffectDuration,
                         from: this.state.battleSceneUnit2StartingStrength,
                         to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
@@ -13634,7 +13637,6 @@ var Rance;
 
         for (var i = 0; i < beforeUseEffects.length; i++) {
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
-            console.log(hasSfx);
             if (hasSfx) {
                 data.effectsToCall.push({
                     effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],

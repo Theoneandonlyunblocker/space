@@ -40,6 +40,7 @@ module Rance
           battleSceneUnit1: null,
           battleSceneUnit2: null,
           playingBattleEffect: false,
+          battleEffectDuration: null,
           playingBattleEffectActive: false
         });
       },
@@ -227,6 +228,17 @@ module Rance
           this.tempHoveredUnit = this.state.hoveredUnit;
         }
 
+        var baseBeforeDelay = 250 * Options.battleAnimationTiming["before"];
+        var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
+
+        var effectDuration = 0;
+        if (effectData[i].sfx)
+        {
+          effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
+        }
+
+        var afterDelay = 500 * Options.battleAnimationTiming["after"];
+
         this.setState(
         {
           battleSceneUnit1StartingStrength: previousUnit1Strength,
@@ -234,6 +246,7 @@ module Rance
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
+          battleEffectDuration: effectDuration,
           hoveredUnit: abilityData.originalTarget,
           abilityTooltip:
           {
@@ -244,16 +257,6 @@ module Rance
           targetsInPotentialArea: []
         });
 
-        var baseBeforeDelay = 250 * Options.battleAnimationTiming["before"];
-        var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
-
-        var effectDuration = 0;
-        if (effectData[i].sfx)
-        {
-          effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
-        }
-
-        var afterDelay = 250 * Options.battleAnimationTiming["after"];
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
@@ -281,6 +284,7 @@ module Rance
         this.setState(
         {
           playingBattleEffect: false,
+          battleEffectDuration: null,
           hoveredUnit: null
         });
 
@@ -432,7 +436,7 @@ module Rance
               this.state.battleSceneUnit1 ? UIComponents.BattleDisplayStrength(
               {
                 key: "" + this.state.battleSceneUnit1.id + Date.now(),
-                delay: Options.battleAnimationTiming["effectDuration"],
+                delay: this.state.battleEffectDuration,
                 from: this.state.battleSceneUnit1StartingStrength,
                 to: this.state.battleSceneUnit1.currentHealth
               }) : null
@@ -444,7 +448,7 @@ module Rance
               this.state.battleSceneUnit2 ? UIComponents.BattleDisplayStrength(
               {
                 key: "" + this.state.battleSceneUnit2.id + Date.now(),
-                delay: Options.battleAnimationTiming["effectDuration"],
+                delay: this.state.battleEffectDuration,
                 from: this.state.battleSceneUnit2StartingStrength,
                 to: this.state.battleSceneUnit2.currentHealth
               }) : null
