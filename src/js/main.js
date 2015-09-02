@@ -1644,6 +1644,7 @@ var Rance;
                 }
                 ;
 
+                effectData[i].user.sfxDuration = null;
                 effectData[i].target.sfxDuration = null;
 
                 var side1Unit = null;
@@ -1692,6 +1693,7 @@ var Rance;
 
                 var startEffectFN = function () {
                     for (var j = 0; j < effectData[i].effects.length; j++) {
+                        effectData[i].user.sfxDuration = effectDuration;
                         effectData[i].target.sfxDuration = effectDuration;
                         effectData[i].effects[j]();
                     }
@@ -6857,22 +6859,6 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (PassiveSkills) {
-            PassiveSkills.autoDamage = {
-                type: "autoDamage",
-                displayName: "Auto damage",
-                description: "hiku hiku",
-                beforeAbilityUse: [
-                    {
-                        template: Rance.Templates.Effects.healSelf,
-                        data: {
-                            flat: -100
-                        },
-                        sfx: {
-                            duration: 200
-                        }
-                    }
-                ]
-            };
             PassiveSkills.autoHeal = {
                 type: "autoHeal",
                 displayName: "Auto heal",
@@ -6884,7 +6870,7 @@ var Rance;
                             flat: 50
                         },
                         sfx: {
-                            duration: 200
+                            duration: 500
                         }
                     }
                 ]
@@ -6940,8 +6926,7 @@ var Rance;
                     Rance.Templates.Abilities.standBy
                 ],
                 passiveSkills: [
-                    Rance.Templates.PassiveSkills.autoHeal,
-                    Rance.Templates.PassiveSkills.autoDamage
+                    Rance.Templates.PassiveSkills.autoHeal
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -13649,6 +13634,7 @@ var Rance;
 
         for (var i = 0; i < beforeUseEffects.length; i++) {
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
+            console.log(hasSfx);
             if (hasSfx) {
                 data.effectsToCall.push({
                     effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],

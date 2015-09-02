@@ -16,27 +16,6 @@ module Rance
     }
     export module PassiveSkills
     {
-      export var autoDamage: IPassiveSkillTemplate =
-      {
-        type: "autoDamage",
-        displayName: "Auto damage",
-        description: "hiku hiku",
-
-        beforeAbilityUse:
-        [
-          {
-            template: Effects.healSelf,
-            data:
-            {
-              flat: -100
-            },
-            sfx:
-            {
-              duration: 200
-            }
-          }
-        ]
-      }
       export var autoHeal: IPassiveSkillTemplate =
       {
         type: "autoHeal",
@@ -53,7 +32,7 @@ module Rance
             },
             sfx:
             {
-              duration: 200
+              duration: 500
             }
           }
         ]

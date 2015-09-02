@@ -74,8 +74,7 @@ module Rance
         ],
         passiveSkills:
         [
-          PassiveSkills.autoHeal,
-          PassiveSkills.autoDamage
+          PassiveSkills.autoHeal
         ]
       }
       export var fighterSquadron: IUnitTemplate =

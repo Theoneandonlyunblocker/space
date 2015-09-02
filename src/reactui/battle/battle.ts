@@ -202,6 +202,7 @@ module Rance
           return;
         };
 
+        effectData[i].user.sfxDuration = null;
         effectData[i].target.sfxDuration = null;
 
         var side1Unit = null;
@@ -260,6 +261,7 @@ module Rance
         {
           for (var j = 0; j < effectData[i].effects.length; j++)
           {
+            effectData[i].user.sfxDuration = effectDuration;
             effectData[i].target.sfxDuration = effectDuration;
             effectData[i].effects[j]();
           }
