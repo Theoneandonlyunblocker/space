@@ -324,6 +324,10 @@ module Rance
       {
         this.attributesAreDirty = true;
       }
+      if (item.template.passiveSkill)
+      {
+        this.passiveSkillsByPhaseAreDirty = true;
+      }
     }
     removeItem(item: Item)
     {
@@ -337,6 +341,10 @@ module Rance
         if (item.template.attributes)
         {
           this.attributesAreDirty = true;
+        }
+        if (item.template.passiveSkill)
+        {
+          this.passiveSkillsByPhaseAreDirty = true;
         }
 
         return true;
@@ -544,6 +552,7 @@ module Rance
       }
 
       this.passiveSkillsByPhase = updatedSkills;
+      this.passiveSkillsByPhaseAreDirty = false;
     }
     getPassiveSkillsByPhase()
     {

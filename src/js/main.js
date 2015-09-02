@@ -14038,6 +14038,9 @@ var Rance;
             if (item.template.attributes) {
                 this.attributesAreDirty = true;
             }
+            if (item.template.passiveSkill) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
         };
         Unit.prototype.removeItem = function (item) {
             var itemSlot = item.template.slot;
@@ -14048,6 +14051,9 @@ var Rance;
 
                 if (item.template.attributes) {
                     this.attributesAreDirty = true;
+                }
+                if (item.template.passiveSkill) {
+                    this.passiveSkillsByPhaseAreDirty = true;
                 }
 
                 return true;
@@ -14217,6 +14223,7 @@ var Rance;
             }
 
             this.passiveSkillsByPhase = updatedSkills;
+            this.passiveSkillsByPhaseAreDirty = false;
         };
         Unit.prototype.getPassiveSkillsByPhase = function () {
             if (this.passiveSkillsByPhaseAreDirty) {
