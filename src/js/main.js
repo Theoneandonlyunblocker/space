@@ -14228,7 +14228,7 @@ var Rance;
             return 1;
         };
         Unit.prototype.canActThisTurn = function () {
-            return this.timesActedThisTurn < 1;
+            return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
         };
         Unit.prototype.heal = function () {
             var location = this.fleet.location;

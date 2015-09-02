@@ -636,7 +636,7 @@ module Rance
     }
     canActThisTurn(): boolean
     {
-      return this.timesActedThisTurn < 1;
+      return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
     }
     heal()
     {
