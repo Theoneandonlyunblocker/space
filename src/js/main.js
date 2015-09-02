@@ -6690,12 +6690,12 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
+                    sfx: {
+                        duration: 1500
+                    },
                     data: {
                         baseDamage: 1,
-                        damageType: 0 /* physical */,
-                        sfx: {
-                            duration: 1500
-                        }
+                        damageType: 0 /* physical */
                     },
                     attachedEffects: [
                         {
@@ -6768,6 +6768,9 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
+                    sfx: {
+                        duration: 1500
+                    },
                     data: {
                         baseDamage: 0.8,
                         damageType: 0 /* physical */
@@ -6785,10 +6788,7 @@ var Rance;
                                 baseDamage: 1
                             }
                         }
-                    ],
-                    sfx: {
-                        duration: 1500
-                    }
+                    ]
                 }
             };
 
@@ -6800,6 +6800,9 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Rance.Templates.Effects.singleTargetDamage,
+                    sfx: {
+                        duration: 1500
+                    },
                     data: {
                         baseDamage: 5,
                         damageType: 0 /* physical */
@@ -6815,17 +6818,20 @@ var Rance;
                 },
                 secondaryEffects: [
                     {
-                        template: Rance.Templates.Effects.bombAttack
+                        template: Rance.Templates.Effects.bombAttack,
+                        sfx: {
+                            duration: 200
+                        }
                     }
                 ],
                 afterUse: [
                     {
-                        template: Rance.Templates.Effects.buffTest
+                        template: Rance.Templates.Effects.buffTest,
+                        sfx: {
+                            duration: 200
+                        }
                     }
-                ],
-                sfx: {
-                    duration: 100
-                }
+                ]
             };
 
             Abilities.standBy = {

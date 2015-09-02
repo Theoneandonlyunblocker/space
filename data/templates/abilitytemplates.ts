@@ -76,14 +76,14 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
+          sfx:
+          {
+            duration: 1500,
+          },
           data:
           {
             baseDamage: 1,
-            damageType: DamageType.physical,
-            sfx:
-            {
-              duration: 1500
-            }
+            damageType: DamageType.physical
           },
           attachedEffects:
           [
@@ -172,7 +172,10 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
-
+          sfx:
+          {
+            duration: 1500,
+          },
           data:
           {
             baseDamage: 0.8,
@@ -194,11 +197,7 @@ module Rance
                 baseDamage: 1
               }
             }
-          ],
-          sfx:
-          {
-            duration: 1500
-          }
+          ]
         }
       }
 
@@ -212,6 +211,10 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
+          sfx:
+          {
+            duration: 1500,
+          },
           data:
           {
             baseDamage: 5,
@@ -231,19 +234,23 @@ module Rance
         secondaryEffects:
         [
           {
-            template: Effects.bombAttack
+            template: Effects.bombAttack,
+            sfx:
+            {
+              duration: 200,
+            }
           }
         ],
         afterUse:
         [
           {
-            template: Effects.buffTest
+            template: Effects.buffTest,
+            sfx:
+            {
+              duration: 200,
+            }
           }
-        ],
-        sfx:
-        {
-          duration: 100
-        }
+        ]
       }
 
       export var standBy: IAbilityTemplate =
