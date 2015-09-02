@@ -1,5 +1,6 @@
 /// <reference path="../data/templates/effecttemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="../data/templates/battleeffectsfxtemplates.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -14,9 +15,10 @@ module Rance
     beforeUse: {(): void;}[];
     effectsToCall:
     {
-      effects: {(): void;}[]; // primary effect and attached effects
+      effect: {(): void;};
       user: Unit;
       target: Unit;
+      sfx: Templates.IBattleEffectSFX;
     }[];
     afterUse: {(): void;}[];
   }
@@ -78,7 +80,13 @@ module Rance
       {
         var effectTarget = targetsInArea[j];
 
-        var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+        data.effectsToCall.push(
+        {
+          effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
+          user: user,
+          target: effectTarget,
+          sfx: effect.sfx
+        });
 
         if (effect.attachedEffects)
         {
@@ -86,18 +94,17 @@ module Rance
           {
             var attachedEffect = effect.attachedEffects[k];
 
-            boundEffects.push(
-              attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data)
-            );
+            data.effectsToCall.push(
+            {
+              effect: attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data),
+              user: user,
+              target: effectTarget,
+              sfx: effect.sfx
+            });
           }
         }
 
-        data.effectsToCall.push(
-        {
-          effects: boundEffects,
-          user: user,
-          target: effectTarget
-        });
+        
       }
     }
 

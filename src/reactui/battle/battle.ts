@@ -241,20 +241,21 @@ module Rance
           targetsInPotentialArea: []
         });
 
-        var baseBeforeDelay = Options.battleAnimationTiming["before"];
+        var baseBeforeDelay = 250 * Options.battleAnimationTiming["before"];
         var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
 
-        var effectDuration = Options.battleAnimationTiming["effectDuration"];
-        var afterDelay = Options.battleAnimationTiming["after"];
+        var effectDuration = 0;
+        if (effectData[i].sfx)
+        {
+          effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
+        }
+        var afterDelay = 250 * Options.battleAnimationTiming["after"];
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
         var startEffectFN = function()
         {
-          for (var j = 0; j < effectData[i].effects.length; j++)
-          {
-            effectData[i].effects[j]();
-          }
+          effectData[i].effect();
 
           this.setState(
           {

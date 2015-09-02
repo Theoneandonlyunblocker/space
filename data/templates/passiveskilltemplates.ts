@@ -29,6 +29,10 @@ module Rance
             data:
             {
               flat: -100
+            },
+            sfx:
+            {
+              duration: 200
             }
           }
         ]
@@ -46,6 +50,10 @@ module Rance
             data:
             {
               flat: 50
+            },
+            sfx:
+            {
+              duration: 200
             }
           }
         ]

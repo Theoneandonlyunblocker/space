@@ -1,4 +1,5 @@
 /// <reference path="effecttemplates.ts" />
+/// <reference path="battleeffectsfxtemplates.ts" />
 
 module Rance
 {
@@ -11,6 +12,7 @@ module Rance
       // called after parent effect with same user and effect target
       // nesting these wont work and wouldnt do anything anyway
       attachedEffects?: IAbilityTemplateEffect[];
+      sfx?: IBattleEffectSFX;
     }
     export interface IAbilityTemplate
     {
@@ -77,7 +79,11 @@ module Rance
           data:
           {
             baseDamage: 1,
-            damageType: DamageType.physical
+            damageType: DamageType.physical,
+            sfx:
+            {
+              duration: 1500
+            }
           },
           attachedEffects:
           [
@@ -100,7 +106,11 @@ module Rance
         actionsUse: 2,
         mainEffect:
         {
-          template: Effects.closeAttack
+          template: Effects.closeAttack,
+          sfx:
+          {
+            duration: 1500
+          }
         }
       }
       export var wholeRowAttack: IAbilityTemplate =
@@ -112,7 +122,11 @@ module Rance
         actionsUse: 1,
         mainEffect:
         {
-          template: Effects.wholeRowAttack
+          template: Effects.wholeRowAttack,
+          sfx:
+          {
+            duration: 1500
+          }
         }
       }
 
@@ -125,7 +139,11 @@ module Rance
         actionsUse: 1,
         mainEffect:
         {
-          template: Effects.bombAttack
+          template: Effects.bombAttack,
+          sfx:
+          {
+            duration: 1500
+          }
         }
       }
       export var guardColumn: IAbilityTemplate =
@@ -137,7 +155,11 @@ module Rance
         actionsUse: 1,
         mainEffect:
         {
-          template: Effects.guardColumn
+          template: Effects.guardColumn,
+          sfx:
+          {
+            duration: 1500
+          }
         }
       }
       export var boardingHook: IAbilityTemplate =
@@ -150,6 +172,7 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
+
           data:
           {
             baseDamage: 0.8,
@@ -171,7 +194,11 @@ module Rance
                 baseDamage: 1
               }
             }
-          ]
+          ],
+          sfx:
+          {
+            duration: 1500
+          }
         }
       }
 
@@ -212,7 +239,11 @@ module Rance
           {
             template: Effects.buffTest
           }
-        ]
+        ],
+        sfx:
+        {
+          duration: 100
+        }
       }
 
       export var standBy: IAbilityTemplate =
@@ -224,7 +255,11 @@ module Rance
         actionsUse: 1,
         mainEffect:
         {
-          template: Effects.standBy
+          template: Effects.standBy,
+          sfx:
+          {
+            duration: 750
+          }
         }
       }
     }
