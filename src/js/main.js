@@ -1673,18 +1673,19 @@ var Rance;
                     targetsInPotentialArea: []
                 });
 
-                var baseBeforeDelay = Rance.Options.battleAnimationTiming["before"];
+                var baseBeforeDelay = 250 * Rance.Options.battleAnimationTiming["before"];
                 var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
 
-                var effectDuration = Rance.Options.battleAnimationTiming["effectDuration"];
-                var afterDelay = Rance.Options.battleAnimationTiming["after"];
+                var effectDuration = 0;
+                if (effectData[i].sfx) {
+                    effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
+                }
+                var afterDelay = 250 * Rance.Options.battleAnimationTiming["after"];
 
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
                 var startEffectFN = function () {
-                    for (var j = 0; j < effectData[i].effects.length; j++) {
-                        effectData[i].effects[j]();
-                    }
+                    effectData[i].effect();
 
                     this.setState({
                         playingBattleEffectActive: true
@@ -4877,7 +4878,7 @@ var Rance;
                 }
 
                 var onChangeFN = function (e) {
-                    var value = parseInt(e.target.value);
+                    var value = parseFloat(e.target.value);
                     if (!isFinite(value)) {
                         return;
                     }
@@ -4895,8 +4896,8 @@ var Rance;
                         id: key,
                         value: Rance.Options.battleAnimationTiming[stage],
                         min: 0,
-                        max: 10000,
-                        step: 10,
+                        max: 10,
+                        step: 0.1,
                         onChange: onChangeFN
                     }), React.DOM.label({
                         htmlFor: key
@@ -6647,6 +6648,7 @@ var Rance;
     var Templates = Rance.Templates;
 })(Rance || (Rance = {}));
 /// <reference path="effecttemplates.ts" />
+/// <reference path="battleeffectsfxtemplates.ts" />
 var Rance;
 (function (Rance) {
     (function (Templates) {
@@ -6681,7 +6683,10 @@ var Rance;
                     template: Rance.Templates.Effects.singleTargetDamage,
                     data: {
                         baseDamage: 1,
-                        damageType: 0 /* physical */
+                        damageType: 0 /* physical */,
+                        sfx: {
+                            duration: 1500
+                        }
                     },
                     attachedEffects: [
                         {
@@ -6700,7 +6705,10 @@ var Rance;
                 moveDelay: 90,
                 actionsUse: 2,
                 mainEffect: {
-                    template: Rance.Templates.Effects.closeAttack
+                    template: Rance.Templates.Effects.closeAttack,
+                    sfx: {
+                        duration: 1500
+                    }
                 }
             };
             Abilities.wholeRowAttack = {
@@ -6710,7 +6718,10 @@ var Rance;
                 moveDelay: 300,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.wholeRowAttack
+                    template: Rance.Templates.Effects.wholeRowAttack,
+                    sfx: {
+                        duration: 1500
+                    }
                 }
             };
 
@@ -6721,7 +6732,10 @@ var Rance;
                 moveDelay: 120,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.bombAttack
+                    template: Rance.Templates.Effects.bombAttack,
+                    sfx: {
+                        duration: 1500
+                    }
                 }
             };
             Abilities.guardColumn = {
@@ -6731,7 +6745,10 @@ var Rance;
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.guardColumn
+                    template: Rance.Templates.Effects.guardColumn,
+                    sfx: {
+                        duration: 1500
+                    }
                 }
             };
             Abilities.boardingHook = {
@@ -6759,7 +6776,10 @@ var Rance;
                                 baseDamage: 1
                             }
                         }
-                    ]
+                    ],
+                    sfx: {
+                        duration: 1500
+                    }
                 }
             };
 
@@ -6793,7 +6813,10 @@ var Rance;
                     {
                         template: Rance.Templates.Effects.buffTest
                     }
-                ]
+                ],
+                sfx: {
+                    duration: 100
+                }
             };
 
             Abilities.standBy = {
@@ -6803,7 +6826,10 @@ var Rance;
                 moveDelay: 50,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.standBy
+                    template: Rance.Templates.Effects.standBy,
+                    sfx: {
+                        duration: 750
+                    }
                 }
             };
         })(Templates.Abilities || (Templates.Abilities = {}));
@@ -6825,6 +6851,9 @@ var Rance;
                         template: Rance.Templates.Effects.healSelf,
                         data: {
                             flat: -100
+                        },
+                        sfx: {
+                            duration: 200
                         }
                     }
                 ]
@@ -6838,6 +6867,9 @@ var Rance;
                         template: Rance.Templates.Effects.healSelf,
                         data: {
                             flat: 50
+                        },
+                        sfx: {
+                            duration: 200
                         }
                     }
                 ]
@@ -6869,7 +6901,7 @@ var Rance;
                 typeName: "Debug Ship",
                 archetype: "combat",
                 sprite: {
-                    imageSrc: "fighter.png",
+                    imageSrc: "cheatShip.png",
                     anchor: { x: 0.5, y: 0.5 }
                 },
                 isSquadron: false,
@@ -13572,6 +13604,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/effecttemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="../data/templates/battleeffectsfxtemplates.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -13582,6 +13615,7 @@ var Rance;
         data.user = user;
         data.originalTarget = target;
         data.actualTarget = getTargetOrGuard(battle, user, ability, target);
+        data.effectsToCall = [];
         data.beforeUse = [];
 
         var passiveSkills = user.getPassiveSkillsByPhase();
@@ -13599,14 +13633,22 @@ var Rance;
         }
 
         for (var i = 0; i < beforeUseEffects.length; i++) {
-            data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
+            var hasSfx = Boolean(beforeUseEffects[i].sfx);
+            if (hasSfx) {
+                data.effectsToCall.push({
+                    effect: beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data),
+                    user: user,
+                    target: data.actualTarget,
+                    sfx: beforeUseEffects[i].sfx
+                });
+            } else {
+                data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
+            }
         }
 
         if (!ability.addsGuard) {
             data.beforeUse.push(user.removeAllGuard.bind(user));
         }
-
-        data.effectsToCall = [];
 
         var effectsToCall = [ability.mainEffect];
         if (ability.secondaryEffects) {
@@ -13620,21 +13662,25 @@ var Rance;
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
 
-                var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
+                data.effectsToCall.push({
+                    effect: effect.template.effect.bind(null, user, effectTarget, effect.data),
+                    user: user,
+                    target: effectTarget,
+                    sfx: effect.sfx
+                });
 
                 if (effect.attachedEffects) {
                     for (var k = 0; k < effect.attachedEffects.length; k++) {
                         var attachedEffect = effect.attachedEffects[k];
 
-                        boundEffects.push(attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data));
+                        data.effectsToCall.push({
+                            effect: attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data),
+                            user: user,
+                            target: effectTarget,
+                            sfx: effect.sfx
+                        });
                     }
                 }
-
-                data.effectsToCall.push({
-                    effects: boundEffects,
-                    user: user,
-                    target: effectTarget
-                });
             }
         }
 
@@ -13653,7 +13699,17 @@ var Rance;
         }
 
         for (var i = 0; i < afterUseEffects.length; i++) {
-            data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
+            var hasSfx = Boolean(afterUseEffects[i].sfx);
+            if (hasSfx) {
+                data.effectsToCall.push({
+                    effect: afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data),
+                    user: user,
+                    target: data.actualTarget,
+                    sfx: afterUseEffects[i].sfx
+                });
+            } else {
+                data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
+            }
         }
 
         data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
@@ -13672,9 +13728,7 @@ var Rance;
         }
 
         for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-            for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++) {
-                abilityData.effectsToCall[i].effects[j]();
-            }
+            abilityData.effectsToCall[i].effect();
         }
 
         for (var i = 0; i < abilityData.afterUse.length; i++) {
@@ -20983,9 +21037,9 @@ var Rance;
 
     (function (defaultOptions) {
         defaultOptions.battleAnimationTiming = {
-            before: 250,
-            effectDuration: 1500,
-            after: 250
+            before: 1,
+            effectDuration: 1,
+            after: 1
         };
         defaultOptions.debugMode = false;
         defaultOptions.debugOptions = {

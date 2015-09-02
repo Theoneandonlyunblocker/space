@@ -20,7 +20,7 @@ module Rance
 
         var onChangeFN = function(e)
         {
-          var value = parseInt(e.target.value);
+          var value = parseFloat(e.target.value);
           if (!isFinite(value))
           {
             return;
@@ -45,8 +45,8 @@ module Rance
               id: key,
               value: Options.battleAnimationTiming[stage],
               min: 0,
-              max: 10000,
-              step: 10,
+              max: 10,
+              step: 0.1,
               onChange: onChangeFN
             }),
             React.DOM.label(

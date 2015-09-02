@@ -38,9 +38,9 @@ module Rance
   {
     export var battleAnimationTiming =
     {
-      before: 250,
-      effectDuration: 1500,
-      after: 250
+      before: 1,
+      effectDuration: 1,
+      after: 1
     }
     export var debugMode = false;
     export var debugOptions =

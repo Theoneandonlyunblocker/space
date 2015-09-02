@@ -508,10 +508,18 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IBattleEffectSFX {
+            duration: number;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
         interface IAbilityTemplateEffect {
             template: Templates.IEffectTemplate;
             data?: any;
             attachedEffects?: IAbilityTemplateEffect[];
+            sfx?: Templates.IBattleEffectSFX;
         }
         interface IAbilityTemplate {
             type: string;
@@ -1943,11 +1951,10 @@ declare module Rance {
             (): void;
         }[];
         effectsToCall: {
-            effects: {
-                (): void;
-            }[];
+            effect: () => void;
             user: Rance.Unit;
             target: Rance.Unit;
+            sfx: Rance.Templates.IBattleEffectSFX;
         }[];
         afterUse: {
             (): void;
