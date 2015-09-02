@@ -29,6 +29,7 @@ module Rance
     data.user = user;
     data.originalTarget = target;
     data.actualTarget = getTargetOrGuard(battle, user, ability, target);
+    data.effectsToCall = [];
     data.beforeUse = [];
 
     var passiveSkills = user.getPassiveSkillsByPhase();
@@ -51,8 +52,23 @@ module Rance
     
     for (var i = 0; i < beforeUseEffects.length; i++)
     {
-      data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
-        beforeUseEffects[i].data));
+      var hasSfx = Boolean(beforeUseEffects[i].sfx);
+      if (hasSfx)
+      {
+        data.effectsToCall.push(
+        {
+          effect: beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+            beforeUseEffects[i].data),
+          user: user,
+          target: data.actualTarget,
+          sfx: beforeUseEffects[i].sfx
+        });
+      }
+      else
+      {
+        data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+          beforeUseEffects[i].data));
+      }
     }
 
     if (!ability.addsGuard)
@@ -61,7 +77,6 @@ module Rance
     }
 
 
-    data.effectsToCall = [];
     
     var effectsToCall = [ability.mainEffect];
     if (ability.secondaryEffects)
@@ -127,8 +142,23 @@ module Rance
 
     for (var i = 0; i < afterUseEffects.length; i++)
     {
-      data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
-        afterUseEffects[i].data));
+      var hasSfx = Boolean(afterUseEffects[i].sfx);
+      if (hasSfx)
+      {
+        data.effectsToCall.push(
+        {
+          effect: afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+            afterUseEffects[i].data),
+          user: user,
+          target: data.actualTarget,
+          sfx: afterUseEffects[i].sfx
+        });
+      }
+      else
+      {
+        data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+          afterUseEffects[i].data));
+      }
     }
 
     data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
@@ -149,10 +179,7 @@ module Rance
 
     for (var i = 0; i < abilityData.effectsToCall.length; i++)
     {
-      for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++)
-      {
-        abilityData.effectsToCall[i].effects[j]();
-      }
+      abilityData.effectsToCall[i].effect();
     }
 
     for (var i = 0; i < abilityData.afterUse.length; i++)
