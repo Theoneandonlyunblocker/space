@@ -29,19 +29,35 @@ module Rance
     data.actualTarget = getTargetOrGuard(battle, user, ability, target);
     data.beforeUse = [];
 
+    var passiveSkills = user.getPassiveSkillsByPhase();
+
+
+    var beforeUseEffects: Templates.IAbilityTemplateEffect[] = [];
+
     if (ability.beforeUse)
     {
-      for (var i = 0; i < ability.beforeUse.length; i++)
+      beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
+    }
+
+    if (passiveSkills.beforeAbilityUse)
+    {
+      for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++)
       {
-        data.beforeUse.push(ability.beforeUse[i].template.effect.bind(null, user, data.actualTarget,
-          ability.beforeUse[i].data));
+        beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
       }
+    }
+    
+    for (var i = 0; i < beforeUseEffects.length; i++)
+    {
+      data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+        beforeUseEffects[i].data));
     }
 
     if (!ability.addsGuard)
     {
       data.beforeUse.push(user.removeAllGuard.bind(user));
     }
+
 
     data.effectsToCall = [];
     
@@ -87,13 +103,25 @@ module Rance
 
     data.afterUse = [];
 
+    var afterUseEffects: Templates.IAbilityTemplateEffect[] = [];
+
     if (ability.afterUse)
     {
-      for (var i = 0; i < ability.afterUse.length; i++)
+      afterUseEffects = afterUseEffects.concat(ability.afterUse);
+    }
+
+    if (passiveSkills.afterAbilityUse)
+    {
+      for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++)
       {
-        data.afterUse.push(ability.afterUse[i].template.effect.bind(null, user, data.actualTarget,
-          ability.afterUse[i].data));
+        afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
       }
+    }
+
+    for (var i = 0; i < afterUseEffects.length; i++)
+    {
+      data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget,
+        afterUseEffects[i].data));
     }
 
     data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));

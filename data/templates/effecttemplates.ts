@@ -219,7 +219,7 @@ module Rance
         targetRange: "self",
         effect: function(user: Unit, target: Unit, data?)
         {
-          Templates.Effects.healTarget.effect(user, user, data)
+          Templates.Effects.healTarget.effect(user, user, data);
         }
       }
 

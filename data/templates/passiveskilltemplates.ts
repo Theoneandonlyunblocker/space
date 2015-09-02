@@ -16,11 +16,28 @@ module Rance
     }
     export module PassiveSkills
     {
+      export var autoDamage: IPassiveSkillTemplate =
+      {
+        type: "autoDamage",
+        displayName: "Auto damage",
+        description: "hiku hiku",
+
+        beforeAbilityUse:
+        [
+          {
+            template: Effects.healSelf,
+            data:
+            {
+              flat: -100
+            }
+          }
+        ]
+      }
       export var autoHeal: IPassiveSkillTemplate =
       {
         type: "autoHeal",
         displayName: "Auto heal",
-        description: "hin hin",
+        description: "hiku hiku",
 
         afterAbilityUse:
         [
@@ -37,7 +54,7 @@ module Rance
       {
         type: "overdrive",
         displayName: "Overdrive",
-        description: "o-o",
+        description: "o-",
 
         atBattleStart:
         [

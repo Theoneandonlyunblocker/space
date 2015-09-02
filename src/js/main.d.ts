@@ -555,6 +555,7 @@ declare module Rance {
             afterAbilityUse?: Templates.IAbilityTemplateEffect[];
         }
         module PassiveSkills {
+            var autoDamage: IPassiveSkillTemplate;
             var autoHeal: IPassiveSkillTemplate;
             var overdrive: IPassiveSkillTemplate;
         }

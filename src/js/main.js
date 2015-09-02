@@ -6816,10 +6816,23 @@ var Rance;
 (function (Rance) {
     (function (Templates) {
         (function (PassiveSkills) {
+            PassiveSkills.autoDamage = {
+                type: "autoDamage",
+                displayName: "Auto damage",
+                description: "hiku hiku",
+                beforeAbilityUse: [
+                    {
+                        template: Rance.Templates.Effects.healSelf,
+                        data: {
+                            flat: -100
+                        }
+                    }
+                ]
+            };
             PassiveSkills.autoHeal = {
                 type: "autoHeal",
                 displayName: "Auto heal",
-                description: "hin hin",
+                description: "hiku hiku",
                 afterAbilityUse: [
                     {
                         template: Rance.Templates.Effects.healSelf,
@@ -6832,7 +6845,7 @@ var Rance;
             PassiveSkills.overdrive = {
                 type: "overdrive",
                 displayName: "Overdrive",
-                description: "o-o",
+                description: "o-",
                 atBattleStart: [
                     {
                         template: Rance.Templates.Effects.buffTest
@@ -6880,7 +6893,8 @@ var Rance;
                     Rance.Templates.Abilities.standBy
                 ],
                 passiveSkills: [
-                    Rance.Templates.PassiveSkills.autoHeal
+                    Rance.Templates.PassiveSkills.autoHeal,
+                    Rance.Templates.PassiveSkills.autoDamage
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -13570,10 +13584,22 @@ var Rance;
         data.actualTarget = getTargetOrGuard(battle, user, ability, target);
         data.beforeUse = [];
 
+        var passiveSkills = user.getPassiveSkillsByPhase();
+
+        var beforeUseEffects = [];
+
         if (ability.beforeUse) {
-            for (var i = 0; i < ability.beforeUse.length; i++) {
-                data.beforeUse.push(ability.beforeUse[i].template.effect.bind(null, user, data.actualTarget, ability.beforeUse[i].data));
+            beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
+        }
+
+        if (passiveSkills.beforeAbilityUse) {
+            for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++) {
+                beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
             }
+        }
+
+        for (var i = 0; i < beforeUseEffects.length; i++) {
+            data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
         }
 
         if (!ability.addsGuard) {
@@ -13614,10 +13640,20 @@ var Rance;
 
         data.afterUse = [];
 
+        var afterUseEffects = [];
+
         if (ability.afterUse) {
-            for (var i = 0; i < ability.afterUse.length; i++) {
-                data.afterUse.push(ability.afterUse[i].template.effect.bind(null, user, data.actualTarget, ability.afterUse[i].data));
+            afterUseEffects = afterUseEffects.concat(ability.afterUse);
+        }
+
+        if (passiveSkills.afterAbilityUse) {
+            for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++) {
+                afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
             }
+        }
+
+        for (var i = 0; i < afterUseEffects.length; i++) {
+            data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
         }
 
         data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
