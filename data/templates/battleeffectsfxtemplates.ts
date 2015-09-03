@@ -2,10 +2,21 @@ module Rance
 {
   export module Templates
   {
+    export interface SFXParams
+    {
+      user: Unit;
+      target: Unit;
+      width: number;
+      height: number;
+    }
     export interface IBattleEffectSFX
     {
       duration: number;
-      // TODO
+      userSprite?: (props: SFXParams) => HTMLCanvasElement;
+      userOverlay?: (props: SFXParams) => HTMLCanvasElement;
+      emptySpaceOverlay?: (props: SFXParams) => HTMLCanvasElement;
+      enemyOverlay?: (props: SFXParams) => HTMLCanvasElement;
+      battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
     }
   }
 }

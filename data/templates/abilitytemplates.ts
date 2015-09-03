@@ -265,7 +265,20 @@ module Rance
           template: Effects.standBy,
           sfx:
           {
-            duration: 750
+            duration: 750,
+            userOverlay: function(props: SFXParams)
+            {
+              var canvas = document.createElement("canvas");
+              var ctx = canvas.getContext("2d");
+
+              canvas.width = props.width;
+              canvas.height = props.height;
+
+              ctx.fillStyle = "#FFF";
+              ctx.fillRect(20, 20, 40, 40);
+
+              return canvas;
+            }
           }
         }
       }

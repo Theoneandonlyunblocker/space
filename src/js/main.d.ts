@@ -508,8 +508,19 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface SFXParams {
+            user: Rance.Unit;
+            target: Rance.Unit;
+            width: number;
+            height: number;
+        }
         interface IBattleEffectSFX {
             duration: number;
+            userSprite?: (props: SFXParams) => HTMLCanvasElement;
+            userOverlay?: (props: SFXParams) => HTMLCanvasElement;
+            emptySpaceOverlay?: (props: SFXParams) => HTMLCanvasElement;
+            enemyOverlay?: (props: SFXParams) => HTMLCanvasElement;
+            battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
         }
     }
 }
