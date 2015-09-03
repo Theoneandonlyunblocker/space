@@ -1361,16 +1361,36 @@ var Rance;
                 return this.refs.scene.getDOMNode().getBoundingClientRect();
             },
             render: function () {
+                var unit1SpriteFN, unit1OverlayFN, unit2SpriteFN, unit2OverlayFN;
+
+                if (this.props.unit1IsActive) {
+                    unit1SpriteFN = this.props.effectSFX.userSprite;
+                    unit1OverlayFN = this.props.effectSFX.userOverlay;
+
+                    unit2OverlayFN = this.props.effectSFX.enemyOverlay;
+                } else {
+                    unit2SpriteFN = this.props.effectSFX.userSprite;
+                    unit2OverlayFN = this.props.effectSFX.userOverlay;
+
+                    unit1OverlayFN = this.props.effectSFX.enemyOverlay;
+                }
+
                 return (React.DOM.div({
                     className: "battle-scene",
                     ref: "scene"
                 }, Rance.UIComponents.BattleSceneUnit({
                     unit: this.props.unit1,
                     side: "side1",
+                    effectDuration: this.props.effectDuration,
+                    effectSpriteFN: unit1SpriteFN,
+                    effectOverlayFN: unit1OverlayFN,
                     getSceneBounds: this.getSceneBounds
                 }), Rance.UIComponents.BattleSceneUnit({
                     unit: this.props.unit2,
                     side: "side2",
+                    effectDuration: this.props.effectDuration,
+                    effectSpriteFN: unit2SpriteFN,
+                    effectOverlayFN: unit2OverlayFN,
                     getSceneBounds: this.getSceneBounds
                 })));
             }
@@ -1872,7 +1892,8 @@ var Rance;
                     unit1: this.state.battleSceneUnit1,
                     unit2: this.state.battleSceneUnit2,
                     effectDuration: this.state.battleEffectDuration,
-                    effectSFX: this.state.battleEffectSFX
+                    effectSFX: this.state.battleEffectSFX,
+                    unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit
                 })), React.DOM.div({
                     className: "fleets-container",
                     ref: "fleetsContainer"

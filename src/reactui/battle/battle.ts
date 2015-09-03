@@ -495,7 +495,8 @@ module Rance
                   unit1: this.state.battleSceneUnit1,
                   unit2: this.state.battleSceneUnit2,
                   effectDuration: this.state.battleEffectDuration,
-                  effectSFX: this.state.battleEffectSFX
+                  effectSFX: this.state.battleEffectSFX,
+                  unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit
                 })
               ),
               React.DOM.div(
