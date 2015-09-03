@@ -772,6 +772,10 @@ module Rance
       {
         unitsToDraw = props.unitsToDraw;
       }
+      else if (!this.isSquadron)
+      {
+        unitsToDraw = 1;
+      }
       else
       {
         unitsToDraw = Math.round(this.currentHealth * 0.05);
