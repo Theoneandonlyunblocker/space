@@ -1257,15 +1257,12 @@ var Rance;
 var Rance;
 (function (Rance) {
     (function (UIComponents) {
-        UIComponents.BattleScene = React.createClass({
-            displayName: "BattleScene",
+        UIComponents.BattleSceneUnit = React.createClass({
+            displayName: "BattleSceneUnit",
+            mixins: [React.addons.PureRenderMixin],
             componentWillReceiveProps: function (newProps) {
-                if (newProps.unit1 !== this.props.unit1) {
-                    this.renderScene("side1", true, newProps.unit1);
-                }
-
-                if (newProps.unit2 !== this.props.unit2) {
-                    this.renderScene("side2", true, newProps.unit2);
+                if (newProps.unit !== this.props.unit) {
+                    this.renderScene(true, newProps.unit);
                 }
             },
             componentDidMount: function () {
@@ -1275,24 +1272,12 @@ var Rance;
                 window.removeEventListener("resize", this.handleResize);
             },
             handleResize: function () {
-                if (this.props.unit1) {
-                    this.renderScene("side1", false, this.props.unit1);
+                if (this.props.unit) {
+                    this.renderScene(false, this.props.unit);
                 }
-                if (this.props.unit2) {
-                    this.renderScene("side2", false, this.props.unit2);
-                }
-            },
-            getUnitsContainerForSide: function (side) {
-                if (side === "side1")
-                    return this.refs["unit1Scene"].getDOMNode();
-                else if (side === "side2")
-                    return this.refs["unit2Scene"].getDOMNode();
-                else
-                    throw new Error("Invalid side");
             },
             getSceneProps: function (unit) {
-                var container = this.refs.scene.getDOMNode();
-                var boundingRect = container.getBoundingClientRect();
+                var boundingRect = this.props.getSceneBounds();
 
                 return ({
                     zDistance: 8,
@@ -1306,20 +1291,20 @@ var Rance;
                     desiredHeight: boundingRect.height
                 });
             },
-            addUnit: function (side, animate, unit) {
-                var container = this.getUnitsContainerForSide(side);
+            addUnit: function (animate, unit) {
+                var container = this.refs.sprite.getDOMNode();
 
                 if (unit) {
                     var scene = unit.drawBattleScene(this.getSceneProps(unit));
                     if (animate) {
-                        scene.classList.add("battle-scene-unit-enter-" + side);
+                        scene.classList.add("battle-scene-unit-enter-" + this.props.side);
                     }
 
                     container.appendChild(scene);
                 }
             },
-            removeUnit: function (side, animate, onComplete) {
-                var container = this.getUnitsContainerForSide(side);
+            removeUnit: function (animate, onComplete) {
+                var container = this.refs.sprite.getDOMNode();
 
                 // has child. child will be removed with animation if specified, then fire callback
                 if (container.firstChild) {
@@ -1333,7 +1318,7 @@ var Rance;
                         container.firstChild.addEventListener("animationend", animationEndFN);
                         container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
 
-                        container.firstChild.classList.add("battle-scene-unit-leave-" + side);
+                        container.firstChild.classList.add("battle-scene-unit-leave-" + this.props.side);
                     } else {
                         container.removeChild(container.firstChild);
                         if (onComplete)
@@ -1344,24 +1329,50 @@ var Rance;
                         onComplete();
                 }
             },
-            renderScene: function (side, animate, unit) {
-                var container = this.getUnitsContainerForSide(side);
+            renderScene: function (animate, unit) {
+                var addUnitFN = this.addUnit.bind(this, animate, unit);
 
-                var addUnitFN = this.addUnit.bind(this, side, animate, unit);
-
-                this.removeUnit(side, animate, addUnitFN);
+                this.removeUnit(animate, addUnitFN);
+            },
+            render: function () {
+                return (React.DOM.div({
+                    className: "battle-scene-units-container",
+                    ref: "container"
+                }, React.DOM.div({
+                    className: "battle-scene-unit-overlay",
+                    ref: "overlay"
+                }, null), React.DOM.div({
+                    className: "battle-scene-unit-sprite",
+                    ref: "sprite"
+                }, null)));
+            }
+        });
+    })(Rance.UIComponents || (Rance.UIComponents = {}));
+    var UIComponents = Rance.UIComponents;
+})(Rance || (Rance = {}));
+/// <reference path="battlesceneunit.ts" />
+var Rance;
+(function (Rance) {
+    (function (UIComponents) {
+        UIComponents.BattleScene = React.createClass({
+            displayName: "BattleScene",
+            mixins: [React.addons.PureRenderMixin],
+            getSceneBounds: function () {
+                return this.refs.scene.getDOMNode().getBoundingClientRect();
             },
             render: function () {
                 return (React.DOM.div({
                     className: "battle-scene",
                     ref: "scene"
-                }, React.DOM.div({
-                    className: "battle-scene-units-container",
-                    ref: "unit1Scene"
-                }, null), React.DOM.div({
-                    className: "battle-scene-units-container",
-                    ref: "unit2Scene"
-                }, null)));
+                }, Rance.UIComponents.BattleSceneUnit({
+                    unit: this.props.unit1,
+                    side: "side1",
+                    getSceneBounds: this.getSceneBounds
+                }), Rance.UIComponents.BattleSceneUnit({
+                    unit: this.props.unit2,
+                    side: "side2",
+                    getSceneBounds: this.getSceneBounds
+                })));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -1517,8 +1528,9 @@ var Rance;
                     battleSceneUnit1: null,
                     battleSceneUnit2: null,
                     playingBattleEffect: false,
+                    playingBattleEffectActive: false,
                     battleEffectDuration: null,
-                    playingBattleEffectActive: false
+                    battleEffectSFX: null
                 });
             },
             getBlurArea: function () {
@@ -1682,6 +1694,7 @@ var Rance;
                     battleSceneUnit2: side2Unit,
                     playingBattleEffect: true,
                     battleEffectDuration: effectDuration,
+                    battleEffectSFX: effectData[i].sfx,
                     hoveredUnit: abilityData.originalTarget,
                     abilityTooltip: {
                         parentElement: null
@@ -1713,6 +1726,7 @@ var Rance;
                 this.setState({
                     playingBattleEffect: false,
                     battleEffectDuration: null,
+                    battleEffectSFX: null,
                     hoveredUnit: null
                 });
 
@@ -1856,7 +1870,9 @@ var Rance;
                     battle: battle
                 }), upperFooter, Rance.UIComponents.BattleScene({
                     unit1: this.state.battleSceneUnit1,
-                    unit2: this.state.battleSceneUnit2
+                    unit2: this.state.battleSceneUnit2,
+                    effectDuration: this.state.battleEffectDuration,
+                    effectSFX: this.state.battleEffectSFX
                 })), React.DOM.div({
                     className: "fleets-container",
                     ref: "fleetsContainer"
@@ -6848,7 +6864,19 @@ var Rance;
                 mainEffect: {
                     template: Rance.Templates.Effects.standBy,
                     sfx: {
-                        duration: 750
+                        duration: 750,
+                        userOverlay: function (props) {
+                            var canvas = document.createElement("canvas");
+                            var ctx = canvas.getContext("2d");
+
+                            canvas.width = props.width;
+                            canvas.height = props.height;
+
+                            ctx.fillStyle = "#FFF";
+                            ctx.fillRect(20, 20, 40, 40);
+
+                            return canvas;
+                        }
                     }
                 }
             };
@@ -14546,6 +14574,8 @@ var Rance;
 
             if (isFinite(props.unitsToDraw)) {
                 unitsToDraw = props.unitsToDraw;
+            } else if (!this.isSquadron) {
+                unitsToDraw = 1;
             } else {
                 unitsToDraw = Math.round(this.currentHealth * 0.05);
                 var heightRatio = 25 / image.height;

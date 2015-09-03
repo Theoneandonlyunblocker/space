@@ -132,6 +132,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var BattleSceneUnit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var BattleScene: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
     }
 }
@@ -513,6 +518,7 @@ declare module Rance {
             target: Rance.Unit;
             width: number;
             height: number;
+            duration: number;
         }
         interface IBattleEffectSFX {
             duration: number;

@@ -8,6 +8,7 @@ module Rance
       target: Unit;
       width: number;
       height: number;
+      duration: number;
     }
     export interface IBattleEffectSFX
     {

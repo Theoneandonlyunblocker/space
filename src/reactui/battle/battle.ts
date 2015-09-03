@@ -40,8 +40,9 @@ module Rance
           battleSceneUnit1: null,
           battleSceneUnit2: null,
           playingBattleEffect: false,
+          playingBattleEffectActive: false,
           battleEffectDuration: null,
-          playingBattleEffectActive: false
+          battleEffectSFX: null
         });
       },
       getBlurArea: function()
@@ -247,6 +248,7 @@ module Rance
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
           battleEffectDuration: effectDuration,
+          battleEffectSFX: effectData[i].sfx,
           hoveredUnit: abilityData.originalTarget,
           abilityTooltip:
           {
@@ -285,6 +287,7 @@ module Rance
         {
           playingBattleEffect: false,
           battleEffectDuration: null,
+          battleEffectSFX: null,
           hoveredUnit: null
         });
 
@@ -490,7 +493,9 @@ module Rance
                 UIComponents.BattleScene(
                 {
                   unit1: this.state.battleSceneUnit1,
-                  unit2: this.state.battleSceneUnit2
+                  unit2: this.state.battleSceneUnit2,
+                  effectDuration: this.state.battleEffectDuration,
+                  effectSFX: this.state.battleEffectSFX
                 })
               ),
               React.DOM.div(
