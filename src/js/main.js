@@ -1260,9 +1260,11 @@ var Rance;
         UIComponents.BattleSceneUnit = React.createClass({
             displayName: "BattleSceneUnit",
             mixins: [React.addons.PureRenderMixin],
-            componentWillReceiveProps: function (newProps) {
-                if (newProps.unit !== this.props.unit) {
-                    this.renderScene(true, newProps.unit);
+            componentDidUpdate: function (oldProps) {
+                if (oldProps.unit !== this.props.unit) {
+                    this.renderScene(true, this.props.unit);
+                } else if (oldProps.effectSpriteFN !== this.props.effectSpriteFN || oldProps.effectOverlayFN !== this.props.effectOverlayFN) {
+                    this.renderScene(false, this.props.unit);
                 }
             },
             componentDidMount: function () {
@@ -1293,9 +1295,20 @@ var Rance;
             },
             addUnit: function (animate, unit) {
                 var container = this.refs.sprite.getDOMNode();
+                var sceneBounds = this.props.getSceneBounds();
 
                 if (unit) {
-                    var scene = unit.drawBattleScene(this.getSceneProps(unit));
+                    var scene;
+                    if (this.props.effectSpriteFN && this.props.effectDuration) {
+                        scene = this.props.effectSpriteFN({
+                            user: this.props.unit,
+                            width: sceneBounds.width,
+                            height: sceneBounds.height,
+                            duration: this.props.effectDuration
+                        });
+                    } else {
+                        scene = unit.drawBattleScene(this.getSceneProps(unit));
+                    }
                     if (animate) {
                         scene.classList.add("battle-scene-unit-enter-" + this.props.side);
                     }
@@ -1363,16 +1376,18 @@ var Rance;
             render: function () {
                 var unit1SpriteFN, unit1OverlayFN, unit2SpriteFN, unit2OverlayFN;
 
-                if (this.props.unit1IsActive) {
-                    unit1SpriteFN = this.props.effectSFX.userSprite;
-                    unit1OverlayFN = this.props.effectSFX.userOverlay;
+                if (this.props.effectSFX) {
+                    if (this.props.unit1IsActive) {
+                        unit1SpriteFN = this.props.effectSFX.userSprite;
+                        unit1OverlayFN = this.props.effectSFX.userOverlay;
 
-                    unit2OverlayFN = this.props.effectSFX.enemyOverlay;
-                } else {
-                    unit2SpriteFN = this.props.effectSFX.userSprite;
-                    unit2OverlayFN = this.props.effectSFX.userOverlay;
+                        unit2OverlayFN = this.props.effectSFX.enemyOverlay;
+                    } else {
+                        unit2SpriteFN = this.props.effectSFX.userSprite;
+                        unit2OverlayFN = this.props.effectSFX.userOverlay;
 
-                    unit1OverlayFN = this.props.effectSFX.enemyOverlay;
+                        unit1OverlayFN = this.props.effectSFX.enemyOverlay;
+                    }
                 }
 
                 return (React.DOM.div({
@@ -6886,12 +6901,12 @@ var Rance;
                     template: Rance.Templates.Effects.standBy,
                     sfx: {
                         duration: 750,
-                        userOverlay: function (props) {
+                        userSprite: function (props) {
                             var canvas = document.createElement("canvas");
                             var ctx = canvas.getContext("2d");
 
-                            canvas.width = props.width;
-                            canvas.height = props.height;
+                            canvas.width = 80;
+                            canvas.height = 80;
 
                             ctx.fillStyle = "#FFF";
                             ctx.fillRect(20, 20, 40, 40);

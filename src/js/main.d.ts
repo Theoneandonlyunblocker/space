@@ -515,7 +515,6 @@ declare module Rance {
     module Templates {
         interface SFXParams {
             user: Rance.Unit;
-            target: Rance.Unit;
             width: number;
             height: number;
             duration: number;

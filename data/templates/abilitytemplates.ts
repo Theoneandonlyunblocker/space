@@ -266,13 +266,13 @@ module Rance
           sfx:
           {
             duration: 750,
-            userOverlay: function(props: SFXParams)
+            userSprite: function(props: SFXParams)
             {
               var canvas = document.createElement("canvas");
               var ctx = canvas.getContext("2d");
 
-              canvas.width = props.width;
-              canvas.height = props.height;
+              canvas.width = 80;
+              canvas.height = 80
 
               ctx.fillStyle = "#FFF";
               ctx.fillRect(20, 20, 40, 40);

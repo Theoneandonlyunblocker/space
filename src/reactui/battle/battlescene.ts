@@ -18,19 +18,22 @@ module Rance
       {
         var unit1SpriteFN, unit1OverlayFN, unit2SpriteFN, unit2OverlayFN;
 
-        if (this.props.unit1IsActive)
+        if (this.props.effectSFX)
         {
-          unit1SpriteFN = this.props.effectSFX.userSprite;
-          unit1OverlayFN = this.props.effectSFX.userOverlay;
+          if (this.props.unit1IsActive)
+          {
+            unit1SpriteFN = this.props.effectSFX.userSprite;
+            unit1OverlayFN = this.props.effectSFX.userOverlay;
 
-          unit2OverlayFN = this.props.effectSFX.enemyOverlay;
-        }
-        else
-        {
-          unit2SpriteFN = this.props.effectSFX.userSprite;
-          unit2OverlayFN = this.props.effectSFX.userOverlay;
+            unit2OverlayFN = this.props.effectSFX.enemyOverlay;
+          }
+          else
+          {
+            unit2SpriteFN = this.props.effectSFX.userSprite;
+            unit2OverlayFN = this.props.effectSFX.userOverlay;
 
-          unit1OverlayFN = this.props.effectSFX.enemyOverlay;
+            unit1OverlayFN = this.props.effectSFX.enemyOverlay;
+          }
         }
 
         return(
