@@ -279,8 +279,13 @@ module Rance
               img.onload = function(e)
               {
                 ctx.drawImage(img, 0, 0);
+                if (!props.facingRight)
+                {
+                  ctx.scale(-1, 1);
+                }
               }
 
+              // cg13300.bmp
               img.src = "img\/battleEffects\/ranceAttack.png"
 
 
@@ -339,6 +344,10 @@ module Rance
                 }
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (!props.facingRight)
+                {
+                  ctx.scale(-1, 1);
+                }
                 ctx.drawImage(_.abababa[frameNumber], 0, 0, canvas.width, canvas.height);
               }
               var previousFrame: number;
@@ -362,6 +371,7 @@ module Rance
               video.oncanplay = onVideoLoadFN;
               video.onplay = playFrameFN;
 
+              // cg40500.bmp - cg40529.bmp converted to webm
               video.src = "img\/battleEffects\/ranceAttack.webm";
 
               if (video.readyState >= 4)

@@ -1304,7 +1304,8 @@ var Rance;
                             user: this.props.unit,
                             width: sceneBounds.width,
                             height: sceneBounds.height,
-                            duration: this.props.effectDuration
+                            duration: this.props.effectDuration,
+                            facingRight: this.props.side === "side1"
                         });
                     } else {
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
@@ -1370,12 +1371,35 @@ var Rance;
         UIComponents.BattleScene = React.createClass({
             displayName: "BattleScene",
             mixins: [React.addons.PureRenderMixin],
+            componentDidUpdate: function (oldProps) {
+                if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
+                    if (!oldProps.effectSFX || this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay) {
+                        this.drawBattleOverlay();
+                    }
+                }
+            },
             getSceneBounds: function () {
                 return this.refs.scene.getDOMNode().getBoundingClientRect();
             },
+            drawBattleOverlay: function () {
+                var container = this.refs.overlay.getDOMNode();
+                if (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+
+                var bounds = this.getSceneBounds();
+                var battleOverlay = this.props.effectSFX.battleOverlay({
+                    user: this.props.unit1IsActive ? this.props.unit1 : this.props.unit2,
+                    width: bounds.width,
+                    height: bounds.height,
+                    duration: this.props.effectDuration,
+                    facingRight: this.props.unit1IsActive ? true : false
+                });
+
+                container.appendChild(battleOverlay);
+            },
             render: function () {
                 var unit1SpriteFN, unit1OverlayFN, unit2SpriteFN, unit2OverlayFN;
-
                 if (this.props.effectSFX) {
                     if (this.props.unit1IsActive) {
                         unit1SpriteFN = this.props.effectSFX.userSprite;
@@ -1407,7 +1431,10 @@ var Rance;
                     effectSpriteFN: unit2SpriteFN,
                     effectOverlayFN: unit2OverlayFN,
                     getSceneBounds: this.getSceneBounds
-                })));
+                }), React.DOM.div({
+                    className: "battle-scene-overlay-container",
+                    ref: "overlay"
+                }, null)));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6912,6 +6939,9 @@ var Rance;
 
                             img.onload = function (e) {
                                 ctx.drawImage(img, 0, 0);
+                                if (!props.facingRight) {
+                                    ctx.scale(-1, 1);
+                                }
                             };
 
                             img.src = "img\/battleEffects\/ranceAttack.png";
@@ -6966,6 +6996,9 @@ var Rance;
                                 }
 
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                if (!props.facingRight) {
+                                    ctx.scale(-1, 1);
+                                }
                                 ctx.drawImage(_.abababa[frameNumber], 0, 0, canvas.width, canvas.height);
                             };
                             var previousFrame;

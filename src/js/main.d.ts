@@ -518,6 +518,7 @@ declare module Rance {
             width: number;
             height: number;
             duration: number;
+            facingRight: boolean;
         }
         interface IBattleEffectSFX {
             duration: number;

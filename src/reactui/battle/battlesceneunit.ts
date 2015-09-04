@@ -73,7 +73,8 @@ module Rance
               user: this.props.unit,
               width: sceneBounds.width,
               height: sceneBounds.height,
-              duration: this.props.effectDuration
+              duration: this.props.effectDuration,
+              facingRight: this.props.side === "side1"
             });
           }
           else
@@ -139,21 +140,19 @@ module Rance
             className: "battle-scene-units-container",
             ref: "container"
           },
-            // overlay
             React.DOM.div(
             {
               className: "battle-scene-unit-overlay",
               ref: "overlay"
             },
-              null
+              null // unit overlay SFX drawn on canvas
             ),
-            // scene
             React.DOM.div(
             {
               className: "battle-scene-unit-sprite",
               ref: "sprite"
             },
-              null
+              null // unit sprite drawn on canvas
             )
           )
         );
