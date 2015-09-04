@@ -519,6 +519,7 @@ declare module Rance {
             height: number;
             duration: number;
             facingRight: boolean;
+            onLoaded: (canvas: HTMLCanvasElement) => void;
         }
         interface IBattleEffectSFX {
             duration: number;

@@ -1377,7 +1377,7 @@ var Rance;
             },
             render: function () {
                 return (React.DOM.div({
-                    className: "battle-scene-units-container " + "battle-scene-units-container-" + this.props.side,
+                    className: "battle-scene-unit " + "battle-scene-unit-" + this.props.side,
                     ref: "container"
                 }, React.DOM.div({
                     className: "battle-scene-unit-overlay",
@@ -1398,6 +1398,7 @@ var Rance;
         UIComponents.BattleScene = React.createClass({
             displayName: "BattleScene",
             mixins: [React.addons.PureRenderMixin],
+            cachedSFXWidth: null,
             componentDidUpdate: function (oldProps) {
                 if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
                     if (!oldProps.effectSFX || this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay) {
@@ -1405,8 +1406,32 @@ var Rance;
                     }
                 }
             },
+            componentDidMount: function () {
+                window.addEventListener("resize", this.handleResize, false);
+            },
+            componentWillUnmount: function () {
+                window.removeEventListener("resize", this.handleResize);
+            },
             getSceneBounds: function () {
-                return this.refs.scene.getDOMNode().getBoundingClientRect();
+                return this.refs.wrapper.getDOMNode().getBoundingClientRect();
+            },
+            handleResize: function () {
+                if (this.cachedSFXWidth) {
+                    this.resizeScene(this.cachedSFXWidth);
+                }
+            },
+            resizeSceneToCanvas: function (overlayCanvas) {
+                this.resizeScene(overlayCanvas.width);
+                this.cachedSFXWidth = overlayCanvas.width;
+            },
+            resizeScene: function (width) {
+                var scene = this.refs.scene.getDOMNode();
+
+                var wrapperBounds = this.refs.wrapper.getDOMNode().getBoundingClientRect();
+                var leftoverWidth2 = (wrapperBounds.width - width) / 2;
+
+                scene.style.width = "" + width + "px";
+                scene.style.left = "" + leftoverWidth2 + "px";
             },
             drawBattleOverlay: function () {
                 var container = this.refs.overlay.getDOMNode();
@@ -1420,7 +1445,8 @@ var Rance;
                     width: bounds.width,
                     height: bounds.height,
                     duration: this.props.effectDuration,
-                    facingRight: this.props.unit1IsActive ? true : false
+                    facingRight: this.props.unit1IsActive ? true : false,
+                    onLoaded: this.resizeSceneToCanvas
                 });
 
                 container.appendChild(battleOverlay);
@@ -1442,8 +1468,13 @@ var Rance;
                 }
 
                 return (React.DOM.div({
+                    className: "battle-scene-wrapper",
+                    ref: "wrapper"
+                }, React.DOM.div({
                     className: "battle-scene",
                     ref: "scene"
+                }, React.DOM.div({
+                    className: "battle-scene-units-container"
                 }, Rance.UIComponents.BattleSceneUnit({
                     unit: this.props.unit1,
                     side: "side1",
@@ -1458,10 +1489,10 @@ var Rance;
                     effectSpriteFN: unit2SpriteFN,
                     effectOverlayFN: unit2OverlayFN,
                     getSceneBounds: this.getSceneBounds
-                }), React.DOM.div({
+                })), React.DOM.div({
                     className: "battle-scene-overlay-container",
                     ref: "overlay"
-                }, null)));
+                }, null))));
             }
         });
     })(Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6809,6 +6840,8 @@ var Rance;
             canvas.height = video.videoHeight;
             maskCanvas.width = canvas.width;
             maskCanvas.height = canvas.height;
+
+            props.onLoaded(canvas);
             video.play();
         };
 

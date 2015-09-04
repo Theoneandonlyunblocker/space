@@ -9,6 +9,7 @@ module Rance
       height: number;
       duration: number; // in milliseconds
       facingRight: boolean;
+      onLoaded: (canvas: HTMLCanvasElement) => void;
     }
     export interface IBattleEffectSFX
     {

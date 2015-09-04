@@ -176,8 +176,8 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "battle-scene-units-container " +
-              "battle-scene-units-container-" + this.props.side,
+            className: "battle-scene-unit " +
+              "battle-scene-unit-" + this.props.side,
             ref: "container"
           },
             React.DOM.div(

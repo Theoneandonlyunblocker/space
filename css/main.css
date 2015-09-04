@@ -272,31 +272,50 @@ progress::-webkit-progress-value {
   background-image: url("../img/icons/turnOrderArrow.png");
   z-index: 101;
 }
-.battle-scene {
+.battle-scene-wrapper {
   position: absolute;
   width: 100%;
   height: 100%;
   bottom: 0;
   left: 0;
   z-index: 0;
-  display: flex;
-  justify-content: space-between;
 }
-.battle-scene-overlay-container {
+.battle-scene {
   position: absolute;
   width: 100%;
   height: 100%;
   bottom: 0;
   left: 0;
 }
+.battle-scene > * {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  left: 0;
+}
+.battle-scene-overlay-container canvas {
+  position: absolute;
+  bottom: 0;
+}
 .battle-scene-units-container {
+  display: flex;
+  justify-content: space-between;
+}
+.battle-scene-unit {
   position: relative;
   height: 100%;
   width: 200px;
 }
-.battle-scene-units-container canvas {
+.battle-scene-unit canvas {
   position: absolute;
   bottom: 40px;
+}
+.battle-scene-unit-side1 canvas {
+  left: 5%;
+}
+.battle-scene-unit-side2 canvas {
+  right: 5%;
 }
 .battle-scene-unit-fade-in {
   -webkit-animation-duration: 0.5s;
@@ -370,14 +389,14 @@ progress::-webkit-progress-value {
   left: -100%;
 }
 .unit-enter-side1-keyframes to {
-  left: 0;
+  left: 5%;
 }
 @keyframes battle-scene-unit-enter-side1 {
   from {
     left: -100%;
   }
   to {
-    left: 0;
+    left: 5%;
   }
 }
 @-webkit-keyframes battle-scene-unit-enter-side1 {
@@ -385,7 +404,7 @@ progress::-webkit-progress-value {
     left: -100%;
   }
   to {
-    left: 0;
+    left: 5%;
   }
 }
 .battle-scene-unit-leave-side1 {
@@ -397,25 +416,25 @@ progress::-webkit-progress-value {
   animation-timing: ease;
 }
 .unit-leave-side1-keyframes from {
-  right: 0;
+  left: 5%;
 }
 .unit-leave-side1-keyframes to {
-  right: 100%;
+  left: -100%;
 }
 @keyframes battle-scene-unit-leave-side1 {
   from {
-    right: 0;
+    left: 5%;
   }
   to {
-    right: 100%;
+    left: -100%;
   }
 }
 @-webkit-keyframes battle-scene-unit-leave-side1 {
   from {
-    right: 0;
+    left: 5%;
   }
   to {
-    right: 100%;
+    left: -100%;
   }
 }
 .battle-scene-unit-enter-side2 {
@@ -427,25 +446,25 @@ progress::-webkit-progress-value {
   animation-timing: ease;
 }
 .unit-enter-side2-keyframes from {
-  margin-left: 100%;
+  right: -100%;
 }
 .unit-enter-side2-keyframes to {
-  margin-left: 0;
+  right: 5%;
 }
 @keyframes battle-scene-unit-enter-side2 {
   from {
-    margin-left: 100%;
+    right: -100%;
   }
   to {
-    margin-left: 0;
+    right: 5%;
   }
 }
 @-webkit-keyframes battle-scene-unit-enter-side2 {
   from {
-    margin-left: 100%;
+    right: -100%;
   }
   to {
-    margin-left: 0;
+    right: 5%;
   }
 }
 .battle-scene-unit-leave-side2 {
@@ -457,25 +476,25 @@ progress::-webkit-progress-value {
   animation-timing: ease;
 }
 .unit-leave-side2-keyframes from {
-  margin-left: 0;
+  right: 5%;
 }
 .unit-leave-side2-keyframes to {
-  margin-left: 100%;
+  right: -100%;
 }
 @keyframes battle-scene-unit-leave-side2 {
   from {
-    margin-left: 0;
+    right: 5%;
   }
   to {
-    margin-left: 100%;
+    right: -100%;
   }
 }
 @-webkit-keyframes battle-scene-unit-leave-side2 {
   from {
-    margin-left: 0;
+    right: 5%;
   }
   to {
-    margin-left: 100%;
+    right: -100%;
   }
 }
 .ability-tooltip {

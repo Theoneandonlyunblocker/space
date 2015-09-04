@@ -48,6 +48,8 @@ module Rance
       canvas.height = video.videoHeight;
       maskCanvas.width = canvas.width;
       maskCanvas.height = canvas.height;
+
+      props.onLoaded(canvas);
       video.play();
     }
 

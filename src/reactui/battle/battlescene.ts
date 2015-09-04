@@ -8,6 +8,7 @@ module Rance
     {
       displayName: "BattleScene",
       mixins: [React.addons.PureRenderMixin],
+      cachedSFXWidth: null,
 
       componentDidUpdate: function(oldProps: any)
       {
@@ -21,9 +22,45 @@ module Rance
         }
       },
 
+      componentDidMount: function()
+      {
+        window.addEventListener("resize", this.handleResize, false);
+      },
+
+      componentWillUnmount: function()
+      {
+        window.removeEventListener("resize", this.handleResize);
+      },
+
       getSceneBounds: function()
       {
-        return this.refs.scene.getDOMNode().getBoundingClientRect();
+        return this.refs.wrapper.getDOMNode().getBoundingClientRect();
+      },
+
+      handleResize: function()
+      {
+        if (this.cachedSFXWidth)
+        {
+          this.resizeScene(this.cachedSFXWidth);
+        }
+      },
+
+      resizeSceneToCanvas: function(overlayCanvas: HTMLCanvasElement)
+      {
+        this.resizeScene(overlayCanvas.width);
+        this.cachedSFXWidth = overlayCanvas.width;
+      },
+
+      resizeScene: function(width: number)
+      {
+        var scene = this.refs.scene.getDOMNode();
+
+        var wrapperBounds = this.refs.wrapper.getDOMNode().getBoundingClientRect();
+        var leftoverWidth2 = (wrapperBounds.width - width) / 2;
+
+
+        scene.style.width = "" +  width + "px";
+        scene.style.left = "" +  leftoverWidth2 + "px";
       },
 
       drawBattleOverlay: function()
@@ -41,7 +78,8 @@ module Rance
           width: bounds.width,
           height: bounds.height,
           duration: this.props.effectDuration,
-          facingRight: this.props.unit1IsActive ? true : false
+          facingRight: this.props.unit1IsActive ? true : false,
+          onLoaded: this.resizeSceneToCanvas
         });
 
         container.appendChild(battleOverlay);
@@ -72,37 +110,48 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "battle-scene",
-            ref: "scene"
+            className: "battle-scene-wrapper",
+            ref: "wrapper"
           },
-            UIComponents.BattleSceneUnit(
-            {
-              unit: this.props.unit1,
-              side: "side1",
-
-              effectDuration: this.props.effectDuration,
-              effectSpriteFN: unit1SpriteFN,
-              effectOverlayFN: unit1OverlayFN,
-
-              getSceneBounds: this.getSceneBounds
-            }),
-            UIComponents.BattleSceneUnit(
-            {
-              unit: this.props.unit2,
-              side: "side2",
-
-              effectDuration: this.props.effectDuration,
-              effectSpriteFN: unit2SpriteFN,
-              effectOverlayFN: unit2OverlayFN,
-
-              getSceneBounds: this.getSceneBounds
-            }),
             React.DOM.div(
             {
-              className: "battle-scene-overlay-container",
-              ref: "overlay"
+              className: "battle-scene",
+              ref: "scene"
             },
-              null // battle overlay SFX drawn on canvas
+              React.DOM.div(
+              {
+                className: "battle-scene-units-container"
+              },
+                UIComponents.BattleSceneUnit(
+                {
+                  unit: this.props.unit1,
+                  side: "side1",
+
+                  effectDuration: this.props.effectDuration,
+                  effectSpriteFN: unit1SpriteFN,
+                  effectOverlayFN: unit1OverlayFN,
+
+                  getSceneBounds: this.getSceneBounds
+                }),
+                UIComponents.BattleSceneUnit(
+                {
+                  unit: this.props.unit2,
+                  side: "side2",
+
+                  effectDuration: this.props.effectDuration,
+                  effectSpriteFN: unit2SpriteFN,
+                  effectOverlayFN: unit2OverlayFN,
+
+                  getSceneBounds: this.getSceneBounds
+                })
+              ),
+              React.DOM.div(
+              {
+                className: "battle-scene-overlay-container",
+                ref: "overlay"
+              },
+                null // battle overlay SFX drawn on canvas
+              )
             )
           )
         );
