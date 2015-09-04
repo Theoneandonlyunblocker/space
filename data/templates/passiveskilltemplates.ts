@@ -32,7 +32,12 @@ module Rance
             },
             sfx:
             {
-              duration: 500
+              duration: 1200,
+              battleOverlay: function(props: Templates.SFXParams)
+              {
+                // cg40400.bmp - cg40429.bmp converted to webm
+                return makeVideo("img\/battleEffects\/heal.webm", props);
+              }
             }
           }
         ]

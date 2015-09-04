@@ -531,6 +531,8 @@ declare module Rance {
     }
 }
 declare module Rance {
+    function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
+    function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
     module Templates {
         interface IAbilityTemplateEffect {
             template: Templates.IEffectTemplate;
