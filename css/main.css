@@ -281,7 +281,6 @@ progress::-webkit-progress-value {
   z-index: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 .battle-scene-overlay-container {
   position: absolute;
@@ -292,17 +291,20 @@ progress::-webkit-progress-value {
 }
 .battle-scene-units-container {
   position: relative;
+  height: 100%;
+  width: 200px;
 }
 .battle-scene-units-container canvas {
-  position: relative;
+  position: absolute;
+  bottom: 40px;
 }
 .battle-scene-unit-fade-in {
-  -webkit-animation-duration: 2s;
-  animation-duration: 2s;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
   -webkit-animation-name: battle-scene-unit-fade-in;
   animation-name: battle-scene-unit-fade-in;
-  -webkit-animation-timing: ease;
-  animation-timing: ease;
+  -webkit-animation-timing: linear;
+  animation-timing: linear;
 }
 .unit-fade-in-keyframes from {
   opacity: 0;
@@ -327,33 +329,33 @@ progress::-webkit-progress-value {
   }
 }
 .battle-scene-unit-fade-out {
-  -webkit-animation-duration: 2s;
-  animation-duration: 2s;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
   -webkit-animation-name: battle-scene-unit-fade-out;
   animation-name: battle-scene-unit-fade-out;
-  -webkit-animation-timing: ease;
-  animation-timing: ease;
+  -webkit-animation-timing: linear;
+  animation-timing: linear;
 }
 .unit-fade-out-keyframes from {
-  opacity: 0;
+  opacity: 1;
 }
 .unit-fade-out-keyframes to {
-  opacity: 1;
+  opacity: 0;
 }
 @keyframes battle-scene-unit-fade-out {
   from {
-    opacity: 0;
+    opacity: 1;
   }
   to {
-    opacity: 1;
+    opacity: 0;
   }
 }
 @-webkit-keyframes battle-scene-unit-fade-out {
   from {
-    opacity: 0;
+    opacity: 1;
   }
   to {
-    opacity: 1;
+    opacity: 0;
   }
 }
 .battle-scene-unit-enter-side1 {

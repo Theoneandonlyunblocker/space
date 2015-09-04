@@ -11,14 +11,13 @@ module Rance
       {
         if (oldProps.unit !== this.props.unit)
         {
-          this.renderScene(true, this.props.unit);
+          this.renderScene(true, false, this.props.unit);
         }
         else if (
-          oldProps.effectSpriteFN !== this.props.effectSpriteFN ||
-          oldProps.effectOverlayFN !== this.props.effectOverlayFN
+          oldProps.effectSpriteFN !== this.props.effectSpriteFN
         )
         {
-          this.renderScene(false, this.props.unit);
+          this.renderScene(false, true, this.props.unit);
         }
       },
 
@@ -36,8 +35,16 @@ module Rance
       {
         if (this.props.unit)
         {
-          this.renderScene(false, this.props.unit);
+          this.renderScene(false, false, this.props.unit);
         }
+      },
+
+      removeAnimations: function(element: HTMLElement)
+      {
+        element.classList.remove("battle-scene-unit-enter-" + this.props.side);
+        element.classList.remove("battle-scene-unit-leave-" + this.props.side);
+        element.classList.remove("battle-scene-unit-fade-in");
+        element.classList.remove("battle-scene-unit-fade-out");
       },
 
       getSceneProps: function(unit: Unit)
@@ -58,7 +65,7 @@ module Rance
         });
       },
 
-      addUnit: function(animate: boolean, unit?: Unit)
+      addUnit: function(animateEnter: boolean, animateFade: boolean, unit?: Unit, onComplete?: {(): void})
       {
         var container = this.refs.sprite.getDOMNode();
         var sceneBounds = this.props.getSceneBounds();
@@ -81,23 +88,38 @@ module Rance
           {
             scene = unit.drawBattleScene(this.getSceneProps(unit));
           }
-          if (animate)
+          if (animateEnter)
           {
             scene.classList.add("battle-scene-unit-enter-" + this.props.side);
+          }
+          else if (animateFade)
+          {
+            scene.addEventListener("animationend", onComplete);
+            scene.addEventListener("webkitAnimationEnd", onComplete);
+            scene.classList.add("battle-scene-unit-fade-in");
+          }
+
+          if (!animateFade && onComplete)
+          {
+            onComplete();
           }
 
           container.appendChild(scene);
         }
+        else if (onComplete)
+        {
+          onComplete();
+        }
       },
 
-      removeUnit: function(animate: boolean, onComplete?: {(): void})
+      removeUnit: function(animateEnter: boolean, animateFade: boolean, onComplete?: {(): void})
       {
         var container = this.refs.sprite.getDOMNode();
 
         // has child. child will be removed with animation if specified, then fire callback
         if (container.firstChild)
         {
-          if (animate)
+          if (animateEnter || animateFade)
           {
             var animationEndFN = function()
             {
@@ -105,12 +127,20 @@ module Rance
               {
                 container.removeChild(container.firstChild);
               }
-              onComplete();
+              if (onComplete) onComplete();
             }
+            this.removeAnimations(container.firstChild);
             container.firstChild.addEventListener("animationend", animationEndFN);
             container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
 
-            container.firstChild.classList.add("battle-scene-unit-leave-" + this.props.side);
+            if (animateEnter)
+            {
+              container.firstChild.classList.add("battle-scene-unit-leave-" + this.props.side);
+            }
+            else if (animateFade)
+            {
+              container.firstChild.classList.add("battle-scene-unit-fade-out");
+            }
           }
           else
           {
@@ -125,11 +155,20 @@ module Rance
         }
       },
 
-      renderScene: function(animate: boolean, unit?: Unit)
+      renderScene: function(animateEnter: boolean, animateFade: boolean, unit?: Unit)
       {
-        var addUnitFN = this.addUnit.bind(this, animate, unit);
+        if (animateFade)
+        {
+          this.addUnit(animateEnter, animateFade, unit);
+          this.removeUnit(animateEnter, animateFade);
+        }
+        else
+        {
+          var addUnitFN = this.addUnit.bind(this, animateEnter, animateFade, unit);
 
-        this.removeUnit(animate, addUnitFN);
+          this.removeUnit(animateEnter, animateFade, addUnitFN);
+        }
+
       },
 
       render: function()
@@ -137,7 +176,8 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "battle-scene-units-container",
+            className: "battle-scene-units-container " +
+              "battle-scene-units-container-" + this.props.side,
             ref: "container"
           },
             React.DOM.div(

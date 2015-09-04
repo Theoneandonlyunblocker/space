@@ -519,7 +519,6 @@ progress::-webkit-progress-value { background: #080; }
 
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .battle-scene-overlay-container
@@ -534,9 +533,14 @@ progress::-webkit-progress-value { background: #080; }
 .battle-scene-units-container
 {
   position: relative;
+  height: 100%;
+  width: 200px;
+  // display: flex;
+  // align-items: center;
   canvas
   {
-    position: relative;
+    position: absolute;
+    bottom: 40px;
   }
 }
 
@@ -552,7 +556,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-scene-unit-fade-in
 {
-  .attach-animation(2s, battle-scene-unit-fade-in, ease);
+  .attach-animation(0.5s, battle-scene-unit-fade-in, linear);
 }
 .unit-fade-in-keyframes
 {
@@ -569,17 +573,17 @@ progress::-webkit-progress-value { background: #080; }
 @-webkit-keyframes battle-scene-unit-fade-in {.unit-fade-in-keyframes;}
 .battle-scene-unit-fade-out
 {
-  .attach-animation(2s, battle-scene-unit-fade-out, ease);
+  .attach-animation(0.5s, battle-scene-unit-fade-out, linear);
 }
 .unit-fade-out-keyframes
 {
   from
   {
-    opacity: 0;
+    opacity: 1;
   }
   to
   {
-    opacity: 1;
+    opacity: 0;
   }
 }
 @keyframes battle-scene-unit-fade-out {.unit-fade-out-keyframes;}
