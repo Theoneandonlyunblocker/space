@@ -296,6 +296,66 @@ progress::-webkit-progress-value {
 .battle-scene-units-container canvas {
   position: relative;
 }
+.battle-scene-unit-fade-in {
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-name: battle-scene-unit-fade-in;
+  animation-name: battle-scene-unit-fade-in;
+  -webkit-animation-timing: ease;
+  animation-timing: ease;
+}
+.unit-fade-in-keyframes from {
+  opacity: 0;
+}
+.unit-fade-in-keyframes to {
+  opacity: 1;
+}
+@keyframes battle-scene-unit-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes battle-scene-unit-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.battle-scene-unit-fade-out {
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-name: battle-scene-unit-fade-out;
+  animation-name: battle-scene-unit-fade-out;
+  -webkit-animation-timing: ease;
+  animation-timing: ease;
+}
+.unit-fade-out-keyframes from {
+  opacity: 0;
+}
+.unit-fade-out-keyframes to {
+  opacity: 1;
+}
+@keyframes battle-scene-unit-fade-out {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes battle-scene-unit-fade-out {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .battle-scene-unit-enter-side1 {
   -webkit-animation-duration: 0.2s;
   animation-duration: 0.2s;
