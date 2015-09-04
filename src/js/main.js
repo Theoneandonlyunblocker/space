@@ -1430,8 +1430,13 @@ var Rance;
                 var wrapperBounds = this.refs.wrapper.getDOMNode().getBoundingClientRect();
                 var leftoverWidth2 = (wrapperBounds.width - width) / 2;
 
-                scene.style.width = "" + width + "px";
-                scene.style.left = "" + leftoverWidth2 + "px";
+                if (leftoverWidth2 <= 0) {
+                    scene.style.width = "";
+                    scene.style.height = "";
+                } else {
+                    scene.style.width = "" + width + "px";
+                    scene.style.left = "" + leftoverWidth2 + "px";
+                }
             },
             drawBattleOverlay: function () {
                 var container = this.refs.overlay.getDOMNode();
@@ -6886,7 +6891,7 @@ var Rance;
         var playFrameFN = function () {
             if (video.paused || video.ended)
                 return;
-            var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 24) / (1 / 24));
+            var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
             if (isFinite(previousFrame) && currentFrame === previousFrame) {
             } else {
                 previousFrame = currentFrame;

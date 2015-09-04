@@ -96,7 +96,7 @@ module Rance
     var playFrameFN = function()
     {
       if (video.paused || video.ended) return;
-      var currentFrame = Math.round(roundToNearestMultiple(video.currentTime, 1 / 24) / (1 / 24));
+      var currentFrame = Math.round(roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
       if (isFinite(previousFrame) && currentFrame === previousFrame)
       {
         
