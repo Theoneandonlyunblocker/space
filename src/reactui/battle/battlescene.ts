@@ -58,9 +58,17 @@ module Rance
         var wrapperBounds = this.refs.wrapper.getDOMNode().getBoundingClientRect();
         var leftoverWidth2 = (wrapperBounds.width - width) / 2;
 
+        if (leftoverWidth2 <= 0)
+        {
+          scene.style.width = "";
+          scene.style.height = "";
+        }
+        else
+        {
+          scene.style.width = "" +  width + "px";
+          scene.style.left = "" +  leftoverWidth2 + "px";
+        }
 
-        scene.style.width = "" +  width + "px";
-        scene.style.left = "" +  leftoverWidth2 + "px";
       },
 
       drawBattleOverlay: function()
