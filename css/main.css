@@ -827,7 +827,7 @@ progress::-webkit-progress-value {
 }
 .turn-counter {
   flex: 0 0 6px;
-  margin: 3px 0;
+  margin: 2px 0;
   width: 30px;
 }
 .used-turn {

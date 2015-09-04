@@ -6891,6 +6891,116 @@ var Rance;
                 ]
             };
 
+            Abilities.ranceAttack = {
+                type: "ranceAttack",
+                displayName: "Rance attack",
+                description: "dont sue",
+                moveDelay: 0,
+                actionsUse: 0,
+                mainEffect: {
+                    template: Rance.Templates.Effects.singleTargetDamage,
+                    sfx: {
+                        duration: 1500,
+                        userSprite: function (props) {
+                            var canvas = document.createElement("canvas");
+                            var ctx = canvas.getContext("2d");
+
+                            canvas.width = 340;
+                            canvas.height = 290;
+
+                            var img = new Image();
+
+                            img.onload = function (e) {
+                                ctx.drawImage(img, 0, 0);
+                            };
+
+                            img.src = "img\/battleEffects\/ranceAttack.png";
+
+                            return canvas;
+                        },
+                        battleOverlay: function (props) {
+                            var video = document.createElement("video");
+
+                            var canvas = document.createElement("canvas");
+                            var ctx = canvas.getContext("2d");
+
+                            var maskCanvas = document.createElement("canvas");
+                            var mask = maskCanvas.getContext("2d");
+                            mask.fillStyle = "#000";
+                            mask.globalCompositeOperation = "luminosity";
+
+                            var onVideoLoadFN = function () {
+                                canvas.width = video.videoWidth;
+                                canvas.height = video.videoHeight;
+                                maskCanvas.width = canvas.width;
+                                maskCanvas.height = canvas.height;
+                                video.play();
+                            };
+
+                            var _ = window;
+                            if (!_.abababa)
+                                _.abababa = {};
+                            var computeFrameFN = function (frameNumber) {
+                                if (!_.abababa[frameNumber]) {
+                                    var c3 = document.createElement("canvas");
+                                    c3.width = canvas.width;
+                                    c3.height = canvas.height;
+                                    var ctx3 = c3.getContext("2d");
+
+                                    ctx3.drawImage(video, 0, 0, c3.width, c3.height);
+
+                                    var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
+
+                                    mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+                                    mask.drawImage(video, 0, 0, c3.width, c3.height);
+
+                                    var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
+
+                                    var l = frame.data.length / 4;
+                                    for (var i = 0; i < l; i++) {
+                                        frame.data[i * 4 + 3] = maskData[i * 4];
+                                    }
+
+                                    ctx3.putImageData(frame, 0, 0);
+                                    _.abababa[frameNumber] = c3;
+                                }
+
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(_.abababa[frameNumber], 0, 0, canvas.width, canvas.height);
+                            };
+                            var previousFrame;
+
+                            var playFrameFN = function () {
+                                if (video.paused || video.ended)
+                                    return;
+                                var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 24) / (1 / 24));
+                                if (isFinite(previousFrame) && currentFrame === previousFrame) {
+                                } else {
+                                    previousFrame = currentFrame;
+                                    computeFrameFN(currentFrame);
+                                }
+                                requestAnimFrame(playFrameFN);
+                            };
+
+                            video.oncanplay = onVideoLoadFN;
+                            video.onplay = playFrameFN;
+
+                            video.src = "img\/battleEffects\/ranceAttack.webm";
+
+                            if (video.readyState >= 4) {
+                                onVideoLoadFN();
+                            }
+
+                            return canvas;
+                        }
+                    },
+                    data: {
+                        baseDamage: 0.4,
+                        damageType: 0 /* physical */
+                    }
+                }
+            };
+
             Abilities.standBy = {
                 type: "standBy",
                 displayName: "Standby",
@@ -6990,6 +7100,7 @@ var Rance;
                     Rance.Templates.Abilities.bombAttack,
                     Rance.Templates.Abilities.boardingHook,
                     Rance.Templates.Abilities.guardColumn,
+                    Rance.Templates.Abilities.ranceAttack,
                     Rance.Templates.Abilities.standBy
                 ],
                 passiveSkills: [

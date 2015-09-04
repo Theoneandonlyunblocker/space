@@ -564,6 +564,7 @@ declare module Rance {
             var guardColumn: IAbilityTemplate;
             var boardingHook: IAbilityTemplate;
             var debugAbility: IAbilityTemplate;
+            var ranceAttack: IAbilityTemplate;
             var standBy: IAbilityTemplate;
         }
     }

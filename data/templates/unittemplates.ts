@@ -70,6 +70,7 @@ module Rance
           Abilities.bombAttack,
           Abilities.boardingHook,
           Abilities.guardColumn,
+          Abilities.ranceAttack,
           Abilities.standBy
         ],
         passiveSkills:
