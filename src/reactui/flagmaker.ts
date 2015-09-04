@@ -37,9 +37,9 @@ module Rance
           var hsl = hexToHsv(hex);
 
           hsl = colorFromScalars(hsl);
-          hsl = hsl.map(function(v):number{return v.toFixed()});
+          var hslString = hsl.map(function(v){return v.toFixed()});
 
-          return hsl.join(", ");
+          return hslString.join(", ");
         }
 
         window.setTimeout(function(e)

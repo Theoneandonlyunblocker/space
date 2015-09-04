@@ -1,4 +1,4 @@
-interface Point
+declare interface OffsetPoint extends Rance.Point
 {
   x: number;
   y: number;
@@ -7,10 +7,10 @@ interface Point
 
 declare class Offset
 {
-  constructor(data?: any, vertices?: Point[], arcSegments?: number);
-  data(vertices: Point[]): Offset;
-  margin(amount: number): Point[];
-  padding(amount: number): Point[];
-  offset(amount: number): Point[];
+  constructor(data?: any, vertices?: OffsetPoint[], arcSegments?: number);
+  data(vertices: OffsetPoint[]): Offset;
+  margin(amount: number): OffsetPoint[];
+  padding(amount: number): OffsetPoint[];
+  offset(amount: number): OffsetPoint[];
   arcSegments(amount: number): Offset;
 }

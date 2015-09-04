@@ -23,6 +23,7 @@ module Rance
   export interface IMapRendererLayerMapMode
   {
     name: string;
+    displayName: string;
     layers:
     {
       layer: IMapRendererLayer;

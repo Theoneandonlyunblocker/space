@@ -228,7 +228,6 @@ module Rance
       {
         moveDelay: this.getBaseMoveDelay(),
         currentActionPoints: this.attributes.maxActionPoints,
-        battle: null,
         side: null,
         position: null,
         guardAmount: 0,

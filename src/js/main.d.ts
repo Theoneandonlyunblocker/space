@@ -14,32 +14,32 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var UnitStrength: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitStrength: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitActions: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitStatus: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitStatus: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitInfo: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitIcon: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitIcon: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitStatusEffects: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitStatusEffects: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -79,12 +79,12 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var Unit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Unit: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var EmptyUnit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var EmptyUnit: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -97,62 +97,62 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var UnitWrapper: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitWrapper: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetColumn: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetColumn: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Fleet: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Fleet: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TurnCounter: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var TurnCounter: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TurnOrder: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var TurnOrder: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AbilityTooltip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var AbilityTooltip: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleScore: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattleScore: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleSceneUnit: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattleSceneUnit: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleScene: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattleScene: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleDisplayStrength: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattleDisplayStrength: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleBackground: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattleBackground: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Battle: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Battle: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -164,142 +164,142 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var List: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var List: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitListItem: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ItemListItem: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ItemList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AbilityList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var AbilityList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitItem: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var UnitItemWrapper: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var UnitItemWrapper: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MenuUnitInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var MenuUnitInfo: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemEquip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ItemEquip: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DefenceBuilding: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var DefenceBuilding: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DefenceBuildingList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var DefenceBuildingList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattleInfo: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattlePrep: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BattlePrep: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var LightBox: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var LightBox: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemPurchaseListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ItemPurchaseListItem: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ItemPurchaseList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ItemPurchaseList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuyItems: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BuyItems: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PopupResizeHandle: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var PopupResizeHandle: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Popup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Popup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TutorialPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var TutorialPopup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ConfirmPopup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ConfirmPopup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PopupManager: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var PopupManager: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SaveListItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var SaveListItem: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SaveList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var SaveList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SaveGame: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var SaveGame: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var LoadGame: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var LoadGame: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DiplomacyActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var DiplomacyActions: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -316,127 +316,127 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var AttitudeModifierInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var AttitudeModifierInfo: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AttitudeModifierList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var AttitudeModifierList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Opinion: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Opinion: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DiplomaticStatusPlayer: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var DiplomaticStatusPlayer: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var DiplomacyOverview: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var DiplomacyOverview: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var EconomySummaryItem: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var EconomySummaryItem: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var EconomySummary: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var EconomySummary: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsGroup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var OptionsGroup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsCheckbox: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var OptionsCheckbox: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var OptionsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var OptionsList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopMenu: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var TopMenu: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var Resource: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Resource: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopBarResources: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var TopBarResources: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var TopBar: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var TopBar: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetControls: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetControls: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetInfo: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ShipInfoName: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ShipInfoName: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ShipInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ShipInfo: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetContents: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetContents: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetReorganization: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetReorganization: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FleetSelection: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FleetSelection: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var StarInfo: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var StarInfo: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var AttackTarget: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var AttackTarget: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildableBuilding: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BuildableBuilding: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildableBuildingList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BuildableBuildingList: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -470,7 +470,7 @@ declare module Rance {
 }
 declare module Rance {
     interface TargetingFunction {
-        (fleets: Rance.Unit[][], target: number[]): Rance.Unit[];
+        (fleets: Unit[][], target: number[]): Unit[];
     }
     var targetSingle: TargetingFunction;
     var targetAll: TargetingFunction;
@@ -490,9 +490,9 @@ declare module Rance {
         interface IEffectTemplate {
             name: string;
             targetFleets: string;
-            targetingFunction: Rance.TargetingFunction;
+            targetingFunction: TargetingFunction;
             targetRange: string;
-            effect: (user: Rance.Unit, target: Rance.Unit, data?: any) => void;
+            effect: (user: Unit, target: Unit, data?: any) => void;
         }
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
@@ -514,7 +514,7 @@ declare module Rance {
 declare module Rance {
     module Templates {
         interface SFXParams {
-            user: Rance.Unit;
+            user: Unit;
             width: number;
             height: number;
             duration: number;
@@ -536,10 +536,10 @@ declare module Rance {
     function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
     module Templates {
         interface IAbilityTemplateEffect {
-            template: Templates.IEffectTemplate;
+            template: IEffectTemplate;
             data?: any;
             attachedEffects?: IAbilityTemplateEffect[];
-            sfx?: Templates.IBattleEffectSFX;
+            sfx?: IBattleEffectSFX;
         }
         interface IAbilityTemplate {
             type: string;
@@ -579,9 +579,9 @@ declare module Rance {
             type: string;
             displayName: string;
             description: string;
-            atBattleStart?: Templates.IAbilityTemplateEffect[];
-            beforeAbilityUse?: Templates.IAbilityTemplateEffect[];
-            afterAbilityUse?: Templates.IAbilityTemplateEffect[];
+            atBattleStart?: IAbilityTemplateEffect[];
+            beforeAbilityUse?: IAbilityTemplateEffect[];
+            afterAbilityUse?: IAbilityTemplateEffect[];
         }
         module PassiveSkills {
             var autoHeal: IPassiveSkillTemplate;
@@ -595,7 +595,7 @@ declare module Rance {
             type: string;
             archetype: string;
             typeName: string;
-            sprite: Templates.ISpriteTemplate;
+            sprite: ISpriteTemplate;
             isSquadron: boolean;
             buildCost: number;
             icon: string;
@@ -608,8 +608,8 @@ declare module Rance {
                 intelligence: number;
                 speed: number;
             };
-            abilities: Templates.IAbilityTemplate[];
-            passiveSkills?: Templates.IPassiveSkillTemplate[];
+            abilities: IAbilityTemplate[];
+            passiveSkills?: IPassiveSkillTemplate[];
         }
         module ShipTypes {
             var cheatShip: IUnitTemplate;
@@ -687,28 +687,28 @@ declare module Rance {
 }
 declare module Rance {
     class Building {
-        public template: Rance.Templates.IBuildingTemplate;
-        public id: number;
-        public location: Rance.Star;
-        public controller: Rance.Player;
-        public upgradeLevel: number;
-        public totalCost: number;
+        template: Templates.IBuildingTemplate;
+        id: number;
+        location: Star;
+        controller: Player;
+        upgradeLevel: number;
+        totalCost: number;
         constructor(props: {
-            template: Rance.Templates.IBuildingTemplate;
-            location: Rance.Star;
-            controller?: Rance.Player;
+            template: Templates.IBuildingTemplate;
+            location: Star;
+            controller?: Player;
             upgradeLevel?: number;
             totalCost?: number;
             id?: number;
         });
-        public getPossibleUpgrades(): {
-            template: Rance.Templates.IBuildingTemplate;
+        getPossibleUpgrades(): {
+            template: Templates.IBuildingTemplate;
             level: number;
             cost: number;
         }[];
-        public upgrade(): void;
-        public setController(newController: Rance.Player): void;
-        public serialize(): any;
+        upgrade(): void;
+        setController(newController: Player): void;
+        serialize(): any;
     }
 }
 declare module Rance {
@@ -721,8 +721,8 @@ declare module Rance {
             techLevel: number;
             slot: string;
             cost: number;
-            ability?: Templates.IAbilityTemplate;
-            passiveSkill?: Templates.IPassiveSkillTemplate;
+            ability?: IAbilityTemplate;
+            passiveSkill?: IPassiveSkillTemplate;
             attributes?: {
                 maxActionPoints?: number;
                 attack?: number;
@@ -746,46 +746,46 @@ declare module Rance {
 }
 declare module Rance {
     class Item {
-        public id: number;
-        public template: Rance.Templates.IItemTemplate;
-        public unit: Rance.Unit;
-        constructor(template: Rance.Templates.IItemTemplate, id?: number);
-        public serialize(): any;
+        id: number;
+        template: Templates.IItemTemplate;
+        unit: Unit;
+        constructor(template: Templates.IItemTemplate, id?: number);
+        serialize(): any;
     }
 }
 declare module Rance {
     class ItemGenerator {
-        public itemsByTechLevel: {
-            [techLevel: number]: Rance.Templates.IItemTemplate[];
+        itemsByTechLevel: {
+            [techLevel: number]: Templates.IItemTemplate[];
         };
         constructor();
-        public indexItemsByTechLevel(): void;
+        indexItemsByTechLevel(): void;
     }
 }
 declare module Rance {
-    class Star implements Rance.Point {
-        public id: number;
-        public x: number;
-        public y: number;
-        public basisX: number;
-        public basisY: number;
-        public linksTo: Star[];
-        public linksFrom: Star[];
-        public mapGenData: any;
-        public voronoiId: number;
-        public seed: string;
-        public name: string;
-        public owner: Rance.Player;
-        public baseIncome: number;
-        public resource: Rance.Templates.IResourceTemplate;
-        public fleets: {
-            [playerId: string]: Rance.Fleet[];
+    class Star implements Point {
+        id: number;
+        x: number;
+        y: number;
+        basisX: number;
+        basisY: number;
+        linksTo: Star[];
+        linksFrom: Star[];
+        mapGenData: any;
+        voronoiId: number;
+        seed: string;
+        name: string;
+        owner: Player;
+        baseIncome: number;
+        resource: Templates.IResourceTemplate;
+        fleets: {
+            [playerId: string]: Fleet[];
         };
-        public buildings: {
-            [category: string]: Rance.Building[];
+        buildings: {
+            [category: string]: Building[];
         };
-        public voronoiCell: any;
-        public indexedNeighborsInRange: {
+        voronoiCell: any;
+        indexedNeighborsInRange: {
             [range: number]: {
                 all: Star[];
                 byRange: {
@@ -793,92 +793,92 @@ declare module Rance {
                 };
             };
         };
-        public indexedDistanceToStar: {
+        indexedDistanceToStar: {
             [id: number]: number;
         };
-        public buildableItems: {
-            1: Rance.Templates.IItemTemplate[];
-            2: Rance.Templates.IItemTemplate[];
-            3: Rance.Templates.IItemTemplate[];
+        buildableItems: {
+            1: Templates.IItemTemplate[];
+            2: Templates.IItemTemplate[];
+            3: Templates.IItemTemplate[];
         };
         constructor(x: number, y: number, id?: number);
-        public severLinksToNonAdjacent(): void;
-        public addBuilding(building: Rance.Building): void;
-        public removeBuilding(building: Rance.Building): void;
-        public sortDefenceBuildings(): void;
-        public getSecondaryController(): Rance.Player;
-        public updateController(): any;
-        public getIncome(): number;
-        public getResourceIncome(): {
-            resource: Rance.Templates.IResourceTemplate;
+        severLinksToNonAdjacent(): void;
+        addBuilding(building: Building): void;
+        removeBuilding(building: Building): void;
+        sortDefenceBuildings(): void;
+        getSecondaryController(): Player;
+        updateController(): any;
+        getIncome(): number;
+        getResourceIncome(): {
+            resource: Templates.IResourceTemplate;
             amount: number;
         };
-        public getAllBuildings(): any[];
-        public getBuildingsForPlayer(player: Rance.Player): any[];
-        public getBuildingsByType(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
-        public getBuildingsByFamily(buildingTemplate: Rance.Templates.IBuildingTemplate): any[];
-        public getBuildableBuildings(): any[];
-        public getBuildingUpgrades(): {
+        getAllBuildings(): any[];
+        getBuildingsForPlayer(player: Player): any[];
+        getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate): any[];
+        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): any[];
+        getBuildableBuildings(): any[];
+        getBuildingUpgrades(): {
             [buildingId: number]: {
-                template: Rance.Templates.IBuildingTemplate;
+                template: Templates.IBuildingTemplate;
                 level: number;
                 cost: number;
-                parentBuilding: Rance.Building;
+                parentBuilding: Building;
             }[];
         };
-        public getBuildableShipTypes(): any[];
-        public getAllFleets(): any[];
-        public getFleetIndex(fleet: Rance.Fleet): number;
-        public hasFleet(fleet: Rance.Fleet): boolean;
-        public addFleet(fleet: Rance.Fleet): boolean;
-        public addFleets(fleets: Rance.Fleet[]): void;
-        public removeFleet(fleet: Rance.Fleet): boolean;
-        public removeFleets(fleets: Rance.Fleet[]): void;
-        public getAllShipsOfPlayer(player: Rance.Player): Rance.Unit[];
-        public getIndependentShips(): Rance.Unit[];
-        public getTargetsForPlayer(player: Rance.Player): any[];
-        public getFirstEnemyDefenceBuilding(player: Rance.Player): Rance.Building;
-        public getEnemyFleetOwners(player: Rance.Player, excludedTarget?: Rance.Player): Rance.Player[];
-        public setPosition(x: number, y: number): void;
-        public setResource(resource: Rance.Templates.IResourceTemplate): void;
-        public hasLink(linkTo: Star): boolean;
-        public addLink(linkTo: Star): void;
-        public removeLink(linkTo: Star): void;
-        public getAllLinks(): Star[];
-        public getNeighbors(): Star[];
-        public getLinkedInRange(range: number): {
+        getBuildableShipTypes(): any[];
+        getAllFleets(): any[];
+        getFleetIndex(fleet: Fleet): number;
+        hasFleet(fleet: Fleet): boolean;
+        addFleet(fleet: Fleet): boolean;
+        addFleets(fleets: Fleet[]): void;
+        removeFleet(fleet: Fleet): boolean;
+        removeFleets(fleets: Fleet[]): void;
+        getAllShipsOfPlayer(player: Player): Unit[];
+        getIndependentShips(): Unit[];
+        getTargetsForPlayer(player: Player): any[];
+        getFirstEnemyDefenceBuilding(player: Player): Building;
+        getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
+        setPosition(x: number, y: number): void;
+        setResource(resource: Templates.IResourceTemplate): void;
+        hasLink(linkTo: Star): boolean;
+        addLink(linkTo: Star): void;
+        removeLink(linkTo: Star): void;
+        getAllLinks(): Star[];
+        getNeighbors(): Star[];
+        getLinkedInRange(range: number): {
             all: Star[];
             byRange: {
                 [range: number]: Star[];
             };
         };
-        public getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
-        public getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
-        public getDistanceToStar(target: Star): number;
-        public getVisionRange(): number;
-        public getVision(): Star[];
-        public getHealingFactor(player: Rance.Player): number;
-        public getSeed(): string;
-        public seedBuildableItems(): void;
-        public getItemManufactoryLevel(): number;
-        public getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
-        public getBuildableItems(): {
+        getIslandForQualifier(qualifier: (starA: Star, starB: Star) => boolean, earlyReturnSize?: number): Star[];
+        getNearestStarForQualifier(qualifier: (star: Star) => boolean): Star;
+        getDistanceToStar(target: Star): number;
+        getVisionRange(): number;
+        getVision(): Star[];
+        getHealingFactor(player: Player): number;
+        getSeed(): string;
+        seedBuildableItems(): void;
+        getItemManufactoryLevel(): number;
+        getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
+        getBuildableItems(): {
             byTechLevel: {};
             all: any[];
         };
-        public serialize(): any;
+        serialize(): any;
     }
 }
 declare module Rance {
     class PriorityQueue {
-        public items: {
+        items: {
             [priority: number]: any[];
         };
         constructor();
-        public isEmpty(): boolean;
-        public push(priority: number, data: any): void;
-        public pop(): any;
-        public peek(): any[];
+        isEmpty(): boolean;
+        push(priority: number, data: any): void;
+        pop(): any;
+        peek(): any[];
     }
 }
 declare module Rance {
@@ -894,43 +894,43 @@ declare module Rance {
 }
 declare module Rance {
     class Fleet {
-        public player: Rance.Player;
-        public ships: Rance.Unit[];
-        public location: Rance.Star;
-        public visionIsDirty: boolean;
-        public visibleStars: Rance.Star[];
-        public id: number;
-        public name: string;
-        constructor(player: Rance.Player, ships: Rance.Unit[], location: Rance.Star, id?: number);
-        public getShipIndex(ship: Rance.Unit): number;
-        public hasShip(ship: Rance.Unit): boolean;
-        public deleteFleet(shouldRender?: boolean): void;
-        public mergeWith(fleet: Fleet, shouldRender?: boolean): void;
-        public addShip(ship: Rance.Unit): boolean;
-        public addShips(ships: Rance.Unit[]): void;
-        public removeShip(ship: Rance.Unit): boolean;
-        public removeShips(ships: Rance.Unit[]): void;
-        public transferShip(fleet: Fleet, ship: Rance.Unit): boolean;
-        public split(): Fleet;
-        public getMinCurrentMovePoints(): number;
-        public getMinMaxMovePoints(): number;
-        public canMove(): boolean;
-        public subtractMovePoints(): void;
-        public move(newLocation: Rance.Star): void;
-        public getPathTo(newLocation: Rance.Star): {
-            star: Rance.Star;
+        player: Player;
+        ships: Unit[];
+        location: Star;
+        visionIsDirty: boolean;
+        visibleStars: Star[];
+        id: number;
+        name: string;
+        constructor(player: Player, ships: Unit[], location: Star, id?: number);
+        getShipIndex(ship: Unit): number;
+        hasShip(ship: Unit): boolean;
+        deleteFleet(shouldRender?: boolean): void;
+        mergeWith(fleet: Fleet, shouldRender?: boolean): void;
+        addShip(ship: Unit): boolean;
+        addShips(ships: Unit[]): void;
+        removeShip(ship: Unit): boolean;
+        removeShips(ships: Unit[]): void;
+        transferShip(fleet: Fleet, ship: Unit): boolean;
+        split(): Fleet;
+        getMinCurrentMovePoints(): number;
+        getMinMaxMovePoints(): number;
+        canMove(): boolean;
+        subtractMovePoints(): void;
+        move(newLocation: Star): void;
+        getPathTo(newLocation: Star): {
+            star: Star;
             cost: any;
         }[];
-        public pathFind(newLocation: Rance.Star, onMove?: any, afterMove?: any): void;
-        public getFriendlyFleetsAtOwnLocation(): Fleet[];
-        public getTotalStrengthEvaluation(): number;
-        public getTotalHealth(): {
+        pathFind(newLocation: Star, onMove?: any, afterMove?: any): void;
+        getFriendlyFleetsAtOwnLocation(): Fleet[];
+        getTotalStrengthEvaluation(): number;
+        getTotalHealth(): {
             current: number;
             max: number;
         };
-        public updateVisibleStars(): void;
-        public getVision(): Rance.Star[];
-        public serialize(): any;
+        updateVisibleStars(): void;
+        getVision(): Star[];
+        serialize(): any;
     }
 }
 declare module Rance {
@@ -1181,31 +1181,31 @@ declare module Rance {
 }
 declare module Rance {
     class Emblem {
-        public alpha: number;
-        public color: number;
-        public inner: Rance.Templates.ISubEmblemTemplate;
-        public outer: Rance.Templates.ISubEmblemTemplate;
+        alpha: number;
+        color: number;
+        inner: Templates.ISubEmblemTemplate;
+        outer: Templates.ISubEmblemTemplate;
         constructor(color: number, alpha?: number, inner?: any, outer?: any);
-        public isForegroundOnly(): boolean;
-        public generateRandom(minAlpha: number, rng?: any): void;
-        public generateSubEmblems(rng: any): void;
-        public draw(): HTMLCanvasElement;
-        public drawSubEmblem(toDraw: Rance.Templates.ISubEmblemTemplate): HTMLCanvasElement;
-        public serialize(): any;
+        isForegroundOnly(): boolean;
+        generateRandom(minAlpha: number, rng?: any): void;
+        generateSubEmblems(rng: any): void;
+        draw(): HTMLCanvasElement;
+        drawSubEmblem(toDraw: Templates.ISubEmblemTemplate): HTMLCanvasElement;
+        serialize(): any;
     }
 }
 declare module Rance {
     class Flag {
-        public width: number;
-        public height: number;
-        public mainColor: number;
-        public secondaryColor: number;
-        public tetriaryColor: number;
-        public backgroundEmblem: Rance.Emblem;
-        public foregroundEmblem: Rance.Emblem;
-        public customImage: string;
+        width: number;
+        height: number;
+        mainColor: number;
+        secondaryColor: number;
+        tetriaryColor: number;
+        backgroundEmblem: Emblem;
+        foregroundEmblem: Emblem;
+        customImage: string;
         private _customImageToRender;
-        public seed: any;
+        seed: any;
         constructor(props: {
             width: number;
             height?: number;
@@ -1213,106 +1213,106 @@ declare module Rance {
             secondaryColor?: number;
             tetriaryColor?: number;
         });
-        public setColorScheme(main: any, secondary?: any, tetriary?: any): void;
-        public generateRandom(seed?: any): void;
-        public clearContent(): void;
-        public setForegroundEmblem(emblem: Rance.Emblem): void;
-        public setBackgroundEmblem(emblem: Rance.Emblem): void;
-        public setCustomImage(imageSrc: string): void;
-        public draw(): HTMLCanvasElement;
-        public serialize(): any;
+        setColorScheme(main: any, secondary?: any, tetriary?: any): void;
+        generateRandom(seed?: any): void;
+        clearContent(): void;
+        setForegroundEmblem(emblem: Emblem): void;
+        setBackgroundEmblem(emblem: Emblem): void;
+        setCustomImage(imageSrc: string): void;
+        draw(): HTMLCanvasElement;
+        serialize(): any;
     }
 }
 declare module Rance {
     interface IMove {
-        ability: Rance.Templates.IAbilityTemplate;
+        ability: Templates.IAbilityTemplate;
         targetId: number;
     }
     class MCTreeNode {
-        public battle: Rance.Battle;
-        public sideId: string;
-        public move: IMove;
-        public depth: number;
-        public parent: MCTreeNode;
-        public children: MCTreeNode[];
-        public visits: number;
-        public wins: number;
-        public winRate: number;
-        public totalScore: number;
-        public averageScore: number;
-        public currentScore: number;
-        public possibleMoves: IMove[];
-        public uctEvaluation: number;
-        public uctIsDirty: boolean;
-        constructor(battle: Rance.Battle, sideId: string, move?: IMove);
-        public getPossibleMoves(): any[];
-        public addChild(): MCTreeNode;
-        public updateResult(result: number): void;
-        public simulateOnce(battle: Rance.Battle): void;
-        public simulateToEnd(): void;
-        public clearResult(): void;
-        public setUct(): void;
-        public getHighestUctChild(): MCTreeNode;
-        public getRecursiveBestUctChild(): any;
+        battle: Battle;
+        sideId: string;
+        move: IMove;
+        depth: number;
+        parent: MCTreeNode;
+        children: MCTreeNode[];
+        visits: number;
+        wins: number;
+        winRate: number;
+        totalScore: number;
+        averageScore: number;
+        currentScore: number;
+        possibleMoves: IMove[];
+        uctEvaluation: number;
+        uctIsDirty: boolean;
+        constructor(battle: Battle, sideId: string, move?: IMove);
+        getPossibleMoves(): any[];
+        addChild(): MCTreeNode;
+        updateResult(result: number): void;
+        simulateOnce(battle: Battle): void;
+        simulateToEnd(): void;
+        clearResult(): void;
+        setUct(): void;
+        getHighestUctChild(): MCTreeNode;
+        getRecursiveBestUctChild(): any;
     }
 }
 declare module Rance {
     class MCTree {
-        public rootNode: Rance.MCTreeNode;
-        constructor(battle: Rance.Battle, sideId: string);
-        public sortByWinRateFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
-        public sortByScoreFN(a: Rance.MCTreeNode, b: Rance.MCTreeNode): number;
-        public evaluate(iterations: number): Rance.MCTreeNode;
-        public printToConsole(nodes: Rance.MCTreeNode[]): void;
+        rootNode: MCTreeNode;
+        constructor(battle: Battle, sideId: string);
+        sortByWinRateFN(a: MCTreeNode, b: MCTreeNode): number;
+        sortByScoreFN(a: MCTreeNode, b: MCTreeNode): number;
+        evaluate(iterations: number): MCTreeNode;
+        printToConsole(nodes: MCTreeNode[]): void;
     }
 }
 declare module Rance {
     class BattleSimulator {
-        public battle: Rance.Battle;
-        constructor(battle: Rance.Battle);
-        public simulateBattle(): void;
-        public simulateMove(): void;
-        public simulateAbility(ability: Rance.Templates.IAbilityTemplate, target: Rance.Unit): void;
-        public getBattleEndData(): void;
-        public finishBattle(): void;
+        battle: Battle;
+        constructor(battle: Battle);
+        simulateBattle(): void;
+        simulateMove(): void;
+        simulateAbility(ability: Templates.IAbilityTemplate, target: Unit): void;
+        getBattleEndData(): void;
+        finishBattle(): void;
     }
 }
 declare module Rance {
     class BattlePrep {
-        public attacker: Rance.Player;
-        public defender: Rance.Player;
-        public battleData: Rance.IBattleData;
-        public attackerFormation: Rance.Unit[][];
-        public defenderFormation: Rance.Unit[][];
-        public availableUnits: Rance.Unit[];
-        public playerFormation: Rance.Unit[][];
-        public humanPlayer: Rance.Player;
-        public enemyFormation: Rance.Unit[][];
-        public enemyPlayer: Rance.Player;
-        public alreadyPlaced: {
+        attacker: Player;
+        defender: Player;
+        battleData: IBattleData;
+        attackerFormation: Unit[][];
+        defenderFormation: Unit[][];
+        availableUnits: Unit[];
+        playerFormation: Unit[][];
+        humanPlayer: Player;
+        enemyFormation: Unit[][];
+        enemyPlayer: Player;
+        alreadyPlaced: {
             [id: number]: number[];
         };
-        constructor(battleData: Rance.IBattleData);
-        public makeEmptyFormation(): Rance.Unit[][];
-        public makeAIFormations(): void;
-        public setupPlayer(): void;
-        public makeAIFormation(units: Rance.Unit[]): Rance.Unit[][];
-        public getUnitPosition(unit: Rance.Unit): number[];
-        public getUnitAtPosition(position: number[]): Rance.Unit;
-        public clearPlayerFormation(): void;
-        public setupPlayerFormation(formation: Rance.Unit[][]): void;
-        public setUnit(unit: Rance.Unit, position: number[]): void;
-        public swapUnits(unit1: Rance.Unit, unit2: Rance.Unit): void;
-        public removeUnit(unit: Rance.Unit): void;
-        public humanFormationIsValid(): boolean;
-        public forEachShipInFormation(formation: Rance.Unit[][], operator: (unit: Rance.Unit) => any): void;
-        public makeBattle(): Rance.Battle;
+        constructor(battleData: IBattleData);
+        makeEmptyFormation(): Unit[][];
+        makeAIFormations(): void;
+        setupPlayer(): void;
+        makeAIFormation(units: Unit[]): Unit[][];
+        getUnitPosition(unit: Unit): number[];
+        getUnitAtPosition(position: number[]): Unit;
+        clearPlayerFormation(): void;
+        setupPlayerFormation(formation: Unit[][]): void;
+        setUnit(unit: Unit, position: number[]): void;
+        swapUnits(unit1: Unit, unit2: Unit): void;
+        removeUnit(unit: Unit): void;
+        humanFormationIsValid(): boolean;
+        forEachShipInFormation(formation: Unit[][], operator: (unit: Unit) => any): void;
+        makeBattle(): Battle;
     }
 }
 declare module Rance {
     interface IDiplomacyEvaluation {
         currentTurn: number;
-        currentStatus: Rance.DiplomaticState;
+        currentStatus: DiplomaticState;
         neighborStars: number;
         opinion: number;
     }
@@ -1329,10 +1329,10 @@ declare module Rance {
             duration: number;
             canBeOverriddenBy?: IAttitudeModifierTemplate[];
             triggeredOnly?: boolean;
-            startCondition?: (evaluation: Rance.IDiplomacyEvaluation) => boolean;
-            endCondition?: (evaluation: Rance.IDiplomacyEvaluation) => boolean;
+            startCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
+            endCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
             constantEffect?: number;
-            getEffectFromEvaluation?: (evaluation: Rance.IDiplomacyEvaluation) => number;
+            getEffectFromEvaluation?: (evaluation: IDiplomacyEvaluation) => number;
             canOverride?: IAttitudeModifierTemplate[];
         }
         module AttitudeModifiers {
@@ -1344,24 +1344,24 @@ declare module Rance {
 }
 declare module Rance {
     class AttitudeModifier {
-        public template: Rance.Templates.IAttitudeModifierTemplate;
-        public startTurn: number;
-        public endTurn: number;
-        public currentTurn: number;
-        public strength: number;
-        public isOverRidden: boolean;
+        template: Templates.IAttitudeModifierTemplate;
+        startTurn: number;
+        endTurn: number;
+        currentTurn: number;
+        strength: number;
+        isOverRidden: boolean;
         constructor(props: {
-            template: Rance.Templates.IAttitudeModifierTemplate;
+            template: Templates.IAttitudeModifierTemplate;
             startTurn: number;
             endTurn?: number;
             strength?: number;
         });
-        public setStrength(evaluation: Rance.IDiplomacyEvaluation): number;
-        public getFreshness(currentTurn?: number): number;
-        public getAdjustedStrength(currentTurn?: number): number;
-        public hasExpired(currentTurn?: number): boolean;
-        public shouldEnd(evaluation: Rance.IDiplomacyEvaluation): boolean;
-        public serialize(): any;
+        setStrength(evaluation: IDiplomacyEvaluation): number;
+        getFreshness(currentTurn?: number): number;
+        getAdjustedStrength(currentTurn?: number): number;
+        hasExpired(currentTurn?: number): boolean;
+        shouldEnd(evaluation: IDiplomacyEvaluation): boolean;
+        serialize(): any;
     }
 }
 declare module Rance {
@@ -1371,33 +1371,33 @@ declare module Rance {
         war = 2,
     }
     class DiplomacyStatus {
-        public player: Rance.Player;
-        public baseOpinion: number;
-        public metPlayers: {
-            [playerId: number]: Rance.Player;
+        player: Player;
+        baseOpinion: number;
+        metPlayers: {
+            [playerId: number]: Player;
         };
-        public statusByPlayer: {
+        statusByPlayer: {
             [playerId: number]: DiplomaticState;
         };
-        public attitudeModifiersByPlayer: {
-            [playerId: number]: Rance.AttitudeModifier[];
+        attitudeModifiersByPlayer: {
+            [playerId: number]: AttitudeModifier[];
         };
-        constructor(player: Rance.Player);
-        public getBaseOpinion(): number;
-        public updateAttitudes(): void;
-        public handleDiplomaticStatusUpdate(): void;
-        public getOpinionOf(player: Rance.Player): number;
-        public meetPlayer(player: Rance.Player): void;
-        public canDeclareWarOn(player: Rance.Player): boolean;
-        public canMakePeaceWith(player: Rance.Player): boolean;
-        public declareWarOn(player: Rance.Player): void;
-        public makePeaceWith(player: Rance.Player): void;
-        public canAttackFleetOfPlayer(player: Rance.Player): boolean;
-        public canAttackBuildingOfPlayer(player: Rance.Player): boolean;
-        public hasModifierOfSameType(player: Rance.Player, modifier: Rance.AttitudeModifier): boolean;
-        public addAttitudeModifier(player: Rance.Player, modifier: Rance.AttitudeModifier): void;
-        public processAttitudeModifiersForPlayer(player: Rance.Player, evaluation: Rance.IDiplomacyEvaluation): void;
-        public serialize(): any;
+        constructor(player: Player);
+        getBaseOpinion(): number;
+        updateAttitudes(): void;
+        handleDiplomaticStatusUpdate(): void;
+        getOpinionOf(player: Player): number;
+        meetPlayer(player: Player): void;
+        canDeclareWarOn(player: Player): boolean;
+        canMakePeaceWith(player: Player): boolean;
+        declareWarOn(player: Player): void;
+        makePeaceWith(player: Player): void;
+        canAttackFleetOfPlayer(player: Player): boolean;
+        canAttackBuildingOfPlayer(player: Player): boolean;
+        hasModifierOfSameType(player: Player, modifier: AttitudeModifier): boolean;
+        addAttitudeModifier(player: Player, modifier: AttitudeModifier): void;
+        processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation): void;
+        serialize(): any;
     }
 }
 declare module Rance {
@@ -1412,32 +1412,32 @@ declare module Rance {
     function makeRandomPersonality(): IPersonalityData;
     module Templates {
         module Personalities {
-            var testPersonality1: Rance.IPersonalityData;
+            var testPersonality1: IPersonalityData;
         }
     }
 }
 declare module Rance {
     class MapVoronoiInfo {
-        public treeMap: any;
-        public diagram: any;
-        public nonFillerLines: {
+        treeMap: any;
+        diagram: any;
+        nonFillerLines: {
             [visibility: string]: any[];
         };
         constructor();
-        public getNonFillerVoronoiLines(visibleStars?: Rance.Star[]): any[];
-        public getStarAtPoint(point: Rance.Point): any;
+        getNonFillerVoronoiLines(visibleStars?: Star[]): any[];
+        getStarAtPoint(point: Point): any;
     }
 }
 declare module Rance {
-    class FillerPoint implements Rance.Point {
-        public x: number;
-        public y: number;
-        public mapGenData: any;
-        public voronoiCell: any;
-        public voronoiId: number;
+    class FillerPoint implements Point {
+        x: number;
+        y: number;
+        mapGenData: any;
+        voronoiCell: any;
+        voronoiId: number;
         constructor(x: number, y: number);
-        public setPosition(x: number, y: number): void;
-        public serialize(): {
+        setPosition(x: number, y: number): void;
+        serialize(): {
             x: number;
             y: number;
         };
@@ -1446,92 +1446,92 @@ declare module Rance {
 declare module Rance {
     module MapGen2 {
         class Triangle {
-            public a: Rance.Point;
-            public b: Rance.Point;
-            public c: Rance.Point;
-            public circumCenterX: number;
-            public circumCenterY: number;
-            public circumRadius: number;
-            constructor(a: Rance.Point, b: Rance.Point, c: Rance.Point);
-            public getPoints(): Rance.Point[];
-            public getCircumCenter(): number[];
-            public calculateCircumCircle(tolerance?: number): void;
-            public circumCircleContainsPoint(point: Rance.Point): boolean;
-            public getEdges(): Rance.Point[][];
-            public getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
+            a: Point;
+            b: Point;
+            c: Point;
+            circumCenterX: number;
+            circumCenterY: number;
+            circumRadius: number;
+            constructor(a: Point, b: Point, c: Point);
+            getPoints(): Point[];
+            getCircumCenter(): number[];
+            calculateCircumCircle(tolerance?: number): void;
+            circumCircleContainsPoint(point: Point): boolean;
+            getEdges(): Point[][];
+            getAmountOfSharedVerticesWith(toCheckAgainst: Triangle): number;
         }
     }
 }
 declare module Rance {
     module MapGen2 {
-        function triangulate(vertices: Rance.Point[]): Triangle[];
-        function getCentroid(vertices: Rance.Point[]): Rance.Point;
+        function triangulate(vertices: Point[]): Triangle[];
+        function getCentroid(vertices: Point[]): Point;
     }
 }
 declare module Rance {
     module MapGen2 {
-        function makeVoronoi(points: Rance.Point[], width: number, height: number): any;
+        function makeVoronoi(points: Point[], width: number, height: number): any;
         /**
-        * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
-        * @param {any}             diagram Voronoi diagram to relax
-        * @param {(any) => number} dampeningFunction If specified, use value returned by dampeningFunction(cell.site)
-        *                                            to adjust how far towards centroid the point is moved.
-        *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
-        */
-        function relaxVoronoi(diagram: any, dampeningFunction?: (any: any) => number): void;
+         * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
+         * @param {any}             diagram Voronoi diagram to relax
+         * @param {(any) => number} dampeningFunction If specified, use value returned by dampeningFunction(cell.site)
+         *                                            to adjust how far towards centroid the point is moved.
+         *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
+         */
+        function relaxVoronoi(diagram: any, dampeningFunction?: (any) => number): void;
     }
 }
 declare module Rance {
     module MapGen2 {
         class MapGenResult {
-            public stars: Rance.Star[];
-            public fillerPoints: Rance.FillerPoint[];
-            public width: number;
-            public height: number;
-            public voronoiInfo: Rance.MapVoronoiInfo;
+            stars: Star[];
+            fillerPoints: FillerPoint[];
+            width: number;
+            height: number;
+            voronoiInfo: MapVoronoiInfo;
             constructor(props: {
-                stars: Rance.Star[];
-                fillerPoints: Rance.FillerPoint[];
+                stars: Star[];
+                fillerPoints: FillerPoint[];
                 width: number;
                 height: number;
             });
-            public getAllPoints(): Rance.Point[];
-            public makeMap(): Rance.GalaxyMap;
-            public makeVoronoiInfo(): Rance.MapVoronoiInfo;
-            public makeVoronoiTreeMap(): any;
-            public clearMapGenData(): void;
+            getAllPoints(): Point[];
+            makeMap(): GalaxyMap;
+            makeVoronoiInfo(): MapVoronoiInfo;
+            makeVoronoiTreeMap(): any;
+            clearMapGenData(): void;
         }
     }
 }
 declare module Rance {
     class Game {
-        public turnNumber: number;
-        public independents: Rance.Player[];
-        public playerOrder: Rance.Player[];
-        public galaxyMap: Rance.GalaxyMap;
-        public humanPlayer: Rance.Player;
-        public activePlayer: Rance.Player;
-        constructor(map: Rance.GalaxyMap, players: Rance.Player[], humanPlayer: Rance.Player);
-        public endTurn(): void;
-        public processPlayerStartTurn(player: Rance.Player): void;
-        public setNextPlayer(): void;
-        public serialize(): any;
-        public save(name: string): void;
+        turnNumber: number;
+        independents: Player[];
+        playerOrder: Player[];
+        galaxyMap: GalaxyMap;
+        humanPlayer: Player;
+        activePlayer: Player;
+        constructor(map: GalaxyMap, players: Player[], humanPlayer: Player);
+        endTurn(): void;
+        processPlayerStartTurn(player: Player): void;
+        setNextPlayer(): void;
+        serialize(): any;
+        save(name: string): void;
     }
 }
 declare module Rance {
     class GalaxyMap {
-        public stars: Rance.Star[];
-        public fillerPoints: Rance.FillerPoint[];
-        public width: number;
-        public height: number;
-        public voronoi: Rance.MapVoronoiInfo;
-        constructor(mapGen: Rance.MapGen2.MapGenResult);
-        public getIncomeBounds(): {
+        stars: Star[];
+        fillerPoints: FillerPoint[];
+        width: number;
+        height: number;
+        voronoi: MapVoronoiInfo;
+        constructor(mapGen: MapGen2.MapGenResult);
+        getIncomeBounds(): {
             min: any;
             max: any;
         };
-        public serialize(): any;
+        serialize(): any;
     }
 }
 declare module Rance {
@@ -1548,30 +1548,30 @@ declare module Rance {
     };
     interface IIndependentTargetEvaluations {
         [starId: number]: {
-            star: Rance.Star;
+            star: Star;
             desirability: number;
             independentStrength: number;
             ownInfluence: number;
         };
     }
     class MapEvaluator {
-        public map: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public cachedInfluenceMaps: {
+        map: GalaxyMap;
+        player: Player;
+        game: Game;
+        cachedInfluenceMaps: {
             [turnNumber: number]: {
                 [playerId: number]: {
                     [starId: number]: number;
                 };
             };
         };
-        public cachedVisibleFleets: {
+        cachedVisibleFleets: {
             [turnNumber: number]: {
-                [playerId: number]: Rance.Fleet[];
+                [playerId: number]: Fleet[];
             };
         };
-        public cachedOwnIncome: number;
-        public evaluationParameters: {
+        cachedOwnIncome: number;
+        evaluationParameters: {
             starDesirability: {
                 neighborRange: number;
                 neighborWeight: number;
@@ -1582,391 +1582,391 @@ declare module Rance {
                 productionWeight: number;
             };
         };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player, game?: Rance.Game);
-        public processTurnStart(): void;
-        public evaluateStarIncome(star: Rance.Star): number;
-        public evaluateStarInfrastructure(star: Rance.Star): number;
-        public evaluateStarProduction(star: Rance.Star): number;
-        public evaluateStarDefendability(star: Rance.Star): number;
-        public evaluateIndividualStarDesirability(star: Rance.Star): number;
-        public evaluateNeighboringStarsDesirability(star: Rance.Star, range: number): number;
-        public evaluateStarDesirability(star: Rance.Star): number;
-        public evaluateIndependentTargets(targetStars: Rance.Star[]): IIndependentTargetEvaluations;
-        public scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
-            star: Rance.Star;
+        constructor(map: GalaxyMap, player: Player, game?: Game);
+        processTurnStart(): void;
+        evaluateStarIncome(star: Star): number;
+        evaluateStarInfrastructure(star: Star): number;
+        evaluateStarProduction(star: Star): number;
+        evaluateStarDefendability(star: Star): number;
+        evaluateIndividualStarDesirability(star: Star): number;
+        evaluateNeighboringStarsDesirability(star: Star, range: number): number;
+        evaluateStarDesirability(star: Star): number;
+        evaluateIndependentTargets(targetStars: Star[]): IIndependentTargetEvaluations;
+        scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
+            star: Star;
             score: number;
         }[];
-        public getScoredExpansionTargets(): {
-            star: Rance.Star;
+        getScoredExpansionTargets(): {
+            star: Star;
             score: number;
         }[];
-        public getScoredCleanPiratesTargets(): {
-            star: Rance.Star;
+        getScoredCleanPiratesTargets(): {
+            star: Star;
             score: number;
         }[];
-        public getHostileShipsAtStar(star: Rance.Star): {
-            [playerId: number]: Rance.Unit[];
+        getHostileShipsAtStar(star: Star): {
+            [playerId: number]: Unit[];
         };
-        public getHostileStrengthAtStar(star: Rance.Star): {
+        getHostileStrengthAtStar(star: Star): {
             [playerId: number]: number;
         };
-        public getIndependentStrengthAtStar(star: Rance.Star): number;
-        public getTotalHostileStrengthAtStar(star: Rance.Star): number;
-        public getDefenceBuildingStrengthAtStarByPlayer(star: Rance.Star): {
+        getIndependentStrengthAtStar(star: Star): number;
+        getTotalHostileStrengthAtStar(star: Star): number;
+        getDefenceBuildingStrengthAtStarByPlayer(star: Star): {
             [playerId: number]: number;
         };
-        public getTotalDefenceBuildingStrengthAtStar(star: Rance.Star): number;
-        public evaluateFleetStrength(fleet: Rance.Fleet): number;
-        public getVisibleFleetsByPlayer(): {
-            [playerId: number]: Rance.Fleet[];
+        getTotalDefenceBuildingStrengthAtStar(star: Star): number;
+        evaluateFleetStrength(fleet: Fleet): number;
+        getVisibleFleetsByPlayer(): {
+            [playerId: number]: Fleet[];
         };
-        public buildPlayerInfluenceMap(player: Rance.Player): {
+        buildPlayerInfluenceMap(player: Player): {
             [starId: number]: number;
         };
-        public getPlayerInfluenceMap(player: Rance.Player): {
+        getPlayerInfluenceMap(player: Player): {
             [starId: number]: number;
         };
-        public getInfluenceMapsForKnownPlayers(): {
+        getInfluenceMapsForKnownPlayers(): {
             [playerId: number]: {
                 [starId: number]: number;
             };
         };
-        public estimateGlobalStrength(player: Rance.Player): number;
-        public getPerceivedThreatOfPlayer(player: Rance.Player): number;
-        public getPerceivedThreatOfAllKnownPlayers(): {
+        estimateGlobalStrength(player: Player): number;
+        getPerceivedThreatOfPlayer(player: Player): number;
+        getPerceivedThreatOfAllKnownPlayers(): {
             [playerId: number]: number;
         };
-        public getRelativePerceivedThreatOfAllKnownPlayers(): {
+        getRelativePerceivedThreatOfAllKnownPlayers(): {
             [playerId: number]: number;
         };
-        public getDiplomacyEvaluations(currentTurn: number): {
-            [playerId: number]: Rance.IDiplomacyEvaluation;
+        getDiplomacyEvaluations(currentTurn: number): {
+            [playerId: number]: IDiplomacyEvaluation;
         };
     }
 }
 declare module Rance {
     class Objective {
-        public id: number;
-        public type: string;
+        id: number;
+        type: string;
         private _basePriority;
-        public priority : number;
-        public isOngoing: boolean;
-        public target: Rance.Star;
-        public data: any;
-        constructor(type: string, priority: number, target: Rance.Star, data?: any);
+        priority: number;
+        isOngoing: boolean;
+        target: Star;
+        data: any;
+        constructor(type: string, priority: number, target: Star, data?: any);
     }
 }
 declare module Rance {
     class ObjectivesAI {
-        public mapEvaluator: Rance.MapEvaluator;
-        public map: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public personality: Rance.IPersonalityData;
-        public objectivesByType: {
+        mapEvaluator: MapEvaluator;
+        map: GalaxyMap;
+        player: Player;
+        personality: IPersonalityData;
+        objectivesByType: {
             expansion: any[];
             cleanPirates: any[];
             heal: any[];
         };
-        public objectives: Rance.Objective[];
-        public maxActiveExpansionRequests: number;
-        public requests: any[];
-        constructor(mapEvaluator: Rance.MapEvaluator, personality: Rance.IPersonalityData);
-        public setAllObjectives(): void;
-        public addObjectives(objectives: Rance.Objective[]): void;
-        public getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Rance.Objective[];
-        public getExpansionObjectives(): Rance.Objective[];
-        public getCleanPiratesObjectives(): Rance.Objective[];
-        public getHealObjectives(): Rance.Objective[];
+        objectives: Objective[];
+        maxActiveExpansionRequests: number;
+        requests: any[];
+        constructor(mapEvaluator: MapEvaluator, personality: IPersonalityData);
+        setAllObjectives(): void;
+        addObjectives(objectives: Objective[]): void;
+        getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
+        getExpansionObjectives(): Objective[];
+        getCleanPiratesObjectives(): Objective[];
+        getHealObjectives(): Objective[];
     }
 }
 declare module Rance {
     class Front {
-        public id: number;
-        public objective: Rance.Objective;
-        public priority: number;
-        public units: Rance.Unit[];
-        public minUnitsDesired: number;
-        public idealUnitsDesired: number;
-        public targetLocation: Rance.Star;
-        public musterLocation: Rance.Star;
-        public hasMustered: boolean;
+        id: number;
+        objective: Objective;
+        priority: number;
+        units: Unit[];
+        minUnitsDesired: number;
+        idealUnitsDesired: number;
+        targetLocation: Star;
+        musterLocation: Star;
+        hasMustered: boolean;
         constructor(props: {
             id: number;
-            objective: Rance.Objective;
+            objective: Objective;
             priority: number;
-            units?: Rance.Unit[];
+            units?: Unit[];
             minUnitsDesired: number;
             idealUnitsDesired: number;
-            targetLocation: Rance.Star;
-            musterLocation: Rance.Star;
+            targetLocation: Star;
+            musterLocation: Star;
         });
-        public organizeFleets(): void;
-        public isFleetPure(fleet: Rance.Fleet): boolean;
-        public getAssociatedFleets(): Rance.Fleet[];
-        public getUnitIndex(unit: Rance.Unit): number;
-        public addUnit(unit: Rance.Unit): void;
-        public removeUnit(unit: Rance.Unit): void;
-        public getUnitCountByArchetype(): {
+        organizeFleets(): void;
+        isFleetPure(fleet: Fleet): boolean;
+        getAssociatedFleets(): Fleet[];
+        getUnitIndex(unit: Unit): number;
+        addUnit(unit: Unit): void;
+        removeUnit(unit: Unit): void;
+        getUnitCountByArchetype(): {
             [archetype: string]: number;
         };
-        public getUnitsByLocation(): {
-            [starId: number]: Rance.Unit[];
+        getUnitsByLocation(): {
+            [starId: number]: Unit[];
         };
-        public moveFleets(afterMoveCallback: any): void;
-        public healMoveRoutine(afterMoveCallback: any): void;
-        public defaultMoveRoutine(afterMoveCallback: any): void;
-        public executeAction(afterExecutedCallback: any): void;
+        moveFleets(afterMoveCallback: any): void;
+        healMoveRoutine(afterMoveCallback: any): void;
+        defaultMoveRoutine(afterMoveCallback: any): void;
+        executeAction(afterExecutedCallback: any): void;
     }
 }
 declare module Rance {
     class FrontsAI {
-        public player: Rance.Player;
-        public map: Rance.GalaxyMap;
-        public mapEvaluator: Rance.MapEvaluator;
-        public objectivesAI: Rance.ObjectivesAI;
-        public personality: Rance.IPersonalityData;
-        public fronts: Rance.Front[];
-        public frontsRequestingUnits: Rance.Front[];
-        public frontsToMove: Rance.Front[];
-        constructor(mapEvaluator: Rance.MapEvaluator, objectivesAI: Rance.ObjectivesAI, personality: Rance.IPersonalityData);
-        public getTotalUnitCountByArchetype(): {};
-        public getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
+        player: Player;
+        map: GalaxyMap;
+        mapEvaluator: MapEvaluator;
+        objectivesAI: ObjectivesAI;
+        personality: IPersonalityData;
+        fronts: Front[];
+        frontsRequestingUnits: Front[];
+        frontsToMove: Front[];
+        constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonalityData);
+        getTotalUnitCountByArchetype(): {};
+        getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
             [archetype: string]: number;
         };
-        public getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
+        getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
             [archetype: string]: number;
         };
-        public getGlobalUnitArcheypeScores(): {
+        getGlobalUnitArcheypeScores(): {
             [archetype: string]: number;
         };
-        public getFrontUnitArchetypeScores(front: Rance.Front): {
+        getFrontUnitArchetypeScores(front: Front): {
             [archetype: string]: number;
         };
-        public scoreUnitFitForFront(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
-        public getHealUnitFitScore(unit: Rance.Unit, front: Rance.Front): number;
-        public getDefaultUnitFitScore(unit: Rance.Unit, front: Rance.Front, frontArchetypeScores: any): any;
-        public getUnitScoresForFront(units: Rance.Unit[], front: Rance.Front): {
-            unit: Rance.Unit;
+        scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: any): any;
+        getHealUnitFitScore(unit: Unit, front: Front): number;
+        getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: any): any;
+        getUnitScoresForFront(units: Unit[], front: Front): {
+            unit: Unit;
             score: number;
-            front: Rance.Front;
+            front: Front;
         }[];
-        public assignUnits(): void;
-        public getFrontWithId(id: number): Rance.Front;
-        public createFront(objective: Rance.Objective): Rance.Front;
-        public removeInactiveFronts(): void;
-        public formFronts(): void;
-        public organizeFleets(): void;
-        public setFrontsToMove(): void;
-        public moveFleets(afterMovingAllCallback: any): void;
-        public getUnitsToFillObjective(objective: Rance.Objective): {
+        assignUnits(): void;
+        getFrontWithId(id: number): Front;
+        createFront(objective: Objective): Front;
+        removeInactiveFronts(): void;
+        formFronts(): void;
+        organizeFleets(): void;
+        setFrontsToMove(): void;
+        moveFleets(afterMovingAllCallback: any): void;
+        getUnitsToFillObjective(objective: Objective): {
             min: number;
             ideal: number;
         };
-        public getUnitsToFillExpansionObjective(objective: Rance.Objective): number;
-        public setUnitRequests(): void;
+        getUnitsToFillExpansionObjective(objective: Objective): number;
+        setUnitRequests(): void;
     }
 }
 declare module Rance {
     class EconomyAI {
-        public objectivesAI: Rance.ObjectivesAI;
-        public frontsAI: Rance.FrontsAI;
-        public mapEvaluator: Rance.MapEvaluator;
-        public player: Rance.Player;
-        public personality: Rance.IPersonalityData;
+        objectivesAI: ObjectivesAI;
+        frontsAI: FrontsAI;
+        mapEvaluator: MapEvaluator;
+        player: Player;
+        personality: IPersonalityData;
         constructor(props: {
-            objectivesAI: Rance.ObjectivesAI;
-            frontsAI: Rance.FrontsAI;
-            mapEvaluator: Rance.MapEvaluator;
-            personality: Rance.IPersonalityData;
+            objectivesAI: ObjectivesAI;
+            frontsAI: FrontsAI;
+            mapEvaluator: MapEvaluator;
+            personality: IPersonalityData;
         });
-        public satisfyAllRequests(): void;
-        public satisfyFrontRequest(front: Rance.Front): void;
+        satisfyAllRequests(): void;
+        satisfyFrontRequest(front: Front): void;
     }
 }
 declare module Rance {
     class DiplomacyAI {
-        public game: Rance.Game;
-        public player: Rance.Player;
-        public diplomacyStatus: Rance.DiplomacyStatus;
-        public personality: Rance.IPersonalityData;
-        public mapEvaluator: Rance.MapEvaluator;
-        constructor(mapEvaluator: Rance.MapEvaluator, game: Rance.Game, personality: Rance.IPersonalityData);
-        public setAttitudes(): void;
+        game: Game;
+        player: Player;
+        diplomacyStatus: DiplomacyStatus;
+        personality: IPersonalityData;
+        mapEvaluator: MapEvaluator;
+        constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonalityData);
+        setAttitudes(): void;
     }
 }
 declare module Rance {
     class AIController {
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public personality: Rance.IPersonalityData;
-        public map: Rance.GalaxyMap;
-        public mapEvaluator: Rance.MapEvaluator;
-        public objectivesAI: Rance.ObjectivesAI;
-        public economicAI: Rance.EconomyAI;
-        public frontsAI: Rance.FrontsAI;
-        public diplomacyAI: Rance.DiplomacyAI;
-        constructor(player: Rance.Player, game: Rance.Game, personality?: Rance.IPersonalityData);
-        public processTurn(afterFinishedCallback?: any): void;
-        public finishMovingFleets(afterFinishedCallback?: any): void;
+        player: Player;
+        game: Game;
+        personality: IPersonalityData;
+        map: GalaxyMap;
+        mapEvaluator: MapEvaluator;
+        objectivesAI: ObjectivesAI;
+        economicAI: EconomyAI;
+        frontsAI: FrontsAI;
+        diplomacyAI: DiplomacyAI;
+        constructor(player: Player, game: Game, personality?: IPersonalityData);
+        processTurn(afterFinishedCallback?: any): void;
+        finishMovingFleets(afterFinishedCallback?: any): void;
     }
 }
 declare module Rance {
     class Player {
-        public id: number;
-        public name: string;
-        public color: number;
-        public colorAlpha: number;
-        public secondaryColor: number;
-        public flag: Rance.Flag;
-        public icon: string;
-        public units: {
-            [id: number]: Rance.Unit;
+        id: number;
+        name: string;
+        color: number;
+        colorAlpha: number;
+        secondaryColor: number;
+        flag: Flag;
+        icon: string;
+        units: {
+            [id: number]: Unit;
         };
-        public resources: {
+        resources: {
             [resourceType: string]: number;
         };
-        public fleets: Rance.Fleet[];
-        public items: Rance.Item[];
-        public isAI: boolean;
-        public personality: Rance.IPersonalityData;
-        public AIController: Rance.AIController;
-        public isIndependent: boolean;
-        public diplomacyStatus: Rance.DiplomacyStatus;
-        public money: number;
-        public controlledLocations: Rance.Star[];
-        public visionIsDirty: boolean;
-        public visibleStars: {
-            [id: number]: Rance.Star;
+        fleets: Fleet[];
+        items: Item[];
+        isAI: boolean;
+        personality: IPersonalityData;
+        AIController: AIController;
+        isIndependent: boolean;
+        diplomacyStatus: DiplomacyStatus;
+        money: number;
+        controlledLocations: Star[];
+        visionIsDirty: boolean;
+        visibleStars: {
+            [id: number]: Star;
         };
-        public revealedStars: {
-            [id: number]: Rance.Star;
+        revealedStars: {
+            [id: number]: Star;
         };
         constructor(isAI: boolean, id?: number);
-        public makeColorScheme(): void;
-        public setupAI(game: Rance.Game): void;
-        public setupPirates(): void;
-        public makeRandomFlag(seed?: any): void;
-        public setIcon(): void;
-        public addUnit(unit: Rance.Unit): void;
-        public removeUnit(unit: Rance.Unit): void;
-        public getAllUnits(): any[];
-        public forEachUnit(operator: (Unit: any) => void): void;
-        public getFleetIndex(fleet: Rance.Fleet): number;
-        public addFleet(fleet: Rance.Fleet): void;
-        public removeFleet(fleet: Rance.Fleet): void;
-        public getFleetsWithPositions(): any[];
-        public hasStar(star: Rance.Star): boolean;
-        public addStar(star: Rance.Star): boolean;
-        public removeStar(star: Rance.Star): boolean;
-        public getIncome(): number;
-        public addResource(resource: Rance.Templates.IResourceTemplate, amount: number): void;
-        public getResourceIncome(): {
+        makeColorScheme(): void;
+        setupAI(game: Game): void;
+        setupPirates(): void;
+        makeRandomFlag(seed?: any): void;
+        setIcon(): void;
+        addUnit(unit: Unit): void;
+        removeUnit(unit: Unit): void;
+        getAllUnits(): any[];
+        forEachUnit(operator: (Unit) => void): void;
+        getFleetIndex(fleet: Fleet): number;
+        addFleet(fleet: Fleet): void;
+        removeFleet(fleet: Fleet): void;
+        getFleetsWithPositions(): any[];
+        hasStar(star: Star): boolean;
+        addStar(star: Star): boolean;
+        removeStar(star: Star): boolean;
+        getIncome(): number;
+        addResource(resource: Templates.IResourceTemplate, amount: number): void;
+        getResourceIncome(): {
             [resourceType: string]: {
-                resource: Rance.Templates.IResourceTemplate;
+                resource: Templates.IResourceTemplate;
                 amount: number;
             };
         };
-        public getGloballyBuildableShips(): any[];
-        public getNeighboringStars(): Rance.Star[];
-        public updateVisibleStars(): void;
-        public getVisibleStars(): Rance.Star[];
-        public getRevealedStars(): Rance.Star[];
-        public getRevealedButNotVisibleStars(): Rance.Star[];
-        public buildUnit(template: Rance.Templates.IUnitTemplate, location: Rance.Star): Rance.Unit;
-        public addItem(item: Rance.Item): void;
-        public removeItem(item: Rance.Item): void;
-        public getAllBuildableItems(): any[];
-        public getNearestOwnedStarTo(star: Rance.Star): Rance.Star;
-        public attackTarget(location: Rance.Star, target: any, battleFinishCallback?: any): void;
-        public serialize(): any;
+        getGloballyBuildableShips(): any[];
+        getNeighboringStars(): Star[];
+        updateVisibleStars(): void;
+        getVisibleStars(): Star[];
+        getRevealedStars(): Star[];
+        getRevealedButNotVisibleStars(): Star[];
+        buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
+        addItem(item: Item): void;
+        removeItem(item: Item): void;
+        getAllBuildableItems(): any[];
+        getNearestOwnedStarTo(star: Star): Star;
+        attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
+        serialize(): any;
     }
 }
 declare module Rance {
     interface IBattleData {
-        location: Rance.Star;
-        building: Rance.Building;
+        location: Star;
+        building: Building;
         attacker: {
-            player: Rance.Player;
-            ships: Rance.Unit[];
+            player: Player;
+            ships: Unit[];
         };
         defender: {
-            player: Rance.Player;
-            ships: Rance.Unit[];
+            player: Player;
+            ships: Unit[];
         };
     }
 }
 declare module Rance {
     class Battle {
-        public unitsById: {
-            [id: number]: Rance.Unit;
+        unitsById: {
+            [id: number]: Unit;
         };
-        public unitsBySide: {
-            [side: string]: Rance.Unit[];
+        unitsBySide: {
+            [side: string]: Unit[];
         };
-        public side1: Rance.Unit[][];
-        public side1Player: Rance.Player;
-        public side2: Rance.Unit[][];
-        public side2Player: Rance.Player;
-        public battleData: Rance.IBattleData;
-        public turnOrder: Rance.Unit[];
-        public activeUnit: Rance.Unit;
-        public currentTurn: number;
-        public maxTurns: number;
-        public turnsLeft: number;
-        public startHealth: {
+        side1: Unit[][];
+        side1Player: Player;
+        side2: Unit[][];
+        side2Player: Player;
+        battleData: IBattleData;
+        turnOrder: Unit[];
+        activeUnit: Unit;
+        currentTurn: number;
+        maxTurns: number;
+        turnsLeft: number;
+        startHealth: {
             side1: number;
             side2: number;
         };
-        public evaluation: {
+        evaluation: {
             [turnNumber: number]: number;
         };
-        public isSimulated: boolean;
-        public isVirtual: boolean;
-        public ended: boolean;
-        public capturedUnits: Rance.Unit[];
-        public deadUnits: Rance.Unit[];
-        public afterFinishCallbacks: any[];
+        isSimulated: boolean;
+        isVirtual: boolean;
+        ended: boolean;
+        capturedUnits: Unit[];
+        deadUnits: Unit[];
+        afterFinishCallbacks: any[];
         constructor(props: {
-            battleData: Rance.IBattleData;
-            side1: Rance.Unit[][];
-            side2: Rance.Unit[][];
-            side1Player: Rance.Player;
-            side2Player: Rance.Player;
+            battleData: IBattleData;
+            side1: Unit[][];
+            side2: Unit[][];
+            side1Player: Player;
+            side2Player: Player;
         });
-        public init(): void;
-        public forEachUnit(operator: (Unit: any) => any): void;
-        public initUnit(unit: Rance.Unit, side: string, position: number[]): void;
-        public removeUnitFromTurnOrder(unit: Rance.Unit): boolean;
-        public addUnitToTurnOrder(unit: Rance.Unit): boolean;
-        public updateTurnOrder(): void;
-        public setActiveUnit(): void;
-        public endTurn(): void;
-        public getPlayerForSide(side: string): Rance.Player;
-        public getSideForPlayer(player: Rance.Player): string;
-        public getActivePlayer(): Rance.Player;
-        public getColumnByPosition(position: number): any;
-        public getCapturedUnits(victor: Rance.Player, maxCapturedUnits?: number): Rance.Unit[];
-        public getDeadUnits(capturedUnits: Rance.Unit[], victor: Rance.Player): Rance.Unit[];
-        public endBattle(): void;
-        public finishBattle(forcedVictor?: Rance.Player): void;
-        public getVictor(): Rance.Player;
-        public getTotalHealthForColumn(position: number): number;
-        public getTotalHealthForSide(side: string): {
+        init(): void;
+        forEachUnit(operator: (Unit) => any): void;
+        initUnit(unit: Unit, side: string, position: number[]): void;
+        removeUnitFromTurnOrder(unit: Unit): boolean;
+        addUnitToTurnOrder(unit: Unit): boolean;
+        updateTurnOrder(): void;
+        setActiveUnit(): void;
+        endTurn(): void;
+        getPlayerForSide(side: string): Player;
+        getSideForPlayer(player: Player): string;
+        getActivePlayer(): Player;
+        getColumnByPosition(position: number): any;
+        getCapturedUnits(victor: Player, maxCapturedUnits?: number): Unit[];
+        getDeadUnits(capturedUnits: Unit[], victor: Player): Unit[];
+        endBattle(): void;
+        finishBattle(forcedVictor?: Player): void;
+        getVictor(): Player;
+        getTotalHealthForColumn(position: number): number;
+        getTotalHealthForSide(side: string): {
             current: number;
             max: number;
         };
-        public getEvaluation(): number;
-        public swapColumnsForSide(side: string): void;
-        public swapColumnsIfNeeded(): void;
-        public checkBattleEnd(): boolean;
-        public makeVirtualClone(): Battle;
+        getEvaluation(): number;
+        swapColumnsForSide(side: string): void;
+        swapColumnsIfNeeded(): void;
+        checkBattleEnd(): boolean;
+        makeVirtualClone(): Battle;
     }
 }
 declare module Rance {
     interface IAbilityUseData {
-        user: Rance.Unit;
-        originalTarget: Rance.Unit;
-        actualTarget: Rance.Unit;
+        user: Unit;
+        originalTarget: Unit;
+        actualTarget: Unit;
         beforeUse: {
             (): void;
         }[];
@@ -1974,9 +1974,9 @@ declare module Rance {
             effects: {
                 (): void;
             }[];
-            user: Rance.Unit;
-            target: Rance.Unit;
-            sfx: Rance.Templates.IBattleEffectSFX;
+            user: Unit;
+            target: Unit;
+            sfx: Templates.IBattleEffectSFX;
         }[];
         afterUse: {
             (): void;
@@ -2008,29 +2008,29 @@ declare module Rance {
         speed?: IStatusEffectAttributeAdjustment;
     }
     class StatusEffect {
-        public attributes: IStatusEffectAttributes;
-        public duration: number;
+        attributes: IStatusEffectAttributes;
+        duration: number;
         constructor(attributes: IStatusEffectAttributes, duration: number);
-        public processTurnEnd(): void;
-        public clone(): StatusEffect;
+        processTurnEnd(): void;
+        clone(): StatusEffect;
     }
 }
 declare module Rance {
     class Unit {
-        public template: Rance.Templates.IUnitTemplate;
-        public id: number;
-        public name: string;
-        public maxHealth: number;
-        public currentHealth: number;
-        public isSquadron: boolean;
-        public currentMovePoints: number;
-        public maxMovePoints: number;
-        public timesActedThisTurn: number;
-        public baseAttributes: Rance.IUnitAttributes;
-        public attributesAreDirty: boolean;
-        public cachedAttributes: Rance.IUnitAttributes;
-        public attributes : Rance.IUnitAttributes;
-        public battleStats: {
+        template: Templates.IUnitTemplate;
+        id: number;
+        name: string;
+        maxHealth: number;
+        currentHealth: number;
+        isSquadron: boolean;
+        currentMovePoints: number;
+        maxMovePoints: number;
+        timesActedThisTurn: number;
+        baseAttributes: IUnitAttributes;
+        attributesAreDirty: boolean;
+        cachedAttributes: IUnitAttributes;
+        attributes: IUnitAttributes;
+        battleStats: {
             moveDelay: number;
             side: string;
             position: number[];
@@ -2038,79 +2038,79 @@ declare module Rance {
             guardAmount: number;
             guardCoverage: string;
             captureChance: number;
-            statusEffects: Rance.StatusEffect[];
+            statusEffects: StatusEffect[];
             lastHealthBeforeReceivingDamage: number;
         };
-        public displayFlags: {
+        displayFlags: {
             isAnnihilated: boolean;
         };
-        public fleet: Rance.Fleet;
-        public items: {
-            low: Rance.Item;
-            mid: Rance.Item;
-            high: Rance.Item;
+        fleet: Fleet;
+        items: {
+            low: Item;
+            mid: Item;
+            high: Item;
         };
-        public passiveSkillsByPhase: {
-            atBattleStart?: Rance.Templates.IPassiveSkillTemplate[];
-            beforeAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
-            afterAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
+        passiveSkillsByPhase: {
+            atBattleStart?: Templates.IPassiveSkillTemplate[];
+            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
+            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
         };
-        public passiveSkillsByPhaseAreDirty: boolean;
-        public sfxDuration: number;
-        public uiDisplayIsDirty: boolean;
-        public front: Rance.Front;
-        constructor(template: Rance.Templates.IUnitTemplate, id?: number, data?: any);
-        public makeFromData(data: any): void;
-        public setInitialValues(): void;
-        public setBaseHealth(): void;
-        public setAttributes(experience?: number, variance?: number): void;
-        public getBaseMoveDelay(): number;
-        public resetMovePoints(): void;
-        public resetBattleStats(): void;
-        public setBattlePosition(battle: Rance.Battle, side: string, position: number[]): void;
-        public addStrength(amount: number): void;
-        public removeStrength(amount: number): void;
-        public removeActionPoints(amount: number): void;
-        public addMoveDelay(amount: number): void;
-        public updateStatusEffects(): void;
-        public isTargetable(): boolean;
-        public isActiveInBattle(): boolean;
-        public addItem(item: Rance.Item): boolean;
-        public removeItem(item: Rance.Item): boolean;
-        public destroyAllItems(): void;
-        public getAttributesWithItems(): any;
-        public addStatusEffect(statusEffect: Rance.StatusEffect): void;
-        public removeStatusEffect(statusEffect: Rance.StatusEffect): void;
-        public getTotalStatusEffectAttributeAdjustments(): Rance.IStatusEffectAttributes;
-        public getAttributesWithEffects(): any;
-        public updateCachedAttributes(): void;
-        public removeItemAtSlot(slot: string): boolean;
-        public getItemAbilities(): Rance.Templates.IAbilityTemplate[];
-        public getAllAbilities(): Rance.Templates.IAbilityTemplate[];
-        public getItemPassiveSkills(): Rance.Templates.IPassiveSkillTemplate[];
-        public getAllPassiveSkills(): Rance.Templates.IPassiveSkillTemplate[];
-        public updatePassiveSkillsByPhase(): void;
-        public getPassiveSkillsByPhase(): {
-            atBattleStart?: Rance.Templates.IPassiveSkillTemplate[];
-            beforeAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
-            afterAbilityUse?: Rance.Templates.IPassiveSkillTemplate[];
+        passiveSkillsByPhaseAreDirty: boolean;
+        sfxDuration: number;
+        uiDisplayIsDirty: boolean;
+        front: Front;
+        constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
+        makeFromData(data: any): void;
+        setInitialValues(): void;
+        setBaseHealth(): void;
+        setAttributes(experience?: number, variance?: number): void;
+        getBaseMoveDelay(): number;
+        resetMovePoints(): void;
+        resetBattleStats(): void;
+        setBattlePosition(battle: Battle, side: string, position: number[]): void;
+        addStrength(amount: number): void;
+        removeStrength(amount: number): void;
+        removeActionPoints(amount: number): void;
+        addMoveDelay(amount: number): void;
+        updateStatusEffects(): void;
+        isTargetable(): boolean;
+        isActiveInBattle(): boolean;
+        addItem(item: Item): boolean;
+        removeItem(item: Item): boolean;
+        destroyAllItems(): void;
+        getAttributesWithItems(): any;
+        addStatusEffect(statusEffect: StatusEffect): void;
+        removeStatusEffect(statusEffect: StatusEffect): void;
+        getTotalStatusEffectAttributeAdjustments(): IStatusEffectAttributes;
+        getAttributesWithEffects(): any;
+        updateCachedAttributes(): void;
+        removeItemAtSlot(slot: string): boolean;
+        getItemAbilities(): Templates.IAbilityTemplate[];
+        getAllAbilities(): Templates.IAbilityTemplate[];
+        getItemPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        getAllPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        updatePassiveSkillsByPhase(): void;
+        getPassiveSkillsByPhase(): {
+            atBattleStart?: Templates.IPassiveSkillTemplate[];
+            beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
+            afterAbilityUse?: Templates.IPassiveSkillTemplate[];
         };
-        public receiveDamage(amount: number, damageType: Rance.DamageType): void;
-        public getAdjustedTroopSize(): number;
-        public getAttackDamageIncrease(damageType: Rance.DamageType): number;
-        public getReducedDamageFactor(damageType: Rance.DamageType): number;
-        public addToFleet(fleet: Rance.Fleet): void;
-        public removeFromFleet(): void;
-        public removeFromPlayer(): void;
-        public transferToPlayer(newPlayer: Rance.Player): void;
-        public removeGuard(amount: number): void;
-        public addGuard(amount: number, coverage: string): void;
-        public removeAllGuard(): void;
-        public getCounterAttackStrength(): number;
-        public canActThisTurn(): boolean;
-        public heal(): void;
-        public getStrengthEvaluation(): number;
-        public drawBattleScene(props: {
+        receiveDamage(amount: number, damageType: DamageType): void;
+        getAdjustedTroopSize(): number;
+        getAttackDamageIncrease(damageType: DamageType): number;
+        getReducedDamageFactor(damageType: DamageType): number;
+        addToFleet(fleet: Fleet): void;
+        removeFromFleet(): void;
+        removeFromPlayer(): void;
+        transferToPlayer(newPlayer: Player): void;
+        removeGuard(amount: number): void;
+        addGuard(amount: number, coverage: string): void;
+        removeAllGuard(): void;
+        getCounterAttackStrength(): number;
+        canActThisTurn(): boolean;
+        heal(): void;
+        getStrengthEvaluation(): number;
+        drawBattleScene(props: {
             unitsToDraw?: number;
             maxUnitsPerColumn: number;
             degree: number;
@@ -2123,38 +2123,38 @@ declare module Rance {
             maxHeight?: number;
             desiredHeight?: number;
         }): HTMLCanvasElement;
-        public serialize(includeItems?: boolean): any;
-        public makeVirtualClone(): Unit;
+        serialize(includeItems?: boolean): any;
+        makeVirtualClone(): Unit;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildableShip: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BuildableShip: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildableShipsList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BuildableShipsList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BuildingUpgradeList: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var BuildingUpgradeList: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PossibleActions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var PossibleActions: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var GalaxyMapUI: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var GalaxyMapUI: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var GalaxyMap: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var GalaxyMap: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -2169,74 +2169,74 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var ColorPicker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ColorPicker: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var ColorSetter: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var ColorSetter: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FlagPicker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FlagPicker: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FlagSetter: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FlagSetter: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var PlayerSetup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var PlayerSetup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SetupGamePlayers: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var SetupGamePlayers: React.Factory<any>;
     }
 }
 declare module Rance {
     module MapGen2 {
         class Region2 {
-            public id: string;
-            public isFiller: boolean;
-            public stars: Rance.Star[];
-            public fillerPoints: Rance.FillerPoint[];
+            id: string;
+            isFiller: boolean;
+            stars: Star[];
+            fillerPoints: FillerPoint[];
             constructor(id: string, isFiller: boolean);
-            public addStar(star: Rance.Star): void;
-            public addFillerPoint(point: Rance.FillerPoint): void;
-            public severLinksByQualifier(qualifierFN: (a: Rance.Star, b: Rance.Star) => boolean): void;
-            public severLinksToRegionsExcept(exemptRegions: Region2[]): void;
-            public severLinksToNonCenter(): void;
+            addStar(star: Star): void;
+            addFillerPoint(point: FillerPoint): void;
+            severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean): void;
+            severLinksToRegionsExcept(exemptRegions: Region2[]): void;
+            severLinksToNonCenter(): void;
         }
     }
 }
 declare module Rance {
     module MapGen2 {
         class Sector2 {
-            public id: number;
-            public stars: Rance.Star[];
-            public resourceType: Rance.Templates.IResourceTemplate;
-            public resourceLocation: Rance.Star;
+            id: number;
+            stars: Star[];
+            resourceType: Templates.IResourceTemplate;
+            resourceLocation: Star;
             constructor(id: number);
-            public addStar(star: Rance.Star): void;
-            public getNeighboringStars(): Rance.Star[];
-            public getMajorityRegions(): any[];
+            addStar(star: Star): void;
+            getNeighboringStars(): Star[];
+            getMajorityRegions(): any[];
         }
     }
 }
 declare module Rance {
     module MapGen2 {
-        function linkAllStars(stars: Rance.Star[]): void;
-        function partiallyCutLinks(stars: Rance.Star[], minConnections: number, maxCutsPerRegion: number): void;
-        function makeSectors(stars: Rance.Star[], minSize: number, maxSize: number): {
+        function linkAllStars(stars: Star[]): void;
+        function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
+        function makeSectors(stars: Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector2;
         };
-        function addDefenceBuildings(star: Rance.Star, amount?: number): void;
-        function setDistancesFromNearestPlayerOwnedStar(stars: Rance.Star[]): void;
-        function setupPirates(stars: Rance.Star[], player: Rance.Player, variance?: number, intensity?: number): void;
+        function addDefenceBuildings(star: Star, amount?: number): void;
+        function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;
+        function setupPirates(stars: Star[], player: Player, variance?: number, intensity?: number): void;
     }
 }
 declare module Rance {
@@ -2248,12 +2248,12 @@ declare module Rance {
                 advancedOptions?: IMapSpecificOptions;
             }
             interface IDefaultOptions {
-                height: Rance.IRange;
-                width: Rance.IRange;
-                starCount: Rance.IRange;
+                height: IRange;
+                width: IRange;
+                starCount: IRange;
             }
             interface IMapSpecificOptions {
-                [optionName: string]: Rance.IRange;
+                [optionName: string]: IRange;
             }
             interface IMapGenOptionValues {
                 defaultOptions: {
@@ -2274,7 +2274,7 @@ declare module Rance {
 declare module Rance {
     module Templates {
         module MapGen {
-            function spiralGalaxyGeneration(options: IMapGenOptionValues, players: Rance.Player[], independents: Rance.Player[]): Rance.MapGen2.MapGenResult;
+            function spiralGalaxyGeneration(options: IMapGenOptionValues, players: Player[], independents: Player[]): MapGen2.MapGenResult;
         }
     }
 }
@@ -2286,115 +2286,110 @@ declare module Rance {
             description?: string;
             minPlayers: number;
             maxPlayers: number;
-            options: Templates.MapGen.IMapGenOptions;
-            mapGenFunction: (options: Templates.MapGen.IMapGenOptionValues, players: Rance.Player[], independents: Rance.Player[]) => Rance.MapGen2.MapGenResult;
+            options: MapGen.IMapGenOptions;
+            mapGenFunction: (options: MapGen.IMapGenOptionValues, players: Player[], independents: Player[]) => MapGen2.MapGenResult;
         }
     }
 }
 declare module Rance {
     module Templates {
         module MapGen {
-            var spiralGalaxy: Templates.IMapGenTemplate;
+            var spiralGalaxy: IMapGenTemplate;
         }
     }
 }
 declare module Rance {
     module Templates {
         module MapGen {
-            var tinierSpiralGalaxy: Templates.IMapGenTemplate;
+            var tinierSpiralGalaxy: IMapGenTemplate;
         }
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapGenOption: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var MapGenOption: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapGenOptions: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var MapGenOptions: React.Factory<any>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var MapSetup: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var MapSetup: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var SetupGame: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var SetupGame: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var FlagMaker: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var FlagMaker: React.Factory<{}>;
     }
 }
 declare module Rance {
     module UIComponents {
-        var BattleSceneTester: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var Stage: React.ReactComponentFactory<{}, React.ReactComponent<{}, {}>>;
+        var Stage: React.Factory<{}>;
     }
 }
 declare module Rance {
     class ReactUI {
-        public container: HTMLElement;
-        public currentScene: string;
-        public stage: any;
-        public battle: Rance.Battle;
-        public battlePrep: Rance.BattlePrep;
-        public renderer: Rance.Renderer;
-        public mapRenderer: Rance.MapRenderer;
-        public playerControl: Rance.PlayerControl;
-        public player: Rance.Player;
-        public game: Rance.Game;
-        public switchSceneFN: any;
+        container: HTMLElement;
+        currentScene: string;
+        stage: any;
+        battle: Battle;
+        battlePrep: BattlePrep;
+        renderer: Renderer;
+        mapRenderer: MapRenderer;
+        playerControl: PlayerControl;
+        player: Player;
+        game: Game;
+        switchSceneFN: any;
         constructor(container: HTMLElement);
-        public addEventListeners(): void;
-        public switchScene(newScene: string): void;
-        public destroy(): void;
-        public render(): void;
+        addEventListeners(): void;
+        switchScene(newScene: string): void;
+        destroy(): void;
+        render(): void;
     }
 }
 declare module Rance {
     class PlayerControl {
-        public player: Rance.Player;
-        public selectedFleets: Rance.Fleet[];
-        public inspectedFleets: Rance.Fleet[];
-        public currentlyReorganizing: Rance.Fleet[];
-        public currentAttackTargets: any[];
-        public selectedStar: Rance.Star;
-        public preventingGhost: boolean;
-        public listeners: {
+        player: Player;
+        selectedFleets: Fleet[];
+        inspectedFleets: Fleet[];
+        currentlyReorganizing: Fleet[];
+        currentAttackTargets: any[];
+        selectedStar: Star;
+        preventingGhost: boolean;
+        listeners: {
             [listenerName: string]: any;
         };
-        constructor(player: Rance.Player);
-        public destroy(): void;
-        public removeEventListener(name: string): void;
-        public removeEventListeners(): void;
-        public addEventListener(name: string, handler: any): void;
-        public addEventListeners(): void;
-        public preventGhost(delay: number): void;
-        public clearSelection(): void;
-        public updateSelection(endReorganizingFleets?: boolean): void;
-        public areAllFleetsInSameLocation(): boolean;
-        public selectFleets(fleets: Rance.Fleet[]): void;
-        public selectPlayerFleets(fleets: Rance.Fleet[]): void;
-        public selectOtherFleets(fleets: Rance.Fleet[]): void;
-        public deselectFleet(fleet: Rance.Fleet): void;
-        public getMasterFleetForMerge(): Rance.Fleet;
-        public mergeFleets(): void;
-        public selectStar(star: Rance.Star): void;
-        public moveFleets(star: Rance.Star): void;
-        public splitFleet(fleet: Rance.Fleet): void;
-        public startReorganizingFleets(fleets: Rance.Fleet[]): void;
-        public endReorganizingFleets(): void;
-        public getCurrentAttackTargets(): any[];
-        public attackTarget(target: any): boolean;
+        constructor(player: Player);
+        destroy(): void;
+        removeEventListener(name: string): void;
+        removeEventListeners(): void;
+        addEventListener(name: string, handler: any): void;
+        addEventListeners(): void;
+        preventGhost(delay: number): void;
+        clearSelection(): void;
+        updateSelection(endReorganizingFleets?: boolean): void;
+        areAllFleetsInSameLocation(): boolean;
+        selectFleets(fleets: Fleet[]): void;
+        selectPlayerFleets(fleets: Fleet[]): void;
+        selectOtherFleets(fleets: Fleet[]): void;
+        deselectFleet(fleet: Fleet): void;
+        getMasterFleetForMerge(): Fleet;
+        mergeFleets(): void;
+        selectStar(star: Star): void;
+        moveFleets(star: Star): void;
+        splitFleet(fleet: Fleet): void;
+        startReorganizingFleets(fleets: Fleet[]): void;
+        endReorganizingFleets(): void;
+        getCurrentAttackTargets(): any[];
+        attackTarget(target: any): boolean;
     }
 }
 declare module Rance {
@@ -2403,190 +2398,191 @@ declare module Rance {
         halfEdge: any;
     }[];
     function joinPointsWithin(points: Point[], maxDistance: number): void;
-    function convertHalfEdgeDataToOffset(halfEdgeData: any): Point[];
+    function convertHalfEdgeDataToOffset(halfEdgeData: any): OffsetPoint[];
     function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): any[][];
 }
 declare module Rance {
     interface IMapRendererLayer {
-        drawingFunction: (map: Rance.GalaxyMap) => PIXI.DisplayObjectContainer;
+        drawingFunction: (map: GalaxyMap) => PIXI.DisplayObjectContainer;
         container: PIXI.DisplayObjectContainer;
         isDirty: boolean;
     }
     interface IMapRendererLayerMapMode {
         name: string;
+        displayName: string;
         layers: {
             layer: IMapRendererLayer;
         }[];
     }
     class MapRenderer {
-        public container: PIXI.DisplayObjectContainer;
-        public parent: PIXI.DisplayObjectContainer;
-        public galaxyMap: Rance.GalaxyMap;
-        public player: Rance.Player;
-        public occupationShaders: {
+        container: PIXI.DisplayObjectContainer;
+        parent: PIXI.DisplayObjectContainer;
+        galaxyMap: GalaxyMap;
+        player: Player;
+        occupationShaders: {
             [ownerId: string]: {
                 [occupierId: string]: any;
             };
         };
-        public layers: {
+        layers: {
             [name: string]: IMapRendererLayer;
         };
-        public mapModes: {
+        mapModes: {
             [name: string]: IMapRendererLayerMapMode;
         };
-        public fowTilingSprite: PIXI.TilingSprite;
-        public fowSpriteCache: {
+        fowTilingSprite: PIXI.TilingSprite;
+        fowSpriteCache: {
             [starId: number]: PIXI.Sprite;
         };
-        public fleetTextTextureCache: {
+        fleetTextTextureCache: {
             [fleetSize: number]: PIXI.Texture;
         };
-        public currentMapMode: IMapRendererLayerMapMode;
-        public isDirty: boolean;
-        public preventRender: boolean;
-        public listeners: {
+        currentMapMode: IMapRendererLayerMapMode;
+        isDirty: boolean;
+        preventRender: boolean;
+        listeners: {
             [name: string]: any;
         };
-        constructor(map: Rance.GalaxyMap, player: Rance.Player);
-        public destroy(): void;
-        public init(): void;
-        public addEventListeners(): void;
-        public setPlayer(player: Rance.Player): void;
-        public updateShaderOffsets(x: number, y: number): void;
-        public updateShaderZoom(zoom: number): void;
-        public makeFowSprite(): void;
-        public getFowSpriteForStar(star: Rance.Star): PIXI.Sprite;
-        public getOccupationShader(owner: Rance.Player, occupier: Rance.Player): any;
-        public getFleetTextTexture(fleet: Rance.Fleet): PIXI.Texture;
-        public initLayers(): void;
-        public initMapModes(): void;
-        public setParent(newParent: PIXI.DisplayObjectContainer): void;
-        public resetContainer(): void;
-        public hasLayerInMapMode(layer: IMapRendererLayer): boolean;
-        public setLayerAsDirty(layerName: string): void;
-        public setAllLayersAsDirty(): void;
-        public drawLayer(layer: IMapRendererLayer): void;
-        public setMapMode(newMapMode: string): void;
-        public render(): void;
+        constructor(map: GalaxyMap, player: Player);
+        destroy(): void;
+        init(): void;
+        addEventListeners(): void;
+        setPlayer(player: Player): void;
+        updateShaderOffsets(x: number, y: number): void;
+        updateShaderZoom(zoom: number): void;
+        makeFowSprite(): void;
+        getFowSpriteForStar(star: Star): PIXI.Sprite;
+        getOccupationShader(owner: Player, occupier: Player): any;
+        getFleetTextTexture(fleet: Fleet): PIXI.Texture;
+        initLayers(): void;
+        initMapModes(): void;
+        setParent(newParent: PIXI.DisplayObjectContainer): void;
+        resetContainer(): void;
+        hasLayerInMapMode(layer: IMapRendererLayer): boolean;
+        setLayerAsDirty(layerName: string): void;
+        setAllLayersAsDirty(): void;
+        drawLayer(layer: IMapRendererLayer): void;
+        setMapMode(newMapMode: string): void;
+        render(): void;
     }
 }
 declare var tempCameraId: number;
 declare module Rance {
     /**
-    * @class Camera
-    * @constructor
-    */
+     * @class Camera
+     * @constructor
+     */
     class Camera {
-        public tempCameraId: number;
-        public container: PIXI.DisplayObjectContainer;
-        public width: number;
-        public height: number;
-        public bounds: any;
-        public startPos: number[];
-        public startClick: number[];
-        public currZoom: number;
-        public screenWidth: number;
-        public screenHeight: number;
-        public toCenterOn: Rance.Point;
-        public onMoveCallbacks: {
+        tempCameraId: number;
+        container: PIXI.DisplayObjectContainer;
+        width: number;
+        height: number;
+        bounds: any;
+        startPos: number[];
+        startClick: number[];
+        currZoom: number;
+        screenWidth: number;
+        screenHeight: number;
+        toCenterOn: Point;
+        onMoveCallbacks: {
             (x: number, y: number): void;
         }[];
-        public onZoomCallbacks: {
+        onZoomCallbacks: {
             (zoom: number): void;
         }[];
-        public listeners: {
+        listeners: {
             [name: string]: any;
         };
-        public resizeListener: any;
+        resizeListener: any;
         /**
-        * [constructor description]
-        * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
-        * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
-        * 0.0 to 1.0]
-        */
+         * [constructor description]
+         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+         * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
+         * 0.0 to 1.0]
+         */
         constructor(container: PIXI.DisplayObjectContainer, bound: number);
-        public destroy(): void;
+        destroy(): void;
         /**
-        * @method addEventListeners
-        * @private
-        */
+         * @method addEventListeners
+         * @private
+         */
         private addEventListeners();
         /**
-        * @method setBound
-        * @private
-        */
+         * @method setBound
+         * @private
+         */
         private setBounds();
         /**
-        * @method startScroll
-        * @param {number[]} mousePos [description]
-        */
-        public startScroll(mousePos: number[]): void;
+         * @method startScroll
+         * @param {number[]} mousePos [description]
+         */
+        startScroll(mousePos: number[]): void;
         /**
-        * @method end
-        */
-        public end(): void;
+         * @method end
+         */
+        end(): void;
         /**
-        * @method getDelta
-        * @param {number[]} currPos [description]
-        */
+         * @method getDelta
+         * @param {number[]} currPos [description]
+         */
         private getDelta(currPos);
         /**
-        * @method move
-        * @param {number[]} currPos [description]
-        */
-        public move(currPos: number[]): void;
-        public deltaMove(delta: number[]): void;
+         * @method move
+         * @param {number[]} currPos [description]
+         */
+        move(currPos: number[]): void;
+        deltaMove(delta: number[]): void;
         private onMove();
-        public getScreenCenter(): {
+        getScreenCenter(): {
             x: number;
             y: number;
         };
-        public getLocalPosition(position: Rance.Point): Rance.Point;
-        public getCenterPosition(): Rance.Point;
-        public centerOnPosition(pos: Rance.Point): void;
+        getLocalPosition(position: Point): Point;
+        getCenterPosition(): Point;
+        centerOnPosition(pos: Point): void;
         /**
-        * @method zoom
-        * @param {number} zoomAmount [description]
-        */
-        public zoom(zoomAmount: number): void;
+         * @method zoom
+         * @param {number} zoomAmount [description]
+         */
+        zoom(zoomAmount: number): void;
         private onZoom();
         /**
-        * @method deltaZoom
-        * @param {number} delta [description]
-        * @param {number} scale [description]
-        */
-        public deltaZoom(delta: number, scale: number): void;
+         * @method deltaZoom
+         * @param {number} delta [description]
+         * @param {number} scale [description]
+         */
+        deltaZoom(delta: number, scale: number): void;
         /**
-        * @method clampEdges
-        * @private
-        */
+         * @method clampEdges
+         * @private
+         */
         private clampEdges();
     }
 }
 declare module Rance {
     class RectangleSelect {
-        public parentContainer: PIXI.DisplayObjectContainer;
-        public graphics: PIXI.Graphics;
-        public selecting: boolean;
-        public start: Rance.Point;
-        public current: Rance.Point;
-        public toSelectFrom: {
-            position: Rance.Point;
+        parentContainer: PIXI.DisplayObjectContainer;
+        graphics: PIXI.Graphics;
+        selecting: boolean;
+        start: Point;
+        current: Point;
+        toSelectFrom: {
+            position: Point;
             data: any;
         }[];
-        public getSelectionTargetsFN: () => {
-            position: Rance.Point;
+        getSelectionTargetsFN: () => {
+            position: Point;
             data: any;
         }[];
         constructor(parentContainer: PIXI.DisplayObjectContainer);
-        public destroy(): void;
-        public addEventListeners(): void;
-        public startSelection(point: Rance.Point): void;
-        public moveSelection(point: Rance.Point): void;
-        public endSelection(point: Rance.Point): void;
-        public drawSelectionRectangle(): void;
-        public setSelectionTargets(): void;
-        public getBounds(): {
+        destroy(): void;
+        addEventListeners(): void;
+        startSelection(point: Point): void;
+        moveSelection(point: Point): void;
+        endSelection(point: Point): void;
+        drawSelectionRectangle(): void;
+        setSelectionTargets(): void;
+        getBounds(): {
             x1: number;
             x2: number;
             y1: number;
@@ -2594,61 +2590,61 @@ declare module Rance {
             width: number;
             height: number;
         };
-        public getAllInSelection(): any[];
-        public selectionContains(point: Rance.Point): boolean;
+        getAllInSelection(): any[];
+        selectionContains(point: Point): boolean;
     }
 }
 declare module Rance {
     class MouseEventHandler {
-        public renderer: Rance.Renderer;
-        public camera: Rance.Camera;
-        public rectangleSelect: Rance.RectangleSelect;
-        public startPoint: number[];
-        public currPoint: number[];
-        public currentAction: string;
-        public stashedAction: string;
-        public hoveredStar: Rance.Star;
-        public preventingGhost: {
+        renderer: Renderer;
+        camera: Camera;
+        rectangleSelect: RectangleSelect;
+        startPoint: number[];
+        currPoint: number[];
+        currentAction: string;
+        stashedAction: string;
+        hoveredStar: Star;
+        preventingGhost: {
             [type: string]: any;
         };
-        public listeners: {
+        listeners: {
             [name: string]: any;
         };
-        constructor(renderer: Rance.Renderer, camera: Rance.Camera);
-        public destroy(): void;
-        public addEventListeners(): void;
-        public preventGhost(delay: number, type: string): void;
-        public mouseDown(event: any, targetType: string): void;
-        public touchStart(event: any, targetType: string): void;
-        public touchEnd(event: any, targetType: string): void;
-        public mouseMove(event: any, targetType: string): void;
-        public mouseUp(event: any, targetType: string): void;
-        public startScroll(event: any): void;
-        public scrollMove(event: any): void;
-        public endScroll(event: any): void;
-        public zoomMove(event: any): void;
-        public endZoom(event: any): void;
-        public startZoom(event: any): void;
-        public setHoveredStar(star: Rance.Star): void;
-        public clearHoveredStar(): void;
-        public startFleetMove(event: any): void;
-        public setFleetMoveTarget(star: Rance.Star): void;
-        public completeFleetMove(): void;
-        public clearFleetMoveTarget(): void;
-        public startSelect(event: any): void;
-        public dragSelect(event: any): void;
-        public endSelect(event: any): void;
+        constructor(renderer: Renderer, camera: Camera);
+        destroy(): void;
+        addEventListeners(): void;
+        preventGhost(delay: number, type: string): void;
+        mouseDown(event: any, targetType: string): void;
+        touchStart(event: any, targetType: string): void;
+        touchEnd(event: any, targetType: string): void;
+        mouseMove(event: any, targetType: string): void;
+        mouseUp(event: any, targetType: string): void;
+        startScroll(event: any): void;
+        scrollMove(event: any): void;
+        endScroll(event: any): void;
+        zoomMove(event: any): void;
+        endZoom(event: any): void;
+        startZoom(event: any): void;
+        setHoveredStar(star: Star): void;
+        clearHoveredStar(): void;
+        startFleetMove(event: any): void;
+        setFleetMoveTarget(star: Star): void;
+        completeFleetMove(): void;
+        clearFleetMoveTarget(): void;
+        startSelect(event: any): void;
+        dragSelect(event: any): void;
+        endSelect(event: any): void;
     }
 }
 declare module Rance {
     class UniformManager {
-        public registeredObjects: {
+        registeredObjects: {
             [uniformType: string]: any[];
         };
-        public timeCount: number;
+        timeCount: number;
         constructor();
-        public registerObject(uniformType: string, shader: any): void;
-        public updateTime(): void;
+        registerObject(uniformType: string, shader: any): void;
+        updateTime(): void;
     }
 }
 declare module Rance {
@@ -2658,32 +2654,32 @@ declare module Rance {
 }
 declare module Rance {
     class ShaderManager {
-        public shaders: {
+        shaders: {
             [name: string]: any;
         };
-        public uniformManager: Rance.UniformManager;
+        uniformManager: UniformManager;
         constructor();
-        public destroy(): void;
-        public initNebula(): void;
+        destroy(): void;
+        initNebula(): void;
     }
 }
 declare module Rance {
     class PathfindingArrow {
-        public parentContainer: PIXI.DisplayObjectContainer;
-        public container: PIXI.DisplayObjectContainer;
-        public active: boolean;
-        public currentTarget: Rance.Star;
-        public clearTargetTimeout: any;
-        public selectedFleets: Rance.Fleet[];
-        public labelCache: {
+        parentContainer: PIXI.DisplayObjectContainer;
+        container: PIXI.DisplayObjectContainer;
+        active: boolean;
+        currentTarget: Star;
+        clearTargetTimeout: any;
+        selectedFleets: Fleet[];
+        labelCache: {
             [style: string]: {
                 [distance: number]: PIXI.Text;
             };
         };
-        public listeners: {
+        listeners: {
             [name: string]: any;
         };
-        public curveStyles: {
+        curveStyles: {
             reachable: {
                 color: number;
             };
@@ -2692,31 +2688,31 @@ declare module Rance {
             };
         };
         constructor(parentContainer: PIXI.DisplayObjectContainer);
-        public destroy(): void;
-        public removeEventListener(name: string): void;
-        public removeEventListeners(): void;
-        public addEventListener(name: string, handler: any): void;
-        public addEventListeners(): void;
-        public startMove(): void;
-        public setTarget(star: Rance.Star): void;
-        public clearTarget(): void;
-        public endMove(): void;
-        public clearArrows(): void;
-        public makeLabel(style: string, distance: number): void;
-        public getLabel(style: string, distance: number): PIXI.Text;
-        public getAllCurrentPaths(): {
-            fleet: Rance.Fleet;
+        destroy(): void;
+        removeEventListener(name: string): void;
+        removeEventListeners(): void;
+        addEventListener(name: string, handler: any): void;
+        addEventListeners(): void;
+        startMove(): void;
+        setTarget(star: Star): void;
+        clearTarget(): void;
+        endMove(): void;
+        clearArrows(): void;
+        makeLabel(style: string, distance: number): void;
+        getLabel(style: string, distance: number): PIXI.Text;
+        getAllCurrentPaths(): {
+            fleet: Fleet;
             path: any;
         }[];
-        public getAllCurrentCurves(): {
+        getAllCurrentCurves(): {
             style: string;
             curveData: number[][];
         }[];
-        public drawAllCurrentCurves(): void;
-        public getCurveData(points: Rance.Point[]): number[][];
-        public drawCurve(points: number[][], style: any): PIXI.Graphics;
-        public drawArrowHead(gfx: PIXI.Graphics, color: number): void;
-        public getTargetOffset(target: Rance.Point, sourcePoint: Rance.Point, i: number, totalPaths: number, offsetPerOrbit: number): {
+        drawAllCurrentCurves(): void;
+        getCurveData(points: Point[]): number[][];
+        drawCurve(points: number[][], style: any): PIXI.Graphics;
+        drawArrowHead(gfx: PIXI.Graphics, color: number): void;
+        getTargetOffset(target: Point, sourcePoint: Point, i: number, totalPaths: number, offsetPerOrbit: number): {
             x: number;
             y: number;
         };
@@ -2724,43 +2720,43 @@ declare module Rance {
 }
 declare module Rance {
     class Renderer {
-        public stage: PIXI.Stage;
-        public renderer: any;
-        public pixiContainer: HTMLCanvasElement;
-        public layers: {
+        stage: PIXI.Stage;
+        renderer: any;
+        pixiContainer: HTMLCanvasElement;
+        layers: {
             [name: string]: PIXI.DisplayObjectContainer;
         };
-        public camera: Rance.Camera;
-        public mouseEventHandler: Rance.MouseEventHandler;
-        public shaderManager: Rance.ShaderManager;
-        public pathfindingArrow: Rance.PathfindingArrow;
+        camera: Camera;
+        mouseEventHandler: MouseEventHandler;
+        shaderManager: ShaderManager;
+        pathfindingArrow: PathfindingArrow;
         private activeRenderLoopId;
-        public isPaused: boolean;
-        public forceFrame: boolean;
-        public backgroundIsDirty: boolean;
-        public isBattleBackground: boolean;
-        public blurProps: number[];
-        public toCenterOn: Rance.Point;
-        public resizeListener: any;
+        isPaused: boolean;
+        forceFrame: boolean;
+        backgroundIsDirty: boolean;
+        isBattleBackground: boolean;
+        blurProps: number[];
+        toCenterOn: Point;
+        resizeListener: any;
         constructor();
-        public init(): void;
-        public destroy(): void;
-        public removeRendererView(): void;
-        public bindRendererView(container: HTMLCanvasElement): void;
-        public initLayers(): void;
-        public setupDefaultLayers(): void;
-        public setupBackgroundLayers(): void;
-        public addCamera(): void;
-        public addEventListeners(): void;
-        public resize(): void;
-        public makeBackgroundTexture(seed?: any): PIXI.Texture;
-        public renderNebula(): PIXI.Texture;
-        public renderBackground(): void;
-        public renderBlurredNebula(x: number, y: number, width: number, height: number, seed?: any): PIXI.Texture;
-        public renderOnce(): void;
-        public pause(): void;
-        public resume(): void;
-        public render(renderLoopId?: number): void;
+        init(): void;
+        destroy(): void;
+        removeRendererView(): void;
+        bindRendererView(container: HTMLCanvasElement): void;
+        initLayers(): void;
+        setupDefaultLayers(): void;
+        setupBackgroundLayers(): void;
+        addCamera(): void;
+        addEventListeners(): void;
+        resize(): void;
+        makeBackgroundTexture(seed?: any): PIXI.Texture;
+        renderNebula(): PIXI.Texture;
+        renderBackground(): void;
+        renderBlurredNebula(x: number, y: number, width: number, height: number, seed?: any): PIXI.Texture;
+        renderOnce(): void;
+        pause(): void;
+        resume(): void;
+        render(renderLoopId?: number): void;
     }
 }
 declare module Rance {
@@ -2782,63 +2778,63 @@ declare module Rance {
         meta: any;
     }
     class AppLoader {
-        public loaded: {
+        loaded: {
             DOM: boolean;
             emblems: boolean;
             units: boolean;
             buildings: boolean;
             other: boolean;
         };
-        public startTime: number;
-        public onLoaded: any;
-        public imageCache: {
+        startTime: number;
+        onLoaded: any;
+        imageCache: {
             [type: string]: {
                 [id: string]: HTMLImageElement;
             };
         };
         constructor(onLoaded: any);
-        public spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement): {
+        spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement): {
             [id: string]: HTMLImageElement;
         };
-        public loadDOM(): void;
-        public loadImagesFN(identifier: string): void;
-        public loadEmblems(): void;
-        public loadUnits(): void;
-        public loadBuildings(): void;
-        public loadOther(): void;
-        public checkLoaded(): void;
+        loadDOM(): void;
+        loadImagesFN(identifier: string): void;
+        loadEmblems(): void;
+        loadUnits(): void;
+        loadBuildings(): void;
+        loadOther(): void;
+        checkLoaded(): void;
     }
 }
 declare module Rance {
     class GameLoader {
-        public map: Rance.GalaxyMap;
-        public humanPlayer: Rance.Player;
-        public players: Rance.Player[];
-        public independents: Rance.Player[];
-        public playersById: {
-            [id: number]: Rance.Player;
+        map: GalaxyMap;
+        humanPlayer: Player;
+        players: Player[];
+        independents: Player[];
+        playersById: {
+            [id: number]: Player;
         };
-        public starsById: {
-            [id: number]: Rance.Star;
+        starsById: {
+            [id: number]: Star;
         };
-        public unitsById: {
-            [id: number]: Rance.Unit;
+        unitsById: {
+            [id: number]: Unit;
         };
-        public buildingsByControllerId: {
-            [id: number]: Rance.Building;
+        buildingsByControllerId: {
+            [id: number]: Building;
         };
         constructor();
-        public deserializeGame(data: any): Rance.Game;
-        public deserializeMap(data: any): Rance.GalaxyMap;
-        public deserializeStar(data: any): Rance.Star;
-        public deserializeBuildings(data: any): void;
-        public deserializeBuilding(data: any): Rance.Building;
-        public deserializePlayer(data: any): Rance.Player;
-        public deserializeDiplomacyStatus(player: Rance.Player, data: any): void;
-        public deserializeFlag(data: any): Rance.Flag;
-        public deserializeFleet(player: any, data: any): Rance.Fleet;
-        public deserializeShip(data: any): Rance.Unit;
-        public deserializeItem(data: any, player: Rance.Player): void;
+        deserializeGame(data: any): Game;
+        deserializeMap(data: any): GalaxyMap;
+        deserializeStar(data: any): Star;
+        deserializeBuildings(data: any): void;
+        deserializeBuilding(data: any): Building;
+        deserializePlayer(data: any): Player;
+        deserializeDiplomacyStatus(player: Player, data: any): void;
+        deserializeFlag(data: any): Flag;
+        deserializeFleet(player: any, data: any): Fleet;
+        deserializeShip(data: any): Unit;
+        deserializeItem(data: any, player: Player): void;
     }
 }
 declare module Rance {
@@ -2847,7 +2843,7 @@ declare module Rance {
 declare module Rance {
     module Tutorials {
         var uiTutorial: {
-            pages: {}[];
+            pages: (string | React.Descriptor<React.DomAttributes>)[];
         };
     }
 }
@@ -2881,36 +2877,36 @@ declare module Rance {
         objective: number;
     };
     class App {
-        public seed: any;
-        public loader: Rance.AppLoader;
-        public renderer: Rance.Renderer;
-        public game: Rance.Game;
-        public mapRenderer: Rance.MapRenderer;
-        public reactUI: Rance.ReactUI;
-        public humanPlayer: Rance.Player;
-        public playerControl: Rance.PlayerControl;
-        public images: {
+        seed: any;
+        loader: AppLoader;
+        renderer: Renderer;
+        game: Game;
+        mapRenderer: MapRenderer;
+        reactUI: ReactUI;
+        humanPlayer: Player;
+        playerControl: PlayerControl;
+        images: {
             [type: string]: {
                 [id: string]: HTMLImageElement;
             };
         };
-        public itemGenerator: Rance.ItemGenerator;
+        itemGenerator: ItemGenerator;
         constructor();
-        public makeApp(): void;
-        public destroy(): void;
-        public load(saveName: string): void;
-        public makeGameFromSetup(map: Rance.GalaxyMap, players: Rance.Player[], independents: Rance.Player[]): void;
-        public makeGame(): Rance.Game;
-        public makePlayers(): {
+        makeApp(): void;
+        destroy(): void;
+        load(saveName: string): void;
+        makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[]): void;
+        makeGame(): Game;
+        makePlayers(): {
             players: any[];
-            independents: Rance.Player[];
+            independents: Player[];
         };
-        public makeMap(playerData: any): Rance.GalaxyMap;
-        public initGame(): void;
-        public initDisplay(): void;
-        public initUI(): void;
-        public hookUI(): void;
-        public setInitialScene(): void;
+        makeMap(playerData: any): GalaxyMap;
+        initGame(): void;
+        initDisplay(): void;
+        initUI(): void;
+        hookUI(): void;
+        setInitialScene(): void;
     }
 }
 declare var app: Rance.App;

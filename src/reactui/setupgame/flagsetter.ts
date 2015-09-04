@@ -15,7 +15,7 @@ module Rance
         {
           width: 46, // FLAG_SIZE
           mainColor: this.props.mainColor,
-          subColor: this.props.subColor,
+          secondaryColor: this.props.subColor,
           tetriaryColor: this.props.tetriaryColor
         });
 

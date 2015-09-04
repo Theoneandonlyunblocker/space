@@ -5,16 +5,14 @@ var Rance;
     }
     Rance.EventManager = EventManager;
     ;
-
     var et = PIXI.EventTarget;
-
     et.mixin(EventManager.prototype);
-
     Rance.eventManager = new EventManager();
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/tween.js.d.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitStrength = React.createClass({
             displayName: "UnitStrength",
@@ -25,10 +23,13 @@ var Rance;
                 });
             },
             componentWillReceiveProps: function (newProps) {
-                if (newProps.animateStrength && newProps.currentHealth !== this.props.currentHealth && (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
+                if (newProps.animateStrength &&
+                    newProps.currentHealth !== this.props.currentHealth &&
+                    (!newProps.maxHealth || newProps.maxHealth === this.props.maxHealth)) {
                     var animateDuration = newProps.animateDuration || 0;
                     this.animateDisplayedStrength(newProps.currentHealth, animateDuration);
-                } else {
+                }
+                else {
                     this.updateDisplayStrength(newProps.currentHealth);
                 }
             },
@@ -45,17 +46,14 @@ var Rance;
             animateDisplayedStrength: function (newAmount, time) {
                 var self = this;
                 var stopped = false;
-
                 var animateTween = function () {
                     if (stopped) {
                         cancelAnimationFrame(self.requestAnimFrame);
                         return;
                     }
-
                     TWEEN.update();
                     self.requestAnimFrame = requestAnimFrame(animateTween);
                 };
-
                 var tween = new TWEEN.Tween({
                     health: self.state.displayedStrength
                 }).to({
@@ -65,14 +63,11 @@ var Rance;
                         displayedStrength: this.health
                     });
                 }).easing(TWEEN.Easing.Sinusoidal.Out);
-
                 tween.onStop(function () {
                     stopped = true;
                     TWEEN.remove(tween);
                 });
-
                 this.activeTween = tween;
-
                 tween.start();
                 animateTween();
             },
@@ -81,9 +76,7 @@ var Rance;
             },
             makeCapitalInfo: function () {
                 var text = this.makeStrengthText();
-
                 var relativeHealth = this.state.displayedStrength / this.props.maxHealth;
-
                 var bar = React.DOM.div({
                     className: "unit-strength-bar"
                 }, React.DOM.div({
@@ -92,7 +85,6 @@ var Rance;
                         width: "" + relativeHealth * 100 + "%"
                     }
                 }));
-
                 return (React.DOM.div({ className: "unit-strength-container" }, text, bar));
             },
             makeStrengthText: function () {
@@ -100,47 +92,43 @@ var Rance;
                 var currentStyle = {
                     className: "unit-strength-current"
                 };
-
                 var healthRatio = this.state.displayedStrength / this.props.maxHealth;
-
                 if (healthRatio <= critThreshhold) {
                     currentStyle.className += " critical";
-                } else if (this.state.displayedStrength < this.props.maxHealth) {
+                }
+                else if (this.state.displayedStrength < this.props.maxHealth) {
                     currentStyle.className += " wounded";
                 }
-
                 var containerProps = {
-                    className: (this.props.isSquadron ? "unit-strength-amount" : "unit-strength-amount-capital")
+                    className: (this.props.isSquadron ? "unit-strength-amount" :
+                        "unit-strength-amount-capital")
                 };
-
                 return (React.DOM.div(containerProps, React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)), React.DOM.span({ className: "unit-strength-max" }, "/" + this.props.maxHealth)));
             },
             render: function () {
                 var toRender;
                 if (this.props.isSquadron) {
                     toRender = this.makeSquadronInfo();
-                } else {
+                }
+                else {
                     toRender = this.makeCapitalInfo();
                 }
-
                 return (toRender);
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="unitstrength.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitActions = React.createClass({
             displayName: "UnitActions",
             render: function () {
                 var availableSrc = "img\/icons\/availableAction.png";
                 var spentSrc = "img\/icons\/spentAction.png";
-
                 var icons = [];
-
                 for (var i = 0; i < this.props.currentActionPoints; i++) {
                     icons.push(React.DOM.img({
                         src: availableSrc,
@@ -154,21 +142,19 @@ var Rance;
                         key: "spent" + i
                     }));
                 }
-
                 return (React.DOM.div({ className: "unit-action-points" }, icons));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitStatus = React.createClass({
             displayName: "UnitStatus",
             render: function () {
                 var statusElement = null;
-
                 if (this.props.guardAmount > 0) {
                     var guard = this.props.guardAmount;
                     statusElement = React.DOM.div({
@@ -188,18 +174,17 @@ var Rance;
                         className: "guard-text-value status text"
                     }, "" + guard + "%"))));
                 }
-
                 return (React.DOM.div({ className: "unit-status" }, statusElement));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="unitstrength.ts"/>
 /// <reference path="unitactions.ts"/>
 /// <reference path="unitstatus.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitInfo = React.createClass({
             displayName: "UnitInfo",
@@ -212,100 +197,89 @@ var Rance;
                     }, React.DOM.div({
                         className: "unit-battle-end-status unit-battle-end-status-dead"
                     }, "Destroyed"));
-                } else if (this.props.isCaptured) {
+                }
+                else if (this.props.isCaptured) {
                     battleEndStatus = React.DOM.div({
                         className: "unit-battle-end-status-container"
                     }, React.DOM.div({
                         className: "unit-battle-end-status unit-battle-end-status-captured"
                     }, "Captured"));
                 }
-
-                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, Rance.UIComponents.UnitStatus({
+                return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, UIComponents.UnitStatus({
                     guardAmount: this.props.guardAmount
-                }), Rance.UIComponents.UnitStrength({
+                }), UIComponents.UnitStrength({
                     maxHealth: this.props.maxHealth,
                     currentHealth: this.props.currentHealth,
                     isSquadron: this.props.isSquadron,
                     animateStrength: true,
                     animateDuration: this.props.animateDuration
-                }), Rance.UIComponents.UnitActions({
+                }), UIComponents.UnitActions({
                     maxActionPoints: this.props.maxActionPoints,
                     currentActionPoints: this.props.currentActionPoints
                 }), battleEndStatus)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitIcon = React.createClass({
             displayName: "UnitIcon",
             mixins: [React.addons.PureRenderMixin],
             render: function () {
                 var unit = this.props.unit;
-
                 var containerProps = {
                     className: "unit-icon-container"
                 };
-
                 var fillerProps = {
                     className: "unit-icon-filler"
                 };
-
                 if (this.props.isActiveUnit) {
                     fillerProps.className += " active-border";
                     containerProps.className += " active-border";
                 }
-
                 if (this.props.facesLeft) {
                     fillerProps.className += " unit-border-right";
                     containerProps.className += " unit-border-no-right";
-                } else {
+                }
+                else {
                     fillerProps.className += " unit-border-left";
                     containerProps.className += " unit-border-no-left";
                 }
-
-                var iconImage = this.props.icon ? React.DOM.img({
-                    className: "unit-icon",
-                    src: this.props.icon
-                }) : null;
-
+                var iconImage = this.props.icon ?
+                    React.DOM.img({
+                        className: "unit-icon",
+                        src: this.props.icon
+                    }) :
+                    null;
                 return (React.DOM.div({ className: "unit-icon-wrapper" }, React.DOM.div(fillerProps), React.DOM.div(containerProps, iconImage), React.DOM.div(fillerProps)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitStatusEffects = React.createClass({
             displayName: "UnitStatusEffects",
             render: function () {
                 var statusEffects = [];
-
                 var withItems = this.props.unit.getAttributesWithItems();
                 var withEffects = this.props.unit.getAttributesWithEffects();
-
                 for (var attribute in withEffects) {
                     if (attribute === "maxActionPoints")
                         continue;
-
                     var ite = withItems[attribute];
                     var eff = withEffects[attribute];
-
                     if (ite === eff)
                         continue;
-
                     var polarityString = eff > ite ? "positive" : "negative";
                     var polaritySign = eff > ite ? " +" : " ";
-
                     var imageSrc = "img\/icons\/statusEffect_" + polarityString + "_" + attribute + ".png";
-
                     var titleString = "" + attribute + polaritySign + (eff - ite);
-
                     statusEffects.push(React.DOM.img({
                         className: "status-effect-icon",
                         src: imageSrc,
@@ -313,18 +287,17 @@ var Rance;
                         title: titleString
                     }));
                 }
-
                 return (React.DOM.div({
                     className: "unit-status-effects-container"
                 }, statusEffects));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/react.d.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Draggable = {
             getDefaultProps: function () {
@@ -356,28 +329,24 @@ var Rance;
                     return;
                 e.preventDefault();
                 e.stopPropagation();
-
                 if (this.state.dragging)
                     return;
-
                 var clientRect = this.getDOMNode().getBoundingClientRect();
-
                 var e;
                 if (isFinite(e.clientX)) {
                     e = e;
-                } else {
+                }
+                else {
                     e = e.touches[0];
                     this.needsFirstTouchUpdate = true;
                     this.touchEventTarget = e.target;
                 }
-
                 this.addEventListeners();
-
-                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset || {
-                    x: e.clientX - clientRect.left,
-                    y: e.clientY - clientRect.top
-                };
-
+                var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
+                    {
+                        x: e.clientX - clientRect.left,
+                        y: e.clientY - clientRect.top
+                    };
                 this.setState({
                     mouseDown: true,
                     mouseDownPosition: {
@@ -390,7 +359,6 @@ var Rance;
                     },
                     dragOffset: dragOffset
                 });
-
                 if (this.props.dragThreshhold <= 0) {
                     this.handleMouseMove(e);
                 }
@@ -398,21 +366,15 @@ var Rance;
             handleMouseMove: function (e) {
                 if (e.preventDefault)
                     e.preventDefault();
-
                 var e = e.clientX ? e : e.touches[0];
-
                 if (e.clientX === 0 && e.clientY === 0)
                     return;
-
                 if (!this.state.dragging) {
                     var deltaX = Math.abs(e.pageX - this.state.mouseDownPosition.x);
                     var deltaY = Math.abs(e.pageY - this.state.mouseDownPosition.y);
-
                     var delta = deltaX + deltaY;
-
                     if (delta >= this.props.dragThreshhold) {
                         var ownNode = this.getDOMNode();
-
                         var stateObj = {
                             dragging: true,
                             dragPos: {
@@ -420,24 +382,21 @@ var Rance;
                                 height: parseInt(ownNode.offsetHeight)
                             }
                         };
-
                         if (this.props.makeClone) {
                             if (!this.makeDragClone) {
                                 var nextSibling = ownNode.nextSibling;
                                 var clone = ownNode.cloneNode(true);
                                 Rance.recursiveRemoveAttribute(clone, "data-reactid");
-
                                 ownNode.parentNode.insertBefore(clone, nextSibling);
                                 stateObj.clone = clone;
-                            } else {
+                            }
+                            else {
                                 var clone = this.makeDragClone();
                                 document.body.appendChild(clone);
                                 stateObj.clone = clone;
                             }
                         }
-
                         this.setState(stateObj);
-
                         if (this.onDragStart) {
                             this.onDragStart(e);
                         }
@@ -446,7 +405,6 @@ var Rance;
                         }
                     }
                 }
-
                 if (this.state.dragging) {
                     this.handleDrag(e);
                 }
@@ -454,40 +412,37 @@ var Rance;
             handleDrag: function (e) {
                 var x = e.pageX - this.state.dragOffset.x;
                 var y = e.pageY - this.state.dragOffset.y;
-
                 var domWidth, domHeight;
-
                 if (this.makeDragClone) {
                     domWidth = parseInt(this.state.clone.offsetWidth);
                     domHeight = parseInt(this.state.clone.offsetHeight);
-                } else {
+                }
+                else {
                     domWidth = parseInt(this.getDOMNode().offsetWidth);
                     domHeight = parseInt(this.getDOMNode().offsetHeight);
                 }
-
                 var containerWidth = parseInt(this.containerElement.offsetWidth);
                 var containerHeight = parseInt(this.containerElement.offsetHeight);
-
                 var x2 = x + domWidth;
                 var y2 = y + domHeight;
-
                 if (x < 0) {
                     x = 0;
-                } else if (x2 > containerWidth) {
+                }
+                else if (x2 > containerWidth) {
                     x = containerWidth - domWidth;
                 }
                 ;
-
                 if (y < 0) {
                     y = 0;
-                } else if (y2 > containerHeight) {
+                }
+                else if (y2 > containerHeight) {
                     y = containerHeight - domHeight;
                 }
                 ;
-
                 if (this.onDragMove) {
                     this.onDragMove(x, y);
-                } else {
+                }
+                else {
                     this.setState({
                         dragPos: {
                             top: y,
@@ -501,7 +456,6 @@ var Rance;
             handleMouseUp: function (e) {
                 if (this.touchEventTarget) {
                     var touch = e.changedTouches[0];
-
                     var dropTarget = Rance.getDropTargetAtLocation(touch.clientX, touch.clientY);
                     console.log(dropTarget);
                     if (dropTarget) {
@@ -509,7 +463,6 @@ var Rance;
                         Rance.eventManager.dispatchEvent("drop" + reactid);
                     }
                 }
-
                 if (this.isMounted()) {
                     this.setState({
                         mouseDown: false,
@@ -519,11 +472,9 @@ var Rance;
                         }
                     });
                 }
-
                 if (this.state.dragging) {
                     this.handleDragEnd(e);
                 }
-
                 this.removeEventListeners();
             },
             handleDragEnd: function (e) {
@@ -544,7 +495,6 @@ var Rance;
                         clone: null
                     });
                 }
-
                 if (this.onDragEnd) {
                     var endSuccesful = this.onDragEnd(e);
                 }
@@ -553,7 +503,6 @@ var Rance;
                 var self = this;
                 this.containerElement.addEventListener("mousemove", self.handleMouseMove);
                 document.addEventListener("mouseup", self.handleMouseUp);
-
                 if (this.touchEventTarget) {
                     this.touchEventTarget.addEventListener("touchmove", self.handleMouseMove);
                     this.touchEventTarget.addEventListener("touchend", self.handleMouseUp);
@@ -563,7 +512,6 @@ var Rance;
                 var self = this;
                 this.containerElement.removeEventListener("mousemove", self.handleMouseMove);
                 document.removeEventListener("mouseup", self.handleMouseUp);
-
                 if (this.touchEventTarget) {
                     this.touchEventTarget.removeEventListener("touchmove", self.handleMouseMove);
                     this.touchEventTarget.removeEventListener("touchend", self.handleMouseUp);
@@ -577,7 +525,8 @@ var Rance;
                     if (this.props.containerElement.getDOMNode) {
                         // React component
                         this.containerElement = this.props.containerElement.getDOMNode();
-                    } else
+                    }
+                    else
                         this.containerElement = this.props.containerElement;
                 }
             },
@@ -585,8 +534,7 @@ var Rance;
                 this.removeEventListeners();
             }
         };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="unitinfo.ts"/>
 /// <reference path="uniticon.ts"/>
@@ -594,10 +542,11 @@ var Rance;
 /// <reference path="../mixins/draggable.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Unit = React.createClass({
             displayName: "Unit",
-            mixins: [Rance.UIComponents.Draggable, React.addons.PureRenderMixin],
+            mixins: [UIComponents.Draggable, React.addons.PureRenderMixin],
             getInitialState: function () {
                 return ({
                     hasPopup: false,
@@ -618,19 +567,16 @@ var Rance;
                     return;
                 if (this.props.unit.currentHealth <= 0)
                     return;
-
                 this.props.handleMouseEnterUnit(this.props.unit);
             },
             handleMouseLeave: function (e) {
                 if (!this.props.handleMouseLeaveUnit)
                     return;
-
                 this.props.handleMouseLeaveUnit(e);
             },
             render: function () {
                 var unit = this.props.unit;
                 unit.uiDisplayIsDirty = false;
-
                 var containerProps = {
                     className: "unit-container",
                     key: "container"
@@ -639,46 +585,38 @@ var Rance;
                     className: "unit",
                     id: "unit-id_" + unit.id
                 };
-
                 wrapperProps.onMouseEnter = this.handleMouseEnter;
                 wrapperProps.onMouseLeave = this.handleMouseLeave;
-
                 if (this.props.isDraggable) {
                     wrapperProps.className += " draggable";
                     wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.handleMouseDown;
                 }
-
                 if (this.state.dragging) {
                     wrapperProps.style = this.state.dragPos;
                     wrapperProps.className += " dragging";
                 }
-
                 if (this.props.onUnitClick) {
                     wrapperProps.onClick = this.handleClick;
                 }
-
                 if (this.props.facesLeft) {
                     wrapperProps.className += " enemy-unit";
-                } else {
+                }
+                else {
                     wrapperProps.className += " friendly-unit";
                 }
-
-                var isActiveUnit = (this.props.activeUnit && unit.id === this.props.activeUnit.id);
-
+                var isActiveUnit = (this.props.activeUnit &&
+                    unit.id === this.props.activeUnit.id);
                 if (isActiveUnit) {
                     wrapperProps.className += " active-unit";
                 }
-
-                var isInPotentialTargetArea = (this.props.targetsInPotentialArea && this.props.targetsInPotentialArea.indexOf(unit) >= 0);
-
+                var isInPotentialTargetArea = (this.props.targetsInPotentialArea &&
+                    this.props.targetsInPotentialArea.indexOf(unit) >= 0);
                 if (isInPotentialTargetArea) {
                     wrapperProps.className += " target-unit";
                 }
-
                 if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
                     wrapperProps.className += " hovered-unit";
                 }
-
                 var infoProps = {
                     key: "info",
                     name: unit.name,
@@ -692,45 +630,40 @@ var Rance;
                     isCaptured: this.props.isCaptured,
                     animateDuration: unit.sfxDuration
                 };
-
                 var containerElements = [
                     React.DOM.div({
                         className: "unit-left-container",
                         key: "leftContainer"
-                    }, React.DOM.div({ className: "unit-image", key: "image" }), Rance.UIComponents.UnitStatusEffects({ unit: unit })),
-                    Rance.UIComponents.UnitInfo(infoProps)
+                    }, React.DOM.div({ className: "unit-image", key: "image" }), // UNIT IMAGE TODO
+                    UIComponents.UnitStatusEffects({ unit: unit })),
+                    UIComponents.UnitInfo(infoProps),
                 ];
-
                 if (this.props.facesLeft) {
                     containerElements = containerElements.reverse();
                 }
-
                 if (unit.displayFlags.isAnnihilated) {
                     containerElements.push(React.DOM.div({ key: "overlay", className: "unit-annihilated-overlay" }, "Unit annihilated"));
                 }
-
                 var allElements = [
                     React.DOM.div(containerProps, containerElements),
-                    Rance.UIComponents.UnitIcon({
+                    UIComponents.UnitIcon({
                         icon: unit.template.icon,
                         facesLeft: this.props.facesLeft,
                         key: "icon",
                         isActiveUnit: isActiveUnit
                     })
                 ];
-
                 if (this.props.facesLeft) {
                     allElements = allElements.reverse();
                 }
-
                 return (React.DOM.div(wrapperProps, allElements));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.EmptyUnit = React.createClass({
             displayName: "EmptyUnit",
@@ -741,43 +674,39 @@ var Rance;
                 var wrapperProps = {
                     className: "unit empty-unit"
                 };
-
                 var containerProps = {
                     className: "unit-container",
                     key: "container"
                 };
-
                 if (this.props.facesLeft) {
                     wrapperProps.className += " enemy-unit";
-                } else {
+                }
+                else {
                     wrapperProps.className += " friendly-unit";
                 }
-
                 var allElements = [
                     React.DOM.div(containerProps, null),
-                    Rance.UIComponents.UnitIcon({
+                    UIComponents.UnitIcon({
                         icon: null,
                         facesLeft: this.props.facesLeft,
                         key: "icon"
                     })
                 ];
-
                 if (this.props.facesLeft) {
                     allElements = allElements.reverse();
                 }
-
                 return (React.DOM.div(wrapperProps, allElements));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /*
 used to register event listeners for manually firing drop events because
 touch events suck balls
-*/
+ */
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.DropTarget = {
             componentDidMount: function () {
@@ -789,31 +718,28 @@ var Rance;
                 Rance.eventManager.removeEventListener("drop" + this._rootNodeID, this.handleMouseUp);
             }
         };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/droptarget.ts"/>
 /// <reference path="uniticon.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitWrapper = React.createClass({
             displayName: "UnitWrapper",
-            mixins: [Rance.UIComponents.DropTarget],
+            mixins: [UIComponents.DropTarget],
             shouldComponentUpdate: function (newProps) {
                 if (!this.props.unit && !newProps.unit)
                     return false;
-
                 if (newProps.unit && newProps.unit.uiDisplayIsDirty)
                     return true;
-
                 var targetedProps = {
                     activeUnit: true,
                     hoveredUnit: true,
                     targetsInPotentialArea: true,
                     activeEffectUnits: true
                 };
-
                 for (var prop in newProps) {
                     if (!targetedProps[prop] && prop !== "position") {
                         if (newProps[prop] !== this.props[prop]) {
@@ -825,10 +751,8 @@ var Rance;
                     var unit = newProps.unit;
                     var oldValue = this.props[prop];
                     var newValue = newProps[prop];
-
                     if (!newValue && !oldValue)
                         continue;
-
                     if (prop === "targetsInPotentialArea" || prop === "activeEffectUnits") {
                         if (!oldValue) {
                             if (newValue.indexOf(unit) >= 0)
@@ -837,18 +761,19 @@ var Rance;
                                 continue;
                             }
                         }
-                        if ((oldValue.indexOf(unit) >= 0) !== (newValue.indexOf(unit) >= 0)) {
+                        if ((oldValue.indexOf(unit) >= 0) !==
+                            (newValue.indexOf(unit) >= 0)) {
                             return true;
                         }
-                    } else if (newValue !== oldValue && (oldValue === unit || newValue === unit)) {
+                    }
+                    else if (newValue !== oldValue &&
+                        (oldValue === unit || newValue === unit)) {
                         return true;
                     }
                 }
-
                 if (newProps.battle && newProps.battle.ended) {
                     return true;
                 }
-
                 return false;
             },
             handleMouseUp: function () {
@@ -857,11 +782,9 @@ var Rance;
             },
             render: function () {
                 var allElements = [];
-
                 var wrapperProps = {
                     className: "unit-wrapper drop-target"
                 };
-
                 if (this.props.onMouseUp) {
                     wrapperProps.onMouseUp = wrapperProps.onTouchEnd = this.handleMouseUp;
                 }
@@ -871,58 +794,50 @@ var Rance;
                         wrapperProps.className += " active-effect-unit";
                     }
                 }
-
-                var empty = Rance.UIComponents.EmptyUnit({
+                var empty = UIComponents.EmptyUnit({
                     facesLeft: this.props.facesLeft,
                     key: "empty_" + this.props.key,
                     position: this.props.position
                 });
-
                 allElements.push(empty);
-
                 if (this.props.unit) {
                     var isDead = false;
-                    if (this.props.battle && this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
+                    if (this.props.battle &&
+                        this.props.battle.deadUnits && this.props.battle.deadUnits.length > 0) {
                         if (this.props.battle.deadUnits.indexOf(this.props.unit) >= 0) {
                             this.props.isDead = true;
                         }
                     }
-
                     var isCaptured = false;
-                    if (this.props.battle && this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
+                    if (this.props.battle &&
+                        this.props.battle.capturedUnits && this.props.battle.capturedUnits.length > 0) {
                         if (this.props.battle.capturedUnits.indexOf(this.props.unit) >= 0) {
                             this.props.isCaptured = true;
                         }
                     }
-
-                    var unit = Rance.UIComponents.Unit(this.props);
+                    var unit = UIComponents.Unit(this.props);
                     allElements.push(unit);
                 }
-
                 return (React.DOM.div(wrapperProps, allElements));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unit/unit.ts"/>
 /// <reference path="../unit/emptyunit.ts"/>
 /// <reference path="../unit/unitwrapper.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetColumn = React.createClass({
             displayName: "FleetColumn",
             render: function () {
                 var column = this.props.column;
-
                 var absoluteColumnPosition = this.props.columnPosInOwnFleet + (this.props.facesLeft ? 2 : 0);
-
                 var units = [];
-
                 for (var i = 0; i < column.length; i++) {
                     var data = {};
-
                     data.key = i;
                     data.unit = column[i];
                     data.position = [absoluteColumnPosition, i];
@@ -935,45 +850,39 @@ var Rance;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
                     data.activeEffectUnits = this.props.activeEffectUnits;
-
                     data.onMouseUp = this.props.onMouseUp;
                     data.onUnitClick = this.props.onUnitClick;
-
                     data.isDraggable = this.props.isDraggable;
                     data.onDragStart = this.props.onDragStart;
                     data.onDragEnd = this.props.onDragEnd;
-
                     /*
                     if (!data.unit)
                     {
-                    units.push(UIComponents.EmptyUnit(data));
+                      units.push(UIComponents.EmptyUnit(data));
                     }
                     else
                     {
-                    units.push(UIComponents.Unit(data));
+                      units.push(UIComponents.Unit(data));
                     }*/
-                    units.push(Rance.UIComponents.UnitWrapper(data));
+                    units.push(UIComponents.UnitWrapper(data));
                 }
-
                 return (React.DOM.div({ className: "battle-fleet-column" }, units));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetcolumn.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Fleet = React.createClass({
             displayName: "Fleet",
             render: function () {
                 var fleet = this.props.fleet;
-
                 var columns = [];
-
                 for (var i = 0; i < fleet.length; i++) {
-                    columns.push(Rance.UIComponents.FleetColumn({
+                    columns.push(UIComponents.FleetColumn({
                         key: i,
                         column: fleet[i],
                         columnPosInOwnFleet: i,
@@ -992,48 +901,42 @@ var Rance;
                         onDragEnd: this.props.onDragEnd
                     }));
                 }
-
                 return (React.DOM.div({ className: "battle-fleet" }, columns));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.TurnCounter = React.createClass({
             displayName: "TurnCounter",
             mixins: [React.addons.PureRenderMixin],
             render: function () {
                 var turnsLeft = this.props.turnsLeft;
-
                 var turns = [];
-
                 var usedTurns = this.props.maxTurns - turnsLeft;
-
                 for (var i = 0; i < usedTurns; i++) {
                     turns.push(React.DOM.div({
                         key: "used" + i,
                         className: "turn-counter used-turn"
                     }));
                 }
-
                 for (var i = 0; i < turnsLeft; i++) {
                     turns.push(React.DOM.div({
                         key: "available" + i,
                         className: "turn-counter available-turn"
                     }));
                 }
-
                 return (React.DOM.div({ className: "turns-container" }, turns));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.TurnOrder = React.createClass({
             displayName: "TurnOrder",
@@ -1044,7 +947,6 @@ var Rance;
             },
             componentDidMount: function () {
                 this.setMaxUnits();
-
                 window.addEventListener("resize", this.setMaxUnits);
             },
             componentWillUnmount: function () {
@@ -1052,15 +954,11 @@ var Rance;
             },
             setMaxUnits: function () {
                 var minUnits = 7;
-
                 var containerElement = this.getDOMNode();
-
                 var containerWidth = containerElement.getBoundingClientRect().width;
                 containerWidth -= 30;
                 var unitElementWidth = 160;
-
                 var ceil = Math.ceil(containerWidth / unitElementWidth);
-
                 this.setState({
                     maxUnits: Math.max(ceil, minUnits)
                 });
@@ -1068,7 +966,6 @@ var Rance;
             render: function () {
                 var maxUnits = this.state.maxUnits;
                 var turnOrder = this.props.turnOrder.slice(0);
-
                 if (this.props.potentialDelay) {
                     var fake = {
                         isFake: true,
@@ -1077,25 +974,17 @@ var Rance;
                             moveDelay: this.props.potentialDelay.delay
                         }
                     };
-
                     turnOrder.push(fake);
-
                     turnOrder.sort(Rance.turnOrderSortFunction);
                 }
-
                 var maxUnitsWithFake = maxUnits;
-
                 if (fake && turnOrder.indexOf(fake) <= maxUnits) {
                     maxUnitsWithFake++;
                 }
-
                 turnOrder = turnOrder.slice(0, maxUnitsWithFake);
-
                 var toRender = [];
-
                 for (var i = 0; i < turnOrder.length; i++) {
                     var unit = turnOrder[i];
-
                     if (unit.isFake) {
                         toRender.push(React.DOM.div({
                             className: "turn-order-arrow",
@@ -1103,43 +992,39 @@ var Rance;
                         }));
                         continue;
                     }
-
                     var data = {
                         key: "" + i,
                         className: "turn-order-unit",
-                        title: "delay: " + unit.battleStats.moveDelay + "\n" + "speed: " + unit.attributes.speed,
+                        title: "delay: " + unit.battleStats.moveDelay + "\n" +
+                            "speed: " + unit.attributes.speed,
                         onMouseEnter: this.props.onMouseEnterUnit.bind(null, unit),
                         onMouseLeave: this.props.onMouseLeaveUnit
                     };
-
                     if (this.props.unitsBySide.side1.indexOf(unit) > -1) {
                         data.className += " turn-order-unit-friendly";
-                    } else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
+                    }
+                    else if (this.props.unitsBySide.side2.indexOf(unit) > -1) {
                         data.className += " turn-order-unit-enemy";
                     }
-
                     if (this.props.hoveredUnit && unit.id === this.props.hoveredUnit.id) {
                         data.className += " turn-order-unit-hover";
                     }
-
                     toRender.push(React.DOM.div(data, unit.name));
                 }
-
                 if (this.props.turnOrder.length > maxUnits) {
                     toRender.push(React.DOM.div({
                         className: "turn-order-more",
                         key: "more"
                     }, "..."));
                 }
-
                 return (React.DOM.div({ className: "turn-order-container" }, toRender));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.AbilityTooltip = React.createClass({
             displayName: "AbilityTooltip",
@@ -1155,69 +1040,58 @@ var Rance;
             },
             render: function () {
                 var abilities = this.props.activeTargets[this.props.targetUnit.id];
-
                 var abilityElements = [];
-
                 var containerProps = {
                     className: "ability-tooltip",
                     onMouseLeave: this.props.handleMouseLeave
                 };
-
                 var parentRect = this.props.parentElement.getBoundingClientRect();
-
                 if (this.props.facesLeft) {
                     containerProps.className += " ability-tooltip-faces-left";
-
-                    containerProps.style = {
-                        position: "fixed",
-                        top: parentRect.top,
-                        left: parentRect.right - 96 - 128
-                    };
-                } else {
-                    containerProps.className += " ability-tooltip-faces-right";
-
-                    containerProps.style = {
-                        position: "fixed",
-                        top: parentRect.top,
-                        left: parentRect.left + 96
-                    };
+                    containerProps.style =
+                        {
+                            position: "fixed",
+                            top: parentRect.top,
+                            left: parentRect.right - 96 - 128
+                        };
                 }
-
+                else {
+                    containerProps.className += " ability-tooltip-faces-right";
+                    containerProps.style =
+                        {
+                            position: "fixed",
+                            top: parentRect.top,
+                            left: parentRect.left + 96
+                        };
+                }
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
                     var data = {};
-
                     data.className = "ability-tooltip-ability";
                     data.key = i;
                     data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
-
                     data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);
                     data.onMouseLeave = this.props.handleMouseLeaveAbility;
-
                     if (ability.description) {
                         data.title = ability.description;
                     }
-
                     abilityElements.push(React.DOM.div(data, ability.displayName));
                 }
-
                 return (React.DOM.div(containerProps, abilityElements));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BattleScore = React.createClass({
             displayName: "BattleScore",
             render: function () {
                 var battle = this.props.battle;
                 var evaluation = this.props.battle.getEvaluation();
-
                 var evaluationPercentage = ((1 + evaluation) * 50);
-
                 return (React.DOM.div({
                     className: "battle-score-wrapper"
                 }, React.DOM.div({
@@ -1251,11 +1125,11 @@ var Rance;
                 }))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BattleSceneUnit = React.createClass({
             displayName: "BattleSceneUnit",
@@ -1263,7 +1137,8 @@ var Rance;
             componentDidUpdate: function (oldProps) {
                 if (oldProps.unit !== this.props.unit) {
                     this.renderScene(true, false, this.props.unit);
-                } else if (oldProps.effectSpriteFN !== this.props.effectSpriteFN) {
+                }
+                else if (oldProps.effectSpriteFN !== this.props.effectSpriteFN) {
                     this.renderScene(false, true, this.props.unit);
                 }
             },
@@ -1286,7 +1161,6 @@ var Rance;
             },
             getSceneProps: function (unit) {
                 var boundingRect = this.props.getSceneBounds();
-
                 return ({
                     zDistance: 8,
                     xDistance: 5,
@@ -1302,7 +1176,6 @@ var Rance;
             addUnit: function (animateEnter, animateFade, unit, onComplete) {
                 var container = this.refs.sprite.getDOMNode();
                 var sceneBounds = this.props.getSceneBounds();
-
                 if (unit) {
                     var scene;
                     if (this.props.effectSpriteFN && this.props.effectDuration) {
@@ -1313,29 +1186,29 @@ var Rance;
                             duration: this.props.effectDuration,
                             facingRight: this.props.side === "side1"
                         });
-                    } else {
+                    }
+                    else {
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
                     }
                     if (animateEnter) {
                         scene.classList.add("battle-scene-unit-enter-" + this.props.side);
-                    } else if (animateFade) {
+                    }
+                    else if (animateFade) {
                         scene.addEventListener("animationend", onComplete);
                         scene.addEventListener("webkitAnimationEnd", onComplete);
                         scene.classList.add("battle-scene-unit-fade-in");
                     }
-
                     if (!animateFade && onComplete) {
                         onComplete();
                     }
-
                     container.appendChild(scene);
-                } else if (onComplete) {
+                }
+                else if (onComplete) {
                     onComplete();
                 }
             },
             removeUnit: function (animateEnter, animateFade, onComplete) {
                 var container = this.refs.sprite.getDOMNode();
-
                 // has child. child will be removed with animation if specified, then fire callback
                 if (container.firstChild) {
                     if (animateEnter || animateFade) {
@@ -1349,18 +1222,20 @@ var Rance;
                         this.removeAnimations(container.firstChild);
                         container.firstChild.addEventListener("animationend", animationEndFN);
                         container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
-
                         if (animateEnter) {
                             container.firstChild.classList.add("battle-scene-unit-leave-" + this.props.side);
-                        } else if (animateFade) {
+                        }
+                        else if (animateFade) {
                             container.firstChild.classList.add("battle-scene-unit-fade-out");
                         }
-                    } else {
+                    }
+                    else {
                         container.removeChild(container.firstChild);
                         if (onComplete)
                             onComplete();
                     }
-                } else {
+                }
+                else {
                     if (onComplete)
                         onComplete();
                 }
@@ -1369,31 +1244,34 @@ var Rance;
                 if (animateFade) {
                     this.addUnit(animateEnter, animateFade, unit);
                     this.removeUnit(animateEnter, animateFade);
-                } else {
+                }
+                else {
                     var addUnitFN = this.addUnit.bind(this, animateEnter, animateFade, unit);
-
                     this.removeUnit(animateEnter, animateFade, addUnitFN);
                 }
             },
             render: function () {
                 return (React.DOM.div({
-                    className: "battle-scene-unit " + "battle-scene-unit-" + this.props.side,
+                    className: "battle-scene-unit " +
+                        "battle-scene-unit-" + this.props.side,
                     ref: "container"
                 }, React.DOM.div({
                     className: "battle-scene-unit-overlay",
                     ref: "overlay"
-                }, null), React.DOM.div({
+                }, null // unit overlay SFX drawn on canvas
+                ), React.DOM.div({
                     className: "battle-scene-unit-sprite",
                     ref: "sprite"
-                }, null)));
+                }, null // unit sprite drawn on canvas
+                )));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="battlesceneunit.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BattleScene = React.createClass({
             displayName: "BattleScene",
@@ -1401,7 +1279,8 @@ var Rance;
             cachedSFXWidth: null,
             componentDidUpdate: function (oldProps) {
                 if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
-                    if (!oldProps.effectSFX || this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay) {
+                    if (!oldProps.effectSFX ||
+                        this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay) {
                         this.drawBattleOverlay();
                     }
                 }
@@ -1426,14 +1305,13 @@ var Rance;
             },
             resizeScene: function (width) {
                 var scene = this.refs.scene.getDOMNode();
-
                 var wrapperBounds = this.refs.wrapper.getDOMNode().getBoundingClientRect();
                 var leftoverWidth2 = (wrapperBounds.width - width) / 2;
-
                 if (leftoverWidth2 <= 0) {
                     scene.style.width = "";
                     scene.style.height = "";
-                } else {
+                }
+                else {
                     scene.style.width = "" + width + "px";
                     scene.style.left = "" + leftoverWidth2 + "px";
                 }
@@ -1443,7 +1321,6 @@ var Rance;
                 if (container.firstChild) {
                     container.removeChild(container.firstChild);
                 }
-
                 var bounds = this.getSceneBounds();
                 var battleOverlay = this.props.effectSFX.battleOverlay({
                     user: this.props.unit1IsActive ? this.props.unit1 : this.props.unit2,
@@ -1453,7 +1330,6 @@ var Rance;
                     facingRight: this.props.unit1IsActive ? true : false,
                     onLoaded: this.resizeSceneToCanvas
                 });
-
                 container.appendChild(battleOverlay);
             },
             render: function () {
@@ -1462,16 +1338,14 @@ var Rance;
                     if (this.props.unit1IsActive) {
                         unit1SpriteFN = this.props.effectSFX.userSprite;
                         unit1OverlayFN = this.props.effectSFX.userOverlay;
-
                         unit2OverlayFN = this.props.effectSFX.enemyOverlay;
-                    } else {
+                    }
+                    else {
                         unit2SpriteFN = this.props.effectSFX.userSprite;
                         unit2OverlayFN = this.props.effectSFX.userOverlay;
-
                         unit1OverlayFN = this.props.effectSFX.enemyOverlay;
                     }
                 }
-
                 return (React.DOM.div({
                     className: "battle-scene-wrapper",
                     ref: "wrapper"
@@ -1480,14 +1354,14 @@ var Rance;
                     ref: "scene"
                 }, React.DOM.div({
                     className: "battle-scene-units-container"
-                }, Rance.UIComponents.BattleSceneUnit({
+                }, UIComponents.BattleSceneUnit({
                     unit: this.props.unit1,
                     side: "side1",
                     effectDuration: this.props.effectDuration,
                     effectSpriteFN: unit1SpriteFN,
                     effectOverlayFN: unit1OverlayFN,
                     getSceneBounds: this.getSceneBounds
-                }), Rance.UIComponents.BattleSceneUnit({
+                }), UIComponents.BattleSceneUnit({
                     unit: this.props.unit2,
                     side: "side2",
                     effectDuration: this.props.effectDuration,
@@ -1497,14 +1371,15 @@ var Rance;
                 })), React.DOM.div({
                     className: "battle-scene-overlay-container",
                     ref: "overlay"
-                }, null))));
+                }, null // battle overlay SFX drawn on canvas
+                ))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BattleDisplayStrength = React.createClass({
             displayName: "BattleDisplayStrength",
@@ -1530,23 +1405,18 @@ var Rance;
             animateDisplayedStrength: function (from, newAmount, time) {
                 var self = this;
                 var stopped = false;
-
                 if (this.activeTween) {
                     this.activeTween.stop();
                 }
-
                 if (from === newAmount)
                     return;
-
                 var animateTween = function () {
                     if (stopped) {
                         return;
                     }
-
                     TWEEN.update();
                     self.requestAnimFrame = requestAnimFrame(animateTween);
                 };
-
                 var tween = new TWEEN.Tween({
                     health: from
                 }).to({
@@ -1556,15 +1426,12 @@ var Rance;
                         displayedStrength: this.health
                     });
                 }).easing(TWEEN.Easing.Sinusoidal.Out);
-
                 tween.onStop(function () {
                     cancelAnimationFrame(self.requestAnimFrame);
                     stopped = true;
                     TWEEN.remove(tween);
                 });
-
                 this.activeTween = tween;
-
                 tween.start();
                 animateTween();
             },
@@ -1572,39 +1439,36 @@ var Rance;
                 return (React.DOM.div({ className: "unit-strength-battle-display" }, Math.ceil(this.state.displayedStrength)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         /*
         props
-        
-        renderer
-        backgroundSeed
-        getBlurAreaFN()
-        */
+    
+          renderer
+          backgroundSeed
+          getBlurAreaFN()
+         */
         UIComponents.BattleBackground = React.createClass({
             displayName: "BattleBackground",
             handleResize: function () {
                 var blurArea = this.props.getBlurArea();
-
-                this.props.renderer.blurProps = [
-                    blurArea.left,
-                    0,
-                    blurArea.width,
-                    blurArea.height,
-                    this.props.backgroundSeed
-                ];
+                this.props.renderer.blurProps =
+                    [
+                        blurArea.left,
+                        0,
+                        blurArea.width,
+                        blurArea.height,
+                        this.props.backgroundSeed
+                    ];
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = true;
-
                 this.handleResize();
-
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
-
                 window.addEventListener("resize", this.handleResize, false);
             },
             componentWillUnmount: function () {
@@ -1618,8 +1482,7 @@ var Rance;
                 }, this.props.children));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleet.ts"/>
 /// <reference path="turncounter.ts"/>
@@ -1631,6 +1494,7 @@ var Rance;
 /// <reference path="battlebackground.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Battle = React.createClass({
             displayName: "Battle",
@@ -1663,7 +1527,6 @@ var Rance;
             },
             componentDidMount: function () {
                 this.setBattleSceneUnits(this.state.hoveredUnit);
-
                 if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                     this.useAIAbility();
                 }
@@ -1679,42 +1542,34 @@ var Rance;
                     potentialDelay: null,
                     targetsInPotentialArea: []
                 });
-
                 this.setBattleSceneUnits(null);
             },
             handleMouseLeaveUnit: function (e) {
                 this.tempHoveredUnit = null;
-
                 if (!this.state.hoveredUnit || this.state.playingBattleEffect)
                     return;
-
                 var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
-
                 if (!toElement) {
                     this.clearHoveredUnit();
                     return;
                 }
-
                 if (!this.refs.abilityTooltip) {
                     this.clearHoveredUnit();
                     return;
                 }
-
                 var tooltipElement = this.refs.abilityTooltip.getDOMNode();
-
-                if (toElement !== this.state.abilityTooltip.parentElement && (this.refs.abilityTooltip && toElement !== tooltipElement) && toElement.parentElement !== tooltipElement) {
+                if (toElement !== this.state.abilityTooltip.parentElement &&
+                    (this.refs.abilityTooltip && toElement !== tooltipElement) &&
+                    toElement.parentElement !== tooltipElement) {
                     this.clearHoveredUnit();
                 }
             },
             handleMouseEnterUnit: function (unit) {
                 this.tempHoveredUnit = unit;
-
                 if (this.props.battle.ended || this.state.playingBattleEffect)
                     return;
-
                 var facesLeft = unit.battleStats.side === "side2";
                 var parentElement = this.getUnitElement(unit);
-
                 this.setState({
                     abilityTooltip: {
                         parentElement: parentElement,
@@ -1722,7 +1577,6 @@ var Rance;
                     },
                     hoveredUnit: unit
                 });
-
                 this.setBattleSceneUnits(unit);
             },
             getUnitElement: function (unit) {
@@ -1731,7 +1585,6 @@ var Rance;
             setBattleSceneUnits: function (hoveredUnit) {
                 if (this.state.playingBattleEffect)
                     return;
-
                 var activeUnit = this.props.battle.activeUnit;
                 if (!activeUnit) {
                     this.setState({
@@ -1740,19 +1593,17 @@ var Rance;
                     });
                     return;
                 }
-
-                var shouldDisplayHovered = (hoveredUnit && hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
-
+                var shouldDisplayHovered = (hoveredUnit &&
+                    hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
                 var unit1, unit2;
-
                 if (activeUnit.battleStats.side === "side1") {
                     unit1 = activeUnit;
                     unit2 = shouldDisplayHovered ? hoveredUnit : null;
-                } else {
+                }
+                else {
                     unit1 = shouldDisplayHovered ? hoveredUnit : null;
                     unit2 = activeUnit;
                 }
-
                 this.setState({
                     battleSceneUnit1: unit1,
                     battleSceneUnit2: unit2
@@ -1760,11 +1611,9 @@ var Rance;
             },
             handleAbilityUse: function (ability, target) {
                 var abilityData = Rance.getAbilityUseData(this.props.battle, this.props.battle.activeUnit, ability, target);
-
                 for (var i = 0; i < abilityData.beforeUse.length; i++) {
                     abilityData.beforeUse[i]();
                 }
-
                 this.playBattleEffect(abilityData, 0);
             },
             playBattleEffect: function (abilityData, i) {
@@ -1773,45 +1622,35 @@ var Rance;
                     for (var i = 0; i < abilityData.afterUse.length; i++) {
                         abilityData.afterUse[i]();
                     }
-
                     this.clearBattleEffect(abilityData);
-
                     this.handleTurnEnd();
-
                     return;
                 }
                 ;
-
                 effectData[i].user.sfxDuration = null;
                 effectData[i].target.sfxDuration = null;
-
                 var side1Unit = null;
                 var side2Unit = null;
                 [effectData[i].user, effectData[i].target].forEach(function (unit) {
                     if (unit.battleStats.side === "side1" && !side1Unit) {
                         side1Unit = unit;
-                    } else if (unit.battleStats.side === "side2" && !side2Unit) {
+                    }
+                    else if (unit.battleStats.side === "side2" && !side2Unit) {
                         side2Unit = unit;
                     }
                 });
-
                 var previousUnit1Strength = side1Unit ? side1Unit.currentHealth : null;
                 var previousUnit2Strength = side2Unit ? side2Unit.currentHealth : null;
-
                 if (!this.tempHoveredUnit) {
                     this.tempHoveredUnit = this.state.hoveredUnit;
                 }
-
                 var baseBeforeDelay = 250 * Rance.Options.battleAnimationTiming["before"];
                 var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
-
                 var effectDuration = 0;
                 if (effectData[i].sfx) {
                     effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
                 }
-
                 var afterDelay = 500 * Rance.Options.battleAnimationTiming["after"];
-
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
                     battleSceneUnit2StartingStrength: previousUnit2Strength,
@@ -1828,23 +1667,18 @@ var Rance;
                     potentialDelay: null,
                     targetsInPotentialArea: []
                 });
-
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
-
                 var startEffectFN = function () {
                     for (var j = 0; j < effectData[i].effects.length; j++) {
                         effectData[i].user.sfxDuration = effectDuration;
                         effectData[i].target.sfxDuration = effectDuration;
                         effectData[i].effects[j]();
                     }
-
                     this.setState({
                         playingBattleEffectActive: true
                     });
-
                     window.setTimeout(finishEffectFN, effectDuration + afterDelay);
                 }.bind(this);
-
                 window.setTimeout(startEffectFN, beforeDelay);
             },
             clearBattleEffect: function () {
@@ -1854,7 +1688,6 @@ var Rance;
                     battleEffectSFX: null,
                     hoveredUnit: null
                 });
-
                 if (this.tempHoveredUnit) {
                     this.handleMouseEnterUnit(this.tempHoveredUnit);
                     this.tempHoveredUnit = null;
@@ -1863,13 +1696,12 @@ var Rance;
             handleTurnEnd: function () {
                 if (this.state.hoveredUnit && this.state.hoveredUnit.isTargetable()) {
                     this.forceUpdate();
-                } else {
+                }
+                else {
                     this.clearHoveredUnit();
                 }
-
                 this.props.battle.endTurn();
                 this.setBattleSceneUnits(this.state.hoveredUnit);
-
                 if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                     this.useAIAbility();
                 }
@@ -1877,25 +1709,19 @@ var Rance;
             useAIAbility: function () {
                 if (!this.props.battle.activeUnit || this.props.battle.ended)
                     return;
-
                 var tree = new Rance.MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
-
                 var move = tree.evaluate(1000).move;
-
                 var target = this.props.battle.unitsById[move.targetId];
-
                 this.handleAbilityUse(move.ability, target);
             },
             finishBattle: function () {
                 var battle = this.props.battle;
                 if (!battle.ended)
                     throw new Error();
-
                 battle.finishBattle();
             },
             handleMouseEnterAbility: function (ability) {
                 var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.hoveredUnit.battleStats.position);
-
                 this.setState({
                     hoveredAbility: ability,
                     potentialDelay: {
@@ -1914,15 +1740,15 @@ var Rance;
             },
             render: function () {
                 var battle = this.props.battle;
-
                 if (!battle.ended) {
                     var activeTargets = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
                 }
-
                 var abilityTooltip = null;
-
-                if (!battle.ended && !this.state.playingBattleEffect && this.state.hoveredUnit && activeTargets[this.state.hoveredUnit.id]) {
-                    abilityTooltip = Rance.UIComponents.AbilityTooltip({
+                if (!battle.ended &&
+                    !this.state.playingBattleEffect &&
+                    this.state.hoveredUnit &&
+                    activeTargets[this.state.hoveredUnit.id]) {
+                    abilityTooltip = UIComponents.AbilityTooltip({
                         handleAbilityUse: this.handleAbilityUse,
                         handleMouseLeave: this.handleMouseLeaveUnit,
                         handleMouseEnterAbility: this.handleMouseEnterAbility,
@@ -1937,15 +1763,13 @@ var Rance;
                     });
                 }
                 ;
-
                 var activeEffectUnits = [];
                 if (this.state.playingBattleEffect) {
                     activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
                 }
-
                 var upperFooterElement;
                 if (!this.state.playingBattleEffect) {
-                    upperFooterElement = Rance.UIComponents.TurnOrder({
+                    upperFooterElement = UIComponents.TurnOrder({
                         key: "turnOrder",
                         turnOrder: battle.turnOrder,
                         unitsBySide: battle.unitsBySide,
@@ -1954,35 +1778,35 @@ var Rance;
                         onMouseEnterUnit: this.handleMouseEnterUnit,
                         onMouseLeaveUnit: this.handleMouseLeaveUnit
                     });
-                } else {
+                }
+                else {
                     upperFooterElement = React.DOM.div({
                         key: "battleDisplayStrength",
                         className: "battle-display-strength-container"
                     }, React.DOM.div({
                         className: "battle-display-strength battle-display-strength-side1"
-                    }, this.state.battleSceneUnit1 ? Rance.UIComponents.BattleDisplayStrength({
+                    }, this.state.battleSceneUnit1 ? UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit1.id + Date.now(),
                         delay: this.state.battleEffectDuration,
                         from: this.state.battleSceneUnit1StartingStrength,
                         to: this.state.battleSceneUnit1.currentHealth
                     }) : null), React.DOM.div({
                         className: "battle-display-strength battle-display-strength-side2"
-                    }, this.state.battleSceneUnit2 ? Rance.UIComponents.BattleDisplayStrength({
+                    }, this.state.battleSceneUnit2 ? UIComponents.BattleDisplayStrength({
                         key: "" + this.state.battleSceneUnit2.id + Date.now(),
                         delay: this.state.battleEffectDuration,
                         from: this.state.battleSceneUnit2StartingStrength,
                         to: this.state.battleSceneUnit2.currentHealth
                     }) : null));
                 }
-
                 // hack
-                //
+                // 
                 // transitiongroups dont work very well, especially in the older version
                 // of react we're using. seems to be mostly fine on webkit & ie though
                 // so just disable it on firefox for now
-                var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ? React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
-
-                return (Rance.UIComponents.BattleBackground({
+                var upperFooter = navigator.userAgent.indexOf("Firefox") === -1 ?
+                    React.addons.CSSTransitionGroup({ transitionName: "battle-upper-footer" }, upperFooterElement) : upperFooterElement;
+                return (UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     backgroundSeed: this.props.battle.battleData.location.getSeed(),
                     getBlurArea: this.getBlurArea
@@ -1991,9 +1815,9 @@ var Rance;
                     ref: "battleContainer"
                 }, React.DOM.div({
                     className: "battle-upper"
-                }, Rance.UIComponents.BattleScore({
+                }, UIComponents.BattleScore({
                     battle: battle
-                }), upperFooter, Rance.UIComponents.BattleScene({
+                }), upperFooter, UIComponents.BattleScene({
                     unit1: this.state.battleSceneUnit1,
                     unit2: this.state.battleSceneUnit2,
                     effectDuration: this.state.battleEffectDuration,
@@ -2002,7 +1826,7 @@ var Rance;
                 })), React.DOM.div({
                     className: "fleets-container",
                     ref: "fleetsContainer"
-                }, Rance.UIComponents.Fleet({
+                }, UIComponents.Fleet({
                     battle: battle,
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
@@ -2012,10 +1836,10 @@ var Rance;
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
                     handleMouseLeaveUnit: this.handleMouseLeaveUnit,
                     activeEffectUnits: activeEffectUnits
-                }), Rance.UIComponents.TurnCounter({
+                }), UIComponents.TurnCounter({
                     turnsLeft: battle.turnsLeft,
                     maxTurns: battle.maxTurns
-                }), Rance.UIComponents.Fleet({
+                }), UIComponents.Fleet({
                     battle: battle,
                     fleet: battle.side2,
                     facesLeft: true,
@@ -2026,17 +1850,19 @@ var Rance;
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
                     handleMouseLeaveUnit: this.handleMouseLeaveUnit,
                     activeEffectUnits: activeEffectUnits
-                }), abilityTooltip, this.state.playingBattleEffect ? React.DOM.div({ className: "battle-fleets-darken" }, null) : null), battle.ended ? React.DOM.button({
+                }), abilityTooltip, this.state.playingBattleEffect ?
+                    React.DOM.div({ className: "battle-fleets-darken" }, null) :
+                    null), battle.ended ? React.DOM.button({
                     className: "end-battle-button",
                     onClick: this.finishBattle
                 }, "end") : null)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.SplitMultilineText = {
             splitMultilineText: function (text) {
@@ -2047,26 +1873,27 @@ var Rance;
                         returnArr.push(React.DOM.br(null));
                     }
                     return returnArr;
-                } else {
+                }
+                else {
                     return text;
                 }
             }
         };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/splitmultilinetext.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.List = React.createClass({
             displayName: "List",
-            mixins: [Rance.UIComponents.SplitMultilineText],
+            mixins: [UIComponents.SplitMultilineText],
             getInitialState: function () {
-                var initialColumn = this.props.initialSortOrder ? this.props.initialSortOrder[0] : this.props.initialColumns[0];
-
+                var initialColumn = this.props.initialSortOrder ?
+                    this.props.initialSortOrder[0] :
+                    this.props.initialColumns[0];
                 var initialSelected = this.props.listItems[0];
-
                 return ({
                     columns: this.props.initialColumns,
                     selected: initialSelected,
@@ -2076,27 +1903,27 @@ var Rance;
             },
             componentDidMount: function () {
                 var self = this;
-
                 window.addEventListener("resize", this.setDesiredHeight, false);
-
                 if (this.props.keyboardSelect) {
                     this.getDOMNode().addEventListener("keydown", function (event) {
                         switch (event.keyCode) {
-                            case 40: {
-                                self.shiftSelection(1);
-                                break;
-                            }
-                            case 38: {
-                                self.shiftSelection(-1);
-                                break;
-                            }
-                            default: {
-                                return;
-                            }
+                            case 40:
+                                {
+                                    self.shiftSelection(1);
+                                    break;
+                                }
+                            case 38:
+                                {
+                                    self.shiftSelection(-1);
+                                    break;
+                                }
+                            default:
+                                {
+                                    return;
+                                }
                         }
                     });
                 }
-
                 if (this.props.autoSelect) {
                     this.handleSelectRow(this.props.sortedItems[0]);
                     this.getDOMNode().focus();
@@ -2111,23 +1938,16 @@ var Rance;
             setDesiredHeight: function () {
                 var ownNode = this.getDOMNode();
                 var innerNode = this.refs.inner.getDOMNode();
-
                 ownNode.style.height = "auto";
                 innerNode.style.height = "auto";
-
                 var parentHeight = ownNode.parentNode.getBoundingClientRect().height;
                 var ownRect = ownNode.getBoundingClientRect();
                 var ownHeight = ownRect.height;
-
                 var strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
                 var extraHeight = ownHeight - strippedOwnHeight;
-
                 var desiredHeight = parentHeight - extraHeight;
-
                 var maxHeight = window.innerHeight - ownRect.top - extraHeight;
-
                 desiredHeight = Math.min(desiredHeight, maxHeight);
-
                 ownNode.style.height = "" + desiredHeight + "px";
                 innerNode.style.height = "" + desiredHeight + "px";
             },
@@ -2135,9 +1955,7 @@ var Rance;
                 // scrolls header to match list contents
                 var header = this.refs.header.getDOMNode();
                 var titles = header.getElementsByClassName("fixed-table-th-inner");
-
                 var marginString = "-" + e.target.scrollLeft + "px";
-
                 for (var i = 0; i < titles.length; i++) {
                     titles[i].style.marginLeft = marginString;
                 }
@@ -2147,9 +1965,7 @@ var Rance;
                 if (!initialSortOrder || initialSortOrder.length < 1) {
                     initialSortOrder = [initialColumn];
                 }
-
                 var order = initialSortOrder;
-
                 for (var i = 0; i < columns.length; i++) {
                     if (!columns[i].order) {
                         columns[i].order = columns[i].defaultOrder;
@@ -2158,19 +1974,15 @@ var Rance;
                         order.push(columns[i]);
                     }
                 }
-
                 return order;
             },
             getNewSortingOrder: function (newColumn) {
                 var order = this.state.sortingOrder.slice(0);
                 var current = order.indexOf(newColumn);
-
                 if (current >= 0) {
                     order.splice(current);
                 }
-
                 order.unshift(newColumn);
-
                 return order;
             },
             handleSelectColumn: function (column) {
@@ -2179,11 +1991,11 @@ var Rance;
                 function getReverseOrder(order) {
                     return order === "desc" ? "asc" : "desc";
                 }
-
                 if (this.state.selectedColumn.key === column.key) {
                     column.order = getReverseOrder(column.order);
                     this.forceUpdate();
-                } else {
+                }
+                else {
                     column.order = column.defaultOrder;
                     this.setState({
                         selectedColumn: column,
@@ -2194,7 +2006,6 @@ var Rance;
             handleSelectRow: function (row) {
                 if (this.props.onRowChange && row)
                     this.props.onRowChange.call(null, row);
-
                 this.setState({
                     selected: row
                 });
@@ -2204,17 +2015,13 @@ var Rance;
                 var columnsToTry = this.state.columns;
                 var sortOrder = this.state.sortingOrder;
                 var sortFunctions = {};
-
                 function makeSortingFunction(column) {
                     if (column.sortingFunction)
                         return column.sortingFunction;
-
                     var propToSortBy = column.propToSortBy || column.key;
-
                     return (function (a, b) {
                         var a1 = a.data[propToSortBy];
                         var b1 = b.data[propToSortBy];
-
                         if (a1 > b1)
                             return 1;
                         else if (a1 < b1)
@@ -2223,30 +2030,23 @@ var Rance;
                             return 0;
                     });
                 }
-
                 itemsToSort.sort(function (a, b) {
                     var result = 0;
                     for (var i = 0; i < sortOrder.length; i++) {
                         var columnToSortBy = sortOrder[i];
-
                         if (!sortFunctions[columnToSortBy.key]) {
                             sortFunctions[columnToSortBy.key] = makeSortingFunction(columnToSortBy);
                         }
                         var sortFunction = sortFunctions[columnToSortBy.key];
-
                         result = sortFunction(a, b);
-
                         if (columnToSortBy.order === "desc") {
                             result *= -1;
                         }
-
                         if (result)
                             return result;
                     }
-
-                    return 0;
+                    return 0; // couldnt sort
                 });
-
                 this.props.sortedItems = itemsToSort;
             },
             shiftSelection: function (amountToShift) {
@@ -2260,35 +2060,28 @@ var Rance;
                 if (nextIndex < 0) {
                     nextIndex += this.props.sortedItems.length;
                 }
-
                 this.handleSelectRow(this.props.sortedItems[nextIndex]);
             },
             render: function () {
                 var self = this;
                 var columns = [];
                 var headerLabels = [];
-
                 this.state.columns.forEach(function (column) {
                     var colProps = {
                         key: column.key
                     };
-
                     if (self.props.colStylingFN) {
                         colProps = self.props.colStylingFN(column, colProps);
                     }
-
                     columns.push(React.DOM.col(colProps));
-
                     var sortStatus = null;
-
                     if (!column.notSortable)
                         sortStatus = " sortable";
-
                     if (self.state.selectedColumn.key === column.key) {
                         sortStatus += " sorted-" + column.order;
-                    } else if (!column.notSortable)
+                    }
+                    else if (!column.notSortable)
                         sortStatus += " unsorted";
-
                     headerLabels.push(React.DOM.th({
                         key: column.key
                     }, React.DOM.div({
@@ -2297,25 +2090,19 @@ var Rance;
                         className: "fixed-table-th-content" + sortStatus,
                         title: column.title || colProps.title || null,
                         onMouseDown: self.handleSelectColumn.bind(null, column),
-                        onTouchStart: self.handleSelectColumn.bind(null, column)
+                        onTouchStart: self.handleSelectColumn.bind(null, column),
                     }, column.label))));
                 });
-
                 this.sort();
-
                 var sortedItems = this.props.sortedItems;
-
                 var rows = [];
-
                 sortedItems.forEach(function (item) {
                     item.data.key = item.key;
                     item.data.activeColumns = self.state.columns;
                     item.data.handleClick = self.handleSelectRow.bind(null, item);
                     var row = item.data.rowConstructor(item.data);
-
                     rows.push(row);
                 });
-
                 return (React.DOM.div({
                     className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
                     tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1
@@ -2328,39 +2115,35 @@ var Rance;
                 }, React.DOM.colgroup(null, columns), React.DOM.thead({ className: "fixed-table-actual-header", ref: "header" }, React.DOM.tr(null, headerLabels)), React.DOM.thead({ className: "fixed-table-hidden-header" }, React.DOM.tr(null, headerLabels)), React.DOM.tbody(null, rows)))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="../unit/unitstrength.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitListItem = React.createClass({
             displayName: "UnitListItem",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [UIComponents.Draggable],
             componentDidMount: function () {
                 if (!this.props.isDraggable)
                     return;
-
                 var container = document.getElementsByClassName("unit-wrapper")[0];
-
-                this.forcedDragOffset = {
-                    x: container.offsetWidth / 2,
-                    y: container.offsetHeight / 2
-                };
+                this.forcedDragOffset =
+                    {
+                        x: container.offsetWidth / 2,
+                        y: container.offsetHeight / 2
+                    };
             },
             componentDidUpdate: function () {
                 if (this.needsFirstTouchUpdate && this.refs.dragClone) {
                     var node = this.refs.dragClone.getDOMNode();
                     node.classList.add("draggable");
                     node.classList.add("dragging");
-
                     var container = document.getElementsByClassName("unit-wrapper")[0];
-
                     node.style.width = "" + container.offsetWidth + "px";
                     node.style.height = "" + container.offsetHeight + "px";
-
                     this.needsFirstTouchUpdate = false;
                 }
             },
@@ -2370,22 +2153,19 @@ var Rance;
             onDragMove: function (x, y) {
                 if (!this.refs.dragClone)
                     return;
-
                 var node = this.refs.dragClone.getDOMNode();
                 node.classList.add("draggable");
                 node.classList.add("dragging");
                 node.style.left = "" + x + "px";
                 node.style.top = "" + y + "px";
-
                 var container = document.getElementsByClassName("unit-wrapper")[0];
-
                 node.style.width = "" + container.offsetWidth + "px";
                 node.style.height = "" + container.offsetHeight + "px";
-
-                this.forcedDragOffset = {
-                    x: container.offsetWidth / 2,
-                    y: container.offsetHeight / 2
-                };
+                this.forcedDragOffset =
+                    {
+                        x: container.offsetWidth / 2,
+                        y: container.offsetHeight / 2
+                    };
             },
             onDragEnd: function (e) {
                 this.props.onDragEnd();
@@ -2401,109 +2181,96 @@ var Rance;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "unit-list-item-cell" + " unit-list-" + type;
-
                 var cellContent;
-
                 switch (type) {
-                    case "strength": {
-                        cellContent = Rance.UIComponents.UnitStrength({
-                            maxHealth: this.props.maxHealth,
-                            currentHealth: this.props.currentHealth,
-                            isSquadron: true
-                        });
-
-                        break;
-                    }
+                    case "strength":
+                        {
+                            cellContent = UIComponents.UnitStrength({
+                                maxHealth: this.props.maxHealth,
+                                currentHealth: this.props.currentHealth,
+                                isSquadron: true
+                            });
+                            break;
+                        }
                     case "attack":
                     case "defence":
                     case "intelligence":
-                    case "speed": {
-                        cellContent = this.props[type];
-
-                        if (unit.attributes[type] < unit.baseAttributes[type]) {
-                            cellProps.className += " lowered-stat";
-                        } else if (unit.attributes[type] > unit.baseAttributes[type]) {
-                            cellProps.className += " raised-stat";
+                    case "speed":
+                        {
+                            cellContent = this.props[type];
+                            if (unit.attributes[type] < unit.baseAttributes[type]) {
+                                cellProps.className += " lowered-stat";
+                            }
+                            else if (unit.attributes[type] > unit.baseAttributes[type]) {
+                                cellProps.className += " raised-stat";
+                            }
+                            break;
                         }
-
-                        break;
-                    }
-                    default: {
-                        cellContent = this.props[type];
-
-                        break;
-                    }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var unit = this.props.unit;
                 var columns = this.props.activeColumns;
-
                 if (this.state.dragging) {
-                    return (Rance.UIComponents.Unit({
+                    return (UIComponents.Unit({
                         ref: "dragClone",
                         unit: unit
                     }));
                 }
-
                 var cells = [];
-
                 for (var i = 0; i < columns.length; i++) {
                     var cell = this.makeCell(columns[i].key);
-
                     cells.push(cell);
                 }
-
                 var rowProps = {
                     className: "unit-list-item",
                     onClick: this.props.handleClick
                 };
-
                 if (this.props.isDraggable && !this.props.noActionsLeft) {
                     rowProps.className += " draggable";
-                    rowProps.onTouchStart = rowProps.onMouseDown = this.handleMouseDown;
+                    rowProps.onTouchStart = rowProps.onMouseDown =
+                        this.handleMouseDown;
                 }
-
                 if (this.props.isSelected) {
                     rowProps.className += " selected-unit";
                 }
                 ;
-
                 if (this.props.isReserved) {
                     rowProps.className += " reserved-unit";
                 }
                 if (this.props.isHovered) {
                     rowProps.className += " unit-list-item-hovered";
                 }
-
                 if (this.props.noActionsLeft) {
                     rowProps.className += " no-actions-left";
-                } else if (this.props.onMouseEnter) {
+                }
+                else if (this.props.onMouseEnter) {
                     rowProps.onMouseEnter = this.handleMouseEnter;
                     rowProps.onMouseLeave = this.handleMouseLeave;
                 }
-
                 return (React.DOM.tr(rowProps, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="list.ts" />
 /// <reference path="unitlistitem.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitList = React.createClass({
             displayName: "UnitList",
             render: function () {
                 var rows = [];
-
                 for (var id in this.props.units) {
                     var unit = this.props.units[id];
-
                     var data = {
                         unit: unit,
                         id: unit.id,
@@ -2517,7 +2284,7 @@ var Rance;
                         defence: unit.attributes.defence,
                         intelligence: unit.attributes.intelligence,
                         speed: unit.attributes.speed,
-                        rowConstructor: Rance.UIComponents.UnitListItem,
+                        rowConstructor: UIComponents.UnitListItem,
                         makeClone: true,
                         isReserved: (this.props.reservedUnits && this.props.reservedUnits[unit.id]),
                         noActionsLeft: (this.props.checkTimesActed && !unit.canActThisTurn()),
@@ -2529,13 +2296,11 @@ var Rance;
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
                     };
-
                     rows.push({
                         key: unit.id,
                         data: data
                     });
                 }
-
                 var columns = [
                     {
                         label: "Id",
@@ -2581,8 +2346,7 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "unit-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "unit-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.props.onRowChange,
@@ -2591,15 +2355,15 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ItemListItem = React.createClass({
             displayName: "ItemListItem",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [UIComponents.Draggable],
             onDragStart: function (e) {
                 console.log("onDragStart", this.props.item.template.displayName);
                 this.props.onDragStart(this.props.item);
@@ -2611,98 +2375,87 @@ var Rance;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "item-list-item-cell" + " item-list-" + type;
-
                 var cellContent;
-
                 switch (type) {
-                    case "ability": {
-                        if (this.props.abilityTemplate) {
-                            cellProps.title = this.props.abilityTemplate.description;
+                    case "ability":
+                        {
+                            if (this.props.abilityTemplate) {
+                                cellProps.title = this.props.abilityTemplate.description;
+                            }
                         }
-                    }
-                    default: {
-                        cellContent = this.props[type];
-                        if (isFinite(cellContent)) {
-                            cellProps.className += " center-text";
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            if (isFinite(cellContent)) {
+                                cellProps.className += " center-text";
+                            }
+                            break;
                         }
-
-                        break;
-                    }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             makeDragClone: function () {
                 var clone = new Image();
                 clone.src = this.props.item.template.icon;
                 clone.className = "item-icon-base draggable dragging";
-
                 return clone;
             },
             render: function () {
                 var item = this.props.item;
                 var columns = this.props.activeColumns;
-
                 if (this.state.dragging && this.state.clone) {
                     this.state.clone.style.left = "" + this.state.dragPos.left + "px";
                     this.state.clone.style.top = "" + this.state.dragPos.top + "px";
                 }
-
                 var cells = [];
-
                 for (var i = 0; i < columns.length; i++) {
                     var cell = this.makeCell(columns[i].key);
-
                     cells.push(cell);
                 }
-
                 var rowProps = {
                     className: "item-list-item",
                     onClick: this.props.handleClick,
                     key: this.props.key
                 };
-
                 if (this.props.isDraggable) {
                     rowProps.className += " draggable";
-                    rowProps.onTouchStart = rowProps.onMouseDown = this.handleMouseDown;
+                    rowProps.onTouchStart = rowProps.onMouseDown =
+                        this.handleMouseDown;
                 }
-
                 if (this.props.isSelected) {
                     rowProps.className += " selected-item";
                 }
                 ;
-
                 if (this.props.isReserved) {
                     rowProps.className += " reserved-item";
                 }
-
                 return (React.DOM.tr(rowProps, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="list.ts" />
 /// <reference path="itemlistitem.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ItemList = React.createClass({
             displayName: "ItemList",
             getSlotIndex: function (slot) {
                 if (slot === "high") {
                     return 2;
-                } else if (slot === "mid") {
+                }
+                else if (slot === "mid") {
                     return 1;
-                } else
+                }
+                else
                     return 0;
             },
             render: function () {
                 var rows = [];
-
                 for (var i = 0; i < this.props.items.length; i++) {
                     var item = this.props.items[i];
-
                     var data = {
                         item: item,
                         key: item.id,
@@ -2719,105 +2472,102 @@ var Rance;
                         isReserved: Boolean(item.unit),
                         makeClone: true,
                         forcedDragOffset: { x: 32, y: 32 },
-                        rowConstructor: Rance.UIComponents.ItemListItem,
+                        rowConstructor: UIComponents.ItemListItem,
                         isDraggable: this.props.isDraggable,
                         onDragStart: this.props.onDragStart,
                         onDragEnd: this.props.onDragEnd
                     };
-
-                    [
-                        "maxActionPoints", "attack", "defence",
+                    ["maxActionPoints", "attack", "defence",
                         "intelligence", "speed"].forEach(function (stat) {
                         if (!item.template.attributes)
                             data[stat] = null;
                         else
                             data[stat] = item.template.attributes[stat] || null;
                     });
-
                     rows.push({
                         key: item.id,
                         data: data
                     });
                 }
-
                 var columns;
-
                 if (this.props.isItemPurchaseList) {
-                    columns = [
-                        {
-                            label: "Type",
-                            key: "typeName",
-                            defaultOrder: "asc"
-                        },
-                        {
-                            label: "Slot",
-                            key: "slot",
-                            propToSortBy: "slotIndex",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Tech",
-                            key: "techLevel",
-                            defaultOrder: "asc"
-                        },
-                        {
-                            label: "Cost",
-                            key: "cost",
-                            defaultOrder: "asc"
-                        }
-                    ];
-                } else {
-                    columns = [
-                        {
-                            label: "Type",
-                            key: "typeName",
-                            defaultOrder: "asc"
-                        },
-                        {
-                            label: "Slot",
-                            key: "slot",
-                            propToSortBy: "slotIndex",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Unit",
-                            key: "unitName",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Act",
-                            key: "maxActionPoints",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Atk",
-                            key: "attack",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Def",
-                            key: "defence",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Int",
-                            key: "intelligence",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Spd",
-                            key: "speed",
-                            defaultOrder: "desc"
-                        },
-                        {
-                            label: "Ability",
-                            key: "ability",
-                            defaultOrder: "desc"
-                        }
-                    ];
+                    columns =
+                        [
+                            {
+                                label: "Type",
+                                key: "typeName",
+                                defaultOrder: "asc"
+                            },
+                            {
+                                label: "Slot",
+                                key: "slot",
+                                propToSortBy: "slotIndex",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Tech",
+                                key: "techLevel",
+                                defaultOrder: "asc"
+                            },
+                            {
+                                label: "Cost",
+                                key: "cost",
+                                defaultOrder: "asc"
+                            }
+                        ];
                 }
-
-                return (React.DOM.div({ className: "item-list" }, Rance.UIComponents.List({
+                else {
+                    columns =
+                        [
+                            {
+                                label: "Type",
+                                key: "typeName",
+                                defaultOrder: "asc"
+                            },
+                            {
+                                label: "Slot",
+                                key: "slot",
+                                propToSortBy: "slotIndex",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Unit",
+                                key: "unitName",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Act",
+                                key: "maxActionPoints",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Atk",
+                                key: "attack",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Def",
+                                key: "defence",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Int",
+                                key: "intelligence",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Spd",
+                                key: "speed",
+                                defaultOrder: "desc"
+                            },
+                            {
+                                label: "Ability",
+                                key: "ability",
+                                defaultOrder: "desc"
+                            }
+                        ];
+                }
+                return (React.DOM.div({ className: "item-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
@@ -2827,35 +2577,31 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.AbilityList = React.createClass({
             displayName: "AbilityList",
             render: function () {
                 var abilities = [];
                 var baseClassName = "unit-info-ability";
-
                 if (this.props.listPassiveSkills) {
                     abilities = this.props.unit.getAllPassiveSkills();
                     baseClassName += " passive-skill";
-                } else {
+                }
+                else {
                     abilities = this.props.unit.getAllAbilities();
                 }
-
                 if (abilities.length < 1)
                     return null;
-
                 var abilityElements = [];
                 var addedAbilityTypes = {};
-
                 abilities.sort(function (_a, _b) {
                     var a = _a.displayName.toLowerCase();
                     var b = _b.displayName.toLowerCase();
-
                     if (a > b)
                         return 1;
                     else if (a < b)
@@ -2863,42 +2609,36 @@ var Rance;
                     else
                         return 0;
                 });
-
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
                     if (!addedAbilityTypes[ability.type]) {
                         addedAbilityTypes[ability.type] = 0;
                     }
-
                     var className = baseClassName;
-
                     if (addedAbilityTypes[ability.type] >= 1) {
                         className += " redundant-ability";
                     }
-
                     abilityElements.push(React.DOM.li({
                         className: className,
                         title: ability.description,
                         key: ability.type + addedAbilityTypes[ability.type]
                     }, "[" + ability.displayName + "]"));
-
                     addedAbilityTypes[ability.type]++;
                 }
-
                 return (React.DOM.ul({
                     className: "ability-list"
                 }, abilityElements));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitItem = React.createClass({
             displayName: "UnitItem",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [UIComponents.Draggable],
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.item);
             },
@@ -2908,34 +2648,33 @@ var Rance;
             // todo
             getTechIcon: function (techLevel) {
                 switch (techLevel) {
-                    case 2: {
-                        return "img\/items\/t2icon.png";
-                    }
-                    case 3: {
-                        return "img\/items\/t3icon.png";
-                    }
+                    case 2:
+                        {
+                            return "img\/items\/t2icon.png";
+                        }
+                    case 3:
+                        {
+                            return "img\/items\/t3icon.png";
+                        }
                 }
             },
             render: function () {
                 if (!this.props.item)
                     return (React.DOM.div({ className: "empty-unit-item" }));
                 var item = this.props.item;
-
                 var divProps = {
                     className: "unit-item",
                     title: item.template.displayName
                 };
-
                 if (this.props.isDraggable) {
                     divProps.className += " draggable";
-                    divProps.onMouseDown = divProps.onTouchStart = this.handleMouseDown;
+                    divProps.onMouseDown = divProps.onTouchStart =
+                        this.handleMouseDown;
                 }
-
                 if (this.state.dragging) {
                     divProps.style = this.state.dragPos;
                     divProps.className += " dragging";
                 }
-
                 return (React.DOM.div(divProps, React.DOM.div({
                     className: "item-icon-container"
                 }, React.DOM.img({
@@ -2947,46 +2686,43 @@ var Rance;
                 }) : null)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/droptarget.ts"/>
 /// <reference path="unititem.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.UnitItemWrapper = React.createClass({
             displayName: "UnitItemWrapper",
-            mixins: [Rance.UIComponents.DropTarget],
+            mixins: [UIComponents.DropTarget],
             handleMouseUp: function () {
                 this.props.onMouseUp(this.props.slot);
             },
             render: function () {
                 var allElements = [];
                 var item = this.props.item;
-
                 var wrapperProps = {
                     className: "unit-item-wrapper"
                 };
-
                 // if this is declared inside the conditional block
                 // the component won't accept the first drop properly
                 if (this.props.onMouseUp) {
                     wrapperProps.onMouseUp = this.handleMouseUp;
                 }
                 ;
-
                 if (this.props.currentDragItem) {
                     var dragItem = this.props.currentDragItem;
                     if (dragItem.template.slot === this.props.slot) {
                         wrapperProps.className += " drop-target";
-                    } else {
+                    }
+                    else {
                         wrapperProps.onMouseUp = null;
                         wrapperProps.className += " invalid-drop-target";
                     }
                 }
-
-                return (React.DOM.div(wrapperProps, Rance.UIComponents.UnitItem({
+                return (React.DOM.div(wrapperProps, UIComponents.UnitItem({
                     item: this.props.item,
                     key: "item",
                     isDraggable: this.props.isDraggable,
@@ -2995,13 +2731,13 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="abilitylist.ts" />
 /// <reference path="unititemwrapper.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.MenuUnitInfo = React.createClass({
             displayName: "MenuUnitInfo",
@@ -3009,11 +2745,9 @@ var Rance;
                 var unit = this.props.unit;
                 if (!unit)
                     return (React.DOM.div({ className: "menu-unit-info" }));
-
                 var itemSlots = [];
-
                 for (var slot in unit.items) {
-                    itemSlots.push(Rance.UIComponents.UnitItemWrapper({
+                    itemSlots.push(UIComponents.UnitItemWrapper({
                         key: slot,
                         slot: slot,
                         item: unit.items[slot],
@@ -3024,19 +2758,18 @@ var Rance;
                         currentDragItem: this.props.currentDragItem
                     }));
                 }
-
                 return (React.DOM.div({
                     className: "menu-unit-info"
                 }, React.DOM.div({
                     className: "menu-unit-info-name"
                 }, unit.name), React.DOM.div({
-                    className: "menu-unit-info-image unit-image"
+                    className: "menu-unit-info-image unit-image" // UNIT IMAGE TODO
                 }, null), React.DOM.div({
                     className: "menu-unit-info-abilities"
-                }, Rance.UIComponents.AbilityList({
+                }, UIComponents.AbilityList({
                     unit: unit,
                     listPassiveSkills: false
-                }), Rance.UIComponents.AbilityList({
+                }), UIComponents.AbilityList({
                     unit: unit,
                     listPassiveSkills: true
                 })), React.DOM.div({
@@ -3044,14 +2777,14 @@ var Rance;
                 }, itemSlots)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="itemlist.ts" />
 /// <reference path="unitlist.ts" />
 /// <reference path="menuunitinfo.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ItemEquip = React.createClass({
             displayName: "ItemEquip",
@@ -3064,7 +2797,6 @@ var Rance;
             handleSelectRow: function (row) {
                 if (!row.data.unit)
                     return;
-
                 this.setState({
                     selectedUnit: row.data.unit
                 });
@@ -3075,14 +2807,13 @@ var Rance;
                 });
             },
             handleDragEnd: function (dropSuccesful) {
-                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                if (dropSuccesful === void 0) { dropSuccesful = false; }
                 if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
                     var item = this.state.currentDragItem;
                     if (this.state.selectedUnit.items[item.template.slot] === item) {
                         this.state.selectedUnit.removeItem(item);
                     }
                 }
-
                 this.setState({
                     currentDragItem: null
                 });
@@ -3096,20 +2827,18 @@ var Rance;
                     }
                     unit.addItem(item);
                 }
-
                 this.handleDragEnd(true);
             },
             render: function () {
                 var player = this.props.player;
-
-                return (React.DOM.div({ className: "item-equip" }, React.DOM.div({ className: "item-equip-left" }, Rance.UIComponents.MenuUnitInfo({
+                return (React.DOM.div({ className: "item-equip" }, React.DOM.div({ className: "item-equip-left" }, UIComponents.MenuUnitInfo({
                     unit: this.state.selectedUnit,
                     onMouseUp: this.handleDrop,
                     isDraggable: true,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd,
                     currentDragItem: this.state.currentDragItem
-                }), Rance.UIComponents.ItemList({
+                }), UIComponents.ItemList({
                     items: player.items,
                     // only used to trigger updates
                     selectedUnit: this.state.selectedUnit,
@@ -3117,7 +2846,7 @@ var Rance;
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd,
                     onRowChange: this.handleSelectRow
-                })), Rance.UIComponents.UnitList({
+                })), UIComponents.UnitList({
                     units: player.units,
                     selectedUnit: this.state.selectedUnit,
                     isDraggable: false,
@@ -3126,18 +2855,17 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.DefenceBuilding = React.createClass({
             displayName: "DefenceBuilding",
             render: function () {
                 var building = this.props.building;
                 var image = app.images["buildings"][building.template.iconSrc];
-
                 return (React.DOM.div({
                     className: "defence-building"
                 }, React.DOM.img({
@@ -3151,43 +2879,39 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="defencebuilding.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.DefenceBuildingList = React.createClass({
             displayName: "DefenceBuildingList",
             render: function () {
                 if (!this.props.buildings)
                     return null;
-
                 var buildings = [];
-
                 for (var i = 0; i < this.props.buildings.length; i++) {
-                    buildings.push(Rance.UIComponents.DefenceBuilding({
+                    buildings.push(UIComponents.DefenceBuilding({
                         key: i,
                         building: this.props.buildings[i]
                     }));
                 }
-
                 if (this.props.reverse) {
                     buildings.reverse();
                 }
-
                 return (React.DOM.div({
                     className: "defence-building-list"
                 }, buildings));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap/defencebuildinglist.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BattleInfo = React.createClass({
             displayName: "BattleInfo",
@@ -3195,7 +2919,6 @@ var Rance;
                 var battlePrep = this.props.battlePrep;
                 var star = battlePrep.battleData.location;
                 var isAttacker = battlePrep.humanPlayer === battlePrep.attacker;
-
                 return (React.DOM.div({
                     className: "battle-info"
                 }, React.DOM.div({
@@ -3207,19 +2930,19 @@ var Rance;
                     className: "battle-info-opponent-name"
                 }, battlePrep.enemyPlayer.name)), React.DOM.div({
                     className: "battle-info-summary"
-                }, star.name + ": " + (isAttacker ? "Attacking" : "Defending")), Rance.UIComponents.DefenceBuildingList({
+                }, star.name + ": " + (isAttacker ? "Attacking" : "Defending")), UIComponents.DefenceBuildingList({
                     buildings: star.buildings["defence"],
                     reverse: isAttacker
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="battleinfo.ts"/>
 /// <reference path="../unitlist/menuunitinfo.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BattlePrep = React.createClass({
             displayName: "BattlePrep",
@@ -3229,24 +2952,20 @@ var Rance;
                     hoveredUnit: null,
                     selectedUnit: null,
                     currentDragItem: null,
-                    leftLowerElement: "playerFleet"
+                    leftLowerElement: "playerFleet" // "playerFleet" || "enemyFleet" || "itemEquip"
                 });
             },
             autoMakeFormation: function () {
                 var battlePrep = this.props.battlePrep;
-
                 battlePrep.clearPlayerFormation();
                 battlePrep.playerFormation = battlePrep.makeAIFormation(battlePrep.availableUnits);
-
                 battlePrep.setupPlayerFormation(battlePrep.playerFormation);
-
                 this.setLeftLowerElement("playerFleet");
                 this.forceUpdate();
             },
             handleSelectRow: function (row) {
                 if (!row.data.unit)
                     return;
-
                 this.setSelectedUnit(row.data.unit);
             },
             clearSelectedUnit: function () {
@@ -3259,7 +2978,6 @@ var Rance;
                     this.clearSelectedUnit();
                     return;
                 }
-
                 this.setState({
                     selectedUnit: unit,
                     hoveredUnit: null
@@ -3281,16 +2999,14 @@ var Rance;
                 });
             },
             handleDragEnd: function (dropSuccesful) {
-                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                if (dropSuccesful === void 0) { dropSuccesful = false; }
                 if (!dropSuccesful && this.state.currentDragUnit) {
                     this.props.battlePrep.removeUnit(this.state.currentDragUnit);
                 }
-
                 this.setState({
                     currentDragUnit: null,
                     hoveredUnit: null
                 });
-
                 return dropSuccesful;
             },
             handleDrop: function (position) {
@@ -3299,11 +3015,11 @@ var Rance;
                     var unitCurrentlyInPosition = battlePrep.getUnitAtPosition(position);
                     if (unitCurrentlyInPosition) {
                         battlePrep.swapUnits(this.state.currentDragUnit, unitCurrentlyInPosition);
-                    } else {
+                    }
+                    else {
                         battlePrep.setUnit(this.state.currentDragUnit, position);
                     }
                 }
-
                 this.handleDragEnd(true);
             },
             handleItemDragStart: function (item) {
@@ -3316,22 +3032,19 @@ var Rance;
                 var newState = {
                     leftLowerElement: newElement
                 };
-
                 if (oldElement === "enemyFleet" || newElement === "enemyFleet") {
                     newState.selectedUnit = null;
                 }
-
                 this.setState(newState);
             },
             handleItemDragEnd: function (dropSuccesful) {
-                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                if (dropSuccesful === void 0) { dropSuccesful = false; }
                 if (!dropSuccesful && this.state.currentDragItem && this.state.selectedUnit) {
                     var item = this.state.currentDragItem;
                     if (this.state.selectedUnit.items[item.template.slot] === item) {
                         this.state.selectedUnit.removeItem(item);
                     }
                 }
-
                 this.setState({
                     currentDragItem: null
                 });
@@ -3345,7 +3058,6 @@ var Rance;
                     }
                     unit.addItem(item);
                 }
-
                 this.handleItemDragEnd(true);
             },
             getBackgroundBlurArea: function () {
@@ -3354,16 +3066,15 @@ var Rance;
             render: function () {
                 // priority: hovered unit > selected unit > battle infd
                 var leftUpperElement;
-
                 var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
                 if (hoveredUnit) {
-                    leftUpperElement = Rance.UIComponents.MenuUnitInfo({
+                    leftUpperElement = UIComponents.MenuUnitInfo({
                         unit: hoveredUnit
                     });
-                } else if (this.state.selectedUnit) {
+                }
+                else if (this.state.selectedUnit) {
                     var selectedUnitIsFriendly = this.props.battlePrep.availableUnits.indexOf(this.state.selectedUnit) !== -1;
-
-                    leftUpperElement = Rance.UIComponents.MenuUnitInfo({
+                    leftUpperElement = UIComponents.MenuUnitInfo({
                         unit: this.state.selectedUnit,
                         onMouseUp: this.handleItemDrop,
                         isDraggable: selectedUnitIsFriendly,
@@ -3371,60 +3082,61 @@ var Rance;
                         onDragEnd: this.handleItemDragEnd,
                         currentDragItem: this.state.currentDragItem
                     });
-                } else {
-                    leftUpperElement = Rance.UIComponents.BattleInfo({
+                }
+                else {
+                    leftUpperElement = UIComponents.BattleInfo({
                         battlePrep: this.props.battlePrep
                     });
-                    //leftUpperElement = React.DOM.div(null, "battle info todo");
                 }
-
                 var leftLowerElement;
                 switch (this.state.leftLowerElement) {
-                    case "playerFleet": {
-                        leftLowerElement = Rance.UIComponents.Fleet({
-                            key: "playerFleet",
-                            fleet: this.props.battlePrep.playerFormation.slice(0),
-                            hoveredUnit: this.state.hoveredUnit,
-                            activeUnit: this.state.selectedUnit,
-                            onMouseUp: this.handleDrop,
-                            onUnitClick: this.setSelectedUnit,
-                            isDraggable: true,
-                            onDragStart: this.handleDragStart,
-                            onDragEnd: this.handleDragEnd,
-                            handleMouseEnterUnit: this.handleMouseEnterUnit,
-                            handleMouseLeaveUnit: this.handleMouseLeaveUnit
-                        });
-                        break;
-                    }
-                    case "enemyFleet": {
-                        leftLowerElement = Rance.UIComponents.Fleet({
-                            key: "enemyFleet",
-                            fleet: this.props.battlePrep.enemyFormation,
-                            facesLeft: true,
-                            hoveredUnit: this.state.hoveredUnit,
-                            activeUnit: this.state.selectedUnit,
-                            onUnitClick: this.setSelectedUnit,
-                            isDraggable: false,
-                            handleMouseEnterUnit: this.handleMouseEnterUnit,
-                            handleMouseLeaveUnit: this.handleMouseLeaveUnit
-                        });
-                        break;
-                    }
-                    case "itemEquip": {
-                        leftLowerElement = Rance.UIComponents.ItemList({
-                            key: "itemEquip",
-                            items: this.props.battlePrep.humanPlayer.items,
-                            isDraggable: true,
-                            onDragStart: this.handleItemDragStart,
-                            onDragEnd: this.handleItemDragEnd,
-                            onRowChange: this.handleSelectRow
-                        });
-                        break;
-                    }
+                    case "playerFleet":
+                        {
+                            leftLowerElement = UIComponents.Fleet({
+                                key: "playerFleet",
+                                fleet: this.props.battlePrep.playerFormation.slice(0),
+                                hoveredUnit: this.state.hoveredUnit,
+                                activeUnit: this.state.selectedUnit,
+                                onMouseUp: this.handleDrop,
+                                onUnitClick: this.setSelectedUnit,
+                                isDraggable: true,
+                                onDragStart: this.handleDragStart,
+                                onDragEnd: this.handleDragEnd,
+                                handleMouseEnterUnit: this.handleMouseEnterUnit,
+                                handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                            });
+                            break;
+                        }
+                    case "enemyFleet":
+                        {
+                            leftLowerElement = UIComponents.Fleet({
+                                key: "enemyFleet",
+                                fleet: this.props.battlePrep.enemyFormation,
+                                facesLeft: true,
+                                hoveredUnit: this.state.hoveredUnit,
+                                activeUnit: this.state.selectedUnit,
+                                onUnitClick: this.setSelectedUnit,
+                                isDraggable: false,
+                                handleMouseEnterUnit: this.handleMouseEnterUnit,
+                                handleMouseLeaveUnit: this.handleMouseLeaveUnit
+                            });
+                            break;
+                        }
+                    case "itemEquip":
+                        {
+                            leftLowerElement = UIComponents.ItemList({
+                                key: "itemEquip",
+                                items: this.props.battlePrep.humanPlayer.items,
+                                isDraggable: true,
+                                onDragStart: this.handleItemDragStart,
+                                onDragEnd: this.handleItemDragEnd,
+                                onRowChange: this.handleSelectRow
+                            });
+                            break;
+                        }
                 }
                 ;
-
-                return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, Rance.UIComponents.BattleBackground({
+                return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     getBlurArea: this.getBackgroundBlurArea,
                     backgroundSeed: this.props.battlePrep.battleData.location.getSeed()
@@ -3463,7 +3175,7 @@ var Rance;
                         Rance.eventManager.dispatchEvent("setCameraToCenterOn", battle.battleData.location);
                         Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
                     }.bind(this)
-                }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), Rance.UIComponents.UnitList({
+                }, "Simulate battle")), React.DOM.div({ className: "battle-prep-left-lower" }, leftLowerElement)), UIComponents.UnitList({
                     units: this.props.battlePrep.availableUnits,
                     selectedUnit: this.state.selectedUnit,
                     reservedUnits: this.props.battlePrep.alreadyPlaced,
@@ -3478,11 +3190,11 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.LightBox = React.createClass({
             displayName: "LightBox",
@@ -3493,19 +3205,18 @@ var Rance;
                 var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
                 container.classList.remove("light-box-horizontal-padding");
                 container.classList.remove("light-box-fill-horizontal");
-
                 container.classList.remove("light-box-vertical-padding");
                 container.classList.remove("light-box-fill-vertical");
-
                 if (container.getBoundingClientRect().width + 10 + wrapperRect.left < window.innerWidth) {
                     container.classList.add("light-box-horizontal-padding");
-                } else {
+                }
+                else {
                     container.classList.add("light-box-fill-horizontal");
                 }
-
                 if (container.getBoundingClientRect().height + 10 + wrapperRect.top < window.innerHeight) {
                     container.classList.add("light-box-vertical-padding");
-                } else {
+                }
+                else {
                     container.classList.add("light-box-fill-vertical");
                 }
             },
@@ -3534,47 +3245,44 @@ var Rance;
                 }, this.props.content))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ItemPurchaseListItem = React.createClass({
             displayName: "ItemPurchaseListItem",
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
-                cellProps.className = "item-purchase-list-item-cell " + "item-purchase-list-" + type;
-
+                cellProps.className = "item-purchase-list-item-cell " +
+                    "item-purchase-list-" + type;
                 var cellContent;
-
                 switch (type) {
-                    case ("buildCost"): {
-                        if (this.props.playerMoney < this.props.buildCost) {
-                            cellProps.className += " negative";
+                    case ("buildCost"):
+                        {
+                            if (this.props.playerMoney < this.props.buildCost) {
+                                cellProps.className += " negative";
+                            }
                         }
-                    }
-                    default: {
-                        cellContent = this.props[type];
-                        if (isFinite(cellContent)) {
-                            cellProps.className += " center-text";
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            if (isFinite(cellContent)) {
+                                cellProps.className += " center-text";
+                            }
+                            break;
                         }
-
-                        break;
-                    }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var cells = [];
                 var columns = this.props.activeColumns;
-
                 for (var i = 0; i < columns.length; i++) {
                     cells.push(this.makeCell(columns[i].key));
                 }
-
                 var props = {
                     className: "item-purchase-list-item",
                     onClick: this.props.handleClick
@@ -3584,33 +3292,32 @@ var Rance;
                     props.disabled = true;
                     props.className += " disabled";
                 }
-
                 return (React.DOM.tr(props, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="itempurchaselistitem.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ItemPurchaseList = React.createClass({
             displayName: "ItemPurchaseList",
             getSlotIndex: function (slot) {
                 if (slot === "high") {
                     return 2;
-                } else if (slot === "mid") {
+                }
+                else if (slot === "mid") {
                     return 1;
-                } else
+                }
+                else
                     return 0;
             },
             render: function () {
                 var rows = [];
-
                 for (var i = 0; i < this.props.items.length; i++) {
                     var item = this.props.items[i];
-
                     var data = {
                         item: item,
                         typeName: item.template.displayName,
@@ -3619,15 +3326,13 @@ var Rance;
                         techLevel: item.template.techLevel,
                         buildCost: item.template.cost,
                         playerMoney: this.props.playerMoney,
-                        rowConstructor: Rance.UIComponents.ItemPurchaseListItem
+                        rowConstructor: UIComponents.ItemPurchaseListItem
                     };
-
                     rows.push({
                         key: item.template.type,
                         data: data
                     });
                 }
-
                 var columns = [
                     {
                         label: "Type",
@@ -3651,8 +3356,7 @@ var Rance;
                         defaultOrder: "asc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "item-purchase-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "item-purchase-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1], columns[2]],
@@ -3660,49 +3364,45 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="itempurchaselist.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BuyItems = React.createClass({
             displayName: "BuyItems",
             handleSelectRow: function (row) {
                 var template = row.data.item.template;
                 var item = new Rance.Item(template);
-
                 this.props.player.addItem(item);
                 this.props.player.money -= template.cost;
-
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
             },
             render: function () {
                 var player = this.props.player;
                 var items = player.getAllBuildableItems();
-
                 if (items.length < 1) {
                     return (React.DOM.div({ className: "buy-items" }, "You need to construct an item manufactory first"));
                 }
-
-                return (React.DOM.div({ className: "buy-items" }, Rance.UIComponents.ItemPurchaseList({
+                return (React.DOM.div({ className: "buy-items" }, UIComponents.ItemPurchaseList({
                     items: items,
                     onRowChange: this.handleSelectRow,
                     playerMoney: this.props.player.money
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.PopupResizeHandle = React.createClass({
             displayName: "PopupResizeHandle",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [UIComponents.Draggable],
             // originBottom: undefined,
             // originRight: undefined,
             // onDragStart: function()
@@ -3725,17 +3425,17 @@ var Rance;
                 }));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/draggable.ts" />
 /// <reference path="resizehandle.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Popup = React.createClass({
             displayName: "Popup",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [UIComponents.Draggable],
             getInitialState: function () {
                 return ({
                     zIndex: this.props.incrementZIndex()
@@ -3751,17 +3451,13 @@ var Rance;
             },
             setInitialPosition: function () {
                 var rect = this.getDOMNode().getBoundingClientRect();
-                var container = this.containerElement;
-
+                var container = this.containerElement; // set in draggable mixin
                 var left = parseInt(container.offsetWidth) / 2.5 - rect.width / 2;
                 var top = parseInt(container.offsetHeight) / 3.5 - rect.height / 2;
-
                 left += this.props.activePopupsCount * 20;
                 top += this.props.activePopupsCount * 20;
-
                 left = Math.min(left, container.offsetWidth - rect.width);
                 top = Math.min(top, container.offsetHeight - rect.height);
-
                 this.setState({
                     dragPos: {
                         top: top,
@@ -3791,27 +3487,22 @@ var Rance;
                         zIndex: this.state.zIndex
                     }
                 };
-
                 if (this.state.dragging) {
                     divProps.className += " dragging";
                 }
-
                 var contentProps = this.props.contentProps;
-
                 contentProps.closePopup = this.props.closePopup;
-
-                var resizeHandle = !this.resizable ? null : Rance.UIComponents.PopupResizeHandle({
+                var resizeHandle = !this.resizable ? null : UIComponents.PopupResizeHandle({
                     handleResize: this.handleResizeMove
                 });
-
                 return (React.DOM.div(divProps, this.props.contentConstructor(contentProps), resizeHandle));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.TutorialPopup = React.createClass({
             displayName: "TutorialPopup",
@@ -3824,16 +3515,13 @@ var Rance;
                 var lastPage = this.props.pages.length - 1;
                 var newPage = this.state.currentPage + amount;
                 newPage = Rance.clamp(newPage, 0, lastPage);
-
                 this.setState({
                     currentPage: newPage
                 });
             },
             handleClose: function () {
                 if (this.refs.dontShowAgain.getDOMNode().checked) {
-                    //do stuff
                 }
-
                 this.props.closePopup();
             },
             render: function () {
@@ -3844,12 +3532,12 @@ var Rance;
                         className: "tutorial-popup-flip-page tutorial-popup-flip-page-back",
                         onClick: this.flipPage.bind(this, -1)
                     }, "<");
-                } else {
+                }
+                else {
                     backElement = React.DOM.div({
                         className: "tutorial-popup-flip-page disabled"
                     });
                 }
-
                 var hasForwardArrow = this.state.currentPage < this.props.pages.length - 1;
                 var forwardElement;
                 if (hasForwardArrow) {
@@ -3857,12 +3545,12 @@ var Rance;
                         className: "tutorial-popup-flip-page tutorial-popup-flip-page-forward",
                         onClick: this.flipPage.bind(this, 1)
                     }, ">");
-                } else {
+                }
+                else {
                     forwardElement = React.DOM.div({
                         className: "tutorial-popup-flip-page disabled"
                     });
                 }
-
                 return (React.DOM.div({
                     className: "tutorial-popup"
                 }, React.DOM.div({
@@ -3883,11 +3571,11 @@ var Rance;
                 }, this.props.cancelText || "Close")))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ConfirmPopup = React.createClass({
             displayName: "ConfirmPopup",
@@ -3899,9 +3587,7 @@ var Rance;
                     this.handleClose();
                     return;
                 }
-
                 var callbackSuccesful = this.props.handleOk();
-
                 if (callbackSuccesful !== false) {
                     this.handleClose();
                 }
@@ -3926,29 +3612,32 @@ var Rance;
                 }, this.props.cancelText || "Cancel"))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="popup.ts"/>
 /// <reference path="tutorialpopup.ts"/>
 /// <reference path="confirmpopup.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.PopupManager = React.createClass({
             displayName: "PopupManager",
             componentWillMount: function () {
                 this.listeners = {};
                 var self = this;
-                this.listeners["makePopup"] = Rance.eventManager.addEventListener("makePopup", function (e) {
-                    self.makePopup(e.data);
-                });
-                this.listeners["closePopup"] = Rance.eventManager.addEventListener("closePopup", function (e) {
-                    self.closePopup(e.data);
-                });
-                this.listeners["setPopupContent"] = Rance.eventManager.addEventListener("setPopupContent", function (e) {
-                    self.setPopupContent(e.data.id, e.data.content);
-                });
+                this.listeners["makePopup"] =
+                    Rance.eventManager.addEventListener("makePopup", function (e) {
+                        self.makePopup(e.data);
+                    });
+                this.listeners["closePopup"] =
+                    Rance.eventManager.addEventListener("closePopup", function (e) {
+                        self.closePopup(e.data);
+                    });
+                this.listeners["setPopupContent"] =
+                    Rance.eventManager.addEventListener("setPopupContent", function (e) {
+                        self.setPopupContent(e.data.id, e.data.content);
+                    });
             },
             componentWillUnmount: function () {
                 for (var listenerId in this.listeners) {
@@ -3963,13 +3652,11 @@ var Rance;
             incrementZIndex: function () {
                 if (!this.currentZIndex)
                     this.currentZIndex = 0;
-
                 return this.currentZIndex++;
             },
             getPopupId: function () {
                 if (!this.popupId)
                     this.popupId = 0;
-
                 return this.popupId++;
             },
             getPopup: function (id) {
@@ -3977,7 +3664,6 @@ var Rance;
                     if (this.state.popups[i].id === id)
                         return this.state.popups[i];
                 }
-
                 return null;
             },
             hasPopup: function (id) {
@@ -3985,39 +3671,36 @@ var Rance;
                     if (this.state.popups[i].id === id)
                         return true;
                 }
-
                 return false;
             },
             closePopup: function (id) {
                 if (!this.hasPopup(id))
                     throw new Error("No such popup");
-
                 var newPopups = [];
-
                 for (var i = 0; i < this.state.popups.length; i++) {
                     if (this.state.popups[i].id !== id) {
                         newPopups.push(this.state.popups[i]);
                     }
                 }
-
                 this.setState({ popups: newPopups });
             },
             makePopup: function (props) {
                 if (this.props.onlyAllowOne) {
                     this.setState({
-                        popups: [{
+                        popups: [
+                            {
                                 contentConstructor: props.contentConstructor,
                                 contentProps: props.contentProps,
                                 id: this.getPopupId()
                             }]
                     });
-                } else {
+                }
+                else {
                     var popups = this.state.popups.concat({
                         contentConstructor: props.contentConstructor,
                         contentProps: props.contentProps,
                         id: this.getPopupId()
                     });
-
                     this.setState({
                         popups: popups
                     });
@@ -4027,20 +3710,15 @@ var Rance;
                 var popup = this.getPopup(popupId);
                 if (!popup)
                     throw new Error();
-
                 popup.contentProps = newContent;
-
                 this.forceUpdate();
             },
             render: function () {
                 var popups = this.state.popups;
-
                 var toRender = [];
-
                 for (var i = 0; i < popups.length; i++) {
                     var popup = popups[i];
-
-                    toRender.push(Rance.UIComponents.Popup({
+                    toRender.push(UIComponents.Popup({
                         contentConstructor: popup.contentConstructor,
                         contentProps: popup.contentProps,
                         key: popup.id,
@@ -4049,21 +3727,19 @@ var Rance;
                         activePopupsCount: this.state.popups.length
                     }));
                 }
-
                 if (toRender.length < 1) {
                     return null;
                 }
-
                 return (React.DOM.div({
                     className: "popup-container"
                 }, toRender));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.SaveListItem = React.createClass({
             displayName: "SaveListItem",
@@ -4071,77 +3747,67 @@ var Rance;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "save-list-item-cell" + " save-list-" + type;
-
                 var cellContent;
-
                 switch (type) {
-                    case "delete": {
-                        cellContent = "X";
-
-                        cellProps.onClick = this.props.handleDelete;
-                        break;
-                    }
-                    default: {
-                        cellContent = this.props[type];
-                        break;
-                    }
+                    case "delete":
+                        {
+                            cellContent = "X";
+                            cellProps.onClick = this.props.handleDelete;
+                            break;
+                        }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var columns = this.props.activeColumns;
-
                 var cells = [];
-
                 for (var i = 0; i < columns.length; i++) {
                     var cell = this.makeCell(columns[i].key);
-
                     cells.push(cell);
                 }
-
                 var rowProps = {
                     className: "save-list-item",
                     onClick: this.props.handleClick
                 };
-
                 return (React.DOM.tr(rowProps, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="savelistitem.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.SaveList = React.createClass({
             displayName: "SaveList",
             render: function () {
                 var rows = [];
-
                 var allKeys = Object.keys(localStorage);
-
                 var saveKeys = allKeys.filter(function (key) {
                     return (key.indexOf("Rance.Save") > -1);
                 });
-
                 for (var i = 0; i < saveKeys.length; i++) {
                     var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
                     var date = new Date(saveData.date);
-
                     rows.push({
                         key: saveKeys[i],
                         data: {
                             name: saveData.name,
                             date: Rance.prettifyDate(date),
                             accurateDate: saveData.date,
-                            rowConstructor: Rance.UIComponents.SaveListItem,
-                            handleDelete: this.props.onDelete ? this.props.onDelete.bind(null, saveKeys[i]) : null
+                            rowConstructor: UIComponents.SaveListItem,
+                            handleDelete: this.props.onDelete ?
+                                this.props.onDelete.bind(null, saveKeys[i]) :
+                                null
                         }
                     });
                 }
-
                 var columns = [
                     {
                         label: "Name",
@@ -4155,7 +3821,6 @@ var Rance;
                         propToSortBy: "accurateDate"
                     }
                 ];
-
                 if (this.props.allowDelete) {
                     columns.push({
                         label: "Del",
@@ -4163,8 +3828,7 @@ var Rance;
                         notSortable: true
                     });
                 }
-
-                return (React.DOM.div({ className: "save-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "save-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[1]],
@@ -4174,13 +3838,13 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.SaveGame = React.createClass({
             displayName: "SaveGame",
@@ -4198,7 +3862,8 @@ var Rance;
                 var saveKey = "Rance.Save." + saveName;
                 if (localStorage[saveKey]) {
                     this.makeConfirmOverWritePopup(saveName);
-                } else {
+                }
+                else {
                     this.saveGame();
                 }
             },
@@ -4212,21 +3877,21 @@ var Rance;
             makeConfirmOverWritePopup: function (saveName) {
                 var confirmProps = {
                     handleOk: this.saveGame,
-                    contentText: "Are you sure you want to overwrite " + saveName.replace("Rance.Save.", "") + "?"
+                    contentText: "Are you sure you want to overwrite " +
+                        saveName.replace("Rance.Save.", "") + "?"
                 };
-
                 this.refs.popupManager.makePopup({
-                    contentConstructor: Rance.UIComponents.ConfirmPopup,
+                    contentConstructor: UIComponents.ConfirmPopup,
                     contentProps: confirmProps
                 });
             },
             render: function () {
                 return (React.DOM.div({
                     className: "save-game"
-                }, Rance.UIComponents.PopupManager({
+                }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
-                }), Rance.UIComponents.SaveList({
+                }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
                     autoSelect: true
                 }), React.DOM.input({
@@ -4246,13 +3911,13 @@ var Rance;
                 }, "Cancel"))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="savelist.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.LoadGame = React.createClass({
             displayName: "LoadGame",
@@ -4267,9 +3932,7 @@ var Rance;
             },
             handleLoad: function (e) {
                 var saveName = this.refs.saveName.getDOMNode().value;
-
                 this.handleClose();
-
                 // https://github.com/facebook/react/issues/2988
                 // https://github.com/facebook/react/issues/2605#issuecomment-118398797
                 // without this react will keep a reference to this element causing a big memory leak
@@ -4287,24 +3950,23 @@ var Rance;
                     this.refs.saveName.getDOMNode().value = "";
                     this.forceUpdate();
                 }.bind(this, saveName);
-
                 var confirmProps = {
                     handleOk: deleteFN,
-                    contentText: "Are you sure you want to delete the save " + saveName.replace("Rance.Save.", "") + "?"
+                    contentText: "Are you sure you want to delete the save " +
+                        saveName.replace("Rance.Save.", "") + "?"
                 };
-
                 this.refs.popupManager.makePopup({
-                    contentConstructor: Rance.UIComponents.ConfirmPopup,
+                    contentConstructor: UIComponents.ConfirmPopup,
                     contentProps: confirmProps
                 });
             },
             render: function () {
                 return (React.DOM.div({
                     className: "save-game"
-                }, Rance.UIComponents.PopupManager({
+                }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
-                }), Rance.UIComponents.SaveList({
+                }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
                     autoSelect: true,
                     allowDelete: true,
@@ -4325,11 +3987,11 @@ var Rance;
                 }, "Cancel"))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.DiplomacyActions = React.createClass({
             displayName: "DiplomacyActions",
@@ -4344,29 +4006,26 @@ var Rance;
             render: function () {
                 var player = this.props.player;
                 var targetPlayer = this.props.targetPlayer;
-
                 var declareWarProps = {
                     className: "diplomacy-action-button"
                 };
-
                 if (player.diplomacyStatus.canDeclareWarOn(targetPlayer)) {
                     declareWarProps.onClick = this.handleDeclareWar;
-                } else {
+                }
+                else {
                     declareWarProps.disabled = true;
                     declareWarProps.className += " disabled";
                 }
-
                 var makePeaceProps = {
                     className: "diplomacy-action-button"
                 };
-
                 if (player.diplomacyStatus.canMakePeaceWith(targetPlayer)) {
                     makePeaceProps.onClick = this.handleMakePeace;
-                } else {
+                }
+                else {
                     makePeaceProps.disabled = true;
                     makePeaceProps.className += " disabled";
                 }
-
                 return (React.DOM.div({
                     className: "diplomacy-actions-container"
                 }, React.DOM.button({
@@ -4379,11 +4038,11 @@ var Rance;
                 }, targetPlayer.name), React.DOM.button(declareWarProps, "Declare war"), React.DOM.button(makePeaceProps, "Make peace"))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.AutoPosition = {
             componentDidMount: function () {
@@ -4398,179 +4057,179 @@ var Rance;
             },
             flipSide: function (side) {
                 switch (side) {
-                    case "top": {
-                        return "bottom";
-                    }
-                    case "bottom": {
-                        return "top";
-                    }
-                    case "left": {
-                        return "right";
-                    }
-                    case "right": {
-                        return "left";
-                    }
-                    default: {
-                        throw new Error("Invalid side");
-                    }
+                    case "top":
+                        {
+                            return "bottom";
+                        }
+                    case "bottom":
+                        {
+                            return "top";
+                        }
+                    case "left":
+                        {
+                            return "right";
+                        }
+                    case "right":
+                        {
+                            return "left";
+                        }
+                    default:
+                        {
+                            throw new Error("Invalid side");
+                        }
                 }
             },
             elementFitsYSide: function (side, ownRect, parentRect) {
                 switch (side) {
-                    case "top": {
-                        return parentRect.top - ownRect.height >= 0;
-                    }
-                    case "bottom": {
-                        return parentRect.bottom + ownRect.height < window.innerHeight;
-                    }
-                    default: {
-                        throw new Error("Invalid side");
-                    }
+                    case "top":
+                        {
+                            return parentRect.top - ownRect.height >= 0;
+                        }
+                    case "bottom":
+                        {
+                            return parentRect.bottom + ownRect.height < window.innerHeight;
+                        }
+                    default:
+                        {
+                            throw new Error("Invalid side");
+                        }
                 }
             },
             elementFitsXSide: function (side, ownRect, parentRect) {
                 switch (side) {
-                    case "left": {
-                        return parentRect.left + ownRect.width < window.innerWidth;
-                    }
-                    case "right": {
-                        return parentRect.right - ownRect.width >= 0;
-                    }
-                    default: {
-                        throw new Error("Invalid side");
-                    }
+                    case "left":
+                        {
+                            return parentRect.left + ownRect.width < window.innerWidth;
+                        }
+                    case "right":
+                        {
+                            return parentRect.right - ownRect.width >= 0;
+                        }
+                    default:
+                        {
+                            throw new Error("Invalid side");
+                        }
                 }
             },
             setAutoPosition: function () {
                 /*
                 try to fit prefered y
-                flip if doesnt fit
+                  flip if doesnt fit
                 try to fit prefered x alignment
-                flip if doesnt fit
-                */
+                  flip if doesnt fit
+                 */
                 var parentRect = this.props.getParentNode().getBoundingClientRect();
                 var ownNode = this.getDOMNode();
                 var rect = ownNode.getBoundingClientRect();
-
                 var ySide = this.props.ySide || "top";
                 var xSide = this.props.xSide || "right";
-
                 var yMargin = this.props.yMargin || 0;
                 var xMargin = this.props.xMargin || 0;
-
                 var fitsY = this.elementFitsYSide(ySide, rect, parentRect);
                 if (!fitsY) {
                     ySide = this.flipSide(ySide);
                 }
-
                 var fitsX = this.elementFitsXSide(xSide, rect, parentRect);
                 if (!fitsX) {
                     xSide = this.flipSide(xSide);
                 }
                 var top = null;
                 var left = null;
-
                 if (ySide === "top") {
                     top = parentRect.top - rect.height - yMargin;
-                } else {
+                }
+                else {
                     top = parentRect.bottom + yMargin;
                 }
-
                 if (xSide === "left") {
                     left = parentRect.left - xMargin;
-                } else {
+                }
+                else {
                     left = parentRect.right - rect.width + xMargin;
                 }
-
                 ownNode.style.left = "" + left + "px";
                 ownNode.style.top = "" + top + "px";
             }
         };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.AttitudeModifierInfo = React.createClass({
             displayName: "AttitudeModifierInfo",
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
-                cellProps.className = "attitude-modifier-info-cell" + " attitude-modifier-info-" + type;
-
+                cellProps.className = "attitude-modifier-info-cell" +
+                    " attitude-modifier-info-" + type;
                 var cellContent;
-
                 switch (type) {
-                    case "endTurn": {
-                        if (this.props.endTurn < 0) {
-                            cellContent = null;
-                            return;
+                    case "endTurn":
+                        {
+                            if (this.props.endTurn < 0) {
+                                cellContent = null;
+                                return;
+                            }
                         }
-                    }
-                    case "strength": {
-                        var relativeValue = Rance.getRelativeValue(this.props.strength, -20, 20);
-                        relativeValue = Rance.clamp(relativeValue, 0, 1);
-
-                        var deviation = Math.abs(0.5 - relativeValue) * 2;
-
-                        var hue = 110 * relativeValue;
-                        var saturation = 0 + 50 * deviation;
-                        if (deviation > 0.3)
-                            saturation += 40;
-                        var lightness = 70 - 20 * deviation;
-
-                        cellProps.style = {
-                            color: "hsl(" + hue + "," + saturation + "%," + lightness + "%)"
-                        };
-                    }
-                    default: {
-                        cellContent = this.props[type];
-
-                        if (isFinite(cellContent)) {
-                            cellProps.className += " center-text";
+                    case "strength":
+                        {
+                            var relativeValue = Rance.getRelativeValue(this.props.strength, -20, 20);
+                            relativeValue = Rance.clamp(relativeValue, 0, 1);
+                            var deviation = Math.abs(0.5 - relativeValue) * 2;
+                            var hue = 110 * relativeValue;
+                            var saturation = 0 + 50 * deviation;
+                            if (deviation > 0.3)
+                                saturation += 40;
+                            var lightness = 70 - 20 * deviation;
+                            cellProps.style =
+                                {
+                                    color: "hsl(" +
+                                        hue + "," +
+                                        saturation + "%," +
+                                        lightness + "%)"
+                                };
                         }
-
-                        break;
-                    }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            if (isFinite(cellContent)) {
+                                cellProps.className += " center-text";
+                            }
+                            break;
+                        }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var columns = this.props.activeColumns;
-
                 var cells = [];
-
                 for (var i = 0; i < columns.length; i++) {
                     var cell = this.makeCell(columns[i].key);
-
                     cells.push(cell);
                 }
-
                 var rowProps = {
                     className: "diplomatic-status-player",
                     onClick: this.props.handleClick
                 };
-
                 return (React.DOM.tr(rowProps, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/autoposition.ts" />
 /// <reference path="attitudemodifierinfo.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.AttitudeModifierList = React.createClass({
             displayName: "AttitudeModifierList",
-            mixins: [Rance.UIComponents.AutoPosition],
+            mixins: [UIComponents.AutoPosition],
             render: function () {
                 var modifiers = this.props.attitudeModifiers;
                 var rows = [];
-
                 rows.push({
                     key: "baseOpinion",
                     data: {
@@ -4578,15 +4237,13 @@ var Rance;
                         strength: this.props.baseOpinion,
                         endTurn: -1,
                         sortOrder: -1,
-                        rowConstructor: Rance.UIComponents.AttitudeModifierInfo
+                        rowConstructor: UIComponents.AttitudeModifierInfo
                     }
                 });
-
                 for (var i = 0; i < modifiers.length; i++) {
                     var modifier = modifiers[i];
                     if (modifier.isOverRidden)
                         continue;
-
                     rows.push({
                         key: modifier.template.type,
                         data: {
@@ -4594,11 +4251,10 @@ var Rance;
                             strength: modifier.getAdjustedStrength(),
                             endTurn: modifier.endTurn,
                             sortOrder: 0,
-                            rowConstructor: Rance.UIComponents.AttitudeModifierInfo
+                            rowConstructor: UIComponents.AttitudeModifierInfo
                         }
                     });
                 }
-
                 var columns = [
                     {
                         label: "Name",
@@ -4617,20 +4273,19 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "attitude-modifier-list auto-position" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "attitude-modifier-list auto-position" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[0], columns[1], columns[2]]
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="attitudemodifierlist.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Opinion = React.createClass({
             displayName: "Opinion",
@@ -4651,21 +4306,21 @@ var Rance;
             getColor: function () {
                 var relativeValue = Rance.getRelativeValue(this.props.opinion, -30, 30);
                 relativeValue = Rance.clamp(relativeValue, 0, 1);
-
                 var deviation = Math.abs(0.5 - relativeValue) * 2;
-
                 var hue = 110 * relativeValue;
                 var saturation = 0 + 50 * deviation;
                 if (deviation > 0.3)
                     saturation += 40;
                 var lightness = 70 - 20 * deviation;
-
-                return ("hsl(" + hue + "," + saturation + "%," + lightness + "%)");
+                return ("hsl(" +
+                    hue + "," +
+                    saturation + "%," +
+                    lightness + "%)");
             },
             render: function () {
                 var tooltip = null;
                 if (this.state.hasAttitudeModifierTootlip) {
-                    tooltip = Rance.UIComponents.AttitudeModifierList({
+                    tooltip = UIComponents.AttitudeModifierList({
                         attitudeModifiers: this.props.attitudeModifiers,
                         baseOpinion: this.props.baseOpinion,
                         onLeave: this.clearTooltip,
@@ -4687,12 +4342,12 @@ var Rance;
                 }, this.props.opinion), tooltip));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="opinion.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.DiplomaticStatusPlayer = React.createClass({
             displayName: "DiplomaticStatusPlayer",
@@ -4703,7 +4358,6 @@ var Rance;
             },
             makeCell: function (type) {
                 var className = "diplomatic-status-player-cell" + " diplomatic-status-" + type;
-
                 if (type === "flag") {
                     if (!this.props.player) {
                         return (React.DOM.td({
@@ -4711,7 +4365,6 @@ var Rance;
                             className: className
                         }, null));
                     }
-
                     return (React.DOM.td({
                         key: type,
                         className: className
@@ -4724,17 +4377,15 @@ var Rance;
                     return (React.DOM.td({
                         key: type,
                         className: className
-                    }, Rance.UIComponents.Opinion({
+                    }, UIComponents.Opinion({
                         attitudeModifiers: this.props.attitudeModifiers,
                         opinion: this.props.opinion,
                         baseOpinion: this.props.baseOpinion
                     })));
                 }
-
                 if (type === "player") {
                     className += " player-name";
                 }
-
                 return (React.DOM.td({
                     key: type,
                     className: className
@@ -4742,30 +4393,25 @@ var Rance;
             },
             render: function () {
                 var columns = this.props.activeColumns;
-
                 var cells = [];
-
                 for (var i = 0; i < columns.length; i++) {
                     var cell = this.makeCell(columns[i].key);
-
                     cells.push(cell);
                 }
-
                 var rowProps = {
                     className: "diplomatic-status-player",
                     onClick: this.props.handleClick
                 };
-
                 return (React.DOM.tr(rowProps, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="diplomacyactions.ts" />
 /// <reference path="diplomaticstatusplayer.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.DiplomacyOverview = React.createClass({
             displayName: "DiplomacyOverview",
@@ -4773,9 +4419,8 @@ var Rance;
                 var player = rowItem.data.player;
                 if (!player)
                     return;
-
                 this.refs.popupManager.makePopup({
-                    contentConstructor: Rance.UIComponents.DiplomacyActions,
+                    contentConstructor: UIComponents.DiplomacyActions,
                     contentProps: {
                         player: this.props.player,
                         targetPlayer: player,
@@ -4784,13 +4429,11 @@ var Rance;
                 });
             },
             render: function () {
-                var unmetPlayerCount = this.props.totalPlayerCount - Object.keys(this.props.metPlayers).length - 1;
-
+                var unmetPlayerCount = this.props.totalPlayerCount -
+                    Object.keys(this.props.metPlayers).length - 1;
                 var rows = [];
-
                 for (var playerId in this.props.statusByPlayer) {
                     var player = this.props.metPlayers[playerId];
-
                     rows.push({
                         key: player.id,
                         data: {
@@ -4801,11 +4444,10 @@ var Rance;
                             statusEnum: this.props.statusByPlayer[playerId],
                             opinion: player.diplomacyStatus.getOpinionOf(this.props.player),
                             attitudeModifiers: player.diplomacyStatus.attitudeModifiersByPlayer[this.props.player.id],
-                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
+                            rowConstructor: UIComponents.DiplomaticStatusPlayer
                         }
                     });
                 }
-
                 for (var i = 0; i < unmetPlayerCount; i++) {
                     rows.push({
                         key: "unmet" + i,
@@ -4814,11 +4456,10 @@ var Rance;
                             status: "unmet",
                             statusEnum: 99999 + i,
                             opinion: null,
-                            rowConstructor: Rance.UIComponents.DiplomaticStatusPlayer
+                            rowConstructor: UIComponents.DiplomaticStatusPlayer
                         }
                     });
                 }
-
                 var columns = [
                     {
                         label: "",
@@ -4843,11 +4484,10 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "diplomacy-overview" }, Rance.UIComponents.PopupManager({
+                return (React.DOM.div({ className: "diplomacy-overview" }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
-                }), React.DOM.div({ className: "diplomacy-status-list" }, Rance.UIComponents.List({
+                }), React.DOM.div({ className: "diplomacy-status-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[0]],
@@ -4855,11 +4495,11 @@ var Rance;
                 }))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.EconomySummaryItem = React.createClass({
             displayName: "EconomySummaryItem",
@@ -4867,74 +4507,61 @@ var Rance;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "economy-summary-item-cell" + " economy-summary-" + type;
-
                 var cellContent;
-
                 switch (type) {
-                    default: {
-                        cellContent = this.props[type];
-
-                        break;
-                    }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var columns = this.props.activeColumns;
-
                 var cells = [];
-
                 for (var i = 0; i < columns.length; i++) {
                     var cell = this.makeCell(columns[i].key);
-
                     cells.push(cell);
                 }
-
                 var rowProps = {
                     className: "economy-summary-item",
                     onClick: this.props.handleClick
                 };
-
                 if (this.props.isSelected) {
                     rowProps.className += " selected";
                 }
                 ;
-
                 return (React.DOM.tr(rowProps, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unitlist/list.ts"/>
 /// <reference path="economysummaryitem.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.EconomySummary = React.createClass({
             displayName: "EconomySummary",
             render: function () {
                 var rows = [];
                 var player = this.props.player;
-
                 for (var i = 0; i < player.controlledLocations.length; i++) {
                     var star = player.controlledLocations[i];
-
                     var data = {
                         star: star,
                         id: star.id,
                         name: star.name,
                         income: star.getIncome(),
-                        rowConstructor: Rance.UIComponents.EconomySummaryItem
+                        rowConstructor: UIComponents.EconomySummaryItem
                     };
-
                     rows.push({
                         key: star.id,
                         data: data
                     });
                 }
-
                 var columns = [
                     {
                         label: "Id",
@@ -4952,34 +4579,30 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "economy-summary-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "economy-summary-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     initialSortOrder: [columns[2]]
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.OptionsGroup = React.createClass({
             displayName: "OptionsGroup",
             render: function () {
                 var rows = [];
-
                 for (var i = 0; i < this.props.options.length; i++) {
                     var option = this.props.options[i];
-
                     rows.push(React.DOM.div({
                         className: "option-container",
                         key: option.key
                     }, option.content));
                 }
-
                 var resetButton = null;
                 if (this.props.resetFN) {
                     resetButton = React.DOM.button({
@@ -4987,23 +4610,22 @@ var Rance;
                         onClick: this.props.resetFN
                     }, "reset");
                 }
-
-                var header = this.props.header || resetButton ? React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton) : null;
-
+                var header = this.props.header || resetButton ?
+                    React.DOM.div({ className: "option-group-header" }, this.props.header, resetButton) :
+                    null;
                 return (React.DOM.div({ className: "option-group" }, header, rows));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.OptionsCheckbox = React.createClass({
             displayName: "OptionsCheckbox",
             render: function () {
                 var key = "options-checkbox-" + this.props.label;
-
                 return (React.DOM.div({
                     className: "options-checkbox-container"
                 }, React.DOM.input({
@@ -5016,14 +4638,14 @@ var Rance;
                 }, this.props.label)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../popups/popupmanager.ts"/>
 /// <reference path="optionsgroup.ts"/>
 /// <reference path="optionscheckbox.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.OptionsList = React.createClass({
             displayName: "OptionsList",
@@ -5032,7 +4654,6 @@ var Rance;
                     console.warn("Invalid option", stage);
                     return;
                 }
-
                 var onChangeFN = function (e) {
                     var value = parseFloat(e.target.value);
                     if (!isFinite(value)) {
@@ -5042,9 +4663,7 @@ var Rance;
                     Rance.Options.battleAnimationTiming[stage] = value;
                     this.forceUpdate();
                 }.bind(this);
-
                 var key = "battle-animation-option-" + stage;
-
                 return ({
                     key: stage,
                     content: React.DOM.div({}, React.DOM.input({
@@ -5066,33 +4685,30 @@ var Rance;
                     if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode)
                         shouldToggleDebug = true;
                     Rance.Options = Rance.extendObject(Rance.defaultOptions);
-
                     if (shouldToggleDebug) {
                         app.reactUI.render();
-                    } else {
+                    }
+                    else {
                         this.forceUpdate();
                     }
                 }.bind(this);
-
                 var confirmProps = {
                     handleOk: resetFN,
                     contentText: "Are you sure you want to reset all options?"
                 };
-
                 this.refs.popupManager.makePopup({
-                    contentConstructor: Rance.UIComponents.ConfirmPopup,
+                    contentConstructor: UIComponents.ConfirmPopup,
                     contentProps: confirmProps
                 });
             },
             render: function () {
                 var allOptions = [];
-
                 // battle animation timing
                 var battleAnimationOptions = [];
                 for (var stage in Rance.Options.battleAnimationTiming) {
                     battleAnimationOptions.push(this.makeBattleAnimationOption(stage));
                 }
-                allOptions.push(Rance.UIComponents.OptionsGroup({
+                allOptions.push(UIComponents.OptionsGroup({
                     header: "Battle animation timing",
                     options: battleAnimationOptions,
                     resetFN: function () {
@@ -5101,11 +4717,10 @@ var Rance;
                     }.bind(this),
                     key: "battleAnimationOptions"
                 }));
-
                 var debugOptions = [];
                 debugOptions.push({
                     key: "debugMode",
-                    content: Rance.UIComponents.OptionsCheckbox({
+                    content: UIComponents.OptionsCheckbox({
                         isChecked: Rance.Options.debugMode,
                         label: "Debug mode",
                         onChangeFN: function () {
@@ -5114,7 +4729,6 @@ var Rance;
                         }.bind(this)
                     })
                 });
-
                 if (Rance.Options.debugMode) {
                     debugOptions.push({
                         key: "battleSimulationDepth",
@@ -5139,8 +4753,7 @@ var Rance;
                         }, "AI vs. AI Battle simulation depth"))
                     });
                 }
-
-                allOptions.push(Rance.UIComponents.OptionsGroup({
+                allOptions.push(UIComponents.OptionsGroup({
                     header: "Debug",
                     options: debugOptions,
                     resetFN: function () {
@@ -5152,11 +4765,10 @@ var Rance;
                     }.bind(this),
                     key: "debug"
                 }));
-
                 var uiOptions = [];
                 uiOptions.push({
                     key: "noHamburger",
-                    content: Rance.UIComponents.OptionsCheckbox({
+                    content: UIComponents.OptionsCheckbox({
                         isChecked: Rance.Options.ui.noHamburger,
                         label: "Always expand top right menu on low resolution",
                         onChangeFN: function () {
@@ -5166,8 +4778,7 @@ var Rance;
                         }.bind(this)
                     })
                 });
-
-                allOptions.push(Rance.UIComponents.OptionsGroup({
+                allOptions.push(UIComponents.OptionsGroup({
                     header: "UI",
                     options: uiOptions,
                     resetFN: function () {
@@ -5176,8 +4787,7 @@ var Rance;
                     }.bind(this),
                     key: "ui"
                 }));
-
-                return (React.DOM.div({ className: "options" }, Rance.UIComponents.PopupManager({
+                return (React.DOM.div({ className: "options" }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
                 }), React.DOM.div({ className: "options-header" }, "Options", React.DOM.button({
@@ -5186,8 +4796,7 @@ var Rance;
                 }, "Reset all options")), allOptions));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="lightbox.ts"/>
 /// <reference path="../items/buyitems.ts"/>
@@ -5199,6 +4808,7 @@ var Rance;
 /// <reference path="optionslist.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.TopMenu = React.createClass({
             displayName: "TopMenu",
@@ -5219,7 +4829,6 @@ var Rance;
                 window.addEventListener("resize", this.handleResize, false);
                 Rance.eventManager.addEventListener("playerControlUpdated", this.handleResize);
                 Rance.eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
-
                 this.handleResize();
             },
             componentWillUnmount: function () {
@@ -5234,65 +4843,55 @@ var Rance;
             handleResize: function () {
                 if (!this.cachedTopMenuWidth) {
                     this.cachedTopMenuWidth = this.refs.topMenu.getDOMNode().getBoundingClientRect().width;
-
                     var buttons = this.refs.topMenuItems.getDOMNode().children;
-
                     var margin = parseInt(window.getComputedStyle(buttons[0]).margin) * 2;
-
                     for (var i = 0; i < buttons.length; i++) {
                         var buttonWidth = buttons[i].getBoundingClientRect().width + margin;
                         this.cachedButtonWidths.push(buttonWidth);
                     }
                 }
-
                 var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
-
                 var topBar = document.getElementsByClassName("top-bar-info")[0];
                 var topBarRect = topBar.getBoundingClientRect();
-
                 var rightmostElement = topBar;
                 var rightmostRect = topBarRect;
-
                 var fleetContainer = document.getElementsByClassName("fleet-selection-container")[0];
                 if (fleetContainer) {
                     var fleetElementToCheckAgainst;
                     if (fleetContainer.classList.contains("reorganizing")) {
                         fleetElementToCheckAgainst = document.getElementsByClassName("fleet-selection-selected-wrapper")[0];
-                    } else {
+                    }
+                    else {
                         fleetElementToCheckAgainst = fleetContainer;
                     }
-
                     var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
-
                     if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right) {
                         rightmostElement = fleetElementToCheckAgainst;
                         rightmostRect = fleetRect;
                     }
                 }
-
                 var spaceAvailable = window.innerWidth - rightmostRect.right;
                 var hasCondensedMenu = spaceAvailable < this.cachedTopMenuWidth;
                 var amountOfButtonsToPlace = 0;
-
                 if (hasCondensedMenu) {
                     if (!Rance.Options.ui.noHamburger) {
                         spaceAvailable -= this.cachedMenuButtonWidth;
                     }
                     var padding = window.innerHeight > 600 ? 25 : 0;
-
                     for (var i = 0; i < this.cachedButtonWidths.length; i++) {
                         var buttonWidthToCheck = this.cachedButtonWidths[i];
                         if (spaceAvailable > buttonWidthToCheck + padding) {
                             amountOfButtonsToPlace++;
                             spaceAvailable -= buttonWidthToCheck;
-                        } else {
+                        }
+                        else {
                             break;
                         }
                     }
-                } else {
+                }
+                else {
                     amountOfButtonsToPlace = this.cachedButtonWidths.length;
                 }
-
                 this.setState({
                     hasCondensedMenu: hasCondensedMenu,
                     buttonsToPlace: amountOfButtonsToPlace
@@ -5302,7 +4901,6 @@ var Rance;
                 if (this.state.opened === "options") {
                     Rance.saveOptions();
                 }
-
                 this.setState({
                     opened: null,
                     lightBoxElement: null
@@ -5311,12 +4909,13 @@ var Rance;
             handleEquipItems: function () {
                 if (this.state.opened === "equipItems") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "equipItems",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.ItemEquip({
+                            content: UIComponents.ItemEquip({
                                 player: this.props.player
                             })
                         })
@@ -5326,12 +4925,13 @@ var Rance;
             handleBuyItems: function () {
                 if (this.state.opened === "buyItems") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "buyItems",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.BuyItems({
+                            content: UIComponents.BuyItems({
                                 player: this.props.player
                             })
                         })
@@ -5341,12 +4941,13 @@ var Rance;
             handleEconomySummary: function () {
                 if (this.state.opened === "economySummary") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "economySummary",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.EconomySummary({
+                            content: UIComponents.EconomySummary({
                                 player: this.props.player
                             })
                         })
@@ -5356,12 +4957,13 @@ var Rance;
             handleSaveGame: function () {
                 if (this.state.opened === "saveGame") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "saveGame",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.SaveGame({
+                            content: UIComponents.SaveGame({
                                 handleClose: this.closeLightBox
                             })
                         })
@@ -5371,12 +4973,13 @@ var Rance;
             handleLoadGame: function () {
                 if (this.state.opened === "loadGame") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "loadGame",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.LoadGame({
+                            content: UIComponents.LoadGame({
                                 handleClose: this.closeLightBox
                             })
                         })
@@ -5386,12 +4989,13 @@ var Rance;
             handleOptions: function () {
                 if (this.state.opened === "options") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "options",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.OptionsList({
+                            content: UIComponents.OptionsList({
                                 handleClose: this.closeLightBox
                             })
                         })
@@ -5401,12 +5005,13 @@ var Rance;
             handleDiplomacy: function () {
                 if (this.state.opened === "diplomacy") {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         opened: "diplomacy",
-                        lightBoxElement: Rance.UIComponents.LightBox({
+                        lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: Rance.UIComponents.DiplomacyOverview({
+                            content: UIComponents.DiplomacyOverview({
                                 handleClose: this.closeLightBox,
                                 player: this.props.player,
                                 totalPlayerCount: this.props.game.playerOrder.length,
@@ -5420,7 +5025,8 @@ var Rance;
             toggleCondensedMenu: function () {
                 if (this.state.opened) {
                     this.closeLightBox();
-                } else {
+                }
+                else {
                     this.setState({
                         condensedMenuOpened: !this.state.condensedMenuOpened
                     });
@@ -5428,7 +5034,6 @@ var Rance;
             },
             render: function () {
                 var menuItemTabIndex = this.state.opened ? -1 : 0;
-
                 var topMenuButtons = [
                     React.DOM.button({
                         className: "top-menu-items-button",
@@ -5442,6 +5047,15 @@ var Rance;
                         onClick: this.handleBuyItems,
                         tabIndex: menuItemTabIndex
                     }, "Buy items"),
+                    /*
+                    React.DOM.button(
+                    {
+                      className: "top-menu-items-button",
+                      key: "economySummary",
+                      onClick: this.handleEconomySummary,
+                      tabIndex: menuItemTabIndex
+                    }, "Economy"),
+                    */
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "diplomacy",
@@ -5467,10 +5081,8 @@ var Rance;
                         tabIndex: menuItemTabIndex
                     }, "Save")
                 ];
-
                 var topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
                 var leftoverButtons = topMenuButtons.slice(this.state.buttonsToPlace);
-
                 if (this.state.hasCondensedMenu && !Rance.Options.ui.noHamburger) {
                     topMenuItems.push(React.DOM.button({
                         className: "top-menu-items-button top-menu-open-condensed-button",
@@ -5479,7 +5091,6 @@ var Rance;
                         tabIndex: menuItemTabIndex
                     }));
                 }
-
                 var openedCondensedMenu = null;
                 if ((this.state.condensedMenuOpened || Rance.Options.ui.noHamburger) && leftoverButtons.length > 0) {
                     openedCondensedMenu = React.DOM.div({
@@ -5487,7 +5098,6 @@ var Rance;
                     }, leftoverButtons);
                 }
                 ;
-
                 return (React.DOM.div({
                     className: "top-menu-wrapper"
                 }, React.DOM.div({
@@ -5499,11 +5109,11 @@ var Rance;
                 }, topMenuItems)), openedCondensedMenu, this.state.lightBoxElement));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Resource = React.createClass({
             displayName: "Resource",
@@ -5519,50 +5129,45 @@ var Rance;
                 }, this.props.amount)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="resource.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.TopBarResources = React.createClass({
             displayName: "TopBarResources",
             render: function () {
                 var resources = [];
-
                 for (var resourceType in this.props.player.resources) {
                     var resourceData = {
                         resource: Rance.Templates.Resources[resourceType],
                         amount: this.props.player.resources[resourceType],
                         key: resourceType
                     };
-                    resources.push(Rance.UIComponents.Resource(resourceData));
+                    resources.push(UIComponents.Resource(resourceData));
                 }
-
                 return (React.DOM.div({
                     className: "top-bar-resources"
                 }, resources));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="topbarresources.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.TopBar = React.createClass({
             displayName: "TopBar",
             render: function () {
                 var player = this.props.player;
-
                 var income = player.getIncome();
-
                 var incomeClass = "top-bar-money-income";
                 if (income < 0)
                     incomeClass += " negative";
-
                 return (React.DOM.div({
                     className: "top-bar"
                 }, React.DOM.div({
@@ -5580,16 +5185,16 @@ var Rance;
                     className: "top-bar-money-current"
                 }, "Money: " + player.money), React.DOM.div({
                     className: incomeClass
-                }, "(+" + player.getIncome() + ")")), Rance.UIComponents.TopBarResources({
+                }, "(+" + player.getIncome() + ")")), UIComponents.TopBarResources({
                     player: player
                 }))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetControls = React.createClass({
             displayName: "FleetControls",
@@ -5608,7 +5213,8 @@ var Rance;
                 };
                 if (this.props.fleet.ships.length > 1 && !this.props.isInspecting) {
                     splitButtonProps.onClick = this.splitFleet;
-                } else {
+                }
+                else {
                     splitButtonProps.className += " disabled";
                     splitButtonProps.disabled = true;
                 }
@@ -5623,12 +5229,12 @@ var Rance;
                 }, "select")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetcontrols.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetInfo = React.createClass({
             displayName: "FleetInfo",
@@ -5642,18 +5248,15 @@ var Rance;
                 if (!fleet)
                     return null;
                 var totalHealth = fleet.getTotalHealth();
-
                 var healthRatio = totalHealth.current / totalHealth.max;
                 var critThreshhold = 0.3;
-
                 var healthStatus = "";
-
                 if (healthRatio <= critThreshhold) {
                     healthStatus += " critical";
-                } else if (totalHealth.current < totalHealth.max) {
+                }
+                else if (totalHealth.current < totalHealth.max) {
                     healthStatus += " wounded";
                 }
-
                 return (React.DOM.div({
                     className: "fleet-info"
                 }, React.DOM.div({
@@ -5670,20 +5273,21 @@ var Rance;
                     className: "fleet-info-strength-current" + healthStatus
                 }, totalHealth.current), React.DOM.span({
                     className: "fleet-info-strength-max"
-                }, "/" + totalHealth.max)), Rance.UIComponents.FleetControls({
+                }, "/" + totalHealth.max)), UIComponents.FleetControls({
                     fleet: fleet,
                     hasMultipleSelected: this.props.hasMultipleSelected,
                     isInspecting: this.props.isInspecting
                 })), React.DOM.div({
                     className: "fleet-info-move-points"
-                }, "Moves: " + fleet.getMinCurrentMovePoints() + "/" + fleet.getMinMaxMovePoints())));
+                }, "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
+                    fleet.getMinMaxMovePoints())));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ShipInfoName = React.createClass({
             displayName: "ShipInfoName",
@@ -5704,17 +5308,17 @@ var Rance;
                 }));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unit/unitstrength.ts"/>
 /// <reference path="shipinfoname.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ShipInfo = React.createClass({
             displayName: "ShipInfo",
-            mixins: [Rance.UIComponents.Draggable],
+            mixins: [UIComponents.Draggable],
             onDragStart: function (e) {
                 this.props.onDragStart(this.props.ship);
             },
@@ -5723,22 +5327,18 @@ var Rance;
             },
             render: function () {
                 var ship = this.props.ship;
-
                 var divProps = {
                     className: "ship-info"
                 };
-
                 if (this.props.isDraggable) {
                     divProps.className += " draggable";
                     divProps.onTouchStart = this.handleMouseDown;
                     divProps.onMouseDown = this.handleMouseDown;
-
                     if (this.state.dragging) {
                         divProps.style = this.state.dragPos;
                         divProps.className += " dragging";
                     }
                 }
-
                 return (React.DOM.div(divProps, React.DOM.div({
                     className: "ship-info-icon-container"
                 }, React.DOM.img({
@@ -5746,39 +5346,37 @@ var Rance;
                     src: ship.template.icon
                 })), React.DOM.div({
                     className: "ship-info-info"
-                }, Rance.UIComponents.ShipInfoName({
+                }, UIComponents.ShipInfoName({
                     unit: ship
                 }), React.DOM.div({
                     className: "ship-info-type"
-                }, ship.template.typeName)), Rance.UIComponents.UnitStrength({
+                }, ship.template.typeName)), UIComponents.UnitStrength({
                     maxHealth: ship.maxHealth,
                     currentHealth: ship.currentHealth,
                     isSquadron: true
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="shipinfo.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetContents = React.createClass({
             displayName: "FleetContents",
             handleMouseUp: function () {
                 if (!this.props.onMouseUp)
                     return;
-
                 this.props.onMouseUp(this.props.fleet);
             },
             render: function () {
                 var shipInfos = [];
-
-                var hasDraggableContent = (this.props.onDragStart || this.props.onDragEnd);
-
+                var hasDraggableContent = (this.props.onDragStart ||
+                    this.props.onDragEnd);
                 for (var i = 0; i < this.props.fleet.ships.length; i++) {
-                    shipInfos.push(Rance.UIComponents.ShipInfo({
+                    shipInfos.push(UIComponents.ShipInfo({
                         key: this.props.fleet.ships[i].id,
                         ship: this.props.fleet.ships[i],
                         isDraggable: hasDraggableContent,
@@ -5787,26 +5385,24 @@ var Rance;
                         onDragEnd: this.props.onDragEnd
                     }));
                 }
-
                 if (hasDraggableContent) {
                     shipInfos.push(React.DOM.div({
                         className: "fleet-contents-dummy-ship",
                         key: "dummy"
                     }));
                 }
-
                 return (React.DOM.div({
                     className: "fleet-contents",
                     onMouseUp: this.handleMouseUp
                 }, shipInfos));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetcontents.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetReorganization = React.createClass({
             displayName: "FleetReorganization",
@@ -5821,7 +5417,7 @@ var Rance;
                 });
             },
             handleDragEnd: function (dropSuccesful) {
-                if (typeof dropSuccesful === "undefined") { dropSuccesful = false; }
+                if (dropSuccesful === void 0) { dropSuccesful = false; }
                 this.setState({
                     currentDragUnit: null
                 });
@@ -5830,11 +5426,9 @@ var Rance;
                 var draggingUnit = this.state.currentDragUnit;
                 if (draggingUnit) {
                     var oldFleet = draggingUnit.fleet;
-
                     oldFleet.transferShip(fleet, draggingUnit);
                     Rance.eventManager.dispatchEvent("playerControlUpdated", null);
                 }
-
                 this.handleDragEnd(true);
             },
             handleClose: function () {
@@ -5844,7 +5438,6 @@ var Rance;
             componentWillUnmount: function () {
                 if (this.hasClosed)
                     return;
-
                 Rance.eventManager.dispatchEvent("endReorganizingFleets");
             },
             render: function () {
@@ -5852,7 +5445,6 @@ var Rance;
                 if (!selectedFleets || selectedFleets.length < 1) {
                     return null;
                 }
-
                 return (React.DOM.div({
                     className: "fleet-reorganization"
                 }, React.DOM.div({
@@ -5860,21 +5452,23 @@ var Rance;
                 }, "Reorganize fleets"), React.DOM.div({
                     className: "fleet-reorganization-subheader"
                 }, React.DOM.div({
-                    className: "fleet-reorganization-subheader-fleet-name" + " fleet-reorganization-subheader-fleet-name-left"
+                    className: "fleet-reorganization-subheader-fleet-name" +
+                        " fleet-reorganization-subheader-fleet-name-left",
                 }, selectedFleets[0].name), React.DOM.div({
                     className: "fleet-reorganization-subheader-center"
                 }, null), React.DOM.div({
-                    className: "fleet-reorganization-subheader-fleet-name" + " fleet-reorganization-subheader-fleet-name-right"
+                    className: "fleet-reorganization-subheader-fleet-name" +
+                        " fleet-reorganization-subheader-fleet-name-right",
                 }, selectedFleets[1].name)), React.DOM.div({
                     className: "fleet-reorganization-contents"
-                }, Rance.UIComponents.FleetContents({
+                }, UIComponents.FleetContents({
                     fleet: selectedFleets[0],
                     onMouseUp: this.handleDrop,
                     onDragStart: this.handleDragStart,
                     onDragEnd: this.handleDragEnd
                 }), React.DOM.div({
                     className: "fleet-reorganization-contents-divider"
-                }, null), Rance.UIComponents.FleetContents({
+                }, null), UIComponents.FleetContents({
                     fleet: selectedFleets[1],
                     onMouseUp: this.handleDrop,
                     onDragStart: this.handleDragStart,
@@ -5887,14 +5481,14 @@ var Rance;
                 }, "Close"))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="fleetinfo.ts"/>
 /// <reference path="fleetcontents.ts"/>
 /// <reference path="fleetreorganization.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FleetSelection = React.createClass({
             displayName: "FleetSelection",
@@ -5908,24 +5502,23 @@ var Rance;
                 if (!this.refs.selected)
                     return;
                 var domNode = this.refs.selected.getDOMNode();
-
                 if (!this.props.selectedStar) {
                     domNode.style.left = 0;
-                } else {
+                }
+                else {
                     var actionsNode = document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
                     var actionsRect = actionsNode.getBoundingClientRect();
                     var ownBottom = domNode.getBoundingClientRect().bottom;
-
                     if (ownBottom > actionsRect.top + 3) {
                         domNode.style.left = "" + (actionsRect.right) + "px";
-                    } else {
+                    }
+                    else {
                         domNode.style.left = 0;
                     }
                 }
             },
             componentDidMount: function () {
                 this.setElementPosition();
-
                 Rance.eventManager.addEventListener("possibleActionsUpdated", this.setElementPosition);
                 window.addEventListener("resize", this.setElementPosition, false);
             },
@@ -5941,10 +5534,8 @@ var Rance;
                 if (!selectedFleets || selectedFleets.length <= 0) {
                     return null;
                 }
-
                 var allFleetsInSameLocation = true;
                 var hasMultipleSelected = selectedFleets.length >= 2;
-
                 for (var i = 1; i < selectedFleets.length; i++) {
                     if (selectedFleets[i].location !== selectedFleets[i - 1].location) {
                         allFleetsInSameLocation = false;
@@ -5952,7 +5543,6 @@ var Rance;
                     }
                 }
                 var fleetInfos = [];
-
                 for (var i = 0; i < selectedFleets.length; i++) {
                     var infoProps = {
                         key: selectedFleets[i].id,
@@ -5960,55 +5550,48 @@ var Rance;
                         hasMultipleSelected: hasMultipleSelected,
                         isInspecting: this.props.isInspecting
                     };
-
-                    fleetInfos.push(Rance.UIComponents.FleetInfo(infoProps));
+                    fleetInfos.push(UIComponents.FleetInfo(infoProps));
                 }
-
                 var fleetSelectionControls = null;
-
                 if (hasMultipleSelected) {
                     var mergeProps = {
                         className: "fleet-selection-controls-merge"
                     };
                     if (allFleetsInSameLocation && !this.props.isInspecting) {
                         mergeProps.onClick = this.mergeFleets;
-                    } else {
+                    }
+                    else {
                         mergeProps.disabled = true;
                         mergeProps.className += " disabled";
                     }
-
                     var reorganizeProps = {
                         className: "fleet-selection-controls-reorganize"
                     };
                     if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting) {
                         reorganizeProps.onClick = this.reorganizeFleets;
-                    } else {
+                    }
+                    else {
                         reorganizeProps.disabled = true;
                         reorganizeProps.className += " disabled";
                     }
-
                     fleetSelectionControls = React.DOM.div({
                         className: "fleet-selection-controls"
                     }, React.DOM.button(reorganizeProps, "reorganize"), React.DOM.button(mergeProps, "merge"));
                 }
-
                 var fleetContents = null;
-
                 if (!hasMultipleSelected) {
-                    fleetContents = Rance.UIComponents.FleetContents({
+                    fleetContents = UIComponents.FleetContents({
                         fleet: selectedFleets[0]
                     });
                 }
-
                 var isReorganizing = this.props.currentlyReorganizing.length > 0;
                 var reorganizeElement = null;
                 if (isReorganizing) {
-                    reorganizeElement = Rance.UIComponents.FleetReorganization({
+                    reorganizeElement = UIComponents.FleetReorganization({
                         fleets: this.props.currentlyReorganizing,
                         closeReorganization: this.props.closeReorganization
                     });
                 }
-
                 return (React.DOM.div({
                     className: "fleet-selection"
                 }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
@@ -6019,12 +5602,12 @@ var Rance;
                 }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="defencebuildinglist.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.StarInfo = React.createClass({
             displayName: "StarInfo",
@@ -6032,9 +5615,7 @@ var Rance;
                 var star = this.props.selectedStar;
                 if (!star)
                     return null;
-
                 var dumpDebugInfoButton = null;
-
                 if (Rance.Options.debugMode) {
                     dumpDebugInfoButton = React.DOM.button({
                         className: "star-info-dump-debug-button",
@@ -6044,7 +5625,6 @@ var Rance;
                         }
                     }, "Debug");
                 }
-
                 return (React.DOM.div({
                     className: "star-info"
                 }, React.DOM.div({
@@ -6053,18 +5633,19 @@ var Rance;
                     className: "star-info-owner"
                 }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
                     className: "star-info-location"
-                }, "x: " + star.x.toFixed() + " y: " + star.y.toFixed()), React.DOM.div({
+                }, "x: " + star.x.toFixed() +
+                    " y: " + star.y.toFixed()), React.DOM.div({
                     className: "star-info-income"
-                }, "Income: " + star.getIncome()), Rance.UIComponents.DefenceBuildingList({
+                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
                     buildings: star.buildings["defence"]
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.AttackTarget = React.createClass({
             displayName: "AttackTarget",
@@ -6073,7 +5654,6 @@ var Rance;
             },
             render: function () {
                 var target = this.props.attackTarget;
-
                 return (React.DOM.div({
                     className: "attack-target",
                     onClick: this.handleAttack
@@ -6085,11 +5665,11 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildableBuilding = React.createClass({
             displayName: "BuildableBuilding",
@@ -6097,33 +5677,29 @@ var Rance;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "buildable-building-list-item-cell " + type;
-
                 var cellContent;
-
                 switch (type) {
-                    case ("buildCost"): {
-                        if (this.props.player.money < this.props.buildCost) {
-                            cellProps.className += " negative";
+                    case ("buildCost"):
+                        {
+                            if (this.props.player.money < this.props.buildCost) {
+                                cellProps.className += " negative";
+                            }
                         }
-                    }
-                    default: {
-                        cellContent = this.props[type];
-
-                        break;
-                    }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var player = this.props.player;
                 var cells = [];
                 var columns = this.props.activeColumns;
-
                 for (var i = 0; i < columns.length; i++) {
                     cells.push(this.makeCell(columns[i].key));
                 }
-
                 var props = {
                     className: "buildable-item buildable-building",
                     onClick: this.props.handleClick
@@ -6133,17 +5709,16 @@ var Rance;
                     props.disabled = true;
                     props.className += " disabled";
                 }
-
                 return (React.DOM.tr(props, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unitlist/list.ts" />
 /// <reference path="buildablebuilding.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildableBuildingList = React.createClass({
             displayName: "BuildableBuildingList",
@@ -6157,7 +5732,6 @@ var Rance;
                 this.setState({
                     buildingTemplates: buildingTemplates
                 });
-
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
                 if (buildingTemplates.length < 1) {
                     this.props.clearExpandedAction();
@@ -6165,18 +5739,14 @@ var Rance;
             },
             buildBuilding: function (rowItem) {
                 var template = rowItem.data.template;
-
                 var building = new Rance.Building({
                     template: template,
                     location: this.props.star
                 });
-
                 if (!building.controller)
                     building.controller = this.props.humanPlayer;
-
                 this.props.star.addBuilding(building);
                 building.controller.money -= template.buildCost;
-
                 //building.totalCost += template.buildCost;
                 this.updateBuildings();
             },
@@ -6184,24 +5754,20 @@ var Rance;
                 if (this.state.buildingTemplates.length < 1)
                     return null;
                 var rows = [];
-
                 for (var i = 0; i < this.state.buildingTemplates.length; i++) {
                     var template = this.state.buildingTemplates[i];
-
                     var data = {
                         template: template,
                         typeName: template.name,
                         buildCost: template.buildCost,
                         player: this.props.player,
-                        rowConstructor: Rance.UIComponents.BuildableBuilding
+                        rowConstructor: UIComponents.BuildableBuilding
                     };
-
                     rows.push({
                         key: i,
                         data: data
                     });
                 }
-
                 var columns = [
                     {
                         label: "Name",
@@ -6214,16 +5780,14 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "buildable-item-list buildable-building-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "buildable-item-list buildable-building-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.buildBuilding
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
@@ -6251,17 +5815,16 @@ var Rance;
         return _targetKeys[_rnd];
     }
     Rance.getRandomKey = getRandomKey;
-
     function getObjectKeysSortedByValue(obj, order) {
         return Object.keys(obj).sort(function (a, b) {
             if (order === "asc") {
                 return obj[a] - obj[b];
-            } else
+            }
+            else
                 return obj[b] - obj[a];
         });
     }
     Rance.getObjectKeysSortedByValue = getObjectKeysSortedByValue;
-
     function getRandomProperty(target) {
         var _rndProp = target[getRandomKey(target)];
         return _rndProp;
@@ -6270,9 +5833,12 @@ var Rance;
     function getFrom2dArray(target, arr) {
         var result = [];
         for (var i = 0; i < arr.length; i++) {
-            if ((arr[i] !== undefined) && (arr[i][0] >= 0 && arr[i][0] < target.length) && (arr[i][1] >= 0 && arr[i][1] < target[0].length)) {
+            if ((arr[i] !== undefined) &&
+                (arr[i][0] >= 0 && arr[i][0] < target.length) &&
+                (arr[i][1] >= 0 && arr[i][1] < target[0].length)) {
                 result.push(target[arr[i][0]][arr[i][1]]);
-            } else {
+            }
+            else {
                 result.push(null);
             }
         }
@@ -6287,29 +5853,31 @@ var Rance;
                 flattened.push(toFlatten[i][j]);
             }
         }
-
         return flattened;
     }
     Rance.flatten2dArray = flatten2dArray;
     function reverseSide(side) {
         switch (side) {
-            case "side1": {
-                return "side2";
-            }
-            case "side2": {
-                return "side1";
-            }
-            default: {
-                throw new Error("Invalid side");
-            }
+            case "side1":
+                {
+                    return "side2";
+                }
+            case "side2":
+                {
+                    return "side1";
+                }
+            default:
+                {
+                    throw new Error("Invalid side");
+                }
         }
     }
     Rance.reverseSide = reverseSide;
-
     function turnOrderSortFunction(a, b) {
         if (a.battleStats.moveDelay !== b.battleStats.moveDelay) {
             return a.battleStats.moveDelay - b.battleStats.moveDelay;
-        } else {
+        }
+        else {
             return a.id - b.id;
         }
     }
@@ -6317,16 +5885,14 @@ var Rance;
     function rectContains(rect, point) {
         var x = point.x;
         var y = point.y;
-
         var x1 = Math.min(rect.x1, rect.x2);
         var x2 = Math.max(rect.x1, rect.x2);
         var y1 = Math.min(rect.y1, rect.y2);
         var y2 = Math.max(rect.y1, rect.y2);
-
-        return ((x >= x1 && x <= x2) && (y >= y1 && y <= y2));
+        return ((x >= x1 && x <= x2) &&
+            (y >= y1 && y <= y2));
     }
     Rance.rectContains = rectContains;
-
     function hexToString(hex) {
         hex = Math.round(hex);
         var converted = hex.toString(16);
@@ -6337,31 +5903,24 @@ var Rance;
         if (text.charAt(0) === "#") {
             text = text.substring(1, 7);
         }
-
         return parseInt(text, 16);
     }
     Rance.stringToHex = stringToHex;
     function colorImageInPlayerColor(image, player) {
         var canvas = document.createElement("canvas");
-
         canvas.width = image.width;
         canvas.height = image.height;
-
         var ctx = canvas.getContext("2d");
         ctx.drawImage(image, 0, 0, image.width, image.height);
-
         ctx.globalCompositeOperation = "source-in";
-
         ctx.fillStyle = "#" + hexToString(player.color);
         ctx.fillRect(0, 0, image.width, image.height);
-
         return canvas.toDataURL();
     }
     Rance.colorImageInPlayerColor = colorImageInPlayerColor;
-
     // http://stackoverflow.com/a/1042676
     // extends 'from' object with members from 'to'. If 'to' is null, a deep clone of 'from' is returned
-    //
+    // 
     // to[prop] = from[prop] seems to add a reference instead of actually copying value
     // so calling the constructor with "new" is needed
     function extendObject(from, to) {
@@ -6369,27 +5928,23 @@ var Rance;
             return from;
         if (from.constructor != Object && from.constructor != Array)
             return from;
-        if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function || from.constructor == String || from.constructor == Number || from.constructor == Boolean)
+        if (from.constructor == Date || from.constructor == RegExp || from.constructor == Function ||
+            from.constructor == String || from.constructor == Number || from.constructor == Boolean)
             return new from.constructor(from);
-
         to = to || new from.constructor();
-
         for (var name in from) {
             to[name] = extendObject(from[name], null);
         }
-
         return to;
     }
     Rance.extendObject = extendObject;
     function recursiveRemoveAttribute(parent, attribute) {
         parent.removeAttribute(attribute);
-
         for (var i = 0; i < parent.children.length; i++) {
             recursiveRemoveAttribute(parent.children[i], attribute);
         }
     }
     Rance.recursiveRemoveAttribute = recursiveRemoveAttribute;
-
     function clamp(value, min, max) {
         if (value < min)
             return min;
@@ -6399,13 +5954,13 @@ var Rance;
             return value;
     }
     Rance.clamp = clamp;
-
     // http://stackoverflow.com/a/3254334
     function roundToNearestMultiple(value, multiple) {
         var resto = value % multiple;
         if (resto <= (multiple / 2)) {
             return value - resto;
-        } else {
+        }
+        else {
             return value + multiple - resto;
         }
     }
@@ -6413,7 +5968,6 @@ var Rance;
     function getAngleBetweenDegrees(degA, degB) {
         var angle = Math.abs(degB - degA) % 360;
         var distance = Math.min(360 - angle, angle);
-
         //console.log(degA, degB, distance);
         return distance;
     }
@@ -6435,7 +5989,6 @@ var Rance;
     function getMatchingLocalstorageItemsByDate(stringToMatch) {
         var allKeys = Object.keys(localStorage);
         var matchingItems = [];
-
         for (var i = 0; i < allKeys.length; i++) {
             if (allKeys[i].indexOf(stringToMatch) !== -1) {
                 var item = localStorage.getItem(allKeys[i]);
@@ -6445,24 +5998,19 @@ var Rance;
                 }
             }
         }
-
         matchingItems.sort(function (a, b) {
             return Date.parse(b.date) - Date.parse(a.date);
         });
-
         return matchingItems;
     }
     Rance.getMatchingLocalstorageItemsByDate = getMatchingLocalstorageItemsByDate;
     function shuffleArray(toShuffle, seed) {
         var rng = new RNG(seed);
         var resultArray = toShuffle.slice(0);
-
         var i = resultArray.length;
-
         while (i > 0) {
             i--;
             var n = rng.random(0, i);
-
             var temp = resultArray[i];
             resultArray[i] = resultArray[n];
             resultArray[n] = temp;
@@ -6484,11 +6032,9 @@ var Rance;
             x: x,
             y: y
         };
-
         for (var i = 0; i < dropTargets.length; i++) {
             var node = dropTargets[i];
             var nodeBounds = node.getBoundingClientRect();
-
             var rect = {
                 x1: nodeBounds.left,
                 x2: nodeBounds.right,
@@ -6499,7 +6045,6 @@ var Rance;
                 return node;
             }
         }
-
         return null;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
@@ -6508,97 +6053,52 @@ var Rance;
 /// <reference path="unit.ts"/>
 var Rance;
 (function (Rance) {
-    //**
-    //**
-    //X*
-    //**
-    Rance.targetSingle;
     Rance.targetSingle = function (fleets, target) {
         return Rance.getFrom2dArray(fleets, [target]);
     };
-
-    //XX
-    //XX
-    //XX
-    //XX
-    Rance.targetAll;
     Rance.targetAll = function (fleets, target) {
         var allTargets = [];
-
         for (var i = 0; i < fleets.length; i++) {
             for (var j = 0; j < fleets[i].length; j++) {
                 allTargets.push(fleets[i][j]);
             }
         }
-
         return allTargets;
     };
-
-    //**
-    //**
-    //XX
-    //**
-    Rance.targetRow;
     Rance.targetRow = function (fleets, target) {
         var y = target[1];
         var allTargets = [];
-
         for (var i = 0; i < fleets.length; i++) {
             allTargets.push([i, y]);
         }
-
         return Rance.getFrom2dArray(fleets, allTargets);
     };
-
-    //X*
-    //X*
-    //X*
-    //X*
-    Rance.targetColumn;
     Rance.targetColumn = function (fleets, target) {
         var x = target[0];
         var allTargets = [];
-
         for (var i = 0; i < fleets[x].length; i++) {
             allTargets.push([x, i]);
         }
-
         return Rance.getFrom2dArray(fleets, allTargets);
     };
-
-    //**
-    //X*
-    //X*
-    //X*
-    Rance.targetColumnNeighbors;
     Rance.targetColumnNeighbors = function (fleets, target) {
         var x = target[0];
         var y = target[1];
         var allTargets = [];
-
         allTargets.push([x, y]);
         allTargets.push([x, y - 1]);
         allTargets.push([x, y + 1]);
-
         return Rance.getFrom2dArray(fleets, allTargets);
     };
-
-    //**
-    //X*
-    //XX
-    //X*
-    Rance.targetNeighbors;
     Rance.targetNeighbors = function (fleets, target) {
         var x = target[0];
         var y = target[1];
         var allTargets = [];
-
         allTargets.push([x, y]);
         allTargets.push([x - 1, y]);
         allTargets.push([x + 1, y]);
         allTargets.push([x, y - 1]);
         allTargets.push([x, y + 1]);
-
         return Rance.getFrom2dArray(fleets, allTargets);
     };
 })(Rance || (Rance = {}));
@@ -6615,23 +6115,23 @@ var Rance;
 /// <reference path="../../src/damagetype.ts" />
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var Effects;
         (function (Effects) {
             Effects.dummyTargetColumn = {
                 name: "dummyTargetColumn",
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetColumn,
                 targetRange: "all",
-                effect: function () {
-                }
+                effect: function () { }
             };
             Effects.dummyTargetAll = {
                 name: "dummyTargetAll",
                 targetFleets: "enemy",
                 targetingFunction: Rance.targetAll,
                 targetRange: "all",
-                effect: function () {
-                }
+                effect: function () { }
             };
             Effects.singleTargetDamage = {
                 name: "singleTargetDamage",
@@ -6641,10 +6141,8 @@ var Rance;
                 effect: function (user, target, data) {
                     var baseDamage = data.baseDamage;
                     var damageType = data.damageType;
-
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
-
                     target.receiveDamage(damage, damageType);
                 }
             };
@@ -6655,11 +6153,9 @@ var Rance;
                 targetRange: "close",
                 effect: function (user, target) {
                     var baseDamage = 0.66;
-                    var damageType = 0 /* physical */;
-
+                    var damageType = Rance.DamageType.physical;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
-
                     target.receiveDamage(damage, damageType);
                 }
             };
@@ -6670,15 +6166,12 @@ var Rance;
                 targetRange: "all",
                 effect: function (user, target) {
                     var baseDamage = 0.75;
-                    var damageType = 1 /* magical */;
-
+                    var damageType = Rance.DamageType.magical;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
-
                     target.receiveDamage(damage, damageType);
                 }
             };
-
             Effects.bombAttack = {
                 name: "bombAttack",
                 targetFleets: "enemy",
@@ -6686,11 +6179,9 @@ var Rance;
                 targetRange: "all",
                 effect: function (user, target) {
                     var baseDamage = 0.5;
-                    var damageType = 0 /* physical */;
-
+                    var damageType = Rance.DamageType.physical;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
                     var damage = baseDamage * damageIncrease;
-
                     target.receiveDamage(damage, damageType);
                 }
             };
@@ -6713,9 +6204,9 @@ var Rance;
                 effect: function (user, target, data) {
                     var counterStrength = target.getCounterAttackStrength();
                     if (counterStrength) {
-                        Rance.Templates.Effects.singleTargetDamage.effect(target, user, {
+                        Templates.Effects.singleTargetDamage.effect(target, user, {
                             baseDamage: data.baseDamage * counterStrength,
-                            damageType: 0 /* physical */
+                            damageType: Rance.DamageType.physical
                         });
                     }
                 }
@@ -6758,7 +6249,6 @@ var Rance;
                     }, 1));
                 }
             };
-
             Effects.healTarget = {
                 name: "healTarget",
                 targetFleets: "ally",
@@ -6773,35 +6263,29 @@ var Rance;
                         healAmount += target.maxHealth * data.maxHealthPercentage;
                     }
                     if (data.perUserUnit) {
-                        healAmount += data.perUserUnit * user.getAttackDamageIncrease(1 /* magical */);
+                        healAmount += data.perUserUnit * user.getAttackDamageIncrease(Rance.DamageType.magical);
                     }
-
                     target.removeStrength(-healAmount);
                 }
             };
-
             Effects.healSelf = {
                 name: "healSelf",
                 targetFleets: "ally",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
                 effect: function (user, target, data) {
-                    Rance.Templates.Effects.healTarget.effect(user, user, data);
+                    Templates.Effects.healTarget.effect(user, user, data);
                 }
             };
-
             Effects.standBy = {
                 name: "standBy",
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
-                effect: function () {
-                }
+                effect: function () { }
             };
-        })(Templates.Effects || (Templates.Effects = {}));
-        var Effects = Templates.Effects;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(Effects = Templates.Effects || (Templates.Effects = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="effecttemplates.ts" />
 /// <reference path="battleeffectsfxtemplates.ts" />
@@ -6811,9 +6295,7 @@ var Rance;
     function makeSprite(imgSrc, props) {
         var canvas = document.createElement("canvas");
         var ctx = canvas.getContext("2d");
-
         var img = new Image();
-
         img.onload = function (e) {
             canvas.width = img.width;
             canvas.height = img.height;
@@ -6822,34 +6304,27 @@ var Rance;
                 ctx.scale(-1, 1);
             }
         };
-
         // cg13300.bmp
         img.src = imgSrc;
-
         return canvas;
     }
     Rance.makeSprite = makeSprite;
     function makeVideo(videoSrc, props) {
         var video = document.createElement("video");
-
         var canvas = document.createElement("canvas");
         var ctx = canvas.getContext("2d");
-
         var maskCanvas = document.createElement("canvas");
         var mask = maskCanvas.getContext("2d");
         mask.fillStyle = "#000";
         mask.globalCompositeOperation = "luminosity";
-
         var onVideoLoadFN = function () {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             maskCanvas.width = canvas.width;
             maskCanvas.height = canvas.height;
-
             props.onLoaded(canvas);
             video.play();
         };
-
         var _ = window;
         if (!_.abababa)
             _.abababa = {};
@@ -6861,25 +6336,18 @@ var Rance;
                 c3.width = canvas.width;
                 c3.height = canvas.height;
                 var ctx3 = c3.getContext("2d");
-
                 ctx3.drawImage(video, 0, 0, c3.width, c3.height);
-
                 var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
-
                 mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
                 mask.drawImage(video, 0, 0, c3.width, c3.height);
-
                 var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-
                 var l = frame.data.length / 4;
                 for (var i = 0; i < l; i++) {
                     frame.data[i * 4 + 3] = maskData[i * 4];
                 }
-
                 ctx3.putImageData(frame, 0, 0);
                 _.abababa[videoSrc][frameNumber] = c3;
             }
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (!props.facingRight) {
                 ctx.scale(-1, 1);
@@ -6887,32 +6355,30 @@ var Rance;
             ctx.drawImage(_.abababa[videoSrc][frameNumber], 0, 0, canvas.width, canvas.height);
         };
         var previousFrame;
-
         var playFrameFN = function () {
             if (video.paused || video.ended)
                 return;
             var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
             if (isFinite(previousFrame) && currentFrame === previousFrame) {
-            } else {
+            }
+            else {
                 previousFrame = currentFrame;
                 computeFrameFN(currentFrame);
             }
             requestAnimFrame(playFrameFN);
         };
-
         video.oncanplay = onVideoLoadFN;
         video.onplay = playFrameFN;
-
         video.src = videoSrc;
-
         if (video.readyState >= 4) {
             onVideoLoadFN();
         }
-
         return canvas;
     }
     Rance.makeVideo = makeVideo;
+    var Templates;
     (function (Templates) {
+        var Abilities;
         (function (Abilities) {
             Abilities.dummyTargetColumn = {
                 type: "dummyTargetColumn",
@@ -6921,7 +6387,7 @@ var Rance;
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: {
-                    template: Rance.Templates.Effects.dummyTargetColumn
+                    template: Templates.Effects.dummyTargetColumn
                 }
             };
             Abilities.dummyTargetAll = {
@@ -6931,7 +6397,7 @@ var Rance;
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: {
-                    template: Rance.Templates.Effects.dummyTargetAll
+                    template: Templates.Effects.dummyTargetAll
                 }
             };
             Abilities.rangedAttack = {
@@ -6941,17 +6407,17 @@ var Rance;
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.singleTargetDamage,
+                    template: Templates.Effects.singleTargetDamage,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
                     },
                     data: {
                         baseDamage: 1,
-                        damageType: 0 /* physical */
+                        damageType: Rance.DamageType.physical
                     },
                     attachedEffects: [
                         {
-                            template: Rance.Templates.Effects.receiveCounterAttack,
+                            template: Templates.Effects.receiveCounterAttack,
                             data: {
                                 baseDamage: 1
                             }
@@ -6966,7 +6432,7 @@ var Rance;
                 moveDelay: 90,
                 actionsUse: 2,
                 mainEffect: {
-                    template: Rance.Templates.Effects.closeAttack,
+                    template: Templates.Effects.closeAttack,
                     sfx: {
                         duration: 1500
                     }
@@ -6979,13 +6445,12 @@ var Rance;
                 moveDelay: 300,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.wholeRowAttack,
+                    template: Templates.Effects.wholeRowAttack,
                     sfx: {
                         duration: 1500
                     }
                 }
             };
-
             Abilities.bombAttack = {
                 type: "bombAttack",
                 displayName: "Bomb Attack",
@@ -6993,7 +6458,7 @@ var Rance;
                 moveDelay: 120,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.bombAttack,
+                    template: Templates.Effects.bombAttack,
                     sfx: {
                         duration: 1500
                     }
@@ -7006,7 +6471,7 @@ var Rance;
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.guardColumn,
+                    template: Templates.Effects.guardColumn,
                     sfx: {
                         duration: 1500
                     }
@@ -7019,23 +6484,23 @@ var Rance;
                 moveDelay: 100,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.singleTargetDamage,
+                    template: Templates.Effects.singleTargetDamage,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
                     },
                     data: {
                         baseDamage: 0.8,
-                        damageType: 0 /* physical */
+                        damageType: Rance.DamageType.physical
                     },
                     attachedEffects: [
                         {
-                            template: Rance.Templates.Effects.increaseCaptureChance,
+                            template: Templates.Effects.increaseCaptureChance,
                             data: {
                                 flat: 0.5
                             }
                         },
                         {
-                            template: Rance.Templates.Effects.receiveCounterAttack,
+                            template: Templates.Effects.receiveCounterAttack,
                             data: {
                                 baseDamage: 1
                             }
@@ -7043,7 +6508,6 @@ var Rance;
                     ]
                 }
             };
-
             Abilities.debugAbility = {
                 type: "debugAbility",
                 displayName: "Debug Ability",
@@ -7051,17 +6515,17 @@ var Rance;
                 moveDelay: 20,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.singleTargetDamage,
+                    template: Templates.Effects.singleTargetDamage,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
                     },
                     data: {
                         baseDamage: 5,
-                        damageType: 0 /* physical */
+                        damageType: Rance.DamageType.physical
                     },
                     attachedEffects: [
                         {
-                            template: Rance.Templates.Effects.receiveCounterAttack,
+                            template: Templates.Effects.receiveCounterAttack,
                             data: {
                                 baseDamage: 1
                             }
@@ -7070,22 +6534,21 @@ var Rance;
                 },
                 secondaryEffects: [
                     {
-                        template: Rance.Templates.Effects.bombAttack,
+                        template: Templates.Effects.bombAttack,
                         sfx: {
-                            duration: 200
+                            duration: 200,
                         }
                     }
                 ],
                 afterUse: [
                     {
-                        template: Rance.Templates.Effects.buffTest,
+                        template: Templates.Effects.buffTest,
                         sfx: {
-                            duration: 200
+                            duration: 200,
                         }
                     }
                 ]
             };
-
             Abilities.ranceAttack = {
                 type: "ranceAttack",
                 displayName: "Rance attack",
@@ -7093,33 +6556,33 @@ var Rance;
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: {
-                    template: Rance.Templates.Effects.singleTargetDamage,
+                    template: Templates.Effects.singleTargetDamage,
                     sfx: {
                         duration: 1200,
                         userSprite: function (props) {
                             // cg13600.bmp
-                            return Rance.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                            return makeSprite("img\/battleEffects\/ranceAttack2.png", props);
                         },
                         battleOverlay: function (props) {
                             // cg40500.bmp - cg40529.bmp converted to webm
-                            return Rance.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                            return makeVideo("img\/battleEffects\/ranceAttack.webm", props);
                         }
                     },
                     data: {
                         baseDamage: 0.1,
-                        damageType: 0 /* physical */
+                        damageType: Rance.DamageType.physical
                     }
                 },
                 secondaryEffects: [
                     {
-                        template: Rance.Templates.Effects.singleTargetDamage,
+                        template: Templates.Effects.singleTargetDamage,
                         data: {
                             baseDamage: 0.1,
-                            damageType: 0 /* physical */
+                            damageType: Rance.DamageType.physical
                         },
                         attachedEffects: [
                             {
-                                template: Rance.Templates.Effects.receiveCounterAttack,
+                                template: Templates.Effects.receiveCounterAttack,
                                 data: {
                                     baseDamage: 0.1
                                 }
@@ -7129,17 +6592,16 @@ var Rance;
                             duration: 1500,
                             userSprite: function (props) {
                                 // cg13300.bmp
-                                return Rance.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                                return makeSprite("img\/battleEffects\/ranceAttack.png", props);
                             },
                             battleOverlay: function (props) {
                                 // cg40000.bmp - cg40029.bmp converted to webm
-                                return Rance.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                                return makeVideo("img\/battleEffects\/bushiAttack.webm", props);
                             }
                         }
                     }
                 ]
             };
-
             Abilities.standBy = {
                 type: "standBy",
                 displayName: "Standby",
@@ -7147,33 +6609,30 @@ var Rance;
                 moveDelay: 50,
                 actionsUse: 1,
                 mainEffect: {
-                    template: Rance.Templates.Effects.standBy,
+                    template: Templates.Effects.standBy,
                     sfx: {
                         duration: 750,
                         userSprite: function (props) {
                             var canvas = document.createElement("canvas");
                             var ctx = canvas.getContext("2d");
-
                             canvas.width = 80;
                             canvas.height = 80;
-
                             ctx.fillStyle = "#FFF";
                             ctx.fillRect(20, 20, 40, 40);
-
                             return canvas;
                         }
                     }
                 }
             };
-        })(Templates.Abilities || (Templates.Abilities = {}));
-        var Abilities = Templates.Abilities;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts" />
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var PassiveSkills;
         (function (PassiveSkills) {
             PassiveSkills.autoHeal = {
                 type: "autoHeal",
@@ -7181,7 +6640,7 @@ var Rance;
                 description: "hiku hiku",
                 afterAbilityUse: [
                     {
-                        template: Rance.Templates.Effects.healSelf,
+                        template: Templates.Effects.healSelf,
                         data: {
                             flat: 50
                         },
@@ -7201,21 +6660,21 @@ var Rance;
                 description: "o-",
                 atBattleStart: [
                     {
-                        template: Rance.Templates.Effects.buffTest
+                        template: Templates.Effects.buffTest
                     }
                 ]
             };
-        })(Templates.PassiveSkills || (Templates.PassiveSkills = {}));
-        var PassiveSkills = Templates.PassiveSkills;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="abilitytemplates.ts"/>
 /// <reference path="passiveskilltemplates.ts" />
 /// <reference path="spritetemplate.d.ts"/>
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var ShipTypes;
         (function (ShipTypes) {
             ShipTypes.cheatShip = {
                 type: "cheatShip",
@@ -7238,16 +6697,16 @@ var Rance;
                     speed: 9
                 },
                 abilities: [
-                    Rance.Templates.Abilities.debugAbility,
-                    Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.bombAttack,
-                    Rance.Templates.Abilities.boardingHook,
-                    Rance.Templates.Abilities.guardColumn,
-                    Rance.Templates.Abilities.ranceAttack,
-                    Rance.Templates.Abilities.standBy
+                    Templates.Abilities.debugAbility,
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.bombAttack,
+                    Templates.Abilities.boardingHook,
+                    Templates.Abilities.guardColumn,
+                    Templates.Abilities.ranceAttack,
+                    Templates.Abilities.standBy
                 ],
                 passiveSkills: [
-                    Rance.Templates.PassiveSkills.autoHeal
+                    Templates.PassiveSkills.autoHeal
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -7271,8 +6730,8 @@ var Rance;
                     speed: 1
                 },
                 abilities: [
-                    Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.closeAttack
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.closeAttack
                 ]
             };
             ShipTypes.bomberSquadron = {
@@ -7296,8 +6755,8 @@ var Rance;
                     speed: 0.8
                 },
                 abilities: [
-                    Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.bombAttack
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.bombAttack
                 ]
             };
             ShipTypes.battleCruiser = {
@@ -7321,8 +6780,8 @@ var Rance;
                     speed: 0.6
                 },
                 abilities: [
-                    Rance.Templates.Abilities.rangedAttack,
-                    Rance.Templates.Abilities.wholeRowAttack
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.wholeRowAttack
                 ]
             };
             ShipTypes.scout = {
@@ -7346,7 +6805,7 @@ var Rance;
                     speed: 0.7
                 },
                 abilities: [
-                    Rance.Templates.Abilities.rangedAttack
+                    Templates.Abilities.rangedAttack
                 ]
             };
             ShipTypes.shieldBoat = {
@@ -7370,18 +6829,18 @@ var Rance;
                     speed: 0.4
                 },
                 abilities: [
-                    Rance.Templates.Abilities.guardColumn,
-                    Rance.Templates.Abilities.rangedAttack
+                    Templates.Abilities.guardColumn,
+                    Templates.Abilities.rangedAttack
                 ]
             };
-        })(Templates.ShipTypes || (Templates.ShipTypes = {}));
-        var ShipTypes = Templates.ShipTypes;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var Resources;
         (function (Resources) {
             Resources.testResource1 = {
                 type: "testResource1",
@@ -7418,14 +6877,14 @@ var Rance;
                 rarity: 1,
                 distributionGroups: ["rare"]
             };
-        })(Templates.Resources || (Templates.Resources = {}));
-        var Resources = Templates.Resources;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(Resources = Templates.Resources || (Templates.Resources = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var Buildings;
         (function (Buildings) {
             Buildings.sectorCommand = {
                 type: "sectorCommand",
@@ -7503,7 +6962,7 @@ var Rance;
                 iconSrc: "commercialPort.png",
                 buildCost: 200,
                 maxPerType: 1,
-                maxUpgradeLevel: 3
+                maxUpgradeLevel: 3 // MANUFACTORY_MAX
             };
             Buildings.resourceMine = {
                 type: "resourceMine",
@@ -7514,10 +6973,8 @@ var Rance;
                 maxPerType: 1,
                 maxUpgradeLevel: 3
             };
-        })(Templates.Buildings || (Templates.Buildings = {}));
-        var Buildings = Templates.Buildings;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/buildingtemplates.ts" />
 /// <reference path="star.ts" />
@@ -7527,7 +6984,8 @@ var Rance;
     var Building = (function () {
         function Building(props) {
             this.template = props.template;
-            this.id = (props.id && isFinite(props.id)) ? props.id : Rance.idGenerators.building++;
+            this.id = (props.id && isFinite(props.id)) ?
+                props.id : Rance.idGenerators.building++;
             this.location = props.location;
             this.controller = props.controller || this.location.owner;
             this.upgradeLevel = props.upgradeLevel || 1;
@@ -7535,14 +6993,14 @@ var Rance;
         }
         Building.prototype.getPossibleUpgrades = function () {
             var upgrades = [];
-
             if (this.upgradeLevel < this.template.maxUpgradeLevel) {
                 upgrades.push({
                     template: this.template,
                     level: this.upgradeLevel + 1,
                     cost: this.template.buildCost * (this.upgradeLevel + 1)
                 });
-            } else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
+            }
+            else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
                 var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
                     var template = Rance.Templates.Buildings[upgradeData.type];
                     return ({
@@ -7551,10 +7009,8 @@ var Rance;
                         cost: template.buildCost
                     });
                 });
-
                 upgrades = upgrades.concat(templatedUpgrades);
             }
-
             return upgrades;
         };
         Building.prototype.upgrade = function () {
@@ -7563,22 +7019,17 @@ var Rance;
             var oldController = this.controller;
             if (oldController === newController)
                 return;
-
             this.controller = newController;
             this.location.updateController();
         };
         Building.prototype.serialize = function () {
             var data = {};
-
             data.templateType = this.template.type;
             data.id = this.id;
-
             data.locationId = this.location.id;
             data.controllerId = this.controller.id;
-
             data.upgradeLevel = this.upgradeLevel;
             data.totalCost = this.totalCost;
-
             return data;
         };
         return Building;
@@ -7589,7 +7040,9 @@ var Rance;
 /// <reference path="passiveskilltemplates.ts" />
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var Items;
         (function (Items) {
             Items.bombLauncher1 = {
                 type: "bombLauncher1",
@@ -7598,7 +7051,7 @@ var Rance;
                 techLevel: 1,
                 cost: 100,
                 slot: "high",
-                ability: Rance.Templates.Abilities.bombAttack
+                ability: Templates.Abilities.bombAttack
             };
             Items.bombLauncher2 = {
                 type: "bombLauncher2",
@@ -7610,7 +7063,7 @@ var Rance;
                     attack: 1
                 },
                 slot: "high",
-                ability: Rance.Templates.Abilities.bombAttack
+                ability: Templates.Abilities.bombAttack
             };
             Items.bombLauncher3 = {
                 type: "bombLauncher3",
@@ -7622,9 +7075,8 @@ var Rance;
                     attack: 3
                 },
                 slot: "high",
-                ability: Rance.Templates.Abilities.bombAttack
+                ability: Templates.Abilities.bombAttack
             };
-
             Items.afterBurner1 = {
                 type: "afterBurner1",
                 displayName: "Afterburner 1",
@@ -7635,7 +7087,7 @@ var Rance;
                     speed: 1
                 },
                 slot: "mid",
-                passiveSkill: Rance.Templates.PassiveSkills.overdrive
+                passiveSkill: Templates.PassiveSkills.overdrive
             };
             Items.afterBurner2 = {
                 type: "afterBurner2",
@@ -7693,12 +7145,10 @@ var Rance;
                     speed: -1
                 },
                 slot: "low",
-                ability: Rance.Templates.Abilities.guardColumn
+                ability: Templates.Abilities.guardColumn
             };
-        })(Templates.Items || (Templates.Items = {}));
-        var Items = Templates.Items;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(Items = Templates.Items || (Templates.Items = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/itemtemplates.ts" />
 /// <reference path="unit.ts" />
@@ -7711,13 +7161,11 @@ var Rance;
         }
         Item.prototype.serialize = function () {
             var data = {};
-
             data.id = this.id;
             data.templateType = this.template.type;
             if (this.unit) {
                 data.unitId = this.unit.id;
             }
-
             return data;
         };
         return Item;
@@ -7737,11 +7185,9 @@ var Rance;
         ItemGenerator.prototype.indexItemsByTechLevel = function () {
             for (var itemName in Rance.Templates.Items) {
                 var item = Rance.Templates.Items[itemName];
-
                 if (!this.itemsByTechLevel[item.techLevel]) {
                     this.itemsByTechLevel[item.techLevel] = [];
                 }
-
                 this.itemsByTechLevel[item.techLevel].push(item);
             }
         };
@@ -7778,40 +7224,31 @@ var Rance;
             };
             this.id = isFinite(id) ? id : Rance.idGenerators.star++;
             this.name = "Star " + this.id;
-
             this.x = x;
             this.y = y;
         }
         // TODO REMOVE
         Star.prototype.severLinksToNonAdjacent = function () {
             var allLinks = this.getAllLinks();
-
             var neighborVoronoiIds = this.voronoiCell.getNeighborIds();
-
             for (var i = 0; i < allLinks.length; i++) {
                 var star = allLinks[i];
-
                 if (neighborVoronoiIds.indexOf(star.voronoiId) === -1) {
                     this.removeLink(star);
                 }
             }
         };
-
         // END TO REMOVE
         // BUILDINGS
         Star.prototype.addBuilding = function (building) {
             if (!this.buildings[building.template.category]) {
                 this.buildings[building.template.category] = [];
             }
-
             var buildings = this.buildings[building.template.category];
-
             if (buildings.indexOf(building) >= 0) {
                 throw new Error("Already has building");
             }
-
             buildings.push(building);
-
             if (building.template.category === "defence") {
                 this.sortDefenceBuildings();
             }
@@ -7821,59 +7258,49 @@ var Rance;
             }
         };
         Star.prototype.removeBuilding = function (building) {
-            if (!this.buildings[building.template.category] || this.buildings[building.template.category].indexOf(building) < 0) {
+            if (!this.buildings[building.template.category] ||
+                this.buildings[building.template.category].indexOf(building) < 0) {
                 throw new Error("Location doesn't have building");
             }
-
             var buildings = this.buildings[building.template.category];
-
             this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
         };
         Star.prototype.sortDefenceBuildings = function () {
             this.buildings["defence"].sort(function (a, b) {
                 if (a.template.maxPerType === 1) {
                     return -1;
-                } else if (b.template.maxPerType === 1) {
+                }
+                else if (b.template.maxPerType === 1) {
                     return 1;
                 }
-
                 if (a.upgradeLevel !== b.upgradeLevel) {
                     return b.upgradeLevel - a.upgradeLevel;
                 }
-
                 return a.id - b.id;
             });
         };
-
         Star.prototype.getSecondaryController = function () {
             if (!this.buildings["defence"])
                 return null;
-
             var defenceBuildings = this.buildings["defence"];
             for (var i = 0; i < defenceBuildings.length; i++) {
                 if (defenceBuildings[i].controller !== this.owner) {
                     return defenceBuildings[i].controller;
                 }
             }
-
             return null;
         };
         Star.prototype.updateController = function () {
             if (!this.buildings["defence"])
                 return null;
-
             var oldOwner = this.owner;
             var newOwner = this.buildings["defence"][0].controller;
-
             if (oldOwner) {
                 if (oldOwner === newOwner)
                     return;
-
                 oldOwner.removeStar(this);
             }
-
             newOwner.addStar(this);
-
             Rance.eventManager.dispatchEvent("renderMap");
         };
         Star.prototype.getIncome = function () {
@@ -7898,25 +7325,20 @@ var Rance;
         };
         Star.prototype.getAllBuildings = function () {
             var buildings = [];
-
             for (var category in this.buildings) {
                 buildings = buildings.concat(this.buildings[category]);
             }
-
             return buildings;
         };
         Star.prototype.getBuildingsForPlayer = function (player) {
             var allBuildings = this.getAllBuildings();
-
             return allBuildings.filter(function (building) {
                 return building.controller.id === player.id;
             });
         };
         Star.prototype.getBuildingsByType = function (buildingTemplate) {
             var categoryBuildings = this.buildings[buildingTemplate.category];
-
             var buildings = [];
-
             if (categoryBuildings) {
                 for (var i = 0; i < categoryBuildings.length; i++) {
                     if (categoryBuildings[i].template.type === buildingTemplate.type) {
@@ -7924,16 +7346,13 @@ var Rance;
                     }
                 }
             }
-
             return buildings;
         };
         Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
             if (!buildingTemplate.family)
                 throw new Error("Building has no family");
             var categoryBuildings = this.buildings[buildingTemplate.category];
-
             var buildings = [];
-
             if (categoryBuildings) {
                 for (var i = 0; i < categoryBuildings.length; i++) {
                     if (categoryBuildings[i].template.family === buildingTemplate.family) {
@@ -7941,7 +7360,6 @@ var Rance;
                     }
                 }
             }
-
             return buildings;
         };
         Star.prototype.getBuildableBuildings = function () {
@@ -7949,64 +7367,51 @@ var Rance;
             for (var buildingType in Rance.Templates.Buildings) {
                 var template = Rance.Templates.Buildings[buildingType];
                 var alreadyBuilt;
-
                 if (template.category === "mine" && !this.resource) {
                     continue;
                 }
-
                 if (template.family) {
                     alreadyBuilt = this.getBuildingsByFamily(template);
-                } else {
+                }
+                else {
                     alreadyBuilt = this.getBuildingsByType(template);
                 }
-
                 if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
                     canBuild.push(template);
                 }
             }
-
             return canBuild;
         };
         Star.prototype.getBuildingUpgrades = function () {
             var allUpgrades = {};
-
             var ownerBuildings = this.getBuildingsForPlayer(this.owner);
-
             for (var i = 0; i < ownerBuildings.length; i++) {
                 var building = ownerBuildings[i];
                 var upgrades = building.getPossibleUpgrades();
-
                 if (upgrades && upgrades.length > 0) {
                     for (var j = 0; j < upgrades.length; j++) {
                         upgrades[j].parentBuilding = building;
                     }
-
                     allUpgrades[building.id] = upgrades;
                 }
             }
-
             return allUpgrades;
         };
-
         Star.prototype.getBuildableShipTypes = function () {
             // TODO add local unit types similar to dominions independents
             return this.owner.getGloballyBuildableShips();
         };
-
         // FLEETS
         Star.prototype.getAllFleets = function () {
             var allFleets = [];
-
             for (var playerId in this.fleets) {
                 allFleets = allFleets.concat(this.fleets[playerId]);
             }
-
             return allFleets;
         };
         Star.prototype.getFleetIndex = function (fleet) {
             if (!this.fleets[fleet.player.id])
                 return -1;
-
             return this.fleets[fleet.player.id].indexOf(fleet);
         };
         Star.prototype.hasFleet = function (fleet) {
@@ -8016,10 +7421,8 @@ var Rance;
             if (!this.fleets[fleet.player.id]) {
                 this.fleets[fleet.player.id] = [];
             }
-
             if (this.hasFleet(fleet))
                 return false;
-
             this.fleets[fleet.player.id].push(fleet);
         };
         Star.prototype.addFleets = function (fleets) {
@@ -8029,12 +7432,9 @@ var Rance;
         };
         Star.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
-
             if (fleetIndex < 0)
                 return false;
-
             this.fleets[fleet.player.id].splice(fleetIndex, 1);
-
             if (this.fleets[fleet.player.id].length === 0) {
                 delete this.fleets[fleet.player.id];
             }
@@ -8046,39 +7446,33 @@ var Rance;
         };
         Star.prototype.getAllShipsOfPlayer = function (player) {
             var allShips = [];
-
             var fleets = this.fleets[player.id];
             if (!fleets)
                 return [];
-
             for (var i = 0; i < fleets.length; i++) {
                 allShips = allShips.concat(fleets[i].ships);
             }
-
             return allShips;
         };
         Star.prototype.getIndependentShips = function () {
             var ships = [];
-
             for (var playerId in this.fleets) {
                 var player = this.fleets[playerId][0].player;
                 if (player.isIndependent) {
                     ships = ships.concat(this.getAllShipsOfPlayer(player));
                 }
             }
-
             return ships;
         };
         Star.prototype.getTargetsForPlayer = function (player) {
             var buildingTarget = this.getFirstEnemyDefenceBuilding(player);
             var buildingController = buildingTarget ? buildingTarget.controller : null;
             var fleetOwners = this.getEnemyFleetOwners(player, buildingController);
-
             var diplomacyStatus = player.diplomacyStatus;
-
             var targets = [];
-
-            if (buildingTarget && (player === this.owner || diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
+            if (buildingTarget &&
+                (player === this.owner ||
+                    diplomacyStatus.canAttackBuildingOfPlayer(buildingTarget.controller))) {
                 targets.push({
                     type: "building",
                     enemy: buildingTarget.controller,
@@ -8096,28 +7490,23 @@ var Rance;
                     });
                 }
             }
-
             return targets;
         };
         Star.prototype.getFirstEnemyDefenceBuilding = function (player) {
             if (!this.buildings["defence"])
                 return null;
-
             var defenceBuildings = this.buildings["defence"].slice(0);
             if (this.owner === player)
                 defenceBuildings = defenceBuildings.reverse();
-
             for (var i = defenceBuildings.length - 1; i >= 0; i--) {
                 if (defenceBuildings[i].controller.id !== player.id) {
                     return defenceBuildings[i];
                 }
             }
-
             return null;
         };
         Star.prototype.getEnemyFleetOwners = function (player, excludedTarget) {
             var fleetOwners = [];
-
             for (var playerId in this.fleets) {
                 if (playerId == player.id)
                     continue;
@@ -8125,13 +7514,10 @@ var Rance;
                     continue;
                 else if (this.fleets[playerId].length < 1)
                     continue;
-
                 fleetOwners.push(this.fleets[playerId][0].player);
             }
-
             return fleetOwners;
         };
-
         // MAP GEN
         Star.prototype.setPosition = function (x, y) {
             this.x = x;
@@ -8143,75 +7529,62 @@ var Rance;
         Star.prototype.hasLink = function (linkTo) {
             return this.linksTo.indexOf(linkTo) >= 0 || this.linksFrom.indexOf(linkTo) >= 0;
         };
-
         // could maybe use adding / removing links as a gameplay mechanic
         Star.prototype.addLink = function (linkTo) {
             if (this.hasLink(linkTo))
                 return;
-
             this.linksTo.push(linkTo);
             linkTo.linksFrom.push(this);
         };
         Star.prototype.removeLink = function (linkTo) {
             if (!this.hasLink(linkTo))
                 return;
-
             var toIndex = this.linksTo.indexOf(linkTo);
             if (toIndex >= 0) {
                 this.linksTo.splice(toIndex, 1);
-            } else {
+            }
+            else {
                 this.linksFrom.splice(this.linksFrom.indexOf(linkTo), 1);
             }
-
             linkTo.removeLink(this);
         };
         Star.prototype.getAllLinks = function () {
             return this.linksTo.concat(this.linksFrom);
         };
-
         // return adjacent stars whether they're linked to this or not
         Star.prototype.getNeighbors = function () {
             var neighbors = [];
-
             for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
                 var edge = this.voronoiCell.halfedges[i].edge;
-
                 if (edge.lSite !== null && edge.lSite.id !== this.id) {
                     neighbors.push(edge.lSite);
-                } else if (edge.rSite !== null && edge.rSite.id !== this.id) {
+                }
+                else if (edge.rSite !== null && edge.rSite.id !== this.id) {
                     neighbors.push(edge.rSite);
                 }
             }
-
             return neighbors;
         };
         Star.prototype.getLinkedInRange = function (range) {
             if (this.indexedNeighborsInRange[range]) {
                 return this.indexedNeighborsInRange[range];
             }
-
             var visited = {};
             var visitedByRange = {};
-
             visited[this.id] = this;
-
             var current = [];
             var frontier = [this];
-
             for (var i = 0; i < range; i++) {
                 current = frontier.slice(0);
                 if (current.length <= 0)
                     break;
                 frontier = [];
                 visitedByRange[i + 1] = [];
-
                 for (var j = 0; j < current.length; j++) {
                     var neighbors = current[j].getAllLinks();
-
                     for (var k = 0; k < neighbors.length; k++) {
                         if (visited[neighbors[k].id])
                             continue;
-
                         visited[neighbors[k].id] = neighbors[k];
                         visitedByRange[i + 1].push(neighbors[k]);
                         frontier.push(neighbors[k]);
@@ -8220,97 +7593,78 @@ var Rance;
                 }
             }
             var allVisited = [];
-
             for (var id in visited) {
                 allVisited.push(visited[id]);
             }
-
-            this.indexedNeighborsInRange[range] = {
-                all: allVisited,
-                byRange: visitedByRange
-            };
-
+            this.indexedNeighborsInRange[range] =
+                {
+                    all: allVisited,
+                    byRange: visitedByRange
+                };
             return ({
                 all: allVisited,
                 byRange: visitedByRange
             });
         };
-
         // Recursively gets all neighbors that fulfill the callback condition with this star
         // Optional earlyReturnSize parameter returns if an island of specified size is found
         Star.prototype.getIslandForQualifier = function (qualifier, earlyReturnSize) {
             var visited = {};
-
             var connected = {};
-
             var sizeFound = 1;
-
             var initialStar = this;
             var frontier = [initialStar];
             visited[initialStar.id] = true;
-
             while (frontier.length > 0) {
                 var current = frontier.pop();
                 connected[current.id] = current;
                 var neighbors = current.getLinkedInRange(1).all;
-
                 for (var i = 0; i < neighbors.length; i++) {
                     var neighbor = neighbors[i];
                     if (visited[neighbor.id])
                         continue;
-
                     visited[neighbor.id] = true;
                     if (qualifier(initialStar, neighbor)) {
                         sizeFound++;
                         frontier.push(neighbor);
                     }
                 }
-
                 // breaks when sufficiently big island has been found
                 if (earlyReturnSize && sizeFound >= earlyReturnSize) {
                     for (var i = 0; i < frontier.length; i++) {
                         connected[frontier[i].id] = frontier[i];
                     }
-
                     break;
                 }
             }
-
             var island = [];
             for (var starId in connected) {
                 island.push(connected[starId]);
             }
-
             return island;
         };
         Star.prototype.getNearestStarForQualifier = function (qualifier) {
             if (qualifier(this))
                 return this;
-
             var visited = {};
-
             var frontier = [this];
             visited[this.id] = true;
-
             while (frontier.length > 0) {
                 var current = frontier.pop();
                 var neighbors = current.getLinkedInRange(1).all;
-
                 for (var i = 0; i < neighbors.length; i++) {
                     var neighbor = neighbors[i];
                     if (visited[neighbor.id])
                         continue;
-
                     visited[neighbor.id] = true;
-
                     if (qualifier(neighbor)) {
                         return neighbor;
-                    } else {
+                    }
+                    else {
                         frontier.push(neighbor);
                     }
                 }
             }
-
             return null;
         };
         Star.prototype.getDistanceToStar = function (target) {
@@ -8318,24 +7672,22 @@ var Rance;
                 var a = Rance.aStar(this, target);
                 if (!a) {
                     this.indexedDistanceToStar[target.id] = -1;
-                } else {
+                }
+                else {
                     for (var id in a.cost) {
                         this.indexedDistanceToStar[id] = a.cost[id];
                     }
                 }
             }
-
             return this.indexedDistanceToStar[target.id];
         };
         Star.prototype.getVisionRange = function () {
             var baseVision = 1;
-
             if (this.buildings["vision"]) {
                 for (var i = 0; i < this.buildings["vision"].length; i++) {
                     baseVision += this.buildings["vision"][i].upgradeLevel;
                 }
             }
-
             return baseVision;
         };
         Star.prototype.getVision = function () {
@@ -8343,11 +7695,9 @@ var Rance;
         };
         Star.prototype.getHealingFactor = function (player) {
             var factor = 0;
-
             if (player === this.owner) {
                 factor += 0.15;
             }
-
             return factor;
         };
         Star.prototype.getSeed = function () {
@@ -8358,18 +7708,13 @@ var Rance;
                 bgString += new Date().getTime();
                 this.seed = bgString;
             }
-
             return this.seed;
         };
-
         Star.prototype.seedBuildableItems = function () {
             for (var techLevel in this.buildableItems) {
                 var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
-
                 var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
-
                 itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel, this.getSeed());
-
                 for (var i = 0; i < maxItemsForTechLevel; i++) {
                     this.buildableItems[techLevel].push(itemsByTechLevel.pop());
                 }
@@ -8382,19 +7727,14 @@ var Rance;
                     level += this.buildings["manufactory"][i].upgradeLevel;
                 }
             }
-
             return level;
         };
         Star.prototype.getItemAmountForTechLevel = function (techLevel, manufactoryLevel) {
-            var maxManufactoryLevel = 3;
-
+            var maxManufactoryLevel = 3; // MANUFACTORY_MAX
             manufactoryLevel = Rance.clamp(manufactoryLevel, 0, maxManufactoryLevel);
-
             var amount = (1 + manufactoryLevel) - techLevel;
-
             if (amount < 0)
                 amount = 0;
-
             return amount;
         };
         Star.prototype.getBuildableItems = function () {
@@ -8402,20 +7742,15 @@ var Rance;
                 this.seedBuildableItems();
             }
             ;
-
             var manufactoryLevel = this.getItemManufactoryLevel();
-
             var byTechLevel = {};
             var allBuildable = [];
-
             for (var techLevel in this.buildableItems) {
                 var amountBuildable = this.getItemAmountForTechLevel(techLevel, manufactoryLevel);
                 var forThisTechLevel = this.buildableItems[techLevel].slice(0, amountBuildable);
-
                 byTechLevel[techLevel] = forThisTechLevel;
                 allBuildable = allBuildable.concat(forThisTechLevel);
             }
-
             return ({
                 byTechLevel: byTechLevel,
                 all: allBuildable
@@ -8423,37 +7758,25 @@ var Rance;
         };
         Star.prototype.serialize = function () {
             var data = {};
-
             data.id = this.id;
             data.x = this.basisX;
             data.y = this.basisY;
-
             data.baseIncome = this.baseIncome;
-
             data.name = this.name;
             data.ownerId = this.owner ? this.owner.id : null;
-
-            data.linksToIds = this.linksTo.map(function (star) {
-                return star.id;
-            });
-            data.linksFromIds = this.linksFrom.map(function (star) {
-                return star.id;
-            });
-
+            data.linksToIds = this.linksTo.map(function (star) { return star.id; });
+            data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
             data.seed = this.seed;
             if (this.resource) {
                 data.resourceType = this.resource.type;
             }
-
             data.buildings = {};
-
             for (var category in this.buildings) {
                 data.buildings[category] = [];
                 for (var i = 0; i < this.buildings[category].length; i++) {
                     data.buildings[category].push(this.buildings[category][i].serialize());
                 }
             }
-
             return data;
         };
         return Star;
@@ -8473,17 +7796,14 @@ var Rance;
             else
                 return true;
         };
-
         PriorityQueue.prototype.push = function (priority, data) {
             if (!this.items[priority]) {
                 this.items[priority] = [];
             }
-
             this.items[priority].push(data);
         };
         PriorityQueue.prototype.pop = function () {
             var highestPriority = Math.min.apply(null, Object.keys(this.items));
-
             var toReturn = this.items[highestPriority].pop();
             if (this.items[highestPriority].length < 1) {
                 delete this.items[highestPriority];
@@ -8493,7 +7813,6 @@ var Rance;
         PriorityQueue.prototype.peek = function () {
             var highestPriority = Math.min.apply(null, Object.keys(this.items));
             var toReturn = this.items[highestPriority][0];
-
             return [highestPriority, toReturn.mapPosition[1], toReturn.mapPosition[2]];
         };
         return PriorityQueue;
@@ -8506,17 +7825,14 @@ var Rance;
 (function (Rance) {
     function backTrace(graph, target) {
         var parent = graph[target.id];
-
         if (!parent)
             return [];
-
         var path = [
             {
                 star: target,
                 cost: parent.cost
             }
         ];
-
         while (parent) {
             path.push({
                 star: parent.star,
@@ -8526,59 +7842,49 @@ var Rance;
         }
         path.reverse();
         path[0].cost = null;
-
         return path;
     }
     Rance.backTrace = backTrace;
-
     function aStar(start, target) {
         var frontier = new Rance.PriorityQueue();
         frontier.push(0, start);
-
         //var frontier = new EasyStar.PriorityQueue("p", 1);
         //frontier.insert({p: 0, tile: start})
         var cameFrom = {};
         var costSoFar = {};
         cameFrom[start.id] = null;
         costSoFar[start.id] = 0;
-
-        while (!frontier.isEmpty()) {
+        while (!frontier.isEmpty()) 
+        //while (frontier.length > 0)
+        {
             var current = frontier.pop();
-
             //var current = frontier.shiftHighestPriorityElement().tile;
             if (current === target)
                 return { came: cameFrom, cost: costSoFar, queue: frontier };
-
             var neighbors = current.getAllLinks();
-
             for (var i = 0; i < neighbors.length; i++) {
                 var neigh = neighbors[i];
                 if (!neigh)
                     continue;
-
                 var moveCost = 1;
-
                 var newCost = costSoFar[current.id] + moveCost;
-
                 if (costSoFar[neigh.id] === undefined || newCost < costSoFar[neigh.id]) {
                     costSoFar[neigh.id] = newCost;
-
                     // ^ done
                     var dx = Math.abs(neigh.id[1] - target.id[1]);
                     var dy = Math.abs(neigh.id[2] - target.id[2]);
                     var priority = newCost;
                     frontier.push(priority, neigh);
-
                     //frontier.insert({p: priority, tile: neigh});
-                    cameFrom[neigh.id] = {
-                        star: current,
-                        cost: moveCost
-                    };
+                    cameFrom[neigh.id] =
+                        {
+                            star: current,
+                            cost: moveCost
+                        };
                 }
             }
         }
-
-        return null;
+        return null; // didnt find path 
     }
     Rance.aStar = aStar;
 })(Rance || (Rance = {}));
@@ -8597,12 +7903,9 @@ var Rance;
             this.location = location;
             this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
             this.name = "Fleet " + this.id;
-
             this.location.addFleet(this);
             this.player.addFleet(this);
-
             this.addShips(ships);
-
             Rance.eventManager.dispatchEvent("renderLayer", "fleets");
         }
         Fleet.prototype.getShipIndex = function (ship) {
@@ -8612,26 +7915,23 @@ var Rance;
             return this.getShipIndex(ship) >= 0;
         };
         Fleet.prototype.deleteFleet = function (shouldRender) {
-            if (typeof shouldRender === "undefined") { shouldRender = true; }
+            if (shouldRender === void 0) { shouldRender = true; }
             this.location.removeFleet(this);
             this.player.removeFleet(this);
-
             if (shouldRender) {
                 Rance.eventManager.dispatchEvent("renderLayer", "fleets");
             }
         };
         Fleet.prototype.mergeWith = function (fleet, shouldRender) {
-            if (typeof shouldRender === "undefined") { shouldRender = true; }
+            if (shouldRender === void 0) { shouldRender = true; }
             fleet.addShips(this.ships);
             this.deleteFleet(shouldRender);
         };
         Fleet.prototype.addShip = function (ship) {
             if (this.hasShip(ship))
                 return false;
-
             this.ships.push(ship);
             ship.addToFleet(this);
-
             this.visionIsDirty = true;
         };
         Fleet.prototype.addShips = function (ships) {
@@ -8641,15 +7941,11 @@ var Rance;
         };
         Fleet.prototype.removeShip = function (ship) {
             var index = this.getShipIndex(ship);
-
             if (index < 0)
                 return false;
-
             this.ships.splice(index, 1);
             ship.removeFromFleet();
-
             this.visionIsDirty = true;
-
             if (this.ships.length <= 0) {
                 this.deleteFleet();
             }
@@ -8663,27 +7959,21 @@ var Rance;
             if (fleet === this)
                 return;
             var index = this.getShipIndex(ship);
-
             if (index < 0)
                 return false;
-
             fleet.addShip(ship);
-
             this.ships.splice(index, 1);
             Rance.eventManager.dispatchEvent("renderLayer", "fleets");
         };
         Fleet.prototype.split = function () {
             var newFleet = new Fleet(this.player, [], this.location);
             this.location.addFleet(newFleet);
-
             return newFleet;
         };
         Fleet.prototype.getMinCurrentMovePoints = function () {
             if (!this.ships[0])
                 return 0;
-
             var min = this.ships[0].currentMovePoints;
-
             for (var i = 0; i < this.ships.length; i++) {
                 min = Math.min(this.ships[i].currentMovePoints, min);
             }
@@ -8692,9 +7982,7 @@ var Rance;
         Fleet.prototype.getMinMaxMovePoints = function () {
             if (!this.ships[0])
                 return 0;
-
             var min = this.ships[0].maxMovePoints;
-
             for (var i = 0; i < this.ships.length; i++) {
                 min = Math.min(this.ships[i].maxMovePoints, min);
             }
@@ -8706,11 +7994,9 @@ var Rance;
                     return false;
                 }
             }
-
             if (this.getMinCurrentMovePoints() > 0) {
                 return true;
             }
-
             return false;
         };
         Fleet.prototype.subtractMovePoints = function () {
@@ -8723,33 +8009,24 @@ var Rance;
                 return;
             if (!this.canMove())
                 return;
-
             var oldLocation = this.location;
             oldLocation.removeFleet(this);
-
             this.location = newLocation;
             newLocation.addFleet(this);
-
             this.subtractMovePoints();
-
             this.visionIsDirty = true;
             this.player.updateVisibleStars();
-
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         Fleet.prototype.getPathTo = function (newLocation) {
             var a = Rance.aStar(this.location, newLocation);
-
             if (!a)
                 return;
-
             var path = Rance.backTrace(a.came, newLocation);
-
             return path;
         };
         Fleet.prototype.pathFind = function (newLocation, onMove, afterMove) {
             var path = this.getPathTo(newLocation);
-
             var interval = window.setInterval(function () {
                 if (!path || path.length <= 0) {
                     window.clearInterval(interval);
@@ -8757,7 +8034,6 @@ var Rance;
                         afterMove();
                     return;
                 }
-
                 var move = path.shift();
                 this.move(move.star);
                 if (onMove)
@@ -8769,11 +8045,9 @@ var Rance;
         };
         Fleet.prototype.getTotalStrengthEvaluation = function () {
             var total = 0;
-
             for (var i = 0; i < this.ships.length; i++) {
                 total += this.ships[i].getStrengthEvaluation();
             }
-
             return total;
         };
         Fleet.prototype.getTotalHealth = function () {
@@ -8781,25 +8055,20 @@ var Rance;
                 current: 0,
                 max: 0
             };
-
             for (var i = 0; i < this.ships.length; i++) {
                 total.current += this.ships[i].currentHealth;
                 total.max += this.ships[i].maxHealth;
             }
-
             return total;
         };
         Fleet.prototype.updateVisibleStars = function () {
             var highestVisionRange = 0;
-
             for (var i = 0; i < this.ships.length; i++) {
                 if (this.ships[i].template.visionRange > highestVisionRange) {
                     highestVisionRange = this.ships[i].template.visionRange;
                 }
             }
-
             var inVision = this.location.getLinkedInRange(highestVisionRange);
-
             this.visibleStars = inVision.all;
             this.visionIsDirty = false;
         };
@@ -8807,21 +8076,15 @@ var Rance;
             if (this.visionIsDirty) {
                 this.updateVisibleStars();
             }
-
             return this.visibleStars;
         };
         Fleet.prototype.serialize = function () {
             var data = {};
-
             data.id = this.id;
             data.name = this.name;
-
             data.locationId = this.location.id;
             data.playerId = this.player.id;
-            data.ships = this.ships.map(function (ship) {
-                return ship.serialize(false);
-            });
-
+            data.ships = this.ships.map(function (ship) { return ship.serialize(false); });
             return data;
         };
         return Fleet;
@@ -8830,7 +8093,9 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var SubEmblems;
         (function (SubEmblems) {
             SubEmblems.emblem0 = {
                 type: "emblem0",
@@ -9006,10 +8271,8 @@ var Rance;
                 foregroundOnly: true,
                 imageSrc: "emblem61.png"
             };
-        })(Templates.SubEmblems || (Templates.SubEmblems = {}));
-        var SubEmblems = Templates.SubEmblems;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
 /// <reference path="range.ts" />
@@ -9023,21 +8286,18 @@ var Rance;
         ]);
     }
     Rance.hex2rgb = hex2rgb;
-
     function rgb2hex(rgb) {
         return ((rgb[0] * 255 << 16) + (rgb[1] * 255 << 8) + rgb[2] * 255);
     }
     Rance.rgb2hex = rgb2hex;
-
     //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
     /* accepts parameters
-    * h  Object = {h:x, s:y, v:z}
-    * OR
-    * h, s, v
+     * h  Object = {h:x, s:y, v:z}
+     * OR
+     * h, s, v
     */
     function hsvToRgb(h, s, v) {
         var r, g, b, i, f, p, q, t;
-
         i = Math.floor(h * 6);
         f = h * 6 - i;
         p = v * (1 - s);
@@ -9068,10 +8328,10 @@ var Rance;
     Rance.hsvToRgb = hsvToRgb;
     function hslToRgb(h, s, l) {
         var r, g, b;
-
         if (s == 0) {
             r = g = b = l; // achromatic
-        } else {
+        }
+        else {
             function hue2rgb(p, q, t) {
                 if (t < 0)
                     t += 1;
@@ -9085,27 +8345,24 @@ var Rance;
                     return p + (q - p) * (2 / 3 - t) * 6;
                 return p;
             }
-
             var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
             var p = 2 * l - q;
             r = hue2rgb(p, q, h + 1 / 3);
             g = hue2rgb(p, q, h);
             b = hue2rgb(p, q, h - 1 / 3);
         }
-
         return [r, g, b];
     }
     Rance.hslToRgb = hslToRgb;
     function rgbToHsv(r, g, b) {
         var max = Math.max(r, g, b), min = Math.min(r, g, b);
         var h, s, v = max;
-
         var d = max - min;
         s = max == 0 ? 0 : d / max;
-
         if (max == min) {
             h = 0; // achromatic
-        } else {
+        }
+        else {
             switch (max) {
                 case r:
                     h = (g - b) / d + (g < b ? 6 : 0);
@@ -9119,17 +8376,16 @@ var Rance;
             }
             h /= 6;
         }
-
         return [h, s, v];
     }
     Rance.rgbToHsv = rgbToHsv;
     function rgbToHsl(r, g, b) {
         var max = Math.max(r, g, b), min = Math.min(r, g, b);
         var h, s, l = (max + min) / 2;
-
         if (max == min) {
             h = s = 0; // achromatic
-        } else {
+        }
+        else {
             var d = max - min;
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
             switch (max) {
@@ -9145,11 +8401,9 @@ var Rance;
             }
             h /= 6;
         }
-
         return [h, s, l];
     }
     Rance.rgbToHsl = rgbToHsl;
-
     function hslToHex(h, s, l) {
         return rgb2hex(hslToRgb(h, s, l));
     }
@@ -9158,7 +8412,6 @@ var Rance;
         return rgb2hex(hsvToRgb(h, s, v));
     }
     Rance.hsvToHex = hsvToHex;
-
     function hexToHsl(hex) {
         return rgbToHsl.apply(null, hex2rgb(hex));
     }
@@ -9167,26 +8420,19 @@ var Rance;
         return rgbToHsv.apply(null, hex2rgb(hex));
     }
     Rance.hexToHsv = hexToHsv;
-
     function excludeFromRanges(ranges, toExclude) {
         var intersecting = getIntersectingRanges(ranges, toExclude);
-
         var newRanges = ranges.slice(0);
-
         for (var i = 0; i < intersecting.length; i++) {
             newRanges.splice(newRanges.indexOf(intersecting[i]), 1);
-
             var intersectedRanges = excludeFromRange(intersecting[i], toExclude);
-
             if (intersectedRanges) {
                 newRanges = newRanges.concat(intersectedRanges);
             }
         }
-
         return newRanges;
     }
     Rance.excludeFromRanges = excludeFromRanges;
-
     function getIntersectingRanges(ranges, toIntersectWith) {
         var intersecting = [];
         for (var i = 0; i < ranges.length; i++) {
@@ -9194,26 +8440,24 @@ var Rance;
             if (toIntersectWith.max < range.min || toIntersectWith.min > range.max) {
                 continue;
             }
-
             intersecting.push(range);
         }
         return intersecting;
     }
     Rance.getIntersectingRanges = getIntersectingRanges;
-
     function excludeFromRange(range, toExclude) {
         if (toExclude.max < range.min || toExclude.min > range.max) {
             return null;
-        } else if (toExclude.min < range.min && toExclude.max > range.max) {
+        }
+        else if (toExclude.min < range.min && toExclude.max > range.max) {
             return null;
         }
-
         if (toExclude.min <= range.min) {
             return ([{ min: toExclude.max, max: range.max }]);
-        } else if (toExclude.max >= range.max) {
+        }
+        else if (toExclude.max >= range.max) {
             return ([{ min: range.min, max: toExclude.min }]);
         }
-
         var a = {
             min: range.min,
             max: toExclude.min
@@ -9222,16 +8466,13 @@ var Rance;
             min: toExclude.max,
             max: range.max
         };
-
         return [a, b];
     }
     Rance.excludeFromRange = excludeFromRange;
-
     function randomSelectFromRanges(ranges) {
         var totalWeight = 0;
         var rangesByRelativeWeight = {};
         var currentRelativeWeight = 0;
-
         for (var i = 0; i < ranges.length; i++) {
             var range = ranges[i];
             if (!isFinite(range.max))
@@ -9239,7 +8480,6 @@ var Rance;
             if (!isFinite(range.min))
                 range.min = 0;
             var weight = range.max - range.min;
-
             totalWeight += weight;
         }
         for (var i = 0; i < ranges.length; i++) {
@@ -9250,16 +8490,12 @@ var Rance;
             currentRelativeWeight += relativeWeight;
             rangesByRelativeWeight[currentRelativeWeight] = range;
         }
-
         var rand = Math.random();
         var selectedRange;
-
         var sortedWeights = Object.keys(rangesByRelativeWeight).map(function (w) {
             return parseFloat(w);
         });
-
         var sortedWeights = sortedWeights.sort();
-
         for (var i = 0; i < sortedWeights.length; i++) {
             if (rand < sortedWeights[i]) {
                 selectedRange = rangesByRelativeWeight[sortedWeights[i]];
@@ -9268,11 +8504,9 @@ var Rance;
         }
         if (!selectedRange)
             console.log(rangesByRelativeWeight);
-
         return Rance.randRange(selectedRange.min, selectedRange.max);
     }
     Rance.randomSelectFromRanges = randomSelectFromRanges;
-
     function makeRandomVibrantColor() {
         var hRanges = [
             { min: 0, max: 90 / 360 },
@@ -9300,24 +8534,19 @@ var Rance;
         return [Rance.randRange(0, 360), Rance.randRange(0.55, 0.65), 1];
     }
     Rance.makeRandomLightColor = makeRandomLightColor;
-
     function makeRandomColor(values) {
         values = values || {};
         var color = {};
-
         ["h", "s", "l"].forEach(function (v) {
             if (!values[v])
                 values[v] = [];
         });
-
         for (var value in values) {
             if (values[value].length < 1) {
                 values[value] = [{ min: 0, max: 1 }];
             }
-
             color[value] = randomSelectFromRanges(values[value]);
         }
-
         return [color.h, color.s, color.l];
     }
     Rance.makeRandomColor = makeRandomColor;
@@ -9329,53 +8558,45 @@ var Rance;
         return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
     }
     Rance.scalarsFromColor = scalarsFromColor;
-
     function makeContrastingColor(props) {
         var initialRanges = props.initialRanges || {};
         var exclusions = props.minDifference || {};
         var maxDifference = props.maxDifference || {};
         var color = props.color;
-        var hMaxDiffernece = isFinite(maxDifference.h) ? maxDifference.h : 360;
-        var sMaxDiffernece = isFinite(maxDifference.s) ? maxDifference.s : 100;
-        var lMaxDiffernece = isFinite(maxDifference.l) ? maxDifference.l : 100;
-
+        var hMaxDiffernece = isFinite(maxDifference.h) ?
+            maxDifference.h : 360;
+        var sMaxDiffernece = isFinite(maxDifference.s) ?
+            maxDifference.s : 100;
+        var lMaxDiffernece = isFinite(maxDifference.l) ?
+            maxDifference.l : 100;
         var hRange = initialRanges.h || { min: 0, max: 360 };
         var sRange = initialRanges.s || { min: 50, max: 100 };
         var lRange = initialRanges.l || { min: 0, max: 100 };
-
         var hExclusion = exclusions.h || 30;
-
         var hMin = (color[0] - hExclusion) % 360;
         var hMax = (color[0] + hExclusion) % 360;
-
         var hRange2 = excludeFromRange(hRange, { min: hMin, max: hMax });
-
         var h = randomSelectFromRanges(hRange2);
         h = Rance.clamp(h, color[0] - hMaxDiffernece, color[0] + hMaxDiffernece);
         var hDistance = Rance.getAngleBetweenDegrees(h, color[0]);
         var relativeHDistance = 1 / (180 / hDistance);
-
         var lExclusion = exclusions.l || 30;
-
         // if (relativeHDistance < 0.2)
         // {
         //   lExclusion /= 2;
         //   clamp(lExclusion, 0, 100);
         // }
-        //
+        // 
         var lMin = Rance.clamp(color[2] - lExclusion, lRange.min, 100);
         var lMax = Rance.clamp(color[2] + lExclusion, lMin, 100);
-
         var sExclusion = exclusions.s || 0;
         var sMin = Rance.clamp(color[1] - sExclusion, sRange.min, 100);
         var sMax = Rance.clamp(color[1] + sExclusion, sMin, 100);
-
         var ranges = {
             h: [{ min: h, max: h }],
             s: excludeFromRange(sRange, { min: sMin, max: sMax }),
-            l: excludeFromRange(lRange, { min: lMin, max: lMax })
+            l: excludeFromRange(lRange, { min: lMin, max: lMax }),
         };
-
         return makeRandomColor(ranges);
     }
     Rance.makeContrastingColor = makeContrastingColor;
@@ -9391,15 +8612,18 @@ var Rance;
             color = makeRandomDeepColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "deep";
-        } else if (Math.random() < 0.25) {
+        }
+        else if (Math.random() < 0.25) {
             color = makeRandomLightColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "light";
-        } else if (Math.random() < 0.3) {
+        }
+        else if (Math.random() < 0.3) {
             color = makeRandomVibrantColor();
             hexColor = hsvToHex.apply(null, color);
             genType = "vibrant";
-        } else {
+        }
+        else {
             color = makeRandomColor({
                 s: [{ min: 1, max: 1 }],
                 l: [{ min: 0.88, max: 1 }]
@@ -9407,7 +8631,6 @@ var Rance;
             hexColor = Rance.stringToHex(HUSL.toHex.apply(null, colorFromScalars(color)));
             genType = "husl";
         }
-
         var huslColor = hexToHusl(hexColor);
         huslColor[2] = Rance.clamp(huslColor[2], 30, 100);
         hexColor = Rance.stringToHex(HUSL.toHex.apply(null, huslColor));
@@ -9417,7 +8640,6 @@ var Rance;
     function generateSecondaryColor(mainColor) {
         var huslColor = hexToHusl(mainColor);
         var hexColor;
-
         if (huslColor[2] < 0.3 || Math.random() < 0.4) {
             var contrastingColor = makeContrastingColor({
                 color: huslColor,
@@ -9427,13 +8649,13 @@ var Rance;
                 }
             });
             hexColor = Rance.stringToHex(HUSL.toHex.apply(null, contrastingColor));
-        } else {
+        }
+        else {
             function contrasts(c1, c2) {
                 return ((c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20));
             }
             function makeColor(c1, easing) {
-                var hsvColor = hexToHsv(c1);
-
+                var hsvColor = hexToHsv(c1); // scalar
                 hsvColor = colorFromScalars(hsvColor);
                 var contrastingColor = makeContrastingColor({
                     color: hsvColor,
@@ -9445,38 +8667,32 @@ var Rance;
                         s: 30 * easing
                     }
                 });
-
                 var hex = hsvToHex.apply(null, scalarsFromColor(contrastingColor));
-
                 return hexToHusl(hex);
             }
-
             var huslBg = hexToHusl(mainColor);
             var easing = 1;
             var candidateColor = makeColor(mainColor, easing);
-
             while (!contrasts(huslBg, candidateColor)) {
                 easing -= 0.1;
                 candidateColor = makeColor(mainColor, easing);
             }
-
             hexColor = Rance.stringToHex(HUSL.toHex.apply(null, candidateColor));
         }
-
         return hexColor;
     }
     Rance.generateSecondaryColor = generateSecondaryColor;
     function generateColorScheme(mainColor) {
-        var mainColor = mainColor !== null && isFinite(mainColor) ? mainColor : generateMainColor();
+        var mainColor = mainColor !== null && isFinite(mainColor) ?
+            mainColor :
+            generateMainColor();
         var secondaryColor = generateSecondaryColor(mainColor);
-
         return ({
             main: mainColor,
             secondary: secondaryColor
         });
     }
     Rance.generateColorScheme = generateColorScheme;
-
     function checkRandomGenHues(amt) {
         var maxBarSize = 80;
         var hues = {};
@@ -9484,42 +8700,32 @@ var Rance;
             var color = generateMainColor();
             var hue = colorFromScalars(hexToHsv(color))[0];
             var roundedHue = Math.round(hue / 10) * 10;
-
             if (!hues[roundedHue])
                 hues[roundedHue] = 0;
             hues[roundedHue]++;
         }
-
         var min;
         var max;
-
         for (var _hue in hues) {
             var count = hues[_hue];
-
             if (!min) {
                 min = count;
             }
             if (!max) {
                 max = count;
             }
-
             min = Math.min(min, count);
             max = Math.max(max, count);
         }
-
         var args = [""];
         var toPrint = "";
-
         for (var _hue in hues) {
             var hue = parseInt(_hue);
             var color = hsvToHex(hue / 360, 1, 1);
             var count = hues[_hue];
-
             var difference = max - min;
             var relative = (count - min) / difference;
-
             var chars = relative * maxBarSize;
-
             var line = "\n%c ";
             for (var i = 0; i < chars; i++) {
                 line += "#";
@@ -9527,9 +8733,7 @@ var Rance;
             toPrint += line;
             args.push("color: " + "#" + Rance.hexToString(color));
         }
-
         args[0] = toPrint;
-
         console.log.apply(console, args);
     }
     Rance.checkRandomGenHues = checkRandomGenHues;
@@ -9551,109 +8755,91 @@ var Rance;
                 return true;
             if (this.outer && this.outer.foregroundOnly)
                 return true;
-
             return false;
         };
         Emblem.prototype.generateRandom = function (minAlpha, rng) {
             var rng = rng || new RNG(Math.random);
             this.alpha = rng.uniform();
             this.alpha = Rance.clamp(this.alpha, minAlpha, 1);
-
             this.generateSubEmblems(rng);
         };
         Emblem.prototype.generateSubEmblems = function (rng) {
             var allEmblems = [];
-
             function getSeededRandomArrayItem(array) {
                 var _rnd = Math.floor(rng.uniform() * array.length);
                 return array[_rnd];
             }
-
             for (var subEmblem in Rance.Templates.SubEmblems) {
                 allEmblems.push(Rance.Templates.SubEmblems[subEmblem]);
             }
-
             var mainEmblem = getSeededRandomArrayItem(allEmblems);
-
             if (mainEmblem.position === "both") {
                 this.inner = mainEmblem;
                 return;
-            } else if (mainEmblem.position === "inner" || mainEmblem.position === "outer") {
+            }
+            else if (mainEmblem.position === "inner" || mainEmblem.position === "outer") {
                 this[mainEmblem.position] = mainEmblem;
-            } else {
+            }
+            else {
                 if (rng.uniform() > 0.5) {
                     this.inner = mainEmblem;
                     return;
-                } else if (mainEmblem.position === "inner-or-both") {
+                }
+                else if (mainEmblem.position === "inner-or-both") {
                     this.inner = mainEmblem;
-                } else {
+                }
+                else {
                     this.outer = mainEmblem;
                 }
             }
-
             if (mainEmblem.position === "inner" || mainEmblem.position === "inner-or-both") {
                 var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
                     return (emblem.position === "outer" || emblem.position === "outer-or-both");
                 }));
-
                 this.outer = subEmblem;
-            } else if (mainEmblem.position === "outer" || mainEmblem.position === "outer-or-both") {
+            }
+            else if (mainEmblem.position === "outer" || mainEmblem.position === "outer-or-both") {
                 var subEmblem = getSeededRandomArrayItem(allEmblems.filter(function (emblem) {
                     return (emblem.position === "inner" || emblem.position === "inner-or-both");
                 }));
-
                 this.inner = subEmblem;
             }
         };
         Emblem.prototype.draw = function () {
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
-
             ctx.globalAlpha = this.alpha;
-
             var inner = this.drawSubEmblem(this.inner);
             canvas.width = inner.width;
             canvas.height = inner.height;
             ctx.drawImage(inner, 0, 0);
-
             if (this.outer) {
                 var outer = this.drawSubEmblem(this.outer);
                 ctx.drawImage(outer, 0, 0);
             }
-
             return canvas;
         };
-
         Emblem.prototype.drawSubEmblem = function (toDraw) {
             var image = app.images["emblems"][toDraw.imageSrc];
-
             var width = image.width;
             var height = image.height;
-
             var canvas = document.createElement("canvas");
             canvas.width = width;
             canvas.height = height;
             var ctx = canvas.getContext("2d");
-
             ctx.drawImage(image, 0, 0);
-
             ctx.globalCompositeOperation = "source-in";
-
             ctx.fillStyle = "#" + Rance.hexToString(this.color);
             ctx.fillRect(0, 0, width, height);
-
             return canvas;
         };
-
         Emblem.prototype.serialize = function () {
             var data = {
                 alpha: this.alpha,
                 innerType: this.inner.type
             };
-
             if (this.outer)
                 data.outerType = this.outer.type;
-
             return (data);
         };
         return Emblem;
@@ -9669,33 +8855,26 @@ var Rance;
         function Flag(props) {
             this.width = props.width;
             this.height = props.height || props.width;
-
             this.mainColor = props.mainColor;
             this.secondaryColor = props.secondaryColor;
             this.tetriaryColor = props.tetriaryColor;
         }
         Flag.prototype.setColorScheme = function (main, secondary, tetriary) {
             this.mainColor = main;
-
             this.secondaryColor = secondary;
             if (this.foregroundEmblem && isFinite(secondary)) {
                 this.foregroundEmblem.color = this.secondaryColor;
             }
-
             this.tetriaryColor = tetriary;
             if (this.backgroundEmblem && isFinite(tetriary)) {
                 this.backgroundEmblem.color = this.tetriaryColor;
             }
         };
-
         Flag.prototype.generateRandom = function (seed) {
             this.seed = seed || Math.random();
-
             var rng = new RNG(this.seed);
-
             this.foregroundEmblem = new Rance.Emblem(this.secondaryColor);
             this.foregroundEmblem.generateRandom(1, rng);
-
             if (!this.foregroundEmblem.isForegroundOnly() && rng.uniform() > 0.5) {
                 this.backgroundEmblem = new Rance.Emblem(this.tetriaryColor);
                 this.backgroundEmblem.generateRandom(0.4, rng);
@@ -9713,13 +8892,12 @@ var Rance;
                 this.foregroundEmblem = null;
                 return;
             }
-
             this.clearContent();
             this.foregroundEmblem = emblem;
-
             if (isFinite(emblem.color) && emblem.color !== null) {
                 this.secondaryColor = emblem.color;
-            } else {
+            }
+            else {
                 emblem.color = this.secondaryColor;
             }
         };
@@ -9728,77 +8906,66 @@ var Rance;
                 this.backgroundEmblem = null;
                 return;
             }
-
             this.clearContent();
             this.backgroundEmblem = emblem;
-
             if (isFinite(emblem.color) && emblem.color !== null) {
                 this.tetriaryColor = emblem.color;
-            } else {
+            }
+            else {
                 emblem.color = this.tetriaryColor;
             }
         };
         Flag.prototype.setCustomImage = function (imageSrc) {
             this.clearContent();
             this.customImage = imageSrc;
-
             var canvas = document.createElement("canvas");
             canvas.width = this.width;
             canvas.height = this.height;
-
             var ctx = canvas.getContext("2d");
-
             var image = new Image();
             image.src = imageSrc;
             var xPos, xWidth, yPos, yHeight;
-
             // center image if smaller than canvas we're drawing on
             if (image.width < this.width) {
                 xPos = (this.width - image.width) / 2;
                 xWidth = image.width;
-            } else {
+            }
+            else {
                 xPos = 0;
                 xWidth = this.width;
             }
-
             if (image.height < this.height) {
                 yPos = (this.height - image.height) / 2;
                 yHeight = image.height;
-            } else {
+            }
+            else {
                 yPos = 0;
                 yHeight = this.height;
             }
-
             ctx.drawImage(image, xPos, yPos, xWidth, yHeight);
-
             this._customImageToRender = canvas;
         };
         Flag.prototype.draw = function () {
             var canvas = document.createElement("canvas");
             canvas.width = this.width;
             canvas.height = this.height;
-
             if (!isFinite(this.mainColor))
                 return canvas;
-
             var ctx = canvas.getContext("2d");
-
             ctx.globalCompositeOperation = "source-over";
-
             ctx.fillStyle = "#" + Rance.hexToString(this.mainColor);
             ctx.fillRect(0, 0, this.width, this.height);
             ctx.fillStyle = "#00FF00";
-
             if (this._customImageToRender) {
                 ctx.drawImage(this._customImageToRender, 0, 0);
-            } else {
+            }
+            else {
                 if (this.backgroundEmblem && isFinite(this.tetriaryColor) && this.tetriaryColor !== null) {
                     var background = this.backgroundEmblem.draw();
                     var x = (this.width - background.width) / 2;
                     var y = (this.height - background.height) / 2;
                     ctx.drawImage(background, x, y);
                 }
-
                 if (this.foregroundEmblem && isFinite(this.secondaryColor) && this.secondaryColor !== null) {
                     var foreground = this.foregroundEmblem.draw();
                     var x = (this.width - foreground.width) / 2;
@@ -9806,30 +8973,28 @@ var Rance;
                     ctx.drawImage(foreground, x, y);
                 }
             }
-
             return canvas;
         };
         Flag.prototype.serialize = function () {
             var data = {
                 mainColor: this.mainColor
             };
-
             if (isFinite(this.secondaryColor))
                 data.secondaryColor = this.secondaryColor;
             if (isFinite(this.tetriaryColor))
                 data.tetriaryColor = this.tetriaryColor;
-
             if (this.customImage) {
                 data.customImage = this.customImage;
-            } else if (this.seed) {
+            }
+            else if (this.seed) {
                 data.seed = this.seed;
-            } else {
+            }
+            else {
                 if (this.foregroundEmblem)
                     data.foregroundEmblem = this.foregroundEmblem.serialize();
                 if (this.backgroundEmblem)
                     data.backgroundEmblem = this.backgroundEmblem.serialize();
             }
-
             return data;
         };
         return Flag;
@@ -9853,7 +9018,6 @@ var Rance;
             this.battle = battle;
             this.sideId = sideId;
             this.move = move;
-
             this.currentScore = battle.getEvaluation();
         }
         MCTreeNode.prototype.getPossibleMoves = function () {
@@ -9861,9 +9025,7 @@ var Rance;
                 return null;
             }
             var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
-
             var actions = [];
-
             for (var id in targets) {
                 var unit = this.battle.unitsById[id];
                 var targetActions = targets[id];
@@ -9874,33 +9036,25 @@ var Rance;
                     });
                 }
             }
-
             return actions;
         };
         MCTreeNode.prototype.addChild = function () {
             if (!this.possibleMoves) {
                 this.possibleMoves = this.getPossibleMoves();
             }
-
             var move = this.possibleMoves.pop();
-
             var battle = this.battle.makeVirtualClone();
-
             Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
-
             battle.endTurn();
-
             var child = new MCTreeNode(battle, this.sideId, move);
             child.parent = this;
             child.depth = this.depth + 1;
             this.children.push(child);
-
             return child;
         };
         MCTreeNode.prototype.updateResult = function (result) {
             this.visits++;
             this.totalScore += result;
-
             if (this.sideId === "side1") {
                 if (result < 0)
                     this.wins++;
@@ -9909,32 +9063,25 @@ var Rance;
                 if (result > 0)
                     this.wins++;
             }
-
             this.averageScore = this.totalScore / this.visits;
             this.winRate = this.wins / this.visits;
             this.uctIsDirty = true;
-
             if (this.parent)
                 this.parent.updateResult(result);
         };
         MCTreeNode.prototype.simulateOnce = function (battle) {
             var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
             var targetId = Rance.getRandomKey(actions);
-
             var action = Rance.getRandomArrayItem(actions[targetId]);
-
             var target = battle.unitsById[targetId];
-
             Rance.useAbility(battle, battle.activeUnit, action, target);
             battle.endTurn();
         };
         MCTreeNode.prototype.simulateToEnd = function () {
             var battle = this.battle.makeVirtualClone();
-
             while (!battle.ended) {
                 this.simulateOnce(battle);
             }
-
             this.updateResult(battle.getEvaluation());
         };
         MCTreeNode.prototype.clearResult = function () {
@@ -9949,9 +9096,8 @@ var Rance;
                 this.uctIsDirty = false;
                 return;
             }
-
-            this.uctEvaluation = this.wins / this.visits + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
-
+            this.uctEvaluation = this.wins / this.visits +
+                Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
             this.uctIsDirty = false;
         };
         MCTreeNode.prototype.getHighestUctChild = function () {
@@ -9961,25 +9107,24 @@ var Rance;
                 if (child.uctIsDirty) {
                     child.setUct();
                 }
-
                 if (child.uctEvaluation > highest.uctEvaluation) {
                     highest = child;
                 }
             }
-
             return highest;
         };
         MCTreeNode.prototype.getRecursiveBestUctChild = function () {
             if (!this.possibleMoves) {
                 this.possibleMoves = this.getPossibleMoves();
             }
-
             // not fully expanded
             if (this.possibleMoves && this.possibleMoves.length > 0) {
                 return this.addChild();
-            } else if (this.children.length > 0) {
+            }
+            else if (this.children.length > 0) {
                 return this.getHighestUctChild().getRecursiveBestUctChild();
-            } else {
+            }
+            else {
                 return this;
             }
         };
@@ -10008,13 +9153,10 @@ var Rance;
             for (var i = 0; i < iterations; i++) {
                 // select & expand
                 var toSimulateFrom = root.getRecursiveBestUctChild();
-
                 // simulate & backpropagate
                 toSimulateFrom.simulateToEnd();
             }
-
             var sortedMoves = root.children.sort(this.sortByWinRateFN);
-
             // this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
@@ -10035,11 +9177,9 @@ var Rance;
                 consoleRows.push(row);
             }
             var _ = window;
-
             if (_.console.table) {
                 _.console.table(consoleRows);
             }
-
             console.log(nodes);
         };
         return MCTree;
@@ -10060,31 +9200,23 @@ var Rance;
                 this.simulateMove();
             }
         };
-
         BattleSimulator.prototype.simulateMove = function () {
             if (!this.battle.activeUnit || this.battle.ended) {
                 throw new Error("Simulated battle already ended");
             }
-
             var tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side);
-
             var move = tree.evaluate(Rance.Options.debugOptions.battleSimulationDepth).move;
             var target = this.battle.unitsById[move.targetId];
-
             this.simulateAbility(move.ability, target);
-
             this.battle.endTurn();
         };
-
         BattleSimulator.prototype.simulateAbility = function (ability, target) {
             Rance.useAbility(this.battle, this.battle.activeUnit, ability, target);
         };
-
         BattleSimulator.prototype.getBattleEndData = function () {
             if (!this.battle.ended) {
                 throw new Error("Simulated battle hasn't ended yet");
             }
-
             var captured = this.battle.capturedUnits;
             var destroyed = this.battle.deadUnits;
             var victor = this.battle.getVictor();
@@ -10108,15 +9240,12 @@ var Rance;
             this.attacker = battleData.attacker.player;
             this.defender = battleData.defender.player;
             this.battleData = battleData;
-
             this.makeAIFormations();
-
             this.setupPlayer();
         }
         BattlePrep.prototype.makeEmptyFormation = function () {
             var COLUMNS_PER_FORMATION = 2;
             var SHIPS_PER_COLUMN = 3;
-
             var formation = [];
             for (var i = 0; i < COLUMNS_PER_FORMATION; i++) {
                 var column = [];
@@ -10125,10 +9254,8 @@ var Rance;
                 }
                 formation.push(column);
             }
-
             return formation;
         };
-
         BattlePrep.prototype.makeAIFormations = function () {
             if (this.attacker.isAI) {
                 this.attackerFormation = this.makeAIFormation(this.battleData.attacker.ships);
@@ -10137,7 +9264,6 @@ var Rance;
                 this.defenderFormation = this.makeAIFormation(this.battleData.defender.ships);
             }
         };
-
         BattlePrep.prototype.setupPlayer = function () {
             if (!this.attacker.isAI) {
                 this.availableUnits = this.battleData.attacker.ships;
@@ -10146,7 +9272,8 @@ var Rance;
                 this.enemyFormation = this.defenderFormation;
                 this.humanPlayer = this.attacker;
                 this.enemyPlayer = this.defender;
-            } else if (!this.defender.isAI) {
+            }
+            else if (!this.defender.isAI) {
                 this.availableUnits = this.battleData.defender.ships;
                 this.defenderFormation = this.makeEmptyFormation();
                 this.playerFormation = this.attackerFormation;
@@ -10155,11 +9282,9 @@ var Rance;
                 this.enemyPlayer = this.attacker;
             }
         };
-
         BattlePrep.prototype.makeAIFormation = function (units) {
             var MAX_UNITS_PER_SIDE = 6;
             var MAX_UNITS_PER_ROW = 3;
-
             var formation = this.makeEmptyFormation();
             var unitsToPlace = units.filter(function (unit) {
                 return unit.canActThisTurn();
@@ -10174,7 +9299,6 @@ var Rance;
                 support: 0,
                 utility: 0
             };
-
             // these are overridden if we run out of units or if alternative
             // units have significantly higher strength
             var maxUnitsPerArchetype = {
@@ -10191,60 +9315,48 @@ var Rance;
                 support: "back",
                 utility: "back"
             };
-
             var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
                 var score = unit.getStrengthEvaluation();
-
                 if (unit.template.archetype === "defence" && row === "front") {
                     score *= frontRowDefenceBonus;
                 }
-
                 var archetype = unit.template.archetype;
                 var overMax = Math.max(0, unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
-
                 score *= 1 - overMax * 0.15;
-
-                var rowModifier = preferredColumnForArchetype[archetype] === row ? 1 : 0.5;
-
+                var rowModifier = preferredColumnForArchetype[archetype] === row ?
+                    1 :
+                    0.5;
                 score *= rowModifier;
-
                 return ({
                     unit: unit,
                     score: score,
                     row: row
                 });
             };
-
             var getFrontRowDefenceBonusFN = function (threshhold) {
                 var totalDefenceUnderThreshhold = 0;
                 var alreadyHasDefender = false;
-
                 for (var i = 0; i < formation[1].length; i++) {
                     var unit = formation[1][i];
                     if (!unit) {
                         continue;
                     }
-
                     totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-
                     if (alreadyHasDefender) {
                         totalDefenceUnderThreshhold = 0;
-                    } else if (!alreadyHasDefender && unit.template.archetype === "defence") {
+                    }
+                    else if (!alreadyHasDefender && unit.template.archetype === "defence") {
                         alreadyHasDefender = true;
                         totalDefenceUnderThreshhold += 0.5;
                     }
                 }
-
                 return 1 + totalDefenceUnderThreshhold * 0.25;
             };
             while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE) {
                 var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
-
                 var positionScores = [];
-
                 for (var i = 0; i < unitsToPlace.length; i++) {
                     var unit = unitsToPlace[i];
-
                     if (placedInFront < MAX_UNITS_PER_ROW) {
                         positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
                     }
@@ -10252,28 +9364,24 @@ var Rance;
                         positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
                     }
                 }
-
                 positionScores.sort(function (a, b) {
                     return (b.score - a.score);
                 });
                 var topScore = positionScores[0];
-
                 if (topScore.row === "front") {
                     placedInFront++;
                     formation[1][placedInFront - 1] = topScore.unit;
-                } else {
+                }
+                else {
                     placedInBack++;
                     formation[0][placedInBack - 1] = topScore.unit;
                 }
-
                 totalPlaced++;
                 unitsPlacedByArchetype[topScore.unit.template.archetype]++;
                 unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
             }
-
             return formation;
         };
-
         // Human formation stuff
         BattlePrep.prototype.getUnitPosition = function (unit) {
             return this.alreadyPlaced[unit.id];
@@ -10285,7 +9393,6 @@ var Rance;
             this.alreadyPlaced = {};
             this.playerFormation = this.makeEmptyFormation();
         };
-
         // called after player formation is created automatically
         BattlePrep.prototype.setupPlayerFormation = function (formation) {
             for (var i = 0; i < formation.length; i++) {
@@ -10298,72 +9405,56 @@ var Rance;
         };
         BattlePrep.prototype.setUnit = function (unit, position) {
             this.removeUnit(unit);
-
             if (!position) {
                 return;
             }
-
             var oldUnitInPosition = this.getUnitAtPosition(position);
-
             if (oldUnitInPosition) {
                 this.removeUnit(oldUnitInPosition);
             }
-
             this.playerFormation[position[0]][position[1]] = unit;
             this.alreadyPlaced[unit.id] = position;
         };
         BattlePrep.prototype.swapUnits = function (unit1, unit2) {
             if (unit1 === unit2)
                 return;
-
             var new1Pos = this.getUnitPosition(unit2);
             var new2Pos = this.getUnitPosition(unit1);
-
             this.setUnit(unit1, new1Pos);
             this.setUnit(unit2, new2Pos);
         };
         BattlePrep.prototype.removeUnit = function (unit) {
             var currentPosition = this.getUnitPosition(unit);
-
             if (!currentPosition)
                 return;
-
             this.playerFormation[currentPosition[0]][currentPosition[1]] = null;
-
             this.alreadyPlaced[unit.id] = null;
             delete this.alreadyPlaced[unit.id];
         };
-
         BattlePrep.prototype.humanFormationIsValid = function () {
             /*
             invalid if
-            attacking and no ships placed
-            battle is in territority not controlled by either and ships placed
-            is smaller than requirement
-            */
+              attacking and no ships placed
+              battle is in territority not controlled by either and ships placed
+                is smaller than requirement
+             */
             var shipsPlaced = 0;
-
             this.forEachShipInFormation(this.playerFormation, function (unit) {
                 if (unit)
                     shipsPlaced++;
             });
-
             if (!this.attacker.isAI) {
                 if (shipsPlaced < 1)
                     return false;
             }
-
             if (!this.battleData.building) {
                 var minShips = 1;
-
                 // TODO add passive ability that forces more enemy ships to stay and fight
                 if (shipsPlaced < minShips)
                     return false;
             }
-
             return true;
         };
-
         // end player formation
         BattlePrep.prototype.forEachShipInFormation = function (formation, operator) {
             for (var i = 0; i < formation.length; i++) {
@@ -10372,14 +9463,11 @@ var Rance;
                 }
             }
         };
-
         BattlePrep.prototype.makeBattle = function () {
             var side1Formation = this.playerFormation || this.attackerFormation;
             var side2Formation = this.enemyFormation || this.defenderFormation;
-
             var side1Player = this.humanPlayer || this.attacker;
             var side2Player = this.enemyPlayer || this.defender;
-
             var battle = new Rance.Battle({
                 battleData: this.battleData,
                 side1: side1Formation,
@@ -10387,9 +9475,7 @@ var Rance;
                 side1Player: side1Player,
                 side2Player: side2Player
             });
-
             battle.init();
-
             return battle;
         };
         return BattlePrep;
@@ -10398,6 +9484,7 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
         (function (AttitudeModifierFamily) {
             AttitudeModifierFamily[AttitudeModifierFamily["geographic"] = 0] = "geographic";
@@ -10405,12 +9492,12 @@ var Rance;
             AttitudeModifierFamily[AttitudeModifierFamily["current"] = 2] = "current";
         })(Templates.AttitudeModifierFamily || (Templates.AttitudeModifierFamily = {}));
         var AttitudeModifierFamily = Templates.AttitudeModifierFamily;
-
+        var AttitudeModifiers;
         (function (AttitudeModifiers) {
             AttitudeModifiers.neighborStars = {
                 type: "neighborStars",
                 displayName: "neighborStars",
-                family: 0 /* geographic */,
+                family: AttitudeModifierFamily.geographic,
                 duration: -1,
                 startCondition: function (evaluation) {
                     return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
@@ -10419,32 +9506,28 @@ var Rance;
                     return -2 * evaluation.neighborStars;
                 }
             };
-
             AttitudeModifiers.atWar = {
                 type: "atWar",
                 displayName: "At war",
-                family: 2 /* current */,
+                family: AttitudeModifierFamily.current,
                 duration: -1,
                 startCondition: function (evaluation) {
-                    return (evaluation.currentStatus >= 2 /* war */);
+                    return (evaluation.currentStatus >= Rance.DiplomaticState.war);
                 },
                 constantEffect: -30
             };
-
             AttitudeModifiers.declaredWar = {
                 type: "declaredWar",
                 displayName: "Declared war",
-                family: 1 /* history */,
+                family: AttitudeModifierFamily.history,
                 duration: 15,
                 startCondition: function (evaluation) {
-                    return (evaluation.currentStatus >= 2 /* war */);
+                    return (evaluation.currentStatus >= Rance.DiplomaticState.war);
                 },
                 constantEffect: -35
             };
-        })(Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
-        var AttitudeModifiers = Templates.AttitudeModifiers;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(AttitudeModifiers = Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/attitudemodifiers.ts" />
 var Rance;
@@ -10455,39 +9538,42 @@ var Rance;
             this.template = props.template;
             this.startTurn = props.startTurn;
             this.currentTurn = this.startTurn;
-
             if (isFinite(props.endTurn)) {
                 this.endTurn = props.endTurn;
-            } else if (isFinite(this.template.duration)) {
+            }
+            else if (isFinite(this.template.duration)) {
                 if (this.template.duration < 0) {
                     this.endTurn = -1;
-                } else {
+                }
+                else {
                     this.endTurn = this.startTurn + this.template.duration;
                 }
-            } else {
+            }
+            else {
                 throw new Error("Attitude modifier has no duration or end turn set");
             }
-
             if (isFinite(this.template.constantEffect)) {
                 this.strength = this.template.constantEffect;
-            } else {
+            }
+            else {
                 this.strength = props.strength;
             }
         }
         AttitudeModifier.prototype.setStrength = function (evaluation) {
             if (this.template.constantEffect) {
                 this.strength = this.template.constantEffect;
-            } else if (this.template.getEffectFromEvaluation) {
-                this.strength = this.template.getEffectFromEvaluation(evaluation);
-            } else {
-                throw new Error("Attitude modifier has no constant effect " + "or effect from evaluation defined");
             }
-
+            else if (this.template.getEffectFromEvaluation) {
+                this.strength = this.template.getEffectFromEvaluation(evaluation);
+            }
+            else {
+                throw new Error("Attitude modifier has no constant effect " +
+                    "or effect from evaluation defined");
+            }
             return this.strength;
         };
-
         AttitudeModifier.prototype.getFreshness = function (currentTurn) {
-            if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
             if (this.endTurn < 0)
                 return 1;
             else {
@@ -10495,35 +9581,34 @@ var Rance;
             }
         };
         AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
-            if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
             var freshenss = this.getFreshness(currentTurn);
-
             return Math.round(this.strength * freshenss);
         };
         AttitudeModifier.prototype.hasExpired = function (currentTurn) {
-            if (typeof currentTurn === "undefined") { currentTurn = this.currentTurn; }
+            if (currentTurn === void 0) { currentTurn = this.currentTurn; }
             return (this.endTurn >= 0 && currentTurn > this.endTurn);
         };
         AttitudeModifier.prototype.shouldEnd = function (evaluation) {
             if (this.hasExpired(evaluation.currentTurn)) {
                 return true;
-            } else if (this.template.endCondition) {
+            }
+            else if (this.template.endCondition) {
                 return this.template.endCondition(evaluation);
-            } else if (this.template.startCondition) {
+            }
+            else if (this.template.startCondition) {
                 return !this.template.startCondition(evaluation);
-            } else {
+            }
+            else {
                 return false;
             }
         };
-
         AttitudeModifier.prototype.serialize = function () {
             var data = {};
-
             data.templateType = this.template.type;
             data.startTurn = this.startTurn;
             data.endTurn = this.endTurn;
             data.strength = this.strength;
-
             return data;
         };
         return AttitudeModifier;
@@ -10538,7 +9623,7 @@ var Rance;
     (function (DiplomaticState) {
         DiplomaticState[DiplomaticState["peace"] = 0] = "peace";
         DiplomaticState[DiplomaticState["coldWar"] = 1] = "coldWar";
-        DiplomaticState[DiplomaticState["war"] = 2] = "war";
+        DiplomaticState[DiplomaticState["war"] = 2] = "war"; // any fighting
     })(Rance.DiplomaticState || (Rance.DiplomaticState = {}));
     var DiplomaticState = Rance.DiplomaticState;
     var DiplomacyStatus = (function () {
@@ -10551,193 +9636,159 @@ var Rance;
         DiplomacyStatus.prototype.getBaseOpinion = function () {
             if (isFinite(this.baseOpinion))
                 return this.baseOpinion;
-
             var friendliness = this.player.AIController.personality.friendliness;
-
             this.baseOpinion = Math.round((friendliness - 0.5) * 10);
-
             return this.baseOpinion;
         };
-
         DiplomacyStatus.prototype.updateAttitudes = function () {
             if (!this.player.AIController) {
                 return;
             }
-
             this.player.AIController.diplomacyAI.setAttitudes();
         };
-
         DiplomacyStatus.prototype.handleDiplomaticStatusUpdate = function () {
             Rance.eventManager.dispatchEvent("diplomaticStatusUpdated");
         };
-
         DiplomacyStatus.prototype.getOpinionOf = function (player) {
             var baseOpinion = this.getBaseOpinion();
-
             var attitudeModifiers = this.attitudeModifiersByPlayer[player.id];
             var modifierOpinion = 0;
-
             for (var i = 0; i < attitudeModifiers.length; i++) {
                 modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
             }
-
             return Math.round(baseOpinion + modifierOpinion);
         };
-
         DiplomacyStatus.prototype.meetPlayer = function (player) {
             if (this.metPlayers[player.id])
                 return;
             else {
                 this.metPlayers[player.id] = player;
-                this.statusByPlayer[player.id] = 1 /* coldWar */;
+                this.statusByPlayer[player.id] = DiplomaticState.coldWar;
                 this.attitudeModifiersByPlayer[player.id] = [];
                 player.diplomacyStatus.meetPlayer(this.player);
             }
         };
-
         DiplomacyStatus.prototype.canDeclareWarOn = function (player) {
-            return (this.statusByPlayer[player.id] < 2 /* war */);
+            return (this.statusByPlayer[player.id] < DiplomaticState.war);
         };
         DiplomacyStatus.prototype.canMakePeaceWith = function (player) {
-            return (this.statusByPlayer[player.id] > 0 /* peace */);
+            return (this.statusByPlayer[player.id] > DiplomaticState.peace);
         };
-
         DiplomacyStatus.prototype.declareWarOn = function (player) {
-            if (this.statusByPlayer[player.id] >= 2 /* war */) {
+            if (this.statusByPlayer[player.id] >= DiplomaticState.war) {
                 throw new Error("Players " + this.player.id + " and " + player.id + " are already at war");
             }
-            this.statusByPlayer[player.id] = 2 /* war */;
-            player.diplomacyStatus.statusByPlayer[this.player.id] = 2 /* war */;
-
+            this.statusByPlayer[player.id] = DiplomaticState.war;
+            player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
             player.diplomacyStatus.updateAttitudes();
         };
-
         DiplomacyStatus.prototype.makePeaceWith = function (player) {
-            if (this.statusByPlayer[player.id] <= 0 /* peace */) {
+            if (this.statusByPlayer[player.id] <= DiplomaticState.peace) {
                 throw new Error("Players " + this.player.id + " and " + player.id + " are already at peace");
             }
-
-            this.statusByPlayer[player.id] = 0 /* peace */;
-            player.diplomacyStatus.statusByPlayer[this.player.id] = 0 /* peace */;
-
+            this.statusByPlayer[player.id] = DiplomaticState.peace;
+            player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.peace;
             player.diplomacyStatus.updateAttitudes();
         };
-
         DiplomacyStatus.prototype.canAttackFleetOfPlayer = function (player) {
             if (player.isIndependent)
                 return true;
-
-            if (this.statusByPlayer[player.id] >= 1 /* coldWar */) {
+            if (this.statusByPlayer[player.id] >= DiplomaticState.coldWar) {
                 return true;
             }
-
             return false;
         };
         DiplomacyStatus.prototype.canAttackBuildingOfPlayer = function (player) {
             if (player.isIndependent)
                 return true;
-
-            if (this.statusByPlayer[player.id] >= 2 /* war */) {
+            if (this.statusByPlayer[player.id] >= DiplomaticState.war) {
                 return true;
             }
-
             return false;
         };
-
         DiplomacyStatus.prototype.hasModifierOfSameType = function (player, modifier) {
             var modifiers = this.attitudeModifiersByPlayer[player.id];
-
             for (var i = 0; i < modifiers.length; i++) {
                 if (modifiers[i].template.type === modifier.template.type) {
                     return true;
                 }
             }
-
             return false;
         };
-
         DiplomacyStatus.prototype.addAttitudeModifier = function (player, modifier) {
             if (!this.attitudeModifiersByPlayer[player.id]) {
                 this.attitudeModifiersByPlayer[player.id] = [];
             }
-
             if (this.hasModifierOfSameType(player, modifier)) {
                 return;
             }
-
             this.attitudeModifiersByPlayer[player.id].push(modifier);
         };
-
         DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
             /*
             remove modifiers that should be removed
             add modifiers that should be added. throw if type was already removed
             set new strength for modifier
-            */
+             */
             var modifiersByPlayer = this.attitudeModifiersByPlayer;
             var allModifiers = Rance.Templates.AttitudeModifiers;
-
             for (var playerId in modifiersByPlayer)
                 var playerModifiers = modifiersByPlayer[player.id];
-
             var activeModifiers = {};
-
             // debugging
             var modifiersAdded = {};
             var modifiersRemoved = {};
-
+            // remove modifiers & build active modifiers index
             for (var i = playerModifiers.length - 1; i >= 0; i--) {
                 var modifier = playerModifiers[i];
                 if (modifier.shouldEnd(evaluation)) {
                     playerModifiers.splice(i, 1);
                     modifiersRemoved[modifier.template.type] = modifier;
-                } else {
+                }
+                else {
                     activeModifiers[modifier.template.type] = modifier;
                 }
             }
-
+            // loop through all modifiers
+            // if modifier is not active and should start,
+            // add it and mark as active
+            // 
+            // if modifier is active, set strength based on evaluation
             for (var modifierType in allModifiers) {
                 var template = allModifiers[modifierType];
-
                 var modifier;
                 modifier = activeModifiers[template.type];
                 var alreadyHasModifierOfType = modifier;
-
                 if (!alreadyHasModifierOfType && !template.triggeredOnly) {
                     if (!template.startCondition) {
-                        throw new Error("Attitude modifier is not trigger only despite " + "having no start condition specified");
-                    } else {
+                        throw new Error("Attitude modifier is not trigger only despite " +
+                            "having no start condition specified");
+                    }
+                    else {
                         var shouldStart = template.startCondition(evaluation);
-
                         if (shouldStart) {
                             modifier = new Rance.AttitudeModifier({
                                 template: template,
                                 startTurn: evaluation.currentTurn
                             });
-
                             playerModifiers.push(modifier);
                             modifiersAdded[template.type] = modifier;
                         }
                     }
                 }
-
                 if (modifier) {
                     modifier.currentTurn = evaluation.currentTurn;
                     modifier.setStrength(evaluation);
                 }
             }
         };
-
         DiplomacyStatus.prototype.serialize = function () {
             var data = {};
-
             data.metPlayerIds = [];
             for (var playerId in this.metPlayers) {
                 data.metPlayerIds.push(this.metPlayers[playerId].id);
             }
-
             data.statusByPlayer = this.statusByPlayer;
-
             data.attitudeModifiersByPlayer = [];
             for (var playerId in this.attitudeModifiersByPlayer) {
                 var serializedModifiers = this.attitudeModifiersByPlayer[playerId].map(function (modifier) {
@@ -10745,7 +9796,6 @@ var Rance;
                 });
                 data.attitudeModifiersByPlayer[playerId] = serializedModifiers;
             }
-
             return data;
         };
         return DiplomacyStatus;
@@ -10768,7 +9818,9 @@ var Rance;
         });
     }
     Rance.makeRandomPersonality = makeRandomPersonality;
+    var Templates;
     (function (Templates) {
+        var Personalities;
         (function (Personalities) {
             Personalities.testPersonality1 = {
                 expansiveness: 1,
@@ -10782,10 +9834,8 @@ var Rance;
                     utility: 0.3
                 }
             };
-        })(Templates.Personalities || (Templates.Personalities = {}));
-        var Personalities = Templates.Personalities;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(Personalities = Templates.Personalities || (Templates.Personalities = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -10796,63 +9846,54 @@ var Rance;
         MapVoronoiInfo.prototype.getNonFillerVoronoiLines = function (visibleStars) {
             if (!this.diagram)
                 return [];
-
             var indexString = "";
             if (!visibleStars)
                 indexString = "all";
             else {
-                var ids = visibleStars.map(function (star) {
-                    return star.id;
-                });
+                var ids = visibleStars.map(function (star) { return star.id; });
                 ids = ids.sort();
-
                 indexString = ids.join();
             }
-
-            if (!this.nonFillerLines[indexString] || this.nonFillerLines[indexString].length <= 0) {
+            if (!this.nonFillerLines[indexString] ||
+                this.nonFillerLines[indexString].length <= 0) {
                 console.log("newEdgesIndex");
-                this.nonFillerLines[indexString] = this.diagram.edges.filter(function (edge) {
-                    var adjacentSites = [edge.lSite, edge.rSite];
-                    var adjacentFillerSites = 0;
-                    var maxAllowedFillerSites = 2;
-
-                    for (var i = 0; i < adjacentSites.length; i++) {
-                        var site = adjacentSites[i];
-
-                        if (!site) {
-                            // draw all border edges
-                            //return true;
-                            // draw all non filler border edges
-                            maxAllowedFillerSites--;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
+                this.nonFillerLines[indexString] =
+                    this.diagram.edges.filter(function (edge) {
+                        var adjacentSites = [edge.lSite, edge.rSite];
+                        var adjacentFillerSites = 0;
+                        var maxAllowedFillerSites = 2;
+                        for (var i = 0; i < adjacentSites.length; i++) {
+                            var site = adjacentSites[i];
+                            if (!site) {
+                                // draw all border edges
+                                //return true;
+                                // draw all non filler border edges
+                                maxAllowedFillerSites--;
+                                if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                    return false;
+                                }
+                                continue;
                             }
-                            continue;
-                        }
-                        ;
-
-                        if (visibleStars && visibleStars.indexOf(site) < 0) {
-                            maxAllowedFillerSites--;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
+                            ;
+                            if (visibleStars && visibleStars.indexOf(site) < 0) {
+                                maxAllowedFillerSites--;
+                                if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                    return false;
+                                }
+                                continue;
                             }
-                            continue;
-                        }
-                        ;
-
-                        if (!isFinite(site.id)) {
-                            adjacentFillerSites++;
-                            if (adjacentFillerSites >= maxAllowedFillerSites) {
-                                return false;
+                            ;
+                            if (!isFinite(site.id)) {
+                                adjacentFillerSites++;
+                                if (adjacentFillerSites >= maxAllowedFillerSites) {
+                                    return false;
+                                }
                             }
+                            ;
                         }
-                        ;
-                    }
-
-                    return true;
-                });
+                        return true;
+                    });
             }
-
             return this.nonFillerLines[indexString];
         };
         MapVoronoiInfo.prototype.getStarAtPoint = function (point) {
@@ -10863,7 +9904,6 @@ var Rance;
                     return cell.site;
                 }
             }
-
             return false;
         };
         return MapVoronoiInfo;
@@ -10896,6 +9936,7 @@ var Rance;
 /// <reference path="../point.ts"/>
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         var Triangle = (function () {
             function Triangle(a, b, c) {
@@ -10910,48 +9951,42 @@ var Rance;
                 if (!this.circumRadius) {
                     this.calculateCircumCircle();
                 }
-
                 return [this.circumCenterX, this.circumCenterY];
             };
             Triangle.prototype.calculateCircumCircle = function (tolerance) {
-                if (typeof tolerance === "undefined") { tolerance = 0.00001; }
+                if (tolerance === void 0) { tolerance = 0.00001; }
                 var pA = this.a;
                 var pB = this.b;
                 var pC = this.c;
-
                 var m1, m2;
                 var mx1, mx2;
                 var my1, my2;
                 var cX, cY;
-
                 if (Math.abs(pB.y - pA.y) < tolerance) {
                     m2 = -(pC.x - pB.x) / (pC.y - pB.y);
                     mx2 = (pB.x + pC.x) * 0.5;
                     my2 = (pB.y + pC.y) * 0.5;
-
                     cX = (pB.x + pA.x) * 0.5;
                     cY = m2 * (cX - mx2) + my2;
-                } else {
+                }
+                else {
                     m1 = -(pB.x - pA.x) / (pB.y - pA.y);
                     mx1 = (pA.x + pB.x) * 0.5;
                     my1 = (pA.y + pB.y) * 0.5;
-
                     if (Math.abs(pC.y - pB.y) < tolerance) {
                         cX = (pC.x + pB.x) * 0.5;
                         cY = m1 * (cX - mx1) + my1;
-                    } else {
+                    }
+                    else {
                         m2 = -(pC.x - pB.x) / (pC.y - pB.y);
                         mx2 = (pB.x + pC.x) * 0.5;
                         my2 = (pB.y + pC.y) * 0.5;
-
                         cX = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
                         cY = m1 * (cX - mx1) + my1;
                     }
                 }
-
                 this.circumCenterX = cX;
                 this.circumCenterY = cY;
-
                 mx1 = pB.x - cX;
                 my1 = pB.y - cY;
                 this.circumRadius = Math.sqrt(mx1 * mx1 + my1 * my1);
@@ -10960,9 +9995,7 @@ var Rance;
                 this.calculateCircumCircle();
                 var x = point.x - this.circumCenterX;
                 var y = point.y - this.circumCenterY;
-
                 var contains = x * x + y * y <= this.circumRadius * this.circumRadius;
-
                 return (contains);
             };
             Triangle.prototype.getEdges = function () {
@@ -10971,46 +10004,39 @@ var Rance;
                     [this.b, this.c],
                     [this.c, this.a]
                 ];
-
                 return edges;
             };
             Triangle.prototype.getAmountOfSharedVerticesWith = function (toCheckAgainst) {
                 var ownPoints = this.getPoints();
                 var otherPoints = toCheckAgainst.getPoints();
                 var shared = 0;
-
                 for (var i = 0; i < ownPoints.length; i++) {
                     if (otherPoints.indexOf(ownPoints[i]) >= 0) {
                         shared++;
                     }
                 }
-
                 return shared;
             };
             return Triangle;
         })();
         MapGen2.Triangle = Triangle;
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="triangle.ts" />
 /// <reference path="../point.ts" />
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         function triangulate(vertices) {
             var triangles = [];
-
             var superTriangle = makeSuperTriangle(vertices);
             triangles.push(superTriangle);
-
             for (var i = 0; i < vertices.length; i++) {
                 var vertex = vertices[i];
                 var edgeBuffer = [];
-
                 for (var j = 0; j < triangles.length; j++) {
                     var triangle = triangles[j];
-
                     if (triangle.circumCircleContainsPoint(vertex)) {
                         var edges = triangle.getEdges();
                         edgeBuffer = edgeBuffer.concat(edges);
@@ -11020,7 +10046,6 @@ var Rance;
                 }
                 if (i >= vertices.length)
                     continue;
-
                 for (var j = edgeBuffer.length - 2; j >= 0; j--) {
                     for (var k = edgeBuffer.length - 1; k >= j + 1; k--) {
                         if (edgesEqual(edgeBuffer[k], edgeBuffer[j])) {
@@ -11032,34 +10057,28 @@ var Rance;
                     }
                 }
                 for (var j = 0; j < edgeBuffer.length; j++) {
-                    var newTriangle = new Rance.MapGen2.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
-
+                    var newTriangle = new MapGen2.Triangle(edgeBuffer[j][0], edgeBuffer[j][1], vertex);
                     triangles.push(newTriangle);
                 }
             }
-
             for (var i = triangles.length - 1; i >= 0; i--) {
                 if (triangles[i].getAmountOfSharedVerticesWith(superTriangle)) {
                     triangles.splice(i, 1);
                 }
             }
-
             return triangles;
         }
         MapGen2.triangulate = triangulate;
-
         function getCentroid(vertices) {
             var signedArea = 0;
             var x = 0;
             var y = 0;
-            var x0;
-            var y0;
-            var x1;
-            var y1;
-            var a;
-
+            var x0; // Current vertex X
+            var y0; // Current vertex Y
+            var x1; // Next vertex X
+            var y1; // Next vertex Y
+            var a; // Partial signed area
             var i = 0;
-
             for (i = 0; i < vertices.length - 1; i++) {
                 x0 = vertices[i].x;
                 y0 = vertices[i].y;
@@ -11070,7 +10089,6 @@ var Rance;
                 x += (x0 + x1) * a;
                 y += (y0 + y1) * a;
             }
-
             x0 = vertices[i].x;
             y0 = vertices[i].y;
             x1 = vertices[0].x;
@@ -11079,26 +10097,22 @@ var Rance;
             signedArea += a;
             x += (x0 + x1) * a;
             y += (y0 + y1) * a;
-
             signedArea *= 0.5;
             x /= (6.0 * signedArea);
             y /= (6.0 * signedArea);
-
             return ({
                 x: x,
                 y: y
             });
         }
         MapGen2.getCentroid = getCentroid;
-
         function makeSuperTriangle(vertices, highestCoordinateValue) {
             var max;
-
             if (highestCoordinateValue) {
                 max = highestCoordinateValue;
-            } else {
+            }
+            else {
                 max = vertices[0].x;
-
                 for (var i = 0; i < vertices.length; i++) {
                     if (vertices[i].x > max) {
                         max = vertices[i].x;
@@ -11108,8 +10122,7 @@ var Rance;
                     }
                 }
             }
-
-            var triangle = new Rance.MapGen2.Triangle({
+            var triangle = new MapGen2.Triangle({
                 x: 3 * max,
                 y: 0
             }, {
@@ -11119,25 +10132,23 @@ var Rance;
                 x: -3 * max,
                 y: -3 * max
             });
-
             return (triangle);
         }
-
         function pointsEqual(p1, p2) {
             return (p1.x === p2.x && p1.y === p2.y);
         }
-
         function edgesEqual(e1, e2) {
-            return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) || (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
+            return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) ||
+                (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
         }
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../point.ts" />
 /// <reference path="triangulation.ts" />
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         function makeVoronoi(points, width, height) {
             var boundingBox = {
@@ -11146,57 +10157,48 @@ var Rance;
                 yt: 0,
                 yb: height
             };
-
             var voronoi = new Voronoi();
             var diagram = voronoi.compute(points, boundingBox);
-
             for (var i = 0; i < diagram.cells.length; i++) {
                 var cell = diagram.cells[i];
                 cell.site.voronoiCell = cell;
                 cell.vertices = getVerticesFromCell(cell);
             }
-
             return diagram;
         }
         MapGen2.makeVoronoi = makeVoronoi;
-
         /**
-        * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
-        * @param {any}             diagram Voronoi diagram to relax
-        * @param {(any) => number} dampeningFunction If specified, use value returned by dampeningFunction(cell.site)
-        *                                            to adjust how far towards centroid the point is moved.
-        *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
-        */
+         * Perform one iteration of Lloyd's Algorithm to move points in voronoi diagram to their centroid
+         * @param {any}             diagram Voronoi diagram to relax
+         * @param {(any) => number} dampeningFunction If specified, use value returned by dampeningFunction(cell.site)
+         *                                            to adjust how far towards centroid the point is moved.
+         *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
+         */
         function relaxVoronoi(diagram, dampeningFunction) {
             for (var i = 0; i < diagram.cells.length; i++) {
                 var cell = diagram.cells[i];
                 var point = cell.site;
-                var centroid = Rance.MapGen2.getCentroid(cell.vertices);
+                var centroid = MapGen2.getCentroid(cell.vertices);
                 if (dampeningFunction) {
                     var dampeningValue = dampeningFunction(point);
-
                     var xDelta = (centroid.x - point.x) * dampeningValue;
                     var yDelta = (centroid.y - point.y) * dampeningValue;
-
                     point.setPosition(point.x + xDelta, point.y + yDelta);
-                } else {
+                }
+                else {
                     point.setPosition(centroid.x, centroid.y);
                 }
             }
         }
         MapGen2.relaxVoronoi = relaxVoronoi;
-
         function getVerticesFromCell(cell) {
             var vertices = [];
-
             for (var i = 0; i < cell.halfedges.length; i++) {
                 vertices.push(cell.halfedges[i].getStartpoint());
             }
-
             return vertices;
         }
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../mapvoronoiinfo.ts" />
@@ -11207,48 +10209,40 @@ var Rance;
 /// <reference path="voronoi.ts" />
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         var MapGenResult = (function () {
             function MapGenResult(props) {
                 this.stars = props.stars;
                 this.fillerPoints = props.fillerPoints;
-
                 this.width = props.width;
                 this.height = props.height;
             }
             MapGenResult.prototype.getAllPoints = function () {
                 return this.fillerPoints.concat(this.stars);
             };
-
             MapGenResult.prototype.makeMap = function () {
                 this.voronoiInfo = this.makeVoronoiInfo();
-
                 this.clearMapGenData();
-
                 var map = new Rance.GalaxyMap(this);
-
                 return map;
             };
-
             MapGenResult.prototype.makeVoronoiInfo = function () {
                 var voronoiInfo = new Rance.MapVoronoiInfo();
-                voronoiInfo.diagram = Rance.MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
+                voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
                 voronoiInfo.treeMap = this.makeVoronoiTreeMap();
-
+                // move all stars to centroid of their voronoi cell. store original position for serialization
                 for (var i = 0; i < this.stars.length; i++) {
                     var star = this.stars[i];
                     star.basisX = star.x;
                     star.basisY = star.y;
                 }
-
-                Rance.MapGen2.relaxVoronoi(voronoiInfo.diagram, function (point) {
+                MapGen2.relaxVoronoi(voronoiInfo.diagram, function (point) {
                     // dont move filler points
                     return isFinite(point.id) ? 1 : 0;
                 });
-
                 return voronoiInfo;
             };
-
             MapGenResult.prototype.makeVoronoiTreeMap = function () {
                 var treeMap = new QuadTree({
                     x: 0,
@@ -11256,17 +10250,14 @@ var Rance;
                     width: this.width,
                     height: this.height
                 });
-
                 for (var i = 0; i < this.stars.length; i++) {
                     var cell = this.stars[i].voronoiCell;
                     var bbox = cell.getBbox();
                     bbox.cell = cell;
                     treeMap.insert(bbox);
                 }
-
                 return treeMap;
             };
-
             MapGenResult.prototype.clearMapGenData = function () {
                 if (Rance.Options.debugMode) {
                     console.warn("Skipped cleaning map gen data due to debug mode being enabled");
@@ -11281,8 +10272,7 @@ var Rance;
             return MapGenResult;
         })();
         MapGen2.MapGenResult = MapGenResult;
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
@@ -11293,7 +10283,6 @@ var Rance;
         function Game(map, players, humanPlayer) {
             this.independents = [];
             this.galaxyMap = map;
-
             this.playerOrder = players;
             this.humanPlayer = humanPlayer;
             this.turnNumber = 1;
@@ -11301,17 +10290,15 @@ var Rance;
         Game.prototype.endTurn = function () {
             this.setNextPlayer();
             this.processPlayerStartTurn(this.activePlayer);
-
             if (this.activePlayer.isAI) {
                 this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
-            } else {
+            }
+            else {
                 this.turnNumber++;
-
                 for (var i = 0; i < this.independents.length; i++) {
                     this.processPlayerStartTurn(this.independents[i]);
                 }
             }
-
             Rance.eventManager.dispatchEvent("endTurn", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
@@ -11321,12 +10308,9 @@ var Rance;
                 ship.heal();
                 ship.timesActedThisTurn = 0;
             };
-
             player.forEachUnit(shipStartTurnFN);
-
             if (!player.isIndependent) {
                 player.money += player.getIncome();
-
                 var allResourceIncomeData = player.getResourceIncome();
                 for (var resourceType in allResourceIncomeData) {
                     var resourceData = allResourceIncomeData[resourceType];
@@ -11336,12 +10320,10 @@ var Rance;
         };
         Game.prototype.setNextPlayer = function () {
             this.playerOrder.push(this.playerOrder.shift());
-
             this.activePlayer = this.playerOrder[0];
         };
         Game.prototype.serialize = function () {
             var data = {};
-
             data.galaxyMap = this.galaxyMap.serialize();
             data.players = this.playerOrder.map(function (player) {
                 return player.serialize();
@@ -11350,16 +10332,12 @@ var Rance;
                 return player.serialize();
             }));
             data.humanPlayerId = this.humanPlayer.id;
-
             return data;
         };
         Game.prototype.save = function (name) {
             var saveString = "Rance.Save." + name;
-
             var date = new Date();
-
             var gameData = this.serialize();
-
             var stringified = JSON.stringify({
                 name: name,
                 date: date,
@@ -11367,7 +10345,6 @@ var Rance;
                 idGenerators: Rance.extendObject(Rance.idGenerators),
                 cameraLocation: app.renderer.camera.getCenterPosition()
             });
-
             localStorage.setItem(saveString, stringified);
         };
         return Game;
@@ -11386,15 +10363,12 @@ var Rance;
         function GalaxyMap(mapGen) {
             this.width = mapGen.width;
             this.height = mapGen.height;
-
             this.stars = mapGen.stars;
             this.fillerPoints = mapGen.fillerPoints;
-
             this.voronoi = mapGen.voronoiInfo;
         }
         GalaxyMap.prototype.getIncomeBounds = function () {
             var min, max;
-
             for (var i = 0; i < this.stars.length; i++) {
                 var star = this.stars[i];
                 var income = star.getIncome();
@@ -11407,7 +10381,6 @@ var Rance;
                         max = income;
                 }
             }
-
             return ({
                 min: min,
                 max: max
@@ -11415,18 +10388,14 @@ var Rance;
         };
         GalaxyMap.prototype.serialize = function () {
             var data = {};
-
             data.stars = this.stars.map(function (star) {
                 return star.serialize();
             });
-
             data.fillerPoints = this.fillerPoints.map(function (fillerPoint) {
                 return fillerPoint.serialize();
             });
-
             data.width = this.width;
             data.height = this.height;
-
             return data;
         };
         return GalaxyMap;
@@ -11448,10 +10417,9 @@ var Rance;
             totalIncomeWeight: 1,
             baseIncomeWeight: 0.5,
             infrastructureWeight: 1,
-            productionWeight: 1
+            productionWeight: 1,
         }
     };
-
     var MapEvaluator = (function () {
         function MapEvaluator(map, player, game) {
             this.cachedInfluenceMaps = {};
@@ -11459,7 +10427,6 @@ var Rance;
             this.map = map;
             this.player = player;
             this.game = game;
-
             this.evaluationParameters = Rance.defaultEvaluationParameters;
         }
         MapEvaluator.prototype.processTurnStart = function () {
@@ -11467,39 +10434,29 @@ var Rance;
             this.cachedVisibleFleets = {};
             this.cachedOwnIncome = undefined;
         };
-
         MapEvaluator.prototype.evaluateStarIncome = function (star) {
             var evaluation = 0;
-
             evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) * (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
-
+            evaluation += (star.getIncome() - star.baseIncome) *
+                (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
             return evaluation;
         };
-
         MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
             var evaluation = 0;
-
             for (var category in star.buildings) {
                 for (var i = 0; i < star.buildings[category].length; i++) {
                     evaluation += star.buildings[category][i].totalCost / 25;
                 }
             }
-
             return evaluation;
         };
-
         MapEvaluator.prototype.evaluateStarProduction = function (star) {
             var evaluation = 0;
-
             evaluation += star.getItemManufactoryLevel();
-
             return evaluation;
         };
-
         MapEvaluator.prototype.evaluateStarDefendability = function (star) {
             var evaluation = 0;
-
             // neighboring own stars ++
             // neighboring neutral stars -
             // neighboring other player stars --
@@ -11513,134 +10470,103 @@ var Rance;
                     var neighborDefendability;
                     if (neighbor.owner === this.player) {
                         neighborDefendability = 3;
-                    } else if (neighbor.owner.isIndependent) {
+                    }
+                    else if (neighbor.owner.isIndependent) {
                         neighborDefendability = -0.75;
-                    } else {
+                    }
+                    else {
                         neighborDefendability = -2;
                     }
-
                     evaluation += neighborDefendability * distanceMultiplier;
                 }
             }
-
             if (star.owner === this.player) {
                 evaluation += 3;
             }
-
             return evaluation * 5;
         };
-
         MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
             var evaluation = 0;
             var p = this.evaluationParameters.starDesirability;
-
             if (!isFinite(this.cachedOwnIncome)) {
                 this.cachedOwnIncome = this.player.getIncome();
             }
-
             var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
-
             // prioritize income when would make big relative boost, penalize when opposite
             incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
             evaluation += incomeEvaluation;
-
             var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
             evaluation += infrastructureEvaluation;
-
             var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
             evaluation += productionEvaluation;
-
             var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
             evaluation += defendabilityEvaluation;
-
             return evaluation;
         };
-
         MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
             var evaluation = 0;
-
             var getDistanceFalloff = function (distance) {
                 return 1 / (distance + 1);
             };
             var inRange = star.getLinkedInRange(range).byRange;
-
             for (var distanceString in inRange) {
                 var stars = inRange[distanceString];
                 var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-
                 for (var i = 0; i < stars.length; i++) {
                     evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
                 }
             }
-
             return evaluation;
         };
-
         MapEvaluator.prototype.evaluateStarDesirability = function (star) {
             var evaluation = 0;
             var p = this.evaluationParameters.starDesirability;
-
             evaluation += this.evaluateIndividualStarDesirability(star);
-            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) * p.neighborWeight;
-
+            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
+                p.neighborWeight;
             return evaluation;
         };
-
         MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
             var evaluationByStar = {};
-
             for (var i = 0; i < targetStars.length; i++) {
                 var star = targetStars[i];
-
                 var desirability = this.evaluateStarDesirability(star);
                 var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-
                 var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
                 var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
-
-                evaluationByStar[star.id] = {
-                    star: star,
-                    desirability: desirability,
-                    independentStrength: independentStrength,
-                    ownInfluence: ownInfluenceAtStar
-                };
+                evaluationByStar[star.id] =
+                    {
+                        star: star,
+                        desirability: desirability,
+                        independentStrength: independentStrength,
+                        ownInfluence: ownInfluenceAtStar
+                    };
             }
-
             return evaluationByStar;
         };
-
         MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
             var scores = [];
-
             for (var starId in evaluations) {
                 var evaluation = evaluations[starId];
-
                 var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
-
                 var score = evaluation.desirability * easeOfCapturing;
-
                 scores.push({
                     star: evaluation.star,
-                    evaluation: evaluation,
                     score: score
                 });
             }
-
             return scores.sort(function (a, b) {
                 return b.score - a.score;
             });
         };
-
         MapEvaluator.prototype.getScoredExpansionTargets = function () {
             var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
                 return star.owner.isIndependent;
             });
             var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
             var scores = this.scoreIndependentTargets(evaluations);
-
             return scores;
         };
-
         MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
             var ownedStarsWithPirates = this.player.controlledLocations.filter(function (star) {
                 // we could filter out stars with secondary controllers as cleaning up in
@@ -11649,173 +10575,120 @@ var Rance;
                 // amount of objectives generated is important for performance
                 return star.getIndependentShips().length > 0;
             });
-
             var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
             var scores = this.scoreIndependentTargets(evaluations);
-
             return scores;
         };
-
         MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
             var hostilePlayers = star.getEnemyFleetOwners(this.player);
-
             var shipsByEnemy = {};
-
             for (var i = 0; i < hostilePlayers.length; i++) {
                 shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
             }
-
             return shipsByEnemy;
         };
-
         MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
             var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
-
             var strengthByEnemy = {};
-
             for (var playerId in hostileShipsByPlayer) {
                 var strength = 0;
-
                 for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
                     strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
                 }
-
                 strengthByEnemy[playerId] = strength;
             }
-
             return strengthByEnemy;
         };
-
         MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
             var ships = star.getIndependentShips();
             var total = 0;
-
             for (var i = 0; i < ships.length; i++) {
                 total += ships[i].getStrengthEvaluation();
             }
-
             return total;
         };
-
         MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
             var byPlayer = this.getHostileStrengthAtStar(star);
-
             var total = 0;
-
             for (var playerId in byPlayer) {
                 total += byPlayer[playerId];
             }
-
             return total;
         };
-
         MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
             var byPlayer = {};
-
             for (var i = 0; i < star.buildings["defence"].length; i++) {
                 var building = star.buildings["defence"][i];
-
                 if (!byPlayer[building.controller.id]) {
                     byPlayer[building.controller.id] = 0;
                 }
-
                 byPlayer[building.controller.id] += building.totalCost;
             }
-
             return byPlayer;
         };
-
         MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
             var strength = 0;
-
             for (var i = 0; i < star.buildings["defence"].length; i++) {
                 var building = star.buildings["defence"][i];
-
                 if (building.controller.id === this.player.id)
                     continue;
-
                 strength += building.totalCost;
             }
-
             return strength;
         };
-
         MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
             return fleet.getTotalStrengthEvaluation();
         };
-
         MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
             if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
                 return this.cachedVisibleFleets[this.game.turnNumber];
             }
-
             var stars = this.player.getVisibleStars();
-
             var byPlayer = {};
-
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
-
                 for (var playerId in star.fleets) {
                     var playerFleets = star.fleets[playerId];
-
                     if (!byPlayer[playerId]) {
                         byPlayer[playerId] = [];
                     }
-
                     for (var j = 0; j < playerFleets.length; j++) {
                         byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
                     }
                 }
             }
-
             if (this.game) {
                 this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
             }
-
             return byPlayer;
         };
-
         MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
             var playerIsImmobile = player.isIndependent;
-
             var influenceByStar = {};
-
             var stars = this.player.getRevealedStars();
-
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
-
                 var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-
                 if (defenceBuildingStrengths[player.id]) {
                     if (!isFinite(influenceByStar[star.id])) {
                         influenceByStar[star.id] = 0;
                     }
                     ;
-
                     influenceByStar[star.id] += defenceBuildingStrengths[player.id];
                 }
             }
-
             var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
-
             function getDistanceFalloff(distance) {
                 return 1 / (distance + 1);
             }
-
             for (var i = 0; i < fleets.length; i++) {
                 var fleet = fleets[i];
                 var strength = this.evaluateFleetStrength(fleet);
                 var location = fleet.location;
-
                 var range = fleet.getMinMaxMovePoints();
                 var turnsToCheck = 4;
-
                 var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
-
                 inFleetRange[0] = [location];
-
                 for (var distance in inFleetRange) {
                     var numericDistance = parseInt(distance);
                     var turnsToReach = Math.floor((numericDistance - 1) / range);
@@ -11823,72 +10696,58 @@ var Rance;
                         turnsToReach = 0;
                     var distanceFalloff = getDistanceFalloff(turnsToReach);
                     var adjustedStrength = strength * distanceFalloff;
-
                     for (var j = 0; j < inFleetRange[distance].length; j++) {
                         var star = inFleetRange[distance][j];
-
                         if (!isFinite(influenceByStar[star.id])) {
                             influenceByStar[star.id] = 0;
                         }
                         ;
-
                         influenceByStar[star.id] += adjustedStrength;
                     }
                 }
             }
-
             return influenceByStar;
         };
         MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
             if (!this.game) {
                 throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
             }
-
             if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
                 this.cachedInfluenceMaps[this.game.turnNumber] = {};
             }
-
             if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
                 this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
             }
-
             return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
         };
         MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
             var byPlayer = {};
-
             for (var playerId in this.player.diplomacyStatus.metPlayers) {
                 var player = this.player.diplomacyStatus.metPlayers[playerId];
                 byPlayer[playerId] = this.getPlayerInfluenceMap(player);
             }
-
             return byPlayer;
         };
         MapEvaluator.prototype.estimateGlobalStrength = function (player) {
             var visibleStrength = 0;
             var invisibleStrength = 0;
-
             var fleets = this.getVisibleFleetsByPlayer()[player.id];
             for (var i = 0; i < fleets.length; i++) {
                 visibleStrength += this.evaluateFleetStrength(fleets[i]);
             }
-
             if (player !== this.player) {
                 invisibleStrength = visibleStrength * 0.5; // TODO
             }
-
             return visibleStrength + invisibleStrength;
         };
         MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
             if (!this.player.diplomacyStatus.metPlayers[player.id]) {
-                throw new Error(this.player.name + " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
+                throw new Error(this.player.name +
+                    " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
             }
-
             var otherInfluenceMap = this.getPlayerInfluenceMap(player);
             var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-
             var totalInfluenceInOwnStars = 0;
-
             for (var starId in otherInfluenceMap) {
                 for (var i = 0; i < this.player.controlledLocations.length; i++) {
                     var star = this.player.controlledLocations[i];
@@ -11900,69 +10759,55 @@ var Rance;
                     }
                 }
             }
-
             var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
-
             return totalInfluenceInOwnStars + globalStrengthDifference;
         };
         MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
             var byPlayer = {};
-
             for (var playerId in this.player.diplomacyStatus.metPlayers) {
                 var player = this.player.diplomacyStatus.metPlayers[playerId];
                 byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
             }
-
             return byPlayer;
         };
         MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
             var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
             var relative = {};
-
             var min, max;
-
             for (var playerId in byPlayer) {
                 var threat = byPlayer[playerId];
                 min = isFinite(min) ? Math.min(min, threat) : threat;
                 max = isFinite(max) ? Math.max(max, threat) : threat;
             }
-
             for (var playerId in byPlayer) {
                 relative[playerId] = Rance.getRelativeValue(byPlayer[playerId], min, max);
             }
-
             return relative;
         };
         MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
             var evaluationByPlayer = {};
-
             var neighborStarsCountByPlayer = {};
-
             var allNeighbors = this.player.getNeighboringStars();
             var neighborStarsForPlayer = [];
-
             for (var i = 0; i < allNeighbors.length; i++) {
                 var star = allNeighbors[i];
                 if (!star.owner.isIndependent) {
                     if (!neighborStarsCountByPlayer[star.owner.id]) {
                         neighborStarsCountByPlayer[star.owner.id] = 0;
                     }
-
                     neighborStarsCountByPlayer[star.owner.id]++;
                 }
             }
-
             for (var playerId in this.player.diplomacyStatus.metPlayers) {
                 var player = this.player.diplomacyStatus.metPlayers[playerId];
-
-                evaluationByPlayer[player.id] = {
-                    currentTurn: currentTurn,
-                    opinion: this.player.diplomacyStatus.getOpinionOf(player),
-                    neighborStars: neighborStarsCountByPlayer[player.id],
-                    currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
-                };
+                evaluationByPlayer[player.id] =
+                    {
+                        currentTurn: currentTurn,
+                        opinion: this.player.diplomacyStatus.getOpinionOf(player),
+                        neighborStars: neighborStarsCountByPlayer[player.id],
+                        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
+                    };
             }
-
             return evaluationByPlayer;
         };
         return MapEvaluator;
@@ -11972,20 +10817,21 @@ var Rance;
 /// <reference path="../star.ts"/>
 /*
 objectives:
-defend area
-attack player at area
-expand
-clean up pirates
-heal
-~~building
-*/
+  defend area
+  attack player at area
+  expand
+
+  clean up pirates
+  heal
+
+  ~~building
+ */
 var Rance;
 (function (Rance) {
     var Objective = (function () {
         function Objective(type, priority, target, data) {
-            this.isOngoing = false;
+            this.isOngoing = false; // used to slightly prioritize old objectives
             this.id = Rance.idGenerators.objective++;
-
             this.type = type;
             this.priority = priority;
             this.target = target;
@@ -12016,17 +10862,19 @@ create expansion objectives with priority based on score
 add flat amount of priority if objective is ongoing
 sort objectives by priority
 while under max active expansion objectives
-make highest priority expansion objective active
+  make highest priority expansion objective active
+
 -- fronts ai
 divide available units to fronts based on priority
 make requests for extra units if needed
 muster units at muster location
 when requested units arrive
-move units to target location
-execute action
+  move units to target location
+  execute action
+
 -- economy ai
 build units near request target
-*/
+ */
 var Rance;
 (function (Rance) {
     var ObjectivesAI = (function () {
@@ -12045,57 +10893,44 @@ var Rance;
         }
         ObjectivesAI.prototype.setAllObjectives = function () {
             this.objectives = [];
-
             this.addObjectives(this.getExpansionObjectives());
             this.addObjectives(this.getCleanPiratesObjectives());
             this.addObjectives(this.getHealObjectives());
         };
-
         ObjectivesAI.prototype.addObjectives = function (objectives) {
             this.objectives = this.objectives.concat(objectives);
         };
-
         // base method used for getting expansion & cleanPirates objectives
         ObjectivesAI.prototype.getIndependentFightingObjectives = function (objectiveType, evaluationScores, basePriority) {
             var objectivesByTarget = {};
-
             var allObjectives = [];
-
             for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
                 var objective = this.objectivesByType[objectiveType][i];
                 objective.isOngoing = true;
                 objectivesByTarget[objective.target.id] = objective;
             }
-
             this.objectivesByType[objectiveType] = [];
-
             var minScore, maxScore;
-
             for (var i = 0; i < evaluationScores.length; i++) {
                 var score = evaluationScores[i].score;
-
                 //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
                 maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
             }
-
             for (var i = 0; i < evaluationScores.length; i++) {
                 var star = evaluationScores[i].star;
                 var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, 0, maxScore);
                 var priority = relativeScore * basePriority;
-
                 if (objectivesByTarget[star.id]) {
                     objectivesByTarget[star.id].priority = priority;
-                } else {
+                }
+                else {
                     objectivesByTarget[star.id] = new Rance.Objective(objectiveType, priority, star, evaluationScores[i]);
                 }
-
                 allObjectives.push(objectivesByTarget[star.id]);
                 this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
             }
-
             return allObjectives;
         };
-
         ObjectivesAI.prototype.getExpansionObjectives = function () {
             var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
             var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
@@ -12109,7 +10944,6 @@ var Rance;
         ObjectivesAI.prototype.getHealObjectives = function () {
             var objective = new Rance.Objective("heal", 1, null);
             this.objectivesByType["heal"] = [objective];
-
             return [objective];
         };
         return ObjectivesAI;
@@ -12127,10 +10961,8 @@ var Rance;
             this.objective = props.objective;
             this.priority = props.priority;
             this.units = props.units || [];
-
             this.minUnitsDesired = props.minUnitsDesired;
             this.idealUnitsDesired = props.idealUnitsDesired;
-
             this.targetLocation = props.targetLocation;
             this.musterLocation = props.musterLocation;
         }
@@ -12142,55 +10974,47 @@ var Rance;
             merge pure fleets at same location
             move impure ships to pure fleets at location if possible
             create new pure fleets with remaining impure units
-            */
+             */
             var allFleets = this.getAssociatedFleets();
-
             var pureFleetsByLocation = {};
             var impureFleetMembersByLocation = {};
-
             var ownUnitFilterFN = function (unit) {
                 return this.getUnitIndex(unit) >= 0;
             }.bind(this);
-
+            // build indexes of pure fleets and impure ships
             for (var i = 0; i < allFleets.length; i++) {
                 var fleet = allFleets[i];
                 var star = fleet.location;
-
                 if (this.isFleetPure(fleet)) {
                     if (!pureFleetsByLocation[star.id]) {
                         pureFleetsByLocation[star.id] = [];
                     }
-
                     pureFleetsByLocation[star.id].push(fleet);
-                } else {
+                }
+                else {
                     var ownUnits = fleet.ships.filter(ownUnitFilterFN);
-
                     for (var j = 0; j < ownUnits.length; j++) {
                         if (!impureFleetMembersByLocation[star.id]) {
                             impureFleetMembersByLocation[star.id] = [];
                         }
-
                         impureFleetMembersByLocation[star.id].push(ownUnits[j]);
                     }
                 }
             }
-
             var sortFleetsBySizeFN = function (a, b) {
                 return b.ships.length - a.ships.length;
             };
-
             for (var starId in pureFleetsByLocation) {
                 // combine pure fleets at same location
                 var fleets = pureFleetsByLocation[starId];
                 if (fleets.length > 1) {
                     fleets.sort(sortFleetsBySizeFN);
-
+                    // only goes down to i = 1 !!
                     for (var i = fleets.length - 1; i >= 1; i--) {
                         fleets[i].mergeWith(fleets[0]);
                         fleets.splice(i, 1);
                     }
                 }
-
                 // move impure ships to pure fleets at same location
                 if (impureFleetMembersByLocation[starId]) {
                     for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
@@ -12200,13 +11024,12 @@ var Rance;
                     }
                 }
             }
-
+            // create new pure fleets from leftover impure ships
             for (var starId in impureFleetMembersByLocation) {
                 var ships = impureFleetMembersByLocation[starId];
                 if (ships.length < 1)
                     continue;
                 var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
-
                 for (var i = ships.length - 1; i >= 0; i--) {
                     ships[i].fleet.transferShip(newFleet, ships[i]);
                 }
@@ -12218,27 +11041,21 @@ var Rance;
                     return false;
                 }
             }
-
             return true;
         };
         Front.prototype.getAssociatedFleets = function () {
             var fleetsById = {};
-
             for (var i = 0; i < this.units.length; i++) {
                 if (!this.units[i].fleet)
                     continue;
-
                 if (!fleetsById[this.units[i].fleet.id]) {
                     fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
                 }
             }
-
             var allFleets = [];
-
             for (var fleetId in fleetsById) {
                 allFleets.push(fleetsById[fleetId]);
             }
-
             return allFleets;
         };
         Front.prototype.getUnitIndex = function (unit) {
@@ -12249,7 +11066,6 @@ var Rance;
                 if (unit.front) {
                     unit.front.removeUnit(unit);
                 }
-
                 unit.front = this;
                 this.units.push(unit);
             }
@@ -12263,59 +11079,50 @@ var Rance;
         };
         Front.prototype.getUnitCountByArchetype = function () {
             var unitCountByArchetype = {};
-
             for (var i = 0; i < this.units.length; i++) {
                 var archetype = this.units[i].template.archetype;
-
                 if (!unitCountByArchetype[archetype]) {
                     unitCountByArchetype[archetype] = 0;
                 }
-
                 unitCountByArchetype[archetype]++;
             }
-
             return unitCountByArchetype;
         };
         Front.prototype.getUnitsByLocation = function () {
             var byLocation = {};
-
             for (var i = 0; i < this.units.length; i++) {
                 var star = this.units[i].fleet.location;
                 if (!byLocation[star.id]) {
                     byLocation[star.id] = [];
                 }
-
                 byLocation[star.id].push(this.units[i]);
             }
-
             return byLocation;
         };
-
         Front.prototype.moveFleets = function (afterMoveCallback) {
             if (this.units.length < 1) {
                 afterMoveCallback();
                 return;
             }
             switch (this.objective.type) {
-                case "heal": {
-                    this.healMoveRoutine(afterMoveCallback);
-                    break;
-                }
-                default: {
-                    this.defaultMoveRoutine(afterMoveCallback);
-                    break;
-                }
+                case "heal":
+                    {
+                        this.healMoveRoutine(afterMoveCallback);
+                        break;
+                    }
+                default:
+                    {
+                        this.defaultMoveRoutine(afterMoveCallback);
+                        break;
+                    }
             }
         };
-
         Front.prototype.healMoveRoutine = function (afterMoveCallback) {
             var fleets = this.getAssociatedFleets();
-
             if (fleets.length <= 0) {
                 afterMoveCallback();
                 return;
             }
-
             var finishedMovingCount = 0;
             var finishFleetMoveFN = function () {
                 finishedMovingCount++;
@@ -12323,56 +11130,49 @@ var Rance;
                     afterMoveCallback();
                 }
             };
-
             for (var i = 0; i < fleets.length; i++) {
                 var player = fleets[i].player;
                 var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
-
                 fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
             }
         };
-
         Front.prototype.defaultMoveRoutine = function (afterMoveCallback) {
             var shouldMoveToTarget;
-
             var unitsByLocation = this.getUnitsByLocation();
             var fleets = this.getAssociatedFleets();
-
-            var atMuster = unitsByLocation[this.musterLocation.id] ? unitsByLocation[this.musterLocation.id].length : 0;
-
+            var atMuster = unitsByLocation[this.musterLocation.id] ?
+                unitsByLocation[this.musterLocation.id].length : 0;
             var inRangeOfTarget = 0;
-
             for (var i = 0; i < fleets.length; i++) {
                 var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
                 if (fleets[i].getMinCurrentMovePoints() >= distance) {
                     inRangeOfTarget += fleets[i].ships.length;
                 }
             }
-
             if (this.hasMustered) {
                 shouldMoveToTarget = true;
-            } else {
+            }
+            else {
                 if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired) {
                     this.hasMustered = true;
                     shouldMoveToTarget = true;
-                } else {
+                }
+                else {
                     shouldMoveToTarget = false;
                 }
             }
-
             var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
-
             var finishAllMoveFN = function () {
                 unitsByLocation = this.getUnitsByLocation();
-                var atTarget = unitsByLocation[this.targetLocation.id] ? unitsByLocation[this.targetLocation.id].length : 0;
-
+                var atTarget = unitsByLocation[this.targetLocation.id] ?
+                    unitsByLocation[this.targetLocation.id].length : 0;
                 if (atTarget >= this.minUnitsDesired) {
                     this.executeAction(afterMoveCallback);
-                } else {
+                }
+                else {
                     afterMoveCallback();
                 }
             }.bind(this);
-
             var finishedMovingCount = 0;
             var finishFleetMoveFN = function () {
                 finishedMovingCount++;
@@ -12380,7 +11180,6 @@ var Rance;
                     finishAllMoveFN();
                 }
             };
-
             for (var i = 0; i < fleets.length; i++) {
                 fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
             }
@@ -12388,14 +11187,11 @@ var Rance;
         Front.prototype.executeAction = function (afterExecutedCallback) {
             var star = this.targetLocation;
             var player = this.units[0].fleet.player;
-
             if (this.objective.type === "expansion" || this.objective.type === "cleanPirates") {
                 var attackTargets = star.getTargetsForPlayer(player);
-
                 var target = attackTargets.filter(function (target) {
                     return target.enemy.isIndependent;
                 })[0];
-
                 player.attackTarget(star, target, afterExecutedCallback);
             }
         };
@@ -12425,21 +11221,16 @@ var Rance;
         }
         FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
             var totalUnitCountByArchetype = {};
-
             var units = this.player.getAllUnits();
             for (var i = 0; i < units.length; i++) {
                 var unitArchetype = units[i].template.archetype;
-
                 if (!totalUnitCountByArchetype[unitArchetype]) {
                     totalUnitCountByArchetype[unitArchetype] = 0;
                 }
-
                 totalUnitCountByArchetype[unitArchetype]++;
             }
-
             return totalUnitCountByArchetype;
         };
-
         FrontsAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
             var min = 0;
             var max;
@@ -12447,87 +11238,68 @@ var Rance;
                 var count = unitsByArchetype[archetype];
                 max = isFinite(max) ? Math.max(max, count) : count;
             }
-
             var relativeWeights = {};
-
             for (var archetype in unitsByArchetype) {
                 var count = unitsByArchetype[archetype];
                 relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
             }
-
             return relativeWeights;
         };
-
         FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
             var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
-
             var deviationFromIdeal = {};
-
             for (var archetype in idealWeights) {
                 var ideal = idealWeights[archetype];
                 var actual = relativeWeights[archetype] || 0;
-
                 deviationFromIdeal[archetype] = ideal - actual;
             }
-
             return deviationFromIdeal;
         };
-
         FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
             var ideal = this.personality.unitCompositionPreference;
             var actual = this.getTotalUnitCountByArchetype();
             return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
         };
-
         FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
             var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
             var globalPreferenceWeight = relativeFrontSize;
-
             var globalScores = this.getGlobalUnitArcheypeScores();
-
             var scores = {};
-
             var frontArchetypes = front.getUnitCountByArchetype();
             var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
-
             for (var archetype in globalScores) {
                 scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
                 scores[archetype] += frontScores[archetype];
                 scores[archetype] /= 2;
             }
-
             return scores;
         };
-
         FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
             switch (front.objective.type) {
-                case "heal": {
-                    return this.getHealUnitFitScore(unit, front);
-                }
-                default: {
-                    return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
-                }
+                case "heal":
+                    {
+                        return this.getHealUnitFitScore(unit, front);
+                    }
+                default:
+                    {
+                        return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+                    }
             }
         };
-
         FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
             var healthPercentage = unit.currentHealth / unit.maxHealth;
             if (healthPercentage > 0.75)
                 return -1;
-
             return (1 - healthPercentage) * 2;
         };
-
         FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
             // base score based on unit composition
             var score = frontArchetypeScores[unit.template.archetype];
-
             // add score based on front priority
             // lower priority if front requirements already met
             // more important fronts get priority but dont hog units
             var unitsOverMinimum = front.units.length - front.minUnitsDesired;
             var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
-
             var priorityMultiplier = 1;
             if (unitsOverMinimum > 0) {
                 priorityMultiplier -= unitsOverMinimum * 0.15;
@@ -12535,13 +11307,10 @@ var Rance;
             if (unitsOverIdeal > 0) {
                 priorityMultiplier -= unitsOverIdeal * 0.4;
             }
-
             if (priorityMultiplier < 0)
                 priorityMultiplier = 0;
-
             var adjustedPriority = front.priority * priorityMultiplier;
             score += adjustedPriority * 2;
-
             // penalize initial units for front
             // inertia at beginning of adding units to front
             // so ai prioritizes fully formed fronts to incomplete ones
@@ -12549,7 +11318,6 @@ var Rance;
             if (newUnitInertia > 0) {
                 score -= newUnitInertia;
             }
-
             // prefer units already part of this front
             var alreadyInFront = unit.front && unit.front === front;
             if (alreadyInFront) {
@@ -12558,33 +11326,26 @@ var Rance;
                     score += 0.5;
                 }
             }
-
             // penalize fronts with high requirements
             // reduce forming incomplete fronts even if they have high priority
             // effect lessens as total unit count increases
             // TODO
             // penalize units on low health
             var healthPercentage = unit.currentHealth / unit.maxHealth;
-
             if (healthPercentage < 0.75) {
                 var lostHealthPercentage = 1 - healthPercentage;
                 score += lostHealthPercentage * -2.5;
             }
-
             // prioritize units closer to front target
             var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
             var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
             var distanceAdjust = turnsToReach * -0.1;
             score += distanceAdjust;
-
             return score;
         };
-
         FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
             var scores = [];
-
             var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
-
             for (var i = 0; i < units.length; i++) {
                 scores.push({
                     unit: units[i],
@@ -12592,26 +11353,20 @@ var Rance;
                     front: front
                 });
             }
-
             return scores;
         };
-
         FrontsAI.prototype.assignUnits = function () {
             var units = this.player.getAllUnits();
-
             var allUnitScores = [];
             var unitScoresByFront = {};
-
             var recalculateScoresForFront = function (front) {
                 var archetypeScores = this.getFrontUnitArchetypeScores(front);
                 var frontScores = unitScoresByFront[front.id];
-
                 for (var i = 0; i < frontScores.length; i++) {
                     var unit = frontScores[i].unit;
                     frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
                 }
             }.bind(this);
-
             var removeUnit = function (unit) {
                 for (var frontId in unitScoresByFront) {
                     unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
@@ -12619,51 +11374,42 @@ var Rance;
                     });
                 }
             };
-
             // ascending
             var sortByScoreFN = function (a, b) {
                 return a.score - b.score;
             };
-
             for (var i = 0; i < this.fronts.length; i++) {
                 var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
                 unitScoresByFront[this.fronts[i].id] = frontScores;
                 allUnitScores = allUnitScores.concat(frontScores);
             }
-
             var alreadyAdded = {};
-
             while (allUnitScores.length > 0) {
                 // sorted in loop as scores get recalculated every iteration
                 allUnitScores.sort(sortByScoreFN);
-
                 var bestScore = allUnitScores.pop();
                 if (alreadyAdded[bestScore.unit.id]) {
                     continue;
                 }
-
                 bestScore.front.addUnit(bestScore.unit);
-
                 removeUnit(bestScore.unit);
                 alreadyAdded[bestScore.unit.id] = true;
                 recalculateScoresForFront(bestScore.front);
             }
         };
-
         FrontsAI.prototype.getFrontWithId = function (id) {
             for (var i = 0; i < this.fronts.length; i++) {
                 if (this.fronts[i].id === id) {
                     return this.fronts[i];
                 }
             }
-
             return null;
         };
-
         FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = objective.target ? this.player.getNearestOwnedStarTo(objective.target) : null;
+            var musterLocation = objective.target ?
+                this.player.getNearestOwnedStarTo(objective.target) :
+                null;
             var unitsDesired = this.getUnitsToFillObjective(objective);
-
             var front = new Rance.Front({
                 id: objective.id,
                 priority: objective.priority,
@@ -12673,15 +11419,13 @@ var Rance;
                 targetLocation: objective.target,
                 musterLocation: musterLocation
             });
-
             return front;
         };
-
         FrontsAI.prototype.removeInactiveFronts = function () {
+            // loop backwards because splicing
             for (var i = this.fronts.length - 1; i >= 0; i--) {
                 var front = this.fronts[i];
                 var hasActiveObjective = false;
-
                 for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
                     var objective = this.objectivesAI.objectives[j];
                     if (objective.id === front.id && objective.priority > 0.04) {
@@ -12689,23 +11433,19 @@ var Rance;
                         break;
                     }
                 }
-
                 if (!hasActiveObjective) {
                     this.fronts.splice(i, 1);
                 }
             }
         };
-
         FrontsAI.prototype.formFronts = function () {
             /*
             dissolve old fronts without an active objective
             create new fronts for every objective not already assoicated with one
-            */
+             */
             this.removeInactiveFronts();
-
             for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
                 var objective = this.objectivesAI.objectives[i];
-
                 if (objective.priority > 0.04) {
                     if (!this.getFrontWithId(objective.id)) {
                         var front = this.createFront(objective);
@@ -12714,67 +11454,60 @@ var Rance;
                 }
             }
         };
-
         FrontsAI.prototype.organizeFleets = function () {
             for (var i = 0; i < this.fronts.length; i++) {
                 this.fronts[i].organizeFleets();
             }
         };
-
         FrontsAI.prototype.setFrontsToMove = function () {
             this.frontsToMove = this.fronts.slice(0);
-
             var frontMovePriorities = {
                 expansion: 4,
                 cleanPirates: 3,
                 heal: -1
             };
-
             this.frontsToMove.sort(function (a, b) {
                 return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
             });
         };
-
         FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
             var front = this.frontsToMove.pop();
-
             if (!front) {
                 afterMovingAllCallback();
                 return;
             }
-
             front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
         };
-
         FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
             switch (objective.type) {
-                case "expansion": {
-                    var min = this.getUnitsToFillExpansionObjective(objective);
-                    return ({
-                        min: min,
-                        ideal: 6
-                    });
-                }
-                case "cleanPirates": {
-                    var min = this.getUnitsToFillExpansionObjective(objective);
-                    return ({
-                        min: min,
-                        ideal: min
-                    });
-                }
-                case "heal": {
-                    return ({
-                        min: 999,
-                        ideal: 999
-                    });
-                }
+                case "expansion":
+                    {
+                        var min = this.getUnitsToFillExpansionObjective(objective);
+                        return ({
+                            min: min,
+                            ideal: 6
+                        });
+                    }
+                case "cleanPirates":
+                    {
+                        var min = this.getUnitsToFillExpansionObjective(objective);
+                        return ({
+                            min: min,
+                            ideal: min
+                        });
+                    }
+                case "heal":
+                    {
+                        return ({
+                            min: 999,
+                            ideal: 999
+                        });
+                    }
             }
         };
-
         FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
             var star = objective.target;
             var independentShips = star.getIndependentShips();
-
             if (independentShips.length === 1)
                 return 2;
             else {
@@ -12782,13 +11515,11 @@ var Rance;
                 return Math.min(desired, 6);
             }
         };
-
         FrontsAI.prototype.setUnitRequests = function () {
             /*for each front that doesnt fulfill minimum unit requirement
-            make request with same priority of front
+              make request with same priority of front
             */
             this.frontsRequestingUnits = [];
-
             for (var i = 0; i < this.fronts.length; i++) {
                 var front = this.fronts[i];
                 if (front.units.length < front.idealUnitsDesired) {
@@ -12812,10 +11543,8 @@ var Rance;
         function EconomyAI(props) {
             this.objectivesAI = props.objectivesAI;
             this.frontsAI = props.frontsAI;
-
             this.mapEvaluator = props.mapEvaluator;
             this.player = props.mapEvaluator.player;
-
             this.personality = props.personality;
         }
         EconomyAI.prototype.satisfyAllRequests = function () {
@@ -12823,46 +11552,36 @@ var Rance;
             get all requests from OAI and FAI
             sort by priority
             fulfill by priority
-            */
+             */
             var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
             allRequests.sort(function (a, b) {
                 return b.priority - a.priority;
             });
-
             for (var i = 0; i < allRequests.length; i++) {
                 var request = allRequests[i];
-
                 // is front
                 if (request.targetLocation) {
                     this.satisfyFrontRequest(request);
-                } else {
+                }
+                else {
                 }
             }
         };
-
         EconomyAI.prototype.satisfyFrontRequest = function (front) {
             // TODO
             var star = this.player.getNearestOwnedStarTo(front.musterLocation);
-
             var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
             var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
-
             var buildableUnitTypesByArchetype = {};
-
             var buildableUnitTypes = star.getBuildableShipTypes();
-
             for (var i = 0; i < buildableUnitTypes.length; i++) {
                 var archetype = buildableUnitTypes[i].archetype;
-
                 if (!buildableUnitTypesByArchetype[archetype]) {
                     buildableUnitTypesByArchetype[archetype] = [];
                 }
-
                 buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
             }
-
             var unitType;
-
             for (var i = 0; i < sortedScores.length; i++) {
                 if (buildableUnitTypesByArchetype[sortedScores[i]]) {
                     unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
@@ -12870,16 +11589,15 @@ var Rance;
                         // TODO AI should actually try to figure out which individual unit would
                         // be the best
                         return;
-                    } else {
+                    }
+                    else {
                         break;
                     }
                 }
             }
             if (!unitType)
                 debugger;
-
             var unit = this.player.buildUnit(unitType, star);
-
             front.addUnit(unit);
         };
         return EconomyAI;
@@ -12896,17 +11614,13 @@ var Rance;
     var DiplomacyAI = (function () {
         function DiplomacyAI(mapEvaluator, game, personality) {
             this.game = game;
-
             this.player = mapEvaluator.player;
             this.diplomacyStatus = this.player.diplomacyStatus;
-
             this.mapEvaluator = mapEvaluator;
-
             this.personality = personality;
         }
         DiplomacyAI.prototype.setAttitudes = function () {
             var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
-
             for (var playerId in diplomacyEvaluations) {
                 this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
             }
@@ -12929,14 +11643,10 @@ var Rance;
     var AIController = (function () {
         function AIController(player, game, personality) {
             this.personality = personality || Rance.makeRandomPersonality();
-
             this.player = player;
             this.game = game;
-
             this.map = game.galaxyMap;
-
             this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player, this.game);
-
             this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.personality);
             this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
             this.economicAI = new Rance.EconomyAI({
@@ -12950,32 +11660,23 @@ var Rance;
         AIController.prototype.processTurn = function (afterFinishedCallback) {
             // clear cached stuff from mapevaluator
             this.mapEvaluator.processTurnStart();
-
             // gsai evaluate grand strategy
             // dai set attitude
             this.diplomacyAI.setAttitudes();
-
             // oai make objectives
             this.objectivesAI.setAllObjectives();
-
             // fai form fronts
             this.frontsAI.formFronts();
-
             // fai assign units
             this.frontsAI.assignUnits();
-
             // fai request units
             this.frontsAI.setUnitRequests();
-
             // eai fulfill requests
             this.economicAI.satisfyAllRequests();
-
             // fai organize fleets
             this.frontsAI.organizeFleets();
-
             // fai set fleets yet to move
             this.frontsAI.setFrontsToMove();
-
             // fai move fleets
             // function param is called after all fronts have moved
             this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
@@ -13017,15 +11718,12 @@ var Rance;
             this.revealedStars = {};
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
-
             this.isAI = isAI;
             this.diplomacyStatus = new Rance.DiplomacyStatus(this);
-
             this.money = 1000;
         }
         Player.prototype.makeColorScheme = function () {
             var scheme = Rance.generateColorScheme(this.color);
-
             this.color = scheme.main;
             this.secondaryColor = scheme.secondary;
         };
@@ -13037,38 +11735,32 @@ var Rance;
             this.color = 0x000000;
             this.colorAlpha = 0;
             this.secondaryColor = 0xFFFFFF;
-
             this.isIndependent = true;
-
             var foregroundEmblem = new Rance.Emblem(this.secondaryColor);
-            foregroundEmblem.inner = {
-                type: "pirateEmblem",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "pirateEmblem.png"
-            };
-
+            foregroundEmblem.inner =
+                {
+                    type: "pirateEmblem",
+                    position: "both",
+                    foregroundOnly: true,
+                    imageSrc: "pirateEmblem.png"
+                };
             this.flag = new Rance.Flag({
                 width: 46,
                 mainColor: this.color,
                 secondaryColor: this.secondaryColor
             });
-
             this.flag.setForegroundEmblem(foregroundEmblem);
-
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
         };
         Player.prototype.makeRandomFlag = function (seed) {
             if (!this.color || !this.secondaryColor)
                 this.makeColorScheme();
-
             this.flag = new Rance.Flag({
                 width: 46,
                 mainColor: this.color,
                 secondaryColor: this.secondaryColor
             });
-
             this.flag.generateRandom(seed);
             var canvas = this.flag.draw();
             this.icon = canvas.toDataURL();
@@ -13102,166 +11794,136 @@ var Rance;
             if (this.getFleetIndex(fleet) >= 0) {
                 return;
             }
-
             this.fleets.push(fleet);
             this.visionIsDirty = true;
         };
         Player.prototype.removeFleet = function (fleet) {
             var fleetIndex = this.getFleetIndex(fleet);
-
             if (fleetIndex < 0)
                 return;
-
             this.fleets.splice(fleetIndex, 1);
             this.visionIsDirty = true;
         };
         Player.prototype.getFleetsWithPositions = function () {
             var positions = [];
-
             for (var i = 0; i < this.fleets.length; i++) {
                 var fleet = this.fleets[i];
-
                 positions.push({
                     position: fleet.location,
                     data: fleet
                 });
             }
-
             return positions;
         };
-
         Player.prototype.hasStar = function (star) {
             return (this.controlledLocations.indexOf(star) >= 0);
         };
         Player.prototype.addStar = function (star) {
             if (this.hasStar(star))
                 return false;
-
             star.owner = this;
             this.controlledLocations.push(star);
             this.visionIsDirty = true;
         };
         Player.prototype.removeStar = function (star) {
             var index = this.controlledLocations.indexOf(star);
-
             if (index < 0)
                 return false;
-
             star.owner = null;
             this.controlledLocations.splice(index, 1);
             this.visionIsDirty = true;
         };
         Player.prototype.getIncome = function () {
             var income = 0;
-
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 income += this.controlledLocations[i].getIncome();
             }
-
             return income;
         };
         Player.prototype.addResource = function (resource, amount) {
             if (!this.resources[resource.type]) {
                 this.resources[resource.type] = 0;
             }
-
             this.resources[resource.type] += amount;
         };
         Player.prototype.getResourceIncome = function () {
             var incomeByResource = {};
-
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 var star = this.controlledLocations[i];
-
                 var starIncome = star.getResourceIncome();
-
                 if (!starIncome)
                     continue;
-
                 if (!incomeByResource[starIncome.resource.type]) {
-                    incomeByResource[starIncome.resource.type] = {
-                        resource: starIncome.resource,
-                        amount: 0
-                    };
+                    incomeByResource[starIncome.resource.type] =
+                        {
+                            resource: starIncome.resource,
+                            amount: 0
+                        };
                 }
-
                 incomeByResource[starIncome.resource.type].amount += starIncome.amount;
             }
-
             return incomeByResource;
         };
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
-
             for (var type in Rance.Templates.ShipTypes) {
                 if (type === "cheatShip" && (this.isAI || !Rance.Options.debugMode)) {
                     continue;
                 }
                 templates.push(Rance.Templates.ShipTypes[type]);
             }
-
             return templates;
         };
         Player.prototype.getNeighboringStars = function () {
             var stars = {};
-
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 var currentOwned = this.controlledLocations[i];
                 var frontier = currentOwned.getLinkedInRange(1).all;
                 for (var j = 0; j < frontier.length; j++) {
                     if (stars[frontier[j].id]) {
                         continue;
-                    } else if (frontier[j].owner.id === this.id) {
+                    }
+                    else if (frontier[j].owner.id === this.id) {
                         continue;
-                    } else {
+                    }
+                    else {
                         stars[frontier[j].id] = frontier[j];
                     }
                 }
             }
-
             var allStars = [];
-
             for (var id in stars) {
                 allStars.push(stars[id]);
             }
-
             return allStars;
         };
         Player.prototype.updateVisibleStars = function () {
             this.visibleStars = {};
-
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 var starVisible = this.controlledLocations[i].getVision();
-
                 for (var j = 0; j < starVisible.length; j++) {
                     var star = starVisible[j];
                     if (!this.visibleStars[star.id]) {
                         this.visibleStars[star.id] = star;
-
                         if (!this.revealedStars[star.id]) {
                             this.revealedStars[star.id] = star;
                         }
                     }
                 }
             }
-
             for (var i = 0; i < this.fleets.length; i++) {
                 var fleetVisible = this.fleets[i].getVision();
-
                 for (var j = 0; j < fleetVisible.length; j++) {
                     var star = fleetVisible[j];
                     if (!this.visibleStars[star.id]) {
                         this.visibleStars[star.id] = star;
-
                         if (!this.revealedStars[star.id]) {
                             this.revealedStars[star.id] = star;
                         }
                     }
                 }
             }
-
             this.visionIsDirty = false;
-
             Rance.eventManager.dispatchEvent("renderMap");
         };
         Player.prototype.getVisibleStars = function () {
@@ -13270,19 +11932,16 @@ var Rance;
             }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
-
             var visible = [];
             var metPlayers = this.diplomacyStatus.metPlayers;
-
             for (var id in this.visibleStars) {
                 var star = this.visibleStars[id];
                 visible.push(star);
-
-                if (!star.owner.isIndependent && star.owner !== this && !metPlayers[star.owner.id]) {
+                if (!star.owner.isIndependent && star.owner !== this
+                    && !metPlayers[star.owner.id]) {
                     this.diplomacyStatus.meetPlayer(star.owner);
                 }
             }
-
             return visible;
         };
         Player.prototype.getRevealedStars = function () {
@@ -13291,39 +11950,29 @@ var Rance;
             }
             if (this.visionIsDirty)
                 this.updateVisibleStars();
-
             var toReturn = [];
-
             for (var id in this.revealedStars) {
                 toReturn.push(this.revealedStars[id]);
             }
-
             return toReturn;
         };
         Player.prototype.getRevealedButNotVisibleStars = function () {
             if (this.visionIsDirty)
                 this.updateVisibleStars();
-
             var toReturn = [];
-
             for (var id in this.revealedStars) {
                 if (!this.visibleStars[id]) {
                     toReturn.push(this.revealedStars[id]);
                 }
             }
-
             return toReturn;
         };
         Player.prototype.buildUnit = function (template, location) {
             var unit = new Rance.Unit(template);
             this.addUnit(unit);
-
             var fleet = new Rance.Fleet(this, [unit], location);
-
             this.money -= template.buildCost;
-
             Rance.eventManager.dispatchEvent("playerControlUpdated");
-
             return unit;
         };
         Player.prototype.addItem = function (item) {
@@ -13334,23 +11983,20 @@ var Rance;
             if (index === -1) {
                 throw new Error("Player " + this.name + " has no item " + item.id);
             }
-
             this.items.splice(index, 1);
         };
         Player.prototype.getAllBuildableItems = function () {
             var alreadyAdded = {};
             var allBuildable = [];
-
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 var star = this.controlledLocations[i];
-
                 var buildableItems = star.getBuildableItems().all;
                 for (var j = 0; j < buildableItems.length; j++) {
                     var item = buildableItems[j];
-
                     if (alreadyAdded[item.type]) {
                         continue;
-                    } else {
+                    }
+                    else {
                         alreadyAdded[item.type] = true;
                         allBuildable.push({
                             star: star,
@@ -13359,7 +12005,6 @@ var Rance;
                     }
                 }
             }
-
             return allBuildable;
         };
         Player.prototype.getNearestOwnedStarTo = function (star) {
@@ -13367,7 +12012,6 @@ var Rance;
             var isOwnedByThisFN = function (star) {
                 return star.owner === self;
             };
-
             return star.getNearestStarForQualifier(isOwnedByThisFN);
         };
         Player.prototype.attackTarget = function (location, target, battleFinishCallback) {
@@ -13383,13 +12027,13 @@ var Rance;
                     ships: target.ships
                 }
             };
-
             // TODO
             var battlePrep = new Rance.BattlePrep(battleData);
             if (battlePrep.humanPlayer) {
                 app.reactUI.battlePrep = battlePrep;
                 app.reactUI.switchScene("battlePrep");
-            } else {
+            }
+            else {
                 var battle = battlePrep.makeBattle();
                 battle.afterFinishCallbacks.push(battleFinishCallback);
                 var simulator = new Rance.BattleSimulator(battle);
@@ -13399,7 +12043,6 @@ var Rance;
         };
         Player.prototype.serialize = function () {
             var data = {};
-
             data.id = this.id;
             data.name = this.name;
             data.color = this.color;
@@ -13408,40 +12051,27 @@ var Rance;
             data.isIndependent = this.isIndependent;
             data.isAI = this.isAI;
             data.resources = Rance.extendObject(this.resources);
-
             data.diplomacyStatus = this.diplomacyStatus.serialize();
-
             if (this.flag) {
                 data.flag = this.flag.serialize();
             }
-
             data.unitIds = [];
             for (var id in this.units) {
                 data.unitIds.push(id);
             }
-            data.fleets = this.fleets.map(function (fleet) {
-                return fleet.serialize();
-            });
+            data.fleets = this.fleets.map(function (fleet) { return fleet.serialize(); });
             data.money = this.money;
-            data.controlledLocationIds = this.controlledLocations.map(function (star) {
-                return star.id;
-            });
-
-            data.items = this.items.map(function (item) {
-                return item.serialize();
-            });
-
+            data.controlledLocationIds =
+                this.controlledLocations.map(function (star) { return star.id; });
+            data.items = this.items.map(function (item) { return item.serialize(); });
             data.revealedStarIds = [];
             for (var id in this.revealedStars) {
                 data.revealedStarIds.push(parseInt(id));
             }
-
             data.buildings = [];
-
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
             }
-
             return data;
         };
         return Player;
@@ -13466,9 +12096,9 @@ var Rance;
             };
             this.turnOrder = [];
             this.evaluation = {};
-            this.isSimulated = false;
+            this.isSimulated = false; // true when battle is between two
             // ai players
-            this.isVirtual = false;
+            this.isVirtual = false; // true when a clone made by battle ai
             this.ended = false;
             this.afterFinishCallbacks = [];
             this.side1 = props.side1;
@@ -13479,7 +12109,6 @@ var Rance;
         }
         Battle.prototype.init = function () {
             var self = this;
-
             ["side1", "side2"].forEach(function (sideId) {
                 var side = self[sideId];
                 for (var i = 0; i < side.length; i++) {
@@ -13487,29 +12116,26 @@ var Rance;
                         if (side[i][j]) {
                             self.unitsById[side[i][j].id] = side[i][j];
                             self.unitsBySide[sideId].push(side[i][j]);
-
                             var pos = sideId === "side1" ? [i, j] : [i + 2, j];
-
                             self.initUnit(side[i][j], sideId, pos);
                         }
                     }
                 }
             });
-
             this.currentTurn = 0;
             this.maxTurns = 24;
             this.turnsLeft = this.maxTurns;
             this.updateTurnOrder();
             this.setActiveUnit();
-
-            this.startHealth = {
-                side1: this.getTotalHealthForSide("side1").current,
-                side2: this.getTotalHealthForSide("side2").current
-            };
-
+            this.startHealth =
+                {
+                    side1: this.getTotalHealthForSide("side1").current,
+                    side2: this.getTotalHealthForSide("side2").current
+                };
             if (this.checkBattleEnd()) {
                 this.endBattle();
-            } else {
+            }
+            else {
                 this.swapColumnsIfNeeded();
             }
         };
@@ -13527,34 +12153,28 @@ var Rance;
         Battle.prototype.removeUnitFromTurnOrder = function (unit) {
             var unitIndex = this.turnOrder.indexOf(unit);
             if (unitIndex < 0)
-                return false;
-
+                return false; //not in list
             this.turnOrder.splice(unitIndex, 1);
         };
         Battle.prototype.addUnitToTurnOrder = function (unit) {
             var unitIndex = this.turnOrder.indexOf(unit);
             if (unitIndex >= 0)
-                return false;
-
+                return false; //already in list
             this.turnOrder.push(unit);
         };
         Battle.prototype.updateTurnOrder = function () {
             //Sorting function is in utility.ts for reusing in turn order UI.
             //Maybe should make separate TurnOrder class?
             this.turnOrder.sort(Rance.turnOrderSortFunction);
-
             function turnOrderFilterFunction(unit) {
                 if (unit.battleStats.currentActionPoints <= 0) {
                     return false;
                 }
-
                 if (unit.currentHealth <= 0) {
                     return false;
                 }
-
                 return true;
             }
-
             this.turnOrder = this.turnOrder.filter(turnOrderFilterFunction);
         };
         Battle.prototype.setActiveUnit = function () {
@@ -13565,7 +12185,6 @@ var Rance;
             this.turnsLeft--;
             this.updateTurnOrder();
             this.setActiveUnit();
-
             if (!this.isVirtual) {
                 this.forEachUnit(function (unit) {
                     if (unit.currentHealth <= 0) {
@@ -13574,11 +12193,11 @@ var Rance;
                     }
                 });
             }
-
             var shouldEnd = this.checkBattleEnd();
             if (shouldEnd) {
                 this.endBattle();
-            } else {
+            }
+            else {
                 this.swapColumnsIfNeeded();
             }
         };
@@ -13601,57 +12220,46 @@ var Rance;
         Battle.prototype.getActivePlayer = function () {
             if (!this.activeUnit)
                 return null;
-
             var side = this.activeUnit.battleStats.side;
-
             return this.getPlayerForSide(side);
         };
         Battle.prototype.getColumnByPosition = function (position) {
             var side = position <= 1 ? "side1" : "side2";
             var relativePosition = position % 2;
-
             return this[side][relativePosition];
         };
         Battle.prototype.getCapturedUnits = function (victor, maxCapturedUnits) {
-            if (typeof maxCapturedUnits === "undefined") { maxCapturedUnits = 1; }
+            if (maxCapturedUnits === void 0) { maxCapturedUnits = 1; }
             if (!victor || victor.isIndependent)
                 return [];
-
             var winningSide = this.getSideForPlayer(victor);
             var losingSide = Rance.reverseSide(winningSide);
-
             var losingUnits = this.unitsBySide[losingSide].slice(0);
             losingUnits.sort(function (a, b) {
                 return b.battleStats.captureChance - a.battleStats.captureChance;
             });
-
             var capturedUnits = [];
-
             for (var i = 0; i < losingUnits.length; i++) {
                 if (capturedUnits.length >= maxCapturedUnits)
                     break;
-
                 var unit = losingUnits[i];
-                if (unit.currentHealth <= 0 && Math.random() <= unit.battleStats.captureChance) {
+                if (unit.currentHealth <= 0 &&
+                    Math.random() <= unit.battleStats.captureChance) {
                     capturedUnits.push(unit);
                 }
             }
-
             return capturedUnits;
         };
         Battle.prototype.getDeadUnits = function (capturedUnits, victor) {
-            var INDEPENDENT_DEATH_CHANCE = 1;
-            var PLAYER_DEATH_CHANCE = 0.65;
-            var LOSER_DEATH_CHANCE = 0.35;
-
+            var INDEPENDENT_DEATH_CHANCE = 1; // base chance for independents
+            var PLAYER_DEATH_CHANCE = 0.65; // base chance for players
+            var LOSER_DEATH_CHANCE = 0.35; // extra chance for losing side
             if (victor) {
                 var winningSide = this.getSideForPlayer(victor);
                 var losingSide = Rance.reverseSide(winningSide);
                 var losingPlayer = this.getPlayerForSide(losingSide);
             }
-
             var deadUnits = [];
-
             this.forEachUnit(function (unit) {
                 if (unit.currentHealth <= 0) {
                     var wasCaptured = capturedUnits.indexOf(unit) >= 0;
@@ -13661,64 +12269,55 @@ var Rance;
                         if (unit.fleet.player === losingPlayer) {
                             deathChance += LOSER_DEATH_CHANCE;
                         }
-
                         if (Math.random() < deathChance) {
                             deadUnits.push(unit);
                         }
                     }
                 }
             });
-
             return deadUnits;
         };
         Battle.prototype.endBattle = function () {
             this.ended = true;
-
             if (this.isVirtual)
                 return;
-
             this.activeUnit = null;
             var victor = this.getVictor();
-
             this.capturedUnits = this.getCapturedUnits(victor);
             this.deadUnits = this.getDeadUnits(this.capturedUnits, victor);
-
             /*
             var _ : any = window;
-            
+      
             var consoleRows = [];
             this.forEachUnit(function(unit)
             {
-            consoleRows.push(
-            {
-            id: unit.id,
-            health: unit.currentHealth,
-            destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
-            captureChance: unit.battleStats.captureChance,
-            captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
-            });
+              consoleRows.push(
+              {
+                id: unit.id,
+                health: unit.currentHealth,
+                destroyed: this.deadUnits.indexOf(unit) >= 0 ? true : null,
+                captureChance: unit.battleStats.captureChance,
+                captured: this.capturedUnits.indexOf(unit) >= 0 ? true : null
+              });
             }.bind(this));
-            
+      
             if (_.console.table)
             {
-            _.console.table(consoleRows);
+              _.console.table(consoleRows);
             }
             */
             Rance.eventManager.dispatchEvent("battleEnd", null);
         };
         Battle.prototype.finishBattle = function (forcedVictor) {
             var victor = forcedVictor || this.getVictor();
-
             for (var i = 0; i < this.deadUnits.length; i++) {
                 this.deadUnits[i].removeFromPlayer();
             }
-
             if (victor) {
                 for (var i = 0; i < this.capturedUnits.length; i++) {
                     this.capturedUnits[i].transferToPlayer(victor);
                 }
             }
-
             this.forEachUnit(function (unit) {
                 unit.resetBattleStats();
             });
@@ -13727,7 +12326,6 @@ var Rance;
                     unit.currentHealth = Math.round(unit.maxHealth * 0.1);
                 }
             });
-
             if (this.battleData.building) {
                 if (victor) {
                     this.battleData.building.setController(victor);
@@ -13736,17 +12334,16 @@ var Rance;
             for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
                 this.afterFinishCallbacks[i]();
             }
-
             if (this.isSimulated) {
                 Rance.eventManager.dispatchEvent("renderLayer", "fleets");
-            } else {
+            }
+            else {
                 Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
                 Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
             }
         };
         Battle.prototype.getVictor = function () {
             var evaluation = this.getEvaluation();
-
             if (evaluation < 0)
                 return this.side1Player;
             else if (evaluation > 0)
@@ -13757,13 +12354,11 @@ var Rance;
         Battle.prototype.getTotalHealthForColumn = function (position) {
             var column = this.getColumnByPosition(position);
             var total = 0;
-
             for (var i = 0; i < column.length; i++) {
                 if (column[i]) {
                     total += column[i].currentHealth;
                 }
             }
-
             return total;
         };
         Battle.prototype.getTotalHealthForSide = function (side) {
@@ -13771,22 +12366,18 @@ var Rance;
                 current: 0,
                 max: 0
             };
-
             var units = this.unitsBySide[side];
-
             for (var i = 0; i < units.length; i++) {
                 var unit = units[i];
                 health.current += unit.currentHealth;
                 health.max += unit.maxHealth;
             }
-
             return health;
         };
         Battle.prototype.getEvaluation = function () {
             if (!this.evaluation[this.currentTurn]) {
                 var self = this;
                 var evaluation = 0;
-
                 ["side1", "side2"].forEach(function (side) {
                     var sign = side === "side1" ? 1 : -1;
                     var currentHealth = self.getTotalHealthForSide(side).current;
@@ -13796,31 +12387,24 @@ var Rance;
                     }
                     var currentHealthFactor = currentHealth / self.startHealth[side];
                     var lostHealthFactor = 1 - currentHealthFactor;
-
                     for (var i = 0; i < self.unitsBySide[side].length; i++) {
                         if (self.unitsBySide[side][i].currentHealth <= 0) {
                             evaluation += 0.2 * sign;
                         }
                     }
-
                     evaluation += (1 - currentHealthFactor) * sign;
                 });
-
                 evaluation = Rance.clamp(evaluation, -1, 1);
-
                 this.evaluation[this.currentTurn] = evaluation;
             }
-
             return this.evaluation[this.currentTurn];
         };
         Battle.prototype.swapColumnsForSide = function (side) {
             this[side] = this[side].reverse();
-
             for (var i = 0; i < this[side].length; i++) {
                 var column = this[side][i];
                 for (var j = 0; j < column.length; j++) {
                     var pos = side === "side1" ? [i, j] : [i + 2, j];
-
                     if (column[j]) {
                         column[j].setBattlePosition(this, side, pos);
                     }
@@ -13840,44 +12424,37 @@ var Rance;
         Battle.prototype.checkBattleEnd = function () {
             if (!this.activeUnit)
                 return true;
-
             if (this.turnsLeft <= 0)
                 return true;
-
-            if (this.getTotalHealthForSide("side1").current <= 0 || this.getTotalHealthForSide("side2").current <= 0) {
+            if (this.getTotalHealthForSide("side1").current <= 0 ||
+                this.getTotalHealthForSide("side2").current <= 0) {
                 return true;
             }
-
             return false;
         };
         Battle.prototype.makeVirtualClone = function () {
             var battleData = this.battleData;
-
             function cloneUnits(units) {
                 var clones = [];
                 for (var i = 0; i < units.length; i++) {
                     var column = [];
-
                     for (var j = 0; j < units[i].length; j++) {
                         var unit = units[i][j];
                         if (!unit) {
                             column.push(unit);
-                        } else {
+                        }
+                        else {
                             column.push(unit.makeVirtualClone());
                         }
                     }
                     clones.push(column);
                 }
-
                 return clones;
             }
-
             var side1 = cloneUnits(this.side1);
             var side2 = cloneUnits(this.side2);
-
             var side1Player = this.side1Player;
             var side2Player = this.side2Player;
-
             var clone = new Battle({
                 battleData: battleData,
                 side1: side1,
@@ -13885,7 +12462,6 @@ var Rance;
                 side1Player: side1Player,
                 side2Player: side2Player
             });
-
             [side1, side2].forEach(function (side) {
                 for (var i = 0; i < side.length; i++) {
                     for (var j = 0; j < side[i].length; j++) {
@@ -13897,26 +12473,23 @@ var Rance;
                     }
                 }
             });
-
             clone.isVirtual = true;
-
             clone.currentTurn = 0;
             clone.maxTurns = 24;
             clone.turnsLeft = clone.maxTurns;
             clone.updateTurnOrder();
             clone.setActiveUnit();
-
-            clone.startHealth = {
-                side1: clone.getTotalHealthForSide("side1").current,
-                side2: clone.getTotalHealthForSide("side2").current
-            };
-
+            clone.startHealth =
+                {
+                    side1: clone.getTotalHealthForSide("side1").current,
+                    side2: clone.getTotalHealthForSide("side2").current
+                };
             if (clone.checkBattleEnd()) {
                 clone.endBattle();
-            } else {
+            }
+            else {
                 clone.swapColumnsIfNeeded();
             }
-
             return clone;
         };
         return Battle;
@@ -13938,21 +12511,16 @@ var Rance;
         data.actualTarget = getTargetOrGuard(battle, user, ability, target);
         data.effectsToCall = [];
         data.beforeUse = [];
-
         var passiveSkills = user.getPassiveSkillsByPhase();
-
         var beforeUseEffects = [];
-
         if (ability.beforeUse) {
             beforeUseEffects = beforeUseEffects.concat(ability.beforeUse);
         }
-
         if (passiveSkills.beforeAbilityUse) {
             for (var i = 0; i < passiveSkills.beforeAbilityUse.length; i++) {
                 beforeUseEffects = beforeUseEffects.concat(passiveSkills.beforeAbilityUse[i].beforeAbilityUse);
             }
         }
-
         for (var i = 0; i < beforeUseEffects.length; i++) {
             var hasSfx = Boolean(beforeUseEffects[i].sfx);
             if (hasSfx) {
@@ -13962,35 +12530,29 @@ var Rance;
                     target: data.actualTarget,
                     sfx: beforeUseEffects[i].sfx
                 });
-            } else {
+            }
+            else {
                 data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
             }
         }
-
         if (!ability.addsGuard) {
             data.beforeUse.push(user.removeAllGuard.bind(user));
         }
-
         var effectsToCall = [ability.mainEffect];
         if (ability.secondaryEffects) {
             effectsToCall = effectsToCall.concat(ability.secondaryEffects);
         }
-
         for (var i = 0; i < effectsToCall.length; i++) {
             var effect = effectsToCall[i];
             var targetsInArea = getUnitsInEffectArea(battle, user, effect.template, data.actualTarget.battleStats.position);
-
             for (var j = 0; j < targetsInArea.length; j++) {
                 var effectTarget = targetsInArea[j];
-
                 var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
                 var attachedEffectsToAddAfter = [];
-
                 if (effect.attachedEffects) {
                     for (var k = 0; k < effect.attachedEffects.length; k++) {
                         var attachedEffect = effect.attachedEffects[k];
                         var boundAttachedEffect = attachedEffect.template.effect.bind(null, user, effectTarget, attachedEffect.data);
-
                         if (attachedEffect.sfx) {
                             attachedEffectsToAddAfter.push({
                                 effects: [boundAttachedEffect],
@@ -13998,39 +12560,33 @@ var Rance;
                                 target: effectTarget,
                                 sfx: attachedEffect.sfx
                             });
-                        } else {
+                        }
+                        else {
                             boundEffects.push(boundAttachedEffect);
                         }
                     }
                 }
-
                 data.effectsToCall.push({
                     effects: boundEffects,
                     user: user,
                     target: effectTarget,
                     sfx: effect.sfx
                 });
-
                 if (attachedEffectsToAddAfter.length > 0) {
                     data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
                 }
             }
         }
-
         data.afterUse = [];
-
         var afterUseEffects = [];
-
         if (ability.afterUse) {
             afterUseEffects = afterUseEffects.concat(ability.afterUse);
         }
-
         if (passiveSkills.afterAbilityUse) {
             for (var i = 0; i < passiveSkills.afterAbilityUse.length; i++) {
                 afterUseEffects = afterUseEffects.concat(passiveSkills.afterAbilityUse[i].afterAbilityUse);
             }
         }
-
         for (var i = 0; i < afterUseEffects.length; i++) {
             var hasSfx = Boolean(afterUseEffects[i].sfx);
             if (hasSfx) {
@@ -14040,32 +12596,27 @@ var Rance;
                     target: data.actualTarget,
                     sfx: afterUseEffects[i].sfx
                 });
-            } else {
+            }
+            else {
                 data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
             }
         }
-
         data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
-
         return data;
     }
     Rance.getAbilityUseData = getAbilityUseData;
-
     // used for ai simulation. otherwise UIComponents.Battle steps through ability use data
     function useAbility(battle, user, ability, target) {
         var abilityData = getAbilityUseData(battle, user, ability, target);
-
         for (var i = 0; i < abilityData.beforeUse.length; i++) {
             abilityData.beforeUse[i]();
         }
-
         for (var i = 0; i < abilityData.effectsToCall.length; i++) {
             for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++) {
                 abilityData.effectsToCall[i].effects[j]();
             }
         }
-
         for (var i = 0; i < abilityData.afterUse.length; i++) {
             abilityData.afterUse[i]();
         }
@@ -14073,41 +12624,36 @@ var Rance;
     Rance.useAbility = useAbility;
     function validateTarget(battle, user, ability, target) {
         var potentialTargets = getPotentialTargets(battle, user, ability);
-
         return potentialTargets.indexOf(target) >= 0;
     }
     Rance.validateTarget = validateTarget;
     function getTargetOrGuard(battle, user, ability, target) {
         var guarding = getGuarders(battle, user, ability, target);
-
         guarding = guarding.sort(function (a, b) {
             return a.battleStats.guardAmount - b.battleStats.guardAmount;
         });
-
         for (var i = 0; i < guarding.length; i++) {
             var guardRoll = Math.random() * 100;
             if (guardRoll <= guarding[i].battleStats.guardAmount) {
                 return guarding[i];
             }
         }
-
         return target;
     }
     Rance.getTargetOrGuard = getTargetOrGuard;
     function getGuarders(battle, user, ability, target) {
         var allEnemies = getPotentialTargets(battle, user, Rance.Templates.Abilities.dummyTargetAll);
-
         var guarders = allEnemies.filter(function (unit) {
             if (unit.battleStats.guardCoverage === "all") {
                 return unit.battleStats.guardAmount > 0;
-            } else if (unit.battleStats.guardCoverage === "column") {
+            }
+            else if (unit.battleStats.guardCoverage === "column") {
                 // same column
                 if (unit.battleStats.position[0] === target.battleStats.position[0]) {
                     return unit.battleStats.guardAmount > 0;
                 }
             }
         });
-
         return guarders;
     }
     Rance.getGuarders = getGuarders;
@@ -14116,34 +12662,28 @@ var Rance;
             return [user];
         }
         var fleetsToTarget = getFleetsToTarget(battle, user, ability.mainEffect.template);
-
         if (ability.mainEffect.template.targetRange === "close") {
             var farColumnForSide = {
                 side1: 0,
                 side2: 3
             };
-
-            if (user.battleStats.position[0] === farColumnForSide[user.battleStats.side]) {
+            if (user.battleStats.position[0] ===
+                farColumnForSide[user.battleStats.side]) {
                 return [];
             }
-
             var oppositeSide = Rance.reverseSide(user.battleStats.side);
-
             fleetsToTarget[farColumnForSide[oppositeSide]] = [null];
         }
-
         var fleetFilterFN = function (target) {
             if (!Boolean(target)) {
                 return false;
-            } else if (!target.isTargetable()) {
+            }
+            else if (!target.isTargetable()) {
                 return false;
             }
-
             return true;
         };
-
         var targets = Rance.flatten2dArray(fleetsToTarget).filter(fleetFilterFN);
-
         return targets;
     }
     Rance.getPotentialTargets = getPotentialTargets;
@@ -14154,26 +12694,28 @@ var Rance;
         ];
         var insertNullBefore;
         var toConcat;
-
         switch (effect.targetFleets) {
-            case "all": {
-                return battle.side1.concat(battle.side2);
-            }
-            case "ally": {
-                insertNullBefore = user.battleStats.side === "side1" ? false : true;
-                toConcat = battle[user.battleStats.side];
-                break;
-            }
-            case "enemy": {
-                insertNullBefore = user.battleStats.side === "side1" ? true : false;
-                toConcat = battle[Rance.reverseSide(user.battleStats.side)];
-                break;
-            }
+            case "all":
+                {
+                    return battle.side1.concat(battle.side2);
+                }
+            case "ally":
+                {
+                    insertNullBefore = user.battleStats.side === "side1" ? false : true;
+                    toConcat = battle[user.battleStats.side];
+                    break;
+                }
+            case "enemy":
+                {
+                    insertNullBefore = user.battleStats.side === "side1" ? true : false;
+                    toConcat = battle[Rance.reverseSide(user.battleStats.side)];
+                    break;
+                }
         }
-
         if (insertNullBefore) {
             return nullFleet.concat(toConcat);
-        } else {
+        }
+        else {
             return toConcat.concat(nullFleet);
         }
     }
@@ -14181,17 +12723,14 @@ var Rance;
     function getPotentialTargetsByPosition(battle, user, ability) {
         var targets = getPotentialTargets(battle, user, ability);
         var targetPositions = [];
-
         for (var i = 0; i < targets.length; i++) {
             targetPositions.push(targets[i].battleStats.position);
         }
-
         return targetPositions;
     }
     Rance.getPotentialTargetsByPosition = getPotentialTargetsByPosition;
     function getUnitsInAbilityArea(battle, user, ability, target) {
         var inArea = getUnitsInEffectArea(battle, user, ability.mainEffect.template, target);
-
         if (ability.secondaryEffects) {
             for (var i = 0; i < ability.secondaryEffects.length; i++) {
                 var inSecondary = getUnitsInEffectArea(battle, user, ability.secondaryEffects[i].template, target);
@@ -14202,15 +12741,12 @@ var Rance;
                 }
             }
         }
-
         return inArea;
     }
     Rance.getUnitsInAbilityArea = getUnitsInAbilityArea;
     function getUnitsInEffectArea(battle, user, effect, target) {
         var targetFleets = getFleetsToTarget(battle, user, effect);
-
         var inArea = effect.targetingFunction(targetFleets, target);
-
         return inArea.filter(function (unit) {
             if (!unit)
                 return false;
@@ -14219,31 +12755,23 @@ var Rance;
         });
     }
     Rance.getUnitsInEffectArea = getUnitsInEffectArea;
-
     function getTargetsForAllAbilities(battle, user) {
         if (!user || !battle.activeUnit) {
             return null;
         }
-
         var allTargets = {};
-
         var abilities = user.getAllAbilities();
         for (var i = 0; i < abilities.length; i++) {
             var ability = abilities[i];
-
             var targets = getPotentialTargets(battle, user, ability);
-
             for (var j = 0; j < targets.length; j++) {
                 var target = targets[j];
-
                 if (!allTargets[target.id]) {
                     allTargets[target.id] = [];
                 }
-
                 allTargets[target.id].push(ability);
             }
         }
-
         return allTargets;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
@@ -14294,64 +12822,54 @@ var Rance;
             this.passiveSkillsByPhaseAreDirty = true;
             this.uiDisplayIsDirty = true;
             this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
-
             this.template = template;
             this.name = this.id + " " + template.typeName;
             this.isSquadron = template.isSquadron;
             if (data) {
                 this.makeFromData(data);
-            } else {
+            }
+            else {
                 this.setInitialValues();
             }
-
-            this.displayFlags = {
-                isAnnihilated: false
-            };
+            this.displayFlags =
+                {
+                    isAnnihilated: false
+                };
         }
         Object.defineProperty(Unit.prototype, "attributes", {
             get: function () {
                 if (this.attributesAreDirty || !this.cachedAttributes) {
                     this.updateCachedAttributes();
                 }
-
                 return this.cachedAttributes;
             },
             enumerable: true,
             configurable: true
         });
-
         Unit.prototype.makeFromData = function (data) {
             var items = {};
-
             ["low", "mid", "high"].forEach(function (slot) {
                 if (data.items[slot]) {
                     var item = data.items[slot];
                     if (!item)
                         return;
-
                     if (item.templateType) {
                         items[slot] = new Rance.Item(Rance.Templates.Items[item.templateType], item.id);
-                    } else {
+                    }
+                    else {
                         items[slot] = item;
                     }
                 }
             });
-
             this.name = data.name;
-
             this.maxHealth = data.maxHealth;
             this.currentHealth = data.currentHealth;
-
             this.currentMovePoints = data.currentMovePoints;
             this.maxMovePoints = data.maxMovePoints;
-
             this.timesActedThisTurn = data.timesActedThisTurn;
-
             this.baseAttributes = Rance.extendObject(data.baseAttributes);
             this.attributes = Rance.extendObject(this.baseAttributes);
-
             var battleStats = {};
-
             battleStats.moveDelay = data.battleStats.moveDelay;
             battleStats.side = data.battleStats.side;
             battleStats.position = data.battleStats.position;
@@ -14361,15 +12879,13 @@ var Rance;
             battleStats.captureChance = data.battleStats.captureChance;
             battleStats.statusEffects = data.battleStats.statusEffects;
             battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-
             this.battleStats = battleStats;
-
-            this.items = {
-                low: null,
-                mid: null,
-                high: null
-            };
-
+            this.items =
+                {
+                    low: null,
+                    mid: null,
+                    high: null
+                };
             for (var slot in items) {
                 this.addItem(items[slot]);
             }
@@ -14378,24 +12894,20 @@ var Rance;
             this.setBaseHealth();
             this.setAttributes();
             this.resetBattleStats();
-
             this.maxMovePoints = this.template.maxMovePoints;
             this.resetMovePoints();
-
             this.timesActedThisTurn = 0;
         };
         Unit.prototype.setBaseHealth = function () {
             var min = 500 * this.template.maxHealth;
             var max = 1000 * this.template.maxHealth;
             this.maxHealth = Rance.randInt(min, max);
-
             this.currentHealth = this.maxHealth;
         };
         Unit.prototype.setAttributes = function (experience, variance) {
-            if (typeof experience === "undefined") { experience = 1; }
-            if (typeof variance === "undefined") { variance = 1; }
+            if (experience === void 0) { experience = 1; }
+            if (variance === void 0) { variance = 1; }
             var template = this.template;
-
             var attributes = {
                 attack: 1,
                 defence: 1,
@@ -14403,18 +12915,14 @@ var Rance;
                 speed: 1,
                 maxActionPoints: Rance.randInt(3, 6)
             };
-
             for (var attribute in template.attributeLevels) {
                 var attributeLevel = template.attributeLevels[attribute];
-
                 var min = 4 * experience * attributeLevel + 1;
                 var max = 8 * experience * attributeLevel + 1 + variance;
-
                 attributes[attribute] = Rance.randInt(min, max);
                 if (attributes[attribute] > 9)
                     attributes[attribute] = 9;
             }
-
             this.baseAttributes = Rance.extendObject(attributes);
             this.attributes = attributes;
         };
@@ -14425,44 +12933,40 @@ var Rance;
             this.currentMovePoints = this.maxMovePoints;
         };
         Unit.prototype.resetBattleStats = function () {
-            this.battleStats = {
-                moveDelay: this.getBaseMoveDelay(),
-                currentActionPoints: this.attributes.maxActionPoints,
-                battle: null,
-                side: null,
-                position: null,
-                guardAmount: 0,
-                guardCoverage: null,
-                captureChance: 0.1,
-                statusEffects: [],
-                lastHealthBeforeReceivingDamage: this.currentHealth
-            };
-
-            this.displayFlags = {
-                isAnnihilated: false
-            };
+            this.battleStats =
+                {
+                    moveDelay: this.getBaseMoveDelay(),
+                    currentActionPoints: this.attributes.maxActionPoints,
+                    side: null,
+                    position: null,
+                    guardAmount: 0,
+                    guardCoverage: null,
+                    captureChance: 0.1,
+                    statusEffects: [],
+                    lastHealthBeforeReceivingDamage: this.currentHealth
+                };
+            this.displayFlags =
+                {
+                    isAnnihilated: false
+                };
         };
         Unit.prototype.setBattlePosition = function (battle, side, position) {
             this.battleStats.side = side;
             this.battleStats.position = position;
         };
-
         Unit.prototype.addStrength = function (amount) {
             this.currentHealth += Math.round(amount);
             if (this.currentHealth > this.maxHealth) {
                 this.currentHealth = this.maxHealth;
             }
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeStrength = function (amount) {
             this.currentHealth -= Math.round(amount);
             this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
-
             if (amount > 0) {
                 this.removeGuard(50);
             }
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeActionPoints = function (amount) {
@@ -14470,7 +12974,6 @@ var Rance;
             if (this.battleStats.currentActionPoints < 0) {
                 this.battleStats.currentActionPoints = 0;
             }
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.addMoveDelay = function (amount) {
@@ -14484,7 +12987,6 @@ var Rance;
                 }
             }
         };
-
         // redundant until stealth mechanics are added
         Unit.prototype.isTargetable = function () {
             return this.currentHealth > 0;
@@ -14492,20 +12994,15 @@ var Rance;
         Unit.prototype.isActiveInBattle = function () {
             return this.currentHealth > 0;
         };
-
         Unit.prototype.addItem = function (item) {
             var itemSlot = item.template.slot;
-
             if (this.items[itemSlot])
                 return false;
-
             if (item.unit) {
                 item.unit.removeItem(item);
             }
-
             this.items[itemSlot] = item;
             item.unit = this;
-
             if (item.template.attributes) {
                 this.attributesAreDirty = true;
             }
@@ -14515,21 +13012,17 @@ var Rance;
         };
         Unit.prototype.removeItem = function (item) {
             var itemSlot = item.template.slot;
-
             if (this.items[itemSlot] === item) {
                 this.items[itemSlot] = null;
                 item.unit = null;
-
                 if (item.template.attributes) {
                     this.attributesAreDirty = true;
                 }
                 if (item.template.passiveSkill) {
                     this.passiveSkillsByPhaseAreDirty = true;
                 }
-
                 return true;
             }
-
             return false;
         };
         Unit.prototype.destroyAllItems = function () {
@@ -14542,7 +13035,6 @@ var Rance;
         };
         Unit.prototype.getAttributesWithItems = function () {
             var attributes = Rance.extendObject(this.baseAttributes);
-
             for (var itemSlot in this.items) {
                 if (this.items[itemSlot]) {
                     var item = this.items[itemSlot];
@@ -14551,18 +13043,17 @@ var Rance;
                     }
                 }
             }
-
             return attributes;
         };
         Unit.prototype.addStatusEffect = function (statusEffect) {
             if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1) {
                 throw new Error("Tried to add duplicate status effect to unit " + this.name);
-            } else if (statusEffect.duration === 0) {
+            }
+            else if (statusEffect.duration === 0) {
                 if (Rance.Options.debugMode)
                     console.warn("Tried to add status effect", statusEffect, "with 0 duration");
                 return;
             }
-
             this.battleStats.statusEffects.push(statusEffect);
             if (statusEffect.attributes) {
                 this.attributesAreDirty = true;
@@ -14573,22 +13064,19 @@ var Rance;
             if (index === -1) {
                 throw new Error("Tried to remove status effect not active on unit " + this.name);
             }
-
             this.battleStats.statusEffects.splice(index, 1);
             if (statusEffect.attributes) {
                 this.attributesAreDirty = true;
             }
         };
-
         /*
         sort by attribute, positive/negative, additive vs multiplicative
         apply additive, multiplicative
-        */
+         */
         Unit.prototype.getTotalStatusEffectAttributeAdjustments = function () {
             if (!this.battleStats || !this.battleStats.statusEffects) {
                 return null;
             }
-
             var adjustments = {};
             for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
                 var statusEffect = this.battleStats.statusEffects[i];
@@ -14598,17 +13086,14 @@ var Rance;
                         if (!adjustments[attribute][type]) {
                             adjustments[attribute][type] = 0;
                         }
-
                         adjustments[attribute][type] += statusEffect.attributes[attribute][type];
                     }
                 }
             }
-
             return adjustments;
         };
         Unit.prototype.getAttributesWithEffects = function () {
             var withItems = this.getAttributesWithItems();
-
             var adjustments = this.getTotalStatusEffectAttributeAdjustments();
             for (var attribute in adjustments) {
                 if (adjustments[attribute].flat) {
@@ -14617,10 +13102,8 @@ var Rance;
                 if (adjustments[attribute].multiplier) {
                     withItems[attribute] *= 1 + adjustments[attribute].multiplier;
                 }
-
                 withItems[attribute] = Rance.clamp(withItems[attribute], -5, 20);
             }
-
             return withItems;
         };
         Unit.prototype.updateCachedAttributes = function () {
@@ -14631,36 +13114,29 @@ var Rance;
                 this.removeItem(this.items[slot]);
                 return true;
             }
-
             return false;
         };
         Unit.prototype.getItemAbilities = function () {
             var itemAbilities = [];
-
             for (var slot in this.items) {
                 if (!this.items[slot] || !this.items[slot].template.ability)
                     continue;
                 itemAbilities.push(this.items[slot].template.ability);
             }
-
             return itemAbilities;
         };
         Unit.prototype.getAllAbilities = function () {
             var abilities = this.template.abilities;
-
             abilities = abilities.concat(this.getItemAbilities());
-
             return abilities;
         };
         Unit.prototype.getItemPassiveSkills = function () {
             var itemPassiveSkills = [];
-
             for (var slot in this.items) {
                 if (!this.items[slot] || !this.items[slot].template.passiveSkill)
                     continue;
                 itemPassiveSkills.push(this.items[slot].template.passiveSkill);
             }
-
             return itemPassiveSkills;
         };
         Unit.prototype.getAllPassiveSkills = function () {
@@ -14668,16 +13144,12 @@ var Rance;
             if (this.template.passiveSkills) {
                 allSkills = allSkills.concat(this.template.passiveSkills);
             }
-
             allSkills = allSkills.concat(this.getItemPassiveSkills());
-
             return allSkills;
         };
         Unit.prototype.updatePassiveSkillsByPhase = function () {
             var updatedSkills = {};
-
             var allSkills = this.getAllPassiveSkills();
-
             for (var i = 0; i < allSkills.length; i++) {
                 var skill = allSkills[i];
                 ["atBattleStart", "beforeAbilityUse", "afterAbilityUse"].forEach(function (phase) {
@@ -14685,14 +13157,12 @@ var Rance;
                         if (!updatedSkills[phase]) {
                             updatedSkills[phase] = [];
                         }
-
                         if (updatedSkills[phase].indexOf(skill) === -1) {
                             updatedSkills[phase].push(skill);
                         }
                     }
                 });
             }
-
             this.passiveSkillsByPhase = updatedSkills;
             this.passiveSkillsByPhaseAreDirty = false;
         };
@@ -14700,14 +13170,11 @@ var Rance;
             if (this.passiveSkillsByPhaseAreDirty) {
                 this.updatePassiveSkillsByPhase();
             }
-
             return this.passiveSkillsByPhase;
         };
         Unit.prototype.receiveDamage = function (amount, damageType) {
             var damageReduction = this.getReducedDamageFactor(damageType);
-
             var adjustedDamage = amount * damageReduction;
-
             this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
             this.removeStrength(adjustedDamage);
         };
@@ -14715,60 +13182,59 @@ var Rance;
             // used so unit will always counter with at least 1/3 strength it had before being attacked
             var balancedHealth = this.currentHealth + this.battleStats.lastHealthBeforeReceivingDamage / 3;
             this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
-
-            var currentHealth = this.isSquadron ? balancedHealth : Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
-
+            var currentHealth = this.isSquadron ?
+                balancedHealth :
+                Math.min(this.maxHealth, balancedHealth + this.maxHealth * 0.2);
             if (currentHealth <= 500) {
                 return currentHealth;
-            } else if (currentHealth <= 2000) {
+            }
+            else if (currentHealth <= 2000) {
                 return currentHealth / 2 + 250;
-            } else {
+            }
+            else {
                 return currentHealth / 4 + 750;
             }
         };
         Unit.prototype.getAttackDamageIncrease = function (damageType) {
             var attackStat, attackFactor;
-
             switch (damageType) {
-                case 0 /* physical */: {
-                    attackStat = this.attributes.attack;
-                    attackFactor = 0.1;
-                    break;
-                }
-                case 1 /* magical */: {
-                    attackStat = this.attributes.intelligence;
-                    attackFactor = 0.1;
-                    break;
-                }
+                case Rance.DamageType.physical:
+                    {
+                        attackStat = this.attributes.attack;
+                        attackFactor = 0.1;
+                        break;
+                    }
+                case Rance.DamageType.magical:
+                    {
+                        attackStat = this.attributes.intelligence;
+                        attackFactor = 0.1;
+                        break;
+                    }
             }
-
             var troopSize = this.getAdjustedTroopSize() / 4;
-
             return (1 + attackStat * attackFactor) * troopSize;
         };
         Unit.prototype.getReducedDamageFactor = function (damageType) {
             var defensiveStat, defenceFactor;
             var finalDamageMultiplier = 1;
-
             switch (damageType) {
-                case 0 /* physical */: {
-                    defensiveStat = this.attributes.defence;
-                    defenceFactor = 0.045;
-
-                    var guardAmount = Math.min(this.battleStats.guardAmount, 100);
-                    finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
-                    break;
-                }
-                case 1 /* magical */: {
-                    defensiveStat = this.attributes.intelligence;
-                    defenceFactor = 0.045;
-                    break;
-                }
+                case Rance.DamageType.physical:
+                    {
+                        defensiveStat = this.attributes.defence;
+                        defenceFactor = 0.045;
+                        var guardAmount = Math.min(this.battleStats.guardAmount, 100);
+                        finalDamageMultiplier = 1 - guardAmount / 200; // 1 - 0.5;
+                        break;
+                    }
+                case Rance.DamageType.magical:
+                    {
+                        defensiveStat = this.attributes.intelligence;
+                        defenceFactor = 0.045;
+                        break;
+                    }
             }
-
             var damageReduction = defensiveStat * defenceFactor;
             var finalDamageFactor = (1 - damageReduction) * finalDamageMultiplier;
-
             return finalDamageFactor;
         };
         Unit.prototype.addToFleet = function (fleet) {
@@ -14779,23 +13245,18 @@ var Rance;
         };
         Unit.prototype.removeFromPlayer = function () {
             var player = this.fleet.player;
-
             this.destroyAllItems();
             player.removeUnit(this);
             this.fleet.removeShip(this);
-
             if (this.front) {
                 this.front.removeUnit(this);
             }
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.transferToPlayer = function (newPlayer) {
             var oldPlayer = this.fleet.player;
             var location = this.fleet.location;
-
             this.removeFromPlayer();
-
             newPlayer.addUnit(this);
             var newFleet = new Rance.Fleet(newPlayer, [this], location);
         };
@@ -14803,35 +13264,29 @@ var Rance;
             this.battleStats.guardAmount -= amount;
             if (this.battleStats.guardAmount < 0)
                 this.removeAllGuard();
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.addGuard = function (amount, coverage) {
             this.battleStats.guardAmount += amount;
             this.battleStats.guardCoverage = coverage;
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.removeAllGuard = function () {
             this.battleStats.guardAmount = 0;
             this.battleStats.guardCoverage = null;
-
             this.uiDisplayIsDirty = true;
         };
         Unit.prototype.getCounterAttackStrength = function () {
-            return 1;
+            return 1; // TODO
         };
         Unit.prototype.canActThisTurn = function () {
             return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
         };
         Unit.prototype.heal = function () {
             var location = this.fleet.location;
-
             var baseHealFactor = 0.05;
             var healingFactor = baseHealFactor + location.getHealingFactor(this.fleet.player);
-
             var healAmount = this.maxHealth * healingFactor;
-
             this.addStrength(healAmount);
         };
         Unit.prototype.getStrengthEvaluation = function () {
@@ -14847,148 +13302,116 @@ var Rance;
                 isConvex = !isConvex;
                 degree = Math.abs(degree);
             }
-
             var xDistance = isFinite(props.xDistance) ? props.xDistance : 5;
             var zDistance = isFinite(props.zDistance) ? props.zDistance : 5;
-
             var canvas = document.createElement("canvas");
             canvas.width = 2000;
             canvas.height = 2000;
-
             var ctx = canvas.getContext("2d");
-
             var spriteTemplate = this.template.sprite;
             var image = app.images["units"][spriteTemplate.imageSrc];
-
             var unitsToDraw;
-
             if (isFinite(props.unitsToDraw)) {
                 unitsToDraw = props.unitsToDraw;
-            } else if (!this.isSquadron) {
+            }
+            else if (!this.isSquadron) {
                 unitsToDraw = 1;
-            } else {
+            }
+            else {
                 unitsToDraw = Math.round(this.currentHealth * 0.05);
                 var heightRatio = 25 / image.height;
                 heightRatio = Math.min(heightRatio, 1.25);
                 maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
                 unitsToDraw = Math.round(unitsToDraw * heightRatio);
                 zDistance *= (1 / heightRatio);
-
                 unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
             }
-
             var xMin, xMax, yMin, yMax;
-
             function transformMat3(a, m) {
                 var x = m[0] * a.x + m[3] * a.y + m[6];
                 var y = m[1] * a.x + m[4] * a.y + m[7];
-
                 return { x: x, y: y };
             }
-
             var rotationAngle = Math.PI / 180 * props.rotationAngle;
             var sA = Math.sin(rotationAngle);
             var cA = Math.cos(rotationAngle);
-
             var rotationMatrix = [
                 1, 0, 0,
                 0, cA, -sA,
                 0, sA, cA
             ];
-
             var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-
             if (props.desiredHeight) {
                 var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
                 var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
                 zDistance = spaceToFill / maxUnitsPerColumn;
             }
-
             for (var i = unitsToDraw - 1; i >= 0; i--) {
                 var column = Math.floor(i / maxUnitsPerColumn);
                 var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-
                 var zPos;
                 if (isLastColumn) {
                     var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
                     if (maxUnitsInThisColumn === 1) {
                         zPos = (maxUnitsPerColumn - 1) / 2;
-                    } else {
+                    }
+                    else {
                         var positionInLastColumn = i % maxUnitsInThisColumn;
                         zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
                     }
-                } else {
+                }
+                else {
                     zPos = i % maxUnitsPerColumn;
                 }
-
                 var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
                 if (isConvex) {
                     xOffset = 1 - xOffset;
                 }
-
                 xOffset -= minXOffset;
-
                 var scale = 1 - zPos * props.scalingFactor;
                 var scaledWidth = image.width * scale;
                 var scaledHeight = image.height * scale;
-
                 var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
                 var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-
                 var translated = transformMat3({ x: x, y: y }, rotationMatrix);
-
                 x = Math.round(translated.x);
                 y = Math.round(translated.y);
-
                 xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
                 xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
                 yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
                 yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
-
                 ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
             }
-
             var resultCanvas = document.createElement("canvas");
-
             resultCanvas.width = xMax - xMin;
             if (props.maxWidth) {
                 resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width);
             }
-
             resultCanvas.height = yMax - yMin;
             if (props.maxHeight) {
                 resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height);
             }
-
             var resultCtx = resultCanvas.getContext("2d");
-
             // flip horizontally
             if (props.facesRight) {
                 resultCtx.translate(resultCanvas.width, 0);
                 resultCtx.scale(-1, 1);
             }
             resultCtx.drawImage(canvas, -xMin, -yMin);
-
             return resultCanvas;
         };
         Unit.prototype.serialize = function (includeItems) {
-            if (typeof includeItems === "undefined") { includeItems = true; }
+            if (includeItems === void 0) { includeItems = true; }
             var data = {};
-
             data.templateType = this.template.type;
             data.id = this.id;
             data.name = this.name;
-
             data.maxHealth = this.maxHealth;
             data.currentHealth = this.currentHealth;
-
             data.currentMovePoints = this.currentMovePoints;
             data.maxMovePoints = this.maxMovePoints;
-
             data.timesActedThisTurn = this.timesActedThisTurn;
-
             data.baseAttributes = Rance.extendObject(this.baseAttributes);
-
             data.battleStats = {};
             data.battleStats.moveDelay = this.battleStats.moveDelay;
             data.battleStats.side = this.battleStats.side;
@@ -15000,26 +13423,21 @@ var Rance;
             data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
                 return statusEffect.clone();
             });
-
             if (this.fleet) {
                 data.fleetId = this.fleet.id;
             }
-
             data.items = {};
-
             if (includeItems) {
                 for (var slot in this.items) {
                     if (this.items[slot])
                         data.items[slot] = this.items[slot].serialize();
                 }
             }
-
             return data;
         };
         Unit.prototype.makeVirtualClone = function () {
             var data = this.serialize();
             var clone = new Unit(this.template, this.id, data);
-
             return clone;
         };
         return Unit;
@@ -15028,6 +13446,7 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildableShip = React.createClass({
             displayName: "BuildableShip",
@@ -15035,32 +13454,29 @@ var Rance;
                 var cellProps = {};
                 cellProps.key = type;
                 cellProps.className = "buildable-ship-list-item-cell " + type;
-
                 var cellContent;
-
                 switch (type) {
-                    case ("buildCost"): {
-                        if (this.props.player.money < this.props.buildCost) {
-                            cellProps.className += " negative";
+                    case ("buildCost"):
+                        {
+                            if (this.props.player.money < this.props.buildCost) {
+                                cellProps.className += " negative";
+                            }
                         }
-                    }
-                    default: {
-                        cellContent = this.props[type];
-                        break;
-                    }
+                    default:
+                        {
+                            cellContent = this.props[type];
+                            break;
+                        }
                 }
-
                 return (React.DOM.td(cellProps, cellContent));
             },
             render: function () {
                 var player = this.props.player;
                 var cells = [];
                 var columns = this.props.activeColumns;
-
                 for (var i = 0; i < columns.length; i++) {
                     cells.push(this.makeCell(columns[i].key));
                 }
-
                 var props = {
                     className: "buildable-item buildable-ship",
                     onClick: this.props.handleClick
@@ -15070,12 +13486,10 @@ var Rance;
                     props.disabled = true;
                     props.className += " disabled";
                 }
-
                 return (React.DOM.tr(props, cells));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../unit.ts" />
 /// <reference path="../../fleet.ts" />
@@ -15083,6 +13497,7 @@ var Rance;
 /// <reference path="buildableship.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildableShipsList = React.createClass({
             displayName: "BuildableShipsList",
@@ -15095,31 +13510,26 @@ var Rance;
                 if (rowItem.data.template.buildCost > this.props.player.money) {
                     return;
                 }
-
                 this.props.player.buildUnit(rowItem.data.template, this.props.star);
             },
             render: function () {
                 if (this.state.shipTemplates.length < 1)
                     return null;
                 var rows = [];
-
                 for (var i = 0; i < this.state.shipTemplates.length; i++) {
                     var template = this.state.shipTemplates[i];
-
                     var data = {
                         template: template,
                         typeName: template.typeName,
                         buildCost: template.buildCost,
                         player: this.props.player,
-                        rowConstructor: Rance.UIComponents.BuildableShip
+                        rowConstructor: UIComponents.BuildableShip
                     };
-
                     rows.push({
                         key: i,
                         data: data
                     });
                 }
-
                 var columns = [
                     {
                         label: "Name",
@@ -15132,20 +13542,19 @@ var Rance;
                         defaultOrder: "desc"
                     }
                 ];
-
-                return (React.DOM.div({ className: "buildable-item-list buildable-ship-list" }, Rance.UIComponents.List({
+                return (React.DOM.div({ className: "buildable-item-list buildable-ship-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
                     onRowChange: this.buildShip
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 // /// <reference path="buildingupgradelistitem.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.BuildingUpgradeList = React.createClass({
             displayName: "BuildingUpgradeList",
@@ -15155,7 +13564,6 @@ var Rance;
             },
             upgradeBuilding: function (upgradeData) {
                 var star = upgradeData.parentBuilding.location;
-
                 console.log(upgradeData);
                 var newBuilding = new Rance.Building({
                     template: upgradeData.template,
@@ -15164,14 +13572,10 @@ var Rance;
                     upgradeLevel: upgradeData.level,
                     totalCost: upgradeData.parentBuilding.totalCost + upgradeData.cost
                 });
-
                 star.removeBuilding(upgradeData.parentBuilding);
                 star.addBuilding(newBuilding);
-
                 upgradeData.parentBuilding.controller.money -= upgradeData.cost;
-
                 Rance.eventManager.dispatchEvent("playerControlUpdated");
-
                 if (!this.hasAvailableUpgrades()) {
                     this.props.clearExpandedAction();
                 }
@@ -15179,44 +13583,34 @@ var Rance;
             render: function () {
                 if (!this.hasAvailableUpgrades())
                     return null;
-
                 var possibleUpgrades = this.props.star.getBuildingUpgrades();
                 var upgradeGroups = [];
-
                 for (var parentBuildingId in possibleUpgrades) {
                     var upgrades = possibleUpgrades[parentBuildingId];
                     var parentBuilding = upgrades[0].parentBuilding;
-
                     var upgradeElements = [];
-
                     for (var i = 0; i < upgrades.length; i++) {
                         var upgrade = upgrades[i];
-
                         var rowProps = {
                             key: upgrade.template.type,
                             className: "building-upgrade-list-item",
                             onClick: this.upgradeBuilding.bind(this, upgrade)
                         };
-
                         var costProps = {
                             key: "cost",
                             className: "building-upgrade-list-item-cost"
                         };
-
                         if (this.props.player.money < upgrade.cost) {
                             rowProps.onClick = null;
                             rowProps.disabled = true;
                             rowProps.className += " disabled";
-
                             costProps.className += " negative";
                         }
-
                         upgradeElements.push(React.DOM.tr(rowProps, React.DOM.td({
                             key: "name",
                             className: "building-upgrade-list-item-name"
                         }, upgrade.template.name + " " + upgrade.level), React.DOM.td(costProps, upgrade.cost)));
                     }
-
                     var parentElement = React.DOM.div({
                         key: parentBuilding.id,
                         className: "building-upgrade-group"
@@ -15225,17 +13619,14 @@ var Rance;
                     }, parentBuilding.template.name), React.DOM.table({
                         className: "buildable-item-list"
                     }, React.DOM.tbody({}, upgradeElements)));
-
                     upgradeGroups.push(parentElement);
                 }
-
                 return (React.DOM.ul({
                     className: "building-upgrade-list"
                 }, upgradeGroups));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="attacktarget.ts"/>
 /// <reference path="buildablebuildinglist.ts"/>
@@ -15243,6 +13634,7 @@ var Rance;
 /// <reference path="buildingupgradelist.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.PossibleActions = React.createClass({
             displayName: "PossibleActions",
@@ -15253,7 +13645,8 @@ var Rance;
                 });
             },
             componentWillReceiveProps: function (newProps) {
-                if (this.props.selectedStar !== newProps.selectedStar && this.state.expandedActionElement) {
+                if (this.props.selectedStar !== newProps.selectedStar &&
+                    this.state.expandedActionElement) {
                     this.setState({
                         expandedAction: null,
                         expandedActionElement: null
@@ -15277,17 +13670,18 @@ var Rance;
                 }, this.updateActions);
             },
             buildBuildings: function () {
-                if (!this.props.selectedStar || this.state.expandedAction === "buildBuildings") {
+                if (!this.props.selectedStar ||
+                    this.state.expandedAction === "buildBuildings") {
                     this.clearExpandedAction();
-                } else {
+                }
+                else {
                     var element = React.DOM.div({
                         className: "expanded-action"
-                    }, Rance.UIComponents.BuildableBuildingList({
+                    }, UIComponents.BuildableBuildingList({
                         player: this.props.player,
                         star: this.props.selectedStar,
                         clearExpandedAction: this.clearExpandedAction
                     }));
-
                     this.setState({
                         expandedAction: "buildBuildings",
                         expandedActionElement: element
@@ -15295,17 +13689,18 @@ var Rance;
                 }
             },
             buildShips: function () {
-                if (!this.props.selectedStar || this.state.expandedAction === "buildShips") {
+                if (!this.props.selectedStar ||
+                    this.state.expandedAction === "buildShips") {
                     this.clearExpandedAction();
-                } else {
+                }
+                else {
                     var element = React.DOM.div({
                         className: "expanded-action"
-                    }, Rance.UIComponents.BuildableShipsList({
+                    }, UIComponents.BuildableShipsList({
                         player: this.props.player,
                         star: this.props.selectedStar,
                         clearExpandedAction: this.clearExpandedAction
                     }));
-
                     this.setState({
                         expandedAction: "buildShips",
                         expandedActionElement: element
@@ -15313,17 +13708,18 @@ var Rance;
                 }
             },
             upgradeBuildings: function () {
-                if (!this.props.selectedStar || this.state.expandedAction === "upgradeBuildings") {
+                if (!this.props.selectedStar ||
+                    this.state.expandedAction === "upgradeBuildings") {
                     this.clearExpandedAction();
-                } else {
+                }
+                else {
                     var element = React.DOM.div({
                         className: "expanded-action"
-                    }, Rance.UIComponents.BuildingUpgradeList({
+                    }, UIComponents.BuildingUpgradeList({
                         player: this.props.player,
                         star: this.props.selectedStar,
                         clearExpandedAction: this.clearExpandedAction
                     }));
-
                     this.setState({
                         expandedAction: "upgradeBuildings",
                         expandedActionElement: element
@@ -15332,7 +13728,6 @@ var Rance;
             },
             render: function () {
                 var allActions = [];
-
                 var attackTargets = this.props.attackTargets;
                 if (attackTargets && attackTargets.length > 0) {
                     var attackTargetComponents = [];
@@ -15341,15 +13736,13 @@ var Rance;
                             key: i,
                             attackTarget: attackTargets[i]
                         };
-
-                        attackTargetComponents.push(Rance.UIComponents.AttackTarget(props));
+                        attackTargetComponents.push(UIComponents.AttackTarget(props));
                     }
                     allActions.push(React.DOM.div({
                         className: "possible-action",
                         key: "attackActions"
                     }, React.DOM.div({ className: "possible-action-title" }, "attack"), attackTargetComponents));
                 }
-
                 var star = this.props.selectedStar;
                 if (star) {
                     if (star.owner === this.props.player) {
@@ -15358,7 +13751,6 @@ var Rance;
                             onClick: this.buildShips,
                             key: "buildShipActions"
                         }, "build ship"));
-
                         if (star.getBuildableBuildings().length > 0) {
                             allActions.push(React.DOM.div({
                                 className: "possible-action",
@@ -15366,7 +13758,6 @@ var Rance;
                                 key: "buildActions"
                             }, "construct"));
                         }
-
                         if (Object.keys(star.getBuildingUpgrades()).length > 0) {
                             allActions.push(React.DOM.div({
                                 className: "possible-action",
@@ -15376,22 +13767,18 @@ var Rance;
                         }
                     }
                 }
-
                 if (allActions.length < 1) {
                     return null;
                 }
-
                 var possibleActions = React.DOM.div({
                     className: "possible-actions"
                 }, allActions);
-
                 return (React.DOM.div({
                     className: "possible-actions-container"
                 }, possibleActions, this.state.expandedActionElement));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
@@ -15400,12 +13787,12 @@ var Rance;
 /// <reference path="../possibleactions/possibleactions.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.GalaxyMapUI = React.createClass({
             displayName: "GalaxyMapUI",
             getInitialState: function () {
                 var pc = this.props.playerControl;
-
                 return ({
                     selectedFleets: pc.selectedFleets,
                     inspectedFleets: pc.inspectedFleets,
@@ -15425,7 +13812,6 @@ var Rance;
             },
             updateSelection: function () {
                 var pc = this.props.playerControl;
-
                 var star = null;
                 if (pc.selectedStar)
                     star = pc.selectedStar;
@@ -15433,7 +13819,6 @@ var Rance;
                     star = pc.selectedFleets[0].location;
                 }
                 ;
-
                 this.setState({
                     selectedFleets: pc.selectedFleets,
                     inspectedFleets: pc.inspectedFleets,
@@ -15455,83 +13840,76 @@ var Rance;
                 if (!this.state.isPlayerTurn) {
                     endTurnButtonProps.className += " disabled";
                 }
-
                 var selectionContainerClassName = "fleet-selection-container";
                 if (this.state.currentlyReorganizing.length > 0) {
                     selectionContainerClassName += " reorganizing";
                 }
-
                 var isInspecting = this.state.inspectedFleets.length > 0;
-
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, React.DOM.div({
                     className: "galaxy-map-ui-top"
-                }, Rance.UIComponents.TopBar({
+                }, UIComponents.TopBar({
                     player: this.props.player,
                     game: this.props.game
-                }), Rance.UIComponents.TopMenu({
+                }), UIComponents.TopMenu({
                     player: this.props.player,
                     game: this.props.game
                 }), React.DOM.div({
                     className: selectionContainerClassName
-                }, Rance.UIComponents.FleetSelection({
-                    selectedFleets: (isInspecting ? this.state.inspectedFleets : this.state.selectedFleets),
+                }, UIComponents.FleetSelection({
+                    selectedFleets: (isInspecting ?
+                        this.state.inspectedFleets : this.state.selectedFleets),
                     isInspecting: isInspecting,
                     selectedStar: this.state.selectedStar,
                     currentlyReorganizing: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization
                 }))), React.DOM.div({
                     className: "galaxy-map-ui-bottom-left"
-                }, Rance.UIComponents.PossibleActions({
+                }, UIComponents.PossibleActions({
                     attackTargets: this.state.attackTargets,
                     selectedStar: this.state.selectedStar,
                     player: this.props.player
-                }), Rance.UIComponents.StarInfo({
+                }), UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
                 })), React.DOM.button(endTurnButtonProps, "End turn")));
             },
             componentWillMount: function () {
                 Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
-
                 Rance.eventManager.addEventListener("endTurn", this.setPlayerTurn);
             },
             componentWillUnmount: function () {
                 Rance.eventManager.removeEventListener("playerControlUpdated", this.updateSelection);
-
                 Rance.eventManager.removeEventListener("endTurn", this.setPlayerTurn);
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="galaxymapui.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.GalaxyMap = React.createClass({
             displayName: "GalaxyMap",
             switchMapMode: function () {
                 var newMode = this.refs.mapModeSelector.getDOMNode().value;
-
                 this.props.mapRenderer.setMapMode(newMode);
             },
             render: function () {
                 var mapModeOptions = [];
-
                 for (var mapModeName in this.props.mapRenderer.mapModes) {
                     mapModeOptions.push(React.DOM.option({
                         value: mapModeName,
                         key: mapModeName
                     }, this.props.mapRenderer.mapModes[mapModeName].name));
                 }
-
                 return (React.DOM.div({
                     className: "galaxy-map"
                 }, React.DOM.div({
                     ref: "pixiContainer",
                     id: "pixi-container"
-                }, Rance.UIComponents.GalaxyMapUI({
+                }, UIComponents.GalaxyMapUI({
                     playerControl: this.props.playerControl,
                     player: this.props.player,
                     game: this.props.game
@@ -15545,14 +13923,12 @@ var Rance;
                 this.props.renderer.isBattleBackground = false;
                 this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
                 this.props.mapRenderer.setMapMode("default");
-
                 this.props.renderer.resume();
-
                 // hack. transparency isn't properly rendered without this
                 this.props.mapRenderer.setAllLayersAsDirty();
-
-                var centerLocation = this.props.renderer.camera.toCenterOn || this.props.toCenterOn || this.props.player.controlledLocations[0];
-
+                var centerLocation = this.props.renderer.camera.toCenterOn ||
+                    this.props.toCenterOn ||
+                    this.props.player.controlledLocations[0];
                 this.props.renderer.camera.centerOnPosition(centerLocation);
             },
             componentWillUnmount: function () {
@@ -15560,12 +13936,12 @@ var Rance;
                 this.props.renderer.removeRendererView();
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/react.d.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FocusTimer = {
             componentDidMount: function () {
@@ -15581,12 +13957,12 @@ var Rance;
                 this.lastFocusTime = Date.now();
             }
         };
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../color.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ColorPicker = React.createClass({
             displayName: "ColorPicker",
@@ -15594,7 +13970,6 @@ var Rance;
                 var hexColor = this.props.hexColor || 0xFFFFFF;
                 var hexString = "#" + Rance.hexToString(hexColor);
                 var hsvColor = Rance.colorFromScalars(Rance.hexToHsv(hexColor));
-
                 return ({
                     hexColor: hexColor,
                     hexString: hexString,
@@ -15609,31 +13984,30 @@ var Rance;
                 var hsvColor = [hue, sat, val];
                 var hexColor = Math.round(Rance.hsvToHex.apply(null, Rance.scalarsFromColor(hsvColor)));
                 var hexString = "#" + Rance.hexToString(hexColor);
-
                 this.setState({
                     hexColor: hexColor,
                     hexString: hexString,
                     lastValidHexString: hexString,
                     isNull: false
                 });
-
                 if (this.props.onChange) {
                     // prevent onchange events from constantly having to render custom image
-                    //
-                    if (!this.props.limitUpdates || (!this.props.flagHasCustomImage || e.target.type !== "range" || e.type !== "input")) {
+                    // 
+                    if (!this.props.limitUpdates ||
+                        (!this.props.flagHasCustomImage ||
+                            e.target.type !== "range" ||
+                            e.type !== "input")) {
                         this.props.onChange(hexColor, false);
                     }
                 }
             },
             updateFromHex: function (hexColor) {
                 var hsvColor = Rance.colorFromScalars(Rance.hexToHsv(hexColor));
-
                 this.setState({
                     hue: Math.round(hsvColor[0]),
                     sat: Math.round(hsvColor[1]),
                     val: Math.round(hsvColor[2])
                 });
-
                 if (this.props.onChange) {
                     this.props.onChange(hexColor, false);
                 }
@@ -15645,24 +14019,21 @@ var Rance;
                 var hexString;
                 if (e.type === "paste") {
                     hexString = e.clipboardData.getData("text");
-                } else {
+                }
+                else {
                     hexString = e.target.value;
                 }
-
                 if (hexString[0] !== "#") {
                     hexString = "#" + hexString;
                 }
                 var isValid = /^#[0-9A-F]{6}$/i.test(hexString);
-
                 var hexColor = Rance.stringToHex(hexString);
-
                 this.setState({
                     hexString: hexString,
                     lastValidHexString: isValid ? hexString : this.state.lastValidHexString,
                     hexColor: isValid ? hexColor : this.state.hexColor,
                     isNull: !isValid
                 });
-
                 if (isValid) {
                     this.updateFromHex(hexColor);
                 }
@@ -15691,18 +14062,15 @@ var Rance;
             autoGenerateColor: function () {
                 var hexColor = this.props.generateColor();
                 var hexString = "#" + Rance.hexToString(hexColor);
-
                 this.setState({
                     hexString: hexString,
                     lastValidHexString: hexString,
                     hexColor: hexColor
                 });
-
                 this.updateFromHex(hexColor);
             },
             nullifyColor: function () {
                 this.setState({ isNull: true });
-
                 if (this.props.onChange) {
                     this.props.onChange(this.state.hexColor, true);
                 }
@@ -15710,73 +14078,72 @@ var Rance;
             getHueGradientString: function () {
                 if (this.hueGradientString)
                     return this.hueGradientString;
-
                 var steps = 10;
                 var gradeStep = 100 / (steps - 1);
                 var hueStep = 360 / steps;
-
                 var gradientString = "linear-gradient(to right, ";
-
                 for (var i = 0; i < steps; i++) {
                     var hue = hueStep * i;
                     var grade = gradeStep * i;
                     var colorString = "hsl(" + hue + ", 100%, 50%) " + grade + "%";
                     if (i < steps - 1) {
                         colorString += ",";
-                    } else {
+                    }
+                    else {
                         colorString += ")";
                     }
-
                     gradientString += colorString;
                 }
-
                 this.hueGradientString = gradientString;
                 return gradientString;
             },
             makeGradientString: function (min, max) {
-                return ("linear-gradient(to right, " + min + " 0%, " + max + " 100%)");
+                return ("linear-gradient(to right, " +
+                    min + " 0%, " +
+                    max + " 100%)");
             },
             makeGradientStyle: function (type) {
                 var hue = this.state.hue;
                 var sat = this.state.sat;
                 var val = this.state.val;
-
                 switch (type) {
-                    case "hue": {
-                        return ({
-                            background: this.getHueGradientString()
-                        });
-                    }
-                    case "sat": {
-                        var min = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, 0, val])));
-                        var max = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, 100, val])));
-                        return ({
-                            background: this.makeGradientString(min, max)
-                        });
-                    }
-                    case "val": {
-                        var min = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, sat, 0])));
-                        var max = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, sat, 100])));
-                        return ({
-                            background: this.makeGradientString(min, max)
-                        });
-                    }
-                    default: {
-                        return null;
-                    }
+                    case "hue":
+                        {
+                            return ({
+                                background: this.getHueGradientString()
+                            });
+                        }
+                    case "sat":
+                        {
+                            var min = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, 0, val])));
+                            var max = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, 100, val])));
+                            return ({
+                                background: this.makeGradientString(min, max)
+                            });
+                        }
+                    case "val":
+                        {
+                            var min = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, sat, 0])));
+                            var max = "#" + Rance.hexToString(Rance.hsvToHex.apply(null, Rance.scalarsFromColor([hue, sat, 100])));
+                            return ({
+                                background: this.makeGradientString(min, max)
+                            });
+                        }
+                    default:
+                        {
+                            return null;
+                        }
                 }
             },
             makeHsvInputs: function (type) {
                 var rootId = this._rootNodeID;
                 var label = "" + type[0].toUpperCase() + ":";
-
                 var max = type === "hue" ? 360 : 100;
                 var updateFunctions = {
                     hue: this.setHue,
                     sat: this.setSat,
                     val: this.setVal
                 };
-
                 return (React.DOM.div({ className: "color-picker-input-container", key: type }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + type }, label), React.DOM.div({
                     className: "color-picker-slider-background",
                     style: this.makeGradientStyle(type)
@@ -15802,11 +14169,22 @@ var Rance;
             },
             render: function () {
                 var rootId = this._rootNodeID;
-
-                return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + "hex" }, "Hex:"), !this.props.generateColor ? null : React.DOM.button({
-                    className: "color-picker-button",
-                    onClick: this.autoGenerateColor
-                }, "Auto"), React.DOM.button({
+                return (React.DOM.div({ className: "color-picker" }, React.DOM.div({ className: "color-picker-hsv" }, this.makeHsvInputs("hue"), this.makeHsvInputs("sat"), this.makeHsvInputs("val")), React.DOM.div({ className: "color-picker-input-container", key: "hex" }, React.DOM.label({ className: "color-picker-label", htmlFor: "" + rootId + "hex" }, "Hex:"), 
+                /*React.DOM.input(
+                {
+                  className: "color-picker-slider",
+                  id: "" + rootId + "hex",
+                  ref: "hex",
+                  type: "color",
+                  step: 1,
+                  value: this.state.lastValidHexString,
+                  onChange: this.setHex
+                }),*/
+                !this.props.generateColor ? null :
+                    React.DOM.button({
+                        className: "color-picker-button",
+                        onClick: this.autoGenerateColor
+                    }, "Auto"), React.DOM.button({
                     className: "color-picker-button",
                     onClick: this.nullifyColor
                 }, "Clear"), React.DOM.input({
@@ -15820,17 +14198,17 @@ var Rance;
                 }))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/focustimer.ts" />
 /// <reference path="colorpicker.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.ColorSetter = React.createClass({
             displayName: "ColorSetter",
-            mixins: [Rance.UIComponents.FocusTimer],
+            mixins: [UIComponents.FocusTimer],
             getInitialState: function () {
                 return ({
                     hexColor: this.props.color || 0xFFFFFF,
@@ -15855,18 +14233,19 @@ var Rance;
                 var focusGraceTime = 500;
                 if (Date.now() - this.lastFocusTime <= focusGraceTime)
                     return;
-
                 var node = this.refs.main.getDOMNode();
                 if (e.target === node || node.contains(e.target)) {
                     return;
-                } else {
+                }
+                else {
                     this.setAsInactive();
                 }
             },
             toggleActive: function () {
                 if (this.state.isActive) {
                     this.setAsInactive();
-                } else {
+                }
+                else {
                     if (this.props.setActiveColorPicker) {
                         this.props.setActiveColorPicker(this);
                     }
@@ -15885,41 +14264,43 @@ var Rance;
             updateColor: function (hexColor, isNull) {
                 if (isNull) {
                     this.setState({ isNull: isNull });
-                } else {
+                }
+                else {
                     this.setState({ hexColor: hexColor, isNull: isNull });
                 }
-
                 if (this.props.onChange) {
                     this.props.onChange(hexColor, isNull);
                 }
             },
             render: function () {
-                var displayElement = this.state.isNull ? React.DOM.img({
-                    className: "color-setter-display",
-                    src: "img\/icons\/nullcolor.png",
-                    onClick: this.toggleActive
-                }) : React.DOM.div({
-                    className: "color-setter-display",
-                    style: {
-                        backgroundColor: "#" + Rance.hexToString(this.state.hexColor)
-                    },
-                    onClick: this.toggleActive
-                });
-
-                return (React.DOM.div({ className: "color-setter", ref: "main" }, displayElement, this.props.isActive || this.state.isActive ? Rance.UIComponents.ColorPicker({
-                    hexColor: this.state.hexColor,
-                    generateColor: this.props.generateColor,
-                    onChange: this.updateColor,
-                    setAsInactive: this.setAsInactive,
-                    flagHasCustomImage: this.props.flagHasCustomImage
-                }) : null));
+                var displayElement = this.state.isNull ?
+                    React.DOM.img({
+                        className: "color-setter-display",
+                        src: "img\/icons\/nullcolor.png",
+                        onClick: this.toggleActive
+                    }) :
+                    React.DOM.div({
+                        className: "color-setter-display",
+                        style: {
+                            backgroundColor: "#" + Rance.hexToString(this.state.hexColor)
+                        },
+                        onClick: this.toggleActive
+                    });
+                return (React.DOM.div({ className: "color-setter", ref: "main" }, displayElement, this.props.isActive || this.state.isActive ?
+                    UIComponents.ColorPicker({
+                        hexColor: this.state.hexColor,
+                        generateColor: this.props.generateColor,
+                        onChange: this.updateColor,
+                        setAsInactive: this.setAsInactive,
+                        flagHasCustomImage: this.props.flagHasCustomImage
+                    }) : null));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FlagPicker = React.createClass({
             displayName: "FlagPicker",
@@ -15947,17 +14328,15 @@ var Rance;
             handleUpload: function (e) {
                 if (!this.props.uploadFiles)
                     throw new Error();
-
                 var files = this.refs.imageUploader.getDOMNode().files;
-
                 this.props.uploadFiles(files);
             },
             makeEmblemElement: function (template) {
                 var className = "emblem-picker-image";
-                if (this.state.selectedEmblem && this.state.selectedEmblem.type === template.type) {
+                if (this.state.selectedEmblem &&
+                    this.state.selectedEmblem.type === template.type) {
                     className += " selected-emblem";
                 }
-
                 return (React.DOM.div({
                     className: "emblem-picker-container",
                     key: template.type,
@@ -15969,28 +14348,27 @@ var Rance;
             },
             render: function () {
                 var emblems = [];
-
                 for (var emblemType in Rance.Templates.SubEmblems) {
                     var template = Rance.Templates.SubEmblems[emblemType];
                     emblems.push(this.makeEmblemElement(template));
                 }
-
                 var pirateTemplate = {
                     type: "pirateEmblem",
                     position: "both",
                     foregroundOnly: true,
                     imageSrc: "pirateEmblem.png"
                 };
-
                 emblems.push(this.makeEmblemElement(pirateTemplate));
-
                 var imageInfoMessage;
                 if (this.props.hasImageFailMessage) {
-                    imageInfoMessage = React.DOM.div({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " + "and uploading it.");
-                } else {
-                    imageInfoMessage = React.DOM.div({ className: "image-info-message" }, "Upload or drag image here to set it as your flag");
+                    imageInfoMessage =
+                        React.DOM.div({ className: "image-info-message image-loading-fail-message" }, "Linked image failed to load. Try saving it to your own computer " +
+                            "and uploading it.");
                 }
-
+                else {
+                    imageInfoMessage =
+                        React.DOM.div({ className: "image-info-message" }, "Upload or drag image here to set it as your flag");
+                }
                 return (React.DOM.div({
                     className: "flag-picker"
                 }, React.DOM.div({
@@ -16007,25 +14385,24 @@ var Rance;
                 }, React.DOM.div({ className: "flag-picker-title" }, "Emblems"), React.DOM.div({ className: "emblem-picker-emblem-list" }, emblems))));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../mixins/focustimer.ts" />
 /// <reference path="flagpicker.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FlagSetter = React.createClass({
             displayName: "FlagSetter",
-            mixins: [Rance.UIComponents.FocusTimer],
+            mixins: [UIComponents.FocusTimer],
             getInitialState: function () {
                 var flag = new Rance.Flag({
                     width: 46,
                     mainColor: this.props.mainColor,
-                    subColor: this.props.subColor,
+                    secondaryColor: this.props.subColor,
                     tetriaryColor: this.props.tetriaryColor
                 });
-
                 return ({
                     flag: flag,
                     icon: flag.draw().toDataURL(),
@@ -16040,7 +14417,6 @@ var Rance;
             },
             displayImageLoadingFailMessage: function (error) {
                 this.setState({ hasImageFailMessage: true });
-
                 this.imageLoadingFailTimeout = window.setTimeout(function () {
                     this.setState({ hasImageFailMessage: false });
                 }.bind(this), 10000);
@@ -16055,18 +14431,19 @@ var Rance;
                 var focusGraceTime = 500;
                 if (Date.now() - this.lastFocusTime <= focusGraceTime)
                     return;
-
                 var node = this.refs.main.getDOMNode();
                 if (e.target === node || node.contains(e.target)) {
                     return;
-                } else {
+                }
+                else {
                     this.setAsInactive();
                 }
             },
             toggleActive: function () {
                 if (this.state.isActive) {
                     this.setAsInactive();
-                } else {
+                }
+                else {
                     if (this.props.setActiveColorPicker) {
                         this.props.setActiveColorPicker(this);
                     }
@@ -16084,14 +14461,11 @@ var Rance;
             },
             setForegroundEmblem: function (emblemTemplate) {
                 var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
-
                 var emblem = null;
                 if (emblemTemplate) {
                     emblem = new Rance.Emblem(undefined, 1, emblemTemplate);
                 }
-
                 this.state.flag.setForegroundEmblem(emblem);
-
                 if (shouldUpdate) {
                     this.handleUpdate();
                 }
@@ -16103,32 +14477,25 @@ var Rance;
             handleDrop: function (e) {
                 if (e.dataTransfer) {
                     this.stopEvent(e);
-
                     var files = e.dataTransfer.files;
-
                     var image = this.getFirstValidImageFromFiles(files);
-
                     if (!image) {
                         // try to get image from any html img element dropped
                         var htmlContent = e.dataTransfer.getData("text\/html");
                         var imageSource = htmlContent.match(/src\s*=\s*"(.+?)"/)[1];
-
                         if (!imageSource) {
                             console.error("None of the files provided are valid images");
                             return;
-                        } else {
+                        }
+                        else {
                             var getImageDataUrl = function (image) {
                                 var canvas = document.createElement("canvas");
                                 var ctx = canvas.getContext("2d");
-
                                 canvas.width = image.width;
                                 canvas.height = image.height;
-
                                 ctx.drawImage(image, 0, 0);
-
                                 return canvas.toDataURL();
                             };
-
                             var img = new Image();
                             img.crossOrigin = "Anonymous";
                             img.onload = function (e) {
@@ -16138,16 +14505,15 @@ var Rance;
                             img.onerror = function (e) {
                                 this.displayImageLoadingFailMessage(e);
                             }.bind(this);
-
                             img.src = imageSource;
-
                             // image was cached
                             if (img.complete || img.complete === undefined) {
                                 this.state.flag.setCustomImage(getImageDataUrl(img));
                                 this.handleUpdate();
                             }
                         }
-                    } else {
+                    }
+                    else {
                         this.setCustomImageFromFile(image);
                     }
                 }
@@ -16156,13 +14522,11 @@ var Rance;
                 var image = this.getFirstValidImageFromFiles(files);
                 if (!image)
                     return false;
-
                 this.setCustomImageFromFile(image);
                 return true;
             },
             getFirstValidImageFromFiles: function (files) {
                 var image;
-
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
                     if (file.type.indexOf("image") !== -1) {
@@ -16170,35 +14534,33 @@ var Rance;
                         break;
                     }
                 }
-
                 return image;
             },
             setCustomImageFromFile: function (file) {
                 var setImageFN = function (file) {
                     var reader = new FileReader();
-
                     reader.onloadend = function () {
                         this.state.flag.setCustomImage(reader.result);
                         this.handleUpdate();
                     }.bind(this);
-
                     reader.readAsDataURL(file);
                 }.bind(this, file);
-
                 var fileSizeInMegaBytes = file.size / 1024 / 1024;
                 if (fileSizeInMegaBytes > 20) {
-                    if (window.confirm("Are you sure you want to load an image that is " + fileSizeInMegaBytes.toFixed(2) + "MB in size?\n" + "(The image won't be stored online, " + "but processing it might take a while)")) {
+                    if (window.confirm("Are you sure you want to load an image that is " +
+                        fileSizeInMegaBytes.toFixed(2) + "MB in size?\n" +
+                        "(The image won't be stored online, " +
+                        "but processing it might take a while)")) {
                         setImageFN();
                     }
-                } else {
+                }
+                else {
                     setImageFN();
                 }
             },
             componentWillReceiveProps: function (newProps) {
                 var oldProps = this.props;
-
                 this.state.flag.setColorScheme(newProps.mainColor, newProps.subColor, newProps.tetriaryColor);
-
                 // if (!this.state.flag.customImage)
                 // {
                 //   this.handleUpdate();
@@ -16210,7 +14572,6 @@ var Rance;
                         return;
                     }
                 });
-
                 if (colorHasUpdated) {
                     this.handleUpdate(true);
                     return;
@@ -16218,17 +14579,14 @@ var Rance;
             },
             handleUpdate: function (dontTriggerParentUpdates) {
                 this.clearImageLoadingFailMessage();
-
                 if (this.state.flag.customImage) {
                     if (this.refs.flagPicker) {
                         this.refs.flagPicker.clearSelectedEmblem();
                     }
                 }
-
                 if (!dontTriggerParentUpdates) {
                     this.props.toggleCustomImage(this.state.flag.customImage);
                 }
-
                 this.setState({
                     icon: this.state.flag.draw().toDataURL()
                 });
@@ -16244,23 +14602,24 @@ var Rance;
                     className: "flag-setter-display",
                     src: this.state.icon,
                     onClick: this.toggleActive
-                }), this.props.isActive || this.state.isActive ? Rance.UIComponents.FlagPicker({
-                    ref: "flagPicker",
-                    flag: this.state.flag,
-                    handleSelectEmblem: this.setForegroundEmblem,
-                    hasImageFailMessage: this.state.hasImageFailMessage,
-                    onChange: this.handleUpdate,
-                    uploadFiles: this.handleUpload
-                }) : null));
+                }), this.props.isActive || this.state.isActive ?
+                    UIComponents.FlagPicker({
+                        ref: "flagPicker",
+                        flag: this.state.flag,
+                        handleSelectEmblem: this.setForegroundEmblem,
+                        hasImageFailMessage: this.state.hasImageFailMessage,
+                        onChange: this.handleUpdate,
+                        uploadFiles: this.handleUpload
+                    }) : null));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="colorsetter.ts" />
 /// <reference path="flagsetter.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.PlayerSetup = React.createClass({
             displayName: "PlayerSetup",
@@ -16273,18 +14632,20 @@ var Rance;
                 });
             },
             generateMainColor: function (subColor) {
-                if (typeof subColor === "undefined") { subColor = this.state.subColor; }
+                if (subColor === void 0) { subColor = this.state.subColor; }
                 if (subColor === null) {
                     return Rance.generateMainColor();
-                } else {
+                }
+                else {
                     return Rance.generateSecondaryColor(subColor);
                 }
             },
             generateSubColor: function (mainColor) {
-                if (typeof mainColor === "undefined") { mainColor = this.state.mainColor; }
+                if (mainColor === void 0) { mainColor = this.state.mainColor; }
                 if (mainColor === null) {
                     return Rance.generateMainColor();
-                } else {
+                }
+                else {
                     return Rance.generateSecondaryColor(mainColor);
                 }
             },
@@ -16310,9 +14671,7 @@ var Rance;
                 if (!this.state.flagHasCustomImage) {
                     this.refs.flagSetter.state.flag.generateRandom();
                 }
-
                 var mainColor = Rance.generateMainColor();
-
                 this.setState({
                     mainColor: mainColor,
                     subColor: Rance.generateSecondaryColor(mainColor)
@@ -16320,28 +14679,23 @@ var Rance;
             },
             makePlayer: function () {
                 var player = new Rance.Player(!this.props.isHuman);
-
                 player.name = this.state.name;
-
-                player.color = this.state.mainColor === null ? this.generateMainColor() : this.state.mainColor;
-                player.secondaryColor = this.state.subColor === null ? this.generateSubColor(player.color) : this.state.subColor;
-
+                player.color = this.state.mainColor === null ?
+                    this.generateMainColor() : this.state.mainColor;
+                player.secondaryColor = this.state.subColor === null ?
+                    this.generateSubColor(player.color) : this.state.subColor;
                 var flag = this.refs.flagSetter.state.flag;
-
                 player.flag = flag;
                 player.flag.setColorScheme(player.color, player.secondaryColor, flag.tetriaryColor);
-
-                if (this.state.mainColor === null && this.state.subColor === null && !flag.customImage && !flag.foregroundEmblem) {
+                if (this.state.mainColor === null && this.state.subColor === null &&
+                    !flag.customImage && !flag.foregroundEmblem) {
                     flag.generateRandom();
                 }
-
                 player.setIcon();
-
                 this.setState({
                     mainColor: player.color,
                     subColor: player.secondaryColor
                 });
-
                 return player;
             },
             render: function () {
@@ -16357,21 +14711,21 @@ var Rance;
                     className: "player-setup-name",
                     value: this.state.name,
                     onChange: this.handleNameChange
-                }), Rance.UIComponents.ColorSetter({
+                }), UIComponents.ColorSetter({
                     ref: "mainColor",
                     onChange: this.setMainColor,
                     setActiveColorPicker: this.props.setActiveColorPicker,
                     generateColor: this.generateMainColor,
                     flagHasCustomImage: this.state.flagHasCustomImage,
                     color: this.state.mainColor
-                }), Rance.UIComponents.ColorSetter({
+                }), UIComponents.ColorSetter({
                     ref: "subColor",
                     onChange: this.setSubColor,
                     setActiveColorPicker: this.props.setActiveColorPicker,
                     generateColor: this.generateSubColor,
                     flagHasCustomImage: this.state.flagHasCustomImage,
                     color: this.state.subColor
-                }), Rance.UIComponents.FlagSetter({
+                }), UIComponents.FlagSetter({
                     ref: "flagSetter",
                     mainColor: this.state.mainColor,
                     subColor: this.state.subColor,
@@ -16383,23 +14737,21 @@ var Rance;
                 }, "X")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="playersetup.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.SetupGamePlayers = React.createClass({
             displayName: "SetupGamePlayers",
             getInitialState: function () {
                 this.newPlayerId = 0;
-
                 var players = [];
                 for (var i = 0; i < this.props.minPlayers; i++) {
                     players.push(this.newPlayerId++);
                 }
-
                 return ({
                     players: players,
                     activeColorPicker: null
@@ -16408,41 +14760,35 @@ var Rance;
             componentWillReceiveProps: function (newProps) {
                 if (newProps.minPlayers > this.state.players.length) {
                     this.makeNewPlayers(newProps.minPlayers - this.state.players.length);
-                } else if (newProps.maxPlayers < this.state.players.length) {
+                }
+                else if (newProps.maxPlayers < this.state.players.length) {
                     var overflowCount = this.state.players.length - newProps.maxPlayers;
                     this.removePlayers(this.state.players.slice(-overflowCount));
                 }
             },
             makeNewPlayers: function (amountToMake) {
-                if (typeof amountToMake === "undefined") { amountToMake = 1; }
+                if (amountToMake === void 0) { amountToMake = 1; }
                 if (this.state.players.length >= this.props.maxPlayers) {
                     return;
                 }
-
                 var newIds = [];
-
                 for (var i = 0; i < amountToMake; i++) {
                     newIds.push(this.newPlayerId++);
                 }
-
                 this.setState({
                     players: this.state.players.concat(newIds)
                 });
             },
             setHumanPlayer: function (playerId) {
                 var index = this.state.players.indexOf(playerId);
-
                 var newPlayerOrder = this.state.players.slice(0);
-
                 newPlayerOrder.unshift(newPlayerOrder.splice(index, 1)[0]);
-
                 this.setState({ players: newPlayerOrder });
             },
             removePlayers: function (toRemove) {
                 if (this.state.players.length <= this.props.minPlayers) {
                     return;
                 }
-
                 this.setState({
                     players: this.state.players.filter(function (playerId) {
                         return toRemove.indexOf(playerId) === -1;
@@ -16453,13 +14799,11 @@ var Rance;
                 if (this.state.activeColorPicker) {
                     this.state.activeColorPicker.setAsInactive();
                 }
-
                 this.setState({ activeColorPicker: colorPicker });
             },
             randomizeAllPlayers: function () {
                 for (var id in this.refs) {
                     var player = this.refs[id];
-
                     player.randomize();
                 }
             },
@@ -16468,13 +14812,12 @@ var Rance;
                 for (var id in this.refs) {
                     players.push(this.refs[id].makePlayer());
                 }
-
                 return players;
             },
             render: function () {
                 var playerSetups = [];
                 for (var i = 0; i < this.state.players.length; i++) {
-                    playerSetups.push(Rance.UIComponents.PlayerSetup({
+                    playerSetups.push(UIComponents.PlayerSetup({
                         key: this.state.players[i],
                         ref: this.state.players[i],
                         removePlayers: this.removePlayers,
@@ -16484,9 +14827,7 @@ var Rance;
                         setHuman: this.setHumanPlayer
                     }));
                 }
-
                 var canAddPlayers = this.state.players.length < this.props.maxPlayers;
-
                 return (React.DOM.div({ className: "setup-game-players" }, React.DOM.div({
                     className: "player-setup setup-game-players-header"
                 }, React.DOM.div({
@@ -16508,13 +14849,13 @@ var Rance;
                 }, "Add new player")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../fillerpoint.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         var Region2 = (function () {
             function Region2(id, isFiller) {
@@ -16547,23 +14888,23 @@ var Rance;
                     return exemptRegions.indexOf(b.mapGenData.region) !== -1;
                 });
             };
-
             // TODO REMOVE
             Region2.prototype.severLinksToNonCenter = function () {
                 this.severLinksByQualifier(function (a, b) {
-                    return (a.mapGenData.region !== b.mapGenData.region && b.mapGenData.region.id.indexOf("center") < 0);
+                    return (a.mapGenData.region !== b.mapGenData.region &&
+                        b.mapGenData.region.id.indexOf("center") < 0);
                 });
             };
             return Region2;
         })();
         MapGen2.Region2 = Region2;
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../data/templates/resourcetemplates.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         var Sector2 = (function () {
             function Sector2(id) {
@@ -16574,15 +14915,12 @@ var Rance;
                 if (star.mapGenData.sector) {
                     throw new Error("Star already part of a sector");
                 }
-
                 this.stars.push(star);
                 star.mapGenData.sector = this;
             };
-
             Sector2.prototype.getNeighboringStars = function () {
                 var neighbors = [];
                 var alreadyAdded = {};
-
                 for (var i = 0; i < this.stars.length; i++) {
                     var frontier = this.stars[i].getLinkedInRange(1).all;
                     for (var j = 0; j < frontier.length; j++) {
@@ -16592,64 +14930,54 @@ var Rance;
                         }
                     }
                 }
-
                 return neighbors;
             };
-
             Sector2.prototype.getMajorityRegions = function () {
                 var regionsByStars = {};
-
                 var biggestRegionStarCount = 0;
                 for (var i = 0; i < this.stars.length; i++) {
                     var star = this.stars[i];
                     var region = star.mapGenData.region;
-
                     if (!regionsByStars[region.id]) {
-                        regionsByStars[region.id] = {
-                            count: 0,
-                            region: region
-                        };
+                        regionsByStars[region.id] =
+                            {
+                                count: 0,
+                                region: region
+                            };
                     }
-
                     regionsByStars[region.id].count++;
-
                     if (regionsByStars[region.id].count > biggestRegionStarCount) {
                         biggestRegionStarCount = regionsByStars[region.id].count;
                     }
                 }
-
                 var majorityRegions = [];
                 for (var regionId in regionsByStars) {
                     if (regionsByStars[regionId].count >= biggestRegionStarCount) {
                         majorityRegions.push(regionsByStars[regionId].region);
                     }
                 }
-
                 return majorityRegions;
             };
             return Sector2;
         })();
         MapGen2.Sector2 = Sector2;
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../star.ts" />
 /// <reference path="sector2.ts" />
 /// <reference path="triangulation.ts" />
 var Rance;
 (function (Rance) {
+    var MapGen2;
     (function (MapGen2) {
         function linkAllStars(stars) {
             if (stars.length < 3) {
                 if (stars.length === 2) {
                     stars[0].addLink(stars[1]);
                 }
-
                 return;
             }
-
-            var triangles = Rance.MapGen2.triangulate(stars);
-
+            var triangles = MapGen2.triangulate(stars);
             for (var i = 0; i < triangles.length; i++) {
                 var edges = triangles[i].getEdges();
                 for (var j = 0; j < edges.length; j++) {
@@ -16662,47 +14990,35 @@ var Rance;
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
                 var regionsAlreadyCut = {};
-
                 var neighbors = star.getAllLinks();
-
                 if (neighbors.length <= minConnections)
                     continue;
-
                 for (var j = neighbors.length - 1; j >= 0; j--) {
                     var neighbor = neighbors[j];
-
                     if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion) {
                         continue;
                     }
-
                     var neighborLinks = neighbor.getAllLinks();
-
                     if (neighbors.length <= minConnections || neighborLinks.length <= minConnections)
                         continue;
-
                     var totalLinks = neighbors.length + neighborLinks.length;
-
                     var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
                     var minMultipleCutThreshhold = 0.15;
                     if (cutThreshhold > 0) {
                         if (Math.random() < cutThreshhold) {
                             star.removeLink(neighbor);
                             neighbors.pop();
-
                             if (!regionsAlreadyCut[neighbor.mapGenData.region.id]) {
                                 regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
                             }
                             regionsAlreadyCut[neighbor.mapGenData.region.id]++;
-
                             var path = Rance.aStar(star, neighbor);
-
                             if (!path) {
                                 star.addLink(neighbor);
                                 regionsAlreadyCut[neighbor.mapGenData.region.id]--;
                                 neighbors.push(neighbor);
                             }
                         }
-
                         cutThreshhold -= minMultipleCutThreshhold;
                     }
                 }
@@ -16712,75 +15028,62 @@ var Rance;
         function makeSectors(stars, minSize, maxSize) {
             /*
             while average size sectors left to assign && unassigned stars left
-            pick random unassigned star
-            if star cannot form island bigger than minsize
-            put from unassigned into leftovers & continue
-            else
-            add random neighbors into sector until minsize is met
-            
-            
+              pick random unassigned star
+              if star cannot form island bigger than minsize
+                put from unassigned into leftovers & continue
+              else
+                add random neighbors into sector until minsize is met
+      
+      
             while leftovers
-            pick random leftover
-            if leftover has no assigned neighbor pick, continue
-            
-            leftover gets assigned to smallest neighboring sector
-            if sizes equal, assign to sector with least neighboring leftovers
-            */
+              pick random leftover
+              if leftover has no assigned neighbor pick, continue
+      
+              leftover gets assigned to smallest neighboring sector
+              if sizes equal, assign to sector with least neighboring leftovers
+             */
             var totalStars = stars.length;
             var unassignedStars = stars.slice(0);
             var leftoverStars = [];
-
             var averageSize = (minSize + maxSize) / 2;
             var averageSectorsAmount = Math.round(totalStars / averageSize);
-
             var sectorsById = {};
             var sectorIdGen = 0;
-
             var sameSectorFN = function (a, b) {
                 return a.mapGenData.sector === b.mapGenData.sector;
             };
-
             while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
                 var seedStar = unassignedStars.pop();
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
-
                 if (canFormMinSizeSector) {
-                    var sector = new Rance.MapGen2.Sector2(sectorIdGen++);
+                    var sector = new MapGen2.Sector2(sectorIdGen++);
                     sectorsById[sector.id] = sector;
-
                     var discoveryStarIndex = 0;
                     sector.addStar(seedStar);
-
                     while (sector.stars.length < minSize) {
                         var discoveryStar = sector.stars[discoveryStarIndex];
-
                         var frontier = discoveryStar.getLinkedInRange(1).all;
                         frontier = frontier.filter(function (star) {
                             return !star.mapGenData.sector;
                         });
-
                         while (sector.stars.length < minSize && frontier.length > 0) {
                             var randomFrontierKey = Rance.getRandomArrayKey(frontier);
                             var toAdd = frontier.splice(randomFrontierKey, 1)[0];
                             unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
-
                             sector.addStar(toAdd);
                         }
-
                         discoveryStarIndex++;
                     }
-                } else {
+                }
+                else {
                     leftoverStars.push(seedStar);
                 }
             }
-
             while (leftoverStars.length > 0) {
                 var star = leftoverStars.pop();
-
                 var neighbors = star.getLinkedInRange(1).all;
                 var alreadyAddedNeighborSectors = {};
                 var candidateSectors = [];
-
                 for (var j = 0; j < neighbors.length; j++) {
                     if (!neighbors[j].mapGenData.sector)
                         continue;
@@ -16791,16 +15094,13 @@ var Rance;
                         }
                     }
                 }
-
                 // all neighboring stars don't have sectors
                 // put star at back of queue and try again later
                 if (candidateSectors.length < 1) {
                     leftoverStars.unshift(star);
                     continue;
                 }
-
                 var unclaimedNeighborsPerSector = {};
-
                 for (var j = 0; j < candidateSectors.length; j++) {
                     var sectorNeighbors = candidateSectors[j].getNeighboringStars();
                     var unclaimed = 0;
@@ -16809,27 +15109,23 @@ var Rance;
                             unclaimed++;
                         }
                     }
-
                     unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
                 }
-
                 candidateSectors.sort(function (a, b) {
                     var sizeSort = a.stars.length - b.stars.length;
                     if (sizeSort)
                         return sizeSort;
-
-                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] - unclaimedNeighborsPerSector[a.id];
+                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
+                        unclaimedNeighborsPerSector[a.id];
                     return unclaimedSort;
                 });
-
                 candidateSectors[0].addStar(star);
             }
-
             return sectorsById;
         }
         MapGen2.makeSectors = makeSectors;
         function addDefenceBuildings(star, amount) {
-            if (typeof amount === "undefined") { amount = 1; }
+            if (amount === void 0) { amount = 1; }
             if (!star.owner) {
                 console.warn("Tried to add defence buildings to star without owner.");
                 return;
@@ -16837,12 +15133,10 @@ var Rance;
             if (amount < 1) {
                 return;
             }
-
             star.addBuilding(new Rance.Building({
                 template: Rance.Templates.Buildings.sectorCommand,
                 location: star
             }));
-
             for (var i = 1; i < amount; i++) {
                 star.addBuilding(new Rance.Building({
                     template: Rance.Templates.Buildings.starBase,
@@ -16853,62 +15147,52 @@ var Rance;
         MapGen2.addDefenceBuildings = addDefenceBuildings;
         function setDistancesFromNearestPlayerOwnedStar(stars) {
             var playerOwnedStars = [];
-
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
                 if (star.owner && !star.owner.isIndependent) {
                     playerOwnedStars.push(star);
                 }
             }
-
             for (var i = 0; i < playerOwnedStars.length; i++) {
                 var ownedStarToCheck = playerOwnedStars[i];
                 for (var j = 0; j < stars.length; j++) {
                     var star = stars[j];
                     var distance = star.getDistanceToStar(ownedStarToCheck);
-
                     if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar)) {
                         star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
-                    } else {
-                        star.mapGenData.distanceFromNearestPlayerOwnedStar = Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar);
+                    }
+                    else {
+                        star.mapGenData.distanceFromNearestPlayerOwnedStar =
+                            Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar);
                     }
                 }
             }
         }
         MapGen2.setDistancesFromNearestPlayerOwnedStar = setDistancesFromNearestPlayerOwnedStar;
         function setupPirates(stars, player, variance, intensity) {
-            if (typeof variance === "undefined") { variance = 0.33; }
-            if (typeof intensity === "undefined") { intensity = 1; }
+            if (variance === void 0) { variance = 0.33; }
+            if (intensity === void 0) { intensity = 1; }
             var minShips = 2;
             var maxShips = 6;
-
             setDistancesFromNearestPlayerOwnedStar(stars);
-
             var shipTypes = Object.keys(Rance.Templates.ShipTypes);
             shipTypes = shipTypes.filter(function (shipType) {
                 return shipType !== "cheatShip";
             });
-
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
-
                 if (!star.owner) {
                     player.addStar(star);
                     addDefenceBuildings(star, 1);
-
                     var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
-
                     var shipAmount = minShips;
-
                     for (var j = 2; j < distance; j++) {
                         shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
-
                         if (shipAmount >= maxShips) {
                             shipAmount = maxShips;
                             break;
                         }
                     }
-
                     var ships = [];
                     for (var j = 0; j < shipAmount; j++) {
                         var ship = new Rance.Unit(Rance.Templates.ShipTypes[Rance.getRandomArrayItem(shipTypes)]);
@@ -16920,8 +15204,7 @@ var Rance;
             }
         }
         MapGen2.setupPirates = setupPirates;
-    })(Rance.MapGen2 || (Rance.MapGen2 = {}));
-    var MapGen2 = Rance.MapGen2;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/range.ts" />
 /// <reference path="../../src/utility.ts" />
@@ -16934,7 +15217,9 @@ var Rance;
 /// <reference path="mapgenoptions.ts" />
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var MapGen;
         (function (MapGen) {
             function spiralGalaxyGeneration(options, players, independents) {
                 // generate points
@@ -16942,35 +15227,28 @@ var Rance;
                 var sg = (function setStarGenerationProps(options) {
                     var totalSize = options.defaultOptions.width * options.defaultOptions.height;
                     var totalStars = options.defaultOptions.starCount;
-
                     var actualArms = options.basicOptions["arms"];
-                    var totalArms = actualArms * 2;
-
+                    var totalArms = actualArms * 2; // includes filler arms
                     var percentageInCenter = 0.3;
                     var percentageInArms = 1 - percentageInCenter;
                     var amountInCenter = totalStars * percentageInCenter;
                     var amountPerArm = Math.round(totalStars / actualArms * percentageInArms);
                     var amountPerFillerArm = Math.round(amountPerArm / 2);
                     var amountPerCenter = Math.round(amountInCenter / totalArms);
-
                     // to prevent rounding issues, probably a better way to do this
                     var actualStarsInArms = actualArms * amountPerArm;
                     var actualStarsInCenter = totalArms * amountPerCenter;
                     var actualStars = actualStarsInCenter + actualStarsInArms;
                     var starsDeficit = totalStars - actualStars;
-
                     var armsToMakeUpDeficit = [];
                     var starsToAddPerDeficitArm = 0;
-
                     if (starsDeficit !== 0) {
                         starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
                         var deficitStep = totalArms / Math.abs(starsDeficit);
-
                         for (var i = 0; i < totalArms; i += deficitStep) {
                             armsToMakeUpDeficit.push(Math.round(i));
                         }
                     }
-
                     return ({
                         totalArms: totalArms,
                         armsToMakeUpDeficit: armsToMakeUpDeficit,
@@ -16982,29 +15260,23 @@ var Rance;
                         armDistance: Math.PI * 2 / totalArms,
                         armOffsetMax: 0.5,
                         armRotationFactor: actualArms / 3,
-                        galaxyRotation: Rance.randRange(0, Math.PI * 2)
+                        galaxyRotation: Rance.randRange(0, Math.PI * 2) // rotation of entire galaxy
                     });
                 })(options);
-
                 function makePoint(distanceMin, distanceMax, arm, maxOffset) {
                     var distance = Rance.randRange(distanceMin, distanceMax);
                     var offset = Math.random() * maxOffset - maxOffset / 2;
                     offset *= (1 / distance);
-
                     if (offset < 0)
                         offset = Math.pow(offset, 2) * -1;
                     else
                         offset = Math.pow(offset, 2);
-
                     var armRotation = distance * sg.armRotationFactor;
                     var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotation;
-
                     var width = options.defaultOptions.width / 2;
                     var height = options.defaultOptions.height / 2;
-
                     var x = Math.cos(angle) * distance * width + width;
                     var y = Math.sin(angle) * distance * height + height;
-
                     return ({
                         pos: {
                             x: x,
@@ -17013,70 +15285,54 @@ var Rance;
                         distance: distance
                     });
                 }
-
                 function makeStar(point, distance) {
                     var star = new Rance.Star(point.x, point.y);
                     star.mapGenData.distance = distance;
                     star.baseIncome = Rance.randInt(4, 10) * 10;
-
                     return star;
                 }
-
                 var stars = [];
                 var fillerPoints = [];
                 var regions = [];
-
                 var centerRegion = new Rance.MapGen2.Region2("center", false);
                 regions.push(centerRegion);
-
                 var fillerRegionId = 0;
                 var regionId = 0;
-
                 for (var i = 0; i < sg.totalArms; i++) {
                     var isFiller = i % 2 !== 0;
                     var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
                     var region = new Rance.MapGen2.Region2(regionName, isFiller);
                     regions.push(region);
-
                     var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
                     var amountForThisCenter = sg.amountPerCenter;
                     if (sg.armsToMakeUpDeficit.indexOf(i) !== -1) {
                         amountForThisCenter += sg.starsToAddPerDeficitArm;
                     }
-
                     var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
-
                     for (var j = 0; j < amountForThisArm; j++) {
                         var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
-
                         if (isFiller) {
                             var fillerPoint = new Rance.FillerPoint(point.pos.x, point.pos.y);
                             region.addFillerPoint(fillerPoint);
                             fillerPoint.mapGenData.distance = point.distance;
-
                             fillerPoints.push(fillerPoint);
-                        } else {
+                        }
+                        else {
                             var star = makeStar(point.pos, point.distance);
                             region.addStar(star);
-
                             stars.push(star);
                         }
                     }
-
                     for (var j = 0; j < amountForThisCenter; j++) {
                         var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
                         var star = makeStar(point.pos, point.distance);
-
                         centerRegion.addStar(star);
                         stars.push(star);
                     }
                 }
-
                 var allPoints = fillerPoints.concat(stars);
-
                 // make voronoi
                 var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
-
                 // relax voronoi
                 var regularity = options.basicOptions["starSizeRegularity"] / 100;
                 var centerDensity = options.basicOptions["centerDensity"] / 100;
@@ -17085,32 +15341,28 @@ var Rance;
                     Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
                         return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
                     });
-
                     voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
                 }
-
                 // link stars
                 Rance.MapGen2.linkAllStars(stars);
-
+                // sever links
                 for (var i = 0; i < regions.length; i++) {
                     regions[i].severLinksByQualifier(function (a, b) {
-                        return (a.mapGenData.region !== b.mapGenData.region && a.mapGenData.region !== regions[0] && b.mapGenData.region !== regions[0]);
+                        return (a.mapGenData.region !== b.mapGenData.region &&
+                            a.mapGenData.region !== regions[0] &&
+                            b.mapGenData.region !== regions[0]);
                     });
-
                     for (var j = 0; j < regions[i].stars.length; j++) {
                         regions[i].stars[j].severLinksToNonAdjacent();
                     }
                 }
-
                 var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
                 if (!isConnected) {
                     if (Rance.Options.debugMode)
                         console.log("Regenerated map due to insufficient connections");
                     return spiralGalaxyGeneration(options, players, independents);
                 }
-
                 Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
-
                 // make sectors
                 //MapGen2.makeSectors(stars, 3, 5);
                 // set resources
@@ -17118,51 +15370,36 @@ var Rance;
                 var startRegions = (function setStartingRegions() {
                     var armCount = options.basicOptions["arms"];
                     var playerCount = players.length;
-
                     var playerArmStep = armCount / playerCount;
-
                     var startRegions = [];
                     var candidateRegions = regions.filter(function (region) {
                         return region.id.indexOf("arm") !== -1;
                     });
-
                     for (var i = 0; i < playerCount; i++) {
                         var regionNumber = Math.floor(i * playerArmStep);
                         var regionToAdd = candidateRegions[regionNumber];
-
                         startRegions.push(regionToAdd);
                     }
-
                     return startRegions;
                 })();
-
                 var startPositions = (function getStartPoints(regions) {
                     var startPositions = [];
-
                     for (var i = 0; i < regions.length; i++) {
                         var region = regions[i];
-
                         var starsByDistance = region.stars.slice(0).sort(function (a, b) {
                             return b.mapGenData.distance - a.mapGenData.distance;
                         });
-
                         startPositions.push(starsByDistance[0]);
                     }
-
                     return startPositions;
                 })(startRegions);
-
                 for (var i = 0; i < players.length; i++) {
                     var star = startPositions[i];
                     var player = players[i];
-
                     player.addStar(star);
-
                     Rance.MapGen2.addDefenceBuildings(star, 2);
                 }
-
                 Rance.MapGen2.setupPirates(stars, independents[0], 0.08, 1);
-
                 return new Rance.MapGen2.MapGenResult({
                     stars: stars,
                     fillerPoints: fillerPoints,
@@ -17171,10 +15408,8 @@ var Rance;
                 });
             }
             MapGen.spiralGalaxyGeneration = spiralGalaxyGeneration;
-        })(Templates.MapGen || (Templates.MapGen = {}));
-        var MapGen = Templates.MapGen;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/mapgen/mapgenresult.ts" />
 /// <reference path="../../src/player.ts" />
@@ -17183,7 +15418,9 @@ var Rance;
 /// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var MapGen;
         (function (MapGen) {
             MapGen.spiralGalaxy = {
                 key: "spiralGalaxy",
@@ -17191,7 +15428,7 @@ var Rance;
                 description: "Create a spiral galaxy with arms",
                 minPlayers: 2,
                 maxPlayers: 5,
-                mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
+                mapGenFunction: MapGen.spiralGalaxyGeneration,
                 options: {
                     defaultOptions: {
                         height: {
@@ -17239,16 +15476,16 @@ var Rance;
                     }
                 }
             };
-        })(Templates.MapGen || (Templates.MapGen = {}));
-        var MapGen = Templates.MapGen;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="spiralgalaxygeneration.ts" />
 /// <reference path="mapgentemplate.ts" />
 var Rance;
 (function (Rance) {
+    var Templates;
     (function (Templates) {
+        var MapGen;
         (function (MapGen) {
             MapGen.tinierSpiralGalaxy = {
                 key: "tinierSpiralGalaxy",
@@ -17256,7 +15493,7 @@ var Rance;
                 description: "Create a spiral galaxy with arms but tinier (just for testing)",
                 minPlayers: 2,
                 maxPlayers: 5,
-                mapGenFunction: Rance.Templates.MapGen.spiralGalaxyGeneration,
+                mapGenFunction: MapGen.spiralGalaxyGeneration,
                 options: {
                     defaultOptions: {
                         height: {
@@ -17297,13 +15534,14 @@ var Rance;
                     }
                 }
             };
-        })(Templates.MapGen || (Templates.MapGen = {}));
-        var MapGen = Templates.MapGen;
-    })(Rance.Templates || (Rance.Templates = {}));
-    var Templates = Rance.Templates;
+        })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="spiralgalaxy.ts" />
+/// <reference path="test.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.MapGenOption = React.createClass({
             displayName: "MapGenOption",
@@ -17318,13 +15556,11 @@ var Rance;
             render: function () {
                 var option = this.props.option;
                 var id = "mapGenOption_" + this.props.id;
-
                 ["min", "max", "step"].forEach(function (prop) {
                     if (!option[prop]) {
                         throw new Error("No property " + prop + " specified on map gen option " + this.props.id);
                     }
                 }.bind(this));
-
                 // console.log(this.props.id, this.props.value);
                 return (React.DOM.div({
                     className: "map-gen-option"
@@ -17351,28 +15587,25 @@ var Rance;
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../utility.ts" />
 /// <reference path="../galaxymap/optionsgroup.ts" />
 /// <reference path="mapgenoption.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.MapGenOptions = React.createClass({
             displayName: "MapGenOptions",
             getInitialState: function () {
                 var defaultValues = this.getDefaultValues(this.props.mapGenTemplate);
-
                 var state = {
                     defaultOptionsVisible: true,
                     basicOptionsVisible: true,
                     advancedOptionsVisible: false
                 };
-
                 state = Rance.extendObject(state, defaultValues);
-
                 return (state);
             },
             componentWillReceiveProps: function (newProps) {
@@ -17381,38 +15614,31 @@ var Rance;
                 }
             },
             getDefaultValues: function (mapGenTemplate, unsetOnly) {
-                if (typeof unsetOnly === "undefined") { unsetOnly = true; }
+                if (unsetOnly === void 0) { unsetOnly = true; }
                 var defaultValues = {};
-
                 ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function (optionGroup) {
                     var options = mapGenTemplate.options[optionGroup];
                     if (!options)
                         return;
-
                     for (var optionName in options) {
                         var option = options[optionName];
                         var value;
-
                         if (unsetOnly && this.state && isFinite(this.getOptionValue(optionName))) {
                             if (!this.props.mapGenTemplate.options[optionGroup])
                                 continue;
-
                             var oldOption = this.props.mapGenTemplate.options[optionGroup][optionName];
-
                             if (!oldOption)
                                 continue;
-
                             var oldValuePercentage = Rance.getRelativeValue(this.getOptionValue(optionName), oldOption.min, oldOption.max);
                             value = option.min + (option.max - option.min) * oldValuePercentage;
-                        } else {
+                        }
+                        else {
                             value = isFinite(option.defaultValue) ? option.defaultValue : (option.min + option.max) / 2;
                         }
-
                         value = Rance.clamp(Rance.roundToNearestMultiple(value, option.step), option.min, option.max);
                         defaultValues["optionValue_" + optionName] = value;
                     }
                 }.bind(this));
-
                 return defaultValues;
             },
             resetValuesToDefault: function () {
@@ -17426,7 +15652,6 @@ var Rance;
             handleOptionChange: function (optionName, newValue) {
                 var changedState = {};
                 changedState["optionValue_" + optionName] = newValue;
-
                 this.setState(changedState);
             },
             getOptionValue: function (optionName) {
@@ -17437,7 +15662,6 @@ var Rance;
             },
             randomizeOptions: function () {
                 var newValues = {};
-
                 var optionGroups = this.props.mapGenTemplate.options;
                 for (var optionGroupName in optionGroups) {
                     var optionGroup = optionGroups[optionGroupName];
@@ -17447,30 +15671,24 @@ var Rance;
                         newValues["optionValue_" + optionName] = optionValue;
                     }
                 }
-
                 this.setState(newValues);
             },
             getOptionValuesForTemplate: function () {
                 var optionValues = Rance.extendObject(this.props.mapGenTemplate.options);
-
                 for (var groupName in optionValues) {
                     var optionsGroup = optionValues[groupName];
-
                     for (var optionName in optionsGroup) {
                         var optionValue = this.getOptionValue(optionName);
                         if (!isFinite(optionValue)) {
                             throw new Error("Value " + optionValue + " for option " + optionName + " is invalid.");
                         }
-
                         optionValues[groupName][optionName] = optionValue;
                     }
                 }
-
                 return optionValues;
             },
             render: function () {
                 var optionGroups = [];
-
                 var optionGroupsInfo = {
                     defaultOptions: {
                         title: "Default Options",
@@ -17485,23 +15703,18 @@ var Rance;
                         visibilityProp: "advancedOptionsVisible"
                     }
                 };
-
                 for (var groupName in optionGroupsInfo) {
                     if (!this.props.mapGenTemplate.options[groupName])
                         continue;
-
                     var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
                     var groupIsVisible = this.state[visibilityProp];
-
                     var options = [];
-
                     if (groupIsVisible) {
                         for (var optionName in this.props.mapGenTemplate.options[groupName]) {
                             var option = this.props.mapGenTemplate.options[groupName][optionName];
-
                             options.push({
                                 key: optionName,
-                                content: Rance.UIComponents.MapGenOption({
+                                content: UIComponents.MapGenOption({
                                     key: optionName,
                                     id: optionName,
                                     option: option,
@@ -17511,25 +15724,20 @@ var Rance;
                             });
                         }
                     }
-
                     var headerProps = {
                         className: "map-gen-options-group-header collapsible",
                         onClick: this.toggleOptionGroupVisibility.bind(this, visibilityProp)
                     };
-
                     if (!groupIsVisible) {
                         headerProps.className += " collapsed";
                     }
-
                     var header = React.DOM.div(headerProps, optionGroupsInfo[groupName].title);
-
-                    optionGroups.push(Rance.UIComponents.OptionsGroup({
+                    optionGroups.push(UIComponents.OptionsGroup({
                         key: groupName,
                         header: header,
                         options: options
                     }));
                 }
-
                 return (React.DOM.div({
                     className: "map-gen-options"
                 }, optionGroups, React.DOM.button({
@@ -17541,26 +15749,24 @@ var Rance;
                 }, "reset")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../data/mapgen/builtinmaps.ts" />
 /// <reference path="../../../data/mapgen/mapgentemplate.ts" />
 /// <reference path="mapgenoptions.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.MapSetup = React.createClass({
             displayName: "MapSetup",
             getInitialState: function () {
                 var mapGenTemplates = [];
-
                 for (var template in Rance.Templates.MapGen) {
                     if (Rance.Templates.MapGen[template].key) {
                         mapGenTemplates.push(Rance.Templates.MapGen[template]);
                     }
                 }
-
                 return ({
                     templates: mapGenTemplates,
                     selectedTemplate: mapGenTemplates[0]
@@ -17590,14 +15796,12 @@ var Rance;
                 var mapGenTemplateOptions = [];
                 for (var i = 0; i < this.state.templates.length; i++) {
                     var template = this.state.templates[i];
-
                     mapGenTemplateOptions.push(React.DOM.option({
                         value: template.key,
                         key: template.key,
                         title: template.description
                     }, template.displayName));
                 }
-
                 return (React.DOM.div({
                     className: "map-setup"
                 }, React.DOM.select({
@@ -17606,21 +15810,22 @@ var Rance;
                     onChange: this.setTemplate
                 }, mapGenTemplateOptions), React.DOM.div({
                     className: "map-setup-player-limit"
-                }, "Players: " + this.state.selectedTemplate.minPlayers + "-" + this.state.selectedTemplate.maxPlayers), React.DOM.div({
+                }, "Players: " + this.state.selectedTemplate.minPlayers + "-" +
+                    this.state.selectedTemplate.maxPlayers), React.DOM.div({
                     className: "map-setup-description"
-                }, this.state.selectedTemplate.description), Rance.UIComponents.MapGenOptions({
+                }, this.state.selectedTemplate.description), UIComponents.MapGenOptions({
                     mapGenTemplate: this.state.selectedTemplate,
                     ref: "mapGenOptions"
                 })));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="setupgameplayers.ts" />
 /// <reference path="mapsetup.ts" />
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.SetupGame = React.createClass({
             displayName: "SetupGame",
@@ -17638,19 +15843,13 @@ var Rance;
             },
             startGame: function () {
                 var playerData = {};
-
                 var players = this.refs.players.makeAllPlayers();
-
                 var pirates = new Rance.Player(true);
                 pirates.setupPirates();
-
                 var mapSetupInfo = this.refs.mapSetup.getMapSetupInfo();
-
                 var mapGenFunction = mapSetupInfo.template.mapGenFunction;
-
                 var mapGenResult = mapGenFunction(mapSetupInfo.optionValues, players, [pirates]);
                 var map = mapGenResult.makeMap();
-
                 app.makeGameFromSetup(map, players, [pirates]);
             },
             randomize: function () {
@@ -17662,11 +15861,11 @@ var Rance;
                     className: "setup-game"
                 }, React.DOM.div({
                     className: "setup-game-options"
-                }, Rance.UIComponents.SetupGamePlayers({
+                }, UIComponents.SetupGamePlayers({
                     ref: "players",
                     minPlayers: this.state.minPlayers,
                     maxPlayers: this.state.maxPlayers
-                }), Rance.UIComponents.MapSetup({
+                }), UIComponents.MapSetup({
                     setPlayerLimits: this.setPlayerLimits,
                     ref: "mapSetup"
                 })), React.DOM.button({
@@ -17676,56 +15875,43 @@ var Rance;
                 }, "Start game")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.FlagMaker = React.createClass({
             makeFlags: function (delay) {
-                if (typeof delay === "undefined") { delay = 0; }
+                if (delay === void 0) { delay = 0; }
                 var flags = [];
                 var parent = this.refs.flags.getDOMNode();
-
                 while (parent.lastChild) {
                     parent.removeChild(parent.lastChild);
                 }
-
                 for (var i = 0; i < 100; i++) {
                     var colorScheme = Rance.generateColorScheme();
-
                     var flag = new Rance.Flag({
                         width: 46,
                         mainColor: colorScheme.main,
                         secondaryColor: colorScheme.secondary
                     });
-
                     flag.generateRandom();
-
                     var canvas = flag.draw();
-
                     flags.push(flag);
                 }
-
                 function makeHslStringFromHex(hex) {
                     var hsl = Rance.hexToHsv(hex);
-
                     hsl = Rance.colorFromScalars(hsl);
-                    hsl = hsl.map(function (v) {
-                        return v.toFixed();
-                    });
-
-                    return hsl.join(", ");
+                    var hslString = hsl.map(function (v) { return v.toFixed(); });
+                    return hslString.join(", ");
                 }
-
                 window.setTimeout(function (e) {
                     for (var i = 0; i < flags.length; i++) {
                         var canvas = flags[i].draw();
                         parent.appendChild(canvas);
-
-                        canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" + "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n");
-
+                        canvas.setAttribute("title", "bgColor: " + makeHslStringFromHex(flags[i].mainColor) + "\n" +
+                            "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n");
                         canvas.onclick = function (e) {
                             console.log(Rance.hexToHusl(this.mainColor));
                             console.log(Rance.hexToHusl(this.secondaryColor));
@@ -17745,121 +15931,7 @@ var Rance;
                 }, "make flags")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    (function (UIComponents) {
-        UIComponents.BattleSceneTester = React.createClass({
-            displayName: "BattleSceneTester",
-            initialValues: {
-                zDistance: 5,
-                xDistance: 5,
-                unitsToDraw: 5,
-                maxUnitsPerColumn: 5,
-                degree: -0.5,
-                rotationAngle: 60,
-                scalingFactor: 0.02,
-                facesRight: true
-            },
-            componentDidMount: function () {
-                app.game = app.makeGame();
-                app.initGame();
-                var unit = app.humanPlayer.getAllUnits()[0];
-                var image = new Image();
-                image.src = "img\/ships\/battleCruiser.png";
-                image.onload = this.renderScene;
-            },
-            renderScene: function () {
-                var unit = app.humanPlayer.getAllUnits()[0];
-                var canvas = unit.drawBattleScene({
-                    zDistance: Number(this.refs["zDistance"].getDOMNode().value),
-                    xDistance: Number(this.refs["xDistance"].getDOMNode().value),
-                    unitsToDraw: Number(this.refs["unitsToDraw"].getDOMNode().value),
-                    maxUnitsPerColumn: Number(this.refs["maxUnitsPerColumn"].getDOMNode().value),
-                    degree: Number(this.refs["degree"].getDOMNode().value),
-                    rotationAngle: Number(this.refs["rotationAngle"].getDOMNode().value),
-                    scalingFactor: Number(this.refs["scalingFactor"].getDOMNode().value),
-                    facesRight: this.refs["facesRight"].getDOMNode().checked
-                });
-
-                var container = this.refs["canvasContainer"].getDOMNode();
-                while (container.firstChild) {
-                    container.removeChild(container.firstChild);
-                }
-
-                container.appendChild(canvas);
-            },
-            resetValues: function () {
-                for (var prop in this.initialValues) {
-                    var element = this.refs[prop].getDOMNode();
-                    element.value = this.initialValues[prop];
-                }
-
-                this.renderScene();
-            },
-            render: function () {
-                return (React.DOM.div({
-                    style: {
-                        display: "flex"
-                    }
-                }, React.DOM.div({ ref: "canvasContainer", style: { flex: 1 } }, null), React.DOM.div({
-                    style: {
-                        display: "flex",
-                        flexFlow: "column"
-                    }
-                }, React.DOM.label(null, React.DOM.input({
-                    ref: "zDistance",
-                    type: "number",
-                    defaultValue: this.initialValues["zDistance"],
-                    onChange: this.renderScene
-                }, "zDistance")), React.DOM.label(null, React.DOM.input({
-                    ref: "xDistance",
-                    type: "number",
-                    defaultValue: this.initialValues["xDistance"],
-                    onChange: this.renderScene
-                }, "xDistance")), React.DOM.label(null, React.DOM.input({
-                    ref: "unitsToDraw",
-                    type: "number",
-                    defaultValue: this.initialValues["unitsToDraw"],
-                    onChange: this.renderScene
-                }, "unitsToDraw")), React.DOM.label(null, React.DOM.input({
-                    ref: "maxUnitsPerColumn",
-                    type: "number",
-                    defaultValue: this.initialValues["maxUnitsPerColumn"],
-                    onChange: this.renderScene
-                }, "maxUnitsPerColumn")), React.DOM.label(null, React.DOM.input({
-                    ref: "degree",
-                    type: "number",
-                    defaultValue: this.initialValues["degree"],
-                    min: -10,
-                    max: 10,
-                    step: 0.05,
-                    onChange: this.renderScene
-                }, "degree")), React.DOM.label(null, React.DOM.input({
-                    ref: "rotationAngle",
-                    type: "number",
-                    defaultValue: this.initialValues["rotationAngle"],
-                    onChange: this.renderScene
-                }, "rotationAngle")), React.DOM.label(null, React.DOM.input({
-                    ref: "scalingFactor",
-                    type: "number",
-                    defaultValue: this.initialValues["scalingFactor"],
-                    max: 1,
-                    step: 0.005,
-                    onChange: this.renderScene
-                }, "scalingFactor")), React.DOM.label(null, React.DOM.input({
-                    ref: "facesRight",
-                    type: "checkBox",
-                    onChange: this.renderScene
-                }, "facesRight")), React.DOM.button({
-                    onClick: this.resetValues
-                }, "Reset"))));
-            }
-        });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="battle/battle.ts"/>
@@ -17869,67 +15941,64 @@ var Rance;
 /// <reference path="galaxymap/galaxymap.ts"/>
 /// <reference path="setupgame/setupgame.ts"/>
 /// <reference path="flagmaker.ts"/>
-/// <reference path="battlescenetester.ts"/>
 var Rance;
 (function (Rance) {
+    var UIComponents;
     (function (UIComponents) {
         UIComponents.Stage = React.createClass({
             displayName: "Stage",
             changeScene: function () {
                 var newScene = this.refs.sceneSelector.getDOMNode().value;
-
                 this.props.changeSceneFunction(newScene);
             },
             render: function () {
                 var elementsToRender = [];
-
                 switch (this.props.sceneToRender) {
-                    case "battle": {
-                        elementsToRender.push(Rance.UIComponents.Battle({
-                            battle: this.props.battle,
-                            humanPlayer: this.props.player,
-                            renderer: this.props.renderer,
-                            key: "battle"
-                        }));
-                        break;
-                    }
-                    case "battlePrep": {
-                        elementsToRender.push(Rance.UIComponents.BattlePrep({
-                            battlePrep: this.props.battlePrep,
-                            renderer: this.props.renderer,
-                            key: "battlePrep"
-                        }));
-                        break;
-                    }
-                    case "galaxyMap": {
-                        elementsToRender.push(Rance.UIComponents.GalaxyMap({
-                            renderer: this.props.renderer,
-                            mapRenderer: this.props.mapRenderer,
-                            playerControl: this.props.playerControl,
-                            player: this.props.player,
-                            game: this.props.game,
-                            key: "galaxyMap"
-                        }));
-                        break;
-                    }
-                    case "flagMaker": {
-                        elementsToRender.push(Rance.UIComponents.FlagMaker({
-                            key: "flagMaker"
-                        }));
-                        break;
-                    }
-                    case "battleScene": {
-                        elementsToRender.push(Rance.UIComponents.BattleSceneTester({
-                            key: "battleScene"
-                        }));
-                        break;
-                    }
-                    case "setupGame": {
-                        elementsToRender.push(Rance.UIComponents.SetupGame({
-                            key: "setupGame"
-                        }));
-                        break;
-                    }
+                    case "battle":
+                        {
+                            elementsToRender.push(UIComponents.Battle({
+                                battle: this.props.battle,
+                                humanPlayer: this.props.player,
+                                renderer: this.props.renderer,
+                                key: "battle"
+                            }));
+                            break;
+                        }
+                    case "battlePrep":
+                        {
+                            elementsToRender.push(UIComponents.BattlePrep({
+                                battlePrep: this.props.battlePrep,
+                                renderer: this.props.renderer,
+                                key: "battlePrep"
+                            }));
+                            break;
+                        }
+                    case "galaxyMap":
+                        {
+                            elementsToRender.push(UIComponents.GalaxyMap({
+                                renderer: this.props.renderer,
+                                mapRenderer: this.props.mapRenderer,
+                                playerControl: this.props.playerControl,
+                                player: this.props.player,
+                                game: this.props.game,
+                                key: "galaxyMap"
+                            }));
+                            break;
+                        }
+                    case "flagMaker":
+                        {
+                            elementsToRender.push(UIComponents.FlagMaker({
+                                key: "flagMaker"
+                            }));
+                            break;
+                        }
+                    case "setupGame":
+                        {
+                            elementsToRender.push(UIComponents.SetupGame({
+                                key: "setupGame"
+                            }));
+                            break;
+                        }
                 }
                 return (React.DOM.div({ className: "react-stage" }, elementsToRender, !Rance.Options.debugMode ? null : React.DOM.select({
                     className: "reactui-selector debug",
@@ -17947,12 +16016,9 @@ var Rance;
                             var position = Rance.extendObject(app.renderer.camera.container.position);
                             var zoom = app.renderer.camera.currZoom;
                             app.destroy();
-
                             app.initUI();
-
                             app.game = app.makeGame();
                             app.initGame();
-
                             app.initDisplay();
                             app.hookUI();
                             app.reactUI.switchScene("galaxyMap");
@@ -17963,8 +16029,7 @@ var Rance;
                 }, "Reset app")));
             }
         });
-    })(Rance.UIComponents || (Rance.UIComponents = {}));
-    var UIComponents = Rance.UIComponents;
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../lib/react.d.ts" />
 /// <reference path="../eventmanager.ts"/>
@@ -17981,7 +16046,6 @@ var Rance;
             this.switchSceneFN = function (e) {
                 this.switchScene(e.data);
             }.bind(this);
-
             Rance.eventManager.addEventListener("switchScene", this.switchSceneFN);
         };
         ReactUI.prototype.switchScene = function (newScene) {
@@ -18030,7 +16094,6 @@ var Rance;
         }
         PlayerControl.prototype.destroy = function () {
             this.removeEventListeners();
-
             this.player = null;
             this.selectedFleets = null;
             this.currentlyReorganizing = null;
@@ -18047,16 +16110,13 @@ var Rance;
         };
         PlayerControl.prototype.addEventListener = function (name, handler) {
             this.listeners[name] = handler;
-
             Rance.eventManager.addEventListener(name, handler);
         };
         PlayerControl.prototype.addEventListeners = function () {
             var self = this;
-
             this.addEventListener("updateSelection", function (e) {
                 self.updateSelection();
             });
-
             this.addEventListener("selectFleets", function (e) {
                 self.selectFleets(e.data);
             });
@@ -18066,7 +16126,6 @@ var Rance;
             this.addEventListener("mergeFleets", function (e) {
                 self.mergeFleets();
             });
-
             this.addEventListener("splitFleet", function (e) {
                 self.splitFleet(e.data);
             });
@@ -18076,18 +16135,15 @@ var Rance;
             this.addEventListener("endReorganizingFleets", function (e) {
                 self.endReorganizingFleets();
             });
-
             this.addEventListener("starClick", function (e) {
                 self.selectStar(e.data);
             });
             this.addEventListener("moveFleets", function (e) {
                 self.moveFleets(e.data);
             });
-
             this.addEventListener("setRectangleSelectTargetFN", function (e) {
                 e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
             });
-
             this.addEventListener("attackTarget", function (e) {
                 self.attackTarget(e.data);
             });
@@ -18106,25 +16162,21 @@ var Rance;
             this.selectedStar = null;
         };
         PlayerControl.prototype.updateSelection = function (endReorganizingFleets) {
-            if (typeof endReorganizingFleets === "undefined") { endReorganizingFleets = true; }
+            if (endReorganizingFleets === void 0) { endReorganizingFleets = true; }
             if (endReorganizingFleets)
                 this.endReorganizingFleets();
             this.currentAttackTargets = this.getCurrentAttackTargets();
-
             Rance.eventManager.dispatchEvent("playerControlUpdated", null);
             Rance.eventManager.dispatchEvent("clearPossibleActions", null);
         };
-
         PlayerControl.prototype.areAllFleetsInSameLocation = function () {
             if (this.selectedFleets.length <= 0)
                 return false;
-
             for (var i = 1; i < this.selectedFleets.length; i++) {
                 if (this.selectedFleets[i].location !== this.selectedFleets[i - 1].location) {
                     return false;
                 }
             }
-
             return true;
         };
         PlayerControl.prototype.selectFleets = function (fleets) {
@@ -18133,30 +16185,27 @@ var Rance;
                 this.updateSelection();
                 return;
             }
-
             var playerFleets = [];
             var otherFleets = [];
             for (var i = 0; i < fleets.length; i++) {
                 if (fleets[i].player === this.player) {
                     playerFleets.push(fleets[i]);
-                } else {
+                }
+                else {
                     otherFleets.push(fleets[i]);
                 }
             }
-
             if (playerFleets.length > 0) {
                 this.selectPlayerFleets(playerFleets);
-            } else {
+            }
+            else {
                 this.selectOtherFleets(otherFleets);
             }
-
             this.updateSelection();
-
             this.preventGhost(15);
         };
         PlayerControl.prototype.selectPlayerFleets = function (fleets) {
             this.clearSelection();
-
             for (var i = 0; i < fleets.length; i++) {
                 if (fleets[i].ships.length < 1) {
                     if (this.currentlyReorganizing.indexOf(fleets[i]) >= 0)
@@ -18165,9 +16214,7 @@ var Rance;
                     fleets.splice(i, 1);
                 }
             }
-
             var oldFleets = this.selectedFleets.slice(0);
-
             this.selectedFleets = fleets;
         };
         PlayerControl.prototype.selectOtherFleets = function (fleets) {
@@ -18176,16 +16223,12 @@ var Rance;
         PlayerControl.prototype.deselectFleet = function (fleet) {
             var fleetsContainer = this.selectedFleets.length > 0 ? this.selectedFleets : this.inspectedFleets;
             var fleetIndex = fleetsContainer.indexOf(fleet);
-
             if (fleetIndex < 0)
                 return;
-
             fleetsContainer.splice(fleetIndex, 1);
-
             if (fleetsContainer.length < 1) {
                 this.selectedStar = fleet.location;
             }
-
             this.updateSelection();
         };
         PlayerControl.prototype.getMasterFleetForMerge = function () {
@@ -18194,14 +16237,11 @@ var Rance;
         PlayerControl.prototype.mergeFleets = function () {
             var fleets = this.selectedFleets;
             var master = this.getMasterFleetForMerge();
-
             fleets.splice(fleets.indexOf(master), 1);
             var slaves = fleets;
-
             for (var i = 0; i < slaves.length; i++) {
                 slaves[i].mergeWith(master, i === slaves.length - 1);
             }
-
             this.clearSelection();
             this.selectedFleets = [master];
             this.updateSelection();
@@ -18210,9 +16250,7 @@ var Rance;
             if (this.preventingGhost)
                 return;
             this.clearSelection();
-
             this.selectedStar = star;
-
             this.updateSelection();
         };
         PlayerControl.prototype.moveFleets = function (star) {
@@ -18225,18 +16263,19 @@ var Rance;
                 return;
             this.endReorganizingFleets();
             var newFleet = fleet.split();
-
             this.currentlyReorganizing = [fleet, newFleet];
             this.selectedFleets = [fleet, newFleet];
-
             this.updateSelection(false);
         };
         PlayerControl.prototype.startReorganizingFleets = function (fleets) {
-            if (fleets.length !== 2 || fleets[0].location !== fleets[1].location || this.selectedFleets.length !== 2 || this.selectedFleets.indexOf(fleets[0]) < 0 || this.selectedFleets.indexOf(fleets[1]) < 0) {
+            if (fleets.length !== 2 ||
+                fleets[0].location !== fleets[1].location ||
+                this.selectedFleets.length !== 2 ||
+                this.selectedFleets.indexOf(fleets[0]) < 0 ||
+                this.selectedFleets.indexOf(fleets[1]) < 0) {
                 throw new Error("cant reorganize fleets");
             }
             this.currentlyReorganizing = fleets;
-
             this.updateSelection(false);
         };
         PlayerControl.prototype.endReorganizingFleets = function () {
@@ -18257,19 +16296,14 @@ var Rance;
                 return [];
             if (!this.areAllFleetsInSameLocation())
                 return [];
-
             var location = this.selectedFleets[0].location;
             var possibleTargets = location.getTargetsForPlayer(this.player);
-
             return possibleTargets;
         };
-
         PlayerControl.prototype.attackTarget = function (target) {
             if (this.currentAttackTargets.indexOf(target) < 0)
                 return false;
-
             var currentLocation = this.selectedFleets[0].location;
-
             this.player.attackTarget(currentLocation, target);
         };
         return PlayerControl;
@@ -18281,28 +16315,24 @@ var Rance;
 (function (Rance) {
     function getBorderingHalfEdges(stars) {
         var borderingHalfEdges = [];
-
         function getHalfEdgeOppositeSite(halfEdge) {
-            return halfEdge.edge.lSite === halfEdge.site ? halfEdge.edge.rSite : halfEdge.edge.lSite;
+            return halfEdge.edge.lSite === halfEdge.site ?
+                halfEdge.edge.rSite : halfEdge.edge.lSite;
         }
-
         function halfEdgeIsBorder(halfEdge) {
             var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
             var isBorderWithOtherOwner = !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
-
             var isBorderWithSameOwner = false;
             if (!isBorderWithOtherOwner) {
                 isBorderWithSameOwner = halfEdge.site.getDistanceToStar(oppositeSite) > 2;
             }
-
             return isBorderWithOtherOwner || isBorderWithSameOwner;
         }
-
         function halfEdgeSharesOwner(halfEdge) {
             var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-            return Boolean(oppositeSite) && Boolean(oppositeSite.owner) && (oppositeSite.owner === halfEdge.site.owner);
+            return Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
+                (oppositeSite.owner === halfEdge.site.owner);
         }
-
         function getContiguousHalfEdgeBetweenSharedSites(sharedEdge) {
             var contiguousEdgeEndPoint = sharedEdge.getStartpoint();
             var oppositeSite = getHalfEdgeOppositeSite(sharedEdge);
@@ -18312,16 +16342,13 @@ var Rance;
                     return halfEdge;
                 }
             }
-
             return false;
         }
-
         var startEdge;
         var star;
         for (var i = 0; i < stars.length; i++) {
             if (star)
                 break;
-
             for (var j = 0; j < stars[i].voronoiCell.halfedges.length; j++) {
                 var halfEdge = stars[i].voronoiCell.halfedges[j];
                 if (halfEdgeIsBorder(halfEdge)) {
@@ -18331,13 +16358,12 @@ var Rance;
                 }
             }
         }
-
         if (!star)
             throw new Error("Couldn't find starting location for border polygon");
-
         var hasProcessedStartEdge = false;
         var contiguousEdge = null;
-
+        // just a precaution to make sure we don't get into an infinite loop
+        // should always return earlier unless somethings wrong
         for (var j = 0; j < stars.length * 20; j++) {
             var indexShift = 0;
             for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++) {
@@ -18349,31 +16375,31 @@ var Rance;
                     contiguousEdge = null;
                 }
                 var i = (_i + indexShift) % (star.voronoiCell.halfedges.length);
-
                 var halfEdge = star.voronoiCell.halfedges[i];
                 if (halfEdgeIsBorder(halfEdge)) {
                     borderingHalfEdges.push({
                         star: star,
                         halfEdge: halfEdge
                     });
-
                     if (!startEdge) {
                         startEdge = halfEdge;
-                    } else if (halfEdge === startEdge) {
+                    }
+                    else if (halfEdge === startEdge) {
                         if (!hasProcessedStartEdge) {
                             hasProcessedStartEdge = true;
-                        } else {
+                        }
+                        else {
                             return borderingHalfEdges;
                         }
                     }
-                } else if (halfEdgeSharesOwner(halfEdge)) {
+                }
+                else if (halfEdgeSharesOwner(halfEdge)) {
                     contiguousEdge = getContiguousHalfEdgeBetweenSharedSites(halfEdge);
                     star = contiguousEdge.site;
                     break;
                 }
             }
         }
-
         throw new Error("getHalfEdgesConnectingStars got stuck in infinite loop when star id = " + star.id);
         return borderingHalfEdges;
     }
@@ -18382,16 +16408,13 @@ var Rance;
         for (var i = points.length - 2; i >= 0; i--) {
             var x1 = points[i].x;
             var y1 = points[i].y;
-
             var x2 = points[i + 1].x;
             var y2 = points[i + 1].y;
-
             if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
                 var newPoint = {
                     x: (x1 + x2) / 2,
                     y: (y1 + y2) / 2
                 };
-
                 points.splice(i, 2, newPoint);
             }
         }
@@ -18405,59 +16428,48 @@ var Rance;
                 y: v1.y
             });
         });
-
         joinPointsWithin(convertedToPoints, 5);
-
         var offset = new Offset();
         offset.arcSegments(0);
         var convertedToOffset = offset.data(convertedToPoints).padding(4);
-
         return convertedToOffset;
     }
     Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
     function getRevealedBorderEdges(revealedStars, voronoiInfo) {
         var polyLines = [];
-
         var processedStarsById = {};
-
         for (var ii = 0; ii < revealedStars.length; ii++) {
             var star = revealedStars[ii];
             if (processedStarsById[star.id]) {
                 continue;
             }
-
             if (!star.owner.isIndependent) {
                 var ownedIsland = star.getIslandForQualifier(function (a, b) {
                     return b.owner === a.owner;
                 });
                 var currentPolyLine = [];
-
                 var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
-
                 var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
-
                 for (var jj = offsetted.length - 1; jj >= 0; jj--) {
                     var point = offsetted[jj];
                     var nextPoint = jj === 0 ? offsetted[offsetted.length - 1] : offsetted[jj - 1];
-
                     var edgeCenter = {
                         x: (point.x + nextPoint.x) / 2,
                         y: (point.y + nextPoint.y) / 2
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     point.star = pointStar;
-
                     if (revealedStars.indexOf(point.star) === -1) {
                         if (currentPolyLine.length > 0) {
                             polyLines.push(currentPolyLine);
                             currentPolyLine = [];
                         }
-                    } else {
+                    }
+                    else {
                         // stupid hack to fix pixi bug with drawing polygons
                         // without this consecutive edges with the same angle disappear
                         point.x += (jj % 2) * 0.1;
                         point.y += (jj % 2) * 0.1;
-
                         currentPolyLine.push(point);
                         processedStarsById[star.id] = true;
                     }
@@ -18467,7 +16479,6 @@ var Rance;
                 }
             }
         }
-
         return polyLines;
     }
     Rance.getRevealedBorderEdges = getRevealedBorderEdges;
@@ -18494,26 +16505,21 @@ var Rance;
             this.preventRender = false;
             this.listeners = {};
             this.container = new PIXI.DisplayObjectContainer();
-
             this.galaxyMap = map;
             this.player = player;
         }
         MapRenderer.prototype.destroy = function () {
             this.preventRender = true;
             this.container.renderable = false;
-
             for (var name in this.listeners) {
                 Rance.eventManager.removeEventListener(name, this.listeners[name]);
             }
-
             this.container.removeChildren();
             this.parent.removeChild(this.container);
-
             this.player = null;
             this.container = null;
             this.parent = null;
             this.occupationShaders = null;
-
             for (var starId in this.fowSpriteCache) {
                 var sprite = this.fowSpriteCache[starId];
                 sprite.renderable = false;
@@ -18527,28 +16533,28 @@ var Rance;
         };
         MapRenderer.prototype.init = function () {
             this.makeFowSprite();
-
             this.initLayers();
             this.initMapModes();
-
             this.addEventListeners();
         };
         MapRenderer.prototype.addEventListeners = function () {
             var self = this;
-            this.listeners["renderMap"] = Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
-            this.listeners["renderLayer"] = Rance.eventManager.addEventListener("renderLayer", function (e) {
-                self.setLayerAsDirty(e.data);
-            });
-
+            this.listeners["renderMap"] =
+                Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
+            this.listeners["renderLayer"] =
+                Rance.eventManager.addEventListener("renderLayer", function (e) {
+                    self.setLayerAsDirty(e.data);
+                });
             var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
             var boundUpdateZoom = this.updateShaderZoom.bind(this);
-
-            this.listeners["registerOnMoveCallback"] = Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
-                e.data.push(boundUpdateOffsets);
-            });
-            this.listeners["registerOnZoomCallback"] = Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
-                e.data.push(boundUpdateZoom);
-            });
+            this.listeners["registerOnMoveCallback"] =
+                Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
+                    e.data.push(boundUpdateOffsets);
+                });
+            this.listeners["registerOnZoomCallback"] =
+                Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
+                    e.data.push(boundUpdateZoom);
+                });
         };
         MapRenderer.prototype.setPlayer = function (player) {
             this.player = player;
@@ -18575,45 +16581,37 @@ var Rance;
                 var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
                 var w = this.galaxyMap.width;
                 var h = this.galaxyMap.height;
-
                 this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
             }
         };
         MapRenderer.prototype.getFowSpriteForStar = function (star) {
             // silly hack to make sure first texture gets created properly
-            if (!this.fowSpriteCache[star.id] || Object.keys(this.fowSpriteCache).length < 4) {
+            if (!this.fowSpriteCache[star.id] ||
+                Object.keys(this.fowSpriteCache).length < 4) {
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
                 gfx.beginFill();
                 gfx.drawShape(poly);
                 gfx.endFill();
-
                 this.fowTilingSprite.removeChildren();
-
                 this.fowTilingSprite.mask = gfx;
                 this.fowTilingSprite.addChild(gfx);
-
                 var rendered = this.fowTilingSprite.generateTexture();
-
                 var sprite = new PIXI.Sprite(rendered);
-
                 this.fowSpriteCache[star.id] = sprite;
                 this.fowTilingSprite.mask = null;
             }
-
             return this.fowSpriteCache[star.id];
         };
         MapRenderer.prototype.getOccupationShader = function (owner, occupier) {
             if (!this.occupationShaders[owner.id]) {
                 this.occupationShaders[owner.id] = {};
             }
-
             if (!this.occupationShaders[owner.id][occupier.id]) {
                 var baseColor = PIXI.hex2rgb(owner.color);
                 baseColor.push(1.0);
                 var occupierColor = PIXI.hex2rgb(occupier.color);
                 occupierColor.push(1.0);
-
                 var uniforms = {
                     baseColor: { type: "4fv", value: baseColor },
                     lineColor: { type: "4fv", value: occupierColor },
@@ -18621,7 +16619,6 @@ var Rance;
                     offset: { type: "2f", value: { x: 0.0, y: 0.0 } },
                     zoom: { type: "1f", value: 1.0 }
                 };
-
                 var shaderSrc = [
                     "precision mediump float;",
                     "uniform sampler2D uSampler;",
@@ -18648,615 +16645,549 @@ var Rance;
                     "  }",
                     "}"
                 ];
-
                 this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(shaderSrc, uniforms);
             }
-
             return this.occupationShaders[owner.id][occupier.id];
         };
         MapRenderer.prototype.getFleetTextTexture = function (fleet) {
             var fleetSize = fleet.ships.length;
-
             if (!this.fleetTextTextureCache[fleetSize]) {
                 var text = new PIXI.Text(fleet.ships.length, {
                     fill: "#FFFFFF",
                     stroke: "#000000",
                     strokeThickness: 3
                 });
-
                 this.fleetTextTextureCache[fleetSize] = text.generateTexture();
                 text.texture.destroy(true);
             }
-
             return this.fleetTextTextureCache[fleetSize];
         };
         MapRenderer.prototype.initLayers = function () {
             if (this.layers["nonFillerStars"])
                 return;
-            this.layers["nonFillerStars"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    var mouseDownFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseDown", event);
-                    };
-                    var mouseUpFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseUp", event);
-                    };
-                    var onClickFN = function (star) {
-                        Rance.eventManager.dispatchEvent("starClick", star);
-                    };
-                    var rightDownFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseDown", event);
-                    };
-                    var rightUpFN = function (star) {
-                        Rance.eventManager.dispatchEvent("mouseUp", null);
-                    };
-                    var mouseOverFN = function (star) {
-                        Rance.eventManager.dispatchEvent("hoverStar", star);
-                    };
-                    var mouseOutFN = function (event) {
-                        Rance.eventManager.dispatchEvent("clearHover");
-                    };
-                    var touchStartFN = function (event) {
-                        Rance.eventManager.dispatchEvent("touchStart", event);
-                    };
-                    var touchEndFN = function (event) {
-                        Rance.eventManager.dispatchEvent("touchEnd", event);
-                    };
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var starSize = 1;
-                        if (star.buildings["defence"]) {
-                            starSize += star.buildings["defence"].length * 2;
+            this.layers["nonFillerStars"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
                         }
-                        var gfx = new PIXI.Graphics();
-                        if (!star.owner.isIndependent) {
-                            gfx.lineStyle(starSize / 2, star.owner.color, 1);
+                        else {
+                            points = this.player.getRevealedStars();
                         }
-                        gfx.star = star;
-                        gfx.beginFill(0xFFFFF0);
-                        gfx.drawEllipse(star.x, star.y, starSize, starSize);
-                        gfx.endFill;
-
-                        gfx.interactive = true;
-                        gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
-
-                        gfx.mousedown = mouseDownFN;
-                        gfx.mouseup = mouseUpFN;
-
-                        gfx.click = gfx.tap = function (event) {
-                            if (event.originalEvent.button)
-                                return;
-
-                            onClickFN(this.star);
-                        }.bind(gfx);
-
-                        gfx.rightdown = rightDownFN;
-                        gfx.rightup = rightUpFN.bind(gfx, star);
-
-                        gfx.mouseover = mouseOverFN.bind(gfx, star);
-                        gfx.mouseout = mouseOutFN;
-
-                        doc.addChild(gfx);
-                    }
-
-                    // gets set to 0 without this reference. no idea
-                    doc.height;
-
-                    doc.interactive = true;
-
-                    // cant be set on gfx as touchmove and touchend only register
-                    // on the object that had touchstart called on it
-                    doc.touchstart = touchStartFN;
-                    doc.touchend = touchEndFN;
-                    doc.touchmove = function (event) {
-                        var local = event.getLocalPosition(doc);
-                        var starAtLocal = map.voronoi.getStarAtPoint(local);
-                        if (starAtLocal) {
-                            Rance.eventManager.dispatchEvent("hoverStar", starAtLocal);
+                        var mouseDownFN = function (event) {
+                            Rance.eventManager.dispatchEvent("mouseDown", event);
+                        };
+                        var mouseUpFN = function (event) {
+                            Rance.eventManager.dispatchEvent("mouseUp", event);
+                        };
+                        var onClickFN = function (star) {
+                            Rance.eventManager.dispatchEvent("starClick", star);
+                        };
+                        var rightDownFN = function (event) {
+                            Rance.eventManager.dispatchEvent("mouseDown", event);
+                        };
+                        var rightUpFN = function (star) {
+                            Rance.eventManager.dispatchEvent("mouseUp", null);
+                        };
+                        var mouseOverFN = function (star) {
+                            Rance.eventManager.dispatchEvent("hoverStar", star);
+                        };
+                        var mouseOutFN = function (event) {
+                            Rance.eventManager.dispatchEvent("clearHover");
+                        };
+                        var touchStartFN = function (event) {
+                            Rance.eventManager.dispatchEvent("touchStart", event);
+                        };
+                        var touchEndFN = function (event) {
+                            Rance.eventManager.dispatchEvent("touchEnd", event);
+                        };
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            var starSize = 1;
+                            if (star.buildings["defence"]) {
+                                starSize += star.buildings["defence"].length * 2;
+                            }
+                            var gfx = new PIXI.Graphics();
+                            if (!star.owner.isIndependent) {
+                                gfx.lineStyle(starSize / 2, star.owner.color, 1);
+                            }
+                            gfx.star = star;
+                            gfx.beginFill(0xFFFFF0);
+                            gfx.drawEllipse(star.x, star.y, starSize, starSize);
+                            gfx.endFill;
+                            gfx.interactive = true;
+                            gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
+                            gfx.mousedown = mouseDownFN;
+                            gfx.mouseup = mouseUpFN;
+                            gfx.click = gfx.tap = function (event) {
+                                if (event.originalEvent.button)
+                                    return;
+                                onClickFN(this.star);
+                            }.bind(gfx);
+                            gfx.rightdown = rightDownFN;
+                            gfx.rightup = rightUpFN.bind(gfx, star);
+                            gfx.mouseover = mouseOverFN.bind(gfx, star);
+                            gfx.mouseout = mouseOutFN;
+                            doc.addChild(gfx);
                         }
-                    };
-
-                    return doc;
-                }
-            };
-            this.layers["starOwners"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (!star.owner)
-                            continue;
-
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                        var gfx = new PIXI.Graphics();
-                        var alpha = 0.5;
-                        if (isFinite(star.owner.colorAlpha))
-                            alpha *= star.owner.colorAlpha;
-                        gfx.beginFill(star.owner.color, alpha);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
-                        doc.addChild(gfx);
-
-                        var occupier = star.getSecondaryController();
-                        if (occupier) {
-                            gfx.filters = [this.getOccupationShader(star.owner, occupier)];
-
-                            //gfx.filters = [testFilter];
-                            var mask = new PIXI.Graphics();
-                            mask.beginFill();
-                            mask.drawShape(poly);
-                            mask.endFill();
-                            gfx.mask = mask;
-                            gfx.addChild(mask);
-                        }
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["fogOfWar"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    if (!this.player)
+                        // gets set to 0 without this reference. no idea
+                        doc.height;
+                        doc.interactive = true;
+                        // cant be set on gfx as touchmove and touchend only register
+                        // on the object that had touchstart called on it
+                        doc.touchstart = touchStartFN;
+                        doc.touchend = touchEndFN;
+                        doc.touchmove = function (event) {
+                            var local = event.getLocalPosition(doc);
+                            var starAtLocal = map.voronoi.getStarAtPoint(local);
+                            if (starAtLocal) {
+                                Rance.eventManager.dispatchEvent("hoverStar", starAtLocal);
+                            }
+                        };
                         return doc;
-                    var points = this.player.getRevealedButNotVisibleStars();
-
-                    if (!points || points.length < 1)
+                    }
+                };
+            this.layers["starOwners"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
+                        }
+                        else {
+                            points = this.player.getRevealedStars();
+                        }
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            if (!star.owner)
+                                continue;
+                            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                            var gfx = new PIXI.Graphics();
+                            var alpha = 0.5;
+                            if (isFinite(star.owner.colorAlpha))
+                                alpha *= star.owner.colorAlpha;
+                            gfx.beginFill(star.owner.color, alpha);
+                            gfx.drawShape(poly);
+                            gfx.endFill;
+                            doc.addChild(gfx);
+                            var occupier = star.getSecondaryController();
+                            if (occupier) {
+                                gfx.filters = [this.getOccupationShader(star.owner, occupier)];
+                                //gfx.filters = [testFilter];
+                                var mask = new PIXI.Graphics();
+                                mask.beginFill();
+                                mask.drawShape(poly);
+                                mask.endFill();
+                                gfx.mask = mask;
+                                gfx.addChild(mask);
+                            }
+                        }
+                        doc.height;
                         return doc;
-
-                    doc.alpha = 0.35;
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var sprite = this.getFowSpriteForStar(star);
-
-                        doc.addChild(sprite);
                     }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["starIncome"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-                    var incomeBounds = map.getIncomeBounds();
-
-                    function getRelativeValue(min, max, value) {
-                        var difference = max - min;
-                        if (difference < 1)
-                            difference = 1;
-
-                        // clamps to n different colors
-                        var threshhold = difference / 10;
-                        if (threshhold < 1)
-                            threshhold = 1;
-                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
-                        return relative;
-                    }
-
-                    var colorIndexes = {};
-
-                    function getRelativeColor(min, max, value) {
-                        if (!colorIndexes[value]) {
-                            if (value < 0)
-                                value = 0;
-                            else if (value > 1)
-                                value = 1;
-
-                            var deviation = Math.abs(0.5 - value) * 2;
-
-                            var hue = 110 * value;
-                            var saturation = 0.5 + 0.2 * deviation;
-                            var lightness = 0.6 + 0.25 * deviation;
-
-                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
+                };
+            this.layers["fogOfWar"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
+                        if (!this.player)
+                            return doc;
+                        var points = this.player.getRevealedButNotVisibleStars();
+                        if (!points || points.length < 1)
+                            return doc;
+                        doc.alpha = 0.35;
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            var sprite = this.getFowSpriteForStar(star);
+                            doc.addChild(sprite);
                         }
-                        return colorIndexes[value];
+                        doc.height;
+                        return doc;
                     }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var income = star.getIncome();
-                        var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
-                        var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
-
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                };
+            this.layers["starIncome"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
+                        }
+                        else {
+                            points = this.player.getRevealedStars();
+                        }
+                        var incomeBounds = map.getIncomeBounds();
+                        function getRelativeValue(min, max, value) {
+                            var difference = max - min;
+                            if (difference < 1)
+                                difference = 1;
+                            // clamps to n different colors
+                            var threshhold = difference / 10;
+                            if (threshhold < 1)
+                                threshhold = 1;
+                            var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
+                            return relative;
+                        }
+                        var colorIndexes = {};
+                        function getRelativeColor(min, max, value) {
+                            if (!colorIndexes[value]) {
+                                if (value < 0)
+                                    value = 0;
+                                else if (value > 1)
+                                    value = 1;
+                                var deviation = Math.abs(0.5 - value) * 2;
+                                var hue = 110 * value;
+                                var saturation = 0.5 + 0.2 * deviation;
+                                var lightness = 0.6 + 0.25 * deviation;
+                                colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
+                            }
+                            return colorIndexes[value];
+                        }
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            var income = star.getIncome();
+                            var relativeIncome = getRelativeValue(incomeBounds.min, incomeBounds.max, income);
+                            var color = getRelativeColor(incomeBounds.min, incomeBounds.max, relativeIncome);
+                            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                            var gfx = new PIXI.Graphics();
+                            gfx.beginFill(color, 0.6);
+                            gfx.drawShape(poly);
+                            gfx.endFill;
+                            doc.addChild(gfx);
+                        }
+                        doc.height;
+                        return doc;
+                    }
+                };
+            this.layers["playerInfluence"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
+                        }
+                        else {
+                            points = this.player.getRevealedStars();
+                        }
+                        var mapEvaluator = new Rance.MapEvaluator(map, this.player);
+                        var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
+                        var minInfluence, maxInfluence;
+                        for (var starId in influenceByStar) {
+                            var influence = influenceByStar[starId];
+                            if (!isFinite(minInfluence) || influence < minInfluence) {
+                                minInfluence = influence;
+                            }
+                            if (!isFinite(maxInfluence) || influence > maxInfluence) {
+                                maxInfluence = influence;
+                            }
+                        }
+                        function getRelativeValue(min, max, value) {
+                            var difference = max - min;
+                            if (difference < 1)
+                                difference = 1;
+                            // clamps to n different colors
+                            var threshhold = difference / 10;
+                            if (threshhold < 1)
+                                threshhold = 1;
+                            var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
+                            return relative;
+                        }
+                        var colorIndexes = {};
+                        function getRelativeColor(min, max, value) {
+                            if (!colorIndexes[value]) {
+                                if (value < 0)
+                                    value = 0;
+                                else if (value > 1)
+                                    value = 1;
+                                var deviation = Math.abs(0.5 - value) * 2;
+                                var hue = 110 * value;
+                                var saturation = 0.5 + 0.2 * deviation;
+                                var lightness = 0.6 + 0.25 * deviation;
+                                colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
+                            }
+                            return colorIndexes[value];
+                        }
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            var influence = influenceByStar[star.id];
+                            if (!influence)
+                                continue;
+                            var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
+                            var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
+                            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                            var gfx = new PIXI.Graphics();
+                            gfx.beginFill(color, 0.6);
+                            gfx.drawShape(poly);
+                            gfx.endFill;
+                            doc.addChild(gfx);
+                        }
+                        doc.height;
+                        return doc;
+                    }
+                };
+            this.layers["nonFillerVoronoiLines"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
                         var gfx = new PIXI.Graphics();
-                        gfx.beginFill(color, 0.6);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
                         doc.addChild(gfx);
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["playerInfluence"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-                    var mapEvaluator = new Rance.MapEvaluator(map, this.player);
-                    var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
-
-                    var minInfluence, maxInfluence;
-
-                    for (var starId in influenceByStar) {
-                        var influence = influenceByStar[starId];
-                        if (!isFinite(minInfluence) || influence < minInfluence) {
-                            minInfluence = influence;
+                        gfx.lineStyle(1, 0xA0A0A0, 0.5);
+                        var visible = this.player ? this.player.getRevealedStars() : null;
+                        var lines = map.voronoi.getNonFillerVoronoiLines(visible);
+                        for (var i = 0; i < lines.length; i++) {
+                            var line = lines[i];
+                            gfx.moveTo(line.va.x, line.va.y);
+                            gfx.lineTo(line.vb.x, line.vb.y);
                         }
-                        if (!isFinite(maxInfluence) || influence > maxInfluence) {
-                            maxInfluence = influence;
+                        doc.height;
+                        return doc;
+                    }
+                };
+            this.layers["ownerBorders"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var revealedStars = this.player.getRevealedStars();
+                        var borderEdges = Rance.getRevealedBorderEdges(revealedStars, map.voronoi);
+                        for (var i = 0; i < borderEdges.length; i++) {
+                            var gfx = new PIXI.Graphics();
+                            gfx.alpha = 0.7;
+                            doc.addChild(gfx);
+                            var polyLine = borderEdges[i];
+                            var player = polyLine[0].star.owner;
+                            gfx.lineStyle(8, player.secondaryColor, 1);
+                            gfx.drawPolygon(polyLine);
                         }
+                        doc.height;
+                        return doc;
                     }
-
-                    function getRelativeValue(min, max, value) {
-                        var difference = max - min;
-                        if (difference < 1)
-                            difference = 1;
-
-                        // clamps to n different colors
-                        var threshhold = difference / 10;
-                        if (threshhold < 1)
-                            threshhold = 1;
-                        var relative = (Math.round(value / threshhold) * threshhold - min) / (difference);
-                        return relative;
-                    }
-
-                    var colorIndexes = {};
-
-                    function getRelativeColor(min, max, value) {
-                        if (!colorIndexes[value]) {
-                            if (value < 0)
-                                value = 0;
-                            else if (value > 1)
-                                value = 1;
-
-                            var deviation = Math.abs(0.5 - value) * 2;
-
-                            var hue = 110 * value;
-                            var saturation = 0.5 + 0.2 * deviation;
-                            var lightness = 0.6 + 0.25 * deviation;
-
-                            colorIndexes[value] = Rance.hslToHex(hue / 360, saturation, lightness / 2);
-                        }
-                        return colorIndexes[value];
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var influence = influenceByStar[star.id];
-
-                        if (!influence)
-                            continue;
-
-                        var relativeInfluence = getRelativeValue(minInfluence, maxInfluence, influence);
-                        var color = getRelativeColor(minInfluence, maxInfluence, relativeInfluence);
-
-                        var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                };
+            this.layers["starLinks"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.DisplayObjectContainer();
                         var gfx = new PIXI.Graphics();
-                        gfx.beginFill(color, 0.6);
-                        gfx.drawShape(poly);
-                        gfx.endFill;
                         doc.addChild(gfx);
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["nonFillerVoronoiLines"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var gfx = new PIXI.Graphics();
-                    doc.addChild(gfx);
-                    gfx.lineStyle(1, 0xA0A0A0, 0.5);
-
-                    var visible = this.player ? this.player.getRevealedStars() : null;
-
-                    var lines = map.voronoi.getNonFillerVoronoiLines(visible);
-
-                    for (var i = 0; i < lines.length; i++) {
-                        var line = lines[i];
-                        gfx.moveTo(line.va.x, line.va.y);
-                        gfx.lineTo(line.vb.x, line.vb.y);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["ownerBorders"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var revealedStars = this.player.getRevealedStars();
-                    var borderEdges = Rance.getRevealedBorderEdges(revealedStars, map.voronoi);
-
-                    for (var i = 0; i < borderEdges.length; i++) {
-                        var gfx = new PIXI.Graphics();
-                        gfx.alpha = 0.7;
-                        doc.addChild(gfx);
-                        var polyLine = borderEdges[i];
-                        var player = polyLine[0].star.owner;
-                        gfx.lineStyle(8, player.secondaryColor, 1);
-
-                        gfx.drawPolygon(polyLine);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["starLinks"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var gfx = new PIXI.Graphics();
-                    doc.addChild(gfx);
-                    gfx.lineStyle(1, 0xCCCCCC, 0.6);
-
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    var starsFullyConnected = {};
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (starsFullyConnected[star.id])
-                            continue;
-
-                        starsFullyConnected[star.id] = true;
-
-                        for (var j = 0; j < star.linksTo.length; j++) {
-                            gfx.moveTo(star.x, star.y);
-                            gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+                        gfx.lineStyle(1, 0xCCCCCC, 0.6);
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
                         }
-                        for (var j = 0; j < star.linksFrom.length; j++) {
-                            gfx.moveTo(star.linksFrom[j].x, star.linksFrom[j].y);
-                            gfx.lineTo(star.x, star.y);
+                        else {
+                            points = this.player.getRevealedStars();
                         }
-                    }
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["resources"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var self = this;
-
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getRevealedStars();
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        if (!star.resource)
-                            continue;
-
-                        var text = new PIXI.Text(star.resource.displayName, {
-                            fill: "#FFFFFF",
-                            stroke: "#000000",
-                            strokeThickness: 2
-                        });
-
-                        text.x = star.x;
-                        text.x -= text.width / 2;
-                        text.y = star.y + 8;
-
-                        doc.addChild(text);
-                    }
-
-                    doc.height;
-                    return doc;
-                }
-            };
-            this.layers["fleets"] = {
-                isDirty: true,
-                container: new PIXI.DisplayObjectContainer(),
-                drawingFunction: function (map) {
-                    var self = this;
-
-                    var doc = new PIXI.DisplayObjectContainer();
-
-                    var points;
-                    if (!this.player) {
-                        points = map.stars;
-                    } else {
-                        points = this.player.getVisibleStars();
-                    }
-
-                    var mouseDownFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseDown", event);
-                    };
-                    var mouseUpFN = function (event) {
-                        Rance.eventManager.dispatchEvent("mouseUp", event);
-                    };
-                    var mouseOverFN = function (fleet) {
-                        Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
-                    };
-
-                    function fleetClickFn(fleet) {
-                        Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
-                    }
-                    function singleFleetDrawFN(fleet) {
-                        var fleetContainer = new PIXI.DisplayObjectContainer();
-
-                        var color = fleet.player.color;
-
-                        var textTexture = self.getFleetTextTexture(fleet);
-                        var text = new PIXI.Sprite(textTexture);
-
-                        var containerGfx = new PIXI.Graphics();
-                        containerGfx.lineStyle(1, 0x00000, 1);
-                        containerGfx.beginFill(color, 0.7);
-                        containerGfx.drawRect(0, 0, text.width + 4, text.height - 7);
-                        containerGfx.endFill();
-
-                        fleetContainer.addChild(containerGfx);
-                        fleetContainer.addChild(text);
-                        text.x += 2;
-                        text.y -= 1;
-
-                        fleetContainer.interactive = true;
-
-                        fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
-                        fleetContainer.mousedown = mouseDownFN;
-                        fleetContainer.mouseup = mouseUpFN;
-                        fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
-
-                        return fleetContainer;
-                    }
-
-                    for (var i = 0; i < points.length; i++) {
-                        var star = points[i];
-                        var fleets = star.getAllFleets();
-                        if (!fleets || fleets.length <= 0)
-                            continue;
-
-                        var fleetsContainer = new PIXI.DisplayObjectContainer();
-                        fleetsContainer.x = star.x;
-                        fleetsContainer.y = star.y - 30;
-                        doc.addChild(fleetsContainer);
-
-                        for (var j = 0; j < fleets.length; j++) {
-                            var drawnFleet = singleFleetDrawFN(fleets[j]);
-                            drawnFleet.position.x = fleetsContainer.width;
-                            fleetsContainer.addChild(drawnFleet);
+                        var starsFullyConnected = {};
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            if (starsFullyConnected[star.id])
+                                continue;
+                            starsFullyConnected[star.id] = true;
+                            for (var j = 0; j < star.linksTo.length; j++) {
+                                gfx.moveTo(star.x, star.y);
+                                gfx.lineTo(star.linksTo[j].x, star.linksTo[j].y);
+                            }
+                            for (var j = 0; j < star.linksFrom.length; j++) {
+                                gfx.moveTo(star.linksFrom[j].x, star.linksFrom[j].y);
+                                gfx.lineTo(star.x, star.y);
+                            }
                         }
-
-                        fleetsContainer.x -= fleetsContainer.width / 2;
-                        fleetsContainer.y -= 10;
+                        doc.height;
+                        return doc;
                     }
-
-                    doc.height;
-                    return doc;
-                }
-            };
+                };
+            this.layers["resources"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var self = this;
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
+                        }
+                        else {
+                            points = this.player.getRevealedStars();
+                        }
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            if (!star.resource)
+                                continue;
+                            var text = new PIXI.Text(star.resource.displayName, {
+                                fill: "#FFFFFF",
+                                stroke: "#000000",
+                                strokeThickness: 2
+                            });
+                            text.x = star.x;
+                            text.x -= text.width / 2;
+                            text.y = star.y + 8;
+                            doc.addChild(text);
+                        }
+                        doc.height;
+                        return doc;
+                    }
+                };
+            this.layers["fleets"] =
+                {
+                    isDirty: true,
+                    container: new PIXI.DisplayObjectContainer(),
+                    drawingFunction: function (map) {
+                        var self = this;
+                        var doc = new PIXI.DisplayObjectContainer();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
+                        }
+                        else {
+                            points = this.player.getVisibleStars();
+                        }
+                        var mouseDownFN = function (event) {
+                            Rance.eventManager.dispatchEvent("mouseDown", event);
+                        };
+                        var mouseUpFN = function (event) {
+                            Rance.eventManager.dispatchEvent("mouseUp", event);
+                        };
+                        var mouseOverFN = function (fleet) {
+                            Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
+                        };
+                        function fleetClickFn(fleet) {
+                            Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
+                        }
+                        function singleFleetDrawFN(fleet) {
+                            var fleetContainer = new PIXI.DisplayObjectContainer();
+                            var color = fleet.player.color;
+                            var textTexture = self.getFleetTextTexture(fleet);
+                            var text = new PIXI.Sprite(textTexture);
+                            var containerGfx = new PIXI.Graphics();
+                            containerGfx.lineStyle(1, 0x00000, 1);
+                            containerGfx.beginFill(color, 0.7);
+                            containerGfx.drawRect(0, 0, text.width + 4, text.height - 7);
+                            containerGfx.endFill();
+                            fleetContainer.addChild(containerGfx);
+                            fleetContainer.addChild(text);
+                            text.x += 2;
+                            text.y -= 1;
+                            fleetContainer.interactive = true;
+                            fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
+                            fleetContainer.mousedown = mouseDownFN;
+                            fleetContainer.mouseup = mouseUpFN;
+                            fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
+                            return fleetContainer;
+                        }
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            var fleets = star.getAllFleets();
+                            if (!fleets || fleets.length <= 0)
+                                continue;
+                            var fleetsContainer = new PIXI.DisplayObjectContainer();
+                            fleetsContainer.x = star.x;
+                            fleetsContainer.y = star.y - 30;
+                            doc.addChild(fleetsContainer);
+                            for (var j = 0; j < fleets.length; j++) {
+                                var drawnFleet = singleFleetDrawFN(fleets[j]);
+                                drawnFleet.position.x = fleetsContainer.width;
+                                fleetsContainer.addChild(drawnFleet);
+                            }
+                            fleetsContainer.x -= fleetsContainer.width / 2;
+                            fleetsContainer.y -= 10;
+                        }
+                        doc.height;
+                        return doc;
+                    }
+                };
         };
         MapRenderer.prototype.initMapModes = function () {
-            this.mapModes["default"] = {
-                name: "default",
-                displayName: "Default",
-                layers: [
-                    { layer: this.layers["starOwners"] },
-                    { layer: this.layers["ownerBorders"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["noStatic"] = {
-                name: "noStatic",
-                displayName: "No Static Layers",
-                layers: [
-                    { layer: this.layers["starOwners"] },
-                    { layer: this.layers["ownerBorders"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["income"] = {
-                name: "income",
-                displayName: "Income",
-                layers: [
-                    { layer: this.layers["starIncome"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["influence"] = {
-                name: "influence",
-                displayName: "Player Influence",
-                layers: [
-                    { layer: this.layers["playerInfluence"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
-            this.mapModes["resources"] = {
-                name: "resources",
-                displayName: "Resources",
-                layers: [
-                    { layer: this.layers["starOwners"] },
-                    { layer: this.layers["ownerBorders"] },
-                    { layer: this.layers["nonFillerVoronoiLines"] },
-                    { layer: this.layers["starLinks"] },
-                    { layer: this.layers["nonFillerStars"] },
-                    { layer: this.layers["fogOfWar"] },
-                    { layer: this.layers["resources"] },
-                    { layer: this.layers["fleets"] }
-                ]
-            };
+            this.mapModes["default"] =
+                {
+                    name: "default",
+                    displayName: "Default",
+                    layers: [
+                        { layer: this.layers["starOwners"] },
+                        { layer: this.layers["ownerBorders"] },
+                        { layer: this.layers["nonFillerVoronoiLines"] },
+                        { layer: this.layers["starLinks"] },
+                        { layer: this.layers["nonFillerStars"] },
+                        { layer: this.layers["fogOfWar"] },
+                        { layer: this.layers["fleets"] }
+                    ]
+                };
+            this.mapModes["noStatic"] =
+                {
+                    name: "noStatic",
+                    displayName: "No Static Layers",
+                    layers: [
+                        { layer: this.layers["starOwners"] },
+                        { layer: this.layers["ownerBorders"] },
+                        { layer: this.layers["nonFillerStars"] },
+                        { layer: this.layers["fogOfWar"] },
+                        { layer: this.layers["fleets"] }
+                    ]
+                };
+            this.mapModes["income"] =
+                {
+                    name: "income",
+                    displayName: "Income",
+                    layers: [
+                        { layer: this.layers["starIncome"] },
+                        { layer: this.layers["nonFillerVoronoiLines"] },
+                        { layer: this.layers["starLinks"] },
+                        { layer: this.layers["nonFillerStars"] },
+                        { layer: this.layers["fleets"] }
+                    ]
+                };
+            this.mapModes["influence"] =
+                {
+                    name: "influence",
+                    displayName: "Player Influence",
+                    layers: [
+                        { layer: this.layers["playerInfluence"] },
+                        { layer: this.layers["nonFillerVoronoiLines"] },
+                        { layer: this.layers["starLinks"] },
+                        { layer: this.layers["nonFillerStars"] },
+                        { layer: this.layers["fleets"] }
+                    ]
+                };
+            this.mapModes["resources"] =
+                {
+                    name: "resources",
+                    displayName: "Resources",
+                    layers: [
+                        { layer: this.layers["starOwners"] },
+                        { layer: this.layers["ownerBorders"] },
+                        { layer: this.layers["nonFillerVoronoiLines"] },
+                        { layer: this.layers["starLinks"] },
+                        { layer: this.layers["nonFillerStars"] },
+                        { layer: this.layers["fogOfWar"] },
+                        { layer: this.layers["resources"] },
+                        { layer: this.layers["fleets"] }
+                    ]
+                };
         };
         MapRenderer.prototype.setParent = function (newParent) {
             var oldParent = this.parent;
             if (oldParent) {
                 oldParent.removeChild(this.container);
             }
-
             this.parent = newParent;
             newParent.addChild(this.container);
         };
@@ -19269,15 +17200,12 @@ var Rance;
                     return true;
                 }
             }
-
             return false;
         };
         MapRenderer.prototype.setLayerAsDirty = function (layerName) {
             var layer = this.layers[layerName];
             layer.isDirty = true;
-
             this.isDirty = true;
-
             // TODO
             this.render();
         };
@@ -19285,9 +17213,7 @@ var Rance;
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 this.currentMapMode.layers[i].layer.isDirty = true;
             }
-
             this.isDirty = true;
-
             // TODO
             this.render();
         };
@@ -19303,32 +17229,24 @@ var Rance;
                 throw new Error("Invalid mapmode");
                 return;
             }
-
             if (this.currentMapMode && this.currentMapMode.name === newMapMode) {
                 return;
             }
-
             this.currentMapMode = this.mapModes[newMapMode];
-
             this.resetContainer();
-
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 var layer = this.currentMapMode.layers[i].layer;
                 this.container.addChild(layer.container);
             }
-
             this.setAllLayersAsDirty();
         };
         MapRenderer.prototype.render = function () {
             if (this.preventRender || !this.isDirty)
                 return;
-
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
                 var layer = this.currentMapMode.layers[i].layer;
-
                 this.drawLayer(layer);
             }
-
             this.isDirty = false;
         };
         return MapRenderer;
@@ -19340,16 +17258,16 @@ var tempCameraId = 0;
 var Rance;
 (function (Rance) {
     /**
-    * @class Camera
-    * @constructor
-    */
+     * @class Camera
+     * @constructor
+     */
     var Camera = (function () {
         /**
-        * [constructor description]
-        * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
-        * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
-        * 0.0 to 1.0]
-        */
+         * [constructor description]
+         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+         * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
+         * 0.0 to 1.0]
+         */
         function Camera(container, bound) {
             this.bounds = {};
             this.currZoom = 1;
@@ -19364,7 +17282,6 @@ var Rance;
             var screenElement = window.getComputedStyle(document.getElementById("pixi-container"), null);
             this.screenWidth = parseInt(screenElement.width);
             this.screenHeight = parseInt(screenElement.height);
-
             this.addEventListeners();
             this.setBounds();
         }
@@ -19374,17 +17291,14 @@ var Rance;
             }
             this.onMoveCallbacks = [];
             this.onZoomCallbacks = [];
-
             window.removeEventListener("resize", this.resizeListener);
         };
-
         /**
-        * @method addEventListeners
-        * @private
-        */
+         * @method addEventListeners
+         * @private
+         */
         Camera.prototype.addEventListeners = function () {
             var self = this;
-
             this.resizeListener = function (e) {
                 var container = document.getElementById("pixi-container");
                 if (!container)
@@ -19393,61 +17307,53 @@ var Rance;
                 self.screenWidth = parseInt(style.width);
                 self.screenHeight = parseInt(style.height);
             };
-
             window.addEventListener("resize", this.resizeListener, false);
-
-            this.listeners["setCameraToCenterOn"] = Rance.eventManager.addEventListener("setCameraToCenterOn", function (e) {
-                self.toCenterOn = e.data;
-                console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId);
-            });
-
+            this.listeners["setCameraToCenterOn"] =
+                Rance.eventManager.addEventListener("setCameraToCenterOn", function (e) {
+                    self.toCenterOn = e.data;
+                    console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId);
+                });
             Rance.eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
-
             Rance.eventManager.dispatchEvent("registerOnZoomCallback", self.onZoomCallbacks);
         };
-
         /**
-        * @method setBound
-        * @private
-        */
+         * @method setBound
+         * @private
+         */
         Camera.prototype.setBounds = function () {
             var rect = this.container.getLocalBounds();
             this.width = this.screenWidth;
             this.height = this.screenHeight;
-            this.bounds = {
-                xMin: (this.width * this.bounds.min) - rect.width * this.container.scale.x,
-                xMax: (this.width * this.bounds.max),
-                yMin: (this.height * this.bounds.min) - rect.height * this.container.scale.y,
-                yMax: (this.height * this.bounds.max),
-                min: this.bounds.min,
-                max: this.bounds.max
-            };
+            this.bounds =
+                {
+                    xMin: (this.width * this.bounds.min) - rect.width * this.container.scale.x,
+                    xMax: (this.width * this.bounds.max),
+                    yMin: (this.height * this.bounds.min) - rect.height * this.container.scale.y,
+                    yMax: (this.height * this.bounds.max),
+                    min: this.bounds.min,
+                    max: this.bounds.max
+                };
         };
-
         /**
-        * @method startScroll
-        * @param {number[]} mousePos [description]
-        */
+         * @method startScroll
+         * @param {number[]} mousePos [description]
+         */
         Camera.prototype.startScroll = function (mousePos) {
             this.setBounds();
             this.startClick = mousePos;
             this.startPos = [this.container.position.x, this.container.position.y];
-
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
                 ui.classList.add("prevent-pointer-events");
-
             var popups = document.getElementsByClassName("popup-container")[0];
             if (popups)
                 popups.classList.add("prevent-pointer-events");
         };
-
         /**
-        * @method end
-        */
+         * @method end
+         */
         Camera.prototype.end = function () {
             this.startPos = undefined;
-
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
                 ui.classList.remove("prevent-pointer-events");
@@ -19455,34 +17361,30 @@ var Rance;
             if (popups)
                 popups.classList.remove("prevent-pointer-events");
         };
-
         /**
-        * @method getDelta
-        * @param {number[]} currPos [description]
-        */
+         * @method getDelta
+         * @param {number[]} currPos [description]
+         */
         Camera.prototype.getDelta = function (currPos) {
             var x = this.startClick[0] - currPos[0];
             var y = this.startClick[1] - currPos[1];
             return [-x, -y];
         };
-
         /**
-        * @method move
-        * @param {number[]} currPos [description]
-        */
+         * @method move
+         * @param {number[]} currPos [description]
+         */
         Camera.prototype.move = function (currPos) {
             var delta = this.getDelta(currPos);
             this.container.position.x = this.startPos[0] + delta[0];
             this.container.position.y = this.startPos[1] + delta[1];
             this.clampEdges();
-
             this.onMove();
         };
         Camera.prototype.deltaMove = function (delta) {
             this.container.position.x += delta[0];
             this.container.position.y += delta[1];
             this.clampEdges();
-
             this.onMove();
         };
         Camera.prototype.onMove = function () {
@@ -19508,45 +17410,34 @@ var Rance;
         };
         Camera.prototype.centerOnPosition = function (pos) {
             this.setBounds();
-
             var localPos = this.getLocalPosition(pos);
             var center = this.getScreenCenter();
-
             this.container.position.x += center.x - localPos.x;
             this.container.position.y += center.y - localPos.y;
-
             this.clampEdges();
-
             this.onMove();
         };
-
         /**
-        * @method zoom
-        * @param {number} zoomAmount [description]
-        */
+         * @method zoom
+         * @param {number} zoomAmount [description]
+         */
         Camera.prototype.zoom = function (zoomAmount) {
             if (zoomAmount > 1) {
-                //zoomAmount = 1;
             }
-
             var container = this.container;
             var oldZoom = this.currZoom;
-
             var zoomDelta = oldZoom - zoomAmount;
             var rect = container.getLocalBounds();
-
             //these 2 get position of screen center in relation to the container
             //0: far left 1: far right
             var xRatio = 1 - ((container.x - this.screenWidth / 2) / rect.width / oldZoom + 1);
             var yRatio = 1 - ((container.y - this.screenHeight / 2) / rect.height / oldZoom + 1);
-
             var xDelta = rect.width * xRatio * zoomDelta;
             var yDelta = rect.height * yRatio * zoomDelta;
             container.position.x += xDelta;
             container.position.y += yDelta;
             container.scale.set(zoomAmount, zoomAmount);
             this.currZoom = zoomAmount;
-
             this.onMove();
             this.onZoom();
         };
@@ -19555,51 +17446,48 @@ var Rance;
                 this.onZoomCallbacks[i](this.currZoom);
             }
         };
-
         /**
-        * @method deltaZoom
-        * @param {number} delta [description]
-        * @param {number} scale [description]
-        */
+         * @method deltaZoom
+         * @param {number} delta [description]
+         * @param {number} scale [description]
+         */
         Camera.prototype.deltaZoom = function (delta, scale) {
             if (delta === 0) {
                 return;
             }
-
             //var scaledDelta = absDelta + scale / absDelta;
             var direction = delta < 0 ? "out" : "in";
             var adjDelta = 1 + Math.abs(delta) * scale;
             if (direction === "out") {
                 this.zoom(this.currZoom / adjDelta);
-            } else {
+            }
+            else {
                 this.zoom(this.currZoom * adjDelta);
             }
         };
-
         /**
-        * @method clampEdges
-        * @private
-        */
+         * @method clampEdges
+         * @private
+         */
         Camera.prototype.clampEdges = function () {
             var x = this.container.position.x;
             var y = this.container.position.y;
-
             //horizontal
             //left edge
             if (x < this.bounds.xMin) {
                 x = this.bounds.xMin;
-            } else if (x > this.bounds.xMax) {
+            }
+            else if (x > this.bounds.xMax) {
                 x = this.bounds.xMax;
             }
-
             //vertical
             //top
             if (y < this.bounds.yMin) {
                 y = this.bounds.yMin;
-            } else if (y > this.bounds.yMax) {
+            }
+            else if (y > this.bounds.yMax) {
                 y = this.bounds.yMax;
             }
-
             this.container.position.set(x, y);
         };
         return Camera;
@@ -19616,7 +17504,6 @@ var Rance;
             this.parentContainer = parentContainer;
             this.graphics = new PIXI.Graphics();
             parentContainer.addChild(this.graphics);
-
             this.addEventListeners();
         }
         RectangleSelect.prototype.destroy = function () {
@@ -19627,19 +17514,15 @@ var Rance;
         };
         RectangleSelect.prototype.addEventListeners = function () {
             var self = this;
-
             Rance.eventManager.dispatchEvent("setRectangleSelectTargetFN", this);
         };
-
         RectangleSelect.prototype.startSelection = function (point) {
             this.selecting = true;
             this.start = point;
             this.current = point;
-
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
                 ui.classList.add("prevent-pointer-events");
-
             var popups = document.getElementsByClassName("popup-container")[0];
             if (popups)
                 popups.classList.add("prevent-pointer-events");
@@ -19650,7 +17533,6 @@ var Rance;
         };
         RectangleSelect.prototype.endSelection = function (point) {
             this.setSelectionTargets();
-
             this.selecting = false;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui)
@@ -19658,23 +17540,17 @@ var Rance;
             var popups = document.getElementsByClassName("popup-container")[0];
             if (popups)
                 popups.classList.remove("prevent-pointer-events");
-
             this.graphics.clear();
-
             var inSelection = this.getAllInSelection();
             Rance.eventManager.dispatchEvent("selectFleets", inSelection);
-
             this.start = null;
             this.current = null;
         };
-
         RectangleSelect.prototype.drawSelectionRectangle = function () {
             if (!this.current)
                 return;
-
             var gfx = this.graphics;
             var bounds = this.getBounds();
-
             gfx.clear();
             gfx.lineStyle(1, 0xFFFFFF, 1);
             gfx.beginFill(0x000000, 0);
@@ -19684,7 +17560,6 @@ var Rance;
         RectangleSelect.prototype.setSelectionTargets = function () {
             if (!this.getSelectionTargetsFN)
                 return;
-
             this.toSelectFrom = this.getSelectionTargetsFN();
         };
         RectangleSelect.prototype.getBounds = function () {
@@ -19692,7 +17567,6 @@ var Rance;
             var x2 = Math.max(this.start.x, this.current.x);
             var y1 = Math.min(this.start.y, this.current.y);
             var y2 = Math.max(this.start.y, this.current.y);
-
             return ({
                 x1: x1,
                 x2: x2,
@@ -19702,10 +17576,8 @@ var Rance;
                 height: y2 - y1
             });
         };
-
         RectangleSelect.prototype.getAllInSelection = function () {
             var toReturn = [];
-
             for (var i = 0; i < this.toSelectFrom.length; i++) {
                 if (this.selectionContains(this.toSelectFrom[i].position)) {
                     toReturn.push(this.toSelectFrom[i].data);
@@ -19713,14 +17585,12 @@ var Rance;
             }
             return toReturn;
         };
-
         RectangleSelect.prototype.selectionContains = function (point) {
             var x = point.x;
             var y = point.y;
-
             var bounds = this.getBounds();
-
-            return ((x >= bounds.x1 && x <= bounds.x2) && (y >= bounds.y1 && y <= bounds.y2));
+            return ((x >= bounds.x1 && x <= bounds.x2) &&
+                (y >= bounds.y1 && y <= bounds.y2));
         };
         return RectangleSelect;
     })();
@@ -19740,7 +17610,6 @@ var Rance;
             this.camera = camera;
             this.rectangleSelect = new Rance.RectangleSelect(renderer.layers["select"]);
             this.currentAction = undefined;
-
             window.oncontextmenu = function (event) {
                 var eventTarget = event.target;
                 if (eventTarget.localName !== "canvas")
@@ -19748,25 +17617,20 @@ var Rance;
                 event.preventDefault();
                 event.stopPropagation();
             };
-
             this.addEventListeners();
         }
         MouseEventHandler.prototype.destroy = function () {
             for (var name in this.listeners) {
                 Rance.eventManager.removeEventListener(name, this.listeners[name]);
             }
-
             this.hoveredStar = null;
-
             this.rectangleSelect.destroy();
             this.rectangleSelect = null;
-
             this.renderer = null;
             this.camera = null;
         };
         MouseEventHandler.prototype.addEventListeners = function () {
             var self = this;
-
             var _canvas = document.getElementById("pixi-container");
             _canvas.addEventListener("DOMMouseScroll", function (e) {
                 if (e.target.localName !== "canvas")
@@ -19782,21 +17646,18 @@ var Rance;
                 if (e.target.localName !== "canvas")
                     return;
             });
-
             this.listeners["mouseDown"] = Rance.eventManager.addEventListener("mouseDown", function (e) {
                 self.mouseDown(e.content, "world");
             });
             this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
                 self.mouseUp(e.content, "world");
             });
-
             this.listeners["touchStart"] = Rance.eventManager.addEventListener("touchStart", function (e) {
                 self.touchStart(e.content, "world");
             });
             this.listeners["touchEnd"] = Rance.eventManager.addEventListener("touchEnd", function (e) {
                 self.touchEnd(e.content, "world");
             });
-
             this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (e) {
                 self.setHoveredStar(e.content);
             });
@@ -19808,35 +17669,40 @@ var Rance;
             if (this.preventingGhost[type]) {
                 window.clearTimeout(this.preventingGhost[type]);
             }
-
             var self = this;
-
             this.preventingGhost[type] = window.setTimeout(function () {
                 self.preventingGhost[type] = null;
             }, delay);
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
             if (targetType === "stage") {
-                if (event.originalEvent.ctrlKey || event.originalEvent.metaKey || event.originalEvent.button === 1) {
+                if (event.originalEvent.ctrlKey ||
+                    event.originalEvent.metaKey ||
+                    event.originalEvent.button === 1 //||
+                ) {
                     this.startScroll(event);
                 }
-            } else if (targetType === "world") {
-                if (event.originalEvent.button === 0 || !isFinite(event.originalEvent.button)) {
+            }
+            else if (targetType === "world") {
+                if (event.originalEvent.button === 0 ||
+                    !isFinite(event.originalEvent.button)) {
                     this.startSelect(event);
-                } else if (event.originalEvent.button === 2) {
+                }
+                else if (event.originalEvent.button === 2) {
                     this.startFleetMove(event);
                 }
             }
         };
-
         MouseEventHandler.prototype.touchStart = function (event, targetType) {
             if (targetType === "world") {
                 if (app.playerControl.selectedFleets.length === 0) {
                     this.startSelect(event);
-                } else {
+                }
+                else {
                     this.startFleetMove(event);
                 }
-            } else {
+            }
+            else {
                 debugger;
             }
         };
@@ -19848,39 +17714,42 @@ var Rance;
                 if (this.currentAction === "fleetMove") {
                     this.completeFleetMove();
                 }
-            } else {
+            }
+            else {
                 debugger;
             }
         };
-
         MouseEventHandler.prototype.mouseMove = function (event, targetType) {
             if (this.currentAction === "scroll") {
                 this.scrollMove(event);
-            } else if (this.currentAction === "zoom") {
+            }
+            else if (this.currentAction === "zoom") {
                 this.zoomMove(event);
-            } else if (this.currentAction === "select") {
+            }
+            else if (this.currentAction === "select") {
                 this.dragSelect(event);
             }
         };
         MouseEventHandler.prototype.mouseUp = function (event, targetType) {
             if (this.currentAction === undefined)
                 return;
-
             if (this.currentAction === "scroll") {
                 this.endScroll(event);
                 this.preventGhost(15, "mouseUp");
-            } else if (this.currentAction === "zoom") {
+            }
+            else if (this.currentAction === "zoom") {
                 this.endZoom(event);
                 this.preventGhost(15, "mouseUp");
-            } else if (this.currentAction === "select") {
+            }
+            else if (this.currentAction === "select") {
                 if (!this.preventingGhost["mouseUp"])
                     this.endSelect(event);
-            } else if (this.currentAction === "fleetMove") {
+            }
+            else if (this.currentAction === "fleetMove") {
                 if (!this.preventingGhost["mouseUp"])
                     this.completeFleetMove();
             }
         };
-
         MouseEventHandler.prototype.startScroll = function (event) {
             if (this.currentAction === "select")
                 this.stashedAction = "select";
@@ -19898,7 +17767,8 @@ var Rance;
             this.stashedAction = undefined;
         };
         MouseEventHandler.prototype.zoomMove = function (event) {
-            var delta = event.global.x + this.currPoint[1] - this.currPoint[0] - event.global.y;
+            var delta = event.global.x + this.currPoint[1] -
+                this.currPoint[0] - event.global.y;
             this.camera.deltaZoom(delta, 0.005);
             this.currPoint = [event.global.x, event.global.y];
         };
@@ -19918,7 +17788,6 @@ var Rance;
             this.preventGhost(30, "hover");
             this.setFleetMoveTarget(star);
         };
-
         MouseEventHandler.prototype.clearHoveredStar = function () {
             var timeout = window.setTimeout(function () {
                 if (!this.preventingGhost["hover"]) {
@@ -19928,7 +17797,6 @@ var Rance;
                 window.clearTimeout(timeout);
             }.bind(this), 15);
         };
-
         MouseEventHandler.prototype.startFleetMove = function (event) {
             Rance.eventManager.dispatchEvent("startPotentialMove", event.target.star);
             this.currentAction = "fleetMove";
@@ -19976,16 +17844,12 @@ var Rance;
             if (!this.registeredObjects[uniformType]) {
                 this.registeredObjects[uniformType] = [];
             }
-
             this.registeredObjects[uniformType].push(shader);
         };
-
         UniformManager.prototype.updateTime = function () {
             this.timeCount += 0.01;
-
             if (!this.registeredObjects["time"])
                 return;
-
             for (var i = 0; i < this.registeredObjects["time"].length; i++) {
                 this.registeredObjects["time"][i].uniforms.time.value = this.timeCount;
             }
@@ -19996,6 +17860,7 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var ShaderSources;
     (function (ShaderSources) {
         ShaderSources.nebula = [
             "precision mediump float;",
@@ -20140,10 +18005,9 @@ var Rance;
             "  c += vec3(star(pos, volume));",
             "",
             "  gl_FragColor = vec4(c, 1.0);",
-            "}"
+            "}",
         ];
-    })(Rance.ShaderSources || (Rance.ShaderSources = {}));
-    var ShaderSources = Rance.ShaderSources;
+    })(ShaderSources = Rance.ShaderSources || (Rance.ShaderSources = {}));
 })(Rance || (Rance = {}));
 /// <reference path="uniformmanager.ts"/>
 /// <reference path="shaders/converted/shadersources.ts"/>
@@ -20165,9 +18029,7 @@ var Rance;
         };
         ShaderManager.prototype.initNebula = function () {
             var nebulaColorScheme = Rance.generateColorScheme();
-
             var lightness = Rance.randRange(1.1, 1.3);
-
             var nebulaUniforms = {
                 baseColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.main) },
                 overlayColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.secondary) },
@@ -20182,7 +18044,6 @@ var Rance;
                 highlightB: { type: "1f", value: 2.2 },
                 seed: { type: "2fv", value: [Math.random() * 100, Math.random() * 100] }
             };
-
             this.shaders["nebula"] = new PIXI.AbstractFilter(Rance.ShaderSources.nebula, nebulaUniforms);
         };
         return ShaderManager;
@@ -20211,18 +18072,14 @@ var Rance;
             this.parentContainer = parentContainer;
             this.container = new PIXI.DisplayObjectContainer();
             this.parentContainer.addChild(this.container);
-
             this.addEventListeners();
         }
         PathfindingArrow.prototype.destroy = function () {
             this.active = false;
-
             this.removeEventListeners();
-
             this.parentContainer = null;
             this.container = null;
             this.currentTarget = null;
-
             window.clearTimeout(this.clearTargetTimeout);
             this.selectedFleets = null;
             this.labelCache = null;
@@ -20237,225 +18094,181 @@ var Rance;
         };
         PathfindingArrow.prototype.addEventListener = function (name, handler) {
             this.listeners[name] = handler;
-
             Rance.eventManager.addEventListener(name, handler);
         };
         PathfindingArrow.prototype.addEventListeners = function () {
             var self = this;
-
             this.addEventListener("startPotentialMove", function (e) {
                 self.startMove();
                 if (e.data) {
                     self.setTarget(e.data);
                 }
             });
-
             this.addEventListener("setPotentialMoveTarget", function (e) {
                 self.setTarget(e.data);
             });
             this.addEventListener("clearPotentialMoveTarget", function (e) {
                 self.clearTarget();
             });
-
             this.addEventListener("endPotentialMove", function (e) {
                 self.endMove();
             });
-
             this.addEventListener("mouseUp", function (e) {
                 self.endMove();
             });
         };
-
         PathfindingArrow.prototype.startMove = function () {
-            var fleets = app.playerControl.selectedFleets;
-
+            var fleets = app.playerControl.selectedFleets; // TODO
             if (this.active || !fleets || fleets.length < 1) {
                 return;
             }
-
             this.active = true;
             this.currentTarget = null;
             this.selectedFleets = fleets;
             this.clearArrows();
         };
-
         PathfindingArrow.prototype.setTarget = function (star) {
             if (!this.active) {
                 return;
             }
-
             if (this.clearTargetTimeout) {
                 window.clearTimeout(this.clearTargetTimeout);
             }
-
             this.currentTarget = star;
             window.setTimeout(this.drawAllCurrentCurves.bind(this), 10);
             //this.drawAllCurrentCurves();
         };
-
         PathfindingArrow.prototype.clearTarget = function () {
             if (!this.active) {
                 return;
             }
-
             var self = this;
-
             if (this.clearTargetTimeout) {
                 window.clearTimeout(this.clearTargetTimeout);
             }
-
             this.clearTargetTimeout = window.setTimeout(function () {
                 self.currentTarget = null;
                 self.clearArrows();
                 self.clearTargetTimeout = null;
             }, 10);
         };
-
         PathfindingArrow.prototype.endMove = function () {
             this.active = false;
             this.currentTarget = null;
             this.selectedFleets = [];
             this.clearArrows();
         };
-
         PathfindingArrow.prototype.clearArrows = function () {
             this.container.removeChildren();
         };
-
         PathfindingArrow.prototype.makeLabel = function (style, distance) {
             var textStyle;
-
             switch (style) {
-                case "reachable": {
-                    textStyle = {
-                        fill: 0xFFFFF0
-                    };
-                    break;
-                }
-                case "unreachable": {
-                    textStyle = {
-                        fill: 0xFF0000
-                    };
-                    break;
-                }
+                case "reachable":
+                    {
+                        textStyle =
+                            {
+                                fill: 0xFFFFF0
+                            };
+                        break;
+                    }
+                case "unreachable":
+                    {
+                        textStyle =
+                            {
+                                fill: 0xFF0000
+                            };
+                        break;
+                    }
             }
-
             if (!this.labelCache[style]) {
                 this.labelCache[style] = {};
             }
-
             this.labelCache[style][distance] = new PIXI.Text(distance, textStyle);
         };
-
         PathfindingArrow.prototype.getLabel = function (style, distance) {
             if (!this.labelCache[style] || !this.labelCache[style][distance]) {
                 this.makeLabel(style, distance);
             }
-
             return this.labelCache[style][distance];
         };
-
         PathfindingArrow.prototype.getAllCurrentPaths = function () {
             var paths = [];
-
             for (var i = 0; i < this.selectedFleets.length; i++) {
                 var fleet = this.selectedFleets[i];
-
                 if (fleet.location.id === this.currentTarget.id)
                     continue;
-
                 var path = fleet.getPathTo(this.currentTarget);
-
                 paths.push({
                     fleet: fleet,
                     path: path
                 });
             }
-
             return paths;
         };
-
         PathfindingArrow.prototype.getAllCurrentCurves = function () {
             var paths = this.getAllCurrentPaths();
-
             var curves = [];
-
             var totalPathsPerStar = {};
             var alreadyVisitedPathsPerStar = {};
-
+            // get total paths passing through star
+            // used for seperating overlapping paths to pass through
+            // orbits around the star
             for (var i = 0; i < paths.length; i++) {
                 for (var j = 0; j < paths[i].path.length; j++) {
                     var star = paths[i].path[j].star;
-
                     if (!totalPathsPerStar[star.id]) {
                         totalPathsPerStar[star.id] = 0;
                         alreadyVisitedPathsPerStar[star.id] = 0;
                     }
-
                     totalPathsPerStar[star.id]++;
                 }
             }
-
             for (var i = 0; i < paths.length; i++) {
                 var fleet = paths[i].fleet;
                 var path = paths[i].path;
                 var distance = path.length - 1;
-
                 var currentMovePoints = fleet.getMinCurrentMovePoints();
                 var canReach = currentMovePoints >= distance;
-
                 var style = canReach ? "reachable" : "unreachable";
-
                 var curvePoints = [];
-
                 for (var j = path.length - 1; j >= 0; j--) {
                     var star = path[j].star;
-
                     var sourceStar = j < path.length - 1 ? path[j + 1].star : null;
-
                     if (totalPathsPerStar[star.id] > 1 && star !== this.currentTarget) {
                         var visits = ++alreadyVisitedPathsPerStar[star.id];
                         curvePoints.unshift(this.getTargetOffset(star, sourceStar, visits, totalPathsPerStar[star.id], 12));
-                    } else {
+                    }
+                    else {
                         curvePoints.unshift(star);
                     }
                 }
-
                 var curveData = this.getCurveData(curvePoints);
-
                 curves.push({
                     style: style,
                     curveData: curveData
                 });
             }
-
             return curves;
         };
-
         PathfindingArrow.prototype.drawAllCurrentCurves = function () {
             this.clearArrows();
-
             var curves = this.getAllCurrentCurves();
-
             for (var i = 0; i < curves.length; i++) {
                 var curve = this.drawCurve(curves[i].curveData, this.curveStyles[curves[i].style]);
-
                 this.container.addChild(curve);
             }
         };
-
         PathfindingArrow.prototype.getCurveData = function (points) {
             var i6 = 1.0 / 6.0;
             var path = [];
             var abababa = [points[0]].concat(points);
             abababa.push(points[points.length - 1]);
-
             for (var i = 3, n = abababa.length; i < n; i++) {
                 var p0 = abababa[i - 3];
                 var p1 = abababa[i - 2];
                 var p2 = abababa[i - 1];
                 var p3 = abababa[i];
-
                 path.push([
                     p2.x * i6 + p1.x - p0.x * i6,
                     p2.y * i6 + p1.y - p0.y * i6,
@@ -20465,104 +18278,78 @@ var Rance;
                     p2.y
                 ]);
             }
-
             path[0][0] = points[0].x;
             path[0][1] = points[0].y;
-
             return path;
         };
-
         PathfindingArrow.prototype.drawCurve = function (points, style) {
             var gfx = new PIXI.Graphics();
-
             gfx.lineStyle(12, style.color, 0.7);
             gfx.moveTo(points[0][0], points[0][1]);
-
             for (var i = 0; i < points.length; i++) {
                 gfx.bezierCurveTo.apply(gfx, points[i]);
             }
             gfx.height;
-
             this.drawArrowHead(gfx, style.color);
-
             return gfx;
         };
         PathfindingArrow.prototype.drawArrowHead = function (gfx, color) {
             var points = gfx.graphicsData[0].shape.points;
-
             var x1 = points[points.length - 12];
             var y1 = points[points.length - 11];
             var x2 = points[points.length - 2];
             var y2 = points[points.length - 1];
-
             var lineAngle = Math.atan2(y2 - y1, x2 - x1);
             var headLength = 30;
             var buttAngle = 27 * (Math.PI / 180);
-
             var hypotenuseLength = Math.abs(headLength / Math.cos(buttAngle));
-
             var angle1 = lineAngle + Math.PI + buttAngle;
             var topX = x2 + Math.cos(angle1) * hypotenuseLength;
             var topY = y2 + Math.sin(angle1) * hypotenuseLength;
-
             var angle2 = lineAngle + Math.PI - buttAngle;
             var botX = x2 + Math.cos(angle2) * hypotenuseLength;
             var botY = y2 + Math.sin(angle2) * hypotenuseLength;
-
             gfx.lineStyle(null);
-
             gfx.moveTo(x2, y2);
             gfx.beginFill(color, 0.7);
             gfx.lineTo(topX, topY);
             gfx.lineTo(botX, botY);
             gfx.lineTo(x2, y2);
             gfx.endFill();
-
             var buttMidX = x2 + Math.cos(lineAngle + Math.PI) * headLength;
             var buttMidY = y2 + Math.sin(lineAngle + Math.PI) * headLength;
-
             for (var i = points.length - 1; i >= 0; i -= 2) {
                 var y = points[i];
                 var x = points[i - 1];
                 var distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
-
                 if (distance >= headLength + 10) {
                     points.push(buttMidX);
                     points.push(buttMidY);
                     break;
-                } else {
+                }
+                else {
                     points.pop();
                     points.pop();
                 }
             }
-
             gfx.height;
         };
-
         PathfindingArrow.prototype.getTargetOffset = function (target, sourcePoint, i, totalPaths, offsetPerOrbit) {
             var maxPerOrbit = 6;
-
             var currentOrbit = Math.ceil(i / maxPerOrbit);
             var isOuterOrbit = currentOrbit > Math.floor(totalPaths / maxPerOrbit);
             var pathsInCurrentOrbit = isOuterOrbit ? totalPaths % maxPerOrbit : maxPerOrbit;
-
             var positionInOrbit = (i - 1) % pathsInCurrentOrbit;
-
             var distance = currentOrbit * offsetPerOrbit;
-
             var angle = (Math.PI * 2 / pathsInCurrentOrbit) * positionInOrbit;
-
             if (sourcePoint) {
                 var dx = sourcePoint.x - target.x;
                 var dy = sourcePoint.y - target.y;
                 var approachAngle = Math.atan2(dy, dx);
-
                 angle += approachAngle;
             }
-
             var x = Math.sin(angle) * distance;
             var y = Math.cos(angle) * distance;
-
             return ({
                 x: target.x + x,
                 y: target.y - y
@@ -20588,50 +18375,39 @@ var Rance;
             this.backgroundIsDirty = true;
             this.isBattleBackground = false;
             PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
-
             this.stage = new PIXI.Stage(0x101060);
-
             this.resizeListener = this.resize.bind(this);
             window.addEventListener("resize", this.resizeListener, false);
         }
         Renderer.prototype.init = function () {
             this.shaderManager = new Rance.ShaderManager();
             this.initLayers();
-
             this.addEventListeners();
             this.activeRenderLoopId++;
-
             this.stage.renderable = true;
         };
-
         // can't destroy everything because pixi stops working properly
         // with more than 1 stage / PIXI.Renderer
         Renderer.prototype.destroy = function () {
             this.stage.renderable = false;
             this.pause();
-
             if (this.pathfindingArrow) {
                 this.pathfindingArrow.destroy();
                 this.pathfindingArrow = null;
             }
-
             if (this.mouseEventHandler) {
                 this.mouseEventHandler.destroy();
                 this.mouseEventHandler = null;
             }
-
             if (this.camera) {
                 this.camera.destroy();
                 this.camera = null;
             }
-
             if (this.shaderManager) {
                 this.shaderManager.destroy();
                 this.shaderManager = null;
             }
-
             this.layers["bgFilter"].filters = null;
-
             this.stage.removeChildren();
             this.removeRendererView();
         };
@@ -20642,7 +18418,6 @@ var Rance;
         };
         Renderer.prototype.bindRendererView = function (container) {
             this.pixiContainer = container;
-
             if (!this.renderer) {
                 var containerStyle = window.getComputedStyle(this.pixiContainer);
                 this.renderer = PIXI.autoDetectRenderer(parseInt(containerStyle.width), parseInt(containerStyle.height), {
@@ -20650,30 +18425,23 @@ var Rance;
                     antialias: true
                 });
             }
-
             this.pixiContainer.appendChild(this.renderer.view);
             this.renderer.view.setAttribute("id", "pixi-canvas");
-
             this.resize();
-
             if (!this.isBattleBackground) {
                 this.setupDefaultLayers();
                 this.addCamera();
-            } else {
+            }
+            else {
                 this.setupBackgroundLayers();
             }
         };
         Renderer.prototype.initLayers = function () {
             var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
-
             var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
-
             var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
-
             var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
-
             var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
-
             _main.addChild(_map);
             _main.addChild(_select);
         };
@@ -20690,7 +18458,6 @@ var Rance;
         };
         Renderer.prototype.addCamera = function () {
             var oldToCenterOn;
-
             if (this.mouseEventHandler)
                 this.mouseEventHandler.destroy();
             if (this.camera) {
@@ -20699,14 +18466,11 @@ var Rance;
             }
             this.camera = new Rance.Camera(this.layers["main"], 0.5);
             this.camera.toCenterOn = this.toCenterOn || oldToCenterOn;
-
             this.mouseEventHandler = new Rance.MouseEventHandler(this, this.camera);
-
             this.pathfindingArrow = new Rance.PathfindingArrow(this.layers["select"]);
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
-
             this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
                 self.mouseEventHandler.mouseDown(event, "stage");
             };
@@ -20719,12 +18483,9 @@ var Rance;
             this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function (event) {
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
-
             var main = this.layers["bgSprite"];
             main.interactive = true;
-
             main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
-
             main.mousedown = main.rightdown = main.touchstart = function (event) {
                 if (event.target !== main)
                     return;
@@ -20766,23 +18527,16 @@ var Rance;
                     if (!target[name]) {
                         target[name] = { type: uniformObj[name].type };
                     }
-
                     target[name].value = uniformObj[name].value;
                 }
-
                 return target;
             }
-
             var nebulaFilter = this.shaderManager.shaders["nebula"];
-
             var oldRng = Math.random;
             var oldUniforms = copyUniforms(nebulaFilter.uniforms);
             Math.random = RNG.prototype.uniform.bind(new RNG(seed));
-
             var nebulaColorScheme = Rance.generateColorScheme();
-
             var lightness = Rance.randRange(1, 1.2);
-
             var newUniforms = {
                 baseColor: { value: Rance.hex2rgb(nebulaColorScheme.main) },
                 overlayColor: { value: Rance.hex2rgb(nebulaColorScheme.secondary) },
@@ -20797,48 +18551,37 @@ var Rance;
                 highlightB: { value: 2.2 },
                 seed: { value: [Math.random() * 100, Math.random() * 100] }
             };
-
             copyUniforms(newUniforms, nebulaFilter.uniforms);
-
             var texture = this.renderNebula();
-
             copyUniforms(oldUniforms, nebulaFilter.uniforms);
             Math.random = oldRng;
-
             return texture;
         };
         Renderer.prototype.renderNebula = function () {
             this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
-
             var texture = this.layers["bgFilter"].generateTexture();
-
             this.layers["bgFilter"].filters = null;
-
             return texture;
         };
         Renderer.prototype.renderBackground = function () {
-            var texture = this.isBattleBackground ? this.renderBlurredNebula.apply(this, this.blurProps) : this.renderNebula();
+            var texture = this.isBattleBackground ?
+                this.renderBlurredNebula.apply(this, this.blurProps) :
+                this.renderNebula();
             var sprite = new PIXI.Sprite(texture);
-
             this.layers["bgSprite"].removeChildren();
             this.layers["bgSprite"].addChild(sprite);
-
             this.backgroundIsDirty = false;
         };
         Renderer.prototype.renderBlurredNebula = function (x, y, width, height, seed) {
             var seed = seed || Math.random();
             var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
             var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
-
             var container = new PIXI.DisplayObjectContainer();
             container.addChild(bg);
             container.addChild(fg);
-
             fg.filters = [new PIXI.BlurFilter()];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
-
             var texture = container.generateTexture();
-
             return texture;
         };
         Renderer.prototype.renderOnce = function () {
@@ -20863,18 +18606,16 @@ var Rance;
             if (this.isPaused) {
                 if (this.forceFrame) {
                     this.forceFrame = false;
-                } else {
+                }
+                else {
                     return;
                 }
             }
             if (this.backgroundIsDirty) {
                 this.renderBackground();
             }
-
             this.shaderManager.uniformManager.updateTime();
-
             this.renderer.render(this.stage);
-
             if (this.activeRenderLoopId === renderLoopId) {
                 requestAnimFrame(this.render.bind(this, renderLoopId));
             }
@@ -20893,7 +18634,6 @@ var Rance;
     function inspectSave(saveName) {
         var saveKey = "Rance.Save." + saveName;
         var save = localStorage.getItem(saveKey);
-
         return JSON.parse(save);
     }
     Rance.inspectSave = inspectSave;
@@ -20914,7 +18654,6 @@ var Rance;
             this.onLoaded = onLoaded;
             PIXI.dontSayHello = true;
             this.startTime = new Date().getTime();
-
             this.loadDOM();
             this.loadEmblems();
             this.loadBuildings();
@@ -20924,25 +18663,19 @@ var Rance;
         AppLoader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
             var self = this;
             var frames = {};
-
             (function splitSpritesheetFN() {
                 for (var sprite in sheetData.frames) {
                     var frame = sheetData.frames[sprite].frame;
-
                     var canvas = document.createElement("canvas");
                     canvas.width = frame.w;
                     canvas.height = frame.h;
                     var context = canvas.getContext("2d");
-
                     context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
-
                     var image = new Image();
                     image.src = canvas.toDataURL();
-
                     frames[sprite] = image;
                 }
             }());
-
             return frames;
         };
         AppLoader.prototype.loadDOM = function () {
@@ -20950,7 +18683,8 @@ var Rance;
             if (document.readyState === "interactive" || document.readyState === "complete") {
                 self.loaded.DOM = true;
                 self.checkLoaded();
-            } else {
+            }
+            else {
                 document.addEventListener('DOMContentLoaded', function () {
                     self.loaded.DOM = true;
                     self.checkLoaded();
@@ -20960,7 +18694,6 @@ var Rance;
         AppLoader.prototype.loadImagesFN = function (identifier) {
             if (this.loaded[identifier] === undefined)
                 this.loaded[identifier] = false;
-
             var self = this;
             var loader = new PIXI.JsonLoader("img\/" + identifier + ".json");
             loader.addEventListener("loaded", function (event) {
@@ -20969,7 +18702,6 @@ var Rance;
                 self.loaded[identifier] = true;
                 self.checkLoaded();
             });
-
             loader.load();
         };
         AppLoader.prototype.loadEmblems = function () {
@@ -20984,12 +18716,10 @@ var Rance;
         AppLoader.prototype.loadOther = function () {
             var self = this;
             var loader = new PIXI.ImageLoader("img\/fowTexture.png");
-
             loader.addEventListener("loaded", function (event) {
                 self.loaded.other = true;
                 self.checkLoaded();
             });
-
             loader.load();
         };
         AppLoader.prototype.checkLoaded = function () {
@@ -21024,14 +18754,14 @@ var Rance;
         }
         GameLoader.prototype.deserializeGame = function (data) {
             this.map = this.deserializeMap(data.galaxyMap);
-
             for (var i = 0; i < data.players.length; i++) {
                 var playerData = data.players[i];
                 var id = playerData.id;
                 var player = this.playersById[id] = this.deserializePlayer(playerData);
                 if (player.isIndependent) {
                     this.independents.push(player);
-                } else {
+                }
+                else {
                     this.players.push(player);
                 }
             }
@@ -21039,52 +18769,40 @@ var Rance;
                 var playerData = data.players[i];
                 this.deserializeDiplomacyStatus(this.playersById[playerData.id], playerData.diplomacyStatus);
             }
-
             this.humanPlayer = this.playersById[data.humanPlayerId];
-
             this.deserializeBuildings(data.galaxyMap);
-
             var game = new Rance.Game(this.map, this.players, this.humanPlayer);
             game.independents = game.independents.concat(this.independents);
-
             return game;
         };
         GameLoader.prototype.deserializeMap = function (data) {
             var stars = [];
-
             for (var i = 0; i < data.stars.length; i++) {
                 var star = this.deserializeStar(data.stars[i]);
                 stars.push(star);
                 this.starsById[star.id] = star;
             }
-
             for (var i = 0; i < data.stars.length; i++) {
                 var dataStar = data.stars[i];
                 var realStar = this.starsById[dataStar.id];
-
                 for (var j = 0; j < dataStar.linksToIds.length; j++) {
                     var linkId = dataStar.linksToIds[j];
                     var linkStar = this.starsById[linkId];
                     realStar.addLink(linkStar);
                 }
             }
-
             var fillerPoints = [];
-
             for (var i = 0; i < data.fillerPoints.length; i++) {
                 var dataPoint = data.fillerPoints[i];
                 fillerPoints.push(new Rance.FillerPoint(dataPoint.x, dataPoint.y));
             }
-
             var mapGenResult = new Rance.MapGen2.MapGenResult({
                 stars: stars,
                 fillerPoints: fillerPoints,
                 width: data.width,
                 height: data.height
             });
-
             var galaxyMap = mapGenResult.makeMap();
-
             return galaxyMap;
         };
         GameLoader.prototype.deserializeStar = function (data) {
@@ -21092,23 +18810,19 @@ var Rance;
             star.name = data.name;
             star.baseIncome = data.baseIncome;
             star.seed = data.seed;
-
             if (data.resourceType) {
                 star.setResource(Rance.Templates.Resources[data.resourceType]);
             }
-
             return star;
         };
         GameLoader.prototype.deserializeBuildings = function (data) {
             for (var i = 0; i < data.stars.length; i++) {
                 var starData = data.stars[i];
                 var star = this.starsById[starData.id];
-
                 for (var category in starData.buildings) {
                     for (var j = 0; j < starData.buildings[category].length; j++) {
                         var buildingData = starData.buildings[category][j];
                         var building = this.deserializeBuilding(buildingData);
-
                         star.addBuilding(building);
                     }
                 }
@@ -21124,60 +18838,51 @@ var Rance;
                 totalCost: data.totalCost,
                 id: data.id
             });
-
             return building;
         };
         GameLoader.prototype.deserializePlayer = function (data) {
             var personality;
-
             if (data.personality) {
                 personality = Rance.extendObject(data.personality, Rance.makeRandomPersonality());
             }
-
             var player = new Rance.Player(data.isAI, data.id);
-
             player.money = data.money;
-
             if (data.resources) {
                 player.resources = Rance.extendObject(data.resources);
             }
-
             // color scheme & flag
             if (data.isIndependent) {
                 player.setupPirates();
-            } else {
+            }
+            else {
                 player.personality = personality;
-
                 player.color = data.color;
                 player.secondaryColor = data.secondaryColor;
                 player.colorAlpha = data.colorAlpha;
-
                 if (data.flag && data.flag.mainColor) {
                     player.flag = this.deserializeFlag(data.flag);
                     player.setIcon();
-                } else {
+                }
+                else {
                     player.makeRandomFlag();
                 }
             }
-
+            // fleets & ships
             for (var i = 0; i < data.fleets.length; i++) {
                 var fleet = data.fleets[i];
                 player.addFleet(this.deserializeFleet(player, fleet));
             }
-
+            // stars
             for (var i = 0; i < data.controlledLocationIds.length; i++) {
                 player.addStar(this.starsById[data.controlledLocationIds[i]]);
             }
-
             for (var i = 0; i < data.items.length; i++) {
                 this.deserializeItem(data.items[i], player);
             }
-
             for (var i = 0; i < data.revealedStarIds.length; i++) {
                 var id = data.revealedStarIds[i];
                 player.revealedStars[id] = this.starsById[id];
             }
-
             return player;
         };
         GameLoader.prototype.deserializeDiplomacyStatus = function (player, data) {
@@ -21186,17 +18891,13 @@ var Rance;
                     var id = data.metPlayerIds[i];
                     player.diplomacyStatus.metPlayers[id] = this.playersById[id];
                 }
-
                 player.diplomacyStatus.statusByPlayer = data.statusByPlayer;
-
                 for (var playerId in data.attitudeModifiersByPlayer) {
                     var modifiers = data.attitudeModifiersByPlayer[playerId];
-
                     if (!modifiers || modifiers.length === 0) {
                         player.diplomacyStatus.attitudeModifiersByPlayer[playerId] = [];
                         continue;
                     }
-
                     for (var i = 0; i < modifiers.length; i++) {
                         var template = Rance.Templates.AttitudeModifiers[modifiers[i].templateType];
                         var modifier = new Rance.AttitudeModifier({
@@ -21205,7 +18906,6 @@ var Rance;
                             endTurn: modifiers[i].endTurn,
                             strength: modifiers[i].strength
                         });
-
                         player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
                     }
                 }
@@ -21214,23 +18914,23 @@ var Rance;
         GameLoader.prototype.deserializeFlag = function (data) {
             var deserializeEmblem = function (emblemData, color) {
                 var inner = Rance.Templates.SubEmblems[emblemData.innerType];
-                var outer = emblemData.outerType ? Rance.Templates.SubEmblems[emblemData.outerType] : null;
-
+                var outer = emblemData.outerType ?
+                    Rance.Templates.SubEmblems[emblemData.outerType] : null;
                 return new Rance.Emblem(color, emblemData.alpha, inner, outer);
             };
-
             var flag = new Rance.Flag({
                 width: 46,
                 mainColor: data.mainColor,
                 secondaryColor: data.secondaryColor,
                 tetriaryColor: data.tetriaryColor
             });
-
             if (data.customImage) {
                 flag.setCustomImage(data.customImage);
-            } else if (data.seed) {
+            }
+            else if (data.seed) {
                 flag.generateRandom(data.seed);
-            } else {
+            }
+            else {
                 if (data.foregroundEmblem) {
                     var fgEmblem = deserializeEmblem(data.foregroundEmblem, data.secondaryColor);
                     flag.setForegroundEmblem(fgEmblem);
@@ -21240,34 +18940,26 @@ var Rance;
                     flag.setBackgroundEmblem(bgEmblem);
                 }
             }
-
             return flag;
         };
         GameLoader.prototype.deserializeFleet = function (player, data) {
             var ships = [];
-
             for (var i = 0; i < data.ships.length; i++) {
                 var ship = this.deserializeShip(data.ships[i]);
                 player.addUnit(ship);
                 ships.push(ship);
             }
-
             return new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id);
         };
         GameLoader.prototype.deserializeShip = function (data) {
             var template = Rance.Templates.ShipTypes[data.templateType];
-
             var ship = new Rance.Unit(template, data.id, data);
-
             this.unitsById[ship.id] = ship;
-
             return ship;
         };
         GameLoader.prototype.deserializeItem = function (data, player) {
             var template = Rance.Templates.Items[data.templateType];
-
             var item = new Rance.Item(template, data.id);
-
             player.addItem(item);
             if (isFinite(data.unitId)) {
                 this.unitsById[data.unitId].addItem(item);
@@ -21293,20 +18985,16 @@ var Rance;
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-
             var dummyUser = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
             var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
-
             for (var i = 0; i < effects.length; i++) {
                 effects[i].template.effect(dummyUser, dummyTarget, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
                     return true;
                 }
             }
-
             return false;
         }
-
         for (var abilityName in Rance.Templates.Abilities) {
             var ability = Rance.Templates.Abilities[abilityName];
             ability.addsGuard = checkIfAbilityAddsGuard(ability);
@@ -21320,7 +19008,6 @@ var Rance;
                     if (!modifier.canBeOverriddenBy[i].canOverride) {
                         modifier.canBeOverriddenBy[i].canOverride = [];
                     }
-
                     modifier.canBeOverriddenBy[i].canOverride.push(modifier);
                 }
             }
@@ -21330,6 +19017,7 @@ var Rance;
 /// <reference path="tutorial.d.ts"/>
 var Rance;
 (function (Rance) {
+    var Tutorials;
     (function (Tutorials) {
         Tutorials.uiTutorial = {
             pages: [
@@ -21338,40 +19026,36 @@ var Rance;
                 React.DOM.div(null, React.DOM.div(null, "Works with"), React.DOM.button(null, "react elements too"))
             ]
         };
-    })(Rance.Tutorials || (Rance.Tutorials = {}));
-    var Tutorials = Rance.Tutorials;
+    })(Tutorials = Rance.Tutorials || (Rance.Tutorials = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../src/utility.ts" />
 var Rance;
 (function (Rance) {
     function saveOptions(slot) {
-        if (typeof slot === "undefined") { slot = 0; }
+        if (slot === void 0) { slot = 0; }
         var data = JSON.stringify({
             options: Rance.Options,
             date: new Date()
         });
-
         var saveName = "Rance.Options." + slot;
-
         localStorage.setItem(saveName, data);
     }
     Rance.saveOptions = saveOptions;
     function loadOptions(slot) {
         var baseString = "Rance.Options.";
-
         var parsedData;
         if (slot && localStorage[baseString + slot]) {
             parsedData = JSON.parse(localStorage.getItem(baseString + slot));
-        } else {
+        }
+        else {
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
-
         if (parsedData) {
             Rance.Options = Rance.extendObject(parsedData.options, Rance.Options);
         }
     }
     Rance.loadOptions = loadOptions;
-
+    var defaultOptions;
     (function (defaultOptions) {
         defaultOptions.battleAnimationTiming = {
             before: 1,
@@ -21385,10 +19069,7 @@ var Rance;
         defaultOptions.ui = {
             noHamburger: false
         };
-    })(Rance.defaultOptions || (Rance.defaultOptions = {}));
-    var defaultOptions = Rance.defaultOptions;
-
-    Rance.Options;
+    })(defaultOptions = Rance.defaultOptions || (Rance.defaultOptions = {}));
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>
 /// <reference path="player.ts"/>
@@ -21416,42 +19097,31 @@ var Rance;
         building: 0,
         objective: 0
     };
-
     var App = (function () {
         function App() {
             var self = this;
-
             this.seed = Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
-
             this.loader = new Rance.AppLoader(function () {
                 self.makeApp();
             });
-
             Rance.setAllDynamicTemplateProperties();
         }
         App.prototype.makeApp = function () {
             var startTime = new Date().getTime();
-
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
-
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
-
             this.initUI();
             this.setInitialScene();
-
             if (this.reactUI.currentScene === "galaxyMap") {
                 this.game = this.makeGame();
                 this.initGame();
-
                 this.initDisplay();
                 this.hookUI();
             }
-
             this.reactUI.render();
-
             console.log("Init in " + (new Date().getTime() - startTime) + " ms");
         };
         App.prototype.destroy = function () {
@@ -21459,21 +19129,18 @@ var Rance;
                 this.mapRenderer.destroy();
                 this.mapRenderer = null;
             }
-
             // renderer is reused as pixi doesnt like creating
             // more than 1 stage or renderer
-            //
+            // 
             // renderer.destroy() just destroys peripheral stuff and
             // prevents rendering until it's initialized again
             if (this.renderer) {
                 this.renderer.destroy();
             }
-
             if (this.playerControl) {
                 this.playerControl.destroy();
                 this.playerControl = null;
             }
-
             if (this.reactUI) {
                 this.reactUI.destroy();
                 this.reactUI = null;
@@ -21484,67 +19151,47 @@ var Rance;
             var data = localStorage.getItem(itemName);
             if (!data)
                 return;
-
             var parsed = JSON.parse(data);
-
             Rance.idGenerators = Rance.extendObject(parsed.idGenerators);
-
             this.destroy();
-
             this.initUI();
-
             this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
             this.initGame();
-
             this.initDisplay();
             this.hookUI();
             if (parsed.cameraLocation) {
                 this.renderer.toCenterOn = parsed.cameraLocation;
             }
-
             this.reactUI.switchScene("galaxyMap");
         };
-
         App.prototype.makeGameFromSetup = function (map, players, independents) {
             this.destroy();
-
             this.initUI();
-
             this.game = new Rance.Game(map, players, players[0]);
             this.game.independents = independents;
             this.initGame();
-
             this.initDisplay();
             this.hookUI();
-
             this.reactUI.switchScene("galaxyMap");
         };
-
         App.prototype.makeGame = function () {
             var playerData = this.makePlayers();
             var players = playerData.players;
             var independents = playerData.independents;
             var map = this.makeMap(playerData);
-
             var game = new Rance.Game(map, players, players[0]);
             game.independents = game.independents.concat(independents);
-
             return game;
         };
-
         App.prototype.makePlayers = function () {
             var players = [];
-
             for (var i = 0; i < 5; i++) {
                 var player = new Rance.Player(i >= 1);
                 player.makeRandomFlag();
-
                 players.push(player);
             }
-
             var pirates = new Rance.Player(true);
             pirates.setupPirates();
-
             return ({
                 players: players,
                 independents: [pirates]
@@ -21563,24 +19210,19 @@ var Rance;
                     starSizeRegularity: 100
                 }
             };
-
             var mapGenResult = Rance.Templates.MapGen.spiralGalaxyGeneration(optionValues, playerData.players, playerData.independents);
-
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;
         };
         App.prototype.initGame = function () {
             if (!this.game)
-                throw new Error("App tried to init game without " + "having one specified");
-
+                throw new Error("App tried to init game without " +
+                    "having one specified");
             this.humanPlayer = this.game.humanPlayer;
             this.humanPlayer.isAI = false;
-
             if (this.playerControl)
                 this.playerControl.removeEventListeners();
-
             this.playerControl = new Rance.PlayerControl(this.humanPlayer);
-
             for (var i = 0; i < this.game.playerOrder.length; i++) {
                 var player = this.game.playerOrder[i];
                 if (player.isAI) {
@@ -21591,7 +19233,6 @@ var Rance;
         App.prototype.initDisplay = function () {
             this.renderer = this.renderer || new Rance.Renderer();
             this.renderer.init();
-
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap, this.humanPlayer);
             this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.init();
@@ -21612,13 +19253,14 @@ var Rance;
             var uriParser = document.createElement("a");
             uriParser.href = document.URL;
             var hash = uriParser.hash;
-
             if (hash) {
                 if (hash === "#demo") {
-                } else {
+                }
+                else {
                     this.reactUI.currentScene = hash.slice(1);
                 }
-            } else {
+            }
+            else {
                 this.reactUI.currentScene = "galaxyMap";
             }
         };
@@ -21626,6 +19268,5 @@ var Rance;
     })();
     Rance.App = App;
 })(Rance || (Rance = {}));
-
 var app = new Rance.App();
 //# sourceMappingURL=main.js.map

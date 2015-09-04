@@ -3,7 +3,6 @@
 // Definitions by: xperiments <http://github.com/xperiments>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-///<reference path="webgl.d.ts"/>
 declare module PIXI
 {
 
