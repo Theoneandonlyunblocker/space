@@ -9,12 +9,12 @@ module Rance
 {
   export class Renderer
   {
-    stage: PIXI.Stage;
+    stage: PIXI.Container;
     renderer: any; //PIXI.Renderer
     pixiContainer: HTMLCanvasElement;
     layers:
     {
-      [name: string] : PIXI.DisplayObjectContainer;
+      [name: string] : PIXI.Container;
     } = {};
     camera: Camera;
     mouseEventHandler: MouseEventHandler;
@@ -34,9 +34,9 @@ module Rance
 
     constructor()
     {
-      PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
+      PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
       
-      this.stage = new PIXI.Stage(0x101060);
+      this.stage = new PIXI.Container();
 
       this.resizeListener = this.resize.bind(this);
       window.addEventListener("resize", this.resizeListener, false);
@@ -129,15 +129,15 @@ module Rance
     }
     initLayers()
     {
-      var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
+      var _bgSprite = this.layers["bgSprite"] = new PIXI.Container();
 
-      var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
+      var _main = this.layers["main"] = new PIXI.Container();
 
-      var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
+      var _map = this.layers["map"] = new PIXI.Container();
 
-      var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
+      var _bgFilter = this.layers["bgFilter"] = new PIXI.Container();
 
-      var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
+      var _select = this.layers["select"] = new PIXI.Container();
 
       _main.addChild(_map);
       _main.addChild(_select);
@@ -177,47 +177,88 @@ module Rance
       var self = this;
 
 
-      this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function(event)
+      var stageMouseDownFN = function(event)
       {
         self.mouseEventHandler.mouseDown(event, "stage");
       }
-      this.stage.mousemove = this.stage.touchmove = function(event)
+      var stageMouseMoveFN = function(event)
       {
         self.mouseEventHandler.mouseMove(event, "stage");
       }
-      this.stage.mouseup = this.stage.rightup = this.stage.touchend = function(event)
+      var stageMouseUpFN = function(event)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
       }
-      this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function(event)
+      var stageMouseUpOutsideFN = function(event)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
       }
+
+      var stageListeners =
+      {
+        mousedown: stageMouseDownFN,
+        rightdown: stageMouseDownFN,
+        touchstart: stageMouseDownFN,
+        mousemove: stageMouseMoveFN,
+        touchmove: stageMouseMoveFN,
+        mouseup: stageMouseUpFN,
+        rightup: stageMouseUpFN,
+        touchend: stageMouseUpFN,
+        mouseupoutside: stageMouseUpOutsideFN,
+        rightupoutside: stageMouseUpOutsideFN,
+        touchendoutside: stageMouseUpOutsideFN,
+      };
+
+      for (var eventType in stageListeners)
+      {
+        this.stage.on(eventType, stageListeners[eventType]);
+      }
+      
 
       var main = this.layers["bgSprite"];
       main.interactive = true;
 
       main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
 
-      main.mousedown = main.rightdown = main.touchstart = function(event)
+      var mainMouseDownFN = function(event)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseDown(event, "world");
-      }
-      main.mousemove = main.touchmove = function(event)
+      };
+      var mainMouseMoveFN = function(event)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseMove(event, "world");
       }
-      main.mouseup = main.rightup = main.touchend = function(event)
+      var mainMouseUpFN = function(event)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseUp(event, "world");
       }
-      main.mouseupoutside = main.rightupoutside = main.touchendoutside = function(event)
+      var mainMouseUpOutsideFN = function(event)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseUp(event, "world");
+      }
+
+      var mainListeners =
+      {
+        mousedown: mainMouseDownFN,
+        rightdown: mainMouseDownFN,
+        touchstart: mainMouseDownFN,
+        mousemove: mainMouseMoveFN,
+        touchmove: mainMouseMoveFN,
+        mouseup: mainMouseUpFN,
+        rightup: mainMouseUpFN,
+        touchend: mainMouseUpFN,
+        mouseupoutside: mainMouseUpOutsideFN,
+        rightupoutside: mainMouseUpOutsideFN,
+        touchendoutside: mainMouseUpOutsideFN,
+      };
+
+      for (var eventType in mainListeners)
+      {
+        main.on(eventType, mainListeners[eventType]);
       }
     }
     resize()
@@ -300,7 +341,7 @@ module Rance
     {
       this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
 
-      var texture = this.layers["bgFilter"].generateTexture();
+      var texture = this.layers["bgFilter"].generateTexture(this.renderer);
 
       this.layers["bgFilter"].filters = null;
 
@@ -324,14 +365,14 @@ module Rance
       var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
       var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
 
-      var container = new PIXI.DisplayObjectContainer();
+      var container = new PIXI.Container();
       container.addChild(bg);
       container.addChild(fg);
 
-      fg.filters = [new PIXI.BlurFilter()];
+      fg.filters = [new PIXI.filters.BlurFilter()];
       fg.filterArea = new PIXI.Rectangle(x, y, width, height);
 
-      var texture = container.generateTexture();
+      var texture = container.generateTexture(this.renderer);
 
       return texture;
     }
@@ -381,7 +422,7 @@ module Rance
 
       if (this.activeRenderLoopId === renderLoopId)
       {
-        requestAnimFrame( this.render.bind(this, renderLoopId) );
+        window.requestAnimationFrame( this.render.bind(this, renderLoopId) );
       }
     }
   }

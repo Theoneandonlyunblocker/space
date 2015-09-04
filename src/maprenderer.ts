@@ -16,8 +16,8 @@ module Rance
 {
   export interface IMapRendererLayer
   {
-    drawingFunction: (map: GalaxyMap) => PIXI.DisplayObjectContainer;
-    container: PIXI.DisplayObjectContainer;
+    drawingFunction: (map: GalaxyMap) => PIXI.Container;
+    container: PIXI.Container;
     isDirty: boolean;
   }
   export interface IMapRendererLayerMapMode
@@ -31,8 +31,8 @@ module Rance
   }
   export class MapRenderer
   {
-    container: PIXI.DisplayObjectContainer;
-    parent: PIXI.DisplayObjectContainer;
+    container: PIXI.Container;
+    parent: PIXI.Container;
     galaxyMap: GalaxyMap;
     player: Player;
 
@@ -53,7 +53,7 @@ module Rance
       [name: string]: IMapRendererLayerMapMode;
     } = {};
 
-    fowTilingSprite: PIXI.TilingSprite;
+    fowTilingSprite: PIXI.extras.TilingSprite;
     fowSpriteCache:
     {
       [starId: number]: PIXI.Sprite;
@@ -75,7 +75,7 @@ module Rance
 
     constructor(map: GalaxyMap, player: Player)
     {
-      this.container = new PIXI.DisplayObjectContainer();
+      this.container = new PIXI.Container();
 
       this.galaxyMap = map;
       this.player = player;
@@ -127,23 +127,23 @@ module Rance
       this.listeners["renderMap"] =
         eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
       this.listeners["renderLayer"] =
-        eventManager.addEventListener("renderLayer", function(e)
+        eventManager.addEventListener("renderLayer", function(layerName: string)
       {
-        self.setLayerAsDirty(e.data);
+        self.setLayerAsDirty(layerName);
       });
 
       var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
       var boundUpdateZoom = this.updateShaderZoom.bind(this);
 
       this.listeners["registerOnMoveCallback"] =
-        eventManager.addEventListener("registerOnMoveCallback", function(e)
+        eventManager.addEventListener("registerOnMoveCallback", function(callbacks: Function[])
         {
-          e.data.push(boundUpdateOffsets);
+          callbacks.push(boundUpdateOffsets);
         });
       this.listeners["registerOnZoomCallback"] =
-        eventManager.addEventListener("registerOnZoomCallback", function(e)
+        eventManager.addEventListener("registerOnZoomCallback", function(callbacks: Function[])
         {
-          e.data.push(boundUpdateZoom);
+          callbacks.push(boundUpdateZoom);
         });
     }
     setPlayer(player: Player)
@@ -181,7 +181,7 @@ module Rance
         var w = this.galaxyMap.width;
         var h = this.galaxyMap.height;
 
-        this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
+        this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
       }
     }
     getFowSpriteForStar(star: Star)
@@ -192,7 +192,7 @@ module Rance
       {
         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
         var gfx = new PIXI.Graphics();
-        gfx.beginFill();
+        gfx.beginFill(0);
         gfx.drawShape(poly);
         gfx.endFill();
 
@@ -220,9 +220,9 @@ module Rance
 
       if (!this.occupationShaders[owner.id][occupier.id])
       {
-        var baseColor = PIXI.hex2rgb(owner.color);
+        var baseColor = PIXI.utils.hex2rgb(owner.color);
         baseColor.push(1.0);
-        var occupierColor = PIXI.hex2rgb(occupier.color);
+        var occupierColor = PIXI.utils.hex2rgb(occupier.color);
         occupierColor.push(1.0);
 
         var uniforms =
@@ -267,7 +267,7 @@ module Rance
         ];
 
         this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(
-          shaderSrc, uniforms);
+          null, shaderSrc, uniforms);
       }
 
       return this.occupationShaders[owner.id][occupier.id]
@@ -278,7 +278,7 @@ module Rance
 
       if (!this.fleetTextTextureCache[fleetSize])
       {
-        var text = new PIXI.Text(fleet.ships.length,
+        var text = new PIXI.Text("" + fleet.ships.length,
         {
           fill: "#FFFFFF",
           stroke: "#000000",
@@ -286,7 +286,10 @@ module Rance
         });
 
         this.fleetTextTextureCache[fleetSize] = text.generateTexture();
-        text.texture.destroy(true);
+        window.setTimeout(function()
+        {
+          text.texture.destroy(true);
+        }, 0);
       }
 
       return this.fleetTextTextureCache[fleetSize];
@@ -297,10 +300,10 @@ module Rance
       this.layers["nonFillerStars"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
 
           var points: Star[];
           if (!this.player)
@@ -370,21 +373,24 @@ module Rance
             gfx.interactive = true;
             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
 
-            gfx.mousedown = mouseDownFN;
-            gfx.mouseup = mouseUpFN;
+            gfx.on("mousedown", mouseDownFN);
+            gfx.on("mouseup", mouseUpFN);
 
-            gfx.click = gfx.tap = function(event)
+            var gfxClickFN = function(event)
             {
               if (event.originalEvent.button) return;
 
               onClickFN(this.star);
             }.bind(gfx);
 
-            gfx.rightdown = rightDownFN;
-            gfx.rightup = rightUpFN.bind(gfx, star);
+            gfx.on("click", gfxClickFN);
+            gfx.on("tap", gfxClickFN);
 
-            gfx.mouseover = mouseOverFN.bind(gfx, star);
-            gfx.mouseout = mouseOutFN;
+            gfx.on("rightdown", rightDownFN);
+            gfx.on("rightup", rightUpFN.bind(gfx, star));
+
+            gfx.on("mouseover", mouseOverFN.bind(gfx, star));
+            gfx.on("mouseout", mouseOutFN);
 
             doc.addChild(gfx);
           }
@@ -395,9 +401,9 @@ module Rance
 
           // cant be set on gfx as touchmove and touchend only register
           // on the object that had touchstart called on it
-          doc.touchstart = touchStartFN;
-          doc.touchend = touchEndFN;
-          doc.touchmove = function(event: any)
+          doc.on("touchstart", touchStartFN);
+          doc.on("touchend", touchEndFN);
+          doc.on("touchmove", function(event: any)
           {
             var local = event.getLocalPosition(doc);
             var starAtLocal = map.voronoi.getStarAtPoint(local);
@@ -405,7 +411,7 @@ module Rance
             {
               eventManager.dispatchEvent("hoverStar", starAtLocal);
             }
-          }
+          });
 
           return doc;
         }
@@ -413,10 +419,10 @@ module Rance
       this.layers["starOwners"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
           var points: Star[];
           if (!this.player)
           {
@@ -448,7 +454,7 @@ module Rance
               gfx.filters = [this.getOccupationShader(star.owner, occupier)];
               //gfx.filters = [testFilter];
               var mask = new PIXI.Graphics();
-              mask.beginFill();
+              mask.beginFill(0);
               mask.drawShape(poly);
               mask.endFill();
               gfx.mask = mask;
@@ -462,10 +468,10 @@ module Rance
       this.layers["fogOfWar"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
           if (!this.player) return doc;
           var points: Star[] = this.player.getRevealedButNotVisibleStars();
 
@@ -488,10 +494,10 @@ module Rance
       this.layers["starIncome"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
           var points: Star[];
           if (!this.player)
           {
@@ -558,10 +564,10 @@ module Rance
       this.layers["playerInfluence"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
           var points: Star[];
           if (!this.player)
           {
@@ -647,10 +653,10 @@ module Rance
       this.layers["nonFillerVoronoiLines"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
@@ -674,10 +680,10 @@ module Rance
       this.layers["ownerBorders"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
 
           var revealedStars = this.player.getRevealedStars();
           var borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
@@ -701,10 +707,10 @@ module Rance
       this.layers["starLinks"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
 
           var gfx = new PIXI.Graphics();
           doc.addChild(gfx);
@@ -750,12 +756,12 @@ module Rance
       this.layers["resources"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
           var self = this;
 
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
 
           var points: Star[];
           if (!this.player)
@@ -793,12 +799,12 @@ module Rance
       this.layers["fleets"] =
       {
         isDirty: true,
-        container: new PIXI.DisplayObjectContainer(),
+        container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
           var self = this;
 
-          var doc = new PIXI.DisplayObjectContainer();
+          var doc = new PIXI.Container();
 
           var points: Star[];
           if (!this.player)
@@ -829,7 +835,7 @@ module Rance
           }
           function singleFleetDrawFN(fleet: Fleet)
           {
-            var fleetContainer = new PIXI.DisplayObjectContainer();
+            var fleetContainer = new PIXI.Container();
 
             var color = fleet.player.color;
 
@@ -851,10 +857,12 @@ module Rance
 
             fleetContainer.interactive = true;
             
-            fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
-            fleetContainer.mousedown = mouseDownFN;
-            fleetContainer.mouseup = mouseUpFN;
-            fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
+            var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
+            fleetContainer.on("click", boundFleetClickFN);
+            fleetContainer.on("tap", boundFleetClickFN);
+            fleetContainer.on("mousedown", mouseDownFN);
+            fleetContainer.on("mouseup", mouseUpFN);
+            fleetContainer.on("mouseover", mouseOverFN.bind(fleetContainer, fleet));
 
             return fleetContainer;
           }
@@ -865,7 +873,7 @@ module Rance
             var fleets = star.getAllFleets();
             if (!fleets || fleets.length <= 0) continue;
 
-            var fleetsContainer = new PIXI.DisplayObjectContainer();
+            var fleetsContainer = new PIXI.Container();
             fleetsContainer.x = star.x;
             fleetsContainer.y = star.y - 30;
             doc.addChild(fleetsContainer);
@@ -899,8 +907,8 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
-          {layer: this.layers["fogOfWar"]},
-          {layer: this.layers["fleets"]}
+          //{layer: this.layers["fogOfWar"]},
+          //{layer: this.layers["fleets"]}
         ]
       }
       this.mapModes["noStatic"] =
@@ -960,7 +968,7 @@ module Rance
       }
 
     }
-    setParent(newParent: PIXI.DisplayObjectContainer)
+    setParent(newParent: PIXI.Container)
     {
       var oldParent = this.parent;
       if (oldParent)

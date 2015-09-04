@@ -8,9 +8,16 @@
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
+declare class EventEmitter3 extends PIXI.EventEmitter {
+}
 declare module Rance {
-    function EventManager(): void;
-    var eventManager: any;
+    var eventEmitter: EventEmitter3;
+    var eventManager: {
+        dispatchEvent: any;
+        removeEventListener: any;
+        removeAllListeners: any;
+        addEventListener: (eventType: string, listener: Function) => Function;
+    };
 }
 declare module Rance {
     module UIComponents {
@@ -901,7 +908,7 @@ declare module Rance {
         visibleStars: Star[];
         id: number;
         name: string;
-        constructor(player: Player, ships: Unit[], location: Star, id?: number);
+        constructor(player: Player, ships: Unit[], location: Star, id?: number, shouldRender?: boolean);
         getShipIndex(ship: Unit): number;
         hasShip(ship: Unit): boolean;
         deleteFleet(shouldRender?: boolean): void;
@@ -2403,8 +2410,8 @@ declare module Rance {
 }
 declare module Rance {
     interface IMapRendererLayer {
-        drawingFunction: (map: GalaxyMap) => PIXI.DisplayObjectContainer;
-        container: PIXI.DisplayObjectContainer;
+        drawingFunction: (map: GalaxyMap) => PIXI.Container;
+        container: PIXI.Container;
         isDirty: boolean;
     }
     interface IMapRendererLayerMapMode {
@@ -2415,8 +2422,8 @@ declare module Rance {
         }[];
     }
     class MapRenderer {
-        container: PIXI.DisplayObjectContainer;
-        parent: PIXI.DisplayObjectContainer;
+        container: PIXI.Container;
+        parent: PIXI.Container;
         galaxyMap: GalaxyMap;
         player: Player;
         occupationShaders: {
@@ -2430,7 +2437,7 @@ declare module Rance {
         mapModes: {
             [name: string]: IMapRendererLayerMapMode;
         };
-        fowTilingSprite: PIXI.TilingSprite;
+        fowTilingSprite: PIXI.extras.TilingSprite;
         fowSpriteCache: {
             [starId: number]: PIXI.Sprite;
         };
@@ -2456,7 +2463,7 @@ declare module Rance {
         getFleetTextTexture(fleet: Fleet): PIXI.Texture;
         initLayers(): void;
         initMapModes(): void;
-        setParent(newParent: PIXI.DisplayObjectContainer): void;
+        setParent(newParent: PIXI.Container): void;
         resetContainer(): void;
         hasLayerInMapMode(layer: IMapRendererLayer): boolean;
         setLayerAsDirty(layerName: string): void;
@@ -2474,7 +2481,7 @@ declare module Rance {
      */
     class Camera {
         tempCameraId: number;
-        container: PIXI.DisplayObjectContainer;
+        container: PIXI.Container;
         width: number;
         height: number;
         bounds: any;
@@ -2496,11 +2503,11 @@ declare module Rance {
         resizeListener: any;
         /**
          * [constructor description]
-         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+         * @param {PIXI.Container} container [DOC the camera views and manipulates]
          * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
          * 0.0 to 1.0]
          */
-        constructor(container: PIXI.DisplayObjectContainer, bound: number);
+        constructor(container: PIXI.Container, bound: number);
         destroy(): void;
         /**
          * @method addEventListeners
@@ -2561,7 +2568,7 @@ declare module Rance {
 }
 declare module Rance {
     class RectangleSelect {
-        parentContainer: PIXI.DisplayObjectContainer;
+        parentContainer: PIXI.Container;
         graphics: PIXI.Graphics;
         selecting: boolean;
         start: Point;
@@ -2574,7 +2581,7 @@ declare module Rance {
             position: Point;
             data: any;
         }[];
-        constructor(parentContainer: PIXI.DisplayObjectContainer);
+        constructor(parentContainer: PIXI.Container);
         destroy(): void;
         addEventListeners(): void;
         startSelection(point: Point): void;
@@ -2614,26 +2621,26 @@ declare module Rance {
         destroy(): void;
         addEventListeners(): void;
         preventGhost(delay: number, type: string): void;
-        mouseDown(event: any, targetType: string): void;
-        touchStart(event: any, targetType: string): void;
-        touchEnd(event: any, targetType: string): void;
-        mouseMove(event: any, targetType: string): void;
-        mouseUp(event: any, targetType: string): void;
-        startScroll(event: any): void;
-        scrollMove(event: any): void;
-        endScroll(event: any): void;
-        zoomMove(event: any): void;
-        endZoom(event: any): void;
-        startZoom(event: any): void;
+        mouseDown(event: PIXI.interaction.InteractionEvent, targetType: string): void;
+        touchStart(event: PIXI.interaction.InteractionEvent, targetType: string): void;
+        touchEnd(event: PIXI.interaction.InteractionEvent, targetType: string): void;
+        mouseMove(event: PIXI.interaction.InteractionEvent, targetType: string): void;
+        mouseUp(event: PIXI.interaction.InteractionEvent, targetType: string): void;
+        startScroll(event: PIXI.interaction.InteractionEvent): void;
+        scrollMove(event: PIXI.interaction.InteractionEvent): void;
+        endScroll(event: PIXI.interaction.InteractionEvent): void;
+        zoomMove(event: PIXI.interaction.InteractionEvent): void;
+        endZoom(event: PIXI.interaction.InteractionEvent): void;
+        startZoom(event: PIXI.interaction.InteractionEvent): void;
         setHoveredStar(star: Star): void;
         clearHoveredStar(): void;
-        startFleetMove(event: any): void;
+        startFleetMove(event: PIXI.interaction.InteractionEvent): void;
         setFleetMoveTarget(star: Star): void;
         completeFleetMove(): void;
         clearFleetMoveTarget(): void;
-        startSelect(event: any): void;
-        dragSelect(event: any): void;
-        endSelect(event: any): void;
+        startSelect(event: PIXI.interaction.InteractionEvent): void;
+        dragSelect(event: PIXI.interaction.InteractionEvent): void;
+        endSelect(event: PIXI.interaction.InteractionEvent): void;
     }
 }
 declare module Rance {
@@ -2653,9 +2660,12 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class NebulaFilter extends PIXI.AbstractFilter {
+        constructor(uniforms: any);
+    }
     class ShaderManager {
         shaders: {
-            [name: string]: any;
+            [name: string]: PIXI.AbstractFilter;
         };
         uniformManager: UniformManager;
         constructor();
@@ -2665,8 +2675,8 @@ declare module Rance {
 }
 declare module Rance {
     class PathfindingArrow {
-        parentContainer: PIXI.DisplayObjectContainer;
-        container: PIXI.DisplayObjectContainer;
+        parentContainer: PIXI.Container;
+        container: PIXI.Container;
         active: boolean;
         currentTarget: Star;
         clearTargetTimeout: any;
@@ -2687,7 +2697,7 @@ declare module Rance {
                 color: number;
             };
         };
-        constructor(parentContainer: PIXI.DisplayObjectContainer);
+        constructor(parentContainer: PIXI.Container);
         destroy(): void;
         removeEventListener(name: string): void;
         removeEventListeners(): void;
@@ -2720,11 +2730,11 @@ declare module Rance {
 }
 declare module Rance {
     class Renderer {
-        stage: PIXI.Stage;
+        stage: PIXI.Container;
         renderer: any;
         pixiContainer: HTMLCanvasElement;
         layers: {
-            [name: string]: PIXI.DisplayObjectContainer;
+            [name: string]: PIXI.Container;
         };
         camera: Camera;
         mouseEventHandler: MouseEventHandler;

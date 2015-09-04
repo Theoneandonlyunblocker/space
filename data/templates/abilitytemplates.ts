@@ -106,7 +106,7 @@ module Rance
         previousFrame = currentFrame;
         computeFrameFN(currentFrame);
       }
-      requestAnimFrame(playFrameFN);
+      window.requestAnimationFrame(playFrameFN);
     }
 
     video.oncanplay = onVideoLoadFN;

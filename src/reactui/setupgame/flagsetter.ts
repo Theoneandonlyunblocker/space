@@ -117,7 +117,7 @@ module Rance
         e.preventDefault();
       },
 
-      handleDrop: function(e)
+      handleDrop: function(e: DragEvent)
       {
         if (e.dataTransfer)
         {

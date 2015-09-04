@@ -9,8 +9,8 @@ module Rance
 {
   export class PathfindingArrow
   {
-    parentContainer: PIXI.DisplayObjectContainer;
-    container: PIXI.DisplayObjectContainer;
+    parentContainer: PIXI.Container;
+    container: PIXI.Container;
     active: boolean;
     currentTarget: Star;
 
@@ -42,10 +42,10 @@ module Rance
       }
     };
 
-    constructor(parentContainer: PIXI.DisplayObjectContainer)
+    constructor(parentContainer: PIXI.Container)
     {
       this.parentContainer = parentContainer;
-      this.container = new PIXI.DisplayObjectContainer();
+      this.container = new PIXI.Container();
       this.parentContainer.addChild(this.container);
 
       this.addEventListeners();
@@ -85,30 +85,30 @@ module Rance
     {
       var self = this;
 
-      this.addEventListener("startPotentialMove", function(e)
+      this.addEventListener("startPotentialMove", function(star: Star)
       {
         self.startMove();
-        if (e.data)
+        if (star)
         {
-          self.setTarget(e.data);
+          self.setTarget(star);
         }
       });
 
-      this.addEventListener("setPotentialMoveTarget", function(e)
+      this.addEventListener("setPotentialMoveTarget", function(star)
       {
-        self.setTarget(e.data);
+        self.setTarget(star);
       });
-      this.addEventListener("clearPotentialMoveTarget", function(e)
+      this.addEventListener("clearPotentialMoveTarget", function()
       {
         self.clearTarget();
       });
 
-      this.addEventListener("endPotentialMove", function(e)
+      this.addEventListener("endPotentialMove", function()
       {
         self.endMove();
       });
 
-      this.addEventListener("mouseUp", function(e)
+      this.addEventListener("mouseUp", function()
       {
         self.endMove();
       });
@@ -210,7 +210,7 @@ module Rance
         this.labelCache[style] = {};
       }
 
-      this.labelCache[style][distance] = new PIXI.Text(distance, textStyle);
+      this.labelCache[style][distance] = new PIXI.Text("" + distance, textStyle);
     }
 
     getLabel(style: string, distance: number)

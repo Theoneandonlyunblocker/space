@@ -37,7 +37,7 @@ module Rance
     constructor(onLoaded: any)
     {
       this.onLoaded = onLoaded;
-      PIXI.dontSayHello = true;
+      PIXI.utils._saidHello = true;
       this.startTime = new Date().getTime();
 
       this.loadDOM();
@@ -96,17 +96,19 @@ module Rance
       if (this.loaded[identifier] === undefined) this.loaded[identifier] = false;
 
       var self = this;
-      var loader = new PIXI.JsonLoader("img\/" + identifier + ".json");
-      loader.addEventListener("loaded", function(event)
+      var loader = new PIXI.loaders.Loader();
+      loader.add(identifier, "img\/" + identifier + ".json");
+      var onLoadCompleteFN = function(loader: PIXI.loaders.Loader)
       {
-        var spriteImages = self.spritesheetToDataURLs(event.target.json,
-          event.target.texture.source);
+        var json = loader.resources[identifier].data;
+        var image = loader.resources[identifier + "_image"].data;
+        var spriteImages = self.spritesheetToDataURLs(json, image);
         self.imageCache[identifier] = spriteImages;
         self.loaded[identifier] = true;
         self.checkLoaded();
-      });
+      };
 
-      loader.load();
+      loader.load(onLoadCompleteFN);
     }
     loadEmblems()
     {
@@ -123,15 +125,16 @@ module Rance
     loadOther()
     {
       var self = this;
-      var loader = new PIXI.ImageLoader("img\/fowTexture.png");
+      var loader = new PIXI.loaders.Loader();
+      loader.add("img\/fowTexture.png");
 
-      loader.addEventListener("loaded", function(event)
+      var onLoadCompleteFN = function(loader: PIXI.loaders.Loader)
       {
         self.loaded.other = true;
         self.checkLoaded();
-      });
+      };
 
-      loader.load();
+      loader.load(onLoadCompleteFN);
     }
     checkLoaded()
     {

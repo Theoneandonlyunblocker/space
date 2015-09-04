@@ -8,7 +8,7 @@ module Rance
 {
   export class RectangleSelect
   {
-    parentContainer: PIXI.DisplayObjectContainer;
+    parentContainer: PIXI.Container;
     graphics: PIXI.Graphics;
     selecting: boolean;
 
@@ -18,7 +18,7 @@ module Rance
     toSelectFrom: {position: Point; data: any}[];
     getSelectionTargetsFN: () => {position: Point; data: any}[];
 
-    constructor(parentContainer: PIXI.DisplayObjectContainer)
+    constructor(parentContainer: PIXI.Container)
     {
       this.parentContainer = parentContainer;
       this.graphics = new PIXI.Graphics();

@@ -18,7 +18,8 @@ module Rance
     id: number;
     name: string;
 
-    constructor(player: Player, ships: Unit[], location: Star, id?: number)
+    constructor(player: Player, ships: Unit[], location: Star,
+      id?: number, shouldRender: boolean = true)
     {
       this.player = player;
       this.location = location;
@@ -30,7 +31,10 @@ module Rance
 
       this.addShips(ships);
 
-      eventManager.dispatchEvent("renderLayer", "fleets");
+      if (shouldRender)
+      {
+        eventManager.dispatchEvent("renderLayer", "fleets");
+      }
     }
     getShipIndex(ship: Unit)
     {

@@ -26,9 +26,9 @@ module Rance
     }
     addEventListeners()
     {
-      this.switchSceneFN = function(e)
+      this.switchSceneFN = function(sceneName: string)
       {
-        this.switchScene(e.data);
+        this.switchScene(sceneName);
       }.bind(this);
 
       eventManager.addEventListener("switchScene", this.switchSceneFN);

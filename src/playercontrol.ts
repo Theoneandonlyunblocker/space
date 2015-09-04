@@ -60,54 +60,55 @@ module Rance
     {
       var self = this;
 
-      this.addEventListener("updateSelection", function(e)
+      this.addEventListener("updateSelection", function()
       {
         self.updateSelection();
       });
 
-      this.addEventListener("selectFleets", function(e)
+      this.addEventListener("selectFleets", function(fleets: Fleet[])
       {
-        self.selectFleets(e.data);
+        self.selectFleets(fleets);
       });
-      this.addEventListener("deselectFleet", function(e)
+      this.addEventListener("deselectFleet", function(fleet: Fleet)
       {
-        self.deselectFleet(e.data);
+        self.deselectFleet(fleet);
       });
-      this.addEventListener("mergeFleets", function(e)
+      this.addEventListener("mergeFleets", function()
       {
         self.mergeFleets();
       });
 
-      this.addEventListener("splitFleet", function(e)
+      this.addEventListener("splitFleet", function(fleet: Fleet)
       {
-        self.splitFleet(e.data);
+        self.splitFleet(fleet);
       });
-      this.addEventListener("startReorganizingFleets", function(e)
+      this.addEventListener("startReorganizingFleets", function(fleets: Fleet[])
       {
-        self.startReorganizingFleets(e.data);
+        self.startReorganizingFleets(fleets);
       });
-      this.addEventListener("endReorganizingFleets", function(e)
+      this.addEventListener("endReorganizingFleets", function()
       {
         self.endReorganizingFleets();
       });
 
-      this.addEventListener("starClick", function(e)
+      this.addEventListener("starClick", function(star: Star)
       {
-        self.selectStar(e.data);
+        self.selectStar(star);
       });
-      this.addEventListener("moveFleets", function(e)
+      this.addEventListener("moveFleets", function(star: Star)
       {
-        self.moveFleets(e.data);
+        self.moveFleets(star);
       });
       
-      this.addEventListener("setRectangleSelectTargetFN", function(e)
+      this.addEventListener("setRectangleSelectTargetFN", function(rectangleSelect: RectangleSelect)
       {
-        e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
+        rectangleSelect.getSelectionTargetsFN =
+          self.player.getFleetsWithPositions.bind(self.player);
       });
 
-      this.addEventListener("attackTarget", function(e)
+      this.addEventListener("attackTarget", function(target: any)
       {
-        self.attackTarget(e.data);
+        self.attackTarget(target);
       });
     }
     preventGhost(delay: number)

@@ -15,19 +15,19 @@ module Rance
         this.listeners = {};
         var self = this;
         this.listeners["makePopup"] =
-          eventManager.addEventListener("makePopup", function(e)
+          eventManager.addEventListener("makePopup", function(data: any)
           {
-            self.makePopup(e.data);
+            self.makePopup(data);
           });
         this.listeners["closePopup"] =
-          eventManager.addEventListener("closePopup", function(e)
+          eventManager.addEventListener("closePopup", function(popupId: number)
           {
-            self.closePopup(e.data);
+            self.closePopup(popupId);
           });
         this.listeners["setPopupContent"] =
-          eventManager.addEventListener("setPopupContent", function(e)
+          eventManager.addEventListener("setPopupContent", function(data: any)
           {
-            self.setPopupContent(e.data.id, e.data.content);
+            self.setPopupContent(data.id, data.content);
           });
       },
 

@@ -3,11 +3,18 @@
 
 module Rance
 {
+  export class NebulaFilter extends PIXI.AbstractFilter
+  {
+    constructor(uniforms)
+    {
+      super(null, ShaderSources.nebula.join("\n"), uniforms);
+    }
+  }
   export class ShaderManager
   {
     shaders:
     {
-      [name: string]: any; //PIXI.filter
+      [name: string]: PIXI.AbstractFilter;
     } = {};
     uniformManager: UniformManager;
     constructor()
@@ -56,9 +63,7 @@ module Rance
 
 
 
-
-      this.shaders["nebula"] = new PIXI.AbstractFilter(
-        ShaderSources.nebula, nebulaUniforms)
+      this.shaders["nebula"] = new NebulaFilter(nebulaUniforms);
     }
   }
 }

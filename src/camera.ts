@@ -11,7 +11,7 @@ module Rance
   {
     tempCameraId: number;
 
-    container: PIXI.DisplayObjectContainer;
+    container: PIXI.Container;
     width: number
     height: number
     bounds: any = {};
@@ -36,11 +36,11 @@ module Rance
 
     /**
      * [constructor description]
-     * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+     * @param {PIXI.Container} container [DOC the camera views and manipulates]
      * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
      * 0.0 to 1.0]
      */
-    constructor( container:PIXI.DisplayObjectContainer, bound: number)
+    constructor( container:PIXI.Container, bound: number)
     {
       this.tempCameraId = tempCameraId++;
       this.container = container;
@@ -74,7 +74,7 @@ module Rance
     {
       var self = this;
 
-      this.resizeListener = function(e)
+      this.resizeListener = function(e: UIEvent)
       {
         var container = document.getElementById("pixi-container");
         if (!container) return;
@@ -86,9 +86,9 @@ module Rance
       window.addEventListener("resize", this.resizeListener, false);
 
       this.listeners["setCameraToCenterOn"] =
-        eventManager.addEventListener("setCameraToCenterOn", function(e)
+        eventManager.addEventListener("setCameraToCenterOn", function(position: Point)
       {
-        self.toCenterOn = e.data;
+        self.toCenterOn = position;
         console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId)
       });
 
@@ -193,7 +193,8 @@ module Rance
     }
     getLocalPosition(position: Point): Point
     {
-      return this.container.worldTransform.apply(position);
+      var pos = <PIXI.Point> position;
+      return this.container.worldTransform.apply(pos);
     }
     getCenterPosition(): Point
     {

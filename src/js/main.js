@@ -1,13 +1,16 @@
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
-    function EventManager() {
-    }
-    Rance.EventManager = EventManager;
-    ;
-    var et = PIXI.EventTarget;
-    et.mixin(EventManager.prototype);
-    Rance.eventManager = new EventManager();
+    Rance.eventEmitter = new EventEmitter3();
+    Rance.eventManager = {
+        dispatchEvent: Rance.eventEmitter.emit.bind(Rance.eventEmitter),
+        removeEventListener: Rance.eventEmitter.removeListener.bind(Rance.eventEmitter),
+        removeAllListeners: Rance.eventEmitter.removeAllListeners.bind(Rance.eventEmitter),
+        addEventListener: function (eventType, listener) {
+            Rance.eventEmitter.on(eventType, listener);
+            return listener;
+        }
+    };
 })(Rance || (Rance = {}));
 /// <reference path="../../../lib/tween.js.d.ts" />
 var Rance;
@@ -52,7 +55,7 @@ var Rance;
                         return;
                     }
                     TWEEN.update();
-                    self.requestAnimFrame = requestAnimFrame(animateTween);
+                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
                 };
                 var tween = new TWEEN.Tween({
                     health: self.state.displayedStrength
@@ -1415,7 +1418,7 @@ var Rance;
                         return;
                     }
                     TWEEN.update();
-                    self.requestAnimFrame = requestAnimFrame(animateTween);
+                    self.requestAnimFrame = window.requestAnimationFrame(animateTween);
                 };
                 var tween = new TWEEN.Tween({
                     health: from
@@ -3627,16 +3630,16 @@ var Rance;
                 this.listeners = {};
                 var self = this;
                 this.listeners["makePopup"] =
-                    Rance.eventManager.addEventListener("makePopup", function (e) {
-                        self.makePopup(e.data);
+                    Rance.eventManager.addEventListener("makePopup", function (data) {
+                        self.makePopup(data);
                     });
                 this.listeners["closePopup"] =
-                    Rance.eventManager.addEventListener("closePopup", function (e) {
-                        self.closePopup(e.data);
+                    Rance.eventManager.addEventListener("closePopup", function (popupId) {
+                        self.closePopup(popupId);
                     });
                 this.listeners["setPopupContent"] =
-                    Rance.eventManager.addEventListener("setPopupContent", function (e) {
-                        self.setPopupContent(e.data.id, e.data.content);
+                    Rance.eventManager.addEventListener("setPopupContent", function (data) {
+                        self.setPopupContent(data.id, data.content);
                     });
             },
             componentWillUnmount: function () {
@@ -6365,7 +6368,7 @@ var Rance;
                 previousFrame = currentFrame;
                 computeFrameFN(currentFrame);
             }
-            requestAnimFrame(playFrameFN);
+            window.requestAnimationFrame(playFrameFN);
         };
         video.oncanplay = onVideoLoadFN;
         video.onplay = playFrameFN;
@@ -7895,7 +7898,8 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Fleet = (function () {
-        function Fleet(player, ships, location, id) {
+        function Fleet(player, ships, location, id, shouldRender) {
+            if (shouldRender === void 0) { shouldRender = true; }
             this.ships = [];
             this.visionIsDirty = true;
             this.visibleStars = [];
@@ -7906,7 +7910,9 @@ var Rance;
             this.location.addFleet(this);
             this.player.addFleet(this);
             this.addShips(ships);
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+            if (shouldRender) {
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+            }
         }
         Fleet.prototype.getShipIndex = function (ship) {
             return this.ships.indexOf(ship);
@@ -15199,7 +15205,7 @@ var Rance;
                         player.addUnit(ship);
                         ships.push(ship);
                     }
-                    var fleet = new Rance.Fleet(player, ships, star);
+                    var fleet = new Rance.Fleet(player, ships, star, null, false);
                 }
             }
         }
@@ -16043,8 +16049,8 @@ var Rance;
             this.addEventListeners();
         }
         ReactUI.prototype.addEventListeners = function () {
-            this.switchSceneFN = function (e) {
-                this.switchScene(e.data);
+            this.switchSceneFN = function (sceneName) {
+                this.switchScene(sceneName);
             }.bind(this);
             Rance.eventManager.addEventListener("switchScene", this.switchSceneFN);
         };
@@ -16114,38 +16120,39 @@ var Rance;
         };
         PlayerControl.prototype.addEventListeners = function () {
             var self = this;
-            this.addEventListener("updateSelection", function (e) {
+            this.addEventListener("updateSelection", function () {
                 self.updateSelection();
             });
-            this.addEventListener("selectFleets", function (e) {
-                self.selectFleets(e.data);
+            this.addEventListener("selectFleets", function (fleets) {
+                self.selectFleets(fleets);
             });
-            this.addEventListener("deselectFleet", function (e) {
-                self.deselectFleet(e.data);
+            this.addEventListener("deselectFleet", function (fleet) {
+                self.deselectFleet(fleet);
             });
-            this.addEventListener("mergeFleets", function (e) {
+            this.addEventListener("mergeFleets", function () {
                 self.mergeFleets();
             });
-            this.addEventListener("splitFleet", function (e) {
-                self.splitFleet(e.data);
+            this.addEventListener("splitFleet", function (fleet) {
+                self.splitFleet(fleet);
             });
-            this.addEventListener("startReorganizingFleets", function (e) {
-                self.startReorganizingFleets(e.data);
+            this.addEventListener("startReorganizingFleets", function (fleets) {
+                self.startReorganizingFleets(fleets);
             });
-            this.addEventListener("endReorganizingFleets", function (e) {
+            this.addEventListener("endReorganizingFleets", function () {
                 self.endReorganizingFleets();
             });
-            this.addEventListener("starClick", function (e) {
-                self.selectStar(e.data);
+            this.addEventListener("starClick", function (star) {
+                self.selectStar(star);
             });
-            this.addEventListener("moveFleets", function (e) {
-                self.moveFleets(e.data);
+            this.addEventListener("moveFleets", function (star) {
+                self.moveFleets(star);
             });
-            this.addEventListener("setRectangleSelectTargetFN", function (e) {
-                e.data.getSelectionTargetsFN = self.player.getFleetsWithPositions.bind(self.player);
+            this.addEventListener("setRectangleSelectTargetFN", function (rectangleSelect) {
+                rectangleSelect.getSelectionTargetsFN =
+                    self.player.getFleetsWithPositions.bind(self.player);
             });
-            this.addEventListener("attackTarget", function (e) {
-                self.attackTarget(e.data);
+            this.addEventListener("attackTarget", function (target) {
+                self.attackTarget(target);
             });
         };
         PlayerControl.prototype.preventGhost = function (delay) {
@@ -16504,7 +16511,7 @@ var Rance;
             this.isDirty = true;
             this.preventRender = false;
             this.listeners = {};
-            this.container = new PIXI.DisplayObjectContainer();
+            this.container = new PIXI.Container();
             this.galaxyMap = map;
             this.player = player;
         }
@@ -16542,18 +16549,18 @@ var Rance;
             this.listeners["renderMap"] =
                 Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
             this.listeners["renderLayer"] =
-                Rance.eventManager.addEventListener("renderLayer", function (e) {
-                    self.setLayerAsDirty(e.data);
+                Rance.eventManager.addEventListener("renderLayer", function (layerName) {
+                    self.setLayerAsDirty(layerName);
                 });
             var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
             var boundUpdateZoom = this.updateShaderZoom.bind(this);
             this.listeners["registerOnMoveCallback"] =
-                Rance.eventManager.addEventListener("registerOnMoveCallback", function (e) {
-                    e.data.push(boundUpdateOffsets);
+                Rance.eventManager.addEventListener("registerOnMoveCallback", function (callbacks) {
+                    callbacks.push(boundUpdateOffsets);
                 });
             this.listeners["registerOnZoomCallback"] =
-                Rance.eventManager.addEventListener("registerOnZoomCallback", function (e) {
-                    e.data.push(boundUpdateZoom);
+                Rance.eventManager.addEventListener("registerOnZoomCallback", function (callbacks) {
+                    callbacks.push(boundUpdateZoom);
                 });
         };
         MapRenderer.prototype.setPlayer = function (player) {
@@ -16581,7 +16588,7 @@ var Rance;
                 var fowTexture = PIXI.Texture.fromFrame("img\/fowTexture.png");
                 var w = this.galaxyMap.width;
                 var h = this.galaxyMap.height;
-                this.fowTilingSprite = new PIXI.TilingSprite(fowTexture, w, h);
+                this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
             }
         };
         MapRenderer.prototype.getFowSpriteForStar = function (star) {
@@ -16590,7 +16597,7 @@ var Rance;
                 Object.keys(this.fowSpriteCache).length < 4) {
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
-                gfx.beginFill();
+                gfx.beginFill(0);
                 gfx.drawShape(poly);
                 gfx.endFill();
                 this.fowTilingSprite.removeChildren();
@@ -16608,9 +16615,9 @@ var Rance;
                 this.occupationShaders[owner.id] = {};
             }
             if (!this.occupationShaders[owner.id][occupier.id]) {
-                var baseColor = PIXI.hex2rgb(owner.color);
+                var baseColor = PIXI.utils.hex2rgb(owner.color);
                 baseColor.push(1.0);
-                var occupierColor = PIXI.hex2rgb(occupier.color);
+                var occupierColor = PIXI.utils.hex2rgb(occupier.color);
                 occupierColor.push(1.0);
                 var uniforms = {
                     baseColor: { type: "4fv", value: baseColor },
@@ -16645,20 +16652,22 @@ var Rance;
                     "  }",
                     "}"
                 ];
-                this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(shaderSrc, uniforms);
+                this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(null, shaderSrc, uniforms);
             }
             return this.occupationShaders[owner.id][occupier.id];
         };
         MapRenderer.prototype.getFleetTextTexture = function (fleet) {
             var fleetSize = fleet.ships.length;
             if (!this.fleetTextTextureCache[fleetSize]) {
-                var text = new PIXI.Text(fleet.ships.length, {
+                var text = new PIXI.Text("" + fleet.ships.length, {
                     fill: "#FFFFFF",
                     stroke: "#000000",
                     strokeThickness: 3
                 });
                 this.fleetTextTextureCache[fleetSize] = text.generateTexture();
-                text.texture.destroy(true);
+                window.setTimeout(function () {
+                    text.texture.destroy(true);
+                }, 0);
             }
             return this.fleetTextTextureCache[fleetSize];
         };
@@ -16668,9 +16677,9 @@ var Rance;
             this.layers["nonFillerStars"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var points;
                         if (!this.player) {
                             points = map.stars;
@@ -16721,17 +16730,19 @@ var Rance;
                             gfx.endFill;
                             gfx.interactive = true;
                             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
-                            gfx.mousedown = mouseDownFN;
-                            gfx.mouseup = mouseUpFN;
-                            gfx.click = gfx.tap = function (event) {
+                            gfx.on("mousedown", mouseDownFN);
+                            gfx.on("mouseup", mouseUpFN);
+                            var gfxClickFN = function (event) {
                                 if (event.originalEvent.button)
                                     return;
                                 onClickFN(this.star);
                             }.bind(gfx);
-                            gfx.rightdown = rightDownFN;
-                            gfx.rightup = rightUpFN.bind(gfx, star);
-                            gfx.mouseover = mouseOverFN.bind(gfx, star);
-                            gfx.mouseout = mouseOutFN;
+                            gfx.on("click", gfxClickFN);
+                            gfx.on("tap", gfxClickFN);
+                            gfx.on("rightdown", rightDownFN);
+                            gfx.on("rightup", rightUpFN.bind(gfx, star));
+                            gfx.on("mouseover", mouseOverFN.bind(gfx, star));
+                            gfx.on("mouseout", mouseOutFN);
                             doc.addChild(gfx);
                         }
                         // gets set to 0 without this reference. no idea
@@ -16739,24 +16750,24 @@ var Rance;
                         doc.interactive = true;
                         // cant be set on gfx as touchmove and touchend only register
                         // on the object that had touchstart called on it
-                        doc.touchstart = touchStartFN;
-                        doc.touchend = touchEndFN;
-                        doc.touchmove = function (event) {
+                        doc.on("touchstart", touchStartFN);
+                        doc.on("touchend", touchEndFN);
+                        doc.on("touchmove", function (event) {
                             var local = event.getLocalPosition(doc);
                             var starAtLocal = map.voronoi.getStarAtPoint(local);
                             if (starAtLocal) {
                                 Rance.eventManager.dispatchEvent("hoverStar", starAtLocal);
                             }
-                        };
+                        });
                         return doc;
                     }
                 };
             this.layers["starOwners"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var points;
                         if (!this.player) {
                             points = map.stars;
@@ -16782,7 +16793,7 @@ var Rance;
                                 gfx.filters = [this.getOccupationShader(star.owner, occupier)];
                                 //gfx.filters = [testFilter];
                                 var mask = new PIXI.Graphics();
-                                mask.beginFill();
+                                mask.beginFill(0);
                                 mask.drawShape(poly);
                                 mask.endFill();
                                 gfx.mask = mask;
@@ -16796,9 +16807,9 @@ var Rance;
             this.layers["fogOfWar"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         if (!this.player)
                             return doc;
                         var points = this.player.getRevealedButNotVisibleStars();
@@ -16817,9 +16828,9 @@ var Rance;
             this.layers["starIncome"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var points;
                         if (!this.player) {
                             points = map.stars;
@@ -16873,9 +16884,9 @@ var Rance;
             this.layers["playerInfluence"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var points;
                         if (!this.player) {
                             points = map.stars;
@@ -16942,9 +16953,9 @@ var Rance;
             this.layers["nonFillerVoronoiLines"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var gfx = new PIXI.Graphics();
                         doc.addChild(gfx);
                         gfx.lineStyle(1, 0xA0A0A0, 0.5);
@@ -16962,9 +16973,9 @@ var Rance;
             this.layers["ownerBorders"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var revealedStars = this.player.getRevealedStars();
                         var borderEdges = Rance.getRevealedBorderEdges(revealedStars, map.voronoi);
                         for (var i = 0; i < borderEdges.length; i++) {
@@ -16983,9 +16994,9 @@ var Rance;
             this.layers["starLinks"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var gfx = new PIXI.Graphics();
                         doc.addChild(gfx);
                         gfx.lineStyle(1, 0xCCCCCC, 0.6);
@@ -17018,10 +17029,10 @@ var Rance;
             this.layers["resources"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var self = this;
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var points;
                         if (!this.player) {
                             points = map.stars;
@@ -17050,10 +17061,10 @@ var Rance;
             this.layers["fleets"] =
                 {
                     isDirty: true,
-                    container: new PIXI.DisplayObjectContainer(),
+                    container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var self = this;
-                        var doc = new PIXI.DisplayObjectContainer();
+                        var doc = new PIXI.Container();
                         var points;
                         if (!this.player) {
                             points = map.stars;
@@ -17074,7 +17085,7 @@ var Rance;
                             Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
                         }
                         function singleFleetDrawFN(fleet) {
-                            var fleetContainer = new PIXI.DisplayObjectContainer();
+                            var fleetContainer = new PIXI.Container();
                             var color = fleet.player.color;
                             var textTexture = self.getFleetTextTexture(fleet);
                             var text = new PIXI.Sprite(textTexture);
@@ -17088,10 +17099,12 @@ var Rance;
                             text.x += 2;
                             text.y -= 1;
                             fleetContainer.interactive = true;
-                            fleetContainer.click = fleetContainer.tap = fleetClickFn.bind(fleetContainer, fleet);
-                            fleetContainer.mousedown = mouseDownFN;
-                            fleetContainer.mouseup = mouseUpFN;
-                            fleetContainer.mouseover = mouseOverFN.bind(fleetContainer, fleet);
+                            var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
+                            fleetContainer.on("click", boundFleetClickFN);
+                            fleetContainer.on("tap", boundFleetClickFN);
+                            fleetContainer.on("mousedown", mouseDownFN);
+                            fleetContainer.on("mouseup", mouseUpFN);
+                            fleetContainer.on("mouseover", mouseOverFN.bind(fleetContainer, fleet));
                             return fleetContainer;
                         }
                         for (var i = 0; i < points.length; i++) {
@@ -17099,7 +17112,7 @@ var Rance;
                             var fleets = star.getAllFleets();
                             if (!fleets || fleets.length <= 0)
                                 continue;
-                            var fleetsContainer = new PIXI.DisplayObjectContainer();
+                            var fleetsContainer = new PIXI.Container();
                             fleetsContainer.x = star.x;
                             fleetsContainer.y = star.y - 30;
                             doc.addChild(fleetsContainer);
@@ -17127,8 +17140,6 @@ var Rance;
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
-                        { layer: this.layers["fogOfWar"] },
-                        { layer: this.layers["fleets"] }
                     ]
                 };
             this.mapModes["noStatic"] =
@@ -17264,7 +17275,7 @@ var Rance;
     var Camera = (function () {
         /**
          * [constructor description]
-         * @param {PIXI.DisplayObjectContainer} container [DOC the camera views and manipulates]
+         * @param {PIXI.Container} container [DOC the camera views and manipulates]
          * @param {number}                      bound     [How much of the container is allowed to leave the camera view.
          * 0.0 to 1.0]
          */
@@ -17309,8 +17320,8 @@ var Rance;
             };
             window.addEventListener("resize", this.resizeListener, false);
             this.listeners["setCameraToCenterOn"] =
-                Rance.eventManager.addEventListener("setCameraToCenterOn", function (e) {
-                    self.toCenterOn = e.data;
+                Rance.eventManager.addEventListener("setCameraToCenterOn", function (position) {
+                    self.toCenterOn = position;
                     console.log(Date.now(), "set center on", self.toCenterOn, self.tempCameraId);
                 });
             Rance.eventManager.dispatchEvent("registerOnMoveCallback", self.onMoveCallbacks);
@@ -17399,7 +17410,8 @@ var Rance;
             });
         };
         Camera.prototype.getLocalPosition = function (position) {
-            return this.container.worldTransform.apply(position);
+            var pos = position;
+            return this.container.worldTransform.apply(pos);
         };
         Camera.prototype.getCenterPosition = function () {
             var localOrigin = this.getLocalPosition(this.container.position);
@@ -17675,20 +17687,21 @@ var Rance;
             }, delay);
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
+            var originalEvent = event.data.originalEvent;
             if (targetType === "stage") {
-                if (event.originalEvent.ctrlKey ||
-                    event.originalEvent.metaKey ||
-                    event.originalEvent.button === 1 //||
+                if (originalEvent.ctrlKey ||
+                    originalEvent.metaKey ||
+                    originalEvent.button === 1 //||
                 ) {
                     this.startScroll(event);
                 }
             }
             else if (targetType === "world") {
-                if (event.originalEvent.button === 0 ||
-                    !isFinite(event.originalEvent.button)) {
+                if (originalEvent.button === 0 ||
+                    !isFinite(originalEvent.button)) {
                     this.startSelect(event);
                 }
-                else if (event.originalEvent.button === 2) {
+                else if (originalEvent.button === 2) {
                     this.startFleetMove(event);
                 }
             }
@@ -17754,11 +17767,11 @@ var Rance;
             if (this.currentAction === "select")
                 this.stashedAction = "select";
             this.currentAction = "scroll";
-            this.startPoint = [event.global.x, event.global.y];
+            this.startPoint = [event.data.global.x, event.data.global.y];
             this.camera.startScroll(this.startPoint);
         };
         MouseEventHandler.prototype.scrollMove = function (event) {
-            this.camera.move([event.global.x, event.global.y]);
+            this.camera.move([event.data.global.x, event.data.global.y]);
         };
         MouseEventHandler.prototype.endScroll = function (event) {
             this.camera.end();
@@ -17767,10 +17780,10 @@ var Rance;
             this.stashedAction = undefined;
         };
         MouseEventHandler.prototype.zoomMove = function (event) {
-            var delta = event.global.x + this.currPoint[1] -
-                this.currPoint[0] - event.global.y;
+            var delta = event.data.global.x + this.currPoint[1] -
+                this.currPoint[0] - event.data.global.y;
             this.camera.deltaZoom(delta, 0.005);
-            this.currPoint = [event.global.x, event.global.y];
+            this.currPoint = [event.data.global.x, event.data.global.y];
         };
         MouseEventHandler.prototype.endZoom = function (event) {
             this.startPoint = undefined;
@@ -17781,7 +17794,7 @@ var Rance;
             if (this.currentAction === "select")
                 this.stashedAction = "select";
             this.currentAction = "zoom";
-            this.startPoint = this.currPoint = [event.global.x, event.global.y];
+            this.startPoint = this.currPoint = [event.data.global.x, event.data.global.y];
         };
         MouseEventHandler.prototype.setHoveredStar = function (star) {
             this.hoveredStar = star;
@@ -17820,13 +17833,13 @@ var Rance;
         };
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currentAction = "select";
-            this.rectangleSelect.startSelection(event.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
-            this.rectangleSelect.moveSelection(event.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
         };
         MouseEventHandler.prototype.endSelect = function (event) {
-            this.rectangleSelect.endSelection(event.getLocalPosition(this.renderer.layers["main"]));
+            this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
             this.currentAction = undefined;
         };
         return MouseEventHandler;
@@ -18011,8 +18024,21 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="uniformmanager.ts"/>
 /// <reference path="shaders/converted/shadersources.ts"/>
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var Rance;
 (function (Rance) {
+    var NebulaFilter = (function (_super) {
+        __extends(NebulaFilter, _super);
+        function NebulaFilter(uniforms) {
+            _super.call(this, null, Rance.ShaderSources.nebula.join("\n"), uniforms);
+        }
+        return NebulaFilter;
+    })(PIXI.AbstractFilter);
+    Rance.NebulaFilter = NebulaFilter;
     var ShaderManager = (function () {
         function ShaderManager() {
             this.shaders = {};
@@ -18044,7 +18070,7 @@ var Rance;
                 highlightB: { type: "1f", value: 2.2 },
                 seed: { type: "2fv", value: [Math.random() * 100, Math.random() * 100] }
             };
-            this.shaders["nebula"] = new PIXI.AbstractFilter(Rance.ShaderSources.nebula, nebulaUniforms);
+            this.shaders["nebula"] = new NebulaFilter(nebulaUniforms);
         };
         return ShaderManager;
     })();
@@ -18070,7 +18096,7 @@ var Rance;
                 }
             };
             this.parentContainer = parentContainer;
-            this.container = new PIXI.DisplayObjectContainer();
+            this.container = new PIXI.Container();
             this.parentContainer.addChild(this.container);
             this.addEventListeners();
         }
@@ -18098,22 +18124,22 @@ var Rance;
         };
         PathfindingArrow.prototype.addEventListeners = function () {
             var self = this;
-            this.addEventListener("startPotentialMove", function (e) {
+            this.addEventListener("startPotentialMove", function (star) {
                 self.startMove();
-                if (e.data) {
-                    self.setTarget(e.data);
+                if (star) {
+                    self.setTarget(star);
                 }
             });
-            this.addEventListener("setPotentialMoveTarget", function (e) {
-                self.setTarget(e.data);
+            this.addEventListener("setPotentialMoveTarget", function (star) {
+                self.setTarget(star);
             });
-            this.addEventListener("clearPotentialMoveTarget", function (e) {
+            this.addEventListener("clearPotentialMoveTarget", function () {
                 self.clearTarget();
             });
-            this.addEventListener("endPotentialMove", function (e) {
+            this.addEventListener("endPotentialMove", function () {
                 self.endMove();
             });
-            this.addEventListener("mouseUp", function (e) {
+            this.addEventListener("mouseUp", function () {
                 self.endMove();
             });
         };
@@ -18184,7 +18210,7 @@ var Rance;
             if (!this.labelCache[style]) {
                 this.labelCache[style] = {};
             }
-            this.labelCache[style][distance] = new PIXI.Text(distance, textStyle);
+            this.labelCache[style][distance] = new PIXI.Text("" + distance, textStyle);
         };
         PathfindingArrow.prototype.getLabel = function (style, distance) {
             if (!this.labelCache[style] || !this.labelCache[style][distance]) {
@@ -18374,8 +18400,8 @@ var Rance;
             this.forceFrame = false;
             this.backgroundIsDirty = true;
             this.isBattleBackground = false;
-            PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
-            this.stage = new PIXI.Stage(0x101060);
+            PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+            this.stage = new PIXI.Container();
             this.resizeListener = this.resize.bind(this);
             window.addEventListener("resize", this.resizeListener, false);
         }
@@ -18437,11 +18463,11 @@ var Rance;
             }
         };
         Renderer.prototype.initLayers = function () {
-            var _bgSprite = this.layers["bgSprite"] = new PIXI.DisplayObjectContainer();
-            var _main = this.layers["main"] = new PIXI.DisplayObjectContainer();
-            var _map = this.layers["map"] = new PIXI.DisplayObjectContainer();
-            var _bgFilter = this.layers["bgFilter"] = new PIXI.DisplayObjectContainer();
-            var _select = this.layers["select"] = new PIXI.DisplayObjectContainer();
+            var _bgSprite = this.layers["bgSprite"] = new PIXI.Container();
+            var _main = this.layers["main"] = new PIXI.Container();
+            var _map = this.layers["map"] = new PIXI.Container();
+            var _bgFilter = this.layers["bgFilter"] = new PIXI.Container();
+            var _select = this.layers["select"] = new PIXI.Container();
             _main.addChild(_map);
             _main.addChild(_select);
         };
@@ -18471,41 +18497,73 @@ var Rance;
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
-            this.stage.mousedown = this.stage.rightdown = this.stage.touchstart = function (event) {
+            var stageMouseDownFN = function (event) {
                 self.mouseEventHandler.mouseDown(event, "stage");
             };
-            this.stage.mousemove = this.stage.touchmove = function (event) {
+            var stageMouseMoveFN = function (event) {
                 self.mouseEventHandler.mouseMove(event, "stage");
             };
-            this.stage.mouseup = this.stage.rightup = this.stage.touchend = function (event) {
+            var stageMouseUpFN = function (event) {
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
-            this.stage.mouseupoutside = this.stage.rightupoutside = this.stage.touchendoutside = function (event) {
+            var stageMouseUpOutsideFN = function (event) {
                 self.mouseEventHandler.mouseUp(event, "stage");
             };
+            var stageListeners = {
+                mousedown: stageMouseDownFN,
+                rightdown: stageMouseDownFN,
+                touchstart: stageMouseDownFN,
+                mousemove: stageMouseMoveFN,
+                touchmove: stageMouseMoveFN,
+                mouseup: stageMouseUpFN,
+                rightup: stageMouseUpFN,
+                touchend: stageMouseUpFN,
+                mouseupoutside: stageMouseUpOutsideFN,
+                rightupoutside: stageMouseUpOutsideFN,
+                touchendoutside: stageMouseUpOutsideFN,
+            };
+            for (var eventType in stageListeners) {
+                this.stage.on(eventType, stageListeners[eventType]);
+            }
             var main = this.layers["bgSprite"];
             main.interactive = true;
             main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
-            main.mousedown = main.rightdown = main.touchstart = function (event) {
+            var mainMouseDownFN = function (event) {
                 if (event.target !== main)
                     return;
                 self.mouseEventHandler.mouseDown(event, "world");
             };
-            main.mousemove = main.touchmove = function (event) {
+            var mainMouseMoveFN = function (event) {
                 if (event.target !== main)
                     return;
                 self.mouseEventHandler.mouseMove(event, "world");
             };
-            main.mouseup = main.rightup = main.touchend = function (event) {
+            var mainMouseUpFN = function (event) {
                 if (event.target !== main)
                     return;
                 self.mouseEventHandler.mouseUp(event, "world");
             };
-            main.mouseupoutside = main.rightupoutside = main.touchendoutside = function (event) {
+            var mainMouseUpOutsideFN = function (event) {
                 if (event.target !== main)
                     return;
                 self.mouseEventHandler.mouseUp(event, "world");
             };
+            var mainListeners = {
+                mousedown: mainMouseDownFN,
+                rightdown: mainMouseDownFN,
+                touchstart: mainMouseDownFN,
+                mousemove: mainMouseMoveFN,
+                touchmove: mainMouseMoveFN,
+                mouseup: mainMouseUpFN,
+                rightup: mainMouseUpFN,
+                touchend: mainMouseUpFN,
+                mouseupoutside: mainMouseUpOutsideFN,
+                rightupoutside: mainMouseUpOutsideFN,
+                touchendoutside: mainMouseUpOutsideFN,
+            };
+            for (var eventType in mainListeners) {
+                main.on(eventType, mainListeners[eventType]);
+            }
         };
         Renderer.prototype.resize = function () {
             if (this.renderer && document.body.contains(this.renderer.view)) {
@@ -18559,7 +18617,7 @@ var Rance;
         };
         Renderer.prototype.renderNebula = function () {
             this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
-            var texture = this.layers["bgFilter"].generateTexture();
+            var texture = this.layers["bgFilter"].generateTexture(this.renderer);
             this.layers["bgFilter"].filters = null;
             return texture;
         };
@@ -18576,12 +18634,12 @@ var Rance;
             var seed = seed || Math.random();
             var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
             var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
-            var container = new PIXI.DisplayObjectContainer();
+            var container = new PIXI.Container();
             container.addChild(bg);
             container.addChild(fg);
-            fg.filters = [new PIXI.BlurFilter()];
+            fg.filters = [new PIXI.filters.BlurFilter()];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
-            var texture = container.generateTexture();
+            var texture = container.generateTexture(this.renderer);
             return texture;
         };
         Renderer.prototype.renderOnce = function () {
@@ -18617,7 +18675,7 @@ var Rance;
             this.shaderManager.uniformManager.updateTime();
             this.renderer.render(this.stage);
             if (this.activeRenderLoopId === renderLoopId) {
-                requestAnimFrame(this.render.bind(this, renderLoopId));
+                window.requestAnimationFrame(this.render.bind(this, renderLoopId));
             }
         };
         return Renderer;
@@ -18652,7 +18710,7 @@ var Rance;
             };
             this.imageCache = {};
             this.onLoaded = onLoaded;
-            PIXI.dontSayHello = true;
+            PIXI.utils._saidHello = true;
             this.startTime = new Date().getTime();
             this.loadDOM();
             this.loadEmblems();
@@ -18695,14 +18753,17 @@ var Rance;
             if (this.loaded[identifier] === undefined)
                 this.loaded[identifier] = false;
             var self = this;
-            var loader = new PIXI.JsonLoader("img\/" + identifier + ".json");
-            loader.addEventListener("loaded", function (event) {
-                var spriteImages = self.spritesheetToDataURLs(event.target.json, event.target.texture.source);
+            var loader = new PIXI.loaders.Loader();
+            loader.add(identifier, "img\/" + identifier + ".json");
+            var onLoadCompleteFN = function (loader) {
+                var json = loader.resources[identifier].data;
+                var image = loader.resources[identifier + "_image"].data;
+                var spriteImages = self.spritesheetToDataURLs(json, image);
                 self.imageCache[identifier] = spriteImages;
                 self.loaded[identifier] = true;
                 self.checkLoaded();
-            });
-            loader.load();
+            };
+            loader.load(onLoadCompleteFN);
         };
         AppLoader.prototype.loadEmblems = function () {
             this.loadImagesFN("emblems");
@@ -18715,12 +18776,13 @@ var Rance;
         };
         AppLoader.prototype.loadOther = function () {
             var self = this;
-            var loader = new PIXI.ImageLoader("img\/fowTexture.png");
-            loader.addEventListener("loaded", function (event) {
+            var loader = new PIXI.loaders.Loader();
+            loader.add("img\/fowTexture.png");
+            var onLoadCompleteFN = function (loader) {
                 self.loaded.other = true;
                 self.checkLoaded();
-            });
-            loader.load();
+            };
+            loader.load(onLoadCompleteFN);
         };
         AppLoader.prototype.checkLoaded = function () {
             for (var prop in this.loaded) {
@@ -18949,7 +19011,7 @@ var Rance;
                 player.addUnit(ship);
                 ships.push(ship);
             }
-            return new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id);
+            return new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id, false);
         };
         GameLoader.prototype.deserializeShip = function (data) {
             var template = Rance.Templates.ShipTypes[data.templateType];

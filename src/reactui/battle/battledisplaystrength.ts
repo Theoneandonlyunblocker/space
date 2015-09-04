@@ -53,7 +53,7 @@ module Rance
           }
 
           TWEEN.update();
-          self.requestAnimFrame = requestAnimFrame(animateTween);
+          self.requestAnimFrame = window.requestAnimationFrame(animateTween);
         }
 
         var tween = new TWEEN.Tween(
