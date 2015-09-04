@@ -30,7 +30,7 @@ module Rance
     }
     getIncomeBounds()
     {
-      var min, max;
+      var min: number, max: number;
 
       for (var i = 0; i < this.stars.length; i++)
       {

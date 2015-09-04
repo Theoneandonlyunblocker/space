@@ -40,10 +40,10 @@ module Rance
       var COLUMNS_PER_FORMATION = 2;
       var SHIPS_PER_COLUMN = 3;
 
-      var formation = [];
+      var formation: Unit[][] = [];
       for (var i = 0; i < COLUMNS_PER_FORMATION; i++)
       {
-        var column = [];
+        var column: Unit[] = [];
         for (var j = 0; j < SHIPS_PER_COLUMN; j++)
         {
           column.push(null);

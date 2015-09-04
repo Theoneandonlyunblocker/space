@@ -6,10 +6,11 @@ module Rance
     {
       displayName: "MapGenOption",
 
-      handleChange: function(e)
+      handleChange: function(e: Event)
       {
+        var target = <HTMLInputElement> e.target;
         var option = this.props.option;
-        var newValue = clamp(parseFloat(e.target.value), option.min, option.max);
+        var newValue = clamp(parseFloat(target.value), option.min, option.max);
         this.props.onChange(this.props.id, newValue);
       },
 
@@ -23,7 +24,7 @@ module Rance
         var option = this.props.option;
         var id = "mapGenOption_" + this.props.id;
 
-        ["min", "max", "step"].forEach(function(prop)
+        ["min", "max", "step"].forEach(function(prop: string)
         {
           if (!option[prop])
           {

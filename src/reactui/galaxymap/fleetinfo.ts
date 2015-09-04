@@ -7,10 +7,11 @@ module Rance
     export var FleetInfo = React.createClass(
     {
       displayName: "FleetInfo",
-      setFleetName: function(e)
+      setFleetName: function(e: Event)
       {
-        console.log("setFleetName", e.target.value);
-        this.props.fleet.name = e.target.value;
+        var target = <HTMLInputElement> e.target;
+        console.log("setFleetName", target.value);
+        this.props.fleet.name = target.value;
         this.forceUpdate();
       },
 

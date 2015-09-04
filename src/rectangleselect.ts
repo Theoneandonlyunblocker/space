@@ -117,7 +117,7 @@ module Rance
 
     getAllInSelection()
     {
-      var toReturn = [];
+      var toReturn: any[] = [];
 
       for (var i = 0; i < this.toSelectFrom.length; i++)
       {

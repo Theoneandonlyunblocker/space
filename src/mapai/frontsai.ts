@@ -9,6 +9,16 @@
 
 module Rance
 {
+  export interface IArchetypeValues
+  {
+    [archetype: string]: number;
+  }
+  interface IFrontUnitScore
+  {
+    unit: Unit;
+    front: Front;
+    score: number;
+  }
   export class FrontsAI
   {
     player: Player;
@@ -31,9 +41,9 @@ module Rance
       this.personality = personality;
     }
 
-    getTotalUnitCountByArchetype()
+    getTotalUnitCountByArchetype(): IArchetypeValues
     {
-      var totalUnitCountByArchetype = {};
+      var totalUnitCountByArchetype: IArchetypeValues = {};
 
       var units = this.player.getAllUnits();
       for (var i = 0; i < units.length; i++)
@@ -51,10 +61,10 @@ module Rance
       return totalUnitCountByArchetype;
     }
 
-    getUnitArchetypeRelativeWeights(unitsByArchetype)
+    getUnitArchetypeRelativeWeights(unitsByArchetype: IArchetypeValues): IArchetypeValues
     {
       var min = 0;
-      var max;
+      var max: number;
       for (var archetype in unitsByArchetype)
       {
         var count = unitsByArchetype[archetype];
@@ -75,7 +85,8 @@ module Rance
       return relativeWeights;
     }
 
-    getUnitCompositionDeviationFromIdeal(idealWeights, unitsByArchetype)
+    getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues,
+      unitsByArchetype: IArchetypeValues)
     {
       var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
 
@@ -129,7 +140,7 @@ module Rance
       return scores;
     }
 
-    scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores)
+    scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues)
     {
       switch (front.objective.type)
       {
@@ -152,7 +163,7 @@ module Rance
       return (1 - healthPercentage) * 2;
     }
 
-    getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores)
+    getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues)
     {
       // base score based on unit composition
       var score = frontArchetypeScores[unit.template.archetype];
@@ -227,14 +238,9 @@ module Rance
       return score;
     }
 
-    getUnitScoresForFront(units: Unit[], front: Front)
+    private getUnitScoresForFront(units: Unit[], front: Front)
     {
-      var scores:
-      {
-        unit: Unit;
-        score: number;
-        front: Front;
-      }[] = [];
+      var scores: IFrontUnitScore[] = [];
 
       var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
 
@@ -255,7 +261,7 @@ module Rance
     {
       var units = this.player.getAllUnits();
 
-      var allUnitScores = [];
+      var allUnitScores: IFrontUnitScore[] = [];
       var unitScoresByFront:
       {
         [frontId: number]: any[];
@@ -285,7 +291,7 @@ module Rance
       }
 
       // ascending
-      var sortByScoreFN = function(a, b)
+      var sortByScoreFN = function(a: IFrontUnitScore, b: IFrontUnitScore)
       {
         return a.score - b.score;
       }
@@ -431,7 +437,7 @@ module Rance
       });
     }
 
-    moveFleets(afterMovingAllCallback: any)
+    moveFleets(afterMovingAllCallback: Function)
     {
       var front = this.frontsToMove.pop();
 

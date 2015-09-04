@@ -70,13 +70,13 @@ declare module Rance {
                     x: number;
                     y: number;
                 };
-                clone: any;
+                clone: Node;
             };
-            handleMouseDown: (e: any) => void;
-            handleMouseMove: (e: any) => void;
-            handleDrag: (e: any) => void;
-            handleMouseUp: (e: any) => void;
-            handleDragEnd: (e: any) => void;
+            handleMouseDown: (e: MouseEvent) => void;
+            handleMouseMove: (e: MouseEvent) => void;
+            handleDrag: (e: MouseEvent) => void;
+            handleMouseUp: (e: MouseEvent) => void;
+            handleDragEnd: (e: MouseEvent) => void;
             addEventListeners: () => void;
             removeEventListeners: () => void;
             componentDidMount: () => void;
@@ -171,6 +171,20 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        interface IListColumn {
+            label: string;
+            title?: string;
+            key: string;
+            defaultOrder?: string;
+            order?: string;
+            notSortable?: boolean;
+            propToSortBy?: string;
+            sortingFunction?: <T>(a: T, b: T) => number;
+        }
+        interface IListItem {
+            key: string | number;
+            data: any;
+        }
         var List: React.Factory<{}>;
     }
 }
@@ -314,9 +328,9 @@ declare module Rance {
         var AutoPosition: {
             componentDidMount: () => void;
             componentDidUpdate: () => void;
-            flipSide: (side: any) => string;
-            elementFitsYSide: (side: any, ownRect: any, parentRect: any) => boolean;
-            elementFitsXSide: (side: any, ownRect: any, parentRect: any) => boolean;
+            flipSide: (side: string) => string;
+            elementFitsYSide: (side: string, ownRect: ClientRect, parentRect: ClientRect) => boolean;
+            elementFitsXSide: (side: string, ownRect: ClientRect, parentRect: ClientRect) => boolean;
             setAutoPosition: () => void;
         };
     }
@@ -447,25 +461,34 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function randInt(min: any, max: any): number;
-    function randRange(min: any, max: any): any;
+    function randInt(min: number, max: number): number;
+    function randRange(min: number, max: number): number;
     function getRandomArrayKey(target: any[]): number;
     function getRandomArrayItem(target: any[]): any;
-    function getRandomKey(target: any): string;
+    function getRandomKey(target: {
+        [props: string]: any;
+    }): string;
     function getObjectKeysSortedByValue(obj: {
         [key: string]: number;
     }, order: string): string[];
-    function getRandomProperty(target: any): any;
+    function getRandomProperty(target: {
+        [props: string]: any;
+    }): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
     function turnOrderSortFunction(a: Unit, b: Unit): number;
-    function rectContains(rect: any, point: any): boolean;
+    function rectContains(rect: {
+        x1: number;
+        x2: number;
+        y1: number;
+        y2: number;
+    }, point: Point): boolean;
     function hexToString(hex: number): string;
     function stringToHex(text: string): number;
     function colorImageInPlayerColor(image: HTMLImageElement, player: Player): string;
     function extendObject(from: any, to?: any): any;
-    function recursiveRemoveAttribute(parent: any, attribute: string): void;
+    function recursiveRemoveAttribute(parent: HTMLElement, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function roundToNearestMultiple(value: number, multiple: number): number;
     function getAngleBetweenDegrees(degA: number, degB: number): number;
@@ -477,7 +500,7 @@ declare module Rance {
 }
 declare module Rance {
     interface TargetingFunction {
-        (fleets: Unit[][], target: number[]): Unit[];
+        (units: Unit[][], target: number[]): Unit[];
     }
     var targetSingle: TargetingFunction;
     var targetAll: TargetingFunction;
@@ -601,7 +624,7 @@ declare module Rance {
         interface IUnitTemplate {
             type: string;
             archetype: string;
-            typeName: string;
+            displayName: string;
             sprite: ISpriteTemplate;
             isSquadron: boolean;
             buildCost: number;
@@ -693,6 +716,12 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IBuildingUpgradeData {
+        template: Templates.IBuildingTemplate;
+        level: number;
+        cost: number;
+        parentBuilding: Building;
+    }
     class Building {
         template: Templates.IBuildingTemplate;
         id: number;
@@ -708,11 +737,7 @@ declare module Rance {
             totalCost?: number;
             id?: number;
         });
-        getPossibleUpgrades(): {
-            template: Templates.IBuildingTemplate;
-            level: number;
-            cost: number;
-        }[];
+        getPossibleUpgrades(): IBuildingUpgradeData[];
         upgrade(): void;
         setController(newController: Player): void;
         serialize(): any;
@@ -814,17 +839,17 @@ declare module Rance {
         removeBuilding(building: Building): void;
         sortDefenceBuildings(): void;
         getSecondaryController(): Player;
-        updateController(): any;
+        updateController(): void;
         getIncome(): number;
         getResourceIncome(): {
             resource: Templates.IResourceTemplate;
             amount: number;
         };
-        getAllBuildings(): any[];
-        getBuildingsForPlayer(player: Player): any[];
-        getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate): any[];
-        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): any[];
-        getBuildableBuildings(): any[];
+        getAllBuildings(): Building[];
+        getBuildingsForPlayer(player: Player): Building[];
+        getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate): Building[];
+        getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
+        getBuildableBuildings(): Templates.IBuildingTemplate[];
         getBuildingUpgrades(): {
             [buildingId: number]: {
                 template: Templates.IBuildingTemplate;
@@ -833,8 +858,8 @@ declare module Rance {
                 parentBuilding: Building;
             }[];
         };
-        getBuildableShipTypes(): any[];
-        getAllFleets(): any[];
+        getBuildableShipTypes(): Templates.IUnitTemplate[];
+        getAllFleets(): Fleet[];
         getFleetIndex(fleet: Fleet): number;
         hasFleet(fleet: Fleet): boolean;
         addFleet(fleet: Fleet): boolean;
@@ -843,7 +868,12 @@ declare module Rance {
         removeFleets(fleets: Fleet[]): void;
         getAllShipsOfPlayer(player: Player): Unit[];
         getIndependentShips(): Unit[];
-        getTargetsForPlayer(player: Player): any[];
+        getTargetsForPlayer(player: Player): {
+            type: string;
+            enemy: Player;
+            building: Building;
+            ships: Unit[];
+        }[];
         getFirstEnemyDefenceBuilding(player: Player): Building;
         getEnemyFleetOwners(player: Player, excludedTarget?: Player): Player[];
         setPosition(x: number, y: number): void;
@@ -870,8 +900,10 @@ declare module Rance {
         getItemManufactoryLevel(): number;
         getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
         getBuildableItems(): {
-            byTechLevel: {};
-            all: any[];
+            byTechLevel: {
+                [techLevel: number]: Templates.IItemTemplate[];
+            };
+            all: Templates.IItemTemplate[];
         };
         serialize(): any;
     }
@@ -1139,7 +1171,7 @@ declare module Rance {
     function rgb2hex(rgb: number[]): number;
     function hsvToRgb(h: number, s: number, v: number): number[];
     function hslToRgb(h: number, s: number, l: number): number[];
-    function rgbToHsv(r: any, g: any, b: any): any[];
+    function rgbToHsv(r: number, g: number, b: number): number[];
     function rgbToHsl(r: number, g: number, b: number): number[];
     function hslToHex(h: number, s: number, l: number): number;
     function hsvToHex(h: number, s: number, v: number): number;
@@ -1148,15 +1180,15 @@ declare module Rance {
     function excludeFromRanges(ranges: IRange[], toExclude: IRange): IRange[];
     function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[];
     function excludeFromRange(range: IRange, toExclude: IRange): IRange[];
-    function randomSelectFromRanges(ranges: IRange[]): any;
-    function makeRandomVibrantColor(): any[];
-    function makeRandomDeepColor(): any[];
-    function makeRandomLightColor(): any[];
+    function randomSelectFromRanges(ranges: IRange[]): number;
+    function makeRandomVibrantColor(): number[];
+    function makeRandomDeepColor(): number[];
+    function makeRandomLightColor(): number[];
     function makeRandomColor(values?: {
         h?: IRange[];
         s?: IRange[];
         l?: IRange[];
-    }): any[];
+    }): number[];
     function colorFromScalars(color: number[]): number[];
     function scalarsFromColor(scalars: number[]): number[];
     function makeContrastingColor(props: {
@@ -1192,7 +1224,7 @@ declare module Rance {
         color: number;
         inner: Templates.ISubEmblemTemplate;
         outer: Templates.ISubEmblemTemplate;
-        constructor(color: number, alpha?: number, inner?: any, outer?: any);
+        constructor(color: number, alpha?: number, inner?: Templates.ISubEmblemTemplate, outer?: Templates.ISubEmblemTemplate);
         isForegroundOnly(): boolean;
         generateRandom(minAlpha: number, rng?: any): void;
         generateSubEmblems(rng: any): void;
@@ -1220,7 +1252,7 @@ declare module Rance {
             secondaryColor?: number;
             tetriaryColor?: number;
         });
-        setColorScheme(main: any, secondary?: any, tetriary?: any): void;
+        setColorScheme(main: number, secondary?: number, tetriary?: number): void;
         generateRandom(seed?: any): void;
         clearContent(): void;
         setForegroundEmblem(emblem: Emblem): void;
@@ -1252,7 +1284,7 @@ declare module Rance {
         uctEvaluation: number;
         uctIsDirty: boolean;
         constructor(battle: Battle, sideId: string, move?: IMove);
-        getPossibleMoves(): any[];
+        getPossibleMoves(): IMove[];
         addChild(): MCTreeNode;
         updateResult(result: number): void;
         simulateOnce(battle: Battle): void;
@@ -1260,7 +1292,7 @@ declare module Rance {
         clearResult(): void;
         setUct(): void;
         getHighestUctChild(): MCTreeNode;
-        getRecursiveBestUctChild(): any;
+        getRecursiveBestUctChild(): MCTreeNode;
     }
 }
 declare module Rance {
@@ -1485,7 +1517,7 @@ declare module Rance {
          *                                            to adjust how far towards centroid the point is moved.
          *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
          */
-        function relaxVoronoi(diagram: any, dampeningFunction?: (any) => number): void;
+        function relaxVoronoi(diagram: any, dampeningFunction?: (point: any) => number): void;
     }
 }
 declare module Rance {
@@ -1535,8 +1567,8 @@ declare module Rance {
         voronoi: MapVoronoiInfo;
         constructor(mapGen: MapGen2.MapGenResult);
         getIncomeBounds(): {
-            min: any;
-            max: any;
+            min: number;
+            max: number;
         };
         serialize(): any;
     }
@@ -1659,8 +1691,7 @@ declare module Rance {
         priority: number;
         isOngoing: boolean;
         target: Star;
-        data: any;
-        constructor(type: string, priority: number, target: Star, data?: any);
+        constructor(type: string, priority: number, target: Star);
     }
 }
 declare module Rance {
@@ -1670,9 +1701,9 @@ declare module Rance {
         player: Player;
         personality: IPersonalityData;
         objectivesByType: {
-            expansion: any[];
-            cleanPirates: any[];
-            heal: any[];
+            expansion: Objective[];
+            cleanPirates: Objective[];
+            heal: Objective[];
         };
         objectives: Objective[];
         maxActiveExpansionRequests: number;
@@ -1719,13 +1750,16 @@ declare module Rance {
         getUnitsByLocation(): {
             [starId: number]: Unit[];
         };
-        moveFleets(afterMoveCallback: any): void;
-        healMoveRoutine(afterMoveCallback: any): void;
-        defaultMoveRoutine(afterMoveCallback: any): void;
-        executeAction(afterExecutedCallback: any): void;
+        moveFleets(afterMoveCallback: Function): void;
+        healMoveRoutine(afterMoveCallback: Function): void;
+        defaultMoveRoutine(afterMoveCallback: Function): void;
+        executeAction(afterExecutedCallback: Function): void;
     }
 }
 declare module Rance {
+    interface IArchetypeValues {
+        [archetype: string]: number;
+    }
     class FrontsAI {
         player: Player;
         map: GalaxyMap;
@@ -1736,11 +1770,9 @@ declare module Rance {
         frontsRequestingUnits: Front[];
         frontsToMove: Front[];
         constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonalityData);
-        getTotalUnitCountByArchetype(): {};
-        getUnitArchetypeRelativeWeights(unitsByArchetype: any): {
-            [archetype: string]: number;
-        };
-        getUnitCompositionDeviationFromIdeal(idealWeights: any, unitsByArchetype: any): {
+        getTotalUnitCountByArchetype(): IArchetypeValues;
+        getUnitArchetypeRelativeWeights(unitsByArchetype: IArchetypeValues): IArchetypeValues;
+        getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): {
             [archetype: string]: number;
         };
         getGlobalUnitArcheypeScores(): {
@@ -1749,14 +1781,10 @@ declare module Rance {
         getFrontUnitArchetypeScores(front: Front): {
             [archetype: string]: number;
         };
-        scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: any): any;
+        scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
         getHealUnitFitScore(unit: Unit, front: Front): number;
-        getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: any): any;
-        getUnitScoresForFront(units: Unit[], front: Front): {
-            unit: Unit;
-            score: number;
-            front: Front;
-        }[];
+        getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
+        private getUnitScoresForFront(units, front);
         assignUnits(): void;
         getFrontWithId(id: number): Front;
         createFront(objective: Objective): Front;
@@ -1764,7 +1792,7 @@ declare module Rance {
         formFronts(): void;
         organizeFleets(): void;
         setFrontsToMove(): void;
-        moveFleets(afterMovingAllCallback: any): void;
+        moveFleets(afterMovingAllCallback: Function): void;
         getUnitsToFillObjective(objective: Objective): {
             min: number;
             ideal: number;
@@ -1856,12 +1884,15 @@ declare module Rance {
         setIcon(): void;
         addUnit(unit: Unit): void;
         removeUnit(unit: Unit): void;
-        getAllUnits(): any[];
-        forEachUnit(operator: (Unit) => void): void;
+        getAllUnits(): Unit[];
+        forEachUnit(operator: (unit: Unit) => void): void;
         getFleetIndex(fleet: Fleet): number;
         addFleet(fleet: Fleet): void;
         removeFleet(fleet: Fleet): void;
-        getFleetsWithPositions(): any[];
+        getFleetsWithPositions(): {
+            position: Point;
+            data: Fleet;
+        }[];
         hasStar(star: Star): boolean;
         addStar(star: Star): boolean;
         removeStar(star: Star): boolean;
@@ -1873,7 +1904,7 @@ declare module Rance {
                 amount: number;
             };
         };
-        getGloballyBuildableShips(): any[];
+        getGloballyBuildableShips(): Templates.IUnitTemplate[];
         getNeighboringStars(): Star[];
         updateVisibleStars(): void;
         getVisibleStars(): Star[];
@@ -1882,7 +1913,10 @@ declare module Rance {
         buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
         addItem(item: Item): void;
         removeItem(item: Item): void;
-        getAllBuildableItems(): any[];
+        getAllBuildableItems(): {
+            star: Star;
+            template: Templates.IItemTemplate;
+        }[];
         getNearestOwnedStarTo(star: Star): Star;
         attackTarget(location: Star, target: any, battleFinishCallback?: any): void;
         serialize(): any;
@@ -1941,7 +1975,7 @@ declare module Rance {
             side2Player: Player;
         });
         init(): void;
-        forEachUnit(operator: (Unit) => any): void;
+        forEachUnit(operator: (unit: Unit) => any): void;
         initUnit(unit: Unit, side: string, position: number[]): void;
         removeUnitFromTurnOrder(unit: Unit): boolean;
         addUnitToTurnOrder(unit: Unit): boolean;
@@ -1970,6 +2004,14 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IAbilityUseDataEffect {
+        effects: {
+            (): void;
+        }[];
+        user: Unit;
+        target: Unit;
+        sfx: Templates.IBattleEffectSFX;
+    }
     interface IAbilityUseData {
         user: Unit;
         originalTarget: Unit;
@@ -1977,14 +2019,7 @@ declare module Rance {
         beforeUse: {
             (): void;
         }[];
-        effectsToCall: {
-            effects: {
-                (): void;
-            }[];
-            user: Unit;
-            target: Unit;
-            sfx: Templates.IBattleEffectSFX;
-        }[];
+        effectsToCall: IAbilityUseDataEffect[];
         afterUse: {
             (): void;
         }[];
@@ -2230,7 +2265,7 @@ declare module Rance {
             constructor(id: number);
             addStar(star: Star): void;
             getNeighboringStars(): Star[];
-            getMajorityRegions(): any[];
+            getMajorityRegions(): Region2[];
         }
     }
 }
@@ -2339,6 +2374,10 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        interface ReactComponentPlaceHolder {
+        }
+        interface ReactDOMPlaceHolder {
+        }
         var Stage: React.Factory<{}>;
     }
 }
@@ -2378,7 +2417,7 @@ declare module Rance {
         destroy(): void;
         removeEventListener(name: string): void;
         removeEventListeners(): void;
-        addEventListener(name: string, handler: any): void;
+        addEventListener(name: string, handler: Function): void;
         addEventListeners(): void;
         preventGhost(delay: number): void;
         clearSelection(): void;
@@ -2395,7 +2434,12 @@ declare module Rance {
         splitFleet(fleet: Fleet): void;
         startReorganizingFleets(fleets: Fleet[]): void;
         endReorganizingFleets(): void;
-        getCurrentAttackTargets(): any[];
+        getCurrentAttackTargets(): {
+            type: string;
+            enemy: Player;
+            building: Building;
+            ships: Unit[];
+        }[];
         attackTarget(target: any): boolean;
     }
 }
@@ -2405,7 +2449,10 @@ declare module Rance {
         halfEdge: any;
     }[];
     function joinPointsWithin(points: Point[], maxDistance: number): void;
-    function convertHalfEdgeDataToOffset(halfEdgeData: any): OffsetPoint[];
+    function convertHalfEdgeDataToOffset(halfEdgeData: {
+        star: Star;
+        halfEdge: any;
+    }[]): OffsetPoint[];
     function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): any[][];
 }
 declare module Rance {
@@ -2689,19 +2736,12 @@ declare module Rance {
         listeners: {
             [name: string]: any;
         };
-        curveStyles: {
-            reachable: {
-                color: number;
-            };
-            unreachable: {
-                color: number;
-            };
-        };
+        private curveStyles;
         constructor(parentContainer: PIXI.Container);
         destroy(): void;
         removeEventListener(name: string): void;
         removeEventListeners(): void;
-        addEventListener(name: string, handler: any): void;
+        addEventListener(name: string, handler: Function): void;
         addEventListeners(): void;
         startMove(): void;
         setTarget(star: Star): void;
@@ -2720,7 +2760,7 @@ declare module Rance {
         }[];
         drawAllCurrentCurves(): void;
         getCurveData(points: Point[]): number[][];
-        drawCurve(points: number[][], style: any): PIXI.Graphics;
+        private drawCurve(points, style);
         drawArrowHead(gfx: PIXI.Graphics, color: number): void;
         getTargetOffset(target: Point, sourcePoint: Point, i: number, totalPaths: number, offsetPerOrbit: number): {
             x: number;
@@ -2842,7 +2882,7 @@ declare module Rance {
         deserializePlayer(data: any): Player;
         deserializeDiplomacyStatus(player: Player, data: any): void;
         deserializeFlag(data: any): Flag;
-        deserializeFleet(player: any, data: any): Fleet;
+        deserializeFleet(player: Player, data: any): Fleet;
         deserializeShip(data: any): Unit;
         deserializeItem(data: any, player: Player): void;
     }
@@ -2887,7 +2927,7 @@ declare module Rance {
         objective: number;
     };
     class App {
-        seed: any;
+        seed: string;
         loader: AppLoader;
         renderer: Renderer;
         game: Game;
@@ -2908,10 +2948,13 @@ declare module Rance {
         makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[]): void;
         makeGame(): Game;
         makePlayers(): {
-            players: any[];
+            players: Player[];
             independents: Player[];
         };
-        makeMap(playerData: any): GalaxyMap;
+        makeMap(playerData: {
+            players: Player[];
+            independents: Player[];
+        }): GalaxyMap;
         initGame(): void;
         initDisplay(): void;
         initUI(): void;

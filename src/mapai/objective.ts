@@ -30,16 +30,14 @@ module Rance
     isOngoing: boolean = false; // used to slightly prioritize old objectives
 
     target: Star;
-    data: any;
 
-    constructor(type: string, priority: number, target: Star, data?)
+    constructor(type: string, priority: number, target: Star)
     {
       this.id = idGenerators.objective++;
 
       this.type = type;
       this.priority = priority;
       this.target = target;
-      this.data = data;
     }
   }
 }

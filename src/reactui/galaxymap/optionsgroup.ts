@@ -7,7 +7,7 @@ module Rance
       displayName: "OptionsGroup",
       render: function()
       {
-        var rows = [];
+        var rows: ReactDOMPlaceHolder[] = [];
 
         for (var i = 0; i < this.props.options.length; i++)
         {
@@ -22,7 +22,7 @@ module Rance
           ));
         }
 
-        var resetButton = null;
+        var resetButton: ReactDOMPlaceHolder = null;
         if (this.props.resetFN)
         {
           resetButton = React.DOM.button(

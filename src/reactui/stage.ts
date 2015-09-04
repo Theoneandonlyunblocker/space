@@ -13,6 +13,14 @@ module Rance
 {
   export module UIComponents
   {
+    export interface ReactComponentPlaceHolder
+    {
+
+    }
+    export interface ReactDOMPlaceHolder
+    {
+      
+    }
     export var Stage = React.createClass(
     {
       displayName: "Stage",
@@ -25,7 +33,7 @@ module Rance
 
       render: function()
       {
-        var elementsToRender = [];
+        var elementsToRender: ReactComponentPlaceHolder[] = [];
 
         switch (this.props.sceneToRender)
         {

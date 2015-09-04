@@ -85,12 +85,12 @@ module Rance
     uiDisplayIsDirty: boolean = true;
     front: Front;
 
-    constructor(template: Templates.IUnitTemplate, id?: number, data?)
+    constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
     {
       this.id = isFinite(id) ? id : idGenerators.unit++;
 
       this.template = template;
-      this.name = this.id + " " + template.typeName;
+      this.name = this.id + " " + template.displayName;
       this.isSquadron = template.isSquadron;
       if (data)
       {
@@ -106,7 +106,7 @@ module Rance
         isAnnihilated: false
       };
     }
-    makeFromData(data)
+    makeFromData(data: any)
     {
       var items: any = {};
 
@@ -483,7 +483,7 @@ module Rance
     }
     getItemAbilities(): Templates.IAbilityTemplate[]
     {
-      var itemAbilities = [];
+      var itemAbilities: Templates.IAbilityTemplate[] = [];
 
       for (var slot in this.items)
       {
@@ -503,7 +503,7 @@ module Rance
     }
     getItemPassiveSkills(): Templates.IPassiveSkillTemplate[]
     {
-      var itemPassiveSkills = [];
+      var itemPassiveSkills: Templates.IPassiveSkillTemplate[] = [];
 
       for (var slot in this.items)
       {
@@ -597,7 +597,7 @@ module Rance
     }
     getAttackDamageIncrease(damageType: DamageType)
     {
-      var attackStat, attackFactor;
+      var attackStat: number, attackFactor: number;
 
       switch (damageType)
       {
@@ -621,7 +621,7 @@ module Rance
     }
     getReducedDamageFactor(damageType: DamageType)
     {
-      var defensiveStat, defenceFactor;
+      var defensiveStat: number, defenceFactor: number;
       var finalDamageMultiplier = 1;
 
       switch (damageType)
@@ -765,7 +765,7 @@ module Rance
       var spriteTemplate = this.template.sprite;
       var image = app.images["units"][spriteTemplate.imageSrc];
 
-      var unitsToDraw;
+      var unitsToDraw: number;
 
       if (isFinite(props.unitsToDraw))
       {
@@ -787,9 +787,9 @@ module Rance
         unitsToDraw = clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
       }
 
-      var xMin, xMax, yMin, yMax;
+      var xMin: number, xMax: number, yMin: number, yMax: number;
 
-      function transformMat3(a, m)
+      function transformMat3(a: Point, m: number[])
       {
         var x = m[0] * a.x + m[3] * a.y + m[6];
         var y = m[1] * a.x + m[4] * a.y + m[7];
@@ -822,7 +822,7 @@ module Rance
         var column = Math.floor(i / maxUnitsPerColumn);
         var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
 
-        var zPos;
+        var zPos: number;
         if (isLastColumn)
         {
           var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;

@@ -37,7 +37,7 @@ module Rance
 
     for (var abilityName in Templates.Abilities)
     {
-      var ability = Templates.Abilities[abilityName];
+      var ability = <Templates.IAbilityTemplate> Templates.Abilities[abilityName];
       ability.addsGuard = checkIfAbilityAddsGuard(ability);
     }
   }

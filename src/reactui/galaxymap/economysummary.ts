@@ -11,7 +11,7 @@ module Rance
 
       render: function()
       {
-        var rows = [];
+        var rows: IListItem[] = [];
         var player = this.props.player;
 
         for (var i = 0; i < player.controlledLocations.length; i++)
@@ -36,7 +36,7 @@ module Rance
           });
         }
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "Id",

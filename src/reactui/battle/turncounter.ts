@@ -10,7 +10,7 @@ module Rance
       {
         var turnsLeft = this.props.turnsLeft;
 
-        var turns = [];
+        var turns: ReactDOMPlaceHolder[] = [];
 
         var usedTurns = this.props.maxTurns - turnsLeft;
 

@@ -135,14 +135,14 @@ module Rance
     }
     getAllUnits()
     {
-      var allUnits = [];
+      var allUnits: Unit[] = [];
       for (var unitId in this.units)
       {
         allUnits.push(this.units[unitId]);
       }
       return allUnits;
     }
-    forEachUnit(operator: (Unit) => void)
+    forEachUnit(operator: (unit: Unit) => void)
     {
       for (var unitId in this.units)
       {
@@ -174,7 +174,11 @@ module Rance
     }
     getFleetsWithPositions()
     {
-      var positions = [];
+      var positions:
+      {
+        position: Point;
+        data: Fleet;
+      }[] = [];
 
       for (var i = 0; i < this.fleets.length; i++)
       {
@@ -267,7 +271,7 @@ module Rance
     }
     getGloballyBuildableShips()
     {
-      var templates = [];
+      var templates: Templates.IUnitTemplate[] = [];
 
       for (var type in Templates.ShipTypes)
       {
@@ -308,7 +312,7 @@ module Rance
         }
       }
 
-      var allStars = [];
+      var allStars: Star[] = [];
 
       for (var id in stars)
       {
@@ -450,8 +454,8 @@ module Rance
     }
     getAllBuildableItems()
     {
-      var alreadyAdded: any = {};
-      var allBuildable = [];
+      var alreadyAdded: {[itemType: string]: boolean} = {};
+      var allBuildable: {star: Star; template: Templates.IItemTemplate;}[] = [];
 
       for (var i = 0; i < this.controlledLocations.length; i++)
       {

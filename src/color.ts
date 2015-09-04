@@ -27,7 +27,7 @@ module Rance
   */
   export function hsvToRgb(h: number, s: number, v: number): number[]
   {
-    var r, g, b, i, f, p, q, t;
+    var r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
 
     i = Math.floor(h * 6);
     f = h * 6 - i;
@@ -47,7 +47,7 @@ module Rance
   }
   export function hslToRgb(h: number, s: number, l: number): number[]
   {
-    var r, g, b;
+    var r: number, g: number, b: number;
 
     if (s == 0)
     {
@@ -55,7 +55,7 @@ module Rance
     }
     else
     {
-      function hue2rgb(p, q, t)
+      function hue2rgb(p: number, q: number, t: number): number
       {
         if(t < 0) t += 1;
         if(t > 1) t -= 1;
@@ -65,8 +65,8 @@ module Rance
         return p;
       }
 
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      var p = 2 * l - q;
+      var q: number = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p: number = 2 * l - q;
       r = hue2rgb(p, q, h + 1/3);
       g = hue2rgb(p, q, h);
       b = hue2rgb(p, q, h - 1/3);
@@ -74,12 +74,12 @@ module Rance
 
     return [r, g, b];
   }
-  export function rgbToHsv(r, g, b)
+  export function rgbToHsv(r: number, g: number, b: number): number[]
   {
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, v = max;
+    var h: number, s: number, v: number = max;
 
-    var d = max - min;
+    var d: number = max - min;
     s = max == 0 ? 0 : d / max;
 
     if(max == min)
@@ -102,7 +102,7 @@ module Rance
   export function rgbToHsl(r: number, g: number, b: number): number[]
   {
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
+    var h: number, s: number, l: number = (max + min) / 2;
 
     if(max == min)
     {
@@ -165,7 +165,7 @@ module Rance
 
   export function getIntersectingRanges(ranges: IRange[], toIntersectWith: IRange): IRange[]
   {
-    var intersecting = [];
+    var intersecting: IRange[] = [];
     for (var i = 0; i < ranges.length; i++)
     {
       var range = ranges[i];
@@ -217,7 +217,7 @@ module Rance
     return [a, b];
   }
 
-  export function randomSelectFromRanges(ranges: IRange[])
+  export function randomSelectFromRanges(ranges: IRange[]): number
   {
     var totalWeight = 0;
     var rangesByRelativeWeight:
@@ -245,7 +245,7 @@ module Rance
     }
 
     var rand = Math.random();
-    var selectedRange;
+    var selectedRange: IRange;
 
     var sortedWeights = Object.keys(rangesByRelativeWeight).map(function(w)
     {
@@ -267,7 +267,7 @@ module Rance
     return randRange(selectedRange.min, selectedRange.max)
   }
 
-  export function makeRandomVibrantColor()
+  export function makeRandomVibrantColor(): number[]
   {
     var hRanges =
     [
@@ -278,7 +278,7 @@ module Rance
     ];
     return [randomSelectFromRanges(hRanges), randRange(0.8, 0.9), randRange(0.88, 0.92)];
   }
-  export function makeRandomDeepColor()
+  export function makeRandomDeepColor(): number[]
   {
     // yellow
     if (Math.random() < 0.1)
@@ -293,7 +293,7 @@ module Rance
     ];
     return [randomSelectFromRanges(hRanges), 1, randRange(0.55, 0.65)];
   }
-  export function makeRandomLightColor()
+  export function makeRandomLightColor(): number[]
   {
     return [randRange(0, 360), randRange(0.55, 0.65), 1]
   }
@@ -303,7 +303,7 @@ module Rance
     h?: IRange[];
     s?: IRange[];
     l?: IRange[];
-  })
+  }): number[]
   {
     values = values || {};
     var color: any = {};
@@ -326,11 +326,11 @@ module Rance
 
     return [color.h, color.s, color.l];
   }
-  export function colorFromScalars(color: number[])
+  export function colorFromScalars(color: number[]): number[]
   {
     return [color[0] * 360, color[1] * 100, color[2] * 100];
   }
-  export function scalarsFromColor(scalars: number[])
+  export function scalarsFromColor(scalars: number[]): number[]
   {
     return [scalars[0] / 360, scalars[1] / 100, scalars[2] / 100];
   }
@@ -415,9 +415,9 @@ module Rance
   }
   export function generateMainColor(): number
   {
-    var color;
-    var hexColor;
-    var genType;
+    var color: number[];
+    var hexColor: number;
+    var genType: string;
     if (Math.random() < 0.6)
     {
       color = makeRandomDeepColor();
@@ -457,7 +457,7 @@ module Rance
   export function generateSecondaryColor(mainColor: number): number
   {
     var huslColor = hexToHusl(mainColor);
-    var hexColor;
+    var hexColor: number;
 
     if (huslColor[2] < 0.3 || Math.random() < 0.4)
     {
@@ -474,15 +474,15 @@ module Rance
     }
     else
     {
-      function contrasts(c1, c2)
+      function contrasts(c1: number[], c2: number[])
       {
         return(
           (c1[2] < c2[2] - 20 || c1[2] > c2[2] + 20)
         );
       }
-      function makeColor(c1, easing)
+      function makeColor(c1: number, easing: number)
       {
-        var hsvColor = hexToHsv(c1); // scalar
+        var hsvColor: number[] = hexToHsv(c1); // scalar
 
         hsvColor = colorFromScalars(hsvColor);
         var contrastingColor = makeContrastingColor(
@@ -499,7 +499,7 @@ module Rance
           }
         });
 
-        var hex = <number> hsvToHex.apply(null, scalarsFromColor( contrastingColor ));
+        var hex: number = hsvToHex.apply(null, scalarsFromColor( contrastingColor ));
 
         return hexToHusl(hex);
       }
@@ -533,7 +533,7 @@ module Rance
     });
   }
 
-  export function checkRandomGenHues(amt: number)
+  export function checkRandomGenHues(amt: number): void
   {
     var maxBarSize = 80;
     var hues: any = {};
@@ -547,8 +547,8 @@ module Rance
       hues[roundedHue]++;
     }
 
-    var min;
-    var max;
+    var min: number;
+    var max: number;
 
     for (var _hue in hues)
     {

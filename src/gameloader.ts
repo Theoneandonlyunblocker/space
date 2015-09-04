@@ -34,7 +34,7 @@ module Rance
 
     }
 
-    deserializeGame(data)
+    deserializeGame(data: any): Game // TODO make interface for savegame data
     {
 
       this.map = this.deserializeMap(data.galaxyMap);
@@ -69,7 +69,7 @@ module Rance
 
       return game;
     }
-    deserializeMap(data)
+    deserializeMap(data: any)
     {
       var stars: Star[] = [];
 
@@ -113,7 +113,7 @@ module Rance
 
       return galaxyMap;
     }
-    deserializeStar(data)
+    deserializeStar(data: any)
     {
       var star = new Star(data.x, data.y, data.id);
       star.name = data.name;
@@ -127,7 +127,7 @@ module Rance
 
       return star;
     }
-    deserializeBuildings(data)
+    deserializeBuildings(data: any)
     {
       for (var i = 0; i < data.stars.length; i++)
       {
@@ -148,7 +148,7 @@ module Rance
       }
       
     }
-    deserializeBuilding(data)
+    deserializeBuilding(data: any)
     {
       var template = Templates.Buildings[data.templateType];
       var building = new Building(
@@ -164,7 +164,7 @@ module Rance
 
       return building;
     }
-    deserializePlayer(data)
+    deserializePlayer(data: any)
     {
       var personality: IPersonalityData;
 
@@ -232,7 +232,7 @@ module Rance
 
       return player;
     }
-    deserializeDiplomacyStatus(player: Player, data)
+    deserializeDiplomacyStatus(player: Player, data: any)
     {
       if (data)
       {
@@ -270,9 +270,9 @@ module Rance
         }
       }
     }
-    deserializeFlag(data)
+    deserializeFlag(data: any)
     {
-      var deserializeEmblem = function(emblemData, color)
+      var deserializeEmblem = function(emblemData: any, color: number)
       {
         var inner = Templates.SubEmblems[emblemData.innerType];
         var outer = emblemData.outerType ?
@@ -314,9 +314,9 @@ module Rance
 
       return flag;
     }
-    deserializeFleet(player, data)
+    deserializeFleet(player: Player, data: any)
     {
-      var ships = [];
+      var ships: Unit[] = [];
 
       for (var i = 0; i < data.ships.length; i++)
       {
@@ -327,7 +327,7 @@ module Rance
 
       return new Fleet(player, ships, this.starsById[data.locationId], data.id, false);
     }
-    deserializeShip(data)
+    deserializeShip(data: any)
     {
       var template = Templates.ShipTypes[data.templateType];
 
@@ -337,7 +337,7 @@ module Rance
 
       return ship;
     }
-    deserializeItem(data, player: Player)
+    deserializeItem(data: any, player: Player)
     {
       var template = Templates.Items[data.templateType];
 

@@ -13,10 +13,11 @@ module Rance
           value: this.props.unit.name
         });
       },
-      onChange: function(e)
+      onChange: function(e: Event)
       {
-        this.setState({value: e.target.value});
-        this.props.unit.name = e.target.value;
+        var target = <HTMLInputElement> e.target;
+        this.setState({value: target.value});
+        this.props.unit.name = target.value;
       },
       render: function()
       {

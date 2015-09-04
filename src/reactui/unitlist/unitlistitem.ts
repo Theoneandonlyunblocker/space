@@ -40,12 +40,12 @@ module Rance
         }
       },
 
-      onDragStart: function(e)
+      onDragStart: function()
       {
         this.props.onDragStart(this.props.unit);
       },
 
-      onDragMove: function(x, y)
+      onDragMove: function(x: number, y: number)
       {
         if (!this.refs.dragClone) return;
 
@@ -68,17 +68,17 @@ module Rance
         }
       },
 
-      onDragEnd: function(e)
+      onDragEnd: function()
       {
         this.props.onDragEnd();
       },
 
 
-      handleMouseEnter: function(e)
+      handleMouseEnter: function()
       {
         this.props.onMouseEnter(this.props.unit);
       },
-      handleMouseLeave: function(e)
+      handleMouseLeave: function()
       {
         this.props.onMouseLeave();
       },

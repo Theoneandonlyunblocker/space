@@ -6,7 +6,7 @@ module Rance
 {
   export interface TargetingFunction
   {
-    (fleets: Unit[][], target: number[]): Unit[];
+    (units: Unit[][], target: number[]): Unit[];
   }
 
   //**
@@ -14,9 +14,9 @@ module Rance
   //X*
   //**
   export var targetSingle: TargetingFunction;
-  targetSingle = function(fleets: Unit[][], target: number[])
+  targetSingle = function(units: Unit[][], target: number[])
   {
-    return getFrom2dArray(fleets, [target]);
+    return getFrom2dArray(units, [target]);
   };
 
   //XX
@@ -24,19 +24,9 @@ module Rance
   //XX
   //XX
   export var targetAll: TargetingFunction;
-  targetAll = function(fleets: Unit[][], target: number[])
+  targetAll = function(units: Unit[][], target: number[])
   {
-    var allTargets = [];
-
-    for (var i = 0; i < fleets.length; i++)
-    {
-      for (var j = 0; j < fleets[i].length; j++)
-      {
-        allTargets.push(fleets[i][j]);
-      }
-    }
-
-    return allTargets;
+    return flatten2dArray(units);
   };
 
   //**
@@ -44,17 +34,17 @@ module Rance
   //XX
   //**
   export var targetRow: TargetingFunction;
-  targetRow = function(fleets: Unit[][], target: number[])
+  targetRow = function(units: Unit[][], target: number[])
   {
     var y = target[1];
-    var allTargets = [];
+    var targetLocations: number[][] = [];
 
-    for (var i = 0; i < fleets.length; i++)
+    for (var i = 0; i < units.length; i++)
     {
-      allTargets.push([i,y]);
+      targetLocations.push([i,y]);
     }
 
-    return getFrom2dArray(fleets, allTargets);
+    return getFrom2dArray(units, targetLocations);
   };
 
   //X*
@@ -62,17 +52,17 @@ module Rance
   //X*
   //X*
   export var targetColumn: TargetingFunction;
-  targetColumn = function(fleets: Unit[][], target: number[])
+  targetColumn = function(units: Unit[][], target: number[])
   {
     var x = target[0];
-    var allTargets = [];
+    var targetLocations: number[][] = [];
 
-    for (var i = 0; i < fleets[x].length; i++)
+    for (var i = 0; i < units[x].length; i++)
     {
-      allTargets.push([x,i]);
+      targetLocations.push([x,i]);
     }
 
-    return getFrom2dArray(fleets, allTargets);
+    return getFrom2dArray(units, targetLocations);
   };
 
   //**
@@ -80,17 +70,17 @@ module Rance
   //X*
   //X*
   export var targetColumnNeighbors: TargetingFunction;
-  targetColumnNeighbors = function(fleets: Unit[][], target: number[])
+  targetColumnNeighbors = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var y = target[1];
-    var allTargets = [];
+    var targetLocations: number[][] = [];
 
-    allTargets.push([x, y]);
-    allTargets.push([x, y-1]);
-    allTargets.push([x, y+1]);
+    targetLocations.push([x, y]);
+    targetLocations.push([x, y-1]);
+    targetLocations.push([x, y+1]);
 
-    return getFrom2dArray(fleets, allTargets);
+    return getFrom2dArray(units, targetLocations);
   };
 
   //**
@@ -98,18 +88,18 @@ module Rance
   //XX
   //X*
   export var targetNeighbors: TargetingFunction;
-  targetNeighbors = function(fleets: Unit[][], target: number[])
+  targetNeighbors = function(units: Unit[][], target: number[])
   {
     var x = target[0];
     var y = target[1];
-    var allTargets = [];
+    var targetLocations: number[][] = [];
 
-    allTargets.push([x, y]);
-    allTargets.push([x-1, y]);
-    allTargets.push([x+1, y]);
-    allTargets.push([x, y-1]);
-    allTargets.push([x, y+1]);
+    targetLocations.push([x, y]);
+    targetLocations.push([x-1, y]);
+    targetLocations.push([x+1, y]);
+    targetLocations.push([x, y-1]);
+    targetLocations.push([x, y+1]);
 
-    return getFrom2dArray(fleets, allTargets);
+    return getFrom2dArray(units, targetLocations);
   };
 }

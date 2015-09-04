@@ -7,6 +7,10 @@
 
 module Rance
 {
+  interface IPathFindingArrowCurveStyle
+  {
+    color: number;
+  }
   export class PathfindingArrow
   {
     parentContainer: PIXI.Container;
@@ -30,13 +34,13 @@ module Rance
       [name: string]: any;
     } = {};
 
-    curveStyles =
+    private curveStyles =
     {
-      reachable:
+      reachable: <IPathFindingArrowCurveStyle>
       {
         color: 0xFFFFF0
       },
-      unreachable:
+      unreachable: <IPathFindingArrowCurveStyle>
       {
         color: 0xFF0000
       }
@@ -75,7 +79,7 @@ module Rance
         this.removeEventListener(name);
       }
     }
-    addEventListener(name: string, handler)
+    addEventListener(name: string, handler: Function)
     {
       this.listeners[name] = handler;
 
@@ -94,7 +98,7 @@ module Rance
         }
       });
 
-      this.addEventListener("setPotentialMoveTarget", function(star)
+      this.addEventListener("setPotentialMoveTarget", function(star: Star)
       {
         self.setTarget(star);
       });
@@ -183,7 +187,7 @@ module Rance
 
     makeLabel(style: string, distance: number)
     {
-      var textStyle;
+      var textStyle: PIXI.TextStyle;
 
       switch (style)
       {
@@ -347,7 +351,7 @@ module Rance
     getCurveData(points: Point[]): number[][]
     {
       var i6 = 1.0 / 6.0;
-      var path = [];
+      var path: number[][] = [];
       var abababa = [points[0]].concat(points);
       abababa.push(points[points.length - 1]);
 
@@ -377,7 +381,7 @@ module Rance
       return path;
     }
 
-    drawCurve(points: number[][], style)
+    private drawCurve(points: number[][], style: IPathFindingArrowCurveStyle)
     {
       var gfx = new PIXI.Graphics();
 

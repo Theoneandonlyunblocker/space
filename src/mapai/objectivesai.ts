@@ -35,9 +35,9 @@ module Rance
 
     objectivesByType =
     {
-      expansion: [],
-      cleanPirates: [],
-      heal: []
+      expansion: <Objective[]> [],
+      cleanPirates: <Objective[]> [],
+      heal: <Objective[]> []
     };
     objectives: Objective[] = [];
 
@@ -87,7 +87,7 @@ module Rance
       this.objectivesByType[objectiveType] = [];
 
 
-      var minScore, maxScore;
+      var minScore: number, maxScore: number;
 
       for (var i = 0; i < evaluationScores.length; i++)
       {
@@ -108,7 +108,7 @@ module Rance
         }
         else
         {
-          objectivesByTarget[star.id] = new Objective(objectiveType, priority, star, evaluationScores[i]);
+          objectivesByTarget[star.id] = new Objective(objectiveType, priority, star);
         }
 
         allObjectives.push(objectivesByTarget[star.id]);

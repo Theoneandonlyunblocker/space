@@ -77,13 +77,15 @@ module Rance
 
         this.setBattleSceneUnits(null);
       },
-      handleMouseLeaveUnit: function(e)
+      handleMouseLeaveUnit: function(e: React.MouseEvent)
       {
         this.tempHoveredUnit = null;
 
         if (!this.state.hoveredUnit || this.state.playingBattleEffect) return;
 
-        var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
+        var nativeEvent = <MouseEvent> e.nativeEvent;
+
+        var toElement = nativeEvent.toElement || <HTMLElement> nativeEvent.relatedTarget;
 
         if (!toElement)
         {
@@ -109,7 +111,7 @@ module Rance
           this.clearHoveredUnit();
         }
       },
-      handleMouseEnterUnit: function(unit)
+      handleMouseEnterUnit: function(unit: Unit)
       {
         this.tempHoveredUnit = unit;
 
@@ -131,7 +133,7 @@ module Rance
         this.setBattleSceneUnits(unit);
       },
 
-      getUnitElement: function(unit)
+      getUnitElement: function(unit: Unit)
       {
         return document.getElementById("unit-id_" + unit.id);
       },
@@ -154,7 +156,7 @@ module Rance
         var shouldDisplayHovered = (hoveredUnit &&
           hoveredUnit.battleStats.side !== activeUnit.battleStats.side);
 
-        var unit1, unit2;
+        var unit1: Unit, unit2: Unit;
 
         if (activeUnit.battleStats.side === "side1")
         {
@@ -175,7 +177,7 @@ module Rance
 
       },
 
-      handleAbilityUse: function(ability, target)
+      handleAbilityUse: function(ability: Templates.IAbilityTemplate, target: Unit)
       {
         var abilityData = getAbilityUseData(this.props.battle,
           this.props.battle.activeUnit, ability, target);
@@ -207,9 +209,9 @@ module Rance
         effectData[i].user.sfxDuration = null;
         effectData[i].target.sfxDuration = null;
 
-        var side1Unit = null;
-        var side2Unit = null;
-        [effectData[i].user, effectData[i].target].forEach(function(unit)
+        var side1Unit: Unit = null;
+        var side2Unit: Unit = null;
+        [effectData[i].user, effectData[i].target].forEach(function(unit: Unit)
         {
           if (unit.battleStats.side === "side1" && !side1Unit)
           {
@@ -339,7 +341,7 @@ module Rance
         battle.finishBattle();
       },
 
-      handleMouseEnterAbility: function(ability)
+      handleMouseEnterAbility: function(ability: Templates.IAbilityTemplate)
       {
         var targetsInPotentialArea = getUnitsInAbilityArea(
           this.props.battle,
@@ -404,13 +406,13 @@ module Rance
           });
         };
 
-        var activeEffectUnits = [];
+        var activeEffectUnits: Unit[] = [];
         if (this.state.playingBattleEffect)
         {
           activeEffectUnits = [this.state.battleSceneUnit1, this.state.battleSceneUnit2];
         }
 
-        var upperFooterElement;
+        var upperFooterElement: ReactComponentPlaceHolder;
         if (!this.state.playingBattleEffect)
         {
           upperFooterElement = UIComponents.TurnOrder(

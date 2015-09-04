@@ -14,7 +14,7 @@ module Rance
       render: function()
       {
         var modifiers = this.props.attitudeModifiers;
-        var rows = [];
+        var rows: IListItem[] = [];
 
         rows.push(
         {
@@ -51,7 +51,7 @@ module Rance
         }
 
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "Name",

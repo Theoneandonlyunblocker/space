@@ -37,7 +37,7 @@ module Rance
      *                                            to adjust how far towards centroid the point is moved.
      *                                            0.0 = not moved, 0.5 = moved halfway, 1.0 = moved fully
      */
-    export function relaxVoronoi(diagram: any, dampeningFunction?: (any) => number)
+    export function relaxVoronoi(diagram: any, dampeningFunction?: (point: any) => number)
     {
       for (var i = 0; i < diagram.cells.length; i++)
       {
@@ -62,7 +62,7 @@ module Rance
 
     function getVerticesFromCell(cell: any)
     {
-      var vertices = [];
+      var vertices: Point[] = [];
 
       for (var i = 0; i < cell.halfedges.length; i++)
       {

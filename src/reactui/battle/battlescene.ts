@@ -95,7 +95,8 @@ module Rance
 
       render: function()
       {
-        var unit1SpriteFN, unit1OverlayFN, unit2SpriteFN, unit2OverlayFN;
+        var unit1SpriteFN: Function, unit1OverlayFN: Function,
+          unit2SpriteFN: Function, unit2OverlayFN: Function;
         if (this.props.effectSFX)
         {
           if (this.props.unit1IsActive)

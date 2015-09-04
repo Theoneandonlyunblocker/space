@@ -18,14 +18,15 @@ module Rance
           return;
         }
 
-        var onChangeFN = function(e)
+        var onChangeFN = function(e: Event)
         {
-          var value = parseFloat(e.target.value);
+          var target = <HTMLInputElement> e.target;
+          var value = parseFloat(target.value);
           if (!isFinite(value))
           {
             return;
           }
-          value = clamp(value, e.target.min, e.target.max);
+          value = clamp(value, parseFloat(target.min), parseFloat(target.max));
           Options.battleAnimationTiming[stage] = value;
           this.forceUpdate();
         }.bind(this);
@@ -93,7 +94,7 @@ module Rance
 
       render: function()
       {
-        var allOptions = [];
+        var allOptions: ReactComponentPlaceHolder[] = [];
 
         // battle animation timing
         var battleAnimationOptions: any[] = [];
@@ -147,14 +148,15 @@ module Rance
                 min: 1,
                 max: 500,
                 step: 1,
-                onChange: function(e)
+                onChange: function(e: Event)
                 {
-                  var value = parseInt(e.target.value);
+                  var target = <HTMLInputElement> e.target;
+                  var value = parseInt(target.value);
                   if (!isFinite(value))
                   {
                     return;
                   }
-                  value = clamp(value, e.target.min, e.target.max);
+                  value = clamp(value, parseFloat(target.min), parseFloat(target.max));
                   Options.debugOptions.battleSimulationDepth = value;
                   this.forceUpdate();
                 }.bind(this)

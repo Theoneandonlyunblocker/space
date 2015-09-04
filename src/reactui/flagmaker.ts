@@ -6,7 +6,7 @@ module Rance
     {
       makeFlags: function(delay: number = 0)
       {
-        var flags = [];
+        var flags: Flag[] = [];
         var parent = this.refs.flags.getDOMNode();
 
         while (parent.lastChild)
@@ -42,7 +42,7 @@ module Rance
           return hslString.join(", ");
         }
 
-        window.setTimeout(function(e)
+        window.setTimeout(function()
         {
           for (var i = 0; i < flags.length; i++)
           {
@@ -54,7 +54,7 @@ module Rance
               "emblemColor: " + makeHslStringFromHex(flags[i].secondaryColor) + "\n"
             );
 
-            canvas.onclick = function(e)
+            canvas.onclick = function(e: MouseEvent)
             {
               console.log(hexToHusl(this.mainColor));
               console.log(hexToHusl(this.secondaryColor))

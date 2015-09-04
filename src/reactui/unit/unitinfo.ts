@@ -12,7 +12,7 @@ module Rance
       mixins: [React.addons.PureRenderMixin],
       render: function()
       {
-        var battleEndStatus = null;
+        var battleEndStatus: ReactDOMPlaceHolder = null;
         if (this.props.isDead)
         {
           battleEndStatus = React.DOM.div(

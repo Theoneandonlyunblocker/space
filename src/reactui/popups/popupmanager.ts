@@ -85,7 +85,12 @@ module Rance
       {
         if (!this.hasPopup(id)) throw new Error("No such popup");
 
-        var newPopups = [];
+        var newPopups:
+        {
+          contentConstructor: any;
+          contentProps: any;
+          id: number;
+        }[] = [];
 
         for (var i = 0; i < this.state.popups.length; i++)
         {
@@ -147,7 +152,7 @@ module Rance
       {
         var popups = this.state.popups;
 
-        var toRender = [];
+        var toRender: ReactComponentPlaceHolder[] = [];
 
         for (var i = 0; i < popups.length; i++)
         {

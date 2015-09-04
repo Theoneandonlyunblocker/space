@@ -10,7 +10,7 @@ module Rance
       displayName: "UnitList",
       render: function()
       {
-        var rows = [];
+        var rows: IListItem[] = [];
 
         for (var id in this.props.units)
         {
@@ -22,7 +22,7 @@ module Rance
 
             id: unit.id,
             name: unit.name,
-            typeName: unit.template.typeName,
+            typeName: unit.template.displayName,
             strength: "" + unit.currentHealth + " / " + unit.maxHealth,
             currentHealth: unit.currentHealth,
             maxHealth: unit.maxHealth,
@@ -56,7 +56,7 @@ module Rance
           });
         }
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "Id",
@@ -72,7 +72,7 @@ module Rance
             label: "Strength",
             key: "strength",
             defaultOrder: "desc",
-            sortingFunction: function(a, b)
+            sortingFunction: function(a: {data: Unit;}, b: {data: Unit;})
             {
               return a.data.currentHealth - b.data.currentHealth;
             }

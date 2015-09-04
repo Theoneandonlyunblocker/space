@@ -24,7 +24,7 @@ module Rance
 
       render: function()
       {
-        var rows = [];
+        var rows: IListItem[] = [];
 
         for (var i = 0; i < this.props.items.length; i++)
         {
@@ -70,7 +70,7 @@ module Rance
           });
         }
 
-        var columns: any;
+        var columns: IListColumn[];
 
         if (this.props.isItemPurchaseList)
         {

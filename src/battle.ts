@@ -115,7 +115,7 @@ module Rance
       }
 
     }
-    forEachUnit(operator: (Unit) => any)
+    forEachUnit(operator: (unit: Unit) => any): void
     {
       for (var id in this.unitsById)
       {
@@ -515,9 +515,9 @@ module Rance
       var battleData = this.battleData;
 
 
-      function cloneUnits(units)
+      function cloneUnits(units: Unit[][]): Unit[][]
       {
-        var clones = [];
+        var clones: Unit[][] = [];
         for (var i = 0; i < units.length; i++)
         {
           var column: Unit[] = [];
@@ -555,7 +555,7 @@ module Rance
         side2Player: side2Player
       });
 
-      [side1, side2].forEach(function(side)
+      [side1, side2].forEach(function(side: Unit[][])
       {
         for (var i = 0; i < side.length; i++)
         {

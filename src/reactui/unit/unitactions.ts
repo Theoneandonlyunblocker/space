@@ -12,7 +12,7 @@ module Rance
         var availableSrc = "img\/icons\/availableAction.png";
         var spentSrc = "img\/icons\/spentAction.png";
 
-        var icons = [];
+        var icons: ReactDOMPlaceHolder[] = [];
 
         for (var i = 0; i < this.props.currentActionPoints; i++)
         {

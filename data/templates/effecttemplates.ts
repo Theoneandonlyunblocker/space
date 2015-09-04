@@ -40,7 +40,7 @@ module Rance
         targetFleets: "enemy",
         targetingFunction: targetSingle,
         targetRange: "all",
-        effect: function(user: Unit, target: Unit, data?: any)
+        effect: function(user: Unit, target: Unit, data: {baseDamage: number; damageType: number;})
         {
           var baseDamage = data.baseDamage;
           var damageType = data.damageType;
@@ -122,7 +122,7 @@ module Rance
         targetFleets: "all",
         targetingFunction: targetSingle,
         targetRange: "self",
-        effect: function(user: Unit, target: Unit, data?: any)
+        effect: function(user: Unit, target: Unit, data: {baseDamage: number; damageType: number;})
         {
           var counterStrength = target.getCounterAttackStrength();
           if (counterStrength)
@@ -141,7 +141,7 @@ module Rance
         targetFleets: "enemy",
         targetingFunction: targetSingle,
         targetRange: "all",
-        effect: function(user: Unit, target: Unit, data?: any)
+        effect: function(user: Unit, target: Unit, data: {flat?: number; multiplier?: number;})
         {
           if (!data) return;
           if (data.flat)
@@ -191,7 +191,8 @@ module Rance
         targetFleets: "ally",
         targetingFunction: targetSingle,
         targetRange: "all",
-        effect: function(user: Unit, target: Unit, data?)
+        effect: function(user: Unit, target: Unit, data:
+          {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
         {
           var healAmount = 0;
           if (data.flat)
@@ -217,7 +218,7 @@ module Rance
         targetFleets: "ally",
         targetingFunction: targetSingle,
         targetRange: "self",
-        effect: function(user: Unit, target: Unit, data?)
+        effect: function(user: Unit, target: Unit, data: {flat?: number; maxHealthPercentage?: number; perUserUnit?: number})
         {
           Templates.Effects.healTarget.effect(user, user, data);
         }

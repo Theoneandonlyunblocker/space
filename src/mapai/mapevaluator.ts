@@ -195,7 +195,7 @@ module Rance
     {
       var evaluation = 0;
 
-      var getDistanceFalloff = function(distance)
+      var getDistanceFalloff = function(distance: number)
       {
         return 1 / (distance + 1);
       }
@@ -650,7 +650,7 @@ module Rance
         [playerId: number]: number;
       } = {};
 
-      var min, max;
+      var min: number, max: number;
 
       for (var playerId in byPlayer)
       {

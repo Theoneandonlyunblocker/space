@@ -39,7 +39,7 @@ module Rance
       render: function()
       {
         var hasBackArrow = this.state.currentPage > 0;
-        var backElement;
+        var backElement: ReactDOMPlaceHolder;
         if (hasBackArrow)
         {
           backElement = React.DOM.div(
@@ -57,7 +57,7 @@ module Rance
         }
 
         var hasForwardArrow = this.state.currentPage < this.props.pages.length - 1;
-        var forwardElement;
+        var forwardElement: ReactDOMPlaceHolder;
         if (hasForwardArrow)
         {
           forwardElement = React.DOM.div(

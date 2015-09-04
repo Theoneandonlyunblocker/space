@@ -82,7 +82,7 @@ module Rance
             break;
           }
         }
-        var fleetInfos = [];
+        var fleetInfos: ReactComponentPlaceHolder[] = [];
 
         for (var i = 0; i < selectedFleets.length; i++)
         {
@@ -97,7 +97,7 @@ module Rance
           fleetInfos.push(UIComponents.FleetInfo(infoProps));
         }
 
-        var fleetSelectionControls = null;
+        var fleetSelectionControls: ReactDOMPlaceHolder = null;
 
         if (hasMultipleSelected)
         {
@@ -142,7 +142,7 @@ module Rance
           )
         }
 
-        var fleetContents = null;
+        var fleetContents: ReactComponentPlaceHolder = null;
 
         if (!hasMultipleSelected)
         {
@@ -153,7 +153,7 @@ module Rance
         }
 
         var isReorganizing = this.props.currentlyReorganizing.length > 0;
-        var reorganizeElement = null;
+        var reorganizeElement: ReactComponentPlaceHolder = null;
         if (isReorganizing)
         {
           reorganizeElement = UIComponents.FleetReorganization(

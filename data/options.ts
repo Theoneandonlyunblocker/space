@@ -18,7 +18,7 @@ module Rance
   {
     var baseString = "Rance.Options.";
 
-    var parsedData;
+    var parsedData: any;
     if (slot && localStorage[baseString + slot])
     {
       parsedData = JSON.parse(localStorage.getItem(baseString + slot));

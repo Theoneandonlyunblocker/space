@@ -16,7 +16,7 @@ module Rance
 
       render: function()
       {
-        var shipInfos = [];
+        var shipInfos: ReactComponentPlaceHolder[] = [];
 
         var hasDraggableContent =
         (

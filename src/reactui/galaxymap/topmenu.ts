@@ -84,7 +84,7 @@ module Rance
         var fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection-container")[0];
         if (fleetContainer)
         {
-          var fleetElementToCheckAgainst;
+          var fleetElementToCheckAgainst: HTMLElement;
           if (fleetContainer.classList.contains("reorganizing"))
           {
             fleetElementToCheckAgainst = <HTMLElement> document.getElementsByClassName(
@@ -409,7 +409,7 @@ module Rance
           }));
         }
 
-        var openedCondensedMenu = null;
+        var openedCondensedMenu: ReactDOMPlaceHolder = null;
         if ((this.state.condensedMenuOpened || Options.ui.noHamburger) && leftoverButtons.length > 0)
         {
           openedCondensedMenu = React.DOM.div(

@@ -26,7 +26,7 @@ module Rance
         });
       },
 
-      updateFromHsv: function(hue, sat, val, e?)
+      updateFromHsv: function(hue: number, sat: number, val: number, e?: Event)
       {
         var hsvColor = [hue, sat, val];
         var hexColor = Math.round(hsvToHex.apply(null, scalarsFromColor(hsvColor)));
@@ -42,11 +42,11 @@ module Rance
 
         if (this.props.onChange)
         {
+          var target = <HTMLInputElement> e.target;
           // prevent onchange events from constantly having to render custom image
-          // 
           if (!this.props.limitUpdates ||
             (!this.props.flagHasCustomImage ||
-            e.target.type !== "range" ||
+            target.type !== "range" ||
             e.type !== "input"))
           {
             this.props.onChange(hexColor, false);
@@ -69,19 +69,22 @@ module Rance
           this.props.onChange(hexColor, false);
         }
       },
-      setHex: function(e)
+      setHex: function(e: Event)
       {
         e.stopPropagation();
         e.preventDefault();
-        console.log(e.type);
-        var hexString;
+
+        var target = <HTMLInputElement> e.target;
+
+        var hexString: string;
         if (e.type === "paste")
         {
-          hexString = e.clipboardData.getData("text");
+          var e2 = <ClipboardEvent> e;
+          hexString = e2.clipboardData.getData("text");
         }
         else
         {
-          hexString = e.target.value;
+          hexString = target.value;
         }
 
         if (hexString[0] !== "#")
@@ -107,23 +110,26 @@ module Rance
         }
 
       },
-      setHue: function(e)
+      setHue: function(e: Event)
       {
-        var hue = Math.round(e.target.value % 361);
+        var target = <HTMLInputElement> e.target;
+        var hue = Math.round(parseInt(target.value) % 361);
         if (hue < 0) hue = 360;
         this.setState({hue: hue});
         this.updateFromHsv(hue, this.state.sat, this.state.val, e);
       },
-      setSat: function(e)
+      setSat: function(e: Event)
       {
-        var sat = Math.round(e.target.value % 101);
+        var target = <HTMLInputElement> e.target;
+        var sat = Math.round(parseInt(target.value) % 101);
         if (sat < 0) sat = 100;
         this.setState({sat: sat});
         this.updateFromHsv(this.state.hue, sat, this.state.val, e);
       },
-      setVal: function(e)
+      setVal: function(e: Event)
       {
-        var val = Math.round(e.target.value % 101);
+        var target = <HTMLInputElement> e.target;
+        var val = Math.round(parseInt(target.value) % 101);
         if (val < 0) val = 100;
         this.setState({val: val});
         this.updateFromHsv(this.state.hue, this.state.sat, val, e);

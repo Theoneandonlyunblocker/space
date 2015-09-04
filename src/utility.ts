@@ -2,11 +2,11 @@
 
 module Rance
 {
-  export function randInt(min, max)
+  export function randInt(min: number, max: number)
   {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
-  export function randRange(min, max)
+  export function randRange(min: number, max: number)
   {
     return Math.random() * (max - min) + min;
   }
@@ -19,7 +19,7 @@ module Rance
     var _rnd = Math.floor(Math.random() * (target.length));
     return target[_rnd];
   }
-  export function getRandomKey(target)
+  export function getRandomKey(target: {[props: string]: any;})
   {
     var _targetKeys = Object.keys(target);
     var _rnd = Math.floor(Math.random() * (_targetKeys.length));
@@ -41,14 +41,14 @@ module Rance
     });
   }
 
-  export function getRandomProperty(target)
+  export function getRandomProperty(target: {[props: string]: any;})
   {
     var _rndProp = target[getRandomKey(target)];
     return _rndProp;
   }
   export function getFrom2dArray(target: any[][], arr: number[][]): any[]
   {
-    var result = [];
+    var result: any[] = [];
     for (var i = 0; i < arr.length; i++)
     {
       if 
@@ -70,7 +70,7 @@ module Rance
   }
   export function flatten2dArray(toFlatten: any[][]): any[]
   {
-    var flattened = [];
+    var flattened: any[] = [];
     for (var i = 0; i < toFlatten.length; i++)
     {
       for (var j = 0; j < toFlatten[i].length; j++)
@@ -111,7 +111,7 @@ module Rance
       return a.id - b.id;
     }
   }
-  export function rectContains(rect, point)
+  export function rectContains(rect:{x1: number, x2: number, y1: number, y2: number}, point: Point)
   {
     var x = point.x;
     var y = point.y;
@@ -182,13 +182,14 @@ module Rance
 
     return to;
   }
-  export function recursiveRemoveAttribute(parent, attribute: string)
+  export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
   {
     parent.removeAttribute(attribute);
 
     for (var i = 0; i < parent.children.length; i++)
     {
-      recursiveRemoveAttribute(parent.children[i], attribute);
+      var child = <HTMLElement> parent.children[i];
+      recursiveRemoveAttribute(child, attribute);
     }
   }
 

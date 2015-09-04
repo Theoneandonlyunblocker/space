@@ -47,7 +47,7 @@ module Rance
       }
       var targets = getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
 
-      var actions = [];
+      var actions: IMove[] = [];
 
       for (var id in targets)
       {
@@ -171,7 +171,7 @@ module Rance
 
       return highest;
     }
-    getRecursiveBestUctChild()
+    getRecursiveBestUctChild(): MCTreeNode
     {
       if (!this.possibleMoves)
       {

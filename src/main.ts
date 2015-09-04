@@ -35,7 +35,7 @@ module Rance
 
   export class App
   {
-    seed: any;
+    seed: string;
     loader: AppLoader;
     renderer: Renderer;
     game: Game;
@@ -56,7 +56,7 @@ module Rance
     {
       var self = this;
 
-      this.seed = Math.random();
+      this.seed = "" + Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
 
       this.loader = new AppLoader(function()
@@ -183,7 +183,7 @@ module Rance
 
     makePlayers()
     {
-      var players = [];
+      var players: Player[] = [];
 
       for (var i = 0; i < 5; i++)
       {
@@ -202,7 +202,7 @@ module Rance
         independents: [pirates]
       });
     }
-    makeMap(playerData)
+    makeMap(playerData: {players: Player[], independents: Player[]})
     {
       var optionValues: Templates.MapGen.IMapGenOptionValues =
       {

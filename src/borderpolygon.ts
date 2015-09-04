@@ -10,7 +10,7 @@ module Rance
       halfEdge: any;
     }[] = [];
 
-    function getHalfEdgeOppositeSite(halfEdge)
+    function getHalfEdgeOppositeSite(halfEdge: any)
     {
       return halfEdge.edge.lSite === halfEdge.site ?
         halfEdge.edge.rSite : halfEdge.edge.lSite;
@@ -76,7 +76,7 @@ module Rance
     if (!star) throw new Error("Couldn't find starting location for border polygon");
 
     var hasProcessedStartEdge = false;
-    var contiguousEdge = null;
+    var contiguousEdge: any = null;
     // just a precaution to make sure we don't get into an infinite loop
     // should always return earlier unless somethings wrong
     for (var j = 0; j < stars.length * 20; j++)
@@ -154,7 +154,11 @@ module Rance
       }
     }
   }
-  export function convertHalfEdgeDataToOffset(halfEdgeData)
+  export function convertHalfEdgeDataToOffset(halfEdgeData:
+  {
+    star: Star;
+    halfEdge: any;
+  }[])
   {
     var convertedToPoints = halfEdgeData.map(function(data)
     {
@@ -197,7 +201,7 @@ module Rance
         {
           return b.owner === a.owner;
         });
-        var currentPolyLine = [];
+        var currentPolyLine: Point[] = [];
 
         var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
 

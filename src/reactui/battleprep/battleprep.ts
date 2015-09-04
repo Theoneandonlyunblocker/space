@@ -34,7 +34,7 @@ module Rance
         this.forceUpdate();
       },
 
-      handleSelectRow: function(row)
+      handleSelectRow: function(row: IListItem)
       {
         if (!row.data.unit) return;
 
@@ -65,7 +65,7 @@ module Rance
       },
 
 
-      handleMouseEnterUnit: function(unit)
+      handleMouseEnterUnit: function(unit: Unit)
       {
         this.setState(
         {
@@ -81,7 +81,7 @@ module Rance
         });
       },
 
-      handleDragStart: function(unit)
+      handleDragStart: function(unit: Unit)
       {
         this.setState(
         {
@@ -103,7 +103,7 @@ module Rance
 
         return dropSuccesful;
       },
-      handleDrop: function(position)
+      handleDrop: function(position: number[])
       {
         var battlePrep = this.props.battlePrep;
         if (this.state.currentDragUnit)
@@ -123,7 +123,7 @@ module Rance
         this.handleDragEnd(true);
       },
 
-      handleItemDragStart: function(item)
+      handleItemDragStart: function(item: Item)
       {
         this.setState(
         {
@@ -186,7 +186,7 @@ module Rance
       {
 
         // priority: hovered unit > selected unit > battle infd
-        var leftUpperElement;
+        var leftUpperElement: ReactComponentPlaceHolder;
 
         var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
         if (hoveredUnit)
@@ -223,7 +223,7 @@ module Rance
         }
 
 
-        var leftLowerElement;
+        var leftLowerElement: ReactComponentPlaceHolder;
         switch (this.state.leftLowerElement)
         {
           case "playerFleet":

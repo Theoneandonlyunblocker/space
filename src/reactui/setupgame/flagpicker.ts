@@ -7,7 +7,7 @@ module Rance
       displayName: "FlagPicker",
       getInitialState: function()
       {
-        var initialEmblem = null;
+        var initialEmblem: Templates.ISubEmblemTemplate = null;
         if (this.props.flag.foregroundEmblem)
         {
           initialEmblem = this.props.flag.foregroundEmblem.inner;
@@ -35,7 +35,7 @@ module Rance
         this.handleSelectEmblem(null);
       },
 
-      handleUpload: function(e)
+      handleUpload: function()
       {
         if (!this.props.uploadFiles) throw new Error();
 
@@ -89,7 +89,7 @@ module Rance
         emblems.push(this.makeEmblemElement(pirateTemplate));
 
 
-        var imageInfoMessage;
+        var imageInfoMessage: ReactDOMPlaceHolder;
         if (this.props.hasImageFailMessage)
         {
           imageInfoMessage =

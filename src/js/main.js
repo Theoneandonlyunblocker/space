@@ -109,14 +109,12 @@ var Rance;
                 return (React.DOM.div(containerProps, React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)), React.DOM.span({ className: "unit-strength-max" }, "/" + this.props.maxHealth)));
             },
             render: function () {
-                var toRender;
                 if (this.props.isSquadron) {
-                    toRender = this.makeSquadronInfo();
+                    return this.makeSquadronInfo();
                 }
                 else {
-                    toRender = this.makeCapitalInfo();
+                    return this.makeCapitalInfo();
                 }
-                return (toRender);
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -335,15 +333,17 @@ var Rance;
                 if (this.state.dragging)
                     return;
                 var clientRect = this.getDOMNode().getBoundingClientRect();
-                var e;
-                if (isFinite(e.clientX)) {
-                    e = e;
-                }
-                else {
-                    e = e.touches[0];
-                    this.needsFirstTouchUpdate = true;
-                    this.touchEventTarget = e.target;
-                }
+                // var e;
+                // if (isFinite(e.clientX))
+                // {
+                //   e = e;
+                // }
+                // else
+                // {
+                //   e = e.touches[0];
+                //   this.needsFirstTouchUpdate = true;
+                //   this.touchEventTarget = e.target;
+                // }
                 this.addEventListeners();
                 var dragOffset = this.props.forcedDragOffset || this.forcedDragOffset ||
                     {
@@ -369,7 +369,7 @@ var Rance;
             handleMouseMove: function (e) {
                 if (e.preventDefault)
                     e.preventDefault();
-                var e = e.clientX ? e : e.touches[0];
+                // var e = e.clientX ? e : e.touches[0];
                 if (e.clientX === 0 && e.clientY === 0)
                     return;
                 if (!this.state.dragging) {
@@ -457,15 +457,17 @@ var Rance;
                 }
             },
             handleMouseUp: function (e) {
-                if (this.touchEventTarget) {
-                    var touch = e.changedTouches[0];
-                    var dropTarget = Rance.getDropTargetAtLocation(touch.clientX, touch.clientY);
-                    console.log(dropTarget);
-                    if (dropTarget) {
-                        var reactid = dropTarget.getAttribute("data-reactid");
-                        Rance.eventManager.dispatchEvent("drop" + reactid);
-                    }
-                }
+                // if (this.touchEventTarget)
+                // {
+                //   var touch = e.changedTouches[0];
+                //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
+                //   console.log(dropTarget);
+                //   if (dropTarget)
+                //   {
+                //     var reactid = dropTarget.getAttribute("data-reactid");
+                //     eventManager.dispatchEvent("drop" + reactid);
+                //   }
+                // }
                 if (this.isMounted()) {
                     this.setState({
                         mouseDown: false,
@@ -556,16 +558,16 @@ var Rance;
                     popupElement: null
                 });
             },
-            onDragStart: function (e) {
+            onDragStart: function () {
                 this.props.onDragStart(this.props.unit);
             },
-            onDragEnd: function (e) {
+            onDragEnd: function () {
                 this.props.onDragEnd();
             },
-            handleClick: function (e) {
+            handleClick: function () {
                 this.props.onUnitClick(this.props.unit);
             },
-            handleMouseEnter: function (e) {
+            handleMouseEnter: function () {
                 if (!this.props.handleMouseEnterUnit)
                     return;
                 if (this.props.unit.currentHealth <= 0)
@@ -1551,7 +1553,8 @@ var Rance;
                 this.tempHoveredUnit = null;
                 if (!this.state.hoveredUnit || this.state.playingBattleEffect)
                     return;
-                var toElement = e.nativeEvent.toElement || e.nativeEvent.relatedTarget;
+                var nativeEvent = e.nativeEvent;
+                var toElement = nativeEvent.toElement || nativeEvent.relatedTarget;
                 if (!toElement) {
                     this.clearHoveredUnit();
                     return;
@@ -1956,9 +1959,10 @@ var Rance;
             },
             handleScroll: function (e) {
                 // scrolls header to match list contents
+                var target = e.target;
                 var header = this.refs.header.getDOMNode();
                 var titles = header.getElementsByClassName("fixed-table-th-inner");
-                var marginString = "-" + e.target.scrollLeft + "px";
+                var marginString = "-" + target.scrollLeft + "px";
                 for (var i = 0; i < titles.length; i++) {
                     titles[i].style.marginLeft = marginString;
                 }
@@ -2077,7 +2081,7 @@ var Rance;
                         colProps = self.props.colStylingFN(column, colProps);
                     }
                     columns.push(React.DOM.col(colProps));
-                    var sortStatus = null;
+                    var sortStatus = "";
                     if (!column.notSortable)
                         sortStatus = " sortable";
                     if (self.state.selectedColumn.key === column.key) {
@@ -2150,7 +2154,7 @@ var Rance;
                     this.needsFirstTouchUpdate = false;
                 }
             },
-            onDragStart: function (e) {
+            onDragStart: function () {
                 this.props.onDragStart(this.props.unit);
             },
             onDragMove: function (x, y) {
@@ -2170,13 +2174,13 @@ var Rance;
                         y: container.offsetHeight / 2
                     };
             },
-            onDragEnd: function (e) {
+            onDragEnd: function () {
                 this.props.onDragEnd();
             },
-            handleMouseEnter: function (e) {
+            handleMouseEnter: function () {
                 this.props.onMouseEnter(this.props.unit);
             },
-            handleMouseLeave: function (e) {
+            handleMouseLeave: function () {
                 this.props.onMouseLeave();
             },
             makeCell: function (type) {
@@ -2278,7 +2282,7 @@ var Rance;
                         unit: unit,
                         id: unit.id,
                         name: unit.name,
-                        typeName: unit.template.typeName,
+                        typeName: unit.template.displayName,
                         strength: "" + unit.currentHealth + " / " + unit.maxHealth,
                         currentHealth: unit.currentHealth,
                         maxHealth: unit.maxHealth,
@@ -2367,11 +2371,11 @@ var Rance;
         UIComponents.ItemListItem = React.createClass({
             displayName: "ItemListItem",
             mixins: [UIComponents.Draggable],
-            onDragStart: function (e) {
+            onDragStart: function () {
                 console.log("onDragStart", this.props.item.template.displayName);
                 this.props.onDragStart(this.props.item);
             },
-            onDragEnd: function (e) {
+            onDragEnd: function () {
                 this.props.onDragEnd();
             },
             makeCell: function (type) {
@@ -2642,10 +2646,10 @@ var Rance;
         UIComponents.UnitItem = React.createClass({
             displayName: "UnitItem",
             mixins: [UIComponents.Draggable],
-            onDragStart: function (e) {
+            onDragStart: function () {
                 this.props.onDragStart(this.props.item);
             },
-            onDragEnd: function (e) {
+            onDragEnd: function () {
                 this.props.onDragEnd();
             },
             // todo
@@ -2704,7 +2708,6 @@ var Rance;
                 this.props.onMouseUp(this.props.slot);
             },
             render: function () {
-                var allElements = [];
                 var item = this.props.item;
                 var wrapperProps = {
                     className: "unit-item-wrapper"
@@ -3939,7 +3942,8 @@ var Rance;
                 // https://github.com/facebook/react/issues/2988
                 // https://github.com/facebook/react/issues/2605#issuecomment-118398797
                 // without this react will keep a reference to this element causing a big memory leak
-                e.target.blur();
+                var target = e.target;
+                target.blur();
                 window.setTimeout(function () {
                     app.load(saveName);
                 }, 0);
@@ -4658,11 +4662,12 @@ var Rance;
                     return;
                 }
                 var onChangeFN = function (e) {
-                    var value = parseFloat(e.target.value);
+                    var target = e.target;
+                    var value = parseFloat(target.value);
                     if (!isFinite(value)) {
                         return;
                     }
-                    value = Rance.clamp(value, e.target.min, e.target.max);
+                    value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
                     Rance.Options.battleAnimationTiming[stage] = value;
                     this.forceUpdate();
                 }.bind(this);
@@ -4743,11 +4748,12 @@ var Rance;
                             max: 500,
                             step: 1,
                             onChange: function (e) {
-                                var value = parseInt(e.target.value);
+                                var target = e.target;
+                                var value = parseInt(target.value);
                                 if (!isFinite(value)) {
                                     return;
                                 }
-                                value = Rance.clamp(value, e.target.min, e.target.max);
+                                value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
                                 Rance.Options.debugOptions.battleSimulationDepth = value;
                                 this.forceUpdate();
                             }.bind(this)
@@ -5242,8 +5248,9 @@ var Rance;
         UIComponents.FleetInfo = React.createClass({
             displayName: "FleetInfo",
             setFleetName: function (e) {
-                console.log("setFleetName", e.target.value);
-                this.props.fleet.name = e.target.value;
+                var target = e.target;
+                console.log("setFleetName", target.value);
+                this.props.fleet.name = target.value;
                 this.forceUpdate();
             },
             render: function () {
@@ -5300,8 +5307,9 @@ var Rance;
                 });
             },
             onChange: function (e) {
-                this.setState({ value: e.target.value });
-                this.props.unit.name = e.target.value;
+                var target = e.target;
+                this.setState({ value: target.value });
+                this.props.unit.name = target.value;
             },
             render: function () {
                 return (React.DOM.input({
@@ -5322,7 +5330,7 @@ var Rance;
         UIComponents.ShipInfo = React.createClass({
             displayName: "ShipInfo",
             mixins: [UIComponents.Draggable],
-            onDragStart: function (e) {
+            onDragStart: function () {
                 this.props.onDragStart(this.props.ship);
             },
             onDragEnd: function (e) {
@@ -5353,7 +5361,7 @@ var Rance;
                     unit: ship
                 }), React.DOM.div({
                     className: "ship-info-type"
-                }, ship.template.typeName)), UIComponents.UnitStrength({
+                }, ship.template.displayName)), UIComponents.UnitStrength({
                     maxHealth: ship.maxHealth,
                     currentHealth: ship.currentHealth,
                     isSquadron: true
@@ -5944,7 +5952,8 @@ var Rance;
     function recursiveRemoveAttribute(parent, attribute) {
         parent.removeAttribute(attribute);
         for (var i = 0; i < parent.children.length; i++) {
-            recursiveRemoveAttribute(parent.children[i], attribute);
+            var child = parent.children[i];
+            recursiveRemoveAttribute(child, attribute);
         }
     }
     Rance.recursiveRemoveAttribute = recursiveRemoveAttribute;
@@ -6056,53 +6065,47 @@ var Rance;
 /// <reference path="unit.ts"/>
 var Rance;
 (function (Rance) {
-    Rance.targetSingle = function (fleets, target) {
-        return Rance.getFrom2dArray(fleets, [target]);
+    Rance.targetSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
     };
-    Rance.targetAll = function (fleets, target) {
-        var allTargets = [];
-        for (var i = 0; i < fleets.length; i++) {
-            for (var j = 0; j < fleets[i].length; j++) {
-                allTargets.push(fleets[i][j]);
-            }
-        }
-        return allTargets;
+    Rance.targetAll = function (units, target) {
+        return Rance.flatten2dArray(units);
     };
-    Rance.targetRow = function (fleets, target) {
+    Rance.targetRow = function (units, target) {
         var y = target[1];
-        var allTargets = [];
-        for (var i = 0; i < fleets.length; i++) {
-            allTargets.push([i, y]);
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
         }
-        return Rance.getFrom2dArray(fleets, allTargets);
+        return Rance.getFrom2dArray(units, targetLocations);
     };
-    Rance.targetColumn = function (fleets, target) {
+    Rance.targetColumn = function (units, target) {
         var x = target[0];
-        var allTargets = [];
-        for (var i = 0; i < fleets[x].length; i++) {
-            allTargets.push([x, i]);
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
         }
-        return Rance.getFrom2dArray(fleets, allTargets);
+        return Rance.getFrom2dArray(units, targetLocations);
     };
-    Rance.targetColumnNeighbors = function (fleets, target) {
+    Rance.targetColumnNeighbors = function (units, target) {
         var x = target[0];
         var y = target[1];
-        var allTargets = [];
-        allTargets.push([x, y]);
-        allTargets.push([x, y - 1]);
-        allTargets.push([x, y + 1]);
-        return Rance.getFrom2dArray(fleets, allTargets);
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
     };
-    Rance.targetNeighbors = function (fleets, target) {
+    Rance.targetNeighbors = function (units, target) {
         var x = target[0];
         var y = target[1];
-        var allTargets = [];
-        allTargets.push([x, y]);
-        allTargets.push([x - 1, y]);
-        allTargets.push([x + 1, y]);
-        allTargets.push([x, y - 1]);
-        allTargets.push([x, y + 1]);
-        return Rance.getFrom2dArray(fleets, allTargets);
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
     };
 })(Rance || (Rance = {}));
 var Rance;
@@ -6681,7 +6684,7 @@ var Rance;
         (function (ShipTypes) {
             ShipTypes.cheatShip = {
                 type: "cheatShip",
-                typeName: "Debug Ship",
+                displayName: "Debug Ship",
                 archetype: "combat",
                 sprite: {
                     imageSrc: "cheatShip.png",
@@ -6714,7 +6717,7 @@ var Rance;
             };
             ShipTypes.fighterSquadron = {
                 type: "fighterSquadron",
-                typeName: "Fighter Squadron",
+                displayName: "Fighter Squadron",
                 archetype: "combat",
                 sprite: {
                     imageSrc: "fighter.png",
@@ -6739,7 +6742,7 @@ var Rance;
             };
             ShipTypes.bomberSquadron = {
                 type: "bomberSquadron",
-                typeName: "Bomber Squadron",
+                displayName: "Bomber Squadron",
                 archetype: "combat",
                 sprite: {
                     imageSrc: "bomber.png",
@@ -6764,7 +6767,7 @@ var Rance;
             };
             ShipTypes.battleCruiser = {
                 type: "battleCruiser",
-                typeName: "Battlecruiser",
+                displayName: "Battlecruiser",
                 archetype: "combat",
                 sprite: {
                     imageSrc: "battleCruiser.png",
@@ -6789,7 +6792,7 @@ var Rance;
             };
             ShipTypes.scout = {
                 type: "scout",
-                typeName: "Scout",
+                displayName: "Scout",
                 archetype: "utility",
                 sprite: {
                     imageSrc: "scout.png",
@@ -6813,7 +6816,7 @@ var Rance;
             };
             ShipTypes.shieldBoat = {
                 type: "shieldBoat",
-                typeName: "Shield Boat",
+                displayName: "Shield Boat",
                 archetype: "defence",
                 sprite: {
                     imageSrc: "shieldBoat.png",
@@ -7000,7 +7003,8 @@ var Rance;
                 upgrades.push({
                     template: this.template,
                     level: this.upgradeLevel + 1,
-                    cost: this.template.buildCost * (this.upgradeLevel + 1)
+                    cost: this.template.buildCost * (this.upgradeLevel + 1),
+                    parentBuilding: this
                 });
             }
             else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
@@ -7009,7 +7013,8 @@ var Rance;
                     return ({
                         level: upgradeData.level,
                         template: template,
-                        cost: template.buildCost
+                        cost: template.buildCost,
+                        parentBuilding: this
                     });
                 });
                 upgrades = upgrades.concat(templatedUpgrades);
@@ -7295,7 +7300,7 @@ var Rance;
         };
         Star.prototype.updateController = function () {
             if (!this.buildings["defence"])
-                return null;
+                return;
             var oldOwner = this.owner;
             var newOwner = this.buildings["defence"][0].controller;
             if (oldOwner) {
@@ -7392,9 +7397,6 @@ var Rance;
                 var building = ownerBuildings[i];
                 var upgrades = building.getPossibleUpgrades();
                 if (upgrades && upgrades.length > 0) {
-                    for (var j = 0; j < upgrades.length; j++) {
-                        upgrades[j].parentBuilding = building;
-                    }
                     allUpgrades[building.id] = upgrades;
                 }
             }
@@ -10835,13 +10837,12 @@ objectives:
 var Rance;
 (function (Rance) {
     var Objective = (function () {
-        function Objective(type, priority, target, data) {
+        function Objective(type, priority, target) {
             this.isOngoing = false; // used to slightly prioritize old objectives
             this.id = Rance.idGenerators.objective++;
             this.type = type;
             this.priority = priority;
             this.target = target;
-            this.data = data;
         }
         Object.defineProperty(Objective.prototype, "priority", {
             get: function () {
@@ -10930,7 +10931,7 @@ var Rance;
                     objectivesByTarget[star.id].priority = priority;
                 }
                 else {
-                    objectivesByTarget[star.id] = new Rance.Objective(objectiveType, priority, star, evaluationScores[i]);
+                    objectivesByTarget[star.id] = new Rance.Objective(objectiveType, priority, star);
                 }
                 allObjectives.push(objectivesByTarget[star.id]);
                 this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
@@ -12829,7 +12830,7 @@ var Rance;
             this.uiDisplayIsDirty = true;
             this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
             this.template = template;
-            this.name = this.id + " " + template.typeName;
+            this.name = this.id + " " + template.displayName;
             this.isSquadron = template.isSquadron;
             if (data) {
                 this.makeFromData(data);
@@ -13526,7 +13527,7 @@ var Rance;
                     var template = this.state.shipTemplates[i];
                     var data = {
                         template: template,
-                        typeName: template.typeName,
+                        typeName: template.displayName,
                         buildCost: template.buildCost,
                         player: this.props.player,
                         rowConstructor: UIComponents.BuildableShip
@@ -13997,11 +13998,11 @@ var Rance;
                     isNull: false
                 });
                 if (this.props.onChange) {
+                    var target = e.target;
                     // prevent onchange events from constantly having to render custom image
-                    // 
                     if (!this.props.limitUpdates ||
                         (!this.props.flagHasCustomImage ||
-                            e.target.type !== "range" ||
+                            target.type !== "range" ||
                             e.type !== "input")) {
                         this.props.onChange(hexColor, false);
                     }
@@ -14021,13 +14022,14 @@ var Rance;
             setHex: function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                console.log(e.type);
+                var target = e.target;
                 var hexString;
                 if (e.type === "paste") {
-                    hexString = e.clipboardData.getData("text");
+                    var e2 = e;
+                    hexString = e2.clipboardData.getData("text");
                 }
                 else {
-                    hexString = e.target.value;
+                    hexString = target.value;
                 }
                 if (hexString[0] !== "#") {
                     hexString = "#" + hexString;
@@ -14045,21 +14047,24 @@ var Rance;
                 }
             },
             setHue: function (e) {
-                var hue = Math.round(e.target.value % 361);
+                var target = e.target;
+                var hue = Math.round(parseInt(target.value) % 361);
                 if (hue < 0)
                     hue = 360;
                 this.setState({ hue: hue });
                 this.updateFromHsv(hue, this.state.sat, this.state.val, e);
             },
             setSat: function (e) {
-                var sat = Math.round(e.target.value % 101);
+                var target = e.target;
+                var sat = Math.round(parseInt(target.value) % 101);
                 if (sat < 0)
                     sat = 100;
                 this.setState({ sat: sat });
                 this.updateFromHsv(this.state.hue, sat, this.state.val, e);
             },
             setVal: function (e) {
-                var val = Math.round(e.target.value % 101);
+                var target = e.target;
+                var val = Math.round(parseInt(target.value) % 101);
                 if (val < 0)
                     val = 100;
                 this.setState({ val: val });
@@ -14331,7 +14336,7 @@ var Rance;
             clearSelectedEmblem: function () {
                 this.handleSelectEmblem(null);
             },
-            handleUpload: function (e) {
+            handleUpload: function () {
                 if (!this.props.uploadFiles)
                     throw new Error();
                 var files = this.refs.imageUploader.getDOMNode().files;
@@ -14421,7 +14426,7 @@ var Rance;
                 document.removeEventListener("click", this.handleClick);
                 this.clearFocusTimerListener();
             },
-            displayImageLoadingFailMessage: function (error) {
+            displayImageLoadingFailMessage: function () {
                 this.setState({ hasImageFailMessage: true });
                 this.imageLoadingFailTimeout = window.setTimeout(function () {
                     this.setState({ hasImageFailMessage: false });
@@ -14509,7 +14514,7 @@ var Rance;
                                 this.handleUpdate();
                             }.bind(this);
                             img.onerror = function (e) {
-                                this.displayImageLoadingFailMessage(e);
+                                this.displayImageLoadingFailMessage();
                             }.bind(this);
                             img.src = imageSource;
                             // image was cached
@@ -14655,11 +14660,12 @@ var Rance;
                     return Rance.generateSecondaryColor(mainColor);
                 }
             },
-            handleSetHuman: function (e) {
+            handleSetHuman: function () {
                 this.props.setHuman(this.props.key);
             },
             handleNameChange: function (e) {
-                this.setState({ name: e.target.value });
+                var target = e.target;
+                this.setState({ name: target.value });
             },
             setMainColor: function (color, isNull) {
                 this.setState({ mainColor: isNull ? null : color });
@@ -15552,8 +15558,9 @@ var Rance;
         UIComponents.MapGenOption = React.createClass({
             displayName: "MapGenOption",
             handleChange: function (e) {
+                var target = e.target;
                 var option = this.props.option;
-                var newValue = Rance.clamp(parseFloat(e.target.value), option.min, option.max);
+                var newValue = Rance.clamp(parseFloat(target.value), option.min, option.max);
                 this.props.onChange(this.props.id, newValue);
             },
             shouldComponentUpdate: function (newProps) {
@@ -15788,8 +15795,9 @@ var Rance;
                 });
             },
             setTemplate: function (e) {
+                var target = e.target;
                 this.setState({
-                    selectedTemplate: Rance.Templates.MapGen[e.target.value]
+                    selectedTemplate: Rance.Templates.MapGen[target.value]
                 }, this.updatePlayerLimits);
             },
             getMapSetupInfo: function () {
@@ -15912,7 +15920,7 @@ var Rance;
                     var hslString = hsl.map(function (v) { return v.toFixed(); });
                     return hslString.join(", ");
                 }
-                window.setTimeout(function (e) {
+                window.setTimeout(function () {
                     for (var i = 0; i < flags.length; i++) {
                         var canvas = flags[i].draw();
                         parent.appendChild(canvas);
@@ -16733,7 +16741,8 @@ var Rance;
                             gfx.on("mousedown", mouseDownFN);
                             gfx.on("mouseup", mouseUpFN);
                             var gfxClickFN = function (event) {
-                                if (event.originalEvent.button)
+                                var originalEvent = event.data.originalEvent;
+                                if (originalEvent.button)
                                     return;
                                 onClickFN(this.star);
                             }.bind(gfx);
@@ -17659,19 +17668,19 @@ var Rance;
                     return;
             });
             this.listeners["mouseDown"] = Rance.eventManager.addEventListener("mouseDown", function (e) {
-                self.mouseDown(e.content, "world");
+                self.mouseDown(e, "world");
             });
             this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
-                self.mouseUp(e.content, "world");
+                self.mouseUp(e, "world");
             });
             this.listeners["touchStart"] = Rance.eventManager.addEventListener("touchStart", function (e) {
-                self.touchStart(e.content, "world");
+                self.touchStart(e, "world");
             });
             this.listeners["touchEnd"] = Rance.eventManager.addEventListener("touchEnd", function (e) {
-                self.touchEnd(e.content, "world");
+                self.touchEnd(e, "world");
             });
-            this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (e) {
-                self.setHoveredStar(e.content);
+            this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (star) {
+                self.setHoveredStar(star);
             });
             this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function (e) {
                 self.clearHoveredStar();
@@ -19162,7 +19171,7 @@ var Rance;
     var App = (function () {
         function App() {
             var self = this;
-            this.seed = Math.random();
+            this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             this.loader = new Rance.AppLoader(function () {
                 self.makeApp();

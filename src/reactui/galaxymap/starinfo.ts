@@ -12,7 +12,7 @@ module Rance
         var star: Star = this.props.selectedStar;
         if (!star) return null;
 
-        var dumpDebugInfoButton = null;
+        var dumpDebugInfoButton: ReactDOMPlaceHolder = null;
 
         if (Options.debugMode)
         {

@@ -44,7 +44,7 @@ module Rance
     }
     printToConsole(nodes: MCTreeNode[])
     {
-      var consoleRows = [];
+      var consoleRows: any[] = [];
       for (var i = 0; i < nodes.length; i++)
       {
         var node = nodes[i];

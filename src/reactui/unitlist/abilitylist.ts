@@ -7,7 +7,7 @@ module Rance
       displayName: "AbilityList",
       render: function()
       {
-        var abilities = [];
+        var abilities: Templates.IAbilityTemplate[] = [];
         var baseClassName = "unit-info-ability";
 
         if (this.props.listPassiveSkills)
@@ -23,7 +23,7 @@ module Rance
         if (abilities.length < 1) return null;
 
 
-        var abilityElements = [];
+        var abilityElements: ReactDOMPlaceHolder[] = [];
         var addedAbilityTypes:
         {
           [abilityType: string]: number;

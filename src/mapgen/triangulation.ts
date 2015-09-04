@@ -69,16 +69,16 @@ module Rance
 
     export function getCentroid(vertices: Point[]): Point
     {
-      var signedArea = 0;
-      var x = 0;
-      var y = 0;
-      var x0; // Current vertex X
-      var y0; // Current vertex Y
-      var x1; // Next vertex X
-      var y1; // Next vertex Y
-      var a;  // Partial signed area
+      var signedArea: number = 0;
+      var x: number = 0;
+      var y: number = 0;
+      var x0: number; // Current vertex X
+      var y0: number; // Current vertex Y
+      var x1: number; // Next vertex X
+      var y1: number; // Next vertex Y
+      var a: number;  // Partial signed area
 
-      var i = 0;
+      var i: number = 0;
 
       for (i = 0; i < vertices.length - 1; i++)
       {
@@ -114,7 +114,7 @@ module Rance
 
     function makeSuperTriangle(vertices: Point[], highestCoordinateValue?: number)
     {
-      var max;
+      var max: number;
 
       if (highestCoordinateValue)
       {

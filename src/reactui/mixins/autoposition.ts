@@ -18,7 +18,7 @@ module Rance
           this.setAutoPosition();
         }
       },
-      flipSide: function(side)
+      flipSide: function(side: string)
       {
         switch (side)
         {
@@ -44,7 +44,7 @@ module Rance
           }
         }
       },
-      elementFitsYSide: function(side, ownRect, parentRect)
+      elementFitsYSide: function(side: string, ownRect: ClientRect, parentRect: ClientRect)
       {
         switch (side)
         {
@@ -62,7 +62,7 @@ module Rance
           }
         }
       },
-      elementFitsXSide: function(side, ownRect, parentRect)
+      elementFitsXSide: function(side: string, ownRect: ClientRect, parentRect: ClientRect)
       {
         switch (side)
         {
@@ -110,8 +110,8 @@ module Rance
         {
           xSide = this.flipSide(xSide);
         }
-        var top = null;
-        var left = null;
+        var top: number = null;
+        var left: number = null;
 
         if (ySide === "top")
         {

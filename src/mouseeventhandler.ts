@@ -81,32 +81,38 @@ module Rance
         if (e.target.localName !== "canvas") return;
       });
 
-      this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown", function(e)
-      {
-        self.mouseDown(e.content, "world");
-      });
-      this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp", function(e)
-      {
-        self.mouseUp(e.content, "world");
-      });
+      this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown",
+        function(e: PIXI.interaction.InteractionEvent)
+        {
+          self.mouseDown(e, "world");
+        });
+      this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp",
+        function(e: PIXI.interaction.InteractionEvent)
+        {
+          self.mouseUp(e, "world");
+        });
 
-      this.listeners["touchStart"] = eventManager.addEventListener("touchStart", function(e)
-      {
-        self.touchStart(e.content, "world");
-      });
-      this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd", function(e)
-      {
-        self.touchEnd(e.content, "world");
-      });
+      this.listeners["touchStart"] = eventManager.addEventListener("touchStart",
+        function(e: PIXI.interaction.InteractionEvent)
+        {
+          self.touchStart(e, "world");
+        });
+      this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd",
+        function(e: PIXI.interaction.InteractionEvent)
+        {
+          self.touchEnd(e, "world");
+        });
 
-      this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar", function(e)
-      {
-        self.setHoveredStar(e.content);
-      });
-      this.listeners["clearHover"] = eventManager.addEventListener("clearHover", function(e)
-      {
-        self.clearHoveredStar();
-      });
+      this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar",
+        function(star: Star)
+        {
+          self.setHoveredStar(star);
+        });
+      this.listeners["clearHover"] = eventManager.addEventListener("clearHover",
+        function(e: PIXI.interaction.InteractionEvent)
+        {
+          self.clearHoveredStar();
+        });
     }
     preventGhost(delay: number, type: string)
     {

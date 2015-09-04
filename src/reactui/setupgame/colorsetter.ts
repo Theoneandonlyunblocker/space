@@ -39,7 +39,7 @@ module Rance
         }
       },
 
-      handleClick: function(e)
+      handleClick: function(e: MouseEvent)
       {
         var focusGraceTime = 500;
         if (Date.now() - this.lastFocusTime <= focusGraceTime) return;

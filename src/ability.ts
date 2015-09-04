@@ -7,19 +7,20 @@
 
 module Rance
 {
+  export interface IAbilityUseDataEffect
+  {
+    effects: {(): void;}[];
+    user: Unit;
+    target: Unit;
+    sfx: Templates.IBattleEffectSFX;
+  }
   export interface IAbilityUseData
   {
     user: Unit;
     originalTarget: Unit;
     actualTarget: Unit;
     beforeUse: {(): void;}[];
-    effectsToCall:
-    {
-      effects: {(): void;}[];
-      user: Unit;
-      target: Unit;
-      sfx: Templates.IBattleEffectSFX;
-    }[];
+    effectsToCall: IAbilityUseDataEffect[];
     afterUse: {(): void;}[];
   }
   export function getAbilityUseData(battle: Battle, user: Unit,
@@ -96,7 +97,7 @@ module Rance
         var effectTarget = targetsInArea[j];
 
         var boundEffects = [effect.template.effect.bind(null, user, effectTarget, effect.data)];
-        var attachedEffectsToAddAfter = [];
+        var attachedEffectsToAddAfter: IAbilityUseDataEffect[] = [];
 
 
         if (effect.attachedEffects)
@@ -307,13 +308,13 @@ module Rance
   export function getFleetsToTarget(battle: Battle, user: Unit,
     effect: Templates.IEffectTemplate): Unit[][]
   {
-    var nullFleet =
+    var nullFleet: Unit[][] =
     [
       [null, null, null, null],
       [null, null, null, null]
     ];
-    var insertNullBefore;
-    var toConcat;
+    var insertNullBefore: boolean;
+    var toConcat: Unit[][];
 
     switch (effect.targetFleets)
     {
@@ -348,7 +349,7 @@ module Rance
     ability: Templates.IAbilityTemplate): number[][]
   {
     var targets = getPotentialTargets(battle, user, ability);
-    var targetPositions = [];
+    var targetPositions: number[][] = [];
 
     for (var i = 0; i < targets.length; i++)
     {

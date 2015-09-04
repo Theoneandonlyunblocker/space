@@ -92,7 +92,7 @@ module Rance
         buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
       }
 
-      var unitType;
+      var unitType: Templates.IUnitTemplate;
 
       for (var i = 0; i < sortedScores.length; i++)
       {

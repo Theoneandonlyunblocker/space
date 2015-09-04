@@ -10,11 +10,11 @@ module Rance
       displayName: "ShipInfo",
       mixins: [Draggable],
 
-      onDragStart: function(e)
+      onDragStart: function()
       {
         this.props.onDragStart(this.props.ship);
       },
-      onDragEnd: function(e)
+      onDragEnd: function(e: DragEvent)
       {
         this.props.onDragEnd(e)
       },
@@ -65,7 +65,7 @@ module Rance
               {
                 className: "ship-info-type"
               },
-                ship.template.typeName
+                ship.template.displayName
               )
             ),
             UIComponents.UnitStrength(

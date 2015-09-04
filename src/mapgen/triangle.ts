@@ -38,10 +38,10 @@ module Rance
         var pB = this.b;
         var pC = this.c;
 
-        var m1, m2;
-        var mx1, mx2;
-        var my1, my2;
-        var cX, cY;
+        var m1: number, m2: number;
+        var mx1: number, mx2: number;
+        var my1: number, my2: number;
+        var cX: number, cY: number;
 
         if (Math.abs(pB.y - pA.y) < tolerance)
         {

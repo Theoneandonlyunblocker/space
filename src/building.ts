@@ -5,6 +5,13 @@
 
 module Rance
 {
+  export interface IBuildingUpgradeData
+  {
+    template: Templates.IBuildingTemplate;
+    level: number;
+    cost: number;
+    parentBuilding: Building;
+  }
   export class Building
   {
     template: Templates.IBuildingTemplate;
@@ -39,12 +46,7 @@ module Rance
     }
     getPossibleUpgrades()
     {
-      var upgrades:
-      {
-        template: Templates.IBuildingTemplate;
-        level: number;
-        cost: number;
-      }[] = [];
+      var upgrades: IBuildingUpgradeData[] = [];
 
       if (this.upgradeLevel < this.template.maxUpgradeLevel)
       {
@@ -52,7 +54,8 @@ module Rance
         {
           template: this.template,
           level: this.upgradeLevel + 1,
-          cost: this.template.buildCost * (this.upgradeLevel + 1)
+          cost: this.template.buildCost * (this.upgradeLevel + 1),
+          parentBuilding: this
         });
       }
       else if (this.template.upgradeInto && this.template.upgradeInto.length > 0)
@@ -64,7 +67,8 @@ module Rance
           {
             level: upgradeData.level,
             template: template,
-            cost: template.buildCost
+            cost: template.buildCost,
+            parentBuilding: this
           });
         });
 

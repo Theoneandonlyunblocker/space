@@ -24,7 +24,7 @@ module Rance
       {
         var abilities = this.props.activeTargets[this.props.targetUnit.id];
 
-        var abilityElements = [];
+        var abilityElements: ReactComponentPlaceHolder[] = [];
 
         var containerProps: any =
         {

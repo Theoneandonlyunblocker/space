@@ -15,7 +15,7 @@ module Rance
         });
       },
 
-      handleDragStart: function(unit)
+      handleDragStart: function(unit: Unit)
       {
         this.setState(
         {

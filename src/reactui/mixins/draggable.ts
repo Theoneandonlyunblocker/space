@@ -34,11 +34,11 @@ module Rance
             x: 0,
             y: 0
           },
-          clone: null
+          clone: <Node> null
 
         });
       },
-      handleMouseDown: function(e)
+      handleMouseDown: function(e: MouseEvent)
       {
         if (e.button) return;
         e.preventDefault();
@@ -48,17 +48,17 @@ module Rance
 
         var clientRect = this.getDOMNode().getBoundingClientRect();
 
-        var e;
-        if (isFinite(e.clientX))
-        {
-          e = e;
-        }
-        else
-        {
-          e = e.touches[0];
-          this.needsFirstTouchUpdate = true;
-          this.touchEventTarget = e.target;
-        }
+        // var e;
+        // if (isFinite(e.clientX))
+        // {
+        //   e = e;
+        // }
+        // else
+        // {
+        //   e = e.touches[0];
+        //   this.needsFirstTouchUpdate = true;
+        //   this.touchEventTarget = e.target;
+        // }
 
 
         this.addEventListeners();
@@ -90,11 +90,11 @@ module Rance
           this.handleMouseMove(e);
         }
       },
-      handleMouseMove: function(e)
+      handleMouseMove: function(e: MouseEvent)
       {
         if (e.preventDefault) e.preventDefault();
 
-        var e = e.clientX ? e : e.touches[0];
+        // var e = e.clientX ? e : e.touches[0];
 
 
         if (e.clientX === 0 && e.clientY === 0) return;
@@ -159,12 +159,12 @@ module Rance
           this.handleDrag(e);
         }
       },
-      handleDrag: function(e)
+      handleDrag: function(e: MouseEvent)
       {
         var x = e.pageX - this.state.dragOffset.x;
         var y = e.pageY - this.state.dragOffset.y;
 
-        var domWidth, domHeight;
+        var domWidth: number, domHeight: number;
 
         if (this.makeDragClone)
         {
@@ -222,20 +222,20 @@ module Rance
         }
 
       },
-      handleMouseUp: function(e)
+      handleMouseUp: function(e: MouseEvent)
       {
-        if (this.touchEventTarget)
-        {
-          var touch = e.changedTouches[0];
+        // if (this.touchEventTarget)
+        // {
+        //   var touch = e.changedTouches[0];
 
-          var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
-          console.log(dropTarget);
-          if (dropTarget)
-          {
-            var reactid = dropTarget.getAttribute("data-reactid");
-            eventManager.dispatchEvent("drop" + reactid);
-          }
-        }
+        //   var dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
+        //   console.log(dropTarget);
+        //   if (dropTarget)
+        //   {
+        //     var reactid = dropTarget.getAttribute("data-reactid");
+        //     eventManager.dispatchEvent("drop" + reactid);
+        //   }
+        // }
 
         if (this.isMounted())
         {
@@ -258,7 +258,7 @@ module Rance
 
         this.removeEventListeners();
       },
-      handleDragEnd: function(e)
+      handleDragEnd: function(e: MouseEvent)
       {
         if (this.state.clone)
         {

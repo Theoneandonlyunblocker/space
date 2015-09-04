@@ -20,7 +20,7 @@ module Rance
       utility: useful misc abilities
        */
       archetype: string;
-      typeName: string;
+      displayName: string;
       sprite: ISpriteTemplate;
       isSquadron: boolean;
       buildCost: number;
@@ -43,7 +43,7 @@ module Rance
       export var cheatShip: IUnitTemplate =
       {
         type: "cheatShip",
-        typeName: "Debug Ship",
+        displayName: "Debug Ship",
         archetype: "combat",
         sprite:
         {
@@ -81,7 +81,7 @@ module Rance
       export var fighterSquadron: IUnitTemplate =
       {
         type: "fighterSquadron",
-        typeName: "Fighter Squadron",
+        displayName: "Fighter Squadron",
         archetype: "combat",
         sprite:
         {
@@ -110,7 +110,7 @@ module Rance
       export var bomberSquadron: IUnitTemplate =
       {
         type: "bomberSquadron",
-        typeName: "Bomber Squadron",
+        displayName: "Bomber Squadron",
         archetype: "combat",
         sprite:
         {
@@ -139,7 +139,7 @@ module Rance
       export var battleCruiser: IUnitTemplate =
       {
         type: "battleCruiser",
-        typeName: "Battlecruiser",
+        displayName: "Battlecruiser",
         archetype: "combat",
         sprite:
         {
@@ -168,7 +168,7 @@ module Rance
       export var scout: IUnitTemplate =
       {
         type: "scout",
-        typeName: "Scout",
+        displayName: "Scout",
         archetype: "utility",
         sprite:
         {
@@ -196,7 +196,7 @@ module Rance
       export var shieldBoat: IUnitTemplate =
       {
         type: "shieldBoat",
-        typeName: "Shield Boat",
+        displayName: "Shield Boat",
         archetype: "defence",
         sprite:
         {

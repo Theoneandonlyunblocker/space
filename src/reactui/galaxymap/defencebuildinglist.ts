@@ -11,7 +11,7 @@ module Rance
       {
         if (!this.props.buildings) return null;
         
-        var buildings = [];
+        var buildings: ReactComponentPlaceHolder[] = [];
 
         for (var i = 0; i < this.props.buildings.length; i++)
         {

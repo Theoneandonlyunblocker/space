@@ -31,7 +31,7 @@ module Rance
         }
       },
 
-      buildBuilding: function(rowItem)
+      buildBuilding: function(rowItem: IListItem)
       {
         var template = rowItem.data.template;
 
@@ -52,7 +52,7 @@ module Rance
       render: function()
       {
         if (this.state.buildingTemplates.length < 1) return null;
-        var rows = [];
+        var rows: IListItem[] = [];
 
         for (var i = 0; i < this.state.buildingTemplates.length; i++)
         {
@@ -76,7 +76,7 @@ module Rance
           });
         }
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "Name",

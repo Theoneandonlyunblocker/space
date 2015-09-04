@@ -157,19 +157,14 @@ module Rance
       },
       render: function()
       {
-        var toRender;
         if (this.props.isSquadron)
         {
-          toRender = this.makeSquadronInfo();
+          return this.makeSquadronInfo();
         }
         else
         {
-          toRender = this.makeCapitalInfo()
+          return this.makeCapitalInfo()
         }
-
-        return(
-          toRender
-        );
       }
     });
   }

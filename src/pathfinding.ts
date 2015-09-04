@@ -4,7 +4,7 @@
 module Rance
 {
 
-  export function backTrace(graph, target: Star)
+  export function backTrace(graph: any, target: Star)
   {
     var parent = graph[target.id];
 

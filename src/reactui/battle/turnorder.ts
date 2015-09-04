@@ -72,7 +72,7 @@ module Rance
 
         turnOrder = turnOrder.slice(0, maxUnitsWithFake);
 
-        var toRender = [];
+        var toRender: ReactDOMPlaceHolder[] = [];
 
         for (var i = 0; i < turnOrder.length; i++)
         {

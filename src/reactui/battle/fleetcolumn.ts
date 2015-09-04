@@ -16,7 +16,7 @@ module Rance
 
         var absoluteColumnPosition = this.props.columnPosInOwnFleet + (this.props.facesLeft ? 2 : 0);
 
-        var units = [];
+        var units: ReactComponentPlaceHolder[] = [];
 
         for (var i = 0; i < column.length; i++)
         {

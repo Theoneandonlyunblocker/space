@@ -15,7 +15,7 @@ module Rance
           React.DOM.div({className: "menu-unit-info"})
         )
 
-        var itemSlots = [];
+        var itemSlots: ReactComponentPlaceHolder[] = [];
 
         for (var slot in unit.items)
         {

@@ -157,7 +157,7 @@ module Rance
     }
     addCamera()
     {
-      var oldToCenterOn;
+      var oldToCenterOn: Point;
 
       if (this.mouseEventHandler) this.mouseEventHandler.destroy();
       if (this.camera)
@@ -177,19 +177,19 @@ module Rance
       var self = this;
 
 
-      var stageMouseDownFN = function(event)
+      var stageMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
       {
         self.mouseEventHandler.mouseDown(event, "stage");
       }
-      var stageMouseMoveFN = function(event)
+      var stageMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
       {
         self.mouseEventHandler.mouseMove(event, "stage");
       }
-      var stageMouseUpFN = function(event)
+      var stageMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
       }
-      var stageMouseUpOutsideFN = function(event)
+      var stageMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
       {
         self.mouseEventHandler.mouseUp(event, "stage");
       }
@@ -220,22 +220,22 @@ module Rance
 
       main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
 
-      var mainMouseDownFN = function(event)
+      var mainMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseDown(event, "world");
       };
-      var mainMouseMoveFN = function(event)
+      var mainMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseMove(event, "world");
       }
-      var mainMouseUpFN = function(event)
+      var mainMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseUp(event, "world");
       }
-      var mainMouseUpOutsideFN = function(event)
+      var mainMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
         self.mouseEventHandler.mouseUp(event, "world");
@@ -278,7 +278,7 @@ module Rance
     }
     makeBackgroundTexture(seed?: any)
     {
-      function copyUniforms(uniformObj, target?)
+      function copyUniforms(uniformObj: any, target?: any)
       {
         if (!target) target = {};
         for (var name in uniformObj)

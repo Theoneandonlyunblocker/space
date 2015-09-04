@@ -44,11 +44,12 @@ module Rance
         });
       },
 
-      setTemplate: function(e)
+      setTemplate: function(e: Event)
       {
+        var target = <HTMLInputElement> e.target;
         this.setState(
         {
-          selectedTemplate: Templates.MapGen[e.target.value]
+          selectedTemplate: Templates.MapGen[target.value]
         }, this.updatePlayerLimits);
       },
 
@@ -63,7 +64,7 @@ module Rance
       
       render: function()
       {
-        var mapGenTemplateOptions = [];
+        var mapGenTemplateOptions: ReactDOMPlaceHolder[] = [];
         for (var i = 0; i < this.state.templates.length; i++)
         {
           var template = this.state.templates[i];

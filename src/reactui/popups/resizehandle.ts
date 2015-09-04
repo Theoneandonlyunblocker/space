@@ -19,7 +19,7 @@ module Rance
       //   this.originRight = rect.right;
       // },
 
-      onDragMove: function(x, y)
+      onDragMove: function(x: number, y: number)
       {
         var rect = this.getDOMNode().getBoundingClientRect();
         var offset = this.state.dragOffset;

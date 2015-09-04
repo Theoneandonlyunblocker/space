@@ -7,11 +7,11 @@ module Rance
       displayName: "UnitItem",
       mixins: [Draggable],
 
-      onDragStart: function(e)
+      onDragStart: function()
       {
         this.props.onDragStart(this.props.item);
       },
-      onDragEnd: function(e)
+      onDragEnd: function()
       {
         this.props.onDragEnd();
       },

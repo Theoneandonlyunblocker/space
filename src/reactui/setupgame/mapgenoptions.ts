@@ -38,7 +38,7 @@ module Rance
       {
         var defaultValues = {};
 
-        ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup)
+        ["defaultOptions", "basicOptions", "advancedOptions"].forEach(function(optionGroup: string)
         {
           var options = mapGenTemplate.options[optionGroup];
           if (!options) return;
@@ -148,7 +148,7 @@ module Rance
 
       render: function()
       {
-        var optionGroups = [];
+        var optionGroups: ReactComponentPlaceHolder[] = [];
 
         var optionGroupsInfo =
         {
@@ -176,7 +176,7 @@ module Rance
           var visibilityProp = optionGroupsInfo[groupName].visibilityProp;
           var groupIsVisible = this.state[visibilityProp];
 
-          var options = [];
+          var options: {key: string; content: ReactComponentPlaceHolder;}[] = [];
 
           if (groupIsVisible)
           {

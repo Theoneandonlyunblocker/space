@@ -32,7 +32,7 @@ module Rance
       {
         console.log("newEdgesIndex")
         this.nonFillerLines[indexString] =
-          this.diagram.edges.filter(function(edge)
+          this.diagram.edges.filter(function(edge: any)
         {
           var adjacentSites = [edge.lSite, edge.rSite];
           var adjacentFillerSites = 0;

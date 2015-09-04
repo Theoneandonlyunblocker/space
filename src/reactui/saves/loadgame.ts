@@ -14,17 +14,17 @@ module Rance
         this.refs.okButton.getDOMNode().focus();
       },
 
-      setInputText: function(newText)
+      setInputText: function(newText: string)
       {
         this.refs.saveName.getDOMNode().value = newText;
       },
 
-      handleRowChange: function(row)
+      handleRowChange: function(row: IListItem)
       {
         this.setInputText(row.data.name)
       },
 
-      handleLoad: function(e: any)
+      handleLoad: function(e: Event)
       {
         var saveName = this.refs.saveName.getDOMNode().value
 
@@ -33,7 +33,8 @@ module Rance
         // https://github.com/facebook/react/issues/2988
         // https://github.com/facebook/react/issues/2605#issuecomment-118398797
         // without this react will keep a reference to this element causing a big memory leak
-        e.target.blur();
+        var target = <HTMLButtonElement> e.target;
+        target.blur();
         window.setTimeout(function()
         {
           app.load(saveName);

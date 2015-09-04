@@ -146,12 +146,12 @@ module Rance
 
       render: function()
       {
-        var allActions = [];
+        var allActions: ReactDOMPlaceHolder[] = [];
 
         var attackTargets = this.props.attackTargets;
         if (attackTargets && attackTargets.length > 0)
         {
-          var attackTargetComponents = [];
+          var attackTargetComponents: ReactComponentPlaceHolder[] = [];
           for (var i = 0; i < attackTargets.length; i++)
           {
             var props: any =

@@ -72,7 +72,7 @@ module Rance
 
         if (unit)
         {
-          var scene;
+          var scene: HTMLCanvasElement;
           if (this.props.effectSpriteFN && this.props.effectDuration)
           {
             scene = this.props.effectSpriteFN(

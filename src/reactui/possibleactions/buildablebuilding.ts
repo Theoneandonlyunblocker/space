@@ -38,7 +38,7 @@ module Rance
       render: function()
       {
         var player = this.props.player;
-        var cells = [];
+        var cells: ReactDOMPlaceHolder[] = [];
         var columns = this.props.activeColumns;
 
         for (var i = 0; i < columns.length; i++)

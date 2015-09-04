@@ -12,7 +12,7 @@ module Rance
       {
         this.newPlayerId = 0;
 
-        var players = [];
+        var players: number[] = [];
         for (var i = 0; i < this.props.minPlayers; i++)
         {
           players.push(this.newPlayerId++);
@@ -78,14 +78,14 @@ module Rance
 
         this.setState(
         {
-          players: this.state.players.filter(function(playerId)
+          players: this.state.players.filter(function(playerId: number)
           {
             return toRemove.indexOf(playerId) === -1;
           })
         });
       },
 
-      setActiveColorPicker: function(colorPicker)
+      setActiveColorPicker: function(colorPicker: ReactComponentPlaceHolder)
       {
         if (this.state.activeColorPicker)
         {

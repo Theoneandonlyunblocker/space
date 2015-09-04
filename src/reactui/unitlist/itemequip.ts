@@ -17,7 +17,7 @@ module Rance
           currentDragItem: null
         });
       },
-      handleSelectRow: function(row)
+      handleSelectRow: function(row: IListItem)
       {
         if (!row.data.unit) return;
 
@@ -26,7 +26,7 @@ module Rance
           selectedUnit: row.data.unit
         });
       },
-      handleDragStart: function(item)
+      handleDragStart: function(item: Item)
       {
         this.setState(
         {

@@ -11,7 +11,8 @@ module Rance
     color: number;
     inner: Templates.ISubEmblemTemplate;
     outer: Templates.ISubEmblemTemplate;
-    constructor(color: number, alpha?: number, inner?, outer?)
+    constructor(color: number, alpha?: number,
+      inner?: Templates.ISubEmblemTemplate, outer?: Templates.ISubEmblemTemplate)
     {
       this.color = color;
       this.alpha = isFinite(alpha) ? alpha : 1;
@@ -19,26 +20,26 @@ module Rance
       this.outer = outer;
     }
 
-    isForegroundOnly()
+    isForegroundOnly(): boolean
     {
       if (this.inner.foregroundOnly) return true;
       if (this.outer && this.outer.foregroundOnly) return true;
 
       return false;
     }
-    generateRandom(minAlpha: number, rng?: any)
+    generateRandom(minAlpha: number, rng?: any): void
     {
-      var rng = rng || new RNG(Math.random);
+      var rng: any = rng || new RNG(Math.random);
       this.alpha = rng.uniform();
       this.alpha = clamp(this.alpha, minAlpha, 1);
 
       this.generateSubEmblems(rng);
     }
-    generateSubEmblems(rng: any)
+    generateSubEmblems(rng: any): void
     {
-      var allEmblems = [];
+      var allEmblems: Templates.ISubEmblemTemplate[] = [];
 
-      function getSeededRandomArrayItem(array)
+      function getSeededRandomArrayItem(array: any[])
       {
         var _rnd = Math.floor(rng.uniform() * array.length);
         return array[_rnd];

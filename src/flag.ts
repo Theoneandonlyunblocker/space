@@ -35,7 +35,7 @@ module Rance
       this.tetriaryColor = props.tetriaryColor;
     }
 
-    setColorScheme(main, secondary?, tetriary?)
+    setColorScheme(main: number, secondary?: number, tetriary?: number)
     {
       this.mainColor = main;
 
@@ -132,7 +132,7 @@ module Rance
 
       var image = new Image();
       image.src = imageSrc
-      var xPos, xWidth, yPos, yHeight;
+      var xPos: number, xWidth: number, yPos: number, yHeight: number;
 
       // center image if smaller than canvas we're drawing on
       if (image.width < this.width)

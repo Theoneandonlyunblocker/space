@@ -9,7 +9,7 @@ module Rance
       displayName: "TopBarResources",
       render: function()
       {
-        var resources = [];
+        var resources: ReactComponentPlaceHolder[] = [];
 
         for (var resourceType in this.props.player.resources)
         {

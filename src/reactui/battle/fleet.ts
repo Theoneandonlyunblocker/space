@@ -12,7 +12,7 @@ module Rance
       {
         var fleet = this.props.fleet;
 
-        var columns = [];
+        var columns: ReactComponentPlaceHolder[] = [];
 
         for (var i = 0; i < fleet.length; i++)
         {

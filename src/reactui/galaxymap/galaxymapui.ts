@@ -44,7 +44,7 @@ module Rance
       {
         var pc = this.props.playerControl;
 
-        var star = null;
+        var star: Star = null;
         if (pc.selectedStar) star = pc.selectedStar;
         else if (pc.areAllFleetsInSameLocation())
         {

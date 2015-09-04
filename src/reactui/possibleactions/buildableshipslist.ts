@@ -19,7 +19,7 @@ module Rance
         });
       },
 
-      buildShip: function(rowItem)
+      buildShip: function(rowItem: IListItem)
       {
         if (rowItem.data.template.buildCost > this.props.player.money)
         {
@@ -32,7 +32,7 @@ module Rance
       render: function()
       {
         if (this.state.shipTemplates.length < 1) return null;
-        var rows = [];
+        var rows: IListItem[] = [];
 
         for (var i = 0; i < this.state.shipTemplates.length; i++)
         {
@@ -42,7 +42,7 @@ module Rance
           {
             template: template,
 
-            typeName: template.typeName,
+            typeName: template.displayName,
             buildCost: template.buildCost,
             player: this.props.player,
 
@@ -56,7 +56,7 @@ module Rance
           });
         }
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "Name",

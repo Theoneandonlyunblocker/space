@@ -53,7 +53,7 @@ module Rance
       
       render: function()
       {
-        var tooltip = null;
+        var tooltip: ReactComponentPlaceHolder = null;
         if (this.state.hasAttitudeModifierTootlip)
         {
           tooltip = UIComponents.AttitudeModifierList(

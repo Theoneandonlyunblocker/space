@@ -41,14 +41,15 @@ module Rance
           return generateSecondaryColor(mainColor);
         }
       },
-      handleSetHuman: function(e)
+      handleSetHuman: function()
       {
         this.props.setHuman(this.props.key);
       },
 
-      handleNameChange: function(e)
+      handleNameChange: function(e: Event)
       {
-        this.setState({name: e.target.value});
+        var target = <HTMLInputElement> e.target;
+        this.setState({name: target.value});
       },
 
       setMainColor: function(color: number, isNull: boolean)
@@ -63,7 +64,7 @@ module Rance
       {
         this.props.removePlayers([this.props.key]);
       },
-      handleSetCustomImage: function(image?)
+      handleSetCustomImage: function(image?: string)
       {
         this.setState({flagHasCustomImage: Boolean(image)});
       },

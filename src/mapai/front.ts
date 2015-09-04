@@ -64,7 +64,7 @@ module Rance
         [starId: number]: Unit[];
       } = {};
 
-      var ownUnitFilterFN = function(unit)
+      var ownUnitFilterFN = function(unit: Unit)
       {
         return this.getUnitIndex(unit) >= 0;
       }.bind(this);
@@ -100,7 +100,7 @@ module Rance
         }
       }
 
-      var sortFleetsBySizeFN = function(a, b)
+      var sortFleetsBySizeFN = function(a: Fleet, b: Fleet)
       {
         return b.ships.length - a.ships.length;
       }
@@ -253,7 +253,7 @@ module Rance
       return byLocation;
     }
 
-    moveFleets(afterMoveCallback: any)
+    moveFleets(afterMoveCallback: Function)
     {
       if (this.units.length < 1)
       {
@@ -275,7 +275,7 @@ module Rance
       }
     }
 
-    healMoveRoutine(afterMoveCallback: any)
+    healMoveRoutine(afterMoveCallback: Function)
     {
       var fleets = this.getAssociatedFleets();
 
@@ -304,9 +304,9 @@ module Rance
       }
     }
 
-    defaultMoveRoutine(afterMoveCallback: any)
+    defaultMoveRoutine(afterMoveCallback: Function)
     {
-      var shouldMoveToTarget;
+      var shouldMoveToTarget: boolean;
 
       var unitsByLocation = this.getUnitsByLocation();
       var fleets = this.getAssociatedFleets();
@@ -380,7 +380,7 @@ module Rance
         fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
       }
     }
-    executeAction(afterExecutedCallback)
+    executeAction(afterExecutedCallback: Function)
     {
       var star = this.targetLocation;
       var player = this.units[0].fleet.player;

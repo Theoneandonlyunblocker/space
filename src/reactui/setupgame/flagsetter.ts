@@ -33,7 +33,7 @@ module Rance
         document.removeEventListener("click", this.handleClick);
         this.clearFocusTimerListener();
       },
-      displayImageLoadingFailMessage: function(error)
+      displayImageLoadingFailMessage: function()
       {
         this.setState({hasImageFailMessage: true});
 
@@ -50,7 +50,7 @@ module Rance
         }
         this.setState({hasImageFailMessage: false});
       },
-      handleClick: function(e)
+      handleClick: function(e: MouseEvent)
       {
         var focusGraceTime = 500;
         if (Date.now() - this.lastFocusTime <= focusGraceTime) return;
@@ -97,7 +97,7 @@ module Rance
       {
         var shouldUpdate = emblemTemplate || this.state.flag.foregroundEmblem;
 
-        var emblem = null;
+        var emblem: Emblem = null;
         if (emblemTemplate)
         {
           emblem = new Emblem(undefined, 1, emblemTemplate);
@@ -111,7 +111,7 @@ module Rance
         }
       },
 
-      stopEvent: function(e)
+      stopEvent: function(e: Event)
       {
         e.stopPropagation();
         e.preventDefault();
@@ -123,7 +123,7 @@ module Rance
         {
           this.stopEvent(e);
 
-          var files = e.dataTransfer.files;
+          var files: FileList = e.dataTransfer.files;
 
           var image = this.getFirstValidImageFromFiles(files);
 
@@ -140,7 +140,7 @@ module Rance
             }
             else
             {
-              var getImageDataUrl = function(image)
+              var getImageDataUrl = function(image: HTMLImageElement)
               {
                 var canvas = document.createElement("canvas");
                 var ctx = canvas.getContext("2d");
@@ -155,14 +155,14 @@ module Rance
 
               var img = new Image();
               img.crossOrigin = "Anonymous";
-              img.onload = function(e)
+              img.onload = function(e: Event)
               {
                 this.state.flag.setCustomImage(getImageDataUrl(img));
                 this.handleUpdate();
               }.bind(this)
-              img.onerror = function(e)
+              img.onerror = function(e: Event)
               {
-                this.displayImageLoadingFailMessage(e);
+                this.displayImageLoadingFailMessage();
               }.bind(this);
 
               img.src = imageSource;
@@ -183,7 +183,7 @@ module Rance
         }
       },
 
-      handleUpload: function(files: any[])
+      handleUpload: function(files: FileList)
       {
         var image = this.getFirstValidImageFromFiles(files);
         if (!image) return false;
@@ -192,9 +192,9 @@ module Rance
         return true;
       },
 
-      getFirstValidImageFromFiles: function(files: any[])
+      getFirstValidImageFromFiles: function(files: FileList)
       {
-        var image;
+        var image: File;
 
         for (var i = 0; i < files.length; i++)
         {
@@ -209,9 +209,9 @@ module Rance
         return image;
       },
 
-      setCustomImageFromFile: function(file)
+      setCustomImageFromFile: function(file: File)
       {
-        var setImageFN = function(file)
+        var setImageFN = function(file: File)
         {
           var reader = new FileReader();
 
@@ -257,7 +257,7 @@ module Rance
         // {
         //   this.handleUpdate();
         // }
-        var colorHasUpdated;
+        var colorHasUpdated: boolean;
         ["mainColor", "subColor", "tetriaryColor"].forEach(function(prop)
         {
           if (oldProps[prop] !== newProps[prop])

@@ -16,7 +16,7 @@ module Rance
     
       render: function()
       {
-        var mapModeOptions = [];
+        var mapModeOptions: ReactDOMPlaceHolder[] = [];
 
         for (var mapModeName in this.props.mapRenderer.mapModes)
         {

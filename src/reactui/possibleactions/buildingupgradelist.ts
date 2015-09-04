@@ -14,7 +14,7 @@ module Rance
         return Object.keys(possibleUpgrades).length > 0;
       },
 
-      upgradeBuilding: function(upgradeData)
+      upgradeBuilding: function(upgradeData: IBuildingUpgradeData)
       {
         var star = upgradeData.parentBuilding.location
 
@@ -46,14 +46,14 @@ module Rance
         if (!this.hasAvailableUpgrades()) return null;
 
         var possibleUpgrades = this.props.star.getBuildingUpgrades();
-        var upgradeGroups = [];
+        var upgradeGroups: ReactDOMPlaceHolder[] = [];
 
         for (var parentBuildingId in possibleUpgrades)
         {
           var upgrades = possibleUpgrades[parentBuildingId];
           var parentBuilding = upgrades[0].parentBuilding;
 
-          var upgradeElements = [];
+          var upgradeElements: ReactDOMPlaceHolder[] = [];
 
           for (var i = 0; i < upgrades.length; i++)
           {

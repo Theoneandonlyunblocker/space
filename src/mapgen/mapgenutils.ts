@@ -120,7 +120,7 @@ module Rance
       } = {};
       var sectorIdGen = 0;
 
-      var sameSectorFN = function(a, b)
+      var sameSectorFN = function(a: Star, b: Star)
       {
         return a.mapGenData.sector === b.mapGenData.sector;
       };
@@ -331,7 +331,7 @@ module Rance
             }
           }
 
-          var ships = [];
+          var ships: Unit[] = [];
           for (var j = 0; j < shipAmount; j++)
           {
             var ship = new Unit(Templates.ShipTypes[getRandomArrayItem(shipTypes)]);

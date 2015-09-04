@@ -8,7 +8,7 @@ module Rance
     {
       displayName: "BuyItems",
 
-      handleSelectRow: function(row)
+      handleSelectRow: function(row: IListItem)
       {
         var template = row.data.item.template;
         var item = new Item(template);

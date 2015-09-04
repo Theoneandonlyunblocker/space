@@ -81,7 +81,7 @@ module Rance
 
       render: function()
       {
-        var allElements = [];
+        var allElements: ReactComponentPlaceHolder[] = [];
 
         var wrapperProps: any =
         {

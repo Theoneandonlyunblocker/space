@@ -21,28 +21,28 @@ module Rance
         });
       },
 
-      onDragStart: function(e)
+      onDragStart: function()
       {
         this.props.onDragStart(this.props.unit);
       },
-      onDragEnd: function(e)
+      onDragEnd: function()
       {
         this.props.onDragEnd();
       },
 
-      handleClick: function(e)
+      handleClick: function()
       {
         this.props.onUnitClick(this.props.unit);
       },
 
-      handleMouseEnter: function(e)
+      handleMouseEnter: function()
       {
         if (!this.props.handleMouseEnterUnit) return;
         if (this.props.unit.currentHealth <= 0) return;
 
         this.props.handleMouseEnterUnit(this.props.unit);
       },
-      handleMouseLeave: function(e)
+      handleMouseLeave: function(e: MouseEvent)
       {
         if (!this.props.handleMouseLeaveUnit) return;
 

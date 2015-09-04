@@ -315,39 +315,39 @@ module Rance
             points = this.player.getRevealedStars();
           }
 
-          var mouseDownFN = function(event)
+          var mouseDownFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("mouseDown", event);
           }
-          var mouseUpFN = function(event)
+          var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("mouseUp", event);
           }
-          var onClickFN = function(star)
+          var onClickFN = function(star: Star)
           {
             eventManager.dispatchEvent("starClick", star);
           }
-          var rightDownFN = function(event)
+          var rightDownFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("mouseDown", event);
           }
-          var rightUpFN = function(star)
+          var rightUpFN = function(star: Star)
           {
             eventManager.dispatchEvent("mouseUp", null);
           }
-          var mouseOverFN = function(star)
+          var mouseOverFN = function(star: Star)
           {
             eventManager.dispatchEvent("hoverStar", star);
           }
-          var mouseOutFN = function(event)
+          var mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("clearHover");
           }
-          var touchStartFN = function(event)
+          var touchStartFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("touchStart", event);
           }
-          var touchEndFN = function(event)
+          var touchEndFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("touchEnd", event);
           }
@@ -376,9 +376,10 @@ module Rance
             gfx.on("mousedown", mouseDownFN);
             gfx.on("mouseup", mouseUpFN);
 
-            var gfxClickFN = function(event)
+            var gfxClickFN = function(event: PIXI.interaction.InteractionEvent)
             {
-              if (event.originalEvent.button) return;
+              var originalEvent = <MouseEvent> event.data.originalEvent;
+              if (originalEvent.button) return;
 
               onClickFN(this.star);
             }.bind(gfx);
@@ -580,7 +581,7 @@ module Rance
           var mapEvaluator = new MapEvaluator(map, this.player);
           var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
 
-          var minInfluence, maxInfluence;
+          var minInfluence: number, maxInfluence: number;
 
           for (var starId in influenceByStar)
           {
@@ -816,15 +817,15 @@ module Rance
             points = this.player.getVisibleStars();
           }
 
-          var mouseDownFN = function(event)
+          var mouseDownFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("mouseDown", event);
           }
-          var mouseUpFN = function(event)
+          var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
           {
             eventManager.dispatchEvent("mouseUp", event);
           }
-          var mouseOverFN = function(fleet)
+          var mouseOverFN = function(fleet: Fleet)
           {
             eventManager.dispatchEvent("hoverStar", fleet.location);
           }

@@ -7,12 +7,12 @@ module Rance
       displayName: "ItemListItem",
       mixins: [Draggable],
 
-      onDragStart: function(e)
+      onDragStart: function()
       {
         console.log("onDragStart", this.props.item.template.displayName);
         this.props.onDragStart(this.props.item);
       },
-      onDragEnd: function(e)
+      onDragEnd: function()
       {
         this.props.onDragEnd();
       },

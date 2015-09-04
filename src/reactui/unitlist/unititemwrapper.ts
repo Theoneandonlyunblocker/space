@@ -18,7 +18,6 @@ module Rance
 
       render: function()
       {
-        var allElements = [];
         var item = this.props.item;
 
         var wrapperProps: any =

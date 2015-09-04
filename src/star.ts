@@ -189,7 +189,7 @@ module Rance
     }
     updateController()
     {
-      if (!this.buildings["defence"]) return null;
+      if (!this.buildings["defence"]) return;
 
       var oldOwner = this.owner;
       var newOwner = this.buildings["defence"][0].controller;
@@ -233,7 +233,7 @@ module Rance
     }
     getAllBuildings()
     {
-      var buildings = [];
+      var buildings: Building[] = [];
 
       for (var category in this.buildings)
       {
@@ -255,7 +255,7 @@ module Rance
     {
       var categoryBuildings = this.buildings[buildingTemplate.category];
 
-      var buildings = [];
+      var buildings: Building[] = [];
 
       if (categoryBuildings)
       {
@@ -275,7 +275,7 @@ module Rance
       if (!buildingTemplate.family) throw new Error("Building has no family");
       var categoryBuildings = this.buildings[buildingTemplate.category];
 
-      var buildings = [];
+      var buildings: Building[] = [];
 
       if (categoryBuildings)
       {
@@ -292,11 +292,11 @@ module Rance
     }
     getBuildableBuildings()
     {
-      var canBuild = [];
+      var canBuild: Templates.IBuildingTemplate[] = [];
       for (var buildingType in Templates.Buildings)
       {
         var template: Templates.IBuildingTemplate = Templates.Buildings[buildingType];
-        var alreadyBuilt;
+        var alreadyBuilt: Building[];
         
         if (template.category === "mine" && !this.resource)
         {
@@ -342,11 +342,6 @@ module Rance
 
         if (upgrades && upgrades.length > 0)
         {
-          for (var j = 0; j < upgrades.length; j++)
-          {
-            upgrades[j].parentBuilding = building;
-          }
-
           allUpgrades[building.id] = upgrades;
         }
 
@@ -364,7 +359,7 @@ module Rance
     // FLEETS
     getAllFleets()
     {
-      var allFleets = [];
+      var allFleets: Fleet[] = [];
 
       for (var playerId in this.fleets)
       {
@@ -458,7 +453,13 @@ module Rance
 
       var diplomacyStatus = player.diplomacyStatus;
 
-      var targets = [];
+      var targets:
+      {
+        type: string;
+        enemy: Player;
+        building: Building;
+        ships: Unit[]
+      }[] = [];
 
       if (buildingTarget &&
         (
@@ -605,7 +606,7 @@ module Rance
 
       visited[this.id] = this;
 
-      var current = [];
+      var current: Star[] = [];
       var frontier: Star[] = [this];
 
       for (var i = 0; i < range; i++)
@@ -860,8 +861,11 @@ module Rance
 
       var manufactoryLevel = this.getItemManufactoryLevel();
 
-      var byTechLevel = {};
-      var allBuildable = [];
+      var byTechLevel:
+      {
+        [techLevel: number]: Templates.IItemTemplate[];
+      } = {};
+      var allBuildable: Templates.IItemTemplate[] = [];
 
       for (var techLevel in this.buildableItems)
       {

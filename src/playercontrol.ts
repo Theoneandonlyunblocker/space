@@ -50,7 +50,7 @@ module Rance
         this.removeEventListener(name);
       }
     }
-    addEventListener(name: string, handler)
+    addEventListener(name: string, handler: Function)
     {
       this.listeners[name] = handler;
 

@@ -9,7 +9,7 @@ module Rance
       {
         if (Array.isArray(text))
         {
-          var returnArr = [];
+          var returnArr: any[] = [];
           for (var i = 0; i < text.length; i++)
           {
             returnArr.push(text[i]);

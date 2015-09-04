@@ -86,7 +86,7 @@ module Rance
           }
         }
 
-        var majorityRegions = [];
+        var majorityRegions: Region2[] = [];
         for (var regionId in regionsByStars)
         {
           if (regionsByStars[regionId].count >= biggestRegionStarCount)

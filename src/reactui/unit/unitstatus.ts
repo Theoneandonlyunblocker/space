@@ -7,7 +7,7 @@ module Rance
       displayName: "UnitStatus",
       render: function()
       {
-        var statusElement = null;
+        var statusElement: ReactDOMPlaceHolder = null;
 
         if (this.props.guardAmount > 0)
         {

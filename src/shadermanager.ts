@@ -5,7 +5,7 @@ module Rance
 {
   export class NebulaFilter extends PIXI.AbstractFilter
   {
-    constructor(uniforms)
+    constructor(uniforms: any)
     {
       super(null, ShaderSources.nebula.join("\n"), uniforms);
     }

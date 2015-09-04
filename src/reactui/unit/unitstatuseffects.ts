@@ -8,7 +8,7 @@ module Rance
 
       render: function()
       {
-        var statusEffects = [];
+        var statusEffects: ReactDOMPlaceHolder[] = [];
 
         var withItems = this.props.unit.getAttributesWithItems();
         var withEffects = this.props.unit.getAttributesWithEffects();

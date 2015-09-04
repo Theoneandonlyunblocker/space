@@ -4,13 +4,30 @@ module Rance
 {
   export module UIComponents
   {
+    export interface IListColumn
+    {
+      label: string;
+      title?: string;
+      key: string;
+      defaultOrder?: string; // optional only if notSortable = true
+      order?: string; // dont set this manually
+
+      notSortable?: boolean;
+      propToSortBy?: string;
+      sortingFunction?: <T>(a: T, b: T) => number;
+    }
+    export interface IListItem
+    {
+      key: string | number;
+      data: any;
+    }
     export var List = React.createClass({
       displayName: "List",
       mixins: [SplitMultilineText],
 
       getInitialState: function()
       {
-        var initialColumn = this.props.initialSortOrder ?
+        var initialColumn: IListColumn = this.props.initialSortOrder ?
           this.props.initialSortOrder[0] :
           this.props.initialColumns[0];
 
@@ -33,7 +50,7 @@ module Rance
 
         if (this.props.keyboardSelect)
         {
-          this.getDOMNode().addEventListener("keydown", function(event)
+          this.getDOMNode().addEventListener("keydown", function(event: KeyboardEvent)
           {
             switch (event.keyCode)
             {
@@ -98,13 +115,14 @@ module Rance
         innerNode.style.height = "" + desiredHeight + "px";
       },
 
-      handleScroll: function(e)
+      handleScroll: function(e: React.UiEvent)
       {
         // scrolls header to match list contents
+        var target = <Element> e.target;
         var header = this.refs.header.getDOMNode();
         var titles = header.getElementsByClassName("fixed-table-th-inner");
 
-        var marginString = "-" + e.target.scrollLeft + "px";
+        var marginString = "-" + target.scrollLeft + "px";
 
         for (var i = 0; i < titles.length; i++)
         {
@@ -112,7 +130,7 @@ module Rance
         }
       },
 
-      makeInitialSortingOrder: function(columns, initialColumn)
+      makeInitialSortingOrder: function(columns: IListColumn[], initialColumn: IListColumn)
       {
         var initialSortOrder = this.props.initialSortOrder;
         if (!initialSortOrder || initialSortOrder.length < 1)
@@ -139,7 +157,7 @@ module Rance
         return order;
       },
 
-      getNewSortingOrder: function(newColumn)
+      getNewSortingOrder: function(newColumn: IListColumn)
       {
         var order = this.state.sortingOrder.slice(0);
         var current = order.indexOf(newColumn);
@@ -154,10 +172,10 @@ module Rance
         return order;
       },
 
-      handleSelectColumn: function(column)
+      handleSelectColumn: function(column: IListColumn)
       {
         if (column.notSortable) return;
-        function getReverseOrder(order)
+        function getReverseOrder(order: string)
         {
           return order === "desc" ? "asc" : "desc";
         }
@@ -178,7 +196,7 @@ module Rance
         }
       },
 
-      handleSelectRow: function(row)
+      handleSelectRow: function(row: IListItem)
       {
         if (this.props.onRowChange && row) this.props.onRowChange.call(null, row);
 
@@ -199,13 +217,13 @@ module Rance
         } = {};
 
 
-        function makeSortingFunction(column)
+        function makeSortingFunction(column: IListColumn)
         {
           if (column.sortingFunction) return column.sortingFunction;
 
           var propToSortBy = column.propToSortBy || column.key;
 
-          return (function(a, b)
+          return (function (a: IListItem, b: IListItem)
           {
             var a1 = a.data[propToSortBy];
             var b1 = b.data[propToSortBy];
@@ -216,7 +234,7 @@ module Rance
           })
         }
 
-        itemsToSort.sort(function(a, b)
+        itemsToSort.sort(function(a: IListItem, b: IListItem)
         {
           var result = 0;
           for (var i = 0; i < sortOrder.length; i++)
@@ -264,10 +282,10 @@ module Rance
       render: function()
       {
         var self = this;
-        var columns = [];
-        var headerLabels = [];
+        var columns: ReactDOMPlaceHolder[] = [];
+        var headerLabels: ReactDOMPlaceHolder[] = [];
 
-        this.state.columns.forEach(function(column)
+        this.state.columns.forEach(function(column: IListColumn)
         {
           var colProps: any =
           {
@@ -283,7 +301,7 @@ module Rance
             React.DOM.col(colProps)
           );
 
-          var sortStatus = null;
+          var sortStatus: string = "";
 
           if (!column.notSortable) sortStatus = " sortable";
 
@@ -320,9 +338,9 @@ module Rance
 
         var sortedItems = this.props.sortedItems;
         
-        var rows = [];
+        var rows: ReactDOMPlaceHolder[] = [];
 
-        sortedItems.forEach(function(item)
+        sortedItems.forEach(function(item: IListItem)
         {
           item.data.key = item.key;
           item.data.activeColumns = self.state.columns;

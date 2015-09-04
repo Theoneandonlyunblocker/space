@@ -14,12 +14,12 @@ module Rance
         this.refs.okButton.getDOMNode().focus();
       },
 
-      setInputText: function(newText)
+      setInputText: function(newText: string)
       {
         this.refs.saveName.getDOMNode().value = newText;
       },
 
-      handleRowChange: function(row)
+      handleRowChange: function(row: IListItem)
       {
         this.setInputText(row.data.name)
       },

@@ -9,7 +9,7 @@ module Rance
       displayName: "SaveList",
       render: function()
       {
-        var rows = [];
+        var rows: IListItem[] = [];
 
         var allKeys = Object.keys(localStorage);
 
@@ -39,7 +39,7 @@ module Rance
           });
         }
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "Name",

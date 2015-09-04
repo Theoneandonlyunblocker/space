@@ -9,7 +9,7 @@ module Rance
     {
       displayName: "DiplomacyOverview",
 
-      makeDiplomacyActionsPopup: function(rowItem)
+      makeDiplomacyActionsPopup: function(rowItem: IListItem)
       {
         var player = rowItem.data.player;
         if (!player) return;
@@ -31,7 +31,7 @@ module Rance
         var unmetPlayerCount = this.props.totalPlayerCount -
           Object.keys(this.props.metPlayers).length - 1;
 
-        var rows = [];
+        var rows: IListItem[] = [];
 
         for (var playerId in this.props.statusByPlayer)
         {
@@ -72,7 +72,7 @@ module Rance
           });
         }
 
-        var columns: any =
+        var columns: IListColumn[] =
         [
           {
             label: "",
