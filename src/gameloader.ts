@@ -325,7 +325,9 @@ module Rance
         ships.push(ship);
       }
 
-      return new Fleet(player, ships, this.starsById[data.locationId], data.id, false);
+      var fleet = new Fleet(player, ships, this.starsById[data.locationId], data.id, false);
+      fleet.name = data.name;
+      return fleet;
     }
     deserializeShip(data: any)
     {

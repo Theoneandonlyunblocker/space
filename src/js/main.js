@@ -19028,7 +19028,9 @@ var Rance;
                 player.addUnit(ship);
                 ships.push(ship);
             }
-            return new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id, false);
+            var fleet = new Rance.Fleet(player, ships, this.starsById[data.locationId], data.id, false);
+            fleet.name = data.name;
+            return fleet;
         };
         GameLoader.prototype.deserializeShip = function (data) {
             var template = Rance.Templates.ShipTypes[data.templateType];
