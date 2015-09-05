@@ -3485,7 +3485,6 @@ var Rance;
             render: function () {
                 var divProps = {
                     className: "popup draggable",
-                    ref: "test",
                     onTouchStart: this.handleMouseDown,
                     onMouseDown: this.handleMouseDown,
                     style: {
@@ -17693,9 +17692,8 @@ var Rance;
             }, delay);
         };
         MouseEventHandler.prototype.makeUITransparent = function () {
-            if (this.currentAction)
+            if (!this.currentAction)
                 return;
-            console.log("makeUITransparent");
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui) {
                 ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
@@ -17704,7 +17702,6 @@ var Rance;
         MouseEventHandler.prototype.makeUIOpaque = function () {
             if (this.currentAction)
                 return;
-            console.log("makeUIOpaque");
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
             if (ui) {
                 ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
@@ -17721,6 +17718,8 @@ var Rance;
             }
         };
         MouseEventHandler.prototype.mouseDown = function (event, star) {
+            if (this.preventingGhost["mouseDown"])
+                return;
             var originalEvent = event.data.originalEvent;
             if (originalEvent.ctrlKey ||
                 originalEvent.metaKey ||
@@ -17736,6 +17735,7 @@ var Rance;
                 this.cancelCurrentAction();
                 this.startFleetMove(event, star);
             }
+            this.preventGhost(15, "mouseDown");
         };
         MouseEventHandler.prototype.touchStart = function (event, star) {
             if (app.playerControl.selectedFleets.length === 0) {

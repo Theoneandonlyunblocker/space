@@ -130,8 +130,7 @@ module Rance
     }
     makeUITransparent()
     {
-      if (this.currentAction) return;
-      console.log("makeUITransparent")
+      if (!this.currentAction) return;
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
       if (ui) 
       {
@@ -141,7 +140,6 @@ module Rance
     makeUIOpaque()
     {
       if (this.currentAction) return;
-      console.log("makeUIOpaque")
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
       if (ui) 
       {
@@ -162,6 +160,8 @@ module Rance
     }
     mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star)
     {
+      if (this.preventingGhost["mouseDown"]) return;
+
       var originalEvent = <MouseEvent> event.data.originalEvent;
       if (
           originalEvent.ctrlKey ||
@@ -182,6 +182,8 @@ module Rance
         this.cancelCurrentAction();
         this.startFleetMove(event, star);
       }
+
+      this.preventGhost(15, "mouseDown");
     }
 
     touchStart(event: PIXI.interaction.InteractionEvent, star?: Star)

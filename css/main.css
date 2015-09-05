@@ -1319,6 +1319,7 @@ progress::-webkit-progress-value {
 }
 .mouse-event-active-ui {
   opacity: 0.1;
+  transition-delay: 1s;
 }
 .galaxy-map-ui-top {
   pointer-events: none;

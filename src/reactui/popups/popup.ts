@@ -72,7 +72,6 @@ module Rance
         var divProps: any =
         {
           className: "popup draggable",
-          ref: "test",
           onTouchStart: this.handleMouseDown,
           onMouseDown: this.handleMouseDown,
           style:
