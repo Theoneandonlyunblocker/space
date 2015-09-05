@@ -1464,7 +1464,7 @@ var Rance;
                 this.props.renderer.blurProps =
                     [
                         blurArea.left,
-                        0,
+                        blurArea.top,
                         blurArea.width,
                         blurArea.height,
                         this.props.backgroundSeed
