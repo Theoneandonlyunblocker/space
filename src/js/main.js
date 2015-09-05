@@ -16459,24 +16459,41 @@ var Rance;
                 var currentPolyLine = [];
                 var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
                 var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
-                for (var jj = offsetted.length - 1; jj >= 0; jj--) {
-                    var point = offsetted[jj];
-                    var nextPoint = jj === 0 ? offsetted[offsetted.length - 1] : offsetted[jj - 1];
+                // set stars
+                for (var j = 0; j < offsetted.length; j++) {
+                    var point = offsetted[j];
+                    var nextPoint = offsetted[(j + 1) % offsetted.length];
                     var edgeCenter = {
                         x: (point.x + nextPoint.x) / 2,
                         y: (point.y + nextPoint.y) / 2
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+                    processedStarsById[pointStar.id] = true;
                     point.star = pointStar;
+                }
+                // find first point in revealed star preceded by unrevealed star
+                // set that point as start of polygon
+                var startIndex = 0; // default = all stars of polygon are revealed
+                for (var j = 0; j < offsetted.length; j++) {
+                    var currPoint = offsetted[j];
+                    var prevPoint = offsetted[(j === 0 ? offsetted.length - 1 : j - 1)];
+                    if (revealedStars.indexOf(currPoint.star) !== -1 && revealedStars.indexOf(prevPoint.star) === -1) {
+                        startIndex = j;
+                    }
+                }
+                // get polylines
+                for (var _j = startIndex; _j < offsetted.length + startIndex; _j++) {
+                    var j = _j % offsetted.length;
+                    var point = offsetted[j];
                     if (revealedStars.indexOf(point.star) === -1) {
                         if (currentPolyLine.length > 1) {
+                            currentPolyLine.push(point);
                             polyLines.push(currentPolyLine);
                             currentPolyLine = [];
                         }
                     }
                     else {
                         currentPolyLine.push(point);
-                        processedStarsById[star.id] = true;
                     }
                 }
                 if (currentPolyLine.length > 1) {
@@ -17096,8 +17113,12 @@ var Rance;
                         var mouseOverFN = function (fleet) {
                             Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
                         };
-                        function fleetClickFn(fleet) {
-                            Rance.eventManager.dispatchEvent("selectFleets", [fleet]);
+                        function fleetClickFn(event) {
+                            var originalEvent = event.data.originalEvent;
+                            ;
+                            if (originalEvent.button === 0) {
+                                Rance.eventManager.dispatchEvent("selectFleets", [this]);
+                            }
                         }
                         function singleFleetDrawFN(fleet) {
                             var fleetContainer = new PIXI.Container();
@@ -17115,7 +17136,7 @@ var Rance;
                             text.y -= 1;
                             fleetContainer.interactive = true;
                             var boundMouseDownFN = mouseDownFN.bind(fleet);
-                            var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
+                            var boundFleetClickFN = fleetClickFn.bind(fleet);
                             fleetContainer.on("click", boundFleetClickFN);
                             fleetContainer.on("tap", boundFleetClickFN);
                             fleetContainer.on("mousedown", boundMouseDownFN);

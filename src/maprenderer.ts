@@ -824,9 +824,13 @@ module Rance
           {
             eventManager.dispatchEvent("hoverStar", fleet.location);
           }
-          function fleetClickFn(fleet: Fleet)
+          function fleetClickFn(event: PIXI.interaction.InteractionEvent)
           {
-            eventManager.dispatchEvent("selectFleets", [fleet]);
+            var originalEvent = <MouseEvent> event.data.originalEvent;;
+            if (originalEvent.button === 0)
+            {
+              eventManager.dispatchEvent("selectFleets", [this]);
+            }
           }
           function singleFleetDrawFN(fleet: Fleet)
           {
@@ -852,7 +856,7 @@ module Rance
             fleetContainer.interactive = true;
             
             var boundMouseDownFN = mouseDownFN.bind(fleet);
-            var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
+            var boundFleetClickFN = fleetClickFn.bind(fleet);
             fleetContainer.on("click", boundFleetClickFN);
             fleetContainer.on("tap", boundFleetClickFN);
             fleetContainer.on("mousedown", boundMouseDownFN);

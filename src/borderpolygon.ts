@@ -207,28 +207,48 @@ module Rance
 
         var offsetted = convertHalfEdgeDataToOffset(halfEdgesDataForIsland);
 
-        for (var jj = offsetted.length - 1; jj >= 0; jj--)
+        // set stars
+        for (var j = 0; j < offsetted.length; j++)
         {
-          var point:
-          {
-            x: number;
-            y: number;
-            star: Star;
-          } = <any> offsetted[jj];
-          var nextPoint = jj === 0 ? offsetted[offsetted.length-1] : offsetted[jj - 1];
+          var point = <any> offsetted[j];
+          var nextPoint = <any> offsetted[(j + 1) % offsetted.length];
 
           var edgeCenter: Point =
           {
             x: (point.x + nextPoint.x) / 2,
             y: (point.y + nextPoint.y) / 2
           }
+
           var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+          processedStarsById[pointStar.id] = true;
           point.star = pointStar;
+        }
+
+        // find first point in revealed star preceded by unrevealed star
+        // set that point as start of polygon
+        var startIndex: number = 0; // default = all stars of polygon are revealed
+
+        for (var j = 0; j < offsetted.length; j++)
+        {
+          var currPoint = <any> offsetted[j];
+          var prevPoint = <any> offsetted[(j === 0 ? offsetted.length - 1 : j - 1)];
+          if (revealedStars.indexOf(currPoint.star) !== -1 && revealedStars.indexOf(prevPoint.star) === -1)
+          {
+            startIndex = j;
+          }
+        }
+
+        // get polylines
+        for (var _j = startIndex; _j < offsetted.length + startIndex; _j++)
+        {
+          var j = _j % offsetted.length;
+          var point = <any> offsetted[j];
 
           if (revealedStars.indexOf(point.star) === -1)
           {
             if (currentPolyLine.length > 1)
             {
+              currentPolyLine.push(point);
               polyLines.push(currentPolyLine);
               currentPolyLine = [];
             }
@@ -236,7 +256,6 @@ module Rance
           else
           {
             currentPolyLine.push(point);
-            processedStarsById[star.id] = true;
           }
         }
         if (currentPolyLine.length > 1)
