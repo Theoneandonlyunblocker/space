@@ -276,7 +276,8 @@ declare module PIXI {
         blendMode: number;
         isMask: boolean;
         boundsPadding: number;
-        graphicsData: GraphicsData;
+        graphicsData: GraphicsData[];
+        currentPath: GraphicsData;
 
         clone(): Graphics;
         lineStyle(lineWidth?: number, color?: number, alpha?: number): Graphics;

@@ -16619,6 +16619,7 @@ var Rance;
                 Object.keys(this.fowSpriteCache).length < 4) {
                 var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                 var gfx = new PIXI.Graphics();
+                gfx.isMask = true;
                 gfx.beginFill(0);
                 gfx.drawShape(poly);
                 gfx.endFill();
@@ -17106,7 +17107,6 @@ var Rance;
                             var color = fleet.player.color;
                             var textTexture = self.getFleetTextTexture(fleet);
                             var text = new PIXI.Sprite(textTexture);
-                            console.log(text.width, textTexture.width);
                             var containerGfx = new PIXI.Graphics();
                             containerGfx.lineStyle(1, 0x00000, 1);
                             containerGfx.beginFill(color, 0.7);
@@ -18335,12 +18335,14 @@ var Rance;
             for (var i = 0; i < points.length; i++) {
                 gfx.bezierCurveTo.apply(gfx, points[i]);
             }
-            gfx.height;
+            var curveShape = gfx.currentPath.shape;
+            curveShape.closed = false; // PIXI 3.0.7 bug
             this.drawArrowHead(gfx, style.color);
             return gfx;
         };
         PathfindingArrow.prototype.drawArrowHead = function (gfx, color) {
-            var points = gfx.graphicsData[0].shape.points;
+            var curveShape = gfx.graphicsData[0].shape;
+            var points = curveShape.points;
             var x1 = points[points.length - 12];
             var y1 = points[points.length - 11];
             var x2 = points[points.length - 2];
@@ -18378,7 +18380,6 @@ var Rance;
                     points.pop();
                 }
             }
-            gfx.height;
         };
         PathfindingArrow.prototype.getTargetOffset = function (target, sourcePoint, i, totalPaths, offsetPerOrbit) {
             var maxPerOrbit = 6;

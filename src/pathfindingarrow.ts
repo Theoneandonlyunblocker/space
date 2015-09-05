@@ -385,7 +385,6 @@ module Rance
     {
       var gfx = new PIXI.Graphics();
 
-
       gfx.lineStyle(12, style.color, 0.7);
       gfx.moveTo(points[0][0], points[0][1]);
 
@@ -393,7 +392,9 @@ module Rance
       {
         gfx.bezierCurveTo.apply(gfx, points[i]);
       }
-      gfx.height;
+
+      var curveShape = <PIXI.Polygon> gfx.currentPath.shape;
+      curveShape.closed = false; // PIXI 3.0.7 bug
 
       this.drawArrowHead(gfx, style.color);
 
@@ -401,7 +402,8 @@ module Rance
     }
     drawArrowHead(gfx: PIXI.Graphics, color: number)
     {
-      var points = gfx.graphicsData[0].shape.points;
+      var curveShape = <PIXI.Polygon> gfx.graphicsData[0].shape;
+      var points = curveShape.points;
 
       var x1 = points[points.length - 12];
       var y1 = points[points.length - 11];
@@ -451,10 +453,7 @@ module Rance
           points.pop();
           points.pop();
         }
-
       }
-
-      gfx.height;
     }
 
     getTargetOffset(target: Point, sourcePoint: Point, i: number,
