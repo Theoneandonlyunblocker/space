@@ -138,7 +138,7 @@ module Rance
                   app.reactUI.switchScene("galaxyMap");
                   app.renderer.camera.zoom(zoom);
                   app.renderer.camera.container.position = position;
-                }, 0);
+                }, 5);
               }
             },
               "Reset app"

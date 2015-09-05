@@ -38,7 +38,7 @@ module Rance
         window.setTimeout(function()
         {
           app.load(saveName);
-        }, 0);
+        }, 5);
       },
       handleClose: function()
       {
