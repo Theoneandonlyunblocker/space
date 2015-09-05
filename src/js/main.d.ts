@@ -2673,6 +2673,8 @@ declare module Rance {
         destroy(): void;
         addEventListeners(): void;
         preventGhost(delay: number, type: string): void;
+        makeUITransparent(): void;
+        makeUIOpaque(): void;
         cancelCurrentAction(): void;
         mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void;
         touchStart(event: PIXI.interaction.InteractionEvent, star?: Star): void;

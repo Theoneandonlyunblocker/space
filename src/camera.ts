@@ -126,12 +126,6 @@ module Rance
       this.setBounds();
       this.startClick = mousePos;
       this.startPos = [this.container.position.x, this.container.position.y];
-
-      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) ui.classList.add("prevent-pointer-events");
-
-      var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
-      if (popups) popups.classList.add("prevent-pointer-events");
     }
     /**
      * @method end
@@ -139,11 +133,6 @@ module Rance
     end()
     {
       this.startPos = undefined;
-
-      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) ui.classList.remove("prevent-pointer-events");
-      var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
-      if (popups) popups.classList.remove("prevent-pointer-events");
     }
     /**
      * @method getDelta

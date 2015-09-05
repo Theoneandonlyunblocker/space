@@ -128,6 +128,26 @@ module Rance
         self.preventingGhost[type] = null
       }, delay);
     }
+    makeUITransparent()
+    {
+      if (this.currentAction) return;
+      console.log("makeUITransparent")
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) 
+      {
+        ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+      }
+    }
+    makeUIOpaque()
+    {
+      if (this.currentAction) return;
+      console.log("makeUIOpaque")
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) 
+      {
+        ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
+      }
+    }
     cancelCurrentAction()
     {
       switch (this.currentAction)
@@ -136,6 +156,7 @@ module Rance
         {
           this.rectangleSelect.clearSelection();
           this.currentAction = undefined;
+          this.makeUIOpaque();
         }
       }
     }
@@ -234,6 +255,7 @@ module Rance
       this.currentAction = "scroll";
       this.startPoint = [event.data.global.x, event.data.global.y];
       this.camera.startScroll(this.startPoint);
+      this.makeUITransparent();
     }
     scrollMove(event: PIXI.interaction.InteractionEvent)
     {
@@ -245,6 +267,7 @@ module Rance
       this.startPoint = undefined;
       this.currentAction = this.stashedAction;
       this.stashedAction = undefined;
+      this.makeUIOpaque();
     }
     zoomMove(event: PIXI.interaction.InteractionEvent)
     {
@@ -293,6 +316,7 @@ module Rance
     {
       eventManager.dispatchEvent("startPotentialMove", star);
       this.currentAction = "fleetMove";
+      this.makeUITransparent();
     }
     setFleetMoveTarget(star: Star)
     {
@@ -307,6 +331,7 @@ module Rance
       }
       eventManager.dispatchEvent("endPotentialMove");
       this.currentAction = undefined;
+      this.makeUIOpaque();
     }
     clearFleetMoveTarget()
     {
@@ -317,6 +342,7 @@ module Rance
     {
       this.currentAction = "select";
       this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+      this.makeUITransparent();
     }
     dragSelect(event: PIXI.interaction.InteractionEvent)
     {
@@ -326,6 +352,7 @@ module Rance
     {
       this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
       this.currentAction = undefined;
+      this.makeUIOpaque();
     }
 
   }

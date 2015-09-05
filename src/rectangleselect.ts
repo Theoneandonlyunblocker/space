@@ -45,12 +45,6 @@ module Rance
       this.selecting = true;
       this.start = point;
       this.current = point;
-
-      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) 
-      {
-        ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
-      }
     }
     moveSelection(point: Point)
     {
@@ -69,14 +63,7 @@ module Rance
     clearSelection()
     {
       this.selecting = false;
-      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) 
-      {
-        ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
-      }
-
       this.graphics.clear();
-
       this.start = null;
       this.current = null;
     }

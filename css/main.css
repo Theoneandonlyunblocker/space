@@ -1303,6 +1303,7 @@ progress::-webkit-progress-value {
 }
 .galaxy-map-ui {
   z-index: 100;
+  transition: opacity 0.5s;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -1315,6 +1316,9 @@ progress::-webkit-progress-value {
 }
 .galaxy-map-ui > * {
   pointer-events: auto;
+}
+.mouse-event-active-ui {
+  opacity: 0.1;
 }
 .galaxy-map-ui-top {
   pointer-events: none;

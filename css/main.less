@@ -1702,12 +1702,18 @@ progress::-webkit-progress-value { background: #080; }
 .galaxy-map-ui
 {
   z-index: 100;
+  transition: opacity 0.5s;
   .prevent-user-select;
   pointer-events: none;
   >*
   {
     pointer-events: auto;
   }
+}
+
+.mouse-event-active-ui
+{
+  opacity: 0.1;
 }
 
 .galaxy-map-ui-top

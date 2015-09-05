@@ -17380,24 +17380,12 @@ var Rance;
             this.setBounds();
             this.startClick = mousePos;
             this.startPos = [this.container.position.x, this.container.position.y];
-            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
-            if (ui)
-                ui.classList.add("prevent-pointer-events");
-            var popups = document.getElementsByClassName("popup-container")[0];
-            if (popups)
-                popups.classList.add("prevent-pointer-events");
         };
         /**
          * @method end
          */
         Camera.prototype.end = function () {
             this.startPos = undefined;
-            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
-            if (ui)
-                ui.classList.remove("prevent-pointer-events");
-            var popups = document.getElementsByClassName("popup-container")[0];
-            if (popups)
-                popups.classList.remove("prevent-pointer-events");
         };
         /**
          * @method getDelta
@@ -17559,10 +17547,6 @@ var Rance;
             this.selecting = true;
             this.start = point;
             this.current = point;
-            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
-            if (ui) {
-                ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
-            }
         };
         RectangleSelect.prototype.moveSelection = function (point) {
             this.current = point;
@@ -17576,10 +17560,6 @@ var Rance;
         };
         RectangleSelect.prototype.clearSelection = function () {
             this.selecting = false;
-            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
-            if (ui) {
-                ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
-            }
             this.graphics.clear();
             this.start = null;
             this.current = null;
@@ -17712,12 +17692,31 @@ var Rance;
                 self.preventingGhost[type] = null;
             }, delay);
         };
+        MouseEventHandler.prototype.makeUITransparent = function () {
+            if (this.currentAction)
+                return;
+            console.log("makeUITransparent");
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui) {
+                ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+            }
+        };
+        MouseEventHandler.prototype.makeUIOpaque = function () {
+            if (this.currentAction)
+                return;
+            console.log("makeUIOpaque");
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui) {
+                ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
+            }
+        };
         MouseEventHandler.prototype.cancelCurrentAction = function () {
             switch (this.currentAction) {
                 case "select":
                     {
                         this.rectangleSelect.clearSelection();
                         this.currentAction = undefined;
+                        this.makeUIOpaque();
                     }
             }
         };
@@ -17792,6 +17791,7 @@ var Rance;
             this.currentAction = "scroll";
             this.startPoint = [event.data.global.x, event.data.global.y];
             this.camera.startScroll(this.startPoint);
+            this.makeUITransparent();
         };
         MouseEventHandler.prototype.scrollMove = function (event) {
             this.camera.move([event.data.global.x, event.data.global.y]);
@@ -17801,6 +17801,7 @@ var Rance;
             this.startPoint = undefined;
             this.currentAction = this.stashedAction;
             this.stashedAction = undefined;
+            this.makeUIOpaque();
         };
         MouseEventHandler.prototype.zoomMove = function (event) {
             var delta = event.data.global.x + this.currPoint[1] -
@@ -17839,6 +17840,7 @@ var Rance;
         MouseEventHandler.prototype.startFleetMove = function (event, star) {
             Rance.eventManager.dispatchEvent("startPotentialMove", star);
             this.currentAction = "fleetMove";
+            this.makeUITransparent();
         };
         MouseEventHandler.prototype.setFleetMoveTarget = function (star) {
             if (this.currentAction !== "fleetMove")
@@ -17851,6 +17853,7 @@ var Rance;
             }
             Rance.eventManager.dispatchEvent("endPotentialMove");
             this.currentAction = undefined;
+            this.makeUIOpaque();
         };
         MouseEventHandler.prototype.clearFleetMoveTarget = function () {
             if (this.currentAction !== "fleetMove")
@@ -17860,6 +17863,7 @@ var Rance;
         MouseEventHandler.prototype.startSelect = function (event) {
             this.currentAction = "select";
             this.rectangleSelect.startSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
+            this.makeUITransparent();
         };
         MouseEventHandler.prototype.dragSelect = function (event) {
             this.rectangleSelect.moveSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
@@ -17867,6 +17871,7 @@ var Rance;
         MouseEventHandler.prototype.endSelect = function (event) {
             this.rectangleSelect.endSelection(event.data.getLocalPosition(this.renderer.layers["main"]));
             this.currentAction = undefined;
+            this.makeUIOpaque();
         };
         return MouseEventHandler;
     })();
