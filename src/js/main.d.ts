@@ -1505,6 +1505,7 @@ declare module Rance {
     module MapGen2 {
         function triangulate(vertices: Point[]): Triangle[];
         function getCentroid(vertices: Point[]): Point;
+        function pointsEqual(p1: Point, p2: Point): boolean;
     }
 }
 declare module Rance {
@@ -2453,7 +2454,10 @@ declare module Rance {
         star: Star;
         halfEdge: any;
     }[]): OffsetPoint[];
-    function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): any[][];
+    function getRevealedBorderEdges(revealedStars: Star[], voronoiInfo: MapVoronoiInfo): {
+        points: any[];
+        isClosed: boolean;
+    }[];
 }
 declare module Rance {
     interface IMapRendererLayer {

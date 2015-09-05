@@ -235,11 +235,6 @@ module Rance
           }
           else
           {
-            // stupid hack to fix pixi bug with drawing polygons
-            // without this consecutive edges with the same angle disappear
-            point.x += (jj % 2) * 0.1;
-            point.y += (jj % 2) * 0.1;
-
             currentPolyLine.push(point);
             processedStarsById[star.id] = true;
           }
@@ -251,6 +246,31 @@ module Rance
       }
     }
 
-    return polyLines;
+    var polyLinesData:
+    {
+      points: any[];
+      isClosed: boolean;
+    }[] = [];
+
+    for (var i = 0; i < polyLines.length; i++)
+    {
+      var polyLine = polyLines[i];
+      var isClosed = MapGen2.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+      if (isClosed) polyLine.pop();
+      for (var j = 0; j < polyLine.length; j++)
+      {
+        // stupid hack to fix pixi bug with drawing polygons
+        // without this consecutive edges with the same angle disappear
+        polyLine[j].x += (j % 2) * 0.1;
+        polyLine[j].y += (j % 2) * 0.1;
+      }
+      polyLinesData.push(
+      {
+        points: polyLine,
+        isClosed: isClosed
+      });
+    }
+
+    return polyLinesData;
   }
 }

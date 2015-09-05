@@ -10145,6 +10145,7 @@ var Rance;
         function pointsEqual(p1, p2) {
             return (p1.x === p2.x && p1.y === p2.y);
         }
+        MapGen2.pointsEqual = pointsEqual;
         function edgesEqual(e1, e2) {
             return ((pointsEqual(e1[0], e2[0]) && pointsEqual(e1[1], e2[1])) ||
                 (pointsEqual(e1[0], e2[1]) && pointsEqual(e1[1], e2[0])));
@@ -16481,10 +16482,6 @@ var Rance;
                         }
                     }
                     else {
-                        // stupid hack to fix pixi bug with drawing polygons
-                        // without this consecutive edges with the same angle disappear
-                        point.x += (jj % 2) * 0.1;
-                        point.y += (jj % 2) * 0.1;
                         currentPolyLine.push(point);
                         processedStarsById[star.id] = true;
                     }
@@ -16494,7 +16491,24 @@ var Rance;
                 }
             }
         }
-        return polyLines;
+        var polyLinesData = [];
+        for (var i = 0; i < polyLines.length; i++) {
+            var polyLine = polyLines[i];
+            var isClosed = Rance.MapGen2.pointsEqual(polyLine[0], polyLine[polyLine.length - 1]);
+            if (isClosed)
+                polyLine.pop();
+            for (var j = 0; j < polyLine.length; j++) {
+                // stupid hack to fix pixi bug with drawing polygons
+                // without this consecutive edges with the same angle disappear
+                polyLine[j].x += (j % 2) * 0.1;
+                polyLine[j].y += (j % 2) * 0.1;
+            }
+            polyLinesData.push({
+                points: polyLine,
+                isClosed: isClosed
+            });
+        }
+        return polyLinesData;
     }
     Rance.getRevealedBorderEdges = getRevealedBorderEdges;
 })(Rance || (Rance = {}));
@@ -16984,10 +16998,12 @@ var Rance;
                             var gfx = new PIXI.Graphics();
                             gfx.alpha = 0.7;
                             doc.addChild(gfx);
-                            var polyLine = borderEdges[i].slice(0, borderEdges[i].length - 1);
-                            var player = polyLine[0].star.owner;
+                            var polyLineData = borderEdges[i];
+                            var player = polyLineData.points[0].star.owner;
                             gfx.lineStyle(8, player.secondaryColor, 1);
-                            gfx.drawPolygon(polyLine);
+                            var polygon = new PIXI.Polygon(polyLineData.points);
+                            polygon.closed = polyLineData.isClosed;
+                            gfx.drawShape(polygon);
                         }
                         return doc;
                     }
