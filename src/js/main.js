@@ -15205,7 +15205,7 @@ var Rance;
                         player.addUnit(ship);
                         ships.push(ship);
                     }
-                    var fleet = new Rance.Fleet(player, ships, star, null, false);
+                    var fleet = new Rance.Fleet(player, ships, star, undefined, false);
                 }
             }
         }
@@ -16469,7 +16469,7 @@ var Rance;
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     point.star = pointStar;
                     if (revealedStars.indexOf(point.star) === -1) {
-                        if (currentPolyLine.length > 0) {
+                        if (currentPolyLine.length > 1) {
                             polyLines.push(currentPolyLine);
                             currentPolyLine = [];
                         }
@@ -16479,7 +16479,7 @@ var Rance;
                         processedStarsById[star.id] = true;
                     }
                 }
-                if (currentPolyLine.length > 0) {
+                if (currentPolyLine.length > 1) {
                     polyLines.push(currentPolyLine);
                 }
             }
@@ -17114,7 +17114,6 @@ var Rance;
                             text.x += 2;
                             text.y -= 1;
                             fleetContainer.interactive = true;
-                            fleetContainer.interactiveChildren = false;
                             var boundMouseDownFN = mouseDownFN.bind(fleet);
                             var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
                             fleetContainer.on("click", boundFleetClickFN);
@@ -17147,10 +17146,8 @@ var Rance;
                     }
                 };
             for (var layerName in this.layers) {
-                if (!this.layers[layerName].interactive) {
-                    this.layers[layerName].container.interactive = false;
-                    this.layers[layerName].container.interactiveChildren = false;
-                }
+                var layer = this.layers[layerName];
+                layer.container.interactiveChildren = layer.interactive;
             }
         };
         MapRenderer.prototype.initMapModes = function () {
@@ -17164,7 +17161,7 @@ var Rance;
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
-                        //{layer: this.layers["fogOfWar"]},
+                        { layer: this.layers["fogOfWar"] },
                         { layer: this.layers["fleets"] }
                     ]
                 };
@@ -17176,7 +17173,7 @@ var Rance;
                         { layer: this.layers["starOwners"] },
                         { layer: this.layers["ownerBorders"] },
                         { layer: this.layers["nonFillerStars"] },
-                        //{layer: this.layers["fogOfWar"]},
+                        { layer: this.layers["fogOfWar"] },
                         { layer: this.layers["fleets"] }
                     ]
                 };
@@ -17214,7 +17211,7 @@ var Rance;
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
-                        //{layer: this.layers["fogOfWar"]},
+                        { layer: this.layers["fogOfWar"] },
                         { layer: this.layers["resources"] },
                         { layer: this.layers["fleets"] }
                     ]

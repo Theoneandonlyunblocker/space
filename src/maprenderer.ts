@@ -850,7 +850,6 @@ module Rance
             text.y -= 1;
             
             fleetContainer.interactive = true;
-            fleetContainer.interactiveChildren = false;
             
             var boundMouseDownFN = mouseDownFN.bind(fleet);
             var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
@@ -893,11 +892,8 @@ module Rance
 
       for (var layerName in this.layers)
       {
-        if (!this.layers[layerName].interactive)
-        {
-          this.layers[layerName].container.interactive = false;
-          this.layers[layerName].container.interactiveChildren = false;
-        }
+        var layer = this.layers[layerName];
+        layer.container.interactiveChildren = layer.interactive;
       }
     }
     initMapModes()
@@ -913,7 +909,7 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
-          //{layer: this.layers["fogOfWar"]},
+          {layer: this.layers["fogOfWar"]},
           {layer: this.layers["fleets"]}
         ]
       }
@@ -926,7 +922,7 @@ module Rance
           {layer: this.layers["starOwners"]},
           {layer: this.layers["ownerBorders"]},
           {layer: this.layers["nonFillerStars"]},
-          //{layer: this.layers["fogOfWar"]},
+          {layer: this.layers["fogOfWar"]},
           {layer: this.layers["fleets"]}
         ]
       }
@@ -967,7 +963,7 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
-          //{layer: this.layers["fogOfWar"]},
+          {layer: this.layers["fogOfWar"]},
           {layer: this.layers["resources"]},
           {layer: this.layers["fleets"]}
         ]
