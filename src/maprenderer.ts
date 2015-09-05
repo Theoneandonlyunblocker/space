@@ -367,7 +367,7 @@ module Rance
             gfx.star = star;
             gfx.beginFill(0xFFFFF0);
             gfx.drawEllipse(star.x, star.y, starSize, starSize);
-            gfx.endFill;
+            gfx.endFill();
 
 
             gfx.interactive = true;
@@ -445,9 +445,8 @@ module Rance
             if (isFinite(star.owner.colorAlpha)) alpha *= star.owner.colorAlpha;
             gfx.beginFill(star.owner.color, alpha);
             gfx.drawShape(poly);
-            gfx.endFill;
+            gfx.endFill();
             doc.addChild(gfx);
-            
 
             var occupier = star.getSecondaryController();
             if (occupier)
@@ -555,7 +554,7 @@ module Rance
             var gfx = new PIXI.Graphics();
             gfx.beginFill(color, 0.6);
             gfx.drawShape(poly);
-            gfx.endFill;
+            gfx.endFill();
             doc.addChild(gfx);
           }
           doc.height;
