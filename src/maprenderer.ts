@@ -201,7 +201,7 @@ module Rance
         this.fowTilingSprite.mask = gfx;
         this.fowTilingSprite.addChild(gfx);
 
-        var rendered = this.fowTilingSprite.generateTexture();
+        var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer);
 
         var sprite = new PIXI.Sprite(rendered);
 
@@ -285,7 +285,10 @@ module Rance
           strokeThickness: 3
         });
 
-        this.fleetTextTextureCache[fleetSize] = text.generateTexture();
+        // triggers bounds update that gets skipped if we just call generateTexture()
+        text.getBounds();
+
+        this.fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
         window.setTimeout(function()
         {
           text.texture.destroy(true);
@@ -837,7 +840,7 @@ module Rance
             var containerGfx = new PIXI.Graphics();
             containerGfx.lineStyle(1, 0x00000, 1);
             containerGfx.beginFill(color, 0.7);
-            containerGfx.drawRect(0, 0, text.width+4, text.height-7);
+            containerGfx.drawRect(0, 0, text.width+4, text.height);
             containerGfx.endFill();
 
 
@@ -898,8 +901,8 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
-          //{layer: this.layers["fogOfWar"]},
-          //{layer: this.layers["fleets"]}
+          {layer: this.layers["fogOfWar"]},
+          {layer: this.layers["fleets"]}
         ]
       }
       this.mapModes["noStatic"] =

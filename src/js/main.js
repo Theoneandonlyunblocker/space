@@ -16625,7 +16625,7 @@ var Rance;
                 this.fowTilingSprite.removeChildren();
                 this.fowTilingSprite.mask = gfx;
                 this.fowTilingSprite.addChild(gfx);
-                var rendered = this.fowTilingSprite.generateTexture();
+                var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer);
                 var sprite = new PIXI.Sprite(rendered);
                 this.fowSpriteCache[star.id] = sprite;
                 this.fowTilingSprite.mask = null;
@@ -16686,7 +16686,9 @@ var Rance;
                     stroke: "#000000",
                     strokeThickness: 3
                 });
-                this.fleetTextTextureCache[fleetSize] = text.generateTexture();
+                // triggers bounds update that gets skipped if we just call generateTexture()
+                text.getBounds();
+                this.fleetTextTextureCache[fleetSize] = text.generateTexture(app.renderer.renderer);
                 window.setTimeout(function () {
                     text.texture.destroy(true);
                 }, 0);
@@ -17104,10 +17106,11 @@ var Rance;
                             var color = fleet.player.color;
                             var textTexture = self.getFleetTextTexture(fleet);
                             var text = new PIXI.Sprite(textTexture);
+                            console.log(text.width, textTexture.width);
                             var containerGfx = new PIXI.Graphics();
                             containerGfx.lineStyle(1, 0x00000, 1);
                             containerGfx.beginFill(color, 0.7);
-                            containerGfx.drawRect(0, 0, text.width + 4, text.height - 7);
+                            containerGfx.drawRect(0, 0, text.width + 4, text.height);
                             containerGfx.endFill();
                             fleetContainer.addChild(containerGfx);
                             fleetContainer.addChild(text);
@@ -17154,6 +17157,8 @@ var Rance;
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
+                        { layer: this.layers["fogOfWar"] },
+                        { layer: this.layers["fleets"] }
                     ]
                 };
             this.mapModes["noStatic"] =
