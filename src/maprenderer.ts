@@ -40,7 +40,7 @@ module Rance
     {
       [ownerId: string]:
       {
-        [occupierId: string]: any; //shader
+        [occupierId: string]: PIXI.AbstractFilter;
       };
     } = {};
 
@@ -70,7 +70,7 @@ module Rance
 
     listeners:
     {
-      [name: string]: any;
+      [name: string]: Function;
     } = {};
 
     constructor(map: GalaxyMap, player: Player)
@@ -321,7 +321,7 @@ module Rance
 
           var mouseDownFN = function(event: PIXI.interaction.InteractionEvent)
           {
-            eventManager.dispatchEvent("mouseDown", event);
+            eventManager.dispatchEvent("mouseDown", event, this);
           }
           var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
           {
@@ -330,14 +330,6 @@ module Rance
           var onClickFN = function(star: Star)
           {
             eventManager.dispatchEvent("starClick", star);
-          }
-          var rightDownFN = function(event: PIXI.interaction.InteractionEvent)
-          {
-            eventManager.dispatchEvent("mouseDown", event);
-          }
-          var rightUpFN = function(star: Star)
-          {
-            eventManager.dispatchEvent("mouseUp", null);
           }
           var mouseOverFN = function(star: Star)
           {
@@ -363,12 +355,11 @@ module Rance
             {
               starSize += star.buildings["defence"].length * 2;
             }
-            var gfx: any = new PIXI.Graphics();
+            var gfx = new PIXI.Graphics();
             if (!star.owner.isIndependent)
             {
               gfx.lineStyle(starSize / 2, star.owner.color, 1);
             }
-            gfx.star = star;
             gfx.beginFill(0xFFFFF0);
             gfx.drawEllipse(star.x, star.y, starSize, starSize);
             gfx.endFill();
@@ -377,25 +368,23 @@ module Rance
             gfx.interactive = true;
             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
 
-            gfx.on("mousedown", mouseDownFN);
-            gfx.on("mouseup", mouseUpFN);
-
+            var boundMouseDown = mouseDownFN.bind(star);
             var gfxClickFN = function(event: PIXI.interaction.InteractionEvent)
             {
               var originalEvent = <MouseEvent> event.data.originalEvent;
               if (originalEvent.button) return;
 
-              onClickFN(this.star);
-            }.bind(gfx);
+              onClickFN(this);
+            }.bind(star);
 
+            gfx.on("mousedown", boundMouseDown);
+            gfx.on("mouseup", mouseUpFN);
+            gfx.on("rightdown", boundMouseDown);
+            gfx.on("rightup", mouseUpFN);
             gfx.on("click", gfxClickFN);
-            gfx.on("tap", gfxClickFN);
-
-            gfx.on("rightdown", rightDownFN);
-            gfx.on("rightup", rightUpFN.bind(gfx, star));
-
             gfx.on("mouseover", mouseOverFN.bind(gfx, star));
             gfx.on("mouseout", mouseOutFN);
+            gfx.on("tap", gfxClickFN);
 
             doc.addChild(gfx);
           }
@@ -406,7 +395,7 @@ module Rance
           // on the object that had touchstart called on it
           doc.on("touchstart", touchStartFN);
           doc.on("touchend", touchEndFN);
-          doc.on("touchmove", function(event: any)
+          doc.on("touchmove", function(event: PIXI.interaction.InteractionEvent)
           {
             var local = event.data.getLocalPosition(doc);
             var starAtLocal = map.voronoi.getStarAtPoint(local);
@@ -814,7 +803,7 @@ module Rance
 
           var mouseDownFN = function(event: PIXI.interaction.InteractionEvent)
           {
-            eventManager.dispatchEvent("mouseDown", event);
+            eventManager.dispatchEvent("mouseDown", event, this.location);
           }
           var mouseUpFN = function(event: PIXI.interaction.InteractionEvent)
           {
@@ -824,7 +813,6 @@ module Rance
           {
             eventManager.dispatchEvent("hoverStar", fleet.location);
           }
-
           function fleetClickFn(fleet: Fleet)
           {
             eventManager.dispatchEvent("selectFleets", [fleet]);
@@ -850,14 +838,17 @@ module Rance
             text.x += 2;
             text.y -= 1;
             
-
             fleetContainer.interactive = true;
+            fleetContainer.interactiveChildren = false;
             
+            var boundMouseDownFN = mouseDownFN.bind(fleet);
             var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
             fleetContainer.on("click", boundFleetClickFN);
             fleetContainer.on("tap", boundFleetClickFN);
-            fleetContainer.on("mousedown", mouseDownFN);
+            fleetContainer.on("mousedown", boundMouseDownFN);
             fleetContainer.on("mouseup", mouseUpFN);
+            fleetContainer.on("rightdown", boundMouseDownFN);
+            fleetContainer.on("rightup", mouseUpFN);
             fleetContainer.on("mouseover", mouseOverFN.bind(fleetContainer, fleet));
 
             return fleetContainer;

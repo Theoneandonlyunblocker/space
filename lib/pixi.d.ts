@@ -1442,7 +1442,7 @@ declare module PIXI {
         export interface InteractionEvent {
 
             stopped: boolean;
-            target: any;
+            target: DisplayObject;
             type: string;
             data: InteractionData;
             stopPropagation(): void;

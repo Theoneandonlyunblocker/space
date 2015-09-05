@@ -3949,7 +3949,7 @@ var Rance;
                 target.blur();
                 window.setTimeout(function () {
                     app.load(saveName);
-                }, 10);
+                }, 5);
             },
             handleClose: function () {
                 this.props.handleClose();
@@ -16033,7 +16033,7 @@ var Rance;
                             app.reactUI.switchScene("galaxyMap");
                             app.renderer.camera.zoom(zoom);
                             app.renderer.camera.container.position = position;
-                        }, 10);
+                        }, 5);
                     }
                 }, "Reset app")));
             }
@@ -16707,7 +16707,7 @@ var Rance;
                             points = this.player.getRevealedStars();
                         }
                         var mouseDownFN = function (event) {
-                            Rance.eventManager.dispatchEvent("mouseDown", event);
+                            Rance.eventManager.dispatchEvent("mouseDown", event, this);
                         };
                         var mouseUpFN = function (event) {
                             Rance.eventManager.dispatchEvent("mouseUp", event);
@@ -16715,19 +16715,11 @@ var Rance;
                         var onClickFN = function (star) {
                             Rance.eventManager.dispatchEvent("starClick", star);
                         };
-                        var rightDownFN = function (event) {
-                            Rance.eventManager.dispatchEvent("mouseDown", event);
-                        };
-                        var rightUpFN = function (star) {
-                            Rance.eventManager.dispatchEvent("mouseUp", null);
-                        };
                         var mouseOverFN = function (star) {
                             Rance.eventManager.dispatchEvent("hoverStar", star);
                         };
                         var mouseOutFN = function (event) {
-                            var local = event.data.getLocalPosition(doc);
-                            var starAtLocal = map.voronoi.getStarAtPoint(local);
-                            Rance.eventManager.dispatchEvent("clearHover", starAtLocal);
+                            Rance.eventManager.dispatchEvent("clearHover");
                         };
                         var touchStartFN = function (event) {
                             Rance.eventManager.dispatchEvent("touchStart", event);
@@ -16745,26 +16737,26 @@ var Rance;
                             if (!star.owner.isIndependent) {
                                 gfx.lineStyle(starSize / 2, star.owner.color, 1);
                             }
-                            gfx.star = star;
                             gfx.beginFill(0xFFFFF0);
                             gfx.drawEllipse(star.x, star.y, starSize, starSize);
                             gfx.endFill();
                             gfx.interactive = true;
                             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
-                            gfx.on("mousedown", mouseDownFN);
-                            gfx.on("mouseup", mouseUpFN);
+                            var boundMouseDown = mouseDownFN.bind(star);
                             var gfxClickFN = function (event) {
                                 var originalEvent = event.data.originalEvent;
                                 if (originalEvent.button)
                                     return;
-                                onClickFN(this.star);
-                            }.bind(gfx);
+                                onClickFN(this);
+                            }.bind(star);
+                            gfx.on("mousedown", boundMouseDown);
+                            gfx.on("mouseup", mouseUpFN);
+                            gfx.on("rightdown", boundMouseDown);
+                            gfx.on("rightup", mouseUpFN);
                             gfx.on("click", gfxClickFN);
-                            gfx.on("tap", gfxClickFN);
-                            gfx.on("rightdown", rightDownFN);
-                            gfx.on("rightup", rightUpFN.bind(gfx, star));
                             gfx.on("mouseover", mouseOverFN.bind(gfx, star));
                             gfx.on("mouseout", mouseOutFN);
+                            gfx.on("tap", gfxClickFN);
                             doc.addChild(gfx);
                         }
                         doc.interactive = true;
@@ -17087,7 +17079,7 @@ var Rance;
                             points = this.player.getVisibleStars();
                         }
                         var mouseDownFN = function (event) {
-                            Rance.eventManager.dispatchEvent("mouseDown", event);
+                            Rance.eventManager.dispatchEvent("mouseDown", event, this.location);
                         };
                         var mouseUpFN = function (event) {
                             Rance.eventManager.dispatchEvent("mouseUp", event);
@@ -17113,11 +17105,14 @@ var Rance;
                             text.x += 2;
                             text.y -= 1;
                             fleetContainer.interactive = true;
+                            var boundMouseDownFN = mouseDownFN.bind(fleet);
                             var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
                             fleetContainer.on("click", boundFleetClickFN);
                             fleetContainer.on("tap", boundFleetClickFN);
-                            fleetContainer.on("mousedown", mouseDownFN);
+                            fleetContainer.on("mousedown", boundMouseDownFN);
                             fleetContainer.on("mouseup", mouseUpFN);
+                            fleetContainer.on("rightdown", boundMouseDownFN);
+                            fleetContainer.on("rightup", mouseUpFN);
                             fleetContainer.on("mouseover", mouseOverFN.bind(fleetContainer, fleet));
                             return fleetContainer;
                         }
@@ -17673,8 +17668,8 @@ var Rance;
                 if (e.target.localName !== "canvas")
                     return;
             });
-            this.listeners["mouseDown"] = Rance.eventManager.addEventListener("mouseDown", function (e) {
-                self.mouseDown(e);
+            this.listeners["mouseDown"] = Rance.eventManager.addEventListener("mouseDown", function (e, star) {
+                self.mouseDown(e, star);
             });
             this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
                 self.mouseUp(e);
@@ -17688,8 +17683,8 @@ var Rance;
             this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (star) {
                 self.setHoveredStar(star);
             });
-            this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function (starCursorIsAt) {
-                self.clearHoveredStar(starCursorIsAt);
+            this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function () {
+                self.clearHoveredStar();
             });
         };
         MouseEventHandler.prototype.preventGhost = function (delay, type) {
@@ -17701,7 +17696,7 @@ var Rance;
                 self.preventingGhost[type] = null;
             }, delay);
         };
-        MouseEventHandler.prototype.mouseDown = function (event) {
+        MouseEventHandler.prototype.mouseDown = function (event, star) {
             var originalEvent = event.data.originalEvent;
             if (originalEvent.ctrlKey ||
                 originalEvent.metaKey ||
@@ -17713,15 +17708,15 @@ var Rance;
                 this.startSelect(event);
             }
             else if (originalEvent.button === 2) {
-                this.startFleetMove(event);
+                this.startFleetMove(event, star);
             }
         };
-        MouseEventHandler.prototype.touchStart = function (event) {
+        MouseEventHandler.prototype.touchStart = function (event, star) {
             if (app.playerControl.selectedFleets.length === 0) {
                 this.startSelect(event);
             }
             else {
-                this.startFleetMove(event);
+                this.startFleetMove(event, star);
             }
         };
         MouseEventHandler.prototype.touchEnd = function (event) {
@@ -17799,23 +17794,24 @@ var Rance;
         MouseEventHandler.prototype.setHoveredStar = function (star) {
             this.preventGhost(30, "hover");
             if (star !== this.hoveredStar) {
+                console.log("hoverStar", star.id);
                 this.hoveredStar = star;
                 this.setFleetMoveTarget(star);
             }
         };
-        MouseEventHandler.prototype.clearHoveredStar = function (starCursorIsAt) {
-            if (starCursorIsAt === this.hoveredStar)
-                return;
+        MouseEventHandler.prototype.clearHoveredStar = function () {
             var timeout = window.setTimeout(function () {
                 if (!this.preventingGhost["hover"]) {
+                    console.log("clearHover");
                     this.hoveredStar = null;
                     this.clearFleetMoveTarget();
                 }
                 window.clearTimeout(timeout);
             }.bind(this), 15);
         };
-        MouseEventHandler.prototype.startFleetMove = function (event) {
-            Rance.eventManager.dispatchEvent("startPotentialMove", event.target.star);
+        MouseEventHandler.prototype.startFleetMove = function (event, star) {
+            console.log("startFleetMove", star ? star.id : null);
+            Rance.eventManager.dispatchEvent("startPotentialMove", star);
             this.currentAction = "fleetMove";
         };
         MouseEventHandler.prototype.setFleetMoveTarget = function (star) {
@@ -18461,10 +18457,13 @@ var Rance;
         };
         Renderer.prototype.initLayers = function () {
             var _bgSprite = this.layers["bgSprite"] = new PIXI.Container();
+            _bgSprite.interactiveChildren = false;
             var _main = this.layers["main"] = new PIXI.Container();
             var _map = this.layers["map"] = new PIXI.Container();
             var _bgFilter = this.layers["bgFilter"] = new PIXI.Container();
+            _bgFilter.interactiveChildren = false;
             var _select = this.layers["select"] = new PIXI.Container();
+            _select.interactiveChildren = false;
             _main.addChild(_map);
             _main.addChild(_select);
         };

@@ -82,9 +82,9 @@ module Rance
       });
 
       this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown",
-        function(e: PIXI.interaction.InteractionEvent)
+        function(e: PIXI.interaction.InteractionEvent, star?: Star)
         {
-          self.mouseDown(e);
+          self.mouseDown(e, star);
         });
       this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp",
         function(e: PIXI.interaction.InteractionEvent)
@@ -128,7 +128,7 @@ module Rance
         self.preventingGhost[type] = null
       }, delay);
     }
-    mouseDown(event: PIXI.interaction.InteractionEvent)
+    mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star)
     {
       var originalEvent = <MouseEvent> event.data.originalEvent;
       if (
@@ -146,11 +146,11 @@ module Rance
       }
       else if (originalEvent.button === 2)
       {
-        this.startFleetMove(event);
+        this.startFleetMove(event, star);
       }
     }
 
-    touchStart(event: PIXI.interaction.InteractionEvent)
+    touchStart(event: PIXI.interaction.InteractionEvent, star?: Star)
     {
       if (app.playerControl.selectedFleets.length === 0)
       {
@@ -158,7 +158,7 @@ module Rance
       }
       else
       {
-        this.startFleetMove(event);
+        this.startFleetMove(event, star);
       }
     }
     touchEnd(event: PIXI.interaction.InteractionEvent)
@@ -272,9 +272,10 @@ module Rance
         window.clearTimeout(timeout);
       }.bind(this), 15);
     }
-    startFleetMove(event: PIXI.interaction.InteractionEvent)
+    startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star)
     {
-      eventManager.dispatchEvent("startPotentialMove", event.target.star);
+      console.log("startFleetMove", star ? star.id : null);
+      eventManager.dispatchEvent("startPotentialMove", star);
       this.currentAction = "fleetMove";
     }
     setFleetMoveTarget(star: Star)

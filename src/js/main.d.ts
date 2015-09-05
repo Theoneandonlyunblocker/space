@@ -2478,7 +2478,7 @@ declare module Rance {
         player: Player;
         occupationShaders: {
             [ownerId: string]: {
-                [occupierId: string]: any;
+                [occupierId: string]: PIXI.AbstractFilter;
             };
         };
         layers: {
@@ -2498,7 +2498,7 @@ declare module Rance {
         isDirty: boolean;
         preventRender: boolean;
         listeners: {
-            [name: string]: any;
+            [name: string]: Function;
         };
         constructor(map: GalaxyMap, player: Player);
         destroy(): void;
@@ -2509,7 +2509,7 @@ declare module Rance {
         updateShaderZoom(zoom: number): void;
         makeFowSprite(): void;
         getFowSpriteForStar(star: Star): PIXI.Sprite;
-        getOccupationShader(owner: Player, occupier: Player): any;
+        getOccupationShader(owner: Player, occupier: Player): PIXI.AbstractFilter;
         getFleetTextTexture(fleet: Fleet): PIXI.Texture;
         initLayers(): void;
         initMapModes(): void;
@@ -2671,8 +2671,8 @@ declare module Rance {
         destroy(): void;
         addEventListeners(): void;
         preventGhost(delay: number, type: string): void;
-        mouseDown(event: PIXI.interaction.InteractionEvent): void;
-        touchStart(event: PIXI.interaction.InteractionEvent): void;
+        mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void;
+        touchStart(event: PIXI.interaction.InteractionEvent, star?: Star): void;
         touchEnd(event: PIXI.interaction.InteractionEvent): void;
         mouseMove(event: PIXI.interaction.InteractionEvent): void;
         mouseUp(event: PIXI.interaction.InteractionEvent): void;
@@ -2683,8 +2683,8 @@ declare module Rance {
         endZoom(event: PIXI.interaction.InteractionEvent): void;
         startZoom(event: PIXI.interaction.InteractionEvent): void;
         setHoveredStar(star: Star): void;
-        clearHoveredStar(starCursorIsAt: Star): void;
-        startFleetMove(event: PIXI.interaction.InteractionEvent): void;
+        clearHoveredStar(): void;
+        startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star): void;
         setFleetMoveTarget(star: Star): void;
         completeFleetMove(): void;
         clearFleetMoveTarget(): void;
