@@ -338,7 +338,7 @@ module Rance
             player.addUnit(ship);
             ships.push(ship);
           }
-          var fleet = new Fleet(player, ships, star, null, false);
+          var fleet = new Fleet(player, ships, star, undefined, false);
         }
       }
     }
