@@ -131,7 +131,11 @@ module Rance
     mouseDown(event: PIXI.interaction.InteractionEvent, targetType: string)
     {
       var originalEvent = <MouseEvent> event.data.originalEvent;
+      console.log(targetType);
       if (targetType === "stage")
+      {
+      }
+      else if (targetType === "world")
       {
         if (
             originalEvent.ctrlKey ||
@@ -142,10 +146,7 @@ module Rance
         {
           this.startScroll(event);
         }
-      }
-      else if (targetType === "world")
-      {
-        if (originalEvent.button === 0 ||
+        else if (originalEvent.button === 0 ||
           !isFinite(originalEvent.button))
         {
           this.startSelect(event);
