@@ -154,7 +154,7 @@ declare module PIXI {
         getLocalBounds(): Rectangle;
         toGlobal(position: Point): Point;
         toLocal(position: Point, from?: DisplayObject): Point;
-        generateTexture(renderer: CanvasRenderer | WebGLRenderer, scaleMode?: number, resolution?: number): Texture;
+        generateTexture(renderer: CanvasRenderer | WebGLRenderer, scaleMode?: number, resolution?: number, bounds?: Rectangle): Texture;
         setParent(container: Container): Container;
         destroy(): void;
         getChildByName(name: string): DisplayObject;
@@ -226,7 +226,7 @@ declare module PIXI {
         removeChildAt(index: number): DisplayObject;
         removeChildren(beginIndex?: number, endIndex?: number): DisplayObject[];
         destroy(destroyChildren?: boolean): void;
-        generateTexture(renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer, resolution?: number, scaleMode?: number): Texture;
+        generateTexture(renderer: CanvasRenderer | WebGLRenderer, scaleMode?: number, resolution?: number, bounds?: Rectangle): Texture;
 
         renderWebGL(renderer: WebGLRenderer): void;
         renderCanvas(renderer: CanvasRenderer): void;
@@ -296,7 +296,7 @@ declare module PIXI {
         drawPolygon(path: number[]| Point[]): Graphics;
         clear(): Graphics;
         //todo
-        generateTexture(renderer: WebGLRenderer | CanvasRenderer, resolution?: number, scaleMode?: number): Texture;
+        generateTexture(renderer: CanvasRenderer | WebGLRenderer, scaleMode?: number, resolution?: number, bounds?: Rectangle): Texture;
         getBounds(matrix?: Matrix): Rectangle;
         containsPoint(point: Point): boolean;
         updateLocalBounds(): void;
