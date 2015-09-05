@@ -16787,9 +16787,6 @@ var Rance;
                             if (!star.owner || star.owner.colorAlpha === 0)
                                 continue;
                             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
-                            debugger;
-                            var x = star.x;
-                            var y = star.y;
                             var gfx = new PIXI.Graphics();
                             var alpha = 0.5;
                             if (isFinite(star.owner.colorAlpha))
@@ -16987,7 +16984,7 @@ var Rance;
                             var gfx = new PIXI.Graphics();
                             gfx.alpha = 0.7;
                             doc.addChild(gfx);
-                            var polyLine = borderEdges[i];
+                            var polyLine = borderEdges[i].slice(0, borderEdges[i].length - 1);
                             var player = polyLine[0].star.owner;
                             gfx.lineStyle(8, player.secondaryColor, 1);
                             gfx.drawPolygon(polyLine);
