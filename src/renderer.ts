@@ -129,14 +129,17 @@ module Rance
     initLayers()
     {
       var _bgSprite = this.layers["bgSprite"] = new PIXI.Container();
+      _bgSprite.interactiveChildren = false;
 
       var _main = this.layers["main"] = new PIXI.Container();
 
       var _map = this.layers["map"] = new PIXI.Container();
 
       var _bgFilter = this.layers["bgFilter"] = new PIXI.Container();
+      _bgFilter.interactiveChildren = false;
 
       var _select = this.layers["select"] = new PIXI.Container();
+      _select.interactiveChildren = false;
 
       _main.addChild(_map);
       _main.addChild(_select);

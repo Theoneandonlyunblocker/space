@@ -345,9 +345,7 @@ module Rance
           }
           var mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
           {
-            var local = event.data.getLocalPosition(doc);
-            var starAtLocal = map.voronoi.getStarAtPoint(local);
-            eventManager.dispatchEvent("clearHover", starAtLocal);
+            eventManager.dispatchEvent("clearHover");
           }
           var touchStartFN = function(event: PIXI.interaction.InteractionEvent)
           {

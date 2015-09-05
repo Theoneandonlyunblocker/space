@@ -109,9 +109,9 @@ module Rance
           self.setHoveredStar(star);
         });
       this.listeners["clearHover"] = eventManager.addEventListener("clearHover",
-        function(starCursorIsAt: Star)
+        function()
         {
-          self.clearHoveredStar(starCursorIsAt);
+          self.clearHoveredStar();
         });
     }
     preventGhost(delay: number, type: string)
@@ -254,18 +254,18 @@ module Rance
       this.preventGhost(30, "hover");
       if (star !== this.hoveredStar)
       {
+        console.log("hoverStar", star.id);
         this.hoveredStar = star;
         this.setFleetMoveTarget(star);
       }
     }
-    clearHoveredStar(starCursorIsAt: Star)
+    clearHoveredStar()
     {
-      if (starCursorIsAt === this.hoveredStar) return;
-
       var timeout = window.setTimeout(function()
       {
         if (!this.preventingGhost["hover"])
         {
+          console.log("clearHover");
           this.hoveredStar = null;
           this.clearFleetMoveTarget();
         }
