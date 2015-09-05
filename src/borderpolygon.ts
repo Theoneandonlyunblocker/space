@@ -227,7 +227,7 @@ module Rance
 
           if (revealedStars.indexOf(point.star) === -1)
           {
-            if (currentPolyLine.length > 0)
+            if (currentPolyLine.length > 1)
             {
               polyLines.push(currentPolyLine);
               currentPolyLine = [];
@@ -239,7 +239,7 @@ module Rance
             processedStarsById[star.id] = true;
           }
         }
-        if (currentPolyLine.length > 0)
+        if (currentPolyLine.length > 1)
         {
           polyLines.push(currentPolyLine);
         }
