@@ -192,6 +192,7 @@ module Rance
       {
         var poly = new PIXI.Polygon(star.voronoiCell.vertices);
         var gfx = new PIXI.Graphics();
+        gfx.isMask = true;
         gfx.beginFill(0);
         gfx.drawShape(poly);
         gfx.endFill();

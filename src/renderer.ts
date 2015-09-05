@@ -176,46 +176,7 @@ module Rance
     {
       var self = this;
 
-
-      var stageMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
-      {
-        self.mouseEventHandler.mouseDown(event, "stage");
-      }
-      var stageMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
-      {
-        self.mouseEventHandler.mouseMove(event, "stage");
-      }
-      var stageMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
-      {
-        self.mouseEventHandler.mouseUp(event, "stage");
-      }
-      var stageMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
-      {
-        self.mouseEventHandler.mouseUp(event, "stage");
-      }
-
-      var stageListeners =
-      {
-        mousedown: stageMouseDownFN,
-        rightdown: stageMouseDownFN,
-        touchstart: stageMouseDownFN,
-        mousemove: stageMouseMoveFN,
-        touchmove: stageMouseMoveFN,
-        mouseup: stageMouseUpFN,
-        rightup: stageMouseUpFN,
-        touchend: stageMouseUpFN,
-        mouseupoutside: stageMouseUpOutsideFN,
-        rightupoutside: stageMouseUpOutsideFN,
-        touchendoutside: stageMouseUpOutsideFN,
-      };
-
-      for (var eventType in stageListeners)
-      {
-        this.stage.on(eventType, stageListeners[eventType]);
-      }
-      
-
-      var main = this.layers["bgSprite"];
+      var main = this.stage;
       main.interactive = true;
 
       main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
@@ -223,22 +184,22 @@ module Rance
       var mainMouseDownFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
-        self.mouseEventHandler.mouseDown(event, "world");
+        self.mouseEventHandler.mouseDown(event);
       };
       var mainMouseMoveFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
-        self.mouseEventHandler.mouseMove(event, "world");
+        self.mouseEventHandler.mouseMove(event);
       }
       var mainMouseUpFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
-        self.mouseEventHandler.mouseUp(event, "world");
+        self.mouseEventHandler.mouseUp(event);
       }
       var mainMouseUpOutsideFN = function(event: PIXI.interaction.InteractionEvent)
       {
         if (event.target !== main) return;
-        self.mouseEventHandler.mouseUp(event, "world");
+        self.mouseEventHandler.mouseUp(event);
       }
 
       var mainListeners =

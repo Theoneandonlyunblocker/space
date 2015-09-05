@@ -2672,11 +2672,11 @@ declare module Rance {
         destroy(): void;
         addEventListeners(): void;
         preventGhost(delay: number, type: string): void;
-        mouseDown(event: PIXI.interaction.InteractionEvent, targetType: string): void;
-        touchStart(event: PIXI.interaction.InteractionEvent, targetType: string): void;
-        touchEnd(event: PIXI.interaction.InteractionEvent, targetType: string): void;
-        mouseMove(event: PIXI.interaction.InteractionEvent, targetType: string): void;
-        mouseUp(event: PIXI.interaction.InteractionEvent, targetType: string): void;
+        mouseDown(event: PIXI.interaction.InteractionEvent): void;
+        touchStart(event: PIXI.interaction.InteractionEvent): void;
+        touchEnd(event: PIXI.interaction.InteractionEvent): void;
+        mouseMove(event: PIXI.interaction.InteractionEvent): void;
+        mouseUp(event: PIXI.interaction.InteractionEvent): void;
         startScroll(event: PIXI.interaction.InteractionEvent): void;
         scrollMove(event: PIXI.interaction.InteractionEvent): void;
         endScroll(event: PIXI.interaction.InteractionEvent): void;

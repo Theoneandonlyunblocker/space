@@ -17678,16 +17678,16 @@ var Rance;
                     return;
             });
             this.listeners["mouseDown"] = Rance.eventManager.addEventListener("mouseDown", function (e) {
-                self.mouseDown(e, "world");
+                self.mouseDown(e);
             });
             this.listeners["mouseUp"] = Rance.eventManager.addEventListener("mouseUp", function (e) {
-                self.mouseUp(e, "world");
+                self.mouseUp(e);
             });
             this.listeners["touchStart"] = Rance.eventManager.addEventListener("touchStart", function (e) {
-                self.touchStart(e, "world");
+                self.touchStart(e);
             });
             this.listeners["touchEnd"] = Rance.eventManager.addEventListener("touchEnd", function (e) {
-                self.touchEnd(e, "world");
+                self.touchEnd(e);
             });
             this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (star) {
                 self.setHoveredStar(star);
@@ -17705,54 +17705,38 @@ var Rance;
                 self.preventingGhost[type] = null;
             }, delay);
         };
-        MouseEventHandler.prototype.mouseDown = function (event, targetType) {
+        MouseEventHandler.prototype.mouseDown = function (event) {
             var originalEvent = event.data.originalEvent;
-            console.log(targetType);
-            if (targetType === "stage") {
+            if (originalEvent.ctrlKey ||
+                originalEvent.metaKey ||
+                originalEvent.button === 1) {
+                this.startScroll(event);
             }
-            else if (targetType === "world") {
-                if (originalEvent.ctrlKey ||
-                    originalEvent.metaKey ||
-                    originalEvent.button === 1 //||
-                ) {
-                    this.startScroll(event);
-                }
-                else if (originalEvent.button === 0 ||
-                    !isFinite(originalEvent.button)) {
-                    this.startSelect(event);
-                }
-                else if (originalEvent.button === 2) {
-                    this.startFleetMove(event);
-                }
+            else if (originalEvent.button === 0 ||
+                !isFinite(originalEvent.button)) {
+                this.startSelect(event);
+            }
+            else if (originalEvent.button === 2) {
+                this.startFleetMove(event);
             }
         };
-        MouseEventHandler.prototype.touchStart = function (event, targetType) {
-            if (targetType === "world") {
-                if (app.playerControl.selectedFleets.length === 0) {
-                    this.startSelect(event);
-                }
-                else {
-                    this.startFleetMove(event);
-                }
+        MouseEventHandler.prototype.touchStart = function (event) {
+            if (app.playerControl.selectedFleets.length === 0) {
+                this.startSelect(event);
             }
             else {
-                debugger;
+                this.startFleetMove(event);
             }
         };
-        MouseEventHandler.prototype.touchEnd = function (event, targetType) {
-            if (targetType === "world") {
-                if (this.currentAction === "select") {
-                    this.endSelect(event);
-                }
-                if (this.currentAction === "fleetMove") {
-                    this.completeFleetMove();
-                }
+        MouseEventHandler.prototype.touchEnd = function (event) {
+            if (this.currentAction === "select") {
+                this.endSelect(event);
             }
-            else {
-                debugger;
+            if (this.currentAction === "fleetMove") {
+                this.completeFleetMove();
             }
         };
-        MouseEventHandler.prototype.mouseMove = function (event, targetType) {
+        MouseEventHandler.prototype.mouseMove = function (event) {
             if (this.currentAction === "scroll") {
                 this.scrollMove(event);
             }
@@ -17763,7 +17747,7 @@ var Rance;
                 this.dragSelect(event);
             }
         };
-        MouseEventHandler.prototype.mouseUp = function (event, targetType) {
+        MouseEventHandler.prototype.mouseUp = function (event) {
             if (this.currentAction === undefined)
                 return;
             if (this.currentAction === "scroll") {
@@ -18518,56 +18502,28 @@ var Rance;
         };
         Renderer.prototype.addEventListeners = function () {
             var self = this;
-            var stageMouseDownFN = function (event) {
-                self.mouseEventHandler.mouseDown(event, "stage");
-            };
-            var stageMouseMoveFN = function (event) {
-                self.mouseEventHandler.mouseMove(event, "stage");
-            };
-            var stageMouseUpFN = function (event) {
-                self.mouseEventHandler.mouseUp(event, "stage");
-            };
-            var stageMouseUpOutsideFN = function (event) {
-                self.mouseEventHandler.mouseUp(event, "stage");
-            };
-            var stageListeners = {
-                mousedown: stageMouseDownFN,
-                rightdown: stageMouseDownFN,
-                touchstart: stageMouseDownFN,
-                mousemove: stageMouseMoveFN,
-                touchmove: stageMouseMoveFN,
-                mouseup: stageMouseUpFN,
-                rightup: stageMouseUpFN,
-                touchend: stageMouseUpFN,
-                mouseupoutside: stageMouseUpOutsideFN,
-                rightupoutside: stageMouseUpOutsideFN,
-                touchendoutside: stageMouseUpOutsideFN,
-            };
-            for (var eventType in stageListeners) {
-                this.stage.on(eventType, stageListeners[eventType]);
-            }
-            var main = this.layers["bgSprite"];
+            var main = this.stage;
             main.interactive = true;
             main.hitArea = new PIXI.Rectangle(-10000, -10000, 20000, 20000);
             var mainMouseDownFN = function (event) {
                 if (event.target !== main)
                     return;
-                self.mouseEventHandler.mouseDown(event, "world");
+                self.mouseEventHandler.mouseDown(event);
             };
             var mainMouseMoveFN = function (event) {
                 if (event.target !== main)
                     return;
-                self.mouseEventHandler.mouseMove(event, "world");
+                self.mouseEventHandler.mouseMove(event);
             };
             var mainMouseUpFN = function (event) {
                 if (event.target !== main)
                     return;
-                self.mouseEventHandler.mouseUp(event, "world");
+                self.mouseEventHandler.mouseUp(event);
             };
             var mainMouseUpOutsideFN = function (event) {
                 if (event.target !== main)
                     return;
-                self.mouseEventHandler.mouseUp(event, "world");
+                self.mouseEventHandler.mouseUp(event);
             };
             var mainListeners = {
                 mousedown: mainMouseDownFN,

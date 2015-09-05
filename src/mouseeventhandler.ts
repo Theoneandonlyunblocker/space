@@ -84,23 +84,23 @@ module Rance
       this.listeners["mouseDown"] = eventManager.addEventListener("mouseDown",
         function(e: PIXI.interaction.InteractionEvent)
         {
-          self.mouseDown(e, "world");
+          self.mouseDown(e);
         });
       this.listeners["mouseUp"] = eventManager.addEventListener("mouseUp",
         function(e: PIXI.interaction.InteractionEvent)
         {
-          self.mouseUp(e, "world");
+          self.mouseUp(e);
         });
 
       this.listeners["touchStart"] = eventManager.addEventListener("touchStart",
         function(e: PIXI.interaction.InteractionEvent)
         {
-          self.touchStart(e, "world");
+          self.touchStart(e);
         });
       this.listeners["touchEnd"] = eventManager.addEventListener("touchEnd",
         function(e: PIXI.interaction.InteractionEvent)
         {
-          self.touchEnd(e, "world");
+          self.touchEnd(e);
         });
 
       this.listeners["hoverStar"] = eventManager.addEventListener("hoverStar",
@@ -128,74 +128,52 @@ module Rance
         self.preventingGhost[type] = null
       }, delay);
     }
-    mouseDown(event: PIXI.interaction.InteractionEvent, targetType: string)
+    mouseDown(event: PIXI.interaction.InteractionEvent)
     {
       var originalEvent = <MouseEvent> event.data.originalEvent;
-      console.log(targetType);
-      if (targetType === "stage")
+      if (
+          originalEvent.ctrlKey ||
+          originalEvent.metaKey ||
+          originalEvent.button === 1
+        )
       {
+        this.startScroll(event);
       }
-      else if (targetType === "world")
+      else if (originalEvent.button === 0 ||
+        !isFinite(originalEvent.button))
       {
-        if (
-            originalEvent.ctrlKey ||
-            originalEvent.metaKey ||
-            originalEvent.button === 1 //||
-            //originalEvent.button === 2
-          )
-        {
-          this.startScroll(event);
-        }
-        else if (originalEvent.button === 0 ||
-          !isFinite(originalEvent.button))
-        {
-          this.startSelect(event);
-        }
-        else if (originalEvent.button === 2)
-        {
-          this.startFleetMove(event);
-        }
+        this.startSelect(event);
+      }
+      else if (originalEvent.button === 2)
+      {
+        this.startFleetMove(event);
       }
     }
 
-    touchStart(event: PIXI.interaction.InteractionEvent, targetType: string)
+    touchStart(event: PIXI.interaction.InteractionEvent)
     {
-      if (targetType === "world")
+      if (app.playerControl.selectedFleets.length === 0)
       {
-        if (app.playerControl.selectedFleets.length === 0)
-        {
-          this.startSelect(event);
-        }
-        else
-        {
-          this.startFleetMove(event);
-        }
+        this.startSelect(event);
       }
       else
       {
-        debugger;
+        this.startFleetMove(event);
       }
     }
-    touchEnd(event: PIXI.interaction.InteractionEvent, targetType: string)
+    touchEnd(event: PIXI.interaction.InteractionEvent)
     {
-      if (targetType === "world")
+      if (this.currentAction === "select")
       {
-        if (this.currentAction === "select")
-        {
-          this.endSelect(event);
-        }
-        if (this.currentAction === "fleetMove")
-        {
-          this.completeFleetMove();
-        }
+        this.endSelect(event);
       }
-      else
+      if (this.currentAction === "fleetMove")
       {
-        debugger;
+        this.completeFleetMove();
       }
     }
 
-    mouseMove(event: PIXI.interaction.InteractionEvent, targetType: string)
+    mouseMove(event: PIXI.interaction.InteractionEvent)
     {
       if (this.currentAction === "scroll")
       {
@@ -210,7 +188,7 @@ module Rance
         this.dragSelect(event);
       }
     }
-    mouseUp(event: PIXI.interaction.InteractionEvent, targetType: string)
+    mouseUp(event: PIXI.interaction.InteractionEvent)
     {
       if (this.currentAction === undefined) return;
 
