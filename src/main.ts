@@ -101,14 +101,10 @@ module Rance
         this.mapRenderer = null;
       }
 
-      // renderer is reused as pixi doesnt like creating
-      // more than 1 stage or renderer
-      // 
-      // renderer.destroy() just destroys peripheral stuff and
-      // prevents rendering until it's initialized again
       if (this.renderer)
       {
         this.renderer.destroy();
+        this.renderer = null;
       }
 
       if (this.playerControl)

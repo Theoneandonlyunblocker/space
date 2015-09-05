@@ -10,7 +10,7 @@ module Rance
   export class Renderer
   {
     stage: PIXI.Container;
-    renderer: any; //PIXI.Renderer
+    renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
     pixiContainer: HTMLCanvasElement;
     layers:
     {
@@ -29,8 +29,7 @@ module Rance
     blurProps: number[];
 
     toCenterOn: Point;
-
-    resizeListener: any;
+    resizeListener: (e: Event) => void;
 
     constructor()
     {
@@ -51,8 +50,6 @@ module Rance
 
       this.stage.renderable = true;
     }
-    // can't destroy everything because pixi stops working properly
-    // with more than 1 stage / PIXI.Renderer
     destroy()
     {
       this.stage.renderable = false;
@@ -76,17 +73,19 @@ module Rance
         this.camera = null;
       }
 
-      if (this.shaderManager)
+      this.shaderManager = null;
+
+      if (this.renderer)
       {
-        this.shaderManager.destroy();
-        this.shaderManager = null;
+        this.renderer.destroy(true);
+        this.renderer = null;
       }
 
+      this.stage.destroy(true);
+      this.stage = null;
+      this.pixiContainer = null;
 
-      this.layers["bgFilter"].filters = null;
-
-      this.stage.removeChildren();
-      this.removeRendererView();
+      window.removeEventListener("resize", this.resizeListener);
     }
     removeRendererView()
     {
