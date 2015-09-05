@@ -395,8 +395,6 @@ module Rance
 
             doc.addChild(gfx);
           }
-          // gets set to 0 without this reference. no idea
-          doc.height;
 
           doc.interactive = true;
 
@@ -437,7 +435,7 @@ module Rance
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
-            if (!star.owner) continue;
+            if (!star.owner || star.owner.colorAlpha === 0) continue;
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
@@ -461,7 +459,6 @@ module Rance
               gfx.addChild(mask);
             }
           }
-          doc.height;
           return doc;
         }
       }
@@ -487,7 +484,6 @@ module Rance
             doc.addChild(sprite);
           }
 
-          doc.height;
           return doc;
         }
       }
@@ -557,7 +553,6 @@ module Rance
             gfx.endFill();
             doc.addChild(gfx);
           }
-          doc.height;
           return doc;
         }
       }
@@ -646,7 +641,6 @@ module Rance
             gfx.endFill;
             doc.addChild(gfx);
           }
-          doc.height;
           return doc;
         }
       }
@@ -673,7 +667,6 @@ module Rance
             gfx.lineTo(line.vb.x, line.vb.y);
           }
 
-          doc.height;
           return doc;
         }
       }
@@ -700,7 +693,6 @@ module Rance
             gfx.drawPolygon(polyLine);
           }
 
-          doc.height;
           return doc;
         }
       }
@@ -749,7 +741,6 @@ module Rance
               gfx.lineTo(star.x, star.y);
             }
           }
-          doc.height;
           return doc;
         }
       }
@@ -792,7 +783,6 @@ module Rance
             doc.addChild(text);
           }
 
-          doc.height;
           return doc;
         }
       }
@@ -889,7 +879,6 @@ module Rance
             fleetsContainer.y -= 10;
           }
 
-          doc.height;
           return doc;
         }
       }

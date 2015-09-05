@@ -16735,7 +16735,7 @@ var Rance;
                             gfx.star = star;
                             gfx.beginFill(0xFFFFF0);
                             gfx.drawEllipse(star.x, star.y, starSize, starSize);
-                            gfx.endFill;
+                            gfx.endFill();
                             gfx.interactive = true;
                             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
                             gfx.on("mousedown", mouseDownFN);
@@ -16754,8 +16754,6 @@ var Rance;
                             gfx.on("mouseout", mouseOutFN);
                             doc.addChild(gfx);
                         }
-                        // gets set to 0 without this reference. no idea
-                        doc.height;
                         doc.interactive = true;
                         // cant be set on gfx as touchmove and touchend only register
                         // on the object that had touchstart called on it
@@ -16786,16 +16784,19 @@ var Rance;
                         }
                         for (var i = 0; i < points.length; i++) {
                             var star = points[i];
-                            if (!star.owner)
+                            if (!star.owner || star.owner.colorAlpha === 0)
                                 continue;
                             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                            debugger;
+                            var x = star.x;
+                            var y = star.y;
                             var gfx = new PIXI.Graphics();
                             var alpha = 0.5;
                             if (isFinite(star.owner.colorAlpha))
                                 alpha *= star.owner.colorAlpha;
                             gfx.beginFill(star.owner.color, alpha);
                             gfx.drawShape(poly);
-                            gfx.endFill;
+                            gfx.endFill();
                             doc.addChild(gfx);
                             var occupier = star.getSecondaryController();
                             if (occupier) {
@@ -16809,7 +16810,6 @@ var Rance;
                                 gfx.addChild(mask);
                             }
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -16830,7 +16830,6 @@ var Rance;
                             var sprite = this.getFowSpriteForStar(star);
                             doc.addChild(sprite);
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -16883,10 +16882,9 @@ var Rance;
                             var gfx = new PIXI.Graphics();
                             gfx.beginFill(color, 0.6);
                             gfx.drawShape(poly);
-                            gfx.endFill;
+                            gfx.endFill();
                             doc.addChild(gfx);
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -16955,7 +16953,6 @@ var Rance;
                             gfx.endFill;
                             doc.addChild(gfx);
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -16975,7 +16972,6 @@ var Rance;
                             gfx.moveTo(line.va.x, line.va.y);
                             gfx.lineTo(line.vb.x, line.vb.y);
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -16996,7 +16992,6 @@ var Rance;
                             gfx.lineStyle(8, player.secondaryColor, 1);
                             gfx.drawPolygon(polyLine);
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -17031,7 +17026,6 @@ var Rance;
                                 gfx.lineTo(star.x, star.y);
                             }
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -17063,7 +17057,6 @@ var Rance;
                             text.y = star.y + 8;
                             doc.addChild(text);
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -17133,7 +17126,6 @@ var Rance;
                             fleetsContainer.x -= fleetsContainer.width / 2;
                             fleetsContainer.y -= 10;
                         }
-                        doc.height;
                         return doc;
                     }
                 };
@@ -17697,16 +17689,17 @@ var Rance;
         };
         MouseEventHandler.prototype.mouseDown = function (event, targetType) {
             var originalEvent = event.data.originalEvent;
+            console.log(targetType);
             if (targetType === "stage") {
+            }
+            else if (targetType === "world") {
                 if (originalEvent.ctrlKey ||
                     originalEvent.metaKey ||
                     originalEvent.button === 1 //||
                 ) {
                     this.startScroll(event);
                 }
-            }
-            else if (targetType === "world") {
-                if (originalEvent.button === 0 ||
+                else if (originalEvent.button === 0 ||
                     !isFinite(originalEvent.button)) {
                     this.startSelect(event);
                 }
