@@ -16696,6 +16696,7 @@ var Rance;
             this.layers["nonFillerStars"] =
                 {
                     isDirty: true,
+                    interactive: true,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -16777,6 +16778,7 @@ var Rance;
             this.layers["starOwners"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -16818,6 +16820,7 @@ var Rance;
             this.layers["fogOfWar"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -16838,6 +16841,7 @@ var Rance;
             this.layers["starIncome"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -16893,6 +16897,7 @@ var Rance;
             this.layers["playerInfluence"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -16961,6 +16966,7 @@ var Rance;
             this.layers["nonFillerVoronoiLines"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -16980,6 +16986,7 @@ var Rance;
             this.layers["ownerBorders"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -17002,6 +17009,7 @@ var Rance;
             this.layers["starLinks"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -17036,6 +17044,7 @@ var Rance;
             this.layers["resources"] =
                 {
                     isDirty: true,
+                    interactive: false,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var self = this;
@@ -17067,6 +17076,7 @@ var Rance;
             this.layers["fleets"] =
                 {
                     isDirty: true,
+                    interactive: true,
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var self = this;
@@ -17105,6 +17115,7 @@ var Rance;
                             text.x += 2;
                             text.y -= 1;
                             fleetContainer.interactive = true;
+                            fleetContainer.interactiveChildren = false;
                             var boundMouseDownFN = mouseDownFN.bind(fleet);
                             var boundFleetClickFN = fleetClickFn.bind(fleetContainer, fleet);
                             fleetContainer.on("click", boundFleetClickFN);
@@ -17136,6 +17147,12 @@ var Rance;
                         return doc;
                     }
                 };
+            for (var layerName in this.layers) {
+                if (!this.layers[layerName].interactive) {
+                    this.layers[layerName].container.interactive = false;
+                    this.layers[layerName].container.interactiveChildren = false;
+                }
+            }
         };
         MapRenderer.prototype.initMapModes = function () {
             this.mapModes["default"] =
@@ -17543,11 +17560,9 @@ var Rance;
             this.start = point;
             this.current = point;
             var ui = document.getElementsByClassName("galaxy-map-ui")[0];
-            if (ui)
-                ui.classList.add("prevent-pointer-events");
-            var popups = document.getElementsByClassName("popup-container")[0];
-            if (popups)
-                popups.classList.add("prevent-pointer-events");
+            if (ui) {
+                ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+            }
         };
         RectangleSelect.prototype.moveSelection = function (point) {
             this.current = point;
@@ -17555,16 +17570,17 @@ var Rance;
         };
         RectangleSelect.prototype.endSelection = function (point) {
             this.setSelectionTargets();
-            this.selecting = false;
-            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
-            if (ui)
-                ui.classList.remove("prevent-pointer-events");
-            var popups = document.getElementsByClassName("popup-container")[0];
-            if (popups)
-                popups.classList.remove("prevent-pointer-events");
-            this.graphics.clear();
             var inSelection = this.getAllInSelection();
             Rance.eventManager.dispatchEvent("selectFleets", inSelection);
+            this.clearSelection();
+        };
+        RectangleSelect.prototype.clearSelection = function () {
+            this.selecting = false;
+            var ui = document.getElementsByClassName("galaxy-map-ui")[0];
+            if (ui) {
+                ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
+            }
+            this.graphics.clear();
             this.start = null;
             this.current = null;
         };
@@ -17696,6 +17712,15 @@ var Rance;
                 self.preventingGhost[type] = null;
             }, delay);
         };
+        MouseEventHandler.prototype.cancelCurrentAction = function () {
+            switch (this.currentAction) {
+                case "select":
+                    {
+                        this.rectangleSelect.clearSelection();
+                        this.currentAction = undefined;
+                    }
+            }
+        };
         MouseEventHandler.prototype.mouseDown = function (event, star) {
             var originalEvent = event.data.originalEvent;
             if (originalEvent.ctrlKey ||
@@ -17705,9 +17730,11 @@ var Rance;
             }
             else if (originalEvent.button === 0 ||
                 !isFinite(originalEvent.button)) {
+                this.cancelCurrentAction();
                 this.startSelect(event);
             }
             else if (originalEvent.button === 2) {
+                this.cancelCurrentAction();
                 this.startFleetMove(event, star);
             }
         };
@@ -17759,8 +17786,9 @@ var Rance;
             }
         };
         MouseEventHandler.prototype.startScroll = function (event) {
-            if (this.currentAction === "select")
-                this.stashedAction = "select";
+            if (this.currentAction !== "scroll") {
+                this.stashedAction = this.currentAction;
+            }
             this.currentAction = "scroll";
             this.startPoint = [event.data.global.x, event.data.global.y];
             this.camera.startScroll(this.startPoint);
@@ -17786,15 +17814,15 @@ var Rance;
             this.stashedAction = undefined;
         };
         MouseEventHandler.prototype.startZoom = function (event) {
-            if (this.currentAction === "select")
-                this.stashedAction = "select";
+            if (this.currentAction !== "zoom") {
+                this.stashedAction = this.currentAction;
+            }
             this.currentAction = "zoom";
             this.startPoint = this.currPoint = [event.data.global.x, event.data.global.y];
         };
         MouseEventHandler.prototype.setHoveredStar = function (star) {
             this.preventGhost(30, "hover");
             if (star !== this.hoveredStar) {
-                console.log("hoverStar", star.id);
                 this.hoveredStar = star;
                 this.setFleetMoveTarget(star);
             }
@@ -17802,7 +17830,6 @@ var Rance;
         MouseEventHandler.prototype.clearHoveredStar = function () {
             var timeout = window.setTimeout(function () {
                 if (!this.preventingGhost["hover"]) {
-                    console.log("clearHover");
                     this.hoveredStar = null;
                     this.clearFleetMoveTarget();
                 }
@@ -17810,7 +17837,6 @@ var Rance;
             }.bind(this), 15);
         };
         MouseEventHandler.prototype.startFleetMove = function (event, star) {
-            console.log("startFleetMove", star ? star.id : null);
             Rance.eventManager.dispatchEvent("startPotentialMove", star);
             this.currentAction = "fleetMove";
         };
@@ -18129,9 +18155,6 @@ var Rance;
                 self.clearTarget();
             });
             this.addEventListener("endPotentialMove", function () {
-                self.endMove();
-            });
-            this.addEventListener("mouseUp", function () {
                 self.endMove();
             });
         };

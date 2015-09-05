@@ -128,6 +128,17 @@ module Rance
         self.preventingGhost[type] = null
       }, delay);
     }
+    cancelCurrentAction()
+    {
+      switch (this.currentAction)
+      {
+        case "select": // other events handle fine without explicitly canceling
+        {
+          this.rectangleSelect.clearSelection();
+          this.currentAction = undefined;
+        }
+      }
+    }
     mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star)
     {
       var originalEvent = <MouseEvent> event.data.originalEvent;
@@ -142,10 +153,12 @@ module Rance
       else if (originalEvent.button === 0 ||
         !isFinite(originalEvent.button))
       {
+        this.cancelCurrentAction();
         this.startSelect(event);
       }
       else if (originalEvent.button === 2)
       {
+        this.cancelCurrentAction();
         this.startFleetMove(event, star);
       }
     }
@@ -214,7 +227,10 @@ module Rance
 
     startScroll(event: PIXI.interaction.InteractionEvent)
     {
-      if (this.currentAction === "select") this.stashedAction = "select";
+      if (this.currentAction !== "scroll")
+      {
+        this.stashedAction = this.currentAction;
+      }
       this.currentAction = "scroll";
       this.startPoint = [event.data.global.x, event.data.global.y];
       this.camera.startScroll(this.startPoint);
@@ -245,7 +261,10 @@ module Rance
     }
     startZoom(event: PIXI.interaction.InteractionEvent)
     {
-      if (this.currentAction === "select") this.stashedAction = "select";
+      if (this.currentAction !== "zoom")
+      {
+        this.stashedAction = this.currentAction;
+      }
       this.currentAction = "zoom";
       this.startPoint = this.currPoint = [event.data.global.x, event.data.global.y];
     }
@@ -254,7 +273,6 @@ module Rance
       this.preventGhost(30, "hover");
       if (star !== this.hoveredStar)
       {
-        console.log("hoverStar", star.id);
         this.hoveredStar = star;
         this.setFleetMoveTarget(star);
       }
@@ -265,7 +283,6 @@ module Rance
       {
         if (!this.preventingGhost["hover"])
         {
-          console.log("clearHover");
           this.hoveredStar = null;
           this.clearFleetMoveTarget();
         }
@@ -274,7 +291,6 @@ module Rance
     }
     startFleetMove(event: PIXI.interaction.InteractionEvent, star: Star)
     {
-      console.log("startFleetMove", star ? star.id : null);
       eventManager.dispatchEvent("startPotentialMove", star);
       this.currentAction = "fleetMove";
     }

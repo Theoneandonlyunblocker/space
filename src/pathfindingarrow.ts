@@ -111,11 +111,6 @@ module Rance
       {
         self.endMove();
       });
-
-      this.addEventListener("mouseUp", function()
-      {
-        self.endMove();
-      });
     }
 
     startMove()

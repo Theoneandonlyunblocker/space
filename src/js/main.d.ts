@@ -2462,6 +2462,7 @@ declare module Rance {
     interface IMapRendererLayer {
         drawingFunction: (map: GalaxyMap) => PIXI.Container;
         container: PIXI.Container;
+        interactive: boolean;
         isDirty: boolean;
     }
     interface IMapRendererLayerMapMode {
@@ -2637,6 +2638,7 @@ declare module Rance {
         startSelection(point: Point): void;
         moveSelection(point: Point): void;
         endSelection(point: Point): void;
+        clearSelection(): void;
         drawSelectionRectangle(): void;
         setSelectionTargets(): void;
         getBounds(): {
@@ -2671,6 +2673,7 @@ declare module Rance {
         destroy(): void;
         addEventListeners(): void;
         preventGhost(delay: number, type: string): void;
+        cancelCurrentAction(): void;
         mouseDown(event: PIXI.interaction.InteractionEvent, star?: Star): void;
         touchStart(event: PIXI.interaction.InteractionEvent, star?: Star): void;
         touchEnd(event: PIXI.interaction.InteractionEvent): void;

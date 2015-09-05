@@ -47,10 +47,10 @@ module Rance
       this.current = point;
 
       var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) ui.classList.add("prevent-pointer-events");
-
-      var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
-      if (popups) popups.classList.add("prevent-pointer-events");
+      if (ui) 
+      {
+        ui.classList.add("prevent-pointer-events", "mouse-event-active-ui");
+      }
     }
     moveSelection(point: Point)
     {
@@ -61,17 +61,21 @@ module Rance
     {
       this.setSelectionTargets();
 
-      this.selecting = false;
-      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
-      if (ui) ui.classList.remove("prevent-pointer-events");
-      var popups = <HTMLElement> document.getElementsByClassName("popup-container")[0];
-      if (popups) popups.classList.remove("prevent-pointer-events");
-
-      this.graphics.clear();
-
       var inSelection = this.getAllInSelection();
       eventManager.dispatchEvent("selectFleets", inSelection);
 
+      this.clearSelection();
+    }
+    clearSelection()
+    {
+      this.selecting = false;
+      var ui = <HTMLElement> document.getElementsByClassName("galaxy-map-ui")[0];
+      if (ui) 
+      {
+        ui.classList.remove("prevent-pointer-events", "mouse-event-active-ui");
+      }
+
+      this.graphics.clear();
 
       this.start = null;
       this.current = null;
