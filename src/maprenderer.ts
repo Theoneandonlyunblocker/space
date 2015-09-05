@@ -18,6 +18,7 @@ module Rance
   {
     drawingFunction: (map: GalaxyMap) => PIXI.Container;
     container: PIXI.Container;
+    interactive: boolean;
     isDirty: boolean;
   }
   export interface IMapRendererLayerMapMode
@@ -304,6 +305,7 @@ module Rance
       this.layers["nonFillerStars"] =
       {
         isDirty: true,
+        interactive: true,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -411,6 +413,7 @@ module Rance
       this.layers["starOwners"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -458,6 +461,7 @@ module Rance
       this.layers["fogOfWar"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -483,6 +487,7 @@ module Rance
       this.layers["starIncome"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -552,6 +557,7 @@ module Rance
       this.layers["playerInfluence"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -640,6 +646,7 @@ module Rance
       this.layers["nonFillerVoronoiLines"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -666,6 +673,7 @@ module Rance
       this.layers["ownerBorders"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -694,6 +702,7 @@ module Rance
       this.layers["starLinks"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -742,6 +751,7 @@ module Rance
       this.layers["resources"] =
       {
         isDirty: true,
+        interactive: false,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -784,6 +794,7 @@ module Rance
       this.layers["fleets"] =
       {
         isDirty: true,
+        interactive: true,
         container: new PIXI.Container(),
         drawingFunction: function(map: GalaxyMap)
         {
@@ -877,6 +888,15 @@ module Rance
           }
 
           return doc;
+        }
+      }
+
+      for (var layerName in this.layers)
+      {
+        if (!this.layers[layerName].interactive)
+        {
+          this.layers[layerName].container.interactive = false;
+          this.layers[layerName].container.interactiveChildren = false;
         }
       }
     }
