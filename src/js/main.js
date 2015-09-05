@@ -16636,7 +16636,9 @@ var Rance;
                 this.fowTilingSprite.removeChildren();
                 this.fowTilingSprite.mask = gfx;
                 this.fowTilingSprite.addChild(gfx);
-                var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer);
+                // triggers bounds update that gets skipped if we just call generateTexture()
+                var bounds = this.fowTilingSprite.getBounds();
+                var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
                 var sprite = new PIXI.Sprite(rendered);
                 this.fowSpriteCache[star.id] = sprite;
                 this.fowTilingSprite.mask = null;
@@ -18630,9 +18632,10 @@ var Rance;
             return texture;
         };
         Renderer.prototype.renderNebula = function () {
-            this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
-            var texture = this.layers["bgFilter"].generateTexture(this.renderer);
-            this.layers["bgFilter"].filters = null;
+            var layer = this.layers["bgFilter"];
+            layer.filters = [this.shaderManager.shaders["nebula"]];
+            var texture = layer.generateTexture(this.renderer, PIXI.SCALE_MODES.DEFAULT, 1, layer.filterArea);
+            layer.filters = null;
             return texture;
         };
         Renderer.prototype.renderBackground = function () {
@@ -18653,7 +18656,7 @@ var Rance;
             container.addChild(fg);
             fg.filters = [new PIXI.filters.BlurFilter()];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
-            var texture = container.generateTexture(this.renderer);
+            var texture = container.generateTexture(this.renderer); //, PIXI.SCALE_MODES.DEFAULT, 1, bg.getLocalBounds());
             return texture;
         };
         Renderer.prototype.renderOnce = function () {

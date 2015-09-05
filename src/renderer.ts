@@ -302,11 +302,12 @@ module Rance
     }
     renderNebula()
     {
-      this.layers["bgFilter"].filters = [this.shaderManager.shaders["nebula"]];
+      var layer = this.layers["bgFilter"];
+      layer.filters = [this.shaderManager.shaders["nebula"]];
 
-      var texture = this.layers["bgFilter"].generateTexture(this.renderer);
+      var texture = layer.generateTexture(this.renderer, PIXI.SCALE_MODES.DEFAULT, 1, layer.filterArea);
 
-      this.layers["bgFilter"].filters = null;
+      layer.filters = null;
 
       return texture;
     }
@@ -335,7 +336,7 @@ module Rance
       fg.filters = [new PIXI.filters.BlurFilter()];
       fg.filterArea = new PIXI.Rectangle(x, y, width, height);
 
-      var texture = container.generateTexture(this.renderer);
+      var texture = container.generateTexture(this.renderer);//, PIXI.SCALE_MODES.DEFAULT, 1, bg.getLocalBounds());
 
       return texture;
     }

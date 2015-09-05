@@ -183,6 +183,7 @@ module Rance
         var h = this.galaxyMap.height;
 
         this.fowTilingSprite = new PIXI.extras.TilingSprite(fowTexture, w, h);
+
       }
     }
     getFowSpriteForStar(star: Star)
@@ -203,7 +204,10 @@ module Rance
         this.fowTilingSprite.mask = gfx;
         this.fowTilingSprite.addChild(gfx);
 
-        var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer);
+        // triggers bounds update that gets skipped if we just call generateTexture()
+        var bounds = this.fowTilingSprite.getBounds();
+
+        var rendered = this.fowTilingSprite.generateTexture(app.renderer.renderer, PIXI.SCALE_MODES.DEFAULT, 1, bounds);
 
         var sprite = new PIXI.Sprite(rendered);
 
