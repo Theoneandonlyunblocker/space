@@ -345,7 +345,9 @@ module Rance
           }
           var mouseOutFN = function(event: PIXI.interaction.InteractionEvent)
           {
-            eventManager.dispatchEvent("clearHover");
+            var local = event.data.getLocalPosition(doc);
+            var starAtLocal = map.voronoi.getStarAtPoint(local);
+            eventManager.dispatchEvent("clearHover", starAtLocal);
           }
           var touchStartFN = function(event: PIXI.interaction.InteractionEvent)
           {
@@ -408,7 +410,7 @@ module Rance
           doc.on("touchend", touchEndFN);
           doc.on("touchmove", function(event: any)
           {
-            var local = event.getLocalPosition(doc);
+            var local = event.data.getLocalPosition(doc);
             var starAtLocal = map.voronoi.getStarAtPoint(local);
             if (starAtLocal)
             {
@@ -902,7 +904,7 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
-          {layer: this.layers["fogOfWar"]},
+          //{layer: this.layers["fogOfWar"]},
           {layer: this.layers["fleets"]}
         ]
       }
@@ -915,7 +917,7 @@ module Rance
           {layer: this.layers["starOwners"]},
           {layer: this.layers["ownerBorders"]},
           {layer: this.layers["nonFillerStars"]},
-          {layer: this.layers["fogOfWar"]},
+          //{layer: this.layers["fogOfWar"]},
           {layer: this.layers["fleets"]}
         ]
       }
@@ -956,7 +958,7 @@ module Rance
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
-          {layer: this.layers["fogOfWar"]},
+          //{layer: this.layers["fogOfWar"]},
           {layer: this.layers["resources"]},
           {layer: this.layers["fleets"]}
         ]

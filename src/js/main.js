@@ -9912,7 +9912,7 @@ var Rance;
                     return cell.site;
                 }
             }
-            return false;
+            return null;
         };
         return MapVoronoiInfo;
     })();
@@ -16731,7 +16731,9 @@ var Rance;
                             Rance.eventManager.dispatchEvent("hoverStar", star);
                         };
                         var mouseOutFN = function (event) {
-                            Rance.eventManager.dispatchEvent("clearHover");
+                            var local = event.data.getLocalPosition(doc);
+                            var starAtLocal = map.voronoi.getStarAtPoint(local);
+                            Rance.eventManager.dispatchEvent("clearHover", starAtLocal);
                         };
                         var touchStartFN = function (event) {
                             Rance.eventManager.dispatchEvent("touchStart", event);
@@ -16777,7 +16779,7 @@ var Rance;
                         doc.on("touchstart", touchStartFN);
                         doc.on("touchend", touchEndFN);
                         doc.on("touchmove", function (event) {
-                            var local = event.getLocalPosition(doc);
+                            var local = event.data.getLocalPosition(doc);
                             var starAtLocal = map.voronoi.getStarAtPoint(local);
                             if (starAtLocal) {
                                 Rance.eventManager.dispatchEvent("hoverStar", starAtLocal);
@@ -17157,7 +17159,7 @@ var Rance;
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
-                        { layer: this.layers["fogOfWar"] },
+                        //{layer: this.layers["fogOfWar"]},
                         { layer: this.layers["fleets"] }
                     ]
                 };
@@ -17169,7 +17171,7 @@ var Rance;
                         { layer: this.layers["starOwners"] },
                         { layer: this.layers["ownerBorders"] },
                         { layer: this.layers["nonFillerStars"] },
-                        { layer: this.layers["fogOfWar"] },
+                        //{layer: this.layers["fogOfWar"]},
                         { layer: this.layers["fleets"] }
                     ]
                 };
@@ -17207,7 +17209,7 @@ var Rance;
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
-                        { layer: this.layers["fogOfWar"] },
+                        //{layer: this.layers["fogOfWar"]},
                         { layer: this.layers["resources"] },
                         { layer: this.layers["fleets"] }
                     ]
@@ -17692,8 +17694,8 @@ var Rance;
             this.listeners["hoverStar"] = Rance.eventManager.addEventListener("hoverStar", function (star) {
                 self.setHoveredStar(star);
             });
-            this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function (e) {
-                self.clearHoveredStar();
+            this.listeners["clearHover"] = Rance.eventManager.addEventListener("clearHover", function (starCursorIsAt) {
+                self.clearHoveredStar(starCursorIsAt);
             });
         };
         MouseEventHandler.prototype.preventGhost = function (delay, type) {
@@ -17801,11 +17803,15 @@ var Rance;
             this.startPoint = this.currPoint = [event.data.global.x, event.data.global.y];
         };
         MouseEventHandler.prototype.setHoveredStar = function (star) {
-            this.hoveredStar = star;
             this.preventGhost(30, "hover");
-            this.setFleetMoveTarget(star);
+            if (star !== this.hoveredStar) {
+                this.hoveredStar = star;
+                this.setFleetMoveTarget(star);
+            }
         };
-        MouseEventHandler.prototype.clearHoveredStar = function () {
+        MouseEventHandler.prototype.clearHoveredStar = function (starCursorIsAt) {
+            if (starCursorIsAt === this.hoveredStar)
+                return;
             var timeout = window.setTimeout(function () {
                 if (!this.preventingGhost["hover"]) {
                     this.hoveredStar = null;

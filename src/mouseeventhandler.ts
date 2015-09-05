@@ -109,9 +109,9 @@ module Rance
           self.setHoveredStar(star);
         });
       this.listeners["clearHover"] = eventManager.addEventListener("clearHover",
-        function(e: PIXI.interaction.InteractionEvent)
+        function(starCursorIsAt: Star)
         {
-          self.clearHoveredStar();
+          self.clearHoveredStar(starCursorIsAt);
         });
     }
     preventGhost(delay: number, type: string)
@@ -251,13 +251,17 @@ module Rance
     }
     setHoveredStar(star: Star)
     {
-      this.hoveredStar = star;
       this.preventGhost(30, "hover");
-      this.setFleetMoveTarget(star);
+      if (star !== this.hoveredStar)
+      {
+        this.hoveredStar = star;
+        this.setFleetMoveTarget(star);
+      }
     }
-
-    clearHoveredStar()
+    clearHoveredStar(starCursorIsAt: Star)
     {
+      if (starCursorIsAt === this.hoveredStar) return;
+
       var timeout = window.setTimeout(function()
       {
         if (!this.preventingGhost["hover"])
@@ -268,7 +272,6 @@ module Rance
         window.clearTimeout(timeout);
       }.bind(this), 15);
     }
-
     startFleetMove(event: PIXI.interaction.InteractionEvent)
     {
       eventManager.dispatchEvent("startPotentialMove", event.target.star);

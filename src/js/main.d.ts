@@ -2684,7 +2684,7 @@ declare module Rance {
         endZoom(event: PIXI.interaction.InteractionEvent): void;
         startZoom(event: PIXI.interaction.InteractionEvent): void;
         setHoveredStar(star: Star): void;
-        clearHoveredStar(): void;
+        clearHoveredStar(starCursorIsAt: Star): void;
         startFleetMove(event: PIXI.interaction.InteractionEvent): void;
         setFleetMoveTarget(star: Star): void;
         completeFleetMove(): void;
