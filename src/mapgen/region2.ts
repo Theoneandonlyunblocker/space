@@ -49,17 +49,6 @@ module Rance
           return exemptRegions.indexOf(b.mapGenData.region) !== -1;
         });
       }
-      // TODO REMOVE
-      severLinksToNonCenter()
-      {
-        this.severLinksByQualifier(function(a: Star, b: Star)
-        {
-          return (a.mapGenData.region !== b.mapGenData.region &&
-            b.mapGenData.region.id.indexOf("center") < 0
-          );
-        });
-      }
-      // END TO REMOVE
     }
   }
 }

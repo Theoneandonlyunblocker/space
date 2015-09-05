@@ -219,7 +219,6 @@ module Rance
           {
             battlePrep: this.props.battlePrep
           });
-          //leftUpperElement = React.DOM.div(null, "battle info todo");
         }
 
 

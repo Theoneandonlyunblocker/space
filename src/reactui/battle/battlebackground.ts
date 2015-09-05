@@ -15,6 +15,8 @@ module Rance
 
       handleResize: function()
       {
+        // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after
+        // breakpoint where blurArea isnt correctly determined
         var blurArea = this.props.getBlurArea();
 
         this.props.renderer.blurProps =

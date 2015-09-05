@@ -1460,6 +1460,8 @@ var Rance;
         UIComponents.BattleBackground = React.createClass({
             displayName: "BattleBackground",
             handleResize: function () {
+                // TODO this seems to trigger before any breakpoints, leading to 1 px immediately after
+                // breakpoint where blurArea isnt correctly determined
                 var blurArea = this.props.getBlurArea();
                 this.props.renderer.blurProps =
                     [
@@ -2652,7 +2654,6 @@ var Rance;
             onDragEnd: function () {
                 this.props.onDragEnd();
             },
-            // todo
             getTechIcon: function (techLevel) {
                 switch (techLevel) {
                     case 2:
@@ -7771,7 +7772,7 @@ var Rance;
             data.ownerId = this.owner ? this.owner.id : null;
             data.linksToIds = this.linksTo.map(function (star) { return star.id; });
             data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
-            data.seed = this.seed;
+            data.seed = this.getSeed();
             if (this.resource) {
                 data.resourceType = this.resource.type;
             }
@@ -14899,13 +14900,6 @@ var Rance;
             Region2.prototype.severLinksToRegionsExcept = function (exemptRegions) {
                 this.severLinksByQualifier(function (a, b) {
                     return exemptRegions.indexOf(b.mapGenData.region) !== -1;
-                });
-            };
-            // TODO REMOVE
-            Region2.prototype.severLinksToNonCenter = function () {
-                this.severLinksByQualifier(function (a, b) {
-                    return (a.mapGenData.region !== b.mapGenData.region &&
-                        b.mapGenData.region.id.indexOf("center") < 0);
                 });
             };
             return Region2;

@@ -15,7 +15,6 @@ module Rance
       {
         this.props.onDragEnd();
       },
-      // todo
       getTechIcon: function(techLevel: number)
       {
         switch (techLevel)

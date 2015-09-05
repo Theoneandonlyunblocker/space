@@ -2252,7 +2252,6 @@ declare module Rance {
             addFillerPoint(point: FillerPoint): void;
             severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean): void;
             severLinksToRegionsExcept(exemptRegions: Region2[]): void;
-            severLinksToNonCenter(): void;
         }
     }
 }
