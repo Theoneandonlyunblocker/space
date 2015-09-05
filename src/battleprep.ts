@@ -327,21 +327,19 @@ module Rance
         if (unit) shipsPlaced++;
       });
 
+      var minShips: number
+
       if (!this.attacker.isAI)
       {
-        if (shipsPlaced < 1) return false;
+        minShips = 1;
       }
-
-      if (!this.battleData.building)
+      else if (!this.battleData.building)
       {
-        var minShips = 1;
-
         // TODO add passive ability that forces more enemy ships to stay and fight
-
-        if (shipsPlaced < minShips) return false;
+        minShips = 1;
       }
 
-      return true;
+      return shipsPlaced >= minShips;
     }
 
     // end player formation

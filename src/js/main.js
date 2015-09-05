@@ -3143,6 +3143,7 @@ var Rance;
                         }
                 }
                 ;
+                var humanFormationIsValid = this.props.battlePrep.humanFormationIsValid();
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     getBlurArea: this.getBackgroundBlurArea,
@@ -3167,6 +3168,7 @@ var Rance;
                     }
                 }, "Cancel"), React.DOM.button({
                     className: "battle-prep-controls-button",
+                    disabled: !humanFormationIsValid,
                     onClick: function () {
                         var battle = this.props.battlePrep.makeBattle();
                         app.reactUI.battle = battle;
@@ -3947,7 +3949,7 @@ var Rance;
                 target.blur();
                 window.setTimeout(function () {
                     app.load(saveName);
-                }, 0);
+                }, 10);
             },
             handleClose: function () {
                 this.props.handleClose();
@@ -7772,7 +7774,7 @@ var Rance;
             data.ownerId = this.owner ? this.owner.id : null;
             data.linksToIds = this.linksTo.map(function (star) { return star.id; });
             data.linksFromIds = this.linksFrom.map(function (star) { return star.id; });
-            data.seed = this.getSeed();
+            data.seed = this.seed;
             if (this.resource) {
                 data.resourceType = this.resource.type;
             }
@@ -9452,17 +9454,15 @@ var Rance;
                 if (unit)
                     shipsPlaced++;
             });
+            var minShips;
             if (!this.attacker.isAI) {
-                if (shipsPlaced < 1)
-                    return false;
+                minShips = 1;
             }
-            if (!this.battleData.building) {
-                var minShips = 1;
+            else if (!this.battleData.building) {
                 // TODO add passive ability that forces more enemy ships to stay and fight
-                if (shipsPlaced < minShips)
-                    return false;
+                minShips = 1;
             }
-            return true;
+            return shipsPlaced >= minShips;
         };
         // end player formation
         BattlePrep.prototype.forEachShipInFormation = function (formation, operator) {
@@ -16033,7 +16033,7 @@ var Rance;
                             app.reactUI.switchScene("galaxyMap");
                             app.renderer.camera.zoom(zoom);
                             app.renderer.camera.container.position = position;
-                        }, 0);
+                        }, 10);
                     }
                 }, "Reset app")));
             }
@@ -18049,14 +18049,6 @@ var Rance;
             this.uniformManager = new Rance.UniformManager();
             this.initNebula();
         }
-        ShaderManager.prototype.destroy = function () {
-            for (var name in this.shaders) {
-                var filter = this.shaders[name];
-                for (var i = 0; i < filter.shaders.length; i++) {
-                    filter.shaders[i].destroy();
-                }
-            }
-        };
         ShaderManager.prototype.initNebula = function () {
             var nebulaColorScheme = Rance.generateColorScheme();
             var lightness = Rance.randRange(1.1, 1.3);
@@ -18417,8 +18409,6 @@ var Rance;
             this.activeRenderLoopId++;
             this.stage.renderable = true;
         };
-        // can't destroy everything because pixi stops working properly
-        // with more than 1 stage / PIXI.Renderer
         Renderer.prototype.destroy = function () {
             this.stage.renderable = false;
             this.pause();
@@ -18434,13 +18424,15 @@ var Rance;
                 this.camera.destroy();
                 this.camera = null;
             }
-            if (this.shaderManager) {
-                this.shaderManager.destroy();
-                this.shaderManager = null;
+            this.shaderManager = null;
+            if (this.renderer) {
+                this.renderer.destroy(true);
+                this.renderer = null;
             }
-            this.layers["bgFilter"].filters = null;
-            this.stage.removeChildren();
-            this.removeRendererView();
+            this.stage.destroy(true);
+            this.stage = null;
+            this.pixiContainer = null;
+            window.removeEventListener("resize", this.resizeListener);
         };
         Renderer.prototype.removeRendererView = function () {
             if (this.renderer && this.renderer.view.parentNode) {
@@ -19168,13 +19160,9 @@ var Rance;
                 this.mapRenderer.destroy();
                 this.mapRenderer = null;
             }
-            // renderer is reused as pixi doesnt like creating
-            // more than 1 stage or renderer
-            // 
-            // renderer.destroy() just destroys peripheral stuff and
-            // prevents rendering until it's initialized again
             if (this.renderer) {
                 this.renderer.destroy();
+                this.renderer = null;
             }
             if (this.playerControl) {
                 this.playerControl.destroy();

@@ -2719,7 +2719,6 @@ declare module Rance {
         };
         uniformManager: UniformManager;
         constructor();
-        destroy(): void;
         initNebula(): void;
     }
 }
@@ -2774,7 +2773,7 @@ declare module Rance {
 declare module Rance {
     class Renderer {
         stage: PIXI.Container;
-        renderer: any;
+        renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer;
         pixiContainer: HTMLCanvasElement;
         layers: {
             [name: string]: PIXI.Container;
@@ -2790,7 +2789,7 @@ declare module Rance {
         isBattleBackground: boolean;
         blurProps: number[];
         toCenterOn: Point;
-        resizeListener: any;
+        resizeListener: (e: Event) => void;
         constructor();
         init(): void;
         destroy(): void;

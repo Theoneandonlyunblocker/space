@@ -279,6 +279,8 @@ module Rance
           }
         };
 
+        var humanFormationIsValid = this.props.battlePrep.humanFormationIsValid();
+
         return(
           React.DOM.div({className: "battle-prep"},
             React.DOM.div({className: "battle-prep-left"},
@@ -327,6 +329,7 @@ module Rance
                 React.DOM.button(
                 {
                   className: "battle-prep-controls-button",
+                  disabled: !humanFormationIsValid,
                   onClick: function()
                   {
                     var battle = this.props.battlePrep.makeBattle();
