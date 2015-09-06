@@ -440,6 +440,16 @@ module Rance
 
       return toReturn;
     }
+    starIsVisible(star: Star): boolean
+    {
+      if (this.visionIsDirty) this.updateVisibleStars();
+      return Boolean(this.visibleStars[star.id]);
+    }
+    starIsRevealed(star: Star): boolean
+    {
+      if (this.visionIsDirty) this.updateVisibleStars();
+      return Boolean(this.revealedStars[star.id]);
+    }
     buildUnit(template: Templates.IUnitTemplate, location: Star)
     {
       var unit = new Rance.Unit(template);

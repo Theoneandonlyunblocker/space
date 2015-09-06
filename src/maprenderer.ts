@@ -128,9 +128,30 @@ module Rance
       this.listeners["renderMap"] =
         eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
       this.listeners["renderLayer"] =
-        eventManager.addEventListener("renderLayer", function(layerName: string)
+        eventManager.addEventListener("renderLayer", function(layerName: string, star?: Star)
       {
-        self.setLayerAsDirty(layerName);
+        var passesStarVisibilityCheck: boolean = true;
+        if (star)
+        {
+          switch (layerName)
+          {
+            case "fleets":
+            {
+              passesStarVisibilityCheck = self.player.starIsVisible(star);
+              break;
+            }
+            default:
+            {
+              passesStarVisibilityCheck = self.player.starIsRevealed(star);
+              break;
+            }
+          }
+        }
+
+        if (passesStarVisibilityCheck)
+        {
+          self.setLayerAsDirty(layerName);
+        }
       });
 
       var boundUpdateOffsets = this.updateShaderOffsets.bind(this);

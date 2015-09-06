@@ -33,7 +33,7 @@ module Rance
 
       if (shouldRender)
       {
-        eventManager.dispatchEvent("renderLayer", "fleets");
+        eventManager.dispatchEvent("renderLayer", "fleets", this.location);
       }
     }
     getShipIndex(ship: Unit)
@@ -51,7 +51,7 @@ module Rance
 
       if (shouldRender)
       {
-        eventManager.dispatchEvent("renderLayer", "fleets");
+        eventManager.dispatchEvent("renderLayer", "fleets", this.location);
       }
     }
     mergeWith(fleet: Fleet, shouldRender: boolean = true)
@@ -108,7 +108,7 @@ module Rance
       fleet.addShip(ship);
 
       this.ships.splice(index, 1);
-      eventManager.dispatchEvent("renderLayer", "fleets");
+      eventManager.dispatchEvent("renderLayer", "fleets", this.location);
     }
     split()
     {

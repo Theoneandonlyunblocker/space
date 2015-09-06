@@ -7288,7 +7288,7 @@ var Rance;
             buildings.push(building);
             if (building.template.category === "defence") {
                 this.sortDefenceBuildings();
-                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars");
+                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
             }
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
@@ -7338,9 +7338,9 @@ var Rance;
                 oldOwner.removeStar(this);
             }
             newOwner.addStar(this);
-            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars");
-            Rance.eventManager.dispatchEvent("renderLayer", "starOwners");
-            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders");
+            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
+            Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
+            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
         };
         Star.prototype.getIncome = function () {
             var tempBuildingIncome = 0;
@@ -7944,7 +7944,7 @@ var Rance;
             this.player.addFleet(this);
             this.addShips(ships);
             if (shouldRender) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
             }
         }
         Fleet.prototype.getShipIndex = function (ship) {
@@ -7958,7 +7958,7 @@ var Rance;
             this.location.removeFleet(this);
             this.player.removeFleet(this);
             if (shouldRender) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
             }
         };
         Fleet.prototype.mergeWith = function (fleet, shouldRender) {
@@ -8002,7 +8002,7 @@ var Rance;
                 return false;
             fleet.addShip(ship);
             this.ships.splice(index, 1);
-            Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
         };
         Fleet.prototype.split = function () {
             var newFleet = new Fleet(this.player, [], this.location);
@@ -12018,6 +12018,16 @@ var Rance;
             }
             return toReturn;
         };
+        Player.prototype.starIsVisible = function (star) {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            return Boolean(this.visibleStars[star.id]);
+        };
+        Player.prototype.starIsRevealed = function (star) {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            return Boolean(this.revealedStars[star.id]);
+        };
         Player.prototype.buildUnit = function (template, location) {
             var unit = new Rance.Unit(template);
             this.addUnit(unit);
@@ -12386,7 +12396,7 @@ var Rance;
                 this.afterFinishCallbacks[i]();
             }
             if (this.isSimulated) {
-                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
             }
             else {
                 Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
@@ -16624,8 +16634,25 @@ var Rance;
             this.listeners["renderMap"] =
                 Rance.eventManager.addEventListener("renderMap", this.setAllLayersAsDirty.bind(this));
             this.listeners["renderLayer"] =
-                Rance.eventManager.addEventListener("renderLayer", function (layerName) {
-                    self.setLayerAsDirty(layerName);
+                Rance.eventManager.addEventListener("renderLayer", function (layerName, star) {
+                    var passesStarVisibilityCheck = true;
+                    if (star) {
+                        switch (layerName) {
+                            case "fleets":
+                                {
+                                    passesStarVisibilityCheck = self.player.starIsVisible(star);
+                                    break;
+                                }
+                            default:
+                                {
+                                    passesStarVisibilityCheck = self.player.starIsRevealed(star);
+                                    break;
+                                }
+                        }
+                    }
+                    if (passesStarVisibilityCheck) {
+                        self.setLayerAsDirty(layerName);
+                    }
                 });
             var boundUpdateOffsets = this.updateShaderOffsets.bind(this);
             var boundUpdateZoom = this.updateShaderZoom.bind(this);

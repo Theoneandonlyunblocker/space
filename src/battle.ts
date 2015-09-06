@@ -378,7 +378,7 @@ module Rance
       
       if (this.isSimulated)
       {
-        eventManager.dispatchEvent("renderLayer", "fleets");
+        eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
       }
       else
       {

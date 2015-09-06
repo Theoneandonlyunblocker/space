@@ -1917,6 +1917,8 @@ declare module Rance {
         getVisibleStars(): Star[];
         getRevealedStars(): Star[];
         getRevealedButNotVisibleStars(): Star[];
+        starIsVisible(star: Star): boolean;
+        starIsRevealed(star: Star): boolean;
         buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
         addItem(item: Item): void;
         removeItem(item: Item): void;
