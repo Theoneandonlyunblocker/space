@@ -128,11 +128,11 @@ module Rance
       if (building.template.category === "defence")
       {
         this.sortDefenceBuildings();
+        eventManager.dispatchEvent("renderLayer", "nonFillerStars");
       }
       if (building.template.category === "vision")
       {
         this.owner.updateVisibleStars();
-        eventManager.dispatchEvent("renderMap", null);
       }
     }
     removeBuilding(building: Building)
@@ -203,7 +203,9 @@ module Rance
 
       newOwner.addStar(this);
 
-      eventManager.dispatchEvent("renderMap");
+      eventManager.dispatchEvent("renderLayer", "nonFillerStars");
+      eventManager.dispatchEvent("renderLayer", "starOwners");
+      eventManager.dispatchEvent("renderLayer", "ownerBorders");
     }
     getIncome()
     {

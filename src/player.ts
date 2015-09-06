@@ -323,6 +323,8 @@ module Rance
     }
     updateVisibleStars()
     {
+      var previousVisibleStars = extendObject(this.visibleStars);
+      var hasChanged: boolean = false;
       this.visibleStars = {};
 
       for (var i = 0; i < this.controlledLocations.length; i++)
@@ -335,6 +337,10 @@ module Rance
           if (!this.visibleStars[star.id])
           {
             this.visibleStars[star.id] = star;
+            if (!hasChanged && !previousVisibleStars[star.id])
+            {
+              hasChanged = true;
+            }
 
             if (!this.revealedStars[star.id])
             {
@@ -354,6 +360,10 @@ module Rance
           if (!this.visibleStars[star.id])
           {
             this.visibleStars[star.id] = star;
+            if (!hasChanged && !previousVisibleStars[star.id])
+            {
+              hasChanged = true;
+            }
 
             if (!this.revealedStars[star.id])
             {
@@ -364,8 +374,13 @@ module Rance
       }
 
       this.visionIsDirty = false;
+      if (!hasChanged)
+      {
+        hasChanged = (Object.keys(this.visibleStars).length !==
+          Object.keys(previousVisibleStars).length);
+      }
 
-      eventManager.dispatchEvent("renderMap");
+      if (!this.isAI && hasChanged) eventManager.dispatchEvent("renderMap");
     }
     getVisibleStars(): Star[]
     {

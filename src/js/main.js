@@ -6075,6 +6075,20 @@ var Rance;
         return null;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
+    function objectLiteralsAreShallowEqual(a, b) {
+        if (a === b)
+            return true;
+        if (Object.keys(a).length !== Object.keys(b).length) {
+            return false;
+        }
+        for (var prop in a) {
+            if (!b[prop] || a[prop] !== b[prop]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    Rance.objectLiteralsAreShallowEqual = objectLiteralsAreShallowEqual;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -7274,10 +7288,10 @@ var Rance;
             buildings.push(building);
             if (building.template.category === "defence") {
                 this.sortDefenceBuildings();
+                Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars");
             }
             if (building.template.category === "vision") {
                 this.owner.updateVisibleStars();
-                Rance.eventManager.dispatchEvent("renderMap", null);
             }
         };
         Star.prototype.removeBuilding = function (building) {
@@ -7324,7 +7338,9 @@ var Rance;
                 oldOwner.removeStar(this);
             }
             newOwner.addStar(this);
-            Rance.eventManager.dispatchEvent("renderMap");
+            Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars");
+            Rance.eventManager.dispatchEvent("renderLayer", "starOwners");
+            Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders");
         };
         Star.prototype.getIncome = function () {
             var tempBuildingIncome = 0;
@@ -11920,6 +11936,8 @@ var Rance;
             return allStars;
         };
         Player.prototype.updateVisibleStars = function () {
+            var previousVisibleStars = Rance.extendObject(this.visibleStars);
+            var hasChanged = false;
             this.visibleStars = {};
             for (var i = 0; i < this.controlledLocations.length; i++) {
                 var starVisible = this.controlledLocations[i].getVision();
@@ -11927,6 +11945,9 @@ var Rance;
                     var star = starVisible[j];
                     if (!this.visibleStars[star.id]) {
                         this.visibleStars[star.id] = star;
+                        if (!hasChanged && !previousVisibleStars[star.id]) {
+                            hasChanged = true;
+                        }
                         if (!this.revealedStars[star.id]) {
                             this.revealedStars[star.id] = star;
                         }
@@ -11939,6 +11960,9 @@ var Rance;
                     var star = fleetVisible[j];
                     if (!this.visibleStars[star.id]) {
                         this.visibleStars[star.id] = star;
+                        if (!hasChanged && !previousVisibleStars[star.id]) {
+                            hasChanged = true;
+                        }
                         if (!this.revealedStars[star.id]) {
                             this.revealedStars[star.id] = star;
                         }
@@ -11946,7 +11970,12 @@ var Rance;
                 }
             }
             this.visionIsDirty = false;
-            Rance.eventManager.dispatchEvent("renderMap");
+            if (!hasChanged) {
+                hasChanged = (Object.keys(this.visibleStars).length !==
+                    Object.keys(previousVisibleStars).length);
+            }
+            if (!this.isAI && hasChanged)
+                Rance.eventManager.dispatchEvent("renderMap");
         };
         Player.prototype.getVisibleStars = function () {
             if (!this.isAI && Rance.Options.debugMode) {
@@ -18801,7 +18830,6 @@ var Rance;
                 var json = loader.resources[identifier].data;
                 var image = loader.resources[identifier + "_image"].data;
                 var spriteImages = self.spriteSheetToDataURLs(json, image);
-                self.spriteSheetToTextures(json, image);
                 self.imageCache[identifier] = spriteImages;
                 self.loaded[identifier] = true;
                 self.checkLoaded();
