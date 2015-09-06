@@ -3796,6 +3796,7 @@ var Rance;
             displayName: "SaveList",
             render: function () {
                 var rows = [];
+                var selected;
                 var allKeys = Object.keys(localStorage);
                 var saveKeys = allKeys.filter(function (key) {
                     return (key.indexOf("Rance.Save") > -1);
@@ -3803,7 +3804,7 @@ var Rance;
                 for (var i = 0; i < saveKeys.length; i++) {
                     var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
                     var date = new Date(saveData.date);
-                    rows.push({
+                    var row = {
                         key: saveKeys[i],
                         data: {
                             name: saveData.name,
@@ -3814,7 +3815,11 @@ var Rance;
                                 this.props.onDelete.bind(null, saveKeys[i]) :
                                 null
                         }
-                    });
+                    };
+                    rows.push(row);
+                    if (this.props.selectedName === saveData.name) {
+                        selected = row;
+                    }
                 }
                 var columns = [
                     {
@@ -3841,7 +3846,8 @@ var Rance;
                     initialColumns: columns,
                     initialSortOrder: [columns[1]],
                     onRowChange: this.props.onRowChange,
-                    autoSelect: this.props.autoSelect,
+                    autoSelect: selected ? false : this.props.autoSelect,
+                    initialSelected: selected,
                     keyboardSelect: true
                 })));
             }
@@ -3858,7 +3864,6 @@ var Rance;
             displayName: "SaveGame",
             componentDidMount: function () {
                 if (app.game.nameGameWasLoadedAs) {
-                    this.setInputText(app.game.nameGameWasLoadedAs);
                     this.refs.okButton.getDOMNode().focus();
                 }
                 else {
@@ -3907,6 +3912,7 @@ var Rance;
                     onlyAllowOne: true
                 }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
+                    selectedName: app.game.nameGameWasLoadedAs,
                     autoSelect: false
                 }), React.DOM.input({
                     className: "save-game-name",
@@ -3983,7 +3989,8 @@ var Rance;
                     onlyAllowOne: true
                 }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
-                    autoSelect: true,
+                    autoSelect: !Boolean(app.game.nameGameWasLoadedAs),
+                    selectedName: app.game.nameGameWasLoadedAs,
                     allowDelete: true,
                     onDelete: this.makeConfirmDeletionPopup
                 }), React.DOM.input({
@@ -18723,6 +18730,14 @@ var Rance;
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
+    ;
+    function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
+        var frames = {};
+        for (var spriteName in sheetData.frames) {
+            frames[spriteName] = processFrameFN(sheetImg, sheetData.frames[spriteName].frame);
+        }
+        return frames;
+    }
     var AppLoader = (function () {
         function AppLoader(onLoaded) {
             this.loaded = {
@@ -18730,6 +18745,7 @@ var Rance;
                 emblems: false,
                 units: false,
                 buildings: false,
+                //battleEffects: false,
                 other: false
             };
             this.imageCache = {};
@@ -18743,22 +18759,17 @@ var Rance;
             this.loadOther();
         }
         AppLoader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
-            var self = this;
-            var frames = {};
-            (function splitSpritesheetFN() {
-                for (var sprite in sheetData.frames) {
-                    var frame = sheetData.frames[sprite].frame;
-                    var canvas = document.createElement("canvas");
-                    canvas.width = frame.w;
-                    canvas.height = frame.h;
-                    var context = canvas.getContext("2d");
-                    context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
-                    var image = new Image();
-                    image.src = canvas.toDataURL();
-                    frames[sprite] = image;
-                }
-            }());
-            return frames;
+            var spriteToDataURLFN = function (sheetImg, frame) {
+                var canvas = document.createElement("canvas");
+                canvas.width = frame.w;
+                canvas.height = frame.h;
+                var context = canvas.getContext("2d");
+                context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
+                var image = new Image();
+                image.src = canvas.toDataURL();
+                return image;
+            };
+            return processSpriteSheet(sheetData, sheetImg, spriteToDataURLFN);
         };
         AppLoader.prototype.loadDOM = function () {
             var self = this;

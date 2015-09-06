@@ -2822,19 +2822,6 @@ declare module Rance {
     function inspectSave(saveName: string): any;
 }
 declare module Rance {
-    interface ISpritesheetData {
-        frames: {
-            [id: string]: {
-                frame: {
-                    x: number;
-                    y: number;
-                    w: number;
-                    h: number;
-                };
-            };
-        };
-        meta: any;
-    }
     class AppLoader {
         loaded: {
             DOM: boolean;
@@ -2851,9 +2838,7 @@ declare module Rance {
             };
         };
         constructor(onLoaded: any);
-        spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement): {
-            [id: string]: HTMLImageElement;
-        };
+        private spritesheetToDataURLs(sheetData, sheetImg);
         loadDOM(): void;
         loadImagesFN(identifier: string): void;
         loadEmblems(): void;

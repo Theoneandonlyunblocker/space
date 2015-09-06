@@ -2,16 +2,36 @@
 
 module Rance
 {
-  export interface ISpritesheetData
+  interface ISpriteSheetFrame
+  {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  }
+  interface ISpriteSheetData
   {
     frames:
     {
       [id: string]:
       {
-        frame: {x: number; y: number; w: number; h: number;}
+        frame: ISpriteSheetFrame;
       }
     };
     meta: any;
+  };
+
+  function processSpriteSheet<T>(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement,
+    processFrameFN: (sheetImg: HTMLImageElement, frame: ISpriteSheetFrame) => T)
+  {
+    var frames: {[id: string]: T;} = {};
+
+    for (var spriteName in sheetData.frames)
+    {
+      frames[spriteName] = processFrameFN(sheetImg, sheetData.frames[spriteName].frame);
+    }
+
+    return frames;
   }
   
   export class AppLoader
@@ -22,6 +42,7 @@ module Rance
       emblems: false,
       units: false,
       buildings: false,
+      //battleEffects: false,
       other: false
     };
     startTime: number;
@@ -46,33 +67,25 @@ module Rance
       this.loadUnits();
       this.loadOther();
     }
-    spritesheetToDataURLs(sheetData: ISpritesheetData, sheetImg: HTMLImageElement)
+    
+    private spritesheetToDataURLs(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
     {
-      var self = this;
-      var frames: {[id: string]: HTMLImageElement;} = {};
-
-      (function splitSpritesheetFN()
+      var spriteToDataURLFN = function(sheetImg: HTMLImageElement, frame: ISpriteSheetFrame)
       {
-        for (var sprite in sheetData.frames)
-        {
-          var frame = sheetData.frames[sprite].frame;
+        var canvas = <HTMLCanvasElement> document.createElement("canvas");
+        canvas.width = frame.w;
+        canvas.height = frame.h;
+        var context = canvas.getContext("2d");
 
-          var canvas = <HTMLCanvasElement> document.createElement("canvas");
-          canvas.width = frame.w;
-          canvas.height = frame.h;
-          var context = canvas.getContext("2d");
+        context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
 
-          context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h,
-            0, 0, frame.w, frame.h);
+        var image = new Image();
+        image.src = canvas.toDataURL();
 
-          var image = new Image();
-          image.src = canvas.toDataURL();
+        return image;
+      }
 
-          frames[sprite] = image;
-        }
-      }());
-
-      return frames;
+      return processSpriteSheet<HTMLImageElement>(sheetData, sheetImg, spriteToDataURLFN);
     }
     loadDOM()
     {
