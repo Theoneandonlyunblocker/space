@@ -11,7 +11,14 @@ module Rance
 
       componentDidMount: function()
       {
-        this.refs.okButton.getDOMNode().focus();
+        if (app.game.nameGameWasLoadedAs)
+        {
+          this.refs.okButton.getDOMNode().focus();
+        }
+        else
+        {
+          this.refs.saveName.getDOMNode().focus();
+        }
       },
 
       setInputText: function(newText: string)
@@ -77,7 +84,8 @@ module Rance
             UIComponents.SaveList(
             {
               onRowChange: this.handleRowChange,
-              autoSelect: true
+              selectedName: app.game.nameGameWasLoadedAs,
+              autoSelect: false
             }),
             React.DOM.input(
             {

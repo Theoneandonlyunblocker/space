@@ -1551,6 +1551,7 @@ declare module Rance {
         galaxyMap: GalaxyMap;
         humanPlayer: Player;
         activePlayer: Player;
+        nameGameWasLoadedAs: string;
         constructor(map: GalaxyMap, players: Player[], humanPlayer: Player);
         endTurn(): void;
         processPlayerStartTurn(player: Player): void;

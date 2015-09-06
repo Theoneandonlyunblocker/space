@@ -82,7 +82,8 @@ module Rance
             UIComponents.SaveList(
             {
               onRowChange: this.handleRowChange,
-              autoSelect: true,
+              autoSelect: !Boolean(app.game.nameGameWasLoadedAs),
+              selectedName: app.game.nameGameWasLoadedAs,
               allowDelete: true,
               onDelete: this.makeConfirmDeletionPopup
             }),

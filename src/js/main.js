@@ -3857,7 +3857,13 @@ var Rance;
         UIComponents.SaveGame = React.createClass({
             displayName: "SaveGame",
             componentDidMount: function () {
-                this.refs.okButton.getDOMNode().focus();
+                if (app.game.nameGameWasLoadedAs) {
+                    this.setInputText(app.game.nameGameWasLoadedAs);
+                    this.refs.okButton.getDOMNode().focus();
+                }
+                else {
+                    this.refs.saveName.getDOMNode().focus();
+                }
             },
             setInputText: function (newText) {
                 this.refs.saveName.getDOMNode().value = newText;
@@ -3901,7 +3907,7 @@ var Rance;
                     onlyAllowOne: true
                 }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
-                    autoSelect: true
+                    autoSelect: false
                 }), React.DOM.input({
                     className: "save-game-name",
                     ref: "saveName",
@@ -6697,7 +6703,7 @@ var Rance;
                 icon: "img\/icons\/f.png",
                 maxHealth: 1,
                 maxMovePoints: 999,
-                visionRange: 999,
+                visionRange: 1,
                 attributeLevels: {
                     attack: 9,
                     defence: 9,
@@ -10345,6 +10351,7 @@ var Rance;
         };
         Game.prototype.save = function (name) {
             var saveString = "Rance.Save." + name;
+            this.nameGameWasLoadedAs = name;
             var date = new Date();
             var gameData = this.serialize();
             var stringified = JSON.stringify({
@@ -19233,6 +19240,7 @@ var Rance;
             this.destroy();
             this.initUI();
             this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
+            this.game.nameGameWasLoadedAs = saveName;
             this.initGame();
             this.initDisplay();
             this.hookUI();

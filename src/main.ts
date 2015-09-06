@@ -135,6 +135,7 @@ module Rance
       this.initUI();
 
       this.game = new GameLoader().deserializeGame(parsed.gameData);
+      this.game.nameGameWasLoadedAs = saveName;
       this.initGame();
 
       this.initDisplay();

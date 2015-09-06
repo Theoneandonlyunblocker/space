@@ -10,6 +10,7 @@ module Rance
       render: function()
       {
         var rows: IListItem[] = [];
+        var selected: IListItem;
 
         var allKeys = Object.keys(localStorage);
 
@@ -23,7 +24,7 @@ module Rance
           var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
           var date = new Date(saveData.date);
 
-          rows.push(
+          var row: IListItem =
           {
             key: saveKeys[i],
             data:
@@ -36,7 +37,13 @@ module Rance
                 this.props.onDelete.bind(null, saveKeys[i]) :
                 null
             }
-          });
+          };
+
+          rows.push(row);
+          if (this.props.selectedName === saveData.name)
+          {
+            selected = row;
+          }
         }
 
         var columns: IListColumn[] =
@@ -72,7 +79,8 @@ module Rance
               initialColumns: columns,
               initialSortOrder: [columns[1]], //date
               onRowChange: this.props.onRowChange,
-              autoSelect: this.props.autoSelect,
+              autoSelect: selected ? false : this.props.autoSelect,
+              initialSelected: selected,
               keyboardSelect: true
             })
           )

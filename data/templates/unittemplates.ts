@@ -55,7 +55,7 @@ module Rance
         icon: "img\/icons\/f.png",
         maxHealth: 1,
         maxMovePoints: 999,
-        visionRange: 999,
+        visionRange: 1,
         attributeLevels:
         {
           attack: 9,
