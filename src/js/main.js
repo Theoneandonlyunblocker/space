@@ -18758,8 +18758,8 @@ var Rance;
             this.loadUnits();
             this.loadOther();
         }
-        AppLoader.prototype.spritesheetToDataURLs = function (sheetData, sheetImg) {
-            var spriteToDataURLFN = function (sheetImg, frame) {
+        AppLoader.prototype.spriteSheetToDataURLs = function (sheetData, sheetImg) {
+            var spriteToImageFN = function (sheetImg, frame) {
                 var canvas = document.createElement("canvas");
                 canvas.width = frame.w;
                 canvas.height = frame.h;
@@ -18769,7 +18769,14 @@ var Rance;
                 image.src = canvas.toDataURL();
                 return image;
             };
-            return processSpriteSheet(sheetData, sheetImg, spriteToDataURLFN);
+            return processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
+        };
+        AppLoader.prototype.spriteSheetToTextures = function (sheetData, sheetImg) {
+            var spriteToTextureFN = function (sheetImg, f) {
+                var baseTexture = PIXI.BaseTexture.fromImage(sheetImg.src, false);
+                return new PIXI.Texture(baseTexture, new PIXI.Rectangle(f.x, f.y, f.w, f.h));
+            };
+            return processSpriteSheet(sheetData, sheetImg, spriteToTextureFN);
         };
         AppLoader.prototype.loadDOM = function () {
             var self = this;
@@ -18793,7 +18800,8 @@ var Rance;
             var onLoadCompleteFN = function (loader) {
                 var json = loader.resources[identifier].data;
                 var image = loader.resources[identifier + "_image"].data;
-                var spriteImages = self.spritesheetToDataURLs(json, image);
+                var spriteImages = self.spriteSheetToDataURLs(json, image);
+                self.spriteSheetToTextures(json, image);
                 self.imageCache[identifier] = spriteImages;
                 self.loaded[identifier] = true;
                 self.checkLoaded();

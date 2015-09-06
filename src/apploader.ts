@@ -68,9 +68,9 @@ module Rance
       this.loadOther();
     }
     
-    private spritesheetToDataURLs(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
+    private spriteSheetToDataURLs(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
     {
-      var spriteToDataURLFN = function(sheetImg: HTMLImageElement, frame: ISpriteSheetFrame)
+      var spriteToImageFN = function(sheetImg: HTMLImageElement, frame: ISpriteSheetFrame)
       {
         var canvas = <HTMLCanvasElement> document.createElement("canvas");
         canvas.width = frame.w;
@@ -85,7 +85,18 @@ module Rance
         return image;
       }
 
-      return processSpriteSheet<HTMLImageElement>(sheetData, sheetImg, spriteToDataURLFN);
+      return processSpriteSheet<HTMLImageElement>(sheetData, sheetImg, spriteToImageFN);
+    }
+    private spriteSheetToTextures(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
+    {
+      var spriteToTextureFN = function(sheetImg: HTMLImageElement, f: ISpriteSheetFrame)
+      {
+        var baseTexture = PIXI.BaseTexture.fromImage(sheetImg.src, false);
+
+        return new PIXI.Texture(baseTexture, new PIXI.Rectangle(f.x, f.y, f.w, f.h));
+      }
+
+      return processSpriteSheet<PIXI.Texture>(sheetData, sheetImg, spriteToTextureFN);
     }
     loadDOM()
     {
@@ -115,7 +126,7 @@ module Rance
       {
         var json = loader.resources[identifier].data;
         var image = loader.resources[identifier + "_image"].data;
-        var spriteImages = self.spritesheetToDataURLs(json, image);
+        var spriteImages = self.spriteSheetToDataURLs(json, image);
         self.imageCache[identifier] = spriteImages;
         self.loaded[identifier] = true;
         self.checkLoaded();

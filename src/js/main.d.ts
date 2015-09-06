@@ -2838,7 +2838,8 @@ declare module Rance {
             };
         };
         constructor(onLoaded: any);
-        private spritesheetToDataURLs(sheetData, sheetImg);
+        private spriteSheetToDataURLs(sheetData, sheetImg);
+        private spriteSheetToTextures(sheetData, sheetImg);
         loadDOM(): void;
         loadImagesFN(identifier: string): void;
         loadEmblems(): void;
