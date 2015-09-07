@@ -2646,6 +2646,7 @@ var Rance;
                 }
                 else {
                     abilities = this.props.unit.getAllAbilities();
+                    baseClassName += " active-skill";
                 }
                 if (abilities.length < 1)
                     return null;
@@ -9324,7 +9325,7 @@ var Rance;
                     currentScore: node.currentScore,
                     averageScore: node.averageScore,
                     abilityName: node.move.ability.displayName,
-                    targetId: node.move.targetId,
+                    targetId: node.move.targetId
                 };
                 consoleRows.push(row);
             }
@@ -9363,7 +9364,6 @@ var Rance;
             this.battle.endTurn();
         };
         BattleSimulator.prototype.simulateAbility = function (ability, target) {
-            console.log(ability.displayName);
             Rance.useAbility(this.battle, this.battle.activeUnit, ability, target);
         };
         BattleSimulator.prototype.getBattleEndData = function () {
@@ -15466,6 +15466,7 @@ var Rance;
                         ships.push(ship);
                     }
                     var fleet = new Rance.Fleet(player, ships, star, undefined, false);
+                    fleet.name = "Pirates";
                 }
             }
         }

@@ -339,6 +339,7 @@ module Rance
             ships.push(ship);
           }
           var fleet = new Fleet(player, ships, star, undefined, false);
+          fleet.name = "Pirates";
         }
       }
     }
