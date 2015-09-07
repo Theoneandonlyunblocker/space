@@ -918,6 +918,63 @@ module Rance
           return doc;
         }
       }
+      this.layers["debugSectors"] =
+      {
+        isDirty: true,
+        interactive: false,
+        container: new PIXI.Container(),
+        drawingFunction: function(map: GalaxyMap)
+        {
+          var doc = new PIXI.Container();
+          var points: Star[];
+          if (!this.player)
+          {
+            points = map.stars;
+          }
+          else
+          {
+            points = this.player.getRevealedStars();
+          }
+
+          if (!points[0].mapGenData || !points[0].mapGenData.sector)
+          {
+            return doc;
+          }
+
+          var sectorIds:
+          {
+            [id: number]: boolean;
+          } = {};
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+            if (star.mapGenData && star.mapGenData.sector)
+            {
+              sectorIds[star.mapGenData.sector.id] = true;
+            }
+          }
+          var sectorsCount = Object.keys(sectorIds).length;
+
+          for (var i = 0; i < points.length; i++)
+          {
+            var star = points[i];
+
+            var sector = star.mapGenData.sector;
+            var hue = sector.id / sectorsCount;
+            var color = hslToHex(hue, 0.8, 0.5);
+
+            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+            var gfx = new PIXI.Graphics();
+            var alpha = 0.5;
+            gfx.beginFill(color, alpha);
+            gfx.drawShape(poly);
+            gfx.endFill();
+            doc.addChild(gfx);
+          }
+          return doc;
+        }
+      }
 
       for (var layerName in this.layers)
       {
@@ -987,8 +1044,7 @@ module Rance
         displayName: "Resources",
         layers:
         [
-          {layer: this.layers["starOwners"]},
-          {layer: this.layers["ownerBorders"]},
+          {layer: this.layers["debugSectors"]},
           {layer: this.layers["nonFillerVoronoiLines"]},
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},

@@ -497,11 +497,6 @@ declare module Rance {
     function shuffleArray(toShuffle: any[], seed?: any): any[];
     function getRelativeValue(value: number, min: number, max: number): number;
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
-    function objectLiteralsAreShallowEqual<T>(a: {
-        [prop: string]: T;
-    }, b: {
-        [prop: string]: T;
-    }): boolean;
 }
 declare module Rance {
     interface TargetingFunction {

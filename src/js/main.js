@@ -6075,20 +6075,6 @@ var Rance;
         return null;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
-    function objectLiteralsAreShallowEqual(a, b) {
-        if (a === b)
-            return true;
-        if (Object.keys(a).length !== Object.keys(b).length) {
-            return false;
-        }
-        for (var prop in a) {
-            if (!b[prop] || a[prop] !== b[prop]) {
-                return false;
-            }
-        }
-        return true;
-    }
-    Rance.objectLiteralsAreShallowEqual = objectLiteralsAreShallowEqual;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -15423,7 +15409,7 @@ var Rance;
                 }
                 Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
                 // make sectors
-                //MapGen2.makeSectors(stars, 3, 5);
+                Rance.MapGen2.makeSectors(stars, 3, 5);
                 // set resources
                 // set players
                 var startRegions = (function setStartingRegions() {
@@ -17238,6 +17224,47 @@ var Rance;
                         return doc;
                     }
                 };
+            this.layers["debugSectors"] =
+                {
+                    isDirty: true,
+                    interactive: false,
+                    container: new PIXI.Container(),
+                    drawingFunction: function (map) {
+                        var doc = new PIXI.Container();
+                        var points;
+                        if (!this.player) {
+                            points = map.stars;
+                        }
+                        else {
+                            points = this.player.getRevealedStars();
+                        }
+                        if (!points[0].mapGenData || !points[0].mapGenData.sector) {
+                            return doc;
+                        }
+                        var sectorIds = {};
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            if (star.mapGenData && star.mapGenData.sector) {
+                                sectorIds[star.mapGenData.sector.id] = true;
+                            }
+                        }
+                        var sectorsCount = Object.keys(sectorIds).length;
+                        for (var i = 0; i < points.length; i++) {
+                            var star = points[i];
+                            var sector = star.mapGenData.sector;
+                            var hue = sector.id / sectorsCount;
+                            var color = Rance.hslToHex(hue, 0.8, 0.5);
+                            var poly = new PIXI.Polygon(star.voronoiCell.vertices);
+                            var gfx = new PIXI.Graphics();
+                            var alpha = 0.5;
+                            gfx.beginFill(color, alpha);
+                            gfx.drawShape(poly);
+                            gfx.endFill();
+                            doc.addChild(gfx);
+                        }
+                        return doc;
+                    }
+                };
             for (var layerName in this.layers) {
                 var layer = this.layers[layerName];
                 layer.container.interactiveChildren = layer.interactive;
@@ -17299,8 +17326,7 @@ var Rance;
                     name: "resources",
                     displayName: "Resources",
                     layers: [
-                        { layer: this.layers["starOwners"] },
-                        { layer: this.layers["ownerBorders"] },
+                        { layer: this.layers["debugSectors"] },
                         { layer: this.layers["nonFillerVoronoiLines"] },
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },

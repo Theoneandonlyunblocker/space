@@ -220,7 +220,7 @@ module Rance
         MapGen2.partiallyCutLinks(stars, 4, 2);
 
         // make sectors
-        //MapGen2.makeSectors(stars, 3, 5);
+        MapGen2.makeSectors(stars, 3, 5);
 
         // set resources
 
