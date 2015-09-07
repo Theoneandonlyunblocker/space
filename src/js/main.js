@@ -6295,20 +6295,7 @@ var Rance;
                 targetingFunction: Rance.targetSingle,
                 targetRange: "all",
                 effect: function (user, target) {
-                    user.addStatusEffect(new Rance.StatusEffect({
-                        attack: {
-                            flat: 9
-                        },
-                        defence: {
-                            flat: 9
-                        },
-                        intelligence: {
-                            flat: -9
-                        },
-                        speed: {
-                            flat: 9
-                        }
-                    }, 1));
+                    user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
                 }
             };
             Effects.healTarget = {
@@ -12868,14 +12855,42 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    var Templates;
+    (function (Templates) {
+        var StatusEffects;
+        (function (StatusEffects) {
+            StatusEffects.test = {
+                type: "test",
+                displayName: "test",
+                attributes: {
+                    attack: {
+                        flat: 9
+                    },
+                    defence: {
+                        flat: 9
+                    },
+                    intelligence: {
+                        flat: -9
+                    },
+                    speed: {
+                        flat: 9
+                    }
+                }
+            };
+        })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../data/templates/statuseffecttemplates.ts" />
+var Rance;
+(function (Rance) {
     var StatusEffect = (function () {
         // effects that trigger at start of battle
         // effects that trigger when using an ability
         // effects that trigger when targeted
         // effects that trigger at start of turn
         // effects that trigger at end of turn
-        function StatusEffect(attributes, duration) {
-            this.attributes = attributes;
+        function StatusEffect(template, duration) {
+            this.template = template;
             this.duration = duration;
         }
         StatusEffect.prototype.processTurnEnd = function () {
@@ -12884,7 +12899,7 @@ var Rance;
             }
         };
         StatusEffect.prototype.clone = function () {
-            return new StatusEffect(this.attributes, this.duration);
+            return new StatusEffect(this.template, this.duration);
         };
         return StatusEffect;
     })();
@@ -13145,7 +13160,7 @@ var Rance;
                 return;
             }
             this.battleStats.statusEffects.push(statusEffect);
-            if (statusEffect.attributes) {
+            if (statusEffect.template.attributes) {
                 this.attributesAreDirty = true;
             }
         };
@@ -13155,7 +13170,7 @@ var Rance;
                 throw new Error("Tried to remove status effect not active on unit " + this.name);
             }
             this.battleStats.statusEffects.splice(index, 1);
-            if (statusEffect.attributes) {
+            if (statusEffect.template.attributes) {
                 this.attributesAreDirty = true;
             }
         };
@@ -13170,13 +13185,15 @@ var Rance;
             var adjustments = {};
             for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
                 var statusEffect = this.battleStats.statusEffects[i];
-                for (var attribute in statusEffect.attributes) {
+                if (!statusEffect.template.attributes)
+                    continue;
+                for (var attribute in statusEffect.template.attributes) {
                     adjustments[attribute] = {};
-                    for (var type in statusEffect.attributes[attribute]) {
+                    for (var type in statusEffect.template.attributes[attribute]) {
                         if (!adjustments[attribute][type]) {
                             adjustments[attribute][type] = 0;
                         }
-                        adjustments[attribute][type] += statusEffect.attributes[attribute][type];
+                        adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
                     }
                 }
             }

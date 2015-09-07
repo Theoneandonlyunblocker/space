@@ -395,7 +395,7 @@ module Rance
       }
 
       this.battleStats.statusEffects.push(statusEffect);
-      if (statusEffect.attributes)
+      if (statusEffect.template.attributes)
       {
         this.attributesAreDirty = true;
       }
@@ -409,7 +409,7 @@ module Rance
       }
 
       this.battleStats.statusEffects.splice(index, 1);
-      if (statusEffect.attributes)
+      if (statusEffect.template.attributes)
       {
         this.attributesAreDirty = true;
       }
@@ -425,21 +425,23 @@ module Rance
         return null;
       }
 
-      var adjustments: IStatusEffectAttributes = {};
+      var adjustments: Templates.IStatusEffectAttributes = {};
       for (var i = 0; i < this.battleStats.statusEffects.length; i++)
       {
         var statusEffect = this.battleStats.statusEffects[i];
-        for (var attribute in statusEffect.attributes)
+        if (!statusEffect.template.attributes) continue;
+
+        for (var attribute in statusEffect.template.attributes)
         {
           adjustments[attribute] = {};
-          for (var type in statusEffect.attributes[attribute])
+          for (var type in statusEffect.template.attributes[attribute])
           {
             if (!adjustments[attribute][type])
             {
               adjustments[attribute][type] = 0;
             }
 
-            adjustments[attribute][type] += statusEffect.attributes[attribute][type];
+            adjustments[attribute][type] += statusEffect.template.attributes[attribute][type];
           }
         }
       }

@@ -163,25 +163,7 @@ module Rance
         targetRange: "all",
         effect: function(user: Unit, target: Unit)
         {
-          user.addStatusEffect(new StatusEffect(
-          {
-            attack:
-            {
-              flat: 9
-            },
-            defence:
-            {
-              flat: 9
-            },
-            intelligence:
-            {
-              flat: -9
-            },
-            speed:
-            {
-              flat: 9
-            }
-          }, 1));
+          user.addStatusEffect(new StatusEffect(StatusEffects.test, 1));
         }
       }
 

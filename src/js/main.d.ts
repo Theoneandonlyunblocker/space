@@ -2051,20 +2051,33 @@ declare module Rance {
     };
 }
 declare module Rance {
-    interface IStatusEffectAttributeAdjustment {
-        flat?: number;
-        multiplier?: number;
+    module Templates {
+        interface IStatusEffectAttributeAdjustment {
+            flat?: number;
+            multiplier?: number;
+        }
+        interface IStatusEffectAttributes {
+            attack?: IStatusEffectAttributeAdjustment;
+            defence?: IStatusEffectAttributeAdjustment;
+            intelligence?: IStatusEffectAttributeAdjustment;
+            speed?: IStatusEffectAttributeAdjustment;
+        }
+        interface IStatusEffectTemplate {
+            type: string;
+            displayName: string;
+            attributes?: IStatusEffectAttributes;
+            passiveSkills?: IPassiveSkillTemplate[];
+        }
+        module StatusEffects {
+            var test: IStatusEffectTemplate;
+        }
     }
-    interface IStatusEffectAttributes {
-        attack?: IStatusEffectAttributeAdjustment;
-        defence?: IStatusEffectAttributeAdjustment;
-        intelligence?: IStatusEffectAttributeAdjustment;
-        speed?: IStatusEffectAttributeAdjustment;
-    }
+}
+declare module Rance {
     class StatusEffect {
-        attributes: IStatusEffectAttributes;
+        template: Templates.IStatusEffectTemplate;
         duration: number;
-        constructor(attributes: IStatusEffectAttributes, duration: number);
+        constructor(template: Templates.IStatusEffectTemplate, duration: number);
         processTurnEnd(): void;
         clone(): StatusEffect;
     }
@@ -2135,7 +2148,7 @@ declare module Rance {
         getAttributesWithItems(): any;
         addStatusEffect(statusEffect: StatusEffect): void;
         removeStatusEffect(statusEffect: StatusEffect): void;
-        getTotalStatusEffectAttributeAdjustments(): IStatusEffectAttributes;
+        getTotalStatusEffectAttributeAdjustments(): Templates.IStatusEffectAttributes;
         getAttributesWithEffects(): any;
         updateCachedAttributes(): void;
         removeItemAtSlot(slot: string): boolean;

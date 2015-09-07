@@ -1,21 +1,11 @@
+/// <reference path="../data/templates/statuseffecttemplates.ts" />
+
 module Rance
 {
-  export interface IStatusEffectAttributeAdjustment
-  {
-    flat?: number;
-    multiplier?: number;
-  }
-  export interface IStatusEffectAttributes
-  {
-    attack?: IStatusEffectAttributeAdjustment;
-    defence?: IStatusEffectAttributeAdjustment;
-    intelligence?: IStatusEffectAttributeAdjustment;
-    speed?: IStatusEffectAttributeAdjustment;
-  }
+  
   export class StatusEffect
   {
-    attributes: IStatusEffectAttributes;
-
+    template: Templates.IStatusEffectTemplate;
     duration: number; // -1 === infinite
 
     // effects that trigger at start of battle
@@ -24,9 +14,9 @@ module Rance
     // effects that trigger at start of turn
     // effects that trigger at end of turn
 
-    constructor(attributes: IStatusEffectAttributes, duration: number)
+    constructor(template: Templates.IStatusEffectTemplate, duration: number)
     {
-      this.attributes = attributes;
+      this.template = template;
       this.duration = duration;
     }
 
@@ -39,7 +29,7 @@ module Rance
     }
     clone()
     {
-      return new StatusEffect(this.attributes, this.duration);
+      return new StatusEffect(this.template, this.duration);
     }
   }
 }
