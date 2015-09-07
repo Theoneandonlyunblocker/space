@@ -7054,6 +7054,7 @@ var Rance;
             this.totalCost = props.totalCost || this.template.buildCost || 0;
         }
         Building.prototype.getPossibleUpgrades = function () {
+            var self = this;
             var upgrades = [];
             if (this.upgradeLevel < this.template.maxUpgradeLevel) {
                 upgrades.push({
@@ -7070,7 +7071,7 @@ var Rance;
                         level: upgradeData.level,
                         template: template,
                         cost: template.buildCost,
-                        parentBuilding: this
+                        parentBuilding: self
                     });
                 });
                 upgrades = upgrades.concat(templatedUpgrades);
@@ -12212,6 +12213,7 @@ var Rance;
             else {
                 this.swapColumnsIfNeeded();
             }
+            this.triggerBattleStartAbilities();
         };
         Battle.prototype.forEachUnit = function (operator) {
             for (var id in this.unitsById) {
@@ -12223,6 +12225,20 @@ var Rance;
             unit.setBattlePosition(this, side, position);
             this.addUnitToTurnOrder(unit);
             unit.timesActedThisTurn++;
+        };
+        Battle.prototype.triggerBattleStartAbilities = function () {
+            this.forEachUnit(function (unit) {
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase["atBattleStart"]) {
+                    var skills = passiveSkillsByPhase["atBattleStart"];
+                    for (var i = 0; i < skills.length; i++) {
+                        for (var j = 0; j < skills[i].atBattleStart.length; j++) {
+                            var effect = skills[i].atBattleStart[j];
+                            effect.template.effect(unit, unit, effect.data);
+                        }
+                    }
+                }
+            });
         };
         Battle.prototype.removeUnitFromTurnOrder = function (unit) {
             var unitIndex = this.turnOrder.indexOf(unit);
@@ -17402,8 +17418,8 @@ var Rance;
                         { layer: this.layers["starLinks"] },
                         { layer: this.layers["nonFillerStars"] },
                         { layer: this.layers["fogOfWar"] },
-                        { layer: this.layers["resources"] },
-                        { layer: this.layers["fleets"] }
+                        { layer: this.layers["fleets"] },
+                        { layer: this.layers["resources"] }
                     ]
                 };
         };

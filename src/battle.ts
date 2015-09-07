@@ -114,6 +114,8 @@ module Rance
         this.swapColumnsIfNeeded();
       }
 
+      this.triggerBattleStartAbilities();
+
     }
     forEachUnit(operator: (unit: Unit) => any): void
     {
@@ -128,6 +130,25 @@ module Rance
       unit.setBattlePosition(this, side, position);
       this.addUnitToTurnOrder(unit);
       unit.timesActedThisTurn++;
+    }
+    triggerBattleStartAbilities()
+    {
+      this.forEachUnit(function(unit: Unit)
+      {
+        var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+        if (passiveSkillsByPhase["atBattleStart"])
+        {
+          var skills = passiveSkillsByPhase["atBattleStart"];
+          for (var i = 0; i < skills.length; i++)
+          {
+            for (var j = 0; j < skills[i].atBattleStart.length; j++)
+            {
+              var effect = skills[i].atBattleStart[j];
+              effect.template.effect(unit, unit, effect.data);
+            }
+          }
+        }
+      });
     }
     removeUnitFromTurnOrder(unit: Unit)
     {

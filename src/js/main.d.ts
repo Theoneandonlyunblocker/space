@@ -1988,6 +1988,7 @@ declare module Rance {
         init(): void;
         forEachUnit(operator: (unit: Unit) => any): void;
         initUnit(unit: Unit, side: string, position: number[]): void;
+        triggerBattleStartAbilities(): void;
         removeUnitFromTurnOrder(unit: Unit): boolean;
         addUnitToTurnOrder(unit: Unit): boolean;
         updateTurnOrder(): void;
