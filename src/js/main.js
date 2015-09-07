@@ -6699,7 +6699,9 @@ var Rance;
                 description: "Skip a turn but next one comes faster",
                 moveDelay: 50,
                 actionsUse: 1,
-                AIEvaluationPriority: 0.1,
+                AIEvaluationPriority: 0.6,
+                AIScoreAdjust: -0.1,
+                disableInAIBattles: true,
                 mainEffect: {
                     template: Templates.Effects.standBy,
                     sfx: {
@@ -9146,6 +9148,7 @@ var Rance;
             this.battle = battle;
             this.sideId = sideId;
             this.move = move;
+            this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
             this.currentScore = battle.getEvaluation();
         }
         MCTreeNode.prototype.getPossibleMoves = function () {
@@ -9155,13 +9158,14 @@ var Rance;
             var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
             var actions = [];
             for (var id in targets) {
-                var unit = this.battle.unitsById[id];
                 var targetActions = targets[id];
                 for (var i = 0; i < targetActions.length; i++) {
-                    actions.push({
-                        targetId: id,
-                        ability: targetActions[i]
-                    });
+                    if (!this.isBetweenAI || !targetActions[i].disableInAIBattles) {
+                        actions.push({
+                            targetId: id,
+                            ability: targetActions[i]
+                        });
+                    }
                 }
             }
             return actions;
@@ -9242,6 +9246,9 @@ var Rance;
             }
             this.uctEvaluation = this.wins / this.visits +
                 Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+            if (this.move.ability.AIEvaluationPriority) {
+                this.uctEvaluation *= this.move.ability.AIEvaluationPriority;
+            }
             this.uctIsDirty = false;
         };
         MCTreeNode.prototype.getHighestUctChild = function () {
@@ -9289,10 +9296,8 @@ var Rance;
             return b.winRate - a.winRate;
         };
         MCTree.prototype.sortByScoreFN = function (a, b) {
-            return b.averageScore - a.averageScore;
-        };
-        MCTree.prototype.sortByUCTAndAverageScoreFN = function (a, b) {
-            return b.averageScore * b.uctEvaluation - a.averageScore * a.uctEvaluation;
+            return (b.uctEvaluation * (b.currentScore + b.averageScore + (b.move.ability.AIScoreAdjust || 0)) -
+                a.uctEvaluation * (a.currentScore + a.averageScore + (a.move.ability.AIScoreAdjust || 0)));
         };
         MCTree.prototype.evaluate = function (iterations) {
             var root = this.rootNode;
@@ -9303,7 +9308,7 @@ var Rance;
                 // simulate & backpropagate
                 toSimulateFrom.simulateToEnd();
             }
-            var sortedMoves = root.children.sort(this.sortByUCTAndAverageScoreFN);
+            var sortedMoves = root.children.sort(this.sortByScoreFN);
             //this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
@@ -9319,7 +9324,7 @@ var Rance;
                     currentScore: node.currentScore,
                     averageScore: node.averageScore,
                     abilityName: node.move.ability.displayName,
-                    targetId: node.move.targetId
+                    targetId: node.move.targetId,
                 };
                 consoleRows.push(row);
             }
@@ -9358,6 +9363,7 @@ var Rance;
             this.battle.endTurn();
         };
         BattleSimulator.prototype.simulateAbility = function (ability, target) {
+            console.log(ability.displayName);
             Rance.useAbility(this.battle, this.battle.activeUnit, ability, target);
         };
         BattleSimulator.prototype.getBattleEndData = function () {
@@ -14119,6 +14125,10 @@ var Rance;
                 var newMode = this.refs.mapModeSelector.getDOMNode().value;
                 this.props.mapRenderer.setMapMode(newMode);
             },
+            changeScene: function (e) {
+                var target = e.target;
+                app.reactUI.switchScene(target.value);
+            },
             render: function () {
                 var mapModeOptions = [];
                 for (var mapModeName in this.props.mapRenderer.mapModes) {
@@ -14145,7 +14155,7 @@ var Rance;
                 }, mapModeOptions), React.DOM.select({
                     className: "reactui-selector debug",
                     ref: "sceneSelector",
-                    value: this.props.sceneToRender,
+                    value: app.reactUI.currentScene,
                     onChange: this.changeScene
                 }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), React.DOM.button({
                     className: "debug",

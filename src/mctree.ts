@@ -18,11 +18,10 @@ module Rance
     }
     sortByScoreFN(a: MCTreeNode, b: MCTreeNode)
     {
-      return b.averageScore - a.averageScore;
-    }
-    sortByUCTAndAverageScoreFN(a: MCTreeNode, b: MCTreeNode)
-    {
-      return b.averageScore * b.uctEvaluation - a.averageScore * a.uctEvaluation;
+      return(
+        b.uctEvaluation * (b.currentScore + b.averageScore + (b.move.ability.AIScoreAdjust || 0)) -
+        a.uctEvaluation * (a.currentScore + a.averageScore + (a.move.ability.AIScoreAdjust || 0))
+      );
     }
     evaluate(iterations: number)
     {
@@ -39,7 +38,7 @@ module Rance
         toSimulateFrom.simulateToEnd();
       }
 
-      var sortedMoves = root.children.sort(this.sortByUCTAndAverageScoreFN);
+      var sortedMoves = root.children.sort(this.sortByScoreFN);
 
       //this.printToConsole(sortedMoves);
 

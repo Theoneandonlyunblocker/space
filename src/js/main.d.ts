@@ -593,6 +593,8 @@ declare module Rance {
             beforeUse?: IAbilityTemplateEffect[];
             afterUse?: IAbilityTemplateEffect[];
             AIEvaluationPriority?: number;
+            AIScoreAdjust?: number;
+            disableInAIBattles?: boolean;
             addsGuard?: boolean;
         }
         module Abilities {
@@ -1278,6 +1280,7 @@ declare module Rance {
     class MCTreeNode {
         battle: Battle;
         sideId: string;
+        isBetweenAI: boolean;
         move: IMove;
         depth: number;
         parent: MCTreeNode;
@@ -1315,7 +1318,6 @@ declare module Rance {
         constructor(battle: Battle, sideId: string);
         sortByWinRateFN(a: MCTreeNode, b: MCTreeNode): number;
         sortByScoreFN(a: MCTreeNode, b: MCTreeNode): number;
-        sortByUCTAndAverageScoreFN(a: MCTreeNode, b: MCTreeNode): number;
         evaluate(iterations: number): MCTreeNode;
         printToConsole(nodes: MCTreeNode[]): void;
     }
