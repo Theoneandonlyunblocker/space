@@ -46,7 +46,7 @@ module Rance
       {
         type: "poisoned",
         displayName: "Poisoned",
-        description: "",
+        description: "-10% max health per turn",
         afterAbilityUse:
         [
           {

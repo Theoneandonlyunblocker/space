@@ -38,12 +38,48 @@ module Rance
           }))
         }
 
+        var passiveSkills: Templates.IPassiveSkillTemplate[] = [];
+        var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
+        var phasesToCheck = ["beforeAbilityUse", "afterAbilityUse"];
+
+        phasesToCheck.forEach(function(phase: string)
+        {
+          if (passiveSkillsByPhase[phase])
+          {
+            passiveSkills = passiveSkills.concat(passiveSkillsByPhase[phase]);
+          }
+        });
+
+        var passiveSkillsElement: ReactDOMPlaceHolder = null;
+        if (passiveSkills.length > 0)
+        {
+          var passiveSkillsElementTitle: string = "";
+          for (var i = 0; i < passiveSkills.length; i++)
+          {
+            passiveSkillsElementTitle += passiveSkills[i].displayName + ": " +
+              passiveSkills[i].description + "\n";
+          }
+
+          passiveSkillsElement = React.DOM.img(
+          {
+            className: "unit-status-effects-passive-skills",
+            src: "img\/icons\/availableAction.png",
+            title: passiveSkillsElementTitle
+          })
+        }
+
         return(
           React.DOM.div(
           {
             className: "unit-status-effects-container"
           },
-            statusEffects
+            passiveSkillsElement,
+            React.DOM.div(
+            {
+              className: "unit-status-effects-attributes"
+            },
+              statusEffects
+            )
           )
         );
       }

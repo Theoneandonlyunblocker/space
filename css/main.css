@@ -729,8 +729,19 @@ progress::-webkit-progress-value {
   height: 64px;
 }
 .unit-status-effects-container {
+  position: absolute;
+  top: 0;
   width: 64px;
-  height: 16px;
+  height: 80px;
+}
+.unit-status-effects-passive-skills {
+  float: right;
+  margin: 5px;
+}
+.unit-status-effects-attributes {
+  position: absolute;
+  height: 12px;
+  bottom: 5px;
 }
 .unit-info {
   display: block;

@@ -288,9 +288,32 @@ var Rance;
                         title: titleString
                     }));
                 }
+                var passiveSkills = [];
+                var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
+                var phasesToCheck = ["beforeAbilityUse", "afterAbilityUse"];
+                phasesToCheck.forEach(function (phase) {
+                    if (passiveSkillsByPhase[phase]) {
+                        passiveSkills = passiveSkills.concat(passiveSkillsByPhase[phase]);
+                    }
+                });
+                var passiveSkillsElement = null;
+                if (passiveSkills.length > 0) {
+                    var passiveSkillsElementTitle = "";
+                    for (var i = 0; i < passiveSkills.length; i++) {
+                        passiveSkillsElementTitle += passiveSkills[i].displayName + ": " +
+                            passiveSkills[i].description + "\n";
+                    }
+                    passiveSkillsElement = React.DOM.img({
+                        className: "unit-status-effects-passive-skills",
+                        src: "img\/icons\/availableAction.png",
+                        title: passiveSkillsElementTitle
+                    });
+                }
                 return (React.DOM.div({
                     className: "unit-status-effects-container"
-                }, statusEffects));
+                }, passiveSkillsElement, React.DOM.div({
+                    className: "unit-status-effects-attributes"
+                }, statusEffects)));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6732,7 +6755,7 @@ var Rance;
             PassiveSkills.poisoned = {
                 type: "poisoned",
                 displayName: "Poisoned",
-                description: "",
+                description: "-10% max health per turn",
                 afterAbilityUse: [
                     {
                         template: Templates.Effects.healSelf,
@@ -6936,6 +6959,9 @@ var Rance;
                     Templates.Abilities.guardColumn,
                     Templates.Abilities.rangedAttack,
                     Templates.Abilities.standBy
+                ],
+                passiveSkills: [
+                    Templates.PassiveSkills.poisoned
                 ]
             };
         })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));
