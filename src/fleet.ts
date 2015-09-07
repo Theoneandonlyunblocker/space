@@ -180,8 +180,9 @@ module Rance
       this.subtractMovePoints();
 
       this.visionIsDirty = true;
-      this.player.updateVisibleStars();
+      this.player.visionIsDirty = true;
 
+      eventManager.dispatchEvent("renderLayer", "fleets", this.location);
       eventManager.dispatchEvent("updateSelection", null);
     }
     getPathTo(newLocation: Star)

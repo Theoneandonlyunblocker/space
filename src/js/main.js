@@ -8120,7 +8120,8 @@ var Rance;
             newLocation.addFleet(this);
             this.subtractMovePoints();
             this.visionIsDirty = true;
-            this.player.updateVisibleStars();
+            this.player.visionIsDirty = true;
+            Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
         Fleet.prototype.getPathTo = function (newLocation) {
