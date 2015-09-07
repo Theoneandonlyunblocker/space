@@ -13,6 +13,11 @@ module Rance
 
         this.props.mapRenderer.setMapMode(newMode);
       },
+      changeScene: function(e: Event)
+      {
+        var target = <HTMLInputElement> e.target;
+        app.reactUI.switchScene(target.value);
+      },
     
       render: function()
       {
@@ -62,7 +67,7 @@ module Rance
                 {
                   className: "reactui-selector debug",
                   ref: "sceneSelector",
-                  value: this.props.sceneToRender,
+                  value: app.reactUI.currentScene,
                   onChange: this.changeScene
                 },
                 React.DOM.option({value: "galaxyMap"}, "map"),
