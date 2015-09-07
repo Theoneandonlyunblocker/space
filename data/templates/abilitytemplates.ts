@@ -155,6 +155,11 @@ module Rance
       beforeUse?: IAbilityTemplateEffect[];
       afterUse?: IAbilityTemplateEffect[];
 
+      // how likely the AI will consider using this ability relative to other available ones
+      // doesn't affect AI's final decision on which ability to use, but can guide it
+      // in the right direction
+      AIEvaluationPriority?: number;
+
       addsGuard?: boolean; // set dynamically
     }
 
@@ -445,6 +450,7 @@ module Rance
         description: "Skip a turn but next one comes faster",
         moveDelay: 50,
         actionsUse: 1,
+        AIEvaluationPriority: 0,
         mainEffect:
         {
           template: Effects.standBy,

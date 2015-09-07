@@ -108,16 +108,41 @@ module Rance
 
       if (this.parent) this.parent.updateResult(result);
     }
+    pickRandomAbilityAndTarget(actions: {[targetId: number]: Templates.IAbilityTemplate[]})
+    {
+      var prioritiesByAbilityAndTarget:
+      {
+        [targetIdAndAbilityType: string]: number;
+      } = {};
+      for (var targetId in actions)
+      {
+        var abilities = actions[targetId];
+        for (var i = 0; i < abilities.length; i++)
+        {
+          var priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
+          prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
+        }
+      }
+
+      var selected = getRandomPropertyWithWeights(prioritiesByAbilityAndTarget);
+      var separatorIndex = selected.indexOf(":");
+
+      return(
+      {
+        targetId: selected.slice(0, separatorIndex ),
+        abilityType: selected.slice(separatorIndex + 1)
+      });
+    }
     simulateOnce(battle: Battle)
     {
       var actions = getTargetsForAllAbilities(battle, battle.activeUnit);
-      var targetId = getRandomKey(actions);
 
-      var action = getRandomArrayItem(actions[targetId]);
+      var targetData = this.pickRandomAbilityAndTarget(actions);
 
-      var target = battle.unitsById[targetId];
+      var ability = Templates.Abilities[targetData.abilityType];
+      var target = battle.unitsById[targetData.targetId];
 
-      useAbility(battle, battle.activeUnit, action, target);
+      useAbility(battle, battle.activeUnit, ability, target);
       battle.endTurn();
     }
     simulateToEnd()

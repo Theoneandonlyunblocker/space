@@ -592,6 +592,7 @@ declare module Rance {
             secondaryEffects?: IAbilityTemplateEffect[];
             beforeUse?: IAbilityTemplateEffect[];
             afterUse?: IAbilityTemplateEffect[];
+            AIEvaluationPriority?: number;
             addsGuard?: boolean;
         }
         module Abilities {
@@ -1294,6 +1295,12 @@ declare module Rance {
         getPossibleMoves(): IMove[];
         addChild(): MCTreeNode;
         updateResult(result: number): void;
+        pickRandomAbilityAndTarget(actions: {
+            [targetId: number]: Templates.IAbilityTemplate[];
+        }): {
+            targetId: any;
+            abilityType: any;
+        };
         simulateOnce(battle: Battle): void;
         simulateToEnd(): void;
         clearResult(): void;

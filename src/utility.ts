@@ -63,9 +63,6 @@ module Rance
         return prop;
       }
     }
-
-    debugger;
-    return getRandomProperty(target);
   }
   export function getFrom2dArray(target: any[][], arr: number[][]): any[]
   {

@@ -5894,8 +5894,6 @@ var Rance;
                 return prop;
             }
         }
-        debugger;
-        return getRandomProperty(target);
     }
     Rance.getRandomPropertyWithWeights = getRandomPropertyWithWeights;
     function getFrom2dArray(target, arr) {
@@ -6683,6 +6681,7 @@ var Rance;
                 description: "Skip a turn but next one comes faster",
                 moveDelay: 50,
                 actionsUse: 1,
+                AIEvaluationPriority: 0,
                 mainEffect: {
                     template: Templates.Effects.standBy,
                     sfx: {
@@ -9175,12 +9174,28 @@ var Rance;
             if (this.parent)
                 this.parent.updateResult(result);
         };
+        MCTreeNode.prototype.pickRandomAbilityAndTarget = function (actions) {
+            var prioritiesByAbilityAndTarget = {};
+            for (var targetId in actions) {
+                var abilities = actions[targetId];
+                for (var i = 0; i < abilities.length; i++) {
+                    var priority = isFinite(abilities[i].AIEvaluationPriority) ? abilities[i].AIEvaluationPriority : 1;
+                    prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
+                }
+            }
+            var selected = Rance.getRandomPropertyWithWeights(prioritiesByAbilityAndTarget);
+            var separatorIndex = selected.indexOf(":");
+            return ({
+                targetId: selected.slice(0, separatorIndex),
+                abilityType: selected.slice(separatorIndex + 1)
+            });
+        };
         MCTreeNode.prototype.simulateOnce = function (battle) {
             var actions = Rance.getTargetsForAllAbilities(battle, battle.activeUnit);
-            var targetId = Rance.getRandomKey(actions);
-            var action = Rance.getRandomArrayItem(actions[targetId]);
-            var target = battle.unitsById[targetId];
-            Rance.useAbility(battle, battle.activeUnit, action, target);
+            var targetData = this.pickRandomAbilityAndTarget(actions);
+            var ability = Rance.Templates.Abilities[targetData.abilityType];
+            var target = battle.unitsById[targetData.targetId];
+            Rance.useAbility(battle, battle.activeUnit, ability, target);
             battle.endTurn();
         };
         MCTreeNode.prototype.simulateToEnd = function () {
