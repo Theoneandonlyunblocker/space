@@ -159,6 +159,12 @@ module Rance
       // doesn't affect AI's final decision on which ability to use, but can guide it
       // in the right direction
       AIEvaluationPriority?: number; // default = 1
+      // adjusts the final score of this ability. AI picks move with highest score.
+      // used to penalize moves that might be optimal but boring, such as doing nothing
+      AIScoreAdjust?: number;
+      // prevent from being used in AI vs AI battles. helps when simulation depth is too low
+      // to let AIScoreAdjust from kicking in
+      disableInAIBattles?: boolean;
 
       addsGuard?: boolean; // set dynamically
     }
@@ -451,7 +457,9 @@ module Rance
         description: "Skip a turn but next one comes faster",
         moveDelay: 50,
         actionsUse: 1,
-        AIEvaluationPriority: 0.1,
+        AIEvaluationPriority: 0.6,
+        AIScoreAdjust: -0.1,
+        disableInAIBattles: true,
         mainEffect:
         {
           template: Effects.standBy,

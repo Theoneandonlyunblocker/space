@@ -12,6 +12,7 @@ module Rance
   {
     battle: Battle;
     sideId: string;
+    isBetweenAI: boolean;
 
     move: IMove;
     depth: number = 0;
@@ -35,6 +36,7 @@ module Rance
       this.battle = battle;
       this.sideId = sideId;
       this.move = move;
+      this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
 
       this.currentScore = battle.getEvaluation();
     }
@@ -51,15 +53,17 @@ module Rance
 
       for (var id in targets)
       {
-        var unit = this.battle.unitsById[id];
         var targetActions = targets[id];
         for (var i = 0; i < targetActions.length; i++)
         {
-          actions.push(
+          if (!this.isBetweenAI || !targetActions[i].disableInAIBattles)
           {
-            targetId: id,
-            ability: targetActions[i]
-          });
+            actions.push(
+            {
+              targetId: id,
+              ability: targetActions[i]
+            });
+          }
         }
       }
 
@@ -174,6 +178,10 @@ module Rance
 
       this.uctEvaluation = this.wins / this.visits +
         Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+      if (this.move.ability.AIEvaluationPriority)
+      {
+        this.uctEvaluation *= this.move.ability.AIEvaluationPriority;
+      }
 
       this.uctIsDirty = false;
     }
