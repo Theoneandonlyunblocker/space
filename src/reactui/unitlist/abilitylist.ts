@@ -18,6 +18,7 @@ module Rance
         else
         {
           abilities = this.props.unit.getAllAbilities();
+          baseClassName += " active-skill";
         }
 
         if (abilities.length < 1) return null;
