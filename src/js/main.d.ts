@@ -1315,6 +1315,7 @@ declare module Rance {
         constructor(battle: Battle, sideId: string);
         sortByWinRateFN(a: MCTreeNode, b: MCTreeNode): number;
         sortByScoreFN(a: MCTreeNode, b: MCTreeNode): number;
+        sortByUCTAndAverageScoreFN(a: MCTreeNode, b: MCTreeNode): number;
         evaluate(iterations: number): MCTreeNode;
         printToConsole(nodes: MCTreeNode[]): void;
     }
@@ -2131,6 +2132,7 @@ declare module Rance {
         passiveSkillsByPhaseAreDirty: boolean;
         sfxDuration: number;
         uiDisplayIsDirty: boolean;
+        lastHealthDrawnAt: number;
         front: Front;
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;

@@ -83,6 +83,7 @@ module Rance
 
     sfxDuration: number;
     uiDisplayIsDirty: boolean = true;
+    lastHealthDrawnAt: number;
     front: Front;
 
     constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
@@ -808,7 +809,9 @@ module Rance
       }
       else
       {
-        unitsToDraw = Math.round(this.currentHealth * 0.05);
+        var lastHealthDrawnAt = this.lastHealthDrawnAt || this.battleStats.lastHealthBeforeReceivingDamage;
+        this.lastHealthDrawnAt = this.currentHealth;
+        unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
         var heightRatio = 25 / image.height;
         heightRatio = Math.min(heightRatio, 1.25);
         maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);

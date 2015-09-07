@@ -9291,6 +9291,9 @@ var Rance;
         MCTree.prototype.sortByScoreFN = function (a, b) {
             return b.averageScore - a.averageScore;
         };
+        MCTree.prototype.sortByUCTAndAverageScoreFN = function (a, b) {
+            return b.averageScore * b.uctEvaluation - a.averageScore * a.uctEvaluation;
+        };
         MCTree.prototype.evaluate = function (iterations) {
             var root = this.rootNode;
             root.possibleMoves = root.getPossibleMoves();
@@ -9300,8 +9303,8 @@ var Rance;
                 // simulate & backpropagate
                 toSimulateFrom.simulateToEnd();
             }
-            var sortedMoves = root.children.sort(this.sortByWinRateFN);
-            // this.printToConsole(sortedMoves);
+            var sortedMoves = root.children.sort(this.sortByUCTAndAverageScoreFN);
+            //this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
         };
@@ -13536,7 +13539,9 @@ var Rance;
                 unitsToDraw = 1;
             }
             else {
-                unitsToDraw = Math.round(this.currentHealth * 0.05);
+                var lastHealthDrawnAt = this.lastHealthDrawnAt || this.battleStats.lastHealthBeforeReceivingDamage;
+                this.lastHealthDrawnAt = this.currentHealth;
+                unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
                 var heightRatio = 25 / image.height;
                 heightRatio = Math.min(heightRatio, 1.25);
                 maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
