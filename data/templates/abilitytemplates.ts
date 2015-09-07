@@ -451,7 +451,7 @@ module Rance
         description: "Skip a turn but next one comes faster",
         moveDelay: 50,
         actionsUse: 1,
-        AIEvaluationPriority: 0,
+        AIEvaluationPriority: 0.1,
         mainEffect:
         {
           template: Effects.standBy,

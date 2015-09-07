@@ -148,7 +148,7 @@ module Rance
           }
         }
 
-        if (passesStarVisibilityCheck)
+        if (passesStarVisibilityCheck || Options.debugMode)
         {
           self.setLayerAsDirty(layerName);
         }

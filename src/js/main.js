@@ -6699,7 +6699,7 @@ var Rance;
                 description: "Skip a turn but next one comes faster",
                 moveDelay: 50,
                 actionsUse: 1,
-                AIEvaluationPriority: 0,
+                AIEvaluationPriority: 0.1,
                 mainEffect: {
                     template: Templates.Effects.standBy,
                     sfx: {
@@ -14136,11 +14136,39 @@ var Rance;
                     playerControl: this.props.playerControl,
                     player: this.props.player,
                     game: this.props.game
-                })), !Rance.Options.debugMode ? null : React.DOM.select({
+                })), !Rance.Options.debugMode ? null : React.DOM.div({
+                    className: "galaxy-map-debug debug"
+                }, React.DOM.select({
                     className: "reactui-selector debug",
                     ref: "mapModeSelector",
                     onChange: this.switchMapMode
-                }, mapModeOptions)));
+                }, mapModeOptions), React.DOM.select({
+                    className: "reactui-selector debug",
+                    ref: "sceneSelector",
+                    value: this.props.sceneToRender,
+                    onChange: this.changeScene
+                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), React.DOM.button({
+                    className: "debug",
+                    onClick: function (e) {
+                        // https://github.com/facebook/react/issues/2988
+                        // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+                        // without this react will keep a reference to this element causing a big memory leak
+                        e.target.blur();
+                        window.setTimeout(function () {
+                            var position = Rance.extendObject(app.renderer.camera.container.position);
+                            var zoom = app.renderer.camera.currZoom;
+                            app.destroy();
+                            app.initUI();
+                            app.game = app.makeGame();
+                            app.initGame();
+                            app.initDisplay();
+                            app.hookUI();
+                            app.reactUI.switchScene("galaxyMap");
+                            app.renderer.camera.zoom(zoom);
+                            app.renderer.camera.container.position = position;
+                        }, 5);
+                    }
+                }, "Reset app"))));
             },
             componentDidMount: function () {
                 this.props.renderer.isBattleBackground = false;
@@ -16267,33 +16295,7 @@ var Rance;
                             break;
                         }
                 }
-                return (React.DOM.div({ className: "react-stage" }, elementsToRender, !Rance.Options.debugMode ? null : React.DOM.select({
-                    className: "reactui-selector debug",
-                    ref: "sceneSelector",
-                    value: this.props.sceneToRender,
-                    onChange: this.changeScene
-                }, React.DOM.option({ value: "galaxyMap" }, "map"), React.DOM.option({ value: "flagMaker" }, "make flags"), React.DOM.option({ value: "battleScene" }, "battle scene"), React.DOM.option({ value: "setupGame" }, "setup game")), !Rance.Options.debugMode ? null : React.DOM.button({
-                    className: "debug",
-                    onClick: function (e) {
-                        // https://github.com/facebook/react/issues/2988
-                        // https://github.com/facebook/react/issues/2605#issuecomment-118398797
-                        // without this react will keep a reference to this element causing a big memory leak
-                        e.target.blur();
-                        window.setTimeout(function () {
-                            var position = Rance.extendObject(app.renderer.camera.container.position);
-                            var zoom = app.renderer.camera.currZoom;
-                            app.destroy();
-                            app.initUI();
-                            app.game = app.makeGame();
-                            app.initGame();
-                            app.initDisplay();
-                            app.hookUI();
-                            app.reactUI.switchScene("galaxyMap");
-                            app.renderer.camera.zoom(zoom);
-                            app.renderer.camera.container.position = position;
-                        }, 5);
-                    }
-                }, "Reset app")));
+                return (React.DOM.div({ className: "react-stage" }, elementsToRender));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -16856,7 +16858,7 @@ var Rance;
                                 }
                         }
                     }
-                    if (passesStarVisibilityCheck) {
+                    if (passesStarVisibilityCheck || Rance.Options.debugMode) {
                         self.setLayerAsDirty(layerName);
                     }
                 });
