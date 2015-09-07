@@ -142,7 +142,11 @@ module Rance
             key: "leftContainer"
           },
             React.DOM.div({className: "unit-image", key: "image"}), // UNIT IMAGE TODO
-            UIComponents.UnitStatusEffects({unit: unit})
+            UIComponents.UnitStatusEffects(
+            {
+              unit: unit,
+              isBattlePrep: !this.props.battle
+            })
           ),
           UIComponents.UnitInfo(infoProps),
         ];

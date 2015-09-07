@@ -41,15 +41,6 @@ module Rance
           data.isDraggable = this.props.isDraggable;
           data.onDragStart = this.props.onDragStart;
           data.onDragEnd = this.props.onDragEnd;
-          /*
-          if (!data.unit)
-          {
-            units.push(UIComponents.EmptyUnit(data));
-          }
-          else
-          {
-            units.push(UIComponents.Unit(data));
-          }*/
 
           units.push(UIComponents.UnitWrapper(data));
         }

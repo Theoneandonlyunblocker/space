@@ -78,7 +78,7 @@ module Rance
       {
         type: "overdrive",
         displayName: "Overdrive",
-        description: "o-",
+        description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
 
         atBattleStart:
         [

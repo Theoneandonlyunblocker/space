@@ -290,7 +290,7 @@ var Rance;
                 }
                 var passiveSkills = [];
                 var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
-                var phasesToCheck = ["beforeAbilityUse", "afterAbilityUse"];
+                var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
                 phasesToCheck.forEach(function (phase) {
                     if (passiveSkillsByPhase[phase]) {
                         passiveSkills = passiveSkills.concat(passiveSkillsByPhase[phase]);
@@ -663,7 +663,10 @@ var Rance;
                         className: "unit-left-container",
                         key: "leftContainer"
                     }, React.DOM.div({ className: "unit-image", key: "image" }), // UNIT IMAGE TODO
-                    UIComponents.UnitStatusEffects({ unit: unit })),
+                    UIComponents.UnitStatusEffects({
+                        unit: unit,
+                        isBattlePrep: !this.props.battle
+                    })),
                     UIComponents.UnitInfo(infoProps),
                 ];
                 if (this.props.facesLeft) {
@@ -883,15 +886,6 @@ var Rance;
                     data.isDraggable = this.props.isDraggable;
                     data.onDragStart = this.props.onDragStart;
                     data.onDragEnd = this.props.onDragEnd;
-                    /*
-                    if (!data.unit)
-                    {
-                      units.push(UIComponents.EmptyUnit(data));
-                    }
-                    else
-                    {
-                      units.push(UIComponents.Unit(data));
-                    }*/
                     units.push(UIComponents.UnitWrapper(data));
                 }
                 return (React.DOM.div({ className: "battle-fleet-column" }, units));
@@ -6780,7 +6774,7 @@ var Rance;
             PassiveSkills.overdrive = {
                 type: "overdrive",
                 displayName: "Overdrive",
-                description: "o-",
+                description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
                 atBattleStart: [
                     {
                         template: Templates.Effects.buffTest
@@ -6959,9 +6953,6 @@ var Rance;
                     Templates.Abilities.guardColumn,
                     Templates.Abilities.rangedAttack,
                     Templates.Abilities.standBy
-                ],
-                passiveSkills: [
-                    Templates.PassiveSkills.poisoned
                 ]
             };
         })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));

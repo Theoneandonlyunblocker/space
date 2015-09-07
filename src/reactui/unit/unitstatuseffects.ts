@@ -40,7 +40,7 @@ module Rance
 
         var passiveSkills: Templates.IPassiveSkillTemplate[] = [];
         var passiveSkillsByPhase = this.props.unit.getPassiveSkillsByPhase();
-        var phasesToCheck = ["beforeAbilityUse", "afterAbilityUse"];
+        var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
 
         phasesToCheck.forEach(function(phase: string)
         {
