@@ -80,7 +80,7 @@ module Rance
         }
         else
         {
-          this.setState({selected: this.prop.sortedItems[0]});
+          this.setState({selected: this.props.sortedItems[0]});
         }
       },
 
