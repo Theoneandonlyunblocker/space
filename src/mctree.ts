@@ -20,6 +20,10 @@ module Rance
     {
       return b.averageScore - a.averageScore;
     }
+    sortByUCTAndAverageScoreFN(a: MCTreeNode, b: MCTreeNode)
+    {
+      return b.averageScore * b.uctEvaluation - a.averageScore * a.uctEvaluation;
+    }
     evaluate(iterations: number)
     {
       var root = this.rootNode;
@@ -35,9 +39,9 @@ module Rance
         toSimulateFrom.simulateToEnd();
       }
 
-      var sortedMoves = root.children.sort(this.sortByWinRateFN);
+      var sortedMoves = root.children.sort(this.sortByUCTAndAverageScoreFN);
 
-      // this.printToConsole(sortedMoves);
+      //this.printToConsole(sortedMoves);
 
       var best = sortedMoves[0];
       return best;
