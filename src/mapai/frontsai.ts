@@ -61,34 +61,10 @@ module Rance
       return totalUnitCountByArchetype;
     }
 
-    getUnitArchetypeRelativeWeights(unitsByArchetype: IArchetypeValues): IArchetypeValues
-    {
-      var min = 0;
-      var max: number;
-      for (var archetype in unitsByArchetype)
-      {
-        var count = unitsByArchetype[archetype];
-        max = isFinite(max) ? Math.max(max, count) : count;
-      }
-
-      var relativeWeights:
-      {
-        [archetype: string]: number;
-      } = {};
-
-      for (var archetype in unitsByArchetype)
-      {
-        var count = unitsByArchetype[archetype];
-        relativeWeights[archetype] = getRelativeValue(count, min, max);
-      }
-
-      return relativeWeights;
-    }
-
     getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues,
       unitsByArchetype: IArchetypeValues)
     {
-      var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
+      var relativeWeights = getRelativeWeightsFromObject(unitsByArchetype);
 
       var deviationFromIdeal:
       {

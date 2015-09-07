@@ -287,6 +287,29 @@ module Rance
       return (value - min) / (max - min);
     }
   }
+  export function getRelativeWeightsFromObject(byCount: {[prop: string]: number})
+  {
+    var relativeWeights:
+    {
+      [prop: string]: number;
+    } = {};
+
+    var min = 0;
+    var max: number;
+    for (var prop in byCount)
+    {
+      var count = byCount[prop];
+      max = isFinite(max) ? Math.max(max, count) : count;
+    }
+
+    for (var prop in byCount)
+    {
+      var count = byCount[prop];
+      relativeWeights[prop] = getRelativeValue(count, min, max);
+    }
+
+    return relativeWeights;
+  }
   export function getDropTargetAtLocation(x: number, y: number)
   {
     var dropTargets = document.getElementsByClassName("drop-target");
