@@ -104,7 +104,8 @@ module Rance
         abilities:
         [
           Abilities.rangedAttack,
-          Abilities.closeAttack
+          Abilities.closeAttack,
+          Abilities.standBy
         ]
       }
       export var bomberSquadron: IUnitTemplate =
@@ -133,7 +134,8 @@ module Rance
         abilities:
         [
           Abilities.rangedAttack,
-          Abilities.bombAttack
+          Abilities.bombAttack,
+          Abilities.standBy
         ]
       }
       export var battleCruiser: IUnitTemplate =
@@ -162,7 +164,8 @@ module Rance
         abilities:
         [
           Abilities.rangedAttack,
-          Abilities.wholeRowAttack
+          Abilities.wholeRowAttack,
+          Abilities.standBy
         ]
       }
       export var scout: IUnitTemplate =
@@ -190,7 +193,8 @@ module Rance
         },
         abilities:
         [
-          Abilities.rangedAttack
+          Abilities.rangedAttack,
+          Abilities.standBy
         ]
       }
       export var shieldBoat: IUnitTemplate =
@@ -219,7 +223,8 @@ module Rance
         abilities:
         [
           Abilities.guardColumn,
-          Abilities.rangedAttack
+          Abilities.rangedAttack,
+          Abilities.standBy
         ]
       }
     }

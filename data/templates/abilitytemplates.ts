@@ -158,7 +158,7 @@ module Rance
       // how likely the AI will consider using this ability relative to other available ones
       // doesn't affect AI's final decision on which ability to use, but can guide it
       // in the right direction
-      AIEvaluationPriority?: number;
+      AIEvaluationPriority?: number; // default = 1
 
       addsGuard?: boolean; // set dynamically
     }
@@ -243,6 +243,7 @@ module Rance
         description: "Attack entire row of units",
         moveDelay: 300,
         actionsUse: 1,
+        AIEvaluationPriority: 0.5,
         mainEffect:
         {
           template: Effects.wholeRowAttack,

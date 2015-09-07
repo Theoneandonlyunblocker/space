@@ -6517,6 +6517,7 @@ var Rance;
                 description: "Attack entire row of units",
                 moveDelay: 300,
                 actionsUse: 1,
+                AIEvaluationPriority: 0.5,
                 mainEffect: {
                     template: Templates.Effects.wholeRowAttack,
                     sfx: {
@@ -6830,7 +6831,8 @@ var Rance;
                 },
                 abilities: [
                     Templates.Abilities.rangedAttack,
-                    Templates.Abilities.closeAttack
+                    Templates.Abilities.closeAttack,
+                    Templates.Abilities.standBy
                 ]
             };
             ShipTypes.bomberSquadron = {
@@ -6855,7 +6857,8 @@ var Rance;
                 },
                 abilities: [
                     Templates.Abilities.rangedAttack,
-                    Templates.Abilities.bombAttack
+                    Templates.Abilities.bombAttack,
+                    Templates.Abilities.standBy
                 ]
             };
             ShipTypes.battleCruiser = {
@@ -6880,7 +6883,8 @@ var Rance;
                 },
                 abilities: [
                     Templates.Abilities.rangedAttack,
-                    Templates.Abilities.wholeRowAttack
+                    Templates.Abilities.wholeRowAttack,
+                    Templates.Abilities.standBy
                 ]
             };
             ShipTypes.scout = {
@@ -6904,7 +6908,8 @@ var Rance;
                     speed: 0.7
                 },
                 abilities: [
-                    Templates.Abilities.rangedAttack
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.standBy
                 ]
             };
             ShipTypes.shieldBoat = {
@@ -6929,7 +6934,8 @@ var Rance;
                 },
                 abilities: [
                     Templates.Abilities.guardColumn,
-                    Templates.Abilities.rangedAttack
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.standBy
                 ]
             };
         })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));
