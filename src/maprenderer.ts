@@ -1049,8 +1049,8 @@ module Rance
           {layer: this.layers["starLinks"]},
           {layer: this.layers["nonFillerStars"]},
           {layer: this.layers["fogOfWar"]},
-          {layer: this.layers["resources"]},
-          {layer: this.layers["fleets"]}
+          {layer: this.layers["fleets"]},
+          {layer: this.layers["resources"]}
         ]
       }
 

@@ -46,6 +46,27 @@ module Rance
     var _rndProp = target[getRandomKey(target)];
     return _rndProp;
   }
+  export function getRandomPropertyWithWeights(target: {[prop: string]: number})
+  {
+    var totalWeight: number = 0;
+    for (var prop in target)
+    {
+      totalWeight += target[prop];
+    }
+
+    var selection = randRange(0, totalWeight);
+    for (var prop in target)
+    {
+      selection -= target[prop];
+      if (selection <= 0)
+      {
+        return prop;
+      }
+    }
+
+    debugger;
+    return getRandomProperty(target);
+  }
   export function getFrom2dArray(target: any[][], arr: number[][]): any[]
   {
     var result: any[] = [];
@@ -279,15 +300,26 @@ module Rance
     }
     return resultArray;
   }
-  export function getRelativeValue(value: number, min: number, max: number)
+  export function getRelativeValue(value: number, min: number, max: number, inverse: boolean = false)
   {
-    if (min === max) return 1;
+    if (inverse)
+    {
+      if (min === max) return 0;
+      else
+      {
+        return 1 - ((value - min) / (max - min));
+      }
+    }
     else
     {
-      return (value - min) / (max - min);
+      if (min === max) return 1;
+      else
+      {
+        return (value - min) / (max - min);
+      }
     }
   }
-  export function getRelativeWeightsFromObject(byCount: {[prop: string]: number})
+  export function getRelativeWeightsFromObject(byCount: {[prop: string]: number}, inverse?: boolean)
   {
     var relativeWeights:
     {

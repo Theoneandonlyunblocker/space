@@ -5856,6 +5856,22 @@ var Rance;
         return _rndProp;
     }
     Rance.getRandomProperty = getRandomProperty;
+    function getRandomPropertyWithWeights(target) {
+        var totalWeight = 0;
+        for (var prop in target) {
+            totalWeight += target[prop];
+        }
+        var selection = randRange(0, totalWeight);
+        for (var prop in target) {
+            selection -= target[prop];
+            if (selection <= 0) {
+                return prop;
+            }
+        }
+        debugger;
+        return getRandomProperty(target);
+    }
+    Rance.getRandomPropertyWithWeights = getRandomPropertyWithWeights;
     function getFrom2dArray(target, arr) {
         var result = [];
         for (var i = 0; i < arr.length; i++) {
@@ -6045,14 +6061,39 @@ var Rance;
         return resultArray;
     }
     Rance.shuffleArray = shuffleArray;
-    function getRelativeValue(value, min, max) {
-        if (min === max)
-            return 1;
+    function getRelativeValue(value, min, max, inverse) {
+        if (inverse === void 0) { inverse = false; }
+        if (inverse) {
+            if (min === max)
+                return 0;
+            else {
+                return 1 - ((value - min) / (max - min));
+            }
+        }
         else {
-            return (value - min) / (max - min);
+            if (min === max)
+                return 1;
+            else {
+                return (value - min) / (max - min);
+            }
         }
     }
     Rance.getRelativeValue = getRelativeValue;
+    function getRelativeWeightsFromObject(byCount, inverse) {
+        var relativeWeights = {};
+        var min = 0;
+        var max;
+        for (var prop in byCount) {
+            var count = byCount[prop];
+            max = isFinite(max) ? Math.max(max, count) : count;
+        }
+        for (var prop in byCount) {
+            var count = byCount[prop];
+            relativeWeights[prop] = getRelativeValue(count, min, max);
+        }
+        return relativeWeights;
+    }
+    Rance.getRelativeWeightsFromObject = getRelativeWeightsFromObject;
     function getDropTargetAtLocation(x, y) {
         var dropTargets = document.getElementsByClassName("drop-target");
         var point = {
@@ -11255,22 +11296,8 @@ var Rance;
             }
             return totalUnitCountByArchetype;
         };
-        FrontsAI.prototype.getUnitArchetypeRelativeWeights = function (unitsByArchetype) {
-            var min = 0;
-            var max;
-            for (var archetype in unitsByArchetype) {
-                var count = unitsByArchetype[archetype];
-                max = isFinite(max) ? Math.max(max, count) : count;
-            }
-            var relativeWeights = {};
-            for (var archetype in unitsByArchetype) {
-                var count = unitsByArchetype[archetype];
-                relativeWeights[archetype] = Rance.getRelativeValue(count, min, max);
-            }
-            return relativeWeights;
-        };
         FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
-            var relativeWeights = this.getUnitArchetypeRelativeWeights(unitsByArchetype);
+            var relativeWeights = Rance.getRelativeWeightsFromObject(unitsByArchetype);
             var deviationFromIdeal = {};
             for (var archetype in idealWeights) {
                 var ideal = idealWeights[archetype];
@@ -14954,6 +14981,7 @@ var Rance;
         var Sector2 = (function () {
             function Sector2(id) {
                 this.stars = [];
+                this.resourceDistributionFlags = [];
                 this.id = id;
             }
             Sector2.prototype.addStar = function (star) {
@@ -14962,6 +14990,12 @@ var Rance;
                 }
                 this.stars.push(star);
                 star.mapGenData.sector = this;
+            };
+            Sector2.prototype.addResource = function (resource) {
+                var star = this.stars[0];
+                this.resourceType = resource;
+                this.resourceLocation = star;
+                star.setResource(resource);
             };
             Sector2.prototype.getNeighboringStars = function () {
                 var neighbors = [];
@@ -15409,8 +15443,45 @@ var Rance;
                 }
                 Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
                 // make sectors
-                Rance.MapGen2.makeSectors(stars, 3, 5);
+                var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 5);
                 // set resources
+                var resourcesPerDistributionGroup = {};
+                var alreadyAddedResourceCount = {};
+                for (var resourceType in Templates.Resources) {
+                    var resource = Templates.Resources[resourceType];
+                    alreadyAddedResourceCount[resource.type] = 0;
+                    for (var i = 0; i < resource.distributionGroups.length; i++) {
+                        var groupName = resource.distributionGroups[i];
+                        if (!resourcesPerDistributionGroup[groupName]) {
+                            resourcesPerDistributionGroup[groupName] = [];
+                        }
+                        resourcesPerDistributionGroup[groupName].push(resource);
+                    }
+                }
+                for (var sectorId in sectorsById) {
+                    var sector = sectorsById[sectorId];
+                    var majorityRegions = sector.getMajorityRegions();
+                    sector.resourceDistributionFlags = ["common"];
+                    for (var i = 0; i < majorityRegions.length; i++) {
+                        if (majorityRegions[i].id === "center") {
+                            sector.resourceDistributionFlags = ["rare"];
+                            break;
+                        }
+                    }
+                    var alreadyAddedResourcesByWeight = Rance.getRelativeWeightsFromObject(alreadyAddedResourceCount, true);
+                    var possibleResources = [];
+                    for (var i = 0; i < sector.resourceDistributionFlags.length; i++) {
+                        possibleResources =
+                            possibleResources.concat(resourcesPerDistributionGroup[sector.resourceDistributionFlags[i]]);
+                    }
+                    var possibleResourcesByWeight = {};
+                    for (var i = 0; i < possibleResources.length; i++) {
+                        possibleResourcesByWeight[possibleResources[i].type] =
+                            alreadyAddedResourcesByWeight[possibleResources[i].type];
+                    }
+                    var selectedResource = Templates.Resources[Rance.getRandomPropertyWithWeights(possibleResourcesByWeight)];
+                    sector.addResource(selectedResource);
+                }
                 // set players
                 var startRegions = (function setStartingRegions() {
                     var armCount = options.basicOptions["arms"];

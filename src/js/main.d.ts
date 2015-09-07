@@ -474,6 +474,9 @@ declare module Rance {
     function getRandomProperty(target: {
         [props: string]: any;
     }): any;
+    function getRandomPropertyWithWeights(target: {
+        [prop: string]: number;
+    }): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
     function flatten2dArray(toFlatten: any[][]): any[];
     function reverseSide(side: string): string;
@@ -495,7 +498,12 @@ declare module Rance {
     function prettifyDate(date: Date): string;
     function getMatchingLocalstorageItemsByDate(stringToMatch: string): any[];
     function shuffleArray(toShuffle: any[], seed?: any): any[];
-    function getRelativeValue(value: number, min: number, max: number): number;
+    function getRelativeValue(value: number, min: number, max: number, inverse?: boolean): number;
+    function getRelativeWeightsFromObject(byCount: {
+        [prop: string]: number;
+    }, inverse?: boolean): {
+        [prop: string]: number;
+    };
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
 }
 declare module Rance {
@@ -1773,7 +1781,6 @@ declare module Rance {
         frontsToMove: Front[];
         constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonalityData);
         getTotalUnitCountByArchetype(): IArchetypeValues;
-        getUnitArchetypeRelativeWeights(unitsByArchetype: IArchetypeValues): IArchetypeValues;
         getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): {
             [archetype: string]: number;
         };
@@ -2263,10 +2270,12 @@ declare module Rance {
         class Sector2 {
             id: number;
             stars: Star[];
+            resourceDistributionFlags: string[];
             resourceType: Templates.IResourceTemplate;
             resourceLocation: Star;
             constructor(id: number);
             addStar(star: Star): void;
+            addResource(resource: Templates.IResourceTemplate): void;
             getNeighboringStars(): Star[];
             getMajorityRegions(): Region2[];
         }

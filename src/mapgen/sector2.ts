@@ -10,6 +10,7 @@ module Rance
     {
       id: number;
       stars: Star[] = [];
+      resourceDistributionFlags: string[] = [];
       resourceType: Templates.IResourceTemplate;
       resourceLocation: Star;
 
@@ -26,6 +27,14 @@ module Rance
 
         this.stars.push(star);
         star.mapGenData.sector = this;
+      }
+      addResource(resource: Templates.IResourceTemplate)
+      {
+        var star = this.stars[0];
+
+        this.resourceType = resource;
+        this.resourceLocation = star;
+        star.setResource(resource);
       }
 
       getNeighboringStars()

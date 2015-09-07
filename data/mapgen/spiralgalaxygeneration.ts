@@ -220,9 +220,66 @@ module Rance
         MapGen2.partiallyCutLinks(stars, 4, 2);
 
         // make sectors
-        MapGen2.makeSectors(stars, 3, 5);
+        var sectorsById = MapGen2.makeSectors(stars, 3, 5);
 
         // set resources
+        var resourcesPerDistributionGroup:
+        {
+          [flag: string]: Templates.IResourceTemplate[];
+        } = {};
+        var alreadyAddedResourceCount:
+        {
+          [resourceType: string]: number;
+        } = {};
+        for (var resourceType in Templates.Resources)
+        {
+          var resource: Templates.IResourceTemplate = Templates.Resources[resourceType];
+          alreadyAddedResourceCount[resource.type] = 0;
+          for (var i = 0; i < resource.distributionGroups.length; i++)
+          {
+            var groupName = resource.distributionGroups[i];
+            if (!resourcesPerDistributionGroup[groupName])
+            {
+              resourcesPerDistributionGroup[groupName] = [];
+            }
+
+            resourcesPerDistributionGroup[groupName].push(resource);
+          }
+        }
+        for (var sectorId in sectorsById)
+        {
+          var sector = sectorsById[sectorId];
+          var majorityRegions = sector.getMajorityRegions();
+          sector.resourceDistributionFlags = ["common"];
+          for (var i = 0; i < majorityRegions.length; i++)
+          {
+            if (majorityRegions[i].id === "center")
+            {
+              sector.resourceDistributionFlags = ["rare"];
+              break;
+            }
+          }
+
+          var alreadyAddedResourcesByWeight = getRelativeWeightsFromObject(alreadyAddedResourceCount, true);
+          var possibleResources: Templates.IResourceTemplate[] = [];
+          for (var i = 0; i < sector.resourceDistributionFlags.length; i++)
+          {
+            possibleResources =
+              possibleResources.concat(resourcesPerDistributionGroup[sector.resourceDistributionFlags[i]]);
+          }
+          var possibleResourcesByWeight:
+          {
+            [resourceType: string]: number;
+          } = {};
+          for (var i = 0; i < possibleResources.length; i++)
+          {
+            possibleResourcesByWeight[possibleResources[i].type] =
+              alreadyAddedResourcesByWeight[possibleResources[i].type];
+          }
+
+          var selectedResource = Templates.Resources[getRandomPropertyWithWeights(possibleResourcesByWeight)];
+          sector.addResource(selectedResource);
+        }
 
         // set players
         var startRegions: MapGen2.Region2[] = (function setStartingRegions()
