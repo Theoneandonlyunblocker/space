@@ -1143,8 +1143,13 @@ var Rance;
                 if (oldProps.unit !== this.props.unit) {
                     this.renderScene(true, false, this.props.unit);
                 }
-                else if (oldProps.effectSpriteFN !== this.props.effectSpriteFN) {
-                    this.renderScene(false, true, this.props.unit);
+                else {
+                    if (oldProps.effectSpriteFN !== this.props.effectSpriteFN) {
+                        this.renderUnit(false, true, this.props.unit);
+                    }
+                    if (oldProps.effectOverlayFN !== this.props.effectOverlayFN) {
+                        this.renderOverlay();
+                    }
                 }
             },
             componentDidMount: function () {
@@ -1178,19 +1183,22 @@ var Rance;
                     desiredHeight: boundingRect.height
                 });
             },
+            getSFXProps: function () {
+                var containerBounds = this.refs.container.getDOMNode().getBoundingClientRect();
+                return ({
+                    user: this.props.unit,
+                    width: containerBounds.width,
+                    height: containerBounds.height,
+                    duration: this.props.effectDuration,
+                    facingRight: this.props.side === "side1"
+                });
+            },
             addUnit: function (animateEnter, animateFade, unit, onComplete) {
                 var container = this.refs.sprite.getDOMNode();
-                var sceneBounds = this.props.getSceneBounds();
                 if (unit) {
                     var scene;
                     if (this.props.effectSpriteFN && this.props.effectDuration) {
-                        scene = this.props.effectSpriteFN({
-                            user: this.props.unit,
-                            width: sceneBounds.width,
-                            height: sceneBounds.height,
-                            duration: this.props.effectDuration,
-                            facingRight: this.props.side === "side1"
-                        });
+                        scene = this.props.effectSpriteFN(this.getSFXProps());
                     }
                     else {
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
@@ -1245,7 +1253,7 @@ var Rance;
                         onComplete();
                 }
             },
-            renderScene: function (animateEnter, animateFade, unit) {
+            renderUnit: function (animateEnter, animateFade, unit) {
                 if (animateFade) {
                     this.addUnit(animateEnter, animateFade, unit);
                     this.removeUnit(animateEnter, animateFade);
@@ -1255,19 +1263,32 @@ var Rance;
                     this.removeUnit(animateEnter, animateFade, addUnitFN);
                 }
             },
+            renderOverlay: function () {
+                var container = this.refs.overlay.getDOMNode();
+                if (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+                if (this.props.effectOverlayFN) {
+                    container.appendChild(this.props.effectOverlayFN(this.getSFXProps()));
+                }
+            },
+            renderScene: function (animateEnter, animateFade, unit) {
+                this.renderUnit(animateEnter, animateFade, unit);
+                this.renderOverlay();
+            },
             render: function () {
                 return (React.DOM.div({
                     className: "battle-scene-unit " +
                         "battle-scene-unit-" + this.props.side,
                     ref: "container"
                 }, React.DOM.div({
-                    className: "battle-scene-unit-overlay",
-                    ref: "overlay"
-                }, null // unit overlay SFX drawn on canvas
-                ), React.DOM.div({
                     className: "battle-scene-unit-sprite",
                     ref: "sprite"
                 }, null // unit sprite drawn on canvas
+                ), React.DOM.div({
+                    className: "battle-scene-unit-overlay",
+                    ref: "overlay"
+                }, null // unit overlay SFX drawn on canvas
                 )));
             }
         });
@@ -1939,7 +1960,7 @@ var Rance;
                     this.getDOMNode().focus();
                 }
                 else {
-                    this.setState({ selected: this.prop.sortedItems[0] });
+                    this.setState({ selected: this.props.sortedItems[0] });
                 }
             },
             componentWillUnmount: function () {
@@ -6703,6 +6724,31 @@ var Rance;
                             battleOverlay: function (props) {
                                 // cg40400.bmp - cg40429.bmp converted to webm
                                 return Rance.makeVideo("img\/battleEffects\/heal.webm", props);
+                            }
+                        }
+                    }
+                ]
+            };
+            PassiveSkills.poisoned = {
+                type: "poisoned",
+                displayName: "Poisoned",
+                description: "",
+                afterAbilityUse: [
+                    {
+                        template: Templates.Effects.healSelf,
+                        data: {
+                            maxHealthPercentage: -0.1
+                        },
+                        sfx: {
+                            duration: 1200,
+                            userOverlay: function (props) {
+                                var canvas = document.createElement("canvas");
+                                canvas.width = props.width;
+                                canvas.height = props.height;
+                                var ctx = canvas.getContext("2d");
+                                ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                return canvas;
                             }
                         }
                     }
@@ -12881,7 +12927,7 @@ var Rance;
                         flat: 9
                     }
                 },
-                passiveSkills: [Templates.PassiveSkills.autoHeal]
+                passiveSkills: [Templates.PassiveSkills.poisoned]
             };
         })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));

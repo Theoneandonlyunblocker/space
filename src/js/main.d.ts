@@ -563,8 +563,6 @@ declare module Rance {
             duration: number;
             userSprite?: (props: SFXParams) => HTMLCanvasElement;
             userOverlay?: (props: SFXParams) => HTMLCanvasElement;
-            emptySpaceOverlay?: (props: SFXParams) => HTMLCanvasElement;
-            enemyOverlay?: (props: SFXParams) => HTMLCanvasElement;
             battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
         }
     }
@@ -623,6 +621,7 @@ declare module Rance {
         }
         module PassiveSkills {
             var autoHeal: IPassiveSkillTemplate;
+            var poisoned: IPassiveSkillTemplate;
             var overdrive: IPassiveSkillTemplate;
         }
     }

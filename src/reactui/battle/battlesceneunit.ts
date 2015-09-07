@@ -13,11 +13,16 @@ module Rance
         {
           this.renderScene(true, false, this.props.unit);
         }
-        else if (
-          oldProps.effectSpriteFN !== this.props.effectSpriteFN
-        )
+        else
         {
-          this.renderScene(false, true, this.props.unit);
+          if (oldProps.effectSpriteFN !== this.props.effectSpriteFN)
+          {
+            this.renderUnit(false, true, this.props.unit);
+          }
+          if (oldProps.effectOverlayFN !== this.props.effectOverlayFN)
+          {
+            this.renderOverlay();
+          }
         }
       },
 
@@ -65,24 +70,30 @@ module Rance
         });
       },
 
+      getSFXProps: function()
+      {
+        var containerBounds = this.refs.container.getDOMNode().getBoundingClientRect();
+
+        return(
+        {
+          user: this.props.unit,
+          width: containerBounds.width,
+          height: containerBounds.height,
+          duration: this.props.effectDuration,
+          facingRight: this.props.side === "side1"
+        });
+      },
+
       addUnit: function(animateEnter: boolean, animateFade: boolean, unit?: Unit, onComplete?: {(): void})
       {
         var container = this.refs.sprite.getDOMNode();
-        var sceneBounds = this.props.getSceneBounds();
 
         if (unit)
         {
           var scene: HTMLCanvasElement;
           if (this.props.effectSpriteFN && this.props.effectDuration)
           {
-            scene = this.props.effectSpriteFN(
-            {
-              user: this.props.unit,
-              width: sceneBounds.width,
-              height: sceneBounds.height,
-              duration: this.props.effectDuration,
-              facingRight: this.props.side === "side1"
-            });
+            scene = this.props.effectSpriteFN(this.getSFXProps());
           }
           else
           {
@@ -155,7 +166,7 @@ module Rance
         }
       },
 
-      renderScene: function(animateEnter: boolean, animateFade: boolean, unit?: Unit)
+      renderUnit: function(animateEnter: boolean, animateFade: boolean, unit?: Unit)
       {
         if (animateFade)
         {
@@ -168,7 +179,26 @@ module Rance
 
           this.removeUnit(animateEnter, animateFade, addUnitFN);
         }
+      },
 
+      renderOverlay: function()
+      {
+        var container = this.refs.overlay.getDOMNode();
+        if (container.firstChild)
+        {
+          container.removeChild(container.firstChild);
+        }
+
+        if (this.props.effectOverlayFN)
+        {
+          container.appendChild(this.props.effectOverlayFN(this.getSFXProps()));
+        }
+      },
+
+      renderScene: function(animateEnter: boolean, animateFade: boolean, unit?: Unit)
+      {
+        this.renderUnit(animateEnter, animateFade, unit);
+        this.renderOverlay();
       },
 
       render: function()
@@ -182,17 +212,17 @@ module Rance
           },
             React.DOM.div(
             {
-              className: "battle-scene-unit-overlay",
-              ref: "overlay"
-            },
-              null // unit overlay SFX drawn on canvas
-            ),
-            React.DOM.div(
-            {
               className: "battle-scene-unit-sprite",
               ref: "sprite"
             },
               null // unit sprite drawn on canvas
+            ),
+            React.DOM.div(
+            {
+              className: "battle-scene-unit-overlay",
+              ref: "overlay"
+            },
+              null // unit overlay SFX drawn on canvas
             )
           )
         );

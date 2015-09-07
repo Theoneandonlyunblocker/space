@@ -42,6 +42,38 @@ module Rance
           }
         ]
       }
+      export var poisoned: IPassiveSkillTemplate =
+      {
+        type: "poisoned",
+        displayName: "Poisoned",
+        description: "",
+        afterAbilityUse:
+        [
+          {
+            template: Effects.healSelf,
+            data:
+            {
+              maxHealthPercentage: -0.1
+            },
+            sfx:
+            {
+              duration: 1200,
+              userOverlay: function(props: Templates.SFXParams)
+              {
+                var canvas = <HTMLCanvasElement> document.createElement("canvas");
+                canvas.width = props.width;
+                canvas.height = props.height;
+                var ctx = canvas.getContext("2d");
+                ctx.fillStyle = "rgba(30, 150, 30, 0.5)"
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                return canvas;
+              }
+            }
+          }
+        ]
+
+      }
       export var overdrive: IPassiveSkillTemplate =
       {
         type: "overdrive",
