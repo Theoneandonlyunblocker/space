@@ -46,13 +46,60 @@ module Rance
                 game: this.props.game
               })
             ),
-            !Options.debugMode ? null : React.DOM.select(
+            !Options.debugMode ? null : React.DOM.div(
             {
-              className: "reactui-selector debug",
-              ref: "mapModeSelector",
-              onChange: this.switchMapMode
+              className: "galaxy-map-debug debug"
             },
-              mapModeOptions
+              React.DOM.select(
+              {
+                className: "reactui-selector debug",
+                ref: "mapModeSelector",
+                onChange: this.switchMapMode
+              },
+                mapModeOptions
+              ),
+              React.DOM.select(
+                {
+                  className: "reactui-selector debug",
+                  ref: "sceneSelector",
+                  value: this.props.sceneToRender,
+                  onChange: this.changeScene
+                },
+                React.DOM.option({value: "galaxyMap"}, "map"),
+                React.DOM.option({value: "flagMaker"}, "make flags"),
+                React.DOM.option({value: "battleScene"}, "battle scene"),
+                React.DOM.option({value: "setupGame"}, "setup game")
+              ),
+              React.DOM.button(
+              {
+                className: "debug",
+                onClick: function(e:any)
+                {
+                  // https://github.com/facebook/react/issues/2988
+                  // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+                  // without this react will keep a reference to this element causing a big memory leak
+                  e.target.blur();
+                  window.setTimeout(function()
+                  {
+                    var position = extendObject(app.renderer.camera.container.position);
+                    var zoom = app.renderer.camera.currZoom;
+                    app.destroy();
+
+                    app.initUI();
+
+                    app.game = app.makeGame();
+                    app.initGame();
+
+                    app.initDisplay();
+                    app.hookUI();
+                    app.reactUI.switchScene("galaxyMap");
+                    app.renderer.camera.zoom(zoom);
+                    app.renderer.camera.container.position = position;
+                  }, 5);
+                }
+              },
+                "Reset app"
+              )
             )
           )
         );
