@@ -2155,6 +2155,7 @@ declare module Rance {
         getItemAbilities(): Templates.IAbilityTemplate[];
         getAllAbilities(): Templates.IAbilityTemplate[];
         getItemPassiveSkills(): Templates.IPassiveSkillTemplate[];
+        getStatusEffectPassiveSkills(): Templates.IPassiveSkillTemplate[];
         getAllPassiveSkills(): Templates.IPassiveSkillTemplate[];
         updatePassiveSkillsByPhase(): void;
         getPassiveSkillsByPhase(): {

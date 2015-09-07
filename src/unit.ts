@@ -399,6 +399,10 @@ module Rance
       {
         this.attributesAreDirty = true;
       }
+      if (statusEffect.template.passiveSkills)
+      {
+        this.passiveSkillsByPhaseAreDirty = true;
+      }
     }
     removeStatusEffect(statusEffect: StatusEffect)
     {
@@ -412,6 +416,10 @@ module Rance
       if (statusEffect.template.attributes)
       {
         this.attributesAreDirty = true;
+      }
+      if (statusEffect.template.passiveSkills)
+      {
+        this.passiveSkillsByPhaseAreDirty = true;
       }
     }
     /*
@@ -515,6 +523,26 @@ module Rance
 
       return itemPassiveSkills;
     }
+    getStatusEffectPassiveSkills(): Templates.IPassiveSkillTemplate[]
+    {
+      var statusEffectPassiveSkills: Templates.IPassiveSkillTemplate[] = [];
+
+      if (!this.battleStats || !this.battleStats.statusEffects)
+      {
+        return statusEffectPassiveSkills;
+      }
+
+      for (var i = 0; i < this.battleStats.statusEffects.length; i++)
+      {
+        var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
+        if (templateSkills)
+        {
+          statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
+        }
+      }
+
+      return statusEffectPassiveSkills;
+    }
     getAllPassiveSkills(): Templates.IPassiveSkillTemplate[]
     {
       var allSkills: Templates.IPassiveSkillTemplate[] = [];
@@ -524,6 +552,7 @@ module Rance
       }
 
       allSkills = allSkills.concat(this.getItemPassiveSkills());
+      allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
 
       return allSkills;
     }

@@ -1901,10 +1901,9 @@ var Rance;
                 var initialColumn = this.props.initialSortOrder ?
                     this.props.initialSortOrder[0] :
                     this.props.initialColumns[0];
-                var initialSelected = this.props.listItems[0];
                 return ({
                     columns: this.props.initialColumns,
-                    selected: initialSelected,
+                    selected: null,
                     selectedColumn: initialColumn,
                     sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
                 });
@@ -1932,7 +1931,10 @@ var Rance;
                         }
                     });
                 }
-                if (this.props.autoSelect) {
+                if (this.props.initialSelected) {
+                    this.handleSelectRow(this.props.initialSelected);
+                }
+                else if (this.props.autoSelect) {
                     this.handleSelectRow(this.props.sortedItems[0]);
                     this.getDOMNode().focus();
                 }
@@ -12875,7 +12877,8 @@ var Rance;
                     speed: {
                         flat: 9
                     }
-                }
+                },
+                passiveSkills: [Templates.PassiveSkills.autoHeal]
             };
         })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
@@ -13163,6 +13166,9 @@ var Rance;
             if (statusEffect.template.attributes) {
                 this.attributesAreDirty = true;
             }
+            if (statusEffect.template.passiveSkills) {
+                this.passiveSkillsByPhaseAreDirty = true;
+            }
         };
         Unit.prototype.removeStatusEffect = function (statusEffect) {
             var index = this.battleStats.statusEffects.indexOf(statusEffect);
@@ -13172,6 +13178,9 @@ var Rance;
             this.battleStats.statusEffects.splice(index, 1);
             if (statusEffect.template.attributes) {
                 this.attributesAreDirty = true;
+            }
+            if (statusEffect.template.passiveSkills) {
+                this.passiveSkillsByPhaseAreDirty = true;
             }
         };
         /*
@@ -13246,12 +13255,26 @@ var Rance;
             }
             return itemPassiveSkills;
         };
+        Unit.prototype.getStatusEffectPassiveSkills = function () {
+            var statusEffectPassiveSkills = [];
+            if (!this.battleStats || !this.battleStats.statusEffects) {
+                return statusEffectPassiveSkills;
+            }
+            for (var i = 0; i < this.battleStats.statusEffects.length; i++) {
+                var templateSkills = this.battleStats.statusEffects[i].template.passiveSkills;
+                if (templateSkills) {
+                    statusEffectPassiveSkills = statusEffectPassiveSkills.concat(templateSkills);
+                }
+            }
+            return statusEffectPassiveSkills;
+        };
         Unit.prototype.getAllPassiveSkills = function () {
             var allSkills = [];
             if (this.template.passiveSkills) {
                 allSkills = allSkills.concat(this.template.passiveSkills);
             }
             allSkills = allSkills.concat(this.getItemPassiveSkills());
+            allSkills = allSkills.concat(this.getStatusEffectPassiveSkills());
             return allSkills;
         };
         Unit.prototype.updatePassiveSkillsByPhase = function () {

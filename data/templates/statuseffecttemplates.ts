@@ -46,7 +46,8 @@ module Rance
           {
             flat: 9
           }
-        }
+        },
+        passiveSkills: [PassiveSkills.autoHeal]
       }
     }
   }
