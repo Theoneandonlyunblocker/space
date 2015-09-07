@@ -31,12 +31,10 @@ module Rance
           this.props.initialSortOrder[0] :
           this.props.initialColumns[0];
 
-        var initialSelected = this.props.listItems[0];
-
         return(
         {
           columns: this.props.initialColumns,
-          selected: initialSelected,
+          selected: null, // set in componentDidMount
           selectedColumn: initialColumn,
           sortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn)
         });
@@ -71,11 +69,18 @@ module Rance
             }
           });
         }
-
-        if (this.props.autoSelect)
+        if (this.props.initialSelected)
+        {
+          this.handleSelectRow(this.props.initialSelected);
+        }
+        else if (this.props.autoSelect)
         {
           this.handleSelectRow(this.props.sortedItems[0]);
           this.getDOMNode().focus();
+        }
+        else
+        {
+          this.setState({selected: this.prop.sortedItems[0]});
         }
       },
 

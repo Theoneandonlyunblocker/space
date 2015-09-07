@@ -1938,6 +1938,9 @@ var Rance;
                     this.handleSelectRow(this.props.sortedItems[0]);
                     this.getDOMNode().focus();
                 }
+                else {
+                    this.setState({ selected: this.prop.sortedItems[0] });
+                }
             },
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.setDesiredHeight);
