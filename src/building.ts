@@ -46,6 +46,7 @@ module Rance
     }
     getPossibleUpgrades()
     {
+      var self = this;
       var upgrades: IBuildingUpgradeData[] = [];
 
       if (this.upgradeLevel < this.template.maxUpgradeLevel)
@@ -68,7 +69,7 @@ module Rance
             level: upgradeData.level,
             template: template,
             cost: template.buildCost,
-            parentBuilding: this
+            parentBuilding: self
           });
         });
 
