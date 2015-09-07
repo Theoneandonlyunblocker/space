@@ -1219,7 +1219,7 @@ progress::-webkit-progress-value {
 }
 .battle-prep-left-upper-wrapper {
   position: relative;
-  flex: 0 0 auto;
+  flex: 1 0 auto;
   min-height: 16em;
   border-style: solid;
   border-color: #c4e5fb;
