@@ -1704,6 +1704,15 @@ progress::-webkit-progress-value {
 .fleet-info + .fleet-info {
   border-top: 0;
 }
+.fleet-info.stealthy {
+  background-color: rgba(12, 22, 21, 0.5);
+}
+.fleet-info.stealthy .fleet-info-header {
+  background: linear-gradient(to bottom, rgba(13, 35, 53, 0.5), rgba(12, 22, 21, 0));
+}
+.fleet-info.stealthy * {
+  color: #d6d6d1;
+}
 .fleet-info-header {
   display: flex;
   position: relative;

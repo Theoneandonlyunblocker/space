@@ -5327,7 +5327,7 @@ var Rance;
                     healthStatus += " wounded";
                 }
                 return (React.DOM.div({
-                    className: "fleet-info"
+                    className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
                 }, React.DOM.div({
                     className: "fleet-info-header"
                 }, React.DOM.input({
@@ -5624,10 +5624,11 @@ var Rance;
                 }
                 var fleetSelectionControls = null;
                 if (hasMultipleSelected) {
+                    var fleetStealthsAreClashing = selectedFleets.length === 2 && selectedFleets[0].isStealthy !== selectedFleets[1].isStealthy;
                     var mergeProps = {
                         className: "fleet-selection-controls-merge"
                     };
-                    if (allFleetsInSameLocation && !this.props.isInspecting) {
+                    if (allFleetsInSameLocation && !this.props.isInspecting && !fleetStealthsAreClashing) {
                         mergeProps.onClick = this.mergeFleets;
                     }
                     else {
@@ -5637,7 +5638,8 @@ var Rance;
                     var reorganizeProps = {
                         className: "fleet-selection-controls-reorganize"
                     };
-                    if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting) {
+                    if (allFleetsInSameLocation && selectedFleets.length === 2 && !this.props.isInspecting &&
+                        !fleetStealthsAreClashing) {
                         reorganizeProps.onClick = this.reorganizeFleets;
                     }
                     else {

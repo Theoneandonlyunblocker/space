@@ -38,7 +38,7 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "fleet-info"
+            className: "fleet-info" + (fleet.isStealthy ? " stealthy" : "")
           },
             React.DOM.div(
             {
