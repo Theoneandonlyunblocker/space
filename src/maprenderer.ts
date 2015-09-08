@@ -423,7 +423,8 @@ module Rance
           for (var i = 0; i < points.length; i++)
           {
             var star = points[i];
-            if (!star.owner || star.owner.colorAlpha === 0) continue;
+            var occupier = star.getSecondaryController();
+            if (!star.owner || (!occupier && star.owner.colorAlpha === 0)) continue;
 
             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
             var gfx = new PIXI.Graphics();
@@ -433,7 +434,6 @@ module Rance
             gfx.drawShape(poly);
             gfx.endFill();
 
-            var occupier = star.getSecondaryController();
             if (occupier)
             {
               var container = new PIXI.Container();
@@ -448,7 +448,6 @@ module Rance
               container.addChild(gfx);
               container.addChild(mask);
               gfx.filters = [this.getOccupationShader(star.owner, occupier)];
-              console.log(gfx.filters[0]);
               container.mask = mask;
             }
             else
