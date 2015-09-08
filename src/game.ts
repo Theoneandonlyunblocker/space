@@ -53,6 +53,20 @@ module Rance
       {
         ship.resetMovePoints();
         ship.heal();
+
+        var passiveSkillsByPhase = ship.getPassiveSkillsByPhase();
+        if (passiveSkillsByPhase.atTurnStart)
+        {
+          for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++)
+          {
+            var skill = passiveSkillsByPhase.atTurnStart[i];
+            for (var j = 0; j < skill.atTurnStart.length; j++)
+            {
+              skill.atTurnStart[j](ship);
+            }
+          }
+        }
+
         ship.timesActedThisTurn = 0;
       }
 

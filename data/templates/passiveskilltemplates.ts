@@ -4,6 +4,15 @@ module Rance
 {
   export module Templates
   {
+    export interface ITurnStartEffect
+    {
+      (unit: Unit): void;
+    }
+    // called for each unit present in star in battleprep constructor
+    export interface IBattlePrepEffect
+    {
+      (unit: Unit, battlePrep: BattlePrep): void;
+    }
     export interface IPassiveSkillTemplate
     {
       type: string;
@@ -13,6 +22,8 @@ module Rance
       atBattleStart?: IAbilityTemplateEffect[];
       beforeAbilityUse?: IAbilityTemplateEffect[];
       afterAbilityUse?: IAbilityTemplateEffect[];
+      atTurnStart?: ITurnStartEffect[];
+      inBattlePrep?: IBattlePrepEffect[];
     }
     export module PassiveSkills
     {
@@ -84,6 +95,25 @@ module Rance
         [
           {
             template: Effects.buffTest
+          }
+        ]
+      }
+      export var medic: IPassiveSkillTemplate =
+      {
+        type: "medic",
+        displayName: "Medic",
+        description: "Heals all units in same star to full at turn start",
+
+        atTurnStart:
+        [
+          function(user: Unit)
+          {
+            var star = user.fleet.location;
+            var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+            for (var i = 0; i < allFriendlyUnits.length; i++)
+            {
+              allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth)
+            }
           }
         ]
       }

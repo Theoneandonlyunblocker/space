@@ -418,7 +418,7 @@ module Rance
         this.removeFleet(fleets[i]);
       }
     }
-    getAllShipsOfPlayer(player: Player)
+    getAllShipsOfPlayer(player: Player): Unit[]
     {
       var allShips: Unit[] = [];
 

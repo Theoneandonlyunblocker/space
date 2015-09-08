@@ -614,6 +614,12 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface ITurnStartEffect {
+            (unit: Unit): void;
+        }
+        interface IBattlePrepEffect {
+            (unit: Unit, battlePrep: BattlePrep): void;
+        }
         interface IPassiveSkillTemplate {
             type: string;
             displayName: string;
@@ -621,11 +627,14 @@ declare module Rance {
             atBattleStart?: IAbilityTemplateEffect[];
             beforeAbilityUse?: IAbilityTemplateEffect[];
             afterAbilityUse?: IAbilityTemplateEffect[];
+            atTurnStart?: ITurnStartEffect[];
+            inBattlePrep?: IBattlePrepEffect[];
         }
         module PassiveSkills {
             var autoHeal: IPassiveSkillTemplate;
             var poisoned: IPassiveSkillTemplate;
             var overdrive: IPassiveSkillTemplate;
+            var medic: IPassiveSkillTemplate;
         }
     }
 }
@@ -2130,6 +2139,8 @@ declare module Rance {
             atBattleStart?: Templates.IPassiveSkillTemplate[];
             beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
             afterAbilityUse?: Templates.IPassiveSkillTemplate[];
+            atTurnStart?: Templates.IPassiveSkillTemplate[];
+            inBattlePrep?: Templates.IPassiveSkillTemplate[];
         };
         passiveSkillsByPhaseAreDirty: boolean;
         sfxDuration: number;
@@ -2172,6 +2183,8 @@ declare module Rance {
             atBattleStart?: Templates.IPassiveSkillTemplate[];
             beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
             afterAbilityUse?: Templates.IPassiveSkillTemplate[];
+            atTurnStart?: Templates.IPassiveSkillTemplate[];
+            inBattlePrep?: Templates.IPassiveSkillTemplate[];
         };
         receiveDamage(amount: number, damageType: DamageType): void;
         getAdjustedTroopSize(): number;

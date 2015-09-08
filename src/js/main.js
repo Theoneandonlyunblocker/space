@@ -6784,6 +6784,20 @@ var Rance;
                     }
                 ]
             };
+            PassiveSkills.medic = {
+                type: "medic",
+                displayName: "Medic",
+                description: "Heals all units in same star to full at turn start",
+                atTurnStart: [
+                    function (user) {
+                        var star = user.fleet.location;
+                        var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                        for (var i = 0; i < allFriendlyUnits.length; i++) {
+                            allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
+                        }
+                    }
+                ]
+            };
         })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
@@ -6826,7 +6840,8 @@ var Rance;
                     Templates.Abilities.standBy
                 ],
                 passiveSkills: [
-                    Templates.PassiveSkills.autoHeal
+                    Templates.PassiveSkills.autoHeal,
+                    Templates.PassiveSkills.medic
                 ]
             };
             ShipTypes.fighterSquadron = {
@@ -10458,6 +10473,15 @@ var Rance;
             var shipStartTurnFN = function (ship) {
                 ship.resetMovePoints();
                 ship.heal();
+                var passiveSkillsByPhase = ship.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.atTurnStart) {
+                    for (var i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++) {
+                        var skill = passiveSkillsByPhase.atTurnStart[i];
+                        for (var j = 0; j < skill.atTurnStart.length; j++) {
+                            skill.atTurnStart[j](ship);
+                        }
+                    }
+                }
                 ship.timesActedThisTurn = 0;
             };
             player.forEachUnit(shipStartTurnFN);
@@ -13379,7 +13403,7 @@ var Rance;
             var allSkills = this.getAllPassiveSkills();
             for (var i = 0; i < allSkills.length; i++) {
                 var skill = allSkills[i];
-                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse"].forEach(function (phase) {
+                ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function (phase) {
                     if (skill[phase]) {
                         if (!updatedSkills[phase]) {
                             updatedSkills[phase] = [];

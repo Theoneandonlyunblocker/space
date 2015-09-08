@@ -78,6 +78,8 @@ module Rance
       atBattleStart?: Templates.IPassiveSkillTemplate[]
       beforeAbilityUse?: Templates.IPassiveSkillTemplate[];
       afterAbilityUse?: Templates.IPassiveSkillTemplate[];
+      atTurnStart?: Templates.IPassiveSkillTemplate[];
+      inBattlePrep?: Templates.IPassiveSkillTemplate[];
     } = {};
     passiveSkillsByPhaseAreDirty: boolean = true;
 
@@ -566,7 +568,7 @@ module Rance
       for (var i = 0; i < allSkills.length; i++)
       {
         var skill = allSkills[i];
-        ["atBattleStart", "beforeAbilityUse", "afterAbilityUse"].forEach(function(phase)
+        ["atBattleStart", "beforeAbilityUse", "afterAbilityUse", "atTurnStart", "inBattlePrep"].forEach(function(phase)
         {
           if (skill[phase])
           {

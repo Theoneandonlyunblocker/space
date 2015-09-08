@@ -163,7 +163,7 @@ module Rance
       // used to penalize moves that might be optimal but boring, such as doing nothing
       AIScoreAdjust?: number;
       // prevent from being used in AI vs AI battles. helps when simulation depth is too low
-      // to let AIScoreAdjust from kicking in
+      // to let AIScoreAdjust kick in
       disableInAIBattles?: boolean;
 
       addsGuard?: boolean; // set dynamically

@@ -39,8 +39,7 @@ module Rance
       this.mapEvaluator = new MapEvaluator(this.map, this.player, this.game);
 
       this.objectivesAI = new ObjectivesAI(this.mapEvaluator, this.personality);
-      this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI,
-        this.personality);
+      this.frontsAI = new FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
       this.economicAI = new EconomyAI(
       {
         objectivesAI: this.objectivesAI,
