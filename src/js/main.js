@@ -15620,6 +15620,7 @@ var Rance;
             shipTypes = shipTypes.filter(function (shipType) {
                 return shipType !== "cheatShip" && !Rance.Templates.ShipTypes[shipType].isStealthy;
             });
+            console.log(shipTypes);
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
                 if (!star.owner) {
@@ -17606,11 +17607,12 @@ var Rance;
                         function singleFleetDrawFN(fleet) {
                             var fleetContainer = new PIXI.Container();
                             var color = fleet.player.color;
+                            var fillAlpha = fleet.isStealthy ? 0.3 : 0.7;
                             var textTexture = self.getFleetTextTexture(fleet);
                             var text = new PIXI.Sprite(textTexture);
                             var containerGfx = new PIXI.Graphics();
                             containerGfx.lineStyle(1, 0x00000, 1);
-                            containerGfx.beginFill(color, 0.7);
+                            containerGfx.beginFill(color, fillAlpha);
                             containerGfx.drawRect(0, 0, text.width + 4, text.height);
                             containerGfx.endFill();
                             fleetContainer.addChild(containerGfx);
