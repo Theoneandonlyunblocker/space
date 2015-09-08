@@ -25,15 +25,37 @@ module Rance
       [id: number]: number[];
     } = {};
 
+    minDefendersInNeutralTerritory: number = 1;
+
     constructor(battleData: IBattleData)
     {
       this.attacker = battleData.attacker.player;
       this.defender = battleData.defender.player;
       this.battleData = battleData;
 
+      this.triggerPassiveSkills();
+
       this.makeAIFormations();
 
       this.setupPlayer();
+    }
+    triggerPassiveSkills()
+    {
+      var star = this.battleData.location;
+      var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+      for (var i = 0; i < allUnits.length; i++)
+      {
+        var unit = allUnits[i]
+        var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+        if (passiveSkillsByPhase.inBattlePrep)
+        {
+          var skill = passiveSkillsByPhase.inBattlePrep[i];
+          for (var j = 0; j < skill.inBattlePrep.length; j++)
+          {
+            skill.inBattlePrep[j](unit, this);
+          }
+        }
+      }
     }
     makeEmptyFormation(): Unit[][]
     {
@@ -316,8 +338,8 @@ module Rance
       /*
       invalid if 
         attacking and no ships placed
-        battle is in territority not controlled by either and ships placed
-          is smaller than requirement
+        battle is in territory not controlled by either and ships placed
+          is smaller than requirement and player hasn't placed all available ships
        */
       
       var shipsPlaced = 0;
@@ -335,9 +357,10 @@ module Rance
       }
       else if (!this.battleData.building)
       {
-        // TODO add passive ability that forces more enemy ships to stay and fight
-        minShips = 1;
+        minShips = this.minDefendersInNeutralTerritory;
       }
+
+      minShips = Math.min(minShips, this.availableUnits.length);
 
       return shipsPlaced >= minShips;
     }

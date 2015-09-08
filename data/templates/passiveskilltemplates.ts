@@ -98,6 +98,23 @@ module Rance
           }
         ]
       }
+      export var warpJammer: IPassiveSkillTemplate =
+      {
+        type: "warpJammer",
+        displayName: "Warp Jammer",
+        description: "Forces an extra unit to defend in neutral territory",
+
+        inBattlePrep:
+        [
+          function(user: Unit, battlePrep: BattlePrep)
+          {
+            if (user.fleet.player === battlePrep.attacker)
+            {
+              battlePrep.minDefendersInNeutralTerritory += 1;
+            }
+          }
+        ]
+      }
       export var medic: IPassiveSkillTemplate =
       {
         type: "medic",

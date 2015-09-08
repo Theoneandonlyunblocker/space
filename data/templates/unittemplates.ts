@@ -76,6 +76,7 @@ module Rance
         passiveSkills:
         [
           PassiveSkills.autoHeal,
+          PassiveSkills.warpJammer,
           PassiveSkills.medic
         ]
       }

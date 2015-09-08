@@ -6784,6 +6784,18 @@ var Rance;
                     }
                 ]
             };
+            PassiveSkills.warpJammer = {
+                type: "warpJammer",
+                displayName: "Warp Jammer",
+                description: "Forces an extra unit to defend in neutral territory",
+                inBattlePrep: [
+                    function (user, battlePrep) {
+                        if (user.fleet.player === battlePrep.attacker) {
+                            battlePrep.minDefendersInNeutralTerritory += 1;
+                        }
+                    }
+                ]
+            };
             PassiveSkills.medic = {
                 type: "medic",
                 displayName: "Medic",
@@ -6841,6 +6853,7 @@ var Rance;
                 ],
                 passiveSkills: [
                     Templates.PassiveSkills.autoHeal,
+                    Templates.PassiveSkills.warpJammer,
                     Templates.PassiveSkills.medic
                 ]
             };
@@ -9405,12 +9418,28 @@ var Rance;
     var BattlePrep = (function () {
         function BattlePrep(battleData) {
             this.alreadyPlaced = {};
+            this.minDefendersInNeutralTerritory = 1;
             this.attacker = battleData.attacker.player;
             this.defender = battleData.defender.player;
             this.battleData = battleData;
+            this.triggerPassiveSkills();
             this.makeAIFormations();
             this.setupPlayer();
         }
+        BattlePrep.prototype.triggerPassiveSkills = function () {
+            var star = this.battleData.location;
+            var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+            for (var i = 0; i < allUnits.length; i++) {
+                var unit = allUnits[i];
+                var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
+                if (passiveSkillsByPhase.inBattlePrep) {
+                    var skill = passiveSkillsByPhase.inBattlePrep[i];
+                    for (var j = 0; j < skill.inBattlePrep.length; j++) {
+                        skill.inBattlePrep[j](unit, this);
+                    }
+                }
+            }
+        };
         BattlePrep.prototype.makeEmptyFormation = function () {
             var COLUMNS_PER_FORMATION = 2;
             var SHIPS_PER_COLUMN = 3;
@@ -9603,8 +9632,8 @@ var Rance;
             /*
             invalid if
               attacking and no ships placed
-              battle is in territority not controlled by either and ships placed
-                is smaller than requirement
+              battle is in territory not controlled by either and ships placed
+                is smaller than requirement and player hasn't placed all available ships
              */
             var shipsPlaced = 0;
             this.forEachShipInFormation(this.playerFormation, function (unit) {
@@ -9616,9 +9645,9 @@ var Rance;
                 minShips = 1;
             }
             else if (!this.battleData.building) {
-                // TODO add passive ability that forces more enemy ships to stay and fight
-                minShips = 1;
+                minShips = this.minDefendersInNeutralTerritory;
             }
+            minShips = Math.min(minShips, this.availableUnits.length);
             return shipsPlaced >= minShips;
         };
         // end player formation
