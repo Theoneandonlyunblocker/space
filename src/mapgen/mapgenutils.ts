@@ -314,9 +314,10 @@ module Rance
         if (!star.owner)
         {
           player.addStar(star);
-          addDefenceBuildings(star, 1);
 
           var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
+          var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
+          addDefenceBuildings(star, defenceBuildingstoAdd);
 
           var shipAmount = minShips;
 
