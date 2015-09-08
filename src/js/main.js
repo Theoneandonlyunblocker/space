@@ -6836,6 +6836,7 @@ var Rance;
                 maxHealth: 1,
                 maxMovePoints: 999,
                 visionRange: 1,
+                detectionRange: -1,
                 attributeLevels: {
                     attack: 9,
                     defence: 9,
@@ -6871,6 +6872,7 @@ var Rance;
                 maxHealth: 0.7,
                 maxMovePoints: 2,
                 visionRange: 1,
+                detectionRange: -1,
                 attributeLevels: {
                     attack: 0.8,
                     defence: 0.6,
@@ -6897,6 +6899,7 @@ var Rance;
                 maxHealth: 0.5,
                 maxMovePoints: 1,
                 visionRange: 1,
+                detectionRange: -1,
                 attributeLevels: {
                     attack: 0.7,
                     defence: 0.4,
@@ -6923,6 +6926,7 @@ var Rance;
                 maxHealth: 1,
                 maxMovePoints: 1,
                 visionRange: 1,
+                detectionRange: -1,
                 attributeLevels: {
                     attack: 0.8,
                     defence: 0.8,
@@ -6949,6 +6953,7 @@ var Rance;
                 maxHealth: 0.6,
                 maxMovePoints: 2,
                 visionRange: 2,
+                detectionRange: 0,
                 attributeLevels: {
                     attack: 0.5,
                     defence: 0.5,
@@ -6974,6 +6979,7 @@ var Rance;
                 maxHealth: 0.9,
                 maxMovePoints: 1,
                 visionRange: 1,
+                detectionRange: -1,
                 attributeLevels: {
                     attack: 0.5,
                     defence: 0.9,
@@ -7726,7 +7732,9 @@ var Rance;
             }
             var visited = {};
             var visitedByRange = {};
-            visited[this.id] = this;
+            if (range >= 0) {
+                visited[this.id] = this;
+            }
             var current = [];
             var frontier = [this];
             for (var i = 0; i < range; i++) {
@@ -7847,6 +7855,13 @@ var Rance;
         };
         Star.prototype.getVision = function () {
             return this.getLinkedInRange(this.getVisionRange()).all;
+        };
+        Star.prototype.getDetectionRange = function () {
+            // TODO detection buildings
+            return 0;
+        };
+        Star.prototype.getDetection = function () {
+            return this.getLinkedInRange(this.getDetectionRange()).all;
         };
         Star.prototype.getHealingFactor = function (player) {
             var factor = 0;
@@ -8055,6 +8070,7 @@ var Rance;
             this.ships = [];
             this.visionIsDirty = true;
             this.visibleStars = [];
+            this.detectedStars = [];
             this.player = player;
             this.location = location;
             this.id = isFinite(id) ? id : Rance.idGenerators.fleet++;
@@ -8222,13 +8238,15 @@ var Rance;
         };
         Fleet.prototype.updateVisibleStars = function () {
             var highestVisionRange = 0;
+            var highestDetectionRange = 0;
             for (var i = 0; i < this.ships.length; i++) {
-                if (this.ships[i].template.visionRange > highestVisionRange) {
-                    highestVisionRange = this.ships[i].template.visionRange;
-                }
+                highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
+                highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
             }
             var inVision = this.location.getLinkedInRange(highestVisionRange);
+            var inDetection = this.location.getLinkedInRange(highestDetectionRange);
             this.visibleStars = inVision.all;
+            this.detectedStars = inDetection.all;
             this.visionIsDirty = false;
         };
         Fleet.prototype.getVision = function () {
@@ -8236,6 +8254,12 @@ var Rance;
                 this.updateVisibleStars();
             }
             return this.visibleStars;
+        };
+        Fleet.prototype.getDetection = function () {
+            if (this.visionIsDirty) {
+                this.updateVisibleStars();
+            }
+            return this.detectedStars;
         };
         Fleet.prototype.serialize = function () {
             var data = {};
@@ -11907,6 +11931,7 @@ var Rance;
             this.visionIsDirty = true;
             this.visibleStars = {};
             this.revealedStars = {};
+            this.detectedStars = {};
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
             this.isAI = isAI;
@@ -12090,45 +12115,57 @@ var Rance;
         };
         Player.prototype.updateVisibleStars = function () {
             var previousVisibleStars = Rance.extendObject(this.visibleStars);
-            var hasChanged = false;
+            var previousDetectedStars = Rance.extendObject(this.detectedStars);
+            var visibilityHasChanged = false;
+            var detectionHasChanged = false;
             this.visibleStars = {};
+            this.detectedStars = {};
+            var allVisible = [];
+            var allDetected = [];
             for (var i = 0; i < this.controlledLocations.length; i++) {
-                var starVisible = this.controlledLocations[i].getVision();
-                for (var j = 0; j < starVisible.length; j++) {
-                    var star = starVisible[j];
-                    if (!this.visibleStars[star.id]) {
-                        this.visibleStars[star.id] = star;
-                        if (!hasChanged && !previousVisibleStars[star.id]) {
-                            hasChanged = true;
-                        }
-                        if (!this.revealedStars[star.id]) {
-                            this.revealedStars[star.id] = star;
-                        }
+                allVisible = allVisible.concat(this.controlledLocations[i].getVision());
+                allDetected = allDetected.concat(this.controlledLocations[i].getDetection());
+            }
+            for (var i = 0; i < this.fleets.length; i++) {
+                allVisible = allVisible.concat(this.fleets[i].getVision());
+                allDetected = allDetected.concat(this.fleets[i].getDetection());
+            }
+            for (var i = 0; i < allVisible.length; i++) {
+                var star = allVisible[i];
+                if (!this.visibleStars[star.id]) {
+                    this.visibleStars[star.id] = star;
+                    if (!visibilityHasChanged && !previousVisibleStars[star.id]) {
+                        visibilityHasChanged = true;
+                    }
+                    if (!this.revealedStars[star.id]) {
+                        this.revealedStars[star.id] = star;
                     }
                 }
             }
-            for (var i = 0; i < this.fleets.length; i++) {
-                var fleetVisible = this.fleets[i].getVision();
-                for (var j = 0; j < fleetVisible.length; j++) {
-                    var star = fleetVisible[j];
-                    if (!this.visibleStars[star.id]) {
-                        this.visibleStars[star.id] = star;
-                        if (!hasChanged && !previousVisibleStars[star.id]) {
-                            hasChanged = true;
-                        }
-                        if (!this.revealedStars[star.id]) {
-                            this.revealedStars[star.id] = star;
-                        }
+            for (var i = 0; i < allDetected.length; i++) {
+                var star = allDetected[i];
+                if (!this.detectedStars[star.id]) {
+                    this.detectedStars[star.id] = star;
+                    if (!detectionHasChanged && !previousDetectedStars[star.id]) {
+                        detectionHasChanged = true;
                     }
                 }
             }
             this.visionIsDirty = false;
-            if (!hasChanged) {
-                hasChanged = (Object.keys(this.visibleStars).length !==
+            if (!visibilityHasChanged) {
+                visibilityHasChanged = (Object.keys(this.visibleStars).length !==
                     Object.keys(previousVisibleStars).length);
             }
-            if (!this.isAI && hasChanged)
+            if (!detectionHasChanged) {
+                detectionHasChanged = (Object.keys(this.detectedStars).length !==
+                    Object.keys(previousDetectedStars).length);
+            }
+            if (!this.isAI && visibilityHasChanged) {
                 Rance.eventManager.dispatchEvent("renderMap");
+            }
+            else if (!this.isAI && detectionHasChanged) {
+                Rance.eventManager.dispatchEvent("renderLayer", "stealthFleets");
+            }
         };
         Player.prototype.getVisibleStars = function () {
             if (!this.isAI && Rance.Options.debugMode) {
@@ -12171,6 +12208,18 @@ var Rance;
             }
             return toReturn;
         };
+        Player.prototype.getDetectedStars = function () {
+            if (!this.isAI && Rance.Options.debugMode) {
+                return this.controlledLocations[0].getLinkedInRange(9999).all;
+            }
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            var toReturn = [];
+            for (var id in this.detectedStars) {
+                toReturn.push(this.detectedStars[id]);
+            }
+            return toReturn;
+        };
         Player.prototype.starIsVisible = function (star) {
             if (this.visionIsDirty)
                 this.updateVisibleStars();
@@ -12180,6 +12229,11 @@ var Rance;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             return Boolean(this.revealedStars[star.id]);
+        };
+        Player.prototype.starIsDetected = function (star) {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
+            return Boolean(this.detectedStars[star.id]);
         };
         Player.prototype.buildUnit = function (template, location) {
             var unit = new Rance.Unit(template);
@@ -13561,6 +13615,14 @@ var Rance;
         };
         Unit.prototype.canActThisTurn = function () {
             return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
+        };
+        Unit.prototype.getVisionRange = function () {
+            // TODO
+            return this.template.visionRange;
+        };
+        Unit.prototype.getDetectionRange = function () {
+            // TODO
+            return this.template.detectionRange;
         };
         Unit.prototype.heal = function () {
             var location = this.fleet.location;

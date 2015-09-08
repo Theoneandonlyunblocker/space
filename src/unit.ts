@@ -744,6 +744,16 @@ module Rance
     {
       return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
     }
+    getVisionRange(): number
+    {
+      // TODO
+      return this.template.visionRange;
+    }
+    getDetectionRange(): number
+    {
+      // TODO
+      return this.template.detectionRange;
+    }
     heal()
     {
       var location = this.fleet.location;

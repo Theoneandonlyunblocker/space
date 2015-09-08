@@ -27,7 +27,12 @@ module Rance
       icon: string;
       maxHealth: number;
       maxMovePoints: number;
+      
+      // how many stars away unit can see
+      // -1: no vision, 0: current star only, 1: current & 1 away etc.
       visionRange: number;
+      detectionRange: number;
+
       attributeLevels:
       {
         attack: number;
@@ -56,6 +61,7 @@ module Rance
         maxHealth: 1,
         maxMovePoints: 999,
         visionRange: 1,
+        detectionRange: -1,
         attributeLevels:
         {
           attack: 9,
@@ -96,6 +102,7 @@ module Rance
         maxHealth: 0.7,
         maxMovePoints: 2,
         visionRange: 1,
+        detectionRange: -1,
         attributeLevels:
         {
           attack: 0.8,
@@ -126,6 +133,7 @@ module Rance
         maxHealth: 0.5,
         maxMovePoints: 1,
         visionRange: 1,
+        detectionRange: -1,
         attributeLevels:
         {
           attack: 0.7,
@@ -156,6 +164,7 @@ module Rance
         maxHealth: 1,
         maxMovePoints: 1,
         visionRange: 1,
+        detectionRange: -1,
         attributeLevels:
         {
           attack: 0.8,
@@ -186,6 +195,7 @@ module Rance
         maxHealth: 0.6,
         maxMovePoints: 2,
         visionRange: 2,
+        detectionRange: 0,
         attributeLevels:
         {
           attack: 0.5,
@@ -215,6 +225,7 @@ module Rance
         maxHealth: 0.9,
         maxMovePoints: 1,
         visionRange: 1,
+        detectionRange: -1,
         attributeLevels:
         {
           attack: 0.5,

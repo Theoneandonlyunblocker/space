@@ -143,7 +143,7 @@ module Rance
             var discoveryStar = sector.stars[discoveryStarIndex];
 
             var frontier = discoveryStar.getLinkedInRange(1).all;
-            frontier = frontier.filter(function(star)
+            frontier = frontier.filter(function(star: Star)
             {
               return !star.mapGenData.sector;
             });

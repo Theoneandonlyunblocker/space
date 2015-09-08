@@ -606,7 +606,10 @@ module Rance
         [range: number]: Star[];
       } = {};
 
-      visited[this.id] = this;
+      if (range >= 0)
+      {
+        visited[this.id] = this;
+      }
 
       var current: Star[] = [];
       var frontier: Star[] = [this];
@@ -787,6 +790,15 @@ module Rance
     getVision(): Star[]
     {
       return this.getLinkedInRange(this.getVisionRange()).all;
+    }
+    getDetectionRange(): number
+    {
+      // TODO detection buildings
+      return 0;
+    }
+    getDetection(): Star[]
+    {
+      return this.getLinkedInRange(this.getDetectionRange()).all;
     }
     getHealingFactor(player: Player): number
     {

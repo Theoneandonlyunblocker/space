@@ -652,6 +652,7 @@ declare module Rance {
             maxHealth: number;
             maxMovePoints: number;
             visionRange: number;
+            detectionRange: number;
             attributeLevels: {
                 attack: number;
                 defence: number;
@@ -914,6 +915,8 @@ declare module Rance {
         getDistanceToStar(target: Star): number;
         getVisionRange(): number;
         getVision(): Star[];
+        getDetectionRange(): number;
+        getDetection(): Star[];
         getHealingFactor(player: Player): number;
         getSeed(): string;
         seedBuildableItems(): void;
@@ -958,6 +961,7 @@ declare module Rance {
         location: Star;
         visionIsDirty: boolean;
         visibleStars: Star[];
+        detectedStars: Star[];
         id: number;
         name: string;
         constructor(player: Player, ships: Unit[], location: Star, id?: number, shouldRender?: boolean);
@@ -989,6 +993,7 @@ declare module Rance {
         };
         updateVisibleStars(): void;
         getVision(): Star[];
+        getDetection(): Star[];
         serialize(): any;
     }
 }
@@ -1906,6 +1911,9 @@ declare module Rance {
         revealedStars: {
             [id: number]: Star;
         };
+        detectedStars: {
+            [id: number]: Star;
+        };
         constructor(isAI: boolean, id?: number);
         makeColorScheme(): void;
         setupAI(game: Game): void;
@@ -1940,8 +1948,10 @@ declare module Rance {
         getVisibleStars(): Star[];
         getRevealedStars(): Star[];
         getRevealedButNotVisibleStars(): Star[];
+        getDetectedStars(): Star[];
         starIsVisible(star: Star): boolean;
         starIsRevealed(star: Star): boolean;
+        starIsDetected(star: Star): boolean;
         buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
         addItem(item: Item): void;
         removeItem(item: Item): void;
@@ -2202,6 +2212,8 @@ declare module Rance {
         removeAllGuard(): void;
         getCounterAttackStrength(): number;
         canActThisTurn(): boolean;
+        getVisionRange(): number;
+        getDetectionRange(): number;
         heal(): void;
         getStrengthEvaluation(): number;
         drawBattleScene(props: {

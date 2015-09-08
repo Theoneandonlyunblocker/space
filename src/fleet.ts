@@ -14,6 +14,7 @@ module Rance
 
     visionIsDirty: boolean = true;
     visibleStars: Star[] = [];
+    detectedStars: Star[] = [];
 
     id: number;
     name: string;
@@ -249,18 +250,20 @@ module Rance
     updateVisibleStars()
     {
       var highestVisionRange = 0;
+      var highestDetectionRange = 0;
 
       for (var i = 0; i < this.ships.length; i++)
       {
-        if (this.ships[i].template.visionRange > highestVisionRange)
-        {
-          highestVisionRange = this.ships[i].template.visionRange;
-        }
+        highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
+        highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
       }
 
       var inVision = this.location.getLinkedInRange(highestVisionRange);
+      var inDetection = this.location.getLinkedInRange(highestDetectionRange);
 
       this.visibleStars = inVision.all;
+      this.detectedStars = inDetection.all;
+
       this.visionIsDirty = false;
     }
     getVision()
@@ -271,6 +274,15 @@ module Rance
       }
 
       return this.visibleStars;
+    }
+    getDetection()
+    {
+      if (this.visionIsDirty)
+      {
+        this.updateVisibleStars();
+      }
+
+      return this.detectedStars;
     }
     serialize()
     {

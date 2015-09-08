@@ -53,6 +53,10 @@ module Rance
     {
       [id: number]: Star;
     } = {};
+    detectedStars:
+    {
+      [id: number]: Star;
+    } = {};
 
     constructor(isAI: boolean, id?: number)
     {
@@ -324,63 +328,76 @@ module Rance
     updateVisibleStars()
     {
       var previousVisibleStars = extendObject(this.visibleStars);
-      var hasChanged: boolean = false;
+      var previousDetectedStars = extendObject(this.detectedStars);
+      var visibilityHasChanged: boolean = false;
+      var detectionHasChanged: boolean = false;
       this.visibleStars = {};
+      this.detectedStars = {};
 
+      var allVisible: Star[] = [];
+      var allDetected: Star[] = [];
       for (var i = 0; i < this.controlledLocations.length; i++)
       {
-        var starVisible = this.controlledLocations[i].getVision();
+        allVisible = allVisible.concat(this.controlledLocations[i].getVision());
+        allDetected = allDetected.concat(this.controlledLocations[i].getDetection());
+      }
+      for (var i = 0; i < this.fleets.length; i++)
+      {
+        allVisible = allVisible.concat(this.fleets[i].getVision());
+        allDetected = allDetected.concat(this.fleets[i].getDetection());
+      }
 
-        for (var j = 0; j < starVisible.length; j++)
+      for (var i = 0; i < allVisible.length; i++)
+      {
+        var star = allVisible[i];
+        if (!this.visibleStars[star.id])
         {
-          var star = starVisible[j];
-          if (!this.visibleStars[star.id])
+          this.visibleStars[star.id] = star;
+          if (!visibilityHasChanged && !previousVisibleStars[star.id])
           {
-            this.visibleStars[star.id] = star;
-            if (!hasChanged && !previousVisibleStars[star.id])
-            {
-              hasChanged = true;
-            }
+            visibilityHasChanged = true;
+          }
 
-            if (!this.revealedStars[star.id])
-            {
-              this.revealedStars[star.id] = star;
-            }
+          if (!this.revealedStars[star.id])
+          {
+            this.revealedStars[star.id] = star;
           }
         }
       }
 
-      for (var i = 0; i < this.fleets.length; i++)
+      for (var i = 0; i < allDetected.length; i++)
       {
-        var fleetVisible = this.fleets[i].getVision();
-
-        for (var j = 0; j < fleetVisible.length; j++)
+        var star = allDetected[i];
+        if (!this.detectedStars[star.id])
         {
-          var star = fleetVisible[j];
-          if (!this.visibleStars[star.id])
+          this.detectedStars[star.id] = star;
+          if (!detectionHasChanged && !previousDetectedStars[star.id])
           {
-            this.visibleStars[star.id] = star;
-            if (!hasChanged && !previousVisibleStars[star.id])
-            {
-              hasChanged = true;
-            }
-
-            if (!this.revealedStars[star.id])
-            {
-              this.revealedStars[star.id] = star;
-            }
+            detectionHasChanged = true;
           }
         }
       }
 
       this.visionIsDirty = false;
-      if (!hasChanged)
+      if (!visibilityHasChanged)
       {
-        hasChanged = (Object.keys(this.visibleStars).length !==
+        visibilityHasChanged = (Object.keys(this.visibleStars).length !==
           Object.keys(previousVisibleStars).length);
       }
+      if (!detectionHasChanged)
+      {
+        detectionHasChanged = (Object.keys(this.detectedStars).length !==
+          Object.keys(previousDetectedStars).length);
+      }
 
-      if (!this.isAI && hasChanged) eventManager.dispatchEvent("renderMap");
+      if (!this.isAI && visibilityHasChanged)
+      {
+        eventManager.dispatchEvent("renderMap");
+      }
+      else if (!this.isAI && detectionHasChanged)
+      {
+        eventManager.dispatchEvent("renderLayer", "stealthFleets");
+      }
     }
     getVisibleStars(): Star[]
     {
@@ -440,6 +457,23 @@ module Rance
 
       return toReturn;
     }
+    getDetectedStars(): Star[]
+    {
+      if (!this.isAI && Options.debugMode)
+      {
+        return this.controlledLocations[0].getLinkedInRange(9999).all;
+      }
+      if (this.visionIsDirty) this.updateVisibleStars();
+
+      var toReturn: Star[] = [];
+
+      for (var id in this.detectedStars)
+      {
+        toReturn.push(this.detectedStars[id]);
+      }
+
+      return toReturn;
+    }
     starIsVisible(star: Star): boolean
     {
       if (this.visionIsDirty) this.updateVisibleStars();
@@ -449,6 +483,11 @@ module Rance
     {
       if (this.visionIsDirty) this.updateVisibleStars();
       return Boolean(this.revealedStars[star.id]);
+    }
+    starIsDetected(star: Star): boolean
+    {
+      if (this.visionIsDirty) this.updateVisibleStars();
+      return Boolean(this.detectedStars[star.id]);
     }
     buildUnit(template: Templates.IUnitTemplate, location: Star)
     {
