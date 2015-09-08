@@ -2497,7 +2497,8 @@ declare module Rance {
         selectPlayerFleets(fleets: Fleet[]): void;
         selectOtherFleets(fleets: Fleet[]): void;
         deselectFleet(fleet: Fleet): void;
-        getMasterFleetForMerge(): Fleet;
+        getMasterFleetForMerge(fleets: Fleet[]): Fleet;
+        mergeFleetsOfSameType(fleets: Fleet[]): Fleet[];
         mergeFleets(): void;
         selectStar(star: Star): void;
         moveFleets(star: Star): void;

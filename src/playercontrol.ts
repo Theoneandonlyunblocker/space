@@ -224,14 +224,15 @@ module Rance
 
       this.updateSelection();
     }
-    getMasterFleetForMerge()
+    getMasterFleetForMerge(fleets: Fleet[])
     {
-      return this.selectedFleets[0];
+      return fleets[0];
     }
-    mergeFleets()
+    mergeFleetsOfSameType(fleets: Fleet[]): Fleet[]
     {
-      var fleets = this.selectedFleets;
-      var master = this.getMasterFleetForMerge();
+      if (fleets.length === 0) return [];
+      
+      var master = this.getMasterFleetForMerge(fleets);
 
       fleets.splice(fleets.indexOf(master), 1);
       var slaves = fleets;
@@ -241,8 +242,29 @@ module Rance
         slaves[i].mergeWith(master, i === slaves.length - 1);
       }
 
+      return [master];
+    }
+    mergeFleets()
+    {
+      var allFleets = this.selectedFleets;
+      var normalFleets: Fleet[] = [];
+      var stealthyFleets: Fleet[] = [];
+
+      for (var i = 0; i < allFleets.length; i++)
+      {
+        if (allFleets[i].isStealthy)
+        {
+          stealthyFleets.push(allFleets[i]);
+        }
+        else
+        {
+          normalFleets.push(allFleets[i]);
+        }
+      }
+
       this.clearSelection();
-      this.selectedFleets = [master];
+      this.selectedFleets =
+        this.mergeFleetsOfSameType(normalFleets).concat(this.mergeFleetsOfSameType(stealthyFleets));
       this.updateSelection();
     }
     selectStar(star: Star)

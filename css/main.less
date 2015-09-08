@@ -2139,13 +2139,14 @@ progress::-webkit-progress-value { background: #080; }
   &.stealthy
   {
     background-color: fade(@bg-color, 50%);
+    color: darken(@text-color, 10%);
+    .fleet-info-name
+    {
+      color: darken(@text-color, 10%);
+    }
     .fleet-info-header
     {
       background: linear-gradient(to bottom, fade(@bg-color2, 50%), fade(@bg-color, 0%));
-    }
-    *
-    {
-      color: darken(@text-color, 10%);
     }
   }
 }

@@ -9510,9 +9510,11 @@ var Rance;
                 var unit = allUnits[i];
                 var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
                 if (passiveSkillsByPhase.inBattlePrep) {
-                    var skill = passiveSkillsByPhase.inBattlePrep[i];
-                    for (var j = 0; j < skill.inBattlePrep.length; j++) {
-                        skill.inBattlePrep[j](unit, this);
+                    for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++) {
+                        var skill = passiveSkillsByPhase.inBattlePrep[j];
+                        for (var k = 0; k < skill.inBattlePrep.length; k++) {
+                            skill.inBattlePrep[k](unit, this);
+                        }
                     }
                 }
             }
@@ -16685,19 +16687,35 @@ var Rance;
             }
             this.updateSelection();
         };
-        PlayerControl.prototype.getMasterFleetForMerge = function () {
-            return this.selectedFleets[0];
+        PlayerControl.prototype.getMasterFleetForMerge = function (fleets) {
+            return fleets[0];
         };
-        PlayerControl.prototype.mergeFleets = function () {
-            var fleets = this.selectedFleets;
-            var master = this.getMasterFleetForMerge();
+        PlayerControl.prototype.mergeFleetsOfSameType = function (fleets) {
+            if (fleets.length === 0)
+                return [];
+            var master = this.getMasterFleetForMerge(fleets);
             fleets.splice(fleets.indexOf(master), 1);
             var slaves = fleets;
             for (var i = 0; i < slaves.length; i++) {
                 slaves[i].mergeWith(master, i === slaves.length - 1);
             }
+            return [master];
+        };
+        PlayerControl.prototype.mergeFleets = function () {
+            var allFleets = this.selectedFleets;
+            var normalFleets = [];
+            var stealthyFleets = [];
+            for (var i = 0; i < allFleets.length; i++) {
+                if (allFleets[i].isStealthy) {
+                    stealthyFleets.push(allFleets[i]);
+                }
+                else {
+                    normalFleets.push(allFleets[i]);
+                }
+            }
             this.clearSelection();
-            this.selectedFleets = [master];
+            this.selectedFleets =
+                this.mergeFleetsOfSameType(normalFleets).concat(this.mergeFleetsOfSameType(stealthyFleets));
             this.updateSelection();
         };
         PlayerControl.prototype.selectStar = function (star) {
