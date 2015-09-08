@@ -184,8 +184,10 @@ module Rance
 
       render: function()
       {
+        var player = this.props.battlePrep.humanPlayer;
+        var location = this.props.battlePrep.battleData.location;
 
-        // priority: hovered unit > selected unit > battle infd
+        // priority: hovered unit > selected unit > battle info
         var leftUpperElement: ReactComponentPlaceHolder;
 
         var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
@@ -269,7 +271,7 @@ module Rance
             leftLowerElement = UIComponents.ItemList(
             {
               key: "itemEquip",
-              items: this.props.battlePrep.humanPlayer.items,
+              items: player.items,
               isDraggable: true,
               onDragStart: this.handleItemDragStart,
               onDragEnd: this.handleItemDragEnd,
@@ -280,6 +282,7 @@ module Rance
         };
 
         var humanFormationIsValid = this.props.battlePrep.humanFormationIsValid();
+        var canScout = player.starIsDetected(this.props.battlePrep.battleData.location);
 
         return(
           React.DOM.div({className: "battle-prep"},
@@ -313,7 +316,9 @@ module Rance
                 {
                   className: "battle-prep-controls-button",
                   onClick: this.setLeftLowerElement.bind(this, "enemyFleet"),
-                  disabled: this.state.leftLowerElement === "enemyFleet"
+                  disabled: this.state.leftLowerElement === "enemyFleet" || !canScout,
+                  title: canScout ? null : "Can't inspect enemy fleet" +
+                    " as star is not in detection radius"
                 }, "Enemy"),
                 React.DOM.button(
                 {

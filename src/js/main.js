@@ -3117,7 +3117,9 @@ var Rance;
                 return this.refs.upper.getDOMNode().getBoundingClientRect();
             },
             render: function () {
-                // priority: hovered unit > selected unit > battle infd
+                var player = this.props.battlePrep.humanPlayer;
+                var location = this.props.battlePrep.battleData.location;
+                // priority: hovered unit > selected unit > battle info
                 var leftUpperElement;
                 var hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
                 if (hoveredUnit) {
@@ -3179,7 +3181,7 @@ var Rance;
                         {
                             leftLowerElement = UIComponents.ItemList({
                                 key: "itemEquip",
-                                items: this.props.battlePrep.humanPlayer.items,
+                                items: player.items,
                                 isDraggable: true,
                                 onDragStart: this.handleItemDragStart,
                                 onDragEnd: this.handleItemDragEnd,
@@ -3190,6 +3192,7 @@ var Rance;
                 }
                 ;
                 var humanFormationIsValid = this.props.battlePrep.humanFormationIsValid();
+                var canScout = player.starIsDetected(this.props.battlePrep.battleData.location);
                 return (React.DOM.div({ className: "battle-prep" }, React.DOM.div({ className: "battle-prep-left" }, React.DOM.div({ className: "battle-prep-left-upper-wrapper", ref: "upper" }, UIComponents.BattleBackground({
                     renderer: this.props.renderer,
                     getBlurArea: this.getBackgroundBlurArea,
@@ -3205,7 +3208,9 @@ var Rance;
                 }, "Own"), React.DOM.button({
                     className: "battle-prep-controls-button",
                     onClick: this.setLeftLowerElement.bind(this, "enemyFleet"),
-                    disabled: this.state.leftLowerElement === "enemyFleet"
+                    disabled: this.state.leftLowerElement === "enemyFleet" || !canScout,
+                    title: canScout ? null : "Can't inspect enemy fleet" +
+                        " as star is not in detection radius"
                 }, "Enemy"), React.DOM.button({
                     onClick: this.autoMakeFormation
                 }, "Auto formation"), React.DOM.button({
@@ -8301,7 +8306,7 @@ var Rance;
         };
         Fleet.prototype.updateVisibleStars = function () {
             var highestVisionRange = 0;
-            var highestDetectionRange = 0;
+            var highestDetectionRange = -1;
             for (var i = 0; i < this.ships.length; i++) {
                 highestVisionRange = Math.max(this.ships[i].getVisionRange(), highestVisionRange);
                 highestDetectionRange = Math.max(this.ships[i].getDetectionRange(), highestDetectionRange);
@@ -10949,7 +10954,6 @@ var Rance;
                     }
                     for (var j = 0; j < playerFleets.length; j++) {
                         if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
-                            console.log("skipped stelathy fleet", playerFleets[j].id);
                             continue;
                         }
                         byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
