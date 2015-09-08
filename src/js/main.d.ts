@@ -2783,10 +2783,14 @@ declare module Rance {
 declare module Rance {
     module ShaderSources {
         var nebula: string[];
+        var occupation: string[];
     }
 }
 declare module Rance {
     class NebulaFilter extends PIXI.AbstractFilter {
+        constructor(uniforms: any);
+    }
+    class OccupationFilter extends PIXI.AbstractFilter {
         constructor(uniforms: any);
     }
     class ShaderManager {

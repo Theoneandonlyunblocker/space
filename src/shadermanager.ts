@@ -10,6 +10,13 @@ module Rance
       super(null, ShaderSources.nebula.join("\n"), uniforms);
     }
   }
+  export class OccupationFilter extends PIXI.AbstractFilter
+  {
+    constructor(uniforms: any)
+    {
+      super(null, ShaderSources.occupation.join("\n"), uniforms);
+    }
+  }
   export class ShaderManager
   {
     shaders:

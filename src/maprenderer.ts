@@ -180,7 +180,7 @@ module Rance
         for (var occupier in this.occupationShaders[owner])
         {
           var shader = this.occupationShaders[owner][occupier];
-          shader.uniforms.offset.value = {x: -x, y: y};
+          shader.uniforms.offset.value = [-x, y];
         }
       }
     }
@@ -257,44 +257,11 @@ module Rance
           baseColor: {type: "4fv", value: baseColor},
           lineColor: {type: "4fv", value: occupierColor},
           gapSize: {type: "1f", value: 3.0},
-          offset: {type: "2f", value: {x: 0.0, y: 0.0}},
+          offset: {type: "2f", value: [0.0, 0.0]},
           zoom: {type: "1f", value: 1.0}
         };
 
-        var shaderSrc =
-        [
-          "precision mediump float;",
-
-          "uniform sampler2D uSampler;",
-
-          "varying vec2 vTextureCoord;",
-          "varying vec4 vColor;",
-
-          "uniform vec4 baseColor;",
-          "uniform vec4 lineColor;",
-          "uniform float gapSize;",
-          "uniform vec2 offset;",
-          "uniform float zoom;",
-
-          "void main( void )",
-          "{",
-          "  vec2 position = gl_FragCoord.xy + offset;",
-          "  position.x += position.y;",
-          "  float scaled = floor(position.x * 0.1 / zoom);",
-          "  float res = mod(scaled, gapSize);",
-          "  if(res > 0.0)",
-          "  {",
-          "    gl_FragColor = mix(gl_FragColor, baseColor, 0.5);",
-          "  }",
-          "  else",
-          "  {",
-          "    gl_FragColor = mix(gl_FragColor, lineColor, 0.5);",
-          "  }",
-          "}"
-        ];
-
-        this.occupationShaders[owner.id][occupier.id] = new PIXI.AbstractFilter(
-          null, shaderSrc, uniforms);
+        this.occupationShaders[owner.id][occupier.id] = new OccupationFilter(uniforms);
       }
 
       return this.occupationShaders[owner.id][occupier.id]
@@ -465,19 +432,28 @@ module Rance
             gfx.beginFill(star.owner.color, alpha);
             gfx.drawShape(poly);
             gfx.endFill();
-            doc.addChild(gfx);
 
             var occupier = star.getSecondaryController();
             if (occupier)
             {
-              gfx.filters = [this.getOccupationShader(star.owner, occupier)];
-              //gfx.filters = [testFilter];
+              var container = new PIXI.Container();
+              doc.addChild(container);
+
               var mask = new PIXI.Graphics();
+              mask.isMask = true;
               mask.beginFill(0);
               mask.drawShape(poly);
               mask.endFill();
-              gfx.mask = mask;
-              gfx.addChild(mask);
+
+              container.addChild(gfx);
+              container.addChild(mask);
+              gfx.filters = [this.getOccupationShader(star.owner, occupier)];
+              console.log(gfx.filters[0]);
+              container.mask = mask;
+            }
+            else
+            {
+              doc.addChild(gfx);
             }
           }
           return doc;
