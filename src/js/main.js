@@ -10850,6 +10850,9 @@ var Rance;
                 var evaluation = evaluations[starId];
                 var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
                 var score = evaluation.desirability * easeOfCapturing;
+                if (evaluation.star.getSecondaryController() === this.player) {
+                    score *= 1.5;
+                }
                 scores.push({
                     star: evaluation.star,
                     score: score
@@ -10860,8 +10863,10 @@ var Rance;
             });
         };
         MapEvaluator.prototype.getScoredExpansionTargets = function () {
+            var self = this;
             var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
-                return star.owner.isIndependent;
+                var secondaryController = star.getSecondaryController();
+                return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
             });
             var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
             var scores = this.scoreIndependentTargets(evaluations);
@@ -17659,15 +17664,19 @@ var Rance;
                                 continue;
                             var fleetsContainer = new PIXI.Container();
                             fleetsContainer.x = star.x;
-                            fleetsContainer.y = star.y - 30;
-                            doc.addChild(fleetsContainer);
+                            fleetsContainer.y = star.y - 40;
                             for (var j = 0; j < fleets.length; j++) {
+                                if (fleets[j].isStealthy && this.player && !this.player.starIsDetected(fleets[j].location)) {
+                                    continue;
+                                }
                                 var drawnFleet = singleFleetDrawFN(fleets[j]);
                                 drawnFleet.position.x = fleetsContainer.width;
                                 fleetsContainer.addChild(drawnFleet);
                             }
-                            fleetsContainer.x -= fleetsContainer.width / 2;
-                            fleetsContainer.y -= 10;
+                            if (fleetsContainer.children.length > 0) {
+                                fleetsContainer.x -= fleetsContainer.width / 2;
+                                doc.addChild(fleetsContainer);
+                            }
                         }
                         return doc;
                     }

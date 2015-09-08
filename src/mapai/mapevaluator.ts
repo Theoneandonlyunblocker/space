@@ -268,6 +268,10 @@ module Rance
         var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
 
         var score = evaluation.desirability * easeOfCapturing;
+        if (evaluation.star.getSecondaryController() === this.player)
+        {
+          score *= 1.5
+        }
 
         scores.push(
         {
@@ -284,9 +288,11 @@ module Rance
 
     getScoredExpansionTargets()
     {
+      var self = this
       var independentNeighborStars = this.player.getNeighboringStars().filter(function(star)
       {
-        return star.owner.isIndependent;
+        var secondaryController = star.getSecondaryController();
+        return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
       });
       var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
       var scores = this.scoreIndependentTargets(evaluations);
