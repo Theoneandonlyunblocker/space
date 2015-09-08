@@ -10,16 +10,16 @@ module Rance
       setFleetName: function(e: Event)
       {
         var target = <HTMLInputElement> e.target;
-        console.log("setFleetName", target.value);
         this.props.fleet.name = target.value;
         this.forceUpdate();
       },
 
       render: function()
       {
-        var fleet = this.props.fleet;
+        var fleet: Fleet = this.props.fleet;
         if (!fleet) return null;
         var totalHealth = fleet.getTotalHealth();
+        var isNotDetected: boolean = this.props.isNotDetected;
 
         var healthRatio = totalHealth.current / totalHealth.max;
         var critThreshhold = 0.3;
@@ -47,13 +47,14 @@ module Rance
               React.DOM.input(
               {
                 className: "fleet-info-name",
-                value: fleet.name,
-                onChange: this.setFleetName
+                value: isNotDetected ? "Unidentified fleet" : fleet.name,
+                onChange: isNotDetected ? null : this.setFleetName,
+                readOnly: isNotDetected
               }),
               React.DOM.div(
               {
                 className: "fleet-info-shipcount"
-              }, fleet.ships.length),
+              }, isNotDetected ? "?" : fleet.ships.length),
               React.DOM.div(
               {
                 className: "fleet-info-strength"
@@ -62,13 +63,13 @@ module Rance
                 {
                   className: "fleet-info-strength-current" + healthStatus
                 },
-                  totalHealth.current
+                  isNotDetected ? "???" : totalHealth.current
                 ),
                 React.DOM.span(
                 {
                   className: "fleet-info-strength-max"
                 },
-                  "/" + totalHealth.max
+                  isNotDetected ? "/???" : "/" + totalHealth.max
                 )
               ),
               UIComponents.FleetControls(
@@ -82,7 +83,7 @@ module Rance
             {
               className: "fleet-info-move-points"
             },
-              "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
+              isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
                 fleet.getMinMaxMovePoints()
             )
             

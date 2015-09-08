@@ -22,6 +22,7 @@ module Rance
       render: function()
       {
         var ship = this.props.ship;
+        var isNotDetected = this.props.isNotDetected;
 
         var divProps: any =
         {
@@ -50,7 +51,7 @@ module Rance
               React.DOM.img(
               {
                 className: "ship-info-icon",
-                src: ship.template.icon
+                src: isNotDetected ? "img\/icons\/unDetected.png" : ship.template.icon
               })
             ),
             React.DOM.div(
@@ -59,20 +60,22 @@ module Rance
             },
               UIComponents.ShipInfoName(
               {
-                unit: ship
+                unit: ship,
+                isNotDetected: isNotDetected
               }),
               React.DOM.div(
               {
                 className: "ship-info-type"
               },
-                ship.template.displayName
+                isNotDetected ? "???" : ship.template.displayName
               )
             ),
             UIComponents.UnitStrength(
             {
               maxHealth: ship.maxHealth,
               currentHealth: ship.currentHealth,
-              isSquadron: true
+              isSquadron: true,
+              isNotDetected: isNotDetected
             })
             
           )

@@ -33,7 +33,8 @@ module Rance
             isDraggable: hasDraggableContent,
             onDragStart: this.props.onDragStart,
             onDragMove: this.props.onDragMove,
-            onDragEnd: this.props.onDragEnd
+            onDragEnd: this.props.onDragEnd,
+            isNotDetected: this.props.isNotDetected
           }));
         }
 

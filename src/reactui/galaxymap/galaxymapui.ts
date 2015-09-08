@@ -118,7 +118,8 @@ module Rance
                   isInspecting: isInspecting,
                   selectedStar: this.state.selectedStar,
                   currentlyReorganizing: this.state.currentlyReorganizing,
-                  closeReorganization: this.closeReorganization
+                  closeReorganization: this.closeReorganization,
+                  player: this.props.player
                 })
               )
             ),

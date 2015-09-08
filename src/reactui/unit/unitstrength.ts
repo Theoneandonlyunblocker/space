@@ -147,11 +147,13 @@ module Rance
             "unit-strength-amount-capital")
         }
 
+        var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
+        var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
+
         return(
           React.DOM.div(containerProps,
-            React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)),
-            React.DOM.span({className: "unit-strength-max"},
-              "/" + this.props.maxHealth)
+            React.DOM.span(currentStyle, displayed),
+            React.DOM.span({className: "unit-strength-max"}, "/" + max)
           )
         )
       },

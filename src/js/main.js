@@ -106,7 +106,9 @@ var Rance;
                     className: (this.props.isSquadron ? "unit-strength-amount" :
                         "unit-strength-amount-capital")
                 };
-                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, Math.ceil(this.state.displayedStrength)), React.DOM.span({ className: "unit-strength-max" }, "/" + this.props.maxHealth)));
+                var displayed = this.props.isNotDetected ? "???" : "" + Math.ceil(this.state.displayedStrength);
+                var max = this.props.isNotDetected ? "???" : "" + this.props.maxHealth;
+                return (React.DOM.div(containerProps, React.DOM.span(currentStyle, displayed), React.DOM.span({ className: "unit-strength-max" }, "/" + max)));
             },
             render: function () {
                 if (this.props.isSquadron) {
@@ -5308,7 +5310,6 @@ var Rance;
             displayName: "FleetInfo",
             setFleetName: function (e) {
                 var target = e.target;
-                console.log("setFleetName", target.value);
                 this.props.fleet.name = target.value;
                 this.forceUpdate();
             },
@@ -5317,6 +5318,7 @@ var Rance;
                 if (!fleet)
                     return null;
                 var totalHealth = fleet.getTotalHealth();
+                var isNotDetected = this.props.isNotDetected;
                 var healthRatio = totalHealth.current / totalHealth.max;
                 var critThreshhold = 0.3;
                 var healthStatus = "";
@@ -5332,23 +5334,24 @@ var Rance;
                     className: "fleet-info-header"
                 }, React.DOM.input({
                     className: "fleet-info-name",
-                    value: fleet.name,
-                    onChange: this.setFleetName
+                    value: isNotDetected ? "Unidentified fleet" : fleet.name,
+                    onChange: isNotDetected ? null : this.setFleetName,
+                    readOnly: isNotDetected
                 }), React.DOM.div({
                     className: "fleet-info-shipcount"
-                }, fleet.ships.length), React.DOM.div({
+                }, isNotDetected ? "?" : fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
                 }, React.DOM.span({
                     className: "fleet-info-strength-current" + healthStatus
-                }, totalHealth.current), React.DOM.span({
+                }, isNotDetected ? "???" : totalHealth.current), React.DOM.span({
                     className: "fleet-info-strength-max"
-                }, "/" + totalHealth.max)), UIComponents.FleetControls({
+                }, isNotDetected ? "/???" : "/" + totalHealth.max)), UIComponents.FleetControls({
                     fleet: fleet,
                     hasMultipleSelected: this.props.hasMultipleSelected,
                     isInspecting: this.props.isInspecting
                 })), React.DOM.div({
                     className: "fleet-info-move-points"
-                }, "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
+                }, isNotDetected ? "Moves: ?/?" : "Moves: " + fleet.getMinCurrentMovePoints() + "/" +
                     fleet.getMinMaxMovePoints())));
             }
         });
@@ -5373,8 +5376,9 @@ var Rance;
             render: function () {
                 return (React.DOM.input({
                     className: "ship-info-name",
-                    value: this.state.value,
-                    onChange: this.onChange
+                    value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
+                    onChange: this.props.isNotDetected ? "null" : this.onChange,
+                    readOnly: this.props.isNotDetected
                 }));
             }
         });
@@ -5397,6 +5401,7 @@ var Rance;
             },
             render: function () {
                 var ship = this.props.ship;
+                var isNotDetected = this.props.isNotDetected;
                 var divProps = {
                     className: "ship-info"
                 };
@@ -5413,17 +5418,19 @@ var Rance;
                     className: "ship-info-icon-container"
                 }, React.DOM.img({
                     className: "ship-info-icon",
-                    src: ship.template.icon
+                    src: isNotDetected ? "img\/icons\/unDetected.png" : ship.template.icon
                 })), React.DOM.div({
                     className: "ship-info-info"
                 }, UIComponents.ShipInfoName({
-                    unit: ship
+                    unit: ship,
+                    isNotDetected: isNotDetected
                 }), React.DOM.div({
                     className: "ship-info-type"
-                }, ship.template.displayName)), UIComponents.UnitStrength({
+                }, isNotDetected ? "???" : ship.template.displayName)), UIComponents.UnitStrength({
                     maxHealth: ship.maxHealth,
                     currentHealth: ship.currentHealth,
-                    isSquadron: true
+                    isSquadron: true,
+                    isNotDetected: isNotDetected
                 })));
             }
         });
@@ -5452,7 +5459,8 @@ var Rance;
                         isDraggable: hasDraggableContent,
                         onDragStart: this.props.onDragStart,
                         onDragMove: this.props.onDragMove,
-                        onDragEnd: this.props.onDragEnd
+                        onDragEnd: this.props.onDragEnd,
+                        isNotDetected: this.props.isNotDetected
                     }));
                 }
                 if (hasDraggableContent) {
@@ -5618,7 +5626,8 @@ var Rance;
                         key: selectedFleets[i].id,
                         fleet: selectedFleets[i],
                         hasMultipleSelected: hasMultipleSelected,
-                        isInspecting: this.props.isInspecting
+                        isInspecting: this.props.isInspecting,
+                        isNotDetected: this.props.isInspecting && !this.props.player.starIsRevealed(selectedFleets[i].location)
                     };
                     fleetInfos.push(UIComponents.FleetInfo(infoProps));
                 }
@@ -5653,7 +5662,8 @@ var Rance;
                 var fleetContents = null;
                 if (!hasMultipleSelected) {
                     fleetContents = UIComponents.FleetContents({
-                        fleet: selectedFleets[0]
+                        fleet: selectedFleets[0],
+                        isNotDetected: this.props.isInspecting && !this.props.player.starIsRevealed(selectedFleets[0].location)
                     });
                 }
                 var isReorganizing = this.props.currentlyReorganizing.length > 0;
@@ -14267,7 +14277,8 @@ var Rance;
                     isInspecting: isInspecting,
                     selectedStar: this.state.selectedStar,
                     currentlyReorganizing: this.state.currentlyReorganizing,
-                    closeReorganization: this.closeReorganization
+                    closeReorganization: this.closeReorganization,
+                    player: this.props.player
                 }))), React.DOM.div({
                     className: "galaxy-map-ui-bottom-left"
                 }, UIComponents.PossibleActions({
@@ -15620,7 +15631,6 @@ var Rance;
             shipTypes = shipTypes.filter(function (shipType) {
                 return shipType !== "cheatShip" && !Rance.Templates.ShipTypes[shipType].isStealthy;
             });
-            console.log(shipTypes);
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
                 if (!star.owner) {

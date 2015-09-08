@@ -25,8 +25,9 @@ module Rance
           React.DOM.input(
           {
             className: "ship-info-name",
-            value: this.state.value,
-            onChange: this.onChange
+            value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
+            onChange: this.props.isNotDetected ? "null" :  this.onChange,
+            readOnly: this.props.isNotDetected
           })
         );
       }
