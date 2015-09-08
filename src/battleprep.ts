@@ -49,10 +49,13 @@ module Rance
         var passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
         if (passiveSkillsByPhase.inBattlePrep)
         {
-          var skill = passiveSkillsByPhase.inBattlePrep[i];
-          for (var j = 0; j < skill.inBattlePrep.length; j++)
+          for (var j = 0; j < passiveSkillsByPhase.inBattlePrep.length; j++)
           {
-            skill.inBattlePrep[j](unit, this);
+            var skill = passiveSkillsByPhase.inBattlePrep[j];
+            for (var k = 0; k < skill.inBattlePrep.length; k++)
+            {
+              skill.inBattlePrep[k](unit, this);
+            }
           }
         }
       }
