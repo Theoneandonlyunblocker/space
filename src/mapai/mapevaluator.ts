@@ -453,6 +453,10 @@ module Rance
 
           for (var j = 0; j < playerFleets.length; j++)
           {
+            if (playerFleets[j].isStealthy && !this.player.starIsDetected(star))
+            {
+              continue;
+            }
             byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
           }
         }

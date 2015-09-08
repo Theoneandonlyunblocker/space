@@ -10948,6 +10948,10 @@ var Rance;
                         byPlayer[playerId] = [];
                     }
                     for (var j = 0; j < playerFleets.length; j++) {
+                        if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
+                            console.log("skipped stelathy fleet", playerFleets[j].id);
+                            continue;
+                        }
                         byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
                     }
                 }
@@ -12149,7 +12153,10 @@ var Rance;
             var templates = [];
             for (var type in Rance.Templates.ShipTypes) {
                 var template = Rance.Templates.ShipTypes[type];
-                if ((type === "cheatShip" || template.isStealthy) && (this.isAI || !Rance.Options.debugMode)) {
+                if (type === "cheatShip" && (this.isAI || !Rance.Options.debugMode)) {
+                    continue;
+                }
+                else if (template.isStealthy && this.isAI) {
                     continue;
                 }
                 templates.push(template);
