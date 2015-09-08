@@ -304,7 +304,7 @@ module Rance
       var shipTypes: string[] = Object.keys(Templates.ShipTypes);
       shipTypes = shipTypes.filter(function(shipType: string)
       {
-        return shipType !== "cheatShip";
+        return shipType !== "cheatShip" && !Templates.ShipTypes[shipType].isStealthy;
       });
 
       for (var i = 0; i < stars.length; i++)

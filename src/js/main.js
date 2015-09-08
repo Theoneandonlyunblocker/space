@@ -12138,10 +12138,11 @@ var Rance;
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
             for (var type in Rance.Templates.ShipTypes) {
-                if (type === "cheatShip" && (this.isAI || !Rance.Options.debugMode)) {
+                var template = Rance.Templates.ShipTypes[type];
+                if ((type === "cheatShip" || template.isStealthy) && (this.isAI || !Rance.Options.debugMode)) {
                     continue;
                 }
-                templates.push(Rance.Templates.ShipTypes[type]);
+                templates.push(template);
             }
             return templates;
         };
@@ -15617,7 +15618,7 @@ var Rance;
             setDistancesFromNearestPlayerOwnedStar(stars);
             var shipTypes = Object.keys(Rance.Templates.ShipTypes);
             shipTypes = shipTypes.filter(function (shipType) {
-                return shipType !== "cheatShip";
+                return shipType !== "cheatShip" && !Rance.Templates.ShipTypes[shipType].isStealthy;
             });
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
