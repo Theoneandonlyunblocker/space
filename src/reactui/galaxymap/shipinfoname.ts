@@ -26,7 +26,7 @@ module Rance
           {
             className: "ship-info-name",
             value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
-            onChange: this.props.isNotDetected ? "null" :  this.onChange,
+            onChange: this.props.isNotDetected ? null :  this.onChange,
             readOnly: this.props.isNotDetected
           })
         );

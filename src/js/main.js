@@ -5377,7 +5377,7 @@ var Rance;
                 return (React.DOM.input({
                     className: "ship-info-name",
                     value: this.props.isNotDetected ? "Unidentified ship" : this.state.value,
-                    onChange: this.props.isNotDetected ? "null" : this.onChange,
+                    onChange: this.props.isNotDetected ? null : this.onChange,
                     readOnly: this.props.isNotDetected
                 }));
             }
@@ -5627,7 +5627,7 @@ var Rance;
                         fleet: selectedFleets[i],
                         hasMultipleSelected: hasMultipleSelected,
                         isInspecting: this.props.isInspecting,
-                        isNotDetected: this.props.isInspecting && !this.props.player.starIsRevealed(selectedFleets[i].location)
+                        isNotDetected: this.props.isInspecting && !this.props.player.starIsDetected(selectedFleets[i].location)
                     };
                     fleetInfos.push(UIComponents.FleetInfo(infoProps));
                 }
@@ -5663,7 +5663,7 @@ var Rance;
                 if (!hasMultipleSelected) {
                     fleetContents = UIComponents.FleetContents({
                         fleet: selectedFleets[0],
-                        isNotDetected: this.props.isInspecting && !this.props.player.starIsRevealed(selectedFleets[0].location)
+                        isNotDetected: this.props.isInspecting && !this.props.player.starIsDetected(selectedFleets[0].location)
                     });
                 }
                 var isReorganizing = this.props.currentlyReorganizing.length > 0;
