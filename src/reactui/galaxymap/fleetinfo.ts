@@ -26,11 +26,11 @@ module Rance
 
         var healthStatus = "";
 
-        if (healthRatio <= critThreshhold)
+        if (!isNotDetected && healthRatio <= critThreshhold)
         {
           healthStatus += " critical";
         }
-        else if (totalHealth.current < totalHealth.max)
+        else if (!isNotDetected && totalHealth.current < totalHealth.max)
         {
           healthStatus += " wounded";
         }

@@ -132,11 +132,11 @@ module Rance
 
         var healthRatio = this.state.displayedStrength / this.props.maxHealth;
 
-        if (healthRatio <= critThreshhold)
+        if (!this.props.isNotDetected && healthRatio <= critThreshhold)
         {
           currentStyle.className += " critical";
         }
-        else if (this.state.displayedStrength < this.props.maxHealth)
+        else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth)
         {
           currentStyle.className += " wounded";
         }

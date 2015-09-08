@@ -96,10 +96,10 @@ var Rance;
                     className: "unit-strength-current"
                 };
                 var healthRatio = this.state.displayedStrength / this.props.maxHealth;
-                if (healthRatio <= critThreshhold) {
+                if (!this.props.isNotDetected && healthRatio <= critThreshhold) {
                     currentStyle.className += " critical";
                 }
-                else if (this.state.displayedStrength < this.props.maxHealth) {
+                else if (!this.props.isNotDetected && this.state.displayedStrength < this.props.maxHealth) {
                     currentStyle.className += " wounded";
                 }
                 var containerProps = {
@@ -5327,10 +5327,10 @@ var Rance;
                 var healthRatio = totalHealth.current / totalHealth.max;
                 var critThreshhold = 0.3;
                 var healthStatus = "";
-                if (healthRatio <= critThreshhold) {
+                if (!isNotDetected && healthRatio <= critThreshhold) {
                     healthStatus += " critical";
                 }
-                else if (totalHealth.current < totalHealth.max) {
+                else if (!isNotDetected && totalHealth.current < totalHealth.max) {
                     healthStatus += " wounded";
                 }
                 return (React.DOM.div({
@@ -17291,7 +17291,8 @@ var Rance;
                         }
                         for (var i = 0; i < points.length; i++) {
                             var star = points[i];
-                            if (!star.owner || star.owner.colorAlpha === 0)
+                            var occupier = star.getSecondaryController();
+                            if (!star.owner || (!occupier && star.owner.colorAlpha === 0))
                                 continue;
                             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                             var gfx = new PIXI.Graphics();
@@ -17301,7 +17302,6 @@ var Rance;
                             gfx.beginFill(star.owner.color, alpha);
                             gfx.drawShape(poly);
                             gfx.endFill();
-                            var occupier = star.getSecondaryController();
                             if (occupier) {
                                 var container = new PIXI.Container();
                                 doc.addChild(container);
@@ -17313,7 +17313,6 @@ var Rance;
                                 container.addChild(gfx);
                                 container.addChild(mask);
                                 gfx.filters = [this.getOccupationShader(star.owner, occupier)];
-                                console.log(gfx.filters[0]);
                                 container.mask = mask;
                             }
                             else {
