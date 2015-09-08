@@ -27,11 +27,13 @@ module Rance
       icon: string;
       maxHealth: number;
       maxMovePoints: number;
-      
+
       // how many stars away unit can see
       // -1: no vision, 0: current star only, 1: current & 1 away etc.
       visionRange: number;
+      // like vision but for stealthy ships
       detectionRange: number;
+      isStealthy?: boolean;
 
       attributeLevels:
       {
@@ -196,6 +198,37 @@ module Rance
         maxMovePoints: 2,
         visionRange: 2,
         detectionRange: 0,
+        attributeLevels:
+        {
+          attack: 0.5,
+          defence: 0.5,
+          intelligence: 0.8,
+          speed: 0.7
+        },
+        abilities:
+        [
+          Abilities.rangedAttack,
+          Abilities.standBy
+        ]
+      }
+      export var stealthShip: IUnitTemplate =
+      {
+        type: "stealthShip",
+        displayName: "Stealth Ship",
+        archetype: "utility",
+        sprite:
+        {
+          imageSrc: "scout.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
+        isSquadron: true,
+        buildCost: 500,
+        icon: "img\/icons\/sc.png",
+        maxHealth: 0.6,
+        maxMovePoints: 1,
+        visionRange: 1,
+        detectionRange: -1,
+        isStealthy: true,
         attributeLevels:
         {
           attack: 0.5,

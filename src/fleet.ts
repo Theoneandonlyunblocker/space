@@ -15,6 +15,7 @@ module Rance
     visionIsDirty: boolean = true;
     visibleStars: Star[] = [];
     detectedStars: Star[] = [];
+    isStealthy: boolean;
 
     id: number;
     name: string;
@@ -57,12 +58,28 @@ module Rance
     }
     mergeWith(fleet: Fleet, shouldRender: boolean = true)
     {
+      if (fleet.isStealthy !== this.isStealthy)
+      {
+        console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
+        return;
+      }
+
       fleet.addShips(this.ships);
       this.deleteFleet(shouldRender);
     }
     addShip(ship: Unit)
     {
       if (this.hasShip(ship)) return false;
+
+      if (this.ships.length === 0)
+      {
+        this.isStealthy = ship.isStealthy();
+      }
+      else if (ship.isStealthy() !== this.isStealthy)
+      {
+        console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
+        return;
+      }
 
       this.ships.push(ship);
       ship.addToFleet(this);
@@ -102,6 +119,11 @@ module Rance
     transferShip(fleet: Fleet, ship: Unit)
     {
       if (fleet === this) return;
+      if (ship.isStealthy() !== this.isStealthy)
+      {
+        console.warn("Tried to transfer stealthy ship to non stealthy fleet");
+        return;
+      }
       var index = this.getShipIndex(ship);
 
       if (index < 0) return false;
@@ -116,6 +138,19 @@ module Rance
       var newFleet = new Fleet(this.player, [], this.location);
       this.location.addFleet(newFleet);
 
+
+      return newFleet;
+    }
+    splitStealthyUnits()
+    {
+      var stealthyUnits = this.ships.filter(function(unit: Unit)
+      {
+        return unit.isStealthy();
+      });
+
+      var newFleet = new Fleet(this.player, stealthyUnits, this.location);
+      this.location.addFleet(newFleet);
+      this.removeShips(stealthyUnits);
 
       return newFleet;
     }

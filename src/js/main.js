@@ -6965,6 +6965,33 @@ var Rance;
                     Templates.Abilities.standBy
                 ]
             };
+            ShipTypes.stealthShip = {
+                type: "stealthShip",
+                displayName: "Stealth Ship",
+                archetype: "utility",
+                sprite: {
+                    imageSrc: "scout.png",
+                    anchor: { x: 0.5, y: 0.5 }
+                },
+                isSquadron: true,
+                buildCost: 500,
+                icon: "img\/icons\/sc.png",
+                maxHealth: 0.6,
+                maxMovePoints: 1,
+                visionRange: 1,
+                detectionRange: -1,
+                isStealthy: true,
+                attributeLevels: {
+                    attack: 0.5,
+                    defence: 0.5,
+                    intelligence: 0.8,
+                    speed: 0.7
+                },
+                abilities: [
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.standBy
+                ]
+            };
             ShipTypes.shieldBoat = {
                 type: "shieldBoat",
                 displayName: "Shield Boat",
@@ -8098,12 +8125,23 @@ var Rance;
         };
         Fleet.prototype.mergeWith = function (fleet, shouldRender) {
             if (shouldRender === void 0) { shouldRender = true; }
+            if (fleet.isStealthy !== this.isStealthy) {
+                console.warn("Tried to merge stealthy fleet with non stealthy or other way around");
+                return;
+            }
             fleet.addShips(this.ships);
             this.deleteFleet(shouldRender);
         };
         Fleet.prototype.addShip = function (ship) {
             if (this.hasShip(ship))
                 return false;
+            if (this.ships.length === 0) {
+                this.isStealthy = ship.isStealthy();
+            }
+            else if (ship.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to add stealthy ship to non stealthy fleet or other way around");
+                return;
+            }
             this.ships.push(ship);
             ship.addToFleet(this);
             this.visionIsDirty = true;
@@ -8132,6 +8170,10 @@ var Rance;
         Fleet.prototype.transferShip = function (fleet, ship) {
             if (fleet === this)
                 return;
+            if (ship.isStealthy() !== this.isStealthy) {
+                console.warn("Tried to transfer stealthy ship to non stealthy fleet");
+                return;
+            }
             var index = this.getShipIndex(ship);
             if (index < 0)
                 return false;
@@ -8142,6 +8184,15 @@ var Rance;
         Fleet.prototype.split = function () {
             var newFleet = new Fleet(this.player, [], this.location);
             this.location.addFleet(newFleet);
+            return newFleet;
+        };
+        Fleet.prototype.splitStealthyUnits = function () {
+            var stealthyUnits = this.ships.filter(function (unit) {
+                return unit.isStealthy();
+            });
+            var newFleet = new Fleet(this.player, stealthyUnits, this.location);
+            this.location.addFleet(newFleet);
+            this.removeShips(stealthyUnits);
             return newFleet;
         };
         Fleet.prototype.getMinCurrentMovePoints = function () {
@@ -12146,7 +12197,7 @@ var Rance;
                 var star = allDetected[i];
                 if (!this.detectedStars[star.id]) {
                     this.detectedStars[star.id] = star;
-                    if (!detectionHasChanged && !previousDetectedStars[star.id]) {
+                    if (!visibilityHasChanged && !detectionHasChanged && !previousDetectedStars[star.id]) {
                         detectionHasChanged = true;
                     }
                 }
@@ -12156,7 +12207,7 @@ var Rance;
                 visibilityHasChanged = (Object.keys(this.visibleStars).length !==
                     Object.keys(previousVisibleStars).length);
             }
-            if (!detectionHasChanged) {
+            if (!visibilityHasChanged && !detectionHasChanged) {
                 detectionHasChanged = (Object.keys(this.detectedStars).length !==
                     Object.keys(previousDetectedStars).length);
             }
@@ -13615,6 +13666,10 @@ var Rance;
         };
         Unit.prototype.canActThisTurn = function () {
             return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
+        };
+        Unit.prototype.isStealthy = function () {
+            // TODO
+            return this.template.isStealthy;
         };
         Unit.prototype.getVisionRange = function () {
             // TODO

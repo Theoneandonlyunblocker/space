@@ -653,6 +653,7 @@ declare module Rance {
             maxMovePoints: number;
             visionRange: number;
             detectionRange: number;
+            isStealthy?: boolean;
             attributeLevels: {
                 attack: number;
                 defence: number;
@@ -668,6 +669,7 @@ declare module Rance {
             var bomberSquadron: IUnitTemplate;
             var battleCruiser: IUnitTemplate;
             var scout: IUnitTemplate;
+            var stealthShip: IUnitTemplate;
             var shieldBoat: IUnitTemplate;
         }
     }
@@ -962,6 +964,7 @@ declare module Rance {
         visionIsDirty: boolean;
         visibleStars: Star[];
         detectedStars: Star[];
+        isStealthy: boolean;
         id: number;
         name: string;
         constructor(player: Player, ships: Unit[], location: Star, id?: number, shouldRender?: boolean);
@@ -975,6 +978,7 @@ declare module Rance {
         removeShips(ships: Unit[]): void;
         transferShip(fleet: Fleet, ship: Unit): boolean;
         split(): Fleet;
+        splitStealthyUnits(): Fleet;
         getMinCurrentMovePoints(): number;
         getMinMaxMovePoints(): number;
         canMove(): boolean;
@@ -2212,6 +2216,7 @@ declare module Rance {
         removeAllGuard(): void;
         getCounterAttackStrength(): number;
         canActThisTurn(): boolean;
+        isStealthy(): boolean;
         getVisionRange(): number;
         getDetectionRange(): number;
         heal(): void;

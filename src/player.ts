@@ -371,7 +371,7 @@ module Rance
         if (!this.detectedStars[star.id])
         {
           this.detectedStars[star.id] = star;
-          if (!detectionHasChanged && !previousDetectedStars[star.id])
+          if (!visibilityHasChanged && !detectionHasChanged && !previousDetectedStars[star.id])
           {
             detectionHasChanged = true;
           }
@@ -384,7 +384,7 @@ module Rance
         visibilityHasChanged = (Object.keys(this.visibleStars).length !==
           Object.keys(previousVisibleStars).length);
       }
-      if (!detectionHasChanged)
+      if (!visibilityHasChanged && !detectionHasChanged)
       {
         detectionHasChanged = (Object.keys(this.detectedStars).length !==
           Object.keys(previousDetectedStars).length);

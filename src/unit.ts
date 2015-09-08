@@ -744,6 +744,11 @@ module Rance
     {
       return this.timesActedThisTurn < 1 || this.fleet.player.isIndependent;
     }
+    isStealthy(): boolean
+    {
+      // TODO
+      return this.template.isStealthy;
+    }
     getVisionRange(): number
     {
       // TODO
