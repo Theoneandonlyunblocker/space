@@ -291,6 +291,10 @@ module Rance
           sfx:
           {
             duration: 1500
+          },
+          data:
+          {
+            perInt: 20
           }
         }
       }

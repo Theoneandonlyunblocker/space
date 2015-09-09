@@ -112,7 +112,7 @@ module Rance
         effect: function(user: Unit, target: Unit, data?: any)
         {
           var data = data || {};
-          var guardPerInt = data.perInt || 20;
+          var guardPerInt = data.perInt || 0;
           var flat = data.flat || 0;
 
           var guardAmount = guardPerInt * user.attributes.intelligence + flat;

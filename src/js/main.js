@@ -6469,7 +6469,7 @@ var Rance;
                 targetRange: "self",
                 effect: function (user, target, data) {
                     var data = data || {};
-                    var guardPerInt = data.perInt || 20;
+                    var guardPerInt = data.perInt || 0;
                     var flat = data.flat || 0;
                     var guardAmount = guardPerInt * user.attributes.intelligence + flat;
                     user.addGuard(guardAmount, "column");
@@ -6742,6 +6742,9 @@ var Rance;
                     template: Templates.Effects.guardColumn,
                     sfx: {
                         duration: 1500
+                    },
+                    data: {
+                        perInt: 20
                     }
                 }
             };
