@@ -14200,7 +14200,6 @@ var Rance;
             },
             upgradeBuilding: function (upgradeData) {
                 var star = upgradeData.parentBuilding.location;
-                console.log(upgradeData);
                 var newBuilding = new Rance.Building({
                     template: upgradeData.template,
                     location: star,
@@ -14245,7 +14244,7 @@ var Rance;
                         upgradeElements.push(React.DOM.tr(rowProps, React.DOM.td({
                             key: "name",
                             className: "building-upgrade-list-item-name"
-                        }, upgrade.template.name + " " + upgrade.level), React.DOM.td(costProps, upgrade.cost)));
+                        }, upgrade.template.name + " " + (upgrade.level > 1 ? upgrade.level : "")), React.DOM.td(costProps, upgrade.cost)));
                     }
                     var parentElement = React.DOM.div({
                         key: parentBuilding.id,

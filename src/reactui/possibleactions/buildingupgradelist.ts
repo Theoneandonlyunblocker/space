@@ -18,7 +18,6 @@ module Rance
       {
         var star = upgradeData.parentBuilding.location
 
-        console.log(upgradeData);
         var newBuilding = new Building(
         {
           template: upgradeData.template,
@@ -87,7 +86,7 @@ module Rance
                 {
                   key: "name",
                   className: "building-upgrade-list-item-name"
-                }, upgrade.template.name + " " + upgrade.level),
+                }, upgrade.template.name + " " + (upgrade.level > 1 ? upgrade.level : "")),
                 React.DOM.td(costProps, upgrade.cost)
               )
             );
