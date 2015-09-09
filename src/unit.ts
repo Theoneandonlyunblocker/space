@@ -268,7 +268,7 @@ module Rance
 
       if (amount > 0)
       {
-        this.removeGuard(50);
+        this.removeGuard(40);
       }
 
       this.uiDisplayIsDirty = true;

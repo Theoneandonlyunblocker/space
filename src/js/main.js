@@ -13568,7 +13568,7 @@ var Rance;
             this.currentHealth -= Math.round(amount);
             this.currentHealth = Rance.clamp(this.currentHealth, 0, this.maxHealth);
             if (amount > 0) {
-                this.removeGuard(50);
+                this.removeGuard(40);
             }
             this.uiDisplayIsDirty = true;
         };

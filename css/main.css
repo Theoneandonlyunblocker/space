@@ -274,10 +274,10 @@ progress::-webkit-progress-value {
 .turn-order-arrow::before {
   content: " ";
   position: absolute;
-  width: 20px;
-  height: 20px;
-  bottom: -20px;
-  left: -10px;
+  width: 31px;
+  height: 26px;
+  bottom: -26px;
+  left: -15px;
   background-image: url("../img/icons/turnOrderArrow.png");
   z-index: 101;
 }
