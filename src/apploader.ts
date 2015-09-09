@@ -152,9 +152,13 @@ module Rance
       var loader = new PIXI.loaders.Loader();
       loader.add("img\/fowTexture.png");
       loader.add("img\/battleEffects\/rocketAttack.png");
+      loader.add("explosion", "img\/battleEffects\/explosion.json");
 
       var onLoadCompleteFN = function(loader: PIXI.loaders.Loader)
       {
+        var json = loader.resources["explosion"].data;
+        var image = loader.resources["explosion_image"].data;
+        self.spriteSheetToTextures(json, image);
         self.loaded.other = true;
         self.checkLoaded();
       };

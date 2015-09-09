@@ -4,9 +4,9 @@ module Rance
   {
     export function rocketAttack(props: Templates.SFXParams)
     {
-      var travelSpeed = props.width / props.duration * 2; //milliseconds
-      var acceleration = travelSpeed / 10;
-      var maxSpeed = travelSpeed * 1.3;
+      var travelSpeed = props.width / props.duration * 3; //milliseconds
+      var acceleration = travelSpeed / 20;
+      var maxSpeed = travelSpeed;
       if (!props.facingRight)
       {
         travelSpeed = -travelSpeed;
@@ -18,13 +18,23 @@ module Rance
       
       var container = new PIXI.Container();
 
-      var texture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+      var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+      var explosionTextures: PIXI.Texture[] = [];
+
+      for (var i = 0; i < 26; i++)
+      {
+         var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i+1) + '.png');
+         explosionTextures.push(explosionTexture);
+      }
+
       var startTime = Date.now();
       var endTime = startTime + props.duration;
       var stopSpawningTime = startTime + props.duration / 2;
       var lastTime = startTime;
 
       var rocketsToSpawn = 20;
+      var explosionsToSpawn = 4;
+      var explosionRate = rocketsToSpawn / explosionsToSpawn;
       var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
       var nextSpawnTime = startTime;
 
@@ -32,6 +42,9 @@ module Rance
       {
         sprite: PIXI.Sprite;
         speed: number;
+        explosionX: number;
+        willExplode: boolean;
+        hasExplosion: boolean;
       }[] = []
 
       function animate()
@@ -42,28 +55,46 @@ module Rance
 
         if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime)
         {
-          console.log("spawn");
           nextSpawnTime += spawnRate;
-          var sprite = new PIXI.Sprite(texture);
+          var sprite = new PIXI.Sprite(rocketTexture);
           sprite.x = 20;
-          sprite.y = randInt(0, props.height);
+          sprite.y = randInt(props.height - 200, props.height - 50);
           container.addChild(sprite);
 
           rockets.push(
           {
             sprite: sprite,
-            speed: 0
+            speed: 0,
+            willExplode: (rockets.length - 1) % explosionRate === 0,
+            explosionX: randInt(props.width - 300, props.width - 100),
+            hasExplosion: false
           });
         }
 
         for (var i = 0; i < rockets.length; i++)
         {
           var rocket = rockets[i];
-          if (rocket.speed < maxSpeed)
+          if (!rocket.hasExplosion)
           {
-            rocket.speed += acceleration;
+            if (rocket.speed < maxSpeed)
+            {
+              rocket.speed += acceleration;
+            }
+            rocket.sprite.x += rocket.speed * elapsedTime;
           }
-          rocket.sprite.x += rocket.speed * elapsedTime;
+
+          if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX)
+          {
+            console.log("explode");
+            rocket.hasExplosion = true;
+            var explosion = new PIXI.extras.MovieClip(explosionTextures);
+            explosion.anchor = new PIXI.Point(0.5, 0.5);
+            explosion.loop = false;
+            explosion.position = rocket.sprite.position;
+            container.removeChild(rocket.sprite);
+            container.addChild(explosion);
+            explosion.play();
+          }
         }
 
         renderer.render(container);

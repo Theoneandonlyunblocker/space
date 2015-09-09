@@ -6648,9 +6648,9 @@ var Rance;
     var BattleSFX;
     (function (BattleSFX) {
         function rocketAttack(props) {
-            var travelSpeed = props.width / props.duration * 2; //milliseconds
-            var acceleration = travelSpeed / 10;
-            var maxSpeed = travelSpeed * 1.3;
+            var travelSpeed = props.width / props.duration * 3; //milliseconds
+            var acceleration = travelSpeed / 20;
+            var maxSpeed = travelSpeed;
             if (!props.facingRight) {
                 travelSpeed = -travelSpeed;
             }
@@ -6658,12 +6658,19 @@ var Rance;
                 transparent: true
             });
             var container = new PIXI.Container();
-            var texture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+            var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+            var explosionTextures = [];
+            for (var i = 0; i < 26; i++) {
+                var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
+                explosionTextures.push(explosionTexture);
+            }
             var startTime = Date.now();
             var endTime = startTime + props.duration;
             var stopSpawningTime = startTime + props.duration / 2;
             var lastTime = startTime;
             var rocketsToSpawn = 20;
+            var explosionsToSpawn = 4;
+            var explosionRate = rocketsToSpawn / explosionsToSpawn;
             var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
             var nextSpawnTime = startTime;
             var rockets = [];
@@ -6672,23 +6679,38 @@ var Rance;
                 var elapsedTime = currentTime - lastTime;
                 lastTime = Date.now();
                 if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
-                    console.log("spawn");
                     nextSpawnTime += spawnRate;
-                    var sprite = new PIXI.Sprite(texture);
+                    var sprite = new PIXI.Sprite(rocketTexture);
                     sprite.x = 20;
-                    sprite.y = Rance.randInt(0, props.height);
+                    sprite.y = Rance.randInt(props.height - 200, props.height - 50);
                     container.addChild(sprite);
                     rockets.push({
                         sprite: sprite,
-                        speed: 0
+                        speed: 0,
+                        willExplode: (rockets.length - 1) % explosionRate === 0,
+                        explosionX: Rance.randInt(props.width - 300, props.width - 100),
+                        hasExplosion: false
                     });
                 }
                 for (var i = 0; i < rockets.length; i++) {
                     var rocket = rockets[i];
-                    if (rocket.speed < maxSpeed) {
-                        rocket.speed += acceleration;
+                    if (!rocket.hasExplosion) {
+                        if (rocket.speed < maxSpeed) {
+                            rocket.speed += acceleration;
+                        }
+                        rocket.sprite.x += rocket.speed * elapsedTime;
                     }
-                    rocket.sprite.x += rocket.speed * elapsedTime;
+                    if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
+                        console.log("explode");
+                        rocket.hasExplosion = true;
+                        var explosion = new PIXI.extras.MovieClip(explosionTextures);
+                        explosion.anchor = new PIXI.Point(0.5, 0.5);
+                        explosion.loop = false;
+                        explosion.position = rocket.sprite.position;
+                        container.removeChild(rocket.sprite);
+                        container.addChild(explosion);
+                        explosion.play();
+                    }
                 }
                 renderer.render(container);
                 if (currentTime < endTime) {
@@ -19627,7 +19649,11 @@ var Rance;
             var loader = new PIXI.loaders.Loader();
             loader.add("img\/fowTexture.png");
             loader.add("img\/battleEffects\/rocketAttack.png");
+            loader.add("explosion", "img\/battleEffects\/explosion.json");
             var onLoadCompleteFN = function (loader) {
+                var json = loader.resources["explosion"].data;
+                var image = loader.resources["explosion_image"].data;
+                self.spriteSheetToTextures(json, image);
                 self.loaded.other = true;
                 self.checkLoaded();
             };
