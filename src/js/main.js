@@ -6553,95 +6553,150 @@ var Rance;
         })(Effects = Templates.Effects || (Templates.Effects = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFX;
+    (function (BattleSFX) {
+        function makeSprite(imgSrc, props) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var img = new Image();
+            img.onload = function (e) {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                if (!props.facingRight) {
+                    ctx.scale(-1, 1);
+                }
+            };
+            // cg13300.bmp
+            img.src = imgSrc;
+            return canvas;
+        }
+        BattleSFX.makeSprite = makeSprite;
+        function makeVideo(videoSrc, props) {
+            var video = document.createElement("video");
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var maskCanvas = document.createElement("canvas");
+            var mask = maskCanvas.getContext("2d");
+            mask.fillStyle = "#000";
+            mask.globalCompositeOperation = "luminosity";
+            var onVideoLoadFN = function () {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                maskCanvas.width = canvas.width;
+                maskCanvas.height = canvas.height;
+                props.onLoaded(canvas);
+                video.play();
+            };
+            var _ = window;
+            if (!_.abababa)
+                _.abababa = {};
+            if (!_.abababa[videoSrc])
+                _.abababa[videoSrc] = {};
+            var computeFrameFN = function (frameNumber) {
+                if (!_.abababa[videoSrc][frameNumber]) {
+                    var c3 = document.createElement("canvas");
+                    c3.width = canvas.width;
+                    c3.height = canvas.height;
+                    var ctx3 = c3.getContext("2d");
+                    ctx3.drawImage(video, 0, 0, c3.width, c3.height);
+                    var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
+                    mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+                    mask.drawImage(video, 0, 0, c3.width, c3.height);
+                    var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
+                    var l = frame.data.length / 4;
+                    for (var i = 0; i < l; i++) {
+                        frame.data[i * 4 + 3] = maskData[i * 4];
+                    }
+                    ctx3.putImageData(frame, 0, 0);
+                    _.abababa[videoSrc][frameNumber] = c3;
+                }
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (!props.facingRight) {
+                    ctx.scale(-1, 1);
+                }
+                ctx.drawImage(_.abababa[videoSrc][frameNumber], 0, 0, canvas.width, canvas.height);
+            };
+            var previousFrame;
+            var playFrameFN = function () {
+                if (video.paused || video.ended)
+                    return;
+                var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
+                if (isFinite(previousFrame) && currentFrame === previousFrame) {
+                }
+                else {
+                    previousFrame = currentFrame;
+                    computeFrameFN(currentFrame);
+                }
+                window.requestAnimationFrame(playFrameFN);
+            };
+            video.oncanplay = onVideoLoadFN;
+            video.onplay = playFrameFN;
+            video.src = videoSrc;
+            if (video.readyState >= 4) {
+                onVideoLoadFN();
+            }
+            return canvas;
+        }
+        BattleSFX.makeVideo = makeVideo;
+    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFX;
+    (function (BattleSFX) {
+        function rocketAttack(props) {
+            var travelSpeed = props.width / props.duration * 2; //milliseconds
+            if (!props.facingRight) {
+                travelSpeed = -travelSpeed;
+            }
+            console.log(props.width, props.height);
+            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
+                transparent: true
+            });
+            var container = new PIXI.Container();
+            var texture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+            var startTime = Date.now();
+            var endTime = startTime + props.duration;
+            var stopSpawningTime = startTime + props.duration / 2;
+            var lastTime = startTime;
+            var rocketsToSpawn = 20;
+            var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
+            var nextSpawnTime = startTime;
+            function animate() {
+                var currentTime = Date.now();
+                var elapsedTime = currentTime - lastTime;
+                lastTime = Date.now();
+                if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
+                    console.log("spawn");
+                    nextSpawnTime += spawnRate;
+                    var sprite = new PIXI.Sprite(texture);
+                    sprite.x = 20;
+                    sprite.y = Rance.randInt(0, props.height);
+                    container.addChild(sprite);
+                }
+                for (var i = 0; i < container.children.length; i++) {
+                    container.children[i].x += travelSpeed * elapsedTime;
+                }
+                renderer.render(container);
+                if (currentTime < endTime) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            animate();
+            return renderer.view;
+        }
+        BattleSFX.rocketAttack = rocketAttack;
+    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../src/battlesfx/battlesfxutils.ts" />
+/// <reference path="../../src/battlesfx/rocketattack.ts" />
 /// <reference path="effecttemplates.ts" />
 /// <reference path="battleeffectsfxtemplates.ts" />
 var Rance;
 (function (Rance) {
-    // TODO move these
-    function makeSprite(imgSrc, props) {
-        var canvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
-        var img = new Image();
-        img.onload = function (e) {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            if (!props.facingRight) {
-                ctx.scale(-1, 1);
-            }
-        };
-        // cg13300.bmp
-        img.src = imgSrc;
-        return canvas;
-    }
-    Rance.makeSprite = makeSprite;
-    function makeVideo(videoSrc, props) {
-        var video = document.createElement("video");
-        var canvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
-        var maskCanvas = document.createElement("canvas");
-        var mask = maskCanvas.getContext("2d");
-        mask.fillStyle = "#000";
-        mask.globalCompositeOperation = "luminosity";
-        var onVideoLoadFN = function () {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            maskCanvas.width = canvas.width;
-            maskCanvas.height = canvas.height;
-            props.onLoaded(canvas);
-            video.play();
-        };
-        var _ = window;
-        if (!_.abababa)
-            _.abababa = {};
-        if (!_.abababa[videoSrc])
-            _.abababa[videoSrc] = {};
-        var computeFrameFN = function (frameNumber) {
-            if (!_.abababa[videoSrc][frameNumber]) {
-                var c3 = document.createElement("canvas");
-                c3.width = canvas.width;
-                c3.height = canvas.height;
-                var ctx3 = c3.getContext("2d");
-                ctx3.drawImage(video, 0, 0, c3.width, c3.height);
-                var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
-                mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-                mask.drawImage(video, 0, 0, c3.width, c3.height);
-                var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-                var l = frame.data.length / 4;
-                for (var i = 0; i < l; i++) {
-                    frame.data[i * 4 + 3] = maskData[i * 4];
-                }
-                ctx3.putImageData(frame, 0, 0);
-                _.abababa[videoSrc][frameNumber] = c3;
-            }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (!props.facingRight) {
-                ctx.scale(-1, 1);
-            }
-            ctx.drawImage(_.abababa[videoSrc][frameNumber], 0, 0, canvas.width, canvas.height);
-        };
-        var previousFrame;
-        var playFrameFN = function () {
-            if (video.paused || video.ended)
-                return;
-            var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
-            if (isFinite(previousFrame) && currentFrame === previousFrame) {
-            }
-            else {
-                previousFrame = currentFrame;
-                computeFrameFN(currentFrame);
-            }
-            window.requestAnimationFrame(playFrameFN);
-        };
-        video.oncanplay = onVideoLoadFN;
-        video.onplay = playFrameFN;
-        video.src = videoSrc;
-        if (video.readyState >= 4) {
-            onVideoLoadFN();
-        }
-        return canvas;
-    }
-    Rance.makeVideo = makeVideo;
     var Templates;
     (function (Templates) {
         var Abilities;
@@ -6783,42 +6838,19 @@ var Rance;
                 type: "debugAbility",
                 displayName: "Debug Ability",
                 description: "who knows what its going to do today",
-                moveDelay: 20,
-                actionsUse: 1,
+                moveDelay: 0,
+                actionsUse: 0,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
                     sfx: {
                         duration: 1500,
+                        battleOverlay: Rance.BattleSFX.rocketAttack
                     },
                     data: {
                         baseDamage: 5,
                         damageType: Rance.DamageType.physical
-                    },
-                    attachedEffects: [
-                        {
-                            template: Templates.Effects.receiveCounterAttack,
-                            data: {
-                                baseDamage: 1
-                            }
-                        }
-                    ]
-                },
-                secondaryEffects: [
-                    {
-                        template: Templates.Effects.bombAttack,
-                        sfx: {
-                            duration: 200,
-                        }
                     }
-                ],
-                afterUse: [
-                    {
-                        template: Templates.Effects.buffTest,
-                        sfx: {
-                            duration: 200,
-                        }
-                    }
-                ]
+                }
             };
             Abilities.ranceAttack = {
                 type: "ranceAttack",
@@ -6832,11 +6864,11 @@ var Rance;
                         duration: 1200,
                         userSprite: function (props) {
                             // cg13600.bmp
-                            return makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                            return Rance.BattleSFX.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
                         },
                         battleOverlay: function (props) {
                             // cg40500.bmp - cg40529.bmp converted to webm
-                            return makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                            return Rance.BattleSFX.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
                         }
                     },
                     data: {
@@ -6863,11 +6895,11 @@ var Rance;
                             duration: 1500,
                             userSprite: function (props) {
                                 // cg13300.bmp
-                                return makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                                return Rance.BattleSFX.makeSprite("img\/battleEffects\/ranceAttack.png", props);
                             },
                             battleOverlay: function (props) {
                                 // cg40000.bmp - cg40029.bmp converted to webm
-                                return makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                                return Rance.BattleSFX.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
                             }
                         }
                     }
@@ -6922,7 +6954,7 @@ var Rance;
                             duration: 1200,
                             battleOverlay: function (props) {
                                 // cg40400.bmp - cg40429.bmp converted to webm
-                                return Rance.makeVideo("img\/battleEffects\/heal.webm", props);
+                                return Rance.BattleSFX.makeVideo("img\/battleEffects\/heal.webm", props);
                             }
                         }
                     }
@@ -19583,6 +19615,7 @@ var Rance;
             var self = this;
             var loader = new PIXI.loaders.Loader();
             loader.add("img\/fowTexture.png");
+            loader.add("img\/battleEffects\/rocketAttack.png");
             var onLoadCompleteFN = function (loader) {
                 self.loaded.other = true;
                 self.checkLoaded();

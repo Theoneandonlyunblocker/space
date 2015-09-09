@@ -550,6 +550,17 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module BattleSFX {
+        function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
+        function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
+    }
+}
+declare module Rance {
+    module BattleSFX {
+        function rocketAttack(props: Templates.SFXParams): HTMLCanvasElement;
+    }
+}
+declare module Rance {
     module Templates {
         interface SFXParams {
             user: Unit;
@@ -568,8 +579,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
-    function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
     module Templates {
         interface IAbilityTemplateEffect {
             template: IEffectTemplate;
