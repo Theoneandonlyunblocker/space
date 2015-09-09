@@ -253,37 +253,18 @@ module Rance
         return building.controller.id === player.id;
       });
     }
-    getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate)
+    getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[]
     {
-      var categoryBuildings = this.buildings[buildingTemplate.category];
+      var propToCheck = buildingTemplate.family ? "family" : "type";
 
+      var categoryBuildings = this.buildings[buildingTemplate.category];
       var buildings: Building[] = [];
 
       if (categoryBuildings)
       {
         for (var i = 0; i < categoryBuildings.length; i++)
         {
-          if (categoryBuildings[i].template.type === buildingTemplate.type)
-          {
-            buildings.push(categoryBuildings[i]);
-          }
-        }
-      }
-
-      return buildings;
-    }
-    getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate)
-    {
-      if (!buildingTemplate.family) throw new Error("Building has no family");
-      var categoryBuildings = this.buildings[buildingTemplate.category];
-
-      var buildings: Building[] = [];
-
-      if (categoryBuildings)
-      {
-        for (var i = 0; i < categoryBuildings.length; i++)
-        {
-          if (categoryBuildings[i].template.family === buildingTemplate.family)
+          if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck])
           {
             buildings.push(categoryBuildings[i]);
           }
@@ -305,14 +286,7 @@ module Rance
           continue;
         }
 
-        if (template.family) 
-        {
-          alreadyBuilt = this.getBuildingsByFamily(template);
-        }
-        else
-        {
-          alreadyBuilt = this.getBuildingsByType(template);
-        }
+        alreadyBuilt = this.getBuildingsByFamily(template);
 
         if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly)
         {
@@ -335,6 +309,8 @@ module Rance
         }[];
       } = {};
 
+      var self = this;
+
       var ownerBuildings = this.getBuildingsForPlayer(this.owner);
 
       for (var i = 0; i < ownerBuildings.length; i++)
@@ -342,7 +318,26 @@ module Rance
         var building = ownerBuildings[i];
         var upgrades = building.getPossibleUpgrades();
 
-        if (upgrades && upgrades.length > 0)
+        upgrades = upgrades.filter(function(upgradeData: IBuildingUpgradeData)
+        {
+          var parent = upgradeData.parentBuilding.template;
+          var template = upgradeData.template;
+          if (parent.type === template.type)
+          {
+            return true;
+          }
+
+          var isSameFamily = (template.family && parent.family === template.family);
+          var maxAllowed = template.maxPerType;
+          if (isSameFamily)
+          {
+            maxAllowed += 1;
+          }
+          var alreadyBuilt = self.getBuildingsByFamily(template);
+          return alreadyBuilt.length < maxAllowed;
+        });
+
+        if (upgrades.length > 0)
         {
           allUpgrades[building.id] = upgrades;
         }
