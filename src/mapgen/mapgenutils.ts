@@ -233,7 +233,7 @@ module Rance
 
       return sectorsById;
     }
-    export function addDefenceBuildings(star: Star, amount: number = 1)
+    export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
     {
       if (!star.owner)
       {
@@ -245,13 +245,18 @@ module Rance
         return;
       }
 
-      star.addBuilding(new Building(
+      if (addSectorCommand)
       {
-        template: Templates.Buildings.sectorCommand,
-        location: star
-      }));
+        star.addBuilding(new Building(
+        {
+          template: Templates.Buildings.sectorCommand,
+          location: star
+        }));
 
-      for (var i = 1; i < amount; i++)
+        var amount = amount - 1;
+      }
+
+      for (var i = 0; i < amount; i++)
       {
         star.addBuilding(new Building(
         {
@@ -317,7 +322,7 @@ module Rance
 
           var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
           var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
-          addDefenceBuildings(star, defenceBuildingstoAdd);
+          addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
 
           var shipAmount = minShips;
 

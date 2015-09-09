@@ -2350,7 +2350,7 @@ declare module Rance {
         function makeSectors(stars: Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector2;
         };
-        function addDefenceBuildings(star: Star, amount?: number): void;
+        function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
         function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;
         function setupPirates(stars: Star[], player: Player, variance?: number, intensity?: number): void;
     }

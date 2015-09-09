@@ -326,15 +326,17 @@ module Rance
           {
             return true;
           }
-
-          var isSameFamily = (template.family && parent.family === template.family);
-          var maxAllowed = template.maxPerType;
-          if (isSameFamily)
+          else
           {
-            maxAllowed += 1;
+            var isSameFamily = (template.family && parent.family === template.family);
+            var maxAllowed = template.maxPerType;
+            if (isSameFamily)
+            {
+              maxAllowed += 1;
+            }
+            var alreadyBuilt = self.getBuildingsByFamily(template);
+            return alreadyBuilt.length < maxAllowed;
           }
-          var alreadyBuilt = self.getBuildingsByFamily(template);
-          return alreadyBuilt.length < maxAllowed;
         });
 
         if (upgrades.length > 0)

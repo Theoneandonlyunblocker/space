@@ -7774,13 +7774,15 @@ var Rance;
                     if (parent.type === template.type) {
                         return true;
                     }
-                    var isSameFamily = (template.family && parent.family === template.family);
-                    var maxAllowed = template.maxPerType;
-                    if (isSameFamily) {
-                        maxAllowed += 1;
+                    else {
+                        var isSameFamily = (template.family && parent.family === template.family);
+                        var maxAllowed = template.maxPerType;
+                        if (isSameFamily) {
+                            maxAllowed += 1;
+                        }
+                        var alreadyBuilt = self.getBuildingsByFamily(template);
+                        return alreadyBuilt.length < maxAllowed;
                     }
-                    var alreadyBuilt = self.getBuildingsByFamily(template);
-                    return alreadyBuilt.length < maxAllowed;
                 });
                 if (upgrades.length > 0) {
                     allUpgrades[building.id] = upgrades;
@@ -12440,7 +12442,7 @@ var Rance;
                 Rance.eventManager.dispatchEvent("renderMap");
             }
             else if (!this.isAI && detectionHasChanged) {
-                Rance.eventManager.dispatchEvent("renderLayer", "stealthFleets");
+                Rance.eventManager.dispatchEvent("renderLayer", "fleets");
             }
         };
         Player.prototype.getVisibleStars = function () {
@@ -15796,8 +15798,9 @@ var Rance;
             return sectorsById;
         }
         MapGen2.makeSectors = makeSectors;
-        function addDefenceBuildings(star, amount) {
+        function addDefenceBuildings(star, amount, addSectorCommand) {
             if (amount === void 0) { amount = 1; }
+            if (addSectorCommand === void 0) { addSectorCommand = true; }
             if (!star.owner) {
                 console.warn("Tried to add defence buildings to star without owner.");
                 return;
@@ -15805,11 +15808,14 @@ var Rance;
             if (amount < 1) {
                 return;
             }
-            star.addBuilding(new Rance.Building({
-                template: Rance.Templates.Buildings.sectorCommand,
-                location: star
-            }));
-            for (var i = 1; i < amount; i++) {
+            if (addSectorCommand) {
+                star.addBuilding(new Rance.Building({
+                    template: Rance.Templates.Buildings.sectorCommand,
+                    location: star
+                }));
+                var amount = amount - 1;
+            }
+            for (var i = 0; i < amount; i++) {
                 star.addBuilding(new Rance.Building({
                     template: Rance.Templates.Buildings.starBase,
                     location: star
@@ -15857,7 +15863,7 @@ var Rance;
                     player.addStar(star);
                     var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
                     var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
-                    addDefenceBuildings(star, defenceBuildingstoAdd);
+                    addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
                     var shipAmount = minShips;
                     for (var j = 2; j < distance; j++) {
                         shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
