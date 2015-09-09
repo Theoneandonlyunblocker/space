@@ -145,6 +145,7 @@ module Rance
         interruptsNeeded: number;
       };
       actionsUse: number;
+      byPassesGuard?: boolean;
 
       // determines targeting range of function, called first
       mainEffect: IAbilityTemplateEffect;
@@ -249,6 +250,7 @@ module Rance
         description: "Attack entire row of units",
         moveDelay: 300,
         actionsUse: 1,
+        byPassesGuard: true,
         AIEvaluationPriority: 0.5,
         mainEffect:
         {

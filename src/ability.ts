@@ -218,6 +218,11 @@ module Rance
   export function getTargetOrGuard(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
   {
+    if (ability.byPassesGuard)
+    {
+      return target;
+    }
+    
     var guarding = getGuarders(battle, user, ability, target);
 
     guarding = guarding.sort(function(a: Unit, b: Unit)
