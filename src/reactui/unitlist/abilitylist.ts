@@ -7,7 +7,7 @@ module Rance
       displayName: "AbilityList",
       render: function()
       {
-        var abilities: Templates.IAbilityTemplate[] = [];
+        var abilities: Templates.IPassiveSkillTemplate[] = []; // TODO wrong type signature
         var baseClassName = "unit-info-ability";
 
         if (this.props.listPassiveSkills)
@@ -43,6 +43,10 @@ module Rance
         for (var i = 0; i < abilities.length; i++)
         {
           var ability = abilities[i];
+          if (ability.isHidden)
+          {
+            continue;
+          }
           if (!addedAbilityTypes[ability.type])
           {
             addedAbilityTypes[ability.type] = 0;

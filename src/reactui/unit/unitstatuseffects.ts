@@ -46,7 +46,14 @@ module Rance
         {
           if (passiveSkillsByPhase[phase])
           {
-            passiveSkills = passiveSkills.concat(passiveSkillsByPhase[phase]);
+            for (var i = 0; i < passiveSkillsByPhase[phase].length; i++)
+            {
+              var skill = passiveSkillsByPhase[phase][i];
+              if (!skill.isHidden)
+              {
+                passiveSkills.push(skill);
+              }
+            }
           }
         });
 

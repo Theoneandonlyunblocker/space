@@ -624,6 +624,7 @@ declare module Rance {
             type: string;
             displayName: string;
             description: string;
+            isHidden?: boolean;
             atBattleStart?: IAbilityTemplateEffect[];
             beforeAbilityUse?: IAbilityTemplateEffect[];
             afterAbilityUse?: IAbilityTemplateEffect[];

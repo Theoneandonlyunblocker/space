@@ -299,7 +299,12 @@ var Rance;
                 var phasesToCheck = this.props.isBattlePrep ? ["atBattleStart"] : ["beforeAbilityUse", "afterAbilityUse"];
                 phasesToCheck.forEach(function (phase) {
                     if (passiveSkillsByPhase[phase]) {
-                        passiveSkills = passiveSkills.concat(passiveSkillsByPhase[phase]);
+                        for (var i = 0; i < passiveSkillsByPhase[phase].length; i++) {
+                            var skill = passiveSkillsByPhase[phase][i];
+                            if (!skill.isHidden) {
+                                passiveSkills.push(skill);
+                            }
+                        }
                     }
                 });
                 var passiveSkillsElement = null;
@@ -2647,7 +2652,7 @@ var Rance;
         UIComponents.AbilityList = React.createClass({
             displayName: "AbilityList",
             render: function () {
-                var abilities = [];
+                var abilities = []; // TODO wrong type signature
                 var baseClassName = "unit-info-ability";
                 if (this.props.listPassiveSkills) {
                     abilities = this.props.unit.getAllPassiveSkills();
@@ -2673,6 +2678,9 @@ var Rance;
                 });
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
+                    if (ability.isHidden) {
+                        continue;
+                    }
                     if (!addedAbilityTypes[ability.type]) {
                         addedAbilityTypes[ability.type] = 0;
                     }
@@ -6456,9 +6464,11 @@ var Rance;
                 targetFleets: "all",
                 targetingFunction: Rance.targetSingle,
                 targetRange: "self",
-                effect: function (user, target) {
-                    var guardPerInt = 20;
-                    var guardAmount = guardPerInt * user.attributes.intelligence;
+                effect: function (user, target, data) {
+                    var data = data || {};
+                    var guardPerInt = data.perInt || 20;
+                    var flat = data.flat || 0;
+                    var guardAmount = guardPerInt * user.attributes.intelligence + flat;
                     user.addGuard(guardAmount, "column");
                 }
             };
@@ -6950,14 +6960,16 @@ var Rance;
                 type: "initialGuard",
                 displayName: "Initial Guard",
                 description: "Adds initial guard",
+                isHidden: true,
                 atBattleStart: [
                     {
-                        template: Templates.Effects.guardColumn
+                        template: Templates.Effects.guardColumn,
+                        data: { perInt: 0, flat: 50 }
                     }
                 ],
                 inBattlePrep: [
                     function (user, battlePrep) {
-                        Templates.Effects.guardColumn.effect(user, user);
+                        Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
                     }
                 ]
             };

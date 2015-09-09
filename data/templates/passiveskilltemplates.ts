@@ -18,6 +18,7 @@ module Rance
       type: string;
       displayName: string;
       description: string;
+      isHidden?: boolean;
 
       atBattleStart?: IAbilityTemplateEffect[];
       beforeAbilityUse?: IAbilityTemplateEffect[];
@@ -103,6 +104,7 @@ module Rance
         type: "initialGuard",
         displayName: "Initial Guard",
         description: "Adds initial guard",
+        isHidden: true,
 
         atBattleStart:
         [
