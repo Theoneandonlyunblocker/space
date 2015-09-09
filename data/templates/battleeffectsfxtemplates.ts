@@ -1,3 +1,6 @@
+/// <reference path="../../src/battlesfx/battlesfxutils.ts" />
+/// <reference path="../../src/battlesfx/rocketattack.ts" />
+
 module Rance
 {
   export module Templates

@@ -48,7 +48,7 @@ module Rance
               battleOverlay: function(props: Templates.SFXParams)
               {
                 // cg40400.bmp - cg40429.bmp converted to webm
-                return makeVideo("img\/battleEffects\/heal.webm", props);
+                return BattleSFX.makeVideo("img\/battleEffects\/heal.webm", props);
               }
             }
           }
