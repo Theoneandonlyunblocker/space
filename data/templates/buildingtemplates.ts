@@ -6,29 +6,29 @@ module Rance
     {
       type: string;
       category: string;
-      family?: string; // all count towards maxPerType
       name: string;
 
       iconSrc: string;
       buildCost: number;
 
+      family?: string; // all buildings in same family count towards maxPerType
       maxPerType: number;
 
       maxUpgradeLevel: number;
-
       upgradeOnly?: boolean;
       upgradeInto?:
       {
-        type: string;
+        templateType: string;
         level: number;
       }[];
-
-      onBuild?: () => void;
-      onTurnEnd?: () => void;
+    }
+    export interface IDefenceBuildingTemplate extends IBuildingTemplate
+    {
+      defenderAdvantage: number;
     }
     export module Buildings
     {
-      export var sectorCommand: IBuildingTemplate =
+      export var sectorCommand: IDefenceBuildingTemplate =
       {
         type: "sectorCommand",
         category: "defence",
@@ -45,16 +45,17 @@ module Rance
         upgradeInto:
         [
           {
-            type: "sectorCommand1",
+            templateType: "sectorCommand1",
             level: 1
           },
           {
-            type: "sectorCommand2",
+            templateType: "sectorCommand2",
             level: 1
           }
-        ]
+        ],
+        defenderAdvantage: 0.2
       }
-      export var sectorCommand1: IBuildingTemplate =
+      export var sectorCommand1: IDefenceBuildingTemplate =
       {
         type: "sectorCommand1",
         category: "defence",
@@ -67,9 +68,10 @@ module Rance
         maxPerType: 1,
 
         maxUpgradeLevel: 1,
-        upgradeOnly: true
+        upgradeOnly: true,
+        defenderAdvantage: 0.3
       }
-      export var sectorCommand2: IBuildingTemplate =
+      export var sectorCommand2: IDefenceBuildingTemplate =
       {
         type: "sectorCommand2",
         category: "defence",
@@ -82,9 +84,10 @@ module Rance
         maxPerType: 1,
 
         maxUpgradeLevel: 1,
-        upgradeOnly: true
+        upgradeOnly: true,
+        defenderAdvantage: 0.3
       }
-      export var starBase: IBuildingTemplate =
+      export var starBase: IDefenceBuildingTemplate =
       {
         type: "starBase",
         category: "defence",
@@ -95,7 +98,15 @@ module Rance
 
         maxPerType: 3,
 
-        maxUpgradeLevel: 1
+        maxUpgradeLevel: 1,
+        defenderAdvantage: 0.1,
+        upgradeInto:
+        [
+          {
+            templateType: "sectorCommand",
+            level: 1
+          }
+        ]
       }
       export var commercialPort: IBuildingTemplate =
       {

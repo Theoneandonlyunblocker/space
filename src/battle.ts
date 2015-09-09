@@ -466,7 +466,6 @@ module Rance
             return;
           }
           var currentHealthFactor = currentHealth / self.startHealth[side];
-          var lostHealthFactor = 1 - currentHealthFactor;
 
           for (var i = 0; i < self.unitsBySide[side].length; i++)
           {
@@ -476,7 +475,18 @@ module Rance
             }
           }
 
-          evaluation += (1 - currentHealthFactor) * sign;
+          var defenderMultiplier = 1;
+          if (self.battleData.building)
+          {
+            var template = <Templates.IDefenceBuildingTemplate> self.battleData.building.template;
+            var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+            if (isDefender)
+            {
+              defenderMultiplier += template.defenderAdvantage;
+            }
+          }
+
+          evaluation += (1 - currentHealthFactor * defenderMultiplier) * sign;
         });
 
         evaluation = clamp(evaluation, -1, 1);
