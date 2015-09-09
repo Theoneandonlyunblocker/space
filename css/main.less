@@ -353,11 +353,22 @@ progress::-webkit-progress-value { background: #080; }
 
 .battle-score-container
 {
+  position: relative;
   display: flex;
   flex: 0 1 400px;
   justify-content: center;
   border: 1px solid white;
   border-top-width: 0px;
+}
+@battle-score-mid-point-width: 16px;
+.battle-score-mid-point
+{
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  width: @battle-score-mid-point-width;
+  margin-left: @battle-score-mid-point-width / -2;
 }
 
 .battle-score-flag-wrapper

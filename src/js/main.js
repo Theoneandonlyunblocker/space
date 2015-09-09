@@ -1130,7 +1130,10 @@ var Rance;
                     className: "battle-score-wrapper"
                 }, React.DOM.div({
                     className: "battle-score-container"
-                }, React.DOM.div({
+                }, React.DOM.img({
+                    className: "battle-score-mid-point",
+                    src: "img\/icons\/battleScoreMidPoint.png"
+                }, null), React.DOM.div({
                     className: "battle-score-flag-wrapper",
                     style: {
                         backgroundImage: "url(" + battle.side1Player.icon + ")"
@@ -6707,6 +6710,7 @@ var Rance;
                 description: "Attack entire row of units",
                 moveDelay: 300,
                 actionsUse: 1,
+                byPassesGuard: true,
                 AIEvaluationPriority: 0.5,
                 mainEffect: {
                     template: Templates.Effects.wholeRowAttack,
@@ -7275,14 +7279,15 @@ var Rance;
                 maxUpgradeLevel: 1,
                 upgradeInto: [
                     {
-                        type: "sectorCommand1",
+                        templateType: "sectorCommand1",
                         level: 1
                     },
                     {
-                        type: "sectorCommand2",
+                        templateType: "sectorCommand2",
                         level: 1
                     }
-                ]
+                ],
+                defenderAdvantage: 0.2
             };
             Buildings.sectorCommand1 = {
                 type: "sectorCommand1",
@@ -7293,7 +7298,8 @@ var Rance;
                 buildCost: 100,
                 maxPerType: 1,
                 maxUpgradeLevel: 1,
-                upgradeOnly: true
+                upgradeOnly: true,
+                defenderAdvantage: 0.3
             };
             Buildings.sectorCommand2 = {
                 type: "sectorCommand2",
@@ -7304,7 +7310,8 @@ var Rance;
                 buildCost: 200,
                 maxPerType: 1,
                 maxUpgradeLevel: 1,
-                upgradeOnly: true
+                upgradeOnly: true,
+                defenderAdvantage: 0.3
             };
             Buildings.starBase = {
                 type: "starBase",
@@ -7313,7 +7320,14 @@ var Rance;
                 iconSrc: "starBase.png",
                 buildCost: 200,
                 maxPerType: 3,
-                maxUpgradeLevel: 1
+                maxUpgradeLevel: 1,
+                defenderAdvantage: 0.1,
+                upgradeInto: [
+                    {
+                        templateType: "sectorCommand",
+                        level: 1
+                    }
+                ]
             };
             Buildings.commercialPort = {
                 type: "commercialPort",
@@ -7382,7 +7396,7 @@ var Rance;
             }
             else if (this.template.upgradeInto && this.template.upgradeInto.length > 0) {
                 var templatedUpgrades = this.template.upgradeInto.map(function (upgradeData) {
-                    var template = Rance.Templates.Buildings[upgradeData.type];
+                    var template = Rance.Templates.Buildings[upgradeData.templateType];
                     return ({
                         level: upgradeData.level,
                         template: template,
@@ -7719,26 +7733,13 @@ var Rance;
                 return building.controller.id === player.id;
             });
         };
-        Star.prototype.getBuildingsByType = function (buildingTemplate) {
-            var categoryBuildings = this.buildings[buildingTemplate.category];
-            var buildings = [];
-            if (categoryBuildings) {
-                for (var i = 0; i < categoryBuildings.length; i++) {
-                    if (categoryBuildings[i].template.type === buildingTemplate.type) {
-                        buildings.push(categoryBuildings[i]);
-                    }
-                }
-            }
-            return buildings;
-        };
         Star.prototype.getBuildingsByFamily = function (buildingTemplate) {
-            if (!buildingTemplate.family)
-                throw new Error("Building has no family");
+            var propToCheck = buildingTemplate.family ? "family" : "type";
             var categoryBuildings = this.buildings[buildingTemplate.category];
             var buildings = [];
             if (categoryBuildings) {
                 for (var i = 0; i < categoryBuildings.length; i++) {
-                    if (categoryBuildings[i].template.family === buildingTemplate.family) {
+                    if (categoryBuildings[i].template[propToCheck] === buildingTemplate[propToCheck]) {
                         buildings.push(categoryBuildings[i]);
                     }
                 }
@@ -7753,12 +7754,7 @@ var Rance;
                 if (template.category === "mine" && !this.resource) {
                     continue;
                 }
-                if (template.family) {
-                    alreadyBuilt = this.getBuildingsByFamily(template);
-                }
-                else {
-                    alreadyBuilt = this.getBuildingsByType(template);
-                }
+                alreadyBuilt = this.getBuildingsByFamily(template);
                 if (alreadyBuilt.length < template.maxPerType && !template.upgradeOnly) {
                     canBuild.push(template);
                 }
@@ -12934,13 +12930,20 @@ var Rance;
                         return;
                     }
                     var currentHealthFactor = currentHealth / self.startHealth[side];
-                    var lostHealthFactor = 1 - currentHealthFactor;
                     for (var i = 0; i < self.unitsBySide[side].length; i++) {
                         if (self.unitsBySide[side][i].currentHealth <= 0) {
                             evaluation += 0.2 * sign;
                         }
                     }
-                    evaluation += (1 - currentHealthFactor) * sign;
+                    var defenderMultiplier = 1;
+                    if (self.battleData.building) {
+                        var template = self.battleData.building.template;
+                        var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+                        if (isDefender) {
+                            defenderMultiplier += template.defenderAdvantage;
+                        }
+                    }
+                    evaluation += (1 - currentHealthFactor * defenderMultiplier) * sign;
                 });
                 evaluation = Rance.clamp(evaluation, -1, 1);
                 this.evaluation[this.currentTurn] = evaluation;
@@ -13176,6 +13179,9 @@ var Rance;
     }
     Rance.validateTarget = validateTarget;
     function getTargetOrGuard(battle, user, ability, target) {
+        if (ability.byPassesGuard) {
+            return target;
+        }
         var guarding = getGuarders(battle, user, ability, target);
         guarding = guarding.sort(function (a, b) {
             return a.battleStats.guardAmount - b.battleStats.guardAmount;

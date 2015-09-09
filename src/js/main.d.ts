@@ -588,6 +588,7 @@ declare module Rance {
                 interruptsNeeded: number;
             };
             actionsUse: number;
+            byPassesGuard?: boolean;
             mainEffect: IAbilityTemplateEffect;
             secondaryEffects?: IAbilityTemplateEffect[];
             beforeUse?: IAbilityTemplateEffect[];
@@ -714,25 +715,26 @@ declare module Rance {
         interface IBuildingTemplate {
             type: string;
             category: string;
-            family?: string;
             name: string;
             iconSrc: string;
             buildCost: number;
+            family?: string;
             maxPerType: number;
             maxUpgradeLevel: number;
             upgradeOnly?: boolean;
             upgradeInto?: {
-                type: string;
+                templateType: string;
                 level: number;
             }[];
-            onBuild?: () => void;
-            onTurnEnd?: () => void;
+        }
+        interface IDefenceBuildingTemplate extends IBuildingTemplate {
+            defenderAdvantage: number;
         }
         module Buildings {
-            var sectorCommand: IBuildingTemplate;
-            var sectorCommand1: IBuildingTemplate;
-            var sectorCommand2: IBuildingTemplate;
-            var starBase: IBuildingTemplate;
+            var sectorCommand: IDefenceBuildingTemplate;
+            var sectorCommand1: IDefenceBuildingTemplate;
+            var sectorCommand2: IDefenceBuildingTemplate;
+            var starBase: IDefenceBuildingTemplate;
             var commercialPort: IBuildingTemplate;
             var deepSpaceRadar: IBuildingTemplate;
             var itemManufactory: IBuildingTemplate;
@@ -872,7 +874,6 @@ declare module Rance {
         };
         getAllBuildings(): Building[];
         getBuildingsForPlayer(player: Player): Building[];
-        getBuildingsByType(buildingTemplate: Templates.IBuildingTemplate): Building[];
         getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
         getBuildableBuildings(): Templates.IBuildingTemplate[];
         getBuildingUpgrades(): {

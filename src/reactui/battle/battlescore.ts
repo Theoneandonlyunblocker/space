@@ -21,6 +21,13 @@ module Rance
             {
               className: "battle-score-container"
             },
+              React.DOM.img(
+              {
+                className: "battle-score-mid-point",
+                src: "img\/icons\/battleScoreMidPoint.png"
+              },
+                null
+              ),
               React.DOM.div(
               {
                 className: "battle-score-flag-wrapper",
