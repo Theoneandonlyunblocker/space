@@ -401,7 +401,7 @@ module Rance
       }
       else if (!this.isAI && detectionHasChanged)
       {
-        eventManager.dispatchEvent("renderLayer", "stealthFleets");
+        eventManager.dispatchEvent("renderLayer", "fleets");
       }
     }
     getVisibleStars(): Star[]
