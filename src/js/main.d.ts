@@ -634,6 +634,7 @@ declare module Rance {
             var autoHeal: IPassiveSkillTemplate;
             var poisoned: IPassiveSkillTemplate;
             var overdrive: IPassiveSkillTemplate;
+            var initialGuard: IPassiveSkillTemplate;
             var warpJammer: IPassiveSkillTemplate;
             var medic: IPassiveSkillTemplate;
         }
@@ -1369,6 +1370,7 @@ declare module Rance {
         };
         minDefendersInNeutralTerritory: number;
         constructor(battleData: IBattleData);
+        resetBattleStats(): void;
         triggerPassiveSkills(): void;
         makeEmptyFormation(): Unit[][];
         makeAIFormations(): void;

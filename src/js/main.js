@@ -6946,6 +6946,21 @@ var Rance;
                     }
                 ]
             };
+            PassiveSkills.initialGuard = {
+                type: "initialGuard",
+                displayName: "Initial Guard",
+                description: "Adds initial guard",
+                atBattleStart: [
+                    {
+                        template: Templates.Effects.guardColumn
+                    }
+                ],
+                inBattlePrep: [
+                    function (user, battlePrep) {
+                        Templates.Effects.guardColumn.effect(user, user);
+                    }
+                ]
+            };
             PassiveSkills.warpJammer = {
                 type: "warpJammer",
                 displayName: "Warp Jammer",
@@ -7179,6 +7194,9 @@ var Rance;
                     Templates.Abilities.guardColumn,
                     Templates.Abilities.rangedAttack,
                     Templates.Abilities.standBy
+                ],
+                passiveSkills: [
+                    Templates.PassiveSkills.initialGuard
                 ]
             };
         })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));
@@ -9659,10 +9677,18 @@ var Rance;
             this.attacker = battleData.attacker.player;
             this.defender = battleData.defender.player;
             this.battleData = battleData;
+            this.resetBattleStats();
             this.triggerPassiveSkills();
             this.makeAIFormations();
             this.setupPlayer();
         }
+        BattlePrep.prototype.resetBattleStats = function () {
+            var star = this.battleData.location;
+            var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+            for (var i = 0; i < allUnits.length; i++) {
+                allUnits[i].resetBattleStats();
+            }
+        };
         BattlePrep.prototype.triggerPassiveSkills = function () {
             var star = this.battleData.location;
             var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));

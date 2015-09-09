@@ -33,11 +33,22 @@ module Rance
       this.defender = battleData.defender.player;
       this.battleData = battleData;
 
+      this.resetBattleStats();
       this.triggerPassiveSkills();
 
       this.makeAIFormations();
 
       this.setupPlayer();
+    }
+    resetBattleStats()
+    {
+      var star = this.battleData.location;
+      var allUnits = star.getAllShipsOfPlayer(this.attacker).concat(star.getAllShipsOfPlayer(this.defender));
+
+      for (var i = 0; i < allUnits.length; i++)
+      {
+        allUnits[i].resetBattleStats();
+      }
     }
     triggerPassiveSkills()
     {

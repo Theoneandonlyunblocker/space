@@ -98,6 +98,27 @@ module Rance
           }
         ]
       }
+      export var initialGuard: IPassiveSkillTemplate =
+      {
+        type: "initialGuard",
+        displayName: "Initial Guard",
+        description: "Adds initial guard",
+
+        atBattleStart:
+        [
+          {
+            template: Effects.guardColumn,
+            data: {perInt: 0, flat: 50}
+          }
+        ],
+        inBattlePrep:
+        [
+          function(user: Unit, battlePrep: BattlePrep)
+          {
+            Effects.guardColumn.effect(user, user, {perInt: 0, flat: 50});
+          }
+        ]
+      }
       export var warpJammer: IPassiveSkillTemplate =
       {
         type: "warpJammer",

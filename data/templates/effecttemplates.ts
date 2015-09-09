@@ -109,10 +109,13 @@ module Rance
         targetFleets: "all",
         targetingFunction: targetSingle,
         targetRange: "self",
-        effect: function(user: Unit, target: Unit)
+        effect: function(user: Unit, target: Unit, data?: any)
         {
-          var guardPerInt = 20;
-          var guardAmount = guardPerInt * user.attributes.intelligence;
+          var data = data || {};
+          var guardPerInt = data.perInt || 20;
+          var flat = data.flat || 0;
+
+          var guardAmount = guardPerInt * user.attributes.intelligence + flat;
           user.addGuard(guardAmount, "column");
         }
       }

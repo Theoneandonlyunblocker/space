@@ -271,6 +271,10 @@ module Rance
           Abilities.guardColumn,
           Abilities.rangedAttack,
           Abilities.standBy
+        ],
+        passiveSkills:
+        [
+          PassiveSkills.initialGuard
         ]
       }
     }
