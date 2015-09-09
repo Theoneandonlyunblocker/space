@@ -57,12 +57,12 @@ module Rance
         var containerProps: any =
         {
           className: "unit-container",
+          id: "unit-id_" + unit.id,
           key: "container"
         };
         var wrapperProps: any =
         {
-          className: "unit",
-          id: "unit-id_" + unit.id
+          className: "unit"
         };
 
         wrapperProps.onMouseEnter = this.handleMouseEnter;

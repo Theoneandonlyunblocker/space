@@ -34,27 +34,20 @@ module Rance
 
         var parentRect = this.props.parentElement.getBoundingClientRect();
 
+        containerProps.style =
+        {
+          position: "fixed",
+          top: parentRect.top,
+          left: parentRect.left
+        }
+
         if (this.props.facesLeft)
         {
           containerProps.className += " ability-tooltip-faces-left";
-
-          containerProps.style =
-          {
-            position: "fixed",
-            top: parentRect.top,
-            left: parentRect.right - 96 - 128
-          }
         }
         else
         {
           containerProps.className += " ability-tooltip-faces-right";
-
-          containerProps.style =
-          {
-            position: "fixed",
-            top: parentRect.top,
-            left: parentRect.left + 96
-          }
         }
 
         for (var i = 0; i < abilities.length; i++)

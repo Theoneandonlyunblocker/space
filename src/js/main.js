@@ -618,11 +618,11 @@ var Rance;
                 unit.uiDisplayIsDirty = false;
                 var containerProps = {
                     className: "unit-container",
+                    id: "unit-id_" + unit.id,
                     key: "container"
                 };
                 var wrapperProps = {
-                    className: "unit",
-                    id: "unit-id_" + unit.id
+                    className: "unit"
                 };
                 wrapperProps.onMouseEnter = this.handleMouseEnter;
                 wrapperProps.onMouseLeave = this.handleMouseLeave;
@@ -1080,23 +1080,17 @@ var Rance;
                     onMouseLeave: this.props.handleMouseLeave
                 };
                 var parentRect = this.props.parentElement.getBoundingClientRect();
+                containerProps.style =
+                    {
+                        position: "fixed",
+                        top: parentRect.top,
+                        left: parentRect.left
+                    };
                 if (this.props.facesLeft) {
                     containerProps.className += " ability-tooltip-faces-left";
-                    containerProps.style =
-                        {
-                            position: "fixed",
-                            top: parentRect.top,
-                            left: parentRect.right - 96 - 128
-                        };
                 }
                 else {
                     containerProps.className += " ability-tooltip-faces-right";
-                    containerProps.style =
-                        {
-                            position: "fixed",
-                            top: parentRect.top,
-                            left: parentRect.left + 96
-                        };
                 }
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
@@ -6688,7 +6682,7 @@ var Rance;
                         sprite: sprite,
                         speed: 0,
                         willExplode: (rockets.length - 1) % explosionRate === 0,
-                        explosionX: Rance.randInt(props.width - 300, props.width - 100),
+                        explosionX: Rance.randInt(props.width - 200, props.width - 50),
                         hasExplosion: false
                     });
                 }

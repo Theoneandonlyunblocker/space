@@ -728,7 +728,7 @@ progress::-webkit-progress-value {
 .unit-left-container {
   width: 64px;
 }
-@media (max-width: 800px) {
+@media (max-width: 850px) {
   .unit-left-container {
     display: none;
   }

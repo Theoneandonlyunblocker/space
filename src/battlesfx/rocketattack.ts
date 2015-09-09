@@ -66,7 +66,7 @@ module Rance
             sprite: sprite,
             speed: 0,
             willExplode: (rockets.length - 1) % explosionRate === 0,
-            explosionX: randInt(props.width - 300, props.width - 100),
+            explosionX: randInt(props.width - 200, props.width - 50),
             hasExplosion: false
           });
         }
