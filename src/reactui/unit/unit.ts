@@ -122,6 +122,7 @@ module Rance
           key: "info",
           name: unit.name,
           guardAmount: unit.battleStats.guardAmount,
+          guardCoverage: unit.battleStats.guardCoverage,
           maxHealth: unit.maxHealth,
           currentHealth: unit.currentHealth,
           isSquadron: unit.isSquadron,
