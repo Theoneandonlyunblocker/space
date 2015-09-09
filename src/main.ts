@@ -119,10 +119,9 @@ module Rance
         this.reactUI = null;
       }
     }
-    load(saveName: string)
+    load(saveKey: string)
     {
-      var itemName = "Rance.Save." + saveName;
-      var data = localStorage.getItem(itemName);
+      var data = localStorage.getItem(saveKey);
       if (!data) return;
 
       var parsed = JSON.parse(data);
@@ -135,7 +134,7 @@ module Rance
       this.initUI();
 
       this.game = new GameLoader().deserializeGame(parsed.gameData);
-      this.game.nameGameWasLoadedAs = saveName;
+      this.game.gameStorageKey = saveKey;
       this.initGame();
 
       this.initDisplay();

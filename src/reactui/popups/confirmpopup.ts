@@ -5,6 +5,7 @@ module Rance
     export var ConfirmPopup = React.createClass(
     {
       displayName: "ConfirmPopup",
+      mixins: [SplitMultilineText],
 
       componentDidMount: function()
       {
@@ -28,6 +29,10 @@ module Rance
       },
       handleClose: function()
       {
+        if (this.props.handleClose)
+        {
+          this.props.handleClose();
+        }
         this.props.closePopup();
       },
 
@@ -42,7 +47,7 @@ module Rance
             {
               className: "confirm-popup-content"
             },
-              this.props.contentText
+              this.splitMultilineText(this.props.contentText)
             ),
             React.DOM.div(
             {

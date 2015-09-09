@@ -8,63 +8,160 @@ module Rance
     export var LoadGame = React.createClass(
     {
       displayName: "LoadGame",
+      popupId: undefined,
 
+      getInitialState: function()
+      {
+        return(
+        {
+          saveKeysToDelete: [],
+          saveKey: null
+        });
+      },
+      
       componentDidMount: function()
       {
         this.refs.okButton.getDOMNode().focus();
       },
 
-      setInputText: function(newText: string)
-      {
-        this.refs.saveName.getDOMNode().value = newText;
-      },
-
       handleRowChange: function(row: IListItem)
       {
-        this.setInputText(row.data.name)
-      },
-
-      handleLoad: function(e: Event)
-      {
-        var saveName = this.refs.saveName.getDOMNode().value
-
-        this.handleClose();
-
-        // https://github.com/facebook/react/issues/2988
-        // https://github.com/facebook/react/issues/2605#issuecomment-118398797
-        // without this react will keep a reference to this element causing a big memory leak
-        var target = <HTMLButtonElement> e.target;
-        target.blur();
-        window.setTimeout(function()
+        this.setState(
         {
-          app.load(saveName);
-        }, 5);
+          saveKey: row.data.storageKey
+        });
+        this.handleUndoDelete(row.data.storageKey);
       },
-      handleClose: function()
+      handleLoad: function()
       {
-        this.props.handleClose();
-      },
-      makeConfirmDeletionPopup: function(saveName: string)
-      {
-        var deleteFN = function(saveName: string)
-        {
-          localStorage.removeItem(saveName);
-          this.refs.saveName.getDOMNode().value = "";
-          this.forceUpdate();
-        }.bind(this, saveName);
+        var saveKey = this.state.saveKey;
 
-        var confirmProps =
+        var afterConfirmFN = function()
         {
-          handleOk: deleteFN,
-          contentText: "Are you sure you want to delete the save " +
-            saveName.replace("Rance.Save.", "") + "?"
+          // https://github.com/facebook/react/issues/2988
+          // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+          // without this react will keep a reference to this element causing a big memory leak
+          this.refs.okButton.getDOMNode().blur();
+          window.setTimeout(function()
+          {
+            app.load(saveKey);
+          }, 5);
+        }.bind(this);
+
+        if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1)
+        {
+          var boundClose = this.handleClose.bind(this, true, afterConfirmFN);
+          this.handleUndoDelete(saveKey, boundClose);
         }
-
-        this.refs.popupManager.makePopup(
+        else
+        {
+          this.handleClose(true, afterConfirmFN);
+        }
+      },
+      deleteSelectedKeys: function()
+      {
+        this.popupId = this.refs.popupManager.makePopup(
         {
           contentConstructor: UIComponents.ConfirmPopup,
-          contentProps: confirmProps
+          contentProps: this.getClosePopupContent(null, false, false)
         });
+      },
+      getClosePopupContent: function(afterCloseCallback?: Function, shouldCloseParent: boolean = true,
+        shouldUndoAll: boolean = false)
+      {
+        var deleteFN = function()
+        {
+          for (var i = 0; i < this.state.saveKeysToDelete.length; i++)
+          {
+            localStorage.removeItem(this.state.saveKeysToDelete[i]);
+          }
+        }.bind(this);
+        var closeFN = function()
+        {
+          this.popupId = undefined;
+          if (shouldCloseParent)
+          {
+            this.props.handleClose();
+          }
+          if (shouldUndoAll)
+          {
+            this.setState(
+            {
+              saveKeysToDelete: []
+            });
+          }
+          if (afterCloseCallback) afterCloseCallback();
+        }.bind(this);
+
+        var confirmText = ["Are you sure you want to delete the following saves?"];
+        confirmText  = confirmText.concat(this.state.saveKeysToDelete.map(function(saveKey: string)
+        {
+          return saveKey.replace("Rance.Save.", "");
+        }));
+
+        return(
+        {
+          handleOk: deleteFN,
+          handleClose: closeFN,
+          contentText: confirmText
+        });
+      },
+      updateClosePopup: function()
+      {
+        if (isFinite(this.popupId))
+        {
+          this.refs.popupManager.setPopupContent(this.popupId,
+            {contentText: this.getClosePopupContent().contentText});
+        }
+        else if (this.state.saveKeysToDelete.length < 1)
+        {
+          if (isFinite(this.popupID)) this.refs.popupManager.closePopup(this.popupId);
+          this.popupId = undefined;
+        }
+      },
+      handleClose: function(deleteSaves: boolean = true, afterCloseCallback?: Function)
+      {
+        if (!deleteSaves || this.state.saveKeysToDelete.length < 1)
+        {
+          this.props.handleClose();
+          if (afterCloseCallback) afterCloseCallback();
+          return;
+        }
+
+        this.popupId = this.refs.popupManager.makePopup(
+        {
+          contentConstructor: UIComponents.ConfirmPopup,
+          contentProps: this.getClosePopupContent(afterCloseCallback, true, true)
+        });
+      },
+      handleDelete: function(saveKey: string)
+      {
+        this.setState(
+        {
+          saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey)
+        }, this.updateClosePopup);
+      },
+      handleUndoDelete: function(saveKey: string, callback?: Function)
+      {
+        var afterDeleteFN = function()
+        {
+          this.updateClosePopup();
+          if (callback) callback();
+        }
+        var i = this.state.saveKeysToDelete.indexOf(saveKey)
+        if (i !== -1)
+        {
+          var newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);
+          newsaveKeysToDelete.splice(i, 1);
+          this.setState(
+          {
+            saveKeysToDelete: newsaveKeysToDelete
+          }, afterDeleteFN);
+        }
+      },
+      overRideLightBoxClose: function()
+      {
+        this.handleClose();
       },
 
       render: function()
@@ -82,16 +179,19 @@ module Rance
             UIComponents.SaveList(
             {
               onRowChange: this.handleRowChange,
-              autoSelect: !Boolean(app.game.nameGameWasLoadedAs),
-              selectedName: app.game.nameGameWasLoadedAs,
+              autoSelect: !Boolean(app.game.gameStorageKey),
+              selectedKey: app.game.gameStorageKey,
               allowDelete: true,
-              onDelete: this.makeConfirmDeletionPopup
+              onDelete: this.handleDelete,
+              onUndoDelete: this.handleUndoDelete,
+              saveKeysToDelete: this.state.saveKeysToDelete
             }),
             React.DOM.input(
             {
               className: "save-game-name",
-              ref: "saveName",
-              type: "text"
+              type: "text",
+              value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
+              readOnly: true
             }),
             React.DOM.div(
             {
@@ -106,8 +206,16 @@ module Rance
               React.DOM.button(
               {
                 className: "save-game-button",
-                onClick: this.handleClose
-              }, "Cancel")
+                onClick: this.handleClose.bind(this, true, null)
+              }, "Cancel"),
+              React.DOM.button(
+              {
+                className: "save-game-button",
+                onClick: this.deleteSelectedKeys,
+                disabled: this.state.saveKeysToDelete.length < 1
+              },
+                "Delete"
+              )
             )
           )
         );

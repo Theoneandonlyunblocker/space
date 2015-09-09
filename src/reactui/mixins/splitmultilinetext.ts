@@ -13,7 +13,10 @@ module Rance
           for (var i = 0; i < text.length; i++)
           {
             returnArr.push(text[i]);
-            returnArr.push(React.DOM.br(null));
+            returnArr.push(React.DOM.br(
+            {
+              key: "" + i
+            }));
           }
           return returnArr;
         }

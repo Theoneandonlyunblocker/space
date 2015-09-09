@@ -52,8 +52,23 @@ module Rance
         this.handleResize();
       },
 
+      handleClose: function()
+      {
+
+        if (this.refs.content.overRideLightBoxClose)
+        {
+          this.refs.content.overRideLightBoxClose();
+        }
+        else
+        {
+          this.props.handleClose();
+        }
+      },
+
       render: function()
       {
+        var contentProps = extendObject(this.props.contentProps);
+        contentProps.ref = "content";
         return(
           React.DOM.div(
           {
@@ -68,13 +83,14 @@ module Rance
               React.DOM.button(
               {
                 className: "light-box-close",
-                onClick: this.props.handleClose
+                onClick: this.handleClose
               }, "X"),
               React.DOM.div(
               {
-                className: "light-box-content"
+                className: "light-box-content",
+                ref: "content"
               },
-                this.props.content
+                this.props.contentConstructor(contentProps)
               )
             )
           )

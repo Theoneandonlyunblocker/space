@@ -170,10 +170,11 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.ItemEquip(
+              contentConstructor: UIComponents.ItemEquip,
+              contentProps:
               {
                 player: this.props.player
-              })
+              }
             })
           });
         }
@@ -193,10 +194,11 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.BuyItems(
+              contentConstructor: UIComponents.BuyItems,
+              contentProps:
               {
                 player: this.props.player
-              })
+              }
             })
           });
         }
@@ -216,10 +218,11 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.EconomySummary(
+              contentConstructor: UIComponents.EconomySummary,
+              contentProps:
               {
                 player: this.props.player
-              })
+              }
             })
           });
         }
@@ -239,10 +242,11 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.SaveGame(
+              contentConstructor: UIComponents.SaveGame,
+              contentProps:
               {
                 handleClose: this.closeLightBox
-              })
+              }
             })
           });
         }
@@ -262,10 +266,11 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.LoadGame(
+              contentConstructor: UIComponents.LoadGame,
+              contentProps:
               {
                 handleClose: this.closeLightBox
-              })
+              }
             })
           });
         }
@@ -285,10 +290,11 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.OptionsList(
+              contentConstructor: UIComponents.OptionsList,
+              contentProps:
               {
                 handleClose: this.closeLightBox
-              })
+              }
             })
           });
         }
@@ -308,14 +314,15 @@ module Rance
             lightBoxElement: UIComponents.LightBox(
             {
               handleClose: this.closeLightBox,
-              content: UIComponents.DiplomacyOverview(
+              contentConstructor: UIComponents.DiplomacyOverview,
+              contentProps:
               {
                 handleClose: this.closeLightBox,
                 player: this.props.player,
                 totalPlayerCount: this.props.game.playerOrder.length,
                 metPlayers: this.props.player.diplomacyStatus.metPlayers,
                 statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
-              })
+              }
             })
           });
         }

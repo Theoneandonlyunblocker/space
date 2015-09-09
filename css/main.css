@@ -2784,6 +2784,16 @@ progress::-webkit-progress-value {
 .save-list-delete.disabled * {
   pointer-events: none !important;
 }
+.undo-delete-button::after {
+  content: "\f0e2";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.marked-for-deletion {
+  color: #bebeb6 !important;
+}
 .popup {
   position: absolute;
   color: #eeeeec;

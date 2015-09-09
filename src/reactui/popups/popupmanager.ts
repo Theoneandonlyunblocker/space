@@ -109,6 +109,7 @@ module Rance
         contentProps: any;
       })
       {
+        var id = this.getPopupId();
         if (this.props.onlyAllowOne)
         {
           this.setState(
@@ -117,7 +118,7 @@ module Rance
             {
               contentConstructor: props.contentConstructor,
               contentProps: props.contentProps,
-              id: this.getPopupId()
+              id: id
             }]
           });
         }
@@ -127,7 +128,7 @@ module Rance
           {
             contentConstructor: props.contentConstructor,
             contentProps: props.contentProps,
-            id: this.getPopupId()
+            id: id
           });
 
           this.setState(
@@ -136,6 +137,7 @@ module Rance
           });
         }
         
+        return id;
       },
 
       setPopupContent: function(popupId: number, newContent: any)
@@ -143,7 +145,7 @@ module Rance
         var popup = this.getPopup(popupId);
         if (!popup) throw new Error();
 
-        popup.contentProps = newContent;
+        popup.contentProps = extendObject(newContent, popup.contentProps);
 
         this.forceUpdate();
       },

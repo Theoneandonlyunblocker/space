@@ -1918,7 +1918,9 @@ var Rance;
                     var returnArr = [];
                     for (var i = 0; i < text.length; i++) {
                         returnArr.push(text[i]);
-                        returnArr.push(React.DOM.br(null));
+                        returnArr.push(React.DOM.br({
+                            key: "" + i
+                        }));
                     }
                     return returnArr;
                 }
@@ -3290,7 +3292,17 @@ var Rance;
             componentDidUpdate: function () {
                 this.handleResize();
             },
+            handleClose: function () {
+                if (this.refs.content.overRideLightBoxClose) {
+                    this.refs.content.overRideLightBoxClose();
+                }
+                else {
+                    this.props.handleClose();
+                }
+            },
             render: function () {
+                var contentProps = Rance.extendObject(this.props.contentProps);
+                contentProps.ref = "content";
                 return (React.DOM.div({
                     className: "light-box-wrapper",
                     ref: "wrapper"
@@ -3299,10 +3311,11 @@ var Rance;
                     ref: "container"
                 }, React.DOM.button({
                     className: "light-box-close",
-                    onClick: this.props.handleClose
+                    onClick: this.handleClose
                 }, "X"), React.DOM.div({
-                    className: "light-box-content"
-                }, this.props.content))));
+                    className: "light-box-content",
+                    ref: "content"
+                }, this.props.contentConstructor(contentProps)))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -3638,6 +3651,7 @@ var Rance;
     (function (UIComponents) {
         UIComponents.ConfirmPopup = React.createClass({
             displayName: "ConfirmPopup",
+            mixins: [UIComponents.SplitMultilineText],
             componentDidMount: function () {
                 this.refs.okButton.getDOMNode().focus();
             },
@@ -3652,6 +3666,9 @@ var Rance;
                 }
             },
             handleClose: function () {
+                if (this.props.handleClose) {
+                    this.props.handleClose();
+                }
                 this.props.closePopup();
             },
             render: function () {
@@ -3659,7 +3676,7 @@ var Rance;
                     className: "confirm-popup"
                 }, React.DOM.div({
                     className: "confirm-popup-content"
-                }, this.props.contentText), React.DOM.div({
+                }, this.splitMultilineText(this.props.contentText)), React.DOM.div({
                     className: "popup-buttons"
                 }, React.DOM.button({
                     className: "popup-button",
@@ -3744,13 +3761,14 @@ var Rance;
                 this.setState({ popups: newPopups });
             },
             makePopup: function (props) {
+                var id = this.getPopupId();
                 if (this.props.onlyAllowOne) {
                     this.setState({
                         popups: [
                             {
                                 contentConstructor: props.contentConstructor,
                                 contentProps: props.contentProps,
-                                id: this.getPopupId()
+                                id: id
                             }]
                     });
                 }
@@ -3758,18 +3776,19 @@ var Rance;
                     var popups = this.state.popups.concat({
                         contentConstructor: props.contentConstructor,
                         contentProps: props.contentProps,
-                        id: this.getPopupId()
+                        id: id
                     });
                     this.setState({
                         popups: popups
                     });
                 }
+                return id;
             },
             setPopupContent: function (popupId, newContent) {
                 var popup = this.getPopup(popupId);
                 if (!popup)
                     throw new Error();
-                popup.contentProps = newContent;
+                popup.contentProps = Rance.extendObject(newContent, popup.contentProps);
                 this.forceUpdate();
             },
             render: function () {
@@ -3802,6 +3821,14 @@ var Rance;
     (function (UIComponents) {
         UIComponents.SaveListItem = React.createClass({
             displayName: "SaveListItem",
+            handleDelete: function (e) {
+                e.stopPropagation();
+                this.props.handleDelete();
+            },
+            handleUndoDelete: function (e) {
+                e.stopPropagation();
+                this.props.handleUndoDelete();
+            },
             makeCell: function (type) {
                 var cellProps = {};
                 cellProps.key = type;
@@ -3810,8 +3837,15 @@ var Rance;
                 switch (type) {
                     case "delete":
                         {
-                            cellContent = "X";
-                            cellProps.onClick = this.props.handleDelete;
+                            if (this.props.isMarkedForDeletion) {
+                                cellContent = "";
+                                cellProps.className += " undo-delete-button";
+                                cellProps.onClick = this.handleUndoDelete;
+                            }
+                            else {
+                                cellContent = "X";
+                                cellProps.onClick = this.handleDelete;
+                            }
                             break;
                         }
                     default:
@@ -3833,6 +3867,9 @@ var Rance;
                     className: "save-list-item",
                     onClick: this.props.handleClick
                 };
+                if (this.props.isMarkedForDeletion) {
+                    rowProps.className += " marked-for-deletion";
+                }
                 return (React.DOM.tr(rowProps, cells));
             }
         });
@@ -3855,20 +3892,31 @@ var Rance;
                 for (var i = 0; i < saveKeys.length; i++) {
                     var saveData = JSON.parse(localStorage.getItem(saveKeys[i]));
                     var date = new Date(saveData.date);
+                    var isMarkedForDeletion = false;
+                    if (this.props.saveKeysToDelete) {
+                        if (this.props.saveKeysToDelete.indexOf(saveKeys[i]) !== -1) {
+                            isMarkedForDeletion = true;
+                        }
+                    }
                     var row = {
                         key: saveKeys[i],
                         data: {
+                            storageKey: saveKeys[i],
                             name: saveData.name,
                             date: Rance.prettifyDate(date),
                             accurateDate: saveData.date,
                             rowConstructor: UIComponents.SaveListItem,
+                            isMarkedForDeletion: isMarkedForDeletion,
                             handleDelete: this.props.onDelete ?
                                 this.props.onDelete.bind(null, saveKeys[i]) :
+                                null,
+                            handleUndoDelete: this.props.onUndoDelete ?
+                                this.props.onUndoDelete.bind(null, saveKeys[i]) :
                                 null
                         }
                     };
                     rows.push(row);
-                    if (this.props.selectedName === saveData.name) {
+                    if (this.props.selectedKey === saveKeys[i]) {
                         selected = row;
                     }
                 }
@@ -3914,7 +3962,7 @@ var Rance;
         UIComponents.SaveGame = React.createClass({
             displayName: "SaveGame",
             componentDidMount: function () {
-                if (app.game.nameGameWasLoadedAs) {
+                if (app.game.gameStorageKey) {
                     this.refs.okButton.getDOMNode().focus();
                 }
                 else {
@@ -3963,7 +4011,7 @@ var Rance;
                     onlyAllowOne: true
                 }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
-                    selectedName: app.game.nameGameWasLoadedAs,
+                    selectedKey: app.game.gameStorageKey,
                     autoSelect: false
                 }), React.DOM.input({
                     className: "save-game-name",
@@ -3992,45 +4040,123 @@ var Rance;
     (function (UIComponents) {
         UIComponents.LoadGame = React.createClass({
             displayName: "LoadGame",
+            popupId: undefined,
+            getInitialState: function () {
+                return ({
+                    saveKeysToDelete: [],
+                    saveKey: null
+                });
+            },
             componentDidMount: function () {
                 this.refs.okButton.getDOMNode().focus();
             },
-            setInputText: function (newText) {
-                this.refs.saveName.getDOMNode().value = newText;
-            },
             handleRowChange: function (row) {
-                this.setInputText(row.data.name);
-            },
-            handleLoad: function (e) {
-                var saveName = this.refs.saveName.getDOMNode().value;
-                this.handleClose();
-                // https://github.com/facebook/react/issues/2988
-                // https://github.com/facebook/react/issues/2605#issuecomment-118398797
-                // without this react will keep a reference to this element causing a big memory leak
-                var target = e.target;
-                target.blur();
-                window.setTimeout(function () {
-                    app.load(saveName);
-                }, 5);
-            },
-            handleClose: function () {
-                this.props.handleClose();
-            },
-            makeConfirmDeletionPopup: function (saveName) {
-                var deleteFN = function (saveName) {
-                    localStorage.removeItem(saveName);
-                    this.refs.saveName.getDOMNode().value = "";
-                    this.forceUpdate();
-                }.bind(this, saveName);
-                var confirmProps = {
-                    handleOk: deleteFN,
-                    contentText: "Are you sure you want to delete the save " +
-                        saveName.replace("Rance.Save.", "") + "?"
-                };
-                this.refs.popupManager.makePopup({
-                    contentConstructor: UIComponents.ConfirmPopup,
-                    contentProps: confirmProps
+                this.setState({
+                    saveKey: row.data.storageKey
                 });
+                this.handleUndoDelete(row.data.storageKey);
+            },
+            handleLoad: function () {
+                var saveKey = this.state.saveKey;
+                var afterConfirmFN = function () {
+                    // https://github.com/facebook/react/issues/2988
+                    // https://github.com/facebook/react/issues/2605#issuecomment-118398797
+                    // without this react will keep a reference to this element causing a big memory leak
+                    this.refs.okButton.getDOMNode().blur();
+                    window.setTimeout(function () {
+                        app.load(saveKey);
+                    }, 5);
+                }.bind(this);
+                if (this.state.saveKeysToDelete.indexOf(saveKey) !== -1) {
+                    var boundClose = this.handleClose.bind(this, true, afterConfirmFN);
+                    this.handleUndoDelete(saveKey, boundClose);
+                }
+                else {
+                    this.handleClose(true, afterConfirmFN);
+                }
+            },
+            deleteSelectedKeys: function () {
+                this.popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.ConfirmPopup,
+                    contentProps: this.getClosePopupContent(null, false, false)
+                });
+            },
+            getClosePopupContent: function (afterCloseCallback, shouldCloseParent, shouldUndoAll) {
+                if (shouldCloseParent === void 0) { shouldCloseParent = true; }
+                if (shouldUndoAll === void 0) { shouldUndoAll = false; }
+                var deleteFN = function () {
+                    for (var i = 0; i < this.state.saveKeysToDelete.length; i++) {
+                        localStorage.removeItem(this.state.saveKeysToDelete[i]);
+                    }
+                }.bind(this);
+                var closeFN = function () {
+                    this.popupId = undefined;
+                    if (shouldCloseParent) {
+                        this.props.handleClose();
+                    }
+                    if (shouldUndoAll) {
+                        this.setState({
+                            saveKeysToDelete: []
+                        });
+                    }
+                    if (afterCloseCallback)
+                        afterCloseCallback();
+                }.bind(this);
+                var confirmText = ["Are you sure you want to delete the following saves?"];
+                confirmText = confirmText.concat(this.state.saveKeysToDelete.map(function (saveKey) {
+                    return saveKey.replace("Rance.Save.", "");
+                }));
+                return ({
+                    handleOk: deleteFN,
+                    handleClose: closeFN,
+                    contentText: confirmText
+                });
+            },
+            updateClosePopup: function () {
+                if (isFinite(this.popupId)) {
+                    this.refs.popupManager.setPopupContent(this.popupId, { contentText: this.getClosePopupContent().contentText });
+                }
+                else if (this.state.saveKeysToDelete.length < 1) {
+                    if (isFinite(this.popupID))
+                        this.refs.popupManager.closePopup(this.popupId);
+                    this.popupId = undefined;
+                }
+            },
+            handleClose: function (deleteSaves, afterCloseCallback) {
+                if (deleteSaves === void 0) { deleteSaves = true; }
+                if (!deleteSaves || this.state.saveKeysToDelete.length < 1) {
+                    this.props.handleClose();
+                    if (afterCloseCallback)
+                        afterCloseCallback();
+                    return;
+                }
+                this.popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.ConfirmPopup,
+                    contentProps: this.getClosePopupContent(afterCloseCallback, true, true)
+                });
+            },
+            handleDelete: function (saveKey) {
+                this.setState({
+                    saveKeysToDelete: this.state.saveKeysToDelete.concat(saveKey)
+                }, this.updateClosePopup);
+            },
+            handleUndoDelete: function (saveKey, callback) {
+                var afterDeleteFN = function () {
+                    this.updateClosePopup();
+                    if (callback)
+                        callback();
+                };
+                var i = this.state.saveKeysToDelete.indexOf(saveKey);
+                if (i !== -1) {
+                    var newsaveKeysToDelete = this.state.saveKeysToDelete.slice(0);
+                    newsaveKeysToDelete.splice(i, 1);
+                    this.setState({
+                        saveKeysToDelete: newsaveKeysToDelete
+                    }, afterDeleteFN);
+                }
+            },
+            overRideLightBoxClose: function () {
+                this.handleClose();
             },
             render: function () {
                 return (React.DOM.div({
@@ -4040,14 +4166,17 @@ var Rance;
                     onlyAllowOne: true
                 }), UIComponents.SaveList({
                     onRowChange: this.handleRowChange,
-                    autoSelect: !Boolean(app.game.nameGameWasLoadedAs),
-                    selectedName: app.game.nameGameWasLoadedAs,
+                    autoSelect: !Boolean(app.game.gameStorageKey),
+                    selectedKey: app.game.gameStorageKey,
                     allowDelete: true,
-                    onDelete: this.makeConfirmDeletionPopup
+                    onDelete: this.handleDelete,
+                    onUndoDelete: this.handleUndoDelete,
+                    saveKeysToDelete: this.state.saveKeysToDelete
                 }), React.DOM.input({
                     className: "save-game-name",
-                    ref: "saveName",
-                    type: "text"
+                    type: "text",
+                    value: this.state.saveKey ? this.state.saveKey.replace("Rance.Save.", "") : "",
+                    readOnly: true
                 }), React.DOM.div({
                     className: "save-game-buttons-container"
                 }, React.DOM.button({
@@ -4056,8 +4185,12 @@ var Rance;
                     ref: "okButton"
                 }, "Load"), React.DOM.button({
                     className: "save-game-button",
-                    onClick: this.handleClose
-                }, "Cancel"))));
+                    onClick: this.handleClose.bind(this, true, null)
+                }, "Cancel"), React.DOM.button({
+                    className: "save-game-button",
+                    onClick: this.deleteSelectedKeys,
+                    disabled: this.state.saveKeysToDelete.length < 1
+                }, "Delete"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -4990,9 +5123,10 @@ var Rance;
                         opened: "equipItems",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.ItemEquip({
+                            contentConstructor: UIComponents.ItemEquip,
+                            contentProps: {
                                 player: this.props.player
-                            })
+                            }
                         })
                     });
                 }
@@ -5006,9 +5140,10 @@ var Rance;
                         opened: "buyItems",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.BuyItems({
+                            contentConstructor: UIComponents.BuyItems,
+                            contentProps: {
                                 player: this.props.player
-                            })
+                            }
                         })
                     });
                 }
@@ -5022,9 +5157,10 @@ var Rance;
                         opened: "economySummary",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.EconomySummary({
+                            contentConstructor: UIComponents.EconomySummary,
+                            contentProps: {
                                 player: this.props.player
-                            })
+                            }
                         })
                     });
                 }
@@ -5038,9 +5174,10 @@ var Rance;
                         opened: "saveGame",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.SaveGame({
+                            contentConstructor: UIComponents.SaveGame,
+                            contentProps: {
                                 handleClose: this.closeLightBox
-                            })
+                            }
                         })
                     });
                 }
@@ -5054,9 +5191,10 @@ var Rance;
                         opened: "loadGame",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.LoadGame({
+                            contentConstructor: UIComponents.LoadGame,
+                            contentProps: {
                                 handleClose: this.closeLightBox
-                            })
+                            }
                         })
                     });
                 }
@@ -5070,9 +5208,10 @@ var Rance;
                         opened: "options",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.OptionsList({
+                            contentConstructor: UIComponents.OptionsList,
+                            contentProps: {
                                 handleClose: this.closeLightBox
-                            })
+                            }
                         })
                     });
                 }
@@ -5086,13 +5225,14 @@ var Rance;
                         opened: "diplomacy",
                         lightBoxElement: UIComponents.LightBox({
                             handleClose: this.closeLightBox,
-                            content: UIComponents.DiplomacyOverview({
+                            contentConstructor: UIComponents.DiplomacyOverview,
+                            contentProps: {
                                 handleClose: this.closeLightBox,
                                 player: this.props.player,
                                 totalPlayerCount: this.props.game.playerOrder.length,
                                 metPlayers: this.props.player.diplomacyStatus.metPlayers,
                                 statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
-                            })
+                            }
                         })
                     });
                 }
@@ -10635,7 +10775,7 @@ var Rance;
         };
         Game.prototype.save = function (name) {
             var saveString = "Rance.Save." + name;
-            this.nameGameWasLoadedAs = name;
+            this.gameStorageKey = saveString;
             var date = new Date();
             var gameData = this.serialize();
             var stringified = JSON.stringify({
@@ -19799,9 +19939,8 @@ var Rance;
                 this.reactUI = null;
             }
         };
-        App.prototype.load = function (saveName) {
-            var itemName = "Rance.Save." + saveName;
-            var data = localStorage.getItem(itemName);
+        App.prototype.load = function (saveKey) {
+            var data = localStorage.getItem(saveKey);
             if (!data)
                 return;
             var parsed = JSON.parse(data);
@@ -19809,7 +19948,7 @@ var Rance;
             this.destroy();
             this.initUI();
             this.game = new Rance.GameLoader().deserializeGame(parsed.gameData);
-            this.game.nameGameWasLoadedAs = saveName;
+            this.game.gameStorageKey = saveKey;
             this.initGame();
             this.initDisplay();
             this.hookUI();

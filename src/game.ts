@@ -13,7 +13,7 @@ module Rance
     humanPlayer: Player;
     activePlayer: Player;
 
-    nameGameWasLoadedAs: string;
+    gameStorageKey: string;
 
     constructor(map: GalaxyMap,
       players: Player[], humanPlayer: Player)
@@ -110,7 +110,7 @@ module Rance
     save(name: string)
     {
       var saveString = "Rance.Save." + name;
-      this.nameGameWasLoadedAs = name;
+      this.gameStorageKey = saveString;
 
       var date = new Date();
       var gameData = this.serialize();

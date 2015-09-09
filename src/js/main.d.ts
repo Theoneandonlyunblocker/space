@@ -1589,7 +1589,7 @@ declare module Rance {
         galaxyMap: GalaxyMap;
         humanPlayer: Player;
         activePlayer: Player;
-        nameGameWasLoadedAs: string;
+        gameStorageKey: string;
         constructor(map: GalaxyMap, players: Player[], humanPlayer: Player);
         endTurn(): void;
         processPlayerStartTurn(player: Player): void;
@@ -3012,7 +3012,7 @@ declare module Rance {
         constructor();
         makeApp(): void;
         destroy(): void;
-        load(saveName: string): void;
+        load(saveKey: string): void;
         makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[]): void;
         makeGame(): Game;
         makePlayers(): {

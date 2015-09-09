@@ -11,7 +11,7 @@ module Rance
 
       componentDidMount: function()
       {
-        if (app.game.nameGameWasLoadedAs)
+        if (app.game.gameStorageKey)
         {
           this.refs.okButton.getDOMNode().focus();
         }
@@ -84,7 +84,7 @@ module Rance
             UIComponents.SaveList(
             {
               onRowChange: this.handleRowChange,
-              selectedName: app.game.nameGameWasLoadedAs,
+              selectedKey: app.game.gameStorageKey,
               autoSelect: false
             }),
             React.DOM.input(

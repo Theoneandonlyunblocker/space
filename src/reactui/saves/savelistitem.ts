@@ -6,6 +6,16 @@ module Rance
     {
       displayName: "SaveListItem",
 
+      handleDelete: function(e: React.MouseEvent)
+      {
+        e.stopPropagation();
+        this.props.handleDelete();
+      },
+      handleUndoDelete: function(e: React.MouseEvent)
+      {
+        e.stopPropagation();
+        this.props.handleUndoDelete();
+      },
       makeCell: function(type: string)
       {
         var cellProps: any = {};
@@ -18,9 +28,17 @@ module Rance
         {
           case "delete":
           {
-            cellContent = "X";
-            
-            cellProps.onClick = this.props.handleDelete;
+            if (this.props.isMarkedForDeletion)
+            {
+              cellContent = "";
+              cellProps.className += " undo-delete-button";
+              cellProps.onClick = this.handleUndoDelete;
+            }
+            else
+            {
+              cellContent = "X";
+              cellProps.onClick = this.handleDelete;
+            }
             break;
           }
           default:
@@ -53,6 +71,11 @@ module Rance
           className: "save-list-item",
           onClick : this.props.handleClick
         };
+
+        if (this.props.isMarkedForDeletion)
+        {
+          rowProps.className += " marked-for-deletion";
+        }
 
         return(
           React.DOM.tr(rowProps,

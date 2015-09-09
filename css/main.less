@@ -2825,6 +2825,19 @@ progress::-webkit-progress-value { background: #080; }
   text-align: center;
 }
 
+.undo-delete-button
+{
+  &::after
+  {
+    .fa("\f0e2");
+  }
+}
+
+.marked-for-deletion
+{
+  color: darken(@text-color, 20%) !important;
+}
+
 .popup
 {
   position: absolute;
