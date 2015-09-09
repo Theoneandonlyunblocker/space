@@ -61,7 +61,7 @@ module Rance
         if (leftoverWidth2 <= 0)
         {
           scene.style.width = "";
-          scene.style.height = "";
+          scene.style.left = "";
         }
         else
         {
