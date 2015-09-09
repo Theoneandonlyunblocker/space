@@ -1367,7 +1367,7 @@ var Rance;
                 var leftoverWidth2 = (wrapperBounds.width - width) / 2;
                 if (leftoverWidth2 <= 0) {
                     scene.style.width = "";
-                    scene.style.height = "";
+                    scene.style.left = "";
                 }
                 else {
                     scene.style.width = "" + width + "px";
@@ -6649,10 +6649,11 @@ var Rance;
     (function (BattleSFX) {
         function rocketAttack(props) {
             var travelSpeed = props.width / props.duration * 2; //milliseconds
+            var acceleration = travelSpeed / 10;
+            var maxSpeed = travelSpeed * 1.3;
             if (!props.facingRight) {
                 travelSpeed = -travelSpeed;
             }
-            console.log(props.width, props.height);
             var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
                 transparent: true
             });
@@ -6665,6 +6666,7 @@ var Rance;
             var rocketsToSpawn = 20;
             var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
             var nextSpawnTime = startTime;
+            var rockets = [];
             function animate() {
                 var currentTime = Date.now();
                 var elapsedTime = currentTime - lastTime;
@@ -6676,15 +6678,24 @@ var Rance;
                     sprite.x = 20;
                     sprite.y = Rance.randInt(0, props.height);
                     container.addChild(sprite);
+                    rockets.push({
+                        sprite: sprite,
+                        speed: 0
+                    });
                 }
-                for (var i = 0; i < container.children.length; i++) {
-                    container.children[i].x += travelSpeed * elapsedTime;
+                for (var i = 0; i < rockets.length; i++) {
+                    var rocket = rockets[i];
+                    if (rocket.speed < maxSpeed) {
+                        rocket.speed += acceleration;
+                    }
+                    rocket.sprite.x += rocket.speed * elapsedTime;
                 }
                 renderer.render(container);
                 if (currentTime < endTime) {
                     requestAnimationFrame(animate);
                 }
             }
+            props.onLoaded(renderer.view);
             animate();
             return renderer.view;
         }
@@ -6847,7 +6858,7 @@ var Rance;
                         battleOverlay: Rance.BattleSFX.rocketAttack
                     },
                     data: {
-                        baseDamage: 5,
+                        baseDamage: 0,
                         damageType: Rance.DamageType.physical
                     }
                 }

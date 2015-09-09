@@ -237,7 +237,7 @@ module Rance
           },
           data:
           {
-            baseDamage: 5,
+            baseDamage: 0,
             damageType: DamageType.physical
           }
         }

@@ -5,11 +5,12 @@ module Rance
     export function rocketAttack(props: Templates.SFXParams)
     {
       var travelSpeed = props.width / props.duration * 2; //milliseconds
+      var acceleration = travelSpeed / 10;
+      var maxSpeed = travelSpeed * 1.3;
       if (!props.facingRight)
       {
         travelSpeed = -travelSpeed;
       }
-      console.log(props.width, props.height);
       var renderer = PIXI.autoDetectRenderer(props.width, props.height,
       {
         transparent: true
@@ -27,6 +28,12 @@ module Rance
       var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
       var nextSpawnTime = startTime;
 
+      var rockets:
+      {
+        sprite: PIXI.Sprite;
+        speed: number;
+      }[] = []
+
       function animate()
       {
         var currentTime = Date.now();
@@ -41,11 +48,22 @@ module Rance
           sprite.x = 20;
           sprite.y = randInt(0, props.height);
           container.addChild(sprite);
+
+          rockets.push(
+          {
+            sprite: sprite,
+            speed: 0
+          });
         }
 
-        for (var i = 0; i < container.children.length; i++)
+        for (var i = 0; i < rockets.length; i++)
         {
-          container.children[i].x += travelSpeed * elapsedTime;
+          var rocket = rockets[i];
+          if (rocket.speed < maxSpeed)
+          {
+            rocket.speed += acceleration;
+          }
+          rocket.sprite.x += rocket.speed * elapsedTime;
         }
 
         renderer.render(container);
@@ -55,6 +73,8 @@ module Rance
           requestAnimationFrame(animate)
         }
       }
+
+      props.onLoaded(renderer.view);
 
       animate();
 
