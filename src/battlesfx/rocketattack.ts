@@ -112,8 +112,6 @@ module Rance
             rocket.sprite.x += rocket.speed * elapsedTime;
           }
 
-          if (i === 0) console.log(rocket.sprite.x);
-
           if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX)
           {
             rocket.hasExplosion = true;

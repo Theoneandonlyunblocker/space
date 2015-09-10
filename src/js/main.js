@@ -1203,8 +1203,9 @@ var Rance;
                 element.addEventListener("animationend", listener);
                 element.addEventListener("webkitAnimationEnd", listener);
             },
-            removeAnimations: function (element) {
-                if (this.eventListenerCache[element.id]) {
+            removeAnimations: function (element, removeListeners) {
+                if (removeListeners === void 0) { removeListeners = false; }
+                if (removeListeners && this.eventListenerCache[element.id]) {
                     for (var i = 0; i < this.eventListenerCache[element.id].length; i++) {
                         var listener = this.eventListenerCache[element.id][i];
                         element.removeEventListener("animationend", listener);
@@ -1244,6 +1245,7 @@ var Rance;
                 });
             },
             addUnit: function (animateEnter, animateFade, unit, onComplete) {
+                var self = this;
                 var container = this.refs.sprite.getDOMNode();
                 if (unit) {
                     var scene;
@@ -1252,44 +1254,57 @@ var Rance;
                     }
                     else {
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
+                        this.removeAnimations(scene, true);
                     }
-                    this.removeAnimations(scene);
-                    if (animateEnter) {
-                        scene.classList.add("battle-scene-unit-enter-" + this.props.side);
-                        console.log("enter");
+                    if (animateEnter || animateFade) {
+                        var animationEndFN = function (e) {
+                            if (e.animationName !== ("battle-scene-unit-enter-" + self.props.side) &&
+                                e.animationName !== "battle-scene-unit-fade-in") {
+                                return;
+                            }
+                            if (onComplete)
+                                onComplete();
+                        };
+                        if (animateEnter) {
+                            scene.classList.add("battle-scene-unit-enter-" + this.props.side);
+                        }
+                        else if (animateFade) {
+                            scene.classList.add("battle-scene-unit-fade-in");
+                        }
+                        container.appendChild(scene);
                     }
-                    else if (animateFade) {
-                        this.addAnimationListeners(scene, onComplete);
-                        scene.classList.add("battle-scene-unit-fade-in");
+                    else {
+                        container.appendChild(scene);
+                        if (onComplete)
+                            onComplete();
                     }
-                    if (!animateFade && onComplete) {
-                        onComplete();
-                    }
-                    container.appendChild(scene);
                 }
-                else if (onComplete) {
-                    onComplete();
+                else {
+                    if (onComplete)
+                        onComplete();
                 }
             },
             removeUnit: function (animateEnter, animateFade, onComplete) {
-                var self = this;
                 var container = this.refs.sprite.getDOMNode();
+                var self = this;
                 // has child. child will be removed with animation if specified, then fire callback
                 if (container.firstChild) {
                     if (animateEnter || animateFade) {
-                        var animationEndFN = function () {
+                        var animationEndFN = function (e) {
+                            if (e.animationName !== ("battle-scene-unit-leave-" + self.props.side) &&
+                                e.animationName !== "battle-scene-unit-fade-out") {
+                                return;
+                            }
                             if (container.firstChild) {
-                                self.removeAnimations(container.firstChild);
                                 container.removeChild(container.firstChild);
                             }
                             if (onComplete)
                                 onComplete();
                         };
-                        this.removeAnimations(container.firstChild);
+                        this.removeAnimations(container.firstChild, false);
                         this.addAnimationListeners(container.firstChild, animationEndFN);
                         if (animateEnter) {
                             container.firstChild.classList.add("battle-scene-unit-leave-" + this.props.side);
-                            console.log("leave");
                         }
                         else if (animateFade) {
                             container.firstChild.classList.add("battle-scene-unit-fade-out");
@@ -6754,8 +6769,6 @@ var Rance;
                         }
                         rocket.sprite.x += rocket.speed * elapsedTime;
                     }
-                    if (i === 0)
-                        console.log(rocket.sprite.x);
                     if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
                         rocket.hasExplosion = true;
                         var explosion = new PIXI.extras.MovieClip(explosionTextures);

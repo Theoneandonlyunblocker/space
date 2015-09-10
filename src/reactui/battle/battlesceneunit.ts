@@ -63,9 +63,9 @@ module Rance
         element.addEventListener("webkitAnimationEnd", listener);
       },
 
-      removeAnimations: function(element: HTMLElement)
+      removeAnimations: function(element: HTMLElement, removeListeners: boolean = false)
       {
-        if (this.eventListenerCache[element.id])
+        if (removeListeners && this.eventListenerCache[element.id])
         {
           for (var i = 0; i < this.eventListenerCache[element.id].length; i++)
           {
@@ -115,8 +115,9 @@ module Rance
         });
       },
 
-      addUnit: function(animateEnter: boolean, animateFade: boolean, unit?: Unit, onComplete?: {(): void})
+      addUnit: function(animateEnter: boolean, animateFade: boolean, unit?: Unit, onComplete?: () => void)
       {
+        var self = this;
         var container = this.refs.sprite.getDOMNode();
 
         if (unit)
@@ -129,51 +130,70 @@ module Rance
           else
           {
             scene = unit.drawBattleScene(this.getSceneProps(unit));
+            this.removeAnimations(scene, true);
           }
 
-          this.removeAnimations(scene);
-
-          if (animateEnter)
+          if (animateEnter || animateFade)
           {
-            scene.classList.add("battle-scene-unit-enter-" + this.props.side);
+            var animationEndFN = function(e: AnimationEvent)
+            {
+              if (e.animationName !== ("battle-scene-unit-enter-" + self.props.side) &&
+                e.animationName !== "battle-scene-unit-fade-in")
+              {
+                return;
+              }
+
+              if (onComplete) onComplete();
+            }
+            if (animateEnter)
+            {
+              scene.classList.add("battle-scene-unit-enter-" + this.props.side);
+            }
+            else if (animateFade)
+            {
+              scene.classList.add("battle-scene-unit-fade-in");
+            }
+
+            container.appendChild(scene);
           }
-          else if (animateFade)
+          else
           {
-            this.addAnimationListeners(scene, onComplete);
-            scene.classList.add("battle-scene-unit-fade-in");
+            container.appendChild(scene);
+            if (onComplete) onComplete();
           }
 
-          if (!animateFade && onComplete)
-          {
-            onComplete();
-          }
-
-          container.appendChild(scene);
         }
-        else if (onComplete)
+        else
         {
-          onComplete();
+          if (onComplete) onComplete();
         }
       },
 
       removeUnit: function(animateEnter: boolean, animateFade: boolean, onComplete?: {(): void})
       {
         var container = this.refs.sprite.getDOMNode();
+        var self = this;
 
         // has child. child will be removed with animation if specified, then fire callback
         if (container.firstChild)
         {
           if (animateEnter || animateFade)
           {
-            var animationEndFN = function()
+            var animationEndFN = function(e: AnimationEvent)
             {
+              if (e.animationName !== ("battle-scene-unit-leave-" + self.props.side) &&
+                e.animationName !== "battle-scene-unit-fade-out")
+              {
+                return;
+              }
+
               if (container.firstChild)
               {
                 container.removeChild(container.firstChild);
               }
               if (onComplete) onComplete();
             }
-            this.removeAnimations(container.firstChild);
+            this.removeAnimations(container.firstChild, false);
             this.addAnimationListeners(container.firstChild, animationEndFN);
 
             if (animateEnter)
