@@ -12,7 +12,7 @@ module Rance
         if (this.props.guardAmount > 0)
         {
           var guard = this.props.guardAmount;
-          var damageReduction = Math.max(50, guard / 2);
+          var damageReduction = Math.min(50, guard / 2);
           var guardText = "" + guard + "% chance to protect ";
           guardText += (this.props.guardCoverage === "all" ? "all units." : " units in same row.");
           guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks."
