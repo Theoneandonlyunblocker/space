@@ -15,7 +15,8 @@ module Rance
         if (this.props.effectSFX && this.props.effectSFX.battleOverlay)
         {
           if ( !oldProps.effectSFX ||
-            this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay)
+            this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay ||
+            this.props.unit1 !== oldProps.unit1 || this.props.unit2 !== oldProps.unit2)
           {
             this.drawBattleOverlay();
           }
