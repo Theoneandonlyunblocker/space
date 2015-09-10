@@ -761,10 +761,8 @@ progress::-webkit-progress-value {
   flex: 1;
 }
 .unit-info-inner {
-  display: flex;
+  display: block;
   position: relative;
-  flex-flow: column;
-  justify-content: flex-end;
   height: 3.8em;
 }
 .unit-info-name {
@@ -773,7 +771,7 @@ progress::-webkit-progress-value {
   min-height: 1.2em;
 }
 .unit-status {
-  height: 20px;
+  height: 1.2em;
   position: relative;
   padding: 2px 4px;
 }
@@ -824,6 +822,7 @@ progress::-webkit-progress-value {
 }
 .unit-info .unit-strength-container {
   padding: 0 2px;
+  height: 1.5em;
 }
 .unit-strength-amount {
   font-size: 1em;
@@ -852,6 +851,7 @@ progress::-webkit-progress-value {
 .unit-action-points {
   padding-left: 2px;
   padding-bottom: 2px;
+  height: 1.1em;
 }
 .unit-action-point {
   width: 12px;
