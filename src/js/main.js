@@ -1754,7 +1754,7 @@ var Rance;
                 if (!this.tempHoveredUnit) {
                     this.tempHoveredUnit = this.state.hoveredUnit;
                 }
-                var baseBeforeDelay = 250 * Rance.Options.battleAnimationTiming["before"];
+                var baseBeforeDelay = 500 * Rance.Options.battleAnimationTiming["before"];
                 var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
                 var effectDuration = 0;
                 if (effectData[i].sfx) {
@@ -1767,8 +1767,6 @@ var Rance;
                     battleSceneUnit1: side1Unit,
                     battleSceneUnit2: side2Unit,
                     playingBattleEffect: true,
-                    battleEffectDuration: effectDuration,
-                    battleEffectSFX: effectData[i].sfx,
                     hoveredUnit: abilityData.originalTarget,
                     abilityTooltip: {
                         parentElement: null
@@ -1785,7 +1783,9 @@ var Rance;
                         effectData[i].effects[j]();
                     }
                     this.setState({
-                        playingBattleEffectActive: true
+                        playingBattleEffectActive: true,
+                        battleEffectDuration: effectDuration,
+                        battleEffectSFX: effectData[i].sfx
                     });
                     window.setTimeout(finishEffectFN, effectDuration + afterDelay);
                 }.bind(this);
@@ -6734,7 +6734,7 @@ var Rance;
                 explosionTextures.push(explosionTexture);
             }
             var startTime = Date.now();
-            var endTime = startTime + props.duration + 100;
+            var endTime = startTime + props.duration;
             var stopSpawningTime = startTime + props.duration / 2;
             var lastTime = startTime;
             var rocketsToSpawn = 10;

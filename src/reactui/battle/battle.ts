@@ -236,7 +236,7 @@ module Rance
           this.tempHoveredUnit = this.state.hoveredUnit;
         }
 
-        var baseBeforeDelay = 250 * Options.battleAnimationTiming["before"];
+        var baseBeforeDelay = 500 * Options.battleAnimationTiming["before"];
         var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
 
         var effectDuration = 0;
@@ -254,8 +254,6 @@ module Rance
           battleSceneUnit1: side1Unit,
           battleSceneUnit2: side2Unit,
           playingBattleEffect: true,
-          battleEffectDuration: effectDuration,
-          battleEffectSFX: effectData[i].sfx,
           hoveredUnit: abilityData.originalTarget,
           abilityTooltip:
           {
@@ -280,7 +278,9 @@ module Rance
 
           this.setState(
           {
-            playingBattleEffectActive: true
+            playingBattleEffectActive: true,
+            battleEffectDuration: effectDuration,
+            battleEffectSFX: effectData[i].sfx
           });
 
           window.setTimeout(finishEffectFN, effectDuration + afterDelay);
