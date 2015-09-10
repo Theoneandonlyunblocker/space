@@ -20,6 +20,10 @@ module Rance
             this.drawBattleOverlay();
           }
         }
+        else if (oldProps.effectSFX && oldProps.effectSFX.battleOverlay)
+        {
+          this.clearBattleOverlay();
+        }
       },
 
       componentDidMount: function()
@@ -70,6 +74,14 @@ module Rance
         }
 
       },
+      clearBattleOverlay: function()
+      {
+        var container = this.refs.overlay.getDOMNode();
+        if (container.firstChild)
+        {
+          container.removeChild(container.firstChild);
+        }
+      },
 
       drawBattleOverlay: function()
       {
@@ -83,6 +95,7 @@ module Rance
         var battleOverlay = this.props.effectSFX.battleOverlay(
         {
           user: this.props.unit1IsActive ? this.props.unit1 : this.props.unit2,
+          target: this.props.unit1IsActive ? this.props.unit2 : this.props.unit1,
           width: bounds.width,
           height: bounds.height,
           duration: this.props.effectDuration,
