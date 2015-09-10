@@ -6656,7 +6656,7 @@ var Rance;
                 transparent: true
             });
             var container = new PIXI.Container();
-            var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+            var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
             var explosionTextures = [];
             for (var i = 0; i < 26; i++) {
                 var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
@@ -19656,7 +19656,7 @@ var Rance;
             var self = this;
             var loader = new PIXI.loaders.Loader();
             loader.add("img\/fowTexture.png");
-            loader.add("img\/battleEffects\/rocketAttack.png");
+            loader.add("img\/battleEffects\/rocket.png");
             loader.add("explosion", "img\/battleEffects\/explosion.json");
             var onLoadCompleteFN = function (loader) {
                 var json = loader.resources["explosion"].data;

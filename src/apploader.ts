@@ -151,7 +151,7 @@ module Rance
       var self = this;
       var loader = new PIXI.loaders.Loader();
       loader.add("img\/fowTexture.png");
-      loader.add("img\/battleEffects\/rocketAttack.png");
+      loader.add("img\/battleEffects\/rocket.png");
       loader.add("explosion", "img\/battleEffects\/explosion.json");
 
       var onLoadCompleteFN = function(loader: PIXI.loaders.Loader)

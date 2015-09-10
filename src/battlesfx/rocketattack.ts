@@ -18,7 +18,7 @@ module Rance
       
       var container = new PIXI.Container();
 
-      var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocketAttack.png");
+      var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
       var explosionTextures: PIXI.Texture[] = [];
 
       for (var i = 0; i < 26; i++)
