@@ -54,7 +54,7 @@ module Rance
         var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
         unit.lastHealthDrawnAt = unit.currentHealth;
         unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
-        var heightRatio = image.height / image.height;
+        var heightRatio = 25 / image.height;
         heightRatio = Math.min(heightRatio, 1.25);
         maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
         unitsToDraw = Math.round(unitsToDraw * heightRatio);
@@ -90,7 +90,7 @@ module Rance
       {
         var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
         var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
-        zDistance = spaceToFill / maxUnitsPerColumn;
+        zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
       }
 
       for (var i = unitsToDraw - 1; i >= 0; i--)
