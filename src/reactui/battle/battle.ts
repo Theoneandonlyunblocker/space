@@ -209,6 +209,11 @@ module Rance
         effectData[i].user.sfxDuration = null;
         effectData[i].target.sfxDuration = null;
 
+        if (effectData[i].trigger && !effectData[i].trigger(effectData[i].user, effectData[i].target))
+        {
+          return this.playBattleEffect(abilityData, i + 1);
+        }
+
         var side1Unit: Unit = null;
         var side2Unit: Unit = null;
         [effectData[i].user, effectData[i].target].forEach(function(unit: Unit)

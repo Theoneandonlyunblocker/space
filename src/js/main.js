@@ -1685,6 +1685,9 @@ var Rance;
                 ;
                 effectData[i].user.sfxDuration = null;
                 effectData[i].target.sfxDuration = null;
+                if (effectData[i].trigger && !effectData[i].trigger(effectData[i].user, effectData[i].target)) {
+                    return this.playBattleEffect(abilityData, i + 1);
+                }
                 var side1Unit = null;
                 var side2Unit = null;
                 [effectData[i].user, effectData[i].target].forEach(function (unit) {
@@ -6984,6 +6987,9 @@ var Rance;
                                 // cg40400.bmp - cg40429.bmp converted to webm
                                 return Rance.BattleSFX.makeVideo("img\/battleEffects\/heal.webm", props);
                             }
+                        },
+                        trigger: function (user, target) {
+                            return user.currentHealth < user.maxHealth;
                         }
                     }
                 ]
@@ -13159,7 +13165,8 @@ var Rance;
                     effects: [beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
-                    sfx: beforeUseEffects[i].sfx
+                    sfx: beforeUseEffects[i].sfx,
+                    trigger: beforeUseEffects[i].trigger
                 });
             }
             else {
@@ -13189,7 +13196,8 @@ var Rance;
                                 effects: [boundAttachedEffect],
                                 user: user,
                                 target: effectTarget,
-                                sfx: attachedEffect.sfx
+                                sfx: attachedEffect.sfx,
+                                trigger: attachedEffect.trigger
                             });
                         }
                         else {
@@ -13201,7 +13209,8 @@ var Rance;
                     effects: boundEffects,
                     user: user,
                     target: effectTarget,
-                    sfx: effect.sfx
+                    sfx: effect.sfx,
+                    trigger: effect.trigger
                 });
                 if (attachedEffectsToAddAfter.length > 0) {
                     data.effectsToCall = data.effectsToCall.concat(attachedEffectsToAddAfter);
@@ -13225,7 +13234,8 @@ var Rance;
                     effects: [afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data)],
                     user: user,
                     target: data.actualTarget,
-                    sfx: afterUseEffects[i].sfx
+                    sfx: afterUseEffects[i].sfx,
+                    trigger: afterUseEffects[i].trigger
                 });
             }
             else {
@@ -13244,8 +13254,11 @@ var Rance;
             abilityData.beforeUse[i]();
         }
         for (var i = 0; i < abilityData.effectsToCall.length; i++) {
-            for (var j = 0; j < abilityData.effectsToCall[i].effects.length; j++) {
-                abilityData.effectsToCall[i].effects[j]();
+            var effectData = abilityData.effectsToCall[i];
+            if (!effectData.trigger || effectData.trigger(effectData.user, effectData.target)) {
+                for (var j = 0; j < effectData.effects.length; j++) {
+                    effectData.effects[j]();
+                }
             }
         }
         for (var i = 0; i < abilityData.afterUse.length; i++) {

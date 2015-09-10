@@ -582,6 +582,7 @@ declare module Rance {
     module Templates {
         interface IAbilityTemplateEffect {
             template: IEffectTemplate;
+            trigger?: (user: Unit, target: Unit) => boolean;
             data?: any;
             attachedEffects?: IAbilityTemplateEffect[];
             sfx?: IBattleEffectSFX;
@@ -2071,6 +2072,7 @@ declare module Rance {
         user: Unit;
         target: Unit;
         sfx: Templates.IBattleEffectSFX;
+        trigger: (user: Unit, target: Unit) => boolean;
     }
     interface IAbilityUseData {
         user: Unit;
