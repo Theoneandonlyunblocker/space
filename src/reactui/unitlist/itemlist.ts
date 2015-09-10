@@ -30,6 +30,18 @@ module Rance
         {
           var item = this.props.items[i];
 
+          var ability: any = null;
+          var abilityIsPassive = false;
+          if (item.template.ability)
+          {
+            ability = item.template.ability;
+          }
+          else if (item.template.passiveSkill)
+          {
+            ability = item.template.passiveSkill;
+            abilityIsPassive = true;
+          }
+
           var data: any =
           {
             item: item,
@@ -43,8 +55,9 @@ module Rance
             techLevel: item.template.techLevel,
             cost: item.template.cost,
 
-            ability: item.template.ability ? item.template.ability.displayName : "",
-            abilityTemplate: item.template.ability,
+            ability: ability,
+            abilityName: ability ? ability.displayName : "",
+            abilityIsPassive: abilityIsPassive,
 
             isReserved: Boolean(item.unit),
 
@@ -146,7 +159,7 @@ module Rance
             },
             {
               label: "Ability",
-              key: "ability",
+              key: "abilityName",
               defaultOrder: "desc"
             }
           ];

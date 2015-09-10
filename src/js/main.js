@@ -1381,7 +1381,8 @@ var Rance;
             componentDidUpdate: function (oldProps) {
                 if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
                     if (!oldProps.effectSFX ||
-                        this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay) {
+                        this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay ||
+                        this.props.unit1 !== oldProps.unit1 || this.props.unit2 !== oldProps.unit2) {
                         this.drawBattleOverlay();
                     }
                 }
@@ -2504,10 +2505,13 @@ var Rance;
                 cellProps.className = "item-list-item-cell" + " item-list-" + type;
                 var cellContent;
                 switch (type) {
-                    case "ability":
+                    case "abilityName":
                         {
-                            if (this.props.abilityTemplate) {
-                                cellProps.title = this.props.abilityTemplate.description;
+                            if (this.props.ability) {
+                                cellProps.title = this.props.ability.description;
+                                if (this.props.abilityIsPassive) {
+                                    cellProps.className += " passive-skill";
+                                }
                             }
                         }
                     default:
@@ -2583,6 +2587,15 @@ var Rance;
                 var rows = [];
                 for (var i = 0; i < this.props.items.length; i++) {
                     var item = this.props.items[i];
+                    var ability = null;
+                    var abilityIsPassive = false;
+                    if (item.template.ability) {
+                        ability = item.template.ability;
+                    }
+                    else if (item.template.passiveSkill) {
+                        ability = item.template.passiveSkill;
+                        abilityIsPassive = true;
+                    }
                     var data = {
                         item: item,
                         key: item.id,
@@ -2594,8 +2607,9 @@ var Rance;
                         unitName: item.unit ? item.unit.name : "",
                         techLevel: item.template.techLevel,
                         cost: item.template.cost,
-                        ability: item.template.ability ? item.template.ability.displayName : "",
-                        abilityTemplate: item.template.ability,
+                        ability: ability,
+                        abilityName: ability ? ability.displayName : "",
+                        abilityIsPassive: abilityIsPassive,
                         isReserved: Boolean(item.unit),
                         makeClone: true,
                         forcedDragOffset: { x: 32, y: 32 },
@@ -2689,7 +2703,7 @@ var Rance;
                             },
                             {
                                 label: "Ability",
-                                key: "ability",
+                                key: "abilityName",
                                 defaultOrder: "desc"
                             }
                         ];
@@ -7427,7 +7441,6 @@ var Rance;
                 var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
                 var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
                 zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
-                console.log(zDistance);
             }
             for (var i = unitsToDraw - 1; i >= 0; i--) {
                 var column = Math.floor(i / maxUnitsPerColumn);

@@ -27,11 +27,15 @@ module Rance
 
         switch (type)
         {
-          case "ability":
+          case "abilityName":
           {
-            if (this.props.abilityTemplate)
+            if (this.props.ability)
             {
-              cellProps.title = this.props.abilityTemplate.description;
+              cellProps.title = this.props.ability.description;
+              if (this.props.abilityIsPassive)
+              {
+                cellProps.className += " passive-skill";
+              }
             }
           }
           default:

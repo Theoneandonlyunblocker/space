@@ -2343,17 +2343,17 @@ progress::-webkit-progress-value {
   float: left;
   clear: both;
 }
+.unit-info-ability.active-skill:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.unit-info-ability.passive-skill:hover {
+  background-color: rgba(255, 255, 0, 0.4);
+}
 .active-skill {
   color: white;
 }
-.active-skill:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
 .passive-skill {
   color: yellow;
-}
-.passive-skill:hover {
-  background-color: rgba(255, 255, 0, 0.4);
 }
 .redundant-ability {
   color: grey;
