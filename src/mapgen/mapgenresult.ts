@@ -58,6 +58,13 @@ module Rance
         var voronoiInfo = new MapVoronoiInfo();
         voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
         voronoiInfo.treeMap = this.makeVoronoiTreeMap();
+        voronoiInfo.bounds =
+        {
+          x1: 0,
+          x2: this.width,
+          y1: 0,
+          y2: this.height
+        };
 
         // move all stars to centroid of their voronoi cell. store original position for serialization
         for (var i = 0; i < this.stars.length; i++)

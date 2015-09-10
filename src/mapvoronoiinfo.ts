@@ -8,6 +8,13 @@ module Rance
     {
       [visibility: string]: any[];
     } = {};
+    bounds:
+    {
+      x1: number;
+      x2: number;
+      y1: number;
+      y2: number;
+    };
 
     constructor()
     {
