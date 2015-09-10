@@ -984,7 +984,10 @@ var Rance;
                         className: "turn-counter available-turn"
                     }));
                 }
-                return (React.DOM.div({ className: "turns-container" }, turns));
+                return (React.DOM.div({
+                    className: "turns-container",
+                    title: "Turns left: " + turnsLeft
+                }, turns));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));

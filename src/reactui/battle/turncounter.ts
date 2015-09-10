@@ -37,7 +37,11 @@ module Rance
         }
 
         return(
-          React.DOM.div({className: "turns-container"},
+          React.DOM.div(
+          {
+            className: "turns-container",
+            title: "Turns left: " + turnsLeft
+          },
             turns
           )
         );
