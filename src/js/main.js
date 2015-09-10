@@ -1397,8 +1397,9 @@ var Rance;
                 }
             },
             resizeSceneToCanvas: function (overlayCanvas) {
-                this.resizeScene(overlayCanvas.width);
-                this.cachedSFXWidth = overlayCanvas.width;
+                var leftoverWidth = this.resizeScene(overlayCanvas.width);
+                if (leftoverWidth !== 0)
+                    this.cachedSFXWidth = overlayCanvas.width;
             },
             resizeScene: function (width) {
                 var scene = this.refs.scene.getDOMNode();
@@ -1412,6 +1413,7 @@ var Rance;
                     scene.style.width = "" + width + "px";
                     scene.style.left = "" + leftoverWidth2 + "px";
                 }
+                return leftoverWidth2;
             },
             clearBattleOverlay: function () {
                 var container = this.refs.overlay.getDOMNode();

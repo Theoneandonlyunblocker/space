@@ -51,8 +51,8 @@ module Rance
 
       resizeSceneToCanvas: function(overlayCanvas: HTMLCanvasElement)
       {
-        this.resizeScene(overlayCanvas.width);
-        this.cachedSFXWidth = overlayCanvas.width;
+        var leftoverWidth = this.resizeScene(overlayCanvas.width);
+        if (leftoverWidth !== 0) this.cachedSFXWidth = overlayCanvas.width;
       },
 
       resizeScene: function(width: number)
@@ -73,6 +73,7 @@ module Rance
           scene.style.left = "" +  leftoverWidth2 + "px";
         }
 
+        return leftoverWidth2;
       },
       clearBattleOverlay: function()
       {
