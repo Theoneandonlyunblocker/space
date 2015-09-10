@@ -719,10 +719,9 @@ progress::-webkit-progress-value { background: #080; }
   flex: none;
   flex-basis: 0px;
   flex-flow: column;
-  //border: 1px solid black;
-  //background-color: #DDD;
   width: 128px;
   height: 64px;
+  pointer-events: none;
 }
 
 .ability-tooltip-ability
@@ -732,7 +731,7 @@ progress::-webkit-progress-value { background: #080; }
   justify-content: center;
   flex: 1;
   max-height: 50%;
-  //background-color: #0A6209;
+  pointer-events: auto;
 }
 
 @ability-color: fadeout(saturate(darken(

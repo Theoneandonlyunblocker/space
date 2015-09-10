@@ -515,6 +515,7 @@ progress::-webkit-progress-value {
   flex-flow: column;
   width: 128px;
   height: 64px;
+  pointer-events: none;
 }
 .ability-tooltip-ability {
   display: flex;
@@ -522,6 +523,7 @@ progress::-webkit-progress-value {
   justify-content: center;
   flex: 1;
   max-height: 50%;
+  pointer-events: auto;
 }
 .ability-tooltip-faces-right .ability-tooltip-ability {
   background: linear-gradient(to left, rgba(113, 113, 5, 0.9), rgba(113, 113, 5, 0.7));
