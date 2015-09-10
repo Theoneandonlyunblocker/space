@@ -160,7 +160,7 @@ var Rance;
                 var statusElement = null;
                 if (this.props.guardAmount > 0) {
                     var guard = this.props.guardAmount;
-                    var damageReduction = Math.max(50, guard / 2);
+                    var damageReduction = Math.min(50, guard / 2);
                     var guardText = "" + guard + "% chance to protect ";
                     guardText += (this.props.guardCoverage === "all" ? "all units." : " units in same row.");
                     guardText += "\n" + "This unit takes " + damageReduction + "% reduced damage from physical attacks.";
@@ -1229,7 +1229,7 @@ var Rance;
                     rotationAngle: 70,
                     scalingFactor: 0.04,
                     facesRight: unit.battleStats.side === "side1",
-                    maxHeight: boundingRect.height - 40,
+                    maxHeight: boundingRect.height - 20,
                     desiredHeight: boundingRect.height - 40
                 });
             },
@@ -1248,6 +1248,7 @@ var Rance;
                 var self = this;
                 var container = this.refs.sprite.getDOMNode();
                 if (unit) {
+                    var SFXProps = this.getSFXProps();
                     var scene;
                     if (this.props.effectSpriteFN && this.props.effectDuration) {
                         scene = this.props.effectSpriteFN(this.getSFXProps());
@@ -1255,6 +1256,12 @@ var Rance;
                     else {
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
                         this.removeAnimations(scene, true);
+                    }
+                    if (scene.height >= this.getSFXProps().height - 40) {
+                        scene.classList.add("attach-to-bottom");
+                    }
+                    else {
+                        scene.classList.remove("attach-to-bottom");
                     }
                     if (animateEnter || animateFade) {
                         var animationEndFN = function (e) {
@@ -7394,7 +7401,7 @@ var Rance;
                 var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
                 unit.lastHealthDrawnAt = unit.currentHealth;
                 unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
-                var heightRatio = image.height / image.height;
+                var heightRatio = 25 / image.height;
                 heightRatio = Math.min(heightRatio, 1.25);
                 maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
                 unitsToDraw = Math.round(unitsToDraw * heightRatio);
@@ -7419,7 +7426,8 @@ var Rance;
             if (props.desiredHeight) {
                 var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
                 var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
-                zDistance = spaceToFill / maxUnitsPerColumn;
+                zDistance = spaceToFill / maxUnitsPerColumn * 1.35;
+                console.log(zDistance);
             }
             for (var i = unitsToDraw - 1; i >= 0; i--) {
                 var column = Math.floor(i / maxUnitsPerColumn);
@@ -14203,12 +14211,11 @@ var Rance;
             return this.currentHealth;
         };
         Unit.prototype.drawBattleScene = function (props) {
-            if (this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
-                var propsString = JSON.stringify(props);
-                if (propsString !== this.cachedBattleScenePropsString) {
-                    this.cachedBattleScene = Rance.BattleSFX.defaultUnitScene(this, props);
-                    this.cachedBattleScenePropsString = propsString;
-                }
+            var propsString = JSON.stringify(props);
+            if (propsString !== this.cachedBattleScenePropsString ||
+                this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
+                this.cachedBattleScene = Rance.BattleSFX.defaultUnitScene(this, props);
+                this.cachedBattleScenePropsString = propsString;
             }
             return this.cachedBattleScene;
         };

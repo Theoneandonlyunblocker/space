@@ -95,7 +95,7 @@ module Rance
           rotationAngle: 70,
           scalingFactor: 0.04,
           facesRight: unit.battleStats.side === "side1",
-          maxHeight: boundingRect.height - 40,
+          maxHeight: boundingRect.height - 20,
           desiredHeight: boundingRect.height - 40
         });
       },
@@ -122,6 +122,7 @@ module Rance
 
         if (unit)
         {
+          var SFXProps = this.getSFXProps();
           var scene: HTMLCanvasElement;
           if (this.props.effectSpriteFN && this.props.effectDuration)
           {
@@ -131,6 +132,15 @@ module Rance
           {
             scene = unit.drawBattleScene(this.getSceneProps(unit));
             this.removeAnimations(scene, true);
+          }
+
+          if (scene.height >= this.getSFXProps().height - 40)
+          {
+            scene.classList.add("attach-to-bottom");
+          }
+          else
+          {
+            scene.classList.remove("attach-to-bottom");
           }
 
           if (animateEnter || animateFade)

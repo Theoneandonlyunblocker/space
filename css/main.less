@@ -567,12 +567,15 @@ progress::-webkit-progress-value { background: #080; }
   position: relative;
   height: 100%;
   width: 200px;
-  // display: flex;
-  // align-items: center;
   canvas
   {
     position: absolute;
     bottom: 40px;
+
+    &.attach-to-bottom
+    {
+      bottom: 20px;
+    }
   }
 }
 
@@ -591,6 +594,7 @@ progress::-webkit-progress-value { background: #080; }
     right: 5%;
   }
 }
+
 
 .attach-animation(@duration, @name, @timing)
 {

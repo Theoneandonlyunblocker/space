@@ -320,6 +320,9 @@ progress::-webkit-progress-value {
   position: absolute;
   bottom: 40px;
 }
+.battle-scene-unit canvas.attach-to-bottom {
+  bottom: 20px;
+}
 .battle-scene-unit-side1 canvas {
   left: 5%;
 }
