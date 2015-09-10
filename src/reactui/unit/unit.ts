@@ -115,7 +115,11 @@ module Rance
           wrapperProps.className += " hovered-unit";
         }
 
-        
+        var hoveredActionPointExpenditure = 0;
+        if (isActiveUnit && this.props.hoveredAbility)
+        {
+          hoveredActionPointExpenditure = this.props.hoveredAbility.actionsUse;
+        }
 
         var infoProps =
         {
@@ -128,6 +132,7 @@ module Rance
           isSquadron: unit.isSquadron,
           maxActionPoints: unit.attributes.maxActionPoints,
           currentActionPoints: unit.battleStats.currentActionPoints,
+          hoveredActionPointExpenditure: hoveredActionPointExpenditure,
 
           isDead: this.props.isDead,
           isCaptured: this.props.isCaptured,

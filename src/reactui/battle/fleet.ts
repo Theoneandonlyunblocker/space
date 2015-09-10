@@ -25,6 +25,7 @@ module Rance
             facesLeft: this.props.facesLeft,
             activeUnit: this.props.activeUnit,
             hoveredUnit: this.props.hoveredUnit,
+            hoveredAbility: this.props.hoveredAbility,
             handleMouseEnterUnit: this.props.handleMouseEnterUnit,
             handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
             targetsInPotentialArea: this.props.targetsInPotentialArea,

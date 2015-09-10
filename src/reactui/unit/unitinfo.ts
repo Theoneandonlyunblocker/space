@@ -63,7 +63,8 @@ module Rance
               UIComponents.UnitActions(
               {
                 maxActionPoints: this.props.maxActionPoints,
-                currentActionPoints: this.props.currentActionPoints
+                currentActionPoints: this.props.currentActionPoints,
+                hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure
               }),
               battleEndStatus
             )

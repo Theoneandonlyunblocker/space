@@ -130,18 +130,30 @@ var Rance;
             displayName: "UnitActions",
             render: function () {
                 var availableSrc = "img\/icons\/availableAction.png";
+                var hoveredSrc = "img\/icons\/spentAction.png";
                 var spentSrc = "img\/icons\/spentAction.png";
                 var icons = [];
-                for (var i = 0; i < this.props.currentActionPoints; i++) {
+                var availableCount = this.props.currentActionPoints - this.props.hoveredActionPointExpenditure;
+                for (var i = 0; i < availableCount; i++) {
                     icons.push(React.DOM.img({
                         src: availableSrc,
+                        className: "unit-action-point available-action-point",
                         key: "available" + i
                     }));
                 }
-                var availableCount = this.props.maxActionPoints - this.props.currentActionPoints;
-                for (var i = 0; i < availableCount; i++) {
+                var hoveredCount = Math.min(this.props.hoveredActionPointExpenditure, this.props.currentActionPoints);
+                for (var i = 0; i < hoveredCount; i++) {
+                    icons.push(React.DOM.img({
+                        src: hoveredSrc,
+                        className: "unit-action-point hovered-action-point",
+                        key: "hovered" + i
+                    }));
+                }
+                var spentCount = this.props.maxActionPoints - this.props.currentActionPoints;
+                for (var i = 0; i < spentCount; i++) {
                     icons.push(React.DOM.img({
                         src: spentSrc,
+                        className: "unit-action-point spent-action-point",
                         key: "spent" + i
                     }));
                 }
@@ -223,7 +235,8 @@ var Rance;
                     animateDuration: this.props.animateDuration
                 }), UIComponents.UnitActions({
                     maxActionPoints: this.props.maxActionPoints,
-                    currentActionPoints: this.props.currentActionPoints
+                    currentActionPoints: this.props.currentActionPoints,
+                    hoveredActionPointExpenditure: this.props.hoveredActionPointExpenditure
                 }), battleEndStatus)));
             }
         });
@@ -657,6 +670,10 @@ var Rance;
                 if (this.props.hoveredUnit && this.props.hoveredUnit.id === unit.id) {
                     wrapperProps.className += " hovered-unit";
                 }
+                var hoveredActionPointExpenditure = 0;
+                if (isActiveUnit && this.props.hoveredAbility) {
+                    hoveredActionPointExpenditure = this.props.hoveredAbility.actionsUse;
+                }
                 var infoProps = {
                     key: "info",
                     name: unit.name,
@@ -667,6 +684,7 @@ var Rance;
                     isSquadron: unit.isSquadron,
                     maxActionPoints: unit.attributes.maxActionPoints,
                     currentActionPoints: unit.battleStats.currentActionPoints,
+                    hoveredActionPointExpenditure: hoveredActionPointExpenditure,
                     isDead: this.props.isDead,
                     isCaptured: this.props.isCaptured,
                     animateDuration: unit.sfxDuration
@@ -890,6 +908,7 @@ var Rance;
                     data.activeUnit = this.props.activeUnit;
                     data.activeTargets = this.props.activeTargets;
                     data.hoveredUnit = this.props.hoveredUnit;
+                    data.hoveredAbility = this.props.hoveredAbility;
                     data.handleMouseLeaveUnit = this.props.handleMouseLeaveUnit;
                     data.handleMouseEnterUnit = this.props.handleMouseEnterUnit;
                     data.targetsInPotentialArea = this.props.targetsInPotentialArea;
@@ -925,6 +944,7 @@ var Rance;
                         facesLeft: this.props.facesLeft,
                         activeUnit: this.props.activeUnit,
                         hoveredUnit: this.props.hoveredUnit,
+                        hoveredAbility: this.props.hoveredAbility,
                         handleMouseEnterUnit: this.props.handleMouseEnterUnit,
                         handleMouseLeaveUnit: this.props.handleMouseLeaveUnit,
                         targetsInPotentialArea: this.props.targetsInPotentialArea,
@@ -1951,6 +1971,7 @@ var Rance;
                     fleet: battle.side1,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
+                    hoveredAbility: this.state.hoveredAbility,
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -1965,6 +1986,7 @@ var Rance;
                     facesLeft: true,
                     activeUnit: battle.activeUnit,
                     hoveredUnit: this.state.hoveredUnit,
+                    hoveredAbility: this.state.hoveredAbility,
                     activeTargets: activeTargets,
                     targetsInPotentialArea: this.state.targetsInPotentialArea,
                     handleMouseEnterUnit: this.handleMouseEnterUnit,
@@ -6966,7 +6988,7 @@ var Rance;
                 displayName: "Debug Ability",
                 description: "who knows what its going to do today",
                 moveDelay: 0,
-                actionsUse: 0,
+                actionsUse: 99,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
                     sfx: {
@@ -6974,7 +6996,7 @@ var Rance;
                         battleOverlay: Rance.BattleSFX.rocketAttack
                     },
                     data: {
-                        baseDamage: 0,
+                        baseDamage: 10,
                         damageType: Rance.DamageType.physical
                     }
                 }
