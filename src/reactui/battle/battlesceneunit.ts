@@ -6,6 +6,8 @@ module Rance
     {
       displayName: "BattleSceneUnit",
       mixins: [React.addons.PureRenderMixin],
+      eventListenerCache: {},
+      idGenerator: 0,
 
       componentDidUpdate: function(oldProps: any)
       {
@@ -44,8 +46,36 @@ module Rance
         }
       },
 
+      addAnimationListeners: function(element: HTMLElement, listener: () => void)
+      {
+        if (!element.id)
+        {
+          element.id = "battle-scene-unit-" + this.idGenerator++;
+        }
+        if (!this.eventListenerCache[element.id])
+        {
+          this.eventListenerCache[element.id] = [];
+        }
+
+        this.eventListenerCache[element.id].push(listener);
+
+        element.addEventListener("animationend", listener);
+        element.addEventListener("webkitAnimationEnd", listener);
+      },
+
       removeAnimations: function(element: HTMLElement)
       {
+        if (this.eventListenerCache[element.id])
+        {
+          for (var i = 0; i < this.eventListenerCache[element.id].length; i++)
+          {
+            var listener = this.eventListenerCache[element.id][i];
+            element.removeEventListener("animationend", listener);
+            element.removeEventListener("webkitAnimationEnd", listener);
+          }
+          this.eventListenerCache[element.id] = null;
+          delete this.eventListenerCache[element.id];
+        }
         element.classList.remove("battle-scene-unit-enter-" + this.props.side);
         element.classList.remove("battle-scene-unit-leave-" + this.props.side);
         element.classList.remove("battle-scene-unit-fade-in");
@@ -65,8 +95,8 @@ module Rance
           rotationAngle: 70,
           scalingFactor: 0.04,
           facesRight: unit.battleStats.side === "side1",
-          maxHeight: boundingRect.height,
-          desiredHeight: boundingRect.height
+          maxHeight: boundingRect.height - 40,
+          desiredHeight: boundingRect.height - 40
         });
       },
 
@@ -77,6 +107,7 @@ module Rance
         return(
         {
           user: this.props.unit,
+          target: this.props.unit,
           width: containerBounds.width,
           height: containerBounds.height,
           duration: this.props.effectDuration,
@@ -99,14 +130,16 @@ module Rance
           {
             scene = unit.drawBattleScene(this.getSceneProps(unit));
           }
+
+          this.removeAnimations(scene);
+
           if (animateEnter)
           {
             scene.classList.add("battle-scene-unit-enter-" + this.props.side);
           }
           else if (animateFade)
           {
-            scene.addEventListener("animationend", onComplete);
-            scene.addEventListener("webkitAnimationEnd", onComplete);
+            this.addAnimationListeners(scene, onComplete);
             scene.classList.add("battle-scene-unit-fade-in");
           }
 
@@ -141,8 +174,7 @@ module Rance
               if (onComplete) onComplete();
             }
             this.removeAnimations(container.firstChild);
-            container.firstChild.addEventListener("animationend", animationEndFN);
-            container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
+            this.addAnimationListeners(container.firstChild, animationEndFN);
 
             if (animateEnter)
             {

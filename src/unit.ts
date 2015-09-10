@@ -87,6 +87,8 @@ module Rance
 
     sfxDuration: number;
     uiDisplayIsDirty: boolean = true;
+    cachedBattleScene: HTMLCanvasElement;
+    cachedBattleScenePropsString: string = "";
     lastHealthDrawnAt: number;
     front: Front;
 
@@ -794,7 +796,18 @@ module Rance
       desiredHeight?: number;
     })
     {
-      return BattleSFX.defaultUnitScene(this, props);
+      console.log("get scene")
+      if (this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
+      {
+        var propsString = JSON.stringify(props);
+        if (propsString !== this.cachedBattleScenePropsString)
+        {
+          console.log("draw scene")
+          this.cachedBattleScene = BattleSFX.defaultUnitScene(this, props);
+          this.cachedBattleScenePropsString = propsString;
+        }
+      }
+      return this.cachedBattleScene;
     }
     serialize(includeItems: boolean = true)
     {
