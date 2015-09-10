@@ -796,15 +796,14 @@ module Rance
       desiredHeight?: number;
     })
     {
-      if (this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
+      var propsString = JSON.stringify(props);
+      if (propsString !== this.cachedBattleScenePropsString ||
+        this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
       {
-        var propsString = JSON.stringify(props);
-        if (propsString !== this.cachedBattleScenePropsString)
-        {
-          this.cachedBattleScene = BattleSFX.defaultUnitScene(this, props);
-          this.cachedBattleScenePropsString = propsString;
-        }
+        this.cachedBattleScene = BattleSFX.defaultUnitScene(this, props);
+        this.cachedBattleScenePropsString = propsString;
       }
+
       return this.cachedBattleScene;
     }
     serialize(includeItems: boolean = true)
