@@ -1166,6 +1166,8 @@ var Rance;
         UIComponents.BattleSceneUnit = React.createClass({
             displayName: "BattleSceneUnit",
             mixins: [React.addons.PureRenderMixin],
+            eventListenerCache: {},
+            idGenerator: 0,
             componentDidUpdate: function (oldProps) {
                 if (oldProps.unit !== this.props.unit) {
                     this.renderScene(true, false, this.props.unit);
@@ -1190,7 +1192,27 @@ var Rance;
                     this.renderScene(false, false, this.props.unit);
                 }
             },
+            addAnimationListeners: function (element, listener) {
+                if (!element.id) {
+                    element.id = "battle-scene-unit-" + this.idGenerator++;
+                }
+                if (!this.eventListenerCache[element.id]) {
+                    this.eventListenerCache[element.id] = [];
+                }
+                this.eventListenerCache[element.id].push(listener);
+                element.addEventListener("animationend", listener);
+                element.addEventListener("webkitAnimationEnd", listener);
+            },
             removeAnimations: function (element) {
+                if (this.eventListenerCache[element.id]) {
+                    for (var i = 0; i < this.eventListenerCache[element.id].length; i++) {
+                        var listener = this.eventListenerCache[element.id][i];
+                        element.removeEventListener("animationend", listener);
+                        element.removeEventListener("webkitAnimationEnd", listener);
+                    }
+                    this.eventListenerCache[element.id] = null;
+                    delete this.eventListenerCache[element.id];
+                }
                 element.classList.remove("battle-scene-unit-enter-" + this.props.side);
                 element.classList.remove("battle-scene-unit-leave-" + this.props.side);
                 element.classList.remove("battle-scene-unit-fade-in");
@@ -1206,14 +1228,15 @@ var Rance;
                     rotationAngle: 70,
                     scalingFactor: 0.04,
                     facesRight: unit.battleStats.side === "side1",
-                    maxHeight: boundingRect.height,
-                    desiredHeight: boundingRect.height
+                    maxHeight: boundingRect.height - 40,
+                    desiredHeight: boundingRect.height - 40
                 });
             },
             getSFXProps: function () {
                 var containerBounds = this.refs.container.getDOMNode().getBoundingClientRect();
                 return ({
                     user: this.props.unit,
+                    target: this.props.unit,
                     width: containerBounds.width,
                     height: containerBounds.height,
                     duration: this.props.effectDuration,
@@ -1230,12 +1253,13 @@ var Rance;
                     else {
                         scene = unit.drawBattleScene(this.getSceneProps(unit));
                     }
+                    this.removeAnimations(scene);
                     if (animateEnter) {
                         scene.classList.add("battle-scene-unit-enter-" + this.props.side);
+                        console.log("enter");
                     }
                     else if (animateFade) {
-                        scene.addEventListener("animationend", onComplete);
-                        scene.addEventListener("webkitAnimationEnd", onComplete);
+                        this.addAnimationListeners(scene, onComplete);
                         scene.classList.add("battle-scene-unit-fade-in");
                     }
                     if (!animateFade && onComplete) {
@@ -1248,22 +1272,24 @@ var Rance;
                 }
             },
             removeUnit: function (animateEnter, animateFade, onComplete) {
+                var self = this;
                 var container = this.refs.sprite.getDOMNode();
                 // has child. child will be removed with animation if specified, then fire callback
                 if (container.firstChild) {
                     if (animateEnter || animateFade) {
                         var animationEndFN = function () {
                             if (container.firstChild) {
+                                self.removeAnimations(container.firstChild);
                                 container.removeChild(container.firstChild);
                             }
                             if (onComplete)
                                 onComplete();
                         };
                         this.removeAnimations(container.firstChild);
-                        container.firstChild.addEventListener("animationend", animationEndFN);
-                        container.firstChild.addEventListener("webkitAnimationEnd", animationEndFN);
+                        this.addAnimationListeners(container.firstChild, animationEndFN);
                         if (animateEnter) {
                             container.firstChild.classList.add("battle-scene-unit-leave-" + this.props.side);
+                            console.log("leave");
                         }
                         else if (animateFade) {
                             container.firstChild.classList.add("battle-scene-unit-fade-out");
@@ -1337,6 +1363,9 @@ var Rance;
                         this.drawBattleOverlay();
                     }
                 }
+                else if (oldProps.effectSFX && oldProps.effectSFX.battleOverlay) {
+                    this.clearBattleOverlay();
+                }
             },
             componentDidMount: function () {
                 window.addEventListener("resize", this.handleResize, false);
@@ -1369,6 +1398,12 @@ var Rance;
                     scene.style.left = "" + leftoverWidth2 + "px";
                 }
             },
+            clearBattleOverlay: function () {
+                var container = this.refs.overlay.getDOMNode();
+                if (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+            },
             drawBattleOverlay: function () {
                 var container = this.refs.overlay.getDOMNode();
                 if (container.firstChild) {
@@ -1377,6 +1412,7 @@ var Rance;
                 var bounds = this.getSceneBounds();
                 var battleOverlay = this.props.effectSFX.battleOverlay({
                     user: this.props.unit1IsActive ? this.props.unit1 : this.props.unit2,
+                    target: this.props.unit1IsActive ? this.props.unit2 : this.props.unit1,
                     width: bounds.width,
                     height: bounds.height,
                     duration: this.props.effectDuration,
@@ -6646,16 +6682,36 @@ var Rance;
     var BattleSFX;
     (function (BattleSFX) {
         function rocketAttack(props) {
+            var minY, maxY;
+            [props.user, props.target].forEach(function (unit) {
+                var unitCanvas = unit.cachedBattleScene;
+                if (unitCanvas) {
+                    var rect = unitCanvas.getBoundingClientRect();
+                    if (isFinite(minY)) {
+                        minY = Math.min(minY, rect.top);
+                    }
+                    else {
+                        minY = rect.top;
+                    }
+                    if (isFinite(maxY)) {
+                        maxY = Math.max(maxY, rect.top + rect.height);
+                    }
+                    else {
+                        maxY = rect.top + rect.height;
+                    }
+                }
+            });
             var travelSpeed = props.width / props.duration * 3; //milliseconds
             var acceleration = travelSpeed / 20;
             var maxSpeed = travelSpeed;
-            if (!props.facingRight) {
-                travelSpeed = -travelSpeed;
-            }
             var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
                 transparent: true
             });
             var container = new PIXI.Container();
+            if (!props.facingRight) {
+                container.scale.x = -1;
+                container.x = props.width;
+            }
             var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
             var explosionTextures = [];
             for (var i = 0; i < 26; i++) {
@@ -6663,11 +6719,11 @@ var Rance;
                 explosionTextures.push(explosionTexture);
             }
             var startTime = Date.now();
-            var endTime = startTime + props.duration;
+            var endTime = startTime + props.duration + 100;
             var stopSpawningTime = startTime + props.duration / 2;
             var lastTime = startTime;
-            var rocketsToSpawn = 20;
-            var explosionsToSpawn = 4;
+            var rocketsToSpawn = 10;
+            var explosionsToSpawn = 5;
             var explosionRate = rocketsToSpawn / explosionsToSpawn;
             var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
             var nextSpawnTime = startTime;
@@ -6680,7 +6736,7 @@ var Rance;
                     nextSpawnTime += spawnRate;
                     var sprite = new PIXI.Sprite(rocketTexture);
                     sprite.x = 20;
-                    sprite.y = Rance.randInt(props.height - 200, props.height - 50);
+                    sprite.y = Rance.randInt(minY, maxY);
                     container.addChild(sprite);
                     rockets.push({
                         sprite: sprite,
@@ -6698,8 +6754,9 @@ var Rance;
                         }
                         rocket.sprite.x += rocket.speed * elapsedTime;
                     }
+                    if (i === 0)
+                        console.log(rocket.sprite.x);
                     if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
-                        console.log("explode");
                         rocket.hasExplosion = true;
                         var explosion = new PIXI.extras.MovieClip(explosionTextures);
                         explosion.anchor = new PIXI.Point(0.5, 0.5);
@@ -6762,6 +6819,7 @@ var Rance;
                     template: Templates.Effects.singleTargetDamage,
                     sfx: {
                         duration: 1500,
+                        battleOverlay: Rance.BattleSFX.rocketAttack
                     },
                     data: {
                         baseDamage: 1,
@@ -6801,7 +6859,8 @@ var Rance;
                 mainEffect: {
                     template: Templates.Effects.wholeRowAttack,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFX.rocketAttack
                     }
                 }
             };
@@ -6814,7 +6873,8 @@ var Rance;
                 mainEffect: {
                     template: Templates.Effects.bombAttack,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFX.rocketAttack
                     }
                 }
             };
@@ -7286,6 +7346,122 @@ var Rance;
             };
         })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFX;
+    (function (BattleSFX) {
+        function defaultUnitScene(unit, props) {
+            //var unitsToDraw = props.unitsToDraw;
+            var maxUnitsPerColumn = props.maxUnitsPerColumn;
+            var isConvex = true;
+            var degree = props.degree;
+            if (degree < 0) {
+                isConvex = !isConvex;
+                degree = Math.abs(degree);
+            }
+            var xDistance = isFinite(props.xDistance) ? props.xDistance : 5;
+            var zDistance = isFinite(props.zDistance) ? props.zDistance : 5;
+            var canvas = document.createElement("canvas");
+            canvas.width = 2000;
+            canvas.height = 2000;
+            var ctx = canvas.getContext("2d");
+            var spriteTemplate = unit.template.sprite;
+            var image = app.images["units"][spriteTemplate.imageSrc];
+            var unitsToDraw;
+            if (isFinite(props.unitsToDraw)) {
+                unitsToDraw = props.unitsToDraw;
+            }
+            else if (!unit.isSquadron) {
+                unitsToDraw = 1;
+            }
+            else {
+                var lastHealthDrawnAt = unit.lastHealthDrawnAt || unit.battleStats.lastHealthBeforeReceivingDamage;
+                unit.lastHealthDrawnAt = unit.currentHealth;
+                unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
+                var heightRatio = image.height / image.height;
+                heightRatio = Math.min(heightRatio, 1.25);
+                maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
+                unitsToDraw = Math.round(unitsToDraw * heightRatio);
+                zDistance *= (1 / heightRatio);
+                unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
+            }
+            var xMin, xMax, yMin, yMax;
+            function transformMat3(a, m) {
+                var x = m[0] * a.x + m[3] * a.y + m[6];
+                var y = m[1] * a.x + m[4] * a.y + m[7];
+                return { x: x, y: y };
+            }
+            var rotationAngle = Math.PI / 180 * props.rotationAngle;
+            var sA = Math.sin(rotationAngle);
+            var cA = Math.cos(rotationAngle);
+            var rotationMatrix = [
+                1, 0, 0,
+                0, cA, -sA,
+                0, sA, cA
+            ];
+            var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
+            if (props.desiredHeight) {
+                var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
+                var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
+                zDistance = spaceToFill / maxUnitsPerColumn;
+            }
+            for (var i = unitsToDraw - 1; i >= 0; i--) {
+                var column = Math.floor(i / maxUnitsPerColumn);
+                var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
+                var zPos;
+                if (isLastColumn) {
+                    var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
+                    if (maxUnitsInThisColumn === 1) {
+                        zPos = (maxUnitsPerColumn - 1) / 2;
+                    }
+                    else {
+                        var positionInLastColumn = i % maxUnitsInThisColumn;
+                        zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
+                    }
+                }
+                else {
+                    zPos = i % maxUnitsPerColumn;
+                }
+                var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
+                if (isConvex) {
+                    xOffset = 1 - xOffset;
+                }
+                xOffset -= minXOffset;
+                var scale = 1 - zPos * props.scalingFactor;
+                var scaledWidth = image.width * scale;
+                var scaledHeight = image.height * scale;
+                var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
+                var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
+                var translated = transformMat3({ x: x, y: y }, rotationMatrix);
+                x = Math.round(translated.x);
+                y = Math.round(translated.y);
+                xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
+                xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
+                yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
+                yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
+                ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
+            }
+            var resultCanvas = document.createElement("canvas");
+            resultCanvas.width = xMax - xMin;
+            if (props.maxWidth) {
+                resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width);
+            }
+            resultCanvas.height = yMax - yMin;
+            if (props.maxHeight) {
+                resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height);
+            }
+            var resultCtx = resultCanvas.getContext("2d");
+            // flip horizontally
+            if (props.facesRight) {
+                resultCtx.translate(resultCanvas.width, 0);
+                resultCtx.scale(-1, 1);
+            }
+            resultCtx.drawImage(canvas, -xMin, -yMin);
+            return resultCanvas;
+        }
+        BattleSFX.defaultUnitScene = defaultUnitScene;
+    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -10786,6 +10962,13 @@ var Rance;
                 var voronoiInfo = new Rance.MapVoronoiInfo();
                 voronoiInfo.diagram = MapGen2.makeVoronoi(this.getAllPoints(), this.width, this.height);
                 voronoiInfo.treeMap = this.makeVoronoiTreeMap();
+                voronoiInfo.bounds =
+                    {
+                        x1: 0,
+                        x2: this.width,
+                        y1: 0,
+                        y2: this.height
+                    };
                 // move all stars to centroid of their voronoi cell. store original position for serialization
                 for (var i = 0; i < this.stars.length; i++) {
                     var star = this.stars[i];
@@ -13478,6 +13661,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/unittemplates.ts" />
 /// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="battlesfx/defaultunitscene.ts" />
 /// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
@@ -13497,6 +13681,7 @@ var Rance;
             this.passiveSkillsByPhase = {};
             this.passiveSkillsByPhaseAreDirty = true;
             this.uiDisplayIsDirty = true;
+            this.cachedBattleScenePropsString = "";
             this.id = isFinite(id) ? id : Rance.idGenerators.unit++;
             this.template = template;
             this.name = this.id + " " + template.displayName;
@@ -13726,8 +13911,7 @@ var Rance;
                 throw new Error("Tried to add duplicate status effect to unit " + this.name);
             }
             else if (statusEffect.duration === 0) {
-                if (Rance.Options.debugMode)
-                    console.warn("Tried to add status effect", statusEffect, "with 0 duration");
+                console.warn("Tried to add status effect", statusEffect, "with 0 duration");
                 return;
             }
             this.battleStats.statusEffects.push(statusEffect);
@@ -14004,113 +14188,14 @@ var Rance;
             return this.currentHealth;
         };
         Unit.prototype.drawBattleScene = function (props) {
-            //var unitsToDraw = props.unitsToDraw;
-            var maxUnitsPerColumn = props.maxUnitsPerColumn;
-            var isConvex = true;
-            var degree = props.degree;
-            if (degree < 0) {
-                isConvex = !isConvex;
-                degree = Math.abs(degree);
-            }
-            var xDistance = isFinite(props.xDistance) ? props.xDistance : 5;
-            var zDistance = isFinite(props.zDistance) ? props.zDistance : 5;
-            var canvas = document.createElement("canvas");
-            canvas.width = 2000;
-            canvas.height = 2000;
-            var ctx = canvas.getContext("2d");
-            var spriteTemplate = this.template.sprite;
-            var image = app.images["units"][spriteTemplate.imageSrc];
-            var unitsToDraw;
-            if (isFinite(props.unitsToDraw)) {
-                unitsToDraw = props.unitsToDraw;
-            }
-            else if (!this.isSquadron) {
-                unitsToDraw = 1;
-            }
-            else {
-                var lastHealthDrawnAt = this.lastHealthDrawnAt || this.battleStats.lastHealthBeforeReceivingDamage;
-                this.lastHealthDrawnAt = this.currentHealth;
-                unitsToDraw = Math.round(lastHealthDrawnAt * 0.05);
-                var heightRatio = 25 / image.height;
-                heightRatio = Math.min(heightRatio, 1.25);
-                maxUnitsPerColumn = Math.round(maxUnitsPerColumn * heightRatio);
-                unitsToDraw = Math.round(unitsToDraw * heightRatio);
-                zDistance *= (1 / heightRatio);
-                unitsToDraw = Rance.clamp(unitsToDraw, 1, maxUnitsPerColumn * 3);
-            }
-            var xMin, xMax, yMin, yMax;
-            function transformMat3(a, m) {
-                var x = m[0] * a.x + m[3] * a.y + m[6];
-                var y = m[1] * a.x + m[4] * a.y + m[7];
-                return { x: x, y: y };
-            }
-            var rotationAngle = Math.PI / 180 * props.rotationAngle;
-            var sA = Math.sin(rotationAngle);
-            var cA = Math.cos(rotationAngle);
-            var rotationMatrix = [
-                1, 0, 0,
-                0, cA, -sA,
-                0, sA, cA
-            ];
-            var minXOffset = isConvex ? 0 : Math.sin(Math.PI / (maxUnitsPerColumn + 1));
-            if (props.desiredHeight) {
-                var averageHeight = image.height * (maxUnitsPerColumn / 2 * props.scalingFactor);
-                var spaceToFill = props.desiredHeight - (averageHeight * maxUnitsPerColumn);
-                zDistance = spaceToFill / maxUnitsPerColumn;
-            }
-            for (var i = unitsToDraw - 1; i >= 0; i--) {
-                var column = Math.floor(i / maxUnitsPerColumn);
-                var isLastColumn = column === Math.floor(unitsToDraw / maxUnitsPerColumn);
-                var zPos;
-                if (isLastColumn) {
-                    var maxUnitsInThisColumn = unitsToDraw % maxUnitsPerColumn;
-                    if (maxUnitsInThisColumn === 1) {
-                        zPos = (maxUnitsPerColumn - 1) / 2;
-                    }
-                    else {
-                        var positionInLastColumn = i % maxUnitsInThisColumn;
-                        zPos = positionInLastColumn * ((maxUnitsPerColumn - 1) / (maxUnitsInThisColumn - 1));
-                    }
+            if (this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
+                var propsString = JSON.stringify(props);
+                if (propsString !== this.cachedBattleScenePropsString) {
+                    this.cachedBattleScene = Rance.BattleSFX.defaultUnitScene(this, props);
+                    this.cachedBattleScenePropsString = propsString;
                 }
-                else {
-                    zPos = i % maxUnitsPerColumn;
-                }
-                var xOffset = Math.sin(Math.PI / (maxUnitsPerColumn + 1) * (zPos + 1));
-                if (isConvex) {
-                    xOffset = 1 - xOffset;
-                }
-                xOffset -= minXOffset;
-                var scale = 1 - zPos * props.scalingFactor;
-                var scaledWidth = image.width * scale;
-                var scaledHeight = image.height * scale;
-                var x = xOffset * scaledWidth * degree + column * (scaledWidth + xDistance * scale);
-                var y = (scaledHeight + zDistance * scale) * (maxUnitsPerColumn - zPos);
-                var translated = transformMat3({ x: x, y: y }, rotationMatrix);
-                x = Math.round(translated.x);
-                y = Math.round(translated.y);
-                xMin = isFinite(xMin) ? Math.min(x, xMin) : x;
-                xMax = isFinite(xMax) ? Math.max(x + scaledWidth, xMax) : x + scaledWidth;
-                yMin = isFinite(yMin) ? Math.min(y, yMin) : y;
-                yMax = isFinite(yMax) ? Math.max(y + scaledHeight, yMax) : y + scaledHeight;
-                ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
             }
-            var resultCanvas = document.createElement("canvas");
-            resultCanvas.width = xMax - xMin;
-            if (props.maxWidth) {
-                resultCanvas.width = Math.min(props.maxWidth, resultCanvas.width);
-            }
-            resultCanvas.height = yMax - yMin;
-            if (props.maxHeight) {
-                resultCanvas.height = Math.min(props.maxHeight, resultCanvas.height);
-            }
-            var resultCtx = resultCanvas.getContext("2d");
-            // flip horizontally
-            if (props.facesRight) {
-                resultCtx.translate(resultCanvas.width, 0);
-                resultCtx.scale(-1, 1);
-            }
-            resultCtx.drawImage(canvas, -xMin, -yMin);
-            return resultCanvas;
+            return this.cachedBattleScene;
         };
         Unit.prototype.serialize = function (includeItems) {
             if (includeItems === void 0) { includeItems = true; }
@@ -17239,9 +17324,11 @@ var Rance;
                 for (var j = 0; j < offsetted.length; j++) {
                     var point = offsetted[j];
                     var nextPoint = offsetted[(j + 1) % offsetted.length];
+                    // TODO offset library can't handle acute angles properly. can lead to crashes
+                    // if angle is at map edge due to points going off the map. clamping should fix crashes at least
                     var edgeCenter = {
-                        x: (point.x + nextPoint.x) / 2,
-                        y: (point.y + nextPoint.y) / 2
+                        x: Rance.clamp((point.x + nextPoint.x) / 2, voronoiInfo.bounds.x1, voronoiInfo.bounds.x2),
+                        y: Rance.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
                     processedStarsById[pointStar.id] = true;

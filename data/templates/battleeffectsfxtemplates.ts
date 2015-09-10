@@ -8,6 +8,7 @@ module Rance
     export interface SFXParams
     {
       user: Unit;
+      target: Unit;
       width: number;
       height: number;
       duration: number; // in milliseconds

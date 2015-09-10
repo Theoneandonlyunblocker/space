@@ -564,6 +564,7 @@ declare module Rance {
     module Templates {
         interface SFXParams {
             user: Unit;
+            target: Unit;
             width: number;
             height: number;
             duration: number;
@@ -685,6 +686,23 @@ declare module Rance {
             var stealthShip: IUnitTemplate;
             var shieldBoat: IUnitTemplate;
         }
+    }
+}
+declare module Rance {
+    module BattleSFX {
+        function defaultUnitScene(unit: Unit, props: {
+            unitsToDraw?: number;
+            maxUnitsPerColumn: number;
+            degree: number;
+            rotationAngle: number;
+            scalingFactor: number;
+            xDistance: number;
+            zDistance: number;
+            facesRight: boolean;
+            maxWidth?: number;
+            maxHeight?: number;
+            desiredHeight?: number;
+        }): HTMLCanvasElement;
     }
 }
 declare module Rance {
@@ -1514,6 +1532,12 @@ declare module Rance {
         nonFillerLines: {
             [visibility: string]: any[];
         };
+        bounds: {
+            x1: number;
+            x2: number;
+            y1: number;
+            y2: number;
+        };
         constructor();
         getNonFillerVoronoiLines(visibleStars?: Star[]): any[];
         getStarAtPoint(point: Point): any;
@@ -2177,6 +2201,8 @@ declare module Rance {
         passiveSkillsByPhaseAreDirty: boolean;
         sfxDuration: number;
         uiDisplayIsDirty: boolean;
+        cachedBattleScene: HTMLCanvasElement;
+        cachedBattleScenePropsString: string;
         lastHealthDrawnAt: number;
         front: Front;
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);

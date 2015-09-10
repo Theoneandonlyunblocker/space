@@ -93,6 +93,7 @@ module Rance
           sfx:
           {
             duration: 1500,
+            battleOverlay: BattleSFX.rocketAttack
           },
           data:
           {
@@ -141,7 +142,8 @@ module Rance
           template: Effects.wholeRowAttack,
           sfx:
           {
-            duration: 1500
+            duration: 1500,
+            battleOverlay: BattleSFX.rocketAttack
           }
         }
       }
@@ -158,7 +160,8 @@ module Rance
           template: Effects.bombAttack,
           sfx:
           {
-            duration: 1500
+            duration: 1500,
+            battleOverlay: BattleSFX.rocketAttack
           }
         }
       }
