@@ -59,7 +59,7 @@ vec4 makeBlocks(vec2 coord)
 {
   vec4 lineColor = makeLines(vec2(frontier, coord.y));
   float h = hash(vec2(seed, coord.y));
-  float blockWidth = blockWidth * (h / 4.0 + 1.0);
+  float blockWidth = blockWidth * (h / 2.0 + 0.5);
 
   float blockStart = frontier - blockWidth;
   float alpha = step(0.01, mod(smoothstep(blockStart, blockEnd, coord.x), 1.0));

@@ -7,7 +7,7 @@ module Rance
       var userCanvasWidth = props.user.cachedBattleScene.width;
       var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
       var baseTrailDistance = 80;
-      var maxTrailDistance = maxFrontier / 2;
+      var maxTrailDistance = maxFrontier;
       var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
       var maxBlockWidth = maxFrontier * 2;
       var uniforms =
@@ -25,7 +25,7 @@ module Rance
         seed:
         {
           type: "1f",
-          value: Math.random()
+          value: Math.random() * 420
         },
         blockSize:
         {
@@ -49,22 +49,25 @@ module Rance
         }
       }
 
+      var travelTime = 0.2;
+
       var syncUniformsFN = function(time: number)
       {
-        if (time < 0.25)
+        if (time < travelTime)
         {
-          var adjustedtime = time / 0.25;
+          var adjustedtime = time / travelTime;
           uniforms.frontier.value = maxFrontier * adjustedtime;
         }
         else
         {
-          var adjustedtime = getRelativeValue(time, 0.2, 1);
-          var quadraticTime = Math.pow(adjustedtime, 4);
+          var adjustedtime = getRelativeValue(time, travelTime - 0.02, 1);
+          adjustedtime = Math.pow(adjustedtime, 4);
 
-          uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * quadraticTime;
-          uniforms.blockWidth.value = quadraticTime * maxBlockWidth;
-          uniforms.lineAlpha.value = (1 - quadraticTime) * 1.5;
-          uniforms.blockAlpha.value = 1 - quadraticTime;
+          uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
+          uniforms.blockWidth.value = adjustedtime * maxBlockWidth;
+          uniforms.lineAlpha.value = (1 - adjustedtime) * 1.5;
+          var relativeDistance = getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+          uniforms.blockAlpha.value = 1 - relativeDistance;
         }
       }
 

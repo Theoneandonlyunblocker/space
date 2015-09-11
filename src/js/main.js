@@ -6850,7 +6850,7 @@ var Rance;
             var userCanvasWidth = props.user.cachedBattleScene.width;
             var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
             var baseTrailDistance = 80;
-            var maxTrailDistance = maxFrontier / 2;
+            var maxTrailDistance = maxFrontier;
             var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
             var maxBlockWidth = maxFrontier * 2;
             var uniforms = {
@@ -6864,7 +6864,7 @@ var Rance;
                 },
                 seed: {
                     type: "1f",
-                    value: Math.random()
+                    value: Math.random() * 420
                 },
                 blockSize: {
                     type: "1f",
@@ -6883,18 +6883,20 @@ var Rance;
                     value: 0
                 }
             };
+            var travelTime = 0.2;
             var syncUniformsFN = function (time) {
-                if (time < 0.25) {
-                    var adjustedtime = time / 0.25;
+                if (time < travelTime) {
+                    var adjustedtime = time / travelTime;
                     uniforms.frontier.value = maxFrontier * adjustedtime;
                 }
                 else {
-                    var adjustedtime = Rance.getRelativeValue(time, 0.2, 1);
-                    var quadraticTime = Math.pow(adjustedtime, 4);
-                    uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * quadraticTime;
-                    uniforms.blockWidth.value = quadraticTime * maxBlockWidth;
-                    uniforms.lineAlpha.value = (1 - quadraticTime) * 1.5;
-                    uniforms.blockAlpha.value = 1 - quadraticTime;
+                    var adjustedtime = Rance.getRelativeValue(time, travelTime - 0.02, 1);
+                    adjustedtime = Math.pow(adjustedtime, 4);
+                    uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
+                    uniforms.blockWidth.value = adjustedtime * maxBlockWidth;
+                    uniforms.lineAlpha.value = (1 - adjustedtime) * 1.5;
+                    var relativeDistance = Rance.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                    uniforms.blockAlpha.value = 1 - relativeDistance;
                 }
             };
             var guardFilter = new Rance.GuardFilter(uniforms);
@@ -7035,7 +7037,8 @@ var Rance;
                 mainEffect: {
                     template: Templates.Effects.guardColumn,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFX.guard
                     },
                     data: {
                         perInt: 20
@@ -7083,7 +7086,7 @@ var Rance;
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
                     sfx: {
-                        duration: 10000,
+                        duration: 1000,
                         battleOverlay: Rance.BattleSFX.guard
                     },
                     data: {
@@ -7157,16 +7160,7 @@ var Rance;
                 mainEffect: {
                     template: Templates.Effects.standBy,
                     sfx: {
-                        duration: 750,
-                        userSprite: function (props) {
-                            var canvas = document.createElement("canvas");
-                            var ctx = canvas.getContext("2d");
-                            canvas.width = 80;
-                            canvas.height = 80;
-                            ctx.fillStyle = "#FFF";
-                            ctx.fillRect(20, 20, 40, 40);
-                            return canvas;
-                        }
+                        duration: 750
                     }
                 }
             };
@@ -19040,7 +19034,7 @@ var Rance;
             "{",
             "  vec4 lineColor = makeLines(vec2(frontier, coord.y));",
             "  float h = hash(vec2(seed, coord.y));",
-            "  float blockWidth = blockWidth * (h * 1.1);",
+            "  float blockWidth = blockWidth * (h / 2.0 + 0.5);",
             "",
             "  float blockStart = frontier - blockWidth;",
             "  float alpha = step(0.01, mod(smoothstep(blockStart, blockEnd, coord.x), 1.0));",

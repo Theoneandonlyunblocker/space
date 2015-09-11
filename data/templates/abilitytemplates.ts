@@ -178,7 +178,8 @@ module Rance
           template: Effects.guardColumn,
           sfx:
           {
-            duration: 1500
+            duration: 1500,
+            battleOverlay: BattleSFX.guard
           },
           data:
           {
@@ -238,7 +239,7 @@ module Rance
           template: Effects.singleTargetDamage,
           sfx:
           {
-            duration: 10000,
+            duration: 1000,
             battleOverlay: BattleSFX.guard
           },
           data:
@@ -331,20 +332,7 @@ module Rance
           template: Effects.standBy,
           sfx:
           {
-            duration: 750,
-            userSprite: function(props: SFXParams)
-            {
-              var canvas = document.createElement("canvas");
-              var ctx = canvas.getContext("2d");
-
-              canvas.width = 80;
-              canvas.height = 80
-
-              ctx.fillStyle = "#FFF";
-              ctx.fillRect(20, 20, 40, 40);
-
-              return canvas;
-            }
+            duration: 750
           }
         }
       }
