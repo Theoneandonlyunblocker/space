@@ -74,11 +74,12 @@ module Rance
       }
     }
 
+    data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
+    
     if (!ability.addsGuard)
     {
       data.beforeUse.push(user.removeAllGuard.bind(user));
     }
-
 
     
     var effectsToCall = [ability.mainEffect];
@@ -184,7 +185,6 @@ module Rance
       }
     }
 
-    data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
     data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
 
     return data;
