@@ -1107,14 +1107,16 @@ var Rance;
                 containerProps.style =
                     {
                         position: "fixed",
-                        top: parentRect.top,
-                        left: parentRect.left
+                        top: parentRect.top
                     };
                 if (this.props.facesLeft) {
                     containerProps.className += " ability-tooltip-faces-left";
+                    containerProps.style.left = parentRect.left;
                 }
                 else {
                     containerProps.className += " ability-tooltip-faces-right";
+                    // aligning right to right doesnt work for some reason
+                    containerProps.style.right = parentRect.right + 128;
                 }
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
@@ -6782,7 +6784,7 @@ var Rance;
                 explosionTextures.push(explosionTexture);
             }
             var startTime = Date.now();
-            var endTime = startTime + props.duration;
+            var endTime = startTime + props.duration + 250;
             var stopSpawningTime = startTime + props.duration / 2;
             var lastTime = startTime;
             var rocketsToSpawn = 10;
@@ -19651,7 +19653,9 @@ var Rance;
             var container = new PIXI.Container();
             container.addChild(bg);
             container.addChild(fg);
-            fg.filters = [new PIXI.filters.BlurFilter()];
+            var blurFilter = new PIXI.filters.BlurFilter();
+            blurFilter.blur = 1;
+            fg.filters = [blurFilter];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
             var texture = container.generateTexture(this.renderer); //, PIXI.SCALE_MODES.DEFAULT, 1, bg.getLocalBounds());
             return texture;

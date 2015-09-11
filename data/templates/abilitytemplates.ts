@@ -124,7 +124,8 @@ module Rance
           template: Effects.closeAttack,
           sfx:
           {
-            duration: 1500
+            duration: 1500,
+            battleOverlay: BattleSFX.rocketAttack
           }
         }
       }
@@ -198,6 +199,7 @@ module Rance
           sfx:
           {
             duration: 1500,
+            battleOverlay: BattleSFX.rocketAttack
           },
           data:
           {
