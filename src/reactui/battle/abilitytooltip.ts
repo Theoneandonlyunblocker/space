@@ -49,7 +49,7 @@ module Rance
         {
           containerProps.className += " ability-tooltip-faces-right";
           // aligning right to right doesnt work for some reason
-          containerProps.style.right = parentRect.right + 128;
+          containerProps.style.left = parentRect.right - 128;
         }
 
         for (var i = 0; i < abilities.length; i++)
