@@ -244,7 +244,7 @@ progress::-webkit-progress-value {
   flex-flow: row;
   width: 100%;
   min-height: 20px;
-  z-index: 1;
+  z-index: 152;
 }
 .turn-order-unit {
   display: flex;
@@ -279,7 +279,7 @@ progress::-webkit-progress-value {
   bottom: -26px;
   left: -15px;
   background-image: url("../img/icons/turnOrderArrow.png");
-  z-index: 101;
+  z-index: 50;
 }
 .battle-scene-wrapper {
   position: absolute;
