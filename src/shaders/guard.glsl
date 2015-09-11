@@ -1,18 +1,17 @@
 precision mediump float;
 
-
-const float frontier = 300.0;
-const float trailDistance = 80.0;
-const vec2 seed = vec2(420.0, 69.0);
-const float blockSize = 90.0;
-const float blockWidth = 40.0;
-const float lineAlpha = 1.0;
-const float blockAlpha = 1.0;
+uniform float frontier;
+uniform float trailDistance;
+uniform float seed;
+uniform float blockSize;
+uniform float blockWidth;
+uniform float lineAlpha;
+uniform float blockAlpha;
 
 
 float minX = frontier - trailDistance;
-float maxX = frontier + trailDistance / 2.0;
-float frontGradientStart = frontier + trailDistance / 3.0;
+float maxX = frontier + 20.0;
+float frontGradientStart = frontier + 13.0;
 float blockEnd = maxX;
 
 float hash(float n)
@@ -43,12 +42,12 @@ vec4 makeLines(vec2 coord)
   gradientAlpha -= smoothstep(frontGradientStart, maxX, coord.x);
   gradientAlpha += 0.5 * gradientAlpha;
 
-  float n = noise(vec2(seed.x, coord.y));
+  float n = noise(vec2(seed, coord.y));
   n = pow(n, 3.5);
   float alpha = n * gradientAlpha;
 
 
-  float r = hash(vec2(seed.x, coord.y));
+  float r = hash(vec2(seed, coord.y));
   r = clamp(r, 0.8, 0.9) * alpha;
   float g = (r + 0.7 - r) * alpha;
   float b = smoothstep(0.0, 0.28, alpha);
@@ -59,8 +58,8 @@ vec4 makeLines(vec2 coord)
 vec4 makeBlocks(vec2 coord)
 {
   vec4 lineColor = makeLines(vec2(frontier, coord.y));
-  float h = hash(vec2(seed.y, coord.y));
-  float blockWidth = blockWidth * (h * 1.5);
+  float h = hash(vec2(seed, coord.y));
+  float blockWidth = blockWidth * (h / 4.0 + 1.0);
 
   float blockStart = frontier - blockWidth;
   float alpha = step(0.01, mod(smoothstep(blockStart, blockEnd, coord.x), 1.0));

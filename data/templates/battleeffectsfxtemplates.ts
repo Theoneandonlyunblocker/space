@@ -1,5 +1,6 @@
 /// <reference path="../../src/battlesfx/battlesfxutils.ts" />
 /// <reference path="../../src/battlesfx/rocketattack.ts" />
+/// <reference path="../../src/battlesfx/guard.ts" />
 
 module Rance
 {

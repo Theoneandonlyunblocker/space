@@ -6842,8 +6842,92 @@ var Rance;
         BattleSFX.rocketAttack = rocketAttack;
     })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFX;
+    (function (BattleSFX) {
+        function guard(props) {
+            var userCanvasWidth = props.user.cachedBattleScene.width;
+            var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
+            var baseTrailDistance = 80;
+            var maxTrailDistance = maxFrontier / 2;
+            var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
+            var maxBlockWidth = maxFrontier * 2;
+            var uniforms = {
+                frontier: {
+                    type: "1f",
+                    value: 0
+                },
+                trailDistance: {
+                    type: "1f",
+                    value: baseTrailDistance
+                },
+                seed: {
+                    type: "1f",
+                    value: Math.random()
+                },
+                blockSize: {
+                    type: "1f",
+                    value: 90
+                },
+                blockWidth: {
+                    type: "1f",
+                    value: 0
+                },
+                lineAlpha: {
+                    type: "1f",
+                    value: 1.5
+                },
+                blockAlpha: {
+                    type: "1f",
+                    value: 0
+                }
+            };
+            var syncUniformsFN = function (time) {
+                if (time < 0.25) {
+                    var adjustedtime = time / 0.25;
+                    uniforms.frontier.value = maxFrontier * adjustedtime;
+                }
+                else {
+                    var adjustedtime = Rance.getRelativeValue(time, 0.2, 1);
+                    var quadraticTime = Math.pow(adjustedtime, 4);
+                    uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * quadraticTime;
+                    uniforms.blockWidth.value = quadraticTime * maxBlockWidth;
+                    uniforms.lineAlpha.value = (1 - quadraticTime) * 1.5;
+                    uniforms.blockAlpha.value = 1 - quadraticTime;
+                }
+            };
+            var guardFilter = new Rance.GuardFilter(uniforms);
+            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
+                transparent: true
+            });
+            var container = new PIXI.Container();
+            if (!props.facingRight) {
+                container.scale.x = -1;
+                container.x = props.width;
+            }
+            container.filters = [guardFilter];
+            container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
+            function animate() {
+                var elapsedTime = Date.now() - startTime;
+                var relativeTime = elapsedTime / props.duration;
+                syncUniformsFN(relativeTime);
+                renderer.render(container);
+                if (elapsedTime < props.duration) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            props.onLoaded(renderer.view);
+            var startTime = Date.now();
+            animate();
+            return renderer.view;
+        }
+        BattleSFX.guard = guard;
+    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/battlesfx/battlesfxutils.ts" />
 /// <reference path="../../src/battlesfx/rocketattack.ts" />
+/// <reference path="../../src/battlesfx/guard.ts" />
 /// <reference path="effecttemplates.ts" />
 /// <reference path="battleeffectsfxtemplates.ts" />
 var Rance;
@@ -6907,7 +6991,8 @@ var Rance;
                 mainEffect: {
                     template: Templates.Effects.closeAttack,
                     sfx: {
-                        duration: 1500
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFX.rocketAttack
                     }
                 }
             };
@@ -6967,6 +7052,7 @@ var Rance;
                     template: Templates.Effects.singleTargetDamage,
                     sfx: {
                         duration: 1500,
+                        battleOverlay: Rance.BattleSFX.rocketAttack
                     },
                     data: {
                         baseDamage: 0.8,
@@ -6993,15 +7079,15 @@ var Rance;
                 displayName: "Debug Ability",
                 description: "who knows what its going to do today",
                 moveDelay: 0,
-                actionsUse: 99,
+                actionsUse: 0,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
                     sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.rocketAttack
+                        duration: 10000,
+                        battleOverlay: Rance.BattleSFX.guard
                     },
                     data: {
-                        baseDamage: 10,
+                        baseDamage: 0,
                         damageType: Rance.DamageType.physical
                     }
                 }
@@ -18892,6 +18978,93 @@ var Rance;
 (function (Rance) {
     var ShaderSources;
     (function (ShaderSources) {
+        ShaderSources.guard = [
+            "precision mediump float;",
+            "",
+            "uniform float frontier;",
+            "uniform float trailDistance;",
+            "uniform float seed;",
+            "uniform float blockSize;",
+            "uniform float blockWidth;",
+            "uniform float lineAlpha;",
+            "uniform float blockAlpha;",
+            "",
+            "",
+            "float minX = frontier - trailDistance;",
+            "float maxX = frontier + 20.0;",
+            "float frontGradientStart = frontier + 13.0;",
+            "float blockEnd = maxX;",
+            "",
+            "float hash(float n)",
+            "{",
+            "  return fract(sin(n) * 1e4);",
+            "}",
+            "float hash(vec2 p)",
+            "{",
+            "  return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));",
+            "}",
+            "",
+            "float noise(vec2 x)",
+            "{",
+            "  vec2 i = floor(x);",
+            "  vec2 f = fract(x);",
+            "  float a = hash(i);",
+            "  float b = hash(i + vec2(1.0, 0.0));",
+            "  float c = hash(i + vec2(0.0, 1.0));",
+            "  float d = hash(i + vec2(1.0, 1.0));",
+            "  vec2 u = f * f * (3.0 - 2.0 * f);",
+            "  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;",
+            "}",
+            "",
+            "",
+            "vec4 makeLines(vec2 coord)",
+            "{",
+            "  float gradientAlpha = smoothstep(minX, frontier, coord.x);",
+            "  gradientAlpha -= smoothstep(frontGradientStart, maxX, coord.x);",
+            "  gradientAlpha += 0.5 * gradientAlpha;",
+            "",
+            "  float n = noise(vec2(seed, coord.y));",
+            "  n = pow(n, 3.5);",
+            "  float alpha = n * gradientAlpha;",
+            "",
+            "",
+            "  float r = hash(vec2(seed, coord.y));",
+            "  r = clamp(r, 0.8, 0.9) * alpha;",
+            "  float g = (r + 0.7 - r) * alpha;",
+            "  float b = smoothstep(0.0, 0.28, alpha);",
+            "",
+            "  return vec4(r, g, b, alpha);",
+            "}",
+            "",
+            "vec4 makeBlocks(vec2 coord)",
+            "{",
+            "  vec4 lineColor = makeLines(vec2(frontier, coord.y));",
+            "  float h = hash(vec2(seed, coord.y));",
+            "  float blockWidth = blockWidth * (h * 1.1);",
+            "",
+            "  float blockStart = frontier - blockWidth;",
+            "  float alpha = step(0.01, mod(smoothstep(blockStart, blockEnd, coord.x), 1.0));",
+            "",
+            "",
+            "  return lineColor * alpha;",
+            "}",
+            "",
+            "void main()",
+            "{",
+            "  vec4 lineColor = makeLines(gl_FragCoord.xy);",
+            "",
+            "  vec4 blockColor = vec4(0.0);",
+            "",
+            "  for (float i = 0.0; i < 10.0; i += 1.0)",
+            "  {",
+            "    float y = gl_FragCoord.y + hash(i) * blockSize * 20.0;",
+            "    float blockY = floor(y / blockSize);",
+            "    blockColor += makeBlocks(vec2(gl_FragCoord.x, blockY)) * 0.2;",
+            "  }",
+            "",
+            "  gl_FragColor = lineColor * lineAlpha + blockColor * blockAlpha;",
+            "}",
+        ];
         ShaderSources.nebula = [
             "precision mediump float;",
             "",
@@ -19089,6 +19262,14 @@ var Rance;
         return OccupationFilter;
     })(PIXI.AbstractFilter);
     Rance.OccupationFilter = OccupationFilter;
+    var GuardFilter = (function (_super) {
+        __extends(GuardFilter, _super);
+        function GuardFilter(uniforms) {
+            _super.call(this, null, Rance.ShaderSources.guard.join("\n"), uniforms);
+        }
+        return GuardFilter;
+    })(PIXI.AbstractFilter);
+    Rance.GuardFilter = GuardFilter;
     var ShaderManager = (function () {
         function ShaderManager() {
             this.shaders = {};
