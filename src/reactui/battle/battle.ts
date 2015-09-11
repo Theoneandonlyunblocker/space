@@ -191,6 +191,7 @@ module Rance
       },
       playBattleEffect: function(abilityData: IAbilityUseData, i: number)
       {
+        var self = this;
         var effectData = abilityData.effectsToCall;
         if (!effectData[i])
         {
@@ -236,14 +237,22 @@ module Rance
           this.tempHoveredUnit = this.state.hoveredUnit;
         }
 
-        var baseBeforeDelay = 500 * Options.battleAnimationTiming["before"];
-        var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
+        var beforeDelay = 500 * Options.battleAnimationTiming["before"];
 
         var effectDuration = 0;
+        var effectDelay = 0;
         if (effectData[i].sfx)
         {
           effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
+          effectDuration = effectDuration / (1 + Math.log(i + 1));
+          if (effectData[i].sfx.delay)
+          {
+            effectDelay = effectDuration * effectData[i].sfx.delay;
+          }
         }
+
+        effectData[i].user.sfxDuration = effectDuration;
+        effectData[i].target.sfxDuration = effectDuration;
 
         var afterDelay = 500 * Options.battleAnimationTiming["after"];
 
@@ -267,13 +276,28 @@ module Rance
 
         var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
 
-        var startEffectFN = function()
+        var callEffectsFN = function(forceUpdate: boolean = true)
         {
           for (var j = 0; j < effectData[i].effects.length; j++)
           {
-            effectData[i].user.sfxDuration = effectDuration;
-            effectData[i].target.sfxDuration = effectDuration;
             effectData[i].effects[j]();
+          }
+          if (forceUpdate)
+          {
+            self.forceUpdate();
+          }
+        }
+
+        var startEffectFN = function()
+        {
+          console.log("startEffectFN", Date.now());
+          if (effectDelay > 0)
+          {
+            window.setTimeout(callEffectsFN, effectDelay);
+          }
+          else
+          {
+            callEffectsFN(false);
           }
 
           this.setState(
@@ -286,6 +310,7 @@ module Rance
           window.setTimeout(finishEffectFN, effectDuration + afterDelay);
         }.bind(this);
 
+        console.log("setStartEffectFN", Date.now(), Date.now() + beforeDelay);
         window.setTimeout(startEffectFN, beforeDelay);
       },
       clearBattleEffect: function()
@@ -503,7 +528,8 @@ module Rance
                   unit2: this.state.battleSceneUnit2,
                   effectDuration: this.state.battleEffectDuration,
                   effectSFX: this.state.battleEffectSFX,
-                  unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit
+                  unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
+                  playingBattleEffect: this.state.playingBattleEffect
                 })
               ),
               React.DOM.div(

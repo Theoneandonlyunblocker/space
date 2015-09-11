@@ -8,6 +8,7 @@ module Rance
 
       [props.user, props.target].forEach(function(unit: Unit)
       {
+        if (!unit) return;
         var unitCanvas = unit.cachedBattleScene;
         if (unitCanvas)
         {

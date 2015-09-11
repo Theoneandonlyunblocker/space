@@ -578,9 +578,14 @@ declare module Rance {
         }
         interface IBattleEffectSFX {
             duration: number;
+            delay?: number;
             userSprite?: (props: SFXParams) => HTMLCanvasElement;
             userOverlay?: (props: SFXParams) => HTMLCanvasElement;
             battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
+        }
+        module BattleSFXTemplates {
+            var rocketAttack: IBattleEffectSFX;
+            var guard: IBattleEffectSFX;
         }
     }
 }

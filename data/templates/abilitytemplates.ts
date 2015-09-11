@@ -90,11 +90,7 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
-          sfx:
-          {
-            duration: 1500,
-            battleOverlay: BattleSFX.rocketAttack
-          },
+          sfx: BattleSFXTemplates.rocketAttack,
           data:
           {
             baseDamage: 1,
@@ -122,11 +118,7 @@ module Rance
         mainEffect:
         {
           template: Effects.closeAttack,
-          sfx:
-          {
-            duration: 1500,
-            battleOverlay: BattleSFX.rocketAttack
-          }
+          sfx: BattleSFXTemplates.rocketAttack
         }
       }
       export var wholeRowAttack: IAbilityTemplate =
@@ -141,11 +133,7 @@ module Rance
         mainEffect:
         {
           template: Effects.wholeRowAttack,
-          sfx:
-          {
-            duration: 1500,
-            battleOverlay: BattleSFX.rocketAttack
-          }
+          sfx: BattleSFXTemplates.rocketAttack
         }
       }
 
@@ -159,11 +147,7 @@ module Rance
         mainEffect:
         {
           template: Effects.bombAttack,
-          sfx:
-          {
-            duration: 1500,
-            battleOverlay: BattleSFX.rocketAttack
-          }
+          sfx: BattleSFXTemplates.rocketAttack
         }
       }
       export var guardColumn: IAbilityTemplate =
@@ -176,11 +160,7 @@ module Rance
         mainEffect:
         {
           template: Effects.guardColumn,
-          sfx:
-          {
-            duration: 1500,
-            battleOverlay: BattleSFX.guard
-          },
+          sfx: BattleSFXTemplates.guard,
           data:
           {
             perInt: 20
@@ -197,11 +177,7 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
-          sfx:
-          {
-            duration: 1500,
-            battleOverlay: BattleSFX.rocketAttack
-          },
+          sfx: BattleSFXTemplates.rocketAttack,
           data:
           {
             baseDamage: 0.8,
@@ -236,16 +212,11 @@ module Rance
         actionsUse: 0,
         mainEffect:
         {
-          template: Effects.singleTargetDamage,
-          sfx:
-          {
-            duration: 1000,
-            battleOverlay: BattleSFX.guard
-          },
+          template: Effects.guardColumn,
+          sfx: BattleSFXTemplates.guard,
           data:
           {
-            baseDamage: 0,
-            damageType: DamageType.physical
+            perInt: 20
           }
         }
       }

@@ -1759,6 +1759,7 @@ var Rance;
                 this.playBattleEffect(abilityData, 0);
             },
             playBattleEffect: function (abilityData, i) {
+                var self = this;
                 var effectData = abilityData.effectsToCall;
                 if (!effectData[i]) {
                     for (var i = 0; i < abilityData.afterUse.length; i++) {
@@ -1789,12 +1790,18 @@ var Rance;
                 if (!this.tempHoveredUnit) {
                     this.tempHoveredUnit = this.state.hoveredUnit;
                 }
-                var baseBeforeDelay = 500 * Rance.Options.battleAnimationTiming["before"];
-                var beforeDelay = baseBeforeDelay / (1 + Math.log(i + 1));
+                var beforeDelay = 500 * Rance.Options.battleAnimationTiming["before"];
                 var effectDuration = 0;
+                var effectDelay = 0;
                 if (effectData[i].sfx) {
                     effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
+                    effectDuration = effectDuration / (1 + Math.log(i + 1));
+                    if (effectData[i].sfx.delay) {
+                        effectDelay = effectDuration * effectData[i].sfx.delay;
+                    }
                 }
+                effectData[i].user.sfxDuration = effectDuration;
+                effectData[i].target.sfxDuration = effectDuration;
                 var afterDelay = 500 * Rance.Options.battleAnimationTiming["after"];
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
@@ -1811,11 +1818,22 @@ var Rance;
                     targetsInPotentialArea: []
                 });
                 var finishEffectFN = this.playBattleEffect.bind(this, abilityData, i + 1);
-                var startEffectFN = function () {
+                var callEffectsFN = function (forceUpdate) {
+                    if (forceUpdate === void 0) { forceUpdate = true; }
                     for (var j = 0; j < effectData[i].effects.length; j++) {
-                        effectData[i].user.sfxDuration = effectDuration;
-                        effectData[i].target.sfxDuration = effectDuration;
                         effectData[i].effects[j]();
+                    }
+                    if (forceUpdate) {
+                        self.forceUpdate();
+                    }
+                };
+                var startEffectFN = function () {
+                    console.log("startEffectFN", Date.now());
+                    if (effectDelay > 0) {
+                        window.setTimeout(callEffectsFN, effectDelay);
+                    }
+                    else {
+                        callEffectsFN(false);
                     }
                     this.setState({
                         playingBattleEffectActive: true,
@@ -1824,6 +1842,7 @@ var Rance;
                     });
                     window.setTimeout(finishEffectFN, effectDuration + afterDelay);
                 }.bind(this);
+                console.log("setStartEffectFN", Date.now(), Date.now() + beforeDelay);
                 window.setTimeout(startEffectFN, beforeDelay);
             },
             clearBattleEffect: function () {
@@ -6749,6 +6768,8 @@ var Rance;
         function rocketAttack(props) {
             var minY, maxY;
             [props.user, props.target].forEach(function (unit) {
+                if (!unit)
+                    return;
                 var unitCanvas = unit.cachedBattleScene;
                 if (unitCanvas) {
                     var rect = unitCanvas.getBoundingClientRect();
@@ -6930,6 +6951,25 @@ var Rance;
 /// <reference path="../../src/battlesfx/battlesfxutils.ts" />
 /// <reference path="../../src/battlesfx/rocketattack.ts" />
 /// <reference path="../../src/battlesfx/guard.ts" />
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        var BattleSFXTemplates;
+        (function (BattleSFXTemplates) {
+            BattleSFXTemplates.rocketAttack = {
+                duration: 1500,
+                battleOverlay: Rance.BattleSFX.rocketAttack,
+                delay: 0.3
+            };
+            BattleSFXTemplates.guard = {
+                duration: 1500,
+                battleOverlay: Rance.BattleSFX.guard,
+                delay: 0.3
+            };
+        })(BattleSFXTemplates = Templates.BattleSFXTemplates || (Templates.BattleSFXTemplates = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
 /// <reference path="effecttemplates.ts" />
 /// <reference path="battleeffectsfxtemplates.ts" />
 var Rance;
@@ -6966,10 +7006,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
-                    sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.rocketAttack
-                    },
+                    sfx: Templates.BattleSFXTemplates.rocketAttack,
                     data: {
                         baseDamage: 1,
                         damageType: Rance.DamageType.physical
@@ -6992,10 +7029,7 @@ var Rance;
                 actionsUse: 2,
                 mainEffect: {
                     template: Templates.Effects.closeAttack,
-                    sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.rocketAttack
-                    }
+                    sfx: Templates.BattleSFXTemplates.rocketAttack
                 }
             };
             Abilities.wholeRowAttack = {
@@ -7008,10 +7042,7 @@ var Rance;
                 AIEvaluationPriority: 0.5,
                 mainEffect: {
                     template: Templates.Effects.wholeRowAttack,
-                    sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.rocketAttack
-                    }
+                    sfx: Templates.BattleSFXTemplates.rocketAttack
                 }
             };
             Abilities.bombAttack = {
@@ -7022,10 +7053,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.bombAttack,
-                    sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.rocketAttack
-                    }
+                    sfx: Templates.BattleSFXTemplates.rocketAttack
                 }
             };
             Abilities.guardColumn = {
@@ -7036,10 +7064,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.guardColumn,
-                    sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.guard
-                    },
+                    sfx: Templates.BattleSFXTemplates.guard,
                     data: {
                         perInt: 20
                     }
@@ -7053,10 +7078,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
-                    sfx: {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFX.rocketAttack
-                    },
+                    sfx: Templates.BattleSFXTemplates.rocketAttack,
                     data: {
                         baseDamage: 0.8,
                         damageType: Rance.DamageType.physical
@@ -7084,14 +7106,10 @@ var Rance;
                 moveDelay: 0,
                 actionsUse: 0,
                 mainEffect: {
-                    template: Templates.Effects.singleTargetDamage,
-                    sfx: {
-                        duration: 1000,
-                        battleOverlay: Rance.BattleSFX.guard
-                    },
+                    template: Templates.Effects.guardColumn,
+                    sfx: Templates.BattleSFXTemplates.guard,
                     data: {
-                        baseDamage: 0,
-                        damageType: Rance.DamageType.physical
+                        perInt: 20
                     }
                 }
             };
@@ -13499,6 +13517,7 @@ var Rance;
                 data.beforeUse.push(beforeUseEffects[i].template.effect.bind(null, user, data.actualTarget, beforeUseEffects[i].data));
             }
         }
+        data.beforeUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
         if (!ability.addsGuard) {
             data.beforeUse.push(user.removeAllGuard.bind(user));
         }
@@ -13568,7 +13587,6 @@ var Rance;
                 data.afterUse.push(afterUseEffects[i].template.effect.bind(null, user, data.actualTarget, afterUseEffects[i].data));
             }
         }
-        data.afterUse.push(user.removeActionPoints.bind(user, ability.actionsUse));
         data.afterUse.push(user.addMoveDelay.bind(user, ability.moveDelay));
         return data;
     }
