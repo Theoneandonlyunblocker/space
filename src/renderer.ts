@@ -333,7 +333,9 @@ module Rance
       container.addChild(bg);
       container.addChild(fg);
 
-      fg.filters = [new PIXI.filters.BlurFilter()];
+      var blurFilter = new PIXI.filters.BlurFilter();
+      blurFilter.blur = 1;
+      fg.filters = [blurFilter];
       fg.filterArea = new PIXI.Rectangle(x, y, width, height);
 
       var texture = container.generateTexture(this.renderer);//, PIXI.SCALE_MODES.DEFAULT, 1, bg.getLocalBounds());
