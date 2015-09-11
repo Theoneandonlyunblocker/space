@@ -19,6 +19,7 @@ module Rance
       // as its not used for trigger updates
       // and needs to be changed synchronously
       tempHoveredUnit: null,
+      idGenerator: 0,
 
       getInitialState: function()
       {
@@ -40,7 +41,7 @@ module Rance
           battleSceneUnit1: null,
           battleSceneUnit2: null,
           playingBattleEffect: false,
-          playingBattleEffectActive: false,
+          battleEffectId: undefined,
           battleEffectDuration: null,
           battleEffectSFX: null
         });
@@ -237,14 +238,14 @@ module Rance
           this.tempHoveredUnit = this.state.hoveredUnit;
         }
 
-        var beforeDelay = 500 * Options.battleAnimationTiming["before"];
+        var beforeDelay = 750 * Options.battleAnimationTiming["before"];
 
         var effectDuration = 0;
         var effectDelay = 0;
         if (effectData[i].sfx)
         {
           effectDuration = effectData[i].sfx.duration * Options.battleAnimationTiming["effectDuration"];
-          effectDuration = effectDuration / (1 + Math.log(i + 1));
+          effectDuration /= (1 + Math.log(i + 1));
           if (effectData[i].sfx.delay)
           {
             effectDelay = effectDuration * effectData[i].sfx.delay;
@@ -254,7 +255,8 @@ module Rance
         effectData[i].user.sfxDuration = effectDuration;
         effectData[i].target.sfxDuration = effectDuration;
 
-        var afterDelay = 500 * Options.battleAnimationTiming["after"];
+        var afterDelay = 1500 * Options.battleAnimationTiming["after"];
+        afterDelay /= effectData.length;
 
         this.setState(
         {
@@ -290,7 +292,6 @@ module Rance
 
         var startEffectFN = function()
         {
-          console.log("startEffectFN", Date.now());
           if (effectDelay > 0)
           {
             window.setTimeout(callEffectsFN, effectDelay);
@@ -302,7 +303,7 @@ module Rance
 
           this.setState(
           {
-            playingBattleEffectActive: true,
+            battleEffectId: this.idGenerator++,
             battleEffectDuration: effectDuration,
             battleEffectSFX: effectData[i].sfx
           });
@@ -310,7 +311,6 @@ module Rance
           window.setTimeout(finishEffectFN, effectDuration + afterDelay);
         }.bind(this);
 
-        console.log("setStartEffectFN", Date.now(), Date.now() + beforeDelay);
         window.setTimeout(startEffectFN, beforeDelay);
       },
       clearBattleEffect: function()
@@ -318,12 +318,13 @@ module Rance
         this.setState(
         {
           playingBattleEffect: false,
+          battleEffectId: undefined,
           battleEffectDuration: null,
           battleEffectSFX: null,
           hoveredUnit: null
         });
 
-        if (this.tempHoveredUnit)
+        if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle())
         {
           this.handleMouseEnterUnit(this.tempHoveredUnit);
           this.tempHoveredUnit = null;
@@ -529,7 +530,7 @@ module Rance
                   effectDuration: this.state.battleEffectDuration,
                   effectSFX: this.state.battleEffectSFX,
                   unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
-                  playingBattleEffect: this.state.playingBattleEffect
+                  effectId: this.state.battleEffectId
                 })
               ),
               React.DOM.div(

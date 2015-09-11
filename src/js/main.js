@@ -1116,7 +1116,7 @@ var Rance;
                 else {
                     containerProps.className += " ability-tooltip-faces-right";
                     // aligning right to right doesnt work for some reason
-                    containerProps.style.right = parentRect.right + 128;
+                    containerProps.style.left = parentRect.right - 128;
                 }
                 for (var i = 0; i < abilities.length; i++) {
                     var ability = abilities[i];
@@ -1405,9 +1405,7 @@ var Rance;
             cachedSFXWidth: null,
             componentDidUpdate: function (oldProps) {
                 if (this.props.effectSFX && this.props.effectSFX.battleOverlay) {
-                    if (!oldProps.effectSFX ||
-                        this.props.effectSFX.battleOverlay !== oldProps.effectSFX.battleOverlay ||
-                        this.props.unit1 !== oldProps.unit1 || this.props.unit2 !== oldProps.unit2) {
+                    if (oldProps.effectId !== this.props.effectId) {
                         this.drawBattleOverlay();
                     }
                 }
@@ -1643,6 +1641,7 @@ var Rance;
             // as its not used for trigger updates
             // and needs to be changed synchronously
             tempHoveredUnit: null,
+            idGenerator: 0,
             getInitialState: function () {
                 return ({
                     abilityTooltip: {
@@ -1658,7 +1657,7 @@ var Rance;
                     battleSceneUnit1: null,
                     battleSceneUnit2: null,
                     playingBattleEffect: false,
-                    playingBattleEffectActive: false,
+                    battleEffectId: undefined,
                     battleEffectDuration: null,
                     battleEffectSFX: null
                 });
@@ -1790,19 +1789,20 @@ var Rance;
                 if (!this.tempHoveredUnit) {
                     this.tempHoveredUnit = this.state.hoveredUnit;
                 }
-                var beforeDelay = 500 * Rance.Options.battleAnimationTiming["before"];
+                var beforeDelay = 750 * Rance.Options.battleAnimationTiming["before"];
                 var effectDuration = 0;
                 var effectDelay = 0;
                 if (effectData[i].sfx) {
                     effectDuration = effectData[i].sfx.duration * Rance.Options.battleAnimationTiming["effectDuration"];
-                    effectDuration = effectDuration / (1 + Math.log(i + 1));
+                    effectDuration /= (1 + Math.log(i + 1));
                     if (effectData[i].sfx.delay) {
                         effectDelay = effectDuration * effectData[i].sfx.delay;
                     }
                 }
                 effectData[i].user.sfxDuration = effectDuration;
                 effectData[i].target.sfxDuration = effectDuration;
-                var afterDelay = 500 * Rance.Options.battleAnimationTiming["after"];
+                var afterDelay = 1500 * Rance.Options.battleAnimationTiming["after"];
+                afterDelay /= effectData.length;
                 this.setState({
                     battleSceneUnit1StartingStrength: previousUnit1Strength,
                     battleSceneUnit2StartingStrength: previousUnit2Strength,
@@ -1828,7 +1828,6 @@ var Rance;
                     }
                 };
                 var startEffectFN = function () {
-                    console.log("startEffectFN", Date.now());
                     if (effectDelay > 0) {
                         window.setTimeout(callEffectsFN, effectDelay);
                     }
@@ -1836,23 +1835,23 @@ var Rance;
                         callEffectsFN(false);
                     }
                     this.setState({
-                        playingBattleEffectActive: true,
+                        battleEffectId: this.idGenerator++,
                         battleEffectDuration: effectDuration,
                         battleEffectSFX: effectData[i].sfx
                     });
                     window.setTimeout(finishEffectFN, effectDuration + afterDelay);
                 }.bind(this);
-                console.log("setStartEffectFN", Date.now(), Date.now() + beforeDelay);
                 window.setTimeout(startEffectFN, beforeDelay);
             },
             clearBattleEffect: function () {
                 this.setState({
                     playingBattleEffect: false,
+                    battleEffectId: undefined,
                     battleEffectDuration: null,
                     battleEffectSFX: null,
                     hoveredUnit: null
                 });
-                if (this.tempHoveredUnit) {
+                if (this.tempHoveredUnit && this.tempHoveredUnit.isActiveInBattle()) {
                     this.handleMouseEnterUnit(this.tempHoveredUnit);
                     this.tempHoveredUnit = null;
                 }
@@ -1986,7 +1985,8 @@ var Rance;
                     unit2: this.state.battleSceneUnit2,
                     effectDuration: this.state.battleEffectDuration,
                     effectSFX: this.state.battleEffectSFX,
-                    unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit
+                    unit1IsActive: this.state.battleSceneUnit1 === battle.activeUnit,
+                    effectId: this.state.battleEffectId
                 })), React.DOM.div({
                     className: "fleets-container",
                     ref: "fleetsContainer"
@@ -14009,7 +14009,7 @@ var Rance;
                 }
             }
         };
-        // redundant until stealth mechanics are added
+        // redundant
         Unit.prototype.isTargetable = function () {
             return this.currentHealth > 0;
         };

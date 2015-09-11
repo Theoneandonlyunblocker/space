@@ -303,7 +303,7 @@ module Rance
       }
     }
     
-    // redundant until stealth mechanics are added
+    // redundant
     isTargetable()
     {
       return this.currentHealth > 0;
