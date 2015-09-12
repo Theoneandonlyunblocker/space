@@ -218,6 +218,59 @@ module Rance
           key: "ui"
         }));
 
+
+        var displayOptions: any[] = [];
+        displayOptions.push(
+        {
+          key: "borderWidth",
+          content: React.DOM.div(
+          {
+
+          },
+            React.DOM.input(
+            {
+              type: "number",
+              id: "border-width-input",
+              value: Options.display.borderWidth,
+              min: 0,
+              max: 20,
+              step: 1,
+              onChange: function(e: Event)
+              {
+                var target = <HTMLInputElement> e.target;
+                var value = parseInt(target.value);
+                if (!isFinite(value))
+                {
+                  return;
+                }
+                value = clamp(value, parseFloat(target.min), parseFloat(target.max));
+                Options.display.borderWidth = value;
+                eventManager.dispatchEvent("renderMap");
+                this.forceUpdate();
+              }.bind(this)
+            }),
+            React.DOM.label(
+            {
+              htmlFor: "border-width-input"
+            },
+              "Border width"
+            )
+          )
+        });
+
+        allOptions.push(UIComponents.OptionsGroup(
+        {
+          header: "Display",
+          options: displayOptions,
+          resetFN: function()
+          {
+            extendObject(defaultOptions.display, Options.display);
+            eventManager.dispatchEvent("renderMap");
+            this.forceUpdate();
+          }.bind(this),
+          key: "display"
+        }));
+
         return(
           React.DOM.div({className: "options"},
 

@@ -3064,7 +3064,9 @@ declare module Rance {
         var ui: {
             noHamburger: boolean;
         };
-        var borderWidth: number;
+        var display: {
+            borderWidth: number;
+        };
     }
     var Options: any;
 }

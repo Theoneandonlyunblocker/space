@@ -678,6 +678,10 @@ module Rance
         drawingFunction: function(map: GalaxyMap)
         {
           var doc = new PIXI.Container();
+          if (Options.display.borderWidth <= 0)
+          {
+            return doc;
+          }
 
           var revealedStars = this.player.getRevealedStars();
           var borderEdges = getRevealedBorderEdges(revealedStars, map.voronoi);
@@ -689,7 +693,7 @@ module Rance
             doc.addChild(gfx);
             var polyLineData = borderEdges[i];
             var player = polyLineData.points[0].star.owner;
-            gfx.lineStyle(8, player.secondaryColor, 1);
+            gfx.lineStyle(Options.display.borderWidth, player.secondaryColor, 1);
 
             var polygon = new PIXI.Polygon(polyLineData.points);
             polygon.closed = polyLineData.isClosed;

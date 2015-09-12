@@ -5129,6 +5129,41 @@ var Rance;
                     }.bind(this),
                     key: "ui"
                 }));
+                var displayOptions = [];
+                displayOptions.push({
+                    key: "borderWidth",
+                    content: React.DOM.div({}, React.DOM.input({
+                        type: "number",
+                        id: "border-width-input",
+                        value: Rance.Options.display.borderWidth,
+                        min: 0,
+                        max: 20,
+                        step: 1,
+                        onChange: function (e) {
+                            var target = e.target;
+                            var value = parseInt(target.value);
+                            if (!isFinite(value)) {
+                                return;
+                            }
+                            value = Rance.clamp(value, parseFloat(target.min), parseFloat(target.max));
+                            Rance.Options.display.borderWidth = value;
+                            Rance.eventManager.dispatchEvent("renderMap");
+                            this.forceUpdate();
+                        }.bind(this)
+                    }), React.DOM.label({
+                        htmlFor: "border-width-input"
+                    }, "Border width"))
+                });
+                allOptions.push(UIComponents.OptionsGroup({
+                    header: "Display",
+                    options: displayOptions,
+                    resetFN: function () {
+                        Rance.extendObject(Rance.defaultOptions.display, Rance.Options.display);
+                        Rance.eventManager.dispatchEvent("renderMap");
+                        this.forceUpdate();
+                    }.bind(this),
+                    key: "display"
+                }));
                 return (React.DOM.div({ className: "options" }, UIComponents.PopupManager({
                     ref: "popupManager",
                     onlyAllowOne: true
@@ -8422,7 +8457,6 @@ var Rance;
         Star.prototype.getEdgeWith = function (neighbor) {
             for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
                 var edge = this.voronoiCell.halfedges[i].edge;
-                // console.log(neighbor.id, edge, (edge.lSite ? edge.lSite.id : null), (edge.rSite ? edge.rSite.id : null));
                 if ((edge.lSite && edge.lSite === neighbor) ||
                     (edge.rSite && edge.rSite === neighbor)) {
                     return edge;
@@ -17466,7 +17500,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = Rance.Options.borderWidth;
+        var minBorderWidth = 10;
         var edge = a.getEdgeWith(b);
         if (!edge) {
             return false;
@@ -17601,10 +17635,10 @@ var Rance;
                 y: v1.y
             });
         });
-        joinPointsWithin(convertedToPoints, Rance.Options.borderWidth / 2);
+        joinPointsWithin(convertedToPoints, Rance.Options.display.borderWidth / 2);
         var offset = new Offset();
         offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(Rance.Options.borderWidth / 2);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Rance.Options.display.borderWidth / 2);
         return convertedToOffset;
     }
     Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
@@ -18177,6 +18211,9 @@ var Rance;
                     container: new PIXI.Container(),
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
+                        if (Rance.Options.display.borderWidth <= 0) {
+                            return doc;
+                        }
                         var revealedStars = this.player.getRevealedStars();
                         var borderEdges = Rance.getRevealedBorderEdges(revealedStars, map.voronoi);
                         for (var i = 0; i < borderEdges.length; i++) {
@@ -18185,7 +18222,7 @@ var Rance;
                             doc.addChild(gfx);
                             var polyLineData = borderEdges[i];
                             var player = polyLineData.points[0].star.owner;
-                            gfx.lineStyle(Rance.Options.borderWidth, player.secondaryColor, 1);
+                            gfx.lineStyle(Rance.Options.display.borderWidth, player.secondaryColor, 1);
                             var polygon = new PIXI.Polygon(polyLineData.points);
                             polygon.closed = polyLineData.isClosed;
                             gfx.drawShape(polygon);
@@ -20510,7 +20547,9 @@ var Rance;
         defaultOptions.ui = {
             noHamburger: false
         };
-        defaultOptions.borderWidth = 8;
+        defaultOptions.display = {
+            borderWidth: 8
+        };
     })(defaultOptions = Rance.defaultOptions || (Rance.defaultOptions = {}));
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>

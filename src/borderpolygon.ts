@@ -4,7 +4,7 @@ module Rance
 {
   function starsOnlyShareNarrowBorder(a: Star, b: Star)
   {
-    var minBorderWidth = Options.borderWidth;
+    var minBorderWidth = 10;
     var edge = a.getEdgeWith(b);
     if (!edge)
     {
@@ -199,11 +199,11 @@ module Rance
       });
     });
 
-    joinPointsWithin(convertedToPoints, Options.borderWidth / 2);
+    joinPointsWithin(convertedToPoints, Options.display.borderWidth / 2);
 
     var offset = new Offset();
     offset.arcSegments(0);
-    var convertedToOffset = offset.data(convertedToPoints).padding(Options.borderWidth / 2);
+    var convertedToOffset = offset.data(convertedToPoints).padding(Options.display.borderWidth / 2);
 
     return convertedToOffset;
   }

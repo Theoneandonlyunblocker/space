@@ -51,6 +51,10 @@ module Rance
     {
       noHamburger: false
     };
+    export var display =
+    {
+      borderWidth: 8
+    };
   }
 
   export var Options: any;
