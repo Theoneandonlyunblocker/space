@@ -1,6 +1,6 @@
 /// <reference path="../star.ts" />
 
-/// <reference path="sector2.ts" />
+/// <reference path="sector.ts" />
 /// <reference path="triangulation.ts" />
 
 module Rance
@@ -116,7 +116,7 @@ module Rance
 
       var sectorsById:
       {
-        [sectorId: number]: Sector2;
+        [sectorId: number]: Sector;
       } = {};
       var sectorIdGen = 0;
 
@@ -132,7 +132,7 @@ module Rance
 
         if (canFormMinSizeSector)
         {
-          var sector = new Sector2(sectorIdGen++);
+          var sector = new Sector(sectorIdGen++);
           sectorsById[sector.id] = sector;
 
           var discoveryStarIndex = 0;
@@ -175,7 +175,7 @@ module Rance
         {
           [sectorId: number]: boolean;
         } = {};
-        var candidateSectors: Sector2[] = [];
+        var candidateSectors: Sector[] = [];
 
         for (var j = 0; j < neighbors.length; j++)
         {

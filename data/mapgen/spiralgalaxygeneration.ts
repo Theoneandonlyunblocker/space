@@ -3,9 +3,9 @@
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/player.ts" />
 /// <reference path="../../src/star.ts" />
-/// <reference path="../../src/mapgen/region2.ts" />
-/// <reference path="../../src/mapgen/mapgenutils.ts" />
-/// <reference path="../../src/mapgen/mapgenresult.ts" />
+/// <reference path="../../src/mapgen2/region.ts" />
+/// <reference path="../../src/mapgen2/mapgenutils.ts" />
+/// <reference path="../../src/mapgen2/mapgenresult.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
@@ -113,9 +113,9 @@ module Rance
 
         var stars: Star[] = [];
         var fillerPoints: FillerPoint[] = [];
-        var regions: MapGen2.Region2[] = [];
+        var regions: MapGen2.Region[] = [];
 
-        var centerRegion = new MapGen2.Region2("center", false);
+        var centerRegion = new MapGen2.Region("center", false);
         regions.push(centerRegion);
 
         var fillerRegionId = 0;
@@ -125,7 +125,7 @@ module Rance
         {
           var isFiller = i % 2 !== 0;
           var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
-          var region = new MapGen2.Region2(regionName, isFiller);
+          var region = new MapGen2.Region(regionName, isFiller);
           regions.push(region);
 
           var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
@@ -282,15 +282,15 @@ module Rance
         }
 
         // set players
-        var startRegions: MapGen2.Region2[] = (function setStartingRegions()
+        var startRegions: MapGen2.Region[] = (function setStartingRegions()
         {
           var armCount = options.basicOptions["arms"];
           var playerCount = players.length;
 
           var playerArmStep = armCount / playerCount;
 
-          var startRegions: MapGen2.Region2[] = [];
-          var candidateRegions = regions.filter(function(region: MapGen2.Region2)
+          var startRegions: MapGen2.Region[] = [];
+          var candidateRegions = regions.filter(function(region: MapGen2.Region)
           {
             return region.id.indexOf("arm") !== -1;
           });
@@ -306,7 +306,7 @@ module Rance
           return startRegions;
         })();
 
-        var startPositions: Star[] = (function getStartPoints(regions: MapGen2.Region2[])
+        var startPositions: Star[] = (function getStartPoints(regions: MapGen2.Region[])
         {
           var startPositions: Star[] = [];
 

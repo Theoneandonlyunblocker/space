@@ -6,7 +6,7 @@ module Rance
 {
   export module MapGen2
   {
-    export class Sector2
+    export class Sector
     {
       id: number;
       stars: Star[] = [];
@@ -68,7 +68,7 @@ module Rance
           [regionId: string]:
           {
             count: number;
-            region: Region2;
+            region: Region;
           };
         } = {};
 
@@ -95,7 +95,7 @@ module Rance
           }
         }
 
-        var majorityRegions: Region2[] = [];
+        var majorityRegions: Region[] = [];
         for (var regionId in regionsByStars)
         {
           if (regionsByStars[regionId].count >= biggestRegionStarCount)

@@ -707,6 +707,8 @@ declare module Rance {
             var scout: IUnitTemplate;
             var stealthShip: IUnitTemplate;
             var shieldBoat: IUnitTemplate;
+            var redShip: IUnitTemplate;
+            var blueShip: IUnitTemplate;
         }
     }
 }
@@ -2369,7 +2371,7 @@ declare module Rance {
 }
 declare module Rance {
     module MapGen2 {
-        class Region2 {
+        class Region {
             id: string;
             isFiller: boolean;
             stars: Star[];
@@ -2378,13 +2380,13 @@ declare module Rance {
             addStar(star: Star): void;
             addFillerPoint(point: FillerPoint): void;
             severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean): void;
-            severLinksToRegionsExcept(exemptRegions: Region2[]): void;
+            severLinksToRegionsExcept(exemptRegions: Region[]): void;
         }
     }
 }
 declare module Rance {
     module MapGen2 {
-        class Sector2 {
+        class Sector {
             id: number;
             stars: Star[];
             resourceDistributionFlags: string[];
@@ -2394,7 +2396,7 @@ declare module Rance {
             addStar(star: Star): void;
             addResource(resource: Templates.IResourceTemplate): void;
             getNeighboringStars(): Star[];
-            getMajorityRegions(): Region2[];
+            getMajorityRegions(): Region[];
         }
     }
 }
@@ -2403,7 +2405,7 @@ declare module Rance {
         function linkAllStars(stars: Star[]): void;
         function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
         function makeSectors(stars: Star[], minSize: number, maxSize: number): {
-            [sectorId: number]: Sector2;
+            [sectorId: number]: Sector;
         };
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
         function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;

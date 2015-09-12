@@ -1,6 +1,6 @@
 /// <reference path="../lib/voronoi.d.ts" />
 
-/// <reference path="mapgen/mapgenresult.ts" />
+/// <reference path="mapgen2/mapgenresult.ts" />
 /// <reference path="game.ts" />
 /// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />

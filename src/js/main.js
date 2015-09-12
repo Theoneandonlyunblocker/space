@@ -7520,6 +7520,60 @@ var Rance;
                     Templates.PassiveSkills.initialGuard
                 ]
             };
+            Units.redShip = {
+                type: "redShip",
+                displayName: "Red ship",
+                archetype: 2 /* utility */,
+                families: [0 /* red */],
+                sprite: {
+                    imageSrc: "scout.png",
+                    anchor: { x: 0.5, y: 0.5 }
+                },
+                isSquadron: true,
+                buildCost: 200,
+                icon: "img\/icons\/sc.png",
+                maxHealth: 0.6,
+                maxMovePoints: 2,
+                visionRange: 2,
+                detectionRange: 0,
+                attributeLevels: {
+                    attack: 0.5,
+                    defence: 0.5,
+                    intelligence: 0.8,
+                    speed: 0.7
+                },
+                abilities: [
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.standBy
+                ]
+            };
+            Units.blueShip = {
+                type: "blueShip",
+                displayName: "Blue ship",
+                archetype: 2 /* utility */,
+                families: [1 /* blue */],
+                sprite: {
+                    imageSrc: "scout.png",
+                    anchor: { x: 0.5, y: 0.5 }
+                },
+                isSquadron: true,
+                buildCost: 200,
+                icon: "img\/icons\/sc.png",
+                maxHealth: 0.6,
+                maxMovePoints: 2,
+                visionRange: 2,
+                detectionRange: 0,
+                attributeLevels: {
+                    attack: 0.5,
+                    defence: 0.5,
+                    intelligence: 0.8,
+                    speed: 0.7
+                },
+                abilities: [
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.standBy
+                ]
+            };
         })(Units = Templates.Units || (Templates.Units = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
@@ -11280,7 +11334,7 @@ var Rance;
     Rance.Game = Game;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/voronoi.d.ts" />
-/// <reference path="mapgen/mapgenresult.ts" />
+/// <reference path="mapgen2/mapgenresult.ts" />
 /// <reference path="game.ts" />
 /// <reference path="fillerpoint.ts" />
 /// <reference path="star.ts" />
@@ -15872,22 +15926,22 @@ var Rance;
 (function (Rance) {
     var MapGen2;
     (function (MapGen2) {
-        var Region2 = (function () {
-            function Region2(id, isFiller) {
+        var Region = (function () {
+            function Region(id, isFiller) {
                 this.stars = [];
                 this.fillerPoints = [];
                 this.id = id;
                 this.isFiller = isFiller;
             }
-            Region2.prototype.addStar = function (star) {
+            Region.prototype.addStar = function (star) {
                 this.stars.push(star);
                 star.mapGenData.region = this;
             };
-            Region2.prototype.addFillerPoint = function (point) {
+            Region.prototype.addFillerPoint = function (point) {
                 this.fillerPoints.push(point);
                 point.mapGenData.region;
             };
-            Region2.prototype.severLinksByQualifier = function (qualifierFN) {
+            Region.prototype.severLinksByQualifier = function (qualifierFN) {
                 for (var i = 0; i < this.stars.length; i++) {
                     var star = this.stars[i];
                     var links = star.getAllLinks();
@@ -15898,14 +15952,14 @@ var Rance;
                     }
                 }
             };
-            Region2.prototype.severLinksToRegionsExcept = function (exemptRegions) {
+            Region.prototype.severLinksToRegionsExcept = function (exemptRegions) {
                 this.severLinksByQualifier(function (a, b) {
                     return exemptRegions.indexOf(b.mapGenData.region) !== -1;
                 });
             };
-            return Region2;
+            return Region;
         })();
-        MapGen2.Region2 = Region2;
+        MapGen2.Region = Region;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../data/templates/resources.ts" />
@@ -15914,26 +15968,26 @@ var Rance;
 (function (Rance) {
     var MapGen2;
     (function (MapGen2) {
-        var Sector2 = (function () {
-            function Sector2(id) {
+        var Sector = (function () {
+            function Sector(id) {
                 this.stars = [];
                 this.resourceDistributionFlags = [];
                 this.id = id;
             }
-            Sector2.prototype.addStar = function (star) {
+            Sector.prototype.addStar = function (star) {
                 if (star.mapGenData.sector) {
                     throw new Error("Star already part of a sector");
                 }
                 this.stars.push(star);
                 star.mapGenData.sector = this;
             };
-            Sector2.prototype.addResource = function (resource) {
+            Sector.prototype.addResource = function (resource) {
                 var star = this.stars[0];
                 this.resourceType = resource;
                 this.resourceLocation = star;
                 star.setResource(resource);
             };
-            Sector2.prototype.getNeighboringStars = function () {
+            Sector.prototype.getNeighboringStars = function () {
                 var neighbors = [];
                 var alreadyAdded = {};
                 for (var i = 0; i < this.stars.length; i++) {
@@ -15947,7 +16001,7 @@ var Rance;
                 }
                 return neighbors;
             };
-            Sector2.prototype.getMajorityRegions = function () {
+            Sector.prototype.getMajorityRegions = function () {
                 var regionsByStars = {};
                 var biggestRegionStarCount = 0;
                 for (var i = 0; i < this.stars.length; i++) {
@@ -15973,13 +16027,13 @@ var Rance;
                 }
                 return majorityRegions;
             };
-            return Sector2;
+            return Sector;
         })();
-        MapGen2.Sector2 = Sector2;
+        MapGen2.Sector = Sector;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../star.ts" />
-/// <reference path="sector2.ts" />
+/// <reference path="sector.ts" />
 /// <reference path="triangulation.ts" />
 var Rance;
 (function (Rance) {
@@ -16071,7 +16125,7 @@ var Rance;
                 var seedStar = unassignedStars.pop();
                 var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
                 if (canFormMinSizeSector) {
-                    var sector = new MapGen2.Sector2(sectorIdGen++);
+                    var sector = new MapGen2.Sector(sectorIdGen++);
                     sectorsById[sector.id] = sector;
                     var discoveryStarIndex = 0;
                     sector.addStar(seedStar);
@@ -16232,9 +16286,9 @@ var Rance;
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/player.ts" />
 /// <reference path="../../src/star.ts" />
-/// <reference path="../../src/mapgen/region2.ts" />
-/// <reference path="../../src/mapgen/mapgenutils.ts" />
-/// <reference path="../../src/mapgen/mapgenresult.ts" />
+/// <reference path="../../src/mapgen2/region.ts" />
+/// <reference path="../../src/mapgen2/mapgenutils.ts" />
+/// <reference path="../../src/mapgen2/mapgenresult.ts" />
 /// <reference path="mapgenoptions.ts" />
 var Rance;
 (function (Rance) {
@@ -16315,14 +16369,14 @@ var Rance;
                 var stars = [];
                 var fillerPoints = [];
                 var regions = [];
-                var centerRegion = new Rance.MapGen2.Region2("center", false);
+                var centerRegion = new Rance.MapGen2.Region("center", false);
                 regions.push(centerRegion);
                 var fillerRegionId = 0;
                 var regionId = 0;
                 for (var i = 0; i < sg.totalArms; i++) {
                     var isFiller = i % 2 !== 0;
                     var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
-                    var region = new Rance.MapGen2.Region2(regionName, isFiller);
+                    var region = new Rance.MapGen2.Region(regionName, isFiller);
                     regions.push(region);
                     var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
                     var amountForThisCenter = sg.amountPerCenter;
@@ -16469,7 +16523,7 @@ var Rance;
         })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../src/mapgen/mapgenresult.ts" />
+/// <reference path="../../src/mapgen2/mapgenresult.ts" />
 /// <reference path="../../src/player.ts" />
 /// <reference path="mapgenoptions.ts" />
 /// <reference path="spiralgalaxygeneration.ts" />

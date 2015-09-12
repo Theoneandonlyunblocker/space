@@ -1,4 +1,4 @@
-/// <reference path="../../src/mapgen/mapgenresult.ts" />
+/// <reference path="../../src/mapgen2/mapgenresult.ts" />
 /// <reference path="../../src/player.ts" />
 /// <reference path="mapgenoptions.ts" />
 
