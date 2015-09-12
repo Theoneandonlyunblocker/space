@@ -292,6 +292,69 @@ module Rance
           PassiveSkills.initialGuard
         ]
       }
+
+      export var redShip: IUnitTemplate =
+      {
+        type: "redShip",
+        displayName: "Red ship",
+        archetype: UnitTemplateArchetype.utility,
+        families: [UnitTemplateFamily.red],
+        sprite:
+        {
+          imageSrc: "scout.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
+        isSquadron: true,
+        buildCost: 200,
+        icon: "img\/icons\/sc.png",
+        maxHealth: 0.6,
+        maxMovePoints: 2,
+        visionRange: 2,
+        detectionRange: 0,
+        attributeLevels:
+        {
+          attack: 0.5,
+          defence: 0.5,
+          intelligence: 0.8,
+          speed: 0.7
+        },
+        abilities:
+        [
+          Abilities.rangedAttack,
+          Abilities.standBy
+        ]
+      }
+      export var blueShip: IUnitTemplate =
+      {
+        type: "blueShip",
+        displayName: "Blue ship",
+        archetype: UnitTemplateArchetype.utility,
+        families: [UnitTemplateFamily.blue],
+        sprite:
+        {
+          imageSrc: "scout.png",
+          anchor: {x: 0.5, y: 0.5}
+        },
+        isSquadron: true,
+        buildCost: 200,
+        icon: "img\/icons\/sc.png",
+        maxHealth: 0.6,
+        maxMovePoints: 2,
+        visionRange: 2,
+        detectionRange: 0,
+        attributeLevels:
+        {
+          attack: 0.5,
+          defence: 0.5,
+          intelligence: 0.8,
+          speed: 0.7
+        },
+        abilities:
+        [
+          Abilities.rangedAttack,
+          Abilities.standBy
+        ]
+      }
     }
   }
 }
