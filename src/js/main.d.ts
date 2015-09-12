@@ -1886,9 +1886,7 @@ declare module Rance {
             getTotalUnitCountByArchetype(): IArchetypeValues;
             getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
             getGlobalUnitArcheypeScores(): IArchetypeValues;
-            getFrontUnitArchetypeScores(front: Front): {
-                [archetype: string]: number;
-            };
+            getFrontUnitArchetypeScores(front: Front): IArchetypeValues;
             scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
             getHealUnitFitScore(unit: Unit, front: Front): number;
             getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;

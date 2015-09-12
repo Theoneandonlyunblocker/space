@@ -17200,9 +17200,9 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../lib/react.d.ts" />
-/// <reference path="../eventmanager.ts"/>
-/// <reference path="stage.ts"/>
+/// <reference path="../lib/react.d.ts" />
+/// <reference path="eventmanager.ts"/>
+/// <reference path="uicomponents/stage.ts"/>
 var Rance;
 (function (Rance) {
     var ReactUI = (function () {
@@ -20323,7 +20323,7 @@ var Rance;
         GameLoader.prototype.deserializePlayer = function (data) {
             var personality;
             if (data.personality) {
-                personality = Rance.extendObject(data.personality, Rance.makeRandomPersonality());
+                personality = Rance.extendObject(Rance.makeRandomPersonality(), data.personality);
             }
             var player = new Rance.Player(data.isAI, data.id);
             player.money = data.money;
@@ -20556,7 +20556,7 @@ var Rance;
         };
     })(defaultOptions = Rance.defaultOptions || (Rance.defaultOptions = {}));
 })(Rance || (Rance = {}));
-/// <reference path="reactui/reactui.ts"/>
+/// <reference path="reactui.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
 /// <reference path="maprenderer.ts" />
@@ -20718,7 +20718,7 @@ var Rance;
             this.mapRenderer.setParent(this.renderer.layers["map"]);
             this.mapRenderer.init();
             // some initialization is done when the react component owning the
-            // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
+            // renderer mounts, such as in uicomponents/galaxymap/galaxymap.ts
         };
         App.prototype.initUI = function () {
             this.reactUI = new Rance.ReactUI(document.getElementById("react-container"));

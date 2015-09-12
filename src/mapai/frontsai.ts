@@ -92,10 +92,7 @@ module Rance
 
         var globalScores = this.getGlobalUnitArcheypeScores();
 
-        var scores:
-        {
-          [archetype: string]: number;
-        } = {};
+        var scores: IArchetypeValues = {};
 
         var frontArchetypes = front.getUnitCountByArchetype();
         var frontScores = this.getUnitCompositionDeviationFromIdeal(

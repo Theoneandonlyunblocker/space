@@ -170,7 +170,7 @@ module Rance
 
       if (data.personality)
       {
-        personality = extendObject(data.personality, makeRandomPersonality());
+        personality = extendObject(makeRandomPersonality(), data.personality);
       }
 
       var player = new Player(data.isAI, data.id);
