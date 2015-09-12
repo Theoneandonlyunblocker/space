@@ -491,6 +491,7 @@ module Rance
     }
     starIsDetected(star: Star): boolean
     {
+      if (!this.isAI && Options.debugMode) return true;
       if (this.visionIsDirty) this.updateVisibleStars();
       return Boolean(this.detectedStars[star.id]);
     }
