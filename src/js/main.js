@@ -8419,6 +8419,29 @@ var Rance;
         Star.prototype.getAllLinks = function () {
             return this.linksTo.concat(this.linksFrom);
         };
+        Star.prototype.getEdgeWith = function (neighbor) {
+            for (var i = 0; i < this.voronoiCell.halfedges.length; i++) {
+                var edge = this.voronoiCell.halfedges[i].edge;
+                // console.log(neighbor.id, edge, (edge.lSite ? edge.lSite.id : null), (edge.rSite ? edge.rSite.id : null));
+                if ((edge.lSite && edge.lSite === neighbor) ||
+                    (edge.rSite && edge.rSite === neighbor)) {
+                    return edge;
+                }
+            }
+            return null;
+        };
+        Star.prototype.getSharedNeighborsWith = function (neighbor) {
+            var ownNeighbors = this.getNeighbors();
+            var neighborNeighbors = neighbor.getNeighbors();
+            var sharedNeighbors = [];
+            for (var i = 0; i < ownNeighbors.length; i++) {
+                var star = ownNeighbors[i];
+                if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1) {
+                    sharedNeighbors.push(star);
+                }
+            }
+            return sharedNeighbors;
+        };
         // return adjacent stars whether they're linked to this or not
         Star.prototype.getNeighbors = function () {
             var neighbors = [];
@@ -8494,7 +8517,7 @@ var Rance;
                     if (visited[neighbor.id])
                         continue;
                     visited[neighbor.id] = true;
-                    if (qualifier(initialStar, neighbor)) {
+                    if (qualifier(current, neighbor)) {
                         sizeFound++;
                         frontier.push(neighbor);
                     }
@@ -17442,6 +17465,24 @@ var Rance;
 /// <reference path="../lib/offset.d.ts" />
 var Rance;
 (function (Rance) {
+    function starsOnlyShareNarrowBorder(a, b) {
+        var minBorderWidth = Rance.Options.borderWidth;
+        var edge = a.getEdgeWith(b);
+        if (!edge) {
+            return false;
+        }
+        var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+        if (edgeLength < minBorderWidth) {
+            var sharedNeighbors = a.getSharedNeighborsWith(b);
+            var sharedOwnedNeighbors = sharedNeighbors.filter(function (sharedNeighbor) {
+                return sharedNeighbor.owner === a.owner;
+            });
+            return sharedOwnedNeighbors.length === 0;
+        }
+        else {
+            return false;
+        }
+    }
     function getBorderingHalfEdges(stars) {
         var borderingHalfEdges = [];
         function getHalfEdgeOppositeSite(halfEdge) {
@@ -17453,14 +17494,16 @@ var Rance;
             var isBorderWithOtherOwner = !oppositeSite || !oppositeSite.owner || (oppositeSite.owner !== halfEdge.site.owner);
             var isBorderWithSameOwner = false;
             if (!isBorderWithOtherOwner) {
-                isBorderWithSameOwner = halfEdge.site.getDistanceToStar(oppositeSite) > 2;
+                isBorderWithSameOwner = starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite) ||
+                    halfEdge.site.getDistanceToStar(oppositeSite) > 2;
             }
             return isBorderWithOtherOwner || isBorderWithSameOwner;
         }
         function halfEdgeSharesOwner(halfEdge) {
             var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-            return Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
+            var sharesOwner = Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
                 (oppositeSite.owner === halfEdge.site.owner);
+            return sharesOwner && !starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite);
         }
         function getContiguousHalfEdgeBetweenSharedSites(sharedEdge) {
             var contiguousEdgeEndPoint = sharedEdge.getStartpoint();
@@ -17540,6 +17583,7 @@ var Rance;
             var x2 = points[i + 1].x;
             var y2 = points[i + 1].y;
             if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
+                console.log(points[i]);
                 var newPoint = {
                     x: (x1 + x2) / 2,
                     y: (y1 + y2) / 2
@@ -17557,10 +17601,10 @@ var Rance;
                 y: v1.y
             });
         });
-        joinPointsWithin(convertedToPoints, 5);
+        joinPointsWithin(convertedToPoints, Rance.Options.borderWidth / 2);
         var offset = new Offset();
         offset.arcSegments(0);
-        var convertedToOffset = offset.data(convertedToPoints).padding(4);
+        var convertedToOffset = offset.data(convertedToPoints).padding(Rance.Options.borderWidth / 2);
         return convertedToOffset;
     }
     Rance.convertHalfEdgeDataToOffset = convertHalfEdgeDataToOffset;
@@ -17574,7 +17618,8 @@ var Rance;
             }
             if (!star.owner.isIndependent) {
                 var ownedIsland = star.getIslandForQualifier(function (a, b) {
-                    return b.owner === a.owner;
+                    // don't count stars if the only shared border between them is smaller than 10px
+                    return (a.owner === b.owner && !starsOnlyShareNarrowBorder(a, b));
                 });
                 var currentPolyLine = [];
                 var halfEdgesDataForIsland = getBorderingHalfEdges(ownedIsland);
@@ -17590,6 +17635,12 @@ var Rance;
                         y: Rance.clamp((point.y + nextPoint.y) / 2, voronoiInfo.bounds.y1, voronoiInfo.bounds.y2)
                     };
                     var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+                    if (!pointStar) {
+                        pointStar = voronoiInfo.getStarAtPoint(point);
+                        if (!pointStar) {
+                            pointStar = voronoiInfo.getStarAtPoint(nextPoint);
+                        }
+                    }
                     processedStarsById[pointStar.id] = true;
                     point.star = pointStar;
                 }
@@ -18134,7 +18185,7 @@ var Rance;
                             doc.addChild(gfx);
                             var polyLineData = borderEdges[i];
                             var player = polyLineData.points[0].star.owner;
-                            gfx.lineStyle(8, player.secondaryColor, 1);
+                            gfx.lineStyle(Rance.Options.borderWidth, player.secondaryColor, 1);
                             var polygon = new PIXI.Polygon(polyLineData.points);
                             polygon.closed = polyLineData.isClosed;
                             gfx.drawShape(polygon);
@@ -20459,6 +20510,7 @@ var Rance;
         defaultOptions.ui = {
             noHamburger: false
         };
+        defaultOptions.borderWidth = 8;
     })(defaultOptions = Rance.defaultOptions || (Rance.defaultOptions = {}));
 })(Rance || (Rance = {}));
 /// <reference path="reactui/reactui.ts"/>

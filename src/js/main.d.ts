@@ -961,6 +961,8 @@ declare module Rance {
         addLink(linkTo: Star): void;
         removeLink(linkTo: Star): void;
         getAllLinks(): Star[];
+        getEdgeWith(neighbor: Star): any;
+        getSharedNeighborsWith(neighbor: Star): Star[];
         getNeighbors(): Star[];
         getLinkedInRange(range: number): {
             all: Star[];
@@ -3062,6 +3064,7 @@ declare module Rance {
         var ui: {
             noHamburger: boolean;
         };
+        var borderWidth: number;
     }
     var Options: any;
 }

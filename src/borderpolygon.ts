@@ -2,6 +2,31 @@
 
 module Rance
 {
+  function starsOnlyShareNarrowBorder(a: Star, b: Star)
+  {
+    var minBorderWidth = Options.borderWidth;
+    var edge = a.getEdgeWith(b);
+    if (!edge)
+    {
+      return false;
+    }
+    var edgeLength = Math.abs(edge.va.x - edge.vb.x) + Math.abs(edge.va.y - edge.vb.y);
+
+    if (edgeLength < minBorderWidth)
+    {
+      var sharedNeighbors = a.getSharedNeighborsWith(b);
+      var sharedOwnedNeighbors = sharedNeighbors.filter(function(sharedNeighbor: Star)
+      {
+        return sharedNeighbor.owner === a.owner;
+      });
+
+      return sharedOwnedNeighbors.length === 0;
+    }
+    else
+    {
+      return false;
+    }
+  }
   export function getBorderingHalfEdges(stars: Star[])
   {
     var borderingHalfEdges:
@@ -25,7 +50,8 @@ module Rance
       var isBorderWithSameOwner = false;
       if (!isBorderWithOtherOwner)
       {
-        isBorderWithSameOwner = halfEdge.site.getDistanceToStar(oppositeSite) > 2;
+        isBorderWithSameOwner = starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite) ||
+          halfEdge.site.getDistanceToStar(oppositeSite) > 2;
       }
 
       return isBorderWithOtherOwner || isBorderWithSameOwner;
@@ -34,8 +60,10 @@ module Rance
     function halfEdgeSharesOwner(halfEdge: any)
     {
       var oppositeSite = getHalfEdgeOppositeSite(halfEdge);
-      return Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
+      var sharesOwner = Boolean(oppositeSite) && Boolean(oppositeSite.owner) &&
         (oppositeSite.owner === halfEdge.site.owner);
+
+      return sharesOwner && !starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite);
     }
 
     function getContiguousHalfEdgeBetweenSharedSites(sharedEdge: any)
@@ -144,6 +172,7 @@ module Rance
 
       if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance)
       {
+        console.log(points[i]);
         var newPoint: Point =
         {
           x: (x1 + x2) / 2,
@@ -170,11 +199,11 @@ module Rance
       });
     });
 
-    joinPointsWithin(convertedToPoints, 5);
+    joinPointsWithin(convertedToPoints, Options.borderWidth / 2);
 
     var offset = new Offset();
     offset.arcSegments(0);
-    var convertedToOffset = offset.data(convertedToPoints).padding(4);
+    var convertedToOffset = offset.data(convertedToPoints).padding(Options.borderWidth / 2);
 
     return convertedToOffset;
   }
@@ -199,7 +228,8 @@ module Rance
       {
         var ownedIsland = star.getIslandForQualifier(function(a: Star, b: Star)
         {
-          return b.owner === a.owner;
+          // don't count stars if the only shared border between them is smaller than 10px
+          return (a.owner === b.owner && !starsOnlyShareNarrowBorder(a, b));
         });
         var currentPolyLine: Point[] = [];
 
@@ -222,6 +252,14 @@ module Rance
           }
 
           var pointStar = point.star || voronoiInfo.getStarAtPoint(edgeCenter);
+          if (!pointStar)
+          {
+            pointStar = voronoiInfo.getStarAtPoint(point);
+            if (!pointStar)
+            {
+              pointStar = voronoiInfo.getStarAtPoint(nextPoint);
+            }
+          }
           processedStarsById[pointStar.id] = true;
           point.star = pointStar;
         }

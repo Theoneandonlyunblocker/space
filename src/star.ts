@@ -566,6 +566,41 @@ module Rance
     {
       return this.linksTo.concat(this.linksFrom);
     }
+    getEdgeWith(neighbor: Star)
+    {
+      for (var i = 0; i < this.voronoiCell.halfedges.length; i++)
+      {
+        var edge = this.voronoiCell.halfedges[i].edge;
+
+        if (
+          (edge.lSite && edge.lSite === neighbor) ||
+          (edge.rSite && edge.rSite === neighbor)
+        )
+        {
+          return edge;
+        }
+      }
+
+      return null;
+    }
+    getSharedNeighborsWith(neighbor: Star)
+    {
+      var ownNeighbors = this.getNeighbors();
+      var neighborNeighbors = neighbor.getNeighbors();
+
+      var sharedNeighbors: Star[] = [];
+
+      for (var i = 0; i < ownNeighbors.length; i++)
+      {
+        var star = ownNeighbors[i];
+        if (star !== neighbor && neighborNeighbors.indexOf(star) !== -1)
+        {
+          sharedNeighbors.push(star);
+        }
+      }
+
+      return sharedNeighbors;
+    }
     // return adjacent stars whether they're linked to this or not
     getNeighbors(): Star[]
     {
@@ -685,7 +720,7 @@ module Rance
           if (visited[neighbor.id]) continue;
 
           visited[neighbor.id] = true;
-          if (qualifier(initialStar, neighbor))
+          if (qualifier(current, neighbor))
           {
             sizeFound++;
             frontier.push(neighbor);
