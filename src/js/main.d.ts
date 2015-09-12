@@ -2594,6 +2594,7 @@ declare module Rance {
     }
 }
 declare module Rance {
+    function starsOnlyShareNarrowBorder(a: Star, b: Star): boolean;
     function getBorderingHalfEdges(stars: Star[]): {
         star: Star;
         halfEdge: any;

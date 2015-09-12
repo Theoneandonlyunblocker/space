@@ -233,12 +233,12 @@ module Rance
               id: "border-width-input",
               value: Options.display.borderWidth,
               min: 0,
-              max: 20,
+              max: 50,
               step: 1,
               onChange: function(e: Event)
               {
                 var target = <HTMLInputElement> e.target;
-                var value = parseInt(target.value);
+                var value = parseFloat(target.value);
                 if (!isFinite(value))
                 {
                   return;

@@ -1,10 +1,14 @@
 /// <reference path="../lib/offset.d.ts" />
 
+// some problems with this as well as pixi polyogn rendering can lead to silly behavior sometimes.
+// overlapping lines, acute angles etc etc.
+// probably have to make a shader based version later but this could still be useful for canvas fallback.
+
 module Rance
 {
-  function starsOnlyShareNarrowBorder(a: Star, b: Star)
+  export function starsOnlyShareNarrowBorder(a: Star, b: Star)
   {
-    var minBorderWidth = 10;
+    var minBorderWidth = Options.display.borderWidth * 2;
     var edge = a.getEdgeWith(b);
     if (!edge)
     {
@@ -51,7 +55,7 @@ module Rance
       if (!isBorderWithOtherOwner)
       {
         isBorderWithSameOwner = starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite) ||
-          halfEdge.site.getDistanceToStar(oppositeSite) > 2;
+          halfEdge.site.getDistanceToStar(oppositeSite) > 3;
       }
 
       return isBorderWithOtherOwner || isBorderWithSameOwner;
@@ -107,7 +111,7 @@ module Rance
     var contiguousEdge: any = null;
     // just a precaution to make sure we don't get into an infinite loop
     // should always return earlier unless somethings wrong
-    for (var j = 0; j < stars.length * 20; j++)
+    for (var j = 0; j < stars.length * 40; j++)
     {
       var indexShift = 0;
       for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++)

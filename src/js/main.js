@@ -5137,11 +5137,11 @@ var Rance;
                         id: "border-width-input",
                         value: Rance.Options.display.borderWidth,
                         min: 0,
-                        max: 20,
+                        max: 50,
                         step: 1,
                         onChange: function (e) {
                             var target = e.target;
-                            var value = parseInt(target.value);
+                            var value = parseFloat(target.value);
                             if (!isFinite(value)) {
                                 return;
                             }
@@ -10614,7 +10614,7 @@ var Rance;
             else if (this.template.endCondition) {
                 return this.template.endCondition(evaluation);
             }
-            else if (this.template.startCondition) {
+            else if (this.template.duration < 0 && this.template.startCondition) {
                 return !this.template.startCondition(evaluation);
             }
             else {
@@ -17497,10 +17497,13 @@ var Rance;
     Rance.PlayerControl = PlayerControl;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/offset.d.ts" />
+// some problems with this as well as pixi polyogn rendering can lead to silly behavior sometimes.
+// overlapping lines, acute angles etc etc.
+// probably have to make a shader based version later but this could still be useful for canvas fallback.
 var Rance;
 (function (Rance) {
     function starsOnlyShareNarrowBorder(a, b) {
-        var minBorderWidth = 10;
+        var minBorderWidth = Rance.Options.display.borderWidth * 2;
         var edge = a.getEdgeWith(b);
         if (!edge) {
             return false;
@@ -17517,6 +17520,7 @@ var Rance;
             return false;
         }
     }
+    Rance.starsOnlyShareNarrowBorder = starsOnlyShareNarrowBorder;
     function getBorderingHalfEdges(stars) {
         var borderingHalfEdges = [];
         function getHalfEdgeOppositeSite(halfEdge) {
@@ -17529,7 +17533,7 @@ var Rance;
             var isBorderWithSameOwner = false;
             if (!isBorderWithOtherOwner) {
                 isBorderWithSameOwner = starsOnlyShareNarrowBorder(halfEdge.site, oppositeSite) ||
-                    halfEdge.site.getDistanceToStar(oppositeSite) > 2;
+                    halfEdge.site.getDistanceToStar(oppositeSite) > 3;
             }
             return isBorderWithOtherOwner || isBorderWithSameOwner;
         }
@@ -17570,7 +17574,7 @@ var Rance;
         var contiguousEdge = null;
         // just a precaution to make sure we don't get into an infinite loop
         // should always return earlier unless somethings wrong
-        for (var j = 0; j < stars.length * 20; j++) {
+        for (var j = 0; j < stars.length * 40; j++) {
             var indexShift = 0;
             for (var _i = 0; _i < star.voronoiCell.halfedges.length; _i++) {
                 if (!hasProcessedStartEdge) {
