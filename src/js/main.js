@@ -6855,6 +6855,9 @@ var Rance;
                 if (currentTime < endTime) {
                     requestAnimationFrame(animate);
                 }
+                else {
+                    renderer.destroy();
+                }
             }
             props.onLoaded(renderer.view);
             animate();
@@ -6938,6 +6941,9 @@ var Rance;
                 renderer.render(container);
                 if (elapsedTime < props.duration) {
                     requestAnimationFrame(animate);
+                }
+                else {
+                    renderer.destroy();
                 }
             }
             props.onLoaded(renderer.view);

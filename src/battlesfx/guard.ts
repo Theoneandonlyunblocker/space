@@ -100,6 +100,10 @@ module Rance
         {
           requestAnimationFrame(animate);
         }
+        else
+        {
+          renderer.destroy();
+        }
       }
 
       props.onLoaded(renderer.view);
