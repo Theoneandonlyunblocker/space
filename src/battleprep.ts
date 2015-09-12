@@ -171,7 +171,7 @@ module Rance
       {
         var score: number = unit.getStrengthEvaluation();
 
-        if (unit.template.archetype === "defence" && row === "front")
+        if (unit.template.archetype === Templates.UnitTemplateArchetype.defence && row === "front")
         {
           score *= frontRowDefenceBonus;
         }
@@ -215,7 +215,8 @@ module Rance
           {
             totalDefenceUnderThreshhold = 0;
           }
-          else if (!alreadyHasDefender && unit.template.archetype === "defence")
+          else if (!alreadyHasDefender &&
+            unit.template.archetype === Templates.UnitTemplateArchetype.defence)
           {
             alreadyHasDefender = true;
             totalDefenceUnderThreshhold += 0.5;

@@ -7309,12 +7309,18 @@ var Rance;
 (function (Rance) {
     var Templates;
     (function (Templates) {
+        (function (UnitTemplateArchetype) {
+            UnitTemplateArchetype[UnitTemplateArchetype["combat"] = 0] = "combat";
+            UnitTemplateArchetype[UnitTemplateArchetype["defence"] = 1] = "defence";
+            UnitTemplateArchetype[UnitTemplateArchetype["utility"] = 2] = "utility"; // useful misc abilities
+        })(Templates.UnitTemplateArchetype || (Templates.UnitTemplateArchetype = {}));
+        var UnitTemplateArchetype = Templates.UnitTemplateArchetype;
         var ShipTypes;
         (function (ShipTypes) {
             ShipTypes.cheatShip = {
                 type: "cheatShip",
                 displayName: "Debug Ship",
-                archetype: "combat",
+                archetype: UnitTemplateArchetype.combat,
                 sprite: {
                     imageSrc: "cheatShip.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7350,7 +7356,7 @@ var Rance;
             ShipTypes.fighterSquadron = {
                 type: "fighterSquadron",
                 displayName: "Fighter Squadron",
-                archetype: "combat",
+                archetype: UnitTemplateArchetype.combat,
                 sprite: {
                     imageSrc: "fighter.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7377,7 +7383,7 @@ var Rance;
             ShipTypes.bomberSquadron = {
                 type: "bomberSquadron",
                 displayName: "Bomber Squadron",
-                archetype: "combat",
+                archetype: UnitTemplateArchetype.combat,
                 sprite: {
                     imageSrc: "bomber.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7404,7 +7410,7 @@ var Rance;
             ShipTypes.battleCruiser = {
                 type: "battleCruiser",
                 displayName: "Battlecruiser",
-                archetype: "combat",
+                archetype: UnitTemplateArchetype.combat,
                 sprite: {
                     imageSrc: "battleCruiser.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7431,7 +7437,7 @@ var Rance;
             ShipTypes.scout = {
                 type: "scout",
                 displayName: "Scout",
-                archetype: "utility",
+                archetype: UnitTemplateArchetype.utility,
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7457,7 +7463,7 @@ var Rance;
             ShipTypes.stealthShip = {
                 type: "stealthShip",
                 displayName: "Stealth Ship",
-                archetype: "utility",
+                archetype: UnitTemplateArchetype.utility,
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7484,7 +7490,7 @@ var Rance;
             ShipTypes.shieldBoat = {
                 type: "shieldBoat",
                 displayName: "Shield Boat",
-                archetype: "defence",
+                archetype: UnitTemplateArchetype.defence,
                 sprite: {
                     imageSrc: "shieldBoat.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -8029,6 +8035,7 @@ var Rance;
                 2: [],
                 3: []
             };
+            this.buildableUnitTypes = [];
             this.id = isFinite(id) ? id : Rance.idGenerators.star++;
             this.name = "Star " + this.id;
             this.x = x;
@@ -8203,8 +8210,7 @@ var Rance;
             return allUpgrades;
         };
         Star.prototype.getBuildableShipTypes = function () {
-            // TODO add local unit types similar to dominions independents
-            return this.owner.getGloballyBuildableShips();
+            return this.owner.getGloballyBuildableShips().concat(this.buildableUnitTypes);
         };
         // FLEETS
         Star.prototype.getAllFleets = function () {
@@ -10216,7 +10222,7 @@ var Rance;
             };
             var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
                 var score = unit.getStrengthEvaluation();
-                if (unit.template.archetype === "defence" && row === "front") {
+                if (unit.template.archetype === Rance.Templates.UnitTemplateArchetype.defence && row === "front") {
                     score *= frontRowDefenceBonus;
                 }
                 var archetype = unit.template.archetype;
@@ -10244,7 +10250,8 @@ var Rance;
                     if (alreadyHasDefender) {
                         totalDefenceUnderThreshhold = 0;
                     }
-                    else if (!alreadyHasDefender && unit.template.archetype === "defence") {
+                    else if (!alreadyHasDefender &&
+                        unit.template.archetype === Rance.Templates.UnitTemplateArchetype.defence) {
                         alreadyHasDefender = true;
                         totalDefenceUnderThreshhold += 0.5;
                     }
@@ -10702,17 +10709,21 @@ var Rance;
 var Rance;
 (function (Rance) {
     function makeRandomPersonality() {
-        var unitCompositionPreference = {
-            combat: Math.random(),
-            defence: Math.random(),
-            utility: Math.random()
-        };
+        // {[prop]: value} is ES6 object initializer syntax that gets compiled to ES5 by typescript
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer
+        var unitCompositionPreference = (_a = {},
+            _a[Templates.UnitTemplateArchetype.combat] = Math.random(),
+            _a[Templates.UnitTemplateArchetype.defence] = Math.random(),
+            _a[Templates.UnitTemplateArchetype.utility] = Math.random(),
+            _a
+        );
         return ({
             expansiveness: Math.random(),
             aggressiveness: Math.random(),
             friendliness: Math.random(),
             unitCompositionPreference: unitCompositionPreference
         });
+        var _a;
     }
     Rance.makeRandomPersonality = makeRandomPersonality;
     var Templates;
@@ -10723,14 +10734,14 @@ var Rance;
                 expansiveness: 1,
                 aggressiveness: 0.6,
                 friendliness: 0.4,
-                unitCompositionPreference: {
-                    combat: 1,
-                    defence: 0.8,
-                    //magic: 0.3,
-                    //support: 0.3,
-                    utility: 0.3
-                }
+                unitCompositionPreference: (_a = {},
+                    _a[Templates.UnitTemplateArchetype.combat] = 1,
+                    _a[Templates.UnitTemplateArchetype.defence] = 0.8,
+                    _a[Templates.UnitTemplateArchetype.utility] = 0.3,
+                    _a
+                )
             };
+            var _a;
         })(Personalities = Templates.Personalities || (Templates.Personalities = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
@@ -12928,6 +12939,8 @@ var Rance;
             return Boolean(this.revealedStars[star.id]);
         };
         Player.prototype.starIsDetected = function (star) {
+            if (!this.isAI && Rance.Options.debugMode)
+                return true;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             return Boolean(this.detectedStars[star.id]);

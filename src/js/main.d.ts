@@ -665,9 +665,13 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        enum UnitTemplateArchetype {
+            combat = 0,
+            defence = 1,
+            utility = 2,
+        }
         interface IUnitTemplate {
             type: string;
-            archetype: string;
             displayName: string;
             sprite: ISpriteTemplate;
             isSquadron: boolean;
@@ -675,6 +679,7 @@ declare module Rance {
             icon: string;
             maxHealth: number;
             maxMovePoints: number;
+            archetype: UnitTemplateArchetype;
             visionRange: number;
             detectionRange: number;
             isStealthy?: boolean;
@@ -898,6 +903,7 @@ declare module Rance {
             2: Templates.IItemTemplate[];
             3: Templates.IItemTemplate[];
         };
+        buildableUnitTypes: Templates.IUnitTemplate[];
         constructor(x: number, y: number, id?: number);
         severLinksToNonAdjacent(): void;
         addBuilding(building: Building): void;
@@ -1520,13 +1526,15 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IArchetypeValues {
+        [archetype: string]: number;
+        [archetype: number]: number;
+    }
     interface IPersonalityData {
         expansiveness: number;
         aggressiveness: number;
         friendliness: number;
-        unitCompositionPreference: {
-            [archetype: string]: number;
-        };
+        unitCompositionPreference: IArchetypeValues;
     }
     function makeRandomPersonality(): IPersonalityData;
     module Templates {
@@ -1845,9 +1853,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface IArchetypeValues {
-        [archetype: string]: number;
-    }
     class FrontsAI {
         player: Player;
         map: GalaxyMap;
@@ -1859,12 +1864,8 @@ declare module Rance {
         frontsToMove: Front[];
         constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonalityData);
         getTotalUnitCountByArchetype(): IArchetypeValues;
-        getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): {
-            [archetype: string]: number;
-        };
-        getGlobalUnitArcheypeScores(): {
-            [archetype: string]: number;
-        };
+        getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
+        getGlobalUnitArcheypeScores(): IArchetypeValues;
         getFrontUnitArchetypeScores(front: Front): {
             [archetype: string]: number;
         };

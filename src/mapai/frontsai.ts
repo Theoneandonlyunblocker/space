@@ -9,10 +9,6 @@
 
 module Rance
 {
-  export interface IArchetypeValues
-  {
-    [archetype: string]: number;
-  }
   interface IFrontUnitScore
   {
     unit: Unit;
@@ -66,10 +62,7 @@ module Rance
     {
       var relativeWeights = getRelativeWeightsFromObject(unitsByArchetype);
 
-      var deviationFromIdeal:
-      {
-        [archetype: string]: number
-      } = {};
+      var deviationFromIdeal: IArchetypeValues = {};
 
       for (var archetype in idealWeights)
       {

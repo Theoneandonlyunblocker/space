@@ -6,20 +6,15 @@ module Rance
 {
   export module Templates
   {
+    export enum UnitTemplateArchetype
+    {
+      combat, // overall fighting
+      defence, // protecting allies
+      utility // useful misc abilities
+    }
     export interface IUnitTemplate
     {
       type: string;
-
-      /*
-      archetype is used by the ai to balance unit composition
-      
-      combat: overall fighting
-      defence: protetcting allies
-      magic: int based damage dealer
-      support: boost / heal allies
-      utility: useful misc abilities
-       */
-      archetype: string;
       displayName: string;
       sprite: ISpriteTemplate;
       isSquadron: boolean;
@@ -27,6 +22,9 @@ module Rance
       icon: string;
       maxHealth: number;
       maxMovePoints: number;
+
+      // archetype is used by the ai to balance unit composition
+      archetype: UnitTemplateArchetype;
 
       // how many stars away unit can see
       // -1: no vision, 0: current star only, 1: current & 1 away etc.
@@ -51,7 +49,7 @@ module Rance
       {
         type: "cheatShip",
         displayName: "Debug Ship",
-        archetype: "combat",
+        archetype: UnitTemplateArchetype.combat,
         sprite:
         {
           imageSrc: "cheatShip.png",
@@ -92,7 +90,7 @@ module Rance
       {
         type: "fighterSquadron",
         displayName: "Fighter Squadron",
-        archetype: "combat",
+        archetype: UnitTemplateArchetype.combat,
         sprite:
         {
           imageSrc: "fighter.png",
@@ -123,7 +121,7 @@ module Rance
       {
         type: "bomberSquadron",
         displayName: "Bomber Squadron",
-        archetype: "combat",
+        archetype: UnitTemplateArchetype.combat,
         sprite:
         {
           imageSrc: "bomber.png",
@@ -154,7 +152,7 @@ module Rance
       {
         type: "battleCruiser",
         displayName: "Battlecruiser",
-        archetype: "combat",
+        archetype: UnitTemplateArchetype.combat,
         sprite:
         {
           imageSrc: "battleCruiser.png",
@@ -185,7 +183,7 @@ module Rance
       {
         type: "scout",
         displayName: "Scout",
-        archetype: "utility",
+        archetype: UnitTemplateArchetype.utility,
         sprite:
         {
           imageSrc: "scout.png",
@@ -215,7 +213,7 @@ module Rance
       {
         type: "stealthShip",
         displayName: "Stealth Ship",
-        archetype: "utility",
+        archetype: UnitTemplateArchetype.utility,
         sprite:
         {
           imageSrc: "scout.png",
@@ -246,7 +244,7 @@ module Rance
       {
         type: "shieldBoat",
         displayName: "Shield Boat",
-        archetype: "defence",
+        archetype: UnitTemplateArchetype.defence,
         sprite:
         {
           imageSrc: "shieldBoat.png",
