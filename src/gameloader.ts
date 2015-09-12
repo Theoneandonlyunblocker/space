@@ -166,7 +166,7 @@ module Rance
     }
     deserializePlayer(data: any)
     {
-      var personality: IPersonalityData;
+      var personality: IPersonality;
 
       if (data.personality)
       {
@@ -331,7 +331,7 @@ module Rance
     }
     deserializeShip(data: any)
     {
-      var template = Templates.ShipTypes[data.templateType];
+      var template = Templates.Units[data.templateType];
 
       var ship = new Unit(template, data.id, data);
 

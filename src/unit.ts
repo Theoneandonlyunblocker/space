@@ -1,5 +1,5 @@
-/// <reference path="../data/templates/unittemplates.ts" />
-/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="../data/templates/units.ts" />
+/// <reference path="../data/templates/abilities.ts" />
 
 /// <reference path="battlesfx/defaultunitscene.ts" />
 

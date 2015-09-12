@@ -2,6 +2,9 @@
 /// <reference path="../../src/unit.ts" />
 /// <reference path="../../src/damagetype.ts" />
 
+// "effect" should be used for referring to ability functionality. visual effects referred to as battleSFX TODO
+// example: Abilities.dealDamagePoison would have Effects.dealDamage & Effects.poison
+
 module Rance
 {
   export module Templates

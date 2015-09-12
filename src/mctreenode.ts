@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="../data/templates/abilities.ts" />
 /// <reference path="unit.ts"/>
 
 module Rance

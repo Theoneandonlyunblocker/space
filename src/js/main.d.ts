@@ -1,7 +1,7 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
-/// <reference path="../../data/templates/spritetemplate.d.ts" />
+/// <reference path="../../data/templates/ispritetemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
@@ -576,7 +576,7 @@ declare module Rance {
             facingRight: boolean;
             onLoaded: (canvas: HTMLCanvasElement) => void;
         }
-        interface IBattleEffectSFX {
+        interface IBattleSFXTemplate {
             duration: number;
             delay?: number;
             userSprite?: (props: SFXParams) => HTMLCanvasElement;
@@ -584,8 +584,8 @@ declare module Rance {
             battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
         }
         module BattleSFXTemplates {
-            var rocketAttack: IBattleEffectSFX;
-            var guard: IBattleEffectSFX;
+            var rocketAttack: IBattleSFXTemplate;
+            var guard: IBattleSFXTemplate;
         }
     }
 }
@@ -596,7 +596,7 @@ declare module Rance {
             trigger?: (user: Unit, target: Unit) => boolean;
             data?: any;
             attachedEffects?: IAbilityTemplateEffect[];
-            sfx?: IBattleEffectSFX;
+            sfx?: IBattleSFXTemplate;
         }
         interface IAbilityTemplate {
             type: string;
@@ -665,10 +665,16 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        enum UnitTemplateArchetype {
+        const enum UnitTemplateArchetype {
             combat = 0,
             defence = 1,
             utility = 2,
+        }
+        const enum UnitTemplateFamily {
+            debug = -2,
+            basic = -1,
+            red = 0,
+            blue = 1,
         }
         interface IUnitTemplate {
             type: string;
@@ -680,6 +686,7 @@ declare module Rance {
             maxHealth: number;
             maxMovePoints: number;
             archetype: UnitTemplateArchetype;
+            families: UnitTemplateFamily[];
             visionRange: number;
             detectionRange: number;
             isStealthy?: boolean;
@@ -692,7 +699,7 @@ declare module Rance {
             abilities: IAbilityTemplate[];
             passiveSkills?: IPassiveSkillTemplate[];
         }
-        module ShipTypes {
+        module Units {
             var cheatShip: IUnitTemplate;
             var fighterSquadron: IUnitTemplate;
             var bomberSquadron: IUnitTemplate;
@@ -1530,16 +1537,16 @@ declare module Rance {
         [archetype: string]: number;
         [archetype: number]: number;
     }
-    interface IPersonalityData {
+    interface IPersonality {
         expansiveness: number;
         aggressiveness: number;
         friendliness: number;
         unitCompositionPreference: IArchetypeValues;
     }
-    function makeRandomPersonality(): IPersonalityData;
+    function makeRandomPersonality(): IPersonality;
     module Templates {
         module Personalities {
-            var testPersonality1: IPersonalityData;
+            var testPersonality1: IPersonality;
         }
     }
 }
@@ -1795,7 +1802,7 @@ declare module Rance {
         mapEvaluator: MapEvaluator;
         map: GalaxyMap;
         player: Player;
-        personality: IPersonalityData;
+        personality: IPersonality;
         objectivesByType: {
             expansion: Objective[];
             cleanPirates: Objective[];
@@ -1804,7 +1811,7 @@ declare module Rance {
         objectives: Objective[];
         maxActiveExpansionRequests: number;
         requests: any[];
-        constructor(mapEvaluator: MapEvaluator, personality: IPersonalityData);
+        constructor(mapEvaluator: MapEvaluator, personality: IPersonality);
         setAllObjectives(): void;
         addObjectives(objectives: Objective[]): void;
         getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
@@ -1858,11 +1865,11 @@ declare module Rance {
         map: GalaxyMap;
         mapEvaluator: MapEvaluator;
         objectivesAI: ObjectivesAI;
-        personality: IPersonalityData;
+        personality: IPersonality;
         fronts: Front[];
         frontsRequestingUnits: Front[];
         frontsToMove: Front[];
-        constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonalityData);
+        constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonality);
         getTotalUnitCountByArchetype(): IArchetypeValues;
         getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
         getGlobalUnitArcheypeScores(): IArchetypeValues;
@@ -1895,12 +1902,12 @@ declare module Rance {
         frontsAI: FrontsAI;
         mapEvaluator: MapEvaluator;
         player: Player;
-        personality: IPersonalityData;
+        personality: IPersonality;
         constructor(props: {
             objectivesAI: ObjectivesAI;
             frontsAI: FrontsAI;
             mapEvaluator: MapEvaluator;
-            personality: IPersonalityData;
+            personality: IPersonality;
         });
         satisfyAllRequests(): void;
         satisfyFrontRequest(front: Front): void;
@@ -1911,9 +1918,9 @@ declare module Rance {
         game: Game;
         player: Player;
         diplomacyStatus: DiplomacyStatus;
-        personality: IPersonalityData;
+        personality: IPersonality;
         mapEvaluator: MapEvaluator;
-        constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonalityData);
+        constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality);
         setAttitudes(): void;
     }
 }
@@ -1921,14 +1928,14 @@ declare module Rance {
     class AIController {
         player: Player;
         game: Game;
-        personality: IPersonalityData;
+        personality: IPersonality;
         map: GalaxyMap;
         mapEvaluator: MapEvaluator;
         objectivesAI: ObjectivesAI;
         economicAI: EconomyAI;
         frontsAI: FrontsAI;
         diplomacyAI: DiplomacyAI;
-        constructor(player: Player, game: Game, personality?: IPersonalityData);
+        constructor(player: Player, game: Game, personality?: IPersonality);
         processTurn(afterFinishedCallback?: any): void;
         finishMovingFleets(afterFinishedCallback?: any): void;
     }
@@ -1951,7 +1958,7 @@ declare module Rance {
         fleets: Fleet[];
         items: Item[];
         isAI: boolean;
-        personality: IPersonalityData;
+        personality: IPersonality;
         AIController: AIController;
         isIndependent: boolean;
         diplomacyStatus: DiplomacyStatus;
@@ -2106,7 +2113,7 @@ declare module Rance {
         }[];
         user: Unit;
         target: Unit;
-        sfx: Templates.IBattleEffectSFX;
+        sfx: Templates.IBattleSFXTemplate;
         trigger: (user: Unit, target: Unit) => boolean;
     }
     interface IAbilityUseData {

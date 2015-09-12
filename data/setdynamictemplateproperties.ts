@@ -1,7 +1,7 @@
 /// <reference path="../src/utility.ts" />
 /// <reference path="../src/unit.ts" />
 
-/// <reference path="templates/abilitytemplates.ts" />
+/// <reference path="templates/abilities.ts" />
 
 module Rance
 {
@@ -20,8 +20,8 @@ module Rance
         effects = effects.concat(ability.secondaryEffects);
       }
 
-      var dummyUser = new Unit(getRandomProperty(Templates.ShipTypes));
-      var dummyTarget = new Unit(getRandomProperty(Templates.ShipTypes));
+      var dummyUser = new Unit(getRandomProperty(Templates.Units));
+      var dummyTarget = new Unit(getRandomProperty(Templates.Units));
 
       for (var i = 0; i < effects.length; i++)
       {

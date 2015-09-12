@@ -6508,6 +6508,8 @@ var Rance;
 /// <reference path="../../src/targeting.ts" />
 /// <reference path="../../src/unit.ts" />
 /// <reference path="../../src/damagetype.ts" />
+// "effect" should be used for referring to ability functionality. visual effects referred to as battleSFX TODO
+// example: Abilities.dealDamagePoison would have Effects.dealDamage & Effects.poison
 var Rance;
 (function (Rance) {
     var Templates;
@@ -6976,8 +6978,8 @@ var Rance;
         })(BattleSFXTemplates = Templates.BattleSFXTemplates || (Templates.BattleSFXTemplates = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="effecttemplates.ts" />
-/// <reference path="battleeffectsfxtemplates.ts" />
+/// <reference path="effects.ts" />
+/// <reference path="battlesfxtemplates.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7191,7 +7193,7 @@ var Rance;
         })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="abilitytemplates.ts" />
+/// <reference path="abilities.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7302,25 +7304,20 @@ var Rance;
         })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="abilitytemplates.ts"/>
-/// <reference path="passiveskilltemplates.ts" />
-/// <reference path="spritetemplate.d.ts"/>
+/// <reference path="abilities.ts"/>
+/// <reference path="passiveskills.ts" />
+/// <reference path="ispritetemplate.d.ts"/>
 var Rance;
 (function (Rance) {
     var Templates;
     (function (Templates) {
-        (function (UnitTemplateArchetype) {
-            UnitTemplateArchetype[UnitTemplateArchetype["combat"] = 0] = "combat";
-            UnitTemplateArchetype[UnitTemplateArchetype["defence"] = 1] = "defence";
-            UnitTemplateArchetype[UnitTemplateArchetype["utility"] = 2] = "utility"; // useful misc abilities
-        })(Templates.UnitTemplateArchetype || (Templates.UnitTemplateArchetype = {}));
-        var UnitTemplateArchetype = Templates.UnitTemplateArchetype;
-        var ShipTypes;
-        (function (ShipTypes) {
-            ShipTypes.cheatShip = {
+        var Units;
+        (function (Units) {
+            Units.cheatShip = {
                 type: "cheatShip",
                 displayName: "Debug Ship",
-                archetype: UnitTemplateArchetype.combat,
+                archetype: 0 /* combat */,
+                families: [-2 /* debug */],
                 sprite: {
                     imageSrc: "cheatShip.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7353,10 +7350,11 @@ var Rance;
                     Templates.PassiveSkills.medic
                 ]
             };
-            ShipTypes.fighterSquadron = {
+            Units.fighterSquadron = {
                 type: "fighterSquadron",
                 displayName: "Fighter Squadron",
-                archetype: UnitTemplateArchetype.combat,
+                archetype: 0 /* combat */,
+                families: [-1 /* basic */],
                 sprite: {
                     imageSrc: "fighter.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7380,10 +7378,11 @@ var Rance;
                     Templates.Abilities.standBy
                 ]
             };
-            ShipTypes.bomberSquadron = {
+            Units.bomberSquadron = {
                 type: "bomberSquadron",
                 displayName: "Bomber Squadron",
-                archetype: UnitTemplateArchetype.combat,
+                archetype: 0 /* combat */,
+                families: [-1 /* basic */],
                 sprite: {
                     imageSrc: "bomber.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7407,10 +7406,11 @@ var Rance;
                     Templates.Abilities.standBy
                 ]
             };
-            ShipTypes.battleCruiser = {
+            Units.battleCruiser = {
                 type: "battleCruiser",
                 displayName: "Battlecruiser",
-                archetype: UnitTemplateArchetype.combat,
+                archetype: 0 /* combat */,
+                families: [-1 /* basic */],
                 sprite: {
                     imageSrc: "battleCruiser.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7434,10 +7434,11 @@ var Rance;
                     Templates.Abilities.standBy
                 ]
             };
-            ShipTypes.scout = {
+            Units.scout = {
                 type: "scout",
                 displayName: "Scout",
-                archetype: UnitTemplateArchetype.utility,
+                archetype: 2 /* utility */,
+                families: [-1 /* basic */],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7460,10 +7461,11 @@ var Rance;
                     Templates.Abilities.standBy
                 ]
             };
-            ShipTypes.stealthShip = {
+            Units.stealthShip = {
                 type: "stealthShip",
                 displayName: "Stealth Ship",
-                archetype: UnitTemplateArchetype.utility,
+                archetype: 2 /* utility */,
+                families: [-1 /* basic */],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7487,10 +7489,11 @@ var Rance;
                     Templates.Abilities.standBy
                 ]
             };
-            ShipTypes.shieldBoat = {
+            Units.shieldBoat = {
                 type: "shieldBoat",
                 displayName: "Shield Boat",
-                archetype: UnitTemplateArchetype.defence,
+                archetype: 1 /* defence */,
+                families: [-1 /* basic */],
                 sprite: {
                     imageSrc: "shieldBoat.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7517,7 +7520,7 @@ var Rance;
                     Templates.PassiveSkills.initialGuard
                 ]
             };
-        })(ShipTypes = Templates.ShipTypes || (Templates.ShipTypes = {}));
+        })(Units = Templates.Units || (Templates.Units = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 var Rance;
@@ -7786,7 +7789,7 @@ var Rance;
         })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/buildingtemplates.ts" />
+/// <reference path="../data/templates/buildings.ts" />
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
 var Rance;
@@ -7849,8 +7852,8 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
-/// <reference path="abilitytemplates.ts" />
-/// <reference path="passiveskilltemplates.ts" />
+/// <reference path="abilities.ts" />
+/// <reference path="passiveskills.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7963,7 +7966,7 @@ var Rance;
         })(Items = Templates.Items || (Templates.Items = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/itemtemplates.ts" />
+/// <reference path="../data/templates/items.ts" />
 /// <reference path="unit.ts" />
 var Rance;
 (function (Rance) {
@@ -7985,7 +7988,7 @@ var Rance;
     })();
     Rance.Item = Item;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/itemtemplates.ts" />
+/// <reference path="../data/templates/items.ts" />
 /// <reference path="item.ts" />
 /// <reference path="utility.ts" />
 var Rance;
@@ -8008,7 +8011,7 @@ var Rance;
     })();
     Rance.ItemGenerator = ItemGenerator;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/resourcetemplates.ts" />
+/// <reference path="../data/templates/resources.ts" />
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
@@ -9596,7 +9599,7 @@ var Rance;
     Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
-/// <reference path="../data/templates/subemblemtemplates.ts" />
+/// <reference path="../data/templates/subemblems.ts" />
 /// <reference path="color.ts"/>
 var Rance;
 (function (Rance) {
@@ -9858,7 +9861,7 @@ var Rance;
     })();
     Rance.Flag = Flag;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="../data/templates/abilities.ts" />
 /// <reference path="unit.ts"/>
 var Rance;
 (function (Rance) {
@@ -10222,7 +10225,7 @@ var Rance;
             };
             var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
                 var score = unit.getStrengthEvaluation();
-                if (unit.template.archetype === Rance.Templates.UnitTemplateArchetype.defence && row === "front") {
+                if (unit.template.archetype === 1 /* defence */ && row === "front") {
                     score *= frontRowDefenceBonus;
                 }
                 var archetype = unit.template.archetype;
@@ -10251,7 +10254,7 @@ var Rance;
                         totalDefenceUnderThreshhold = 0;
                     }
                     else if (!alreadyHasDefender &&
-                        unit.template.archetype === Rance.Templates.UnitTemplateArchetype.defence) {
+                        unit.template.archetype === 1 /* defence */) {
                         alreadyHasDefender = true;
                         totalDefenceUnderThreshhold += 0.5;
                     }
@@ -10711,17 +10714,16 @@ var Rance;
     function makeRandomPersonality() {
         // {[prop]: value} is ES6 object initializer syntax that gets compiled to ES5 by typescript
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer
-        var unitCompositionPreference = (_a = {},
-            _a[Templates.UnitTemplateArchetype.combat] = Math.random(),
-            _a[Templates.UnitTemplateArchetype.defence] = Math.random(),
-            _a[Templates.UnitTemplateArchetype.utility] = Math.random(),
-            _a
-        );
         return ({
             expansiveness: Math.random(),
             aggressiveness: Math.random(),
             friendliness: Math.random(),
-            unitCompositionPreference: unitCompositionPreference
+            unitCompositionPreference: (_a = {},
+                _a[0 /* combat */] = Math.random(),
+                _a[1 /* defence */] = Math.random(),
+                _a[2 /* utility */] = Math.random(),
+                _a
+            )
         });
         var _a;
     }
@@ -10735,9 +10737,9 @@ var Rance;
                 aggressiveness: 0.6,
                 friendliness: 0.4,
                 unitCompositionPreference: (_a = {},
-                    _a[Templates.UnitTemplateArchetype.combat] = 1,
-                    _a[Templates.UnitTemplateArchetype.defence] = 0.8,
-                    _a[Templates.UnitTemplateArchetype.utility] = 0.3,
+                    _a[0 /* combat */] = 1,
+                    _a[1 /* defence */] = 0.8,
+                    _a[2 /* utility */] = 0.3,
                     _a
                 )
             };
@@ -12132,7 +12134,7 @@ var Rance;
     })();
     Rance.Front = Front;
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 /// <reference path="../player.ts"/>
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="objectivesai.ts"/>
@@ -12450,7 +12452,7 @@ var Rance;
     })();
     Rance.FrontsAI = FrontsAI;
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="mapevaluator.ts"/>
@@ -12548,7 +12550,7 @@ var Rance;
     })();
     Rance.DiplomacyAI = DiplomacyAI;
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
@@ -12786,8 +12788,8 @@ var Rance;
         };
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
-            for (var type in Rance.Templates.ShipTypes) {
-                var template = Rance.Templates.ShipTypes[type];
+            for (var type in Rance.Templates.Units) {
+                var template = Rance.Templates.Units[type];
                 if (type === "cheatShip" && (this.isAI || !Rance.Options.debugMode)) {
                     continue;
                 }
@@ -13496,9 +13498,9 @@ var Rance;
     })();
     Rance.Battle = Battle;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/effecttemplates.ts" />
-/// <reference path="../data/templates/abilitytemplates.ts" />
-/// <reference path="../data/templates/battleeffectsfxtemplates.ts" />
+/// <reference path="../data/templates/effects.ts" />
+/// <reference path="../data/templates/abilities.ts" />
+/// <reference path="../data/templates/battlesfxtemplates.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -13814,7 +13816,7 @@ var Rance;
         })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/statuseffecttemplates.ts" />
+/// <reference path="../data/templates/statuseffects.ts" />
 var Rance;
 (function (Rance) {
     var StatusEffect = (function () {
@@ -13839,8 +13841,8 @@ var Rance;
     })();
     Rance.StatusEffect = StatusEffect;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/unittemplates.ts" />
-/// <reference path="../data/templates/abilitytemplates.ts" />
+/// <reference path="../data/templates/units.ts" />
+/// <reference path="../data/templates/abilities.ts" />
 /// <reference path="battlesfx/defaultunitscene.ts" />
 /// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
@@ -15906,7 +15908,7 @@ var Rance;
         MapGen2.Region2 = Region2;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/resourcetemplates.ts" />
+/// <reference path="../../data/templates/resources.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
@@ -16192,9 +16194,9 @@ var Rance;
             var minShips = 2;
             var maxShips = 6;
             setDistancesFromNearestPlayerOwnedStar(stars);
-            var shipTypes = Object.keys(Rance.Templates.ShipTypes);
+            var shipTypes = Object.keys(Rance.Templates.Units);
             shipTypes = shipTypes.filter(function (shipType) {
-                return shipType !== "cheatShip" && !Rance.Templates.ShipTypes[shipType].isStealthy;
+                return shipType !== "cheatShip" && !Rance.Templates.Units[shipType].isStealthy;
             });
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
@@ -16213,7 +16215,7 @@ var Rance;
                     }
                     var ships = [];
                     for (var j = 0; j < shipAmount; j++) {
-                        var ship = new Rance.Unit(Rance.Templates.ShipTypes[Rance.getRandomArrayItem(shipTypes)]);
+                        var ship = new Rance.Unit(Rance.Templates.Units[Rance.getRandomArrayItem(shipTypes)]);
                         player.addUnit(ship);
                         ships.push(ship);
                     }
@@ -20262,7 +20264,7 @@ var Rance;
             return fleet;
         };
         GameLoader.prototype.deserializeShip = function (data) {
-            var template = Rance.Templates.ShipTypes[data.templateType];
+            var template = Rance.Templates.Units[data.templateType];
             var ship = new Rance.Unit(template, data.id, data);
             this.unitsById[ship.id] = ship;
             return ship;
@@ -20281,7 +20283,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../src/utility.ts" />
 /// <reference path="../src/unit.ts" />
-/// <reference path="templates/abilitytemplates.ts" />
+/// <reference path="templates/abilities.ts" />
 var Rance;
 (function (Rance) {
     function setAllDynamicTemplateProperties() {
@@ -20295,8 +20297,8 @@ var Rance;
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
-            var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.ShipTypes));
+            var dummyUser = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.Units));
+            var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].template.effect(dummyUser, dummyTarget, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {

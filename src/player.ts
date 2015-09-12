@@ -35,7 +35,7 @@ module Rance
     items: Item[] = [];
 
     isAI: boolean = false;
-    personality: IPersonalityData;
+    personality: IPersonality;
     AIController: AIController;
     isIndependent: boolean = false;
 
@@ -277,9 +277,9 @@ module Rance
     {
       var templates: Templates.IUnitTemplate[] = [];
 
-      for (var type in Templates.ShipTypes)
+      for (var type in Templates.Units)
       {
-        var template = Templates.ShipTypes[type];
+        var template = Templates.Units[type];
         if (type === "cheatShip" && (this.isAI || !Options.debugMode))
         {
           continue;

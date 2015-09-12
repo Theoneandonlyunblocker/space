@@ -1,16 +1,23 @@
-/// <reference path="abilitytemplates.ts"/>
-/// <reference path="passiveskilltemplates.ts" />
-/// <reference path="spritetemplate.d.ts"/>
+/// <reference path="abilities.ts"/>
+/// <reference path="passiveskills.ts" />
+/// <reference path="ispritetemplate.d.ts"/>
 
 module Rance
 {
   export module Templates
   {
-    export enum UnitTemplateArchetype
+    export const enum UnitTemplateArchetype
     {
       combat, // overall fighting
       defence, // protecting allies
       utility // useful misc abilities
+    }
+    export const enum UnitTemplateFamily
+    {
+      debug = -2, // negative values are used by default map gen functions to ignore family
+      basic = -1, 
+      red = 0,
+      blue = 1
     }
     export interface IUnitTemplate
     {
@@ -25,6 +32,9 @@ module Rance
 
       // archetype is used by the ai to balance unit composition
       archetype: UnitTemplateArchetype;
+      // family is used to group ships for local specialties and AI favorites
+      // f.ex. sector specializes in producing units with beam weapons
+      families : UnitTemplateFamily[];
 
       // how many stars away unit can see
       // -1: no vision, 0: current star only, 1: current & 1 away etc.
@@ -43,13 +53,14 @@ module Rance
       abilities: IAbilityTemplate[];
       passiveSkills?: IPassiveSkillTemplate[];
     }
-    export module ShipTypes
+    export module Units
     {
       export var cheatShip: IUnitTemplate =
       {
         type: "cheatShip",
         displayName: "Debug Ship",
         archetype: UnitTemplateArchetype.combat,
+        families: [UnitTemplateFamily.debug],
         sprite:
         {
           imageSrc: "cheatShip.png",
@@ -91,6 +102,7 @@ module Rance
         type: "fighterSquadron",
         displayName: "Fighter Squadron",
         archetype: UnitTemplateArchetype.combat,
+        families: [UnitTemplateFamily.basic],
         sprite:
         {
           imageSrc: "fighter.png",
@@ -122,6 +134,7 @@ module Rance
         type: "bomberSquadron",
         displayName: "Bomber Squadron",
         archetype: UnitTemplateArchetype.combat,
+        families: [UnitTemplateFamily.basic],
         sprite:
         {
           imageSrc: "bomber.png",
@@ -153,6 +166,7 @@ module Rance
         type: "battleCruiser",
         displayName: "Battlecruiser",
         archetype: UnitTemplateArchetype.combat,
+        families: [UnitTemplateFamily.basic],
         sprite:
         {
           imageSrc: "battleCruiser.png",
@@ -184,6 +198,7 @@ module Rance
         type: "scout",
         displayName: "Scout",
         archetype: UnitTemplateArchetype.utility,
+        families: [UnitTemplateFamily.basic],
         sprite:
         {
           imageSrc: "scout.png",
@@ -214,6 +229,7 @@ module Rance
         type: "stealthShip",
         displayName: "Stealth Ship",
         archetype: UnitTemplateArchetype.utility,
+        families: [UnitTemplateFamily.basic],
         sprite:
         {
           imageSrc: "scout.png",
@@ -245,6 +261,7 @@ module Rance
         type: "shieldBoat",
         displayName: "Shield Boat",
         archetype: UnitTemplateArchetype.defence,
+        families: [UnitTemplateFamily.basic],
         sprite:
         {
           imageSrc: "shieldBoat.png",

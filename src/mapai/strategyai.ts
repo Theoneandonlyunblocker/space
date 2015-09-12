@@ -1,4 +1,4 @@
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 
 module Rance
 {
@@ -7,10 +7,10 @@ module Rance
     player: Player;
     map: GalaxyMap;
     mapEvaluator: MapEvaluator;
-    personality: IPersonalityData;
+    personality: IPersonality;
 
     constructor(mapEvaluator: MapEvaluator, game: Game,
-      personality: IPersonalityData)
+      personality: IPersonality)
     {
       this.mapEvaluator = mapEvaluator;
       this.player = mapEvaluator.player;

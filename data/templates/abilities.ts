@@ -1,5 +1,5 @@
-/// <reference path="effecttemplates.ts" />
-/// <reference path="battleeffectsfxtemplates.ts" />
+/// <reference path="effects.ts" />
+/// <reference path="battlesfxtemplates.ts" />
 
 
 module Rance
@@ -14,7 +14,7 @@ module Rance
       // called after parent effect with same user and effect target
       // nesting these wont work and wouldnt do anything anyway
       attachedEffects?: IAbilityTemplateEffect[];
-      sfx?: IBattleEffectSFX;
+      sfx?: IBattleSFXTemplate;
     }
     export interface IAbilityTemplate
     {

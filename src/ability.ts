@@ -1,6 +1,6 @@
-/// <reference path="../data/templates/effecttemplates.ts" />
-/// <reference path="../data/templates/abilitytemplates.ts" />
-/// <reference path="../data/templates/battleeffectsfxtemplates.ts" />
+/// <reference path="../data/templates/effects.ts" />
+/// <reference path="../data/templates/abilities.ts" />
+/// <reference path="../data/templates/battlesfxtemplates.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -12,7 +12,7 @@ module Rance
     effects: {(): void;}[];
     user: Unit;
     target: Unit;
-    sfx: Templates.IBattleEffectSFX;
+    sfx: Templates.IBattleSFXTemplate;
     trigger: (user: Unit, target: Unit) => boolean;
   }
   export interface IAbilityUseData

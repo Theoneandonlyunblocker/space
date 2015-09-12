@@ -1,4 +1,4 @@
-/// <reference path="../../data/templates/resourcetemplates.ts" />
+/// <reference path="../../data/templates/resources.ts" />
 
 /// <reference path="../star.ts" />
 

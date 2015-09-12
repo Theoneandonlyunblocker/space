@@ -1,5 +1,5 @@
-/// <reference path="abilitytemplates.ts" />
-/// <reference path="passiveskilltemplates.ts" />
+/// <reference path="abilities.ts" />
+/// <reference path="passiveskills.ts" />
 
 module Rance
 {

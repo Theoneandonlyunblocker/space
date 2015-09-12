@@ -16,7 +16,7 @@ module Rance
       facingRight: boolean;
       onLoaded: (canvas: HTMLCanvasElement) => void;
     }
-    export interface IBattleEffectSFX
+    export interface IBattleSFXTemplate
     {
       duration: number;
       delay?: number; // 0.0 - 1.0; how far in the sfx the effect function should be called
@@ -28,13 +28,13 @@ module Rance
     }
     export module BattleSFXTemplates
     {
-      export var rocketAttack: IBattleEffectSFX =
+      export var rocketAttack: IBattleSFXTemplate =
       {
         duration: 1500,
         battleOverlay: BattleSFX.rocketAttack,
         delay: 0.3
       }
-      export var guard: IBattleEffectSFX =
+      export var guard: IBattleSFXTemplate =
       {
         duration: 1500,
         battleOverlay: BattleSFX.guard,

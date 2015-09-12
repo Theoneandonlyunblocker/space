@@ -1,4 +1,4 @@
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
@@ -17,7 +17,7 @@ module Rance
     mapEvaluator: MapEvaluator;
     player: Player;
 
-    personality: IPersonalityData;
+    personality: IPersonality;
 
     constructor(props:
     {
@@ -25,7 +25,7 @@ module Rance
       frontsAI: FrontsAI;
 
       mapEvaluator: MapEvaluator;
-      personality: IPersonalityData;
+      personality: IPersonality;
     })
     {
       this.objectivesAI = props.objectivesAI;

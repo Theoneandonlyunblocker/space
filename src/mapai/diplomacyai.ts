@@ -15,10 +15,10 @@ module Rance
     player: Player;
     diplomacyStatus: DiplomacyStatus;
 
-    personality: IPersonalityData;
+    personality: IPersonality;
     mapEvaluator: MapEvaluator;
 
-    constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonalityData)
+    constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality)
     {
       this.game = game;
       

@@ -5,7 +5,7 @@ module Rance
     [archetype: string]: number; // archetype: Templates.UnitTemplateArchetype
     [archetype: number]: number;
   }
-  export interface IPersonalityData
+  export interface IPersonality
   {
     expansiveness: number;
     aggressiveness: number;
@@ -13,30 +13,29 @@ module Rance
 
     unitCompositionPreference: IArchetypeValues;
   }
-  export function makeRandomPersonality(): IPersonalityData
+  export function makeRandomPersonality(): IPersonality
   {
     // {[prop]: value} is ES6 object initializer syntax that gets compiled to ES5 by typescript
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer
-    var unitCompositionPreference: IArchetypeValues =
-    {
-      [Templates.UnitTemplateArchetype.combat]: Math.random(),
-      [Templates.UnitTemplateArchetype.defence]: Math.random(),
-      [Templates.UnitTemplateArchetype.utility]: Math.random()
-    }
     return(
     {
       expansiveness: Math.random(),
       aggressiveness: Math.random(),
       friendliness: Math.random(),
 
-      unitCompositionPreference: unitCompositionPreference
+      unitCompositionPreference:
+      {
+        [Templates.UnitTemplateArchetype.combat]: Math.random(),
+        [Templates.UnitTemplateArchetype.defence]: Math.random(),
+        [Templates.UnitTemplateArchetype.utility]: Math.random()
+      }
     });
   }
   export module Templates
   {
     export module Personalities
     {
-      export var testPersonality1: IPersonalityData =
+      export var testPersonality1: IPersonality =
       {
         expansiveness: 1,
         aggressiveness: 0.6,

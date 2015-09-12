@@ -1,4 +1,4 @@
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 
 /// <reference path="../player.ts"/>
 /// <reference path="../galaxymap.ts"/>
@@ -21,14 +21,14 @@ module Rance
     map: GalaxyMap;
     mapEvaluator: MapEvaluator;
     objectivesAI: ObjectivesAI;
-    personality: IPersonalityData;
+    personality: IPersonality;
 
     fronts: Front[] = [];
     frontsRequestingUnits: Front[] = [];
     frontsToMove: Front[] = [];
 
     constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI,
-      personality: IPersonalityData)
+      personality: IPersonality)
     {
       this.mapEvaluator = mapEvaluator;
       this.map = mapEvaluator.map;

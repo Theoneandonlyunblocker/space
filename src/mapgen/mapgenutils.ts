@@ -306,10 +306,10 @@ module Rance
 
       setDistancesFromNearestPlayerOwnedStar(stars);
 
-      var shipTypes: string[] = Object.keys(Templates.ShipTypes);
+      var shipTypes: string[] = Object.keys(Templates.Units);
       shipTypes = shipTypes.filter(function(shipType: string)
       {
-        return shipType !== "cheatShip" && !Templates.ShipTypes[shipType].isStealthy;
+        return shipType !== "cheatShip" && !Templates.Units[shipType].isStealthy;
       });
 
       for (var i = 0; i < stars.length; i++)
@@ -340,7 +340,7 @@ module Rance
           var ships: Unit[] = [];
           for (var j = 0; j < shipAmount; j++)
           {
-            var ship = new Unit(Templates.ShipTypes[getRandomArrayItem(shipTypes)]);
+            var ship = new Unit(Templates.Units[getRandomArrayItem(shipTypes)]);
             player.addUnit(ship);
             ships.push(ship);
           }

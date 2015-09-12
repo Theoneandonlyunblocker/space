@@ -31,7 +31,7 @@ module Rance
     mapEvaluator: MapEvaluator;
     map: GalaxyMap;
     player: Player;
-    personality: IPersonalityData;
+    personality: IPersonality;
 
     objectivesByType =
     {
@@ -45,7 +45,7 @@ module Rance
 
     requests: any[] = [];
 
-    constructor(mapEvaluator: MapEvaluator, personality: IPersonalityData)
+    constructor(mapEvaluator: MapEvaluator, personality: IPersonality)
     {
       this.mapEvaluator = mapEvaluator;
       this.map = mapEvaluator.map;

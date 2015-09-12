@@ -1,4 +1,4 @@
-/// <reference path="../../data/templates/personalitytemplates.ts" />
+/// <reference path="../../data/templates/personalities.ts" />
 
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
@@ -17,7 +17,7 @@ module Rance
     player: Player;
     game: Game;
 
-    personality: IPersonalityData;
+    personality: IPersonality;
     map: GalaxyMap;
 
     mapEvaluator: MapEvaluator;
@@ -27,7 +27,7 @@ module Rance
     frontsAI: FrontsAI;
     diplomacyAI: DiplomacyAI;
 
-    constructor(player: Player, game: Game, personality?: IPersonalityData)
+    constructor(player: Player, game: Game, personality?: IPersonality)
     {
       this.personality = personality || makeRandomPersonality();
 

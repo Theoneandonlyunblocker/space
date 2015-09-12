@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/resourcetemplates.ts" />
+/// <reference path="../data/templates/resources.ts" />
 
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
@@ -80,6 +80,7 @@ module Rance
       2: [],
       3: []
     };
+    buildableUnitTypes: Templates.IUnitTemplate[] = [];
 
     constructor(x: number, y: number, id?: number)
     {
@@ -351,8 +352,7 @@ module Rance
 
     getBuildableShipTypes()
     {
-      // TODO add local unit types similar to dominions independents
-      return this.owner.getGloballyBuildableShips();
+      return this.owner.getGloballyBuildableShips().concat(this.buildableUnitTypes);
     }
 
     // FLEETS

@@ -1,5 +1,5 @@
 /// <reference path="../lib/rng.d.ts" />
-/// <reference path="../data/templates/subemblemtemplates.ts" />
+/// <reference path="../data/templates/subemblems.ts" />
 
 /// <reference path="color.ts"/>
 
