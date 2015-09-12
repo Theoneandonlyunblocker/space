@@ -3,398 +3,401 @@
 
 module Rance
 {
-  export class Front
+  export module MapAI
   {
-    id: number;
-    objective: Objective;
-    priority: number;
-    units: Unit[];
-
-    minUnitsDesired: number;
-    idealUnitsDesired: number;
-
-    targetLocation: Star;
-    musterLocation: Star;
-    hasMustered: boolean = false;
-
-    constructor(props:
+    export class Front
     {
       id: number;
       objective: Objective;
       priority: number;
-      units?: Unit[];
-      
+      units: Unit[];
+
       minUnitsDesired: number;
       idealUnitsDesired: number;
 
       targetLocation: Star;
       musterLocation: Star;
-    })
-    {
-      this.id = props.id;
-      this.objective = props.objective;
-      this.priority = props.priority;
-      this.units = props.units || [];
+      hasMustered: boolean = false;
 
-      this.minUnitsDesired = props.minUnitsDesired;
-      this.idealUnitsDesired = props.idealUnitsDesired;
-
-      this.targetLocation = props.targetLocation;
-      this.musterLocation = props.musterLocation;
-    }
-
-    organizeFleets()
-    {
-      // pure fleet only has units belonging to this front in it
-      /*
-      get all pure fleets + location
-      get all ships in impure fleets + location
-      merge pure fleets at same location
-      move impure ships to pure fleets at location if possible
-      create new pure fleets with remaining impure units
-       */
-      var allFleets = this.getAssociatedFleets();
-
-      var pureFleetsByLocation:
+      constructor(props:
       {
-        [starId: number]: Fleet[];
-      } = {};
-      var impureFleetMembersByLocation:
-      {
-        [starId: number]: Unit[];
-      } = {};
+        id: number;
+        objective: Objective;
+        priority: number;
+        units?: Unit[];
+        
+        minUnitsDesired: number;
+        idealUnitsDesired: number;
 
-      var ownUnitFilterFN = function(unit: Unit)
+        targetLocation: Star;
+        musterLocation: Star;
+      })
       {
-        return this.getUnitIndex(unit) >= 0;
-      }.bind(this);
+        this.id = props.id;
+        this.objective = props.objective;
+        this.priority = props.priority;
+        this.units = props.units || [];
 
-      // build indexes of pure fleets and impure ships
-      for (var i = 0; i < allFleets.length; i++)
+        this.minUnitsDesired = props.minUnitsDesired;
+        this.idealUnitsDesired = props.idealUnitsDesired;
+
+        this.targetLocation = props.targetLocation;
+        this.musterLocation = props.musterLocation;
+      }
+
+      organizeFleets()
       {
-        var fleet = allFleets[i];
-        var star = fleet.location;
+        // pure fleet only has units belonging to this front in it
+        /*
+        get all pure fleets + location
+        get all ships in impure fleets + location
+        merge pure fleets at same location
+        move impure ships to pure fleets at location if possible
+        create new pure fleets with remaining impure units
+         */
+        var allFleets = this.getAssociatedFleets();
 
-        if (this.isFleetPure(fleet))
+        var pureFleetsByLocation:
         {
-          if (!pureFleetsByLocation[star.id])
-          {
-            pureFleetsByLocation[star.id] = [];
-          }
-
-          pureFleetsByLocation[star.id].push(fleet);
-        }
-        else
+          [starId: number]: Fleet[];
+        } = {};
+        var impureFleetMembersByLocation:
         {
-          var ownUnits = fleet.ships.filter(ownUnitFilterFN);
+          [starId: number]: Unit[];
+        } = {};
 
-          for (var j = 0; j < ownUnits.length; j++)
+        var ownUnitFilterFN = function(unit: Unit)
+        {
+          return this.getUnitIndex(unit) >= 0;
+        }.bind(this);
+
+        // build indexes of pure fleets and impure ships
+        for (var i = 0; i < allFleets.length; i++)
+        {
+          var fleet = allFleets[i];
+          var star = fleet.location;
+
+          if (this.isFleetPure(fleet))
           {
-            if (!impureFleetMembersByLocation[star.id])
+            if (!pureFleetsByLocation[star.id])
             {
-              impureFleetMembersByLocation[star.id] = [];
+              pureFleetsByLocation[star.id] = [];
             }
 
-            impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+            pureFleetsByLocation[star.id].push(fleet);
           }
-        }
-      }
-
-      var sortFleetsBySizeFN = function(a: Fleet, b: Fleet)
-      {
-        return b.ships.length - a.ships.length;
-      }
-
-      for (var starId in pureFleetsByLocation)
-      {
-        // combine pure fleets at same location
-        var fleets = pureFleetsByLocation[starId];
-        if (fleets.length > 1)
-        {
-          fleets.sort(sortFleetsBySizeFN);
-
-          // only goes down to i = 1 !!
-          for (var i = fleets.length - 1; i >= 1; i--)
+          else
           {
-            fleets[i].mergeWith(fleets[0]);
-            fleets.splice(i, 1);
+            var ownUnits = fleet.ships.filter(ownUnitFilterFN);
+
+            for (var j = 0; j < ownUnits.length; j++)
+            {
+              if (!impureFleetMembersByLocation[star.id])
+              {
+                impureFleetMembersByLocation[star.id] = [];
+              }
+
+              impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+            }
           }
         }
 
-        // move impure ships to pure fleets at same location
-        if (impureFleetMembersByLocation[starId])
+        var sortFleetsBySizeFN = function(a: Fleet, b: Fleet)
         {
-          for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--)
+          return b.ships.length - a.ships.length;
+        }
+
+        for (var starId in pureFleetsByLocation)
+        {
+          // combine pure fleets at same location
+          var fleets = pureFleetsByLocation[starId];
+          if (fleets.length > 1)
           {
-            var ship = impureFleetMembersByLocation[starId][i];
-            ship.fleet.transferShip(fleets[0], ship);
-            impureFleetMembersByLocation[starId].splice(i, 1);
+            fleets.sort(sortFleetsBySizeFN);
+
+            // only goes down to i = 1 !!
+            for (var i = fleets.length - 1; i >= 1; i--)
+            {
+              fleets[i].mergeWith(fleets[0]);
+              fleets.splice(i, 1);
+            }
+          }
+
+          // move impure ships to pure fleets at same location
+          if (impureFleetMembersByLocation[starId])
+          {
+            for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--)
+            {
+              var ship = impureFleetMembersByLocation[starId][i];
+              ship.fleet.transferShip(fleets[0], ship);
+              impureFleetMembersByLocation[starId].splice(i, 1);
+            }
           }
         }
-      }
 
-      // create new pure fleets from leftover impure ships
-      for (var starId in impureFleetMembersByLocation)
-      {
-        var ships = impureFleetMembersByLocation[starId];
-        if (ships.length < 1) continue;
-        var newFleet = new Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
-
-        for (var i = ships.length - 1; i >= 0; i--)
+        // create new pure fleets from leftover impure ships
+        for (var starId in impureFleetMembersByLocation)
         {
-          ships[i].fleet.transferShip(newFleet, ships[i]);
-        }
-      }
+          var ships = impureFleetMembersByLocation[starId];
+          if (ships.length < 1) continue;
+          var newFleet = new Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
 
-    }
-    isFleetPure(fleet: Fleet): boolean
-    {
-      for (var i = 0; i < fleet.ships.length; i++)
-      {
-        if (this.getUnitIndex(fleet.ships[i]) === -1)
-        {
-          return false;
-        }
-      }
-
-      return true;
-    }
-    getAssociatedFleets(): Fleet[]
-    {
-      var fleetsById:
-      {
-        [fleetId: number]: Fleet;
-      } = {};
-
-      for (var i = 0; i < this.units.length; i++)
-      {
-        if (!this.units[i].fleet) continue;
-        
-        if (!fleetsById[this.units[i].fleet.id])
-        {
-          fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
-        }
-      }
-
-      var allFleets: Fleet[] = [];
-
-      for (var fleetId in fleetsById)
-      {
-        allFleets.push(fleetsById[fleetId]);
-      }
-
-      return allFleets;
-    }
-    getUnitIndex(unit: Unit)
-    {
-      return this.units.indexOf(unit);
-    }
-    addUnit(unit: Unit)
-    {
-      if (this.getUnitIndex(unit) === -1)
-      {
-        if (unit.front)
-        {
-          unit.front.removeUnit(unit);
-        }
-        
-        unit.front = this;
-        this.units.push(unit);
-      }
-    }
-    removeUnit(unit: Unit)
-    {
-      var unitIndex = this.getUnitIndex(unit);
-      if (unitIndex !== -1)
-      {
-        unit.front = null;
-        this.units.splice(unitIndex, 1);
-      }
-    }
-    getUnitCountByArchetype()
-    {
-      var unitCountByArchetype:
-      {
-        [archetype: string]: number;
-      } = {};
-
-      for (var i = 0; i < this.units.length; i++)
-      {
-        var archetype = this.units[i].template.archetype;
-        
-        if (!unitCountByArchetype[archetype])
-        {
-          unitCountByArchetype[archetype] = 0;
+          for (var i = ships.length - 1; i >= 0; i--)
+          {
+            ships[i].fleet.transferShip(newFleet, ships[i]);
+          }
         }
 
-        unitCountByArchetype[archetype]++;
       }
-
-      return unitCountByArchetype;
-    }
-    getUnitsByLocation()
-    {
-      var byLocation:
+      isFleetPure(fleet: Fleet): boolean
       {
-        [starId: number]: Unit[];
-      } = {};
-
-      for (var i = 0; i < this.units.length; i++)
-      {
-        var star = this.units[i].fleet.location;
-        if (!byLocation[star.id])
+        for (var i = 0; i < fleet.ships.length; i++)
         {
-          byLocation[star.id] = [];
+          if (this.getUnitIndex(fleet.ships[i]) === -1)
+          {
+            return false;
+          }
         }
 
-        byLocation[star.id].push(this.units[i]);
+        return true;
       }
-
-      return byLocation;
-    }
-
-    moveFleets(afterMoveCallback: Function)
-    {
-      if (this.units.length < 1)
+      getAssociatedFleets(): Fleet[]
       {
-        afterMoveCallback();
-        return;
-      }
-      switch (this.objective.type)
-      {
-        case "heal":
+        var fleetsById:
         {
-          this.healMoveRoutine(afterMoveCallback);
-          break;
-        }
-        default:
+          [fleetId: number]: Fleet;
+        } = {};
+
+        for (var i = 0; i < this.units.length; i++)
         {
-          this.defaultMoveRoutine(afterMoveCallback);
-          break;
+          if (!this.units[i].fleet) continue;
+          
+          if (!fleetsById[this.units[i].fleet.id])
+          {
+            fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
+          }
+        }
+
+        var allFleets: Fleet[] = [];
+
+        for (var fleetId in fleetsById)
+        {
+          allFleets.push(fleetsById[fleetId]);
+        }
+
+        return allFleets;
+      }
+      getUnitIndex(unit: Unit)
+      {
+        return this.units.indexOf(unit);
+      }
+      addUnit(unit: Unit)
+      {
+        if (this.getUnitIndex(unit) === -1)
+        {
+          if (unit.front)
+          {
+            unit.front.removeUnit(unit);
+          }
+          
+          unit.front = this;
+          this.units.push(unit);
         }
       }
-    }
-
-    healMoveRoutine(afterMoveCallback: Function)
-    {
-      var fleets = this.getAssociatedFleets();
-
-      if (fleets.length <= 0)
+      removeUnit(unit: Unit)
       {
-        afterMoveCallback();
-        return;
+        var unitIndex = this.getUnitIndex(unit);
+        if (unitIndex !== -1)
+        {
+          unit.front = null;
+          this.units.splice(unitIndex, 1);
+        }
+      }
+      getUnitCountByArchetype()
+      {
+        var unitCountByArchetype:
+        {
+          [archetype: string]: number;
+        } = {};
+
+        for (var i = 0; i < this.units.length; i++)
+        {
+          var archetype = this.units[i].template.archetype;
+          
+          if (!unitCountByArchetype[archetype])
+          {
+            unitCountByArchetype[archetype] = 0;
+          }
+
+          unitCountByArchetype[archetype]++;
+        }
+
+        return unitCountByArchetype;
+      }
+      getUnitsByLocation()
+      {
+        var byLocation:
+        {
+          [starId: number]: Unit[];
+        } = {};
+
+        for (var i = 0; i < this.units.length; i++)
+        {
+          var star = this.units[i].fleet.location;
+          if (!byLocation[star.id])
+          {
+            byLocation[star.id] = [];
+          }
+
+          byLocation[star.id].push(this.units[i]);
+        }
+
+        return byLocation;
       }
 
-      var finishedMovingCount = 0;
-      var finishFleetMoveFN = function()
+      moveFleets(afterMoveCallback: Function)
       {
-        finishedMovingCount++;
-        if (finishedMovingCount >= fleets.length)
+        if (this.units.length < 1)
         {
           afterMoveCallback();
+          return;
         }
-      };
-
-      for (var i = 0; i < fleets.length; i++)
-      {
-        var player = fleets[i].player;
-        var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
-
-        fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-      }
-    }
-
-    defaultMoveRoutine(afterMoveCallback: Function)
-    {
-      var shouldMoveToTarget: boolean;
-
-      var unitsByLocation = this.getUnitsByLocation();
-      var fleets = this.getAssociatedFleets();
-
-      var atMuster = unitsByLocation[this.musterLocation.id] ? 
-        unitsByLocation[this.musterLocation.id].length : 0;
-
-
-      var inRangeOfTarget = 0;
-
-      for (var i = 0; i < fleets.length; i++)
-      {
-        var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
-        if (fleets[i].getMinCurrentMovePoints() >= distance)
+        switch (this.objective.type)
         {
-          inRangeOfTarget += fleets[i].ships.length;
+          case "heal":
+          {
+            this.healMoveRoutine(afterMoveCallback);
+            break;
+          }
+          default:
+          {
+            this.defaultMoveRoutine(afterMoveCallback);
+            break;
+          }
         }
       }
 
-
-      if (this.hasMustered)
+      healMoveRoutine(afterMoveCallback: Function)
       {
-        shouldMoveToTarget = true;
-      }
-      else
-      {
+        var fleets = this.getAssociatedFleets();
 
-        if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired)
+        if (fleets.length <= 0)
         {
-          this.hasMustered = true;
+          afterMoveCallback();
+          return;
+        }
+
+        var finishedMovingCount = 0;
+        var finishFleetMoveFN = function()
+        {
+          finishedMovingCount++;
+          if (finishedMovingCount >= fleets.length)
+          {
+            afterMoveCallback();
+          }
+        };
+
+        for (var i = 0; i < fleets.length; i++)
+        {
+          var player = fleets[i].player;
+          var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
+
+          fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+        }
+      }
+
+      defaultMoveRoutine(afterMoveCallback: Function)
+      {
+        var shouldMoveToTarget: boolean;
+
+        var unitsByLocation = this.getUnitsByLocation();
+        var fleets = this.getAssociatedFleets();
+
+        var atMuster = unitsByLocation[this.musterLocation.id] ? 
+          unitsByLocation[this.musterLocation.id].length : 0;
+
+
+        var inRangeOfTarget = 0;
+
+        for (var i = 0; i < fleets.length; i++)
+        {
+          var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
+          if (fleets[i].getMinCurrentMovePoints() >= distance)
+          {
+            inRangeOfTarget += fleets[i].ships.length;
+          }
+        }
+
+
+        if (this.hasMustered)
+        {
           shouldMoveToTarget = true;
         }
         else
         {
-          shouldMoveToTarget = false;
+
+          if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired)
+          {
+            this.hasMustered = true;
+            shouldMoveToTarget = true;
+          }
+          else
+          {
+            shouldMoveToTarget = false;
+          }
+
         }
 
+        var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
+
+
+        var finishAllMoveFN = function()
+        {
+          unitsByLocation = this.getUnitsByLocation();
+          var atTarget = unitsByLocation[this.targetLocation.id] ? 
+            unitsByLocation[this.targetLocation.id].length : 0;
+
+          if (atTarget >= this.minUnitsDesired)
+          {
+            this.executeAction(afterMoveCallback);
+          }
+          else
+          {
+            afterMoveCallback();
+          }
+        }.bind(this);
+
+        var finishedMovingCount = 0;
+        var finishFleetMoveFN = function()
+        {
+          finishedMovingCount++;
+          if (finishedMovingCount >= fleets.length)
+          {
+            finishAllMoveFN();
+          }
+        };
+
+        for (var i = 0; i < fleets.length; i++)
+        {
+          fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+        }
       }
-
-      var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
-
-
-      var finishAllMoveFN = function()
+      executeAction(afterExecutedCallback: Function)
       {
-        unitsByLocation = this.getUnitsByLocation();
-        var atTarget = unitsByLocation[this.targetLocation.id] ? 
-          unitsByLocation[this.targetLocation.id].length : 0;
+        var star = this.targetLocation;
+        var player = this.units[0].fleet.player;
 
-        if (atTarget >= this.minUnitsDesired)
+        if (this.objective.type === "expansion" || this.objective.type === "cleanPirates")
         {
-          this.executeAction(afterMoveCallback);
+          var attackTargets = star.getTargetsForPlayer(player);
+
+          var target = attackTargets.filter(function(target)
+          {
+            return target.enemy.isIndependent;
+          })[0];
+
+          player.attackTarget(star, target, afterExecutedCallback);
         }
-        else
-        {
-          afterMoveCallback();
-        }
-      }.bind(this);
-
-      var finishedMovingCount = 0;
-      var finishFleetMoveFN = function()
-      {
-        finishedMovingCount++;
-        if (finishedMovingCount >= fleets.length)
-        {
-          finishAllMoveFN();
-        }
-      };
-
-      for (var i = 0; i < fleets.length; i++)
-      {
-        fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-      }
-    }
-    executeAction(afterExecutedCallback: Function)
-    {
-      var star = this.targetLocation;
-      var player = this.units[0].fleet.player;
-
-      if (this.objective.type === "expansion" || this.objective.type === "cleanPirates")
-      {
-        var attackTargets = star.getTargetsForPlayer(player);
-
-        var target = attackTargets.filter(function(target)
-        {
-          return target.enemy.isIndependent;
-        })[0];
-
-        player.attackTarget(star, target, afterExecutedCallback);
       }
     }
   }

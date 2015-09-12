@@ -571,7 +571,7 @@ module Rance
           {
             points = this.player.getRevealedStars();
           }
-          var mapEvaluator = new MapEvaluator(map, this.player);
+          var mapEvaluator = new MapAI.MapEvaluator(map, this.player);
           var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
 
           var minInfluence: number, maxInfluence: number;

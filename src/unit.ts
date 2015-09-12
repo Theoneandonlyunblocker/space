@@ -90,7 +90,7 @@ module Rance
     cachedBattleScene: HTMLCanvasElement;
     cachedBattleScenePropsString: string = "";
     lastHealthDrawnAt: number;
-    front: Front;
+    front: MapAI.Front;
 
     constructor(template: Templates.IUnitTemplate, id?: number, data?: any)
     {

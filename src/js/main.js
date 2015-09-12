@@ -11391,418 +11391,421 @@ var Rance;
 /// <reference path="../fleet.ts" />
 var Rance;
 (function (Rance) {
-    Rance.defaultEvaluationParameters = {
-        starDesirability: {
-            neighborRange: 1,
-            neighborWeight: 0.5,
-            defendabilityWeight: 1,
-            totalIncomeWeight: 1,
-            baseIncomeWeight: 0.5,
-            infrastructureWeight: 1,
-            productionWeight: 1,
-        }
-    };
-    var MapEvaluator = (function () {
-        function MapEvaluator(map, player, game) {
-            this.cachedInfluenceMaps = {};
-            this.cachedVisibleFleets = {};
-            this.map = map;
-            this.player = player;
-            this.game = game;
-            this.evaluationParameters = Rance.defaultEvaluationParameters;
-        }
-        MapEvaluator.prototype.processTurnStart = function () {
-            this.cachedInfluenceMaps = {};
-            this.cachedVisibleFleets = {};
-            this.cachedOwnIncome = undefined;
-        };
-        MapEvaluator.prototype.evaluateStarIncome = function (star) {
-            var evaluation = 0;
-            evaluation += star.baseIncome;
-            evaluation += (star.getIncome() - star.baseIncome) *
-                (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
-            var evaluation = 0;
-            for (var category in star.buildings) {
-                for (var i = 0; i < star.buildings[category].length; i++) {
-                    evaluation += star.buildings[category][i].totalCost / 25;
-                }
+    var MapAI;
+    (function (MapAI) {
+        MapAI.defaultEvaluationParameters = {
+            starDesirability: {
+                neighborRange: 1,
+                neighborWeight: 0.5,
+                defendabilityWeight: 1,
+                totalIncomeWeight: 1,
+                baseIncomeWeight: 0.5,
+                infrastructureWeight: 1,
+                productionWeight: 1,
             }
-            return evaluation;
         };
-        MapEvaluator.prototype.evaluateStarProduction = function (star) {
-            var evaluation = 0;
-            evaluation += star.getItemManufactoryLevel();
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarDefendability = function (star) {
-            var evaluation = 0;
-            // neighboring own stars ++
-            // neighboring neutral stars -
-            // neighboring other player stars --
-            // neighboring other player with low trust stars --- TODO
-            var nearbyStars = star.getLinkedInRange(2).byRange;
-            for (var rangeString in nearbyStars) {
-                var distanceMultiplier = 1 / parseInt(rangeString);
-                var starsInRange = nearbyStars[rangeString];
-                for (var i = 0; i < starsInRange.length; i++) {
-                    var neighbor = starsInRange[i];
-                    var neighborDefendability;
-                    if (neighbor.owner === this.player) {
-                        neighborDefendability = 3;
-                    }
-                    else if (neighbor.owner.isIndependent) {
-                        neighborDefendability = -0.75;
-                    }
-                    else {
-                        neighborDefendability = -2;
-                    }
-                    evaluation += neighborDefendability * distanceMultiplier;
-                }
+        var MapEvaluator = (function () {
+            function MapEvaluator(map, player, game) {
+                this.cachedInfluenceMaps = {};
+                this.cachedVisibleFleets = {};
+                this.map = map;
+                this.player = player;
+                this.game = game;
+                this.evaluationParameters = MapAI.defaultEvaluationParameters;
             }
-            if (star.owner === this.player) {
-                evaluation += 3;
-            }
-            return evaluation * 5;
-        };
-        MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-            if (!isFinite(this.cachedOwnIncome)) {
-                this.cachedOwnIncome = this.player.getIncome();
-            }
-            var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
-            // prioritize income when would make big relative boost, penalize when opposite
-            incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
-            evaluation += incomeEvaluation;
-            var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
-            evaluation += infrastructureEvaluation;
-            var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
-            evaluation += productionEvaluation;
-            var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
-            evaluation += defendabilityEvaluation;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
-            var evaluation = 0;
-            var getDistanceFalloff = function (distance) {
-                return 1 / (distance + 1);
+            MapEvaluator.prototype.processTurnStart = function () {
+                this.cachedInfluenceMaps = {};
+                this.cachedVisibleFleets = {};
+                this.cachedOwnIncome = undefined;
             };
-            var inRange = star.getLinkedInRange(range).byRange;
-            for (var distanceString in inRange) {
-                var stars = inRange[distanceString];
-                var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
-                for (var i = 0; i < stars.length; i++) {
-                    evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
-                }
-            }
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateStarDesirability = function (star) {
-            var evaluation = 0;
-            var p = this.evaluationParameters.starDesirability;
-            evaluation += this.evaluateIndividualStarDesirability(star);
-            evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
-                p.neighborWeight;
-            return evaluation;
-        };
-        MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
-            var evaluationByStar = {};
-            for (var i = 0; i < targetStars.length; i++) {
-                var star = targetStars[i];
-                var desirability = this.evaluateStarDesirability(star);
-                var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
-                var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-                var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
-                evaluationByStar[star.id] =
-                    {
-                        star: star,
-                        desirability: desirability,
-                        independentStrength: independentStrength,
-                        ownInfluence: ownInfluenceAtStar
-                    };
-            }
-            return evaluationByStar;
-        };
-        MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
-            var scores = [];
-            for (var starId in evaluations) {
-                var evaluation = evaluations[starId];
-                var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
-                var score = evaluation.desirability * easeOfCapturing;
-                if (evaluation.star.getSecondaryController() === this.player) {
-                    score *= 1.5;
-                }
-                scores.push({
-                    star: evaluation.star,
-                    score: score
-                });
-            }
-            return scores.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        };
-        MapEvaluator.prototype.getScoredExpansionTargets = function () {
-            var self = this;
-            var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
-                var secondaryController = star.getSecondaryController();
-                return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
-            });
-            var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
-            var scores = this.scoreIndependentTargets(evaluations);
-            return scores;
-        };
-        MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
-            var ownedStarsWithPirates = this.player.controlledLocations.filter(function (star) {
-                // we could filter out stars with secondary controllers as cleaning up in
-                // contested areas probably isnt smart, but clean up objectives should get
-                // overridden in objective priority. maybe do it later if minimizing the
-                // amount of objectives generated is important for performance
-                return star.getIndependentShips().length > 0;
-            });
-            var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
-            var scores = this.scoreIndependentTargets(evaluations);
-            return scores;
-        };
-        MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
-            var hostilePlayers = star.getEnemyFleetOwners(this.player);
-            var shipsByEnemy = {};
-            for (var i = 0; i < hostilePlayers.length; i++) {
-                shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
-            }
-            return shipsByEnemy;
-        };
-        MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
-            var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
-            var strengthByEnemy = {};
-            for (var playerId in hostileShipsByPlayer) {
-                var strength = 0;
-                for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
-                    strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
-                }
-                strengthByEnemy[playerId] = strength;
-            }
-            return strengthByEnemy;
-        };
-        MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
-            var ships = star.getIndependentShips();
-            var total = 0;
-            for (var i = 0; i < ships.length; i++) {
-                total += ships[i].getStrengthEvaluation();
-            }
-            return total;
-        };
-        MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
-            var byPlayer = this.getHostileStrengthAtStar(star);
-            var total = 0;
-            for (var playerId in byPlayer) {
-                total += byPlayer[playerId];
-            }
-            return total;
-        };
-        MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
-            var byPlayer = {};
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-                if (!byPlayer[building.controller.id]) {
-                    byPlayer[building.controller.id] = 0;
-                }
-                byPlayer[building.controller.id] += building.totalCost;
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
-            var strength = 0;
-            for (var i = 0; i < star.buildings["defence"].length; i++) {
-                var building = star.buildings["defence"][i];
-                if (building.controller.id === this.player.id)
-                    continue;
-                strength += building.totalCost;
-            }
-            return strength;
-        };
-        MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
-            return fleet.getTotalStrengthEvaluation();
-        };
-        MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
-            if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
-                return this.cachedVisibleFleets[this.game.turnNumber];
-            }
-            var stars = this.player.getVisibleStars();
-            var byPlayer = {};
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                for (var playerId in star.fleets) {
-                    var playerFleets = star.fleets[playerId];
-                    if (!byPlayer[playerId]) {
-                        byPlayer[playerId] = [];
+            MapEvaluator.prototype.evaluateStarIncome = function (star) {
+                var evaluation = 0;
+                evaluation += star.baseIncome;
+                evaluation += (star.getIncome() - star.baseIncome) *
+                    (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
+                return evaluation;
+            };
+            MapEvaluator.prototype.evaluateStarInfrastructure = function (star) {
+                var evaluation = 0;
+                for (var category in star.buildings) {
+                    for (var i = 0; i < star.buildings[category].length; i++) {
+                        evaluation += star.buildings[category][i].totalCost / 25;
                     }
-                    for (var j = 0; j < playerFleets.length; j++) {
-                        if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
-                            continue;
+                }
+                return evaluation;
+            };
+            MapEvaluator.prototype.evaluateStarProduction = function (star) {
+                var evaluation = 0;
+                evaluation += star.getItemManufactoryLevel();
+                return evaluation;
+            };
+            MapEvaluator.prototype.evaluateStarDefendability = function (star) {
+                var evaluation = 0;
+                // neighboring own stars ++
+                // neighboring neutral stars -
+                // neighboring other player stars --
+                // neighboring other player with low trust stars --- TODO
+                var nearbyStars = star.getLinkedInRange(2).byRange;
+                for (var rangeString in nearbyStars) {
+                    var distanceMultiplier = 1 / parseInt(rangeString);
+                    var starsInRange = nearbyStars[rangeString];
+                    for (var i = 0; i < starsInRange.length; i++) {
+                        var neighbor = starsInRange[i];
+                        var neighborDefendability;
+                        if (neighbor.owner === this.player) {
+                            neighborDefendability = 3;
                         }
-                        byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+                        else if (neighbor.owner.isIndependent) {
+                            neighborDefendability = -0.75;
+                        }
+                        else {
+                            neighborDefendability = -2;
+                        }
+                        evaluation += neighborDefendability * distanceMultiplier;
                     }
                 }
-            }
-            if (this.game) {
-                this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
-            var playerIsImmobile = player.isIndependent;
-            var influenceByStar = {};
-            var stars = this.player.getRevealedStars();
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
-                if (defenceBuildingStrengths[player.id]) {
-                    if (!isFinite(influenceByStar[star.id])) {
-                        influenceByStar[star.id] = 0;
-                    }
-                    ;
-                    influenceByStar[star.id] += defenceBuildingStrengths[player.id];
+                if (star.owner === this.player) {
+                    evaluation += 3;
                 }
-            }
-            var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
-            function getDistanceFalloff(distance) {
-                return 1 / (distance + 1);
-            }
-            for (var i = 0; i < fleets.length; i++) {
-                var fleet = fleets[i];
-                var strength = this.evaluateFleetStrength(fleet);
-                var location = fleet.location;
-                var range = fleet.getMinMaxMovePoints();
-                var turnsToCheck = 4;
-                var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
-                inFleetRange[0] = [location];
-                for (var distance in inFleetRange) {
-                    var numericDistance = parseInt(distance);
-                    var turnsToReach = Math.floor((numericDistance - 1) / range);
-                    if (turnsToReach < 0)
-                        turnsToReach = 0;
-                    var distanceFalloff = getDistanceFalloff(turnsToReach);
-                    var adjustedStrength = strength * distanceFalloff;
-                    for (var j = 0; j < inFleetRange[distance].length; j++) {
-                        var star = inFleetRange[distance][j];
+                return evaluation * 5;
+            };
+            MapEvaluator.prototype.evaluateIndividualStarDesirability = function (star) {
+                var evaluation = 0;
+                var p = this.evaluationParameters.starDesirability;
+                if (!isFinite(this.cachedOwnIncome)) {
+                    this.cachedOwnIncome = this.player.getIncome();
+                }
+                var incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
+                // prioritize income when would make big relative boost, penalize when opposite
+                incomeEvaluation *= incomeEvaluation / (this.cachedOwnIncome / 4);
+                evaluation += incomeEvaluation;
+                var infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
+                evaluation += infrastructureEvaluation;
+                var productionEvaluation = this.evaluateStarProduction(star) * p.productionWeight;
+                evaluation += productionEvaluation;
+                var defendabilityEvaluation = this.evaluateStarDefendability(star) * p.defendabilityWeight;
+                evaluation += defendabilityEvaluation;
+                return evaluation;
+            };
+            MapEvaluator.prototype.evaluateNeighboringStarsDesirability = function (star, range) {
+                var evaluation = 0;
+                var getDistanceFalloff = function (distance) {
+                    return 1 / (distance + 1);
+                };
+                var inRange = star.getLinkedInRange(range).byRange;
+                for (var distanceString in inRange) {
+                    var stars = inRange[distanceString];
+                    var distanceFalloff = getDistanceFalloff(parseInt(distanceString));
+                    for (var i = 0; i < stars.length; i++) {
+                        evaluation += this.evaluateIndividualStarDesirability(stars[i]) * distanceFalloff;
+                    }
+                }
+                return evaluation;
+            };
+            MapEvaluator.prototype.evaluateStarDesirability = function (star) {
+                var evaluation = 0;
+                var p = this.evaluationParameters.starDesirability;
+                evaluation += this.evaluateIndividualStarDesirability(star);
+                evaluation += this.evaluateNeighboringStarsDesirability(star, p.neighborRange) *
+                    p.neighborWeight;
+                return evaluation;
+            };
+            MapEvaluator.prototype.evaluateIndependentTargets = function (targetStars) {
+                var evaluationByStar = {};
+                for (var i = 0; i < targetStars.length; i++) {
+                    var star = targetStars[i];
+                    var desirability = this.evaluateStarDesirability(star);
+                    var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
+                    var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+                    var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
+                    evaluationByStar[star.id] =
+                        {
+                            star: star,
+                            desirability: desirability,
+                            independentStrength: independentStrength,
+                            ownInfluence: ownInfluenceAtStar
+                        };
+                }
+                return evaluationByStar;
+            };
+            MapEvaluator.prototype.scoreIndependentTargets = function (evaluations) {
+                var scores = [];
+                for (var starId in evaluations) {
+                    var evaluation = evaluations[starId];
+                    var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
+                    var score = evaluation.desirability * easeOfCapturing;
+                    if (evaluation.star.getSecondaryController() === this.player) {
+                        score *= 1.5;
+                    }
+                    scores.push({
+                        star: evaluation.star,
+                        score: score
+                    });
+                }
+                return scores.sort(function (a, b) {
+                    return b.score - a.score;
+                });
+            };
+            MapEvaluator.prototype.getScoredExpansionTargets = function () {
+                var self = this;
+                var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
+                    var secondaryController = star.getSecondaryController();
+                    return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
+                });
+                var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
+                var scores = this.scoreIndependentTargets(evaluations);
+                return scores;
+            };
+            MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
+                var ownedStarsWithPirates = this.player.controlledLocations.filter(function (star) {
+                    // we could filter out stars with secondary controllers as cleaning up in
+                    // contested areas probably isnt smart, but clean up objectives should get
+                    // overridden in objective priority. maybe do it later if minimizing the
+                    // amount of objectives generated is important for performance
+                    return star.getIndependentShips().length > 0;
+                });
+                var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
+                var scores = this.scoreIndependentTargets(evaluations);
+                return scores;
+            };
+            MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
+                var hostilePlayers = star.getEnemyFleetOwners(this.player);
+                var shipsByEnemy = {};
+                for (var i = 0; i < hostilePlayers.length; i++) {
+                    shipsByEnemy[hostilePlayers[i].id] = star.getAllShipsOfPlayer(hostilePlayers[i]);
+                }
+                return shipsByEnemy;
+            };
+            MapEvaluator.prototype.getHostileStrengthAtStar = function (star) {
+                var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
+                var strengthByEnemy = {};
+                for (var playerId in hostileShipsByPlayer) {
+                    var strength = 0;
+                    for (var i = 0; i < hostileShipsByPlayer[playerId].length; i++) {
+                        strength += hostileShipsByPlayer[playerId][i].getStrengthEvaluation();
+                    }
+                    strengthByEnemy[playerId] = strength;
+                }
+                return strengthByEnemy;
+            };
+            MapEvaluator.prototype.getIndependentStrengthAtStar = function (star) {
+                var ships = star.getIndependentShips();
+                var total = 0;
+                for (var i = 0; i < ships.length; i++) {
+                    total += ships[i].getStrengthEvaluation();
+                }
+                return total;
+            };
+            MapEvaluator.prototype.getTotalHostileStrengthAtStar = function (star) {
+                var byPlayer = this.getHostileStrengthAtStar(star);
+                var total = 0;
+                for (var playerId in byPlayer) {
+                    total += byPlayer[playerId];
+                }
+                return total;
+            };
+            MapEvaluator.prototype.getDefenceBuildingStrengthAtStarByPlayer = function (star) {
+                var byPlayer = {};
+                for (var i = 0; i < star.buildings["defence"].length; i++) {
+                    var building = star.buildings["defence"][i];
+                    if (!byPlayer[building.controller.id]) {
+                        byPlayer[building.controller.id] = 0;
+                    }
+                    byPlayer[building.controller.id] += building.totalCost;
+                }
+                return byPlayer;
+            };
+            MapEvaluator.prototype.getTotalDefenceBuildingStrengthAtStar = function (star) {
+                var strength = 0;
+                for (var i = 0; i < star.buildings["defence"].length; i++) {
+                    var building = star.buildings["defence"][i];
+                    if (building.controller.id === this.player.id)
+                        continue;
+                    strength += building.totalCost;
+                }
+                return strength;
+            };
+            MapEvaluator.prototype.evaluateFleetStrength = function (fleet) {
+                return fleet.getTotalStrengthEvaluation();
+            };
+            MapEvaluator.prototype.getVisibleFleetsByPlayer = function () {
+                if (this.game && this.cachedVisibleFleets[this.game.turnNumber]) {
+                    return this.cachedVisibleFleets[this.game.turnNumber];
+                }
+                var stars = this.player.getVisibleStars();
+                var byPlayer = {};
+                for (var i = 0; i < stars.length; i++) {
+                    var star = stars[i];
+                    for (var playerId in star.fleets) {
+                        var playerFleets = star.fleets[playerId];
+                        if (!byPlayer[playerId]) {
+                            byPlayer[playerId] = [];
+                        }
+                        for (var j = 0; j < playerFleets.length; j++) {
+                            if (playerFleets[j].isStealthy && !this.player.starIsDetected(star)) {
+                                continue;
+                            }
+                            byPlayer[playerId] = byPlayer[playerId].concat(playerFleets[j]);
+                        }
+                    }
+                }
+                if (this.game) {
+                    this.cachedVisibleFleets[this.game.turnNumber] = byPlayer;
+                }
+                return byPlayer;
+            };
+            MapEvaluator.prototype.buildPlayerInfluenceMap = function (player) {
+                var playerIsImmobile = player.isIndependent;
+                var influenceByStar = {};
+                var stars = this.player.getRevealedStars();
+                for (var i = 0; i < stars.length; i++) {
+                    var star = stars[i];
+                    var defenceBuildingStrengths = this.getDefenceBuildingStrengthAtStarByPlayer(star);
+                    if (defenceBuildingStrengths[player.id]) {
                         if (!isFinite(influenceByStar[star.id])) {
                             influenceByStar[star.id] = 0;
                         }
                         ;
-                        influenceByStar[star.id] += adjustedStrength;
+                        influenceByStar[star.id] += defenceBuildingStrengths[player.id];
                     }
                 }
-            }
-            return influenceByStar;
-        };
-        MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
-            if (!this.game) {
-                throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
-            }
-            if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
-                this.cachedInfluenceMaps[this.game.turnNumber] = {};
-            }
-            if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
-                this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
-            }
-            return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
-        };
-        MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getPlayerInfluenceMap(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.estimateGlobalStrength = function (player) {
-            var visibleStrength = 0;
-            var invisibleStrength = 0;
-            var fleets = this.getVisibleFleetsByPlayer()[player.id];
-            for (var i = 0; i < fleets.length; i++) {
-                visibleStrength += this.evaluateFleetStrength(fleets[i]);
-            }
-            if (player !== this.player) {
-                invisibleStrength = visibleStrength * 0.5; // TODO
-            }
-            return visibleStrength + invisibleStrength;
-        };
-        MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
-            if (!this.player.diplomacyStatus.metPlayers[player.id]) {
-                throw new Error(this.player.name +
-                    " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
-            }
-            var otherInfluenceMap = this.getPlayerInfluenceMap(player);
-            var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-            var totalInfluenceInOwnStars = 0;
-            for (var starId in otherInfluenceMap) {
-                for (var i = 0; i < this.player.controlledLocations.length; i++) {
-                    var star = this.player.controlledLocations[i];
-                    if (star.id === parseInt(starId)) {
-                        var otherInfluence = otherInfluenceMap[starId];
-                        var ownInfluence = ownInfluenceMap[starId];
-                        totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
-                        break;
+                var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
+                function getDistanceFalloff(distance) {
+                    return 1 / (distance + 1);
+                }
+                for (var i = 0; i < fleets.length; i++) {
+                    var fleet = fleets[i];
+                    var strength = this.evaluateFleetStrength(fleet);
+                    var location = fleet.location;
+                    var range = fleet.getMinMaxMovePoints();
+                    var turnsToCheck = 4;
+                    var inFleetRange = location.getLinkedInRange(range * turnsToCheck).byRange;
+                    inFleetRange[0] = [location];
+                    for (var distance in inFleetRange) {
+                        var numericDistance = parseInt(distance);
+                        var turnsToReach = Math.floor((numericDistance - 1) / range);
+                        if (turnsToReach < 0)
+                            turnsToReach = 0;
+                        var distanceFalloff = getDistanceFalloff(turnsToReach);
+                        var adjustedStrength = strength * distanceFalloff;
+                        for (var j = 0; j < inFleetRange[distance].length; j++) {
+                            var star = inFleetRange[distance][j];
+                            if (!isFinite(influenceByStar[star.id])) {
+                                influenceByStar[star.id] = 0;
+                            }
+                            ;
+                            influenceByStar[star.id] += adjustedStrength;
+                        }
                     }
                 }
-            }
-            var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
-            return totalInfluenceInOwnStars + globalStrengthDifference;
-        };
-        MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
-            var byPlayer = {};
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
-            }
-            return byPlayer;
-        };
-        MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
-            var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
-            var relative = {};
-            var min, max;
-            for (var playerId in byPlayer) {
-                var threat = byPlayer[playerId];
-                min = isFinite(min) ? Math.min(min, threat) : threat;
-                max = isFinite(max) ? Math.max(max, threat) : threat;
-            }
-            for (var playerId in byPlayer) {
-                relative[playerId] = Rance.getRelativeValue(byPlayer[playerId], min, max);
-            }
-            return relative;
-        };
-        MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
-            var evaluationByPlayer = {};
-            var neighborStarsCountByPlayer = {};
-            var allNeighbors = this.player.getNeighboringStars();
-            var neighborStarsForPlayer = [];
-            for (var i = 0; i < allNeighbors.length; i++) {
-                var star = allNeighbors[i];
-                if (!star.owner.isIndependent) {
-                    if (!neighborStarsCountByPlayer[star.owner.id]) {
-                        neighborStarsCountByPlayer[star.owner.id] = 0;
-                    }
-                    neighborStarsCountByPlayer[star.owner.id]++;
+                return influenceByStar;
+            };
+            MapEvaluator.prototype.getPlayerInfluenceMap = function (player) {
+                if (!this.game) {
+                    throw new Error("Can't use cached influence maps when game isn't specified for MapEvaluator");
                 }
-            }
-            for (var playerId in this.player.diplomacyStatus.metPlayers) {
-                var player = this.player.diplomacyStatus.metPlayers[playerId];
-                evaluationByPlayer[player.id] =
-                    {
-                        currentTurn: currentTurn,
-                        opinion: this.player.diplomacyStatus.getOpinionOf(player),
-                        neighborStars: neighborStarsCountByPlayer[player.id],
-                        currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
-                    };
-            }
-            return evaluationByPlayer;
-        };
-        return MapEvaluator;
-    })();
-    Rance.MapEvaluator = MapEvaluator;
+                if (!this.cachedInfluenceMaps[this.game.turnNumber]) {
+                    this.cachedInfluenceMaps[this.game.turnNumber] = {};
+                }
+                if (!this.cachedInfluenceMaps[this.game.turnNumber][player.id]) {
+                    this.cachedInfluenceMaps[this.game.turnNumber][player.id] = this.buildPlayerInfluenceMap(player);
+                }
+                return this.cachedInfluenceMaps[this.game.turnNumber][player.id];
+            };
+            MapEvaluator.prototype.getInfluenceMapsForKnownPlayers = function () {
+                var byPlayer = {};
+                for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                    var player = this.player.diplomacyStatus.metPlayers[playerId];
+                    byPlayer[playerId] = this.getPlayerInfluenceMap(player);
+                }
+                return byPlayer;
+            };
+            MapEvaluator.prototype.estimateGlobalStrength = function (player) {
+                var visibleStrength = 0;
+                var invisibleStrength = 0;
+                var fleets = this.getVisibleFleetsByPlayer()[player.id];
+                for (var i = 0; i < fleets.length; i++) {
+                    visibleStrength += this.evaluateFleetStrength(fleets[i]);
+                }
+                if (player !== this.player) {
+                    invisibleStrength = visibleStrength * 0.5; // TODO
+                }
+                return visibleStrength + invisibleStrength;
+            };
+            MapEvaluator.prototype.getPerceivedThreatOfPlayer = function (player) {
+                if (!this.player.diplomacyStatus.metPlayers[player.id]) {
+                    throw new Error(this.player.name +
+                        " tried to call getPerceivedThreatOfPlayer on unkown player " + player.name);
+                }
+                var otherInfluenceMap = this.getPlayerInfluenceMap(player);
+                var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
+                var totalInfluenceInOwnStars = 0;
+                for (var starId in otherInfluenceMap) {
+                    for (var i = 0; i < this.player.controlledLocations.length; i++) {
+                        var star = this.player.controlledLocations[i];
+                        if (star.id === parseInt(starId)) {
+                            var otherInfluence = otherInfluenceMap[starId];
+                            var ownInfluence = ownInfluenceMap[starId];
+                            totalInfluenceInOwnStars += otherInfluence - 0.5 * ownInfluence;
+                            break;
+                        }
+                    }
+                }
+                var globalStrengthDifference = this.estimateGlobalStrength(player) - this.estimateGlobalStrength(this.player);
+                return totalInfluenceInOwnStars + globalStrengthDifference;
+            };
+            MapEvaluator.prototype.getPerceivedThreatOfAllKnownPlayers = function () {
+                var byPlayer = {};
+                for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                    var player = this.player.diplomacyStatus.metPlayers[playerId];
+                    byPlayer[playerId] = this.getPerceivedThreatOfPlayer(player);
+                }
+                return byPlayer;
+            };
+            MapEvaluator.prototype.getRelativePerceivedThreatOfAllKnownPlayers = function () {
+                var byPlayer = this.getPerceivedThreatOfAllKnownPlayers();
+                var relative = {};
+                var min, max;
+                for (var playerId in byPlayer) {
+                    var threat = byPlayer[playerId];
+                    min = isFinite(min) ? Math.min(min, threat) : threat;
+                    max = isFinite(max) ? Math.max(max, threat) : threat;
+                }
+                for (var playerId in byPlayer) {
+                    relative[playerId] = Rance.getRelativeValue(byPlayer[playerId], min, max);
+                }
+                return relative;
+            };
+            MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
+                var evaluationByPlayer = {};
+                var neighborStarsCountByPlayer = {};
+                var allNeighbors = this.player.getNeighboringStars();
+                var neighborStarsForPlayer = [];
+                for (var i = 0; i < allNeighbors.length; i++) {
+                    var star = allNeighbors[i];
+                    if (!star.owner.isIndependent) {
+                        if (!neighborStarsCountByPlayer[star.owner.id]) {
+                            neighborStarsCountByPlayer[star.owner.id] = 0;
+                        }
+                        neighborStarsCountByPlayer[star.owner.id]++;
+                    }
+                }
+                for (var playerId in this.player.diplomacyStatus.metPlayers) {
+                    var player = this.player.diplomacyStatus.metPlayers[playerId];
+                    evaluationByPlayer[player.id] =
+                        {
+                            currentTurn: currentTurn,
+                            opinion: this.player.diplomacyStatus.getOpinionOf(player),
+                            neighborStars: neighborStarsCountByPlayer[player.id],
+                            currentStatus: this.player.diplomacyStatus.statusByPlayer[player.id]
+                        };
+                }
+                return evaluationByPlayer;
+            };
+            return MapEvaluator;
+        })();
+        MapAI.MapEvaluator = MapEvaluator;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../star.ts"/>
 /*
@@ -11818,27 +11821,30 @@ objectives:
  */
 var Rance;
 (function (Rance) {
-    var Objective = (function () {
-        function Objective(type, priority, target) {
-            this.isOngoing = false; // used to slightly prioritize old objectives
-            this.id = Rance.idGenerators.objective++;
-            this.type = type;
-            this.priority = priority;
-            this.target = target;
-        }
-        Object.defineProperty(Objective.prototype, "priority", {
-            get: function () {
-                return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
-            },
-            set: function (priority) {
-                this._basePriority = priority;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return Objective;
-    })();
-    Rance.Objective = Objective;
+    var MapAI;
+    (function (MapAI) {
+        var Objective = (function () {
+            function Objective(type, priority, target) {
+                this.isOngoing = false; // used to slightly prioritize old objectives
+                this.id = Rance.idGenerators.objective++;
+                this.type = type;
+                this.priority = priority;
+                this.target = target;
+            }
+            Object.defineProperty(Objective.prototype, "priority", {
+                get: function () {
+                    return this.isOngoing ? this._basePriority * 1.25 : this._basePriority;
+                },
+                set: function (priority) {
+                    this._basePriority = priority;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Objective;
+        })();
+        MapAI.Objective = Objective;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
@@ -11866,327 +11872,333 @@ build units near request target
  */
 var Rance;
 (function (Rance) {
-    var ObjectivesAI = (function () {
-        function ObjectivesAI(mapEvaluator, personality) {
-            this.objectivesByType = {
-                expansion: [],
-                cleanPirates: [],
-                heal: []
+    var MapAI;
+    (function (MapAI) {
+        var ObjectivesAI = (function () {
+            function ObjectivesAI(mapEvaluator, personality) {
+                this.objectivesByType = {
+                    expansion: [],
+                    cleanPirates: [],
+                    heal: []
+                };
+                this.objectives = [];
+                this.requests = [];
+                this.mapEvaluator = mapEvaluator;
+                this.map = mapEvaluator.map;
+                this.player = mapEvaluator.player;
+                this.personality = personality;
+            }
+            ObjectivesAI.prototype.setAllObjectives = function () {
+                this.objectives = [];
+                this.addObjectives(this.getExpansionObjectives());
+                this.addObjectives(this.getCleanPiratesObjectives());
+                this.addObjectives(this.getHealObjectives());
             };
-            this.objectives = [];
-            this.requests = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.personality = personality;
-        }
-        ObjectivesAI.prototype.setAllObjectives = function () {
-            this.objectives = [];
-            this.addObjectives(this.getExpansionObjectives());
-            this.addObjectives(this.getCleanPiratesObjectives());
-            this.addObjectives(this.getHealObjectives());
-        };
-        ObjectivesAI.prototype.addObjectives = function (objectives) {
-            this.objectives = this.objectives.concat(objectives);
-        };
-        // base method used for getting expansion & cleanPirates objectives
-        ObjectivesAI.prototype.getIndependentFightingObjectives = function (objectiveType, evaluationScores, basePriority) {
-            var objectivesByTarget = {};
-            var allObjectives = [];
-            for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
-                var objective = this.objectivesByType[objectiveType][i];
-                objective.isOngoing = true;
-                objectivesByTarget[objective.target.id] = objective;
-            }
-            this.objectivesByType[objectiveType] = [];
-            var minScore, maxScore;
-            for (var i = 0; i < evaluationScores.length; i++) {
-                var score = evaluationScores[i].score;
-                //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
-                maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
-            }
-            for (var i = 0; i < evaluationScores.length; i++) {
-                var star = evaluationScores[i].star;
-                var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, 0, maxScore);
-                var priority = relativeScore * basePriority;
-                if (objectivesByTarget[star.id]) {
-                    objectivesByTarget[star.id].priority = priority;
+            ObjectivesAI.prototype.addObjectives = function (objectives) {
+                this.objectives = this.objectives.concat(objectives);
+            };
+            // base method used for getting expansion & cleanPirates objectives
+            ObjectivesAI.prototype.getIndependentFightingObjectives = function (objectiveType, evaluationScores, basePriority) {
+                var objectivesByTarget = {};
+                var allObjectives = [];
+                for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
+                    var objective = this.objectivesByType[objectiveType][i];
+                    objective.isOngoing = true;
+                    objectivesByTarget[objective.target.id] = objective;
                 }
-                else {
-                    objectivesByTarget[star.id] = new Rance.Objective(objectiveType, priority, star);
+                this.objectivesByType[objectiveType] = [];
+                var minScore, maxScore;
+                for (var i = 0; i < evaluationScores.length; i++) {
+                    var score = evaluationScores[i].score;
+                    //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+                    maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
                 }
-                allObjectives.push(objectivesByTarget[star.id]);
-                this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
-            }
-            return allObjectives;
-        };
-        ObjectivesAI.prototype.getExpansionObjectives = function () {
-            var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-            var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
-            return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
-        };
-        ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
-            var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-            var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
-            return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
-        };
-        ObjectivesAI.prototype.getHealObjectives = function () {
-            var objective = new Rance.Objective("heal", 1, null);
-            this.objectivesByType["heal"] = [objective];
-            return [objective];
-        };
-        return ObjectivesAI;
-    })();
-    Rance.ObjectivesAI = ObjectivesAI;
+                for (var i = 0; i < evaluationScores.length; i++) {
+                    var star = evaluationScores[i].star;
+                    var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, 0, maxScore);
+                    var priority = relativeScore * basePriority;
+                    if (objectivesByTarget[star.id]) {
+                        objectivesByTarget[star.id].priority = priority;
+                    }
+                    else {
+                        objectivesByTarget[star.id] = new MapAI.Objective(objectiveType, priority, star);
+                    }
+                    allObjectives.push(objectivesByTarget[star.id]);
+                    this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
+                }
+                return allObjectives;
+            };
+            ObjectivesAI.prototype.getExpansionObjectives = function () {
+                var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
+                var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
+                return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
+            };
+            ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
+                var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
+                var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
+                return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
+            };
+            ObjectivesAI.prototype.getHealObjectives = function () {
+                var objective = new MapAI.Objective("heal", 1, null);
+                this.objectivesByType["heal"] = [objective];
+                return [objective];
+            };
+            return ObjectivesAI;
+        })();
+        MapAI.ObjectivesAI = ObjectivesAI;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../unit.ts"/>
 /// <reference path="../star.ts"/>
 var Rance;
 (function (Rance) {
-    var Front = (function () {
-        function Front(props) {
-            this.hasMustered = false;
-            this.id = props.id;
-            this.objective = props.objective;
-            this.priority = props.priority;
-            this.units = props.units || [];
-            this.minUnitsDesired = props.minUnitsDesired;
-            this.idealUnitsDesired = props.idealUnitsDesired;
-            this.targetLocation = props.targetLocation;
-            this.musterLocation = props.musterLocation;
-        }
-        Front.prototype.organizeFleets = function () {
-            // pure fleet only has units belonging to this front in it
-            /*
-            get all pure fleets + location
-            get all ships in impure fleets + location
-            merge pure fleets at same location
-            move impure ships to pure fleets at location if possible
-            create new pure fleets with remaining impure units
-             */
-            var allFleets = this.getAssociatedFleets();
-            var pureFleetsByLocation = {};
-            var impureFleetMembersByLocation = {};
-            var ownUnitFilterFN = function (unit) {
-                return this.getUnitIndex(unit) >= 0;
-            }.bind(this);
-            // build indexes of pure fleets and impure ships
-            for (var i = 0; i < allFleets.length; i++) {
-                var fleet = allFleets[i];
-                var star = fleet.location;
-                if (this.isFleetPure(fleet)) {
-                    if (!pureFleetsByLocation[star.id]) {
-                        pureFleetsByLocation[star.id] = [];
-                    }
-                    pureFleetsByLocation[star.id].push(fleet);
-                }
-                else {
-                    var ownUnits = fleet.ships.filter(ownUnitFilterFN);
-                    for (var j = 0; j < ownUnits.length; j++) {
-                        if (!impureFleetMembersByLocation[star.id]) {
-                            impureFleetMembersByLocation[star.id] = [];
+    var MapAI;
+    (function (MapAI) {
+        var Front = (function () {
+            function Front(props) {
+                this.hasMustered = false;
+                this.id = props.id;
+                this.objective = props.objective;
+                this.priority = props.priority;
+                this.units = props.units || [];
+                this.minUnitsDesired = props.minUnitsDesired;
+                this.idealUnitsDesired = props.idealUnitsDesired;
+                this.targetLocation = props.targetLocation;
+                this.musterLocation = props.musterLocation;
+            }
+            Front.prototype.organizeFleets = function () {
+                // pure fleet only has units belonging to this front in it
+                /*
+                get all pure fleets + location
+                get all ships in impure fleets + location
+                merge pure fleets at same location
+                move impure ships to pure fleets at location if possible
+                create new pure fleets with remaining impure units
+                 */
+                var allFleets = this.getAssociatedFleets();
+                var pureFleetsByLocation = {};
+                var impureFleetMembersByLocation = {};
+                var ownUnitFilterFN = function (unit) {
+                    return this.getUnitIndex(unit) >= 0;
+                }.bind(this);
+                // build indexes of pure fleets and impure ships
+                for (var i = 0; i < allFleets.length; i++) {
+                    var fleet = allFleets[i];
+                    var star = fleet.location;
+                    if (this.isFleetPure(fleet)) {
+                        if (!pureFleetsByLocation[star.id]) {
+                            pureFleetsByLocation[star.id] = [];
                         }
-                        impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+                        pureFleetsByLocation[star.id].push(fleet);
+                    }
+                    else {
+                        var ownUnits = fleet.ships.filter(ownUnitFilterFN);
+                        for (var j = 0; j < ownUnits.length; j++) {
+                            if (!impureFleetMembersByLocation[star.id]) {
+                                impureFleetMembersByLocation[star.id] = [];
+                            }
+                            impureFleetMembersByLocation[star.id].push(ownUnits[j]);
+                        }
                     }
                 }
-            }
-            var sortFleetsBySizeFN = function (a, b) {
-                return b.ships.length - a.ships.length;
+                var sortFleetsBySizeFN = function (a, b) {
+                    return b.ships.length - a.ships.length;
+                };
+                for (var starId in pureFleetsByLocation) {
+                    // combine pure fleets at same location
+                    var fleets = pureFleetsByLocation[starId];
+                    if (fleets.length > 1) {
+                        fleets.sort(sortFleetsBySizeFN);
+                        // only goes down to i = 1 !!
+                        for (var i = fleets.length - 1; i >= 1; i--) {
+                            fleets[i].mergeWith(fleets[0]);
+                            fleets.splice(i, 1);
+                        }
+                    }
+                    // move impure ships to pure fleets at same location
+                    if (impureFleetMembersByLocation[starId]) {
+                        for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
+                            var ship = impureFleetMembersByLocation[starId][i];
+                            ship.fleet.transferShip(fleets[0], ship);
+                            impureFleetMembersByLocation[starId].splice(i, 1);
+                        }
+                    }
+                }
+                // create new pure fleets from leftover impure ships
+                for (var starId in impureFleetMembersByLocation) {
+                    var ships = impureFleetMembersByLocation[starId];
+                    if (ships.length < 1)
+                        continue;
+                    var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
+                    for (var i = ships.length - 1; i >= 0; i--) {
+                        ships[i].fleet.transferShip(newFleet, ships[i]);
+                    }
+                }
             };
-            for (var starId in pureFleetsByLocation) {
-                // combine pure fleets at same location
-                var fleets = pureFleetsByLocation[starId];
-                if (fleets.length > 1) {
-                    fleets.sort(sortFleetsBySizeFN);
-                    // only goes down to i = 1 !!
-                    for (var i = fleets.length - 1; i >= 1; i--) {
-                        fleets[i].mergeWith(fleets[0]);
-                        fleets.splice(i, 1);
+            Front.prototype.isFleetPure = function (fleet) {
+                for (var i = 0; i < fleet.ships.length; i++) {
+                    if (this.getUnitIndex(fleet.ships[i]) === -1) {
+                        return false;
                     }
                 }
-                // move impure ships to pure fleets at same location
-                if (impureFleetMembersByLocation[starId]) {
-                    for (var i = impureFleetMembersByLocation[starId].length - 1; i >= 0; i--) {
-                        var ship = impureFleetMembersByLocation[starId][i];
-                        ship.fleet.transferShip(fleets[0], ship);
-                        impureFleetMembersByLocation[starId].splice(i, 1);
+                return true;
+            };
+            Front.prototype.getAssociatedFleets = function () {
+                var fleetsById = {};
+                for (var i = 0; i < this.units.length; i++) {
+                    if (!this.units[i].fleet)
+                        continue;
+                    if (!fleetsById[this.units[i].fleet.id]) {
+                        fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
                     }
                 }
-            }
-            // create new pure fleets from leftover impure ships
-            for (var starId in impureFleetMembersByLocation) {
-                var ships = impureFleetMembersByLocation[starId];
-                if (ships.length < 1)
-                    continue;
-                var newFleet = new Rance.Fleet(ships[0].fleet.player, [], ships[0].fleet.location);
-                for (var i = ships.length - 1; i >= 0; i--) {
-                    ships[i].fleet.transferShip(newFleet, ships[i]);
+                var allFleets = [];
+                for (var fleetId in fleetsById) {
+                    allFleets.push(fleetsById[fleetId]);
                 }
-            }
-        };
-        Front.prototype.isFleetPure = function (fleet) {
-            for (var i = 0; i < fleet.ships.length; i++) {
-                if (this.getUnitIndex(fleet.ships[i]) === -1) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Front.prototype.getAssociatedFleets = function () {
-            var fleetsById = {};
-            for (var i = 0; i < this.units.length; i++) {
-                if (!this.units[i].fleet)
-                    continue;
-                if (!fleetsById[this.units[i].fleet.id]) {
-                    fleetsById[this.units[i].fleet.id] = this.units[i].fleet;
-                }
-            }
-            var allFleets = [];
-            for (var fleetId in fleetsById) {
-                allFleets.push(fleetsById[fleetId]);
-            }
-            return allFleets;
-        };
-        Front.prototype.getUnitIndex = function (unit) {
-            return this.units.indexOf(unit);
-        };
-        Front.prototype.addUnit = function (unit) {
-            if (this.getUnitIndex(unit) === -1) {
-                if (unit.front) {
-                    unit.front.removeUnit(unit);
-                }
-                unit.front = this;
-                this.units.push(unit);
-            }
-        };
-        Front.prototype.removeUnit = function (unit) {
-            var unitIndex = this.getUnitIndex(unit);
-            if (unitIndex !== -1) {
-                unit.front = null;
-                this.units.splice(unitIndex, 1);
-            }
-        };
-        Front.prototype.getUnitCountByArchetype = function () {
-            var unitCountByArchetype = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var archetype = this.units[i].template.archetype;
-                if (!unitCountByArchetype[archetype]) {
-                    unitCountByArchetype[archetype] = 0;
-                }
-                unitCountByArchetype[archetype]++;
-            }
-            return unitCountByArchetype;
-        };
-        Front.prototype.getUnitsByLocation = function () {
-            var byLocation = {};
-            for (var i = 0; i < this.units.length; i++) {
-                var star = this.units[i].fleet.location;
-                if (!byLocation[star.id]) {
-                    byLocation[star.id] = [];
-                }
-                byLocation[star.id].push(this.units[i]);
-            }
-            return byLocation;
-        };
-        Front.prototype.moveFleets = function (afterMoveCallback) {
-            if (this.units.length < 1) {
-                afterMoveCallback();
-                return;
-            }
-            switch (this.objective.type) {
-                case "heal":
-                    {
-                        this.healMoveRoutine(afterMoveCallback);
-                        break;
+                return allFleets;
+            };
+            Front.prototype.getUnitIndex = function (unit) {
+                return this.units.indexOf(unit);
+            };
+            Front.prototype.addUnit = function (unit) {
+                if (this.getUnitIndex(unit) === -1) {
+                    if (unit.front) {
+                        unit.front.removeUnit(unit);
                     }
-                default:
-                    {
-                        this.defaultMoveRoutine(afterMoveCallback);
-                        break;
+                    unit.front = this;
+                    this.units.push(unit);
+                }
+            };
+            Front.prototype.removeUnit = function (unit) {
+                var unitIndex = this.getUnitIndex(unit);
+                if (unitIndex !== -1) {
+                    unit.front = null;
+                    this.units.splice(unitIndex, 1);
+                }
+            };
+            Front.prototype.getUnitCountByArchetype = function () {
+                var unitCountByArchetype = {};
+                for (var i = 0; i < this.units.length; i++) {
+                    var archetype = this.units[i].template.archetype;
+                    if (!unitCountByArchetype[archetype]) {
+                        unitCountByArchetype[archetype] = 0;
                     }
-            }
-        };
-        Front.prototype.healMoveRoutine = function (afterMoveCallback) {
-            var fleets = this.getAssociatedFleets();
-            if (fleets.length <= 0) {
-                afterMoveCallback();
-                return;
-            }
-            var finishedMovingCount = 0;
-            var finishFleetMoveFN = function () {
-                finishedMovingCount++;
-                if (finishedMovingCount >= fleets.length) {
+                    unitCountByArchetype[archetype]++;
+                }
+                return unitCountByArchetype;
+            };
+            Front.prototype.getUnitsByLocation = function () {
+                var byLocation = {};
+                for (var i = 0; i < this.units.length; i++) {
+                    var star = this.units[i].fleet.location;
+                    if (!byLocation[star.id]) {
+                        byLocation[star.id] = [];
+                    }
+                    byLocation[star.id].push(this.units[i]);
+                }
+                return byLocation;
+            };
+            Front.prototype.moveFleets = function (afterMoveCallback) {
+                if (this.units.length < 1) {
                     afterMoveCallback();
+                    return;
+                }
+                switch (this.objective.type) {
+                    case "heal":
+                        {
+                            this.healMoveRoutine(afterMoveCallback);
+                            break;
+                        }
+                    default:
+                        {
+                            this.defaultMoveRoutine(afterMoveCallback);
+                            break;
+                        }
                 }
             };
-            for (var i = 0; i < fleets.length; i++) {
-                var player = fleets[i].player;
-                var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
-                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-            }
-        };
-        Front.prototype.defaultMoveRoutine = function (afterMoveCallback) {
-            var shouldMoveToTarget;
-            var unitsByLocation = this.getUnitsByLocation();
-            var fleets = this.getAssociatedFleets();
-            var atMuster = unitsByLocation[this.musterLocation.id] ?
-                unitsByLocation[this.musterLocation.id].length : 0;
-            var inRangeOfTarget = 0;
-            for (var i = 0; i < fleets.length; i++) {
-                var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
-                if (fleets[i].getMinCurrentMovePoints() >= distance) {
-                    inRangeOfTarget += fleets[i].ships.length;
+            Front.prototype.healMoveRoutine = function (afterMoveCallback) {
+                var fleets = this.getAssociatedFleets();
+                if (fleets.length <= 0) {
+                    afterMoveCallback();
+                    return;
                 }
-            }
-            if (this.hasMustered) {
-                shouldMoveToTarget = true;
-            }
-            else {
-                if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired) {
-                    this.hasMustered = true;
+                var finishedMovingCount = 0;
+                var finishFleetMoveFN = function () {
+                    finishedMovingCount++;
+                    if (finishedMovingCount >= fleets.length) {
+                        afterMoveCallback();
+                    }
+                };
+                for (var i = 0; i < fleets.length; i++) {
+                    var player = fleets[i].player;
+                    var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
+                    fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+                }
+            };
+            Front.prototype.defaultMoveRoutine = function (afterMoveCallback) {
+                var shouldMoveToTarget;
+                var unitsByLocation = this.getUnitsByLocation();
+                var fleets = this.getAssociatedFleets();
+                var atMuster = unitsByLocation[this.musterLocation.id] ?
+                    unitsByLocation[this.musterLocation.id].length : 0;
+                var inRangeOfTarget = 0;
+                for (var i = 0; i < fleets.length; i++) {
+                    var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
+                    if (fleets[i].getMinCurrentMovePoints() >= distance) {
+                        inRangeOfTarget += fleets[i].ships.length;
+                    }
+                }
+                if (this.hasMustered) {
                     shouldMoveToTarget = true;
                 }
                 else {
-                    shouldMoveToTarget = false;
+                    if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired) {
+                        this.hasMustered = true;
+                        shouldMoveToTarget = true;
+                    }
+                    else {
+                        shouldMoveToTarget = false;
+                    }
                 }
-            }
-            var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
-            var finishAllMoveFN = function () {
-                unitsByLocation = this.getUnitsByLocation();
-                var atTarget = unitsByLocation[this.targetLocation.id] ?
-                    unitsByLocation[this.targetLocation.id].length : 0;
-                if (atTarget >= this.minUnitsDesired) {
-                    this.executeAction(afterMoveCallback);
-                }
-                else {
-                    afterMoveCallback();
-                }
-            }.bind(this);
-            var finishedMovingCount = 0;
-            var finishFleetMoveFN = function () {
-                finishedMovingCount++;
-                if (finishedMovingCount >= fleets.length) {
-                    finishAllMoveFN();
+                var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
+                var finishAllMoveFN = function () {
+                    unitsByLocation = this.getUnitsByLocation();
+                    var atTarget = unitsByLocation[this.targetLocation.id] ?
+                        unitsByLocation[this.targetLocation.id].length : 0;
+                    if (atTarget >= this.minUnitsDesired) {
+                        this.executeAction(afterMoveCallback);
+                    }
+                    else {
+                        afterMoveCallback();
+                    }
+                }.bind(this);
+                var finishedMovingCount = 0;
+                var finishFleetMoveFN = function () {
+                    finishedMovingCount++;
+                    if (finishedMovingCount >= fleets.length) {
+                        finishAllMoveFN();
+                    }
+                };
+                for (var i = 0; i < fleets.length; i++) {
+                    fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
                 }
             };
-            for (var i = 0; i < fleets.length; i++) {
-                fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-            }
-        };
-        Front.prototype.executeAction = function (afterExecutedCallback) {
-            var star = this.targetLocation;
-            var player = this.units[0].fleet.player;
-            if (this.objective.type === "expansion" || this.objective.type === "cleanPirates") {
-                var attackTargets = star.getTargetsForPlayer(player);
-                var target = attackTargets.filter(function (target) {
-                    return target.enemy.isIndependent;
-                })[0];
-                player.attackTarget(star, target, afterExecutedCallback);
-            }
-        };
-        return Front;
-    })();
-    Rance.Front = Front;
+            Front.prototype.executeAction = function (afterExecutedCallback) {
+                var star = this.targetLocation;
+                var player = this.units[0].fleet.player;
+                if (this.objective.type === "expansion" || this.objective.type === "cleanPirates") {
+                    var attackTargets = star.getTargetsForPlayer(player);
+                    var target = attackTargets.filter(function (target) {
+                        return target.enemy.isIndependent;
+                    })[0];
+                    player.attackTarget(star, target, afterExecutedCallback);
+                }
+            };
+            return Front;
+        })();
+        MapAI.Front = Front;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../data/templates/personalities.ts" />
 /// <reference path="../player.ts"/>
@@ -12197,314 +12209,317 @@ var Rance;
 /// <reference path="objectivesai.ts"/>
 var Rance;
 (function (Rance) {
-    var FrontsAI = (function () {
-        function FrontsAI(mapEvaluator, objectivesAI, personality) {
-            this.fronts = [];
-            this.frontsRequestingUnits = [];
-            this.frontsToMove = [];
-            this.mapEvaluator = mapEvaluator;
-            this.map = mapEvaluator.map;
-            this.player = mapEvaluator.player;
-            this.objectivesAI = objectivesAI;
-            this.personality = personality;
-        }
-        FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
-            var totalUnitCountByArchetype = {};
-            var units = this.player.getAllUnits();
-            for (var i = 0; i < units.length; i++) {
-                var unitArchetype = units[i].template.archetype;
-                if (!totalUnitCountByArchetype[unitArchetype]) {
-                    totalUnitCountByArchetype[unitArchetype] = 0;
-                }
-                totalUnitCountByArchetype[unitArchetype]++;
+    var MapAI;
+    (function (MapAI) {
+        var FrontsAI = (function () {
+            function FrontsAI(mapEvaluator, objectivesAI, personality) {
+                this.fronts = [];
+                this.frontsRequestingUnits = [];
+                this.frontsToMove = [];
+                this.mapEvaluator = mapEvaluator;
+                this.map = mapEvaluator.map;
+                this.player = mapEvaluator.player;
+                this.objectivesAI = objectivesAI;
+                this.personality = personality;
             }
-            return totalUnitCountByArchetype;
-        };
-        FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
-            var relativeWeights = Rance.getRelativeWeightsFromObject(unitsByArchetype);
-            var deviationFromIdeal = {};
-            for (var archetype in idealWeights) {
-                var ideal = idealWeights[archetype];
-                var actual = relativeWeights[archetype] || 0;
-                deviationFromIdeal[archetype] = ideal - actual;
-            }
-            return deviationFromIdeal;
-        };
-        FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
-            var ideal = this.personality.unitCompositionPreference;
-            var actual = this.getTotalUnitCountByArchetype();
-            return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
-        };
-        FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
-            var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
-            var globalPreferenceWeight = relativeFrontSize;
-            var globalScores = this.getGlobalUnitArcheypeScores();
-            var scores = {};
-            var frontArchetypes = front.getUnitCountByArchetype();
-            var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
-            for (var archetype in globalScores) {
-                scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
-                scores[archetype] += frontScores[archetype];
-                scores[archetype] /= 2;
-            }
-            return scores;
-        };
-        FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
-            switch (front.objective.type) {
-                case "heal":
-                    {
-                        return this.getHealUnitFitScore(unit, front);
+            FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
+                var totalUnitCountByArchetype = {};
+                var units = this.player.getAllUnits();
+                for (var i = 0; i < units.length; i++) {
+                    var unitArchetype = units[i].template.archetype;
+                    if (!totalUnitCountByArchetype[unitArchetype]) {
+                        totalUnitCountByArchetype[unitArchetype] = 0;
                     }
-                default:
-                    {
-                        return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+                    totalUnitCountByArchetype[unitArchetype]++;
+                }
+                return totalUnitCountByArchetype;
+            };
+            FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
+                var relativeWeights = Rance.getRelativeWeightsFromObject(unitsByArchetype);
+                var deviationFromIdeal = {};
+                for (var archetype in idealWeights) {
+                    var ideal = idealWeights[archetype];
+                    var actual = relativeWeights[archetype] || 0;
+                    deviationFromIdeal[archetype] = ideal - actual;
+                }
+                return deviationFromIdeal;
+            };
+            FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
+                var ideal = this.personality.unitCompositionPreference;
+                var actual = this.getTotalUnitCountByArchetype();
+                return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
+            };
+            FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
+                var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
+                var globalPreferenceWeight = relativeFrontSize;
+                var globalScores = this.getGlobalUnitArcheypeScores();
+                var scores = {};
+                var frontArchetypes = front.getUnitCountByArchetype();
+                var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
+                for (var archetype in globalScores) {
+                    scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
+                    scores[archetype] += frontScores[archetype];
+                    scores[archetype] /= 2;
+                }
+                return scores;
+            };
+            FrontsAI.prototype.scoreUnitFitForFront = function (unit, front, frontArchetypeScores) {
+                switch (front.objective.type) {
+                    case "heal":
+                        {
+                            return this.getHealUnitFitScore(unit, front);
+                        }
+                    default:
+                        {
+                            return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+                        }
+                }
+            };
+            FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
+                var healthPercentage = unit.currentHealth / unit.maxHealth;
+                if (healthPercentage > 0.75)
+                    return -1;
+                return (1 - healthPercentage) * 2;
+            };
+            FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
+                // base score based on unit composition
+                var score = frontArchetypeScores[unit.template.archetype];
+                // add score based on front priority
+                // lower priority if front requirements already met
+                // more important fronts get priority but dont hog units
+                var unitsOverMinimum = front.units.length - front.minUnitsDesired;
+                var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
+                var priorityMultiplier = 1;
+                if (unitsOverMinimum > 0) {
+                    priorityMultiplier -= unitsOverMinimum * 0.15;
+                }
+                if (unitsOverIdeal > 0) {
+                    priorityMultiplier -= unitsOverIdeal * 0.4;
+                }
+                if (priorityMultiplier < 0)
+                    priorityMultiplier = 0;
+                var adjustedPriority = front.priority * priorityMultiplier;
+                score += adjustedPriority * 2;
+                // penalize initial units for front
+                // inertia at beginning of adding units to front
+                // so ai prioritizes fully formed fronts to incomplete ones
+                var newUnitInertia = 0.5 - front.units.length * 0.1;
+                if (newUnitInertia > 0) {
+                    score -= newUnitInertia;
+                }
+                // prefer units already part of this front
+                var alreadyInFront = unit.front && unit.front === front;
+                if (alreadyInFront) {
+                    score += 0.2;
+                    if (front.hasMustered) {
+                        score += 0.5;
                     }
-            }
-        };
-        FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
-            var healthPercentage = unit.currentHealth / unit.maxHealth;
-            if (healthPercentage > 0.75)
-                return -1;
-            return (1 - healthPercentage) * 2;
-        };
-        FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
-            // base score based on unit composition
-            var score = frontArchetypeScores[unit.template.archetype];
-            // add score based on front priority
-            // lower priority if front requirements already met
-            // more important fronts get priority but dont hog units
-            var unitsOverMinimum = front.units.length - front.minUnitsDesired;
-            var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
-            var priorityMultiplier = 1;
-            if (unitsOverMinimum > 0) {
-                priorityMultiplier -= unitsOverMinimum * 0.15;
-            }
-            if (unitsOverIdeal > 0) {
-                priorityMultiplier -= unitsOverIdeal * 0.4;
-            }
-            if (priorityMultiplier < 0)
-                priorityMultiplier = 0;
-            var adjustedPriority = front.priority * priorityMultiplier;
-            score += adjustedPriority * 2;
-            // penalize initial units for front
-            // inertia at beginning of adding units to front
-            // so ai prioritizes fully formed fronts to incomplete ones
-            var newUnitInertia = 0.5 - front.units.length * 0.1;
-            if (newUnitInertia > 0) {
-                score -= newUnitInertia;
-            }
-            // prefer units already part of this front
-            var alreadyInFront = unit.front && unit.front === front;
-            if (alreadyInFront) {
-                score += 0.2;
-                if (front.hasMustered) {
-                    score += 0.5;
                 }
-            }
-            // penalize fronts with high requirements
-            // reduce forming incomplete fronts even if they have high priority
-            // effect lessens as total unit count increases
-            // TODO
-            // penalize units on low health
-            var healthPercentage = unit.currentHealth / unit.maxHealth;
-            if (healthPercentage < 0.75) {
-                var lostHealthPercentage = 1 - healthPercentage;
-                score += lostHealthPercentage * -2.5;
-            }
-            // prioritize units closer to front target
-            var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-            var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
-            var distanceAdjust = turnsToReach * -0.1;
-            score += distanceAdjust;
-            return score;
-        };
-        FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
-            var scores = [];
-            var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
-            for (var i = 0; i < units.length; i++) {
-                scores.push({
-                    unit: units[i],
-                    score: this.scoreUnitFitForFront(units[i], front, frontArchetypeScores),
-                    front: front
-                });
-            }
-            return scores;
-        };
-        FrontsAI.prototype.assignUnits = function () {
-            var units = this.player.getAllUnits();
-            var allUnitScores = [];
-            var unitScoresByFront = {};
-            var recalculateScoresForFront = function (front) {
-                var archetypeScores = this.getFrontUnitArchetypeScores(front);
-                var frontScores = unitScoresByFront[front.id];
-                for (var i = 0; i < frontScores.length; i++) {
-                    var unit = frontScores[i].unit;
-                    frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
+                // penalize fronts with high requirements
+                // reduce forming incomplete fronts even if they have high priority
+                // effect lessens as total unit count increases
+                // TODO
+                // penalize units on low health
+                var healthPercentage = unit.currentHealth / unit.maxHealth;
+                if (healthPercentage < 0.75) {
+                    var lostHealthPercentage = 1 - healthPercentage;
+                    score += lostHealthPercentage * -2.5;
                 }
-            }.bind(this);
-            var removeUnit = function (unit) {
-                for (var frontId in unitScoresByFront) {
-                    unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
-                        return score.unit !== unit;
+                // prioritize units closer to front target
+                var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
+                var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
+                var distanceAdjust = turnsToReach * -0.1;
+                score += distanceAdjust;
+                return score;
+            };
+            FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
+                var scores = [];
+                var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
+                for (var i = 0; i < units.length; i++) {
+                    scores.push({
+                        unit: units[i],
+                        score: this.scoreUnitFitForFront(units[i], front, frontArchetypeScores),
+                        front: front
                     });
                 }
+                return scores;
             };
-            // ascending
-            var sortByScoreFN = function (a, b) {
-                return a.score - b.score;
-            };
-            for (var i = 0; i < this.fronts.length; i++) {
-                var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
-                unitScoresByFront[this.fronts[i].id] = frontScores;
-                allUnitScores = allUnitScores.concat(frontScores);
-            }
-            var alreadyAdded = {};
-            while (allUnitScores.length > 0) {
-                // sorted in loop as scores get recalculated every iteration
-                allUnitScores.sort(sortByScoreFN);
-                var bestScore = allUnitScores.pop();
-                if (alreadyAdded[bestScore.unit.id]) {
-                    continue;
-                }
-                bestScore.front.addUnit(bestScore.unit);
-                removeUnit(bestScore.unit);
-                alreadyAdded[bestScore.unit.id] = true;
-                recalculateScoresForFront(bestScore.front);
-            }
-        };
-        FrontsAI.prototype.getFrontWithId = function (id) {
-            for (var i = 0; i < this.fronts.length; i++) {
-                if (this.fronts[i].id === id) {
-                    return this.fronts[i];
-                }
-            }
-            return null;
-        };
-        FrontsAI.prototype.createFront = function (objective) {
-            var musterLocation = objective.target ?
-                this.player.getNearestOwnedStarTo(objective.target) :
-                null;
-            var unitsDesired = this.getUnitsToFillObjective(objective);
-            var front = new Rance.Front({
-                id: objective.id,
-                priority: objective.priority,
-                objective: objective,
-                minUnitsDesired: unitsDesired.min,
-                idealUnitsDesired: unitsDesired.ideal,
-                targetLocation: objective.target,
-                musterLocation: musterLocation
-            });
-            return front;
-        };
-        FrontsAI.prototype.removeInactiveFronts = function () {
-            // loop backwards because splicing
-            for (var i = this.fronts.length - 1; i >= 0; i--) {
-                var front = this.fronts[i];
-                var hasActiveObjective = false;
-                for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
-                    var objective = this.objectivesAI.objectives[j];
-                    if (objective.id === front.id && objective.priority > 0.04) {
-                        hasActiveObjective = true;
-                        break;
+            FrontsAI.prototype.assignUnits = function () {
+                var units = this.player.getAllUnits();
+                var allUnitScores = [];
+                var unitScoresByFront = {};
+                var recalculateScoresForFront = function (front) {
+                    var archetypeScores = this.getFrontUnitArchetypeScores(front);
+                    var frontScores = unitScoresByFront[front.id];
+                    for (var i = 0; i < frontScores.length; i++) {
+                        var unit = frontScores[i].unit;
+                        frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
                     }
-                }
-                if (!hasActiveObjective) {
-                    this.fronts.splice(i, 1);
-                }
-            }
-        };
-        FrontsAI.prototype.formFronts = function () {
-            /*
-            dissolve old fronts without an active objective
-            create new fronts for every objective not already assoicated with one
-             */
-            this.removeInactiveFronts();
-            for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
-                var objective = this.objectivesAI.objectives[i];
-                if (objective.priority > 0.04) {
-                    if (!this.getFrontWithId(objective.id)) {
-                        var front = this.createFront(objective);
-                        this.fronts.push(front);
-                    }
-                }
-            }
-        };
-        FrontsAI.prototype.organizeFleets = function () {
-            for (var i = 0; i < this.fronts.length; i++) {
-                this.fronts[i].organizeFleets();
-            }
-        };
-        FrontsAI.prototype.setFrontsToMove = function () {
-            this.frontsToMove = this.fronts.slice(0);
-            var frontMovePriorities = {
-                expansion: 4,
-                cleanPirates: 3,
-                heal: -1
-            };
-            this.frontsToMove.sort(function (a, b) {
-                return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
-            });
-        };
-        FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
-            var front = this.frontsToMove.pop();
-            if (!front) {
-                afterMovingAllCallback();
-                return;
-            }
-            front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
-        };
-        FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
-            switch (objective.type) {
-                case "expansion":
-                    {
-                        var min = this.getUnitsToFillExpansionObjective(objective);
-                        return ({
-                            min: min,
-                            ideal: 6
+                }.bind(this);
+                var removeUnit = function (unit) {
+                    for (var frontId in unitScoresByFront) {
+                        unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
+                            return score.unit !== unit;
                         });
                     }
-                case "cleanPirates":
-                    {
-                        var min = this.getUnitsToFillExpansionObjective(objective);
-                        return ({
-                            min: min,
-                            ideal: min
-                        });
-                    }
-                case "heal":
-                    {
-                        return ({
-                            min: 999,
-                            ideal: 999
-                        });
-                    }
-            }
-        };
-        FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
-            var star = objective.target;
-            var independentShips = star.getIndependentShips();
-            if (independentShips.length === 1)
-                return 2;
-            else {
-                var desired = independentShips.length + 2;
-                return Math.min(desired, 6);
-            }
-        };
-        FrontsAI.prototype.setUnitRequests = function () {
-            /*for each front that doesnt fulfill minimum unit requirement
-              make request with same priority of front
-            */
-            this.frontsRequestingUnits = [];
-            for (var i = 0; i < this.fronts.length; i++) {
-                var front = this.fronts[i];
-                if (front.units.length < front.idealUnitsDesired) {
-                    this.frontsRequestingUnits.push(front);
+                };
+                // ascending
+                var sortByScoreFN = function (a, b) {
+                    return a.score - b.score;
+                };
+                for (var i = 0; i < this.fronts.length; i++) {
+                    var frontScores = this.getUnitScoresForFront(units, this.fronts[i]);
+                    unitScoresByFront[this.fronts[i].id] = frontScores;
+                    allUnitScores = allUnitScores.concat(frontScores);
                 }
-            }
-        };
-        return FrontsAI;
-    })();
-    Rance.FrontsAI = FrontsAI;
+                var alreadyAdded = {};
+                while (allUnitScores.length > 0) {
+                    // sorted in loop as scores get recalculated every iteration
+                    allUnitScores.sort(sortByScoreFN);
+                    var bestScore = allUnitScores.pop();
+                    if (alreadyAdded[bestScore.unit.id]) {
+                        continue;
+                    }
+                    bestScore.front.addUnit(bestScore.unit);
+                    removeUnit(bestScore.unit);
+                    alreadyAdded[bestScore.unit.id] = true;
+                    recalculateScoresForFront(bestScore.front);
+                }
+            };
+            FrontsAI.prototype.getFrontWithId = function (id) {
+                for (var i = 0; i < this.fronts.length; i++) {
+                    if (this.fronts[i].id === id) {
+                        return this.fronts[i];
+                    }
+                }
+                return null;
+            };
+            FrontsAI.prototype.createFront = function (objective) {
+                var musterLocation = objective.target ?
+                    this.player.getNearestOwnedStarTo(objective.target) :
+                    null;
+                var unitsDesired = this.getUnitsToFillObjective(objective);
+                var front = new MapAI.Front({
+                    id: objective.id,
+                    priority: objective.priority,
+                    objective: objective,
+                    minUnitsDesired: unitsDesired.min,
+                    idealUnitsDesired: unitsDesired.ideal,
+                    targetLocation: objective.target,
+                    musterLocation: musterLocation
+                });
+                return front;
+            };
+            FrontsAI.prototype.removeInactiveFronts = function () {
+                // loop backwards because splicing
+                for (var i = this.fronts.length - 1; i >= 0; i--) {
+                    var front = this.fronts[i];
+                    var hasActiveObjective = false;
+                    for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
+                        var objective = this.objectivesAI.objectives[j];
+                        if (objective.id === front.id && objective.priority > 0.04) {
+                            hasActiveObjective = true;
+                            break;
+                        }
+                    }
+                    if (!hasActiveObjective) {
+                        this.fronts.splice(i, 1);
+                    }
+                }
+            };
+            FrontsAI.prototype.formFronts = function () {
+                /*
+                dissolve old fronts without an active objective
+                create new fronts for every objective not already assoicated with one
+                 */
+                this.removeInactiveFronts();
+                for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
+                    var objective = this.objectivesAI.objectives[i];
+                    if (objective.priority > 0.04) {
+                        if (!this.getFrontWithId(objective.id)) {
+                            var front = this.createFront(objective);
+                            this.fronts.push(front);
+                        }
+                    }
+                }
+            };
+            FrontsAI.prototype.organizeFleets = function () {
+                for (var i = 0; i < this.fronts.length; i++) {
+                    this.fronts[i].organizeFleets();
+                }
+            };
+            FrontsAI.prototype.setFrontsToMove = function () {
+                this.frontsToMove = this.fronts.slice(0);
+                var frontMovePriorities = {
+                    expansion: 4,
+                    cleanPirates: 3,
+                    heal: -1
+                };
+                this.frontsToMove.sort(function (a, b) {
+                    return frontMovePriorities[a.objective.type] - frontMovePriorities[b.objective.type];
+                });
+            };
+            FrontsAI.prototype.moveFleets = function (afterMovingAllCallback) {
+                var front = this.frontsToMove.pop();
+                if (!front) {
+                    afterMovingAllCallback();
+                    return;
+                }
+                front.moveFleets(this.moveFleets.bind(this, afterMovingAllCallback));
+            };
+            FrontsAI.prototype.getUnitsToFillObjective = function (objective) {
+                switch (objective.type) {
+                    case "expansion":
+                        {
+                            var min = this.getUnitsToFillExpansionObjective(objective);
+                            return ({
+                                min: min,
+                                ideal: 6
+                            });
+                        }
+                    case "cleanPirates":
+                        {
+                            var min = this.getUnitsToFillExpansionObjective(objective);
+                            return ({
+                                min: min,
+                                ideal: min
+                            });
+                        }
+                    case "heal":
+                        {
+                            return ({
+                                min: 999,
+                                ideal: 999
+                            });
+                        }
+                }
+            };
+            FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
+                var star = objective.target;
+                var independentShips = star.getIndependentShips();
+                if (independentShips.length === 1)
+                    return 2;
+                else {
+                    var desired = independentShips.length + 2;
+                    return Math.min(desired, 6);
+                }
+            };
+            FrontsAI.prototype.setUnitRequests = function () {
+                /*for each front that doesnt fulfill minimum unit requirement
+                  make request with same priority of front
+                */
+                this.frontsRequestingUnits = [];
+                for (var i = 0; i < this.fronts.length; i++) {
+                    var front = this.fronts[i];
+                    if (front.units.length < front.idealUnitsDesired) {
+                        this.frontsRequestingUnits.push(front);
+                    }
+                }
+            };
+            return FrontsAI;
+        })();
+        MapAI.FrontsAI = FrontsAI;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../data/templates/personalities.ts" />
 /// <reference path="../galaxymap.ts"/>
@@ -12514,70 +12529,73 @@ var Rance;
 /// <reference path="frontsai.ts"/>
 var Rance;
 (function (Rance) {
-    var EconomyAI = (function () {
-        function EconomyAI(props) {
-            this.objectivesAI = props.objectivesAI;
-            this.frontsAI = props.frontsAI;
-            this.mapEvaluator = props.mapEvaluator;
-            this.player = props.mapEvaluator.player;
-            this.personality = props.personality;
-        }
-        EconomyAI.prototype.satisfyAllRequests = function () {
-            /*
-            get all requests from OAI and FAI
-            sort by priority
-            fulfill by priority
-             */
-            var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
-            allRequests.sort(function (a, b) {
-                return b.priority - a.priority;
-            });
-            for (var i = 0; i < allRequests.length; i++) {
-                var request = allRequests[i];
-                // is front
-                if (request.targetLocation) {
-                    this.satisfyFrontRequest(request);
-                }
-                else {
-                }
+    var MapAI;
+    (function (MapAI) {
+        var EconomyAI = (function () {
+            function EconomyAI(props) {
+                this.objectivesAI = props.objectivesAI;
+                this.frontsAI = props.frontsAI;
+                this.mapEvaluator = props.mapEvaluator;
+                this.player = props.mapEvaluator.player;
+                this.personality = props.personality;
             }
-        };
-        EconomyAI.prototype.satisfyFrontRequest = function (front) {
-            // TODO
-            var star = this.player.getNearestOwnedStarTo(front.musterLocation);
-            var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
-            var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
-            var buildableUnitTypesByArchetype = {};
-            var buildableUnitTypes = star.getBuildableShipTypes();
-            for (var i = 0; i < buildableUnitTypes.length; i++) {
-                var archetype = buildableUnitTypes[i].archetype;
-                if (!buildableUnitTypesByArchetype[archetype]) {
-                    buildableUnitTypesByArchetype[archetype] = [];
-                }
-                buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
-            }
-            var unitType;
-            for (var i = 0; i < sortedScores.length; i++) {
-                if (buildableUnitTypesByArchetype[sortedScores[i]]) {
-                    unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-                    if (this.player.money < unitType.buildCost) {
-                        // TODO AI should actually try to figure out which individual unit would
-                        // be the best
-                        return;
+            EconomyAI.prototype.satisfyAllRequests = function () {
+                /*
+                get all requests from OAI and FAI
+                sort by priority
+                fulfill by priority
+                 */
+                var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+                allRequests.sort(function (a, b) {
+                    return b.priority - a.priority;
+                });
+                for (var i = 0; i < allRequests.length; i++) {
+                    var request = allRequests[i];
+                    // is front
+                    if (request.targetLocation) {
+                        this.satisfyFrontRequest(request);
                     }
                     else {
-                        break;
                     }
                 }
-            }
-            if (!unitType)
-                debugger;
-            var unit = this.player.buildUnit(unitType, star);
-            front.addUnit(unit);
-        };
-        return EconomyAI;
-    })();
-    Rance.EconomyAI = EconomyAI;
+            };
+            EconomyAI.prototype.satisfyFrontRequest = function (front) {
+                // TODO
+                var star = this.player.getNearestOwnedStarTo(front.musterLocation);
+                var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
+                var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
+                var buildableUnitTypesByArchetype = {};
+                var buildableUnitTypes = star.getBuildableShipTypes();
+                for (var i = 0; i < buildableUnitTypes.length; i++) {
+                    var archetype = buildableUnitTypes[i].archetype;
+                    if (!buildableUnitTypesByArchetype[archetype]) {
+                        buildableUnitTypesByArchetype[archetype] = [];
+                    }
+                    buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
+                }
+                var unitType;
+                for (var i = 0; i < sortedScores.length; i++) {
+                    if (buildableUnitTypesByArchetype[sortedScores[i]]) {
+                        unitType = Rance.getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+                        if (this.player.money < unitType.buildCost) {
+                            // TODO AI should actually try to figure out which individual unit would
+                            // be the best
+                            return;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                if (!unitType)
+                    debugger;
+                var unit = this.player.buildUnit(unitType, star);
+                front.addUnit(unit);
+            };
+            return EconomyAI;
+        })();
+        MapAI.EconomyAI = EconomyAI;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../data/templates/attitudemodifiers.ts" />
 /// <reference path="../game.ts"/>
@@ -12586,23 +12604,26 @@ var Rance;
 /// <reference path="mapevaluator.ts"/>
 var Rance;
 (function (Rance) {
-    var DiplomacyAI = (function () {
-        function DiplomacyAI(mapEvaluator, game, personality) {
-            this.game = game;
-            this.player = mapEvaluator.player;
-            this.diplomacyStatus = this.player.diplomacyStatus;
-            this.mapEvaluator = mapEvaluator;
-            this.personality = personality;
-        }
-        DiplomacyAI.prototype.setAttitudes = function () {
-            var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
-            for (var playerId in diplomacyEvaluations) {
-                this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
+    var MapAI;
+    (function (MapAI) {
+        var DiplomacyAI = (function () {
+            function DiplomacyAI(mapEvaluator, game, personality) {
+                this.game = game;
+                this.player = mapEvaluator.player;
+                this.diplomacyStatus = this.player.diplomacyStatus;
+                this.mapEvaluator = mapEvaluator;
+                this.personality = personality;
             }
-        };
-        return DiplomacyAI;
-    })();
-    Rance.DiplomacyAI = DiplomacyAI;
+            DiplomacyAI.prototype.setAttitudes = function () {
+                var diplomacyEvaluations = this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+                for (var playerId in diplomacyEvaluations) {
+                    this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
+                }
+            };
+            return DiplomacyAI;
+        })();
+        MapAI.DiplomacyAI = DiplomacyAI;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../data/templates/personalities.ts" />
 /// <reference path="../galaxymap.ts"/>
@@ -12615,56 +12636,59 @@ var Rance;
 /// <reference path="diplomacyai.ts"/>
 var Rance;
 (function (Rance) {
-    var AIController = (function () {
-        function AIController(player, game, personality) {
-            this.personality = personality || Rance.makeRandomPersonality();
-            this.player = player;
-            this.game = game;
-            this.map = game.galaxyMap;
-            this.mapEvaluator = new Rance.MapEvaluator(this.map, this.player, this.game);
-            this.objectivesAI = new Rance.ObjectivesAI(this.mapEvaluator, this.personality);
-            this.frontsAI = new Rance.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
-            this.economicAI = new Rance.EconomyAI({
-                objectivesAI: this.objectivesAI,
-                frontsAI: this.frontsAI,
-                mapEvaluator: this.mapEvaluator,
-                personality: this.personality
-            });
-            this.diplomacyAI = new Rance.DiplomacyAI(this.mapEvaluator, this.game, this.personality);
-        }
-        AIController.prototype.processTurn = function (afterFinishedCallback) {
-            // clear cached stuff from mapevaluator
-            this.mapEvaluator.processTurnStart();
-            // gsai evaluate grand strategy
-            // dai set attitude
-            this.diplomacyAI.setAttitudes();
-            // oai make objectives
-            this.objectivesAI.setAllObjectives();
-            // fai form fronts
-            this.frontsAI.formFronts();
-            // fai assign units
-            this.frontsAI.assignUnits();
-            // fai request units
-            this.frontsAI.setUnitRequests();
-            // eai fulfill requests
-            this.economicAI.satisfyAllRequests();
-            // fai organize fleets
-            this.frontsAI.organizeFleets();
-            // fai set fleets yet to move
-            this.frontsAI.setFrontsToMove();
-            // fai move fleets
-            // function param is called after all fronts have moved
-            this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
-        };
-        AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
-            this.frontsAI.organizeFleets();
-            if (afterFinishedCallback) {
-                afterFinishedCallback();
+    var MapAI;
+    (function (MapAI) {
+        var AIController = (function () {
+            function AIController(player, game, personality) {
+                this.personality = personality || Rance.makeRandomPersonality();
+                this.player = player;
+                this.game = game;
+                this.map = game.galaxyMap;
+                this.mapEvaluator = new MapAI.MapEvaluator(this.map, this.player, this.game);
+                this.objectivesAI = new MapAI.ObjectivesAI(this.mapEvaluator, this.personality);
+                this.frontsAI = new MapAI.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
+                this.economicAI = new MapAI.EconomyAI({
+                    objectivesAI: this.objectivesAI,
+                    frontsAI: this.frontsAI,
+                    mapEvaluator: this.mapEvaluator,
+                    personality: this.personality
+                });
+                this.diplomacyAI = new MapAI.DiplomacyAI(this.mapEvaluator, this.game, this.personality);
             }
-        };
-        return AIController;
-    })();
-    Rance.AIController = AIController;
+            AIController.prototype.processTurn = function (afterFinishedCallback) {
+                // clear cached stuff from mapevaluator
+                this.mapEvaluator.processTurnStart();
+                // gsai evaluate grand strategy
+                // dai set attitude
+                this.diplomacyAI.setAttitudes();
+                // oai make objectives
+                this.objectivesAI.setAllObjectives();
+                // fai form fronts
+                this.frontsAI.formFronts();
+                // fai assign units
+                this.frontsAI.assignUnits();
+                // fai request units
+                this.frontsAI.setUnitRequests();
+                // eai fulfill requests
+                this.economicAI.satisfyAllRequests();
+                // fai organize fleets
+                this.frontsAI.organizeFleets();
+                // fai set fleets yet to move
+                this.frontsAI.setFrontsToMove();
+                // fai move fleets
+                // function param is called after all fronts have moved
+                this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
+            };
+            AIController.prototype.finishMovingFleets = function (afterFinishedCallback) {
+                this.frontsAI.organizeFleets();
+                if (afterFinishedCallback) {
+                    afterFinishedCallback();
+                }
+            };
+            return AIController;
+        })();
+        MapAI.AIController = AIController;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
 /// <reference path="unit.ts"/>
 /// <reference path="fleet.ts"/>
@@ -12704,7 +12728,7 @@ var Rance;
             this.secondaryColor = scheme.secondary;
         };
         Player.prototype.setupAI = function (game) {
-            this.AIController = new Rance.AIController(this, game, this.personality);
+            this.AIController = new Rance.MapAI.AIController(this, game, this.personality);
         };
         Player.prototype.setupPirates = function () {
             this.name = "Independent";
@@ -18020,7 +18044,7 @@ var Rance;
                         else {
                             points = this.player.getRevealedStars();
                         }
-                        var mapEvaluator = new Rance.MapEvaluator(map, this.player);
+                        var mapEvaluator = new Rance.MapAI.MapEvaluator(map, this.player);
                         var influenceByStar = mapEvaluator.buildPlayerInfluenceMap(this.player);
                         var minInfluence, maxInfluence;
                         for (var starId in influenceByStar) {

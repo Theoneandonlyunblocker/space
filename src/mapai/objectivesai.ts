@@ -26,116 +26,119 @@ build units near request target
 
 module Rance
 {
-  export class ObjectivesAI
+  export module MapAI
   {
-    mapEvaluator: MapEvaluator;
-    map: GalaxyMap;
-    player: Player;
-    personality: IPersonality;
-
-    objectivesByType =
+    export class ObjectivesAI
     {
-      expansion: <Objective[]> [],
-      cleanPirates: <Objective[]> [],
-      heal: <Objective[]> []
-    };
-    objectives: Objective[] = [];
+      mapEvaluator: MapEvaluator;
+      map: GalaxyMap;
+      player: Player;
+      personality: IPersonality;
 
-    maxActiveExpansionRequests: number;
-
-    requests: any[] = [];
-
-    constructor(mapEvaluator: MapEvaluator, personality: IPersonality)
-    {
-      this.mapEvaluator = mapEvaluator;
-      this.map = mapEvaluator.map;
-      this.player = mapEvaluator.player;
-      this.personality = personality;
-    }
-
-    setAllObjectives()
-    {
-      this.objectives = [];
-
-      this.addObjectives(this.getExpansionObjectives());
-      this.addObjectives(this.getCleanPiratesObjectives());
-      this.addObjectives(this.getHealObjectives());
-    }
-
-    addObjectives(objectives: Objective[])
-    {
-      this.objectives = this.objectives.concat(objectives);
-    }
-
-    // base method used for getting expansion & cleanPirates objectives
-    getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number)
-    {
-      var objectivesByTarget:
+      objectivesByType =
       {
-        [starId: number]: Objective;
-      } = {};
+        expansion: <Objective[]> [],
+        cleanPirates: <Objective[]> [],
+        heal: <Objective[]> []
+      };
+      objectives: Objective[] = [];
 
-      var allObjectives: Objective[] = [];
+      maxActiveExpansionRequests: number;
 
-      for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
+      requests: any[] = [];
+
+      constructor(mapEvaluator: MapEvaluator, personality: IPersonality)
       {
-        var objective = this.objectivesByType[objectiveType][i];
-        objective.isOngoing = true;
-        objectivesByTarget[objective.target.id] = objective;
+        this.mapEvaluator = mapEvaluator;
+        this.map = mapEvaluator.map;
+        this.player = mapEvaluator.player;
+        this.personality = personality;
       }
 
-      this.objectivesByType[objectiveType] = [];
-
-
-      var minScore: number, maxScore: number;
-
-      for (var i = 0; i < evaluationScores.length; i++)
+      setAllObjectives()
       {
-        var score = evaluationScores[i].score;
-        //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
-        maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+        this.objectives = [];
+
+        this.addObjectives(this.getExpansionObjectives());
+        this.addObjectives(this.getCleanPiratesObjectives());
+        this.addObjectives(this.getHealObjectives());
       }
 
-      for (var i = 0; i < evaluationScores.length; i++)
+      addObjectives(objectives: Objective[])
       {
-        var star = evaluationScores[i].star;
-        var relativeScore = getRelativeValue(evaluationScores[i].score, 0, maxScore);
-        var priority = relativeScore * basePriority;
+        this.objectives = this.objectives.concat(objectives);
+      }
 
-        if (objectivesByTarget[star.id])
+      // base method used for getting expansion & cleanPirates objectives
+      getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number)
+      {
+        var objectivesByTarget:
         {
-          objectivesByTarget[star.id].priority = priority;
-        }
-        else
+          [starId: number]: Objective;
+        } = {};
+
+        var allObjectives: Objective[] = [];
+
+        for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
         {
-          objectivesByTarget[star.id] = new Objective(objectiveType, priority, star);
+          var objective = this.objectivesByType[objectiveType][i];
+          objective.isOngoing = true;
+          objectivesByTarget[objective.target.id] = objective;
         }
 
-        allObjectives.push(objectivesByTarget[star.id]);
-        this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
+        this.objectivesByType[objectiveType] = [];
+
+
+        var minScore: number, maxScore: number;
+
+        for (var i = 0; i < evaluationScores.length; i++)
+        {
+          var score = evaluationScores[i].score;
+          //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
+          maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+        }
+
+        for (var i = 0; i < evaluationScores.length; i++)
+        {
+          var star = evaluationScores[i].star;
+          var relativeScore = getRelativeValue(evaluationScores[i].score, 0, maxScore);
+          var priority = relativeScore * basePriority;
+
+          if (objectivesByTarget[star.id])
+          {
+            objectivesByTarget[star.id].priority = priority;
+          }
+          else
+          {
+            objectivesByTarget[star.id] = new Objective(objectiveType, priority, star);
+          }
+
+          allObjectives.push(objectivesByTarget[star.id]);
+          this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
+        }
+
+        return allObjectives;
       }
 
-      return allObjectives;
-    }
+      getExpansionObjectives()
+      {
+        var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
+        var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
+        return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
+      }
+      getCleanPiratesObjectives()
+      {
+        var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
+        var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
+        return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
+      }
+      getHealObjectives()
+      {
+        var objective = new Objective("heal", 1, null);
+        this.objectivesByType["heal"] = [objective];
 
-    getExpansionObjectives()
-    {
-      var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-      var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
-      return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
-    }
-    getCleanPiratesObjectives()
-    {
-      var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-      var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
-      return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
-    }
-    getHealObjectives()
-    {
-      var objective = new Objective("heal", 1, null);
-      this.objectivesByType["heal"] = [objective];
-
-      return [objective];
+        return [objective];
+      }
     }
   }
 }

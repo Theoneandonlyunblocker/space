@@ -8,38 +8,41 @@
 
 module Rance
 {
-  export class DiplomacyAI
+  export module MapAI
   {
-    game: Game;
-
-    player: Player;
-    diplomacyStatus: DiplomacyStatus;
-
-    personality: IPersonality;
-    mapEvaluator: MapEvaluator;
-
-    constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality)
+    export class DiplomacyAI
     {
-      this.game = game;
-      
-      this.player = mapEvaluator.player;
-      this.diplomacyStatus = this.player.diplomacyStatus;
+      game: Game;
 
-      this.mapEvaluator = mapEvaluator;
-      
-      this.personality = personality;
-    }
+      player: Player;
+      diplomacyStatus: DiplomacyStatus;
 
-    setAttitudes()
-    {
-      var diplomacyEvaluations =
-        this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+      personality: IPersonality;
+      mapEvaluator: MapEvaluator;
 
-      for (var playerId in diplomacyEvaluations)
+      constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality)
       {
-        this.diplomacyStatus.processAttitudeModifiersForPlayer(
-          this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]
-        );
+        this.game = game;
+        
+        this.player = mapEvaluator.player;
+        this.diplomacyStatus = this.player.diplomacyStatus;
+
+        this.mapEvaluator = mapEvaluator;
+        
+        this.personality = personality;
+      }
+
+      setAttitudes()
+      {
+        var diplomacyEvaluations =
+          this.mapEvaluator.getDiplomacyEvaluations(this.game.turnNumber);
+
+        for (var playerId in diplomacyEvaluations)
+        {
+          this.diplomacyStatus.processAttitudeModifiersForPlayer(
+            this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]
+          );
+        }
       }
     }
   }

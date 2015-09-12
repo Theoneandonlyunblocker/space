@@ -1679,43 +1679,8 @@ declare module Rance {
     }
 }
 declare module Rance {
-    var defaultEvaluationParameters: {
-        starDesirability: {
-            neighborRange: number;
-            neighborWeight: number;
-            defendabilityWeight: number;
-            totalIncomeWeight: number;
-            baseIncomeWeight: number;
-            infrastructureWeight: number;
-            productionWeight: number;
-        };
-    };
-    interface IIndependentTargetEvaluations {
-        [starId: number]: {
-            star: Star;
-            desirability: number;
-            independentStrength: number;
-            ownInfluence: number;
-        };
-    }
-    class MapEvaluator {
-        map: GalaxyMap;
-        player: Player;
-        game: Game;
-        cachedInfluenceMaps: {
-            [turnNumber: number]: {
-                [playerId: number]: {
-                    [starId: number]: number;
-                };
-            };
-        };
-        cachedVisibleFleets: {
-            [turnNumber: number]: {
-                [playerId: number]: Fleet[];
-            };
-        };
-        cachedOwnIncome: number;
-        evaluationParameters: {
+    module MapAI {
+        var defaultEvaluationParameters: {
             starDesirability: {
                 neighborRange: number;
                 neighborWeight: number;
@@ -1726,220 +1691,271 @@ declare module Rance {
                 productionWeight: number;
             };
         };
-        constructor(map: GalaxyMap, player: Player, game?: Game);
-        processTurnStart(): void;
-        evaluateStarIncome(star: Star): number;
-        evaluateStarInfrastructure(star: Star): number;
-        evaluateStarProduction(star: Star): number;
-        evaluateStarDefendability(star: Star): number;
-        evaluateIndividualStarDesirability(star: Star): number;
-        evaluateNeighboringStarsDesirability(star: Star, range: number): number;
-        evaluateStarDesirability(star: Star): number;
-        evaluateIndependentTargets(targetStars: Star[]): IIndependentTargetEvaluations;
-        scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
-            star: Star;
-            score: number;
-        }[];
-        getScoredExpansionTargets(): {
-            star: Star;
-            score: number;
-        }[];
-        getScoredCleanPiratesTargets(): {
-            star: Star;
-            score: number;
-        }[];
-        getHostileShipsAtStar(star: Star): {
-            [playerId: number]: Unit[];
-        };
-        getHostileStrengthAtStar(star: Star): {
-            [playerId: number]: number;
-        };
-        getIndependentStrengthAtStar(star: Star): number;
-        getTotalHostileStrengthAtStar(star: Star): number;
-        getDefenceBuildingStrengthAtStarByPlayer(star: Star): {
-            [playerId: number]: number;
-        };
-        getTotalDefenceBuildingStrengthAtStar(star: Star): number;
-        evaluateFleetStrength(fleet: Fleet): number;
-        getVisibleFleetsByPlayer(): {
-            [playerId: number]: Fleet[];
-        };
-        buildPlayerInfluenceMap(player: Player): {
-            [starId: number]: number;
-        };
-        getPlayerInfluenceMap(player: Player): {
-            [starId: number]: number;
-        };
-        getInfluenceMapsForKnownPlayers(): {
-            [playerId: number]: {
+        interface IIndependentTargetEvaluations {
+            [starId: number]: {
+                star: Star;
+                desirability: number;
+                independentStrength: number;
+                ownInfluence: number;
+            };
+        }
+        class MapEvaluator {
+            map: GalaxyMap;
+            player: Player;
+            game: Game;
+            cachedInfluenceMaps: {
+                [turnNumber: number]: {
+                    [playerId: number]: {
+                        [starId: number]: number;
+                    };
+                };
+            };
+            cachedVisibleFleets: {
+                [turnNumber: number]: {
+                    [playerId: number]: Fleet[];
+                };
+            };
+            cachedOwnIncome: number;
+            evaluationParameters: {
+                starDesirability: {
+                    neighborRange: number;
+                    neighborWeight: number;
+                    defendabilityWeight: number;
+                    totalIncomeWeight: number;
+                    baseIncomeWeight: number;
+                    infrastructureWeight: number;
+                    productionWeight: number;
+                };
+            };
+            constructor(map: GalaxyMap, player: Player, game?: Game);
+            processTurnStart(): void;
+            evaluateStarIncome(star: Star): number;
+            evaluateStarInfrastructure(star: Star): number;
+            evaluateStarProduction(star: Star): number;
+            evaluateStarDefendability(star: Star): number;
+            evaluateIndividualStarDesirability(star: Star): number;
+            evaluateNeighboringStarsDesirability(star: Star, range: number): number;
+            evaluateStarDesirability(star: Star): number;
+            evaluateIndependentTargets(targetStars: Star[]): IIndependentTargetEvaluations;
+            scoreIndependentTargets(evaluations: IIndependentTargetEvaluations): {
+                star: Star;
+                score: number;
+            }[];
+            getScoredExpansionTargets(): {
+                star: Star;
+                score: number;
+            }[];
+            getScoredCleanPiratesTargets(): {
+                star: Star;
+                score: number;
+            }[];
+            getHostileShipsAtStar(star: Star): {
+                [playerId: number]: Unit[];
+            };
+            getHostileStrengthAtStar(star: Star): {
+                [playerId: number]: number;
+            };
+            getIndependentStrengthAtStar(star: Star): number;
+            getTotalHostileStrengthAtStar(star: Star): number;
+            getDefenceBuildingStrengthAtStarByPlayer(star: Star): {
+                [playerId: number]: number;
+            };
+            getTotalDefenceBuildingStrengthAtStar(star: Star): number;
+            evaluateFleetStrength(fleet: Fleet): number;
+            getVisibleFleetsByPlayer(): {
+                [playerId: number]: Fleet[];
+            };
+            buildPlayerInfluenceMap(player: Player): {
                 [starId: number]: number;
             };
-        };
-        estimateGlobalStrength(player: Player): number;
-        getPerceivedThreatOfPlayer(player: Player): number;
-        getPerceivedThreatOfAllKnownPlayers(): {
-            [playerId: number]: number;
-        };
-        getRelativePerceivedThreatOfAllKnownPlayers(): {
-            [playerId: number]: number;
-        };
-        getDiplomacyEvaluations(currentTurn: number): {
-            [playerId: number]: IDiplomacyEvaluation;
-        };
+            getPlayerInfluenceMap(player: Player): {
+                [starId: number]: number;
+            };
+            getInfluenceMapsForKnownPlayers(): {
+                [playerId: number]: {
+                    [starId: number]: number;
+                };
+            };
+            estimateGlobalStrength(player: Player): number;
+            getPerceivedThreatOfPlayer(player: Player): number;
+            getPerceivedThreatOfAllKnownPlayers(): {
+                [playerId: number]: number;
+            };
+            getRelativePerceivedThreatOfAllKnownPlayers(): {
+                [playerId: number]: number;
+            };
+            getDiplomacyEvaluations(currentTurn: number): {
+                [playerId: number]: IDiplomacyEvaluation;
+            };
+        }
     }
 }
 declare module Rance {
-    class Objective {
-        id: number;
-        type: string;
-        private _basePriority;
-        priority: number;
-        isOngoing: boolean;
-        target: Star;
-        constructor(type: string, priority: number, target: Star);
+    module MapAI {
+        class Objective {
+            id: number;
+            type: string;
+            private _basePriority;
+            priority: number;
+            isOngoing: boolean;
+            target: Star;
+            constructor(type: string, priority: number, target: Star);
+        }
     }
 }
 declare module Rance {
-    class ObjectivesAI {
-        mapEvaluator: MapEvaluator;
-        map: GalaxyMap;
-        player: Player;
-        personality: IPersonality;
-        objectivesByType: {
-            expansion: Objective[];
-            cleanPirates: Objective[];
-            heal: Objective[];
-        };
-        objectives: Objective[];
-        maxActiveExpansionRequests: number;
-        requests: any[];
-        constructor(mapEvaluator: MapEvaluator, personality: IPersonality);
-        setAllObjectives(): void;
-        addObjectives(objectives: Objective[]): void;
-        getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
-        getExpansionObjectives(): Objective[];
-        getCleanPiratesObjectives(): Objective[];
-        getHealObjectives(): Objective[];
+    module MapAI {
+        class ObjectivesAI {
+            mapEvaluator: MapEvaluator;
+            map: GalaxyMap;
+            player: Player;
+            personality: IPersonality;
+            objectivesByType: {
+                expansion: Objective[];
+                cleanPirates: Objective[];
+                heal: Objective[];
+            };
+            objectives: Objective[];
+            maxActiveExpansionRequests: number;
+            requests: any[];
+            constructor(mapEvaluator: MapEvaluator, personality: IPersonality);
+            setAllObjectives(): void;
+            addObjectives(objectives: Objective[]): void;
+            getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
+            getExpansionObjectives(): Objective[];
+            getCleanPiratesObjectives(): Objective[];
+            getHealObjectives(): Objective[];
+        }
     }
 }
 declare module Rance {
-    class Front {
-        id: number;
-        objective: Objective;
-        priority: number;
-        units: Unit[];
-        minUnitsDesired: number;
-        idealUnitsDesired: number;
-        targetLocation: Star;
-        musterLocation: Star;
-        hasMustered: boolean;
-        constructor(props: {
+    module MapAI {
+        class Front {
             id: number;
             objective: Objective;
             priority: number;
-            units?: Unit[];
+            units: Unit[];
             minUnitsDesired: number;
             idealUnitsDesired: number;
             targetLocation: Star;
             musterLocation: Star;
-        });
-        organizeFleets(): void;
-        isFleetPure(fleet: Fleet): boolean;
-        getAssociatedFleets(): Fleet[];
-        getUnitIndex(unit: Unit): number;
-        addUnit(unit: Unit): void;
-        removeUnit(unit: Unit): void;
-        getUnitCountByArchetype(): {
-            [archetype: string]: number;
-        };
-        getUnitsByLocation(): {
-            [starId: number]: Unit[];
-        };
-        moveFleets(afterMoveCallback: Function): void;
-        healMoveRoutine(afterMoveCallback: Function): void;
-        defaultMoveRoutine(afterMoveCallback: Function): void;
-        executeAction(afterExecutedCallback: Function): void;
+            hasMustered: boolean;
+            constructor(props: {
+                id: number;
+                objective: Objective;
+                priority: number;
+                units?: Unit[];
+                minUnitsDesired: number;
+                idealUnitsDesired: number;
+                targetLocation: Star;
+                musterLocation: Star;
+            });
+            organizeFleets(): void;
+            isFleetPure(fleet: Fleet): boolean;
+            getAssociatedFleets(): Fleet[];
+            getUnitIndex(unit: Unit): number;
+            addUnit(unit: Unit): void;
+            removeUnit(unit: Unit): void;
+            getUnitCountByArchetype(): {
+                [archetype: string]: number;
+            };
+            getUnitsByLocation(): {
+                [starId: number]: Unit[];
+            };
+            moveFleets(afterMoveCallback: Function): void;
+            healMoveRoutine(afterMoveCallback: Function): void;
+            defaultMoveRoutine(afterMoveCallback: Function): void;
+            executeAction(afterExecutedCallback: Function): void;
+        }
     }
 }
 declare module Rance {
-    class FrontsAI {
-        player: Player;
-        map: GalaxyMap;
-        mapEvaluator: MapEvaluator;
-        objectivesAI: ObjectivesAI;
-        personality: IPersonality;
-        fronts: Front[];
-        frontsRequestingUnits: Front[];
-        frontsToMove: Front[];
-        constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonality);
-        getTotalUnitCountByArchetype(): IArchetypeValues;
-        getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
-        getGlobalUnitArcheypeScores(): IArchetypeValues;
-        getFrontUnitArchetypeScores(front: Front): {
-            [archetype: string]: number;
-        };
-        scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
-        getHealUnitFitScore(unit: Unit, front: Front): number;
-        getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
-        private getUnitScoresForFront(units, front);
-        assignUnits(): void;
-        getFrontWithId(id: number): Front;
-        createFront(objective: Objective): Front;
-        removeInactiveFronts(): void;
-        formFronts(): void;
-        organizeFleets(): void;
-        setFrontsToMove(): void;
-        moveFleets(afterMovingAllCallback: Function): void;
-        getUnitsToFillObjective(objective: Objective): {
-            min: number;
-            ideal: number;
-        };
-        getUnitsToFillExpansionObjective(objective: Objective): number;
-        setUnitRequests(): void;
+    module MapAI {
+        class FrontsAI {
+            player: Player;
+            map: GalaxyMap;
+            mapEvaluator: MapEvaluator;
+            objectivesAI: ObjectivesAI;
+            personality: IPersonality;
+            fronts: Front[];
+            frontsRequestingUnits: Front[];
+            frontsToMove: Front[];
+            constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonality);
+            getTotalUnitCountByArchetype(): IArchetypeValues;
+            getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
+            getGlobalUnitArcheypeScores(): IArchetypeValues;
+            getFrontUnitArchetypeScores(front: Front): {
+                [archetype: string]: number;
+            };
+            scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
+            getHealUnitFitScore(unit: Unit, front: Front): number;
+            getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
+            private getUnitScoresForFront(units, front);
+            assignUnits(): void;
+            getFrontWithId(id: number): Front;
+            createFront(objective: Objective): Front;
+            removeInactiveFronts(): void;
+            formFronts(): void;
+            organizeFleets(): void;
+            setFrontsToMove(): void;
+            moveFleets(afterMovingAllCallback: Function): void;
+            getUnitsToFillObjective(objective: Objective): {
+                min: number;
+                ideal: number;
+            };
+            getUnitsToFillExpansionObjective(objective: Objective): number;
+            setUnitRequests(): void;
+        }
     }
 }
 declare module Rance {
-    class EconomyAI {
-        objectivesAI: ObjectivesAI;
-        frontsAI: FrontsAI;
-        mapEvaluator: MapEvaluator;
-        player: Player;
-        personality: IPersonality;
-        constructor(props: {
+    module MapAI {
+        class EconomyAI {
             objectivesAI: ObjectivesAI;
             frontsAI: FrontsAI;
             mapEvaluator: MapEvaluator;
+            player: Player;
             personality: IPersonality;
-        });
-        satisfyAllRequests(): void;
-        satisfyFrontRequest(front: Front): void;
+            constructor(props: {
+                objectivesAI: ObjectivesAI;
+                frontsAI: FrontsAI;
+                mapEvaluator: MapEvaluator;
+                personality: IPersonality;
+            });
+            satisfyAllRequests(): void;
+            satisfyFrontRequest(front: Front): void;
+        }
     }
 }
 declare module Rance {
-    class DiplomacyAI {
-        game: Game;
-        player: Player;
-        diplomacyStatus: DiplomacyStatus;
-        personality: IPersonality;
-        mapEvaluator: MapEvaluator;
-        constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality);
-        setAttitudes(): void;
+    module MapAI {
+        class DiplomacyAI {
+            game: Game;
+            player: Player;
+            diplomacyStatus: DiplomacyStatus;
+            personality: IPersonality;
+            mapEvaluator: MapEvaluator;
+            constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality);
+            setAttitudes(): void;
+        }
     }
 }
 declare module Rance {
-    class AIController {
-        player: Player;
-        game: Game;
-        personality: IPersonality;
-        map: GalaxyMap;
-        mapEvaluator: MapEvaluator;
-        objectivesAI: ObjectivesAI;
-        economicAI: EconomyAI;
-        frontsAI: FrontsAI;
-        diplomacyAI: DiplomacyAI;
-        constructor(player: Player, game: Game, personality?: IPersonality);
-        processTurn(afterFinishedCallback?: any): void;
-        finishMovingFleets(afterFinishedCallback?: any): void;
+    module MapAI {
+        class AIController {
+            player: Player;
+            game: Game;
+            personality: IPersonality;
+            map: GalaxyMap;
+            mapEvaluator: MapEvaluator;
+            objectivesAI: ObjectivesAI;
+            economicAI: EconomyAI;
+            frontsAI: FrontsAI;
+            diplomacyAI: DiplomacyAI;
+            constructor(player: Player, game: Game, personality?: IPersonality);
+            processTurn(afterFinishedCallback?: any): void;
+            finishMovingFleets(afterFinishedCallback?: any): void;
+        }
     }
 }
 declare module Rance {
@@ -1961,7 +1977,7 @@ declare module Rance {
         items: Item[];
         isAI: boolean;
         personality: IPersonality;
-        AIController: AIController;
+        AIController: MapAI.AIController;
         isIndependent: boolean;
         diplomacyStatus: DiplomacyStatus;
         money: number;
@@ -2224,7 +2240,7 @@ declare module Rance {
         cachedBattleScene: HTMLCanvasElement;
         cachedBattleScenePropsString: string;
         lastHealthDrawnAt: number;
-        front: Front;
+        front: MapAI.Front;
         constructor(template: Templates.IUnitTemplate, id?: number, data?: any);
         makeFromData(data: any): void;
         setInitialValues(): void;

@@ -2,43 +2,46 @@
 
 module Rance
 {
-  export class StrategyAI
+  export module MapAI
   {
-    player: Player;
-    map: GalaxyMap;
-    mapEvaluator: MapEvaluator;
-    personality: IPersonality;
-
-    constructor(mapEvaluator: MapEvaluator, game: Game,
-      personality: IPersonality)
+    export class StrategyAI
     {
-      this.mapEvaluator = mapEvaluator;
-      this.player = mapEvaluator.player;
-      this.map = mapEvaluator.map;
-      this.game = game;
-      this.personality = personality;
-    }
-    getDesireToExpand()
-    {
-      var neighboringStars = this.player.getNeighboringStars();
+      player: Player;
+      map: GalaxyMap;
+      mapEvaluator: MapEvaluator;
+      personality: IPersonality;
 
-      var independentNeighbors = neighboringStars.filter(function(star)
+      constructor(mapEvaluator: MapEvaluator, game: Game,
+        personality: IPersonality)
       {
-        return star.owner.isIndependent;
-      });
-
-      if (independentNeighbors.length <= 0)
-      {
-        return 0;
+        this.mapEvaluator = mapEvaluator;
+        this.player = mapEvaluator.player;
+        this.map = mapEvaluator.map;
+        this.game = game;
+        this.personality = personality;
       }
+      getDesireToExpand()
+      {
+        var neighboringStars = this.player.getNeighboringStars();
 
-      var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
-      var minDesiredStars = starsPerPlayer / 2;
+        var independentNeighbors = neighboringStars.filter(function(star)
+        {
+          return star.owner.isIndependent;
+        });
 
-      var desire = minDesiredStars / this.player.controlledLocations.length;
-      desire = clamp(desire, 0, 1);
+        if (independentNeighbors.length <= 0)
+        {
+          return 0;
+        }
 
-      return desire;
+        var starsPerPlayer = this.map.stars.length / this.game.playerOrder.length;
+        var minDesiredStars = starsPerPlayer / 2;
+
+        var desire = minDesiredStars / this.player.controlledLocations.length;
+        desire = clamp(desire, 0, 1);
+
+        return desire;
+      }
     }
   }
 }

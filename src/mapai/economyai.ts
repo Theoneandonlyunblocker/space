@@ -9,113 +9,116 @@
 
 module Rance
 {
-  export class EconomyAI
+  export module MapAI
   {
-    objectivesAI: ObjectivesAI;
-    frontsAI: FrontsAI;
-
-    mapEvaluator: MapEvaluator;
-    player: Player;
-
-    personality: IPersonality;
-
-    constructor(props:
+    export class EconomyAI
     {
       objectivesAI: ObjectivesAI;
       frontsAI: FrontsAI;
 
       mapEvaluator: MapEvaluator;
+      player: Player;
+
       personality: IPersonality;
-    })
-    {
-      this.objectivesAI = props.objectivesAI;
-      this.frontsAI = props.frontsAI;
 
-      this.mapEvaluator = props.mapEvaluator;
-      this.player = props.mapEvaluator.player;
-
-      this.personality = props.personality;
-    }
-
-    satisfyAllRequests()
-    {
-      /*
-      get all requests from OAI and FAI
-      sort by priority
-      fulfill by priority
-       */
-      var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
-      allRequests.sort(function(a, b)
+      constructor(props:
       {
-        return b.priority - a.priority;
-      });
+        objectivesAI: ObjectivesAI;
+        frontsAI: FrontsAI;
 
-      for (var i = 0; i < allRequests.length; i++)
+        mapEvaluator: MapEvaluator;
+        personality: IPersonality;
+      })
       {
-        var request = allRequests[i];
-        // is front
-        if (request.targetLocation)
-        {
-          this.satisfyFrontRequest(request);
-        }
-        else
-        {
-          
-        }
-      }
-    }
+        this.objectivesAI = props.objectivesAI;
+        this.frontsAI = props.frontsAI;
 
-    satisfyFrontRequest(front: Front)
-    {
-      // TODO
-      var star = this.player.getNearestOwnedStarTo(front.musterLocation);
+        this.mapEvaluator = props.mapEvaluator;
+        this.player = props.mapEvaluator.player;
 
-      var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
-      var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
-
-      var buildableUnitTypesByArchetype:
-      {
-        [archetype: string]: Templates.IUnitTemplate[];
-      } = {};
-
-      var buildableUnitTypes = star.getBuildableShipTypes();
-
-      for (var i = 0; i < buildableUnitTypes.length; i++)
-      {
-        var archetype = buildableUnitTypes[i].archetype;
-
-        if (!buildableUnitTypesByArchetype[archetype])
-        {
-          buildableUnitTypesByArchetype[archetype] = [];
-        }
-
-        buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
+        this.personality = props.personality;
       }
 
-      var unitType: Templates.IUnitTemplate;
-
-      for (var i = 0; i < sortedScores.length; i++)
+      satisfyAllRequests()
       {
-        if (buildableUnitTypesByArchetype[sortedScores[i]])
+        /*
+        get all requests from OAI and FAI
+        sort by priority
+        fulfill by priority
+         */
+        var allRequests = this.objectivesAI.requests.concat(this.frontsAI.frontsRequestingUnits);
+        allRequests.sort(function(a, b)
         {
-          unitType = getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
-          if (this.player.money < unitType.buildCost)
+          return b.priority - a.priority;
+        });
+
+        for (var i = 0; i < allRequests.length; i++)
+        {
+          var request = allRequests[i];
+          // is front
+          if (request.targetLocation)
           {
-            // TODO AI should actually try to figure out which individual unit would
-            // be the best
-            return;
+            this.satisfyFrontRequest(request);
           }
           else
           {
-            break;
+            
           }
         }
       }
-      if (!unitType) debugger;
 
-      var unit = this.player.buildUnit(unitType, star);
-      
-      front.addUnit(unit);
+      satisfyFrontRequest(front: Front)
+      {
+        // TODO
+        var star = this.player.getNearestOwnedStarTo(front.musterLocation);
+
+        var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
+        var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
+
+        var buildableUnitTypesByArchetype:
+        {
+          [archetype: string]: Templates.IUnitTemplate[];
+        } = {};
+
+        var buildableUnitTypes = star.getBuildableShipTypes();
+
+        for (var i = 0; i < buildableUnitTypes.length; i++)
+        {
+          var archetype = buildableUnitTypes[i].archetype;
+
+          if (!buildableUnitTypesByArchetype[archetype])
+          {
+            buildableUnitTypesByArchetype[archetype] = [];
+          }
+
+          buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
+        }
+
+        var unitType: Templates.IUnitTemplate;
+
+        for (var i = 0; i < sortedScores.length; i++)
+        {
+          if (buildableUnitTypesByArchetype[sortedScores[i]])
+          {
+            unitType = getRandomArrayItem(buildableUnitTypesByArchetype[sortedScores[i]]);
+            if (this.player.money < unitType.buildCost)
+            {
+              // TODO AI should actually try to figure out which individual unit would
+              // be the best
+              return;
+            }
+            else
+            {
+              break;
+            }
+          }
+        }
+        if (!unitType) debugger;
+
+        var unit = this.player.buildUnit(unitType, star);
+        
+        front.addUnit(unit);
+      }
     }
   }
 }

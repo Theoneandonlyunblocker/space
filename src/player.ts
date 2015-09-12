@@ -36,7 +36,7 @@ module Rance
 
     isAI: boolean = false;
     personality: IPersonality;
-    AIController: AIController;
+    AIController: MapAI.AIController;
     isIndependent: boolean = false;
 
     diplomacyStatus: DiplomacyStatus;
@@ -77,7 +77,7 @@ module Rance
     }
     setupAI(game: Game)
     {
-      this.AIController = new AIController(this, game, this.personality);
+      this.AIController = new MapAI.AIController(this, game, this.personality);
     }
     setupPirates()
     {
