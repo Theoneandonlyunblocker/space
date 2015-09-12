@@ -1,4 +1,4 @@
-/// <reference path="reactui/reactui.ts"/>
+/// <reference path="reactui.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="playercontrol.ts"/>
 /// <reference path="maprenderer.ts" />
@@ -256,7 +256,7 @@ module Rance
       this.mapRenderer.init();
 
       // some initialization is done when the react component owning the
-      // renderer mounts, such as in reactui/galaxymap/galaxymap.ts
+      // renderer mounts, such as in uicomponents/galaxymap/galaxymap.ts
     }
     initUI()
     {

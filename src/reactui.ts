@@ -1,7 +1,7 @@
-/// <reference path="../../lib/react.d.ts" />
+/// <reference path="../lib/react.d.ts" />
 
-/// <reference path="../eventmanager.ts"/>
-/// <reference path="stage.ts"/>
+/// <reference path="eventmanager.ts"/>
+/// <reference path="uicomponents/stage.ts"/>
 
 module Rance
 {
