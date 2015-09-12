@@ -1,5 +1,5 @@
 /// <reference path="effects.ts" />
-/// <reference path="battlesfxtemplates.ts" />
+/// <reference path="battlesfx.ts" />
 
 
 module Rance
@@ -90,7 +90,7 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
-          sfx: BattleSFXTemplates.rocketAttack,
+          sfx: BattleSFX.rocketAttack,
           data:
           {
             baseDamage: 1,
@@ -118,7 +118,7 @@ module Rance
         mainEffect:
         {
           template: Effects.closeAttack,
-          sfx: BattleSFXTemplates.rocketAttack
+          sfx: BattleSFX.rocketAttack
         }
       }
       export var wholeRowAttack: IAbilityTemplate =
@@ -133,7 +133,7 @@ module Rance
         mainEffect:
         {
           template: Effects.wholeRowAttack,
-          sfx: BattleSFXTemplates.rocketAttack
+          sfx: BattleSFX.rocketAttack
         }
       }
 
@@ -147,7 +147,7 @@ module Rance
         mainEffect:
         {
           template: Effects.bombAttack,
-          sfx: BattleSFXTemplates.rocketAttack
+          sfx: BattleSFX.rocketAttack
         }
       }
       export var guardColumn: IAbilityTemplate =
@@ -160,7 +160,7 @@ module Rance
         mainEffect:
         {
           template: Effects.guardColumn,
-          sfx: BattleSFXTemplates.guard,
+          sfx: BattleSFX.guard,
           data:
           {
             perInt: 20
@@ -177,7 +177,7 @@ module Rance
         mainEffect:
         {
           template: Effects.singleTargetDamage,
-          sfx: BattleSFXTemplates.rocketAttack,
+          sfx: BattleSFX.rocketAttack,
           data:
           {
             baseDamage: 0.8,
@@ -213,7 +213,7 @@ module Rance
         mainEffect:
         {
           template: Effects.guardColumn,
-          sfx: BattleSFXTemplates.guard,
+          sfx: BattleSFX.guard,
           data:
           {
             perInt: 20
@@ -237,12 +237,12 @@ module Rance
             userSprite: function(props: SFXParams)
             {
               // cg13600.bmp
-              return BattleSFX.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+              return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
             },
             battleOverlay: function(props: SFXParams)
             {
               // cg40500.bmp - cg40529.bmp converted to webm
-              return BattleSFX.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+              return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
             }
           },
           data:
@@ -276,12 +276,12 @@ module Rance
               userSprite: function(props: SFXParams)
               {
                 // cg13300.bmp
-                return BattleSFX.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
               },
               battleOverlay: function(props: SFXParams)
               {
                 // cg40000.bmp - cg40029.bmp converted to webm
-                return BattleSFX.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
               }
             }
           }

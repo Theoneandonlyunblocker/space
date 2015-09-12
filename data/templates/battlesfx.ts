@@ -1,6 +1,6 @@
-/// <reference path="../../src/battlesfx/battlesfxutils.ts" />
-/// <reference path="../../src/battlesfx/rocketattack.ts" />
-/// <reference path="../../src/battlesfx/guard.ts" />
+/// <reference path="../../src/battlesfxfunctions/battlesfxutils.ts" />
+/// <reference path="../../src/battlesfxfunctions/rocketattack.ts" />
+/// <reference path="../../src/battlesfxfunctions/guard.ts" />
 
 module Rance
 {
@@ -26,18 +26,18 @@ module Rance
       //enemyOverlay?: (props: SFXParams) => HTMLCanvasElement;
       battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
     }
-    export module BattleSFXTemplates
+    export module BattleSFX
     {
       export var rocketAttack: IBattleSFXTemplate =
       {
         duration: 1500,
-        battleOverlay: BattleSFX.rocketAttack,
+        battleOverlay: BattleSFXFunctions.rocketAttack,
         delay: 0.3
       }
       export var guard: IBattleSFXTemplate =
       {
         duration: 1500,
-        battleOverlay: BattleSFX.guard,
+        battleOverlay: BattleSFXFunctions.guard,
         delay: 0.3
       }
     }

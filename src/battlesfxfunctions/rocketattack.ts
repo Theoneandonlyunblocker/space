@@ -1,6 +1,6 @@
 module Rance
 {
-  export module BattleSFX
+  export module BattleSFXFunctions
   {
     export function rocketAttack(props: Templates.SFXParams)
     {

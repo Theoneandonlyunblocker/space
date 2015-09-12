@@ -1,7 +1,7 @@
 /// <reference path="../data/templates/units.ts" />
 /// <reference path="../data/templates/abilities.ts" />
 
-/// <reference path="battlesfx/defaultunitscene.ts" />
+/// <reference path="battlesfxfunctions/defaultunitscene.ts" />
 
 /// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
@@ -800,7 +800,7 @@ module Rance
       if (propsString !== this.cachedBattleScenePropsString ||
         this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage)
       {
-        this.cachedBattleScene = BattleSFX.defaultUnitScene(this, props);
+        this.cachedBattleScene = BattleSFXFunctions.defaultUnitScene(this, props);
         this.cachedBattleScenePropsString = propsString;
       }
 

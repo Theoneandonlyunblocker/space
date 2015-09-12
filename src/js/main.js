@@ -6675,8 +6675,8 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var BattleSFX;
-    (function (BattleSFX) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
         function makeSprite(imgSrc, props) {
             var canvas = document.createElement("canvas");
             var ctx = canvas.getContext("2d");
@@ -6693,7 +6693,7 @@ var Rance;
             img.src = imgSrc;
             return canvas;
         }
-        BattleSFX.makeSprite = makeSprite;
+        BattleSFXFunctions.makeSprite = makeSprite;
         function makeVideo(videoSrc, props) {
             var video = document.createElement("video");
             var canvas = document.createElement("canvas");
@@ -6760,13 +6760,13 @@ var Rance;
             }
             return canvas;
         }
-        BattleSFX.makeVideo = makeVideo;
-    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+        BattleSFXFunctions.makeVideo = makeVideo;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var BattleSFX;
-    (function (BattleSFX) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
         function rocketAttack(props) {
             var minY, maxY;
             [props.user, props.target].forEach(function (unit) {
@@ -6865,13 +6865,13 @@ var Rance;
             animate();
             return renderer.view;
         }
-        BattleSFX.rocketAttack = rocketAttack;
-    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+        BattleSFXFunctions.rocketAttack = rocketAttack;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var BattleSFX;
-    (function (BattleSFX) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
         function guard(props) {
             var userCanvasWidth = props.user.cachedBattleScene.width;
             var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
@@ -6953,33 +6953,33 @@ var Rance;
             animate();
             return renderer.view;
         }
-        BattleSFX.guard = guard;
-    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+        BattleSFXFunctions.guard = guard;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../src/battlesfx/battlesfxutils.ts" />
-/// <reference path="../../src/battlesfx/rocketattack.ts" />
-/// <reference path="../../src/battlesfx/guard.ts" />
+/// <reference path="../../src/battlesfxfunctions/battlesfxutils.ts" />
+/// <reference path="../../src/battlesfxfunctions/rocketattack.ts" />
+/// <reference path="../../src/battlesfxfunctions/guard.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
     (function (Templates) {
-        var BattleSFXTemplates;
-        (function (BattleSFXTemplates) {
-            BattleSFXTemplates.rocketAttack = {
+        var BattleSFX;
+        (function (BattleSFX) {
+            BattleSFX.rocketAttack = {
                 duration: 1500,
-                battleOverlay: Rance.BattleSFX.rocketAttack,
+                battleOverlay: Rance.BattleSFXFunctions.rocketAttack,
                 delay: 0.3
             };
-            BattleSFXTemplates.guard = {
+            BattleSFX.guard = {
                 duration: 1500,
-                battleOverlay: Rance.BattleSFX.guard,
+                battleOverlay: Rance.BattleSFXFunctions.guard,
                 delay: 0.3
             };
-        })(BattleSFXTemplates = Templates.BattleSFXTemplates || (Templates.BattleSFXTemplates = {}));
+        })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="effects.ts" />
-/// <reference path="battlesfxtemplates.ts" />
+/// <reference path="battlesfx.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7014,7 +7014,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
-                    sfx: Templates.BattleSFXTemplates.rocketAttack,
+                    sfx: Templates.BattleSFX.rocketAttack,
                     data: {
                         baseDamage: 1,
                         damageType: Rance.DamageType.physical
@@ -7037,7 +7037,7 @@ var Rance;
                 actionsUse: 2,
                 mainEffect: {
                     template: Templates.Effects.closeAttack,
-                    sfx: Templates.BattleSFXTemplates.rocketAttack
+                    sfx: Templates.BattleSFX.rocketAttack
                 }
             };
             Abilities.wholeRowAttack = {
@@ -7050,7 +7050,7 @@ var Rance;
                 AIEvaluationPriority: 0.5,
                 mainEffect: {
                     template: Templates.Effects.wholeRowAttack,
-                    sfx: Templates.BattleSFXTemplates.rocketAttack
+                    sfx: Templates.BattleSFX.rocketAttack
                 }
             };
             Abilities.bombAttack = {
@@ -7061,7 +7061,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.bombAttack,
-                    sfx: Templates.BattleSFXTemplates.rocketAttack
+                    sfx: Templates.BattleSFX.rocketAttack
                 }
             };
             Abilities.guardColumn = {
@@ -7072,7 +7072,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.guardColumn,
-                    sfx: Templates.BattleSFXTemplates.guard,
+                    sfx: Templates.BattleSFX.guard,
                     data: {
                         perInt: 20
                     }
@@ -7086,7 +7086,7 @@ var Rance;
                 actionsUse: 1,
                 mainEffect: {
                     template: Templates.Effects.singleTargetDamage,
-                    sfx: Templates.BattleSFXTemplates.rocketAttack,
+                    sfx: Templates.BattleSFX.rocketAttack,
                     data: {
                         baseDamage: 0.8,
                         damageType: Rance.DamageType.physical
@@ -7115,7 +7115,7 @@ var Rance;
                 actionsUse: 0,
                 mainEffect: {
                     template: Templates.Effects.guardColumn,
-                    sfx: Templates.BattleSFXTemplates.guard,
+                    sfx: Templates.BattleSFX.guard,
                     data: {
                         perInt: 20
                     }
@@ -7133,11 +7133,11 @@ var Rance;
                         duration: 1200,
                         userSprite: function (props) {
                             // cg13600.bmp
-                            return Rance.BattleSFX.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                            return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
                         },
                         battleOverlay: function (props) {
                             // cg40500.bmp - cg40529.bmp converted to webm
-                            return Rance.BattleSFX.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                            return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
                         }
                     },
                     data: {
@@ -7164,11 +7164,11 @@ var Rance;
                             duration: 1500,
                             userSprite: function (props) {
                                 // cg13300.bmp
-                                return Rance.BattleSFX.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                                return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
                             },
                             battleOverlay: function (props) {
                                 // cg40000.bmp - cg40029.bmp converted to webm
-                                return Rance.BattleSFX.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                                return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
                             }
                         }
                     }
@@ -7214,7 +7214,7 @@ var Rance;
                             duration: 1200,
                             battleOverlay: function (props) {
                                 // cg40400.bmp - cg40429.bmp converted to webm
-                                return Rance.BattleSFX.makeVideo("img\/battleEffects\/heal.webm", props);
+                                return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
                             }
                         },
                         trigger: function (user, target) {
@@ -7525,8 +7525,8 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    var BattleSFX;
-    (function (BattleSFX) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
         function defaultUnitScene(unit, props) {
             //var unitsToDraw = props.unitsToDraw;
             var maxUnitsPerColumn = props.maxUnitsPerColumn;
@@ -7636,8 +7636,8 @@ var Rance;
             resultCtx.drawImage(canvas, -xMin, -yMin);
             return resultCanvas;
         }
-        BattleSFX.defaultUnitScene = defaultUnitScene;
-    })(BattleSFX = Rance.BattleSFX || (Rance.BattleSFX = {}));
+        BattleSFXFunctions.defaultUnitScene = defaultUnitScene;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -13500,7 +13500,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/effects.ts" />
 /// <reference path="../data/templates/abilities.ts" />
-/// <reference path="../data/templates/battlesfxtemplates.ts" />
+/// <reference path="../data/templates/battlesfx.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -13843,7 +13843,7 @@ var Rance;
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/units.ts" />
 /// <reference path="../data/templates/abilities.ts" />
-/// <reference path="battlesfx/defaultunitscene.ts" />
+/// <reference path="battlesfxfunctions/defaultunitscene.ts" />
 /// <reference path="damagetype.ts" />
 /// <reference path="unitattributes.ts"/>
 /// <reference path="utility.ts"/>
@@ -14373,7 +14373,7 @@ var Rance;
             var propsString = JSON.stringify(props);
             if (propsString !== this.cachedBattleScenePropsString ||
                 this.lastHealthDrawnAt !== this.battleStats.lastHealthBeforeReceivingDamage) {
-                this.cachedBattleScene = Rance.BattleSFX.defaultUnitScene(this, props);
+                this.cachedBattleScene = Rance.BattleSFXFunctions.defaultUnitScene(this, props);
                 this.cachedBattleScenePropsString = propsString;
             }
             return this.cachedBattleScene;

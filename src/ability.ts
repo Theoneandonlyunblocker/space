@@ -1,6 +1,6 @@
 /// <reference path="../data/templates/effects.ts" />
 /// <reference path="../data/templates/abilities.ts" />
-/// <reference path="../data/templates/battlesfxtemplates.ts" />
+/// <reference path="../data/templates/battlesfx.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>

@@ -550,18 +550,18 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module BattleSFX {
+    module BattleSFXFunctions {
         function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
         function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
     }
 }
 declare module Rance {
-    module BattleSFX {
+    module BattleSFXFunctions {
         function rocketAttack(props: Templates.SFXParams): HTMLCanvasElement;
     }
 }
 declare module Rance {
-    module BattleSFX {
+    module BattleSFXFunctions {
         function guard(props: Templates.SFXParams): HTMLCanvasElement;
     }
 }
@@ -583,7 +583,7 @@ declare module Rance {
             userOverlay?: (props: SFXParams) => HTMLCanvasElement;
             battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
         }
-        module BattleSFXTemplates {
+        module BattleSFX {
             var rocketAttack: IBattleSFXTemplate;
             var guard: IBattleSFXTemplate;
         }
@@ -711,7 +711,7 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module BattleSFX {
+    module BattleSFXFunctions {
         function defaultUnitScene(unit: Unit, props: {
             unitsToDraw?: number;
             maxUnitsPerColumn: number;

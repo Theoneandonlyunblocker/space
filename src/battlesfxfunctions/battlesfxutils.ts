@@ -1,6 +1,6 @@
 module Rance
 {
-  export module BattleSFX
+  export module BattleSFXFunctions
   {
     export function makeSprite(imgSrc: string, props: Templates.SFXParams)
     {
