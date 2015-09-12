@@ -101,7 +101,7 @@ module Rance
       {
         return this.template.endCondition(evaluation);
       }
-      else if (this.template.startCondition)
+      else if (this.template.duration < 0 && this.template.startCondition)
       {
         return !this.template.startCondition(evaluation);
       }

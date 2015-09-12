@@ -28,7 +28,7 @@ module Rance
 
       triggeredOnly?: boolean;
       startCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
-      // if endCondition is not defined, the opposite of startCondition is used
+      // if endCondition is not defined and duration is infinite, the opposite of startCondition is used
       // to determine when to end modifier
       endCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
 
