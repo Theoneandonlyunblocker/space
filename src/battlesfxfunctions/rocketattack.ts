@@ -134,7 +134,7 @@ module Rance
         }
         else
         {
-          renderer.destroy();
+          renderer.destroy(true);
         }
       }
 
