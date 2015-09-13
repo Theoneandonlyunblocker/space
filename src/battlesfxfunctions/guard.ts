@@ -10,6 +10,7 @@ module Rance
       var maxTrailDistance = maxFrontier;
       var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
       var maxBlockWidth = maxFrontier * 2;
+
       var uniforms =
       {
         frontier:
@@ -79,14 +80,17 @@ module Rance
       });
 
       var container = new PIXI.Container();
-      if (!props.facingRight)
-      {
-        container.scale.x = -1;
-        container.x = props.width;
-      }
 
       container.filters = [guardFilter];
       container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
+
+      var renderTexture = new PIXI.RenderTexture(renderer, props.width, props.height);
+      var sprite = new PIXI.Sprite(renderTexture);
+      if (!props.facingRight)
+      {
+        sprite.x = props.width;
+        sprite.scale.x = -1;
+      }
 
       function animate()
       {
@@ -94,7 +98,9 @@ module Rance
         var relativeTime = elapsedTime / props.duration;
         syncUniformsFN(relativeTime);
 
-        renderer.render(container);
+        renderTexture.clear();
+        renderTexture.render(container);
+        renderer.render(sprite);
 
         if (elapsedTime < props.duration)
         {

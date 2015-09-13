@@ -6893,7 +6893,7 @@ var Rance;
                     requestAnimationFrame(animate);
                 }
                 else {
-                    renderer.destroy();
+                    renderer.destroy(true);
                 }
             }
             props.onLoaded(renderer.view);
@@ -6965,22 +6965,26 @@ var Rance;
                 transparent: true
             });
             var container = new PIXI.Container();
-            if (!props.facingRight) {
-                container.scale.x = -1;
-                container.x = props.width;
-            }
             container.filters = [guardFilter];
             container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
+            var renderTexture = new PIXI.RenderTexture(renderer, props.width, props.height);
+            var sprite = new PIXI.Sprite(renderTexture);
+            if (!props.facingRight) {
+                sprite.x = props.width;
+                sprite.scale.x = -1;
+            }
             function animate() {
                 var elapsedTime = Date.now() - startTime;
                 var relativeTime = elapsedTime / props.duration;
                 syncUniformsFN(relativeTime);
-                renderer.render(container);
+                renderTexture.clear();
+                renderTexture.render(container);
+                renderer.render(sprite);
                 if (elapsedTime < props.duration) {
                     requestAnimationFrame(animate);
                 }
                 else {
-                    renderer.destroy();
+                    renderer.destroy(true);
                 }
             }
             props.onLoaded(renderer.view);
@@ -7492,8 +7496,7 @@ var Rance;
                     speed: 0.7
                 },
                 abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.standBy
+                    Templates.Abilities.guardColumn
                 ]
             };
             Units.stealthShip = {
