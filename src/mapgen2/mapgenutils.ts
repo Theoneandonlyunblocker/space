@@ -340,7 +340,8 @@ module Rance
           var ships: Unit[] = [];
           for (var j = 0; j < shipAmount; j++)
           {
-            var ship = new Unit(Templates.Units[getRandomArrayItem(shipTypes)]);
+            var shipTemplates = star.getBuildableShipTypes();
+            var ship = new Unit(getRandomArrayItem(shipTemplates));
             player.addUnit(ship);
             ships.push(ship);
           }

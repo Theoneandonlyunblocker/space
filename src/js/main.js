@@ -7496,7 +7496,8 @@ var Rance;
                     speed: 0.7
                 },
                 abilities: [
-                    Templates.Abilities.guardColumn
+                    Templates.Abilities.rangedAttack,
+                    Templates.Abilities.standBy
                 ]
             };
             Units.stealthShip = {
@@ -16358,7 +16359,8 @@ var Rance;
                     }
                     var ships = [];
                     for (var j = 0; j < shipAmount; j++) {
-                        var ship = new Rance.Unit(Rance.Templates.Units[Rance.getRandomArrayItem(shipTypes)]);
+                        var shipTemplates = star.getBuildableShipTypes();
+                        var ship = new Rance.Unit(Rance.getRandomArrayItem(shipTemplates));
                         player.addUnit(ship);
                         ships.push(ship);
                     }
