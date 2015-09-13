@@ -355,7 +355,7 @@ module Rance
               gfx.lineStyle(starSize / 2, star.owner.color, 1);
             }
             gfx.beginFill(0xFFFFF0);
-            gfx.drawEllipse(star.x, star.y, starSize, starSize);
+            gfx.drawCircle(star.x, star.y, starSize);
             gfx.endFill();
 
 

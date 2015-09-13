@@ -6893,11 +6893,7 @@ var Rance;
                     requestAnimationFrame(animate);
                 }
                 else {
-                    container.renderable = false;
-                    renderer.destroy(true);
-                    renderer = null;
-                    container.destroy();
-                    container = null;
+                    renderer.destroy();
                 }
             }
             props.onLoaded(renderer.view);
@@ -6984,11 +6980,7 @@ var Rance;
                     requestAnimationFrame(animate);
                 }
                 else {
-                    container.renderable = false;
-                    renderer.destroy(true);
-                    renderer = null;
-                    container.destroy(true);
-                    container = null;
+                    renderer.destroy();
                 }
             }
             props.onLoaded(renderer.view);
@@ -17968,12 +17960,11 @@ var Rance;
                             }
                             var gfx = new PIXI.Graphics();
                             if (!star.owner.isIndependent) {
-                                gfx.lineStyle(Math.round(starSize / 2), star.owner.color, 1);
+                                gfx.lineStyle(starSize / 2, star.owner.color, 1);
                             }
                             gfx.beginFill(0xFFFFF0);
-                            gfx.drawEllipse(star.x, star.y, starSize, starSize);
+                            gfx.drawCircle(star.x, star.y, starSize);
                             gfx.endFill();
-                            console.log(starSize, Math.round(starSize / 2));
                             gfx.interactive = true;
                             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
                             var boundMouseDown = mouseDownFN.bind(star);
