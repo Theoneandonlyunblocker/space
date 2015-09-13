@@ -6893,7 +6893,11 @@ var Rance;
                     requestAnimationFrame(animate);
                 }
                 else {
-                    renderer.destroy();
+                    container.renderable = false;
+                    renderer.destroy(true);
+                    renderer = null;
+                    container.destroy();
+                    container = null;
                 }
             }
             props.onLoaded(renderer.view);
@@ -6980,7 +6984,11 @@ var Rance;
                     requestAnimationFrame(animate);
                 }
                 else {
-                    renderer.destroy();
+                    container.renderable = false;
+                    renderer.destroy(true);
+                    renderer = null;
+                    container.destroy(true);
+                    container = null;
                 }
             }
             props.onLoaded(renderer.view);
@@ -7500,7 +7508,7 @@ var Rance;
                 type: "stealthShip",
                 displayName: "Stealth Ship",
                 archetype: 2 /* utility */,
-                families: [-1 /* basic */],
+                families: [-2 /* debug */],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -12923,15 +12931,20 @@ var Rance;
         };
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
-            for (var type in Rance.Templates.Units) {
-                var template = Rance.Templates.Units[type];
-                if (type === "cheatShip" && (this.isAI || !Rance.Options.debugMode)) {
-                    continue;
+            var typesAlreadyAdded = {};
+            var familiesToAdd = [-1 /* basic */];
+            if (!this.isAI && Rance.Options.debugMode) {
+                familiesToAdd.push(-2 /* debug */);
+            }
+            for (var i = 0; i < familiesToAdd.length; i++) {
+                var unitsInThisFamily = Rance.Templates.unitsByFamily[familiesToAdd[i]];
+                for (var j = 0; j < unitsInThisFamily.length; j++) {
+                    var template = unitsInThisFamily[j];
+                    if (typesAlreadyAdded[template.type])
+                        continue;
+                    typesAlreadyAdded[template.type] = true;
+                    templates.push(template);
                 }
-                else if (template.isStealthy && this.isAI) {
-                    continue;
-                }
-                templates.push(template);
             }
             return templates;
         };
@@ -17621,7 +17634,6 @@ var Rance;
             var x2 = points[i + 1].x;
             var y2 = points[i + 1].y;
             if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance) {
-                console.log(points[i]);
                 var newPoint = {
                     x: (x1 + x2) / 2,
                     y: (y1 + y2) / 2
@@ -17956,11 +17968,12 @@ var Rance;
                             }
                             var gfx = new PIXI.Graphics();
                             if (!star.owner.isIndependent) {
-                                gfx.lineStyle(starSize / 2, star.owner.color, 1);
+                                gfx.lineStyle(Math.round(starSize / 2), star.owner.color, 1);
                             }
                             gfx.beginFill(0xFFFFF0);
                             gfx.drawEllipse(star.x, star.y, starSize, starSize);
                             gfx.endFill();
+                            console.log(starSize, Math.round(starSize / 2));
                             gfx.interactive = true;
                             gfx.hitArea = new PIXI.Polygon(star.voronoiCell.vertices);
                             var boundMouseDown = mouseDownFN.bind(star);
@@ -20496,6 +20509,30 @@ var Rance;
         }
     }
 })(Rance || (Rance = {}));
+/// <reference path="templates/units" />
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        Templates.unitsByFamily = (function (unitLocations) {
+            var unitsByFamily = {};
+            for (var i = 0; i < unitLocations.length; i++) {
+                var units = unitLocations[i];
+                for (var unitType in units) {
+                    var template = units[unitType];
+                    for (var j = 0; j < template.families.length; j++) {
+                        var family = template.families[j];
+                        if (!unitsByFamily[family]) {
+                            unitsByFamily[family] = [];
+                        }
+                        unitsByFamily[family].push(template);
+                    }
+                }
+            }
+            return unitsByFamily;
+        })([Templates.Units]);
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -20568,6 +20605,7 @@ var Rance;
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
+/// <reference path="../data/templateindexes.ts"/>
 /// <reference path="../data/mapgen/builtinmaps.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>

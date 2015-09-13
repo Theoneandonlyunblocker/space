@@ -229,7 +229,7 @@ module Rance
         type: "stealthShip",
         displayName: "Stealth Ship",
         archetype: UnitTemplateArchetype.utility,
-        families: [UnitTemplateFamily.basic],
+        families: [UnitTemplateFamily.debug],
         sprite:
         {
           imageSrc: "scout.png",

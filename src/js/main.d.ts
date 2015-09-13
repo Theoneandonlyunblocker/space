@@ -3041,6 +3041,13 @@ declare module Rance {
     function setAllDynamicTemplateProperties(): void;
 }
 declare module Rance {
+    module Templates {
+        var unitsByFamily: {
+            [family: number]: Templates.IUnitTemplate[];
+        };
+    }
+}
+declare module Rance {
     module Tutorials {
         var uiTutorial: {
             pages: (string | React.Descriptor<React.DomAttributes>)[];

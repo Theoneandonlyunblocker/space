@@ -276,19 +276,28 @@ module Rance
     getGloballyBuildableShips()
     {
       var templates: Templates.IUnitTemplate[] = [];
-
-      for (var type in Templates.Units)
+      var typesAlreadyAdded:
       {
-        var template = Templates.Units[type];
-        if (type === "cheatShip" && (this.isAI || !Options.debugMode))
+        [unitType: string]: boolean;
+      } = {};
+
+      var familiesToAdd: number[] = [Templates.UnitTemplateFamily.basic];
+      if (!this.isAI && Options.debugMode)
+      {
+        familiesToAdd.push(Templates.UnitTemplateFamily.debug);
+      }
+
+      for (var i = 0; i < familiesToAdd.length; i++)
+      {
+        var unitsInThisFamily = Templates.unitsByFamily[familiesToAdd[i]];
+        for (var j = 0; j < unitsInThisFamily.length; j++)
         {
-          continue;
+          var template = unitsInThisFamily[j];
+          if (typesAlreadyAdded[template.type]) continue;
+
+          typesAlreadyAdded[template.type] = true;
+          templates.push(template);
         }
-        else if (template.isStealthy && this.isAI)
-        {
-          continue;
-        }
-        templates.push(template);
       }
 
       return templates;

@@ -176,7 +176,6 @@ module Rance
 
       if (Math.abs(x1 - x2) + Math.abs(y1 - y2) < maxDistance)
       {
-        console.log(points[i]);
         var newPoint: Point =
         {
           x: (x1 + x2) / 2,
