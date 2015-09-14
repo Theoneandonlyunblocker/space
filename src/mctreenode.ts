@@ -273,8 +273,13 @@ module Rance
       {
         return this.addChild();
       }
-      // expanded and not terminal
-      else if (this.children.length > 0)
+      // only 1 choice
+      else if (this.children.length === 1)
+      {
+        return this.children[0];
+      }
+      // expanded and not terminal, actually fetch child with highest score
+      else if (this.children.length > 1)
       {
         return this.getHighestUctChild().getRecursiveBestUctChild();
       }

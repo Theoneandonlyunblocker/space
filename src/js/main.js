@@ -10173,7 +10173,10 @@ var Rance;
             if (this.possibleMoves && this.possibleMoves.length > 0) {
                 return this.addChild();
             }
-            else if (this.children.length > 0) {
+            else if (this.children.length === 1) {
+                return this.children[0];
+            }
+            else if (this.children.length > 1) {
                 return this.getHighestUctChild().getRecursiveBestUctChild();
             }
         };
@@ -10210,6 +10213,7 @@ var Rance;
                 root.possibleMoves = root.getPossibleMoves();
             if (this.rootSimulationNeedsToBeRemade()) {
                 this.remakeSimulation();
+                root = this.rootNode;
             }
             var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
             for (var i = iterationStart; i < iterations; i++) {
@@ -10219,7 +10223,7 @@ var Rance;
                 toSimulateFrom.simulateToEnd();
             }
             var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
-            this.printToConsole(sortedMoves);
+            //this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
         };
@@ -10227,7 +10231,7 @@ var Rance;
             return this.rootNode.getChildForMove(move);
         };
         MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
-            var scoreVariationTolerance = 0.2;
+            var scoreVariationTolerance = 0.1;
             var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
             if (scoreVariance > scoreVariationTolerance) {
                 console.log("scoreVariance: ", scoreVariance);
@@ -10235,17 +10239,25 @@ var Rance;
             }
             else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id) {
                 console.log("activeUnit conflict");
-                return true;
+                return this.actualBattle.activeUnit.battleStats.side === this.sideId;
             }
-            else if (this.rootNode.children.length === 0 && this.rootNode.possibleMoves.length === 0) {
-                console.log("terminal node");
-                return true;
+            else if (this.rootNode.children.length === 0) {
+                if (!this.rootNode.possibleMoves) {
+                    this.rootNode.possibleMoves = this.rootNode.getPossibleMoves();
+                }
+                if (this.rootNode.possibleMoves.length === 0) {
+                    console.log("terminal node");
+                    return true;
+                }
             }
             return false;
         };
         MCTree.prototype.remakeSimulation = function () {
             console.log("remade root");
             this.rootNode = new Rance.MCTreeNode(this.actualBattle.makeVirtualClone());
+            if (this.rootSimulationNeedsToBeRemade()) {
+                console.log("!!! remade but needs another remake");
+            }
             return this.rootNode;
         };
         MCTree.prototype.advanceMove = function (move) {
@@ -10294,6 +10306,10 @@ var Rance;
         function BattleSimulator(battle) {
             this.battle = battle;
             battle.isSimulated = true;
+            if (battle.ended) {
+                this.finishBattle();
+                return;
+            }
             this.tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
         }
         BattleSimulator.prototype.simulateBattle = function () {
@@ -12635,19 +12651,11 @@ var Rance;
                 switch (objective.type) {
                     case "expansion":
                         {
-                            var min = this.getUnitsToFillExpansionObjective(objective);
-                            return ({
-                                min: min,
-                                ideal: 6
-                            });
+                            return (this.getUnitsToFillExpansionObjective(objective));
                         }
                     case "cleanPirates":
                         {
-                            var min = this.getUnitsToFillExpansionObjective(objective);
-                            return ({
-                                min: min,
-                                ideal: min
-                            });
+                            return (this.getUnitsToFillExpansionObjective(objective));
                         }
                     case "heal":
                         {
@@ -12659,14 +12667,22 @@ var Rance;
                 }
             };
             FrontsAI.prototype.getUnitsToFillExpansionObjective = function (objective) {
+                var min;
+                var ideal;
                 var star = objective.target;
                 var independentShips = star.getIndependentShips();
-                if (independentShips.length === 1)
-                    return 2;
-                else {
-                    var desired = independentShips.length + 2;
-                    return Math.min(desired, 6);
+                if (independentShips.length <= 1) {
+                    min = independentShips.length + 1;
+                    ideal = independentShips.length + 1;
                 }
+                else {
+                    min = Math.min(independentShips.length + 2, 6);
+                    ideal = 6;
+                }
+                return ({
+                    min: min,
+                    ideal: ideal
+                });
             };
             FrontsAI.prototype.setUnitRequests = function () {
                 /*for each front that doesnt fulfill minimum unit requirement
@@ -20677,7 +20693,7 @@ var Rance;
         };
         defaultOptions.debugMode = false;
         defaultOptions.debugOptions = {
-            battleSimulationDepth: 33
+            battleSimulationDepth: 20
         };
         defaultOptions.ui = {
             noHamburger: false

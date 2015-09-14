@@ -1914,7 +1914,10 @@ declare module Rance {
                 min: number;
                 ideal: number;
             };
-            getUnitsToFillExpansionObjective(objective: Objective): number;
+            getUnitsToFillExpansionObjective(objective: Objective): {
+                min: number;
+                ideal: number;
+            };
             setUnitRequests(): void;
         }
     }

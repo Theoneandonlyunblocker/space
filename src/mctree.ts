@@ -39,7 +39,9 @@ module Rance
       if (this.rootSimulationNeedsToBeRemade())
       {
         this.remakeSimulation();
+        root = this.rootNode;
       }
+
       var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
       for (var i = iterationStart; i < iterations; i++)
       {
@@ -53,7 +55,7 @@ module Rance
 
       var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
 
-      this.printToConsole(sortedMoves);
+      //this.printToConsole(sortedMoves);
 
       var best = sortedMoves[0];
       return best;
@@ -64,7 +66,7 @@ module Rance
     }
     rootSimulationNeedsToBeRemade(): boolean
     {
-      var scoreVariationTolerance = 0.2;
+      var scoreVariationTolerance = 0.1;
       var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
       if (scoreVariance > scoreVariationTolerance)
       {
@@ -74,12 +76,20 @@ module Rance
       else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id)
       {
         console.log("activeUnit conflict");
-        return true;
+        return this.actualBattle.activeUnit.battleStats.side === this.sideId;
       }
-      else if (this.rootNode.children.length === 0 && this.rootNode.possibleMoves.length === 0)
+      else if (this.rootNode.children.length === 0)
       {
-        console.log("terminal node");
-        return true;
+        if (!this.rootNode.possibleMoves)
+        {
+          this.rootNode.possibleMoves = this.rootNode.getPossibleMoves();
+        }
+        
+        if(this.rootNode.possibleMoves.length === 0)
+        {
+          console.log("terminal node");
+          return true;
+        }
       }
 
       return false;
@@ -88,6 +98,10 @@ module Rance
     {
       console.log("remade root");
       this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone());
+      if (this.rootSimulationNeedsToBeRemade())
+      {
+        console.log("!!! remade but needs another remake");
+      }
       return this.rootNode;
     }
     advanceMove(move: IMove)

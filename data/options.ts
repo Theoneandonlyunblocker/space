@@ -45,7 +45,7 @@ module Rance
     export var debugMode = false;
     export var debugOptions =
     {
-      battleSimulationDepth: 33
+      battleSimulationDepth: 20
     };
     export var ui =
     {
