@@ -1371,6 +1371,7 @@ progress::-webkit-progress-value { background: #080; }
   width: 100%;
   padding-top: 1.5em;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .no-header.fixed-table-container
@@ -2842,6 +2843,11 @@ progress::-webkit-progress-value { background: #080; }
 {
   .hover-only-fancy-table-style(2px, 0);
   .full-border(3px);
+
+  .fixed-table-container-inner
+  {
+    max-height: 20em;
+  }
 }
 
 .save-list-name

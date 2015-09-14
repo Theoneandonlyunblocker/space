@@ -969,6 +969,7 @@ progress::-webkit-progress-value {
   width: 100%;
   padding-top: 1.5em;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 .no-header.fixed-table-container {
   padding-top: 0;
@@ -2770,6 +2771,9 @@ progress::-webkit-progress-value {
 .save-list tbody tr:hover.disabled *,
 .save-list tbody tr:focus.disabled * {
   pointer-events: none !important;
+}
+.save-list .fixed-table-container-inner {
+  max-height: 20em;
 }
 .save-list-name {
   max-width: 400px;
