@@ -26,15 +26,21 @@ module Rance
     {
       return b.winRate - a.winRate;
     }
-    sortByScoreFN(a: MCTreeNode, b: MCTreeNode): number
+    getNodeCombinedScore(n: MCTreeNode): number
+    {
+      var sign = n.sideId === "side1" ? 1 : -1;
+
+      var baseScore = n.averageScore * sign;
+      var winRate = n.winRate;
+      var aiAdjust = n.move.ability.AIScoreAdjust || 0;
+      var uctConfidence = n.uctEvaluation;
+
+      return (baseScore + winRate) * uctConfidence + aiAdjust;
+    }
+    sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
     {
       if (a.sideId !== b.sideId) debugger;
-      var sign = a.sideId === "side1" ? 1 : -1;
-
-      return(
-        (b.currentScore + b.averageScore) * sign + (b.move.ability.AIScoreAdjust || 0) -
-        (a.currentScore + a.averageScore) * sign + (a.move.ability.AIScoreAdjust || 0)
-      );
+      return this.getNodeCombinedScore(b) - this.getNodeCombinedScore(a);
     }
     evaluate(iterations: number): MCTreeNode
     {
@@ -56,7 +62,7 @@ module Rance
         toSimulateFrom.simulateToEnd();
       }
 
-      var sortedMoves = root.children.sort(this.sortByScoreFN);
+      var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
 
       this.printToConsole(sortedMoves);
 
@@ -71,11 +77,9 @@ module Rance
     {
       var scoreVariationTolerance = 0.2;
       var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
-      console.log("scoreVariance", scoreVariance);
-      console.log("visits", this.rootNode.visits);
-      if ( scoreVariance > scoreVariationTolerance)
+      console.log("scoreVariance: ", scoreVariance);
+      if (scoreVariance > scoreVariationTolerance)
       {
-        console.log("remade scoreVariance");
         return true;
       }
       else if (this.rootNode.children.length === 0 && this.rootNode.possibleMoves.length === 0)
@@ -89,12 +93,13 @@ module Rance
     {
       console.log("advance", move.targetId, move.ability.type);
       this.rootNode = this.getChildForMove(move);
+      var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
     }
     getBestMoveAndAdvance(iterations: number): IMove
     {
       var best = this.evaluate(iterations);
-      console.log("getBestMoveAndAdvance", best.move.targetId, best.move.ability.type);
       this.rootNode = best;
+      var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
 
       return best.move;
     }

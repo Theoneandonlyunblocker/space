@@ -1398,7 +1398,8 @@ declare module Rance {
         countVisitsAsIterations: boolean;
         constructor(battle: Battle, sideId: string, fastMode?: boolean);
         sortByWinRateFN(a: MCTreeNode, b: MCTreeNode): number;
-        sortByScoreFN(a: MCTreeNode, b: MCTreeNode): number;
+        getNodeCombinedScore(n: MCTreeNode): number;
+        sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number;
         evaluate(iterations: number): MCTreeNode;
         getChildForMove(move: IMove): MCTreeNode;
         rootSimulationNeedsToBeRemade(): boolean;

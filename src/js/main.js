@@ -6591,7 +6591,7 @@ var Rance;
                     var baseDamage = data.baseDamage;
                     var damageType = data.damageType;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease;
+                    var damage = baseDamage * damageIncrease * Math.pow(Math.random(), 2);
                     target.receiveDamage(damage, damageType);
                 }
             };
@@ -10060,6 +10060,9 @@ var Rance;
                     return child;
                 }
             }
+            if (!this.possibleMoves) {
+                this.possibleMoves = this.getPossibleMoves();
+            }
             for (var i = 0; i < this.possibleMoves.length; i++) {
                 var possibleMove = this.possibleMoves[i];
                 if (possibleMove.targetId === move.targetId &&
@@ -10189,12 +10192,18 @@ var Rance;
         MCTree.prototype.sortByWinRateFN = function (a, b) {
             return b.winRate - a.winRate;
         };
-        MCTree.prototype.sortByScoreFN = function (a, b) {
+        MCTree.prototype.getNodeCombinedScore = function (n) {
+            var sign = n.sideId === "side1" ? 1 : -1;
+            var baseScore = n.averageScore * sign;
+            var winRate = n.winRate;
+            var aiAdjust = n.move.ability.AIScoreAdjust || 0;
+            var uctConfidence = n.uctEvaluation;
+            return (baseScore + winRate) * uctConfidence + aiAdjust;
+        };
+        MCTree.prototype.sortByCombinedScoreFN = function (a, b) {
             if (a.sideId !== b.sideId)
                 debugger;
-            var sign = a.sideId === "side1" ? 1 : -1;
-            return ((b.currentScore + b.averageScore) * sign + (b.move.ability.AIScoreAdjust || 0) -
-                (a.currentScore + a.averageScore) * sign + (a.move.ability.AIScoreAdjust || 0));
+            return this.getNodeCombinedScore(b) - this.getNodeCombinedScore(a);
         };
         MCTree.prototype.evaluate = function (iterations) {
             var root = this.rootNode;
@@ -10210,7 +10219,7 @@ var Rance;
                 // simulate & backpropagate
                 toSimulateFrom.simulateToEnd();
             }
-            var sortedMoves = root.children.sort(this.sortByScoreFN);
+            var sortedMoves = root.children.sort(this.sortByCombinedScoreFN.bind(this));
             this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
@@ -10221,10 +10230,8 @@ var Rance;
         MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
             var scoreVariationTolerance = 0.2;
             var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
-            console.log("scoreVariance", scoreVariance);
-            console.log("visits", this.rootNode.visits);
+            console.log("scoreVariance: ", scoreVariance);
             if (scoreVariance > scoreVariationTolerance) {
-                console.log("remade scoreVariance");
                 return true;
             }
             else if (this.rootNode.children.length === 0 && this.rootNode.possibleMoves.length === 0) {
@@ -10235,11 +10242,12 @@ var Rance;
         MCTree.prototype.advanceMove = function (move) {
             console.log("advance", move.targetId, move.ability.type);
             this.rootNode = this.getChildForMove(move);
+            var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
         };
         MCTree.prototype.getBestMoveAndAdvance = function (iterations) {
             var best = this.evaluate(iterations);
-            console.log("getBestMoveAndAdvance", best.move.targetId, best.move.ability.type);
             this.rootNode = best;
+            var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
             return best.move;
         };
         MCTree.prototype.printToConsole = function (nodes) {

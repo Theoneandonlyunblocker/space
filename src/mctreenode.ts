@@ -113,6 +113,11 @@ module Rance
         }
       }
 
+      if (!this.possibleMoves)
+      {
+        this.possibleMoves = this.getPossibleMoves();
+      }
+
       for (var i = 0; i < this.possibleMoves.length; i++)
       {
         var possibleMove = this.possibleMoves[i];
