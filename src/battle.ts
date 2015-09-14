@@ -602,9 +602,9 @@ module Rance
 
       clone.isVirtual = true;
 
-      clone.currentTurn = 0;
-      clone.maxTurns = 24;
-      clone.turnsLeft = clone.maxTurns;
+      clone.currentTurn = this.currentTurn;
+      clone.maxTurns = this.maxTurns;
+      clone.turnsLeft = this.turnsLeft;
       clone.updateTurnOrder();
       clone.setActiveUnit();
 
