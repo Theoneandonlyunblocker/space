@@ -102,7 +102,7 @@ module Rance
               template: Effects.receiveCounterAttack,
               data:
               {
-                baseDamage: 1
+                baseDamage: 0.5
               }
             }
           ]
@@ -195,7 +195,7 @@ module Rance
               template: Effects.receiveCounterAttack,
               data:
               {
-                baseDamage: 1
+                baseDamage: 0.5
               }
             }
           ]
@@ -265,7 +265,7 @@ module Rance
                 template: Effects.receiveCounterAttack,
                 data:
                 {
-                  baseDamage: 0.1
+                  baseDamage: 0.5
                 }
               }
             ],
