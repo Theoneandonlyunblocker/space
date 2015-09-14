@@ -13,6 +13,12 @@ module Rance
       this.battle = battle;
       battle.isSimulated = true;
 
+      if (battle.ended)
+      {
+        this.finishBattle();
+        return;
+      }
+
       this.tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
     }
 

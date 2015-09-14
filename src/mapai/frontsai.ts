@@ -424,21 +424,11 @@ module Rance
         {
           case "expansion":
           {
-            var min = this.getUnitsToFillExpansionObjective(objective);
-            return(
-            {
-              min: min,
-              ideal: 6
-            });
+            return(this.getUnitsToFillExpansionObjective(objective));
           }
           case "cleanPirates":
           {
-            var min = this.getUnitsToFillExpansionObjective(objective);
-            return(
-            {
-              min: min,
-              ideal: min
-              });
+            return(this.getUnitsToFillExpansionObjective(objective));
           }
           case "heal":
           {
@@ -453,15 +443,27 @@ module Rance
 
       getUnitsToFillExpansionObjective(objective: Objective)
       {
+        var min: number;
+        var ideal: number;
         var star = objective.target;
         var independentShips = star.getIndependentShips();
 
-        if (independentShips.length === 1) return 2;
+        if (independentShips.length <= 1)
+        {
+          min = independentShips.length + 1;
+          ideal = independentShips.length + 1;
+        }
         else
         {
-          var desired = independentShips.length + 2;
-          return Math.min(desired, 6);
+          min = Math.min(independentShips.length + 2, 6);
+          ideal = 6;
         }
+
+        return(
+        {
+          min: min,
+          ideal: ideal
+        });
       }
 
       setUnitRequests()
