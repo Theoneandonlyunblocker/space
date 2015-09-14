@@ -6,11 +6,14 @@ module Rance
   export class BattleSimulator
   {
     battle: Battle;
+    tree: MCTree;
 
     constructor(battle: Battle)
     {
       this.battle = battle;
       battle.isSimulated = true;
+
+      this.tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
     }
 
     simulateBattle()
@@ -28,9 +31,7 @@ module Rance
         throw new Error("Simulated battle already ended");
       }
 
-      var tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side);
-
-      var move = tree.evaluate(Options.debugOptions.battleSimulationDepth).move;
+      var move = this.tree.getBestMoveAndAdvance(Options.debugOptions.battleSimulationDepth);
       var target = this.battle.unitsById[move.targetId];
 
       this.simulateAbility(move.ability, target);

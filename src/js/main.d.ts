@@ -134,7 +134,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var BattleScore: React.Factory<{}>;
+        var BattleScore: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -1371,15 +1371,16 @@ declare module Rance {
         possibleMoves: IMove[];
         uctEvaluation: number;
         uctIsDirty: boolean;
-        constructor(battle: Battle, sideId: string, move?: IMove);
+        constructor(battle: Battle, move?: IMove);
         getPossibleMoves(): IMove[];
-        addChild(): MCTreeNode;
+        addChild(possibleMovesIndex?: number): MCTreeNode;
+        getChildForMove(move: IMove): MCTreeNode;
         updateResult(result: number): void;
         pickRandomAbilityAndTarget(actions: {
             [targetId: number]: Templates.IAbilityTemplate[];
         }): {
-            targetId: any;
-            abilityType: any;
+            targetId: number;
+            abilityType: string;
         };
         simulateOnce(battle: Battle): void;
         simulateToEnd(): void;
@@ -1392,16 +1393,24 @@ declare module Rance {
 declare module Rance {
     class MCTree {
         rootNode: MCTreeNode;
-        constructor(battle: Battle, sideId: string);
+        actualBattle: Battle;
+        sideId: string;
+        countVisitsAsIterations: boolean;
+        constructor(battle: Battle, sideId: string, fastMode?: boolean);
         sortByWinRateFN(a: MCTreeNode, b: MCTreeNode): number;
         sortByScoreFN(a: MCTreeNode, b: MCTreeNode): number;
         evaluate(iterations: number): MCTreeNode;
+        getChildForMove(move: IMove): MCTreeNode;
+        rootSimulationNeedsToBeRemade(): boolean;
+        advanceMove(move: IMove): void;
+        getBestMoveAndAdvance(iterations: number): IMove;
         printToConsole(nodes: MCTreeNode[]): void;
     }
 }
 declare module Rance {
     class BattleSimulator {
         battle: Battle;
+        tree: MCTree;
         constructor(battle: Battle);
         simulateBattle(): void;
         simulateMove(): void;

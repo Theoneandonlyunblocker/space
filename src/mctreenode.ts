@@ -31,21 +31,21 @@ module Rance
     uctEvaluation: number;
     uctIsDirty: boolean = true;
 
-    constructor(battle: Battle, sideId: string, move?: IMove)
+    constructor(battle: Battle, move?: IMove)
     {
       this.battle = battle;
-      this.sideId = sideId;
+      this.sideId = battle.activeUnit.battleStats.side;
       this.move = move;
       this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
 
       this.currentScore = battle.getEvaluation();
     }
 
-    getPossibleMoves()
+    getPossibleMoves(): IMove[]
     {
       if (!this.battle.activeUnit)
       {
-        return null;
+        return [];
       }
       var targets = getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
 
@@ -69,30 +69,65 @@ module Rance
 
       return actions;
     }
-    addChild()
+    addChild(possibleMovesIndex?: number): MCTreeNode
     {
       if (!this.possibleMoves)
       {
         this.possibleMoves = this.getPossibleMoves();
       }
 
-      var move = this.possibleMoves.pop();
+      if (isFinite(possibleMovesIndex))
+      {
+        var move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
+      }
+      else
+      {
+        var move = this.possibleMoves.pop();
+      }
 
       var battle = this.battle.makeVirtualClone();
 
-      useAbility(battle, battle.activeUnit, move.ability,
-        battle.unitsById[move.targetId]);
-
-      battle.endTurn();
-      
-      var child = new MCTreeNode(battle, this.sideId, move);
+      var child = new MCTreeNode(battle, move);
       child.parent = this;
       child.depth = this.depth + 1;
       this.children.push(child);
 
+      useAbility(battle, battle.activeUnit, move.ability,
+        battle.unitsById[move.targetId]);
+
+      child.currentScore = battle.getEvaluation();
+
+      battle.endTurn();
+
       return child;
     }
-    updateResult(result: number)
+    getChildForMove(move: IMove): MCTreeNode
+    {
+      for (var i = 0; i < this.children.length; i++)
+      {
+        var child = this.children[i];
+        if (child.move.targetId === move.targetId &&
+          child.move.ability.type === move.ability.type)
+        {
+          return child;
+        }
+      }
+
+      for (var i = 0; i < this.possibleMoves.length; i++)
+      {
+        var possibleMove = this.possibleMoves[i];
+        if (possibleMove.targetId === move.targetId &&
+          possibleMove.ability.type === move.ability.type)
+        {
+          return this.addChild(i);
+        }
+      }
+
+      var currId = this.battle.activeUnit.id;
+      throw new Error("Tried to fetch child node for impossible move " +
+        currId + ": " + move.ability.type + " -> " + move.targetId);
+    }
+    updateResult(result: number): void
     {
       this.visits++;
       this.totalScore += result;
@@ -133,11 +168,11 @@ module Rance
 
       return(
       {
-        targetId: selected.slice(0, separatorIndex ),
-        abilityType: selected.slice(separatorIndex + 1)
+        targetId: <number> selected.slice(0, separatorIndex),
+        abilityType: <string> selected.slice(separatorIndex + 1)
       });
     }
-    simulateOnce(battle: Battle)
+    simulateOnce(battle: Battle): void
     {
       var actions = getTargetsForAllAbilities(battle, battle.activeUnit);
 
@@ -149,7 +184,7 @@ module Rance
       useAbility(battle, battle.activeUnit, ability, target);
       battle.endTurn();
     }
-    simulateToEnd()
+    simulateToEnd(): void
     {
       var battle = this.battle.makeVirtualClone();
 
@@ -160,16 +195,16 @@ module Rance
 
       this.updateResult(battle.getEvaluation());
     }
-    clearResult()
+    clearResult(): void
     {
       this.visits = 0;
       this.wins = 0;
       this.averageScore = 0;
       this.totalScore = 0;
     }
-    setUct()
+    setUct(): void
     {
-      if (!parent)
+      if (!this.parent)
       {
         this.uctEvaluation = -1;
         this.uctIsDirty = false;
@@ -185,7 +220,7 @@ module Rance
 
       this.uctIsDirty = false;
     }
-    getHighestUctChild()
+    getHighestUctChild(): MCTreeNode
     {
       var highest = this.children[0];
       for (var i = 0; i < this.children.length; i++)
@@ -206,6 +241,12 @@ module Rance
     }
     getRecursiveBestUctChild(): MCTreeNode
     {
+      // terminal
+      if (this.battle.ended)
+      {
+        return this;
+      }
+
       if (!this.possibleMoves)
       {
         this.possibleMoves = this.getPossibleMoves();
@@ -220,11 +261,6 @@ module Rance
       else if (this.children.length > 0)
       {
         return this.getHighestUctChild().getRecursiveBestUctChild();
-      }
-      // terminal
-      else
-      {
-        return this;
       }
     }
   }

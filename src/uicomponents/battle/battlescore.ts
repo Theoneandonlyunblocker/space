@@ -8,22 +8,15 @@ module Rance
       lastEvaluation: undefined,
       shouldComponentUpdate: function(newProps: any)
       {
-        if (!isFinite(this.lastEvaluation))
-        {
-          this.lastEvaluation = newProps.battle.getEvaluation();
-          return true;
-        }
-        else 
-        {
-          var oldEvaluation = this.lastEvaluation;
-          this.lastEvaluation = newProps.battle.getEvaluation();
-          return this.lastEvaluation !== oldEvaluation;
-        }
+        var oldEvaluation = this.lastEvaluation;
+        this.lastEvaluation = newProps.battle.getEvaluation();
+
+        return this.lastEvaluation !== oldEvaluation;
       },
       render: function()
       {
-        var battle = this.props.battle;
-        var evaluation = this.lastEvaluation;
+        var battle: Battle = this.props.battle;
+        var evaluation = this.lastEvaluation
 
         var evaluationPercentage = ((1 - evaluation) * 50);
 

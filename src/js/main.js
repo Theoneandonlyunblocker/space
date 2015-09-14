@@ -1142,10 +1142,16 @@ var Rance;
     (function (UIComponents) {
         UIComponents.BattleScore = React.createClass({
             displayName: "BattleScore",
+            lastEvaluation: undefined,
+            shouldComponentUpdate: function (newProps) {
+                var oldEvaluation = this.lastEvaluation;
+                this.lastEvaluation = newProps.battle.getEvaluation();
+                return this.lastEvaluation !== oldEvaluation;
+            },
             render: function () {
                 var battle = this.props.battle;
-                var evaluation = this.props.battle.getEvaluation();
-                var evaluationPercentage = ((1 + evaluation) * 50);
+                var evaluation = this.lastEvaluation;
+                var evaluationPercentage = ((1 - evaluation) * 50);
                 return (React.DOM.div({
                     className: "battle-score-wrapper"
                 }, React.DOM.div({
@@ -1642,6 +1648,7 @@ var Rance;
             // and needs to be changed synchronously
             tempHoveredUnit: null,
             idGenerator: 0,
+            MCTree: null,
             getInitialState: function () {
                 return ({
                     abilityTooltip: {
@@ -1750,12 +1757,18 @@ var Rance;
                     battleSceneUnit2: unit2
                 });
             },
-            handleAbilityUse: function (ability, target) {
+            handleAbilityUse: function (ability, target, wasByPlayer) {
                 var abilityData = Rance.getAbilityUseData(this.props.battle, this.props.battle.activeUnit, ability, target);
                 for (var i = 0; i < abilityData.beforeUse.length; i++) {
                     abilityData.beforeUse[i]();
                 }
                 this.playBattleEffect(abilityData, 0);
+                if (wasByPlayer && this.MCTree) {
+                    this.MCTree.advanceMove({
+                        ability: ability,
+                        targetId: "" + abilityData.actualTarget.id
+                    });
+                }
             },
             playBattleEffect: function (abilityData, i) {
                 var self = this;
@@ -1869,13 +1882,17 @@ var Rance;
                     this.useAIAbility();
                 }
             },
+            usePlayerAbility: function (ability, target) {
+                this.handleAbilityUse(ability, target, true);
+            },
             useAIAbility: function () {
                 if (!this.props.battle.activeUnit || this.props.battle.ended)
                     return;
-                var tree = new Rance.MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
-                var move = tree.evaluate(1000).move;
+                if (!this.MCTree)
+                    this.MCTree = new Rance.MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side, false);
+                var move = this.MCTree.getBestMoveAndAdvance(1000);
                 var target = this.props.battle.unitsById[move.targetId];
-                this.handleAbilityUse(move.ability, target);
+                this.handleAbilityUse(move.ability, target, false);
             },
             finishBattle: function () {
                 var battle = this.props.battle;
@@ -1912,7 +1929,7 @@ var Rance;
                     this.state.hoveredUnit &&
                     activeTargets[this.state.hoveredUnit.id]) {
                     abilityTooltip = UIComponents.AbilityTooltip({
-                        handleAbilityUse: this.handleAbilityUse,
+                        handleAbilityUse: this.usePlayerAbility,
                         handleMouseLeave: this.handleMouseLeaveUnit,
                         handleMouseEnterAbility: this.handleMouseEnterAbility,
                         handleMouseLeaveAbility: this.handleMouseLeaveAbility,
@@ -9981,7 +9998,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var MCTreeNode = (function () {
-        function MCTreeNode(battle, sideId, move) {
+        function MCTreeNode(battle, move) {
             this.depth = 0;
             this.children = [];
             this.visits = 0;
@@ -9991,14 +10008,14 @@ var Rance;
             this.averageScore = 0;
             this.uctIsDirty = true;
             this.battle = battle;
-            this.sideId = sideId;
+            this.sideId = battle.activeUnit.battleStats.side;
             this.move = move;
             this.isBetweenAI = battle.side1Player.isAI && battle.side2Player.isAI;
             this.currentScore = battle.getEvaluation();
         }
         MCTreeNode.prototype.getPossibleMoves = function () {
             if (!this.battle.activeUnit) {
-                return null;
+                return [];
             }
             var targets = Rance.getTargetsForAllAbilities(this.battle, this.battle.activeUnit);
             var actions = [];
@@ -10015,19 +10032,44 @@ var Rance;
             }
             return actions;
         };
-        MCTreeNode.prototype.addChild = function () {
+        MCTreeNode.prototype.addChild = function (possibleMovesIndex) {
             if (!this.possibleMoves) {
                 this.possibleMoves = this.getPossibleMoves();
             }
-            var move = this.possibleMoves.pop();
+            if (isFinite(possibleMovesIndex)) {
+                var move = this.possibleMoves.splice(possibleMovesIndex, 1)[0];
+            }
+            else {
+                var move = this.possibleMoves.pop();
+            }
             var battle = this.battle.makeVirtualClone();
-            Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
-            battle.endTurn();
-            var child = new MCTreeNode(battle, this.sideId, move);
+            var child = new MCTreeNode(battle, move);
             child.parent = this;
             child.depth = this.depth + 1;
             this.children.push(child);
+            Rance.useAbility(battle, battle.activeUnit, move.ability, battle.unitsById[move.targetId]);
+            child.currentScore = battle.getEvaluation();
+            battle.endTurn();
             return child;
+        };
+        MCTreeNode.prototype.getChildForMove = function (move) {
+            for (var i = 0; i < this.children.length; i++) {
+                var child = this.children[i];
+                if (child.move.targetId === move.targetId &&
+                    child.move.ability.type === move.ability.type) {
+                    return child;
+                }
+            }
+            for (var i = 0; i < this.possibleMoves.length; i++) {
+                var possibleMove = this.possibleMoves[i];
+                if (possibleMove.targetId === move.targetId &&
+                    possibleMove.ability.type === move.ability.type) {
+                    return this.addChild(i);
+                }
+            }
+            var currId = this.battle.activeUnit.id;
+            throw new Error("Tried to fetch child node for impossible move " +
+                currId + ": " + move.ability.type + " -> " + move.targetId);
         };
         MCTreeNode.prototype.updateResult = function (result) {
             this.visits++;
@@ -10084,7 +10126,7 @@ var Rance;
             this.totalScore = 0;
         };
         MCTreeNode.prototype.setUct = function () {
-            if (!parent) {
+            if (!this.parent) {
                 this.uctEvaluation = -1;
                 this.uctIsDirty = false;
                 return;
@@ -10110,6 +10152,10 @@ var Rance;
             return highest;
         };
         MCTreeNode.prototype.getRecursiveBestUctChild = function () {
+            // terminal
+            if (this.battle.ended) {
+                return this;
+            }
             if (!this.possibleMoves) {
                 this.possibleMoves = this.getPossibleMoves();
             }
@@ -10119,9 +10165,6 @@ var Rance;
             }
             else if (this.children.length > 0) {
                 return this.getHighestUctChild().getRecursiveBestUctChild();
-            }
-            else {
-                return this;
             }
         };
         return MCTreeNode;
@@ -10133,30 +10176,71 @@ var Rance;
 var Rance;
 (function (Rance) {
     var MCTree = (function () {
-        function MCTree(battle, sideId) {
+        function MCTree(battle, sideId, fastMode) {
+            if (fastMode === void 0) { fastMode = false; }
             var cloned = battle.makeVirtualClone();
-            this.rootNode = new Rance.MCTreeNode(cloned, sideId);
+            this.rootNode = new Rance.MCTreeNode(cloned);
+            this.actualBattle = battle;
+            this.sideId = sideId;
+            if (fastMode) {
+                this.countVisitsAsIterations = true;
+            }
         }
         MCTree.prototype.sortByWinRateFN = function (a, b) {
             return b.winRate - a.winRate;
         };
         MCTree.prototype.sortByScoreFN = function (a, b) {
-            return (b.uctEvaluation * (b.currentScore + b.averageScore + (b.move.ability.AIScoreAdjust || 0)) -
-                a.uctEvaluation * (a.currentScore + a.averageScore + (a.move.ability.AIScoreAdjust || 0)));
+            if (a.sideId !== b.sideId)
+                debugger;
+            var sign = a.sideId === "side1" ? 1 : -1;
+            return ((b.currentScore + b.averageScore) * sign + (b.move.ability.AIScoreAdjust || 0) -
+                (a.currentScore + a.averageScore) * sign + (a.move.ability.AIScoreAdjust || 0));
         };
         MCTree.prototype.evaluate = function (iterations) {
             var root = this.rootNode;
-            root.possibleMoves = root.getPossibleMoves();
-            for (var i = 0; i < iterations; i++) {
+            if (!root.possibleMoves)
+                root.possibleMoves = root.getPossibleMoves();
+            if (this.rootSimulationNeedsToBeRemade()) {
+                root = this.rootNode = new Rance.MCTreeNode(this.actualBattle.makeVirtualClone());
+            }
+            var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
+            for (var i = iterationStart; i < iterations; i++) {
                 // select & expand
                 var toSimulateFrom = root.getRecursiveBestUctChild();
                 // simulate & backpropagate
                 toSimulateFrom.simulateToEnd();
             }
             var sortedMoves = root.children.sort(this.sortByScoreFN);
-            //this.printToConsole(sortedMoves);
+            this.printToConsole(sortedMoves);
             var best = sortedMoves[0];
             return best;
+        };
+        MCTree.prototype.getChildForMove = function (move) {
+            return this.rootNode.getChildForMove(move);
+        };
+        MCTree.prototype.rootSimulationNeedsToBeRemade = function () {
+            var scoreVariationTolerance = 0.2;
+            var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+            console.log("scoreVariance", scoreVariance);
+            console.log("visits", this.rootNode.visits);
+            if (scoreVariance > scoreVariationTolerance) {
+                console.log("remade scoreVariance");
+                return true;
+            }
+            else if (this.rootNode.children.length === 0 && this.rootNode.possibleMoves.length === 0) {
+                return true;
+            }
+            return false;
+        };
+        MCTree.prototype.advanceMove = function (move) {
+            console.log("advance", move.targetId, move.ability.type);
+            this.rootNode = this.getChildForMove(move);
+        };
+        MCTree.prototype.getBestMoveAndAdvance = function (iterations) {
+            var best = this.evaluate(iterations);
+            console.log("getBestMoveAndAdvance", best.move.targetId, best.move.ability.type);
+            this.rootNode = best;
+            return best.move;
         };
         MCTree.prototype.printToConsole = function (nodes) {
             var consoleRows = [];
@@ -10191,6 +10275,7 @@ var Rance;
         function BattleSimulator(battle) {
             this.battle = battle;
             battle.isSimulated = true;
+            this.tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
         }
         BattleSimulator.prototype.simulateBattle = function () {
             while (!this.battle.ended) {
@@ -10201,8 +10286,7 @@ var Rance;
             if (!this.battle.activeUnit || this.battle.ended) {
                 throw new Error("Simulated battle already ended");
             }
-            var tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side);
-            var move = tree.evaluate(Rance.Options.debugOptions.battleSimulationDepth).move;
+            var move = this.tree.getBestMoveAndAdvance(Rance.Options.debugOptions.battleSimulationDepth);
             var target = this.battle.unitsById[move.targetId];
             this.simulateAbility(move.ability, target);
             this.battle.endTurn();
@@ -13514,35 +13598,34 @@ var Rance;
             return health;
         };
         Battle.prototype.getEvaluation = function () {
-            if (!this.evaluation[this.currentTurn]) {
-                var self = this;
-                var evaluation = 0;
-                ["side1", "side2"].forEach(function (side) {
-                    var sign = side === "side1" ? 1 : -1;
-                    var currentHealth = self.getTotalHealthForSide(side).current;
-                    if (currentHealth <= 0) {
-                        evaluation += 999 * sign;
-                        return;
+            var self = this;
+            var evaluation = 0;
+            ["side1", "side2"].forEach(function (side) {
+                var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
+                var currentHealth = self.getTotalHealthForSide(side).current;
+                if (currentHealth <= 0) {
+                    evaluation += 999 * sign;
+                    return evaluation;
+                }
+                // how much health remains from strating health 0.0-1.0
+                var currentHealthFactor = currentHealth / self.startHealth[side];
+                for (var i = 0; i < self.unitsBySide[side].length; i++) {
+                    if (self.unitsBySide[side][i].currentHealth <= 0) {
+                        evaluation += 0.2 * sign;
                     }
-                    var currentHealthFactor = currentHealth / self.startHealth[side];
-                    for (var i = 0; i < self.unitsBySide[side].length; i++) {
-                        if (self.unitsBySide[side][i].currentHealth <= 0) {
-                            evaluation += 0.2 * sign;
-                        }
+                }
+                var defenderMultiplier = 1;
+                if (self.battleData.building) {
+                    var template = self.battleData.building.template;
+                    var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+                    if (isDefender) {
+                        defenderMultiplier += template.defenderAdvantage;
                     }
-                    var defenderMultiplier = 1;
-                    if (self.battleData.building) {
-                        var template = self.battleData.building.template;
-                        var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
-                        if (isDefender) {
-                            defenderMultiplier += template.defenderAdvantage;
-                        }
-                    }
-                    evaluation += (1 - currentHealthFactor * defenderMultiplier) * sign;
-                });
-                evaluation = Rance.clamp(evaluation, -1, 1);
-                this.evaluation[this.currentTurn] = evaluation;
-            }
+                }
+                evaluation += currentHealthFactor * defenderMultiplier * sign;
+            });
+            evaluation = Rance.clamp(evaluation, -1, 1);
+            this.evaluation[this.currentTurn] = evaluation;
             return this.evaluation[this.currentTurn];
         };
         Battle.prototype.swapColumnsForSide = function (side) {
@@ -13620,16 +13703,12 @@ var Rance;
                 }
             });
             clone.isVirtual = true;
-            clone.currentTurn = 0;
-            clone.maxTurns = 24;
-            clone.turnsLeft = clone.maxTurns;
+            clone.currentTurn = this.currentTurn;
+            clone.maxTurns = this.maxTurns;
+            clone.turnsLeft = this.turnsLeft;
+            clone.startHealth = this.startHealth;
             clone.updateTurnOrder();
             clone.setActiveUnit();
-            clone.startHealth =
-                {
-                    side1: clone.getTotalHealthForSide("side1").current,
-                    side2: clone.getTotalHealthForSide("side2").current
-                };
             if (clone.checkBattleEnd()) {
                 clone.endBattle();
             }

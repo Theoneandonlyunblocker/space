@@ -20,6 +20,7 @@ module Rance
       // and needs to be changed synchronously
       tempHoveredUnit: null,
       idGenerator: 0,
+      MCTree: null,
 
       getInitialState: function()
       {
@@ -178,7 +179,7 @@ module Rance
 
       },
 
-      handleAbilityUse: function(ability: Templates.IAbilityTemplate, target: Unit)
+      handleAbilityUse: function(ability: Templates.IAbilityTemplate, target: Unit, wasByPlayer: boolean)
       {
         var abilityData = getAbilityUseData(this.props.battle,
           this.props.battle.activeUnit, ability, target);
@@ -189,6 +190,16 @@ module Rance
         }
 
         this.playBattleEffect(abilityData, 0);
+
+
+        if (wasByPlayer && this.MCTree)
+        {
+          this.MCTree.advanceMove(
+          {
+            ability: ability,
+            targetId: "" + abilityData.actualTarget.id
+          });
+        }
       },
       playBattleEffect: function(abilityData: IAbilityUseData, i: number)
       {
@@ -350,18 +361,22 @@ module Rance
           this.useAIAbility();
         }
       },
+      usePlayerAbility: function(ability: Templates.IAbilityTemplate, target: Unit)
+      {
+        this.handleAbilityUse(ability, target, true);
+      },
       useAIAbility: function()
       {
         if (!this.props.battle.activeUnit || this.props.battle.ended) return;
         
-        var tree = new MCTree(this.props.battle,
-          this.props.battle.activeUnit.battleStats.side);
+        if (!this.MCTree) this.MCTree = new MCTree(this.props.battle,
+          this.props.battle.activeUnit.battleStats.side, false);
 
-        var move = tree.evaluate(1000).move;
+        var move = this.MCTree.getBestMoveAndAdvance(1000);
 
         var target = this.props.battle.unitsById[move.targetId];
 
-        this.handleAbilityUse(move.ability, target);
+        this.handleAbilityUse(move.ability, target, false);
       },
 
       finishBattle: function()
@@ -423,7 +438,7 @@ module Rance
         {
           abilityTooltip = UIComponents.AbilityTooltip(
           {
-            handleAbilityUse: this.handleAbilityUse,
+            handleAbilityUse: this.usePlayerAbility,
             handleMouseLeave: this.handleMouseLeaveUnit,
             handleMouseEnterAbility: this.handleMouseEnterAbility,
             handleMouseLeaveAbility: this.handleMouseLeaveAbility,
