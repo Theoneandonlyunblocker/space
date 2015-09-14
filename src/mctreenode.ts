@@ -208,6 +208,16 @@ module Rance
       this.averageScore = 0;
       this.totalScore = 0;
     }
+    getCombinedScore(): number
+    {
+      var sign = this.sideId === "side1" ? 1 : -1;
+
+      var baseScore = this.averageScore * sign / 2;
+      var winRate = this.winRate;
+      var aiAdjust = this.move.ability.AIScoreAdjust || 0;
+
+      return (baseScore + winRate) + aiAdjust * 1.5;
+    }
     setUct(): void
     {
       if (!this.parent)
@@ -217,8 +227,8 @@ module Rance
         return;
       }
 
-      this.uctEvaluation = this.wins / this.visits +
-        Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+      //this.uctEvaluation = this.winRate + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
+      this.uctEvaluation = this.getCombinedScore() + Math.sqrt(2 * Math.log(this.parent.visits) / this.visits);
       if (this.move.ability.AIEvaluationPriority)
       {
         this.uctEvaluation *= this.move.ability.AIEvaluationPriority;

@@ -26,21 +26,10 @@ module Rance
     {
       return b.winRate - a.winRate;
     }
-    getNodeCombinedScore(n: MCTreeNode): number
-    {
-      var sign = n.sideId === "side1" ? 1 : -1;
-
-      var baseScore = n.averageScore * sign;
-      var winRate = n.winRate;
-      var aiAdjust = n.move.ability.AIScoreAdjust || 0;
-      var uctConfidence = n.uctEvaluation;
-
-      return (baseScore + winRate) * uctConfidence + aiAdjust;
-    }
     sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
     {
       if (a.sideId !== b.sideId) debugger;
-      return this.getNodeCombinedScore(b) - this.getNodeCombinedScore(a);
+      return b.getCombinedScore() - a.getCombinedScore();
     }
     evaluate(iterations: number): MCTreeNode
     {
@@ -130,7 +119,7 @@ module Rance
           winRate: node.winRate,
           currentScore: node.currentScore,
           averageScore: node.averageScore,
-          finalScore: this.getNodeCombinedScore(node),
+          finalScore: node.getCombinedScore(),
           abilityName: node.move.ability.displayName,
           targetId: node.move.targetId
         }
