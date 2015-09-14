@@ -603,14 +603,10 @@ module Rance
       clone.currentTurn = this.currentTurn;
       clone.maxTurns = this.maxTurns;
       clone.turnsLeft = this.turnsLeft;
+      clone.startHealth = this.startHealth;
       clone.updateTurnOrder();
       clone.setActiveUnit();
 
-      clone.startHealth =
-      {
-        side1: clone.getTotalHealthForSide("side1").current,
-        side2: clone.getTotalHealthForSide("side2").current
-      }
 
       if (clone.checkBattleEnd())
       {
