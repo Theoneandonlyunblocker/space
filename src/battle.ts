@@ -458,13 +458,14 @@ module Rance
 
         ["side1", "side2"].forEach(function(side)
         {
-          var sign = side === "side1" ? 1 : -1;
+          var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
           var currentHealth = self.getTotalHealthForSide(side).current;
           if (currentHealth <= 0)
           {
             evaluation += 999 * sign;
             return;
           }
+          // how much health remains from strating health 0.0-1.0
           var currentHealthFactor = currentHealth / self.startHealth[side];
 
           for (var i = 0; i < self.unitsBySide[side].length; i++)
@@ -486,7 +487,7 @@ module Rance
             }
           }
 
-          evaluation += (1 - currentHealthFactor * defenderMultiplier) * sign;
+          evaluation += currentHealthFactor * defenderMultiplier * sign;
         });
 
         evaluation = clamp(evaluation, -1, 1);

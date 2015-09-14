@@ -5,12 +5,27 @@ module Rance
     export var BattleScore = React.createClass(
     {
       displayName: "BattleScore",
+      lastEvaluation: undefined,
+      shouldComponentUpdate: function(newProps: any)
+      {
+        if (!isFinite(this.lastEvaluation))
+        {
+          this.lastEvaluation = newProps.battle.getEvaluation();
+          return true;
+        }
+        else 
+        {
+          var oldEvaluation = this.lastEvaluation;
+          this.lastEvaluation = newProps.battle.getEvaluation();
+          return this.lastEvaluation !== oldEvaluation;
+        }
+      },
       render: function()
       {
         var battle = this.props.battle;
-        var evaluation = this.props.battle.getEvaluation();
+        var evaluation = this.lastEvaluation;
 
-        var evaluationPercentage = ((1 + evaluation) * 50);
+        var evaluationPercentage = ((1 - evaluation) * 50);
 
         return(
           React.DOM.div(
