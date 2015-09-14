@@ -449,51 +449,48 @@ module Rance
 
       return health;
     }
-    getEvaluation()
+    getEvaluation(): number
     {
-      if (!this.evaluation[this.currentTurn])
+      var self = this;
+      var evaluation = 0;
+
+      ["side1", "side2"].forEach(function(side)
       {
-        var self = this;
-        var evaluation = 0;
-
-        ["side1", "side2"].forEach(function(side)
+        var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
+        var currentHealth = self.getTotalHealthForSide(side).current;
+        if (currentHealth <= 0)
         {
-          var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
-          var currentHealth = self.getTotalHealthForSide(side).current;
-          if (currentHealth <= 0)
+          evaluation += 999 * sign;
+          return evaluation;
+        }
+        // how much health remains from strating health 0.0-1.0
+        var currentHealthFactor = currentHealth / self.startHealth[side];
+
+        for (var i = 0; i < self.unitsBySide[side].length; i++)
+        {
+          if (self.unitsBySide[side][i].currentHealth <= 0)
           {
-            evaluation += 999 * sign;
-            return;
+            evaluation += 0.2 * sign;
           }
-          // how much health remains from strating health 0.0-1.0
-          var currentHealthFactor = currentHealth / self.startHealth[side];
+        }
 
-          for (var i = 0; i < self.unitsBySide[side].length; i++)
+        var defenderMultiplier = 1;
+        if (self.battleData.building)
+        {
+          var template = <Templates.IDefenceBuildingTemplate> self.battleData.building.template;
+          var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
+          if (isDefender)
           {
-            if (self.unitsBySide[side][i].currentHealth <= 0)
-            {
-              evaluation += 0.2 * sign;
-            }
+            defenderMultiplier += template.defenderAdvantage;
           }
+        }
 
-          var defenderMultiplier = 1;
-          if (self.battleData.building)
-          {
-            var template = <Templates.IDefenceBuildingTemplate> self.battleData.building.template;
-            var isDefender = self.battleData.defender.player === self.getPlayerForSide(side);
-            if (isDefender)
-            {
-              defenderMultiplier += template.defenderAdvantage;
-            }
-          }
+        evaluation += currentHealthFactor * defenderMultiplier * sign;
+      });
 
-          evaluation += currentHealthFactor * defenderMultiplier * sign;
-        });
+      evaluation = clamp(evaluation, -1, 1);
 
-        evaluation = clamp(evaluation, -1, 1);
-
-        this.evaluation[this.currentTurn] = evaluation;
-      }
+      this.evaluation[this.currentTurn] = evaluation;
 
       return this.evaluation[this.currentTurn];
     }
