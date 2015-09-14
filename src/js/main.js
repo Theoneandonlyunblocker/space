@@ -6591,7 +6591,7 @@ var Rance;
                     var baseDamage = data.baseDamage;
                     var damageType = data.damageType;
                     var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease * Math.pow(Math.random(), 2);
+                    var damage = baseDamage * damageIncrease;
                     target.receiveDamage(damage, damageType);
                 }
             };
@@ -7102,8 +7102,7 @@ var Rance;
                 description: "Attack entire row of units",
                 moveDelay: 300,
                 actionsUse: 1,
-                byPassesGuard: true,
-                AIEvaluationPriority: 0.5,
+                bypassesGuard: true,
                 mainEffect: {
                     template: Templates.Effects.wholeRowAttack,
                     sfx: Templates.BattleSFX.rocketAttack
@@ -10260,6 +10259,7 @@ var Rance;
                     winRate: node.winRate,
                     currentScore: node.currentScore,
                     averageScore: node.averageScore,
+                    finalScore: this.getNodeCombinedScore(node),
                     abilityName: node.move.ability.displayName,
                     targetId: node.move.targetId
                 };
@@ -13868,7 +13868,7 @@ var Rance;
     }
     Rance.validateTarget = validateTarget;
     function getTargetOrGuard(battle, user, ability, target) {
-        if (ability.byPassesGuard) {
+        if (ability.bypassesGuard) {
             return target;
         }
         var guarding = getGuarders(battle, user, ability, target);

@@ -116,6 +116,7 @@ module Rance
           winRate: node.winRate,
           currentScore: node.currentScore,
           averageScore: node.averageScore,
+          finalScore: this.getNodeCombinedScore(node),
           abilityName: node.move.ability.displayName,
           targetId: node.move.targetId
         }

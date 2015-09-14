@@ -609,7 +609,7 @@ declare module Rance {
                 interruptsNeeded: number;
             };
             actionsUse: number;
-            byPassesGuard?: boolean;
+            bypassesGuard?: boolean;
             mainEffect: IAbilityTemplateEffect;
             secondaryEffects?: IAbilityTemplateEffect[];
             beforeUse?: IAbilityTemplateEffect[];

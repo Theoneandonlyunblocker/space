@@ -227,7 +227,7 @@ module Rance
   export function getTargetOrGuard(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)
   {
-    if (ability.byPassesGuard)
+    if (ability.bypassesGuard)
     {
       return target;
     }
