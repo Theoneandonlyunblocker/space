@@ -128,9 +128,10 @@ module Rance
         }
       }
 
-      var currId = this.battle.activeUnit.id;
-      throw new Error("Tried to fetch child node for impossible move " +
-        currId + ": " + move.ability.type + " -> " + move.targetId);
+      return null;
+      // var currId = this.battle.activeUnit.id;
+      // throw new Error("Tried to fetch child node for impossible move " +
+      //   currId + ": " + move.ability.type + " -> " + move.targetId);
     }
     updateResult(result: number): void
     {

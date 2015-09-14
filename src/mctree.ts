@@ -49,7 +49,7 @@ module Rance
 
       if (this.rootSimulationNeedsToBeRemade())
       {
-        root = this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone());
+        this.remakeSimulation();
       }
       var iterationStart = this.countVisitsAsIterations ? Math.min(iterations - 1, root.visits - root.depth) : 0;
       for (var i = iterationStart; i < iterations; i++)
@@ -77,29 +77,43 @@ module Rance
     {
       var scoreVariationTolerance = 0.2;
       var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
-      console.log("scoreVariance: ", scoreVariance);
       if (scoreVariance > scoreVariationTolerance)
       {
+        console.log("scoreVariance: ", scoreVariance);
+        return true;
+      }
+      else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id)
+      {
+        console.log("activeUnit conflict");
         return true;
       }
       else if (this.rootNode.children.length === 0 && this.rootNode.possibleMoves.length === 0)
       {
+        console.log("terminal node");
         return true;
       }
 
       return false;
     }
+    remakeSimulation()
+    {
+      console.log("remade root");
+      this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone());
+      return this.rootNode;
+    }
     advanceMove(move: IMove)
     {
       console.log("advance", move.targetId, move.ability.type);
       this.rootNode = this.getChildForMove(move);
-      var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
+      if (!this.rootNode)
+      {
+        this.remakeSimulation();
+      }
     }
     getBestMoveAndAdvance(iterations: number): IMove
     {
       var best = this.evaluate(iterations);
       this.rootNode = best;
-      var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
 
       return best.move;
     }
