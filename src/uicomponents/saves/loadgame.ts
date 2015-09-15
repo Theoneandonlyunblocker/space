@@ -75,6 +75,11 @@ module Rance
           {
             localStorage.removeItem(this.state.saveKeysToDelete[i]);
           }
+
+          this.setState(
+          {
+            saveKeysToDelete: []
+          });
         }.bind(this);
         var closeFN = function()
         {

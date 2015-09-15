@@ -4248,6 +4248,9 @@ var Rance;
                     for (var i = 0; i < this.state.saveKeysToDelete.length; i++) {
                         localStorage.removeItem(this.state.saveKeysToDelete[i]);
                     }
+                    this.setState({
+                        saveKeysToDelete: []
+                    });
                 }.bind(this);
                 var closeFN = function () {
                     this.popupId = undefined;
