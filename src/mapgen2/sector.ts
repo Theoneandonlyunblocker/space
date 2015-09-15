@@ -10,7 +10,7 @@ module Rance
     {
       id: number;
       stars: Star[] = [];
-      resourceDistributionFlags: string[] = [];
+      distributionFlags: string[];
       resourceType: Templates.IResourceTemplate;
       resourceLocation: Star;
 

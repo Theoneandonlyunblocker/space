@@ -233,6 +233,75 @@ module Rance
 
       return sectorsById;
     }
+    export function setSectorDistributionFlags(sectors: Sector[])
+    {
+      for (var i = 0; i < sectors.length; i++)
+      {
+        var sector = sectors[i];
+        sector.distributionFlags = [];
+        var majorityRegions = sector.getMajorityRegions();
+        for (var j = 0; j < majorityRegions.length; j++)
+        {
+          if (majorityRegions[j].id.indexOf("center") !== -1)
+          {
+            sector.distributionFlags.push("rare");
+          }
+          else
+          {
+            sector.distributionFlags.push("common");
+          }
+        }
+      }
+    }
+    export function distributeDistributablesPerSector(sectors: Sector[], distributableType: string,
+      allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void)
+    {
+      if (!sectors[0].distributionFlags)
+      {
+        setSectorDistributionFlags(sectors);
+      }
+
+      var probabilityWeights:
+      {
+        [distributableName: string]: number;
+      } = {};
+      for (var name in allDistributables)
+      {
+        probabilityWeights[name] = allDistributables[name].rarity;
+      }
+
+      for (var i = 0; i < sectors.length; i++)
+      {
+        var sector = sectors[i];
+        var alreadyAddedByWright = getRelativeWeightsFromObject(probabilityWeights);
+        var candidates: Templates.IDistributable[] = [];
+
+        for (var j = 0; j < sector.distributionFlags.length; j++)
+        {
+          var flag = sector.distributionFlags[j];
+          var distributablesForFlag = TemplateIndexes.distributablesByDistributionGroup[flag][distributableType];
+          candidates = candidates.concat(distributablesForFlag);
+        }
+
+        if (candidates.length === 0) continue;
+
+        var candidatesByWeight:
+        {
+          [distributableName: string]: number;
+        } = {};
+        for (var j = 0; j < candidates.length; j++)
+        {
+          candidatesByWeight[candidates[j].type] =
+            alreadyAddedByWright[candidates[j].type];
+        }
+
+        var selectedKey = getRandomKeyWithWeights(candidatesByWeight);
+        var selectedType = allDistributables[selectedKey];
+        probabilityWeights[selectedKey]  /= 2;
+
+        placerFunction(sector, selectedType);
+      }
+    }
     export function addDefenceBuildings(star: Star, amount: number = 1, addSectorCommand: boolean = true)
     {
       if (!star.owner)
