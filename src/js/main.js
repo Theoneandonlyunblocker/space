@@ -13368,7 +13368,6 @@ var Rance;
             for (var id in this.revealedStars) {
                 data.revealedStarIds.push(parseInt(id));
             }
-            data.buildings = [];
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
             }

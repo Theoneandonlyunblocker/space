@@ -641,9 +641,6 @@ module Rance
         data.revealedStarIds.push(parseInt(id));
       }
 
-      data.buildings = [];
-
-
       if (this.isAI && this.AIController)
       {
         data.personality = extendObject(this.AIController.personality);
