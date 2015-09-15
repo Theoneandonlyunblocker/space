@@ -2091,9 +2091,6 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
-.buildable-item-list tbody :first-child::after {
-  background-image: none;
-}
 .buildable-item-list tbody tr {
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
@@ -2123,6 +2120,9 @@ progress::-webkit-progress-value {
   padding-bottom: 8px;
   min-width: 70px;
 }
+.buildable-item-list tbody :first-child::after {
+  background-image: none;
+}
 .buildable-item-list tbody tr::after {
   content: "";
   position: absolute;
@@ -2133,6 +2133,7 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
 }
 .buildable-item-list tbody tr:hover,
 .buildable-item-list tbody tr:focus {
@@ -2467,6 +2468,7 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
 }
 .economy-summary-item td {
   padding-top: 8px;
@@ -2494,6 +2496,35 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
+.diplomacy-status-list tbody tr {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  position: relative;
+}
+.diplomacy-status-list tbody tr:hover,
+.diplomacy-status-list tbody tr:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.diplomacy-status-list tbody tr:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.diplomacy-status-list tbody tr:disabled,
+.diplomacy-status-list tbody tr.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.diplomacy-status-list tbody tr:disabled *,
+.diplomacy-status-list tbody tr.disabled * {
+  pointer-events: none !important;
+}
+.diplomacy-status-list tbody tr td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-width: 0;
+}
 .diplomacy-status-list .disabled,
 .diplomacy-status-list :disabled {
   pointer-events: none !important;
@@ -2509,13 +2540,7 @@ progress::-webkit-progress-value {
   background-image: none;
 }
 .diplomacy-status-list tbody tr {
-  position: relative;
   cursor: pointer;
-}
-.diplomacy-status-list tbody tr td {
-  padding-top: 2px;
-  padding-bottom: 2px;
-  min-width: 0;
 }
 .diplomacy-status-list tbody tr::after {
   content: "";
@@ -2527,6 +2552,7 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
 }
 .diplomacy-status-list tbody tr:hover,
 .diplomacy-status-list tbody tr:focus {
@@ -2707,73 +2733,44 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
-.save-list .disabled,
-.save-list :disabled {
+.save-list tbody tr {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  position: relative;
+}
+.save-list tbody tr:hover,
+.save-list tbody tr:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.save-list tbody tr:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.save-list tbody tr:disabled,
+.save-list tbody tr.disabled {
   pointer-events: none !important;
   cursor: default;
   color: #bebeb6;
   background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
 }
-.save-list .disabled *,
-.save-list :disabled * {
+.save-list tbody tr:disabled *,
+.save-list tbody tr.disabled * {
   pointer-events: none !important;
-}
-.save-list tbody :first-child::after {
-  background-image: none;
-}
-.save-list tbody tr {
-  position: relative;
-  cursor: pointer;
 }
 .save-list tbody tr td {
   padding-top: 2px;
   padding-bottom: 2px;
   min-width: 0;
 }
-.save-list tbody tr::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-image: url("../img/listSeparator.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: 100% 2px;
-}
-.save-list tbody tr:hover,
-.save-list tbody tr:focus {
-  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
-  color: #eeeeec;
-  cursor: pointer;
-}
-.save-list tbody tr:hover:hover,
-.save-list tbody tr:focus:hover,
-.save-list tbody tr:hover:focus,
-.save-list tbody tr:focus:focus {
-  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
-}
-.save-list tbody tr:hover:active,
-.save-list tbody tr:focus:active {
-  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
-}
-.save-list tbody tr:hover:disabled,
-.save-list tbody tr:focus:disabled,
-.save-list tbody tr:hover.disabled,
-.save-list tbody tr:focus.disabled {
-  pointer-events: none !important;
-  cursor: default;
-  color: #bebeb6;
-  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
-}
-.save-list tbody tr:hover:disabled *,
-.save-list tbody tr:focus:disabled *,
-.save-list tbody tr:hover.disabled *,
-.save-list tbody tr:focus.disabled * {
-  pointer-events: none !important;
-}
 .save-list .fixed-table-container-inner {
   max-height: 20em;
+}
+.save-list .list-spacer td {
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 2px;
+  pointer-events: none;
 }
 .save-list-name {
   max-width: 400px;
@@ -2929,6 +2926,35 @@ progress::-webkit-progress-value {
   border-image-source: url("../img/uiBorderHorizontal.png");
   border-image-slice: 10%;
 }
+.item-purchase-list tbody tr {
+  background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
+  color: #eeeeec;
+  cursor: pointer;
+  position: relative;
+}
+.item-purchase-list tbody tr:hover,
+.item-purchase-list tbody tr:focus {
+  background: linear-gradient(to bottom, #194366 0%, #1b2f2e 50%, #194366 100%);
+}
+.item-purchase-list tbody tr:active {
+  background: linear-gradient(to bottom, #153856 0%, #142221 50%, #153856 100%);
+}
+.item-purchase-list tbody tr:disabled,
+.item-purchase-list tbody tr.disabled {
+  pointer-events: none !important;
+  cursor: default;
+  color: #bebeb6;
+  background: linear-gradient(to bottom, #050d14 0%, #000000 50%, #050d14 100%);
+}
+.item-purchase-list tbody tr:disabled *,
+.item-purchase-list tbody tr.disabled * {
+  pointer-events: none !important;
+}
+.item-purchase-list tbody tr td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-width: 0;
+}
 .item-purchase-list .disabled,
 .item-purchase-list :disabled {
   pointer-events: none !important;
@@ -2944,13 +2970,7 @@ progress::-webkit-progress-value {
   background-image: none;
 }
 .item-purchase-list tbody tr {
-  position: relative;
   cursor: pointer;
-}
-.item-purchase-list tbody tr td {
-  padding-top: 2px;
-  padding-bottom: 2px;
-  min-width: 0;
 }
 .item-purchase-list tbody tr::after {
   content: "";
@@ -2962,6 +2982,7 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
 }
 .item-purchase-list tbody tr:hover,
 .item-purchase-list tbody tr:focus {
@@ -3093,6 +3114,7 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
   bottom: 0;
 }
 .option-group {
@@ -3109,6 +3131,7 @@ progress::-webkit-progress-value {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
 }
 .option-group label {
   margin: 0 0.5em;

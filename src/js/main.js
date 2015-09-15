@@ -2287,12 +2287,20 @@ var Rance;
                 this.sort();
                 var sortedItems = this.props.sortedItems;
                 var rows = [];
-                sortedItems.forEach(function (item) {
+                sortedItems.forEach(function (item, i) {
                     item.data.key = item.key;
                     item.data.activeColumns = self.state.columns;
                     item.data.handleClick = self.handleSelectRow.bind(null, item);
                     var row = item.data.rowConstructor(item.data);
                     rows.push(row);
+                    if (self.props.addSpacer && i < sortedItems.length - 1) {
+                        rows.push(React.DOM.tr({
+                            className: "list-spacer",
+                            key: "spacer" + i
+                        }, React.DOM.td({
+                            colSpan: 20
+                        }, null)));
+                    }
                 });
                 return (React.DOM.div({
                     className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
@@ -4098,7 +4106,8 @@ var Rance;
                     onRowChange: this.props.onRowChange,
                     autoSelect: selected ? false : this.props.autoSelect,
                     initialSelected: selected,
-                    keyboardSelect: true
+                    keyboardSelect: true,
+                    addSpacer: true
                 })));
             }
         });
@@ -20680,7 +20689,7 @@ var Rance;
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
         if (parsedData) {
-            Rance.Options = Rance.extendObject(parsedData.options, Rance.Options);
+            Rance.Options = Rance.extendObject(Rance.Options, parsedData.options);
         }
     }
     Rance.loadOptions = loadOptions;

@@ -345,7 +345,7 @@ module Rance
         
         var rows: ReactDOMPlaceHolder[] = [];
 
-        sortedItems.forEach(function(item: IListItem)
+        sortedItems.forEach(function(item: IListItem, i: number)
         {
           item.data.key = item.key;
           item.data.activeColumns = self.state.columns;
@@ -355,6 +355,21 @@ module Rance
           rows.push(
             row
           );
+          if (self.props.addSpacer && i < sortedItems.length - 1)
+          {
+            rows.push(React.DOM.tr(
+            {
+              className: "list-spacer",
+              key: "spacer" + i
+            },
+              React.DOM.td(
+              {
+                colSpan: 20
+              },
+                null
+              )
+            ))
+          }
         });
 
 

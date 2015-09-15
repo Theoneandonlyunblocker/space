@@ -169,6 +169,7 @@ ul
 
 // pseudo elements used instead of borders as
 // borders dont scale to table rows properly
+// doesn't work properly with scrolling
 // original design do not steal
 .civ-splitter-horizontal(@height: 2px)
 {
@@ -181,19 +182,15 @@ ul
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: 100% 2px;
+  pointer-events: none;
 }
 
-.fancy-table-style(@padding, @min-width)
+.base-fancy-table-style(@padding, @min-width)
 {
   position: relative;
   .fixed-table-header-background
   {
     .horizontal-border(0px, 3px);
-  }
-
-  tbody :first-child::after
-  {
-    background-image: none;
   }
 
   tbody
@@ -209,7 +206,21 @@ ul
         padding-bottom: @padding;
         min-width: @min-width;
       }
+    }
+  }
+}
 
+.fancy-table-style(@padding, @min-width)
+{
+  .base-fancy-table-style(@padding, @min-width);
+  tbody :first-child::after
+  {
+    background-image: none;
+  }
+  tbody
+  {
+    tr
+    {
       &::after
       {
         .civ-splitter-horizontal;
@@ -224,17 +235,11 @@ ul
 
 .hover-only-fancy-table-style(@padding, @min-width)
 {
-  position: relative;
-  .fixed-table-header-background
-  {
-    .horizontal-border(0px, 3px);
-  }
-
+  .base-fancy-table-style(@padding, @min-width);
   .disabled, :disabled
   {
     .disabled-button-style;
   }
-
 
   tbody :first-child::after
   {
@@ -245,15 +250,7 @@ ul
   {
     tr
     {
-      position: relative;
       cursor: pointer;
-      td
-      {
-        padding-top: @padding;
-        padding-bottom: @padding;
-        min-width: @min-width;
-      }
-
       &::after
       {
         .civ-splitter-horizontal;
@@ -2841,12 +2838,20 @@ progress::-webkit-progress-value { background: #080; }
 
 .save-list
 {
-  .hover-only-fancy-table-style(2px, 0);
+  .base-fancy-table-style(2px, 0);
   .full-border(3px);
 
   .fixed-table-container-inner
   {
     max-height: 20em;
+  }
+  .list-spacer td
+  {
+    background-image: url("../img/listSeparator.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 2px;
+    pointer-events: none;
   }
 }
 

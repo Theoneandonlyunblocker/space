@@ -94,7 +94,8 @@ module Rance
               onRowChange: this.props.onRowChange,
               autoSelect: selected ? false : this.props.autoSelect,
               initialSelected: selected,
-              keyboardSelect: true
+              keyboardSelect: true,
+              addSpacer: true
             })
           )
         );
