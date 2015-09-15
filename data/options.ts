@@ -30,7 +30,7 @@ module Rance
     
     if (parsedData)
     {
-      Options = extendObject(Rance.Options, parsedData.options);
+      Options = extendObject(parsedData.options, Rance.Options, true);
     }
   }
   

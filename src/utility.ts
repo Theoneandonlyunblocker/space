@@ -183,7 +183,7 @@ module Rance
   // 
   // to[prop] = from[prop] seems to add a reference instead of actually copying value
   // so calling the constructor with "new" is needed
-  export function extendObject(from: any, to?: any)
+  export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: boolean = false)
   {
     if (from == null || typeof from != "object") return from;
     if (from.constructor != Object && from.constructor != Array) return from;
@@ -192,10 +192,14 @@ module Rance
       return new from.constructor(from);
 
     to = to || new from.constructor();
+    var toIterateOver = onlyExtendAlreadyPresent ? to : from;
 
-    for (var name in from)
+    for (var name in toIterateOver)
     {
-      to[name] = extendObject(from[name], null);
+      if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name))
+      {
+        to[name] = extendObject(from[name], null);
+      }
     }
 
     return to;
