@@ -21,7 +21,7 @@ module Rance
     interactive: boolean;
     isDirty: boolean;
   }
-  export interface IMapRendererLayerMapMode
+  export interface IMapRendererMapMode
   {
     name: string;
     displayName: string;
@@ -51,7 +51,7 @@ module Rance
     } = {};
     mapModes:
     {
-      [name: string]: IMapRendererLayerMapMode;
+      [name: string]: IMapRendererMapMode;
     } = {};
 
     fowTilingSprite: PIXI.extras.TilingSprite;
@@ -65,7 +65,7 @@ module Rance
       [fleetSize: number]: PIXI.Texture;
     } = {};
 
-    currentMapMode: IMapRendererLayerMapMode;
+    currentMapMode: IMapRendererMapMode;
     isDirty: boolean = true;
     preventRender: boolean = false;
 
