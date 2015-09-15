@@ -20301,6 +20301,51 @@ var Rance;
     }
     Rance.inspectSave = inspectSave;
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var ModuleData = (function () {
+        function ModuleData() {
+            this.Templates = {
+                Abilities: {},
+                AttitudeModifiers: {},
+                BattleSFX: {},
+                Buildings: {},
+                Effects: {},
+                Items: {},
+                PassiveSkills: {},
+                Personalities: {},
+                Resources: {},
+                StatusEffects: {},
+                SubEmblems: {},
+                UnitFamilies: {},
+                Units: {}
+            };
+        }
+        ModuleData.prototype.copyTemplates = function (source, category) {
+            if (!this.Templates[category]) {
+                console.warn("Tried to copy templates in invalid category \"" + category +
+                    "\". Category must be one of: " + Object.keys(this.Templates).join(", "));
+                return;
+            }
+            for (var templateType in source) {
+                if (this.Templates[category][templateType]) {
+                    console.warn("Duplicate template identifier for " + templateType + " in " + category);
+                    continue;
+                }
+                this.Templates[category][templateType] = source[templateType];
+            }
+        };
+        ModuleData.prototype.copyAllTemplates = function (source) {
+            for (var category in this.Templates) {
+                if (source[category]) {
+                    this.copyTemplates(source[category], category);
+                }
+            }
+        };
+        return ModuleData;
+    })();
+    Rance.ModuleData = ModuleData;
+})(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
@@ -20814,6 +20859,7 @@ var Rance;
 /// <reference path="game.ts"/>
 /// <reference path="itemgenerator.ts" />
 /// <reference path="debug.ts"/>
+/// <reference path="moduledata.ts"/>
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>

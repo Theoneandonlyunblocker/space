@@ -2639,7 +2639,7 @@ declare module Rance {
         interactive: boolean;
         isDirty: boolean;
     }
-    interface IMapRendererLayerMapMode {
+    interface IMapRendererMapMode {
         name: string;
         displayName: string;
         layers: {
@@ -2660,7 +2660,7 @@ declare module Rance {
             [name: string]: IMapRendererLayer;
         };
         mapModes: {
-            [name: string]: IMapRendererLayerMapMode;
+            [name: string]: IMapRendererMapMode;
         };
         fowTilingSprite: PIXI.extras.TilingSprite;
         fowSpriteCache: {
@@ -2669,7 +2669,7 @@ declare module Rance {
         fleetTextTextureCache: {
             [fleetSize: number]: PIXI.Texture;
         };
-        currentMapMode: IMapRendererLayerMapMode;
+        currentMapMode: IMapRendererMapMode;
         isDirty: boolean;
         preventRender: boolean;
         listeners: {
@@ -3001,6 +3001,64 @@ declare module Rance {
 declare module Rance {
     function toggleDebugMode(): void;
     function inspectSave(saveName: string): any;
+}
+declare module Rance {
+    interface ITemplates {
+        Abilities: {
+            [type: string]: Templates.IAbilityTemplate;
+        };
+        AttitudeModifiers: {
+            [type: string]: Templates.IAttitudeModifierTemplate;
+        };
+        BattleSFX: {
+            [type: string]: Templates.IAbilityTemplate;
+        };
+        Buildings: {
+            [type: string]: Templates.IBuildingTemplate;
+        };
+        Effects: {
+            [type: string]: Templates.IEffectTemplate;
+        };
+        Items: {
+            [type: string]: Templates.IItemTemplate;
+        };
+        PassiveSkills: {
+            [type: string]: Templates.IPassiveSkillTemplate;
+        };
+        Personalities: {
+            [type: string]: IPersonality;
+        };
+        Resources: {
+            [type: string]: Templates.IResourceTemplate;
+        };
+        StatusEffects: {
+            [type: string]: Templates.IStatusEffectTemplate;
+        };
+        SubEmblems: {
+            [type: string]: Templates.ISubEmblemTemplate;
+        };
+        UnitFamilies: {
+            [type: string]: Templates.IUnitFamily;
+        };
+        Units: {
+            [type: string]: Templates.IUnitTemplate;
+        };
+    }
+    class ModuleData {
+        metaData: {
+            name: string;
+            version: string;
+            author: string;
+            description: string;
+        };
+        mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
+        starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
+        mapRendererLayers: IMapRendererLayer[];
+        mapRendererMapModes: IMapRendererMapMode[];
+        Templates: ITemplates;
+        copyTemplates(source: any, category: string): void;
+        copyAllTemplates(source: any): void;
+    }
 }
 declare module Rance {
     class AppLoader {
