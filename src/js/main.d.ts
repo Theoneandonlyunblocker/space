@@ -475,7 +475,7 @@ declare module Rance {
     function getRandomProperty(target: {
         [props: string]: any;
     }): any;
-    function getRandomPropertyWithWeights(target: {
+    function getRandomKeyWithWeights(target: {
         [prop: string]: number;
     }): any;
     function getFrom2dArray(target: any[][], arr: number[][]): any[];
@@ -491,7 +491,7 @@ declare module Rance {
     function hexToString(hex: number): string;
     function stringToHex(text: string): number;
     function colorImageInPlayerColor(image: HTMLImageElement, player: Player): string;
-    function extendObject(from: any, to?: any): any;
+    function extendObject(from: any, to?: any, onlyExtendAlreadyPresent?: boolean): any;
     function recursiveRemoveAttribute(parent: HTMLElement, attribute: string): void;
     function clamp(value: number, min: number, max: number): number;
     function roundToNearestMultiple(value: number, multiple: number): number;
@@ -2428,7 +2428,7 @@ declare module Rance {
         class Sector {
             id: number;
             stars: Star[];
-            resourceDistributionFlags: string[];
+            distributionFlags: string[];
             resourceType: Templates.IResourceTemplate;
             resourceLocation: Star;
             constructor(id: number);
@@ -2446,6 +2446,8 @@ declare module Rance {
         function makeSectors(stars: Star[], minSize: number, maxSize: number): {
             [sectorId: number]: Sector;
         };
+        function setSectorDistributionFlags(sectors: Sector[]): void;
+        function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
         function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
         function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;
         function setupPirates(stars: Star[], player: Player, variance?: number, intensity?: number): void;
@@ -3062,6 +3064,16 @@ declare module Rance {
 }
 declare module Rance {
     function setAllDynamicTemplateProperties(): void;
+}
+declare module Rance {
+    module TemplateIndexes {
+        var distributablesByDistributionGroup: {
+            [groupName: string]: {
+                unitFamilies: Templates.IUnitFamily[];
+                resources: Templates.IResourceTemplate[];
+            };
+        };
+    }
 }
 declare module Rance {
     module Tutorials {

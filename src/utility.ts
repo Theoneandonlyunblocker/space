@@ -46,7 +46,7 @@ module Rance
     var _rndProp = target[getRandomKey(target)];
     return _rndProp;
   }
-  export function getRandomPropertyWithWeights(target: {[prop: string]: number})
+  export function getRandomKeyWithWeights(target: {[prop: string]: number})
   {
     var totalWeight: number = 0;
     for (var prop in target)

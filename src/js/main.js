@@ -6255,7 +6255,7 @@ var Rance;
         return _rndProp;
     }
     Rance.getRandomProperty = getRandomProperty;
-    function getRandomPropertyWithWeights(target) {
+    function getRandomKeyWithWeights(target) {
         var totalWeight = 0;
         for (var prop in target) {
             totalWeight += target[prop];
@@ -6268,7 +6268,7 @@ var Rance;
             }
         }
     }
-    Rance.getRandomPropertyWithWeights = getRandomPropertyWithWeights;
+    Rance.getRandomKeyWithWeights = getRandomKeyWithWeights;
     function getFrom2dArray(target, arr) {
         var result = [];
         for (var i = 0; i < arr.length; i++) {
@@ -6362,7 +6362,8 @@ var Rance;
     // 
     // to[prop] = from[prop] seems to add a reference instead of actually copying value
     // so calling the constructor with "new" is needed
-    function extendObject(from, to) {
+    function extendObject(from, to, onlyExtendAlreadyPresent) {
+        if (onlyExtendAlreadyPresent === void 0) { onlyExtendAlreadyPresent = false; }
         if (from == null || typeof from != "object")
             return from;
         if (from.constructor != Object && from.constructor != Array)
@@ -6371,8 +6372,11 @@ var Rance;
             from.constructor == String || from.constructor == Number || from.constructor == Boolean)
             return new from.constructor(from);
         to = to || new from.constructor();
-        for (var name in from) {
-            to[name] = extendObject(from[name], null);
+        var toIterateOver = onlyExtendAlreadyPresent ? to : from;
+        for (var name in toIterateOver) {
+            if (!onlyExtendAlreadyPresent || from.hasOwnProperty(name)) {
+                to[name] = extendObject(from[name], null);
+            }
         }
         return to;
     }
@@ -10153,7 +10157,7 @@ var Rance;
                     prioritiesByAbilityAndTarget["" + targetId + ":" + abilities[i].type] = priority;
                 }
             }
-            var selected = Rance.getRandomPropertyWithWeights(prioritiesByAbilityAndTarget);
+            var selected = Rance.getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
             var separatorIndex = selected.indexOf(":");
             return ({
                 targetId: selected.slice(0, separatorIndex),
@@ -16225,7 +16229,6 @@ var Rance;
         var Sector = (function () {
             function Sector(id) {
                 this.stars = [];
-                this.resourceDistributionFlags = [];
                 this.id = id;
             }
             Sector.prototype.addStar = function (star) {
@@ -16447,6 +16450,53 @@ var Rance;
             return sectorsById;
         }
         MapGen2.makeSectors = makeSectors;
+        function setSectorDistributionFlags(sectors) {
+            for (var i = 0; i < sectors.length; i++) {
+                var sector = sectors[i];
+                sector.distributionFlags = [];
+                var majorityRegions = sector.getMajorityRegions();
+                for (var j = 0; j < majorityRegions.length; j++) {
+                    if (majorityRegions[j].id.indexOf("center") !== -1) {
+                        sector.distributionFlags.push("rare");
+                    }
+                    else {
+                        sector.distributionFlags.push("common");
+                    }
+                }
+            }
+        }
+        MapGen2.setSectorDistributionFlags = setSectorDistributionFlags;
+        function distributeDistributablesPerSector(sectors, distributableType, allDistributables, placerFunction) {
+            if (!sectors[0].distributionFlags) {
+                setSectorDistributionFlags(sectors);
+            }
+            var probabilityWeights = {};
+            for (var name in allDistributables) {
+                probabilityWeights[name] = allDistributables[name].rarity;
+            }
+            for (var i = 0; i < sectors.length; i++) {
+                var sector = sectors[i];
+                var alreadyAddedByWright = Rance.getRelativeWeightsFromObject(probabilityWeights);
+                var candidates = [];
+                for (var j = 0; j < sector.distributionFlags.length; j++) {
+                    var flag = sector.distributionFlags[j];
+                    var distributablesForFlag = Rance.TemplateIndexes.distributablesByDistributionGroup[flag][distributableType];
+                    candidates = candidates.concat(distributablesForFlag);
+                }
+                if (candidates.length === 0)
+                    continue;
+                var candidatesByWeight = {};
+                for (var j = 0; j < candidates.length; j++) {
+                    candidatesByWeight[candidates[j].type] =
+                        alreadyAddedByWright[candidates[j].type];
+                }
+                var selectedKey = Rance.getRandomKeyWithWeights(candidatesByWeight);
+                var selectedType = allDistributables[selectedKey];
+                probabilityWeights[selectedKey] /= 2;
+                placerFunction(sector, selectedType);
+            }
+        }
+        MapGen2.distributeDistributablesPerSector = distributeDistributablesPerSector;
         function addDefenceBuildings(star, amount, addSectorCommand) {
             if (amount === void 0) { amount = 1; }
             if (addSectorCommand === void 0) { addSectorCommand = true; }
@@ -16695,44 +16745,22 @@ var Rance;
                 Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
                 // make sectors
                 var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 5);
-                // set resources
-                var resourcesPerDistributionGroup = {};
-                var alreadyAddedResourceCount = {};
-                for (var resourceType in Templates.Resources) {
-                    var resource = Templates.Resources[resourceType];
-                    alreadyAddedResourceCount[resource.type] = 0;
-                    for (var i = 0; i < resource.distributionGroups.length; i++) {
-                        var groupName = resource.distributionGroups[i];
-                        if (!resourcesPerDistributionGroup[groupName]) {
-                            resourcesPerDistributionGroup[groupName] = [];
-                        }
-                        resourcesPerDistributionGroup[groupName].push(resource);
-                    }
-                }
+                // set resources && local ships
+                var allSectors = [];
                 for (var sectorId in sectorsById) {
-                    var sector = sectorsById[sectorId];
-                    var majorityRegions = sector.getMajorityRegions();
-                    sector.resourceDistributionFlags = ["common"];
-                    for (var i = 0; i < majorityRegions.length; i++) {
-                        if (majorityRegions[i].id === "center") {
-                            sector.resourceDistributionFlags = ["rare"];
-                            break;
-                        }
-                    }
-                    var alreadyAddedResourcesByWeight = Rance.getRelativeWeightsFromObject(alreadyAddedResourceCount, true);
-                    var possibleResources = [];
-                    for (var i = 0; i < sector.resourceDistributionFlags.length; i++) {
-                        possibleResources =
-                            possibleResources.concat(resourcesPerDistributionGroup[sector.resourceDistributionFlags[i]]);
-                    }
-                    var possibleResourcesByWeight = {};
-                    for (var i = 0; i < possibleResources.length; i++) {
-                        possibleResourcesByWeight[possibleResources[i].type] =
-                            alreadyAddedResourcesByWeight[possibleResources[i].type];
-                    }
-                    var selectedResource = Templates.Resources[Rance.getRandomPropertyWithWeights(possibleResourcesByWeight)];
-                    sector.addResource(selectedResource);
+                    allSectors.push(sectorsById[sectorId]);
                 }
+                var resourcePlacerFN = function (sector, resource) {
+                    sector.addResource(resource);
+                };
+                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "resources", Templates.Resources, resourcePlacerFN);
+                var localShipPlacerFN = function (sector, shipFamily) {
+                    for (var i = 0; i < sector.stars.length; i++) {
+                        var star = sector.stars[i];
+                        star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
+                    }
+                };
+                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "unitFamilies", Templates.UnitFamilies, localShipPlacerFN);
                 // set players
                 var startRegions = (function setStartingRegions() {
                     var armCount = options.basicOptions["arms"];
@@ -20682,6 +20710,34 @@ var Rance;
         }
     }
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var TemplateIndexes;
+    (function (TemplateIndexes) {
+        TemplateIndexes.distributablesByDistributionGroup = (function () {
+            var result = {};
+            function putInGroups(distributables, distributableType) {
+                for (var prop in distributables) {
+                    var distributable = distributables[prop];
+                    for (var i = 0; i < distributable.distributionGroups.length; i++) {
+                        var groupName = distributable.distributionGroups[i];
+                        if (!result[groupName]) {
+                            result[groupName] =
+                                {
+                                    unitFamilies: [],
+                                    resources: []
+                                };
+                        }
+                        result[groupName][distributableType].push(distributable);
+                    }
+                }
+            }
+            putInGroups(Rance.Templates.UnitFamilies, "unitFamilies");
+            putInGroups(Rance.Templates.Resources, "resources");
+            return result;
+        })();
+    })(TemplateIndexes = Rance.TemplateIndexes || (Rance.TemplateIndexes = {}));
+})(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -20719,7 +20775,7 @@ var Rance;
             parsedData = Rance.getMatchingLocalstorageItemsByDate(baseString)[0];
         }
         if (parsedData) {
-            Rance.Options = Rance.extendObject(Rance.Options, parsedData.options);
+            Rance.Options = Rance.extendObject(parsedData.options, Rance.Options, true);
         }
     }
     Rance.loadOptions = loadOptions;
@@ -20754,6 +20810,7 @@ var Rance;
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
+/// <reference path="../data/templateindexes.ts"/>
 /// <reference path="../data/mapgen/builtinmaps.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>

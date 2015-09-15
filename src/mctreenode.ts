@@ -169,7 +169,7 @@ module Rance
         }
       }
 
-      var selected = getRandomPropertyWithWeights(prioritiesByAbilityAndTarget);
+      var selected = getRandomKeyWithWeights(prioritiesByAbilityAndTarget);
       var separatorIndex = selected.indexOf(":");
 
       return(

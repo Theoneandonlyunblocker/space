@@ -12,6 +12,7 @@
 /// <reference path="gameloader.ts"/>
 
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
+/// <reference path="../data/templateindexes.ts"/>
 
 /// <reference path="../data/mapgen/builtinmaps.ts"/>
 
