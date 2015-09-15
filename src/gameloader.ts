@@ -125,6 +125,14 @@ module Rance
         star.setResource(Templates.Resources[data.resourceType]);
       }
 
+      if (data.buildableUnitTypes)
+      {
+        for (var i = 0; i < data.buildableUnitTypes.length; i++)
+        {
+          star.buildableUnitTypes.push(Templates.Units[data.buildableUnitTypes[i]]);
+        }
+      }
+
       return star;
     }
     deserializeBuildings(data: any)

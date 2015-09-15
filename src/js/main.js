@@ -8781,6 +8781,9 @@ var Rance;
             if (this.resource) {
                 data.resourceType = this.resource.type;
             }
+            data.buildableUnitTypes = this.buildableUnitTypes.map(function (template) {
+                return template.type;
+            });
             data.buildings = {};
             for (var category in this.buildings) {
                 data.buildings[category] = [];
@@ -20493,6 +20496,11 @@ var Rance;
             star.seed = data.seed;
             if (data.resourceType) {
                 star.setResource(Rance.Templates.Resources[data.resourceType]);
+            }
+            if (data.buildableUnitTypes) {
+                for (var i = 0; i < data.buildableUnitTypes.length; i++) {
+                    star.buildableUnitTypes.push(Rance.Templates.Units[data.buildableUnitTypes[i]]);
+                }
             }
             return star;
         };

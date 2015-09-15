@@ -950,6 +950,11 @@ module Rance
         data.resourceType = this.resource.type;
       }
 
+      data.buildableUnitTypes = this.buildableUnitTypes.map(function(template)
+      {
+        return template.type;
+      });
+
       data.buildings = {};
 
       for (var category in this.buildings)
