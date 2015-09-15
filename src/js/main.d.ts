@@ -1,6 +1,7 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
+/// <reference path="../../data/templates/idistributable.d.ts" />
 /// <reference path="../../data/templates/ispritetemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
@@ -665,16 +666,26 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        interface IUnitFamily extends IDistributable {
+            type: string;
+            debugOnly: boolean;
+            alwaysAvailable: boolean;
+            associatedTemplates?: IUnitTemplate[];
+        }
+        module UnitFamilies {
+            var debug: IUnitFamily;
+            var basic: IUnitFamily;
+            var red: IUnitFamily;
+            var blue: IUnitFamily;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
         const enum UnitTemplateArchetype {
             combat = 0,
             defence = 1,
             utility = 2,
-        }
-        const enum UnitTemplateFamily {
-            debug = -2,
-            basic = -1,
-            red = 0,
-            blue = 1,
         }
         interface IUnitTemplate {
             type: string;
@@ -686,7 +697,7 @@ declare module Rance {
             maxHealth: number;
             maxMovePoints: number;
             archetype: UnitTemplateArchetype;
-            families: UnitTemplateFamily[];
+            families: IUnitFamily[];
             visionRange: number;
             detectionRange: number;
             isStealthy?: boolean;
@@ -740,12 +751,10 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IResourceTemplate {
+        interface IResourceTemplate extends IDistributable {
             type: string;
             displayName: string;
             icon: string;
-            rarity: number;
-            distributionGroups: string[];
         }
         module Resources {
             var testResource1: IResourceTemplate;
@@ -3053,13 +3062,6 @@ declare module Rance {
 }
 declare module Rance {
     function setAllDynamicTemplateProperties(): void;
-}
-declare module Rance {
-    module Templates {
-        var unitsByFamily: {
-            [family: number]: Templates.IUnitTemplate[];
-        };
-    }
 }
 declare module Rance {
     module Tutorials {

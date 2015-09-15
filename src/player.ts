@@ -281,23 +281,19 @@ module Rance
         [unitType: string]: boolean;
       } = {};
 
-      var familiesToAdd: number[] = [Templates.UnitTemplateFamily.basic];
+      var unitsToAdd: Templates.IUnitTemplate[] = Templates.UnitFamilies.basic.associatedTemplates.slice(0);
       if (!this.isAI && Options.debugMode)
       {
-        familiesToAdd.push(Templates.UnitTemplateFamily.debug);
+        unitsToAdd = unitsToAdd.concat(Templates.UnitFamilies.debug.associatedTemplates);
       }
 
-      for (var i = 0; i < familiesToAdd.length; i++)
+      for (var i = 0; i < unitsToAdd.length; i++)
       {
-        var unitsInThisFamily = Templates.unitsByFamily[familiesToAdd[i]];
-        for (var j = 0; j < unitsInThisFamily.length; j++)
-        {
-          var template = unitsInThisFamily[j];
-          if (typesAlreadyAdded[template.type]) continue;
+        var template = unitsToAdd[i];
+        if (typesAlreadyAdded[template.type]) continue;
 
-          typesAlreadyAdded[template.type] = true;
-          templates.push(template);
-        }
+        typesAlreadyAdded[template.type] = true;
+        templates.push(template);
       }
 
       return templates;

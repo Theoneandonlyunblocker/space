@@ -7371,9 +7371,49 @@ var Rance;
         })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="units.ts" />
+/// <reference path="idistributable.d.ts" />
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        var UnitFamilies;
+        (function (UnitFamilies) {
+            UnitFamilies.debug = {
+                type: "debug",
+                debugOnly: true,
+                alwaysAvailable: true,
+                rarity: 0,
+                distributionGroups: []
+            };
+            UnitFamilies.basic = {
+                type: "basic",
+                debugOnly: false,
+                alwaysAvailable: true,
+                rarity: 0,
+                distributionGroups: []
+            };
+            UnitFamilies.red = {
+                type: "red",
+                debugOnly: false,
+                alwaysAvailable: false,
+                rarity: 1,
+                distributionGroups: ["common", "rare"]
+            };
+            UnitFamilies.blue = {
+                type: "blue",
+                debugOnly: false,
+                alwaysAvailable: false,
+                rarity: 1,
+                distributionGroups: ["common", "rare"]
+            };
+        })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
 /// <reference path="ispritetemplate.d.ts"/>
+/// <reference path="unitfamilies.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7384,7 +7424,7 @@ var Rance;
                 type: "cheatShip",
                 displayName: "Debug Ship",
                 archetype: 0 /* combat */,
-                families: [-2 /* debug */],
+                families: [Templates.UnitFamilies.debug],
                 sprite: {
                     imageSrc: "cheatShip.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7421,7 +7461,7 @@ var Rance;
                 type: "fighterSquadron",
                 displayName: "Fighter Squadron",
                 archetype: 0 /* combat */,
-                families: [-1 /* basic */],
+                families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "fighter.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7449,7 +7489,7 @@ var Rance;
                 type: "bomberSquadron",
                 displayName: "Bomber Squadron",
                 archetype: 0 /* combat */,
-                families: [-1 /* basic */],
+                families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "bomber.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7477,7 +7517,7 @@ var Rance;
                 type: "battleCruiser",
                 displayName: "Battlecruiser",
                 archetype: 0 /* combat */,
-                families: [-1 /* basic */],
+                families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "battleCruiser.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7505,7 +7545,7 @@ var Rance;
                 type: "scout",
                 displayName: "Scout",
                 archetype: 2 /* utility */,
-                families: [-1 /* basic */],
+                families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7532,7 +7572,7 @@ var Rance;
                 type: "stealthShip",
                 displayName: "Stealth Ship",
                 archetype: 2 /* utility */,
-                families: [-2 /* debug */],
+                families: [Templates.UnitFamilies.debug],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7560,7 +7600,7 @@ var Rance;
                 type: "shieldBoat",
                 displayName: "Shield Boat",
                 archetype: 1 /* defence */,
-                families: [-1 /* basic */],
+                families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "shieldBoat.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7591,7 +7631,7 @@ var Rance;
                 type: "redShip",
                 displayName: "Red ship",
                 archetype: 2 /* utility */,
-                families: [0 /* red */],
+                families: [Templates.UnitFamilies.red],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7618,7 +7658,7 @@ var Rance;
                 type: "blueShip",
                 displayName: "Blue ship",
                 archetype: 2 /* utility */,
-                families: [1 /* blue */],
+                families: [Templates.UnitFamilies.blue],
                 sprite: {
                     imageSrc: "scout.png",
                     anchor: { x: 0.5, y: 0.5 }
@@ -7760,6 +7800,7 @@ var Rance;
         BattleSFXFunctions.defaultUnitScene = defaultUnitScene;
     })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
+/// <reference path="idistributable.d.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -13059,19 +13100,16 @@ var Rance;
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
             var typesAlreadyAdded = {};
-            var familiesToAdd = [-1 /* basic */];
+            var unitsToAdd = Rance.Templates.UnitFamilies.basic.associatedTemplates.slice(0);
             if (!this.isAI && Rance.Options.debugMode) {
-                familiesToAdd.push(-2 /* debug */);
+                unitsToAdd = unitsToAdd.concat(Rance.Templates.UnitFamilies.debug.associatedTemplates);
             }
-            for (var i = 0; i < familiesToAdd.length; i++) {
-                var unitsInThisFamily = Rance.Templates.unitsByFamily[familiesToAdd[i]];
-                for (var j = 0; j < unitsInThisFamily.length; j++) {
-                    var template = unitsInThisFamily[j];
-                    if (typesAlreadyAdded[template.type])
-                        continue;
-                    typesAlreadyAdded[template.type] = true;
-                    templates.push(template);
-                }
+            for (var i = 0; i < unitsToAdd.length; i++) {
+                var template = unitsToAdd[i];
+                if (typesAlreadyAdded[template.type])
+                    continue;
+                typesAlreadyAdded[template.type] = true;
+                templates.push(template);
             }
             return templates;
         };
@@ -20594,6 +20632,7 @@ var Rance;
     function setAllDynamicTemplateProperties() {
         setAbilityGuardAddition();
         setAttitudeModifierOverride();
+        setUnitFamilyAssociatedTemplates();
     }
     Rance.setAllDynamicTemplateProperties = setAllDynamicTemplateProperties;
     function setAbilityGuardAddition() {
@@ -20630,30 +20669,18 @@ var Rance;
             }
         }
     }
-})(Rance || (Rance = {}));
-/// <reference path="templates/units" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        Templates.unitsByFamily = (function (unitLocations) {
-            var unitsByFamily = {};
-            for (var i = 0; i < unitLocations.length; i++) {
-                var units = unitLocations[i];
-                for (var unitType in units) {
-                    var template = units[unitType];
-                    for (var j = 0; j < template.families.length; j++) {
-                        var family = template.families[j];
-                        if (!unitsByFamily[family]) {
-                            unitsByFamily[family] = [];
-                        }
-                        unitsByFamily[family].push(template);
-                    }
+    function setUnitFamilyAssociatedTemplates() {
+        for (var unitType in Rance.Templates.Units) {
+            var template = Rance.Templates.Units[unitType];
+            for (var i = 0; i < template.families.length; i++) {
+                var family = template.families[i];
+                if (!family.associatedTemplates) {
+                    family.associatedTemplates = [];
                 }
+                family.associatedTemplates.push(template);
             }
-            return unitsByFamily;
-        })([Templates.Units]);
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+        }
+    }
 })(Rance || (Rance = {}));
 /// <reference path="tutorial.d.ts"/>
 var Rance;
@@ -20727,7 +20754,6 @@ var Rance;
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
-/// <reference path="../data/templateindexes.ts"/>
 /// <reference path="../data/mapgen/builtinmaps.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>

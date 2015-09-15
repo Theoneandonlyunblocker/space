@@ -1,16 +1,14 @@
+/// <reference path="idistributable.d.ts" />
+
 module Rance
 {
   export module Templates
   {
-    export interface IResourceTemplate
+    export interface IResourceTemplate extends IDistributable
     {
       type: string;
       displayName: string;
       icon: string;
-      // relative probability resource is picked from pool of available resources
-      rarity: number;
-      // sector needs to have any of these flags to possibly spawn resource there
-      distributionGroups: string[];
     }
     export module Resources
     {

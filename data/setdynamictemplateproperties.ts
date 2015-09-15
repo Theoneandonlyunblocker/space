@@ -9,6 +9,7 @@ module Rance
   {
     setAbilityGuardAddition();
     setAttitudeModifierOverride();
+    setUnitFamilyAssociatedTemplates();
   }
   function setAbilityGuardAddition()
   {
@@ -57,6 +58,23 @@ module Rance
 
           modifier.canBeOverriddenBy[i].canOverride.push(modifier);
         }
+      }
+    }
+  }
+  function setUnitFamilyAssociatedTemplates()
+  {
+    for (var unitType in Templates.Units)
+    {
+      var template = Templates.Units[unitType];
+      for (var i = 0; i < template.families.length; i++)
+      {
+        var family = template.families[i];
+        if (!family.associatedTemplates)
+        {
+          family.associatedTemplates = [];
+        }
+
+        family.associatedTemplates.push(template);
       }
     }
   }
