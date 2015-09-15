@@ -197,8 +197,6 @@ ul
   {
     tr
     {
-      .button-style-no-border;
-
       position: relative;
       td
       {
@@ -221,6 +219,7 @@ ul
   {
     tr
     {
+      .button-style-no-border;
       &::after
       {
         .civ-splitter-horizontal;
@@ -233,7 +232,7 @@ ul
   }
 }
 
-.hover-only-fancy-table-style(@padding, @min-width)
+.hover-only-fancy-table-style-without-splitters(@padding, @min-width)
 {
   .base-fancy-table-style(@padding, @min-width);
   .disabled, :disabled
@@ -241,6 +240,22 @@ ul
     .disabled-button-style;
   }
 
+  tbody
+  {
+    tr
+    {
+      cursor: pointer;
+      &:hover, &:focus
+      {
+        .button-style-no-border;
+      }
+    }
+  }
+}
+
+.hover-only-fancy-table-style(@padding, @min-width)
+{
+  .hover-only-fancy-table-style-without-splitters(@padding, @min-width);
   tbody :first-child::after
   {
     background-image: none;
@@ -250,14 +265,9 @@ ul
   {
     tr
     {
-      cursor: pointer;
       &::after
       {
         .civ-splitter-horizontal;
-      }
-      &:hover, &:focus
-      {
-        .button-style-no-border;
       }
     }
   }
@@ -2838,7 +2848,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .save-list
 {
-  .base-fancy-table-style(2px, 0);
+  .hover-only-fancy-table-style-without-splitters(2px, 0);
   .full-border(3px);
 
   .fixed-table-container-inner
