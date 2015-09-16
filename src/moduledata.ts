@@ -73,6 +73,7 @@ module Rance
   export class ModuleData
   {
     metaData: IModuleMetaData
+    private subModuleMetaData: IModuleMetaData[] = [];
 
     mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
     starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
@@ -106,7 +107,6 @@ module Rance
     {
       
     }
-
     copyTemplates(source: any, category: string)
     {
       if (!this.Templates[category])
@@ -135,6 +135,10 @@ module Rance
           this.copyTemplates(source[category], category);
         }
       }
+    }
+    addSubModule(moduleFile: IModuleFile)
+    {
+      this.subModuleMetaData.push(moduleFile.metaData);
     }
   }
 }

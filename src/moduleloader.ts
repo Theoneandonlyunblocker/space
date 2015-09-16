@@ -14,7 +14,7 @@ module Rance
     loadModuleFile(moduleFile: IModuleFile)
     {
       moduleFile.constructModule(this.moduleData);
-      this.moduleData.metaData = moduleFile.metaData;
+      this.moduleData.addSubModule(moduleFile);
     }
   }
 }

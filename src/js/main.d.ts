@@ -6,17 +6,13 @@
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
+/// <reference path="../templateinterfaces/idistributable.d.ts" />
+/// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/ipassiveskilltemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibattleprepeffect.d.ts" />
 /// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
-/// <reference path="../templateinterfaces/iunitfamily.d.ts" />
-/// <reference path="../templateinterfaces/idistributable.d.ts" />
-/// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
-/// <reference path="../templateinterfaces/iunittemplate.d.ts" />
-/// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
-/// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
-/// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
-/// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
@@ -27,7 +23,11 @@
 /// <reference path="../templateinterfaces/istatuseffectattributeadjustment.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
+/// <reference path="../templateinterfaces/iunittemplate.d.ts" />
+/// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
+/// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
+/// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
@@ -605,52 +605,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        module PassiveSkills {
-            var autoHeal: IPassiveSkillTemplate;
-            var poisoned: IPassiveSkillTemplate;
-            var overdrive: IPassiveSkillTemplate;
-            var initialGuard: IPassiveSkillTemplate;
-            var warpJammer: IPassiveSkillTemplate;
-            var medic: IPassiveSkillTemplate;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module UnitFamilies {
-            var debug: IUnitFamily;
-            var basic: IUnitFamily;
-            var red: IUnitFamily;
-            var blue: IUnitFamily;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module UnitArchetypes {
-            var combat: IUnitArchetype;
-            var utility: IUnitArchetype;
-            var defence: IUnitArchetype;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module Units {
-            var cheatShip: IUnitTemplate;
-            var fighterSquadron: IUnitTemplate;
-            var bomberSquadron: IUnitTemplate;
-            var battleCruiser: IUnitTemplate;
-            var scout: IUnitTemplate;
-            var stealthShip: IUnitTemplate;
-            var shieldBoat: IUnitTemplate;
-            var redShip: IUnitTemplate;
-            var blueShip: IUnitTemplate;
-        }
-    }
-}
-declare module Rance {
     module BattleSFXFunctions {
         function defaultUnitScene(unit: Unit, props: {
             unitsToDraw?: number;
@@ -733,6 +687,18 @@ declare module Rance {
         upgrade(): void;
         setController(newController: Player): void;
         serialize(): any;
+    }
+}
+declare module Rance {
+    module Templates {
+        module PassiveSkills {
+            var autoHeal: IPassiveSkillTemplate;
+            var poisoned: IPassiveSkillTemplate;
+            var overdrive: IPassiveSkillTemplate;
+            var initialGuard: IPassiveSkillTemplate;
+            var warpJammer: IPassiveSkillTemplate;
+            var medic: IPassiveSkillTemplate;
+        }
     }
 }
 declare module Rance {
@@ -2338,6 +2304,16 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
+        module UnitFamilies {
+            var debug: IUnitFamily;
+            var basic: IUnitFamily;
+            var red: IUnitFamily;
+            var blue: IUnitFamily;
+        }
+    }
+}
+declare module Rance {
+    module Templates {
         module MapGen {
             function spiralGalaxyGeneration(options: IMapGenOptionValues, players: Player[], independents: Player[]): MapGen2.MapGenResult;
         }
@@ -2907,6 +2883,7 @@ declare module Rance {
     }
     class ModuleData {
         metaData: IModuleMetaData;
+        private subModuleMetaData;
         mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
         starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
         mapRendererLayers: IMapRendererLayer[];
@@ -2918,6 +2895,7 @@ declare module Rance {
         constructor();
         copyTemplates(source: any, category: string): void;
         copyAllTemplates(source: any): void;
+        addSubModule(moduleFile: IModuleFile): void;
     }
 }
 declare module Rance {
@@ -2928,8 +2906,38 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module Templates {
+        module UnitArchetypes {
+            var combat: IUnitArchetype;
+            var utility: IUnitArchetype;
+            var defence: IUnitArchetype;
+        }
+    }
+}
+declare module Rance {
     module Modules {
-        var defaultModule: IModuleFile;
+        module DefaultModule {
+            module Templates {
+                module Units {
+                    var cheatShip: Rance.Templates.IUnitTemplate;
+                    var fighterSquadron: Rance.Templates.IUnitTemplate;
+                    var bomberSquadron: Rance.Templates.IUnitTemplate;
+                    var battleCruiser: Rance.Templates.IUnitTemplate;
+                    var scout: Rance.Templates.IUnitTemplate;
+                    var stealthShip: Rance.Templates.IUnitTemplate;
+                    var shieldBoat: Rance.Templates.IUnitTemplate;
+                    var redShip: Rance.Templates.IUnitTemplate;
+                    var blueShip: Rance.Templates.IUnitTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            var moduleFile: IModuleFile;
+        }
     }
 }
 declare module Rance {

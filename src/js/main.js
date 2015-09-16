@@ -7269,490 +7269,6 @@ var Rance;
         })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
-/// <reference path="../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
-/// <reference path="../../src/templateinterfaces/iturnstarteffect.d.ts"/>
-/// <reference path="abilities.ts" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        // called for each unit present in star in battleprep constructor
-        var PassiveSkills;
-        (function (PassiveSkills) {
-            PassiveSkills.autoHeal = {
-                type: "autoHeal",
-                displayName: "Auto heal",
-                description: "hiku hiku",
-                afterAbilityUse: [
-                    {
-                        template: Templates.Effects.healSelf,
-                        data: {
-                            flat: 50
-                        },
-                        sfx: {
-                            duration: 1200,
-                            battleOverlay: function (props) {
-                                // cg40400.bmp - cg40429.bmp converted to webm
-                                return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
-                            }
-                        },
-                        trigger: function (user, target) {
-                            return user.currentHealth < user.maxHealth;
-                        }
-                    }
-                ]
-            };
-            PassiveSkills.poisoned = {
-                type: "poisoned",
-                displayName: "Poisoned",
-                description: "-10% max health per turn",
-                afterAbilityUse: [
-                    {
-                        template: Templates.Effects.healSelf,
-                        data: {
-                            maxHealthPercentage: -0.1
-                        },
-                        sfx: {
-                            duration: 1200,
-                            userOverlay: function (props) {
-                                var canvas = document.createElement("canvas");
-                                canvas.width = props.width;
-                                canvas.height = props.height;
-                                var ctx = canvas.getContext("2d");
-                                ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
-                                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                return canvas;
-                            }
-                        }
-                    }
-                ]
-            };
-            PassiveSkills.overdrive = {
-                type: "overdrive",
-                displayName: "Overdrive",
-                description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
-                atBattleStart: [
-                    {
-                        template: Templates.Effects.buffTest
-                    }
-                ]
-            };
-            PassiveSkills.initialGuard = {
-                type: "initialGuard",
-                displayName: "Initial Guard",
-                description: "Adds initial guard",
-                isHidden: true,
-                atBattleStart: [
-                    {
-                        template: Templates.Effects.guardColumn,
-                        data: { perInt: 0, flat: 50 }
-                    }
-                ],
-                inBattlePrep: [
-                    function (user, battlePrep) {
-                        Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
-                    }
-                ]
-            };
-            PassiveSkills.warpJammer = {
-                type: "warpJammer",
-                displayName: "Warp Jammer",
-                description: "Forces an extra unit to defend in neutral territory",
-                inBattlePrep: [
-                    function (user, battlePrep) {
-                        if (user.fleet.player === battlePrep.attacker) {
-                            battlePrep.minDefendersInNeutralTerritory += 1;
-                        }
-                    }
-                ]
-            };
-            PassiveSkills.medic = {
-                type: "medic",
-                displayName: "Medic",
-                description: "Heals all units in same star to full at turn start",
-                atTurnStart: [
-                    function (user) {
-                        var star = user.fleet.location;
-                        var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
-                        for (var i = 0; i < allFriendlyUnits.length; i++) {
-                            allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
-                        }
-                    }
-                ]
-            };
-        })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
-/// <reference path="units.ts" />
-/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var UnitFamilies;
-        (function (UnitFamilies) {
-            UnitFamilies.debug = {
-                type: "debug",
-                debugOnly: true,
-                alwaysAvailable: true,
-                rarity: 0,
-                distributionGroups: []
-            };
-            UnitFamilies.basic = {
-                type: "basic",
-                debugOnly: false,
-                alwaysAvailable: true,
-                rarity: 0,
-                distributionGroups: []
-            };
-            UnitFamilies.red = {
-                type: "red",
-                debugOnly: false,
-                alwaysAvailable: false,
-                rarity: 1,
-                distributionGroups: ["common", "rare"]
-            };
-            UnitFamilies.blue = {
-                type: "blue",
-                debugOnly: false,
-                alwaysAvailable: false,
-                rarity: 1,
-                distributionGroups: ["common", "rare"]
-            };
-        })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../src/templateinterfaces/iunitarchetype.d.ts"/>
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var UnitArchetypes;
-        (function (UnitArchetypes) {
-            UnitArchetypes.combat = {
-                type: "combat",
-                idealWeightInBattle: 1,
-                idealWeightInFleet: 1,
-                rowScores: {
-                    ROW_FRONT: 1,
-                    ROW_BACK: 0.6
-                }
-            };
-            UnitArchetypes.utility = {
-                type: "utility",
-                idealWeightInBattle: 0.33,
-                idealWeightInFleet: 0.5,
-                rowScores: {
-                    ROW_FRONT: 0.4,
-                    ROW_BACK: 0.6
-                }
-            };
-            UnitArchetypes.defence = {
-                type: "defence",
-                idealWeightInBattle: 0.5,
-                idealWeightInFleet: 0.5,
-                rowScores: {
-                    ROW_FRONT: 1,
-                    ROW_BACK: 0.5
-                },
-                scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
-                    var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
-                    var totalDefenceUnderThreshhold = 0;
-                    var threshhold = 6;
-                    var alreadyHasDefender = false;
-                    for (var i = 0; i < rowUnits.length; i++) {
-                        var unit = rowUnits[i];
-                        if (!unit)
-                            continue;
-                        if (unit.template.archetype.type === "defence") {
-                            return multiplier;
-                        }
-                        totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-                    }
-                    return multiplier + totalDefenceUnderThreshhold * 0.2;
-                }
-            };
-        })(UnitArchetypes = Templates.UnitArchetypes || (Templates.UnitArchetypes = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../src/templateinterfaces/iunittemplate.d.ts"/>
-/// <reference path="../../src/templateinterfaces/ispritetemplate.d.ts"/>
-/// <reference path="abilities.ts"/>
-/// <reference path="passiveskills.ts" />
-/// <reference path="unitfamilies.ts" />
-/// <reference path="unitarchetypes.ts" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var Units;
-        (function (Units) {
-            Units.cheatShip = {
-                type: "cheatShip",
-                displayName: "Debug Ship",
-                archetype: Templates.UnitArchetypes.combat,
-                families: [Templates.UnitFamilies.debug],
-                sprite: {
-                    imageSrc: "cheatShip.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: false,
-                buildCost: 0,
-                icon: "img\/icons\/f.png",
-                maxHealth: 1,
-                maxMovePoints: 999,
-                visionRange: 1,
-                detectionRange: -1,
-                attributeLevels: {
-                    attack: 9,
-                    defence: 9,
-                    intelligence: 9,
-                    speed: 9
-                },
-                abilities: [
-                    Templates.Abilities.debugAbility,
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.bombAttack,
-                    Templates.Abilities.boardingHook,
-                    Templates.Abilities.guardColumn,
-                    Templates.Abilities.ranceAttack,
-                    Templates.Abilities.standBy
-                ],
-                passiveSkills: [
-                    Templates.PassiveSkills.autoHeal,
-                    Templates.PassiveSkills.warpJammer,
-                    Templates.PassiveSkills.medic
-                ]
-            };
-            Units.fighterSquadron = {
-                type: "fighterSquadron",
-                displayName: "Fighter Squadron",
-                archetype: Templates.UnitArchetypes.combat,
-                families: [Templates.UnitFamilies.basic],
-                sprite: {
-                    imageSrc: "fighter.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 100,
-                icon: "img\/icons\/fa.png",
-                maxHealth: 0.7,
-                maxMovePoints: 2,
-                visionRange: 1,
-                detectionRange: -1,
-                attributeLevels: {
-                    attack: 0.8,
-                    defence: 0.6,
-                    intelligence: 0.4,
-                    speed: 1
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.closeAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-            Units.bomberSquadron = {
-                type: "bomberSquadron",
-                displayName: "Bomber Squadron",
-                archetype: Templates.UnitArchetypes.combat,
-                families: [Templates.UnitFamilies.basic],
-                sprite: {
-                    imageSrc: "bomber.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 200,
-                icon: "img\/icons\/fb.png",
-                maxHealth: 0.5,
-                maxMovePoints: 1,
-                visionRange: 1,
-                detectionRange: -1,
-                attributeLevels: {
-                    attack: 0.7,
-                    defence: 0.4,
-                    intelligence: 0.5,
-                    speed: 0.8
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.bombAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-            Units.battleCruiser = {
-                type: "battleCruiser",
-                displayName: "Battlecruiser",
-                archetype: Templates.UnitArchetypes.combat,
-                families: [Templates.UnitFamilies.basic],
-                sprite: {
-                    imageSrc: "battleCruiser.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 200,
-                icon: "img\/icons\/bc.png",
-                maxHealth: 1,
-                maxMovePoints: 1,
-                visionRange: 1,
-                detectionRange: -1,
-                attributeLevels: {
-                    attack: 0.8,
-                    defence: 0.8,
-                    intelligence: 0.7,
-                    speed: 0.6
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.wholeRowAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-            Units.scout = {
-                type: "scout",
-                displayName: "Scout",
-                archetype: Templates.UnitArchetypes.utility,
-                families: [Templates.UnitFamilies.basic],
-                sprite: {
-                    imageSrc: "scout.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 200,
-                icon: "img\/icons\/sc.png",
-                maxHealth: 0.6,
-                maxMovePoints: 2,
-                visionRange: 2,
-                detectionRange: 0,
-                attributeLevels: {
-                    attack: 0.5,
-                    defence: 0.5,
-                    intelligence: 0.8,
-                    speed: 0.7
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-            Units.stealthShip = {
-                type: "stealthShip",
-                displayName: "Stealth Ship",
-                archetype: Templates.UnitArchetypes.utility,
-                families: [Templates.UnitFamilies.debug],
-                sprite: {
-                    imageSrc: "scout.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 500,
-                icon: "img\/icons\/sc.png",
-                maxHealth: 0.6,
-                maxMovePoints: 1,
-                visionRange: 1,
-                detectionRange: -1,
-                isStealthy: true,
-                attributeLevels: {
-                    attack: 0.5,
-                    defence: 0.5,
-                    intelligence: 0.8,
-                    speed: 0.7
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-            Units.shieldBoat = {
-                type: "shieldBoat",
-                displayName: "Shield Boat",
-                archetype: Templates.UnitArchetypes.defence,
-                families: [Templates.UnitFamilies.basic],
-                sprite: {
-                    imageSrc: "shieldBoat.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 200,
-                icon: "img\/icons\/sh.png",
-                maxHealth: 0.9,
-                maxMovePoints: 1,
-                visionRange: 1,
-                detectionRange: -1,
-                attributeLevels: {
-                    attack: 0.5,
-                    defence: 0.9,
-                    intelligence: 0.6,
-                    speed: 0.4
-                },
-                abilities: [
-                    Templates.Abilities.guardColumn,
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.standBy
-                ],
-                passiveSkills: [
-                    Templates.PassiveSkills.initialGuard
-                ]
-            };
-            Units.redShip = {
-                type: "redShip",
-                displayName: "Red ship",
-                archetype: Templates.UnitArchetypes.utility,
-                families: [Templates.UnitFamilies.red],
-                sprite: {
-                    imageSrc: "scout.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 200,
-                icon: "img\/icons\/sc.png",
-                maxHealth: 0.6,
-                maxMovePoints: 2,
-                visionRange: 2,
-                detectionRange: 0,
-                attributeLevels: {
-                    attack: 0.5,
-                    defence: 0.5,
-                    intelligence: 0.8,
-                    speed: 0.7
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-            Units.blueShip = {
-                type: "blueShip",
-                displayName: "Blue ship",
-                archetype: Templates.UnitArchetypes.utility,
-                families: [Templates.UnitFamilies.blue],
-                sprite: {
-                    imageSrc: "scout.png",
-                    anchor: { x: 0.5, y: 0.5 }
-                },
-                isSquadron: true,
-                buildCost: 200,
-                icon: "img\/icons\/sc.png",
-                maxHealth: 0.6,
-                maxMovePoints: 2,
-                visionRange: 2,
-                detectionRange: 0,
-                attributeLevels: {
-                    attack: 0.5,
-                    defence: 0.5,
-                    intelligence: 0.8,
-                    speed: 0.7
-                },
-                abilities: [
-                    Templates.Abilities.rangedAttack,
-                    Templates.Abilities.standBy
-                ]
-            };
-        })(Units = Templates.Units || (Templates.Units = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var BattleSFXFunctions;
@@ -8085,6 +7601,121 @@ var Rance;
         return Building;
     })();
     Rance.Building = Building;
+})(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
+/// <reference path="../../src/templateinterfaces/iturnstarteffect.d.ts"/>
+/// <reference path="abilities.ts" />
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        // called for each unit present in star in battleprep constructor
+        var PassiveSkills;
+        (function (PassiveSkills) {
+            PassiveSkills.autoHeal = {
+                type: "autoHeal",
+                displayName: "Auto heal",
+                description: "hiku hiku",
+                afterAbilityUse: [
+                    {
+                        template: Templates.Effects.healSelf,
+                        data: {
+                            flat: 50
+                        },
+                        sfx: {
+                            duration: 1200,
+                            battleOverlay: function (props) {
+                                // cg40400.bmp - cg40429.bmp converted to webm
+                                return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+                            }
+                        },
+                        trigger: function (user, target) {
+                            return user.currentHealth < user.maxHealth;
+                        }
+                    }
+                ]
+            };
+            PassiveSkills.poisoned = {
+                type: "poisoned",
+                displayName: "Poisoned",
+                description: "-10% max health per turn",
+                afterAbilityUse: [
+                    {
+                        template: Templates.Effects.healSelf,
+                        data: {
+                            maxHealthPercentage: -0.1
+                        },
+                        sfx: {
+                            duration: 1200,
+                            userOverlay: function (props) {
+                                var canvas = document.createElement("canvas");
+                                canvas.width = props.width;
+                                canvas.height = props.height;
+                                var ctx = canvas.getContext("2d");
+                                ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                return canvas;
+                            }
+                        }
+                    }
+                ]
+            };
+            PassiveSkills.overdrive = {
+                type: "overdrive",
+                displayName: "Overdrive",
+                description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
+                atBattleStart: [
+                    {
+                        template: Templates.Effects.buffTest
+                    }
+                ]
+            };
+            PassiveSkills.initialGuard = {
+                type: "initialGuard",
+                displayName: "Initial Guard",
+                description: "Adds initial guard",
+                isHidden: true,
+                atBattleStart: [
+                    {
+                        template: Templates.Effects.guardColumn,
+                        data: { perInt: 0, flat: 50 }
+                    }
+                ],
+                inBattlePrep: [
+                    function (user, battlePrep) {
+                        Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
+                    }
+                ]
+            };
+            PassiveSkills.warpJammer = {
+                type: "warpJammer",
+                displayName: "Warp Jammer",
+                description: "Forces an extra unit to defend in neutral territory",
+                inBattlePrep: [
+                    function (user, battlePrep) {
+                        if (user.fleet.player === battlePrep.attacker) {
+                            battlePrep.minDefendersInNeutralTerritory += 1;
+                        }
+                    }
+                ]
+            };
+            PassiveSkills.medic = {
+                type: "medic",
+                displayName: "Medic",
+                description: "Heals all units in same star to full at turn start",
+                atTurnStart: [
+                    function (user) {
+                        var star = user.fleet.location;
+                        var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                        for (var i = 0; i < allFriendlyUnits.length; i++) {
+                            allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
+                        }
+                    }
+                ]
+            };
+        })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/iitemtemplate.d.ts"/>
 /// <reference path="abilities.ts" />
@@ -14187,7 +13818,7 @@ var Rance;
     })();
     Rance.StatusEffect = StatusEffect;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/units.ts" />
+/// <reference path="templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../data/templates/abilities.ts" />
 /// <reference path="battlesfxfunctions/defaultunitscene.ts" />
 /// <reference path="damagetype.ts" />
@@ -16586,9 +16217,9 @@ var Rance;
             var minShips = 2;
             var maxShips = 6;
             setDistancesFromNearestPlayerOwnedStar(stars);
-            var shipTypes = Object.keys(Rance.Templates.Units);
+            var shipTypes = Object.keys(app.moduleData.Templates.Units);
             shipTypes = shipTypes.filter(function (shipType) {
-                return shipType !== "cheatShip" && !Rance.Templates.Units[shipType].isStealthy;
+                return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
             });
             for (var i = 0; i < stars.length; i++) {
                 var star = stars[i];
@@ -16621,6 +16252,45 @@ var Rance;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/range.ts" />
+/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
+/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        var UnitFamilies;
+        (function (UnitFamilies) {
+            UnitFamilies.debug = {
+                type: "debug",
+                debugOnly: true,
+                alwaysAvailable: true,
+                rarity: 0,
+                distributionGroups: []
+            };
+            UnitFamilies.basic = {
+                type: "basic",
+                debugOnly: false,
+                alwaysAvailable: true,
+                rarity: 0,
+                distributionGroups: []
+            };
+            UnitFamilies.red = {
+                type: "red",
+                debugOnly: false,
+                alwaysAvailable: false,
+                rarity: 1,
+                distributionGroups: ["common", "rare"]
+            };
+            UnitFamilies.blue = {
+                type: "blue",
+                debugOnly: false,
+                alwaysAvailable: false,
+                rarity: 1,
+                distributionGroups: ["common", "rare"]
+            };
+        })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/utility.ts" />
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/player.ts" />
@@ -16628,7 +16298,10 @@ var Rance;
 /// <reference path="../../src/mapgen2/region.ts" />
 /// <reference path="../../src/mapgen2/mapgenutils.ts" />
 /// <reference path="../../src/mapgen2/mapgenresult.ts" />
+/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts" />
+/// <reference path="../../src/templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="mapgenoptions.ts" />
+/// <reference path="../templates/unitfamilies.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -20337,6 +20010,7 @@ var Rance;
 (function (Rance) {
     var ModuleData = (function () {
         function ModuleData() {
+            this.subModuleMetaData = [];
             this.Templates = {
                 Abilities: {},
                 AttitudeModifiers: {},
@@ -20375,6 +20049,9 @@ var Rance;
                 }
             }
         };
+        ModuleData.prototype.addSubModule = function (moduleFile) {
+            this.subModuleMetaData.push(moduleFile.metaData);
+        };
         return ModuleData;
     })();
     Rance.ModuleData = ModuleData;
@@ -20388,29 +20065,369 @@ var Rance;
         }
         ModuleLoader.prototype.loadModuleFile = function (moduleFile) {
             moduleFile.constructModule(this.moduleData);
-            this.moduleData.metaData = moduleFile.metaData;
+            this.moduleData.addSubModule(moduleFile);
         };
         return ModuleLoader;
     })();
     Rance.ModuleLoader = ModuleLoader;
 })(Rance || (Rance = {}));
-/// <reference path="../../src/moduledata.ts" />
+/// <reference path="../../src/templateinterfaces/iunitarchetype.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        var UnitArchetypes;
+        (function (UnitArchetypes) {
+            UnitArchetypes.combat = {
+                type: "combat",
+                idealWeightInBattle: 1,
+                idealWeightInFleet: 1,
+                rowScores: {
+                    ROW_FRONT: 1,
+                    ROW_BACK: 0.6
+                }
+            };
+            UnitArchetypes.utility = {
+                type: "utility",
+                idealWeightInBattle: 0.33,
+                idealWeightInFleet: 0.5,
+                rowScores: {
+                    ROW_FRONT: 0.4,
+                    ROW_BACK: 0.6
+                }
+            };
+            UnitArchetypes.defence = {
+                type: "defence",
+                idealWeightInBattle: 0.5,
+                idealWeightInFleet: 0.5,
+                rowScores: {
+                    ROW_FRONT: 1,
+                    ROW_BACK: 0.5
+                },
+                scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
+                    var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
+                    var totalDefenceUnderThreshhold = 0;
+                    var threshhold = 6;
+                    var alreadyHasDefender = false;
+                    for (var i = 0; i < rowUnits.length; i++) {
+                        var unit = rowUnits[i];
+                        if (!unit)
+                            continue;
+                        if (unit.template.archetype.type === "defence") {
+                            return multiplier;
+                        }
+                        totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
+                    }
+                    return multiplier + totalDefenceUnderThreshhold * 0.2;
+                }
+            };
+        })(UnitArchetypes = Templates.UnitArchetypes || (Templates.UnitArchetypes = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
+/// <reference path="../../../data/templates/abilities.ts"/>
+/// <reference path="../../../data/templates/passiveskills.ts" />
+/// <reference path="../../../data/templates/unitfamilies.ts" />
+/// <reference path="../../../data/templates/unitarchetypes.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
     (function (Modules) {
-        Modules.defaultModule = {
-            metaData: {
-                name: "default",
-                version: "6.9",
-                author: "me",
-                description: "default module"
-            },
-            constructModule: function (moduleData) {
-                moduleData.copyAllTemplates(Rance.Templates);
-                return moduleData;
-            }
-        };
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Units;
+                (function (Units) {
+                    Units.cheatShip = {
+                        type: "cheatShip",
+                        displayName: "Debug Ship",
+                        archetype: UnitArchetypes.combat,
+                        families: [UnitFamilies.debug],
+                        sprite: {
+                            imageSrc: "cheatShip.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: false,
+                        buildCost: 0,
+                        icon: "img\/icons\/f.png",
+                        maxHealth: 1,
+                        maxMovePoints: 999,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        attributeLevels: {
+                            attack: 9,
+                            defence: 9,
+                            intelligence: 9,
+                            speed: 9
+                        },
+                        abilities: [
+                            Abilities.debugAbility,
+                            Abilities.rangedAttack,
+                            Abilities.bombAttack,
+                            Abilities.boardingHook,
+                            Abilities.guardColumn,
+                            Abilities.ranceAttack,
+                            Abilities.standBy
+                        ],
+                        passiveSkills: [
+                            PassiveSkills.autoHeal,
+                            PassiveSkills.warpJammer,
+                            PassiveSkills.medic
+                        ]
+                    };
+                    Units.fighterSquadron = {
+                        type: "fighterSquadron",
+                        displayName: "Fighter Squadron",
+                        archetype: UnitArchetypes.combat,
+                        families: [UnitFamilies.basic],
+                        sprite: {
+                            imageSrc: "fighter.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 100,
+                        icon: "img\/icons\/fa.png",
+                        maxHealth: 0.7,
+                        maxMovePoints: 2,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        attributeLevels: {
+                            attack: 0.8,
+                            defence: 0.6,
+                            intelligence: 0.4,
+                            speed: 1
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.closeAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                    Units.bomberSquadron = {
+                        type: "bomberSquadron",
+                        displayName: "Bomber Squadron",
+                        archetype: UnitArchetypes.combat,
+                        families: [UnitFamilies.basic],
+                        sprite: {
+                            imageSrc: "bomber.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 200,
+                        icon: "img\/icons\/fb.png",
+                        maxHealth: 0.5,
+                        maxMovePoints: 1,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        attributeLevels: {
+                            attack: 0.7,
+                            defence: 0.4,
+                            intelligence: 0.5,
+                            speed: 0.8
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.bombAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                    Units.battleCruiser = {
+                        type: "battleCruiser",
+                        displayName: "Battlecruiser",
+                        archetype: UnitArchetypes.combat,
+                        families: [UnitFamilies.basic],
+                        sprite: {
+                            imageSrc: "battleCruiser.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 200,
+                        icon: "img\/icons\/bc.png",
+                        maxHealth: 1,
+                        maxMovePoints: 1,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        attributeLevels: {
+                            attack: 0.8,
+                            defence: 0.8,
+                            intelligence: 0.7,
+                            speed: 0.6
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.wholeRowAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                    Units.scout = {
+                        type: "scout",
+                        displayName: "Scout",
+                        archetype: UnitArchetypes.utility,
+                        families: [UnitFamilies.basic],
+                        sprite: {
+                            imageSrc: "scout.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 200,
+                        icon: "img\/icons\/sc.png",
+                        maxHealth: 0.6,
+                        maxMovePoints: 2,
+                        visionRange: 2,
+                        detectionRange: 0,
+                        attributeLevels: {
+                            attack: 0.5,
+                            defence: 0.5,
+                            intelligence: 0.8,
+                            speed: 0.7
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                    Units.stealthShip = {
+                        type: "stealthShip",
+                        displayName: "Stealth Ship",
+                        archetype: UnitArchetypes.utility,
+                        families: [UnitFamilies.debug],
+                        sprite: {
+                            imageSrc: "scout.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 500,
+                        icon: "img\/icons\/sc.png",
+                        maxHealth: 0.6,
+                        maxMovePoints: 1,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        isStealthy: true,
+                        attributeLevels: {
+                            attack: 0.5,
+                            defence: 0.5,
+                            intelligence: 0.8,
+                            speed: 0.7
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                    Units.shieldBoat = {
+                        type: "shieldBoat",
+                        displayName: "Shield Boat",
+                        archetype: UnitArchetypes.defence,
+                        families: [UnitFamilies.basic],
+                        sprite: {
+                            imageSrc: "shieldBoat.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 200,
+                        icon: "img\/icons\/sh.png",
+                        maxHealth: 0.9,
+                        maxMovePoints: 1,
+                        visionRange: 1,
+                        detectionRange: -1,
+                        attributeLevels: {
+                            attack: 0.5,
+                            defence: 0.9,
+                            intelligence: 0.6,
+                            speed: 0.4
+                        },
+                        abilities: [
+                            Abilities.guardColumn,
+                            Abilities.rangedAttack,
+                            Abilities.standBy
+                        ],
+                        passiveSkills: [
+                            PassiveSkills.initialGuard
+                        ]
+                    };
+                    Units.redShip = {
+                        type: "redShip",
+                        displayName: "Red ship",
+                        archetype: UnitArchetypes.utility,
+                        families: [UnitFamilies.red],
+                        sprite: {
+                            imageSrc: "scout.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 200,
+                        icon: "img\/icons\/sc.png",
+                        maxHealth: 0.6,
+                        maxMovePoints: 2,
+                        visionRange: 2,
+                        detectionRange: 0,
+                        attributeLevels: {
+                            attack: 0.5,
+                            defence: 0.5,
+                            intelligence: 0.8,
+                            speed: 0.7
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                    Units.blueShip = {
+                        type: "blueShip",
+                        displayName: "Blue ship",
+                        archetype: UnitArchetypes.utility,
+                        families: [UnitFamilies.blue],
+                        sprite: {
+                            imageSrc: "scout.png",
+                            anchor: { x: 0.5, y: 0.5 }
+                        },
+                        isSquadron: true,
+                        buildCost: 200,
+                        icon: "img\/icons\/sc.png",
+                        maxHealth: 0.6,
+                        maxMovePoints: 2,
+                        visionRange: 2,
+                        detectionRange: 0,
+                        attributeLevels: {
+                            attack: 0.5,
+                            defence: 0.5,
+                            intelligence: 0.8,
+                            speed: 0.7
+                        },
+                        abilities: [
+                            Abilities.rangedAttack,
+                            Abilities.standBy
+                        ]
+                    };
+                })(Units = Templates.Units || (Templates.Units = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../src/moduledata.ts" />
+/// <reference path="templates/units.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            DefaultModule.moduleFile = {
+                metaData: {
+                    name: "default",
+                    version: "6.9",
+                    author: "me",
+                    description: "default module"
+                },
+                constructModule: function (moduleData) {
+                    moduleData.copyAllTemplates(Rance.Templates);
+                    moduleData.copyAllTemplates(Rance.Modules.DefaultModule.Templates);
+                    return moduleData;
+                }
+            };
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -20610,7 +20627,7 @@ var Rance;
             }
             if (data.buildableUnitTypes) {
                 for (var i = 0; i < data.buildableUnitTypes.length; i++) {
-                    star.buildableUnitTypes.push(Rance.Templates.Units[data.buildableUnitTypes[i]]);
+                    star.buildableUnitTypes.push(app.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
                 }
             }
             return star;
@@ -20754,7 +20771,7 @@ var Rance;
             return fleet;
         };
         GameLoader.prototype.deserializeShip = function (data) {
-            var template = Rance.Templates.Units[data.templateType];
+            var template = app.moduleData.Templates.Units[data.templateType];
             var ship = new Rance.Unit(template, data.id, data);
             this.unitsById[ship.id] = ship;
             return ship;
@@ -20788,8 +20805,8 @@ var Rance;
             if (ability.secondaryEffects) {
                 effects = effects.concat(ability.secondaryEffects);
             }
-            var dummyUser = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.Units));
-            var dummyTarget = new Rance.Unit(Rance.getRandomProperty(Rance.Templates.Units));
+            var dummyUser = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
+            var dummyTarget = new Rance.Unit(Rance.getRandomProperty(app.moduleData.Templates.Units));
             for (var i = 0; i < effects.length; i++) {
                 effects[i].template.effect(dummyUser, dummyTarget, effects[i].data);
                 if (dummyUser.battleStats.guardAmount) {
@@ -20817,8 +20834,8 @@ var Rance;
         }
     }
     function setUnitFamilyAssociatedTemplates() {
-        for (var unitType in Rance.Templates.Units) {
-            var template = Rance.Templates.Units[unitType];
+        for (var unitType in app.moduleData.Templates.Units) {
+            var template = app.moduleData.Templates.Units[unitType];
             for (var i = 0; i < template.families.length; i++) {
                 var family = template.families[i];
                 if (!family.associatedTemplates) {
@@ -20955,15 +20972,15 @@ var Rance;
             this.loader = new Rance.AppLoader(function () {
                 self.makeApp();
             });
-            Rance.setAllDynamicTemplateProperties();
         }
         App.prototype.makeApp = function () {
             var startTime = new Date().getTime();
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
             var moduleLoader = new Rance.ModuleLoader();
-            moduleLoader.loadModuleFile(Rance.Modules.defaultModule);
+            moduleLoader.loadModuleFile(Rance.Modules.DefaultModule.moduleFile);
             this.moduleData = moduleLoader.moduleData;
+            Rance.setAllDynamicTemplateProperties();
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
             this.initUI();

@@ -129,7 +129,7 @@ module Rance
       {
         for (var i = 0; i < data.buildableUnitTypes.length; i++)
         {
-          star.buildableUnitTypes.push(Templates.Units[data.buildableUnitTypes[i]]);
+          star.buildableUnitTypes.push(app.moduleData.Templates.Units[data.buildableUnitTypes[i]]);
         }
       }
 
@@ -339,7 +339,7 @@ module Rance
     }
     deserializeShip(data: any)
     {
-      var template = Templates.Units[data.templateType];
+      var template = app.moduleData.Templates.Units[data.templateType];
 
       var ship = new Unit(template, data.id, data);
 

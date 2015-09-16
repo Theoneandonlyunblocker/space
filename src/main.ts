@@ -79,7 +79,7 @@ module Rance
       loadOptions();
 
       var moduleLoader = new ModuleLoader();
-      moduleLoader.loadModuleFile(Modules.defaultModule);
+      moduleLoader.loadModuleFile(Modules.DefaultModule.moduleFile);
       this.moduleData = moduleLoader.moduleData;
 
       setAllDynamicTemplateProperties();

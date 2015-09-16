@@ -375,10 +375,10 @@ module Rance
 
       setDistancesFromNearestPlayerOwnedStar(stars);
 
-      var shipTypes: string[] = Object.keys(Templates.Units);
+      var shipTypes: string[] = Object.keys(app.moduleData.Templates.Units);
       shipTypes = shipTypes.filter(function(shipType: string)
       {
-        return shipType !== "cheatShip" && !Templates.Units[shipType].isStealthy;
+        return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
       });
 
       for (var i = 0; i < stars.length; i++)

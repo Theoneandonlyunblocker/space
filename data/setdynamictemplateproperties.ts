@@ -21,8 +21,8 @@ module Rance
         effects = effects.concat(ability.secondaryEffects);
       }
 
-      var dummyUser = new Unit(getRandomProperty(Templates.Units));
-      var dummyTarget = new Unit(getRandomProperty(Templates.Units));
+      var dummyUser = new Unit(getRandomProperty(app.moduleData.Templates.Units));
+      var dummyTarget = new Unit(getRandomProperty(app.moduleData.Templates.Units));
 
       for (var i = 0; i < effects.length; i++)
       {
@@ -63,9 +63,9 @@ module Rance
   }
   function setUnitFamilyAssociatedTemplates()
   {
-    for (var unitType in Templates.Units)
+    for (var unitType in app.moduleData.Templates.Units)
     {
-      var template = Templates.Units[unitType];
+      var template = app.moduleData.Templates.Units[unitType];
       for (var i = 0; i < template.families.length; i++)
       {
         var family = template.families[i];

@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/units.ts" />
+/// <reference path="templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../data/templates/abilities.ts" />
 
 /// <reference path="battlesfxfunctions/defaultunitscene.ts" />

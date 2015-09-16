@@ -1,12 +1,17 @@
 /// <reference path="../../src/utility.ts" />
-
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/player.ts" />
 /// <reference path="../../src/star.ts" />
 /// <reference path="../../src/mapgen2/region.ts" />
 /// <reference path="../../src/mapgen2/mapgenutils.ts" />
 /// <reference path="../../src/mapgen2/mapgenresult.ts" />
+
+/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts" />
+/// <reference path="../../src/templateinterfaces/iresourcetemplate.d.ts" />
+
 /// <reference path="mapgenoptions.ts" />
+
+/// <reference path="../templates/unitfamilies.ts" />
 
 module Rance
 {

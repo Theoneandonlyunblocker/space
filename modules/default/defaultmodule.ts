@@ -1,23 +1,29 @@
 /// <reference path="../../src/moduledata.ts" />
 
+/// <reference path="templates/units.ts" />
+
 module Rance
 {
   export module Modules
   {
-    export var defaultModule: IModuleFile =
+    export module DefaultModule
     {
-      metaData:
+      export var moduleFile: IModuleFile =
       {
-        name: "default",
-        version: "6.9",
-        author: "me",
-        description: "default module"
-      },
-      constructModule: function(moduleData: ModuleData)
-      {
-        moduleData.copyAllTemplates(Rance.Templates);
+        metaData:
+        {
+          name: "default",
+          version: "6.9",
+          author: "me",
+          description: "default module"
+        },
+        constructModule: function(moduleData: ModuleData)
+        {
+          moduleData.copyAllTemplates(Rance.Templates);
+          moduleData.copyAllTemplates(Rance.Modules.DefaultModule.Templates);
 
-        return moduleData;
+          return moduleData;
+        }
       }
     }
   }
