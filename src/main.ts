@@ -7,7 +7,10 @@
 /// <reference path="game.ts"/>
 /// <reference path="itemgenerator.ts" />
 /// <reference path="debug.ts"/>
+
 /// <reference path="moduledata.ts"/>
+/// <reference path="moduleloader.ts" />
+/// <reference path="../modules/default/defaultmodule.ts" />
 
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
@@ -54,6 +57,8 @@ module Rance
     };
     itemGenerator: ItemGenerator;
 
+    moduleData: ModuleData;
+
     constructor()
     {
       var self = this;
@@ -65,8 +70,6 @@ module Rance
       {
         self.makeApp();
       });
-
-      setAllDynamicTemplateProperties();
     }
     makeApp()
     {
@@ -74,6 +77,12 @@ module Rance
 
       Options = extendObject(defaultOptions);
       loadOptions();
+
+      var moduleLoader = new ModuleLoader();
+      moduleLoader.loadModuleFile(Modules.defaultModule);
+      this.moduleData = moduleLoader.moduleData;
+
+      setAllDynamicTemplateProperties();
 
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();

@@ -20379,6 +20379,40 @@ var Rance;
     })();
     Rance.ModuleData = ModuleData;
 })(Rance || (Rance = {}));
+/// <reference path="moduledata.ts" />
+var Rance;
+(function (Rance) {
+    var ModuleLoader = (function () {
+        function ModuleLoader() {
+            this.moduleData = new Rance.ModuleData();
+        }
+        ModuleLoader.prototype.loadModuleFile = function (moduleFile) {
+            moduleFile.constructModule(this.moduleData);
+            this.moduleData.metaData = moduleFile.metaData;
+        };
+        return ModuleLoader;
+    })();
+    Rance.ModuleLoader = ModuleLoader;
+})(Rance || (Rance = {}));
+/// <reference path="../../src/moduledata.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        Modules.defaultModule = {
+            metaData: {
+                name: "default",
+                version: "6.9",
+                author: "me",
+                description: "default module"
+            },
+            constructModule: function (moduleData) {
+                moduleData.copyAllTemplates(Rance.Templates);
+                return moduleData;
+            }
+        };
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
@@ -20893,6 +20927,8 @@ var Rance;
 /// <reference path="itemgenerator.ts" />
 /// <reference path="debug.ts"/>
 /// <reference path="moduledata.ts"/>
+/// <reference path="moduleloader.ts" />
+/// <reference path="../modules/default/defaultmodule.ts" />
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
@@ -20925,6 +20961,9 @@ var Rance;
             var startTime = new Date().getTime();
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
+            var moduleLoader = new Rance.ModuleLoader();
+            moduleLoader.loadModuleFile(Rance.Modules.defaultModule);
+            this.moduleData = moduleLoader.moduleData;
             this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
             this.initUI();

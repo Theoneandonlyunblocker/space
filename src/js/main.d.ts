@@ -2895,13 +2895,18 @@ declare module Rance {
             [type: string]: Templates.IUnitTemplate;
         };
     }
+    interface IModuleMetaData {
+        name: string;
+        version: string;
+        author: string;
+        description: string;
+    }
+    interface IModuleFile {
+        metaData: IModuleMetaData;
+        constructModule: (ModuleData: ModuleData) => ModuleData;
+    }
     class ModuleData {
-        metaData: {
-            name: string;
-            version: string;
-            author: string;
-            description: string;
-        };
+        metaData: IModuleMetaData;
         mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
         starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
         mapRendererLayers: IMapRendererLayer[];
@@ -2910,8 +2915,21 @@ declare module Rance {
         mapGenerators: {
             [key: string]: Templates.IMapGenTemplate;
         };
+        constructor();
         copyTemplates(source: any, category: string): void;
         copyAllTemplates(source: any): void;
+    }
+}
+declare module Rance {
+    class ModuleLoader {
+        moduleData: ModuleData;
+        constructor();
+        loadModuleFile(moduleFile: IModuleFile): void;
+    }
+}
+declare module Rance {
+    module Modules {
+        var defaultModule: IModuleFile;
     }
 }
 declare module Rance {
@@ -3041,6 +3059,7 @@ declare module Rance {
             };
         };
         itemGenerator: ItemGenerator;
+        moduleData: ModuleData;
         constructor();
         makeApp(): void;
         destroy(): void;

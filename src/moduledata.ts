@@ -56,15 +56,23 @@ module Rance
     };
   }
 
+  export interface IModuleMetaData
+  {
+    name: string;
+    version: string;
+    author: string;
+    description: string;
+  }
+
+  export interface IModuleFile
+  {
+    metaData: IModuleMetaData;
+    constructModule: (ModuleData: ModuleData) => ModuleData;
+  }
+
   export class ModuleData
   {
-    metaData:
-    {
-      name: string;
-      version: string;
-      author: string;
-      description: string;
-    }
+    metaData: IModuleMetaData
 
     mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
     starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
@@ -93,6 +101,11 @@ module Rance
     {
       [key: string]: Templates.IMapGenTemplate;
     } = {};
+
+    constructor()
+    {
+      
+    }
 
     copyTemplates(source: any, category: string)
     {
