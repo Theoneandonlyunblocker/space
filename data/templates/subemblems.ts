@@ -1,14 +1,8 @@
+/// <reference path="../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
 module Rance
 {
   export module Templates
   {
-    export interface ISubEmblemTemplate
-    {
-      type: string;
-      position: string; //inner, outer, inner-or-both, outer-or-both, both
-      foregroundOnly: boolean;
-      imageSrc: string;
-    }
 
     export module SubEmblems
     {

@@ -1,18 +1,11 @@
+/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
 /// <reference path="units.ts" />
-/// <reference path="idistributable.d.ts" />
+/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 
 module Rance
 {
   export module Templates
   {
-    export interface IUnitFamily extends IDistributable
-    {
-      type: string;
-      debugOnly: boolean;
-      alwaysAvailable: boolean;
-
-      associatedTemplates?: IUnitTemplate[]; //set dynamically
-    }
     export module UnitFamilies
     {
       export var debug: IUnitFamily =

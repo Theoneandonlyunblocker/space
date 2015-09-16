@@ -1,31 +1,13 @@
+/// <reference path="../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
+/// <reference path="../../src/templateinterfaces/iturnstarteffect.d.ts"/>
 /// <reference path="abilities.ts" />
 
 module Rance
 {
   export module Templates
   {
-    export interface ITurnStartEffect
-    {
-      (unit: Unit): void;
-    }
     // called for each unit present in star in battleprep constructor
-    export interface IBattlePrepEffect
-    {
-      (unit: Unit, battlePrep: BattlePrep): void;
-    }
-    export interface IPassiveSkillTemplate
-    {
-      type: string;
-      displayName: string;
-      description: string;
-      isHidden?: boolean;
-
-      atBattleStart?: IAbilityTemplateEffect[];
-      beforeAbilityUse?: IAbilityTemplateEffect[];
-      afterAbilityUse?: IAbilityTemplateEffect[];
-      atTurnStart?: ITurnStartEffect[];
-      inBattlePrep?: IBattlePrepEffect[];
-    }
     export module PassiveSkills
     {
       export var autoHeal: IPassiveSkillTemplate =

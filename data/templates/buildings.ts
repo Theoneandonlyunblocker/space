@@ -1,31 +1,9 @@
+/// <reference path="../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
 module Rance
 {
   export module Templates
   {
-    export interface IBuildingTemplate
-    {
-      type: string;
-      category: string;
-      name: string;
-
-      iconSrc: string;
-      buildCost: number;
-
-      family?: string; // all buildings in same family count towards maxPerType
-      maxPerType: number;
-
-      maxUpgradeLevel: number;
-      upgradeOnly?: boolean;
-      upgradeInto?:
-      {
-        templateType: string;
-        level: number;
-      }[];
-    }
-    export interface IDefenceBuildingTemplate extends IBuildingTemplate
-    {
-      defenderAdvantage: number;
-    }
     export module Buildings
     {
       export var sectorCommand: IDefenceBuildingTemplate =

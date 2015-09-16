@@ -6573,6 +6573,7 @@ var Rance;
     })(Rance.DamageType || (Rance.DamageType = {}));
     var DamageType = Rance.DamageType;
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/ieffecttemplate.d.ts"/>
 /// <reference path="../../src/targeting.ts" />
 /// <reference path="../../src/unit.ts" />
 /// <reference path="../../src/damagetype.ts" />
@@ -7028,6 +7029,8 @@ var Rance;
         BattleSFXFunctions.guard = guard;
     })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../src/battlesfxfunctions/battlesfxutils.ts" />
 /// <reference path="../../src/battlesfxfunctions/rocketattack.ts" />
 /// <reference path="../../src/battlesfxfunctions/guard.ts" />
@@ -7050,6 +7053,8 @@ var Rance;
         })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/iabilitytemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
 /// <reference path="effects.ts" />
 /// <reference path="battlesfx.ts" />
 var Rance;
@@ -7264,11 +7269,15 @@ var Rance;
         })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
+/// <reference path="../../src/templateinterfaces/iturnstarteffect.d.ts"/>
 /// <reference path="abilities.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
     (function (Templates) {
+        // called for each unit present in star in battleprep constructor
         var PassiveSkills;
         (function (PassiveSkills) {
             PassiveSkills.autoHeal = {
@@ -7375,8 +7384,9 @@ var Rance;
         })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
 /// <reference path="units.ts" />
-/// <reference path="idistributable.d.ts" />
+/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7414,9 +7424,10 @@ var Rance;
         })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
-/// <reference path="ispritetemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="unitfamilies.ts" />
 var Rance;
 (function (Rance) {
@@ -7804,7 +7815,8 @@ var Rance;
         BattleSFXFunctions.defaultUnitScene = defaultUnitScene;
     })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
-/// <reference path="idistributable.d.ts" />
+/// <reference path="../../src/templateinterfaces/iresourcetemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7849,6 +7861,8 @@ var Rance;
         })(Resources = Templates.Resources || (Templates.Resources = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
 var Rance;
 (function (Rance) {
     var Templates;
@@ -8018,6 +8032,7 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/iitemtemplate.d.ts"/>
 /// <reference path="abilities.ts" />
 /// <reference path="passiveskills.ts" />
 var Rance;
@@ -9142,6 +9157,7 @@ var Rance;
     })();
     Rance.Fleet = Fleet;
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
 var Rance;
 (function (Rance) {
     var Templates;
@@ -10494,29 +10510,32 @@ var Rance;
             var placedInFront = 0;
             var placedInBack = 0;
             var totalPlaced = 0;
-            var unitsPlacedByArchetype = {
-                combat: 0,
-                defence: 0,
-                magic: 0,
-                support: 0,
-                utility: 0
-            };
+            var unitsPlacedByArchetype = (_a = {},
+                _a[0 /* combat */] = 0,
+                _a[1 /* defence */] = 0,
+                // [Templates.UnitTemplateArchetype.magic]:   0,
+                // [Templates.UnitTemplateArchetype.support]: 0,
+                _a[2 /* utility */] = 0,
+                _a
+            );
             // these are overridden if we run out of units or if alternative
             // units have significantly higher strength
-            var maxUnitsPerArchetype = {
-                combat: Math.ceil(MAX_UNITS_PER_SIDE / 1),
-                defence: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-                magic: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-                support: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
-                utility: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
-            };
-            var preferredColumnForArchetype = {
-                combat: "front",
-                defence: "front",
-                magic: "back",
-                support: "back",
-                utility: "back"
-            };
+            var maxUnitsPerArchetype = (_b = {},
+                _b[0 /* combat */] = Math.ceil(MAX_UNITS_PER_SIDE / 1),
+                _b[1 /* defence */] = Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+                // [Templates.UnitTemplateArchetype.magic]:   Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+                // [Templates.UnitTemplateArchetype.support]: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
+                _b[2 /* utility */] = Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
+                _b
+            );
+            var preferredColumnForArchetype = (_c = {},
+                _c[0 /* combat */] = "front",
+                _c[1 /* defence */] = "front",
+                // [Templates.UnitTemplateArchetype.magic]: "back",
+                // [Templates.UnitTemplateArchetype.support]: "back",
+                _c[2 /* utility */] = "back",
+                _c
+            );
             var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
                 var score = unit.getStrengthEvaluation();
                 if (unit.template.archetype === 1 /* defence */ && row === "front") {
@@ -10584,6 +10603,7 @@ var Rance;
                 unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
             }
             return formation;
+            var _a, _b, _c;
         };
         // Human formation stuff
         BattlePrep.prototype.getUnitPosition = function (unit) {
@@ -10683,6 +10703,7 @@ var Rance;
     })();
     Rance.BattlePrep = BattlePrep;
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
 var Rance;
 (function (Rance) {
     var Templates;
@@ -14102,6 +14123,9 @@ var Rance;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
+/// <reference path="../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
+/// <reference path="../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
 var Rance;
 (function (Rance) {
     var Templates;
@@ -20320,6 +20344,7 @@ var Rance;
                 UnitFamilies: {},
                 Units: {}
             };
+            this.mapGenerators = {};
         }
         ModuleData.prototype.copyTemplates = function (source, category) {
             if (!this.Templates[category]) {

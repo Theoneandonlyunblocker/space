@@ -1,27 +1,10 @@
+/// <reference path="../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
+/// <reference path="../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
+/// <reference path="../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
 module Rance
 {
   export module Templates
   {
-    export interface IStatusEffectAttributeAdjustment
-    {
-      flat?: number;
-      multiplier?: number;
-    }
-    export interface IStatusEffectAttributes
-    {
-      attack?: IStatusEffectAttributeAdjustment;
-      defence?: IStatusEffectAttributeAdjustment;
-      intelligence?: IStatusEffectAttributeAdjustment;
-      speed?: IStatusEffectAttributeAdjustment;
-    }
-    export interface IStatusEffectTemplate
-    {
-      type: string;
-      displayName: string;
-
-      attributes?: IStatusEffectAttributes;
-      passiveSkills?: IPassiveSkillTemplate[];
-    }
     export module StatusEffects
     {
       export var test: IStatusEffectTemplate =

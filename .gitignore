@@ -13,3 +13,4 @@ sr battle animation frame data.txt
 *.sls
 img/battleEffects/*.webm
 img/battleEffects/rance*
+riptemplateinterfaces.py

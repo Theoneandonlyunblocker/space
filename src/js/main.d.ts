@@ -1,12 +1,31 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
-/// <reference path="../../data/templates/idistributable.d.ts" />
-/// <reference path="../../data/templates/ispritetemplate.d.ts" />
+/// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
+/// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
+/// <reference path="../templateinterfaces/sfxparams.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="../templateinterfaces/ipassiveskilltemplate.d.ts" />
+/// <reference path="../templateinterfaces/ibattleprepeffect.d.ts" />
+/// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
+/// <reference path="../templateinterfaces/iunitfamily.d.ts" />
+/// <reference path="../templateinterfaces/idistributable.d.ts" />
+/// <reference path="../templateinterfaces/iunittemplate.d.ts" />
+/// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
+/// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
+/// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
+/// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffectattributeadjustment.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
@@ -526,13 +545,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IEffectTemplate {
-            name: string;
-            targetFleets: string;
-            targetingFunction: TargetingFunction;
-            targetRange: string;
-            effect: (user: Unit, target: Unit, data?: any) => void;
-        }
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
             var dummyTargetAll: IEffectTemplate;
@@ -568,22 +580,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface SFXParams {
-            user: Unit;
-            target: Unit;
-            width: number;
-            height: number;
-            duration: number;
-            facingRight: boolean;
-            onLoaded: (canvas: HTMLCanvasElement) => void;
-        }
-        interface IBattleSFXTemplate {
-            duration: number;
-            delay?: number;
-            userSprite?: (props: SFXParams) => HTMLCanvasElement;
-            userOverlay?: (props: SFXParams) => HTMLCanvasElement;
-            battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
-        }
         module BattleSFX {
             var rocketAttack: IBattleSFXTemplate;
             var guard: IBattleSFXTemplate;
@@ -592,34 +588,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IAbilityTemplateEffect {
-            template: IEffectTemplate;
-            trigger?: (user: Unit, target: Unit) => boolean;
-            data?: any;
-            attachedEffects?: IAbilityTemplateEffect[];
-            sfx?: IBattleSFXTemplate;
-        }
-        interface IAbilityTemplate {
-            type: string;
-            displayName: string;
-            description: string;
-            moveDelay: number;
-            preparation?: {
-                turnsToPrep: number;
-                prepDelay: number;
-                interruptsNeeded: number;
-            };
-            actionsUse: number;
-            bypassesGuard?: boolean;
-            mainEffect: IAbilityTemplateEffect;
-            secondaryEffects?: IAbilityTemplateEffect[];
-            beforeUse?: IAbilityTemplateEffect[];
-            afterUse?: IAbilityTemplateEffect[];
-            AIEvaluationPriority?: number;
-            AIScoreAdjust?: number;
-            disableInAIBattles?: boolean;
-            addsGuard?: boolean;
-        }
         module Abilities {
             var dummyTargetColumn: IAbilityTemplate;
             var dummyTargetAll: IAbilityTemplate;
@@ -637,23 +605,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface ITurnStartEffect {
-            (unit: Unit): void;
-        }
-        interface IBattlePrepEffect {
-            (unit: Unit, battlePrep: BattlePrep): void;
-        }
-        interface IPassiveSkillTemplate {
-            type: string;
-            displayName: string;
-            description: string;
-            isHidden?: boolean;
-            atBattleStart?: IAbilityTemplateEffect[];
-            beforeAbilityUse?: IAbilityTemplateEffect[];
-            afterAbilityUse?: IAbilityTemplateEffect[];
-            atTurnStart?: ITurnStartEffect[];
-            inBattlePrep?: IBattlePrepEffect[];
-        }
         module PassiveSkills {
             var autoHeal: IPassiveSkillTemplate;
             var poisoned: IPassiveSkillTemplate;
@@ -666,12 +617,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IUnitFamily extends IDistributable {
-            type: string;
-            debugOnly: boolean;
-            alwaysAvailable: boolean;
-            associatedTemplates?: IUnitTemplate[];
-        }
         module UnitFamilies {
             var debug: IUnitFamily;
             var basic: IUnitFamily;
@@ -686,29 +631,6 @@ declare module Rance {
             combat = 0,
             defence = 1,
             utility = 2,
-        }
-        interface IUnitTemplate {
-            type: string;
-            displayName: string;
-            sprite: ISpriteTemplate;
-            isSquadron: boolean;
-            buildCost: number;
-            icon: string;
-            maxHealth: number;
-            maxMovePoints: number;
-            archetype: UnitTemplateArchetype;
-            families: IUnitFamily[];
-            visionRange: number;
-            detectionRange: number;
-            isStealthy?: boolean;
-            attributeLevels: {
-                attack: number;
-                defence: number;
-                intelligence: number;
-                speed: number;
-            };
-            abilities: IAbilityTemplate[];
-            passiveSkills?: IPassiveSkillTemplate[];
         }
         module Units {
             var cheatShip: IUnitTemplate;
@@ -751,11 +673,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IResourceTemplate extends IDistributable {
-            type: string;
-            displayName: string;
-            icon: string;
-        }
         module Resources {
             var testResource1: IResourceTemplate;
             var testResource2: IResourceTemplate;
@@ -773,24 +690,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IBuildingTemplate {
-            type: string;
-            category: string;
-            name: string;
-            iconSrc: string;
-            buildCost: number;
-            family?: string;
-            maxPerType: number;
-            maxUpgradeLevel: number;
-            upgradeOnly?: boolean;
-            upgradeInto?: {
-                templateType: string;
-                level: number;
-            }[];
-        }
-        interface IDefenceBuildingTemplate extends IBuildingTemplate {
-            defenderAdvantage: number;
-        }
         module Buildings {
             var sectorCommand: IDefenceBuildingTemplate;
             var sectorCommand1: IDefenceBuildingTemplate;
@@ -833,24 +732,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IItemTemplate {
-            type: string;
-            displayName: string;
-            description?: string;
-            icon: string;
-            techLevel: number;
-            slot: string;
-            cost: number;
-            ability?: IAbilityTemplate;
-            passiveSkill?: IPassiveSkillTemplate;
-            attributes?: {
-                maxActionPoints?: number;
-                attack?: number;
-                defence?: number;
-                intelligence?: number;
-                speed?: number;
-            };
-        }
         module Items {
             var bombLauncher1: IItemTemplate;
             var bombLauncher2: IItemTemplate;
@@ -1070,12 +951,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface ISubEmblemTemplate {
-            type: string;
-            position: string;
-            foregroundOnly: boolean;
-            imageSrc: string;
-        }
         module SubEmblems {
             var emblem0: {
                 type: string;
@@ -1477,19 +1352,6 @@ declare module Rance {
             geographic = 0,
             history = 1,
             current = 2,
-        }
-        interface IAttitudeModifierTemplate {
-            type: string;
-            displayName: string;
-            family: AttitudeModifierFamily;
-            duration: number;
-            canBeOverriddenBy?: IAttitudeModifierTemplate[];
-            triggeredOnly?: boolean;
-            startCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
-            endCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
-            constantEffect?: number;
-            getEffectFromEvaluation?: (evaluation: IDiplomacyEvaluation) => number;
-            canOverride?: IAttitudeModifierTemplate[];
         }
         module AttitudeModifiers {
             var neighborStars: IAttitudeModifierTemplate;
@@ -2185,22 +2047,6 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        interface IStatusEffectAttributeAdjustment {
-            flat?: number;
-            multiplier?: number;
-        }
-        interface IStatusEffectAttributes {
-            attack?: IStatusEffectAttributeAdjustment;
-            defence?: IStatusEffectAttributeAdjustment;
-            intelligence?: IStatusEffectAttributeAdjustment;
-            speed?: IStatusEffectAttributeAdjustment;
-        }
-        interface IStatusEffectTemplate {
-            type: string;
-            displayName: string;
-            attributes?: IStatusEffectAttributes;
-            passiveSkills?: IPassiveSkillTemplate[];
-        }
         module StatusEffects {
             var test: IStatusEffectTemplate;
         }
@@ -3056,6 +2902,9 @@ declare module Rance {
         mapRendererLayers: IMapRendererLayer[];
         mapRendererMapModes: IMapRendererMapMode[];
         Templates: ITemplates;
+        mapGenerators: {
+            [key: string]: Templates.IMapGenTemplate;
+        };
         copyTemplates(source: any, category: string): void;
         copyAllTemplates(source: any): void;
     }

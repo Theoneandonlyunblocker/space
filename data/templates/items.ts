@@ -1,3 +1,4 @@
+/// <reference path="../../src/templateinterfaces/iitemtemplate.d.ts"/>
 /// <reference path="abilities.ts" />
 /// <reference path="passiveskills.ts" />
 
@@ -5,31 +6,6 @@ module Rance
 {
   export module Templates
   {
-    export interface IItemTemplate
-    {
-      type: string;
-      displayName: string;
-      description?: string;
-      icon: string;
-
-      techLevel: number;
-
-      slot: string; // low, mid, high
-
-      cost: number;
-
-      ability?: IAbilityTemplate;
-      passiveSkill?: IPassiveSkillTemplate;
-      attributes?:
-      {
-        maxActionPoints?: number;
-        attack?: number;
-        defence?: number;
-        intelligence?: number;
-        speed?: number;
-      };
-
-    }
     export module Items
     {
       export var bombLauncher1: IItemTemplate =

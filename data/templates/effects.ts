@@ -1,3 +1,4 @@
+/// <reference path="../../src/templateinterfaces/ieffecttemplate.d.ts"/>
 /// <reference path="../../src/targeting.ts" />
 /// <reference path="../../src/unit.ts" />
 /// <reference path="../../src/damagetype.ts" />
@@ -9,15 +10,6 @@ module Rance
 {
   export module Templates
   {
-    export interface IEffectTemplate
-    {
-      name: string;
-
-      targetFleets: string; // ally, enemy, all
-      targetingFunction: TargetingFunction;
-      targetRange: string; // self, close, all
-      effect: (user: Unit, target: Unit, data?: any) => void;
-    }
 
     export module Effects
     {

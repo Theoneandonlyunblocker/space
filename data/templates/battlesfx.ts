@@ -1,3 +1,5 @@
+/// <reference path="../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../src/battlesfxfunctions/battlesfxutils.ts" />
 /// <reference path="../../src/battlesfxfunctions/rocketattack.ts" />
 /// <reference path="../../src/battlesfxfunctions/guard.ts" />
@@ -6,26 +8,6 @@ module Rance
 {
   export module Templates
   {
-    export interface SFXParams
-    {
-      user: Unit;
-      target: Unit;
-      width: number;
-      height: number;
-      duration: number; // in milliseconds
-      facingRight: boolean;
-      onLoaded: (canvas: HTMLCanvasElement) => void;
-    }
-    export interface IBattleSFXTemplate
-    {
-      duration: number;
-      delay?: number; // 0.0 - 1.0; how far in the sfx the effect function should be called
-      userSprite?: (props: SFXParams) => HTMLCanvasElement;
-      userOverlay?: (props: SFXParams) => HTMLCanvasElement;
-      //emptySpaceOverlay?: (props: SFXParams) => HTMLCanvasElement;
-      //enemyOverlay?: (props: SFXParams) => HTMLCanvasElement;
-      battleOverlay?: (props: SFXParams) => HTMLCanvasElement;
-    }
     export module BattleSFX
     {
       export var rocketAttack: IBattleSFXTemplate =

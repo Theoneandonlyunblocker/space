@@ -1,15 +1,10 @@
-/// <reference path="idistributable.d.ts" />
+/// <reference path="../../src/templateinterfaces/iresourcetemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 
 module Rance
 {
   export module Templates
   {
-    export interface IResourceTemplate extends IDistributable
-    {
-      type: string;
-      displayName: string;
-      icon: string;
-    }
     export module Resources
     {
       export var testResource1: IResourceTemplate =

@@ -91,7 +91,7 @@ module Rance
 
     mapGenerators:
     {
-      [key: string]: IMapGenTemplate;
+      [key: string]: Templates.IMapGenTemplate;
     } = {};
 
     copyTemplates(source: any, category: string)
