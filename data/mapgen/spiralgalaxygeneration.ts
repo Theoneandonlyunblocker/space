@@ -11,8 +11,6 @@
 
 /// <reference path="mapgenoptions.ts" />
 
-/// <reference path="../templates/unitfamilies.ts" />
-
 module Rance
 {
   export module Templates

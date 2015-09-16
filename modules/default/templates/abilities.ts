@@ -1,3 +1,5 @@
+/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts"/>
+/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
 /// <reference path="effects.ts" />
@@ -14,7 +16,7 @@ module Rance
       {
         export module Abilities
         {
-          export var rangedAttack: IAbilityTemplate =
+          export var rangedAttack: Rance.Templates.IAbilityTemplate =
           {
             type: "rangedAttack",
             displayName: "Ranged Attack",
@@ -42,7 +44,7 @@ module Rance
               ]
             }
           }
-          export var closeAttack: IAbilityTemplate =
+          export var closeAttack: Rance.Templates.IAbilityTemplate =
           {
             type: "closeAttack",
             displayName: "Close Attack",
@@ -55,7 +57,7 @@ module Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var wholeRowAttack: IAbilityTemplate =
+          export var wholeRowAttack: Rance.Templates.IAbilityTemplate =
           {
             type: "wholeRowAttack",
             displayName: "Row Attack",
@@ -70,7 +72,7 @@ module Rance
             }
           }
 
-          export var bombAttack: IAbilityTemplate =
+          export var bombAttack: Rance.Templates.IAbilityTemplate =
           {
             type: "bombAttack",
             displayName: "Bomb Attack",
@@ -83,7 +85,7 @@ module Rance
               sfx: BattleSFX.rocketAttack
             }
           }
-          export var guardColumn: IAbilityTemplate =
+          export var guardColumn: Rance.Templates.IAbilityTemplate =
           {
             type: "guardColumn",
             displayName: "Guard Column",
@@ -100,7 +102,7 @@ module Rance
               }
             }
           }
-          export var boardingHook: IAbilityTemplate =
+          export var boardingHook: Rance.Templates.IAbilityTemplate =
           {
             type: "boardingHook",
             displayName: "Boarding Hook",
@@ -136,7 +138,7 @@ module Rance
             }
           }
 
-          export var debugAbility: IAbilityTemplate =
+          export var debugAbility: Rance.Templates.IAbilityTemplate =
           {
             type: "debugAbility",
             displayName: "Debug Ability",
@@ -154,7 +156,7 @@ module Rance
             }
           }
 
-          export var ranceAttack: IAbilityTemplate =
+          export var ranceAttack: Rance.Templates.IAbilityTemplate =
           {
             type: "ranceAttack",
             displayName: "Rance attack",
@@ -167,12 +169,12 @@ module Rance
               sfx:
               {
                 duration: 1200,
-                userSprite: function(props: SFXParams)
+                userSprite: function(props: Rance.Templates.SFXParams)
                 {
                   // cg13600.bmp
                   return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
                 },
-                battleOverlay: function(props: SFXParams)
+                battleOverlay: function(props: Rance.Templates.SFXParams)
                 {
                   // cg40500.bmp - cg40529.bmp converted to webm
                   return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
@@ -206,12 +208,12 @@ module Rance
                 sfx:
                 {
                   duration: 1500,
-                  userSprite: function(props: SFXParams)
+                  userSprite: function(props: Rance.Templates.SFXParams)
                   {
                     // cg13300.bmp
                     return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
                   },
-                  battleOverlay: function(props: SFXParams)
+                  battleOverlay: function(props: Rance.Templates.SFXParams)
                   {
                     // cg40000.bmp - cg40029.bmp converted to webm
                     return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
@@ -221,7 +223,7 @@ module Rance
             ]
           }
 
-          export var standBy: IAbilityTemplate =
+          export var standBy: Rance.Templates.IAbilityTemplate =
           {
             type: "standBy",
             displayName: "Standby",

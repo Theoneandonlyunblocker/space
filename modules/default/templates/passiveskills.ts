@@ -1,6 +1,6 @@
-/// <reference path="../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
-/// <reference path="../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
-/// <reference path="../../src/templateinterfaces/iturnstarteffect.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iturnstarteffect.d.ts"/>
 /// <reference path="abilities.ts" />
 
 module Rance
@@ -30,7 +30,7 @@ module Rance
                 sfx:
                 {
                   duration: 1200,
-                  battleOverlay: function(props: Templates.SFXParams)
+                  battleOverlay: function(props: Rance.Templates.SFXParams)
                   {
                     // cg40400.bmp - cg40429.bmp converted to webm
                     return BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
@@ -59,7 +59,7 @@ module Rance
                 sfx:
                 {
                   duration: 1200,
-                  userOverlay: function(props: Templates.SFXParams)
+                  userOverlay: function(props: Rance.Templates.SFXParams)
                   {
                     var canvas = <HTMLCanvasElement> document.createElement("canvas");
                     canvas.width = props.width;

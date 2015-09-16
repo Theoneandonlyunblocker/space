@@ -1,4 +1,4 @@
-/// <reference path="../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
 module Rance
 {
   export module Modules

@@ -8,6 +8,8 @@
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
 /// <reference path="../templateinterfaces/ipassiveskilltemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibattleprepeffect.d.ts" />
 /// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
@@ -15,7 +17,6 @@
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
@@ -25,7 +26,6 @@
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
@@ -571,21 +571,23 @@ declare module Rance {
     var targetNeighbors: TargetingFunction;
 }
 declare module Rance {
-    module Templates {
-        module Effects {
-            var dummyTargetColumn: IEffectTemplate;
-            var dummyTargetAll: IEffectTemplate;
-            var singleTargetDamage: IEffectTemplate;
-            var closeAttack: IEffectTemplate;
-            var wholeRowAttack: IEffectTemplate;
-            var bombAttack: IEffectTemplate;
-            var guardColumn: IEffectTemplate;
-            var receiveCounterAttack: IEffectTemplate;
-            var increaseCaptureChance: IEffectTemplate;
-            var buffTest: IEffectTemplate;
-            var healTarget: IEffectTemplate;
-            var healSelf: IEffectTemplate;
-            var standBy: IEffectTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Effects {
+                    var singleTargetDamage: Rance.Templates.IEffectTemplate;
+                    var closeAttack: Rance.Templates.IEffectTemplate;
+                    var wholeRowAttack: Rance.Templates.IEffectTemplate;
+                    var bombAttack: Rance.Templates.IEffectTemplate;
+                    var guardColumn: Rance.Templates.IEffectTemplate;
+                    var receiveCounterAttack: Rance.Templates.IEffectTemplate;
+                    var increaseCaptureChance: Rance.Templates.IEffectTemplate;
+                    var buffTest: Rance.Templates.IEffectTemplate;
+                    var healTarget: Rance.Templates.IEffectTemplate;
+                    var healSelf: Rance.Templates.IEffectTemplate;
+                    var standBy: Rance.Templates.IEffectTemplate;
+                }
+            }
         }
     }
 }
@@ -606,21 +608,29 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        module BattleSFX {
-            var rocketAttack: IBattleSFXTemplate;
-            var guard: IBattleSFXTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module BattleSFX {
+                    var rocketAttack: Rance.Templates.IBattleSFXTemplate;
+                    var guard: Rance.Templates.IBattleSFXTemplate;
+                }
+            }
         }
     }
 }
 declare module Rance {
-    module Templates {
-        module Resources {
-            var testResource1: IResourceTemplate;
-            var testResource2: IResourceTemplate;
-            var testResource3: IResourceTemplate;
-            var testResource4: IResourceTemplate;
-            var testResource5: IResourceTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Resources {
+                    var testResource1: Rance.Templates.IResourceTemplate;
+                    var testResource2: Rance.Templates.IResourceTemplate;
+                    var testResource3: Rance.Templates.IResourceTemplate;
+                    var testResource4: Rance.Templates.IResourceTemplate;
+                    var testResource5: Rance.Templates.IResourceTemplate;
+                }
+            }
         }
     }
 }
@@ -631,16 +641,20 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        module Buildings {
-            var sectorCommand: IDefenceBuildingTemplate;
-            var sectorCommand1: IDefenceBuildingTemplate;
-            var sectorCommand2: IDefenceBuildingTemplate;
-            var starBase: IDefenceBuildingTemplate;
-            var commercialPort: IBuildingTemplate;
-            var deepSpaceRadar: IBuildingTemplate;
-            var itemManufactory: IBuildingTemplate;
-            var resourceMine: IBuildingTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Buildings {
+                    var sectorCommand: Rance.Templates.IDefenceBuildingTemplate;
+                    var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate;
+                    var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate;
+                    var starBase: Rance.Templates.IDefenceBuildingTemplate;
+                    var commercialPort: Rance.Templates.IBuildingTemplate;
+                    var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
+                    var itemManufactory: Rance.Templates.IBuildingTemplate;
+                    var resourceMine: Rance.Templates.IBuildingTemplate;
+                }
+            }
         }
     }
 }
@@ -673,29 +687,56 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        module PassiveSkills {
-            var autoHeal: IPassiveSkillTemplate;
-            var poisoned: IPassiveSkillTemplate;
-            var overdrive: IPassiveSkillTemplate;
-            var initialGuard: IPassiveSkillTemplate;
-            var warpJammer: IPassiveSkillTemplate;
-            var medic: IPassiveSkillTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Abilities {
+                    var rangedAttack: Rance.Templates.IAbilityTemplate;
+                    var closeAttack: Rance.Templates.IAbilityTemplate;
+                    var wholeRowAttack: Rance.Templates.IAbilityTemplate;
+                    var bombAttack: Rance.Templates.IAbilityTemplate;
+                    var guardColumn: Rance.Templates.IAbilityTemplate;
+                    var boardingHook: Rance.Templates.IAbilityTemplate;
+                    var debugAbility: Rance.Templates.IAbilityTemplate;
+                    var ranceAttack: Rance.Templates.IAbilityTemplate;
+                    var standBy: Rance.Templates.IAbilityTemplate;
+                }
+            }
         }
     }
 }
 declare module Rance {
-    module Templates {
-        module Items {
-            var bombLauncher1: IItemTemplate;
-            var bombLauncher2: IItemTemplate;
-            var bombLauncher3: IItemTemplate;
-            var afterBurner1: IItemTemplate;
-            var afterBurner2: IItemTemplate;
-            var afterBurner3: IItemTemplate;
-            var shieldPlating1: IItemTemplate;
-            var shieldPlating2: IItemTemplate;
-            var shieldPlating3: IItemTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module PassiveSkills {
+                    var autoHeal: Rance.Templates.IPassiveSkillTemplate;
+                    var poisoned: Rance.Templates.IPassiveSkillTemplate;
+                    var overdrive: Rance.Templates.IPassiveSkillTemplate;
+                    var initialGuard: Rance.Templates.IPassiveSkillTemplate;
+                    var warpJammer: Rance.Templates.IPassiveSkillTemplate;
+                    var medic: Rance.Templates.IPassiveSkillTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Items {
+                    var bombLauncher1: Rance.Templates.IItemTemplate;
+                    var bombLauncher2: Rance.Templates.IItemTemplate;
+                    var bombLauncher3: Rance.Templates.IItemTemplate;
+                    var afterBurner1: Rance.Templates.IItemTemplate;
+                    var afterBurner2: Rance.Templates.IItemTemplate;
+                    var afterBurner3: Rance.Templates.IItemTemplate;
+                    var shieldPlating1: Rance.Templates.IItemTemplate;
+                    var shieldPlating2: Rance.Templates.IItemTemplate;
+                    var shieldPlating3: Rance.Templates.IItemTemplate;
+                }
+            }
         }
     }
 }
@@ -904,182 +945,41 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        module SubEmblems {
-            var emblem0: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem33: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem34: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem35: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem36: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem37: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem38: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem39: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem40: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem41: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem42: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem43: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem44: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem45: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem46: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem47: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem48: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem49: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem50: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem51: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem52: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem53: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem54: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem55: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem56: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem57: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem58: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem59: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
-            var emblem61: {
-                type: string;
-                position: string;
-                foregroundOnly: boolean;
-                imageSrc: string;
-            };
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module SubEmblems {
+                    var emblem0: Rance.Templates.ISubEmblemTemplate;
+                    var emblem33: Rance.Templates.ISubEmblemTemplate;
+                    var emblem34: Rance.Templates.ISubEmblemTemplate;
+                    var emblem35: Rance.Templates.ISubEmblemTemplate;
+                    var emblem36: Rance.Templates.ISubEmblemTemplate;
+                    var emblem37: Rance.Templates.ISubEmblemTemplate;
+                    var emblem38: Rance.Templates.ISubEmblemTemplate;
+                    var emblem39: Rance.Templates.ISubEmblemTemplate;
+                    var emblem40: Rance.Templates.ISubEmblemTemplate;
+                    var emblem41: Rance.Templates.ISubEmblemTemplate;
+                    var emblem42: Rance.Templates.ISubEmblemTemplate;
+                    var emblem43: Rance.Templates.ISubEmblemTemplate;
+                    var emblem44: Rance.Templates.ISubEmblemTemplate;
+                    var emblem45: Rance.Templates.ISubEmblemTemplate;
+                    var emblem46: Rance.Templates.ISubEmblemTemplate;
+                    var emblem47: Rance.Templates.ISubEmblemTemplate;
+                    var emblem48: Rance.Templates.ISubEmblemTemplate;
+                    var emblem49: Rance.Templates.ISubEmblemTemplate;
+                    var emblem50: Rance.Templates.ISubEmblemTemplate;
+                    var emblem51: Rance.Templates.ISubEmblemTemplate;
+                    var emblem52: Rance.Templates.ISubEmblemTemplate;
+                    var emblem53: Rance.Templates.ISubEmblemTemplate;
+                    var emblem54: Rance.Templates.ISubEmblemTemplate;
+                    var emblem55: Rance.Templates.ISubEmblemTemplate;
+                    var emblem56: Rance.Templates.ISubEmblemTemplate;
+                    var emblem57: Rance.Templates.ISubEmblemTemplate;
+                    var emblem58: Rance.Templates.ISubEmblemTemplate;
+                    var emblem59: Rance.Templates.ISubEmblemTemplate;
+                    var emblem61: Rance.Templates.ISubEmblemTemplate;
+                }
+            }
         }
     }
 }
@@ -1304,16 +1204,20 @@ declare module Rance {
         neighborStars: number;
         opinion: number;
     }
-    module Templates {
-        enum AttitudeModifierFamily {
-            geographic = 0,
-            history = 1,
-            current = 2,
-        }
-        module AttitudeModifiers {
-            var neighborStars: IAttitudeModifierTemplate;
-            var atWar: IAttitudeModifierTemplate;
-            var declaredWar: IAttitudeModifierTemplate;
+    enum AttitudeModifierFamily {
+        geographic = 0,
+        history = 1,
+        current = 2,
+    }
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module AttitudeModifiers {
+                    var neighborStars: Rance.Templates.IAttitudeModifierTemplate;
+                    var atWar: Rance.Templates.IAttitudeModifierTemplate;
+                    var declaredWar: Rance.Templates.IAttitudeModifierTemplate;
+                }
+            }
         }
     }
 }
@@ -1386,11 +1290,6 @@ declare module Rance {
         unitCompositionPreference: IArchetypeValues;
     }
     function makeRandomPersonality(): IPersonality;
-    module Templates {
-        module Personalities {
-            var testPersonality1: IPersonality;
-        }
-    }
 }
 declare module Rance {
     class MapVoronoiInfo {
@@ -2000,9 +1899,13 @@ declare module Rance {
     };
 }
 declare module Rance {
-    module Templates {
-        module StatusEffects {
-            var test: IStatusEffectTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module StatusEffects {
+                    var test: Rance.Templates.IStatusEffectTemplate;
+                }
+            }
         }
     }
 }
@@ -2282,16 +2185,6 @@ declare module Rance {
                     [optionName: string]: number;
                 };
             }
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module UnitFamilies {
-            var debug: IUnitFamily;
-            var basic: IUnitFamily;
-            var red: IUnitFamily;
-            var blue: IUnitFamily;
         }
     }
 }
@@ -2847,6 +2740,9 @@ declare module Rance {
         SubEmblems: {
             [type: string]: Templates.ISubEmblemTemplate;
         };
+        UnitArchetypes: {
+            [type: string]: Templates.IUnitArchetype;
+        };
         UnitFamilies: {
             [type: string]: Templates.IUnitFamily;
         };
@@ -2889,28 +2785,29 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Templates {
-        module Abilities {
-            var dummyTargetColumn: IAbilityTemplate;
-            var dummyTargetAll: IAbilityTemplate;
-            var rangedAttack: IAbilityTemplate;
-            var closeAttack: IAbilityTemplate;
-            var wholeRowAttack: IAbilityTemplate;
-            var bombAttack: IAbilityTemplate;
-            var guardColumn: IAbilityTemplate;
-            var boardingHook: IAbilityTemplate;
-            var debugAbility: IAbilityTemplate;
-            var ranceAttack: IAbilityTemplate;
-            var standBy: IAbilityTemplate;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module UnitFamilies {
+                    var debug: Rance.Templates.IUnitFamily;
+                    var basic: Rance.Templates.IUnitFamily;
+                    var red: Rance.Templates.IUnitFamily;
+                    var blue: Rance.Templates.IUnitFamily;
+                }
+            }
         }
     }
 }
 declare module Rance {
-    module Templates {
-        module UnitArchetypes {
-            var combat: IUnitArchetype;
-            var utility: IUnitArchetype;
-            var defence: IUnitArchetype;
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module UnitArchetypes {
+                    var combat: Rance.Templates.IUnitArchetype;
+                    var utility: Rance.Templates.IUnitArchetype;
+                    var defence: Rance.Templates.IUnitArchetype;
+                }
+            }
         }
     }
 }
@@ -3004,6 +2901,7 @@ declare module Rance {
     function setAllDynamicTemplateProperties(): void;
 }
 declare module Rance {
+    function buildTemplateIndexes(): void;
     module TemplateIndexes {
         var distributablesByDistributionGroup: {
             [groupName: string]: {

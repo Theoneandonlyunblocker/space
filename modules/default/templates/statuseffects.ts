@@ -1,6 +1,6 @@
-/// <reference path="../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
-/// <reference path="../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
-/// <reference path="../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
 module Rance
 {
   export module Modules

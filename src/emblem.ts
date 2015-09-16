@@ -45,9 +45,9 @@ module Rance
         return array[_rnd];
       }
 
-      for (var subEmblem in Templates.SubEmblems)
+      for (var subEmblem in app.moduleData.Templates.SubEmblems)
       {
-        allEmblems.push(Templates.SubEmblems[subEmblem]);
+        allEmblems.push(app.moduleData.Templates.SubEmblems[subEmblem]);
       }
 
       var mainEmblem = getSeededRandomArrayItem(allEmblems);

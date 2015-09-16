@@ -1,4 +1,4 @@
-/// <reference path="../../src/templateinterfaces/iitemtemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iitemtemplate.d.ts"/>
 /// <reference path="abilities.ts" />
 /// <reference path="passiveskills.ts" />
 

@@ -125,7 +125,7 @@ module Rance
 
           if (item.templateType)
           {
-            items[slot] = new Item(Templates.Items[item.templateType], item.id);
+            items[slot] = new Item(app.moduleData.Templates.Items[item.templateType], item.id);
           }
           else
           {

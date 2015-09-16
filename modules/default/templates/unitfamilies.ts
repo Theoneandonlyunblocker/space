@@ -1,5 +1,5 @@
-/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
-/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
+/// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
 
 module Rance
 {

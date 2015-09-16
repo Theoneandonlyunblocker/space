@@ -1,4 +1,4 @@
-/// <reference path="../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
 module Rance
 {
   export interface IDiplomacyEvaluation
@@ -8,19 +8,18 @@ module Rance
     neighborStars: number;
     opinion: number;
   }
+  export enum AttitudeModifierFamily
+  {
+    geographic,
+    history,
+    current
+  }
   export module Modules
   {
     export module DefaultModule
     {
       export module Templates
       {
-        export enum AttitudeModifierFamily
-        {
-          geographic,
-          history,
-          current
-        }
-
         export module AttitudeModifiers
         {
           export var neighborStars: Rance.Templates.IAttitudeModifierTemplate =

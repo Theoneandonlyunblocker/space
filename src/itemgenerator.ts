@@ -18,9 +18,9 @@ module Rance
 
     indexItemsByTechLevel()
     {
-      for (var itemName in Templates.Items)
+      for (var itemName in app.moduleData.Templates.Items)
       {
-        var item = Templates.Items[itemName];
+        var item = app.moduleData.Templates.Items[itemName];
 
         if (!this.itemsByTechLevel[item.techLevel])
         {

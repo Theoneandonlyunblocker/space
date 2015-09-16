@@ -46,6 +46,10 @@ module Rance
     {
       [type: string]: Templates.ISubEmblemTemplate;
     };
+    UnitArchetypes:
+    {
+      [type: string]: Templates.IUnitArchetype;
+    };
     UnitFamilies:
     {
       [type: string]: Templates.IUnitFamily;
@@ -94,6 +98,7 @@ module Rance
       Resources: {},
       StatusEffects: {},
       SubEmblems: {},
+      UnitArchetypes: {},
       UnitFamilies: {},
       Units: {}
     };

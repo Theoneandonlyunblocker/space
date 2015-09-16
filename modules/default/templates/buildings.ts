@@ -1,5 +1,5 @@
-/// <reference path="../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
-/// <reference path="../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
 module Rance
 {
   export module Modules

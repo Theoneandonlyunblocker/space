@@ -277,9 +277,9 @@ module Rance
     getBuildableBuildings()
     {
       var canBuild: Templates.IBuildingTemplate[] = [];
-      for (var buildingType in Templates.Buildings)
+      for (var buildingType in app.moduleData.Templates.Buildings)
       {
-        var template: Templates.IBuildingTemplate = Templates.Buildings[buildingType];
+        var template: Templates.IBuildingTemplate = app.moduleData.Templates.Buildings[buildingType];
         var alreadyBuilt: Building[];
         
         if (template.category === "mine" && !this.resource)

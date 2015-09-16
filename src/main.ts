@@ -83,6 +83,7 @@ module Rance
       this.moduleData = moduleLoader.moduleData;
 
       setAllDynamicTemplateProperties();
+      buildTemplateIndexes();
 
       this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();

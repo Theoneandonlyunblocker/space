@@ -72,9 +72,9 @@ module Rance
       {
         var emblems: any[] = [];
 
-        for (var emblemType in Templates.SubEmblems)
+        for (var emblemType in app.moduleData.Templates.SubEmblems)
         {
-          var template = Templates.SubEmblems[emblemType];
+          var template = app.moduleData.Templates.SubEmblems[emblemType];
           emblems.push(this.makeEmblemElement(template));
         }
 

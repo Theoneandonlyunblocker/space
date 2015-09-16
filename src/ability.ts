@@ -252,10 +252,15 @@ module Rance
   export function getGuarders(battle: Battle, user: Unit,
     ability:Templates.IAbilityTemplate, target: Unit)
   {
-    var allEnemies = getPotentialTargets(battle, user, app.moduleData.Templates.Abilities.dummyTargetAll);
+    var enemySide = reverseSide(user.battleStats.side);
+    if (target.battleStats.side !== enemySide) return [];
+
+    var allEnemies = battle.unitsBySide[enemySide];
 
     var guarders = allEnemies.filter(function(unit: Unit)
     {
+      if (!unit.isTargetable) return false;
+      
       if (unit.battleStats.guardCoverage === "all")
       {
         return unit.battleStats.guardAmount > 0;

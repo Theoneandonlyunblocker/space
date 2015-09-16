@@ -15,7 +15,7 @@ module Rance
         {
           var resourceData =
           {
-            resource: Rance.app.moduleData.Templates.Resources[resourceType],
+            resource: app.moduleData.Templates.Resources[resourceType],
             amount: this.props.player.resources[resourceType],
             key: resourceType
           }

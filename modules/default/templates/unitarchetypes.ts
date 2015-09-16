@@ -1,4 +1,4 @@
-/// <reference path="../../src/templateinterfaces/iunitarchetype.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iunitarchetype.d.ts"/>
 
 module Rance
 {

@@ -63,7 +63,7 @@ module Rance
       {
         var templatedUpgrades = this.template.upgradeInto.map(function(upgradeData)
         {
-          var template = Templates.Buildings[upgradeData.templateType];
+          var template = app.moduleData.Templates.Buildings[upgradeData.templateType];
           return(
           {
             level: upgradeData.level,

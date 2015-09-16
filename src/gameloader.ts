@@ -158,7 +158,7 @@ module Rance
     }
     deserializeBuilding(data: any)
     {
-      var template = Templates.Buildings[data.templateType];
+      var template = app.moduleData.Templates.Buildings[data.templateType];
       var building = new Building(
       {
         template: template,
@@ -282,9 +282,9 @@ module Rance
     {
       var deserializeEmblem = function(emblemData: any, color: number)
       {
-        var inner = Templates.SubEmblems[emblemData.innerType];
+        var inner = app.moduleData.Templates.SubEmblems[emblemData.innerType];
         var outer = emblemData.outerType ?
-          Templates.SubEmblems[emblemData.outerType] : null;
+          app.moduleData.Templates.SubEmblems[emblemData.outerType] : null;
 
         return new Emblem(color, emblemData.alpha, inner, outer);
 
@@ -349,7 +349,7 @@ module Rance
     }
     deserializeItem(data: any, player: Player)
     {
-      var template = Templates.Items[data.templateType];
+      var template = app.moduleData.Templates.Items[data.templateType];
 
       var item = new Item(template, data.id);
 
