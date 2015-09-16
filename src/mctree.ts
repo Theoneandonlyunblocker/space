@@ -70,12 +70,10 @@ module Rance
       var scoreVariance = Math.abs(this.actualBattle.getEvaluation() - this.rootNode.currentScore);
       if (scoreVariance > scoreVariationTolerance)
       {
-        console.log("scoreVariance: ", scoreVariance);
         return true;
       }
       else if (this.actualBattle.activeUnit.id !== this.rootNode.battle.activeUnit.id)
       {
-        console.log("activeUnit conflict");
         return this.actualBattle.activeUnit.battleStats.side === this.sideId;
       }
       else if (this.rootNode.children.length === 0)
@@ -87,7 +85,6 @@ module Rance
         
         if(this.rootNode.possibleMoves.length === 0)
         {
-          console.log("terminal node");
           return true;
         }
       }
@@ -96,17 +93,11 @@ module Rance
     }
     remakeSimulation()
     {
-      console.log("remade root");
       this.rootNode = new MCTreeNode(this.actualBattle.makeVirtualClone());
-      if (this.rootSimulationNeedsToBeRemade())
-      {
-        console.log("!!! remade but needs another remake");
-      }
       return this.rootNode;
     }
     advanceMove(move: IMove)
     {
-      console.log("advance", move.targetId, move.ability.type);
       this.rootNode = this.getChildForMove(move);
       if (!this.rootNode)
       {
