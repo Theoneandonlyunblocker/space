@@ -5,143 +5,149 @@
 
 module Rance
 {
-  export module Templates
+  export module Modules
   {
-    // called for each unit present in star in battleprep constructor
-    export module PassiveSkills
+    export module DefaultModule
     {
-      export var autoHeal: IPassiveSkillTemplate =
+      export module Templates
       {
-        type: "autoHeal",
-        displayName: "Auto heal",
-        description: "hiku hiku",
-
-        afterAbilityUse:
-        [
+        // called for each unit present in star in battleprep constructor
+        export module PassiveSkills
+        {
+          export var autoHeal: IPassiveSkillTemplate =
           {
-            template: Effects.healSelf,
-            data:
-            {
-              flat: 50
-            },
-            sfx:
-            {
-              duration: 1200,
-              battleOverlay: function(props: Templates.SFXParams)
+            type: "autoHeal",
+            displayName: "Auto heal",
+            description: "hiku hiku",
+
+            afterAbilityUse:
+            [
               {
-                // cg40400.bmp - cg40429.bmp converted to webm
-                return BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+                template: Effects.healSelf,
+                data:
+                {
+                  flat: 50
+                },
+                sfx:
+                {
+                  duration: 1200,
+                  battleOverlay: function(props: Templates.SFXParams)
+                  {
+                    // cg40400.bmp - cg40429.bmp converted to webm
+                    return BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+                  }
+                },
+                trigger: function(user: Unit, target: Unit)
+                {
+                  return user.currentHealth < user.maxHealth;
+                }
               }
-            },
-            trigger: function(user: Unit, target: Unit)
-            {
-              return user.currentHealth < user.maxHealth;
-            }
+            ]
           }
-        ]
-      }
-      export var poisoned: IPassiveSkillTemplate =
-      {
-        type: "poisoned",
-        displayName: "Poisoned",
-        description: "-10% max health per turn",
-        afterAbilityUse:
-        [
+          export var poisoned: IPassiveSkillTemplate =
           {
-            template: Effects.healSelf,
-            data:
-            {
-              maxHealthPercentage: -0.1
-            },
-            sfx:
-            {
-              duration: 1200,
-              userOverlay: function(props: Templates.SFXParams)
+            type: "poisoned",
+            displayName: "Poisoned",
+            description: "-10% max health per turn",
+            afterAbilityUse:
+            [
               {
-                var canvas = <HTMLCanvasElement> document.createElement("canvas");
-                canvas.width = props.width;
-                canvas.height = props.height;
-                var ctx = canvas.getContext("2d");
-                ctx.fillStyle = "rgba(30, 150, 30, 0.5)"
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                template: Effects.healSelf,
+                data:
+                {
+                  maxHealthPercentage: -0.1
+                },
+                sfx:
+                {
+                  duration: 1200,
+                  userOverlay: function(props: Templates.SFXParams)
+                  {
+                    var canvas = <HTMLCanvasElement> document.createElement("canvas");
+                    canvas.width = props.width;
+                    canvas.height = props.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.fillStyle = "rgba(30, 150, 30, 0.5)"
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                return canvas;
+                    return canvas;
+                  }
+                }
               }
-            }
-          }
-        ]
+            ]
 
-      }
-      export var overdrive: IPassiveSkillTemplate =
-      {
-        type: "overdrive",
-        displayName: "Overdrive",
-        description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
+          }
+          export var overdrive: IPassiveSkillTemplate =
+          {
+            type: "overdrive",
+            displayName: "Overdrive",
+            description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
 
-        atBattleStart:
-        [
-          {
-            template: Effects.buffTest
+            atBattleStart:
+            [
+              {
+                template: Effects.buffTest
+              }
+            ]
           }
-        ]
-      }
-      export var initialGuard: IPassiveSkillTemplate =
-      {
-        type: "initialGuard",
-        displayName: "Initial Guard",
-        description: "Adds initial guard",
-        isHidden: true,
+          export var initialGuard: IPassiveSkillTemplate =
+          {
+            type: "initialGuard",
+            displayName: "Initial Guard",
+            description: "Adds initial guard",
+            isHidden: true,
 
-        atBattleStart:
-        [
-          {
-            template: Effects.guardColumn,
-            data: {perInt: 0, flat: 50}
+            atBattleStart:
+            [
+              {
+                template: Effects.guardColumn,
+                data: {perInt: 0, flat: 50}
+              }
+            ],
+            inBattlePrep:
+            [
+              function(user: Unit, battlePrep: BattlePrep)
+              {
+                Effects.guardColumn.effect(user, user, {perInt: 0, flat: 50});
+              }
+            ]
           }
-        ],
-        inBattlePrep:
-        [
-          function(user: Unit, battlePrep: BattlePrep)
+          export var warpJammer: IPassiveSkillTemplate =
           {
-            Effects.guardColumn.effect(user, user, {perInt: 0, flat: 50});
-          }
-        ]
-      }
-      export var warpJammer: IPassiveSkillTemplate =
-      {
-        type: "warpJammer",
-        displayName: "Warp Jammer",
-        description: "Forces an extra unit to defend in neutral territory",
+            type: "warpJammer",
+            displayName: "Warp Jammer",
+            description: "Forces an extra unit to defend in neutral territory",
 
-        inBattlePrep:
-        [
-          function(user: Unit, battlePrep: BattlePrep)
-          {
-            if (user.fleet.player === battlePrep.attacker)
-            {
-              battlePrep.minDefendersInNeutralTerritory += 1;
-            }
+            inBattlePrep:
+            [
+              function(user: Unit, battlePrep: BattlePrep)
+              {
+                if (user.fleet.player === battlePrep.attacker)
+                {
+                  battlePrep.minDefendersInNeutralTerritory += 1;
+                }
+              }
+            ]
           }
-        ]
-      }
-      export var medic: IPassiveSkillTemplate =
-      {
-        type: "medic",
-        displayName: "Medic",
-        description: "Heals all units in same star to full at turn start",
+          export var medic: IPassiveSkillTemplate =
+          {
+            type: "medic",
+            displayName: "Medic",
+            description: "Heals all units in same star to full at turn start",
 
-        atTurnStart:
-        [
-          function(user: Unit)
-          {
-            var star = user.fleet.location;
-            var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
-            for (var i = 0; i < allFriendlyUnits.length; i++)
-            {
-              allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth)
-            }
+            atTurnStart:
+            [
+              function(user: Unit)
+              {
+                var star = user.fleet.location;
+                var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                for (var i = 0; i < allFriendlyUnits.length; i++)
+                {
+                  allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth)
+                }
+              }
+            ]
           }
-        ]
+        }
       }
     }
   }

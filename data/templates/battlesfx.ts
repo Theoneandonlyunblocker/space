@@ -6,21 +6,27 @@
 
 module Rance
 {
-  export module Templates
+  export module Modules
   {
-    export module BattleSFX
+    export module DefaultModule
     {
-      export var rocketAttack: IBattleSFXTemplate =
+      export module Templates
       {
-        duration: 1500,
-        battleOverlay: BattleSFXFunctions.rocketAttack,
-        delay: 0.3
-      }
-      export var guard: IBattleSFXTemplate =
-      {
-        duration: 1500,
-        battleOverlay: BattleSFXFunctions.guard,
-        delay: 0.3
+        export module BattleSFX
+        {
+          export var rocketAttack: IBattleSFXTemplate =
+          {
+            duration: 1500,
+            battleOverlay: BattleSFXFunctions.rocketAttack,
+            delay: 0.3
+          }
+          export var guard: IBattleSFXTemplate =
+          {
+            duration: 1500,
+            battleOverlay: BattleSFXFunctions.guard,
+            delay: 0.3
+          }
+        }
       }
     }
   }

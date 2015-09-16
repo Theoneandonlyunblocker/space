@@ -3,41 +3,47 @@
 
 module Rance
 {
-  export module Templates
+  export module Modules
   {
-    export module UnitFamilies
+    export module DefaultModule
     {
-      export var debug: IUnitFamily =
+      export module Templates
       {
-        type: "debug",
-        debugOnly: true,
-        alwaysAvailable: true,
-        rarity: 0,
-        distributionGroups: []
-      }
-      export var basic: IUnitFamily =
-      {
-        type: "basic",
-        debugOnly: false,
-        alwaysAvailable: true,
-        rarity: 0,
-        distributionGroups: []
-      }
-      export var red: IUnitFamily =
-      {
-        type: "red",
-        debugOnly: false,
-        alwaysAvailable: false,
-        rarity: 1,
-        distributionGroups: ["common", "rare"]
-      }
-      export var blue: IUnitFamily =
-      {
-        type: "blue",
-        debugOnly: false,
-        alwaysAvailable: false,
-        rarity: 1,
-        distributionGroups: ["common", "rare"]
+        export module UnitFamilies
+        {
+          export var debug: IUnitFamily =
+          {
+            type: "debug",
+            debugOnly: true,
+            alwaysAvailable: true,
+            rarity: 0,
+            distributionGroups: []
+          }
+          export var basic: IUnitFamily =
+          {
+            type: "basic",
+            debugOnly: false,
+            alwaysAvailable: true,
+            rarity: 0,
+            distributionGroups: []
+          }
+          export var red: IUnitFamily =
+          {
+            type: "red",
+            debugOnly: false,
+            alwaysAvailable: false,
+            rarity: 1,
+            distributionGroups: ["common", "rare"]
+          }
+          export var blue: IUnitFamily =
+          {
+            type: "blue",
+            debugOnly: false,
+            alwaysAvailable: false,
+            rarity: 1,
+            distributionGroups: ["common", "rare"]
+          }
+        }
       }
     }
   }

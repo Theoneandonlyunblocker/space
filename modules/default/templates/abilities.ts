@@ -6,233 +6,239 @@
 
 module Rance
 {
-  export module Templates
+  export module Modules
   {
-    export module Abilities
+    export module DefaultModule
     {
-      export var rangedAttack: IAbilityTemplate =
+      export module Templates
       {
-        type: "rangedAttack",
-        displayName: "Ranged Attack",
-        description: "Standard ranged attack",
-        moveDelay: 100,
-        actionsUse: 1,
-        mainEffect:
+        export module Abilities
         {
-          template: Effects.singleTargetDamage,
-          sfx: BattleSFX.rocketAttack,
-          data:
+          export var rangedAttack: IAbilityTemplate =
           {
-            baseDamage: 1,
-            damageType: DamageType.physical
-          },
-          attachedEffects:
-          [
+            type: "rangedAttack",
+            displayName: "Ranged Attack",
+            description: "Standard ranged attack",
+            moveDelay: 100,
+            actionsUse: 1,
+            mainEffect:
             {
-              template: Effects.receiveCounterAttack,
+              template: Effects.singleTargetDamage,
+              sfx: BattleSFX.rocketAttack,
               data:
               {
-                baseDamage: 0.5
-              }
+                baseDamage: 1,
+                damageType: DamageType.physical
+              },
+              attachedEffects:
+              [
+                {
+                  template: Effects.receiveCounterAttack,
+                  data:
+                  {
+                    baseDamage: 0.5
+                  }
+                }
+              ]
             }
-          ]
-        }
-      }
-      export var closeAttack: IAbilityTemplate =
-      {
-        type: "closeAttack",
-        displayName: "Close Attack",
-        description: "Close range attack that hits adjacent targets in same row as well",
-        moveDelay: 90,
-        actionsUse: 2,
-        mainEffect:
-        {
-          template: Effects.closeAttack,
-          sfx: BattleSFX.rocketAttack
-        }
-      }
-      export var wholeRowAttack: IAbilityTemplate =
-      {
-        type: "wholeRowAttack",
-        displayName: "Row Attack",
-        description: "Attack entire row of units",
-        moveDelay: 300,
-        actionsUse: 1,
-        bypassesGuard: true,
-        mainEffect:
-        {
-          template: Effects.wholeRowAttack,
-          sfx: BattleSFX.rocketAttack
-        }
-      }
-
-      export var bombAttack: IAbilityTemplate =
-      {
-        type: "bombAttack",
-        displayName: "Bomb Attack",
-        description: "Ranged attack that hits all adjacent enemy units",
-        moveDelay: 120,
-        actionsUse: 1,
-        mainEffect:
-        {
-          template: Effects.bombAttack,
-          sfx: BattleSFX.rocketAttack
-        }
-      }
-      export var guardColumn: IAbilityTemplate =
-      {
-        type: "guardColumn",
-        displayName: "Guard Column",
-        description: "Protect allies in the same row and boost defence up to 2x",
-        moveDelay: 100,
-        actionsUse: 1,
-        mainEffect:
-        {
-          template: Effects.guardColumn,
-          sfx: BattleSFX.guard,
-          data:
-          {
-            perInt: 20
           }
-        }
-      }
-      export var boardingHook: IAbilityTemplate =
-      {
-        type: "boardingHook",
-        displayName: "Boarding Hook",
-        description: "0.8x damage but increases target capture chance",
-        moveDelay: 100,
-        actionsUse: 1,
-        mainEffect:
-        {
-          template: Effects.singleTargetDamage,
-          sfx: BattleSFX.rocketAttack,
-          data:
+          export var closeAttack: IAbilityTemplate =
           {
-            baseDamage: 0.8,
-            damageType: DamageType.physical
-          },
-          attachedEffects:
-          [
+            type: "closeAttack",
+            displayName: "Close Attack",
+            description: "Close range attack that hits adjacent targets in same row as well",
+            moveDelay: 90,
+            actionsUse: 2,
+            mainEffect:
             {
-              template: Effects.increaseCaptureChance,
+              template: Effects.closeAttack,
+              sfx: BattleSFX.rocketAttack
+            }
+          }
+          export var wholeRowAttack: IAbilityTemplate =
+          {
+            type: "wholeRowAttack",
+            displayName: "Row Attack",
+            description: "Attack entire row of units",
+            moveDelay: 300,
+            actionsUse: 1,
+            bypassesGuard: true,
+            mainEffect:
+            {
+              template: Effects.wholeRowAttack,
+              sfx: BattleSFX.rocketAttack
+            }
+          }
+
+          export var bombAttack: IAbilityTemplate =
+          {
+            type: "bombAttack",
+            displayName: "Bomb Attack",
+            description: "Ranged attack that hits all adjacent enemy units",
+            moveDelay: 120,
+            actionsUse: 1,
+            mainEffect:
+            {
+              template: Effects.bombAttack,
+              sfx: BattleSFX.rocketAttack
+            }
+          }
+          export var guardColumn: IAbilityTemplate =
+          {
+            type: "guardColumn",
+            displayName: "Guard Column",
+            description: "Protect allies in the same row and boost defence up to 2x",
+            moveDelay: 100,
+            actionsUse: 1,
+            mainEffect:
+            {
+              template: Effects.guardColumn,
+              sfx: BattleSFX.guard,
               data:
               {
-                flat: 0.5
+                perInt: 20
               }
-            },
+            }
+          }
+          export var boardingHook: IAbilityTemplate =
+          {
+            type: "boardingHook",
+            displayName: "Boarding Hook",
+            description: "0.8x damage but increases target capture chance",
+            moveDelay: 100,
+            actionsUse: 1,
+            mainEffect:
             {
-              template: Effects.receiveCounterAttack,
+              template: Effects.singleTargetDamage,
+              sfx: BattleSFX.rocketAttack,
               data:
               {
-                baseDamage: 0.5
+                baseDamage: 0.8,
+                damageType: DamageType.physical
+              },
+              attachedEffects:
+              [
+                {
+                  template: Effects.increaseCaptureChance,
+                  data:
+                  {
+                    flat: 0.5
+                  }
+                },
+                {
+                  template: Effects.receiveCounterAttack,
+                  data:
+                  {
+                    baseDamage: 0.5
+                  }
+                }
+              ]
+            }
+          }
+
+          export var debugAbility: IAbilityTemplate =
+          {
+            type: "debugAbility",
+            displayName: "Debug Ability",
+            description: "who knows what its going to do today",
+            moveDelay: 0,
+            actionsUse: 0,
+            mainEffect:
+            {
+              template: Effects.guardColumn,
+              sfx: BattleSFX.guard,
+              data:
+              {
+                perInt: 20
               }
             }
-          ]
-        }
-      }
-
-      export var debugAbility: IAbilityTemplate =
-      {
-        type: "debugAbility",
-        displayName: "Debug Ability",
-        description: "who knows what its going to do today",
-        moveDelay: 0,
-        actionsUse: 0,
-        mainEffect:
-        {
-          template: Effects.guardColumn,
-          sfx: BattleSFX.guard,
-          data:
-          {
-            perInt: 20
           }
-        }
-      }
 
-      export var ranceAttack: IAbilityTemplate =
-      {
-        type: "ranceAttack",
-        displayName: "Rance attack",
-        description: "dont sue",
-        moveDelay: 0,
-        actionsUse: 0,
-        mainEffect:
-        {
-          template: Effects.singleTargetDamage,
-          sfx:
+          export var ranceAttack: IAbilityTemplate =
           {
-            duration: 1200,
-            userSprite: function(props: SFXParams)
+            type: "ranceAttack",
+            displayName: "Rance attack",
+            description: "dont sue",
+            moveDelay: 0,
+            actionsUse: 0,
+            mainEffect:
             {
-              // cg13600.bmp
-              return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+              template: Effects.singleTargetDamage,
+              sfx:
+              {
+                duration: 1200,
+                userSprite: function(props: SFXParams)
+                {
+                  // cg13600.bmp
+                  return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                },
+                battleOverlay: function(props: SFXParams)
+                {
+                  // cg40500.bmp - cg40529.bmp converted to webm
+                  return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                }
+              },
+              data:
+              {
+                baseDamage: 0.1,
+                damageType: DamageType.physical
+              }
             },
-            battleOverlay: function(props: SFXParams)
-            {
-              // cg40500.bmp - cg40529.bmp converted to webm
-              return BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
-            }
-          },
-          data:
-          {
-            baseDamage: 0.1,
-            damageType: DamageType.physical
-          }
-        },
-        secondaryEffects:
-        [
-          {
-            template: Effects.singleTargetDamage,
-            data:
-            {
-              baseDamage: 0.1,
-              damageType: DamageType.physical
-            },
-            attachedEffects:
+            secondaryEffects:
             [
               {
-                template: Effects.receiveCounterAttack,
+                template: Effects.singleTargetDamage,
                 data:
                 {
-                  baseDamage: 0.5
+                  baseDamage: 0.1,
+                  damageType: DamageType.physical
+                },
+                attachedEffects:
+                [
+                  {
+                    template: Effects.receiveCounterAttack,
+                    data:
+                    {
+                      baseDamage: 0.5
+                    }
+                  }
+                ],
+                sfx:
+                {
+                  duration: 1500,
+                  userSprite: function(props: SFXParams)
+                  {
+                    // cg13300.bmp
+                    return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                  },
+                  battleOverlay: function(props: SFXParams)
+                  {
+                    // cg40000.bmp - cg40029.bmp converted to webm
+                    return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                  }
                 }
               }
-            ],
-            sfx:
+            ]
+          }
+
+          export var standBy: IAbilityTemplate =
+          {
+            type: "standBy",
+            displayName: "Standby",
+            description: "Skip a turn but next one comes faster",
+            moveDelay: 50,
+            actionsUse: 1,
+            AIEvaluationPriority: 0.6,
+            AIScoreAdjust: -0.1,
+            disableInAIBattles: true,
+            mainEffect:
             {
-              duration: 1500,
-              userSprite: function(props: SFXParams)
+              template: Effects.standBy,
+              sfx:
               {
-                // cg13300.bmp
-                return BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
-              },
-              battleOverlay: function(props: SFXParams)
-              {
-                // cg40000.bmp - cg40029.bmp converted to webm
-                return BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                duration: 750
               }
             }
-          }
-        ]
-      }
-
-      export var standBy: IAbilityTemplate =
-      {
-        type: "standBy",
-        displayName: "Standby",
-        description: "Skip a turn but next one comes faster",
-        moveDelay: 50,
-        actionsUse: 1,
-        AIEvaluationPriority: 0.6,
-        AIScoreAdjust: -0.1,
-        disableInAIBattles: true,
-        mainEffect:
-        {
-          template: Effects.standBy,
-          sfx:
-          {
-            duration: 750
           }
         }
       }

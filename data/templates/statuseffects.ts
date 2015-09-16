@@ -3,34 +3,40 @@
 /// <reference path="../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
 module Rance
 {
-  export module Templates
+  export module Modules
   {
-    export module StatusEffects
+    export module DefaultModule
     {
-      export var test: IStatusEffectTemplate =
+      export module Templates
       {
-        type: "test",
-        displayName: "test",
-        attributes:
+        export module StatusEffects
         {
-          attack:
+          export var test: IStatusEffectTemplate =
           {
-            flat: 9
-          },
-          defence:
-          {
-            flat: 9
-          },
-          intelligence:
-          {
-            flat: -9
-          },
-          speed:
-          {
-            flat: 9
+            type: "test",
+            displayName: "test",
+            attributes:
+            {
+              attack:
+              {
+                flat: 9
+              },
+              defence:
+              {
+                flat: 9
+              },
+              intelligence:
+              {
+                flat: -9
+              },
+              speed:
+              {
+                flat: 9
+              }
+            },
+            passiveSkills: [PassiveSkills.poisoned]
           }
-        },
-        passiveSkills: [PassiveSkills.poisoned]
+        }
       }
     }
   }

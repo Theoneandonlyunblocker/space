@@ -8,63 +8,69 @@ module Rance
     neighborStars: number;
     opinion: number;
   }
-  export module Templates
+  export module Modules
   {
-    export enum AttitudeModifierFamily
+    export module DefaultModule
     {
-      geographic,
-      history,
-      current
-    }
-
-    export module AttitudeModifiers
-    {
-      export var neighborStars: IAttitudeModifierTemplate =
+      export module Templates
       {
-        type: "neighborStars",
-        displayName: "neighborStars",
-        family: AttitudeModifierFamily.geographic,
-        duration: -1,
-
-        startCondition: function(evaluation: IDiplomacyEvaluation)
+        export enum AttitudeModifierFamily
         {
-          return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
-        },
-        
-        getEffectFromEvaluation: function(evaluation: IDiplomacyEvaluation)
-        {
-          return -2 * evaluation.neighborStars;
+          geographic,
+          history,
+          current
         }
-      }
 
-      export var atWar: IAttitudeModifierTemplate =
-      {
-        type: "atWar",
-        displayName: "At war",
-        family: AttitudeModifierFamily.current,
-        duration: -1,
-
-        startCondition: function(evaluation: IDiplomacyEvaluation)
+        export module AttitudeModifiers
         {
-          return (evaluation.currentStatus >= DiplomaticState.war)
-        },
+          export var neighborStars: IAttitudeModifierTemplate =
+          {
+            type: "neighborStars",
+            displayName: "neighborStars",
+            family: AttitudeModifierFamily.geographic,
+            duration: -1,
 
-        constantEffect: -30
-      }
+            startCondition: function(evaluation: IDiplomacyEvaluation)
+            {
+              return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
+            },
+            
+            getEffectFromEvaluation: function(evaluation: IDiplomacyEvaluation)
+            {
+              return -2 * evaluation.neighborStars;
+            }
+          }
 
-      export var declaredWar: IAttitudeModifierTemplate =
-      {
-        type: "declaredWar",
-        displayName: "Declared war",
-        family: AttitudeModifierFamily.history,
-        duration: 15,
+          export var atWar: IAttitudeModifierTemplate =
+          {
+            type: "atWar",
+            displayName: "At war",
+            family: AttitudeModifierFamily.current,
+            duration: -1,
 
-        startCondition: function(evaluation: IDiplomacyEvaluation)
-        {
-          return (evaluation.currentStatus >= DiplomaticState.war)
-        },
+            startCondition: function(evaluation: IDiplomacyEvaluation)
+            {
+              return (evaluation.currentStatus >= DiplomaticState.war)
+            },
 
-        constantEffect: -35
+            constantEffect: -30
+          }
+
+          export var declaredWar: IAttitudeModifierTemplate =
+          {
+            type: "declaredWar",
+            displayName: "Declared war",
+            family: AttitudeModifierFamily.history,
+            duration: 15,
+
+            startCondition: function(evaluation: IDiplomacyEvaluation)
+            {
+              return (evaluation.currentStatus >= DiplomaticState.war)
+            },
+
+            constantEffect: -35
+          }
+        }
       }
     }
   }

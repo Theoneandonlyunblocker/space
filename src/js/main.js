@@ -6697,166 +6697,158 @@ var Rance;
 // example: Abilities.dealDamagePoison would have Effects.dealDamage & Effects.poison
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var Effects;
-        (function (Effects) {
-            Effects.dummyTargetColumn = {
-                name: "dummyTargetColumn",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetColumn,
-                targetRange: "all",
-                effect: function () { }
-            };
-            Effects.dummyTargetAll = {
-                name: "dummyTargetAll",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetAll,
-                targetRange: "all",
-                effect: function () { }
-            };
-            Effects.singleTargetDamage = {
-                name: "singleTargetDamage",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "all",
-                effect: function (user, target, data) {
-                    var baseDamage = data.baseDamage;
-                    var damageType = data.damageType;
-                    var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease;
-                    target.receiveDamage(damage, damageType);
-                }
-            };
-            Effects.closeAttack = {
-                name: "closeAttack",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetColumnNeighbors,
-                targetRange: "close",
-                effect: function (user, target) {
-                    var baseDamage = 0.66;
-                    var damageType = Rance.DamageType.physical;
-                    var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease;
-                    target.receiveDamage(damage, damageType);
-                }
-            };
-            Effects.wholeRowAttack = {
-                name: "wholeRowAttack",
-                targetFleets: "all",
-                targetingFunction: Rance.targetRow,
-                targetRange: "all",
-                effect: function (user, target) {
-                    var baseDamage = 0.75;
-                    var damageType = Rance.DamageType.magical;
-                    var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease;
-                    target.receiveDamage(damage, damageType);
-                }
-            };
-            Effects.bombAttack = {
-                name: "bombAttack",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetNeighbors,
-                targetRange: "all",
-                effect: function (user, target) {
-                    var baseDamage = 0.5;
-                    var damageType = Rance.DamageType.physical;
-                    var damageIncrease = user.getAttackDamageIncrease(damageType);
-                    var damage = baseDamage * damageIncrease;
-                    target.receiveDamage(damage, damageType);
-                }
-            };
-            Effects.guardColumn = {
-                name: "guardColumn",
-                targetFleets: "all",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "self",
-                effect: function (user, target, data) {
-                    var data = data || {};
-                    var guardPerInt = data.perInt || 0;
-                    var flat = data.flat || 0;
-                    var guardAmount = guardPerInt * user.attributes.intelligence + flat;
-                    user.addGuard(guardAmount, "column");
-                }
-            };
-            Effects.receiveCounterAttack = {
-                name: "receiveCounterAttack",
-                targetFleets: "all",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "self",
-                effect: function (user, target, data) {
-                    var counterStrength = target.getCounterAttackStrength();
-                    if (counterStrength) {
-                        Templates.Effects.singleTargetDamage.effect(target, user, {
-                            baseDamage: data.baseDamage * counterStrength,
-                            damageType: Rance.DamageType.physical
-                        });
-                    }
-                }
-            };
-            Effects.increaseCaptureChance = {
-                name: "increaseCaptureChance",
-                targetFleets: "enemy",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "all",
-                effect: function (user, target, data) {
-                    if (!data)
-                        return;
-                    if (data.flat) {
-                        target.battleStats.captureChance += data.flat;
-                    }
-                    if (isFinite(data.multiplier)) {
-                        target.battleStats.captureChance *= data.multiplier;
-                    }
-                }
-            };
-            Effects.buffTest = {
-                name: "buffTest",
-                targetFleets: "all",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "all",
-                effect: function (user, target) {
-                    user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
-                }
-            };
-            Effects.healTarget = {
-                name: "healTarget",
-                targetFleets: "ally",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "all",
-                effect: function (user, target, data) {
-                    var healAmount = 0;
-                    if (data.flat) {
-                        healAmount += data.flat;
-                    }
-                    if (data.maxHealthPercentage) {
-                        healAmount += target.maxHealth * data.maxHealthPercentage;
-                    }
-                    if (data.perUserUnit) {
-                        healAmount += data.perUserUnit * user.getAttackDamageIncrease(Rance.DamageType.magical);
-                    }
-                    target.removeStrength(-healAmount);
-                }
-            };
-            Effects.healSelf = {
-                name: "healSelf",
-                targetFleets: "ally",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "self",
-                effect: function (user, target, data) {
-                    Templates.Effects.healTarget.effect(user, user, data);
-                }
-            };
-            Effects.standBy = {
-                name: "standBy",
-                targetFleets: "all",
-                targetingFunction: Rance.targetSingle,
-                targetRange: "self",
-                effect: function () { }
-            };
-        })(Effects = Templates.Effects || (Templates.Effects = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Effects;
+                (function (Effects) {
+                    Effects.singleTargetDamage = {
+                        name: "singleTargetDamage",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target, data) {
+                            var baseDamage = data.baseDamage;
+                            var damageType = data.damageType;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.closeAttack = {
+                        name: "closeAttack",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetColumnNeighbors,
+                        targetRange: "close",
+                        effect: function (user, target) {
+                            var baseDamage = 0.66;
+                            var damageType = Rance.DamageType.physical;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.wholeRowAttack = {
+                        name: "wholeRowAttack",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetRow,
+                        targetRange: "all",
+                        effect: function (user, target) {
+                            var baseDamage = 0.75;
+                            var damageType = Rance.DamageType.magical;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.bombAttack = {
+                        name: "bombAttack",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetNeighbors,
+                        targetRange: "all",
+                        effect: function (user, target) {
+                            var baseDamage = 0.5;
+                            var damageType = Rance.DamageType.physical;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.guardColumn = {
+                        name: "guardColumn",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function (user, target, data) {
+                            var data = data || {};
+                            var guardPerInt = data.perInt || 0;
+                            var flat = data.flat || 0;
+                            var guardAmount = guardPerInt * user.attributes.intelligence + flat;
+                            user.addGuard(guardAmount, "column");
+                        }
+                    };
+                    Effects.receiveCounterAttack = {
+                        name: "receiveCounterAttack",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function (user, target, data) {
+                            var counterStrength = target.getCounterAttackStrength();
+                            if (counterStrength) {
+                                Templates.Effects.singleTargetDamage.effect(target, user, {
+                                    baseDamage: data.baseDamage * counterStrength,
+                                    damageType: Rance.DamageType.physical
+                                });
+                            }
+                        }
+                    };
+                    Effects.increaseCaptureChance = {
+                        name: "increaseCaptureChance",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target, data) {
+                            if (!data)
+                                return;
+                            if (data.flat) {
+                                target.battleStats.captureChance += data.flat;
+                            }
+                            if (isFinite(data.multiplier)) {
+                                target.battleStats.captureChance *= data.multiplier;
+                            }
+                        }
+                    };
+                    Effects.buffTest = {
+                        name: "buffTest",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target) {
+                            user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
+                        }
+                    };
+                    Effects.healTarget = {
+                        name: "healTarget",
+                        targetFleets: "ally",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target, data) {
+                            var healAmount = 0;
+                            if (data.flat) {
+                                healAmount += data.flat;
+                            }
+                            if (data.maxHealthPercentage) {
+                                healAmount += target.maxHealth * data.maxHealthPercentage;
+                            }
+                            if (data.perUserUnit) {
+                                healAmount += data.perUserUnit * user.getAttackDamageIncrease(Rance.DamageType.magical);
+                            }
+                            target.removeStrength(-healAmount);
+                        }
+                    };
+                    Effects.healSelf = {
+                        name: "healSelf",
+                        targetFleets: "ally",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function (user, target, data) {
+                            Templates.Effects.healTarget.effect(user, user, data);
+                        }
+                    };
+                    Effects.standBy = {
+                        name: "standBy",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function () { }
+                    };
+                })(Effects = Templates.Effects || (Templates.Effects = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
@@ -7152,176 +7144,194 @@ var Rance;
 /// <reference path="../../src/battlesfxfunctions/guard.ts" />
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var BattleSFX;
-        (function (BattleSFX) {
-            BattleSFX.rocketAttack = {
-                duration: 1500,
-                battleOverlay: Rance.BattleSFXFunctions.rocketAttack,
-                delay: 0.3
-            };
-            BattleSFX.guard = {
-                duration: 1500,
-                battleOverlay: Rance.BattleSFXFunctions.guard,
-                delay: 0.3
-            };
-        })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var BattleSFX;
+                (function (BattleSFX) {
+                    BattleSFX.rocketAttack = {
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFXFunctions.rocketAttack,
+                        delay: 0.3
+                    };
+                    BattleSFX.guard = {
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFXFunctions.guard,
+                        delay: 0.3
+                    };
+                })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/iresourcetemplate.d.ts"/>
 /// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var Resources;
-        (function (Resources) {
-            Resources.testResource1 = {
-                type: "testResource1",
-                displayName: "Test Resource 1",
-                icon: "img\/resources\/test1.png",
-                rarity: 1,
-                distributionGroups: ["common"]
-            };
-            Resources.testResource2 = {
-                type: "testResource2",
-                displayName: "Test Resource 2",
-                icon: "img\/resources\/test2.png",
-                rarity: 1,
-                distributionGroups: ["common"]
-            };
-            Resources.testResource3 = {
-                type: "testResource3",
-                displayName: "Test Resource 3",
-                icon: "img\/resources\/test3.png",
-                rarity: 1,
-                distributionGroups: ["common"]
-            };
-            Resources.testResource4 = {
-                type: "testResource4",
-                displayName: "Test Resource 4",
-                icon: "img\/resources\/test4.png",
-                rarity: 1,
-                distributionGroups: ["rare"]
-            };
-            Resources.testResource5 = {
-                type: "testResource5",
-                displayName: "Test Resource 5",
-                icon: "img\/resources\/test5.png",
-                rarity: 1,
-                distributionGroups: ["rare"]
-            };
-        })(Resources = Templates.Resources || (Templates.Resources = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Resources;
+                (function (Resources) {
+                    Resources.testResource1 = {
+                        type: "testResource1",
+                        displayName: "Test Resource 1",
+                        icon: "img\/resources\/test1.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
+                    };
+                    Resources.testResource2 = {
+                        type: "testResource2",
+                        displayName: "Test Resource 2",
+                        icon: "img\/resources\/test2.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
+                    };
+                    Resources.testResource3 = {
+                        type: "testResource3",
+                        displayName: "Test Resource 3",
+                        icon: "img\/resources\/test3.png",
+                        rarity: 1,
+                        distributionGroups: ["common"]
+                    };
+                    Resources.testResource4 = {
+                        type: "testResource4",
+                        displayName: "Test Resource 4",
+                        icon: "img\/resources\/test4.png",
+                        rarity: 1,
+                        distributionGroups: ["rare"]
+                    };
+                    Resources.testResource5 = {
+                        type: "testResource5",
+                        displayName: "Test Resource 5",
+                        icon: "img\/resources\/test5.png",
+                        rarity: 1,
+                        distributionGroups: ["rare"]
+                    };
+                })(Resources = Templates.Resources || (Templates.Resources = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
 /// <reference path="../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var Buildings;
-        (function (Buildings) {
-            Buildings.sectorCommand = {
-                type: "sectorCommand",
-                category: "defence",
-                family: "sectorCommand",
-                name: "Sector Command",
-                iconSrc: "sectorCommand.png",
-                buildCost: 200,
-                maxPerType: 1,
-                maxUpgradeLevel: 1,
-                upgradeInto: [
-                    {
-                        templateType: "sectorCommand1",
-                        level: 1
-                    },
-                    {
-                        templateType: "sectorCommand2",
-                        level: 1
-                    }
-                ],
-                defenderAdvantage: 0.2
-            };
-            Buildings.sectorCommand1 = {
-                type: "sectorCommand1",
-                category: "defence",
-                family: "sectorCommand",
-                name: "Sector Command1",
-                iconSrc: "sectorCommand.png",
-                buildCost: 100,
-                maxPerType: 1,
-                maxUpgradeLevel: 1,
-                upgradeOnly: true,
-                defenderAdvantage: 0.3
-            };
-            Buildings.sectorCommand2 = {
-                type: "sectorCommand2",
-                category: "defence",
-                family: "sectorCommand",
-                name: "Sector Command2",
-                iconSrc: "sectorCommand.png",
-                buildCost: 200,
-                maxPerType: 1,
-                maxUpgradeLevel: 1,
-                upgradeOnly: true,
-                defenderAdvantage: 0.3
-            };
-            Buildings.starBase = {
-                type: "starBase",
-                category: "defence",
-                name: "Starbase",
-                iconSrc: "starBase.png",
-                buildCost: 200,
-                maxPerType: 3,
-                maxUpgradeLevel: 1,
-                defenderAdvantage: 0.1,
-                upgradeInto: [
-                    {
-                        templateType: "sectorCommand",
-                        level: 1
-                    }
-                ]
-            };
-            Buildings.commercialPort = {
-                type: "commercialPort",
-                category: "economy",
-                name: "Commercial Spaceport",
-                iconSrc: "commercialPort.png",
-                buildCost: 200,
-                maxPerType: 1,
-                maxUpgradeLevel: 4
-            };
-            Buildings.deepSpaceRadar = {
-                type: "deepSpaceRadar",
-                category: "vision",
-                name: "Deep Space Radar",
-                iconSrc: "commercialPort.png",
-                buildCost: 200,
-                maxPerType: 1,
-                maxUpgradeLevel: 2
-            };
-            Buildings.itemManufactory = {
-                type: "itemManufactory",
-                category: "manufactory",
-                name: "Item Manufactory",
-                iconSrc: "commercialPort.png",
-                buildCost: 200,
-                maxPerType: 1,
-                maxUpgradeLevel: 3 // MANUFACTORY_MAX
-            };
-            Buildings.resourceMine = {
-                type: "resourceMine",
-                category: "mine",
-                name: "Mine",
-                iconSrc: "commercialPort.png",
-                buildCost: 500,
-                maxPerType: 1,
-                maxUpgradeLevel: 3
-            };
-        })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Buildings;
+                (function (Buildings) {
+                    Buildings.sectorCommand = {
+                        type: "sectorCommand",
+                        category: "defence",
+                        family: "sectorCommand",
+                        name: "Sector Command",
+                        iconSrc: "sectorCommand.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 1,
+                        upgradeInto: [
+                            {
+                                templateType: "sectorCommand1",
+                                level: 1
+                            },
+                            {
+                                templateType: "sectorCommand2",
+                                level: 1
+                            }
+                        ],
+                        defenderAdvantage: 0.2
+                    };
+                    Buildings.sectorCommand1 = {
+                        type: "sectorCommand1",
+                        category: "defence",
+                        family: "sectorCommand",
+                        name: "Sector Command1",
+                        iconSrc: "sectorCommand.png",
+                        buildCost: 100,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 1,
+                        upgradeOnly: true,
+                        defenderAdvantage: 0.3
+                    };
+                    Buildings.sectorCommand2 = {
+                        type: "sectorCommand2",
+                        category: "defence",
+                        family: "sectorCommand",
+                        name: "Sector Command2",
+                        iconSrc: "sectorCommand.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 1,
+                        upgradeOnly: true,
+                        defenderAdvantage: 0.3
+                    };
+                    Buildings.starBase = {
+                        type: "starBase",
+                        category: "defence",
+                        name: "Starbase",
+                        iconSrc: "starBase.png",
+                        buildCost: 200,
+                        maxPerType: 3,
+                        maxUpgradeLevel: 1,
+                        defenderAdvantage: 0.1,
+                        upgradeInto: [
+                            {
+                                templateType: "sectorCommand",
+                                level: 1
+                            }
+                        ]
+                    };
+                    Buildings.commercialPort = {
+                        type: "commercialPort",
+                        category: "economy",
+                        name: "Commercial Spaceport",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 4
+                    };
+                    Buildings.deepSpaceRadar = {
+                        type: "deepSpaceRadar",
+                        category: "vision",
+                        name: "Deep Space Radar",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 2
+                    };
+                    Buildings.itemManufactory = {
+                        type: "itemManufactory",
+                        category: "manufactory",
+                        name: "Item Manufactory",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 3 // MANUFACTORY_MAX
+                    };
+                    Buildings.resourceMine = {
+                        type: "resourceMine",
+                        category: "mine",
+                        name: "Mine",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 500,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 3
+                    };
+                })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/buildings.ts" />
 /// <reference path="star.ts" />
@@ -7392,229 +7402,241 @@ var Rance;
 /// <reference path="abilities.ts" />
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        // called for each unit present in star in battleprep constructor
-        var PassiveSkills;
-        (function (PassiveSkills) {
-            PassiveSkills.autoHeal = {
-                type: "autoHeal",
-                displayName: "Auto heal",
-                description: "hiku hiku",
-                afterAbilityUse: [
-                    {
-                        template: Templates.Effects.healSelf,
-                        data: {
-                            flat: 50
-                        },
-                        sfx: {
-                            duration: 1200,
-                            battleOverlay: function (props) {
-                                // cg40400.bmp - cg40429.bmp converted to webm
-                                return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                // called for each unit present in star in battleprep constructor
+                var PassiveSkills;
+                (function (PassiveSkills) {
+                    PassiveSkills.autoHeal = {
+                        type: "autoHeal",
+                        displayName: "Auto heal",
+                        description: "hiku hiku",
+                        afterAbilityUse: [
+                            {
+                                template: Templates.Effects.healSelf,
+                                data: {
+                                    flat: 50
+                                },
+                                sfx: {
+                                    duration: 1200,
+                                    battleOverlay: function (props) {
+                                        // cg40400.bmp - cg40429.bmp converted to webm
+                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+                                    }
+                                },
+                                trigger: function (user, target) {
+                                    return user.currentHealth < user.maxHealth;
+                                }
                             }
-                        },
-                        trigger: function (user, target) {
-                            return user.currentHealth < user.maxHealth;
-                        }
-                    }
-                ]
-            };
-            PassiveSkills.poisoned = {
-                type: "poisoned",
-                displayName: "Poisoned",
-                description: "-10% max health per turn",
-                afterAbilityUse: [
-                    {
-                        template: Templates.Effects.healSelf,
-                        data: {
-                            maxHealthPercentage: -0.1
-                        },
-                        sfx: {
-                            duration: 1200,
-                            userOverlay: function (props) {
-                                var canvas = document.createElement("canvas");
-                                canvas.width = props.width;
-                                canvas.height = props.height;
-                                var ctx = canvas.getContext("2d");
-                                ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
-                                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                return canvas;
+                        ]
+                    };
+                    PassiveSkills.poisoned = {
+                        type: "poisoned",
+                        displayName: "Poisoned",
+                        description: "-10% max health per turn",
+                        afterAbilityUse: [
+                            {
+                                template: Templates.Effects.healSelf,
+                                data: {
+                                    maxHealthPercentage: -0.1
+                                },
+                                sfx: {
+                                    duration: 1200,
+                                    userOverlay: function (props) {
+                                        var canvas = document.createElement("canvas");
+                                        canvas.width = props.width;
+                                        canvas.height = props.height;
+                                        var ctx = canvas.getContext("2d");
+                                        ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
+                                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                        return canvas;
+                                    }
+                                }
                             }
-                        }
-                    }
-                ]
-            };
-            PassiveSkills.overdrive = {
-                type: "overdrive",
-                displayName: "Overdrive",
-                description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
-                atBattleStart: [
-                    {
-                        template: Templates.Effects.buffTest
-                    }
-                ]
-            };
-            PassiveSkills.initialGuard = {
-                type: "initialGuard",
-                displayName: "Initial Guard",
-                description: "Adds initial guard",
-                isHidden: true,
-                atBattleStart: [
-                    {
-                        template: Templates.Effects.guardColumn,
-                        data: { perInt: 0, flat: 50 }
-                    }
-                ],
-                inBattlePrep: [
-                    function (user, battlePrep) {
-                        Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
-                    }
-                ]
-            };
-            PassiveSkills.warpJammer = {
-                type: "warpJammer",
-                displayName: "Warp Jammer",
-                description: "Forces an extra unit to defend in neutral territory",
-                inBattlePrep: [
-                    function (user, battlePrep) {
-                        if (user.fleet.player === battlePrep.attacker) {
-                            battlePrep.minDefendersInNeutralTerritory += 1;
-                        }
-                    }
-                ]
-            };
-            PassiveSkills.medic = {
-                type: "medic",
-                displayName: "Medic",
-                description: "Heals all units in same star to full at turn start",
-                atTurnStart: [
-                    function (user) {
-                        var star = user.fleet.location;
-                        var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
-                        for (var i = 0; i < allFriendlyUnits.length; i++) {
-                            allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
-                        }
-                    }
-                ]
-            };
-        })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+                        ]
+                    };
+                    PassiveSkills.overdrive = {
+                        type: "overdrive",
+                        displayName: "Overdrive",
+                        description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
+                        atBattleStart: [
+                            {
+                                template: Templates.Effects.buffTest
+                            }
+                        ]
+                    };
+                    PassiveSkills.initialGuard = {
+                        type: "initialGuard",
+                        displayName: "Initial Guard",
+                        description: "Adds initial guard",
+                        isHidden: true,
+                        atBattleStart: [
+                            {
+                                template: Templates.Effects.guardColumn,
+                                data: { perInt: 0, flat: 50 }
+                            }
+                        ],
+                        inBattlePrep: [
+                            function (user, battlePrep) {
+                                Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
+                            }
+                        ]
+                    };
+                    PassiveSkills.warpJammer = {
+                        type: "warpJammer",
+                        displayName: "Warp Jammer",
+                        description: "Forces an extra unit to defend in neutral territory",
+                        inBattlePrep: [
+                            function (user, battlePrep) {
+                                if (user.fleet.player === battlePrep.attacker) {
+                                    battlePrep.minDefendersInNeutralTerritory += 1;
+                                }
+                            }
+                        ]
+                    };
+                    PassiveSkills.medic = {
+                        type: "medic",
+                        displayName: "Medic",
+                        description: "Heals all units in same star to full at turn start",
+                        atTurnStart: [
+                            function (user) {
+                                var star = user.fleet.location;
+                                var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                                for (var i = 0; i < allFriendlyUnits.length; i++) {
+                                    allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
+                                }
+                            }
+                        ]
+                    };
+                })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/iitemtemplate.d.ts"/>
 /// <reference path="abilities.ts" />
 /// <reference path="passiveskills.ts" />
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var Items;
-        (function (Items) {
-            Items.bombLauncher1 = {
-                type: "bombLauncher1",
-                displayName: "Bomb Launcher 1",
-                icon: "img\/items\/cannon.png",
-                techLevel: 1,
-                cost: 100,
-                slot: "high",
-                ability: Templates.Abilities.bombAttack
-            };
-            Items.bombLauncher2 = {
-                type: "bombLauncher2",
-                displayName: "Bomb Launcher 2",
-                icon: "img\/items\/cannon.png",
-                techLevel: 2,
-                cost: 200,
-                attributes: {
-                    attack: 1
-                },
-                slot: "high",
-                ability: Templates.Abilities.bombAttack
-            };
-            Items.bombLauncher3 = {
-                type: "bombLauncher3",
-                displayName: "Bomb Launcher 3",
-                icon: "img\/items\/cannon.png",
-                techLevel: 3,
-                cost: 300,
-                attributes: {
-                    attack: 3
-                },
-                slot: "high",
-                ability: Templates.Abilities.bombAttack
-            };
-            Items.afterBurner1 = {
-                type: "afterBurner1",
-                displayName: "Afterburner 1",
-                icon: "img\/items\/blueThing.png",
-                techLevel: 1,
-                cost: 100,
-                attributes: {
-                    speed: 1
-                },
-                slot: "mid",
-                passiveSkill: Templates.PassiveSkills.overdrive
-            };
-            Items.afterBurner2 = {
-                type: "afterBurner2",
-                displayName: "Afterburner 2",
-                icon: "img\/items\/blueThing.png",
-                techLevel: 2,
-                cost: 200,
-                attributes: {
-                    speed: 2
-                },
-                slot: "mid"
-            };
-            Items.afterBurner3 = {
-                type: "afterBurner3",
-                displayName: "Afterburner 3",
-                icon: "img\/items\/blueThing.png",
-                techLevel: 3,
-                cost: 300,
-                attributes: {
-                    maxActionPoints: 1,
-                    speed: 3
-                },
-                slot: "mid"
-            };
-            Items.shieldPlating1 = {
-                type: "shieldPlating1",
-                displayName: "Shield Plating 1",
-                icon: "img\/items\/armor1.png",
-                techLevel: 1,
-                cost: 100,
-                attributes: {
-                    defence: 1
-                },
-                slot: "low"
-            };
-            Items.shieldPlating2 = {
-                type: "shieldPlating2",
-                displayName: "Shield Plating 2",
-                icon: "img\/items\/armor1.png",
-                techLevel: 2,
-                cost: 200,
-                attributes: {
-                    defence: 2
-                },
-                slot: "low"
-            };
-            Items.shieldPlating3 = {
-                type: "shieldPlating3",
-                displayName: "Shield Plating 3",
-                icon: "img\/items\/armor1.png",
-                techLevel: 3,
-                cost: 300,
-                attributes: {
-                    defence: 3,
-                    speed: -1
-                },
-                slot: "low",
-                ability: Templates.Abilities.guardColumn
-            };
-        })(Items = Templates.Items || (Templates.Items = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Items;
+                (function (Items) {
+                    Items.bombLauncher1 = {
+                        type: "bombLauncher1",
+                        displayName: "Bomb Launcher 1",
+                        icon: "img\/items\/cannon.png",
+                        techLevel: 1,
+                        cost: 100,
+                        slot: "high",
+                        ability: Templates.Abilities.bombAttack
+                    };
+                    Items.bombLauncher2 = {
+                        type: "bombLauncher2",
+                        displayName: "Bomb Launcher 2",
+                        icon: "img\/items\/cannon.png",
+                        techLevel: 2,
+                        cost: 200,
+                        attributes: {
+                            attack: 1
+                        },
+                        slot: "high",
+                        ability: Templates.Abilities.bombAttack
+                    };
+                    Items.bombLauncher3 = {
+                        type: "bombLauncher3",
+                        displayName: "Bomb Launcher 3",
+                        icon: "img\/items\/cannon.png",
+                        techLevel: 3,
+                        cost: 300,
+                        attributes: {
+                            attack: 3
+                        },
+                        slot: "high",
+                        ability: Templates.Abilities.bombAttack
+                    };
+                    Items.afterBurner1 = {
+                        type: "afterBurner1",
+                        displayName: "Afterburner 1",
+                        icon: "img\/items\/blueThing.png",
+                        techLevel: 1,
+                        cost: 100,
+                        attributes: {
+                            speed: 1
+                        },
+                        slot: "mid",
+                        passiveSkill: Templates.PassiveSkills.overdrive
+                    };
+                    Items.afterBurner2 = {
+                        type: "afterBurner2",
+                        displayName: "Afterburner 2",
+                        icon: "img\/items\/blueThing.png",
+                        techLevel: 2,
+                        cost: 200,
+                        attributes: {
+                            speed: 2
+                        },
+                        slot: "mid"
+                    };
+                    Items.afterBurner3 = {
+                        type: "afterBurner3",
+                        displayName: "Afterburner 3",
+                        icon: "img\/items\/blueThing.png",
+                        techLevel: 3,
+                        cost: 300,
+                        attributes: {
+                            maxActionPoints: 1,
+                            speed: 3
+                        },
+                        slot: "mid"
+                    };
+                    Items.shieldPlating1 = {
+                        type: "shieldPlating1",
+                        displayName: "Shield Plating 1",
+                        icon: "img\/items\/armor1.png",
+                        techLevel: 1,
+                        cost: 100,
+                        attributes: {
+                            defence: 1
+                        },
+                        slot: "low"
+                    };
+                    Items.shieldPlating2 = {
+                        type: "shieldPlating2",
+                        displayName: "Shield Plating 2",
+                        icon: "img\/items\/armor1.png",
+                        techLevel: 2,
+                        cost: 200,
+                        attributes: {
+                            defence: 2
+                        },
+                        slot: "low"
+                    };
+                    Items.shieldPlating3 = {
+                        type: "shieldPlating3",
+                        displayName: "Shield Plating 3",
+                        icon: "img\/items\/armor1.png",
+                        techLevel: 3,
+                        cost: 300,
+                        attributes: {
+                            defence: 3,
+                            speed: -1
+                        },
+                        slot: "low",
+                        ability: Templates.Abilities.guardColumn
+                    };
+                })(Items = Templates.Items || (Templates.Items = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/items.ts" />
 /// <reference path="unit.ts" />
@@ -8629,186 +8651,192 @@ var Rance;
 /// <reference path="../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var SubEmblems;
-        (function (SubEmblems) {
-            SubEmblems.emblem0 = {
-                type: "emblem0",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem0.png"
-            };
-            SubEmblems.emblem33 = {
-                type: "emblem33",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem33.png"
-            };
-            SubEmblems.emblem34 = {
-                type: "emblem34",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem34.png"
-            };
-            SubEmblems.emblem35 = {
-                type: "emblem35",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem35.png"
-            };
-            SubEmblems.emblem36 = {
-                type: "emblem36",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem36.png"
-            };
-            SubEmblems.emblem37 = {
-                type: "emblem37",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem37.png"
-            };
-            SubEmblems.emblem38 = {
-                type: "emblem38",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem38.png"
-            };
-            SubEmblems.emblem39 = {
-                type: "emblem39",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem39.png"
-            };
-            SubEmblems.emblem40 = {
-                type: "emblem40",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem40.png"
-            };
-            SubEmblems.emblem41 = {
-                type: "emblem41",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem41.png"
-            };
-            SubEmblems.emblem42 = {
-                type: "emblem42",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem42.png"
-            };
-            SubEmblems.emblem43 = {
-                type: "emblem43",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem43.png"
-            };
-            SubEmblems.emblem44 = {
-                type: "emblem44",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem44.png"
-            };
-            SubEmblems.emblem45 = {
-                type: "emblem45",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem45.png"
-            };
-            SubEmblems.emblem46 = {
-                type: "emblem46",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem46.png"
-            };
-            SubEmblems.emblem47 = {
-                type: "emblem47",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem47.png"
-            };
-            SubEmblems.emblem48 = {
-                type: "emblem48",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem48.png"
-            };
-            SubEmblems.emblem49 = {
-                type: "emblem49",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem49.png"
-            };
-            SubEmblems.emblem50 = {
-                type: "emblem50",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem50.png"
-            };
-            SubEmblems.emblem51 = {
-                type: "emblem51",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem51.png"
-            };
-            SubEmblems.emblem52 = {
-                type: "emblem52",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem52.png"
-            };
-            SubEmblems.emblem53 = {
-                type: "emblem53",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem53.png"
-            };
-            SubEmblems.emblem54 = {
-                type: "emblem54",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem54.png"
-            };
-            SubEmblems.emblem55 = {
-                type: "emblem55",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem55.png"
-            };
-            SubEmblems.emblem56 = {
-                type: "emblem56",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem56.png"
-            };
-            SubEmblems.emblem57 = {
-                type: "emblem57",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem57.png"
-            };
-            SubEmblems.emblem58 = {
-                type: "emblem58",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem58.png"
-            };
-            SubEmblems.emblem59 = {
-                type: "emblem59",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem59.png"
-            };
-            SubEmblems.emblem61 = {
-                type: "emblem61",
-                position: "both",
-                foregroundOnly: true,
-                imageSrc: "emblem61.png"
-            };
-        })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var SubEmblems;
+                (function (SubEmblems) {
+                    SubEmblems.emblem0 = {
+                        type: "emblem0",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem0.png"
+                    };
+                    SubEmblems.emblem33 = {
+                        type: "emblem33",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem33.png"
+                    };
+                    SubEmblems.emblem34 = {
+                        type: "emblem34",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem34.png"
+                    };
+                    SubEmblems.emblem35 = {
+                        type: "emblem35",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem35.png"
+                    };
+                    SubEmblems.emblem36 = {
+                        type: "emblem36",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem36.png"
+                    };
+                    SubEmblems.emblem37 = {
+                        type: "emblem37",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem37.png"
+                    };
+                    SubEmblems.emblem38 = {
+                        type: "emblem38",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem38.png"
+                    };
+                    SubEmblems.emblem39 = {
+                        type: "emblem39",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem39.png"
+                    };
+                    SubEmblems.emblem40 = {
+                        type: "emblem40",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem40.png"
+                    };
+                    SubEmblems.emblem41 = {
+                        type: "emblem41",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem41.png"
+                    };
+                    SubEmblems.emblem42 = {
+                        type: "emblem42",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem42.png"
+                    };
+                    SubEmblems.emblem43 = {
+                        type: "emblem43",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem43.png"
+                    };
+                    SubEmblems.emblem44 = {
+                        type: "emblem44",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem44.png"
+                    };
+                    SubEmblems.emblem45 = {
+                        type: "emblem45",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem45.png"
+                    };
+                    SubEmblems.emblem46 = {
+                        type: "emblem46",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem46.png"
+                    };
+                    SubEmblems.emblem47 = {
+                        type: "emblem47",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem47.png"
+                    };
+                    SubEmblems.emblem48 = {
+                        type: "emblem48",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem48.png"
+                    };
+                    SubEmblems.emblem49 = {
+                        type: "emblem49",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem49.png"
+                    };
+                    SubEmblems.emblem50 = {
+                        type: "emblem50",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem50.png"
+                    };
+                    SubEmblems.emblem51 = {
+                        type: "emblem51",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem51.png"
+                    };
+                    SubEmblems.emblem52 = {
+                        type: "emblem52",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem52.png"
+                    };
+                    SubEmblems.emblem53 = {
+                        type: "emblem53",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem53.png"
+                    };
+                    SubEmblems.emblem54 = {
+                        type: "emblem54",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem54.png"
+                    };
+                    SubEmblems.emblem55 = {
+                        type: "emblem55",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem55.png"
+                    };
+                    SubEmblems.emblem56 = {
+                        type: "emblem56",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem56.png"
+                    };
+                    SubEmblems.emblem57 = {
+                        type: "emblem57",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem57.png"
+                    };
+                    SubEmblems.emblem58 = {
+                        type: "emblem58",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem58.png"
+                    };
+                    SubEmblems.emblem59 = {
+                        type: "emblem59",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem59.png"
+                    };
+                    SubEmblems.emblem61 = {
+                        type: "emblem61",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem61.png"
+                    };
+                })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
 /// <reference path="range.ts" />
@@ -10130,50 +10158,56 @@ var Rance;
 /// <reference path="../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        (function (AttitudeModifierFamily) {
-            AttitudeModifierFamily[AttitudeModifierFamily["geographic"] = 0] = "geographic";
-            AttitudeModifierFamily[AttitudeModifierFamily["history"] = 1] = "history";
-            AttitudeModifierFamily[AttitudeModifierFamily["current"] = 2] = "current";
-        })(Templates.AttitudeModifierFamily || (Templates.AttitudeModifierFamily = {}));
-        var AttitudeModifierFamily = Templates.AttitudeModifierFamily;
-        var AttitudeModifiers;
-        (function (AttitudeModifiers) {
-            AttitudeModifiers.neighborStars = {
-                type: "neighborStars",
-                displayName: "neighborStars",
-                family: AttitudeModifierFamily.geographic,
-                duration: -1,
-                startCondition: function (evaluation) {
-                    return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
-                },
-                getEffectFromEvaluation: function (evaluation) {
-                    return -2 * evaluation.neighborStars;
-                }
-            };
-            AttitudeModifiers.atWar = {
-                type: "atWar",
-                displayName: "At war",
-                family: AttitudeModifierFamily.current,
-                duration: -1,
-                startCondition: function (evaluation) {
-                    return (evaluation.currentStatus >= Rance.DiplomaticState.war);
-                },
-                constantEffect: -30
-            };
-            AttitudeModifiers.declaredWar = {
-                type: "declaredWar",
-                displayName: "Declared war",
-                family: AttitudeModifierFamily.history,
-                duration: 15,
-                startCondition: function (evaluation) {
-                    return (evaluation.currentStatus >= Rance.DiplomaticState.war);
-                },
-                constantEffect: -35
-            };
-        })(AttitudeModifiers = Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                (function (AttitudeModifierFamily) {
+                    AttitudeModifierFamily[AttitudeModifierFamily["geographic"] = 0] = "geographic";
+                    AttitudeModifierFamily[AttitudeModifierFamily["history"] = 1] = "history";
+                    AttitudeModifierFamily[AttitudeModifierFamily["current"] = 2] = "current";
+                })(Templates.AttitudeModifierFamily || (Templates.AttitudeModifierFamily = {}));
+                var AttitudeModifierFamily = Templates.AttitudeModifierFamily;
+                var AttitudeModifiers;
+                (function (AttitudeModifiers) {
+                    AttitudeModifiers.neighborStars = {
+                        type: "neighborStars",
+                        displayName: "neighborStars",
+                        family: AttitudeModifierFamily.geographic,
+                        duration: -1,
+                        startCondition: function (evaluation) {
+                            return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
+                        },
+                        getEffectFromEvaluation: function (evaluation) {
+                            return -2 * evaluation.neighborStars;
+                        }
+                    };
+                    AttitudeModifiers.atWar = {
+                        type: "atWar",
+                        displayName: "At war",
+                        family: AttitudeModifierFamily.current,
+                        duration: -1,
+                        startCondition: function (evaluation) {
+                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
+                        },
+                        constantEffect: -30
+                    };
+                    AttitudeModifiers.declaredWar = {
+                        type: "declaredWar",
+                        displayName: "Declared war",
+                        family: AttitudeModifierFamily.history,
+                        duration: 15,
+                        startCondition: function (evaluation) {
+                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
+                        },
+                        constantEffect: -35
+                    };
+                })(AttitudeModifiers = Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/attitudemodifiers.ts" />
 var Rance;
@@ -13551,31 +13585,37 @@ var Rance;
 /// <reference path="../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var StatusEffects;
-        (function (StatusEffects) {
-            StatusEffects.test = {
-                type: "test",
-                displayName: "test",
-                attributes: {
-                    attack: {
-                        flat: 9
-                    },
-                    defence: {
-                        flat: 9
-                    },
-                    intelligence: {
-                        flat: -9
-                    },
-                    speed: {
-                        flat: 9
-                    }
-                },
-                passiveSkills: [Templates.PassiveSkills.poisoned]
-            };
-        })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var StatusEffects;
+                (function (StatusEffects) {
+                    StatusEffects.test = {
+                        type: "test",
+                        displayName: "test",
+                        attributes: {
+                            attack: {
+                                flat: 9
+                            },
+                            defence: {
+                                flat: 9
+                            },
+                            intelligence: {
+                                flat: -9
+                            },
+                            speed: {
+                                flat: 9
+                            }
+                        },
+                        passiveSkills: [Templates.PassiveSkills.poisoned]
+                    };
+                })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../data/templates/statuseffects.ts" />
 var Rance;
@@ -16039,40 +16079,46 @@ var Rance;
 /// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var UnitFamilies;
-        (function (UnitFamilies) {
-            UnitFamilies.debug = {
-                type: "debug",
-                debugOnly: true,
-                alwaysAvailable: true,
-                rarity: 0,
-                distributionGroups: []
-            };
-            UnitFamilies.basic = {
-                type: "basic",
-                debugOnly: false,
-                alwaysAvailable: true,
-                rarity: 0,
-                distributionGroups: []
-            };
-            UnitFamilies.red = {
-                type: "red",
-                debugOnly: false,
-                alwaysAvailable: false,
-                rarity: 1,
-                distributionGroups: ["common", "rare"]
-            };
-            UnitFamilies.blue = {
-                type: "blue",
-                debugOnly: false,
-                alwaysAvailable: false,
-                rarity: 1,
-                distributionGroups: ["common", "rare"]
-            };
-        })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var UnitFamilies;
+                (function (UnitFamilies) {
+                    UnitFamilies.debug = {
+                        type: "debug",
+                        debugOnly: true,
+                        alwaysAvailable: true,
+                        rarity: 0,
+                        distributionGroups: []
+                    };
+                    UnitFamilies.basic = {
+                        type: "basic",
+                        debugOnly: false,
+                        alwaysAvailable: true,
+                        rarity: 0,
+                        distributionGroups: []
+                    };
+                    UnitFamilies.red = {
+                        type: "red",
+                        debugOnly: false,
+                        alwaysAvailable: false,
+                        rarity: 1,
+                        distributionGroups: ["common", "rare"]
+                    };
+                    UnitFamilies.blue = {
+                        type: "blue",
+                        debugOnly: false,
+                        alwaysAvailable: false,
+                        rarity: 1,
+                        distributionGroups: ["common", "rare"]
+                    };
+                })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/utility.ts" />
 /// <reference path="../../src/point.ts" />
@@ -19860,268 +19906,260 @@ var Rance;
 /// <reference path="battlesfx.ts" />
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var Abilities;
-        (function (Abilities) {
-            Abilities.dummyTargetColumn = {
-                type: "dummyTargetColumn",
-                displayName: "dummyTargetColumn",
-                description: "you shouldnt see this",
-                moveDelay: 0,
-                actionsUse: 0,
-                mainEffect: {
-                    template: Templates.Effects.dummyTargetColumn
-                }
-            };
-            Abilities.dummyTargetAll = {
-                type: "dummyTargetAll",
-                displayName: "dummyTargetAll",
-                description: "you shouldnt see this",
-                moveDelay: 0,
-                actionsUse: 0,
-                mainEffect: {
-                    template: Templates.Effects.dummyTargetAll
-                }
-            };
-            Abilities.rangedAttack = {
-                type: "rangedAttack",
-                displayName: "Ranged Attack",
-                description: "Standard ranged attack",
-                moveDelay: 100,
-                actionsUse: 1,
-                mainEffect: {
-                    template: Templates.Effects.singleTargetDamage,
-                    sfx: Templates.BattleSFX.rocketAttack,
-                    data: {
-                        baseDamage: 1,
-                        damageType: Rance.DamageType.physical
-                    },
-                    attachedEffects: [
-                        {
-                            template: Templates.Effects.receiveCounterAttack,
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Abilities;
+                (function (Abilities) {
+                    Abilities.rangedAttack = {
+                        type: "rangedAttack",
+                        displayName: "Ranged Attack",
+                        description: "Standard ranged attack",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: Templates.BattleSFX.rocketAttack,
                             data: {
-                                baseDamage: 0.5
+                                baseDamage: 1,
+                                damageType: Rance.DamageType.physical
+                            },
+                            attachedEffects: [
+                                {
+                                    template: Templates.Effects.receiveCounterAttack,
+                                    data: {
+                                        baseDamage: 0.5
+                                    }
+                                }
+                            ]
+                        }
+                    };
+                    Abilities.closeAttack = {
+                        type: "closeAttack",
+                        displayName: "Close Attack",
+                        description: "Close range attack that hits adjacent targets in same row as well",
+                        moveDelay: 90,
+                        actionsUse: 2,
+                        mainEffect: {
+                            template: Templates.Effects.closeAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.wholeRowAttack = {
+                        type: "wholeRowAttack",
+                        displayName: "Row Attack",
+                        description: "Attack entire row of units",
+                        moveDelay: 300,
+                        actionsUse: 1,
+                        bypassesGuard: true,
+                        mainEffect: {
+                            template: Templates.Effects.wholeRowAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.bombAttack = {
+                        type: "bombAttack",
+                        displayName: "Bomb Attack",
+                        description: "Ranged attack that hits all adjacent enemy units",
+                        moveDelay: 120,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.bombAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.guardColumn = {
+                        type: "guardColumn",
+                        displayName: "Guard Column",
+                        description: "Protect allies in the same row and boost defence up to 2x",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.guardColumn,
+                            sfx: Templates.BattleSFX.guard,
+                            data: {
+                                perInt: 20
                             }
                         }
-                    ]
-                }
-            };
-            Abilities.closeAttack = {
-                type: "closeAttack",
-                displayName: "Close Attack",
-                description: "Close range attack that hits adjacent targets in same row as well",
-                moveDelay: 90,
-                actionsUse: 2,
-                mainEffect: {
-                    template: Templates.Effects.closeAttack,
-                    sfx: Templates.BattleSFX.rocketAttack
-                }
-            };
-            Abilities.wholeRowAttack = {
-                type: "wholeRowAttack",
-                displayName: "Row Attack",
-                description: "Attack entire row of units",
-                moveDelay: 300,
-                actionsUse: 1,
-                bypassesGuard: true,
-                mainEffect: {
-                    template: Templates.Effects.wholeRowAttack,
-                    sfx: Templates.BattleSFX.rocketAttack
-                }
-            };
-            Abilities.bombAttack = {
-                type: "bombAttack",
-                displayName: "Bomb Attack",
-                description: "Ranged attack that hits all adjacent enemy units",
-                moveDelay: 120,
-                actionsUse: 1,
-                mainEffect: {
-                    template: Templates.Effects.bombAttack,
-                    sfx: Templates.BattleSFX.rocketAttack
-                }
-            };
-            Abilities.guardColumn = {
-                type: "guardColumn",
-                displayName: "Guard Column",
-                description: "Protect allies in the same row and boost defence up to 2x",
-                moveDelay: 100,
-                actionsUse: 1,
-                mainEffect: {
-                    template: Templates.Effects.guardColumn,
-                    sfx: Templates.BattleSFX.guard,
-                    data: {
-                        perInt: 20
-                    }
-                }
-            };
-            Abilities.boardingHook = {
-                type: "boardingHook",
-                displayName: "Boarding Hook",
-                description: "0.8x damage but increases target capture chance",
-                moveDelay: 100,
-                actionsUse: 1,
-                mainEffect: {
-                    template: Templates.Effects.singleTargetDamage,
-                    sfx: Templates.BattleSFX.rocketAttack,
-                    data: {
-                        baseDamage: 0.8,
-                        damageType: Rance.DamageType.physical
-                    },
-                    attachedEffects: [
-                        {
-                            template: Templates.Effects.increaseCaptureChance,
+                    };
+                    Abilities.boardingHook = {
+                        type: "boardingHook",
+                        displayName: "Boarding Hook",
+                        description: "0.8x damage but increases target capture chance",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: Templates.BattleSFX.rocketAttack,
                             data: {
-                                flat: 0.5
-                            }
-                        },
-                        {
-                            template: Templates.Effects.receiveCounterAttack,
+                                baseDamage: 0.8,
+                                damageType: Rance.DamageType.physical
+                            },
+                            attachedEffects: [
+                                {
+                                    template: Templates.Effects.increaseCaptureChance,
+                                    data: {
+                                        flat: 0.5
+                                    }
+                                },
+                                {
+                                    template: Templates.Effects.receiveCounterAttack,
+                                    data: {
+                                        baseDamage: 0.5
+                                    }
+                                }
+                            ]
+                        }
+                    };
+                    Abilities.debugAbility = {
+                        type: "debugAbility",
+                        displayName: "Debug Ability",
+                        description: "who knows what its going to do today",
+                        moveDelay: 0,
+                        actionsUse: 0,
+                        mainEffect: {
+                            template: Templates.Effects.guardColumn,
+                            sfx: Templates.BattleSFX.guard,
                             data: {
-                                baseDamage: 0.5
+                                perInt: 20
                             }
                         }
-                    ]
-                }
-            };
-            Abilities.debugAbility = {
-                type: "debugAbility",
-                displayName: "Debug Ability",
-                description: "who knows what its going to do today",
-                moveDelay: 0,
-                actionsUse: 0,
-                mainEffect: {
-                    template: Templates.Effects.guardColumn,
-                    sfx: Templates.BattleSFX.guard,
-                    data: {
-                        perInt: 20
-                    }
-                }
-            };
-            Abilities.ranceAttack = {
-                type: "ranceAttack",
-                displayName: "Rance attack",
-                description: "dont sue",
-                moveDelay: 0,
-                actionsUse: 0,
-                mainEffect: {
-                    template: Templates.Effects.singleTargetDamage,
-                    sfx: {
-                        duration: 1200,
-                        userSprite: function (props) {
-                            // cg13600.bmp
-                            return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                    };
+                    Abilities.ranceAttack = {
+                        type: "ranceAttack",
+                        displayName: "Rance attack",
+                        description: "dont sue",
+                        moveDelay: 0,
+                        actionsUse: 0,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: {
+                                duration: 1200,
+                                userSprite: function (props) {
+                                    // cg13600.bmp
+                                    return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                                },
+                                battleOverlay: function (props) {
+                                    // cg40500.bmp - cg40529.bmp converted to webm
+                                    return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                                }
+                            },
+                            data: {
+                                baseDamage: 0.1,
+                                damageType: Rance.DamageType.physical
+                            }
                         },
-                        battleOverlay: function (props) {
-                            // cg40500.bmp - cg40529.bmp converted to webm
-                            return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
-                        }
-                    },
-                    data: {
-                        baseDamage: 0.1,
-                        damageType: Rance.DamageType.physical
-                    }
-                },
-                secondaryEffects: [
-                    {
-                        template: Templates.Effects.singleTargetDamage,
-                        data: {
-                            baseDamage: 0.1,
-                            damageType: Rance.DamageType.physical
-                        },
-                        attachedEffects: [
+                        secondaryEffects: [
                             {
-                                template: Templates.Effects.receiveCounterAttack,
+                                template: Templates.Effects.singleTargetDamage,
                                 data: {
-                                    baseDamage: 0.5
+                                    baseDamage: 0.1,
+                                    damageType: Rance.DamageType.physical
+                                },
+                                attachedEffects: [
+                                    {
+                                        template: Templates.Effects.receiveCounterAttack,
+                                        data: {
+                                            baseDamage: 0.5
+                                        }
+                                    }
+                                ],
+                                sfx: {
+                                    duration: 1500,
+                                    userSprite: function (props) {
+                                        // cg13300.bmp
+                                        return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                                    },
+                                    battleOverlay: function (props) {
+                                        // cg40000.bmp - cg40029.bmp converted to webm
+                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                                    }
                                 }
                             }
-                        ],
-                        sfx: {
-                            duration: 1500,
-                            userSprite: function (props) {
-                                // cg13300.bmp
-                                return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
-                            },
-                            battleOverlay: function (props) {
-                                // cg40000.bmp - cg40029.bmp converted to webm
-                                return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                        ]
+                    };
+                    Abilities.standBy = {
+                        type: "standBy",
+                        displayName: "Standby",
+                        description: "Skip a turn but next one comes faster",
+                        moveDelay: 50,
+                        actionsUse: 1,
+                        AIEvaluationPriority: 0.6,
+                        AIScoreAdjust: -0.1,
+                        disableInAIBattles: true,
+                        mainEffect: {
+                            template: Templates.Effects.standBy,
+                            sfx: {
+                                duration: 750
                             }
                         }
-                    }
-                ]
-            };
-            Abilities.standBy = {
-                type: "standBy",
-                displayName: "Standby",
-                description: "Skip a turn but next one comes faster",
-                moveDelay: 50,
-                actionsUse: 1,
-                AIEvaluationPriority: 0.6,
-                AIScoreAdjust: -0.1,
-                disableInAIBattles: true,
-                mainEffect: {
-                    template: Templates.Effects.standBy,
-                    sfx: {
-                        duration: 750
-                    }
-                }
-            };
-        })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+                    };
+                })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/iunitarchetype.d.ts"/>
 var Rance;
 (function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var UnitArchetypes;
-        (function (UnitArchetypes) {
-            UnitArchetypes.combat = {
-                type: "combat",
-                idealWeightInBattle: 1,
-                idealWeightInFleet: 1,
-                rowScores: {
-                    ROW_FRONT: 1,
-                    ROW_BACK: 0.6
-                }
-            };
-            UnitArchetypes.utility = {
-                type: "utility",
-                idealWeightInBattle: 0.33,
-                idealWeightInFleet: 0.5,
-                rowScores: {
-                    ROW_FRONT: 0.4,
-                    ROW_BACK: 0.6
-                }
-            };
-            UnitArchetypes.defence = {
-                type: "defence",
-                idealWeightInBattle: 0.5,
-                idealWeightInFleet: 0.5,
-                rowScores: {
-                    ROW_FRONT: 1,
-                    ROW_BACK: 0.5
-                },
-                scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
-                    var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
-                    var totalDefenceUnderThreshhold = 0;
-                    var threshhold = 6;
-                    var alreadyHasDefender = false;
-                    for (var i = 0; i < rowUnits.length; i++) {
-                        var unit = rowUnits[i];
-                        if (!unit)
-                            continue;
-                        if (unit.template.archetype.type === "defence") {
-                            return multiplier;
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var UnitArchetypes;
+                (function (UnitArchetypes) {
+                    UnitArchetypes.combat = {
+                        type: "combat",
+                        idealWeightInBattle: 1,
+                        idealWeightInFleet: 1,
+                        rowScores: {
+                            ROW_FRONT: 1,
+                            ROW_BACK: 0.6
                         }
-                        totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-                    }
-                    return multiplier + totalDefenceUnderThreshhold * 0.2;
-                }
-            };
-        })(UnitArchetypes = Templates.UnitArchetypes || (Templates.UnitArchetypes = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
+                    };
+                    UnitArchetypes.utility = {
+                        type: "utility",
+                        idealWeightInBattle: 0.33,
+                        idealWeightInFleet: 0.5,
+                        rowScores: {
+                            ROW_FRONT: 0.4,
+                            ROW_BACK: 0.6
+                        }
+                    };
+                    UnitArchetypes.defence = {
+                        type: "defence",
+                        idealWeightInBattle: 0.5,
+                        idealWeightInFleet: 0.5,
+                        rowScores: {
+                            ROW_FRONT: 1,
+                            ROW_BACK: 0.5
+                        },
+                        scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
+                            var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
+                            var totalDefenceUnderThreshhold = 0;
+                            var threshhold = 6;
+                            var alreadyHasDefender = false;
+                            for (var i = 0; i < rowUnits.length; i++) {
+                                var unit = rowUnits[i];
+                                if (!unit)
+                                    continue;
+                                if (unit.template.archetype.type === "defence") {
+                                    return multiplier;
+                                }
+                                totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
+                            }
+                            return multiplier + totalDefenceUnderThreshhold * 0.2;
+                        }
+                    };
+                })(UnitArchetypes = Templates.UnitArchetypes || (Templates.UnitArchetypes = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
@@ -20142,8 +20180,8 @@ var Rance;
                     Units.cheatShip = {
                         type: "cheatShip",
                         displayName: "Debug Ship",
-                        archetype: UnitArchetypes.combat,
-                        families: [UnitFamilies.debug],
+                        archetype: Templates.UnitArchetypes.combat,
+                        families: [Templates.UnitFamilies.debug],
                         sprite: {
                             imageSrc: "cheatShip.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20162,25 +20200,25 @@ var Rance;
                             speed: 9
                         },
                         abilities: [
-                            Abilities.debugAbility,
-                            Abilities.rangedAttack,
-                            Abilities.bombAttack,
-                            Abilities.boardingHook,
-                            Abilities.guardColumn,
-                            Abilities.ranceAttack,
-                            Abilities.standBy
+                            Templates.Abilities.debugAbility,
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.bombAttack,
+                            Templates.Abilities.boardingHook,
+                            Templates.Abilities.guardColumn,
+                            Templates.Abilities.ranceAttack,
+                            Templates.Abilities.standBy
                         ],
                         passiveSkills: [
-                            PassiveSkills.autoHeal,
-                            PassiveSkills.warpJammer,
-                            PassiveSkills.medic
+                            Templates.PassiveSkills.autoHeal,
+                            Templates.PassiveSkills.warpJammer,
+                            Templates.PassiveSkills.medic
                         ]
                     };
                     Units.fighterSquadron = {
                         type: "fighterSquadron",
                         displayName: "Fighter Squadron",
-                        archetype: UnitArchetypes.combat,
-                        families: [UnitFamilies.basic],
+                        archetype: Templates.UnitArchetypes.combat,
+                        families: [Templates.UnitFamilies.basic],
                         sprite: {
                             imageSrc: "fighter.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20199,16 +20237,16 @@ var Rance;
                             speed: 1
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.closeAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.closeAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                     Units.bomberSquadron = {
                         type: "bomberSquadron",
                         displayName: "Bomber Squadron",
-                        archetype: UnitArchetypes.combat,
-                        families: [UnitFamilies.basic],
+                        archetype: Templates.UnitArchetypes.combat,
+                        families: [Templates.UnitFamilies.basic],
                         sprite: {
                             imageSrc: "bomber.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20227,16 +20265,16 @@ var Rance;
                             speed: 0.8
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.bombAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.bombAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                     Units.battleCruiser = {
                         type: "battleCruiser",
                         displayName: "Battlecruiser",
-                        archetype: UnitArchetypes.combat,
-                        families: [UnitFamilies.basic],
+                        archetype: Templates.UnitArchetypes.combat,
+                        families: [Templates.UnitFamilies.basic],
                         sprite: {
                             imageSrc: "battleCruiser.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20255,16 +20293,16 @@ var Rance;
                             speed: 0.6
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.wholeRowAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.wholeRowAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                     Units.scout = {
                         type: "scout",
                         displayName: "Scout",
-                        archetype: UnitArchetypes.utility,
-                        families: [UnitFamilies.basic],
+                        archetype: Templates.UnitArchetypes.utility,
+                        families: [Templates.UnitFamilies.basic],
                         sprite: {
                             imageSrc: "scout.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20283,15 +20321,15 @@ var Rance;
                             speed: 0.7
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                     Units.stealthShip = {
                         type: "stealthShip",
                         displayName: "Stealth Ship",
-                        archetype: UnitArchetypes.utility,
-                        families: [UnitFamilies.debug],
+                        archetype: Templates.UnitArchetypes.utility,
+                        families: [Templates.UnitFamilies.debug],
                         sprite: {
                             imageSrc: "scout.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20311,15 +20349,15 @@ var Rance;
                             speed: 0.7
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                     Units.shieldBoat = {
                         type: "shieldBoat",
                         displayName: "Shield Boat",
-                        archetype: UnitArchetypes.defence,
-                        families: [UnitFamilies.basic],
+                        archetype: Templates.UnitArchetypes.defence,
+                        families: [Templates.UnitFamilies.basic],
                         sprite: {
                             imageSrc: "shieldBoat.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20338,19 +20376,19 @@ var Rance;
                             speed: 0.4
                         },
                         abilities: [
-                            Abilities.guardColumn,
-                            Abilities.rangedAttack,
-                            Abilities.standBy
+                            Templates.Abilities.guardColumn,
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.standBy
                         ],
                         passiveSkills: [
-                            PassiveSkills.initialGuard
+                            Templates.PassiveSkills.initialGuard
                         ]
                     };
                     Units.redShip = {
                         type: "redShip",
                         displayName: "Red ship",
-                        archetype: UnitArchetypes.utility,
-                        families: [UnitFamilies.red],
+                        archetype: Templates.UnitArchetypes.utility,
+                        families: [Templates.UnitFamilies.red],
                         sprite: {
                             imageSrc: "scout.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20369,15 +20407,15 @@ var Rance;
                             speed: 0.7
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                     Units.blueShip = {
                         type: "blueShip",
                         displayName: "Blue ship",
-                        archetype: UnitArchetypes.utility,
-                        families: [UnitFamilies.blue],
+                        archetype: Templates.UnitArchetypes.utility,
+                        families: [Templates.UnitFamilies.blue],
                         sprite: {
                             imageSrc: "scout.png",
                             anchor: { x: 0.5, y: 0.5 }
@@ -20396,8 +20434,8 @@ var Rance;
                             speed: 0.7
                         },
                         abilities: [
-                            Abilities.rangedAttack,
-                            Abilities.standBy
+                            Templates.Abilities.rangedAttack,
+                            Templates.Abilities.standBy
                         ]
                     };
                 })(Units = Templates.Units || (Templates.Units = {}));
