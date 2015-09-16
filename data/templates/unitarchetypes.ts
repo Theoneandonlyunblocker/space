@@ -10,7 +10,7 @@ module Rance
       {
         export module UnitArchetypes
         {
-          export var combat: IUnitArchetype =
+          export var combat: Rance.Templates.IUnitArchetype =
           {
             type: "combat",
             idealWeightInBattle: 1,
@@ -21,7 +21,7 @@ module Rance
               ROW_BACK: 0.6
             }
           }
-          export var utility: IUnitArchetype =
+          export var utility: Rance.Templates.IUnitArchetype =
           {
             type: "utility",
             idealWeightInBattle: 0.33,
@@ -32,7 +32,7 @@ module Rance
               ROW_BACK: 0.6
             }
           }
-          export var defence: IUnitArchetype =
+          export var defence: Rance.Templates.IUnitArchetype =
           {
             type: "defence",
             idealWeightInBattle: 0.5,

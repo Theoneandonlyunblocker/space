@@ -5555,7 +5555,7 @@ var Rance;
                 var resources = [];
                 for (var resourceType in this.props.player.resources) {
                     var resourceData = {
-                        resource: Rance.Templates.Resources[resourceType],
+                        resource: Rance.app.moduleData.Templates.Resources[resourceType],
                         amount: this.props.player.resources[resourceType],
                         key: resourceType
                     };
@@ -7408,7 +7408,6 @@ var Rance;
         (function (DefaultModule) {
             var Templates;
             (function (Templates) {
-                // called for each unit present in star in battleprep constructor
                 var PassiveSkills;
                 (function (PassiveSkills) {
                     PassiveSkills.autoHeal = {
@@ -10411,7 +10410,7 @@ var Rance;
             set new strength for modifier
              */
             var modifiersByPlayer = this.attitudeModifiersByPlayer;
-            var allModifiers = Rance.Templates.AttitudeModifiers;
+            var allModifiers = app.moduleData.Templates.AttitudeModifiers;
             for (var playerId in modifiersByPlayer)
                 var playerModifiers = modifiersByPlayer[player.id];
             var activeModifiers = {};
@@ -12586,9 +12585,9 @@ var Rance;
         Player.prototype.getGloballyBuildableShips = function () {
             var templates = [];
             var typesAlreadyAdded = {};
-            var unitsToAdd = Rance.Templates.UnitFamilies.basic.associatedTemplates.slice(0);
+            var unitsToAdd = app.moduleData.Templates.UnitFamilies.basic.associatedTemplates.slice(0);
             if (!this.isAI && Rance.Options.debugMode) {
-                unitsToAdd = unitsToAdd.concat(Rance.Templates.UnitFamilies.debug.associatedTemplates);
+                unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies.debug.associatedTemplates);
             }
             for (var i = 0; i < unitsToAdd.length; i++) {
                 var template = unitsToAdd[i];
@@ -16289,14 +16288,14 @@ var Rance;
                 var resourcePlacerFN = function (sector, resource) {
                     sector.addResource(resource);
                 };
-                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "resources", Templates.Resources, resourcePlacerFN);
+                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
                 var localShipPlacerFN = function (sector, shipFamily) {
                     for (var i = 0; i < sector.stars.length; i++) {
                         var star = sector.stars[i];
                         star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
                     }
                 };
-                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "unitFamilies", Templates.UnitFamilies, localShipPlacerFN);
+                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
                 // set players
                 var startRegions = (function setStartingRegions() {
                     var armCount = options.basicOptions["arms"];
@@ -20661,7 +20660,7 @@ var Rance;
             star.baseIncome = data.baseIncome;
             star.seed = data.seed;
             if (data.resourceType) {
-                star.setResource(Rance.Templates.Resources[data.resourceType]);
+                star.setResource(app.moduleData.Templates.Resources[data.resourceType]);
             }
             if (data.buildableUnitTypes) {
                 for (var i = 0; i < data.buildableUnitTypes.length; i++) {
@@ -20754,7 +20753,7 @@ var Rance;
                         continue;
                     }
                     for (var i = 0; i < modifiers.length; i++) {
-                        var template = Rance.Templates.AttitudeModifiers[modifiers[i].templateType];
+                        var template = app.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
                         var modifier = new Rance.AttitudeModifier({
                             template: template,
                             startTurn: modifiers[i].startTurn,
@@ -20858,8 +20857,8 @@ var Rance;
         }
     }
     function setAttitudeModifierOverride() {
-        for (var modifierType in Rance.Templates.AttitudeModifiers) {
-            var modifier = Rance.Templates.AttitudeModifiers[modifierType];
+        for (var modifierType in app.moduleData.Templates.AttitudeModifiers) {
+            var modifier = app.moduleData.Templates.AttitudeModifiers[modifierType];
             if (modifier.canBeOverriddenBy) {
                 for (var i = 0; i < modifier.canBeOverriddenBy.length; i++) {
                     if (!modifier.canBeOverriddenBy[i].canOverride) {
@@ -20905,8 +20904,8 @@ var Rance;
                     }
                 }
             }
-            putInGroups(Rance.Templates.UnitFamilies, "unitFamilies");
-            putInGroups(Rance.Templates.Resources, "resources");
+            putInGroups(app.moduleData.Templates.UnitFamilies, "unitFamilies");
+            putInGroups(app.moduleData.Templates.Resources, "resources");
             return result;
         })();
     })(TemplateIndexes = Rance.TemplateIndexes || (Rance.TemplateIndexes = {}));

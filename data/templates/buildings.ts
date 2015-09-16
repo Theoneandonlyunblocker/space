@@ -10,7 +10,7 @@ module Rance
       {
         export module Buildings
         {
-          export var sectorCommand: IDefenceBuildingTemplate =
+          export var sectorCommand: Rance.Templates.IDefenceBuildingTemplate =
           {
             type: "sectorCommand",
             category: "defence",
@@ -37,7 +37,7 @@ module Rance
             ],
             defenderAdvantage: 0.2
           }
-          export var sectorCommand1: IDefenceBuildingTemplate =
+          export var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate =
           {
             type: "sectorCommand1",
             category: "defence",
@@ -53,7 +53,7 @@ module Rance
             upgradeOnly: true,
             defenderAdvantage: 0.3
           }
-          export var sectorCommand2: IDefenceBuildingTemplate =
+          export var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate =
           {
             type: "sectorCommand2",
             category: "defence",
@@ -69,7 +69,7 @@ module Rance
             upgradeOnly: true,
             defenderAdvantage: 0.3
           }
-          export var starBase: IDefenceBuildingTemplate =
+          export var starBase: Rance.Templates.IDefenceBuildingTemplate =
           {
             type: "starBase",
             category: "defence",
@@ -90,7 +90,7 @@ module Rance
               }
             ]
           }
-          export var commercialPort: IBuildingTemplate =
+          export var commercialPort: Rance.Templates.IBuildingTemplate =
           {
             type: "commercialPort",
             category: "economy",
@@ -103,7 +103,7 @@ module Rance
 
             maxUpgradeLevel: 4
           }
-          export var deepSpaceRadar: IBuildingTemplate =
+          export var deepSpaceRadar: Rance.Templates.IBuildingTemplate =
           {
             type: "deepSpaceRadar",
             category: "vision",
@@ -116,7 +116,7 @@ module Rance
 
             maxUpgradeLevel: 2
           }
-          export var itemManufactory: IBuildingTemplate =
+          export var itemManufactory: Rance.Templates.IBuildingTemplate =
           {
             type: "itemManufactory",
             category: "manufactory",
@@ -129,7 +129,7 @@ module Rance
 
             maxUpgradeLevel: 3 // MANUFACTORY_MAX
           }
-          export var resourceMine: IBuildingTemplate =
+          export var resourceMine: Rance.Templates.IBuildingTemplate =
           {
             type: "resourceMine",
             category: "mine",

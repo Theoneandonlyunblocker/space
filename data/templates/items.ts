@@ -12,7 +12,7 @@ module Rance
       {
         export module Items
         {
-          export var bombLauncher1: IItemTemplate =
+          export var bombLauncher1: Rance.Templates.IItemTemplate =
           {
             type: "bombLauncher1",
             displayName: "Bomb Launcher 1",
@@ -24,7 +24,7 @@ module Rance
             slot: "high",
             ability: Abilities.bombAttack
           }
-          export var bombLauncher2: IItemTemplate =
+          export var bombLauncher2: Rance.Templates.IItemTemplate =
           {
             type: "bombLauncher2",
             displayName: "Bomb Launcher 2",
@@ -41,7 +41,7 @@ module Rance
             slot: "high",
             ability: Abilities.bombAttack
           }
-          export var bombLauncher3: IItemTemplate =
+          export var bombLauncher3: Rance.Templates.IItemTemplate =
           {
             type: "bombLauncher3",
             displayName: "Bomb Launcher 3",
@@ -59,7 +59,7 @@ module Rance
             ability: Abilities.bombAttack
           }
 
-          export var afterBurner1: IItemTemplate =
+          export var afterBurner1: Rance.Templates.IItemTemplate =
           {
             type: "afterBurner1",
             displayName: "Afterburner 1",
@@ -76,7 +76,7 @@ module Rance
             slot: "mid",
             passiveSkill: PassiveSkills.overdrive
           }
-          export var afterBurner2: IItemTemplate =
+          export var afterBurner2: Rance.Templates.IItemTemplate =
           {
             type: "afterBurner2",
             displayName: "Afterburner 2",
@@ -92,7 +92,7 @@ module Rance
 
             slot: "mid"
           }
-          export var afterBurner3: IItemTemplate =
+          export var afterBurner3: Rance.Templates.IItemTemplate =
           {
             type: "afterBurner3",
             displayName: "Afterburner 3",
@@ -109,7 +109,7 @@ module Rance
 
             slot: "mid"
           }
-          export var shieldPlating1: IItemTemplate =
+          export var shieldPlating1: Rance.Templates.IItemTemplate =
           {
             type: "shieldPlating1",
             displayName: "Shield Plating 1",
@@ -125,7 +125,7 @@ module Rance
 
             slot: "low"
           }
-          export var shieldPlating2: IItemTemplate =
+          export var shieldPlating2: Rance.Templates.IItemTemplate =
           {
             type: "shieldPlating2",
             displayName: "Shield Plating 2",
@@ -141,7 +141,7 @@ module Rance
 
             slot: "low"
           }
-          export var shieldPlating3: IItemTemplate =
+          export var shieldPlating3: Rance.Templates.IItemTemplate =
           {
             type: "shieldPlating3",
             displayName: "Shield Plating 3",

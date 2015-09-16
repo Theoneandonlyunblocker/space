@@ -42,8 +42,8 @@ module Rance
         }
       }
 
-      putInGroups(Templates.UnitFamilies, "unitFamilies");
-      putInGroups(Templates.Resources, "resources");
+      putInGroups(app.moduleData.Templates.UnitFamilies, "unitFamilies");
+      putInGroups(app.moduleData.Templates.Resources, "resources");
 
       return result;
     })();

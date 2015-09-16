@@ -42,9 +42,9 @@ module Rance
   }
   function setAttitudeModifierOverride()
   {
-    for (var modifierType in Templates.AttitudeModifiers)
+    for (var modifierType in app.moduleData.Templates.AttitudeModifiers)
     {
-      var modifier = Templates.AttitudeModifiers[modifierType];
+      var modifier = app.moduleData.Templates.AttitudeModifiers[modifierType];
       if (modifier.canBeOverriddenBy)
       {
         for (var i = 0; i < modifier.canBeOverriddenBy.length; i++)

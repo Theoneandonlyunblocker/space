@@ -122,7 +122,7 @@ module Rance
 
       if (data.resourceType)
       {
-        star.setResource(Templates.Resources[data.resourceType]);
+        star.setResource(app.moduleData.Templates.Resources[data.resourceType]);
       }
 
       if (data.buildableUnitTypes)
@@ -264,7 +264,7 @@ module Rance
 
           for (var i = 0; i < modifiers.length; i++)
           {
-            var template = Templates.AttitudeModifiers[modifiers[i].templateType];
+            var template = app.moduleData.Templates.AttitudeModifiers[modifiers[i].templateType];
             var modifier = new AttitudeModifier(
             {
               template: template,

@@ -11,10 +11,9 @@ module Rance
     {
       export module Templates
       {
-        // called for each unit present in star in battleprep constructor
         export module PassiveSkills
         {
-          export var autoHeal: IPassiveSkillTemplate =
+          export var autoHeal: Rance.Templates.IPassiveSkillTemplate =
           {
             type: "autoHeal",
             displayName: "Auto heal",
@@ -44,7 +43,7 @@ module Rance
               }
             ]
           }
-          export var poisoned: IPassiveSkillTemplate =
+          export var poisoned: Rance.Templates.IPassiveSkillTemplate =
           {
             type: "poisoned",
             displayName: "Poisoned",
@@ -76,7 +75,7 @@ module Rance
             ]
 
           }
-          export var overdrive: IPassiveSkillTemplate =
+          export var overdrive: Rance.Templates.IPassiveSkillTemplate =
           {
             type: "overdrive",
             displayName: "Overdrive",
@@ -89,7 +88,7 @@ module Rance
               }
             ]
           }
-          export var initialGuard: IPassiveSkillTemplate =
+          export var initialGuard: Rance.Templates.IPassiveSkillTemplate =
           {
             type: "initialGuard",
             displayName: "Initial Guard",
@@ -111,7 +110,7 @@ module Rance
               }
             ]
           }
-          export var warpJammer: IPassiveSkillTemplate =
+          export var warpJammer: Rance.Templates.IPassiveSkillTemplate =
           {
             type: "warpJammer",
             displayName: "Warp Jammer",
@@ -128,7 +127,7 @@ module Rance
               }
             ]
           }
-          export var medic: IPassiveSkillTemplate =
+          export var medic: Rance.Templates.IPassiveSkillTemplate =
           {
             type: "medic",
             displayName: "Medic",

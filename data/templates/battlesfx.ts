@@ -14,13 +14,13 @@ module Rance
       {
         export module BattleSFX
         {
-          export var rocketAttack: IBattleSFXTemplate =
+          export var rocketAttack: Rance.Templates.IBattleSFXTemplate =
           {
             duration: 1500,
             battleOverlay: BattleSFXFunctions.rocketAttack,
             delay: 0.3
           }
-          export var guard: IBattleSFXTemplate =
+          export var guard: Rance.Templates.IBattleSFXTemplate =
           {
             duration: 1500,
             battleOverlay: BattleSFXFunctions.guard,

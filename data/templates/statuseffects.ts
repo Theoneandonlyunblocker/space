@@ -11,7 +11,7 @@ module Rance
       {
         export module StatusEffects
         {
-          export var test: IStatusEffectTemplate =
+          export var test: Rance.Templates.IStatusEffectTemplate =
           {
             type: "test",
             displayName: "test",

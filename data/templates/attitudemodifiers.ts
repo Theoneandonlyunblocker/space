@@ -23,7 +23,7 @@ module Rance
 
         export module AttitudeModifiers
         {
-          export var neighborStars: IAttitudeModifierTemplate =
+          export var neighborStars: Rance.Templates.IAttitudeModifierTemplate =
           {
             type: "neighborStars",
             displayName: "neighborStars",
@@ -41,7 +41,7 @@ module Rance
             }
           }
 
-          export var atWar: IAttitudeModifierTemplate =
+          export var atWar: Rance.Templates.IAttitudeModifierTemplate =
           {
             type: "atWar",
             displayName: "At war",
@@ -56,7 +56,7 @@ module Rance
             constantEffect: -30
           }
 
-          export var declaredWar: IAttitudeModifierTemplate =
+          export var declaredWar: Rance.Templates.IAttitudeModifierTemplate =
           {
             type: "declaredWar",
             displayName: "Declared war",

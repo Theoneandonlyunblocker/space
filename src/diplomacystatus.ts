@@ -184,7 +184,7 @@ module Rance
       set new strength for modifier
        */
       var modifiersByPlayer = this.attitudeModifiersByPlayer;
-      var allModifiers = Templates.AttitudeModifiers;
+      var allModifiers = app.moduleData.Templates.AttitudeModifiers;
 
       for (var playerId in modifiersByPlayer)
 

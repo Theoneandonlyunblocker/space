@@ -11,7 +11,7 @@ module Rance
       {
         export module Resources
         {
-          export var testResource1: IResourceTemplate =
+          export var testResource1: Rance.Templates.IResourceTemplate =
           {
             type: "testResource1",
             displayName: "Test Resource 1",
@@ -19,7 +19,7 @@ module Rance
             rarity: 1,
             distributionGroups: ["common"]
           }
-          export var testResource2: IResourceTemplate =
+          export var testResource2: Rance.Templates.IResourceTemplate =
           {
             type: "testResource2",
             displayName: "Test Resource 2",
@@ -27,7 +27,7 @@ module Rance
             rarity: 1,
             distributionGroups: ["common"]
           }
-          export var testResource3: IResourceTemplate =
+          export var testResource3: Rance.Templates.IResourceTemplate =
           {
             type: "testResource3",
             displayName: "Test Resource 3",
@@ -35,7 +35,7 @@ module Rance
             rarity: 1,
             distributionGroups: ["common"]
           }
-          export var testResource4: IResourceTemplate =
+          export var testResource4: Rance.Templates.IResourceTemplate =
           {
             type: "testResource4",
             displayName: "Test Resource 4",
@@ -43,7 +43,7 @@ module Rance
             rarity: 1,
             distributionGroups: ["rare"]
           }
-          export var testResource5: IResourceTemplate =
+          export var testResource5: Rance.Templates.IResourceTemplate =
           {
             type: "testResource5",
             displayName: "Test Resource 5",

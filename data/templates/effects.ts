@@ -16,7 +16,7 @@ module Rance
       {
         export module Effects
         {
-          export var singleTargetDamage: IEffectTemplate =
+          export var singleTargetDamage: Rance.Templates.IEffectTemplate =
           {
             name: "singleTargetDamage",
             targetFleets: "enemy",
@@ -33,7 +33,7 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var closeAttack: IEffectTemplate =
+          export var closeAttack: Rance.Templates.IEffectTemplate =
           {
             name: "closeAttack",
             targetFleets: "enemy",
@@ -50,7 +50,7 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var wholeRowAttack: IEffectTemplate =
+          export var wholeRowAttack: Rance.Templates.IEffectTemplate =
           {
             name: "wholeRowAttack",
             targetFleets: "all",
@@ -68,7 +68,7 @@ module Rance
             }
           }
 
-          export var bombAttack: IEffectTemplate =
+          export var bombAttack: Rance.Templates.IEffectTemplate =
           {
             name: "bombAttack",
             targetFleets: "enemy",
@@ -85,7 +85,7 @@ module Rance
               target.receiveDamage(damage, damageType);
             }
           }
-          export var guardColumn: IEffectTemplate =
+          export var guardColumn: Rance.Templates.IEffectTemplate =
           {
             name: "guardColumn",
             targetFleets: "all",
@@ -101,7 +101,7 @@ module Rance
               user.addGuard(guardAmount, "column");
             }
           }
-          export var receiveCounterAttack: IEffectTemplate =
+          export var receiveCounterAttack: Rance.Templates.IEffectTemplate =
           {
             name: "receiveCounterAttack",
             targetFleets: "all",
@@ -120,7 +120,7 @@ module Rance
               }
             }
           }
-          export var increaseCaptureChance: IEffectTemplate =
+          export var increaseCaptureChance: Rance.Templates.IEffectTemplate =
           {
             name: "increaseCaptureChance",
             targetFleets: "enemy",
@@ -140,7 +140,7 @@ module Rance
 
             }
           }
-          export var buffTest: IEffectTemplate =
+          export var buffTest: Rance.Templates.IEffectTemplate =
           {
             name: "buffTest",
             targetFleets: "all",
@@ -152,7 +152,7 @@ module Rance
             }
           }
 
-          export var healTarget: IEffectTemplate =
+          export var healTarget: Rance.Templates.IEffectTemplate =
           {
             name: "healTarget",
             targetFleets: "ally",
@@ -179,7 +179,7 @@ module Rance
             }
           }
 
-          export var healSelf: IEffectTemplate =
+          export var healSelf: Rance.Templates.IEffectTemplate =
           {
             name: "healSelf",
             targetFleets: "ally",
@@ -191,7 +191,7 @@ module Rance
             }
           }
 
-          export var standBy: IEffectTemplate =
+          export var standBy: Rance.Templates.IEffectTemplate =
           {
             name: "standBy",
             targetFleets: "all",

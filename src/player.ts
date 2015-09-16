@@ -281,10 +281,10 @@ module Rance
         [unitType: string]: boolean;
       } = {};
 
-      var unitsToAdd: Templates.IUnitTemplate[] = Templates.UnitFamilies.basic.associatedTemplates.slice(0);
+      var unitsToAdd: Templates.IUnitTemplate[] = app.moduleData.Templates.UnitFamilies.basic.associatedTemplates.slice(0);
       if (!this.isAI && Options.debugMode)
       {
-        unitsToAdd = unitsToAdd.concat(Templates.UnitFamilies.debug.associatedTemplates);
+        unitsToAdd = unitsToAdd.concat(app.moduleData.Templates.UnitFamilies.debug.associatedTemplates);
       }
 
       for (var i = 0; i < unitsToAdd.length; i++)

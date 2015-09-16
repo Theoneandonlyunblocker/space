@@ -239,7 +239,7 @@ module Rance
           sector.addResource(resource);
         }
         MapGen2.distributeDistributablesPerSector(
-          allSectors, "resources", Templates.Resources, resourcePlacerFN);
+          allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
 
         var localShipPlacerFN = function(sector: MapGen2.Sector, shipFamily: Templates.IUnitFamily)
         {
@@ -250,7 +250,7 @@ module Rance
           }
         }
         MapGen2.distributeDistributablesPerSector(
-          allSectors, "unitFamilies", Templates.UnitFamilies, localShipPlacerFN);
+          allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
 
         // set players
         var startRegions: MapGen2.Region[] = (function setStartingRegions()
