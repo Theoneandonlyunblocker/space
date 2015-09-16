@@ -11,6 +11,7 @@
 /// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
+/// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
@@ -627,11 +628,15 @@ declare module Rance {
 }
 declare module Rance {
     module Templates {
-        const enum UnitTemplateArchetype {
-            combat = 0,
-            defence = 1,
-            utility = 2,
+        module UnitArchetypes {
+            var combat: IUnitArchetype;
+            var utility: IUnitArchetype;
+            var defence: IUnitArchetype;
         }
+    }
+}
+declare module Rance {
+    module Templates {
         module Units {
             var cheatShip: IUnitTemplate;
             var fighterSquadron: IUnitTemplate;
@@ -1312,7 +1317,10 @@ declare module Rance {
         battleData: IBattleData;
         attackerFormation: Unit[][];
         defenderFormation: Unit[][];
+        attackerUnits: Unit[];
+        defenderUnits: Unit[];
         availableUnits: Unit[];
+        enemyUnits: Unit[];
         playerFormation: Unit[][];
         humanPlayer: Player;
         enemyFormation: Unit[][];
@@ -1327,7 +1335,7 @@ declare module Rance {
         makeEmptyFormation(): Unit[][];
         makeAIFormations(): void;
         setupPlayer(): void;
-        makeAIFormation(units: Unit[]): Unit[][];
+        makeAutoFormation(units: Unit[], enemyUnits: Unit[], player: Player): Unit[][];
         getUnitPosition(unit: Unit): number[];
         getUnitAtPosition(position: number[]): Unit;
         clearPlayerFormation(): void;
@@ -1420,8 +1428,7 @@ declare module Rance {
 }
 declare module Rance {
     interface IArchetypeValues {
-        [archetype: string]: number;
-        [archetype: number]: number;
+        [archetypeType: string]: number;
     }
     interface IPersonality {
         expansiveness: number;
@@ -1740,9 +1747,7 @@ declare module Rance {
             getUnitIndex(unit: Unit): number;
             addUnit(unit: Unit): void;
             removeUnit(unit: Unit): void;
-            getUnitCountByArchetype(): {
-                [archetype: string]: number;
-            };
+            getUnitCountByArchetype(): IArchetypeValues;
             getUnitsByLocation(): {
                 [starId: number]: Unit[];
             };

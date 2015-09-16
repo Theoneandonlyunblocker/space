@@ -77,7 +77,7 @@ module Rance
 
         var buildableUnitTypesByArchetype:
         {
-          [archetype: string]: Templates.IUnitTemplate[];
+          [archetypeType: string]: Templates.IUnitTemplate[];
         } = {};
 
         var buildableUnitTypes = star.getBuildableShipTypes();
@@ -86,12 +86,12 @@ module Rance
         {
           var archetype = buildableUnitTypes[i].archetype;
 
-          if (!buildableUnitTypesByArchetype[archetype])
+          if (!buildableUnitTypesByArchetype[archetype.type])
           {
-            buildableUnitTypesByArchetype[archetype] = [];
+            buildableUnitTypesByArchetype[archetype.type] = [];
           }
 
-          buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
+          buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
         }
 
         var unitType: Templates.IUnitTemplate;

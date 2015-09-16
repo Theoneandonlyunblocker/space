@@ -3172,7 +3172,7 @@ var Rance;
             autoMakeFormation: function () {
                 var battlePrep = this.props.battlePrep;
                 battlePrep.clearPlayerFormation();
-                battlePrep.playerFormation = battlePrep.makeAIFormation(battlePrep.availableUnits);
+                battlePrep.playerFormation = battlePrep.makeAutoFormation(battlePrep.availableUnits, battlePrep.enemyUnits, battlePrep.humanPlayer);
                 battlePrep.setupPlayerFormation(battlePrep.playerFormation);
                 this.setLeftLowerElement("playerFleet");
                 this.forceUpdate();
@@ -7424,11 +7424,65 @@ var Rance;
         })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
     })(Templates = Rance.Templates || (Rance.Templates = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../src/templateinterfaces/iunitarchetype.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Templates;
+    (function (Templates) {
+        var UnitArchetypes;
+        (function (UnitArchetypes) {
+            UnitArchetypes.combat = {
+                type: "combat",
+                idealWeightInBattle: 1,
+                idealWeightInFleet: 1,
+                rowScores: {
+                    ROW_FRONT: 1,
+                    ROW_BACK: 0.6
+                }
+            };
+            UnitArchetypes.utility = {
+                type: "utility",
+                idealWeightInBattle: 0.33,
+                idealWeightInFleet: 0.5,
+                rowScores: {
+                    ROW_FRONT: 0.4,
+                    ROW_BACK: 0.6
+                }
+            };
+            UnitArchetypes.defence = {
+                type: "defence",
+                idealWeightInBattle: 0.5,
+                idealWeightInFleet: 0.5,
+                rowScores: {
+                    ROW_FRONT: 1,
+                    ROW_BACK: 0.5
+                },
+                scoreMultiplierForRowFN: function (row, rowUnits, enemyUnits) {
+                    var multiplier = (row === "ROW_BACK" ? 0.7 : 1);
+                    var totalDefenceUnderThreshhold = 0;
+                    var threshhold = 6;
+                    var alreadyHasDefender = false;
+                    for (var i = 0; i < rowUnits.length; i++) {
+                        var unit = rowUnits[i];
+                        if (!unit)
+                            continue;
+                        if (unit.template.archetype.type === "defence") {
+                            return multiplier;
+                        }
+                        totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
+                    }
+                    return multiplier + totalDefenceUnderThreshhold * 0.2;
+                }
+            };
+        })(UnitArchetypes = Templates.UnitArchetypes || (Templates.UnitArchetypes = {}));
+    })(Templates = Rance.Templates || (Rance.Templates = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/iunittemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
-/// <reference path="../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="unitfamilies.ts" />
+/// <reference path="unitarchetypes.ts" />
 var Rance;
 (function (Rance) {
     var Templates;
@@ -7438,7 +7492,7 @@ var Rance;
             Units.cheatShip = {
                 type: "cheatShip",
                 displayName: "Debug Ship",
-                archetype: 0 /* combat */,
+                archetype: Templates.UnitArchetypes.combat,
                 families: [Templates.UnitFamilies.debug],
                 sprite: {
                     imageSrc: "cheatShip.png",
@@ -7475,7 +7529,7 @@ var Rance;
             Units.fighterSquadron = {
                 type: "fighterSquadron",
                 displayName: "Fighter Squadron",
-                archetype: 0 /* combat */,
+                archetype: Templates.UnitArchetypes.combat,
                 families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "fighter.png",
@@ -7503,7 +7557,7 @@ var Rance;
             Units.bomberSquadron = {
                 type: "bomberSquadron",
                 displayName: "Bomber Squadron",
-                archetype: 0 /* combat */,
+                archetype: Templates.UnitArchetypes.combat,
                 families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "bomber.png",
@@ -7531,7 +7585,7 @@ var Rance;
             Units.battleCruiser = {
                 type: "battleCruiser",
                 displayName: "Battlecruiser",
-                archetype: 0 /* combat */,
+                archetype: Templates.UnitArchetypes.combat,
                 families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "battleCruiser.png",
@@ -7559,7 +7613,7 @@ var Rance;
             Units.scout = {
                 type: "scout",
                 displayName: "Scout",
-                archetype: 2 /* utility */,
+                archetype: Templates.UnitArchetypes.utility,
                 families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "scout.png",
@@ -7586,7 +7640,7 @@ var Rance;
             Units.stealthShip = {
                 type: "stealthShip",
                 displayName: "Stealth Ship",
-                archetype: 2 /* utility */,
+                archetype: Templates.UnitArchetypes.utility,
                 families: [Templates.UnitFamilies.debug],
                 sprite: {
                     imageSrc: "scout.png",
@@ -7614,7 +7668,7 @@ var Rance;
             Units.shieldBoat = {
                 type: "shieldBoat",
                 displayName: "Shield Boat",
-                archetype: 1 /* defence */,
+                archetype: Templates.UnitArchetypes.defence,
                 families: [Templates.UnitFamilies.basic],
                 sprite: {
                     imageSrc: "shieldBoat.png",
@@ -7645,7 +7699,7 @@ var Rance;
             Units.redShip = {
                 type: "redShip",
                 displayName: "Red ship",
-                archetype: 2 /* utility */,
+                archetype: Templates.UnitArchetypes.utility,
                 families: [Templates.UnitFamilies.red],
                 sprite: {
                     imageSrc: "scout.png",
@@ -7672,7 +7726,7 @@ var Rance;
             Units.blueShip = {
                 type: "blueShip",
                 displayName: "Blue ship",
-                archetype: 2 /* utility */,
+                archetype: Templates.UnitArchetypes.utility,
                 families: [Templates.UnitFamilies.blue],
                 sprite: {
                     imageSrc: "scout.png",
@@ -10431,7 +10485,9 @@ var Rance;
             this.alreadyPlaced = {};
             this.minDefendersInNeutralTerritory = 1;
             this.attacker = battleData.attacker.player;
+            this.attackerUnits = battleData.attacker.ships;
             this.defender = battleData.defender.player;
+            this.defenderUnits = battleData.defender.ships;
             this.battleData = battleData;
             this.resetBattleStats();
             this.triggerPassiveSkills();
@@ -10476,15 +10532,16 @@ var Rance;
         };
         BattlePrep.prototype.makeAIFormations = function () {
             if (this.attacker.isAI) {
-                this.attackerFormation = this.makeAIFormation(this.battleData.attacker.ships);
+                this.attackerFormation = this.makeAutoFormation(this.battleData.attacker.ships, this.battleData.defender.ships, this.attacker);
             }
             if (this.defender.isAI) {
-                this.defenderFormation = this.makeAIFormation(this.battleData.defender.ships);
+                this.defenderFormation = this.makeAutoFormation(this.battleData.defender.ships, this.battleData.attacker.ships, this.defender);
             }
         };
         BattlePrep.prototype.setupPlayer = function () {
             if (!this.attacker.isAI) {
                 this.availableUnits = this.battleData.attacker.ships;
+                this.enemyUnits = this.battleData.defender.ships;
                 this.attackerFormation = this.makeEmptyFormation();
                 this.playerFormation = this.attackerFormation;
                 this.enemyFormation = this.defenderFormation;
@@ -10493,6 +10550,7 @@ var Rance;
             }
             else if (!this.defender.isAI) {
                 this.availableUnits = this.battleData.defender.ships;
+                this.enemyUnits = this.battleData.attacker.ships;
                 this.defenderFormation = this.makeEmptyFormation();
                 this.playerFormation = this.attackerFormation;
                 this.enemyFormation = this.attackerFormation;
@@ -10500,7 +10558,8 @@ var Rance;
                 this.enemyPlayer = this.attacker;
             }
         };
-        BattlePrep.prototype.makeAIFormation = function (units) {
+        BattlePrep.prototype.makeAutoFormation = function (units, enemyUnits, player) {
+            var self = this;
             var MAX_UNITS_PER_SIDE = 6;
             var MAX_UNITS_PER_ROW = 3;
             var formation = this.makeEmptyFormation();
@@ -10510,43 +10569,19 @@ var Rance;
             var placedInFront = 0;
             var placedInBack = 0;
             var totalPlaced = 0;
-            var unitsPlacedByArchetype = (_a = {},
-                _a[0 /* combat */] = 0,
-                _a[1 /* defence */] = 0,
-                // [Templates.UnitTemplateArchetype.magic]:   0,
-                // [Templates.UnitTemplateArchetype.support]: 0,
-                _a[2 /* utility */] = 0,
-                _a
-            );
-            // these are overridden if we run out of units or if alternative
-            // units have significantly higher strength
-            var maxUnitsPerArchetype = (_b = {},
-                _b[0 /* combat */] = Math.ceil(MAX_UNITS_PER_SIDE / 1),
-                _b[1 /* defence */] = Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-                // [Templates.UnitTemplateArchetype.magic]:   Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-                // [Templates.UnitTemplateArchetype.support]: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
-                _b[2 /* utility */] = Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
-                _b
-            );
-            var preferredColumnForArchetype = (_c = {},
-                _c[0 /* combat */] = "front",
-                _c[1 /* defence */] = "front",
-                // [Templates.UnitTemplateArchetype.magic]: "back",
-                // [Templates.UnitTemplateArchetype.support]: "back",
-                _c[2 /* utility */] = "back",
-                _c
-            );
-            var getUnitScoreFN = function (unit, row, frontRowDefenceBonus) {
+            var unitsPlacedByArchetype = {};
+            var getUnitScoreFN = function (unit, row) {
                 var score = unit.getStrengthEvaluation();
-                if (unit.template.archetype === 1 /* defence */ && row === "front") {
-                    score *= frontRowDefenceBonus;
-                }
                 var archetype = unit.template.archetype;
-                var overMax = Math.max(0, unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
+                var rowModifier = archetype.rowScores[row];
+                if (archetype.scoreMultiplierForRowFN) {
+                    var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
+                    var scoutedUnits = player.starIsDetected(self.battleData.location) ? enemyUnits : null;
+                    rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits);
+                }
+                var idealMaxUnits = Math.ceil(MAX_UNITS_PER_SIDE / archetype.idealWeightInBattle);
+                var overMax = Math.max(0, unitsPlacedByArchetype[archetype.type] - idealMaxUnits);
                 score *= 1 - overMax * 0.15;
-                var rowModifier = preferredColumnForArchetype[archetype] === row ?
-                    1 :
-                    0.5;
                 score *= rowModifier;
                 return ({
                     unit: unit,
@@ -10554,43 +10589,22 @@ var Rance;
                     row: row
                 });
             };
-            var getFrontRowDefenceBonusFN = function (threshhold) {
-                var totalDefenceUnderThreshhold = 0;
-                var alreadyHasDefender = false;
-                for (var i = 0; i < formation[1].length; i++) {
-                    var unit = formation[1][i];
-                    if (!unit) {
-                        continue;
-                    }
-                    totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-                    if (alreadyHasDefender) {
-                        totalDefenceUnderThreshhold = 0;
-                    }
-                    else if (!alreadyHasDefender &&
-                        unit.template.archetype === 1 /* defence */) {
-                        alreadyHasDefender = true;
-                        totalDefenceUnderThreshhold += 0.5;
-                    }
-                }
-                return 1 + totalDefenceUnderThreshhold * 0.25;
-            };
             while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE) {
-                var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
                 var positionScores = [];
                 for (var i = 0; i < unitsToPlace.length; i++) {
                     var unit = unitsToPlace[i];
                     if (placedInFront < MAX_UNITS_PER_ROW) {
-                        positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
+                        positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
                     }
                     if (placedInBack < MAX_UNITS_PER_ROW) {
-                        positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
+                        positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
                     }
                 }
                 positionScores.sort(function (a, b) {
                     return (b.score - a.score);
                 });
                 var topScore = positionScores[0];
-                if (topScore.row === "front") {
+                if (topScore.row === "ROW_FRONT") {
                     placedInFront++;
                     formation[1][placedInFront - 1] = topScore.unit;
                 }
@@ -10599,11 +10613,13 @@ var Rance;
                     formation[0][placedInBack - 1] = topScore.unit;
                 }
                 totalPlaced++;
-                unitsPlacedByArchetype[topScore.unit.template.archetype]++;
+                if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type]) {
+                    unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
+                }
+                unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
                 unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
             }
             return formation;
-            var _a, _b, _c;
         };
         // Human formation stuff
         BattlePrep.prototype.getUnitPosition = function (unit) {
@@ -11034,9 +11050,9 @@ var Rance;
             aggressiveness: Math.random(),
             friendliness: Math.random(),
             unitCompositionPreference: (_a = {},
-                _a[0 /* combat */] = Math.random(),
-                _a[1 /* defence */] = Math.random(),
-                _a[2 /* utility */] = Math.random(),
+                _a[Templates.UnitArchetypes.combat.type] = Math.random(),
+                _a[Templates.UnitArchetypes.defence.type] = Math.random(),
+                _a[Templates.UnitArchetypes.utility.type] = Math.random(),
                 _a
             )
         });
@@ -11052,9 +11068,9 @@ var Rance;
                 aggressiveness: 0.6,
                 friendliness: 0.4,
                 unitCompositionPreference: (_a = {},
-                    _a[0 /* combat */] = 1,
-                    _a[1 /* defence */] = 0.8,
-                    _a[2 /* utility */] = 0.3,
+                    _a[Templates.UnitArchetypes.combat.type] = 1,
+                    _a[Templates.UnitArchetypes.defence.type] = 0.8,
+                    _a[Templates.UnitArchetypes.utility.type] = 0.3,
                     _a
                 )
             };
@@ -12342,10 +12358,10 @@ var Rance;
                 var unitCountByArchetype = {};
                 for (var i = 0; i < this.units.length; i++) {
                     var archetype = this.units[i].template.archetype;
-                    if (!unitCountByArchetype[archetype]) {
-                        unitCountByArchetype[archetype] = 0;
+                    if (!unitCountByArchetype[archetype.type]) {
+                        unitCountByArchetype[archetype.type] = 0;
                     }
-                    unitCountByArchetype[archetype]++;
+                    unitCountByArchetype[archetype.type]++;
                 }
                 return unitCountByArchetype;
             };
@@ -12488,10 +12504,10 @@ var Rance;
                 var units = this.player.getAllUnits();
                 for (var i = 0; i < units.length; i++) {
                     var unitArchetype = units[i].template.archetype;
-                    if (!totalUnitCountByArchetype[unitArchetype]) {
-                        totalUnitCountByArchetype[unitArchetype] = 0;
+                    if (!totalUnitCountByArchetype[unitArchetype.type]) {
+                        totalUnitCountByArchetype[unitArchetype.type] = 0;
                     }
-                    totalUnitCountByArchetype[unitArchetype]++;
+                    totalUnitCountByArchetype[unitArchetype.type]++;
                 }
                 return totalUnitCountByArchetype;
             };
@@ -12544,7 +12560,7 @@ var Rance;
             };
             FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
                 // base score based on unit composition
-                var score = frontArchetypeScores[unit.template.archetype];
+                var score = frontArchetypeScores[unit.template.archetype.type];
                 // add score based on front priority
                 // lower priority if front requirements already met
                 // more important fronts get priority but dont hog units
@@ -12829,10 +12845,10 @@ var Rance;
                 var buildableUnitTypes = star.getBuildableShipTypes();
                 for (var i = 0; i < buildableUnitTypes.length; i++) {
                     var archetype = buildableUnitTypes[i].archetype;
-                    if (!buildableUnitTypesByArchetype[archetype]) {
-                        buildableUnitTypesByArchetype[archetype] = [];
+                    if (!buildableUnitTypesByArchetype[archetype.type]) {
+                        buildableUnitTypesByArchetype[archetype.type] = [];
                     }
-                    buildableUnitTypesByArchetype[archetype].push(buildableUnitTypes[i]);
+                    buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
                 }
                 var unitType;
                 for (var i = 0; i < sortedScores.length; i++) {

@@ -13,8 +13,11 @@ module Rance
 
     attackerFormation: Unit[][];
     defenderFormation: Unit[][];
+    attackerUnits: Unit[];
+    defenderUnits: Unit[];
 
     availableUnits: Unit[];
+    enemyUnits: Unit[];
 
     playerFormation: Unit[][];
     humanPlayer: Player;
@@ -30,7 +33,9 @@ module Rance
     constructor(battleData: IBattleData)
     {
       this.attacker = battleData.attacker.player;
+      this.attackerUnits = battleData.attacker.ships;
       this.defender = battleData.defender.player;
+      this.defenderUnits = battleData.defender.ships;
       this.battleData = battleData;
 
       this.resetBattleStats();
@@ -94,11 +99,13 @@ module Rance
     {
       if (this.attacker.isAI)
       {
-        this.attackerFormation = this.makeAIFormation(this.battleData.attacker.ships);
+        this.attackerFormation = this.makeAutoFormation(
+          this.battleData.attacker.ships, this.battleData.defender.ships, this.attacker);
       }
       if (this.defender.isAI)
       {
-        this.defenderFormation = this.makeAIFormation(this.battleData.defender.ships);
+        this.defenderFormation = this.makeAutoFormation(
+          this.battleData.defender.ships, this.battleData.attacker.ships, this.defender);
       }
     }
 
@@ -107,6 +114,7 @@ module Rance
       if (!this.attacker.isAI)
       {
         this.availableUnits = this.battleData.attacker.ships;
+        this.enemyUnits = this.battleData.defender.ships;
         this.attackerFormation = this.makeEmptyFormation();
         this.playerFormation = this.attackerFormation;
         this.enemyFormation = this.defenderFormation;
@@ -116,6 +124,7 @@ module Rance
       else if (!this.defender.isAI)
       {
         this.availableUnits = this.battleData.defender.ships;
+        this.enemyUnits = this.battleData.attacker.ships;
         this.defenderFormation = this.makeEmptyFormation();
         this.playerFormation = this.attackerFormation;
         this.enemyFormation = this.attackerFormation;
@@ -126,8 +135,9 @@ module Rance
 
 
 
-    makeAIFormation(units: Unit[]): Unit[][]
+    makeAutoFormation(units: Unit[], enemyUnits: Unit[], player: Player): Unit[][]
     {
+      var self = this;
       var MAX_UNITS_PER_SIDE = 6;
       var MAX_UNITS_PER_ROW = 3;
 
@@ -136,56 +146,29 @@ module Rance
       {
         return unit.canActThisTurn();
       });
+
       var placedInFront = 0;
       var placedInBack = 0;
       var totalPlaced = 0;
-      var unitsPlacedByArchetype =
-      {
-        [Templates.UnitTemplateArchetype.combat]:  0,
-        [Templates.UnitTemplateArchetype.defence]: 0,
-        // [Templates.UnitTemplateArchetype.magic]:   0,
-        // [Templates.UnitTemplateArchetype.support]: 0,
-        [Templates.UnitTemplateArchetype.utility]: 0
-      };
+      var unitsPlacedByArchetype: IArchetypeValues = {};
 
-      // these are overridden if we run out of units or if alternative
-      // units have significantly higher strength
-      var maxUnitsPerArchetype =
+      var getUnitScoreFN = function(unit: Unit, row: string)
       {
-        [Templates.UnitTemplateArchetype.combat]:  Math.ceil(MAX_UNITS_PER_SIDE / 1),
-        [Templates.UnitTemplateArchetype.defence]: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-        // [Templates.UnitTemplateArchetype.magic]:   Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-        // [Templates.UnitTemplateArchetype.support]: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
-        [Templates.UnitTemplateArchetype.utility]: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
-      };
-      var preferredColumnForArchetype =
-      {
-        [Templates.UnitTemplateArchetype.combat]: "front",
-        [Templates.UnitTemplateArchetype.defence]: "front",
-        // [Templates.UnitTemplateArchetype.magic]: "back",
-        // [Templates.UnitTemplateArchetype.support]: "back",
-        [Templates.UnitTemplateArchetype.utility]: "back"
-      }
+        var score = unit.getStrengthEvaluation();
+        var archetype = unit.template.archetype;
+        var rowModifier = archetype.rowScores[row];
 
-      var getUnitScoreFN = function(unit: Unit, row: string, frontRowDefenceBonus: number)
-      {
-        var score: number = unit.getStrengthEvaluation();
-
-        if (unit.template.archetype === Templates.UnitTemplateArchetype.defence && row === "front")
+        if (archetype.scoreMultiplierForRowFN)
         {
-          score *= frontRowDefenceBonus;
+          var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
+          var scoutedUnits = player.starIsDetected(self.battleData.location) ? enemyUnits : null;
+          rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits)
         }
 
-        var archetype = unit.template.archetype;
-        var overMax = Math.max(0, 
-          unitsPlacedByArchetype[archetype] - maxUnitsPerArchetype[archetype]);
+        var idealMaxUnits = Math.ceil(MAX_UNITS_PER_SIDE / archetype.idealWeightInBattle);
+        var overMax = Math.max(0, unitsPlacedByArchetype[archetype.type] - idealMaxUnits);
 
         score *= 1 - overMax * 0.15;
-
-        var rowModifier = preferredColumnForArchetype[archetype] === row ?
-          1 :
-          0.5;
-
         score *= rowModifier;
 
         return(
@@ -196,46 +179,13 @@ module Rance
         });
       }
 
-      var getFrontRowDefenceBonusFN = function(threshhold: number): number
-      {
-        var totalDefenceUnderThreshhold = 0;
-        var alreadyHasDefender = false;
-
-        for (var i = 0; i < formation[1].length; i++)
-        {
-          var unit = formation[1][i];
-          if (!unit)
-          {
-            continue;
-          }
-
-          totalDefenceUnderThreshhold += Math.max(0, threshhold - unit.attributes.defence);
-
-          if (alreadyHasDefender)
-          {
-            totalDefenceUnderThreshhold = 0;
-          }
-          else if (!alreadyHasDefender &&
-            unit.template.archetype === Templates.UnitTemplateArchetype.defence)
-          {
-            alreadyHasDefender = true;
-            totalDefenceUnderThreshhold += 0.5;
-          }
-
-
-        }
-
-        return 1 + totalDefenceUnderThreshhold * 0.25;
-      }
       while (unitsToPlace.length > 0 && totalPlaced < MAX_UNITS_PER_SIDE)
       {
-        var frontRowDefenceBonus = getFrontRowDefenceBonusFN(6);
-
         var positionScores:
         {
           unit: Unit;
           score: number;
-          row: string; // "front" or "back"
+          row: string; // "ROW_FRONT" or "ROW_BACK" // TODO enum
         }[] = [];
 
         for (var i = 0; i < unitsToPlace.length; i++)
@@ -244,11 +194,11 @@ module Rance
 
           if (placedInFront < MAX_UNITS_PER_ROW)
           {
-            positionScores.push(getUnitScoreFN(unit, "front", frontRowDefenceBonus));
+            positionScores.push(getUnitScoreFN(unit, "ROW_FRONT"));
           }
           if (placedInBack < MAX_UNITS_PER_ROW)
           {
-            positionScores.push(getUnitScoreFN(unit, "back", frontRowDefenceBonus));
+            positionScores.push(getUnitScoreFN(unit, "ROW_BACK"));
           }
         }
 
@@ -259,7 +209,7 @@ module Rance
         var topScore = positionScores[0];
 
 
-        if (topScore.row === "front")
+        if (topScore.row === "ROW_FRONT")
         {
           placedInFront++;
           formation[1][placedInFront - 1] = topScore.unit;
@@ -271,7 +221,11 @@ module Rance
         }
 
         totalPlaced++;
-        unitsPlacedByArchetype[topScore.unit.template.archetype]++;
+        if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type])
+        {
+          unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
+        }
+        unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
         unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
       }
 

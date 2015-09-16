@@ -25,8 +25,8 @@ module Rance
         var battlePrep = this.props.battlePrep;
 
         battlePrep.clearPlayerFormation();
-        battlePrep.playerFormation = battlePrep.makeAIFormation(
-          battlePrep.availableUnits);
+        battlePrep.playerFormation = battlePrep.makeAutoFormation(
+          battlePrep.availableUnits, battlePrep.enemyUnits, battlePrep.humanPlayer);
 
         battlePrep.setupPlayerFormation(battlePrep.playerFormation);
 

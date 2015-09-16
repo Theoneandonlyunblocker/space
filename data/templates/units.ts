@@ -1,27 +1,21 @@
 /// <reference path="../../src/templateinterfaces/iunittemplate.d.ts"/>
+/// <reference path="../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="abilities.ts"/>
 /// <reference path="passiveskills.ts" />
-/// <reference path="../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="unitfamilies.ts" />
+/// <reference path="unitarchetypes.ts" />
 
 module Rance
 {
   export module Templates
   {
-    export const enum UnitTemplateArchetype
-    {
-      combat, // overall fighting
-      defence, // protecting allies
-      utility // useful misc abilities
-    }
-    
     export module Units
     {
       export var cheatShip: IUnitTemplate =
       {
         type: "cheatShip",
         displayName: "Debug Ship",
-        archetype: UnitTemplateArchetype.combat,
+        archetype: UnitArchetypes.combat,
         families: [UnitFamilies.debug],
         sprite:
         {
@@ -63,7 +57,7 @@ module Rance
       {
         type: "fighterSquadron",
         displayName: "Fighter Squadron",
-        archetype: UnitTemplateArchetype.combat,
+        archetype: UnitArchetypes.combat,
         families: [UnitFamilies.basic],
         sprite:
         {
@@ -95,7 +89,7 @@ module Rance
       {
         type: "bomberSquadron",
         displayName: "Bomber Squadron",
-        archetype: UnitTemplateArchetype.combat,
+        archetype: UnitArchetypes.combat,
         families: [UnitFamilies.basic],
         sprite:
         {
@@ -127,7 +121,7 @@ module Rance
       {
         type: "battleCruiser",
         displayName: "Battlecruiser",
-        archetype: UnitTemplateArchetype.combat,
+        archetype: UnitArchetypes.combat,
         families: [UnitFamilies.basic],
         sprite:
         {
@@ -159,7 +153,7 @@ module Rance
       {
         type: "scout",
         displayName: "Scout",
-        archetype: UnitTemplateArchetype.utility,
+        archetype: UnitArchetypes.utility,
         families: [UnitFamilies.basic],
         sprite:
         {
@@ -190,7 +184,7 @@ module Rance
       {
         type: "stealthShip",
         displayName: "Stealth Ship",
-        archetype: UnitTemplateArchetype.utility,
+        archetype: UnitArchetypes.utility,
         families: [UnitFamilies.debug],
         sprite:
         {
@@ -222,7 +216,7 @@ module Rance
       {
         type: "shieldBoat",
         displayName: "Shield Boat",
-        archetype: UnitTemplateArchetype.defence,
+        archetype: UnitArchetypes.defence,
         families: [UnitFamilies.basic],
         sprite:
         {
@@ -259,7 +253,7 @@ module Rance
       {
         type: "redShip",
         displayName: "Red ship",
-        archetype: UnitTemplateArchetype.utility,
+        archetype: UnitArchetypes.utility,
         families: [UnitFamilies.red],
         sprite:
         {
@@ -290,7 +284,7 @@ module Rance
       {
         type: "blueShip",
         displayName: "Blue ship",
-        archetype: UnitTemplateArchetype.utility,
+        archetype: UnitArchetypes.utility,
         families: [UnitFamilies.blue],
         sprite:
         {

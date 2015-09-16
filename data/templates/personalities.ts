@@ -2,8 +2,7 @@ module Rance
 {
   export interface IArchetypeValues
   {
-    [archetype: string]: number; // archetype: Templates.UnitTemplateArchetype
-    [archetype: number]: number;
+    [archetypeType: string]: number; // archetype: Templates.UnitTemplateArchetype
   }
   export interface IPersonality
   {
@@ -25,9 +24,9 @@ module Rance
 
       unitCompositionPreference:
       {
-        [Templates.UnitTemplateArchetype.combat]: Math.random(),
-        [Templates.UnitTemplateArchetype.defence]: Math.random(),
-        [Templates.UnitTemplateArchetype.utility]: Math.random()
+        [Templates.UnitArchetypes.combat.type]: Math.random(),
+        [Templates.UnitArchetypes.defence.type]: Math.random(),
+        [Templates.UnitArchetypes.utility.type]: Math.random()
       }
     });
   }
@@ -43,9 +42,9 @@ module Rance
 
         unitCompositionPreference:
         {
-          [Templates.UnitTemplateArchetype.combat]: 1,
-          [Templates.UnitTemplateArchetype.defence]: 0.8,
-          [Templates.UnitTemplateArchetype.utility]: 0.3
+          [Templates.UnitArchetypes.combat.type]: 1,
+          [Templates.UnitArchetypes.defence.type]: 0.8,
+          [Templates.UnitArchetypes.utility.type]: 0.3
         }
       }
     }

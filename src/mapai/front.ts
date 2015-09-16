@@ -215,21 +215,18 @@ module Rance
       }
       getUnitCountByArchetype()
       {
-        var unitCountByArchetype:
-        {
-          [archetype: string]: number;
-        } = {};
+        var unitCountByArchetype: IArchetypeValues = {};
 
         for (var i = 0; i < this.units.length; i++)
         {
           var archetype = this.units[i].template.archetype;
           
-          if (!unitCountByArchetype[archetype])
+          if (!unitCountByArchetype[archetype.type])
           {
-            unitCountByArchetype[archetype] = 0;
+            unitCountByArchetype[archetype.type] = 0;
           }
 
-          unitCountByArchetype[archetype]++;
+          unitCountByArchetype[archetype.type]++;
         }
 
         return unitCountByArchetype;

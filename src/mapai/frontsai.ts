@@ -48,12 +48,12 @@ module Rance
         {
           var unitArchetype = units[i].template.archetype;
 
-          if (!totalUnitCountByArchetype[unitArchetype])
+          if (!totalUnitCountByArchetype[unitArchetype.type])
           {
-            totalUnitCountByArchetype[unitArchetype] = 0;
+            totalUnitCountByArchetype[unitArchetype.type] = 0;
           }
 
-          totalUnitCountByArchetype[unitArchetype]++;
+          totalUnitCountByArchetype[unitArchetype.type]++;
         }
 
         return totalUnitCountByArchetype;
@@ -134,7 +134,7 @@ module Rance
       getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues)
       {
         // base score based on unit composition
-        var score = frontArchetypeScores[unit.template.archetype];
+        var score = frontArchetypeScores[unit.template.archetype.type];
 
         // add score based on front priority
         // lower priority if front requirements already met

@@ -14,7 +14,7 @@ declare module Rance
       maxMovePoints: number;
       
       // archetype is used by the ai to balance unit composition
-      archetype: UnitTemplateArchetype;
+      archetype: IUnitArchetype;
       // family is used to group ships for local specialties and AI favorites
       // f.ex. sector specializes in producing units with beam weapons
       families : IUnitFamily[];
