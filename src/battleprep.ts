@@ -141,30 +141,30 @@ module Rance
       var totalPlaced = 0;
       var unitsPlacedByArchetype =
       {
-        combat:  0,
-        defence: 0,
-        magic:   0,
-        support: 0,
-        utility: 0
+        [Templates.UnitTemplateArchetype.combat]:  0,
+        [Templates.UnitTemplateArchetype.defence]: 0,
+        // [Templates.UnitTemplateArchetype.magic]:   0,
+        // [Templates.UnitTemplateArchetype.support]: 0,
+        [Templates.UnitTemplateArchetype.utility]: 0
       };
 
       // these are overridden if we run out of units or if alternative
       // units have significantly higher strength
       var maxUnitsPerArchetype =
       {
-        combat:  Math.ceil(MAX_UNITS_PER_SIDE / 1),
-        defence: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-        magic:   Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
-        support: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
-        utility: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
+        [Templates.UnitTemplateArchetype.combat]:  Math.ceil(MAX_UNITS_PER_SIDE / 1),
+        [Templates.UnitTemplateArchetype.defence]: Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+        // [Templates.UnitTemplateArchetype.magic]:   Math.ceil(MAX_UNITS_PER_SIDE / 0.5),
+        // [Templates.UnitTemplateArchetype.support]: Math.ceil(MAX_UNITS_PER_SIDE / 0.33),
+        [Templates.UnitTemplateArchetype.utility]: Math.ceil(MAX_UNITS_PER_SIDE / 0.33)
       };
       var preferredColumnForArchetype =
       {
-        combat: "front",
-        defence: "front",
-        magic: "back",
-        support: "back",
-        utility: "back"
+        [Templates.UnitTemplateArchetype.combat]: "front",
+        [Templates.UnitTemplateArchetype.defence]: "front",
+        // [Templates.UnitTemplateArchetype.magic]: "back",
+        // [Templates.UnitTemplateArchetype.support]: "back",
+        [Templates.UnitTemplateArchetype.utility]: "back"
       }
 
       var getUnitScoreFN = function(unit: Unit, row: string, frontRowDefenceBonus: number)
