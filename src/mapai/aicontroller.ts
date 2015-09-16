@@ -1,4 +1,4 @@
-/// <reference path="../../data/templates/personalities.ts" />
+/// <reference path="../../modules/default/templates/personalities.ts" />
 
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>

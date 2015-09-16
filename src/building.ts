@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/buildings.ts" />
+/// <reference path="../modules/default/templates/buildings.ts" />
 
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />

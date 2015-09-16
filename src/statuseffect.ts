@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/statuseffects.ts" />
+/// <reference path="../modules/default/templates/statuseffects.ts" />
 
 module Rance
 {

@@ -1,4 +1,4 @@
-/// <reference path="../data/templates/attitudemodifiers.ts" />
+/// <reference path="../modules/default/templates/attitudemodifiers.ts" />
 
 module Rance
 {

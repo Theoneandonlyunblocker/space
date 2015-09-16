@@ -6642,53 +6642,6 @@ var Rance;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
 })(Rance || (Rance = {}));
-/// <reference path="utility.ts"/>
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    Rance.targetSingle = function (units, target) {
-        return Rance.getFrom2dArray(units, [target]);
-    };
-    Rance.targetAll = function (units, target) {
-        return Rance.flatten2dArray(units);
-    };
-    Rance.targetRow = function (units, target) {
-        var y = target[1];
-        var targetLocations = [];
-        for (var i = 0; i < units.length; i++) {
-            targetLocations.push([i, y]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetColumn = function (units, target) {
-        var x = target[0];
-        var targetLocations = [];
-        for (var i = 0; i < units[x].length; i++) {
-            targetLocations.push([x, i]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetColumnNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-})(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/ieffecttemplate.d.ts"/>
 /// <reference path="../../src/targeting.ts" />
 /// <reference path="../../src/unit.ts" />
@@ -6849,293 +6802,6 @@ var Rance;
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var BattleSFXFunctions;
-    (function (BattleSFXFunctions) {
-        function makeSprite(imgSrc, props) {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            var img = new Image();
-            img.onload = function (e) {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                if (!props.facingRight) {
-                    ctx.scale(-1, 1);
-                }
-            };
-            // cg13300.bmp
-            img.src = imgSrc;
-            return canvas;
-        }
-        BattleSFXFunctions.makeSprite = makeSprite;
-        function makeVideo(videoSrc, props) {
-            var video = document.createElement("video");
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            var maskCanvas = document.createElement("canvas");
-            var mask = maskCanvas.getContext("2d");
-            mask.fillStyle = "#000";
-            mask.globalCompositeOperation = "luminosity";
-            var onVideoLoadFN = function () {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                maskCanvas.width = canvas.width;
-                maskCanvas.height = canvas.height;
-                props.onLoaded(canvas);
-                video.play();
-            };
-            var _ = window;
-            if (!_.abababa)
-                _.abababa = {};
-            if (!_.abababa[videoSrc])
-                _.abababa[videoSrc] = {};
-            var computeFrameFN = function (frameNumber) {
-                if (!_.abababa[videoSrc][frameNumber]) {
-                    var c3 = document.createElement("canvas");
-                    c3.width = canvas.width;
-                    c3.height = canvas.height;
-                    var ctx3 = c3.getContext("2d");
-                    ctx3.drawImage(video, 0, 0, c3.width, c3.height);
-                    var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
-                    mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-                    mask.drawImage(video, 0, 0, c3.width, c3.height);
-                    var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-                    var l = frame.data.length / 4;
-                    for (var i = 0; i < l; i++) {
-                        frame.data[i * 4 + 3] = maskData[i * 4];
-                    }
-                    ctx3.putImageData(frame, 0, 0);
-                    _.abababa[videoSrc][frameNumber] = c3;
-                }
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (!props.facingRight) {
-                    ctx.scale(-1, 1);
-                }
-                ctx.drawImage(_.abababa[videoSrc][frameNumber], 0, 0, canvas.width, canvas.height);
-            };
-            var previousFrame;
-            var playFrameFN = function () {
-                if (video.paused || video.ended)
-                    return;
-                var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
-                if (isFinite(previousFrame) && currentFrame === previousFrame) {
-                }
-                else {
-                    previousFrame = currentFrame;
-                    computeFrameFN(currentFrame);
-                }
-                window.requestAnimationFrame(playFrameFN);
-            };
-            video.oncanplay = onVideoLoadFN;
-            video.onplay = playFrameFN;
-            video.src = videoSrc;
-            if (video.readyState >= 4) {
-                onVideoLoadFN();
-            }
-            return canvas;
-        }
-        BattleSFXFunctions.makeVideo = makeVideo;
-    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var BattleSFXFunctions;
-    (function (BattleSFXFunctions) {
-        function rocketAttack(props) {
-            var minY, maxY;
-            [props.user, props.target].forEach(function (unit) {
-                if (!unit)
-                    return;
-                var unitCanvas = unit.cachedBattleScene;
-                if (unitCanvas) {
-                    var rect = unitCanvas.getBoundingClientRect();
-                    if (isFinite(minY)) {
-                        minY = Math.min(minY, rect.top);
-                    }
-                    else {
-                        minY = rect.top;
-                    }
-                    if (isFinite(maxY)) {
-                        maxY = Math.max(maxY, rect.top + rect.height);
-                    }
-                    else {
-                        maxY = rect.top + rect.height;
-                    }
-                }
-            });
-            var travelSpeed = props.width / props.duration * 3; //milliseconds
-            var acceleration = travelSpeed / 20;
-            var maxSpeed = travelSpeed;
-            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
-                transparent: true
-            });
-            var container = new PIXI.Container();
-            if (!props.facingRight) {
-                container.scale.x = -1;
-                container.x = props.width;
-            }
-            var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
-            var explosionTextures = [];
-            for (var i = 0; i < 26; i++) {
-                var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
-                explosionTextures.push(explosionTexture);
-            }
-            var startTime = Date.now();
-            var endTime = startTime + props.duration + 250;
-            var stopSpawningTime = startTime + props.duration / 2;
-            var lastTime = startTime;
-            var rocketsToSpawn = 10;
-            var explosionsToSpawn = 5;
-            var explosionRate = rocketsToSpawn / explosionsToSpawn;
-            var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
-            var nextSpawnTime = startTime;
-            var rockets = [];
-            function animate() {
-                var currentTime = Date.now();
-                var elapsedTime = currentTime - lastTime;
-                lastTime = Date.now();
-                if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
-                    nextSpawnTime += spawnRate;
-                    var sprite = new PIXI.Sprite(rocketTexture);
-                    sprite.x = 20;
-                    sprite.y = Rance.randInt(minY, maxY);
-                    container.addChild(sprite);
-                    rockets.push({
-                        sprite: sprite,
-                        speed: 0,
-                        willExplode: (rockets.length - 1) % explosionRate === 0,
-                        explosionX: Rance.randInt(props.width - 200, props.width - 50),
-                        hasExplosion: false
-                    });
-                }
-                for (var i = 0; i < rockets.length; i++) {
-                    var rocket = rockets[i];
-                    if (!rocket.hasExplosion) {
-                        if (rocket.speed < maxSpeed) {
-                            rocket.speed += acceleration;
-                        }
-                        rocket.sprite.x += rocket.speed * elapsedTime;
-                    }
-                    if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
-                        rocket.hasExplosion = true;
-                        var explosion = new PIXI.extras.MovieClip(explosionTextures);
-                        explosion.anchor = new PIXI.Point(0.5, 0.5);
-                        explosion.loop = false;
-                        explosion.position = rocket.sprite.position;
-                        container.removeChild(rocket.sprite);
-                        container.addChild(explosion);
-                        explosion.play();
-                    }
-                }
-                renderer.render(container);
-                if (currentTime < endTime) {
-                    requestAnimationFrame(animate);
-                }
-                else {
-                    renderer.destroy(true);
-                }
-            }
-            props.onLoaded(renderer.view);
-            animate();
-            return renderer.view;
-        }
-        BattleSFXFunctions.rocketAttack = rocketAttack;
-    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var BattleSFXFunctions;
-    (function (BattleSFXFunctions) {
-        function guard(props) {
-            var userCanvasWidth = props.user.cachedBattleScene.width;
-            var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
-            var baseTrailDistance = 80;
-            var maxTrailDistance = maxFrontier;
-            var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
-            var maxBlockWidth = maxFrontier * 2;
-            var uniforms = {
-                frontier: {
-                    type: "1f",
-                    value: 0
-                },
-                trailDistance: {
-                    type: "1f",
-                    value: baseTrailDistance
-                },
-                seed: {
-                    type: "1f",
-                    value: Math.random() * 420
-                },
-                blockSize: {
-                    type: "1f",
-                    value: 90
-                },
-                blockWidth: {
-                    type: "1f",
-                    value: 0
-                },
-                lineAlpha: {
-                    type: "1f",
-                    value: 1.5
-                },
-                blockAlpha: {
-                    type: "1f",
-                    value: 0
-                }
-            };
-            var travelTime = 0.2;
-            var syncUniformsFN = function (time) {
-                if (time < travelTime) {
-                    var adjustedtime = time / travelTime;
-                    uniforms.frontier.value = maxFrontier * adjustedtime;
-                }
-                else {
-                    var adjustedtime = Rance.getRelativeValue(time, travelTime - 0.02, 1);
-                    adjustedtime = Math.pow(adjustedtime, 4);
-                    uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
-                    uniforms.blockWidth.value = adjustedtime * maxBlockWidth;
-                    uniforms.lineAlpha.value = (1 - adjustedtime) * 1.5;
-                    var relativeDistance = Rance.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
-                    uniforms.blockAlpha.value = 1 - relativeDistance;
-                }
-            };
-            var guardFilter = new Rance.GuardFilter(uniforms);
-            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
-                transparent: true
-            });
-            var container = new PIXI.Container();
-            container.filters = [guardFilter];
-            container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
-            var renderTexture = new PIXI.RenderTexture(renderer, props.width, props.height);
-            var sprite = new PIXI.Sprite(renderTexture);
-            if (!props.facingRight) {
-                sprite.x = props.width;
-                sprite.scale.x = -1;
-            }
-            function animate() {
-                var elapsedTime = Date.now() - startTime;
-                var relativeTime = elapsedTime / props.duration;
-                syncUniformsFN(relativeTime);
-                renderTexture.clear();
-                renderTexture.render(container);
-                renderer.render(sprite);
-                if (elapsedTime < props.duration) {
-                    requestAnimationFrame(animate);
-                }
-                else {
-                    renderer.destroy(true);
-                }
-            }
-            props.onLoaded(renderer.view);
-            var startTime = Date.now();
-            animate();
-            return renderer.view;
-        }
-        BattleSFXFunctions.guard = guard;
-    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
 /// <reference path="../../src/templateinterfaces/sfxparams.d.ts"/>
@@ -7333,7 +6999,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/buildings.ts" />
+/// <reference path="../modules/default/templates/buildings.ts" />
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
 var Rance;
@@ -7395,6 +7061,208 @@ var Rance;
         return Building;
     })();
     Rance.Building = Building;
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
+/// <reference path="effects.ts" />
+/// <reference path="battlesfx.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Abilities;
+                (function (Abilities) {
+                    Abilities.rangedAttack = {
+                        type: "rangedAttack",
+                        displayName: "Ranged Attack",
+                        description: "Standard ranged attack",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: Templates.BattleSFX.rocketAttack,
+                            data: {
+                                baseDamage: 1,
+                                damageType: Rance.DamageType.physical
+                            },
+                            attachedEffects: [
+                                {
+                                    template: Templates.Effects.receiveCounterAttack,
+                                    data: {
+                                        baseDamage: 0.5
+                                    }
+                                }
+                            ]
+                        }
+                    };
+                    Abilities.closeAttack = {
+                        type: "closeAttack",
+                        displayName: "Close Attack",
+                        description: "Close range attack that hits adjacent targets in same row as well",
+                        moveDelay: 90,
+                        actionsUse: 2,
+                        mainEffect: {
+                            template: Templates.Effects.closeAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.wholeRowAttack = {
+                        type: "wholeRowAttack",
+                        displayName: "Row Attack",
+                        description: "Attack entire row of units",
+                        moveDelay: 300,
+                        actionsUse: 1,
+                        bypassesGuard: true,
+                        mainEffect: {
+                            template: Templates.Effects.wholeRowAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.bombAttack = {
+                        type: "bombAttack",
+                        displayName: "Bomb Attack",
+                        description: "Ranged attack that hits all adjacent enemy units",
+                        moveDelay: 120,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.bombAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.guardColumn = {
+                        type: "guardColumn",
+                        displayName: "Guard Column",
+                        description: "Protect allies in the same row and boost defence up to 2x",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.guardColumn,
+                            sfx: Templates.BattleSFX.guard,
+                            data: {
+                                perInt: 20
+                            }
+                        }
+                    };
+                    Abilities.boardingHook = {
+                        type: "boardingHook",
+                        displayName: "Boarding Hook",
+                        description: "0.8x damage but increases target capture chance",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: Templates.BattleSFX.rocketAttack,
+                            data: {
+                                baseDamage: 0.8,
+                                damageType: Rance.DamageType.physical
+                            },
+                            attachedEffects: [
+                                {
+                                    template: Templates.Effects.increaseCaptureChance,
+                                    data: {
+                                        flat: 0.5
+                                    }
+                                },
+                                {
+                                    template: Templates.Effects.receiveCounterAttack,
+                                    data: {
+                                        baseDamage: 0.5
+                                    }
+                                }
+                            ]
+                        }
+                    };
+                    Abilities.debugAbility = {
+                        type: "debugAbility",
+                        displayName: "Debug Ability",
+                        description: "who knows what its going to do today",
+                        moveDelay: 0,
+                        actionsUse: 0,
+                        mainEffect: {
+                            template: Templates.Effects.guardColumn,
+                            sfx: Templates.BattleSFX.guard,
+                            data: {
+                                perInt: 20
+                            }
+                        }
+                    };
+                    Abilities.ranceAttack = {
+                        type: "ranceAttack",
+                        displayName: "Rance attack",
+                        description: "dont sue",
+                        moveDelay: 0,
+                        actionsUse: 0,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: {
+                                duration: 1200,
+                                userSprite: function (props) {
+                                    // cg13600.bmp
+                                    return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                                },
+                                battleOverlay: function (props) {
+                                    // cg40500.bmp - cg40529.bmp converted to webm
+                                    return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                                }
+                            },
+                            data: {
+                                baseDamage: 0.1,
+                                damageType: Rance.DamageType.physical
+                            }
+                        },
+                        secondaryEffects: [
+                            {
+                                template: Templates.Effects.singleTargetDamage,
+                                data: {
+                                    baseDamage: 0.1,
+                                    damageType: Rance.DamageType.physical
+                                },
+                                attachedEffects: [
+                                    {
+                                        template: Templates.Effects.receiveCounterAttack,
+                                        data: {
+                                            baseDamage: 0.5
+                                        }
+                                    }
+                                ],
+                                sfx: {
+                                    duration: 1500,
+                                    userSprite: function (props) {
+                                        // cg13300.bmp
+                                        return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                                    },
+                                    battleOverlay: function (props) {
+                                        // cg40000.bmp - cg40029.bmp converted to webm
+                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    Abilities.standBy = {
+                        type: "standBy",
+                        displayName: "Standby",
+                        description: "Skip a turn but next one comes faster",
+                        moveDelay: 50,
+                        actionsUse: 1,
+                        AIEvaluationPriority: 0.6,
+                        AIScoreAdjust: -0.1,
+                        disableInAIBattles: true,
+                        mainEffect: {
+                            template: Templates.Effects.standBy,
+                            sfx: {
+                                duration: 750
+                            }
+                        }
+                    };
+                })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
 /// <reference path="../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
@@ -7637,7 +7505,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/items.ts" />
+/// <reference path="../modules/default/templates/items.ts" />
 /// <reference path="unit.ts" />
 var Rance;
 (function (Rance) {
@@ -7659,7 +7527,7 @@ var Rance;
     })();
     Rance.Item = Item;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/items.ts" />
+/// <reference path="../modules/default/templates/items.ts" />
 /// <reference path="item.ts" />
 /// <reference path="utility.ts" />
 var Rance;
@@ -7682,7 +7550,7 @@ var Rance;
     })();
     Rance.ItemGenerator = ItemGenerator;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/resources.ts" />
+/// <reference path="../modules/default/templates/resources.ts" />
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
@@ -9302,7 +9170,7 @@ var Rance;
     Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
-/// <reference path="../data/templates/subemblems.ts" />
+/// <reference path="../modules/default/templates/subemblems.ts" />
 /// <reference path="color.ts"/>
 var Rance;
 (function (Rance) {
@@ -10208,7 +10076,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/attitudemodifiers.ts" />
+/// <reference path="../modules/default/templates/attitudemodifiers.ts" />
 var Rance;
 (function (Rance) {
     var AttitudeModifier = (function () {
@@ -11918,7 +11786,7 @@ var Rance;
         MapAI.Front = Front;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalities.ts" />
+/// <reference path="../../modules/default/templates/personalities.ts" />
 /// <reference path="../player.ts"/>
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="objectivesai.ts"/>
@@ -12239,7 +12107,7 @@ var Rance;
         MapAI.FrontsAI = FrontsAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalities.ts" />
+/// <reference path="../../modules/default/templates/personalities.ts" />
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="mapevaluator.ts"/>
@@ -12315,7 +12183,7 @@ var Rance;
         MapAI.EconomyAI = EconomyAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/attitudemodifiers.ts" />
+/// <reference path="../../modules/default/templates/attitudemodifiers.ts" />
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
 /// <reference path="../diplomacystatus.ts"/>
@@ -12343,7 +12211,7 @@ var Rance;
         MapAI.DiplomacyAI = DiplomacyAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/personalities.ts" />
+/// <reference path="../../modules/default/templates/personalities.ts" />
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
@@ -13290,8 +13158,55 @@ var Rance;
     })();
     Rance.Battle = Battle;
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/effects.ts" />
-/// <reference path="../data/templates/battlesfx.ts" />
+/// <reference path="utility.ts"/>
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    Rance.targetSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
+    };
+    Rance.targetAll = function (units, target) {
+        return Rance.flatten2dArray(units);
+    };
+    Rance.targetRow = function (units, target) {
+        var y = target[1];
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetColumn = function (units, target) {
+        var x = target[0];
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetColumnNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+})(Rance || (Rance = {}));
+/// <reference path="../modules/default/templates/effects.ts" />
+/// <reference path="../modules/default/templates/battlesfx.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -13616,7 +13531,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../data/templates/statuseffects.ts" />
+/// <reference path="../modules/default/templates/statuseffects.ts" />
 var Rance;
 (function (Rance) {
     var StatusEffect = (function () {
@@ -15707,7 +15622,7 @@ var Rance;
         MapGen2.Region = Region;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../data/templates/resources.ts" />
+/// <reference path="../../modules/default/templates/resources.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
@@ -16074,51 +15989,6 @@ var Rance;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/range.ts" />
-/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
-/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var UnitFamilies;
-                (function (UnitFamilies) {
-                    UnitFamilies.debug = {
-                        type: "debug",
-                        debugOnly: true,
-                        alwaysAvailable: true,
-                        rarity: 0,
-                        distributionGroups: []
-                    };
-                    UnitFamilies.basic = {
-                        type: "basic",
-                        debugOnly: false,
-                        alwaysAvailable: true,
-                        rarity: 0,
-                        distributionGroups: []
-                    };
-                    UnitFamilies.red = {
-                        type: "red",
-                        debugOnly: false,
-                        alwaysAvailable: false,
-                        rarity: 1,
-                        distributionGroups: ["common", "rare"]
-                    };
-                    UnitFamilies.blue = {
-                        type: "blue",
-                        debugOnly: false,
-                        alwaysAvailable: false,
-                        rarity: 1,
-                        distributionGroups: ["common", "rare"]
-                    };
-                })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
 /// <reference path="../../src/utility.ts" />
 /// <reference path="../../src/point.ts" />
 /// <reference path="../../src/player.ts" />
@@ -19899,10 +19769,8 @@ var Rance;
     })();
     Rance.ModuleLoader = ModuleLoader;
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
-/// <reference path="effects.ts" />
-/// <reference path="battlesfx.ts" />
+/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts"/>
+/// <reference path="../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -19911,192 +19779,37 @@ var Rance;
         (function (DefaultModule) {
             var Templates;
             (function (Templates) {
-                var Abilities;
-                (function (Abilities) {
-                    Abilities.rangedAttack = {
-                        type: "rangedAttack",
-                        displayName: "Ranged Attack",
-                        description: "Standard ranged attack",
-                        moveDelay: 100,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
-                            sfx: Templates.BattleSFX.rocketAttack,
-                            data: {
-                                baseDamage: 1,
-                                damageType: Rance.DamageType.physical
-                            },
-                            attachedEffects: [
-                                {
-                                    template: Templates.Effects.receiveCounterAttack,
-                                    data: {
-                                        baseDamage: 0.5
-                                    }
-                                }
-                            ]
-                        }
+                var UnitFamilies;
+                (function (UnitFamilies) {
+                    UnitFamilies.debug = {
+                        type: "debug",
+                        debugOnly: true,
+                        alwaysAvailable: true,
+                        rarity: 0,
+                        distributionGroups: []
                     };
-                    Abilities.closeAttack = {
-                        type: "closeAttack",
-                        displayName: "Close Attack",
-                        description: "Close range attack that hits adjacent targets in same row as well",
-                        moveDelay: 90,
-                        actionsUse: 2,
-                        mainEffect: {
-                            template: Templates.Effects.closeAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
-                        }
+                    UnitFamilies.basic = {
+                        type: "basic",
+                        debugOnly: false,
+                        alwaysAvailable: true,
+                        rarity: 0,
+                        distributionGroups: []
                     };
-                    Abilities.wholeRowAttack = {
-                        type: "wholeRowAttack",
-                        displayName: "Row Attack",
-                        description: "Attack entire row of units",
-                        moveDelay: 300,
-                        actionsUse: 1,
-                        bypassesGuard: true,
-                        mainEffect: {
-                            template: Templates.Effects.wholeRowAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
-                        }
+                    UnitFamilies.red = {
+                        type: "red",
+                        debugOnly: false,
+                        alwaysAvailable: false,
+                        rarity: 1,
+                        distributionGroups: ["common", "rare"]
                     };
-                    Abilities.bombAttack = {
-                        type: "bombAttack",
-                        displayName: "Bomb Attack",
-                        description: "Ranged attack that hits all adjacent enemy units",
-                        moveDelay: 120,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.bombAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
-                        }
+                    UnitFamilies.blue = {
+                        type: "blue",
+                        debugOnly: false,
+                        alwaysAvailable: false,
+                        rarity: 1,
+                        distributionGroups: ["common", "rare"]
                     };
-                    Abilities.guardColumn = {
-                        type: "guardColumn",
-                        displayName: "Guard Column",
-                        description: "Protect allies in the same row and boost defence up to 2x",
-                        moveDelay: 100,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.guardColumn,
-                            sfx: Templates.BattleSFX.guard,
-                            data: {
-                                perInt: 20
-                            }
-                        }
-                    };
-                    Abilities.boardingHook = {
-                        type: "boardingHook",
-                        displayName: "Boarding Hook",
-                        description: "0.8x damage but increases target capture chance",
-                        moveDelay: 100,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
-                            sfx: Templates.BattleSFX.rocketAttack,
-                            data: {
-                                baseDamage: 0.8,
-                                damageType: Rance.DamageType.physical
-                            },
-                            attachedEffects: [
-                                {
-                                    template: Templates.Effects.increaseCaptureChance,
-                                    data: {
-                                        flat: 0.5
-                                    }
-                                },
-                                {
-                                    template: Templates.Effects.receiveCounterAttack,
-                                    data: {
-                                        baseDamage: 0.5
-                                    }
-                                }
-                            ]
-                        }
-                    };
-                    Abilities.debugAbility = {
-                        type: "debugAbility",
-                        displayName: "Debug Ability",
-                        description: "who knows what its going to do today",
-                        moveDelay: 0,
-                        actionsUse: 0,
-                        mainEffect: {
-                            template: Templates.Effects.guardColumn,
-                            sfx: Templates.BattleSFX.guard,
-                            data: {
-                                perInt: 20
-                            }
-                        }
-                    };
-                    Abilities.ranceAttack = {
-                        type: "ranceAttack",
-                        displayName: "Rance attack",
-                        description: "dont sue",
-                        moveDelay: 0,
-                        actionsUse: 0,
-                        mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
-                            sfx: {
-                                duration: 1200,
-                                userSprite: function (props) {
-                                    // cg13600.bmp
-                                    return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
-                                },
-                                battleOverlay: function (props) {
-                                    // cg40500.bmp - cg40529.bmp converted to webm
-                                    return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
-                                }
-                            },
-                            data: {
-                                baseDamage: 0.1,
-                                damageType: Rance.DamageType.physical
-                            }
-                        },
-                        secondaryEffects: [
-                            {
-                                template: Templates.Effects.singleTargetDamage,
-                                data: {
-                                    baseDamage: 0.1,
-                                    damageType: Rance.DamageType.physical
-                                },
-                                attachedEffects: [
-                                    {
-                                        template: Templates.Effects.receiveCounterAttack,
-                                        data: {
-                                            baseDamage: 0.5
-                                        }
-                                    }
-                                ],
-                                sfx: {
-                                    duration: 1500,
-                                    userSprite: function (props) {
-                                        // cg13300.bmp
-                                        return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
-                                    },
-                                    battleOverlay: function (props) {
-                                        // cg40000.bmp - cg40029.bmp converted to webm
-                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
-                                    }
-                                }
-                            }
-                        ]
-                    };
-                    Abilities.standBy = {
-                        type: "standBy",
-                        displayName: "Standby",
-                        description: "Skip a turn but next one comes faster",
-                        moveDelay: 50,
-                        actionsUse: 1,
-                        AIEvaluationPriority: 0.6,
-                        AIScoreAdjust: -0.1,
-                        disableInAIBattles: true,
-                        mainEffect: {
-                            template: Templates.Effects.standBy,
-                            sfx: {
-                                duration: 750
-                            }
-                        }
-                    };
-                })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
+                })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -20163,9 +19876,9 @@ var Rance;
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="abilities.ts"/>
-/// <reference path="../../../data/templates/passiveskills.ts" />
-/// <reference path="../../../data/templates/unitfamilies.ts" />
-/// <reference path="../../../data/templates/unitarchetypes.ts" />
+/// <reference path="../../../modules/default/templates/passiveskills.ts" />
+/// <reference path="../../../modules/default/templates/unitfamilies.ts" />
+/// <reference path="../../../modules/default/templates/unitarchetypes.ts" />
 var Rance;
 (function (Rance) {
     var Modules;

@@ -2,9 +2,9 @@
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
 
 /// <reference path="abilities.ts"/>
-/// <reference path="../../../data/templates/passiveskills.ts" />
-/// <reference path="../../../data/templates/unitfamilies.ts" />
-/// <reference path="../../../data/templates/unitarchetypes.ts" />
+/// <reference path="../../../modules/default/templates/passiveskills.ts" />
+/// <reference path="../../../modules/default/templates/unitfamilies.ts" />
+/// <reference path="../../../modules/default/templates/unitarchetypes.ts" />
 
 module Rance
 {
