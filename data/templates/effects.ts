@@ -10,25 +10,8 @@ module Rance
 {
   export module Templates
   {
-
     export module Effects
     {
-      export var dummyTargetColumn: IEffectTemplate =
-      {
-        name: "dummyTargetColumn",
-        targetFleets: "enemy",
-        targetingFunction: targetColumn,
-        targetRange: "all",
-        effect: function(){}
-      }
-      export var dummyTargetAll: IEffectTemplate =
-      {
-        name: "dummyTargetAll",
-        targetFleets: "enemy",
-        targetingFunction: targetAll,
-        targetRange: "all",
-        effect: function(){}
-      }
       export var singleTargetDamage: IEffectTemplate =
       {
         name: "singleTargetDamage",

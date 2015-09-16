@@ -1,5 +1,5 @@
-/// <reference path="../../src/templateinterfaces/iabilitytemplate.d.ts"/>
-/// <reference path="../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
 /// <reference path="effects.ts" />
 /// <reference path="battlesfx.ts" />
 
@@ -8,33 +8,8 @@ module Rance
 {
   export module Templates
   {
-
     export module Abilities
     {
-      export var dummyTargetColumn: IAbilityTemplate =
-      {
-        type: "dummyTargetColumn",
-        displayName: "dummyTargetColumn",
-        description: "you shouldnt see this",
-        moveDelay: 0,
-        actionsUse: 0,
-        mainEffect:
-        {
-          template: Effects.dummyTargetColumn
-        }
-      }
-      export var dummyTargetAll: IAbilityTemplate =
-      {
-        type: "dummyTargetAll",
-        displayName: "dummyTargetAll",
-        description: "you shouldnt see this",
-        moveDelay: 0,
-        actionsUse: 0,
-        mainEffect:
-        {
-          template: Effects.dummyTargetAll
-        }
-      }
       export var rangedAttack: IAbilityTemplate =
       {
         type: "rangedAttack",

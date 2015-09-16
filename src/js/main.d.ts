@@ -4,8 +4,6 @@
 /// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
@@ -17,6 +15,7 @@
 /// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
@@ -26,6 +25,7 @@
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
@@ -482,6 +482,38 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module BattleSFXFunctions {
+        function defaultUnitScene(unit: Unit, props: {
+            unitsToDraw?: number;
+            maxUnitsPerColumn: number;
+            degree: number;
+            rotationAngle: number;
+            scalingFactor: number;
+            xDistance: number;
+            zDistance: number;
+            facesRight: boolean;
+            maxWidth?: number;
+            maxHeight?: number;
+            desiredHeight?: number;
+        }): HTMLCanvasElement;
+    }
+}
+declare module Rance {
+    enum DamageType {
+        physical = 0,
+        magical = 1,
+    }
+}
+declare module Rance {
+    interface IUnitAttributes {
+        maxActionPoints: number;
+        attack: number;
+        defence: number;
+        intelligence: number;
+        speed: number;
+    }
+}
+declare module Rance {
     function randInt(min: number, max: number): number;
     function randRange(min: number, max: number): number;
     function getRandomArrayKey(target: any[]): number;
@@ -539,12 +571,6 @@ declare module Rance {
     var targetNeighbors: TargetingFunction;
 }
 declare module Rance {
-    enum DamageType {
-        physical = 0,
-        magical = 1,
-    }
-}
-declare module Rance {
     module Templates {
         module Effects {
             var dummyTargetColumn: IEffectTemplate;
@@ -585,49 +611,6 @@ declare module Rance {
             var rocketAttack: IBattleSFXTemplate;
             var guard: IBattleSFXTemplate;
         }
-    }
-}
-declare module Rance {
-    module Templates {
-        module Abilities {
-            var dummyTargetColumn: IAbilityTemplate;
-            var dummyTargetAll: IAbilityTemplate;
-            var rangedAttack: IAbilityTemplate;
-            var closeAttack: IAbilityTemplate;
-            var wholeRowAttack: IAbilityTemplate;
-            var bombAttack: IAbilityTemplate;
-            var guardColumn: IAbilityTemplate;
-            var boardingHook: IAbilityTemplate;
-            var debugAbility: IAbilityTemplate;
-            var ranceAttack: IAbilityTemplate;
-            var standBy: IAbilityTemplate;
-        }
-    }
-}
-declare module Rance {
-    module BattleSFXFunctions {
-        function defaultUnitScene(unit: Unit, props: {
-            unitsToDraw?: number;
-            maxUnitsPerColumn: number;
-            degree: number;
-            rotationAngle: number;
-            scalingFactor: number;
-            xDistance: number;
-            zDistance: number;
-            facesRight: boolean;
-            maxWidth?: number;
-            maxHeight?: number;
-            desiredHeight?: number;
-        }): HTMLCanvasElement;
-    }
-}
-declare module Rance {
-    interface IUnitAttributes {
-        maxActionPoints: number;
-        attack: number;
-        defence: number;
-        intelligence: number;
-        speed: number;
     }
 }
 declare module Rance {
@@ -2903,6 +2886,23 @@ declare module Rance {
         moduleData: ModuleData;
         constructor();
         loadModuleFile(moduleFile: IModuleFile): void;
+    }
+}
+declare module Rance {
+    module Templates {
+        module Abilities {
+            var dummyTargetColumn: IAbilityTemplate;
+            var dummyTargetAll: IAbilityTemplate;
+            var rangedAttack: IAbilityTemplate;
+            var closeAttack: IAbilityTemplate;
+            var wholeRowAttack: IAbilityTemplate;
+            var bombAttack: IAbilityTemplate;
+            var guardColumn: IAbilityTemplate;
+            var boardingHook: IAbilityTemplate;
+            var debugAbility: IAbilityTemplate;
+            var ranceAttack: IAbilityTemplate;
+            var standBy: IAbilityTemplate;
+        }
     }
 }
 declare module Rance {

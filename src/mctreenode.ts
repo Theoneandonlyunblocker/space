@@ -1,4 +1,5 @@
-/// <reference path="../data/templates/abilities.ts" />
+/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="battle.ts" />
 /// <reference path="unit.ts"/>
 
 module Rance
@@ -184,7 +185,7 @@ module Rance
 
       var targetData = this.pickRandomAbilityAndTarget(actions);
 
-      var ability = Templates.Abilities[targetData.abilityType];
+      var ability = app.moduleData.Templates.Abilities[targetData.abilityType];
       var target = battle.unitsById[targetData.targetId];
 
       useAbility(battle, battle.activeUnit, ability, target);

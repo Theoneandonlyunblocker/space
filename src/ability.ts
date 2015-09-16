@@ -1,5 +1,4 @@
 /// <reference path="../data/templates/effects.ts" />
-/// <reference path="../data/templates/abilities.ts" />
 /// <reference path="../data/templates/battlesfx.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
@@ -253,7 +252,7 @@ module Rance
   export function getGuarders(battle: Battle, user: Unit,
     ability:Templates.IAbilityTemplate, target: Unit)
   {
-    var allEnemies = getPotentialTargets(battle, user, Templates.Abilities.dummyTargetAll);
+    var allEnemies = getPotentialTargets(battle, user, app.moduleData.Templates.Abilities.dummyTargetAll);
 
     var guarders = allEnemies.filter(function(unit: Unit)
     {

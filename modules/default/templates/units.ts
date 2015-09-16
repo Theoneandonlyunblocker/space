@@ -1,7 +1,7 @@
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
 
-/// <reference path="../../../data/templates/abilities.ts"/>
+/// <reference path="abilities.ts"/>
 /// <reference path="../../../data/templates/passiveskills.ts" />
 /// <reference path="../../../data/templates/unitfamilies.ts" />
 /// <reference path="../../../data/templates/unitarchetypes.ts" />

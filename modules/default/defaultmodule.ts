@@ -1,6 +1,7 @@
 /// <reference path="../../src/moduledata.ts" />
 
 /// <reference path="templates/units.ts" />
+/// <reference path="templates/abilities.ts" />
 
 module Rance
 {

@@ -1,8 +1,6 @@
 /// <reference path="../src/utility.ts" />
 /// <reference path="../src/unit.ts" />
 
-/// <reference path="templates/abilities.ts" />
-
 module Rance
 {
   export function setAllDynamicTemplateProperties()
@@ -36,9 +34,9 @@ module Rance
       return false;
     }
 
-    for (var abilityName in Templates.Abilities)
+    for (var abilityName in app.moduleData.Templates.Abilities)
     {
-      var ability = <Templates.IAbilityTemplate> Templates.Abilities[abilityName];
+      var ability = <Templates.IAbilityTemplate> app.moduleData.Templates.Abilities[abilityName];
       ability.addsGuard = checkIfAbilityAddsGuard(ability);
     }
   }
