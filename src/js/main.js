@@ -6641,6 +6641,15 @@ var Rance;
         return null;
     }
     Rance.getDropTargetAtLocation = getDropTargetAtLocation;
+    function onDOMLoaded(onLoaded) {
+        if (document.readyState === "interactive" || document.readyState === "complete") {
+            onLoaded();
+        }
+        else {
+            document.addEventListener('DOMContentLoaded', onLoaded);
+        }
+    }
+    Rance.onDOMLoaded = onDOMLoaded;
 })(Rance || (Rance = {}));
 /// <reference path="utility.ts"/>
 /// <reference path="unit.ts"/>
@@ -14556,7 +14565,6 @@ var Rance;
                 var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function (aId, bId) {
                     var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
                     var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
-                    console.log(a, b);
                     if (a < b)
                         return -1;
                     else if (a > b)
@@ -19313,6 +19321,35 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
+    ;
+    function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
+        for (var spriteName in sheetData.frames) {
+            processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
+        }
+    }
+    function cacheSpriteSheetAsImages(sheetData, sheetImg) {
+        var spriteToImageFN = function (sheetImg, frame, spriteName) {
+            var canvas = document.createElement("canvas");
+            canvas.width = frame.w;
+            canvas.height = frame.h;
+            var context = canvas.getContext("2d");
+            context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
+            var image = new Image();
+            image.src = canvas.toDataURL();
+            // this is never true as pixi loader silently ignores duplicates, which is a shame
+            // if (app.images[spriteName])
+            // {
+            //   throw new Error("Duplicate image name " + spriteName);
+            //   return;
+            // }
+            app.images[spriteName] = image;
+        };
+        processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
+    }
+    Rance.cacheSpriteSheetAsImages = cacheSpriteSheetAsImages;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
     var Modules;
     (function (Modules) {
         var DefaultModule;
@@ -20505,6 +20542,7 @@ var Rance;
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
+/// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
@@ -20600,76 +20638,6 @@ var Rance;
             };
         })(TestModule = Modules.TestModule || (Modules.TestModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    ;
-    function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
-        for (var spriteName in sheetData.frames) {
-            processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
-        }
-    }
-    function cacheSpriteSheetAsImages(sheetData, sheetImg) {
-        var spriteToImageFN = function (sheetImg, frame, spriteName) {
-            var canvas = document.createElement("canvas");
-            canvas.width = frame.w;
-            canvas.height = frame.h;
-            var context = canvas.getContext("2d");
-            context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
-            var image = new Image();
-            image.src = canvas.toDataURL();
-            // this is never true as pixi loader silently ignores duplicates, which is a shame
-            // if (app.images[spriteName])
-            // {
-            //   throw new Error("Duplicate image name " + spriteName);
-            //   return;
-            // }
-            app.images[spriteName] = image;
-        };
-        processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
-    }
-    Rance.cacheSpriteSheetAsImages = cacheSpriteSheetAsImages;
-})(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
-/// <reference path="spritesheetcachingfunctions" />
-var Rance;
-(function (Rance) {
-    var AppLoader = (function () {
-        function AppLoader(onLoaded) {
-            this.loaded = {
-                DOM: false,
-            };
-            this.onLoaded = onLoaded;
-            PIXI.utils._saidHello = true;
-            this.startTime = new Date().getTime();
-            this.loadDOM();
-        }
-        AppLoader.prototype.loadDOM = function () {
-            var self = this;
-            if (document.readyState === "interactive" || document.readyState === "complete") {
-                self.loaded.DOM = true;
-                self.checkLoaded();
-            }
-            else {
-                document.addEventListener('DOMContentLoaded', function () {
-                    self.loaded.DOM = true;
-                    self.checkLoaded();
-                });
-            }
-        };
-        AppLoader.prototype.checkLoaded = function () {
-            for (var prop in this.loaded) {
-                if (!this.loaded[prop]) {
-                    return;
-                }
-            }
-            var elapsed = new Date().getTime() - this.startTime;
-            console.log("App loaded in " + elapsed + " ms");
-            this.onLoaded.call();
-        };
-        return AppLoader;
-    })();
-    Rance.AppLoader = AppLoader;
 })(Rance || (Rance = {}));
 /// <reference path="game.ts"/>
 /// <reference path="player.ts"/>
@@ -21074,7 +21042,6 @@ var Rance;
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />
 /// <reference path="../modules/test/testmodule.ts" />
-/// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="setdynamictemplateproperties.ts"/>
 /// <reference path="templateindexes.ts"/>
@@ -21095,20 +21062,22 @@ var Rance;
         function App() {
             this.images = {};
             var self = this;
+            PIXI.utils._saidHello = true;
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
-            this.loader = new Rance.AppLoader(function () {
-                var moduleLoader = new Rance.ModuleLoader();
+            var boundMakeApp = this.makeApp.bind(this);
+            Rance.onDOMLoaded(function () {
+                var moduleLoader = self.moduleLoader = new Rance.ModuleLoader();
+                self.moduleData = moduleLoader.moduleData;
                 moduleLoader.addModuleFile(Rance.Modules.DefaultModule.moduleFile);
                 moduleLoader.addModuleFile(Rance.Modules.TestModule.moduleFile);
-                moduleLoader.loadAll(self.makeApp.bind(self, moduleLoader.moduleData));
+                moduleLoader.loadAll(boundMakeApp);
             });
         }
-        App.prototype.makeApp = function (moduleData) {
+        App.prototype.makeApp = function () {
             var startTime = new Date().getTime();
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
-            this.moduleData = moduleData;
             Rance.setAllDynamicTemplateProperties();
             Rance.buildTemplateIndexes();
             this.itemGenerator = new Rance.ItemGenerator();

@@ -1,4 +1,5 @@
 /// <reference path="../../src/moduledata.ts" />
+/// <reference path="../../src/spritesheetcachingfunctions.ts" />
 
 /// <reference path="graphics/drawnebula.ts" />
 

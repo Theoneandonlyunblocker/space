@@ -372,4 +372,15 @@ module Rance
 
     return null;
   }
+  export function onDOMLoaded(onLoaded: () => void)
+  {
+    if (document.readyState === "interactive" || document.readyState === "complete")
+    {
+      onLoaded();
+    }
+    else
+    {
+      document.addEventListener('DOMContentLoaded', onLoaded);
+    }
+  }
 }

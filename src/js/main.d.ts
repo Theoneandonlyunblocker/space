@@ -560,6 +560,7 @@ declare module Rance {
         [prop: string]: number;
     };
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
+    function onDOMLoaded(onLoaded: () => void): void;
 }
 declare module Rance {
     interface TargetingFunction {
@@ -2695,6 +2696,23 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface ISpriteSheetFrame {
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+    }
+    interface ISpriteSheetData {
+        frames: {
+            [id: string]: {
+                frame: ISpriteSheetFrame;
+            };
+        };
+        meta: any;
+    }
+    function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
+}
+declare module Rance {
     module Modules {
         module DefaultModule {
             function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer): PIXI.Sprite;
@@ -2841,35 +2859,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    interface ISpriteSheetFrame {
-        x: number;
-        y: number;
-        w: number;
-        h: number;
-    }
-    interface ISpriteSheetData {
-        frames: {
-            [id: string]: {
-                frame: ISpriteSheetFrame;
-            };
-        };
-        meta: any;
-    }
-    function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
-}
-declare module Rance {
-    class AppLoader {
-        loaded: {
-            DOM: boolean;
-        };
-        startTime: number;
-        onLoaded: any;
-        constructor(onLoaded: any);
-        loadDOM(): void;
-        checkLoaded(): void;
-    }
-}
-declare module Rance {
     class GameLoader {
         map: GalaxyMap;
         humanPlayer: Player;
@@ -2956,7 +2945,6 @@ declare module Rance {
     };
     class App {
         seed: string;
-        loader: AppLoader;
         renderer: Renderer;
         game: Game;
         mapRenderer: MapRenderer;
@@ -2968,8 +2956,9 @@ declare module Rance {
         };
         itemGenerator: ItemGenerator;
         moduleData: ModuleData;
+        moduleLoader: ModuleLoader;
         constructor();
-        makeApp(moduleData: ModuleData): void;
+        makeApp(): void;
         destroy(): void;
         load(saveKey: string): void;
         makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[]): void;

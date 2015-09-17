@@ -13,7 +13,6 @@
 /// <reference path="../modules/default/defaultmodule.ts" />
 /// <reference path="../modules/test/testmodule.ts" />
 
-/// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 
 /// <reference path="setdynamictemplateproperties.ts"/>
@@ -40,7 +39,6 @@ module Rance
   export class App
   {
     seed: string;
-    loader: AppLoader;
     renderer: Renderer;
     game: Game;
     mapRenderer: MapRenderer;
@@ -54,31 +52,34 @@ module Rance
     itemGenerator: ItemGenerator;
 
     moduleData: ModuleData;
+    moduleLoader: ModuleLoader;
 
     constructor()
     {
       var self = this;
+      PIXI.utils._saidHello = true;
 
       this.seed = "" + Math.random();
       Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
+      var boundMakeApp = this.makeApp.bind(this);
 
-      this.loader = new AppLoader(function()
+      onDOMLoaded(function()
       {
-        var moduleLoader = new ModuleLoader();
+        var moduleLoader = self.moduleLoader = new ModuleLoader();
+        self.moduleData = moduleLoader.moduleData;
+
         moduleLoader.addModuleFile(Modules.DefaultModule.moduleFile);
         moduleLoader.addModuleFile(Modules.TestModule.moduleFile);
         
-        moduleLoader.loadAll(self.makeApp.bind(self, moduleLoader.moduleData));
+        moduleLoader.loadAll(boundMakeApp);
       });
     }
-    makeApp(moduleData: ModuleData)
+    makeApp()
     {
       var startTime = new Date().getTime();
 
       Options = extendObject(defaultOptions);
       loadOptions();
-
-      this.moduleData = moduleData;
 
       setAllDynamicTemplateProperties();
       buildTemplateIndexes();
