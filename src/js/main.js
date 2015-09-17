@@ -18976,6 +18976,7 @@ var Rance;
                 this.camera = null;
             }
             this.shaderManager = null;
+            this.galaxyMap = null;
             if (this.renderer) {
                 this.renderer.destroy(true);
                 this.renderer = null;
@@ -19100,68 +19101,21 @@ var Rance;
                 }
             }
         };
-        Renderer.prototype.makeBackgroundTexture = function (seed) {
-            function copyUniforms(uniformObj, target) {
-                if (!target)
-                    target = {};
-                for (var name in uniformObj) {
-                    if (!target[name]) {
-                        target[name] = { type: uniformObj[name].type };
-                    }
-                    target[name].value = uniformObj[name].value;
-                }
-                return target;
-            }
-            var nebulaFilter = this.shaderManager.shaders["nebula"];
-            var oldRng = Math.random;
-            var oldUniforms = copyUniforms(nebulaFilter.uniforms);
-            Math.random = RNG.prototype.uniform.bind(new RNG(seed));
-            var nebulaColorScheme = Rance.generateColorScheme();
-            var lightness = Rance.randRange(1, 1.2);
-            var newUniforms = {
-                baseColor: { value: Rance.hex2rgb(nebulaColorScheme.main) },
-                overlayColor: { value: Rance.hex2rgb(nebulaColorScheme.secondary) },
-                highlightColor: { value: [1.0, 1.0, 1.0] },
-                coverage: { value: Rance.randRange(0.2, 0.4) },
-                scale: { value: Rance.randRange(4, 8) },
-                diffusion: { value: Rance.randRange(1.5, 3.0) },
-                streakiness: { value: Rance.randRange(1.5, 2.5) },
-                streakLightness: { value: lightness },
-                cloudLightness: { value: lightness },
-                highlightA: { value: 0.9 },
-                highlightB: { value: 2.2 },
-                seed: { value: [Math.random() * 100, Math.random() * 100] }
-            };
-            copyUniforms(newUniforms, nebulaFilter.uniforms);
-            var texture = this.renderNebula();
-            copyUniforms(oldUniforms, nebulaFilter.uniforms);
-            Math.random = oldRng;
-            return texture;
-        };
-        Renderer.prototype.renderNebula = function () {
-            var layer = this.layers["bgFilter"];
-            layer.filters = [this.shaderManager.shaders["nebula"]];
-            var texture = layer.generateTexture(this.renderer, PIXI.SCALE_MODES.DEFAULT, 1, layer.filterArea);
-            layer.filters = null;
-            return texture;
-        };
         Renderer.prototype.renderBackground = function () {
             var bgObject;
             if (this.isBattleBackground) {
-                var texture = this.renderBlurredNebula.apply(this, this.blurProps);
-                bgObject = new PIXI.Sprite(texture);
+                bgObject = this.renderBlurredBackground.apply(this, this.blurProps);
             }
             else {
-                bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap, this.renderer);
+                bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
             }
             this.layers["bgSprite"].removeChildren();
             this.layers["bgSprite"].addChild(bgObject);
             this.backgroundIsDirty = false;
         };
-        Renderer.prototype.renderBlurredNebula = function (x, y, width, height, seed) {
-            var seed = seed || Math.random();
-            var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
-            var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
+        Renderer.prototype.renderBlurredBackground = function (x, y, width, height, seed) {
+            var bg = app.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+            var fg = app.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
             var container = new PIXI.Container();
             container.addChild(bg);
             container.addChild(fg);
@@ -19170,7 +19124,8 @@ var Rance;
             fg.filters = [blurFilter];
             fg.filterArea = new PIXI.Rectangle(x, y, width, height);
             var texture = container.generateTexture(this.renderer); //, PIXI.SCALE_MODES.DEFAULT, 1, bg.getLocalBounds());
-            return texture;
+            var sprite = new PIXI.Sprite(texture);
+            return sprite;
         };
         Renderer.prototype.renderOnce = function () {
             this.forceFrame = true;
@@ -19307,8 +19262,7 @@ var Rance;
     (function (Modules) {
         var DefaultModule;
         (function (DefaultModule) {
-            function drawNebula(renderer, seed) {
-                var seed = seed || "" + Math.random();
+            function drawNebula(seed, renderer) {
                 var oldRng = Math.random;
                 Math.random = RNG.prototype.uniform.bind(new RNG(seed));
                 var nebulaColorScheme = Rance.generateColorScheme();
@@ -20528,9 +20482,8 @@ var Rance;
                 },
                 constructModule: function (moduleData) {
                     moduleData.copyAllTemplates(DefaultModule.Templates);
-                    moduleData.mapBackgroundDrawingFunction = function (map, renderer) {
-                        return DefaultModule.drawNebula(renderer, map.seed);
-                    };
+                    moduleData.mapBackgroundDrawingFunction = DefaultModule.drawNebula;
+                    moduleData.starBackgroundDrawingFunction = DefaultModule.drawNebula;
                     return moduleData;
                 }
             };
@@ -21245,7 +21198,7 @@ var Rance;
             }
         };
         App.prototype.initDisplay = function () {
-            this.renderer = new Rance.Renderer(this.game.galaxyMap); // used for bg drawing fn seed
+            this.renderer = new Rance.Renderer(this.game.galaxyMap);
             this.renderer.init();
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap, this.humanPlayer);
             this.mapRenderer.setParent(this.renderer.layers["map"]);

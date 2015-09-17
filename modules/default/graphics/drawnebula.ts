@@ -4,10 +4,8 @@ module Rance
   {
     export module DefaultModule
     {
-      export function drawNebula(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, seed?: string)
+      export function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
       {
-        var seed = seed || "" + Math.random();
-
         var oldRng = Math.random;
         Math.random = RNG.prototype.uniform.bind(new RNG(seed));
 

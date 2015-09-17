@@ -2586,10 +2586,8 @@ declare module Rance {
         addCamera(): void;
         addEventListeners(): void;
         resize(): void;
-        makeBackgroundTexture(seed?: any): PIXI.Texture;
-        renderNebula(): PIXI.Texture;
         renderBackground(): void;
-        renderBlurredNebula(x: number, y: number, width: number, height: number, seed?: any): PIXI.Texture;
+        renderBlurredBackground(x: number, y: number, width: number, height: number, seed: string): PIXI.Sprite;
         renderOnce(): void;
         pause(): void;
         resume(): void;
@@ -2660,8 +2658,8 @@ declare module Rance {
     }
     class ModuleData {
         private subModuleMetaData;
-        mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
-        starBackgroundDrawingFunction: (star: Star, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
+        mapBackgroundDrawingFunction: (seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
+        starBackgroundDrawingFunction: (seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
         mapRendererLayers: IMapRendererLayer[];
         mapRendererMapModes: IMapRendererMapMode[];
         Templates: ITemplates;
@@ -2683,7 +2681,7 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
-            function drawNebula(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, seed?: string): PIXI.Sprite;
+            function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer): PIXI.Sprite;
         }
     }
 }

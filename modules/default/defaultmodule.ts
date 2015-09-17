@@ -39,11 +39,8 @@ module Rance
         {
           moduleData.copyAllTemplates(DefaultModule.Templates);
 
-          moduleData.mapBackgroundDrawingFunction = function(
-            map: GalaxyMap, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
-          {
-            return drawNebula(renderer, map.seed);
-          }
+          moduleData.mapBackgroundDrawingFunction = drawNebula;
+          moduleData.starBackgroundDrawingFunction = drawNebula;
 
           return moduleData;
         }

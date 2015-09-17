@@ -77,6 +77,7 @@ module Rance
       }
 
       this.shaderManager = null;
+      this.galaxyMap = null;
 
       if (this.renderer)
       {
@@ -242,89 +243,16 @@ module Rance
         }
       }
     }
-    makeBackgroundTexture(seed?: any)
-    {
-      function copyUniforms(uniformObj: any, target?: any)
-      {
-        if (!target) target = {};
-        for (var name in uniformObj)
-        {
-          if (!target[name])
-          {
-            target[name] = {type: uniformObj[name].type}; 
-          }
-
-          target[name].value = uniformObj[name].value;
-        }
-
-        return target;
-      }
-
-      var nebulaFilter = this.shaderManager.shaders["nebula"];
-
-      var oldRng = Math.random;
-      var oldUniforms = copyUniforms(nebulaFilter.uniforms);
-      Math.random = RNG.prototype.uniform.bind(new RNG(seed));
-
-
-      var nebulaColorScheme = generateColorScheme();
-
-      var lightness = randRange(1, 1.2);
-
-      var newUniforms =
-      {
-        baseColor: {value: hex2rgb(nebulaColorScheme.main)},
-        overlayColor: {value: hex2rgb(nebulaColorScheme.secondary)},
-        highlightColor: {value: [1.0, 1.0, 1.0]},
-
-        coverage: {value: randRange(0.2, 0.4)},
-
-        scale: {value: randRange(4, 8)},
-
-        diffusion: {value: randRange(1.5, 3.0)},
-        streakiness: {value: randRange(1.5, 2.5)},
-
-        streakLightness: {value: lightness},
-        cloudLightness: {value: lightness},
-
-        highlightA: {value: 0.9},
-        highlightB: {value: 2.2},
-
-        seed: {value: [Math.random() * 100, Math.random() * 100]}
-      };
-
-
-      copyUniforms(newUniforms, nebulaFilter.uniforms);
-
-      var texture = this.renderNebula();
-
-      copyUniforms(oldUniforms, nebulaFilter.uniforms);
-      Math.random = oldRng;
-
-      return texture;
-    }
-    renderNebula()
-    {
-      var layer = this.layers["bgFilter"];
-      layer.filters = [this.shaderManager.shaders["nebula"]];
-
-      var texture = layer.generateTexture(this.renderer, PIXI.SCALE_MODES.DEFAULT, 1, layer.filterArea);
-
-      layer.filters = null;
-
-      return texture;
-    }
     renderBackground()
     {
       var bgObject: PIXI.DisplayObject;
       if (this.isBattleBackground)
       {
-        var texture = this.renderBlurredNebula.apply(this, this.blurProps);
-        bgObject = new PIXI.Sprite(texture);
+        bgObject = this.renderBlurredBackground.apply(this, this.blurProps);
       }
       else
       {
-        bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap, this.renderer);
+        bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap.seed, this.renderer);
       }
 
       this.layers["bgSprite"].removeChildren();
@@ -332,11 +260,10 @@ module Rance
 
       this.backgroundIsDirty = false;
     }
-    renderBlurredNebula(x: number, y: number, width: number, height: number, seed?: any)
+    renderBlurredBackground(x: number, y: number, width: number, height: number, seed: string)
     {
-      var seed = seed || Math.random();
-      var bg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
-      var fg = new PIXI.Sprite(this.makeBackgroundTexture(seed));
+      var bg = app.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
+      var fg = app.moduleData.starBackgroundDrawingFunction(seed, this.renderer);
 
       var container = new PIXI.Container();
       container.addChild(bg);
@@ -348,8 +275,9 @@ module Rance
       fg.filterArea = new PIXI.Rectangle(x, y, width, height);
 
       var texture = container.generateTexture(this.renderer);//, PIXI.SCALE_MODES.DEFAULT, 1, bg.getLocalBounds());
+      var sprite = new PIXI.Sprite(texture);
 
-      return texture;
+      return sprite;
     }
     renderOnce()
     {
