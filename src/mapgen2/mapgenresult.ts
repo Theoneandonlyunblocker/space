@@ -18,6 +18,7 @@ module Rance
       fillerPoints: FillerPoint[];
       width: number;
       height: number;
+      seed: string;
 
       voronoiInfo: MapVoronoiInfo;
 
@@ -28,6 +29,7 @@ module Rance
 
         width: number;
         height: number;
+        seed: string;
       })
       {
         this.stars = props.stars;
@@ -35,6 +37,7 @@ module Rance
 
         this.width = props.width;
         this.height = props.height;
+        this.seed = props.seed;
       }
 
       getAllPoints(): Point[]

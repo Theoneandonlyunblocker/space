@@ -15,6 +15,7 @@ module Rance
     fillerPoints: FillerPoint[];
     width: number;
     height: number;
+    seed: string;
 
     voronoi: MapVoronoiInfo;
 
@@ -66,6 +67,7 @@ module Rance
 
       data.width = this.width;
       data.height = this.height;
+      data.seed = this.seed;
 
       return data;
     }

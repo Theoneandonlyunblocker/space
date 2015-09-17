@@ -313,7 +313,8 @@ module Rance
             stars: stars,
             fillerPoints: fillerPoints,
             width: options.defaultOptions.width,
-            height: options.defaultOptions.height
+            height: options.defaultOptions.height,
+            seed: "" + Math.random() // TODO
           });
         }
       }

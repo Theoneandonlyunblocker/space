@@ -106,7 +106,8 @@ module Rance
         stars: stars,
         fillerPoints: fillerPoints,
         width: data.width,
-        height: data.height
+        height: data.height,
+        seed: data.seed
       });
       
       var galaxyMap = mapGenResult.makeMap();
