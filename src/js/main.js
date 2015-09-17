@@ -7526,6 +7526,11 @@ var Rance;
                         displayName: "Debug Ability",
                         description: "who knows what its going to do today",
                         moveDelay: 0,
+                        preparation: {
+                            turnsToPrep: 1,
+                            prepDelay: 50,
+                            interruptsNeeded: 1
+                        },
                         actionsUse: 0,
                         mainEffect: {
                             template: Templates.Effects.guardColumn,
@@ -13921,6 +13926,7 @@ var Rance;
             battleStats.captureChance = data.battleStats.captureChance;
             battleStats.statusEffects = data.battleStats.statusEffects;
             battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+            battleStats.queuedAction = data.queuedAction;
             this.battleStats = battleStats;
             this.items =
                 {
@@ -13985,7 +13991,8 @@ var Rance;
                     guardCoverage: null,
                     captureChance: 0.1,
                     statusEffects: [],
-                    lastHealthBeforeReceivingDamage: this.currentHealth
+                    lastHealthBeforeReceivingDamage: this.currentHealth,
+                    queuedAction: null
                 };
             this.displayFlags =
                 {
@@ -14400,6 +14407,7 @@ var Rance;
             data.battleStats.statusEffects = this.battleStats.statusEffects.map(function (statusEffect) {
                 return statusEffect.clone();
             });
+            data.battleStats.queuedAction = this.battleStats.queuedAction;
             if (this.fleet) {
                 data.fleetId = this.fleet.id;
             }

@@ -52,7 +52,12 @@ module Rance
       captureChance: number;
       statusEffects: StatusEffect[];
       lastHealthBeforeReceivingDamage: number;
-      //queuedAction: Action;
+      queuedAction:
+      {
+        ability: Templates.IAbilityTemplate;
+        turnsPrepared: number;
+        timesInterrupted: number;
+      }
     };
 
     displayFlags:
@@ -158,6 +163,7 @@ module Rance
       battleStats.captureChance = data.battleStats.captureChance;
       battleStats.statusEffects = data.battleStats.statusEffects;
       battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
+      battleStats.queuedAction = data.queuedAction;
 
       this.battleStats = battleStats;
 
@@ -240,7 +246,8 @@ module Rance
         guardCoverage: null,
         captureChance: 0.1, // BASE_CAPTURE_CHANCE
         statusEffects: [],
-        lastHealthBeforeReceivingDamage: this.currentHealth
+        lastHealthBeforeReceivingDamage: this.currentHealth,
+        queuedAction: null
       };
 
       this.displayFlags =
@@ -835,6 +842,7 @@ module Rance
       {
         return statusEffect.clone();
       });
+      data.battleStats.queuedAction = this.battleStats.queuedAction;
 
       if (this.fleet)
       {

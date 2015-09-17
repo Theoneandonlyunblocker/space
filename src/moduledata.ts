@@ -30,6 +30,7 @@ module Rance
     {
       [type: string]: Templates.IMapGenTemplate;
     };
+    // recommend not touching these 2 too much as they are likely to change and stupid anyway
     MapRendererLayers:
     {
       [layerKey: string]: IMapRendererLayerTemplate;
@@ -38,6 +39,7 @@ module Rance
     {
       [mapModeKey: string]: IMapRendererMapModeTemplate;
     };
+    // can touch again
     PassiveSkills:
     {
       [type: string]: Templates.IPassiveSkillTemplate;

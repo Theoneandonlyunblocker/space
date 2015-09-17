@@ -1951,6 +1951,11 @@ declare module Rance {
             captureChance: number;
             statusEffects: StatusEffect[];
             lastHealthBeforeReceivingDamage: number;
+            queuedAction: {
+                ability: Templates.IAbilityTemplate;
+                turnsPrepared: number;
+                timesInterrupted: number;
+            };
         };
         displayFlags: {
             isAnnihilated: boolean;

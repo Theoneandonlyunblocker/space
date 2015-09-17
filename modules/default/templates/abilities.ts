@@ -144,6 +144,12 @@ module Rance
             displayName: "Debug Ability",
             description: "who knows what its going to do today",
             moveDelay: 0,
+            preparation:
+            {
+              turnsToPrep: 1,
+              prepDelay: 50,
+              interruptsNeeded: 1
+            },
             actionsUse: 0,
             mainEffect:
             {
