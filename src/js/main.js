@@ -14894,7 +14894,7 @@ var Rance;
                     mapModeOptions.push(React.DOM.option({
                         value: mapModeName,
                         key: mapModeName
-                    }, this.props.mapRenderer.mapModes[mapModeName].name));
+                    }, this.props.mapRenderer.mapModes[mapModeName].template.displayName));
                 }
                 return (React.DOM.div({
                     className: "galaxy-map"

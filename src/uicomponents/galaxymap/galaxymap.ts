@@ -30,7 +30,7 @@ module Rance
             value: mapModeName,
             key: mapModeName
           },
-            this.props.mapRenderer.mapModes[mapModeName].name
+            this.props.mapRenderer.mapModes[mapModeName].template.displayName
           ));
         }
 
