@@ -1372,12 +1372,14 @@ declare module Rance {
             fillerPoints: FillerPoint[];
             width: number;
             height: number;
+            seed: string;
             voronoiInfo: MapVoronoiInfo;
             constructor(props: {
                 stars: Star[];
                 fillerPoints: FillerPoint[];
                 width: number;
                 height: number;
+                seed: string;
             });
             getAllPoints(): Point[];
             makeMap(): GalaxyMap;
@@ -1410,6 +1412,7 @@ declare module Rance {
         fillerPoints: FillerPoint[];
         width: number;
         height: number;
+        seed: string;
         voronoi: MapVoronoiInfo;
         constructor(mapGen: MapGen2.MapGenResult);
         getIncomeBounds(): {
@@ -2656,8 +2659,8 @@ declare module Rance {
     }
     class ModuleData {
         private subModuleMetaData;
-        mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
-        starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
+        mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
+        starBackgroundDrawingFunction: (star: Star, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
         mapRendererLayers: IMapRendererLayer[];
         mapRendererMapModes: IMapRendererMapMode[];
         Templates: ITemplates;
@@ -2674,6 +2677,13 @@ declare module Rance {
         moduleData: ModuleData;
         constructor();
         loadModuleFile(moduleFile: IModuleFile): void;
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            function drawNebula(renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, seed?: string): PIXI.Sprite;
+        }
     }
 }
 declare module Rance {

@@ -82,8 +82,10 @@ module Rance
   {
     private subModuleMetaData: IModuleMetaData[] = [];
 
-    mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
-    starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
+    mapBackgroundDrawingFunction: (map: GalaxyMap,
+      renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
+    starBackgroundDrawingFunction: (star: Star,
+      renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
 
     mapRendererLayers: IMapRendererLayer[];
     mapRendererMapModes: IMapRendererMapMode[];

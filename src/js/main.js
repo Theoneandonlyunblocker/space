@@ -11084,6 +11084,7 @@ var Rance;
                 this.fillerPoints = props.fillerPoints;
                 this.width = props.width;
                 this.height = props.height;
+                this.seed = props.seed;
             }
             MapGenResult.prototype.getAllPoints = function () {
                 return this.fillerPoints.concat(this.stars);
@@ -11280,6 +11281,7 @@ var Rance;
             });
             data.width = this.width;
             data.height = this.height;
+            data.seed = this.seed;
             return data;
         };
         return GalaxyMap;
@@ -19142,12 +19144,16 @@ var Rance;
             return texture;
         };
         Renderer.prototype.renderBackground = function () {
-            var texture = this.isBattleBackground ?
-                this.renderBlurredNebula.apply(this, this.blurProps) :
-                this.renderNebula();
-            var sprite = new PIXI.Sprite(texture);
+            var bgObject;
+            if (this.isBattleBackground) {
+                var texture = this.renderBlurredNebula.apply(this, this.blurProps);
+                bgObject = new PIXI.Sprite(texture);
+            }
+            else {
+                bgObject = app.moduleData.mapBackgroundDrawingFunction(null, this.renderer);
+            }
             this.layers["bgSprite"].removeChildren();
-            this.layers["bgSprite"].addChild(sprite);
+            this.layers["bgSprite"].addChild(bgObject);
             this.backgroundIsDirty = false;
         };
         Renderer.prototype.renderBlurredNebula = function (x, y, width, height, seed) {
@@ -19292,6 +19298,46 @@ var Rance;
         return ModuleLoader;
     })();
     Rance.ModuleLoader = ModuleLoader;
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            function drawNebula(renderer, seed) {
+                var seed = seed || "" + Math.random();
+                var oldRng = Math.random;
+                Math.random = RNG.prototype.uniform.bind(new RNG(seed));
+                var nebulaColorScheme = Rance.generateColorScheme();
+                var lightness = Rance.randRange(1, 1.2);
+                var uniforms = {
+                    baseColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.main) },
+                    overlayColor: { type: "3fv", value: Rance.hex2rgb(nebulaColorScheme.secondary) },
+                    highlightColor: { type: "3fv", value: [1.0, 1.0, 1.0] },
+                    coverage: { type: "1f", value: Rance.randRange(0.28, 0.32) },
+                    scale: { type: "1f", value: Rance.randRange(4, 8) },
+                    diffusion: { type: "1f", value: Rance.randRange(1.5, 3.0) },
+                    streakiness: { type: "1f", value: Rance.randRange(1.5, 2.5) },
+                    streakLightness: { type: "1f", value: lightness },
+                    cloudLightness: { type: "1f", value: lightness },
+                    highlightA: { type: "1f", value: 0.9 },
+                    highlightB: { type: "1f", value: 2.2 },
+                    seed: { type: "2fv", value: [Math.random() * 100, Math.random() * 100] }
+                };
+                var filter = new Rance.NebulaFilter(uniforms);
+                var filterContainer = new PIXI.Container();
+                filterContainer.filterArea = new PIXI.Rectangle(0, 0, renderer.width, renderer.height);
+                filterContainer.filters = [filter];
+                var texture = filterContainer.generateTexture(renderer, PIXI.SCALE_MODES.DEFAULT, 1, filterContainer.filterArea);
+                var sprite = new PIXI.Sprite(texture);
+                filterContainer.filters = null;
+                filterContainer = null;
+                return sprite;
+            }
+            DefaultModule.drawNebula = drawNebula;
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../fillerpoint.ts" />
 /// <reference path="../star.ts" />
@@ -19917,7 +19963,8 @@ var Rance;
                         stars: stars,
                         fillerPoints: fillerPoints,
                         width: options.defaultOptions.width,
-                        height: options.defaultOptions.height
+                        height: options.defaultOptions.height,
+                        seed: "" + Math.random() // TODO
                     });
                 }
                 MapGenFunctions.spiralGalaxyGeneration = spiralGalaxyGeneration;
@@ -20447,6 +20494,7 @@ var Rance;
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
+/// <reference path="graphics/drawnebula.ts" />
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
 /// <reference path="templates/abilities.ts" />
@@ -20478,6 +20526,9 @@ var Rance;
                 },
                 constructModule: function (moduleData) {
                     moduleData.copyAllTemplates(DefaultModule.Templates);
+                    moduleData.mapBackgroundDrawingFunction = function (map, renderer) {
+                        return DefaultModule.drawNebula(renderer, map.seed);
+                    };
                     return moduleData;
                 }
             };
@@ -20700,7 +20751,8 @@ var Rance;
                 stars: stars,
                 fillerPoints: fillerPoints,
                 width: data.width,
-                height: data.height
+                height: data.height,
+                seed: data.seed
             });
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;

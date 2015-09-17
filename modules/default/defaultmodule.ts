@@ -1,5 +1,7 @@
 /// <reference path="../../src/moduledata.ts" />
 
+/// <reference path="graphics/drawnebula.ts" />
+
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
 
@@ -36,6 +38,12 @@ module Rance
         constructModule: function(moduleData: ModuleData)
         {
           moduleData.copyAllTemplates(DefaultModule.Templates);
+
+          moduleData.mapBackgroundDrawingFunction = function(
+            map: GalaxyMap, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
+          {
+            return drawNebula(renderer, map.seed);
+          }
 
           return moduleData;
         }

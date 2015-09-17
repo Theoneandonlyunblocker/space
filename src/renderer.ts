@@ -313,13 +313,19 @@ module Rance
     }
     renderBackground()
     {
-      var texture = this.isBattleBackground ?
-        this.renderBlurredNebula.apply(this, this.blurProps) :
-        this.renderNebula();
-      var sprite = new PIXI.Sprite(texture);
+      var bgObject: PIXI.DisplayObject;
+      if (this.isBattleBackground)
+      {
+        var texture = this.renderBlurredNebula.apply(this, this.blurProps);
+        bgObject = new PIXI.Sprite(texture);
+      }
+      else
+      {
+        bgObject = app.moduleData.mapBackgroundDrawingFunction(null, this.renderer);
+      }
 
       this.layers["bgSprite"].removeChildren();
-      this.layers["bgSprite"].addChild(sprite);
+      this.layers["bgSprite"].addChild(bgObject);
 
       this.backgroundIsDirty = false;
     }
