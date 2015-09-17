@@ -2574,7 +2574,8 @@ declare module Rance {
         blurProps: number[];
         toCenterOn: Point;
         resizeListener: (e: Event) => void;
-        constructor();
+        galaxyMap: GalaxyMap;
+        constructor(galaxyMap: GalaxyMap);
         init(): void;
         destroy(): void;
         removeRendererView(): void;

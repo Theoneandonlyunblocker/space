@@ -262,7 +262,7 @@ module Rance
     }
     initDisplay()
     {
-      this.renderer = this.renderer || new Renderer();
+      this.renderer = new Renderer(this.game.galaxyMap); // used for bg drawing fn seed
       this.renderer.init();
 
       this.mapRenderer = new MapRenderer(this.game.galaxyMap, this.humanPlayer);

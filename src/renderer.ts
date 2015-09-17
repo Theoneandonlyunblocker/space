@@ -31,11 +31,14 @@ module Rance
     toCenterOn: Point;
     resizeListener: (e: Event) => void;
 
-    constructor()
+    galaxyMap: GalaxyMap; // used for bg drawing fn seed TODO move?
+
+    constructor(galaxyMap: GalaxyMap)
     {
       PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
       
       this.stage = new PIXI.Container();
+      this.galaxyMap = galaxyMap;
 
       this.resizeListener = this.resize.bind(this);
       window.addEventListener("resize", this.resizeListener, false);
@@ -321,7 +324,7 @@ module Rance
       }
       else
       {
-        bgObject = app.moduleData.mapBackgroundDrawingFunction(null, this.renderer);
+        bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap, this.renderer);
       }
 
       this.layers["bgSprite"].removeChildren();

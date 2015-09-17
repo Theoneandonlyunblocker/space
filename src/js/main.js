@@ -11248,6 +11248,7 @@ var Rance;
         function GalaxyMap(mapGen) {
             this.width = mapGen.width;
             this.height = mapGen.height;
+            this.seed = mapGen.seed;
             this.stars = mapGen.stars;
             this.fillerPoints = mapGen.fillerPoints;
             this.voronoi = mapGen.voronoiInfo;
@@ -18939,7 +18940,7 @@ var Rance;
 var Rance;
 (function (Rance) {
     var Renderer = (function () {
-        function Renderer() {
+        function Renderer(galaxyMap) {
             this.layers = {};
             this.activeRenderLoopId = 0;
             this.isPaused = false;
@@ -18948,6 +18949,7 @@ var Rance;
             this.isBattleBackground = false;
             PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
             this.stage = new PIXI.Container();
+            this.galaxyMap = galaxyMap;
             this.resizeListener = this.resize.bind(this);
             window.addEventListener("resize", this.resizeListener, false);
         }
@@ -19150,7 +19152,7 @@ var Rance;
                 bgObject = new PIXI.Sprite(texture);
             }
             else {
-                bgObject = app.moduleData.mapBackgroundDrawingFunction(null, this.renderer);
+                bgObject = app.moduleData.mapBackgroundDrawingFunction(this.galaxyMap, this.renderer);
             }
             this.layers["bgSprite"].removeChildren();
             this.layers["bgSprite"].addChild(bgObject);
@@ -21243,7 +21245,7 @@ var Rance;
             }
         };
         App.prototype.initDisplay = function () {
-            this.renderer = this.renderer || new Rance.Renderer();
+            this.renderer = new Rance.Renderer(this.game.galaxyMap); // used for bg drawing fn seed
             this.renderer.init();
             this.mapRenderer = new Rance.MapRenderer(this.game.galaxyMap, this.humanPlayer);
             this.mapRenderer.setParent(this.renderer.layers["map"]);

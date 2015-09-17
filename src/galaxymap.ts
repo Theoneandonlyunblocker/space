@@ -24,6 +24,8 @@ module Rance
       this.width = mapGen.width;
       this.height = mapGen.height;
 
+      this.seed = mapGen.seed;
+
       this.stars = mapGen.stars;
       this.fillerPoints = mapGen.fillerPoints;
 
