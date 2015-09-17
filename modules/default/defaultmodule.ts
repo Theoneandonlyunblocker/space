@@ -28,12 +28,43 @@ module Rance
     {
       export var moduleFile: IModuleFile =
       {
+        key: "default",
         metaData:
         {
           name: "default",
           version: "6.9",
           author: "me",
           description: "default module"
+        },
+        loadAssets: function(onLoaded: () => void)
+        {
+          var loader = new PIXI.loaders.Loader();
+          loader.add("emblems", "img\/emblems.json");
+          loader.add("units", "img\/units.json");
+          loader.add("buildings", "img\/buildings.json");
+
+          loader.add("img\/fowTexture.png");
+          loader.add("img\/battleEffects\/rocket.png");
+          loader.add("explosion", "img\/battleEffects\/explosion.json");
+
+          loader.load(function(loader: PIXI.loaders.Loader)
+          {
+            ["emblems", "units", "buildings"].forEach(function(spriteSheetName: string)
+            {
+              var json = loader.resources[spriteSheetName].data;
+              var image = loader.resources[spriteSheetName + "_image"].data;
+              cacheSpriteSheetImages(json, image);
+            });
+
+            ["explosion"].forEach(function(spriteSheetName: string)
+            {
+              var json = loader.resources[spriteSheetName].data;
+              var image = loader.resources[spriteSheetName + "_image"].data;
+              cacheSpriteSheetTextures(json, image);
+            });
+
+            onLoaded();
+          });
         },
         constructModule: function(moduleData: ModuleData)
         {

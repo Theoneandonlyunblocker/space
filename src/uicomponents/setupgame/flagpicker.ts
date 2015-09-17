@@ -62,7 +62,7 @@ module Rance
             React.DOM.img(
             {
               className: className,
-              src: app.images["emblems"][template.imageSrc].src
+              src: app.images[template.imageSrc].src
             })
           )
         );

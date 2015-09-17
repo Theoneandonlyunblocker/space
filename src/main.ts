@@ -49,11 +49,8 @@ module Rance
     playerControl: PlayerControl;
     images:
     {
-      [type: string]:
-      {
-        [id: string]: HTMLImageElement;
-      }
-    };
+      [id: string]: HTMLImageElement;
+    } = {};
     itemGenerator: ItemGenerator;
 
     moduleData: ModuleData;
@@ -67,25 +64,25 @@ module Rance
 
       this.loader = new AppLoader(function()
       {
-        self.makeApp();
+        var moduleLoader = new ModuleLoader();
+        moduleLoader.addModuleFile(Modules.DefaultModule.moduleFile);
+        moduleLoader.addModuleFile(Modules.TestModule.moduleFile);
+        
+        moduleLoader.loadAll(self.makeApp.bind(self, moduleLoader.moduleData));
       });
     }
-    makeApp()
+    makeApp(moduleData: ModuleData)
     {
       var startTime = new Date().getTime();
 
       Options = extendObject(defaultOptions);
       loadOptions();
 
-      var moduleLoader = new ModuleLoader();
-      moduleLoader.loadModuleFile(Modules.DefaultModule.moduleFile);
-      moduleLoader.loadModuleFile(Modules.TestModule.moduleFile);
-      this.moduleData = moduleLoader.moduleData;
+      this.moduleData = moduleData;
 
       setAllDynamicTemplateProperties();
       buildTemplateIndexes();
 
-      this.images = this.loader.imageCache;
       this.itemGenerator = new ItemGenerator();
 
       this.initUI();

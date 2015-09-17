@@ -8,7 +8,7 @@ module Rance
       render: function()
       {
         var building = this.props.building;
-        var image = app.images["buildings"][building.template.iconSrc];
+        var image = app.images[building.template.iconSrc];
 
         return(
           React.DOM.div(

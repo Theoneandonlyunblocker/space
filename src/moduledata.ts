@@ -74,7 +74,9 @@ module Rance
 
   export interface IModuleFile
   {
+    key: string;
     metaData: IModuleMetaData;
+    loadAssets: (callback: Function) => void;
     constructModule: (ModuleData: ModuleData) => ModuleData;
   }
 

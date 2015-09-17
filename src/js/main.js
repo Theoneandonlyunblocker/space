@@ -3079,7 +3079,7 @@ var Rance;
             displayName: "DefenceBuilding",
             render: function () {
                 var building = this.props.building;
-                var image = app.images["buildings"][building.template.iconSrc];
+                var image = app.images[building.template.iconSrc];
                 return (React.DOM.div({
                     className: "defence-building"
                 }, React.DOM.img({
@@ -6234,7 +6234,7 @@ var Rance;
             canvas.height = 2000;
             var ctx = canvas.getContext("2d");
             var spriteTemplate = unit.template.sprite;
-            var image = app.images["units"][spriteTemplate.imageSrc];
+            var image = app.images[spriteTemplate.imageSrc];
             var unitsToDraw;
             if (isFinite(props.unitsToDraw)) {
                 unitsToDraw = props.unitsToDraw;
@@ -9587,7 +9587,7 @@ var Rance;
             return canvas;
         };
         Emblem.prototype.drawSubEmblem = function (toDraw) {
-            var image = app.images["emblems"][toDraw.imageSrc];
+            var image = app.images[toDraw.imageSrc];
             var width = image.width;
             var height = image.height;
             var canvas = document.createElement("canvas");
@@ -15348,7 +15348,7 @@ var Rance;
                     onClick: this.handleSelectEmblem.bind(this, template)
                 }, React.DOM.img({
                     className: className,
-                    src: app.images["emblems"][template.imageSrc].src
+                    src: app.images[template.imageSrc].src
                 })));
             },
             render: function () {
@@ -19246,9 +19246,48 @@ var Rance;
 (function (Rance) {
     var ModuleLoader = (function () {
         function ModuleLoader() {
+            this.moduleFiles = {};
+            this.hasLoaded = {};
             this.moduleData = new Rance.ModuleData();
         }
-        ModuleLoader.prototype.loadModuleFile = function (moduleFile) {
+        ModuleLoader.prototype.addModuleFile = function (moduleFile) {
+            if (this.moduleFiles[moduleFile.key]) {
+                throw new Error("Duplicate module key " + moduleFile.key);
+                return;
+            }
+            this.moduleFiles[moduleFile.key] = moduleFile;
+            this.hasLoaded[moduleFile.key] = false;
+        };
+        ModuleLoader.prototype.loadModuleFile = function (moduleFile, afterLoaded) {
+            if (!this.moduleFiles[moduleFile.key]) {
+                this.addModuleFile(moduleFile);
+            }
+            moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
+        };
+        ModuleLoader.prototype.loadAll = function (afterLoaded) {
+            var boundCheckAll = function () {
+                if (this.hasFinishedLoading()) {
+                    afterLoaded();
+                }
+            }.bind(this);
+            for (var index in this.moduleFiles) {
+                this.loadModuleFile(this.moduleFiles[index], boundCheckAll);
+            }
+        };
+        ModuleLoader.prototype.hasFinishedLoading = function () {
+            for (var index in this.hasLoaded) {
+                if (!this.hasLoaded[index]) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        ModuleLoader.prototype.finishLoadingModuleFile = function (moduleFile, afterLoaded) {
+            this.hasLoaded[moduleFile.key] = true;
+            this.constructModuleFile(moduleFile);
+            afterLoaded();
+        };
+        ModuleLoader.prototype.constructModuleFile = function (moduleFile) {
             moduleFile.constructModule(this.moduleData);
             this.moduleData.addSubModule(moduleFile);
         };
@@ -20474,11 +20513,34 @@ var Rance;
         var DefaultModule;
         (function (DefaultModule) {
             DefaultModule.moduleFile = {
+                key: "default",
                 metaData: {
                     name: "default",
                     version: "6.9",
                     author: "me",
                     description: "default module"
+                },
+                loadAssets: function (onLoaded) {
+                    var loader = new PIXI.loaders.Loader();
+                    loader.add("emblems", "img\/emblems.json");
+                    loader.add("units", "img\/units.json");
+                    loader.add("buildings", "img\/buildings.json");
+                    loader.add("img\/fowTexture.png");
+                    loader.add("img\/battleEffects\/rocket.png");
+                    loader.add("explosion", "img\/battleEffects\/explosion.json");
+                    loader.load(function (loader) {
+                        ["emblems", "units", "buildings"].forEach(function (spriteSheetName) {
+                            var json = loader.resources[spriteSheetName].data;
+                            var image = loader.resources[spriteSheetName + "_image"].data;
+                            Rance.cacheSpriteSheetImages(json, image);
+                        });
+                        ["explosion"].forEach(function (spriteSheetName) {
+                            var json = loader.resources[spriteSheetName].data;
+                            var image = loader.resources[spriteSheetName + "_image"].data;
+                            Rance.cacheSpriteSheetTextures(json, image);
+                        });
+                        onLoaded();
+                    });
                 },
                 constructModule: function (moduleData) {
                     moduleData.copyAllTemplates(DefaultModule.Templates);
@@ -20510,11 +20572,16 @@ var Rance;
                 };
             })(BuildingTemplates = TestModule.BuildingTemplates || (TestModule.BuildingTemplates = {}));
             TestModule.moduleFile = {
+                key: "test",
                 metaData: {
                     name: "test",
                     version: "0.0.420",
                     author: "not me",
                     description: "just testing"
+                },
+                loadAssets: function (onLoaded) {
+                    console.log("load test");
+                    onLoaded();
                 },
                 constructModule: function (moduleData) {
                     moduleData.copyTemplates(TestModule.BuildingTemplates, "Buildings");
@@ -20524,57 +20591,51 @@ var Rance;
         })(TestModule = Modules.TestModule || (Modules.TestModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../lib/pixi.d.ts" />
 var Rance;
 (function (Rance) {
     ;
     function processSpriteSheet(sheetData, sheetImg, processFrameFN) {
-        var frames = {};
         for (var spriteName in sheetData.frames) {
-            frames[spriteName] = processFrameFN(sheetImg, sheetData.frames[spriteName].frame);
+            processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
         }
-        return frames;
     }
+    function cacheSpriteSheetImages(sheetData, sheetImg) {
+        var spriteToImageFN = function (sheetImg, frame, spriteName) {
+            var canvas = document.createElement("canvas");
+            canvas.width = frame.w;
+            canvas.height = frame.h;
+            var context = canvas.getContext("2d");
+            context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
+            var image = new Image();
+            image.src = canvas.toDataURL();
+            app.images[spriteName] = image;
+        };
+        processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
+    }
+    Rance.cacheSpriteSheetImages = cacheSpriteSheetImages;
+    function cacheSpriteSheetTextures(sheetData, sheetImg) {
+        var spriteToTextureFN = function (sheetImg, f) {
+            var baseTexture = PIXI.BaseTexture.fromImage(sheetImg.src, false);
+            var texture = new PIXI.Texture(baseTexture, new PIXI.Rectangle(f.x, f.y, f.w, f.h));
+        };
+        processSpriteSheet(sheetData, sheetImg, spriteToTextureFN);
+    }
+    Rance.cacheSpriteSheetTextures = cacheSpriteSheetTextures;
+})(Rance || (Rance = {}));
+/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="spritesheetcachingfunctions" />
+var Rance;
+(function (Rance) {
     var AppLoader = (function () {
         function AppLoader(onLoaded) {
             this.loaded = {
                 DOM: false,
-                emblems: false,
-                units: false,
-                buildings: false,
-                //battleEffects: false,
-                other: false
             };
-            this.imageCache = {};
             this.onLoaded = onLoaded;
             PIXI.utils._saidHello = true;
             this.startTime = new Date().getTime();
             this.loadDOM();
-            this.loadEmblems();
-            this.loadBuildings();
-            this.loadUnits();
-            this.loadOther();
         }
-        AppLoader.prototype.spriteSheetToDataURLs = function (sheetData, sheetImg) {
-            var spriteToImageFN = function (sheetImg, frame) {
-                var canvas = document.createElement("canvas");
-                canvas.width = frame.w;
-                canvas.height = frame.h;
-                var context = canvas.getContext("2d");
-                context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
-                var image = new Image();
-                image.src = canvas.toDataURL();
-                return image;
-            };
-            return processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
-        };
-        AppLoader.prototype.spriteSheetToTextures = function (sheetData, sheetImg) {
-            var spriteToTextureFN = function (sheetImg, f) {
-                var baseTexture = PIXI.BaseTexture.fromImage(sheetImg.src, false);
-                return new PIXI.Texture(baseTexture, new PIXI.Rectangle(f.x, f.y, f.w, f.h));
-            };
-            return processSpriteSheet(sheetData, sheetImg, spriteToTextureFN);
-        };
         AppLoader.prototype.loadDOM = function () {
             var self = this;
             if (document.readyState === "interactive" || document.readyState === "complete") {
@@ -20587,46 +20648,6 @@ var Rance;
                     self.checkLoaded();
                 });
             }
-        };
-        AppLoader.prototype.loadImagesFN = function (identifier) {
-            if (this.loaded[identifier] === undefined)
-                this.loaded[identifier] = false;
-            var self = this;
-            var loader = new PIXI.loaders.Loader();
-            loader.add(identifier, "img\/" + identifier + ".json");
-            var onLoadCompleteFN = function (loader) {
-                var json = loader.resources[identifier].data;
-                var image = loader.resources[identifier + "_image"].data;
-                var spriteImages = self.spriteSheetToDataURLs(json, image);
-                self.imageCache[identifier] = spriteImages;
-                self.loaded[identifier] = true;
-                self.checkLoaded();
-            };
-            loader.load(onLoadCompleteFN);
-        };
-        AppLoader.prototype.loadEmblems = function () {
-            this.loadImagesFN("emblems");
-        };
-        AppLoader.prototype.loadUnits = function () {
-            this.loadImagesFN("units");
-        };
-        AppLoader.prototype.loadBuildings = function () {
-            this.loadImagesFN("buildings");
-        };
-        AppLoader.prototype.loadOther = function () {
-            var self = this;
-            var loader = new PIXI.loaders.Loader();
-            loader.add("img\/fowTexture.png");
-            loader.add("img\/battleEffects\/rocket.png");
-            loader.add("explosion", "img\/battleEffects\/explosion.json");
-            var onLoadCompleteFN = function (loader) {
-                var json = loader.resources["explosion"].data;
-                var image = loader.resources["explosion_image"].data;
-                self.spriteSheetToTextures(json, image);
-                self.loaded.other = true;
-                self.checkLoaded();
-            };
-            loader.load(onLoadCompleteFN);
         };
         AppLoader.prototype.checkLoaded = function () {
             for (var prop in this.loaded) {
@@ -21064,24 +21085,24 @@ var Rance;
     };
     var App = (function () {
         function App() {
+            this.images = {};
             var self = this;
             this.seed = "" + Math.random();
             Math.random = RNG.prototype.uniform.bind(new RNG(this.seed));
             this.loader = new Rance.AppLoader(function () {
-                self.makeApp();
+                var moduleLoader = new Rance.ModuleLoader();
+                moduleLoader.addModuleFile(Rance.Modules.DefaultModule.moduleFile);
+                moduleLoader.addModuleFile(Rance.Modules.TestModule.moduleFile);
+                moduleLoader.loadAll(self.makeApp.bind(self, moduleLoader.moduleData));
             });
         }
-        App.prototype.makeApp = function () {
+        App.prototype.makeApp = function (moduleData) {
             var startTime = new Date().getTime();
             Rance.Options = Rance.extendObject(Rance.defaultOptions);
             Rance.loadOptions();
-            var moduleLoader = new Rance.ModuleLoader();
-            moduleLoader.loadModuleFile(Rance.Modules.DefaultModule.moduleFile);
-            moduleLoader.loadModuleFile(Rance.Modules.TestModule.moduleFile);
-            this.moduleData = moduleLoader.moduleData;
+            this.moduleData = moduleData;
             Rance.setAllDynamicTemplateProperties();
             Rance.buildTemplateIndexes();
-            this.images = this.loader.imageCache;
             this.itemGenerator = new Rance.ItemGenerator();
             this.initUI();
             this.setInitialScene();

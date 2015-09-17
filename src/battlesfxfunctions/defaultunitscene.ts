@@ -37,7 +37,7 @@ module Rance
       var ctx = canvas.getContext("2d");
 
       var spriteTemplate = unit.template.sprite;
-      var image = app.images["units"][spriteTemplate.imageSrc];
+      var image = app.images[spriteTemplate.imageSrc];
 
       var unitsToDraw: number;
 

@@ -2653,7 +2653,9 @@ declare module Rance {
         description: string;
     }
     interface IModuleFile {
+        key: string;
         metaData: IModuleMetaData;
+        loadAssets: (callback: Function) => void;
         constructModule: (ModuleData: ModuleData) => ModuleData;
     }
     class ModuleData {
@@ -2674,8 +2676,19 @@ declare module Rance {
 declare module Rance {
     class ModuleLoader {
         moduleData: ModuleData;
+        moduleFiles: {
+            [index: string]: IModuleFile;
+        };
+        hasLoaded: {
+            [index: string]: boolean;
+        };
         constructor();
-        loadModuleFile(moduleFile: IModuleFile): void;
+        addModuleFile(moduleFile: IModuleFile): void;
+        loadModuleFile(moduleFile: IModuleFile, afterLoaded: () => void): void;
+        loadAll(afterLoaded: () => void): void;
+        hasFinishedLoading(): boolean;
+        finishLoadingModuleFile(moduleFile: IModuleFile, afterLoaded: () => void): void;
+        constructModuleFile(moduleFile: IModuleFile): void;
     }
 }
 declare module Rance {
@@ -2825,30 +2838,32 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface ISpriteSheetFrame {
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+    }
+    interface ISpriteSheetData {
+        frames: {
+            [id: string]: {
+                frame: ISpriteSheetFrame;
+            };
+        };
+        meta: any;
+    }
+    function cacheSpriteSheetImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
+    function cacheSpriteSheetTextures(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
+}
+declare module Rance {
     class AppLoader {
         loaded: {
             DOM: boolean;
-            emblems: boolean;
-            units: boolean;
-            buildings: boolean;
-            other: boolean;
         };
         startTime: number;
         onLoaded: any;
-        imageCache: {
-            [type: string]: {
-                [id: string]: HTMLImageElement;
-            };
-        };
         constructor(onLoaded: any);
-        private spriteSheetToDataURLs(sheetData, sheetImg);
-        private spriteSheetToTextures(sheetData, sheetImg);
         loadDOM(): void;
-        loadImagesFN(identifier: string): void;
-        loadEmblems(): void;
-        loadUnits(): void;
-        loadBuildings(): void;
-        loadOther(): void;
         checkLoaded(): void;
     }
 }
@@ -2947,14 +2962,12 @@ declare module Rance {
         humanPlayer: Player;
         playerControl: PlayerControl;
         images: {
-            [type: string]: {
-                [id: string]: HTMLImageElement;
-            };
+            [id: string]: HTMLImageElement;
         };
         itemGenerator: ItemGenerator;
         moduleData: ModuleData;
         constructor();
-        makeApp(): void;
+        makeApp(moduleData: ModuleData): void;
         destroy(): void;
         load(saveKey: string): void;
         makeGameFromSetup(map: GalaxyMap, players: Player[], independents: Player[]): void;

@@ -121,7 +121,7 @@ module Rance
 
     drawSubEmblem(toDraw: Templates.ISubEmblemTemplate)
     {
-      var image = app.images["emblems"][toDraw.imageSrc];
+      var image = app.images[toDraw.imageSrc];
 
 
       var width = image.width;

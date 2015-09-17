@@ -24,12 +24,18 @@ module Rance
       }
       export var moduleFile: IModuleFile =
       {
+        key: "test",
         metaData:
         {
           name: "test",
           version: "0.0.420",
           author: "not me",
           description: "just testing"
+        },
+        loadAssets: function(onLoaded: () => void)
+        {
+          console.log("load test");
+          onLoaded();
         },
         constructModule: function(moduleData: ModuleData)
         {
