@@ -790,6 +790,12 @@ progress::-webkit-progress-value {
   height: 100%;
   border-color: white !important;
 }
+.preparation-container {
+  background: linear-gradient(to right, #227700 0%, #31aa00 50%, #227700 100%);
+}
+.preparation-text-container {
+  justify-content: center;
+}
 .guard-meter-container {
   background-color: #032C9C;
 }

@@ -226,8 +226,6 @@ module Rance
         }
       }
 
-      var mapTemplate = app.moduleData.getDefaultMap();
-
       var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(
         optionValues,
         playerData.players,

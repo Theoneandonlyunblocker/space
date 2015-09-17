@@ -43,7 +43,7 @@ module Rance
                 }, "Guard"),
                 React.DOM.div(
                 {
-                  className: "guard-text-value status text"
+                  className: "guard-text-value status-text"
                 }, "" + guard + "%")
               )
             )

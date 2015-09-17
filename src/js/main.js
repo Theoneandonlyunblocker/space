@@ -191,7 +191,7 @@ var Rance;
                     }, React.DOM.div({
                         className: "guard-text status-text"
                     }, "Guard"), React.DOM.div({
-                        className: "guard-text-value status text"
+                        className: "guard-text-value status-text"
                     }, "" + guard + "%"))));
                 }
                 else if (this.props.isPreparing) {
@@ -13679,7 +13679,7 @@ var Rance;
             user: user,
             target: user,
             sfx: {
-                duration: 500
+                duration: 100
             },
             trigger: null
         });
@@ -21352,7 +21352,6 @@ var Rance;
                     starSizeRegularity: 100
                 }
             };
-            var mapTemplate = app.moduleData.getDefaultMap();
             var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(optionValues, playerData.players, playerData.independents);
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;

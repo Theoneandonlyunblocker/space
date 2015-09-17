@@ -264,7 +264,7 @@ module Rance
       target: user,
       sfx:
       {
-        duration: 500
+        duration: 100
       },
       trigger: null
     });
