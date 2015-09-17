@@ -20536,12 +20536,7 @@ var Rance;
                         ["emblems", "units", "buildings"].forEach(function (spriteSheetName) {
                             var json = loader.resources[spriteSheetName].data;
                             var image = loader.resources[spriteSheetName + "_image"].data;
-                            Rance.cacheSpriteSheetImages(json, image);
-                        });
-                        ["explosion"].forEach(function (spriteSheetName) {
-                            var json = loader.resources[spriteSheetName].data;
-                            var image = loader.resources[spriteSheetName + "_image"].data;
-                            Rance.cacheSpriteSheetTextures(json, image);
+                            Rance.cacheSpriteSheetAsImages(json, image);
                         });
                         onLoaded();
                     });
@@ -20602,7 +20597,7 @@ var Rance;
             processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
         }
     }
-    function cacheSpriteSheetImages(sheetData, sheetImg) {
+    function cacheSpriteSheetAsImages(sheetData, sheetImg) {
         var spriteToImageFN = function (sheetImg, frame, spriteName) {
             var canvas = document.createElement("canvas");
             canvas.width = frame.w;
@@ -20615,15 +20610,7 @@ var Rance;
         };
         processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
     }
-    Rance.cacheSpriteSheetImages = cacheSpriteSheetImages;
-    function cacheSpriteSheetTextures(sheetData, sheetImg) {
-        var spriteToTextureFN = function (sheetImg, f) {
-            var baseTexture = PIXI.BaseTexture.fromImage(sheetImg.src, false);
-            var texture = new PIXI.Texture(baseTexture, new PIXI.Rectangle(f.x, f.y, f.w, f.h));
-        };
-        processSpriteSheet(sheetData, sheetImg, spriteToTextureFN);
-    }
-    Rance.cacheSpriteSheetTextures = cacheSpriteSheetTextures;
+    Rance.cacheSpriteSheetAsImages = cacheSpriteSheetAsImages;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
 /// <reference path="spritesheetcachingfunctions" />
@@ -20659,7 +20646,7 @@ var Rance;
                 }
             }
             var elapsed = new Date().getTime() - this.startTime;
-            console.log("Loaded in " + elapsed + " ms");
+            console.log("App loaded in " + elapsed + " ms");
             this.onLoaded.call();
         };
         return AppLoader;

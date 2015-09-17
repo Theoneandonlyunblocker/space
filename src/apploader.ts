@@ -47,7 +47,7 @@ module Rance
         }
       }
       var elapsed = new Date().getTime() - this.startTime;
-      console.log("Loaded in " + elapsed + " ms");
+      console.log("App loaded in " + elapsed + " ms");
       this.onLoaded.call();
     }
   }

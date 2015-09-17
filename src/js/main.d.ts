@@ -2855,8 +2855,7 @@ declare module Rance {
         };
         meta: any;
     }
-    function cacheSpriteSheetImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
-    function cacheSpriteSheetTextures(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
+    function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement): void;
 }
 declare module Rance {
     class AppLoader {

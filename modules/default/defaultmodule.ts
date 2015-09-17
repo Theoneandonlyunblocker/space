@@ -53,14 +53,7 @@ module Rance
             {
               var json = loader.resources[spriteSheetName].data;
               var image = loader.resources[spriteSheetName + "_image"].data;
-              cacheSpriteSheetImages(json, image);
-            });
-
-            ["explosion"].forEach(function(spriteSheetName: string)
-            {
-              var json = loader.resources[spriteSheetName].data;
-              var image = loader.resources[spriteSheetName + "_image"].data;
-              cacheSpriteSheetTextures(json, image);
+              cacheSpriteSheetAsImages(json, image);
             });
 
             onLoaded();

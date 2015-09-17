@@ -27,7 +27,7 @@ module Rance
       processFrameFN(sheetImg, sheetData.frames[spriteName].frame, spriteName);
     }
   }
-  export function cacheSpriteSheetImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
+  export function cacheSpriteSheetAsImages(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
   {
     var spriteToImageFN = function(sheetImg: HTMLImageElement, frame: ISpriteSheetFrame, spriteName: string)
     {
@@ -45,16 +45,5 @@ module Rance
     }
 
     processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
-  }
-  export function cacheSpriteSheetTextures(sheetData: ISpriteSheetData, sheetImg: HTMLImageElement)
-  {
-    var spriteToTextureFN = function(sheetImg: HTMLImageElement, f: ISpriteSheetFrame)
-    {
-      var baseTexture = PIXI.BaseTexture.fromImage(sheetImg.src, false);
-
-      var texture = new PIXI.Texture(baseTexture, new PIXI.Rectangle(f.x, f.y, f.w, f.h));
-    }
-
-    processSpriteSheet(sheetData, sheetImg, spriteToTextureFN);
   }
 }
