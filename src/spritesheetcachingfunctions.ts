@@ -41,6 +41,12 @@ module Rance
       var image = new Image();
       image.src = canvas.toDataURL();
 
+      // this is never true as pixi loader silently ignores duplicates, which is a shame
+      // if (app.images[spriteName])
+      // {
+      //   throw new Error("Duplicate image name " + spriteName);
+      //   return;
+      // }
       app.images[spriteName] = image;
     }
 

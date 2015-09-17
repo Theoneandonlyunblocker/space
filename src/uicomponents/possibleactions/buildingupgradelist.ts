@@ -44,19 +44,30 @@ module Rance
       {
         if (!this.hasAvailableUpgrades()) return null;
 
-        var possibleUpgrades = this.props.star.getBuildingUpgrades();
         var upgradeGroups: ReactDOMPlaceHolder[] = [];
 
-        for (var parentBuildingId in possibleUpgrades)
+        var possibleUpgrades = this.props.star.getBuildingUpgrades();
+        var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function(aId: string, bId: string)
         {
+          var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
+          var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
+          
+          if (a < b) return -1;
+          else if (a > b) return 1;
+          else return 0;
+        });
+
+        for (var i = 0; i < sortedParentBuildings.length; i++)
+        {
+          var parentBuildingId = sortedParentBuildings[i];
           var upgrades = possibleUpgrades[parentBuildingId];
-          var parentBuilding = upgrades[0].parentBuilding;
+          var parentBuilding: Building = upgrades[0].parentBuilding;
 
           var upgradeElements: ReactDOMPlaceHolder[] = [];
 
-          for (var i = 0; i < upgrades.length; i++)
+          for (var j = 0; j < upgrades.length; j++)
           {
-            var upgrade = upgrades[i];
+            var upgrade: IBuildingUpgradeData = upgrades[j];
 
             var rowProps: any =
             {
@@ -86,7 +97,7 @@ module Rance
                 {
                   key: "name",
                   className: "building-upgrade-list-item-name"
-                }, upgrade.template.name + " " + (upgrade.level > 1 ? upgrade.level : "")),
+                }, upgrade.template.displayName + " " + (upgrade.level > 1 ? upgrade.level : "")),
                 React.DOM.td(costProps, upgrade.cost)
               )
             );
@@ -94,13 +105,13 @@ module Rance
 
           var parentElement = React.DOM.div(
           {
-            key: parentBuilding.id,
+            key: "" + parentBuilding.id,
             className: "building-upgrade-group"
           },
             React.DOM.div(
             {
               className: "building-upgrade-group-header"
-            }, parentBuilding.template.name),
+            }, parentBuilding.template.displayName),
             React.DOM.table(
             {
               className: "buildable-item-list"

@@ -7,7 +7,7 @@ module Rance
       displayName: "DefenceBuilding",
       render: function()
       {
-        var building = this.props.building;
+        var building: Building = this.props.building;
         var image = app.images[building.template.iconSrc];
 
         return(
@@ -19,7 +19,7 @@ module Rance
             {
               className: "defence-building-icon",
               src: colorImageInPlayerColor(image, building.controller),
-              title: building.template.name
+              title: building.template.displayName
             }),
             React.DOM.img(
             {

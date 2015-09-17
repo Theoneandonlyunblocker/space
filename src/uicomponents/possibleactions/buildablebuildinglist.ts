@@ -56,13 +56,13 @@ module Rance
 
         for (var i = 0; i < this.state.buildingTemplates.length; i++)
         {
-          var template = this.state.buildingTemplates[i];
+          var template: Templates.IBuildingTemplate = this.state.buildingTemplates[i];
 
           var data: any =
           {
             template: template,
 
-            typeName: template.name,
+            typeName: template.displayName,
             buildCost: template.buildCost,
             player: this.props.player,
 

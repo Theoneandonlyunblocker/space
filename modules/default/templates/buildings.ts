@@ -15,7 +15,7 @@ module Rance
             type: "sectorCommand",
             category: "defence",
             family: "sectorCommand",
-            name: "Sector Command",
+            displayName: "Sector Command",
 
             iconSrc: "sectorCommand.png",
             buildCost: 200,
@@ -42,7 +42,7 @@ module Rance
             type: "sectorCommand1",
             category: "defence",
             family: "sectorCommand",
-            name: "Sector Command1",
+            displayName: "Sector Command1",
 
             iconSrc: "sectorCommand.png",
             buildCost: 100,
@@ -58,7 +58,7 @@ module Rance
             type: "sectorCommand2",
             category: "defence",
             family: "sectorCommand",
-            name: "Sector Command2",
+            displayName: "Sector Command2",
 
             iconSrc: "sectorCommand.png",
             buildCost: 200,
@@ -73,7 +73,7 @@ module Rance
           {
             type: "starBase",
             category: "defence",
-            name: "Starbase",
+            displayName: "Starbase",
 
             iconSrc: "starBase.png",
             buildCost: 200,
@@ -94,7 +94,7 @@ module Rance
           {
             type: "commercialPort",
             category: "economy",
-            name: "Commercial Spaceport",
+            displayName: "Commercial Spaceport",
 
             iconSrc: "commercialPort.png",
             buildCost: 200,
@@ -107,7 +107,7 @@ module Rance
           {
             type: "deepSpaceRadar",
             category: "vision",
-            name: "Deep Space Radar",
+            displayName: "Deep Space Radar",
 
             iconSrc: "commercialPort.png",
             buildCost: 200,
@@ -120,7 +120,7 @@ module Rance
           {
             type: "itemManufactory",
             category: "manufactory",
-            name: "Item Manufactory",
+            displayName: "Item Manufactory",
 
             iconSrc: "commercialPort.png",
             buildCost: 200,
@@ -133,7 +133,7 @@ module Rance
           {
             type: "resourceMine",
             category: "mine",
-            name: "Mine",
+            displayName: "Mine",
 
             iconSrc: "commercialPort.png",
             buildCost: 500,

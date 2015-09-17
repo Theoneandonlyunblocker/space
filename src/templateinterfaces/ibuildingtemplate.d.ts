@@ -6,7 +6,7 @@ declare module Rance
     {
       type: string;
       category: string;
-      name: string;
+      displayName: string;
       
       iconSrc: string;
       buildCost: number;

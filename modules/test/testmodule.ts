@@ -12,7 +12,7 @@ module Rance
         {
           type: "commercialPortTest",
           category: "economy",
-          name: "Commercial Spaceport Test",
+          displayName: "Commercial Spaceport Test",
 
           iconSrc: "commercialPort.png",
           buildCost: 0,

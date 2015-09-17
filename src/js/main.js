@@ -3085,7 +3085,7 @@ var Rance;
                 }, React.DOM.img({
                     className: "defence-building-icon",
                     src: Rance.colorImageInPlayerColor(image, building.controller),
-                    title: building.template.name
+                    title: building.template.displayName
                 }), React.DOM.img({
                     className: "defence-building-controller",
                     src: building.controller.icon,
@@ -6183,7 +6183,7 @@ var Rance;
                     var template = this.state.buildingTemplates[i];
                     var data = {
                         template: template,
-                        typeName: template.name,
+                        typeName: template.displayName,
                         buildCost: template.buildCost,
                         player: this.props.player,
                         rowConstructor: UIComponents.BuildableBuilding
@@ -7235,7 +7235,7 @@ var Rance;
                         type: "sectorCommand",
                         category: "defence",
                         family: "sectorCommand",
-                        name: "Sector Command",
+                        displayName: "Sector Command",
                         iconSrc: "sectorCommand.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -7256,7 +7256,7 @@ var Rance;
                         type: "sectorCommand1",
                         category: "defence",
                         family: "sectorCommand",
-                        name: "Sector Command1",
+                        displayName: "Sector Command1",
                         iconSrc: "sectorCommand.png",
                         buildCost: 100,
                         maxPerType: 1,
@@ -7268,7 +7268,7 @@ var Rance;
                         type: "sectorCommand2",
                         category: "defence",
                         family: "sectorCommand",
-                        name: "Sector Command2",
+                        displayName: "Sector Command2",
                         iconSrc: "sectorCommand.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -7279,7 +7279,7 @@ var Rance;
                     Buildings.starBase = {
                         type: "starBase",
                         category: "defence",
-                        name: "Starbase",
+                        displayName: "Starbase",
                         iconSrc: "starBase.png",
                         buildCost: 200,
                         maxPerType: 3,
@@ -7295,7 +7295,7 @@ var Rance;
                     Buildings.commercialPort = {
                         type: "commercialPort",
                         category: "economy",
-                        name: "Commercial Spaceport",
+                        displayName: "Commercial Spaceport",
                         iconSrc: "commercialPort.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -7304,7 +7304,7 @@ var Rance;
                     Buildings.deepSpaceRadar = {
                         type: "deepSpaceRadar",
                         category: "vision",
-                        name: "Deep Space Radar",
+                        displayName: "Deep Space Radar",
                         iconSrc: "commercialPort.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -7313,7 +7313,7 @@ var Rance;
                     Buildings.itemManufactory = {
                         type: "itemManufactory",
                         category: "manufactory",
-                        name: "Item Manufactory",
+                        displayName: "Item Manufactory",
                         iconSrc: "commercialPort.png",
                         buildCost: 200,
                         maxPerType: 1,
@@ -7322,7 +7322,7 @@ var Rance;
                     Buildings.resourceMine = {
                         type: "resourceMine",
                         category: "mine",
-                        name: "Mine",
+                        displayName: "Mine",
                         iconSrc: "commercialPort.png",
                         buildCost: 500,
                         maxPerType: 1,
@@ -14551,14 +14551,26 @@ var Rance;
             render: function () {
                 if (!this.hasAvailableUpgrades())
                     return null;
-                var possibleUpgrades = this.props.star.getBuildingUpgrades();
                 var upgradeGroups = [];
-                for (var parentBuildingId in possibleUpgrades) {
+                var possibleUpgrades = this.props.star.getBuildingUpgrades();
+                var sortedParentBuildings = Object.keys(possibleUpgrades).sort(function (aId, bId) {
+                    var a = possibleUpgrades[aId][0].parentBuilding.template.displayName;
+                    var b = possibleUpgrades[bId][0].parentBuilding.template.displayName;
+                    console.log(a, b);
+                    if (a < b)
+                        return -1;
+                    else if (a > b)
+                        return 1;
+                    else
+                        return 0;
+                });
+                for (var i = 0; i < sortedParentBuildings.length; i++) {
+                    var parentBuildingId = sortedParentBuildings[i];
                     var upgrades = possibleUpgrades[parentBuildingId];
                     var parentBuilding = upgrades[0].parentBuilding;
                     var upgradeElements = [];
-                    for (var i = 0; i < upgrades.length; i++) {
-                        var upgrade = upgrades[i];
+                    for (var j = 0; j < upgrades.length; j++) {
+                        var upgrade = upgrades[j];
                         var rowProps = {
                             key: upgrade.template.type,
                             className: "building-upgrade-list-item",
@@ -14577,14 +14589,14 @@ var Rance;
                         upgradeElements.push(React.DOM.tr(rowProps, React.DOM.td({
                             key: "name",
                             className: "building-upgrade-list-item-name"
-                        }, upgrade.template.name + " " + (upgrade.level > 1 ? upgrade.level : "")), React.DOM.td(costProps, upgrade.cost)));
+                        }, upgrade.template.displayName + " " + (upgrade.level > 1 ? upgrade.level : "")), React.DOM.td(costProps, upgrade.cost)));
                     }
                     var parentElement = React.DOM.div({
-                        key: parentBuilding.id,
+                        key: "" + parentBuilding.id,
                         className: "building-upgrade-group"
                     }, React.DOM.div({
                         className: "building-upgrade-group-header"
-                    }, parentBuilding.template.name), React.DOM.table({
+                    }, parentBuilding.template.displayName), React.DOM.table({
                         className: "buildable-item-list"
                     }, React.DOM.tbody({}, upgradeElements)));
                     upgradeGroups.push(parentElement);
@@ -20563,7 +20575,7 @@ var Rance;
                 BuildingTemplates.commercialPortTest = {
                     type: "commercialPortTest",
                     category: "economy",
-                    name: "Commercial Spaceport Test",
+                    displayName: "Commercial Spaceport Test",
                     iconSrc: "commercialPort.png",
                     buildCost: 0,
                     maxPerType: 1,
@@ -20606,6 +20618,12 @@ var Rance;
             context.drawImage(sheetImg, frame.x, frame.y, frame.w, frame.h, 0, 0, frame.w, frame.h);
             var image = new Image();
             image.src = canvas.toDataURL();
+            // this is never true as pixi loader silently ignores duplicates, which is a shame
+            // if (app.images[spriteName])
+            // {
+            //   throw new Error("Duplicate image name " + spriteName);
+            //   return;
+            // }
             app.images[spriteName] = image;
         };
         processSpriteSheet(sheetData, sheetImg, spriteToImageFN);
