@@ -2,6 +2,8 @@
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 
 /// <reference path="graphics/drawnebula.ts" />
+/// <reference path="graphics/maprendererlayers.ts" />
+/// <reference path="graphics/maprenderermapmodes.ts" />
 
 /// <reference path="mapgen/spiralgalaxy.ts" />
 /// <reference path="mapgen/test.ts" />
@@ -63,9 +65,13 @@ module Rance
         constructModule: function(moduleData: ModuleData)
         {
           moduleData.copyAllTemplates(DefaultModule.Templates);
+          moduleData.copyTemplates(DefaultModule.MapRendererLayers, "MapRendererLayers");
+          moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
 
           moduleData.mapBackgroundDrawingFunction = drawNebula;
           moduleData.starBackgroundDrawingFunction = drawNebula;
+
+          moduleData.defaultMap = DefaultModule.Templates.MapGen.spiralGalaxy
 
           return moduleData;
         }

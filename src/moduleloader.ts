@@ -76,7 +76,7 @@ module Rance
       this.hasLoaded[moduleFile.key] = true;
       this.constructModuleFile(moduleFile);
       var loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
-      console.log("Module " + moduleFile.key + " finished loading in " + loadTime + "ms");
+      console.log("Module '" + moduleFile.key + "' finished loading in " + loadTime + "ms");
       afterLoaded();
     }
     constructModuleFile(moduleFile: IModuleFile)

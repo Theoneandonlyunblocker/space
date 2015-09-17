@@ -25,6 +25,8 @@
 /// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
+/// <reference path="../templateinterfaces/imaprendererlayertemplate.d.ts" />
+/// <reference path="../templateinterfaces/imaprenderermapmodetemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
@@ -2215,6 +2217,27 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class MapRendererLayer {
+        template: IMapRendererLayerTemplate;
+        container: PIXI.Container;
+        isDirty: boolean;
+        constructor(template: IMapRendererLayerTemplate);
+        draw(map: GalaxyMap, mapRenderer: MapRenderer): void;
+    }
+}
+declare module Rance {
+    class MapRendererMapMode {
+        template: IMapRendererMapModeTemplate;
+        layers: {
+            layer: MapRendererLayer;
+        }[];
+        constructor(template: IMapRendererMapModeTemplate);
+        addLayer(layer: MapRendererLayer): void;
+        getLayerIndex(layer: MapRendererLayer): number;
+        hasLayer(layer: MapRendererLayer): boolean;
+    }
+}
+declare module Rance {
     function starsOnlyShareNarrowBorder(a: Star, b: Star): boolean;
     function getBorderingHalfEdges(stars: Star[]): {
         star: Star;
@@ -2231,17 +2254,11 @@ declare module Rance {
     }[];
 }
 declare module Rance {
-    interface IMapRendererLayer {
-        drawingFunction: (map: GalaxyMap) => PIXI.Container;
-        container: PIXI.Container;
-        interactive: boolean;
-        isDirty: boolean;
-    }
     interface IMapRendererMapMode {
         name: string;
         displayName: string;
         layers: {
-            layer: IMapRendererLayer;
+            layer: MapRendererLayer;
         }[];
     }
     class MapRenderer {
@@ -2255,10 +2272,10 @@ declare module Rance {
             };
         };
         layers: {
-            [name: string]: IMapRendererLayer;
+            [name: string]: MapRendererLayer;
         };
         mapModes: {
-            [name: string]: IMapRendererMapMode;
+            [name: string]: MapRendererMapMode;
         };
         fowTilingSprite: PIXI.extras.TilingSprite;
         fowSpriteCache: {
@@ -2267,7 +2284,7 @@ declare module Rance {
         fleetTextTextureCache: {
             [fleetSize: number]: PIXI.Texture;
         };
-        currentMapMode: IMapRendererMapMode;
+        currentMapMode: MapRendererMapMode;
         isDirty: boolean;
         preventRender: boolean;
         listeners: {
@@ -2288,11 +2305,10 @@ declare module Rance {
         initMapModes(): void;
         setParent(newParent: PIXI.Container): void;
         resetContainer(): void;
-        hasLayerInMapMode(layer: IMapRendererLayer): boolean;
         setLayerAsDirty(layerName: string): void;
         setAllLayersAsDirty(): void;
-        drawLayer(layer: IMapRendererLayer): void;
-        setMapMode(newMapMode: string): void;
+        setMapModeByKey(key: string): void;
+        setMapMode(newMapMode: MapRendererMapMode): void;
         render(): void;
     }
 }
@@ -2622,6 +2638,12 @@ declare module Rance {
         MapGen: {
             [type: string]: Templates.IMapGenTemplate;
         };
+        MapRendererLayers: {
+            [layerKey: string]: IMapRendererLayerTemplate;
+        };
+        MapRendererMapModes: {
+            [mapModeKey: string]: IMapRendererMapModeTemplate;
+        };
         PassiveSkills: {
             [type: string]: Templates.IPassiveSkillTemplate;
         };
@@ -2663,8 +2685,12 @@ declare module Rance {
         private subModuleMetaData;
         mapBackgroundDrawingFunction: (seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
         starBackgroundDrawingFunction: (seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
-        mapRendererLayers: IMapRendererLayer[];
-        mapRendererMapModes: IMapRendererMapMode[];
+        mapRendererLayers: {
+            [layerKey: string]: IMapRendererLayerTemplate;
+        };
+        mapRendererMapModes: {
+            [mapModeKey: string]: IMapRendererMapModeTemplate;
+        };
         Templates: ITemplates;
         defaultMap: Templates.IMapGenTemplate;
         constructor();
@@ -2716,6 +2742,38 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             function drawNebula(seed: string, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer): PIXI.Sprite;
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module MapRendererLayers {
+                var nonFillerStars: IMapRendererLayerTemplate;
+                var starOwners: IMapRendererLayerTemplate;
+                var fogOfWar: IMapRendererLayerTemplate;
+                var starIncome: IMapRendererLayerTemplate;
+                var playerInfluence: IMapRendererLayerTemplate;
+                var nonFillerVoronoiLines: IMapRendererLayerTemplate;
+                var ownerBorders: IMapRendererLayerTemplate;
+                var starLinks: IMapRendererLayerTemplate;
+                var resources: IMapRendererLayerTemplate;
+                var fleets: IMapRendererLayerTemplate;
+                var debugSectors: IMapRendererLayerTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module MapRendererMapModes {
+                var defaultMapMode: IMapRendererMapModeTemplate;
+                var noStatic: IMapRendererMapModeTemplate;
+                var income: IMapRendererMapModeTemplate;
+                var influence: IMapRendererMapModeTemplate;
+                var resources: IMapRendererMapModeTemplate;
+            }
         }
     }
 }

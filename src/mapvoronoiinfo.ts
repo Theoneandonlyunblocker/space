@@ -37,7 +37,6 @@ module Rance
       if (!this.nonFillerLines[indexString] ||
         this.nonFillerLines[indexString].length <= 0)
       {
-        console.log("newEdgesIndex")
         this.nonFillerLines[indexString] =
           this.diagram.edges.filter(function(edge: any)
         {

@@ -30,6 +30,14 @@ module Rance
     {
       [type: string]: Templates.IMapGenTemplate;
     };
+    MapRendererLayers:
+    {
+      [layerKey: string]: IMapRendererLayerTemplate;
+    };
+    MapRendererMapModes:
+    {
+      [mapModeKey: string]: IMapRendererMapModeTemplate;
+    };
     PassiveSkills:
     {
       [type: string]: Templates.IPassiveSkillTemplate;
@@ -89,8 +97,14 @@ module Rance
     starBackgroundDrawingFunction: (seed: string,
       renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer) => PIXI.DisplayObject;
 
-    mapRendererLayers: IMapRendererLayer[];
-    mapRendererMapModes: IMapRendererMapMode[];
+    mapRendererLayers:
+    {
+      [layerKey: string]: IMapRendererLayerTemplate;
+    } = {};
+    mapRendererMapModes:
+    {
+      [mapModeKey: string]: IMapRendererMapModeTemplate;
+    } = {};
 
     Templates: ITemplates =
     {
@@ -101,6 +115,8 @@ module Rance
       Effects: {},
       Items: {},
       MapGen: {},
+      MapRendererLayers: {},
+      MapRendererMapModes: {},
       PassiveSkills: {},
       Personalities: {},
       Resources: {},

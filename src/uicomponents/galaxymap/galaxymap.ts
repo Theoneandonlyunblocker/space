@@ -11,7 +11,7 @@ module Rance
       {
         var newMode = this.refs.mapModeSelector.getDOMNode().value;
 
-        this.props.mapRenderer.setMapMode(newMode);
+        this.props.mapRenderer.setMapModeByKey(newMode);
       },
       changeScene: function(e: Event)
       {
@@ -115,7 +115,7 @@ module Rance
       {
         this.props.renderer.isBattleBackground = false;
         this.props.renderer.bindRendererView(this.refs.pixiContainer.getDOMNode());
-        this.props.mapRenderer.setMapMode("default");
+        this.props.mapRenderer.setMapModeByKey("defaultMapMode");
         
         this.props.renderer.resume();
 
