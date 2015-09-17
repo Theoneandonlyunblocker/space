@@ -34,7 +34,6 @@ module Rance
         },
         loadAssets: function(onLoaded: () => void)
         {
-          console.log("load test");
           onLoaded();
         },
         constructModule: function(moduleData: ModuleData)

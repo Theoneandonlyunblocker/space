@@ -19248,6 +19248,7 @@ var Rance;
         function ModuleLoader() {
             this.moduleFiles = {};
             this.hasLoaded = {};
+            this.moduleLoadStart = {};
             this.moduleData = new Rance.ModuleData();
         }
         ModuleLoader.prototype.addModuleFile = function (moduleFile) {
@@ -19262,6 +19263,7 @@ var Rance;
             if (!this.moduleFiles[moduleFile.key]) {
                 this.addModuleFile(moduleFile);
             }
+            this.moduleLoadStart[moduleFile.key] = Date.now();
             moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
         };
         ModuleLoader.prototype.loadAll = function (afterLoaded) {
@@ -19285,6 +19287,8 @@ var Rance;
         ModuleLoader.prototype.finishLoadingModuleFile = function (moduleFile, afterLoaded) {
             this.hasLoaded[moduleFile.key] = true;
             this.constructModuleFile(moduleFile);
+            var loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
+            console.log("Module " + moduleFile.key + " finished loading in " + loadTime + "ms");
             afterLoaded();
         };
         ModuleLoader.prototype.constructModuleFile = function (moduleFile) {
@@ -20580,7 +20584,6 @@ var Rance;
                     description: "just testing"
                 },
                 loadAssets: function (onLoaded) {
-                    console.log("load test");
                     onLoaded();
                 },
                 constructModule: function (moduleData) {

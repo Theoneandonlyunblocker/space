@@ -20,8 +20,6 @@ module Rance
 
       this.loadDOM();
     }
-    
-    
     loadDOM()
     {
       var self = this;

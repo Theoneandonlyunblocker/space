@@ -13,6 +13,10 @@ module Rance
     {
       [index: string]: boolean;
     } = {};
+    moduleLoadStart:
+    {
+      [index: string]: number;
+    } = {};
 
     constructor()
     {
@@ -37,6 +41,7 @@ module Rance
         this.addModuleFile(moduleFile);
       }
 
+      this.moduleLoadStart[moduleFile.key] = Date.now();
       moduleFile.loadAssets(this.finishLoadingModuleFile.bind(this, moduleFile, afterLoaded));
     }
     loadAll(afterLoaded: () => void)
@@ -70,6 +75,8 @@ module Rance
     {
       this.hasLoaded[moduleFile.key] = true;
       this.constructModuleFile(moduleFile);
+      var loadTime = Date.now() - this.moduleLoadStart[moduleFile.key];
+      console.log("Module " + moduleFile.key + " finished loading in " + loadTime + "ms");
       afterLoaded();
     }
     constructModuleFile(moduleFile: IModuleFile)

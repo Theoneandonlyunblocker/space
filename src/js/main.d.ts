@@ -2682,6 +2682,9 @@ declare module Rance {
         hasLoaded: {
             [index: string]: boolean;
         };
+        moduleLoadStart: {
+            [index: string]: number;
+        };
         constructor();
         addModuleFile(moduleFile: IModuleFile): void;
         loadModuleFile(moduleFile: IModuleFile, afterLoaded: () => void): void;
