@@ -11,14 +11,13 @@
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />
+/// <reference path="../modules/test/testmodule.ts" />
 
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
 /// <reference path="../data/templateindexes.ts"/>
-
-/// <reference path="../data/mapgen/builtinmaps.ts"/>
 
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
@@ -80,6 +79,7 @@ module Rance
 
       var moduleLoader = new ModuleLoader();
       moduleLoader.loadModuleFile(Modules.DefaultModule.moduleFile);
+      moduleLoader.loadModuleFile(Modules.TestModule.moduleFile);
       this.moduleData = moduleLoader.moduleData;
 
       setAllDynamicTemplateProperties();
@@ -212,7 +212,7 @@ module Rance
     }
     makeMap(playerData: {players: Player[], independents: Player[]})
     {
-      var optionValues: Templates.MapGen.IMapGenOptionValues =
+      var optionValues: Templates.IMapGenOptionValues =
       {
         defaultOptions:
         {
@@ -228,7 +228,9 @@ module Rance
         }
       }
 
-      var mapGenResult = Templates.MapGen.spiralGalaxyGeneration(
+      var mapTemplate = app.moduleData.getDefaultMap();
+
+      var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(
         optionValues,
         playerData.players,
         playerData.independents

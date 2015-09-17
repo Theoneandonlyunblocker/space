@@ -15854,764 +15854,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../fillerpoint.ts" />
-/// <reference path="../star.ts" />
-var Rance;
-(function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
-        var Region = (function () {
-            function Region(id, isFiller) {
-                this.stars = [];
-                this.fillerPoints = [];
-                this.id = id;
-                this.isFiller = isFiller;
-            }
-            Region.prototype.addStar = function (star) {
-                this.stars.push(star);
-                star.mapGenData.region = this;
-            };
-            Region.prototype.addFillerPoint = function (point) {
-                this.fillerPoints.push(point);
-                point.mapGenData.region;
-            };
-            Region.prototype.severLinksByQualifier = function (qualifierFN) {
-                for (var i = 0; i < this.stars.length; i++) {
-                    var star = this.stars[i];
-                    var links = star.getAllLinks();
-                    for (var j = 0; j < links.length; j++) {
-                        if (qualifierFN(star, links[j])) {
-                            star.removeLink(links[j]);
-                        }
-                    }
-                }
-            };
-            Region.prototype.severLinksToRegionsExcept = function (exemptRegions) {
-                this.severLinksByQualifier(function (a, b) {
-                    return exemptRegions.indexOf(b.mapGenData.region) !== -1;
-                });
-            };
-            return Region;
-        })();
-        MapGen2.Region = Region;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../modules/default/templates/resources.ts" />
-/// <reference path="../star.ts" />
-var Rance;
-(function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
-        var Sector = (function () {
-            function Sector(id) {
-                this.stars = [];
-                this.id = id;
-            }
-            Sector.prototype.addStar = function (star) {
-                if (star.mapGenData.sector) {
-                    throw new Error("Star already part of a sector");
-                }
-                this.stars.push(star);
-                star.mapGenData.sector = this;
-            };
-            Sector.prototype.addResource = function (resource) {
-                var star = this.stars[0];
-                this.resourceType = resource;
-                this.resourceLocation = star;
-                star.setResource(resource);
-            };
-            Sector.prototype.getNeighboringStars = function () {
-                var neighbors = [];
-                var alreadyAdded = {};
-                for (var i = 0; i < this.stars.length; i++) {
-                    var frontier = this.stars[i].getLinkedInRange(1).all;
-                    for (var j = 0; j < frontier.length; j++) {
-                        if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id]) {
-                            neighbors.push(frontier[j]);
-                            alreadyAdded[frontier[j].id] = true;
-                        }
-                    }
-                }
-                return neighbors;
-            };
-            Sector.prototype.getMajorityRegions = function () {
-                var regionsByStars = {};
-                var biggestRegionStarCount = 0;
-                for (var i = 0; i < this.stars.length; i++) {
-                    var star = this.stars[i];
-                    var region = star.mapGenData.region;
-                    if (!regionsByStars[region.id]) {
-                        regionsByStars[region.id] =
-                            {
-                                count: 0,
-                                region: region
-                            };
-                    }
-                    regionsByStars[region.id].count++;
-                    if (regionsByStars[region.id].count > biggestRegionStarCount) {
-                        biggestRegionStarCount = regionsByStars[region.id].count;
-                    }
-                }
-                var majorityRegions = [];
-                for (var regionId in regionsByStars) {
-                    if (regionsByStars[regionId].count >= biggestRegionStarCount) {
-                        majorityRegions.push(regionsByStars[regionId].region);
-                    }
-                }
-                return majorityRegions;
-            };
-            return Sector;
-        })();
-        MapGen2.Sector = Sector;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../star.ts" />
-/// <reference path="sector.ts" />
-/// <reference path="triangulation.ts" />
-var Rance;
-(function (Rance) {
-    var MapGen2;
-    (function (MapGen2) {
-        function linkAllStars(stars) {
-            if (stars.length < 3) {
-                if (stars.length === 2) {
-                    stars[0].addLink(stars[1]);
-                }
-                return;
-            }
-            var triangles = MapGen2.triangulate(stars);
-            for (var i = 0; i < triangles.length; i++) {
-                var edges = triangles[i].getEdges();
-                for (var j = 0; j < edges.length; j++) {
-                    edges[j][0].addLink(edges[j][1]);
-                }
-            }
-        }
-        MapGen2.linkAllStars = linkAllStars;
-        function partiallyCutLinks(stars, minConnections, maxCutsPerRegion) {
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                var regionsAlreadyCut = {};
-                var neighbors = star.getAllLinks();
-                if (neighbors.length <= minConnections)
-                    continue;
-                for (var j = neighbors.length - 1; j >= 0; j--) {
-                    var neighbor = neighbors[j];
-                    if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion) {
-                        continue;
-                    }
-                    var neighborLinks = neighbor.getAllLinks();
-                    if (neighbors.length <= minConnections || neighborLinks.length <= minConnections)
-                        continue;
-                    var totalLinks = neighbors.length + neighborLinks.length;
-                    var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
-                    var minMultipleCutThreshhold = 0.15;
-                    if (cutThreshhold > 0) {
-                        if (Math.random() < cutThreshhold) {
-                            star.removeLink(neighbor);
-                            neighbors.pop();
-                            if (!regionsAlreadyCut[neighbor.mapGenData.region.id]) {
-                                regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
-                            }
-                            regionsAlreadyCut[neighbor.mapGenData.region.id]++;
-                            var path = Rance.aStar(star, neighbor);
-                            if (!path) {
-                                star.addLink(neighbor);
-                                regionsAlreadyCut[neighbor.mapGenData.region.id]--;
-                                neighbors.push(neighbor);
-                            }
-                        }
-                        cutThreshhold -= minMultipleCutThreshhold;
-                    }
-                }
-            }
-        }
-        MapGen2.partiallyCutLinks = partiallyCutLinks;
-        function makeSectors(stars, minSize, maxSize) {
-            /*
-            while average size sectors left to assign && unassigned stars left
-              pick random unassigned star
-              if star cannot form island bigger than minsize
-                put from unassigned into leftovers & continue
-              else
-                add random neighbors into sector until minsize is met
-      
-      
-            while leftovers
-              pick random leftover
-              if leftover has no assigned neighbor pick, continue
-      
-              leftover gets assigned to smallest neighboring sector
-              if sizes equal, assign to sector with least neighboring leftovers
-             */
-            var totalStars = stars.length;
-            var unassignedStars = stars.slice(0);
-            var leftoverStars = [];
-            var averageSize = (minSize + maxSize) / 2;
-            var averageSectorsAmount = Math.round(totalStars / averageSize);
-            var sectorsById = {};
-            var sectorIdGen = 0;
-            var sameSectorFN = function (a, b) {
-                return a.mapGenData.sector === b.mapGenData.sector;
-            };
-            while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
-                var seedStar = unassignedStars.pop();
-                var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
-                if (canFormMinSizeSector) {
-                    var sector = new MapGen2.Sector(sectorIdGen++);
-                    sectorsById[sector.id] = sector;
-                    var discoveryStarIndex = 0;
-                    sector.addStar(seedStar);
-                    while (sector.stars.length < minSize) {
-                        var discoveryStar = sector.stars[discoveryStarIndex];
-                        var frontier = discoveryStar.getLinkedInRange(1).all;
-                        frontier = frontier.filter(function (star) {
-                            return !star.mapGenData.sector;
-                        });
-                        while (sector.stars.length < minSize && frontier.length > 0) {
-                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
-                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
-                            unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
-                            sector.addStar(toAdd);
-                        }
-                        discoveryStarIndex++;
-                    }
-                }
-                else {
-                    leftoverStars.push(seedStar);
-                }
-            }
-            while (leftoverStars.length > 0) {
-                var star = leftoverStars.pop();
-                var neighbors = star.getLinkedInRange(1).all;
-                var alreadyAddedNeighborSectors = {};
-                var candidateSectors = [];
-                for (var j = 0; j < neighbors.length; j++) {
-                    if (!neighbors[j].mapGenData.sector)
-                        continue;
-                    else {
-                        if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id]) {
-                            alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
-                            candidateSectors.push(neighbors[j].mapGenData.sector);
-                        }
-                    }
-                }
-                // all neighboring stars don't have sectors
-                // put star at back of queue and try again later
-                if (candidateSectors.length < 1) {
-                    leftoverStars.unshift(star);
-                    continue;
-                }
-                var unclaimedNeighborsPerSector = {};
-                for (var j = 0; j < candidateSectors.length; j++) {
-                    var sectorNeighbors = candidateSectors[j].getNeighboringStars();
-                    var unclaimed = 0;
-                    for (var k = 0; k < sectorNeighbors.length; k++) {
-                        if (!sectorNeighbors[k].mapGenData.sector) {
-                            unclaimed++;
-                        }
-                    }
-                    unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
-                }
-                candidateSectors.sort(function (a, b) {
-                    var sizeSort = a.stars.length - b.stars.length;
-                    if (sizeSort)
-                        return sizeSort;
-                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
-                        unclaimedNeighborsPerSector[a.id];
-                    return unclaimedSort;
-                });
-                candidateSectors[0].addStar(star);
-            }
-            return sectorsById;
-        }
-        MapGen2.makeSectors = makeSectors;
-        function setSectorDistributionFlags(sectors) {
-            for (var i = 0; i < sectors.length; i++) {
-                var sector = sectors[i];
-                sector.distributionFlags = [];
-                var majorityRegions = sector.getMajorityRegions();
-                for (var j = 0; j < majorityRegions.length; j++) {
-                    if (majorityRegions[j].id.indexOf("center") !== -1) {
-                        sector.distributionFlags.push("rare");
-                    }
-                    else {
-                        sector.distributionFlags.push("common");
-                    }
-                }
-            }
-        }
-        MapGen2.setSectorDistributionFlags = setSectorDistributionFlags;
-        function distributeDistributablesPerSector(sectors, distributableType, allDistributables, placerFunction) {
-            if (!sectors[0].distributionFlags) {
-                setSectorDistributionFlags(sectors);
-            }
-            var probabilityWeights = {};
-            for (var name in allDistributables) {
-                probabilityWeights[name] = allDistributables[name].rarity;
-            }
-            for (var i = 0; i < sectors.length; i++) {
-                var sector = sectors[i];
-                var alreadyAddedByWright = Rance.getRelativeWeightsFromObject(probabilityWeights);
-                var candidates = [];
-                for (var j = 0; j < sector.distributionFlags.length; j++) {
-                    var flag = sector.distributionFlags[j];
-                    var distributablesForFlag = Rance.TemplateIndexes.distributablesByDistributionGroup[flag][distributableType];
-                    candidates = candidates.concat(distributablesForFlag);
-                }
-                if (candidates.length === 0)
-                    continue;
-                var candidatesByWeight = {};
-                for (var j = 0; j < candidates.length; j++) {
-                    candidatesByWeight[candidates[j].type] =
-                        alreadyAddedByWright[candidates[j].type];
-                }
-                var selectedKey = Rance.getRandomKeyWithWeights(candidatesByWeight);
-                var selectedType = allDistributables[selectedKey];
-                probabilityWeights[selectedKey] /= 2;
-                placerFunction(sector, selectedType);
-            }
-        }
-        MapGen2.distributeDistributablesPerSector = distributeDistributablesPerSector;
-        function addDefenceBuildings(star, amount, addSectorCommand) {
-            if (amount === void 0) { amount = 1; }
-            if (addSectorCommand === void 0) { addSectorCommand = true; }
-            if (!star.owner) {
-                console.warn("Tried to add defence buildings to star without owner.");
-                return;
-            }
-            if (amount < 1) {
-                return;
-            }
-            if (addSectorCommand) {
-                star.addBuilding(new Rance.Building({
-                    template: app.moduleData.Templates.Buildings["sectorCommand"],
-                    location: star
-                }));
-                var amount = amount - 1;
-            }
-            for (var i = 0; i < amount; i++) {
-                star.addBuilding(new Rance.Building({
-                    template: app.moduleData.Templates.Buildings["starBase"],
-                    location: star
-                }));
-            }
-        }
-        MapGen2.addDefenceBuildings = addDefenceBuildings;
-        function setDistancesFromNearestPlayerOwnedStar(stars) {
-            var playerOwnedStars = [];
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                if (star.owner && !star.owner.isIndependent) {
-                    playerOwnedStars.push(star);
-                }
-            }
-            for (var i = 0; i < playerOwnedStars.length; i++) {
-                var ownedStarToCheck = playerOwnedStars[i];
-                for (var j = 0; j < stars.length; j++) {
-                    var star = stars[j];
-                    var distance = star.getDistanceToStar(ownedStarToCheck);
-                    if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar)) {
-                        star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
-                    }
-                    else {
-                        star.mapGenData.distanceFromNearestPlayerOwnedStar =
-                            Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar);
-                    }
-                }
-            }
-        }
-        MapGen2.setDistancesFromNearestPlayerOwnedStar = setDistancesFromNearestPlayerOwnedStar;
-        function setupPirates(stars, player, variance, intensity) {
-            if (variance === void 0) { variance = 0.33; }
-            if (intensity === void 0) { intensity = 1; }
-            var minShips = 2;
-            var maxShips = 6;
-            setDistancesFromNearestPlayerOwnedStar(stars);
-            var shipTypes = Object.keys(app.moduleData.Templates.Units);
-            shipTypes = shipTypes.filter(function (shipType) {
-                return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
-            });
-            for (var i = 0; i < stars.length; i++) {
-                var star = stars[i];
-                if (!star.owner) {
-                    player.addStar(star);
-                    var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
-                    var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
-                    addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
-                    var shipAmount = minShips;
-                    for (var j = 2; j < distance; j++) {
-                        shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
-                        if (shipAmount >= maxShips) {
-                            shipAmount = maxShips;
-                            break;
-                        }
-                    }
-                    var ships = [];
-                    for (var j = 0; j < shipAmount; j++) {
-                        var shipTemplates = star.getBuildableShipTypes();
-                        var ship = new Rance.Unit(Rance.getRandomArrayItem(shipTemplates));
-                        player.addUnit(ship);
-                        ships.push(ship);
-                    }
-                    var fleet = new Rance.Fleet(player, ships, star, undefined, false);
-                    fleet.name = "Pirates";
-                }
-            }
-        }
-        MapGen2.setupPirates = setupPirates;
-    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../src/range.ts" />
-/// <reference path="../../src/utility.ts" />
-/// <reference path="../../src/point.ts" />
-/// <reference path="../../src/player.ts" />
-/// <reference path="../../src/star.ts" />
-/// <reference path="../../src/mapgen2/region.ts" />
-/// <reference path="../../src/mapgen2/mapgenutils.ts" />
-/// <reference path="../../src/mapgen2/mapgenresult.ts" />
-/// <reference path="../../src/templateinterfaces/iunitfamily.d.ts" />
-/// <reference path="../../src/templateinterfaces/iresourcetemplate.d.ts" />
-/// <reference path="mapgenoptions.ts" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var MapGen;
-        (function (MapGen) {
-            function spiralGalaxyGeneration(options, players, independents) {
-                // generate points
-                // in closure because tons of temporary variables we dont really care about
-                var sg = (function setStarGenerationProps(options) {
-                    var totalSize = options.defaultOptions.width * options.defaultOptions.height;
-                    var totalStars = options.defaultOptions.starCount;
-                    var actualArms = options.basicOptions["arms"];
-                    var totalArms = actualArms * 2; // includes filler arms
-                    var percentageInCenter = 0.3;
-                    var percentageInArms = 1 - percentageInCenter;
-                    var amountInCenter = totalStars * percentageInCenter;
-                    var amountPerArm = Math.round(totalStars / actualArms * percentageInArms);
-                    var amountPerFillerArm = Math.round(amountPerArm / 2);
-                    var amountPerCenter = Math.round(amountInCenter / totalArms);
-                    // to prevent rounding issues, probably a better way to do this
-                    var actualStarsInArms = actualArms * amountPerArm;
-                    var actualStarsInCenter = totalArms * amountPerCenter;
-                    var actualStars = actualStarsInCenter + actualStarsInArms;
-                    var starsDeficit = totalStars - actualStars;
-                    var armsToMakeUpDeficit = [];
-                    var starsToAddPerDeficitArm = 0;
-                    if (starsDeficit !== 0) {
-                        starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
-                        var deficitStep = totalArms / Math.abs(starsDeficit);
-                        for (var i = 0; i < totalArms; i += deficitStep) {
-                            armsToMakeUpDeficit.push(Math.round(i));
-                        }
-                    }
-                    return ({
-                        totalArms: totalArms,
-                        armsToMakeUpDeficit: armsToMakeUpDeficit,
-                        starsToAddPerDeficitArm: starsToAddPerDeficitArm,
-                        amountPerArm: amountPerArm,
-                        amountPerFillerArm: amountPerFillerArm,
-                        amountPerCenter: amountPerCenter,
-                        centerSize: 0.4,
-                        armDistance: Math.PI * 2 / totalArms,
-                        armOffsetMax: 0.5,
-                        armRotationFactor: actualArms / 3,
-                        galaxyRotation: Rance.randRange(0, Math.PI * 2) // rotation of entire galaxy
-                    });
-                })(options);
-                function makePoint(distanceMin, distanceMax, arm, maxOffset) {
-                    var distance = Rance.randRange(distanceMin, distanceMax);
-                    var offset = Math.random() * maxOffset - maxOffset / 2;
-                    offset *= (1 / distance);
-                    if (offset < 0)
-                        offset = Math.pow(offset, 2) * -1;
-                    else
-                        offset = Math.pow(offset, 2);
-                    var armRotation = distance * sg.armRotationFactor;
-                    var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotation;
-                    var width = options.defaultOptions.width / 2;
-                    var height = options.defaultOptions.height / 2;
-                    var x = Math.cos(angle) * distance * width + width;
-                    var y = Math.sin(angle) * distance * height + height;
-                    return ({
-                        pos: {
-                            x: x,
-                            y: y
-                        },
-                        distance: distance
-                    });
-                }
-                function makeStar(point, distance) {
-                    var star = new Rance.Star(point.x, point.y);
-                    star.mapGenData.distance = distance;
-                    star.baseIncome = Rance.randInt(4, 10) * 10;
-                    return star;
-                }
-                var stars = [];
-                var fillerPoints = [];
-                var regions = [];
-                var centerRegion = new Rance.MapGen2.Region("center", false);
-                regions.push(centerRegion);
-                var fillerRegionId = 0;
-                var regionId = 0;
-                for (var i = 0; i < sg.totalArms; i++) {
-                    var isFiller = i % 2 !== 0;
-                    var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
-                    var region = new Rance.MapGen2.Region(regionName, isFiller);
-                    regions.push(region);
-                    var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
-                    var amountForThisCenter = sg.amountPerCenter;
-                    if (sg.armsToMakeUpDeficit.indexOf(i) !== -1) {
-                        amountForThisCenter += sg.starsToAddPerDeficitArm;
-                    }
-                    var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
-                    for (var j = 0; j < amountForThisArm; j++) {
-                        var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
-                        if (isFiller) {
-                            var fillerPoint = new Rance.FillerPoint(point.pos.x, point.pos.y);
-                            region.addFillerPoint(fillerPoint);
-                            fillerPoint.mapGenData.distance = point.distance;
-                            fillerPoints.push(fillerPoint);
-                        }
-                        else {
-                            var star = makeStar(point.pos, point.distance);
-                            region.addStar(star);
-                            stars.push(star);
-                        }
-                    }
-                    for (var j = 0; j < amountForThisCenter; j++) {
-                        var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
-                        var star = makeStar(point.pos, point.distance);
-                        centerRegion.addStar(star);
-                        stars.push(star);
-                    }
-                }
-                var allPoints = fillerPoints.concat(stars);
-                // make voronoi
-                var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
-                // relax voronoi
-                var regularity = options.basicOptions["starSizeRegularity"] / 100;
-                var centerDensity = options.basicOptions["centerDensity"] / 100;
-                var inverseCenterDensity = 1 - centerDensity;
-                for (var i = 0; i < 2; i++) {
-                    Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
-                        return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
-                    });
-                    voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
-                }
-                // link stars
-                Rance.MapGen2.linkAllStars(stars);
-                // sever links
-                for (var i = 0; i < regions.length; i++) {
-                    regions[i].severLinksByQualifier(function (a, b) {
-                        return (a.mapGenData.region !== b.mapGenData.region &&
-                            a.mapGenData.region !== regions[0] &&
-                            b.mapGenData.region !== regions[0]);
-                    });
-                    for (var j = 0; j < regions[i].stars.length; j++) {
-                        regions[i].stars[j].severLinksToNonAdjacent();
-                    }
-                }
-                var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
-                if (!isConnected) {
-                    if (Rance.Options.debugMode)
-                        console.log("Regenerated map due to insufficient connections");
-                    return spiralGalaxyGeneration(options, players, independents);
-                }
-                Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
-                // make sectors
-                var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 5);
-                // set resources && local ships
-                var allSectors = [];
-                for (var sectorId in sectorsById) {
-                    allSectors.push(sectorsById[sectorId]);
-                }
-                var resourcePlacerFN = function (sector, resource) {
-                    sector.addResource(resource);
-                };
-                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
-                var localShipPlacerFN = function (sector, shipFamily) {
-                    for (var i = 0; i < sector.stars.length; i++) {
-                        var star = sector.stars[i];
-                        star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
-                    }
-                };
-                Rance.MapGen2.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
-                // set players
-                var startRegions = (function setStartingRegions() {
-                    var armCount = options.basicOptions["arms"];
-                    var playerCount = players.length;
-                    var playerArmStep = armCount / playerCount;
-                    var startRegions = [];
-                    var candidateRegions = regions.filter(function (region) {
-                        return region.id.indexOf("arm") !== -1;
-                    });
-                    for (var i = 0; i < playerCount; i++) {
-                        var regionNumber = Math.floor(i * playerArmStep);
-                        var regionToAdd = candidateRegions[regionNumber];
-                        startRegions.push(regionToAdd);
-                    }
-                    return startRegions;
-                })();
-                var startPositions = (function getStartPoints(regions) {
-                    var startPositions = [];
-                    for (var i = 0; i < regions.length; i++) {
-                        var region = regions[i];
-                        var starsByDistance = region.stars.slice(0).sort(function (a, b) {
-                            return b.mapGenData.distance - a.mapGenData.distance;
-                        });
-                        startPositions.push(starsByDistance[0]);
-                    }
-                    return startPositions;
-                })(startRegions);
-                for (var i = 0; i < players.length; i++) {
-                    var star = startPositions[i];
-                    var player = players[i];
-                    player.addStar(star);
-                    Rance.MapGen2.addDefenceBuildings(star, 2);
-                }
-                Rance.MapGen2.setupPirates(stars, independents[0], 0.08, 1);
-                return new Rance.MapGen2.MapGenResult({
-                    stars: stars,
-                    fillerPoints: fillerPoints,
-                    width: options.defaultOptions.width,
-                    height: options.defaultOptions.height
-                });
-            }
-            MapGen.spiralGalaxyGeneration = spiralGalaxyGeneration;
-        })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../src/mapgen2/mapgenresult.ts" />
-/// <reference path="../../src/player.ts" />
-/// <reference path="mapgenoptions.ts" />
-/// <reference path="spiralgalaxygeneration.ts" />
-/// <reference path="mapgentemplate.ts" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var MapGen;
-        (function (MapGen) {
-            MapGen.spiralGalaxy = {
-                key: "spiralGalaxy",
-                displayName: "Spiral galaxy",
-                description: "Create a spiral galaxy with arms",
-                minPlayers: 2,
-                maxPlayers: 5,
-                mapGenFunction: MapGen.spiralGalaxyGeneration,
-                options: {
-                    defaultOptions: {
-                        height: {
-                            min: 800,
-                            max: 1600,
-                            step: 1
-                        },
-                        width: {
-                            min: 800,
-                            max: 1600,
-                            step: 1
-                        },
-                        starCount: {
-                            min: 30,
-                            max: 50,
-                            step: 1
-                        }
-                    },
-                    basicOptions: {
-                        arms: {
-                            min: 4,
-                            max: 6,
-                            step: 1
-                        },
-                        starSizeRegularity: {
-                            min: 1,
-                            max: 100,
-                            step: 1,
-                            defaultValue: 100
-                        },
-                        centerDensity: {
-                            min: 1,
-                            max: 90,
-                            step: 1,
-                            defaultValue: 50
-                        }
-                    },
-                    advancedOptions: {
-                        funnyNumber: {
-                            min: 69,
-                            max: 420,
-                            step: 351,
-                            defaultValue: 69
-                        }
-                    }
-                }
-            };
-        })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
-/// <reference path="spiralgalaxygeneration.ts" />
-/// <reference path="mapgentemplate.ts" />
-var Rance;
-(function (Rance) {
-    var Templates;
-    (function (Templates) {
-        var MapGen;
-        (function (MapGen) {
-            MapGen.tinierSpiralGalaxy = {
-                key: "tinierSpiralGalaxy",
-                displayName: "Tinier Spiral galaxy",
-                description: "Create a spiral galaxy with arms but tinier (just for testing)",
-                minPlayers: 2,
-                maxPlayers: 5,
-                mapGenFunction: MapGen.spiralGalaxyGeneration,
-                options: {
-                    defaultOptions: {
-                        height: {
-                            min: 500,
-                            max: 1000,
-                            step: 1
-                        },
-                        width: {
-                            min: 500,
-                            max: 1000,
-                            step: 1
-                        },
-                        starCount: {
-                            min: 15,
-                            max: 35,
-                            step: 1
-                        }
-                    },
-                    basicOptions: {
-                        arms: {
-                            min: 2,
-                            max: 5,
-                            step: 1,
-                            defaultValue: 4
-                        },
-                        starSizeRegularity: {
-                            min: 1,
-                            max: 100,
-                            step: 1,
-                            defaultValue: 100
-                        },
-                        centerDensity: {
-                            min: 1,
-                            max: 90,
-                            step: 1,
-                            defaultValue: 50
-                        }
-                    }
-                }
-            };
-        })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
-    })(Templates = Rance.Templates || (Rance.Templates = {}));
-})(Rance || (Rance = {}));
-/// <reference path="spiralgalaxy.ts" />
-/// <reference path="test.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -16825,8 +16067,7 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../data/mapgen/builtinmaps.ts" />
-/// <reference path="../../../data/mapgen/mapgentemplate.ts" />
+/// <reference path="../../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="mapgenoptions.ts" />
 var Rance;
 (function (Rance) {
@@ -16836,9 +16077,9 @@ var Rance;
             displayName: "MapSetup",
             getInitialState: function () {
                 var mapGenTemplates = [];
-                for (var template in Rance.Templates.MapGen) {
-                    if (Rance.Templates.MapGen[template].key) {
-                        mapGenTemplates.push(Rance.Templates.MapGen[template]);
+                for (var template in app.moduleData.Templates.MapGen) {
+                    if (app.moduleData.Templates.MapGen[template].key) {
+                        mapGenTemplates.push(app.moduleData.Templates.MapGen[template]);
                     }
                 }
                 return ({
@@ -16858,7 +16099,7 @@ var Rance;
             setTemplate: function (e) {
                 var target = e.target;
                 this.setState({
-                    selectedTemplate: Rance.Templates.MapGen[target.value]
+                    selectedTemplate: app.moduleData.Templates.MapGen[target.value]
                 }, this.updatePlayerLimits);
             },
             getMapSetupInfo: function () {
@@ -19989,6 +19230,7 @@ var Rance;
                 Buildings: {},
                 Effects: {},
                 Items: {},
+                MapGen: {},
                 PassiveSkills: {},
                 Personalities: {},
                 Resources: {},
@@ -19998,7 +19240,6 @@ var Rance;
                 UnitFamilies: {},
                 Units: {}
             };
-            this.mapGenerators = {};
         }
         ModuleData.prototype.copyTemplates = function (source, category) {
             if (!this.Templates[category]) {
@@ -20024,6 +19265,15 @@ var Rance;
         ModuleData.prototype.addSubModule = function (moduleFile) {
             this.subModuleMetaData.push(moduleFile.metaData);
         };
+        ModuleData.prototype.getDefaultMap = function () {
+            if (this.defaultMap)
+                return this.defaultMap;
+            else if (Object.keys(this.Templates.MapGen).length > 0) {
+                return Rance.getRandomProperty(this.Templates.MapGen);
+            }
+            else
+                throw new Error("Module has no maps registered");
+        };
         return ModuleData;
     })();
     Rance.ModuleData = ModuleData;
@@ -20043,8 +19293,640 @@ var Rance;
     })();
     Rance.ModuleLoader = ModuleLoader;
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
+/// <reference path="../fillerpoint.ts" />
+/// <reference path="../star.ts" />
+var Rance;
+(function (Rance) {
+    var MapGen2;
+    (function (MapGen2) {
+        var Region = (function () {
+            function Region(id, isFiller) {
+                this.stars = [];
+                this.fillerPoints = [];
+                this.id = id;
+                this.isFiller = isFiller;
+            }
+            Region.prototype.addStar = function (star) {
+                this.stars.push(star);
+                star.mapGenData.region = this;
+            };
+            Region.prototype.addFillerPoint = function (point) {
+                this.fillerPoints.push(point);
+                point.mapGenData.region;
+            };
+            Region.prototype.severLinksByQualifier = function (qualifierFN) {
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    var links = star.getAllLinks();
+                    for (var j = 0; j < links.length; j++) {
+                        if (qualifierFN(star, links[j])) {
+                            star.removeLink(links[j]);
+                        }
+                    }
+                }
+            };
+            Region.prototype.severLinksToRegionsExcept = function (exemptRegions) {
+                this.severLinksByQualifier(function (a, b) {
+                    return exemptRegions.indexOf(b.mapGenData.region) !== -1;
+                });
+            };
+            return Region;
+        })();
+        MapGen2.Region = Region;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../modules/default/templates/resources.ts" />
+/// <reference path="../star.ts" />
+var Rance;
+(function (Rance) {
+    var MapGen2;
+    (function (MapGen2) {
+        var Sector = (function () {
+            function Sector(id) {
+                this.stars = [];
+                this.id = id;
+            }
+            Sector.prototype.addStar = function (star) {
+                if (star.mapGenData.sector) {
+                    throw new Error("Star already part of a sector");
+                }
+                this.stars.push(star);
+                star.mapGenData.sector = this;
+            };
+            Sector.prototype.addResource = function (resource) {
+                var star = this.stars[0];
+                this.resourceType = resource;
+                this.resourceLocation = star;
+                star.setResource(resource);
+            };
+            Sector.prototype.getNeighboringStars = function () {
+                var neighbors = [];
+                var alreadyAdded = {};
+                for (var i = 0; i < this.stars.length; i++) {
+                    var frontier = this.stars[i].getLinkedInRange(1).all;
+                    for (var j = 0; j < frontier.length; j++) {
+                        if (frontier[j].mapGenData.sector !== this && !alreadyAdded[frontier[j].id]) {
+                            neighbors.push(frontier[j]);
+                            alreadyAdded[frontier[j].id] = true;
+                        }
+                    }
+                }
+                return neighbors;
+            };
+            Sector.prototype.getMajorityRegions = function () {
+                var regionsByStars = {};
+                var biggestRegionStarCount = 0;
+                for (var i = 0; i < this.stars.length; i++) {
+                    var star = this.stars[i];
+                    var region = star.mapGenData.region;
+                    if (!regionsByStars[region.id]) {
+                        regionsByStars[region.id] =
+                            {
+                                count: 0,
+                                region: region
+                            };
+                    }
+                    regionsByStars[region.id].count++;
+                    if (regionsByStars[region.id].count > biggestRegionStarCount) {
+                        biggestRegionStarCount = regionsByStars[region.id].count;
+                    }
+                }
+                var majorityRegions = [];
+                for (var regionId in regionsByStars) {
+                    if (regionsByStars[regionId].count >= biggestRegionStarCount) {
+                        majorityRegions.push(regionsByStars[regionId].region);
+                    }
+                }
+                return majorityRegions;
+            };
+            return Sector;
+        })();
+        MapGen2.Sector = Sector;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../star.ts" />
+/// <reference path="sector.ts" />
+/// <reference path="triangulation.ts" />
+var Rance;
+(function (Rance) {
+    var MapGen2;
+    (function (MapGen2) {
+        function linkAllStars(stars) {
+            if (stars.length < 3) {
+                if (stars.length === 2) {
+                    stars[0].addLink(stars[1]);
+                }
+                return;
+            }
+            var triangles = MapGen2.triangulate(stars);
+            for (var i = 0; i < triangles.length; i++) {
+                var edges = triangles[i].getEdges();
+                for (var j = 0; j < edges.length; j++) {
+                    edges[j][0].addLink(edges[j][1]);
+                }
+            }
+        }
+        MapGen2.linkAllStars = linkAllStars;
+        function partiallyCutLinks(stars, minConnections, maxCutsPerRegion) {
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                var regionsAlreadyCut = {};
+                var neighbors = star.getAllLinks();
+                if (neighbors.length <= minConnections)
+                    continue;
+                for (var j = neighbors.length - 1; j >= 0; j--) {
+                    var neighbor = neighbors[j];
+                    if (regionsAlreadyCut[neighbor.mapGenData.region.id] >= maxCutsPerRegion) {
+                        continue;
+                    }
+                    var neighborLinks = neighbor.getAllLinks();
+                    if (neighbors.length <= minConnections || neighborLinks.length <= minConnections)
+                        continue;
+                    var totalLinks = neighbors.length + neighborLinks.length;
+                    var cutThreshhold = 0.05 + 0.025 * (totalLinks - minConnections) * (1 - star.mapGenData.distance);
+                    var minMultipleCutThreshhold = 0.15;
+                    if (cutThreshhold > 0) {
+                        if (Math.random() < cutThreshhold) {
+                            star.removeLink(neighbor);
+                            neighbors.pop();
+                            if (!regionsAlreadyCut[neighbor.mapGenData.region.id]) {
+                                regionsAlreadyCut[neighbor.mapGenData.region.id] = 0;
+                            }
+                            regionsAlreadyCut[neighbor.mapGenData.region.id]++;
+                            var path = Rance.aStar(star, neighbor);
+                            if (!path) {
+                                star.addLink(neighbor);
+                                regionsAlreadyCut[neighbor.mapGenData.region.id]--;
+                                neighbors.push(neighbor);
+                            }
+                        }
+                        cutThreshhold -= minMultipleCutThreshhold;
+                    }
+                }
+            }
+        }
+        MapGen2.partiallyCutLinks = partiallyCutLinks;
+        function makeSectors(stars, minSize, maxSize) {
+            /*
+            while average size sectors left to assign && unassigned stars left
+              pick random unassigned star
+              if star cannot form island bigger than minsize
+                put from unassigned into leftovers & continue
+              else
+                add random neighbors into sector until minsize is met
+      
+      
+            while leftovers
+              pick random leftover
+              if leftover has no assigned neighbor pick, continue
+      
+              leftover gets assigned to smallest neighboring sector
+              if sizes equal, assign to sector with least neighboring leftovers
+             */
+            var totalStars = stars.length;
+            var unassignedStars = stars.slice(0);
+            var leftoverStars = [];
+            var averageSize = (minSize + maxSize) / 2;
+            var averageSectorsAmount = Math.round(totalStars / averageSize);
+            var sectorsById = {};
+            var sectorIdGen = 0;
+            var sameSectorFN = function (a, b) {
+                return a.mapGenData.sector === b.mapGenData.sector;
+            };
+            while (averageSectorsAmount > 0 && unassignedStars.length > 0) {
+                var seedStar = unassignedStars.pop();
+                var canFormMinSizeSector = seedStar.getIslandForQualifier(sameSectorFN, minSize).length >= minSize;
+                if (canFormMinSizeSector) {
+                    var sector = new MapGen2.Sector(sectorIdGen++);
+                    sectorsById[sector.id] = sector;
+                    var discoveryStarIndex = 0;
+                    sector.addStar(seedStar);
+                    while (sector.stars.length < minSize) {
+                        var discoveryStar = sector.stars[discoveryStarIndex];
+                        var frontier = discoveryStar.getLinkedInRange(1).all;
+                        frontier = frontier.filter(function (star) {
+                            return !star.mapGenData.sector;
+                        });
+                        while (sector.stars.length < minSize && frontier.length > 0) {
+                            var randomFrontierKey = Rance.getRandomArrayKey(frontier);
+                            var toAdd = frontier.splice(randomFrontierKey, 1)[0];
+                            unassignedStars.splice(unassignedStars.indexOf(toAdd), 1);
+                            sector.addStar(toAdd);
+                        }
+                        discoveryStarIndex++;
+                    }
+                }
+                else {
+                    leftoverStars.push(seedStar);
+                }
+            }
+            while (leftoverStars.length > 0) {
+                var star = leftoverStars.pop();
+                var neighbors = star.getLinkedInRange(1).all;
+                var alreadyAddedNeighborSectors = {};
+                var candidateSectors = [];
+                for (var j = 0; j < neighbors.length; j++) {
+                    if (!neighbors[j].mapGenData.sector)
+                        continue;
+                    else {
+                        if (!alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id]) {
+                            alreadyAddedNeighborSectors[neighbors[j].mapGenData.sector.id] = true;
+                            candidateSectors.push(neighbors[j].mapGenData.sector);
+                        }
+                    }
+                }
+                // all neighboring stars don't have sectors
+                // put star at back of queue and try again later
+                if (candidateSectors.length < 1) {
+                    leftoverStars.unshift(star);
+                    continue;
+                }
+                var unclaimedNeighborsPerSector = {};
+                for (var j = 0; j < candidateSectors.length; j++) {
+                    var sectorNeighbors = candidateSectors[j].getNeighboringStars();
+                    var unclaimed = 0;
+                    for (var k = 0; k < sectorNeighbors.length; k++) {
+                        if (!sectorNeighbors[k].mapGenData.sector) {
+                            unclaimed++;
+                        }
+                    }
+                    unclaimedNeighborsPerSector[candidateSectors[j].id] = unclaimed;
+                }
+                candidateSectors.sort(function (a, b) {
+                    var sizeSort = a.stars.length - b.stars.length;
+                    if (sizeSort)
+                        return sizeSort;
+                    var unclaimedSort = unclaimedNeighborsPerSector[b.id] -
+                        unclaimedNeighborsPerSector[a.id];
+                    return unclaimedSort;
+                });
+                candidateSectors[0].addStar(star);
+            }
+            return sectorsById;
+        }
+        MapGen2.makeSectors = makeSectors;
+        function setSectorDistributionFlags(sectors) {
+            for (var i = 0; i < sectors.length; i++) {
+                var sector = sectors[i];
+                sector.distributionFlags = [];
+                var majorityRegions = sector.getMajorityRegions();
+                for (var j = 0; j < majorityRegions.length; j++) {
+                    if (majorityRegions[j].id.indexOf("center") !== -1) {
+                        sector.distributionFlags.push("rare");
+                    }
+                    else {
+                        sector.distributionFlags.push("common");
+                    }
+                }
+            }
+        }
+        MapGen2.setSectorDistributionFlags = setSectorDistributionFlags;
+        function distributeDistributablesPerSector(sectors, distributableType, allDistributables, placerFunction) {
+            if (!sectors[0].distributionFlags) {
+                setSectorDistributionFlags(sectors);
+            }
+            var probabilityWeights = {};
+            for (var name in allDistributables) {
+                probabilityWeights[name] = allDistributables[name].rarity;
+            }
+            for (var i = 0; i < sectors.length; i++) {
+                var sector = sectors[i];
+                var alreadyAddedByWright = Rance.getRelativeWeightsFromObject(probabilityWeights);
+                var candidates = [];
+                for (var j = 0; j < sector.distributionFlags.length; j++) {
+                    var flag = sector.distributionFlags[j];
+                    var distributablesForFlag = Rance.TemplateIndexes.distributablesByDistributionGroup[flag][distributableType];
+                    candidates = candidates.concat(distributablesForFlag);
+                }
+                if (candidates.length === 0)
+                    continue;
+                var candidatesByWeight = {};
+                for (var j = 0; j < candidates.length; j++) {
+                    candidatesByWeight[candidates[j].type] =
+                        alreadyAddedByWright[candidates[j].type];
+                }
+                var selectedKey = Rance.getRandomKeyWithWeights(candidatesByWeight);
+                var selectedType = allDistributables[selectedKey];
+                probabilityWeights[selectedKey] /= 2;
+                placerFunction(sector, selectedType);
+            }
+        }
+        MapGen2.distributeDistributablesPerSector = distributeDistributablesPerSector;
+        function addDefenceBuildings(star, amount, addSectorCommand) {
+            if (amount === void 0) { amount = 1; }
+            if (addSectorCommand === void 0) { addSectorCommand = true; }
+            if (!star.owner) {
+                console.warn("Tried to add defence buildings to star without owner.");
+                return;
+            }
+            if (amount < 1) {
+                return;
+            }
+            if (addSectorCommand) {
+                star.addBuilding(new Rance.Building({
+                    template: app.moduleData.Templates.Buildings["sectorCommand"],
+                    location: star
+                }));
+                var amount = amount - 1;
+            }
+            for (var i = 0; i < amount; i++) {
+                star.addBuilding(new Rance.Building({
+                    template: app.moduleData.Templates.Buildings["starBase"],
+                    location: star
+                }));
+            }
+        }
+        MapGen2.addDefenceBuildings = addDefenceBuildings;
+        function setDistancesFromNearestPlayerOwnedStar(stars) {
+            var playerOwnedStars = [];
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                if (star.owner && !star.owner.isIndependent) {
+                    playerOwnedStars.push(star);
+                }
+            }
+            for (var i = 0; i < playerOwnedStars.length; i++) {
+                var ownedStarToCheck = playerOwnedStars[i];
+                for (var j = 0; j < stars.length; j++) {
+                    var star = stars[j];
+                    var distance = star.getDistanceToStar(ownedStarToCheck);
+                    if (!isFinite(star.mapGenData.distanceFromNearestPlayerOwnedStar)) {
+                        star.mapGenData.distanceFromNearestPlayerOwnedStar = distance;
+                    }
+                    else {
+                        star.mapGenData.distanceFromNearestPlayerOwnedStar =
+                            Math.min(distance, star.mapGenData.distanceFromNearestPlayerOwnedStar);
+                    }
+                }
+            }
+        }
+        MapGen2.setDistancesFromNearestPlayerOwnedStar = setDistancesFromNearestPlayerOwnedStar;
+        function setupPirates(stars, player, variance, intensity) {
+            if (variance === void 0) { variance = 0.33; }
+            if (intensity === void 0) { intensity = 1; }
+            var minShips = 2;
+            var maxShips = 6;
+            setDistancesFromNearestPlayerOwnedStar(stars);
+            var shipTypes = Object.keys(app.moduleData.Templates.Units);
+            shipTypes = shipTypes.filter(function (shipType) {
+                return shipType !== "cheatShip" && !app.moduleData.Templates.Units[shipType].isStealthy;
+            });
+            for (var i = 0; i < stars.length; i++) {
+                var star = stars[i];
+                if (!star.owner) {
+                    player.addStar(star);
+                    var distance = star.mapGenData.distanceFromNearestPlayerOwnedStar;
+                    var defenceBuildingstoAdd = 1 + Math.floor(distance / 4);
+                    addDefenceBuildings(star, defenceBuildingstoAdd, defenceBuildingstoAdd > 1);
+                    var shipAmount = minShips;
+                    for (var j = 2; j < distance; j++) {
+                        shipAmount += (1 - variance + Math.random() * distance * variance) * intensity;
+                        if (shipAmount >= maxShips) {
+                            shipAmount = maxShips;
+                            break;
+                        }
+                    }
+                    var ships = [];
+                    for (var j = 0; j < shipAmount; j++) {
+                        var shipTemplates = star.getBuildableShipTypes();
+                        var ship = new Rance.Unit(Rance.getRandomArrayItem(shipTemplates));
+                        player.addUnit(ship);
+                        ships.push(ship);
+                    }
+                    var fleet = new Rance.Fleet(player, ships, star, undefined, false);
+                    fleet.name = "Pirates";
+                }
+            }
+        }
+        MapGen2.setupPirates = setupPirates;
+    })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/utility.ts" />
+/// <reference path="../../../src/point.ts" />
+/// <reference path="../../../src/player.ts" />
+/// <reference path="../../../src/star.ts" />
+/// <reference path="../../../src/mapgen2/region.ts" />
+/// <reference path="../../../src/mapgen2/mapgenutils.ts" />
+/// <reference path="../../../src/mapgen2/mapgenresult.ts" />
+/// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts" />
+/// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts" />
+/// <reference path="../../../src/templateinterfaces/mapgenoptions.d.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var MapGenFunctions;
+            (function (MapGenFunctions) {
+                function spiralGalaxyGeneration(options, players, independents) {
+                    // generate points
+                    // in closure because tons of temporary variables we dont really care about
+                    var sg = (function setStarGenerationProps(options) {
+                        var totalSize = options.defaultOptions.width * options.defaultOptions.height;
+                        var totalStars = options.defaultOptions.starCount;
+                        var actualArms = options.basicOptions["arms"];
+                        var totalArms = actualArms * 2; // includes filler arms
+                        var percentageInCenter = 0.3;
+                        var percentageInArms = 1 - percentageInCenter;
+                        var amountInCenter = totalStars * percentageInCenter;
+                        var amountPerArm = Math.round(totalStars / actualArms * percentageInArms);
+                        var amountPerFillerArm = Math.round(amountPerArm / 2);
+                        var amountPerCenter = Math.round(amountInCenter / totalArms);
+                        // to prevent rounding issues, probably a better way to do this
+                        var actualStarsInArms = actualArms * amountPerArm;
+                        var actualStarsInCenter = totalArms * amountPerCenter;
+                        var actualStars = actualStarsInCenter + actualStarsInArms;
+                        var starsDeficit = totalStars - actualStars;
+                        var armsToMakeUpDeficit = [];
+                        var starsToAddPerDeficitArm = 0;
+                        if (starsDeficit !== 0) {
+                            starsToAddPerDeficitArm = starsDeficit > 0 ? 1 : -1;
+                            var deficitStep = totalArms / Math.abs(starsDeficit);
+                            for (var i = 0; i < totalArms; i += deficitStep) {
+                                armsToMakeUpDeficit.push(Math.round(i));
+                            }
+                        }
+                        return ({
+                            totalArms: totalArms,
+                            armsToMakeUpDeficit: armsToMakeUpDeficit,
+                            starsToAddPerDeficitArm: starsToAddPerDeficitArm,
+                            amountPerArm: amountPerArm,
+                            amountPerFillerArm: amountPerFillerArm,
+                            amountPerCenter: amountPerCenter,
+                            centerSize: 0.4,
+                            armDistance: Math.PI * 2 / totalArms,
+                            armOffsetMax: 0.5,
+                            armRotationFactor: actualArms / 3,
+                            galaxyRotation: Rance.randRange(0, Math.PI * 2) // rotation of entire galaxy
+                        });
+                    })(options);
+                    function makePoint(distanceMin, distanceMax, arm, maxOffset) {
+                        var distance = Rance.randRange(distanceMin, distanceMax);
+                        var offset = Math.random() * maxOffset - maxOffset / 2;
+                        offset *= (1 / distance);
+                        if (offset < 0)
+                            offset = Math.pow(offset, 2) * -1;
+                        else
+                            offset = Math.pow(offset, 2);
+                        var armRotation = distance * sg.armRotationFactor;
+                        var angle = arm * sg.armDistance + sg.galaxyRotation + offset + armRotation;
+                        var width = options.defaultOptions.width / 2;
+                        var height = options.defaultOptions.height / 2;
+                        var x = Math.cos(angle) * distance * width + width;
+                        var y = Math.sin(angle) * distance * height + height;
+                        return ({
+                            pos: {
+                                x: x,
+                                y: y
+                            },
+                            distance: distance
+                        });
+                    }
+                    function makeStar(point, distance) {
+                        var star = new Rance.Star(point.x, point.y);
+                        star.mapGenData.distance = distance;
+                        star.baseIncome = Rance.randInt(4, 10) * 10;
+                        return star;
+                    }
+                    var stars = [];
+                    var fillerPoints = [];
+                    var regions = [];
+                    var centerRegion = new Rance.MapGen2.Region("center", false);
+                    regions.push(centerRegion);
+                    var fillerRegionId = 0;
+                    var regionId = 0;
+                    for (var i = 0; i < sg.totalArms; i++) {
+                        var isFiller = i % 2 !== 0;
+                        var regionName = isFiller ? "filler_" + fillerRegionId++ : "arm_" + regionId++;
+                        var region = new Rance.MapGen2.Region(regionName, isFiller);
+                        regions.push(region);
+                        var amountForThisArm = isFiller ? sg.amountPerFillerArm : sg.amountPerArm;
+                        var amountForThisCenter = sg.amountPerCenter;
+                        if (sg.armsToMakeUpDeficit.indexOf(i) !== -1) {
+                            amountForThisCenter += sg.starsToAddPerDeficitArm;
+                        }
+                        var maxOffsetForThisArm = isFiller ? sg.armOffsetMax / 2 : sg.armOffsetMax;
+                        for (var j = 0; j < amountForThisArm; j++) {
+                            var point = makePoint(sg.centerSize, 1, i, maxOffsetForThisArm);
+                            if (isFiller) {
+                                var fillerPoint = new Rance.FillerPoint(point.pos.x, point.pos.y);
+                                region.addFillerPoint(fillerPoint);
+                                fillerPoint.mapGenData.distance = point.distance;
+                                fillerPoints.push(fillerPoint);
+                            }
+                            else {
+                                var star = makeStar(point.pos, point.distance);
+                                region.addStar(star);
+                                stars.push(star);
+                            }
+                        }
+                        for (var j = 0; j < amountForThisCenter; j++) {
+                            var point = makePoint(0, sg.centerSize, i, maxOffsetForThisArm);
+                            var star = makeStar(point.pos, point.distance);
+                            centerRegion.addStar(star);
+                            stars.push(star);
+                        }
+                    }
+                    var allPoints = fillerPoints.concat(stars);
+                    // make voronoi
+                    var voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+                    // relax voronoi
+                    var regularity = options.basicOptions["starSizeRegularity"] / 100;
+                    var centerDensity = options.basicOptions["centerDensity"] / 100;
+                    var inverseCenterDensity = 1 - centerDensity;
+                    for (var i = 0; i < 2; i++) {
+                        Rance.MapGen2.relaxVoronoi(voronoi, function (star) {
+                            return (inverseCenterDensity + centerDensity * star.mapGenData.distance) * regularity;
+                        });
+                        voronoi = Rance.MapGen2.makeVoronoi(allPoints, options.defaultOptions.width, options.defaultOptions.height);
+                    }
+                    // link stars
+                    Rance.MapGen2.linkAllStars(stars);
+                    // sever links
+                    for (var i = 0; i < regions.length; i++) {
+                        regions[i].severLinksByQualifier(function (a, b) {
+                            return (a.mapGenData.region !== b.mapGenData.region &&
+                                a.mapGenData.region !== regions[0] &&
+                                b.mapGenData.region !== regions[0]);
+                        });
+                        for (var j = 0; j < regions[i].stars.length; j++) {
+                            regions[i].stars[j].severLinksToNonAdjacent();
+                        }
+                    }
+                    var isConnected = stars[0].getLinkedInRange(9999).all.length === stars.length;
+                    if (!isConnected) {
+                        if (Rance.Options.debugMode)
+                            console.log("Regenerated map due to insufficient connections");
+                        return spiralGalaxyGeneration(options, players, independents);
+                    }
+                    Rance.MapGen2.partiallyCutLinks(stars, 4, 2);
+                    // make sectors
+                    var sectorsById = Rance.MapGen2.makeSectors(stars, 3, 5);
+                    // set resources && local ships
+                    var allSectors = [];
+                    for (var sectorId in sectorsById) {
+                        allSectors.push(sectorsById[sectorId]);
+                    }
+                    var resourcePlacerFN = function (sector, resource) {
+                        sector.addResource(resource);
+                    };
+                    Rance.MapGen2.distributeDistributablesPerSector(allSectors, "resources", app.moduleData.Templates.Resources, resourcePlacerFN);
+                    var localShipPlacerFN = function (sector, shipFamily) {
+                        for (var i = 0; i < sector.stars.length; i++) {
+                            var star = sector.stars[i];
+                            star.buildableUnitTypes = star.buildableUnitTypes.concat(shipFamily.associatedTemplates);
+                        }
+                    };
+                    Rance.MapGen2.distributeDistributablesPerSector(allSectors, "unitFamilies", app.moduleData.Templates.UnitFamilies, localShipPlacerFN);
+                    // set players
+                    var startRegions = (function setStartingRegions() {
+                        var armCount = options.basicOptions["arms"];
+                        var playerCount = players.length;
+                        var playerArmStep = armCount / playerCount;
+                        var startRegions = [];
+                        var candidateRegions = regions.filter(function (region) {
+                            return region.id.indexOf("arm") !== -1;
+                        });
+                        for (var i = 0; i < playerCount; i++) {
+                            var regionNumber = Math.floor(i * playerArmStep);
+                            var regionToAdd = candidateRegions[regionNumber];
+                            startRegions.push(regionToAdd);
+                        }
+                        return startRegions;
+                    })();
+                    var startPositions = (function getStartPoints(regions) {
+                        var startPositions = [];
+                        for (var i = 0; i < regions.length; i++) {
+                            var region = regions[i];
+                            var starsByDistance = region.stars.slice(0).sort(function (a, b) {
+                                return b.mapGenData.distance - a.mapGenData.distance;
+                            });
+                            startPositions.push(starsByDistance[0]);
+                        }
+                        return startPositions;
+                    })(startRegions);
+                    for (var i = 0; i < players.length; i++) {
+                        var star = startPositions[i];
+                        var player = players[i];
+                        player.addStar(star);
+                        Rance.MapGen2.addDefenceBuildings(star, 2);
+                    }
+                    Rance.MapGen2.setupPirates(stars, independents[0], 0.08, 1);
+                    return new Rance.MapGen2.MapGenResult({
+                        stars: stars,
+                        fillerPoints: fillerPoints,
+                        width: options.defaultOptions.width,
+                        height: options.defaultOptions.height
+                    });
+                }
+                MapGenFunctions.spiralGalaxyGeneration = spiralGalaxyGeneration;
+            })(MapGenFunctions = DefaultModule.MapGenFunctions || (DefaultModule.MapGenFunctions = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="spiralgalaxygeneration.ts" />
+/// <reference path="../../../src/templateinterfaces/imapgentemplate.d.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -20053,37 +19935,127 @@ var Rance;
         (function (DefaultModule) {
             var Templates;
             (function (Templates) {
-                var UnitFamilies;
-                (function (UnitFamilies) {
-                    UnitFamilies.debug = {
-                        type: "debug",
-                        debugOnly: true,
-                        alwaysAvailable: true,
-                        rarity: 0,
-                        distributionGroups: []
+                var MapGen;
+                (function (MapGen) {
+                    MapGen.spiralGalaxy = {
+                        key: "spiralGalaxy",
+                        displayName: "Spiral galaxy",
+                        description: "Create a spiral galaxy with arms",
+                        minPlayers: 2,
+                        maxPlayers: 5,
+                        mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
+                        options: {
+                            defaultOptions: {
+                                height: {
+                                    min: 800,
+                                    max: 1600,
+                                    step: 1
+                                },
+                                width: {
+                                    min: 800,
+                                    max: 1600,
+                                    step: 1
+                                },
+                                starCount: {
+                                    min: 30,
+                                    max: 50,
+                                    step: 1
+                                }
+                            },
+                            basicOptions: {
+                                arms: {
+                                    min: 4,
+                                    max: 6,
+                                    step: 1
+                                },
+                                starSizeRegularity: {
+                                    min: 1,
+                                    max: 100,
+                                    step: 1,
+                                    defaultValue: 100
+                                },
+                                centerDensity: {
+                                    min: 1,
+                                    max: 90,
+                                    step: 1,
+                                    defaultValue: 50
+                                }
+                            },
+                            advancedOptions: {
+                                funnyNumber: {
+                                    min: 69,
+                                    max: 420,
+                                    step: 351,
+                                    defaultValue: 69
+                                }
+                            }
+                        }
                     };
-                    UnitFamilies.basic = {
-                        type: "basic",
-                        debugOnly: false,
-                        alwaysAvailable: true,
-                        rarity: 0,
-                        distributionGroups: []
+                })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="spiralgalaxygeneration.ts" />
+/// <reference path="../../../src/templateinterfaces/imapgentemplate.d.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var MapGen;
+                (function (MapGen) {
+                    MapGen.tinierSpiralGalaxy = {
+                        key: "tinierSpiralGalaxy",
+                        displayName: "Tinier Spiral galaxy",
+                        description: "Create a spiral galaxy with arms but tinier (just for testing)",
+                        minPlayers: 2,
+                        maxPlayers: 5,
+                        mapGenFunction: DefaultModule.MapGenFunctions.spiralGalaxyGeneration,
+                        options: {
+                            defaultOptions: {
+                                height: {
+                                    min: 500,
+                                    max: 1000,
+                                    step: 1
+                                },
+                                width: {
+                                    min: 500,
+                                    max: 1000,
+                                    step: 1
+                                },
+                                starCount: {
+                                    min: 15,
+                                    max: 35,
+                                    step: 1
+                                }
+                            },
+                            basicOptions: {
+                                arms: {
+                                    min: 2,
+                                    max: 5,
+                                    step: 1,
+                                    defaultValue: 4
+                                },
+                                starSizeRegularity: {
+                                    min: 1,
+                                    max: 100,
+                                    step: 1,
+                                    defaultValue: 100
+                                },
+                                centerDensity: {
+                                    min: 1,
+                                    max: 90,
+                                    step: 1,
+                                    defaultValue: 50
+                                }
+                            }
+                        }
                     };
-                    UnitFamilies.red = {
-                        type: "red",
-                        debugOnly: false,
-                        alwaysAvailable: false,
-                        rarity: 1,
-                        distributionGroups: ["common", "rare"]
-                    };
-                    UnitFamilies.blue = {
-                        type: "blue",
-                        debugOnly: false,
-                        alwaysAvailable: false,
-                        rarity: 1,
-                        distributionGroups: ["common", "rare"]
-                    };
-                })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
+                })(MapGen = Templates.MapGen || (Templates.MapGen = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -20143,6 +20115,51 @@ var Rance;
                         }
                     };
                 })(UnitArchetypes = Templates.UnitArchetypes || (Templates.UnitArchetypes = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iunitfamily.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var UnitFamilies;
+                (function (UnitFamilies) {
+                    UnitFamilies.debug = {
+                        type: "debug",
+                        debugOnly: true,
+                        alwaysAvailable: true,
+                        rarity: 0,
+                        distributionGroups: []
+                    };
+                    UnitFamilies.basic = {
+                        type: "basic",
+                        debugOnly: false,
+                        alwaysAvailable: true,
+                        rarity: 0,
+                        distributionGroups: []
+                    };
+                    UnitFamilies.red = {
+                        type: "red",
+                        debugOnly: false,
+                        alwaysAvailable: false,
+                        rarity: 1,
+                        distributionGroups: ["common", "rare"]
+                    };
+                    UnitFamilies.blue = {
+                        type: "blue",
+                        debugOnly: false,
+                        alwaysAvailable: false,
+                        rarity: 1,
+                        distributionGroups: ["common", "rare"]
+                    };
+                })(UnitFamilies = Templates.UnitFamilies || (Templates.UnitFamilies = {}));
             })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -20430,8 +20447,22 @@ var Rance;
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
-/// <reference path="templates/units.ts" />
+/// <reference path="mapgen/spiralgalaxy.ts" />
+/// <reference path="mapgen/test.ts" />
 /// <reference path="templates/abilities.ts" />
+/// <reference path="templates/attitudemodifiers.ts" />
+/// <reference path="templates/battlesfx.ts" />
+/// <reference path="templates/buildings.ts" />
+/// <reference path="templates/effects.ts" />
+/// <reference path="templates/items.ts" />
+/// <reference path="templates/passiveskills.ts" />
+/// <reference path="templates/personalities.ts" />
+/// <reference path="templates/resources.ts" />
+/// <reference path="templates/statuseffects.ts" />
+/// <reference path="templates/subemblems.ts" />
+/// <reference path="templates/unitarchetypes.ts" />
+/// <reference path="templates/unitfamilies.ts" />
+/// <reference path="templates/units.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -20446,12 +20477,45 @@ var Rance;
                     description: "default module"
                 },
                 constructModule: function (moduleData) {
-                    moduleData.copyAllTemplates(Rance.Templates);
-                    moduleData.copyAllTemplates(Rance.Modules.DefaultModule.Templates);
+                    moduleData.copyAllTemplates(DefaultModule.Templates);
                     return moduleData;
                 }
             };
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../src/moduledata.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var TestModule;
+        (function (TestModule) {
+            var BuildingTemplates;
+            (function (BuildingTemplates) {
+                BuildingTemplates.commercialPortTest = {
+                    type: "commercialPortTest",
+                    category: "economy",
+                    name: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+            })(BuildingTemplates = TestModule.BuildingTemplates || (TestModule.BuildingTemplates = {}));
+            TestModule.moduleFile = {
+                metaData: {
+                    name: "test",
+                    version: "0.0.420",
+                    author: "not me",
+                    description: "just testing"
+                },
+                constructModule: function (moduleData) {
+                    moduleData.copyTemplates(TestModule.BuildingTemplates, "Buildings");
+                    return moduleData;
+                }
+            };
+        })(TestModule = Modules.TestModule || (Modules.TestModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/pixi.d.ts" />
@@ -20973,11 +21037,11 @@ var Rance;
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />
+/// <reference path="../modules/test/testmodule.ts" />
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 /// <reference path="../data/setdynamictemplateproperties.ts"/>
 /// <reference path="../data/templateindexes.ts"/>
-/// <reference path="../data/mapgen/builtinmaps.ts"/>
 /// <reference path="../data/tutorials/uitutorial.ts"/>
 /// <reference path="../data/options.ts"/>
 var Rance;
@@ -21006,6 +21070,7 @@ var Rance;
             Rance.loadOptions();
             var moduleLoader = new Rance.ModuleLoader();
             moduleLoader.loadModuleFile(Rance.Modules.DefaultModule.moduleFile);
+            moduleLoader.loadModuleFile(Rance.Modules.TestModule.moduleFile);
             this.moduleData = moduleLoader.moduleData;
             Rance.setAllDynamicTemplateProperties();
             Rance.buildTemplateIndexes();
@@ -21104,7 +21169,8 @@ var Rance;
                     starSizeRegularity: 100
                 }
             };
-            var mapGenResult = Rance.Templates.MapGen.spiralGalaxyGeneration(optionValues, playerData.players, playerData.independents);
+            var mapTemplate = app.moduleData.getDefaultMap();
+            var mapGenResult = app.moduleData.getDefaultMap().mapGenFunction(optionValues, playerData.players, playerData.independents);
             var galaxyMap = mapGenResult.makeMap();
             return galaxyMap;
         };

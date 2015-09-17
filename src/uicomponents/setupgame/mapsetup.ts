@@ -1,5 +1,4 @@
-/// <reference path="../../../data/mapgen/builtinmaps.ts" />
-/// <reference path="../../../data/mapgen/mapgentemplate.ts" />
+/// <reference path="../../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="mapgenoptions.ts" />
 
 module Rance
@@ -14,11 +13,11 @@ module Rance
       {
         var mapGenTemplates: Templates.IMapGenTemplate[] = [];
 
-        for (var template in Templates.MapGen)
+        for (var template in app.moduleData.Templates.MapGen)
         {
-          if (Templates.MapGen[template].key)
+          if (app.moduleData.Templates.MapGen[template].key)
           {
-            mapGenTemplates.push(Templates.MapGen[template]);
+            mapGenTemplates.push(app.moduleData.Templates.MapGen[template]);
           }
         }
 
@@ -49,7 +48,7 @@ module Rance
         var target = <HTMLInputElement> e.target;
         this.setState(
         {
-          selectedTemplate: Templates.MapGen[target.value]
+          selectedTemplate: app.moduleData.Templates.MapGen[target.value]
         }, this.updatePlayerLimits);
       },
 

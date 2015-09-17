@@ -24,8 +24,10 @@
 /// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
-/// <reference path="../templateinterfaces/iunitfamily.d.ts" />
+/// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
 /// <reference path="../../lib/offset.d.ts" />
+/// <reference path="../templateinterfaces/iunitfamily.d.ts" />
+/// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../../data/tutorials/tutorial.d.ts" />
@@ -2112,117 +2114,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module MapGen2 {
-        class Region {
-            id: string;
-            isFiller: boolean;
-            stars: Star[];
-            fillerPoints: FillerPoint[];
-            constructor(id: string, isFiller: boolean);
-            addStar(star: Star): void;
-            addFillerPoint(point: FillerPoint): void;
-            severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean): void;
-            severLinksToRegionsExcept(exemptRegions: Region[]): void;
-        }
-    }
-}
-declare module Rance {
-    module MapGen2 {
-        class Sector {
-            id: number;
-            stars: Star[];
-            distributionFlags: string[];
-            resourceType: Templates.IResourceTemplate;
-            resourceLocation: Star;
-            constructor(id: number);
-            addStar(star: Star): void;
-            addResource(resource: Templates.IResourceTemplate): void;
-            getNeighboringStars(): Star[];
-            getMajorityRegions(): Region[];
-        }
-    }
-}
-declare module Rance {
-    module MapGen2 {
-        function linkAllStars(stars: Star[]): void;
-        function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
-        function makeSectors(stars: Star[], minSize: number, maxSize: number): {
-            [sectorId: number]: Sector;
-        };
-        function setSectorDistributionFlags(sectors: Sector[]): void;
-        function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
-        function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
-        function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;
-        function setupPirates(stars: Star[], player: Player, variance?: number, intensity?: number): void;
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            interface IMapGenOptions {
-                defaultOptions: IDefaultOptions;
-                basicOptions?: IMapSpecificOptions;
-                advancedOptions?: IMapSpecificOptions;
-            }
-            interface IDefaultOptions {
-                height: IRange;
-                width: IRange;
-                starCount: IRange;
-            }
-            interface IMapSpecificOptions {
-                [optionName: string]: IRange;
-            }
-            interface IMapGenOptionValues {
-                defaultOptions: {
-                    height: number;
-                    width: number;
-                    starCount: number;
-                };
-                basicOptions?: {
-                    [optionName: string]: number;
-                };
-                advancedOptions?: {
-                    [optionName: string]: number;
-                };
-            }
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            function spiralGalaxyGeneration(options: IMapGenOptionValues, players: Player[], independents: Player[]): MapGen2.MapGenResult;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        interface IMapGenTemplate {
-            key: string;
-            displayName: string;
-            description?: string;
-            minPlayers: number;
-            maxPlayers: number;
-            options: MapGen.IMapGenOptions;
-            mapGenFunction: (options: MapGen.IMapGenOptionValues, players: Player[], independents: Player[]) => MapGen2.MapGenResult;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            var spiralGalaxy: IMapGenTemplate;
-        }
-    }
-}
-declare module Rance {
-    module Templates {
-        module MapGen {
-            var tinierSpiralGalaxy: IMapGenTemplate;
-        }
-    }
-}
-declare module Rance {
     module UIComponents {
         var MapGenOption: React.Factory<any>;
     }
@@ -2725,6 +2616,9 @@ declare module Rance {
         Items: {
             [type: string]: Templates.IItemTemplate;
         };
+        MapGen: {
+            [type: string]: Templates.IMapGenTemplate;
+        };
         PassiveSkills: {
             [type: string]: Templates.IPassiveSkillTemplate;
         };
@@ -2761,20 +2655,18 @@ declare module Rance {
         constructModule: (ModuleData: ModuleData) => ModuleData;
     }
     class ModuleData {
-        metaData: IModuleMetaData;
         private subModuleMetaData;
         mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
         starBackgroundDrawingFunction: (star: Star, renderer: PIXI.SystemRenderer) => PIXI.Container;
         mapRendererLayers: IMapRendererLayer[];
         mapRendererMapModes: IMapRendererMapMode[];
         Templates: ITemplates;
-        mapGenerators: {
-            [key: string]: Templates.IMapGenTemplate;
-        };
+        defaultMap: Templates.IMapGenTemplate;
         constructor();
         copyTemplates(source: any, category: string): void;
         copyAllTemplates(source: any): void;
         addSubModule(moduleFile: IModuleFile): void;
+        getDefaultMap(): Templates.IMapGenTemplate;
     }
 }
 declare module Rance {
@@ -2785,14 +2677,76 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module MapGen2 {
+        class Region {
+            id: string;
+            isFiller: boolean;
+            stars: Star[];
+            fillerPoints: FillerPoint[];
+            constructor(id: string, isFiller: boolean);
+            addStar(star: Star): void;
+            addFillerPoint(point: FillerPoint): void;
+            severLinksByQualifier(qualifierFN: (a: Star, b: Star) => boolean): void;
+            severLinksToRegionsExcept(exemptRegions: Region[]): void;
+        }
+    }
+}
+declare module Rance {
+    module MapGen2 {
+        class Sector {
+            id: number;
+            stars: Star[];
+            distributionFlags: string[];
+            resourceType: Templates.IResourceTemplate;
+            resourceLocation: Star;
+            constructor(id: number);
+            addStar(star: Star): void;
+            addResource(resource: Templates.IResourceTemplate): void;
+            getNeighboringStars(): Star[];
+            getMajorityRegions(): Region[];
+        }
+    }
+}
+declare module Rance {
+    module MapGen2 {
+        function linkAllStars(stars: Star[]): void;
+        function partiallyCutLinks(stars: Star[], minConnections: number, maxCutsPerRegion: number): void;
+        function makeSectors(stars: Star[], minSize: number, maxSize: number): {
+            [sectorId: number]: Sector;
+        };
+        function setSectorDistributionFlags(sectors: Sector[]): void;
+        function distributeDistributablesPerSector(sectors: Sector[], distributableType: string, allDistributables: any, placerFunction: (sector: Sector, distributable: Templates.IDistributable) => void): void;
+        function addDefenceBuildings(star: Star, amount?: number, addSectorCommand?: boolean): void;
+        function setDistancesFromNearestPlayerOwnedStar(stars: Star[]): void;
+        function setupPirates(stars: Star[], player: Player, variance?: number, intensity?: number): void;
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module MapGenFunctions {
+                function spiralGalaxyGeneration(options: Rance.Templates.IMapGenOptionValues, players: Player[], independents: Player[]): MapGen2.MapGenResult;
+            }
+        }
+    }
+}
+declare module Rance {
     module Modules {
         module DefaultModule {
             module Templates {
-                module UnitFamilies {
-                    var debug: Rance.Templates.IUnitFamily;
-                    var basic: Rance.Templates.IUnitFamily;
-                    var red: Rance.Templates.IUnitFamily;
-                    var blue: Rance.Templates.IUnitFamily;
+                module MapGen {
+                    var spiralGalaxy: Rance.Templates.IMapGenTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module MapGen {
+                    var tinierSpiralGalaxy: Rance.Templates.IMapGenTemplate;
                 }
             }
         }
@@ -2806,6 +2760,20 @@ declare module Rance {
                     var combat: Rance.Templates.IUnitArchetype;
                     var utility: Rance.Templates.IUnitArchetype;
                     var defence: Rance.Templates.IUnitArchetype;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module UnitFamilies {
+                    var debug: Rance.Templates.IUnitFamily;
+                    var basic: Rance.Templates.IUnitFamily;
+                    var red: Rance.Templates.IUnitFamily;
+                    var blue: Rance.Templates.IUnitFamily;
                 }
             }
         }
@@ -2833,6 +2801,16 @@ declare module Rance {
 declare module Rance {
     module Modules {
         module DefaultModule {
+            var moduleFile: IModuleFile;
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module TestModule {
+            module BuildingTemplates {
+                var commercialPortTest: Rance.Templates.IBuildingTemplate;
+            }
             var moduleFile: IModuleFile;
         }
     }

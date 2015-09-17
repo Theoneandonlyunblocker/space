@@ -26,6 +26,10 @@ module Rance
     {
       [type: string]: Templates.IItemTemplate;
     };
+    MapGen:
+    {
+      [type: string]: Templates.IMapGenTemplate;
+    };
     PassiveSkills:
     {
       [type: string]: Templates.IPassiveSkillTemplate;
@@ -76,7 +80,6 @@ module Rance
 
   export class ModuleData
   {
-    metaData: IModuleMetaData
     private subModuleMetaData: IModuleMetaData[] = [];
 
     mapBackgroundDrawingFunction: (map: GalaxyMap, renderer: PIXI.SystemRenderer) => PIXI.Container;
@@ -93,6 +96,7 @@ module Rance
       Buildings: {},
       Effects: {},
       Items: {},
+      MapGen: {},
       PassiveSkills: {},
       Personalities: {},
       Resources: {},
@@ -103,16 +107,13 @@ module Rance
       Units: {}
     };
 
-    mapGenerators:
-    {
-      [key: string]: Templates.IMapGenTemplate;
-    } = {};
+    defaultMap: Templates.IMapGenTemplate;
 
     constructor()
     {
       
     }
-    copyTemplates(source: any, category: string)
+    copyTemplates(source: any, category: string): void
     {
       if (!this.Templates[category])
       {
@@ -131,7 +132,7 @@ module Rance
         this.Templates[category][templateType] = source[templateType];
       }
     }
-    copyAllTemplates(source: any)
+    copyAllTemplates(source: any): void
     {
       for (var category in this.Templates)
       {
@@ -141,9 +142,18 @@ module Rance
         }
       }
     }
-    addSubModule(moduleFile: IModuleFile)
+    addSubModule(moduleFile: IModuleFile): void
     {
       this.subModuleMetaData.push(moduleFile.metaData);
+    }
+    getDefaultMap(): Templates.IMapGenTemplate
+    {
+      if (this.defaultMap) return this.defaultMap;
+      else if (Object.keys(this.Templates.MapGen).length > 0)
+      {
+        return getRandomProperty(this.Templates.MapGen);
+      }
+      else throw new Error("Module has no maps registered");
     }
   }
 }

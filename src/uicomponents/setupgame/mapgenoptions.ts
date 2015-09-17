@@ -122,9 +122,9 @@ module Rance
         this.setState(newValues);
       },
 
-      getOptionValuesForTemplate: function(): Templates.MapGen.IMapGenOptionValues
+      getOptionValuesForTemplate: function(): Templates.IMapGenOptionValues
       {
-        var optionValues: Templates.MapGen.IMapGenOptionValues =
+        var optionValues: Templates.IMapGenOptionValues =
           extendObject(this.props.mapGenTemplate.options);
 
         for (var groupName in optionValues)
