@@ -49,6 +49,26 @@ module Rance
             )
           );
         }
+        else if (this.props.isPreparing)
+        {
+          statusElement = React.DOM.div(
+          {
+            className: "status-container preparation-container"
+          },
+            React.DOM.div(
+            {
+              className: "status-inner-wrapper"
+            },
+              React.DOM.div(
+              {
+                className: "preparation-text-container status-inner",
+                title: "Unit is preparing to use ability"
+              },
+                "Preparing"
+              )
+            )
+          );
+        }
 
         return(
           React.DOM.div({className: "unit-status"},

@@ -1894,6 +1894,7 @@ declare module Rance {
     }
     function getAbilityUseData(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData;
     function useAbility(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): void;
+    function getPreparationDummyData(user: Unit): IAbilityUseData;
     function validateTarget(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): boolean;
     function getTargetOrGuard(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit;
     function getGuarders(battle: Battle, user: Unit, ability: Templates.IAbilityTemplate, target: Unit): Unit[];
@@ -1953,6 +1954,7 @@ declare module Rance {
             lastHealthBeforeReceivingDamage: number;
             queuedAction: {
                 ability: Templates.IAbilityTemplate;
+                targetId: number;
                 turnsPrepared: number;
                 timesInterrupted: number;
             };
@@ -1994,6 +1996,11 @@ declare module Rance {
         removeActionPoints(amount: number): void;
         addMoveDelay(amount: number): void;
         updateStatusEffects(): void;
+        setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit): void;
+        interruptQueuedAction(interruptStrength: number): void;
+        updateQueuedAction(): void;
+        isReadyToUseQueuedAction(): boolean;
+        clearQueuedAction(): void;
         isTargetable(): boolean;
         isActiveInBattle(): boolean;
         addItem(item: Item): boolean;

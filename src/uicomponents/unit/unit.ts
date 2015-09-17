@@ -127,6 +127,7 @@ module Rance
           name: unit.name,
           guardAmount: unit.battleStats.guardAmount,
           guardCoverage: unit.battleStats.guardCoverage,
+          isPreparing: unit.battleStats.queuedAction,
           maxHealth: unit.maxHealth,
           currentHealth: unit.currentHealth,
           isSquadron: unit.isSquadron,

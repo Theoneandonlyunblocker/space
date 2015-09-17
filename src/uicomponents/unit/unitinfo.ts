@@ -50,7 +50,8 @@ module Rance
             React.DOM.div({className: "unit-info-inner"},
               UIComponents.UnitStatus(
               {
-                guardAmount: this.props.guardAmount
+                guardAmount: this.props.guardAmount,
+                isPreparing: this.props.isPreparing
               }),
               UIComponents.UnitStrength(
               {

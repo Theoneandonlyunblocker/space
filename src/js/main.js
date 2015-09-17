@@ -194,6 +194,16 @@ var Rance;
                         className: "guard-text-value status text"
                     }, "" + guard + "%"))));
                 }
+                else if (this.props.isPreparing) {
+                    statusElement = React.DOM.div({
+                        className: "status-container preparation-container"
+                    }, React.DOM.div({
+                        className: "status-inner-wrapper"
+                    }, React.DOM.div({
+                        className: "preparation-text-container status-inner",
+                        title: "Unit is preparing to use ability"
+                    }, "Preparing")));
+                }
                 return (React.DOM.div({ className: "unit-status" }, statusElement));
             }
         });
@@ -226,7 +236,8 @@ var Rance;
                     }, "Captured"));
                 }
                 return (React.DOM.div({ className: "unit-info" }, React.DOM.div({ className: "unit-info-name" }, this.props.name), React.DOM.div({ className: "unit-info-inner" }, UIComponents.UnitStatus({
-                    guardAmount: this.props.guardAmount
+                    guardAmount: this.props.guardAmount,
+                    isPreparing: this.props.isPreparing
                 }), UIComponents.UnitStrength({
                     maxHealth: this.props.maxHealth,
                     currentHealth: this.props.currentHealth,
@@ -679,6 +690,7 @@ var Rance;
                     name: unit.name,
                     guardAmount: unit.battleStats.guardAmount,
                     guardCoverage: unit.battleStats.guardCoverage,
+                    isPreparing: unit.battleStats.queuedAction,
                     maxHealth: unit.maxHealth,
                     currentHealth: unit.currentHealth,
                     isSquadron: unit.isSquadron,
@@ -1878,9 +1890,19 @@ var Rance;
                 }
                 this.props.battle.endTurn();
                 this.setBattleSceneUnits(this.state.hoveredUnit);
-                if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
+                if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction) {
+                    this.usePreparedAbility();
+                }
+                else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer) {
                     this.useAIAbility();
                 }
+            },
+            usePreparedAbility: function () {
+                var unit = this.props.battle.activeUnit;
+                var action = unit.battleStats.queuedAction;
+                var target = this.props.battle.unitsById[action.targetId];
+                var userIsHuman = this.props.battle.getActivePlayer() === this.props.humanPlayer;
+                this.handleAbilityUse(action.ability, target, userIsHuman);
             },
             usePlayerAbility: function (ability, target) {
                 this.handleAbilityUse(ability, target, true);
@@ -7525,13 +7547,13 @@ var Rance;
                         type: "debugAbility",
                         displayName: "Debug Ability",
                         description: "who knows what its going to do today",
-                        moveDelay: 0,
+                        moveDelay: 50,
                         preparation: {
-                            turnsToPrep: 1,
-                            prepDelay: 50,
+                            turnsToPrep: 2,
+                            prepDelay: 100,
                             interruptsNeeded: 1
                         },
-                        actionsUse: 0,
+                        actionsUse: 1,
                         mainEffect: {
                             template: Templates.Effects.guardColumn,
                             sfx: Templates.BattleSFX.guard,
@@ -13498,12 +13520,32 @@ var Rance;
 var Rance;
 (function (Rance) {
     function getAbilityUseData(battle, user, ability, target) {
-        var data = {};
-        data.user = user;
-        data.originalTarget = target;
-        data.actualTarget = getTargetOrGuard(battle, user, ability, target);
-        data.effectsToCall = [];
-        data.beforeUse = [];
+        if (ability.preparation) {
+            if (!user.battleStats.queuedAction) {
+                user.setQueuedAction(ability, target);
+                return getPreparationDummyData(user);
+            }
+            else {
+                user.updateQueuedAction();
+                if (!user.isReadyToUseQueuedAction()) {
+                    return getPreparationDummyData(user);
+                }
+                else {
+                    var action = user.battleStats.queuedAction;
+                    var target = battle.unitsById[action.targetId];
+                    var ability = action.ability;
+                    user.clearQueuedAction();
+                }
+            }
+        }
+        var data = {
+            user: user,
+            originalTarget: target,
+            actualTarget: getTargetOrGuard(battle, user, ability, target),
+            effectsToCall: [],
+            beforeUse: [],
+            afterUse: []
+        };
         var passiveSkills = user.getPassiveSkillsByPhase();
         var beforeUseEffects = [];
         if (ability.beforeUse) {
@@ -13574,7 +13616,6 @@ var Rance;
                 }
             }
         }
-        data.afterUse = [];
         var afterUseEffects = [];
         if (ability.afterUse) {
             afterUseEffects = afterUseEffects.concat(ability.afterUse);
@@ -13622,6 +13663,30 @@ var Rance;
         }
     }
     Rance.useAbility = useAbility;
+    function getPreparationDummyData(user) {
+        var action = user.battleStats.queuedAction;
+        var dummyData = {
+            user: user,
+            originalTarget: user,
+            actualTarget: user,
+            effectsToCall: [],
+            beforeUse: [],
+            afterUse: []
+        };
+        dummyData.beforeUse.push(user.removeAllGuard.bind(user));
+        dummyData.effectsToCall.push({
+            effects: [],
+            user: user,
+            target: user,
+            sfx: {
+                duration: 500
+            },
+            trigger: null
+        });
+        dummyData.afterUse.push(user.addMoveDelay.bind(user, action.ability.preparation.prepDelay));
+        return dummyData;
+    }
+    Rance.getPreparationDummyData = getPreparationDummyData;
     function validateTarget(battle, user, ability, target) {
         var potentialTargets = getPotentialTargets(battle, user, ability);
         return potentialTargets.indexOf(target) >= 0;
@@ -14035,6 +14100,39 @@ var Rance;
                     this.removeStatusEffect(this.battleStats.statusEffects[i]);
                 }
             }
+        };
+        Unit.prototype.setQueuedAction = function (ability, target) {
+            this.battleStats.queuedAction =
+                {
+                    ability: ability,
+                    targetId: target.id,
+                    turnsPrepared: 0,
+                    timesInterrupted: 0
+                };
+            this.uiDisplayIsDirty = true;
+        };
+        Unit.prototype.interruptQueuedAction = function (interruptStrength) {
+            var action = this.battleStats.queuedAction;
+            if (!action)
+                return;
+            action.timesInterrupted += interruptStrength;
+            if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded) {
+                this.clearQueuedAction();
+            }
+        };
+        Unit.prototype.updateQueuedAction = function () {
+            var action = this.battleStats.queuedAction;
+            if (!action)
+                return;
+            action.turnsPrepared++;
+        };
+        Unit.prototype.isReadyToUseQueuedAction = function () {
+            var action = this.battleStats.queuedAction;
+            return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
+        };
+        Unit.prototype.clearQueuedAction = function () {
+            this.battleStats.queuedAction = null;
+            this.uiDisplayIsDirty = true;
         };
         // redundant
         Unit.prototype.isTargetable = function () {

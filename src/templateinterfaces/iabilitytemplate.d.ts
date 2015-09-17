@@ -11,8 +11,9 @@ declare module Rance
       preparation?:
       {
         turnsToPrep: number;
-        prepDelay: number;
         interruptsNeeded: number;
+        // moveDelay is used for turns in which ability is used or being prepared
+        prepDelay: number;
       };
       actionsUse: number;
       bypassesGuard?: boolean;

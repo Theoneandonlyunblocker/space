@@ -55,6 +55,7 @@ module Rance
       queuedAction:
       {
         ability: Templates.IAbilityTemplate;
+        targetId: number;
         turnsPrepared: number;
         timesInterrupted: number;
       }
@@ -307,6 +308,47 @@ module Rance
           this.removeStatusEffect(this.battleStats.statusEffects[i]);
         }
       }
+    }
+    setQueuedAction(ability: Templates.IAbilityTemplate, target: Unit)
+    {
+      this.battleStats.queuedAction =
+      {
+        ability: ability,
+        targetId: target.id,
+        turnsPrepared: 0,
+        timesInterrupted: 0
+      }
+
+      this.uiDisplayIsDirty = true;
+    }
+    interruptQueuedAction(interruptStrength: number)
+    {
+      var action = this.battleStats.queuedAction;
+      if (!action) return;
+
+      action.timesInterrupted += interruptStrength;
+      if (action.timesInterrupted >= action.ability.preparation.interruptsNeeded)
+      {
+        this.clearQueuedAction();
+      }
+    }
+    updateQueuedAction()
+    {
+      var action = this.battleStats.queuedAction;
+      if (!action) return;
+
+      action.turnsPrepared++;
+    }
+    isReadyToUseQueuedAction()
+    {
+      var action = this.battleStats.queuedAction;
+
+      return (action && action.turnsPrepared >= action.ability.preparation.turnsToPrep);
+    }
+    clearQueuedAction()
+    {
+      this.battleStats.queuedAction = null;
+      this.uiDisplayIsDirty = true;
     }
     
     // redundant

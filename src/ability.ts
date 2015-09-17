@@ -26,12 +26,39 @@ module Rance
   export function getAbilityUseData(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit): IAbilityUseData
   {
-    var data = <IAbilityUseData> {};
-    data.user = user;
-    data.originalTarget = target;
-    data.actualTarget = getTargetOrGuard(battle, user, ability, target);
-    data.effectsToCall = [];
-    data.beforeUse = [];
+    if (ability.preparation)
+    {
+      if (!user.battleStats.queuedAction)
+      {
+        user.setQueuedAction(ability, target);
+        return getPreparationDummyData(user);
+      }
+      else
+      {
+        user.updateQueuedAction();
+        if (!user.isReadyToUseQueuedAction())
+        {
+          return getPreparationDummyData(user);
+        }
+        else
+        {
+          var action = user.battleStats.queuedAction;
+          var target = battle.unitsById[action.targetId];
+          var ability = action.ability;
+          user.clearQueuedAction();
+        }
+      }
+    }
+
+    var data: IAbilityUseData =
+    {
+      user: user,
+      originalTarget: target,
+      actualTarget: getTargetOrGuard(battle, user, ability, target),
+      effectsToCall: [],
+      beforeUse: [],
+      afterUse: []
+    }
 
     var passiveSkills = user.getPassiveSkillsByPhase();
 
@@ -145,8 +172,6 @@ module Rance
       }
     }
 
-    data.afterUse = [];
-
     var afterUseEffects: Templates.IAbilityTemplateEffect[] = [];
 
     if (ability.afterUse)
@@ -215,6 +240,38 @@ module Rance
     {
       abilityData.afterUse[i]();
     }
+  }
+  export function getPreparationDummyData(user: Unit)
+  {
+    var action = user.battleStats.queuedAction;
+
+    var dummyData: IAbilityUseData =
+    {
+      user: user,
+      originalTarget: user,
+      actualTarget: user,
+      effectsToCall: [],
+      beforeUse: [],
+      afterUse: []
+    }
+
+    dummyData.beforeUse.push(user.removeAllGuard.bind(user));
+
+    dummyData.effectsToCall.push(
+    {
+      effects: [],
+      user: user,
+      target: user,
+      sfx:
+      {
+        duration: 500
+      },
+      trigger: null
+    });
+
+    dummyData.afterUse.push(user.addMoveDelay.bind(user, action.ability.preparation.prepDelay));
+
+    return dummyData;
   }
   export function validateTarget(battle: Battle, user: Unit,
     ability: Templates.IAbilityTemplate, target: Unit)

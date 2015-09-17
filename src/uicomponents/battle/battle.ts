@@ -356,10 +356,24 @@ module Rance
         this.props.battle.endTurn();
         this.setBattleSceneUnits(this.state.hoveredUnit);
 
-        if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+        if (this.props.battle.activeUnit && this.props.battle.activeUnit.battleStats.queuedAction)
+        {
+          this.usePreparedAbility();
+        }
+        else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
         {
           this.useAIAbility();
         }
+      },
+      usePreparedAbility: function()
+      {
+        var unit: Unit = this.props.battle.activeUnit;
+        var action = unit.battleStats.queuedAction;
+
+        var target = this.props.battle.unitsById[action.targetId];
+        var userIsHuman = this.props.battle.getActivePlayer() === this.props.humanPlayer;
+
+        this.handleAbilityUse(action.ability, target, userIsHuman);
       },
       usePlayerAbility: function(ability: Templates.IAbilityTemplate, target: Unit)
       {
