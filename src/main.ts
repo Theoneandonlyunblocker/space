@@ -16,11 +16,11 @@
 /// <reference path="apploader.ts"/>
 /// <reference path="gameloader.ts"/>
 
-/// <reference path="../data/setdynamictemplateproperties.ts"/>
-/// <reference path="../data/templateindexes.ts"/>
+/// <reference path="setdynamictemplateproperties.ts"/>
+/// <reference path="templateindexes.ts"/>
+/// <reference path="options.ts"/>
 
-/// <reference path="../data/tutorials/uitutorial.ts"/>
-/// <reference path="../data/options.ts"/>
+/// <reference path="tutorials/uitutorial.ts"/>
 
 
 module Rance

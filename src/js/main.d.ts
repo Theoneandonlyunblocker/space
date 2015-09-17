@@ -30,7 +30,7 @@
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
-/// <reference path="../../data/tutorials/tutorial.d.ts" />
+/// <reference path="../tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
 declare module Rance {
@@ -2899,13 +2899,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Tutorials {
-        var uiTutorial: {
-            pages: (string | React.Descriptor<React.DomAttributes>)[];
-        };
-    }
-}
-declare module Rance {
     function saveOptions(slot?: number): void;
     function loadOptions(slot?: number): void;
     module defaultOptions {
@@ -2926,6 +2919,13 @@ declare module Rance {
         };
     }
     var Options: any;
+}
+declare module Rance {
+    module Tutorials {
+        var uiTutorial: {
+            pages: (string | React.Descriptor<React.DomAttributes>)[];
+        };
+    }
 }
 declare module Rance {
     var idGenerators: {
