@@ -91,6 +91,22 @@ module Rance
               costProps.className += " negative";
             }
 
+            if (j > 0)
+            {
+              upgradeElements.push(React.DOM.tr(
+              {
+                className: "list-spacer",
+                key: "spacer" + i + j
+              },
+                React.DOM.td(
+                {
+                  colSpan: 20
+                },
+                  null
+                )
+              ))
+            };
+            
             upgradeElements.push(
               React.DOM.tr(rowProps,
                 React.DOM.td(
@@ -101,6 +117,7 @@ module Rance
                 React.DOM.td(costProps, upgrade.cost)
               )
             );
+
           }
 
           var parentElement = React.DOM.div(

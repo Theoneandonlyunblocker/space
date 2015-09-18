@@ -45,6 +45,7 @@ module Rance
 
       updateActions: function()
       {
+        this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
         eventManager.dispatchEvent("possibleActionsUpdated");
       },
 
@@ -237,10 +238,15 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "possible-actions-container"
+            className: "possible-actions-wrapper"
           },
-            possibleActions,
-            this.state.expandedActionElement
+            React.DOM.div(
+            {
+              className: "possible-actions-container" +
+                (this.state.expandedAction ? " has-expanded-action" : "")
+            },
+              possibleActions
+            )
           )
         );
       }

@@ -467,6 +467,11 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var StarInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var AttackTarget: React.Factory<{}>;
     }
 }
@@ -2078,16 +2083,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var StarInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var GalaxyMapUIBottomLeft: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var GalaxyMapUI: React.Factory<{}>;
     }
 }
@@ -2928,6 +2923,12 @@ declare module Rance {
         module TestModule {
             module BuildingTemplates {
                 var commercialPortTest: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest2: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest3: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest4: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest5: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest6: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest7: Rance.Templates.IBuildingTemplate;
             }
             var moduleFile: IModuleFile;
         }

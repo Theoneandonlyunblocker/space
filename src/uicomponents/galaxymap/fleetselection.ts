@@ -29,17 +29,29 @@ module Rance
         }
         else
         {
-          var actionsNode = <HTMLElement> document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+          var containerNode = <HTMLElement> document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+          var actionsNode = <HTMLElement> containerNode.firstChild.firstChild;
           var actionsRect = actionsNode.getBoundingClientRect();
+          var rightMostNode = <HTMLElement> (containerNode.childElementCount > 1 ?
+            containerNode.lastChild.lastChild :
+            containerNode.lastChild);
+          var rightMostRect = rightMostNode.getBoundingClientRect();
           var ownBottom = domNode.getBoundingClientRect().bottom;
 
-          if (ownBottom > actionsRect.top + 3)
+          var first = this.refs.main.getDOMNode().firstChild
+
+          if (ownBottom > actionsRect.top)
           {
-            domNode.style.left = "" + (actionsRect.right) + "px";
+            var styleString = "" + (rightMostRect.right) + "px";
+            domNode.style.left = styleString;
+            first.style.left = styleString;
+            first.classList.add("fleet-selection-displaced");
           }
           else
           {
             domNode.style.left = 0;
+            first.style.left = 0;
+            first.classList.remove("fleet-selection-displaced");
           }
         }
       },
@@ -172,7 +184,8 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "fleet-selection"
+            className: "fleet-selection",
+            ref: "main"
           },
             fleetSelectionControls,
             hasMultipleSelected ? null : fleetInfos,

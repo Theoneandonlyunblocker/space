@@ -5952,14 +5952,25 @@ var Rance;
                     domNode.style.left = 0;
                 }
                 else {
-                    var actionsNode = document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+                    var containerNode = document.getElementsByClassName("galaxy-map-ui-bottom-left")[0];
+                    var actionsNode = containerNode.firstChild.firstChild;
                     var actionsRect = actionsNode.getBoundingClientRect();
+                    var rightMostNode = (containerNode.childElementCount > 1 ?
+                        containerNode.lastChild.lastChild :
+                        containerNode.lastChild);
+                    var rightMostRect = rightMostNode.getBoundingClientRect();
                     var ownBottom = domNode.getBoundingClientRect().bottom;
-                    if (ownBottom > actionsRect.top + 3) {
-                        domNode.style.left = "" + (actionsRect.right) + "px";
+                    var first = this.refs.main.getDOMNode().firstChild;
+                    if (ownBottom > actionsRect.top) {
+                        var styleString = "" + (rightMostRect.right) + "px";
+                        domNode.style.left = styleString;
+                        first.style.left = styleString;
+                        first.classList.add("fleet-selection-displaced");
                     }
                     else {
                         domNode.style.left = 0;
+                        first.style.left = 0;
+                        first.classList.remove("fleet-selection-displaced");
                     }
                 }
             },
@@ -6043,13 +6054,53 @@ var Rance;
                     });
                 }
                 return (React.DOM.div({
-                    className: "fleet-selection"
+                    className: "fleet-selection",
+                    ref: "main"
                 }, fleetSelectionControls, hasMultipleSelected ? null : fleetInfos, React.DOM.div({
                     className: "fleet-selection-selected-wrapper"
                 }, React.DOM.div({
                     className: "fleet-selection-selected" + (isReorganizing ? " reorganizing" : ""),
                     ref: "selected"
                 }, hasMultipleSelected ? fleetInfos : null, fleetContents), reorganizeElement)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="defencebuildinglist.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.StarInfo = React.createClass({
+            displayName: "StarInfo",
+            render: function () {
+                var star = this.props.selectedStar;
+                if (!star)
+                    return null;
+                var dumpDebugInfoButton = null;
+                if (Rance.Options.debugMode) {
+                    dumpDebugInfoButton = React.DOM.button({
+                        className: "star-info-dump-debug-button",
+                        onClick: function (e) {
+                            console.log(star);
+                            console.log(star.mapGenData);
+                        }
+                    }, "Debug");
+                }
+                return (React.DOM.div({
+                    className: "star-info"
+                }, React.DOM.div({
+                    className: "star-info-name"
+                }, star.name), React.DOM.div({
+                    className: "star-info-owner"
+                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
+                    className: "star-info-location"
+                }, "x: " + star.x.toFixed() +
+                    " y: " + star.y.toFixed()), React.DOM.div({
+                    className: "star-info-income"
+                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
+                    buildings: star.buildings["defence"]
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -6194,7 +6245,8 @@ var Rance;
                 return (React.DOM.div({ className: "buildable-item-list buildable-building-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    onRowChange: this.buildBuilding
+                    onRowChange: this.buildBuilding,
+                    addSpacer: true
                 })));
             }
         });
@@ -14592,7 +14644,8 @@ var Rance;
                 return (React.DOM.div({ className: "buildable-item-list buildable-ship-list" }, UIComponents.List({
                     listItems: rows,
                     initialColumns: columns,
-                    onRowChange: this.buildShip
+                    onRowChange: this.buildShip,
+                    addSpacer: true
                 })));
             }
         });
@@ -14663,6 +14716,15 @@ var Rance;
                             rowProps.className += " disabled";
                             costProps.className += " negative";
                         }
+                        if (j > 0) {
+                            upgradeElements.push(React.DOM.tr({
+                                className: "list-spacer",
+                                key: "spacer" + i + j
+                            }, React.DOM.td({
+                                colSpan: 20
+                            }, null)));
+                        }
+                        ;
                         upgradeElements.push(React.DOM.tr(rowProps, React.DOM.td({
                             key: "name",
                             className: "building-upgrade-list-item-name"
@@ -14718,6 +14780,7 @@ var Rance;
                 Rance.eventManager.removeAllListeners("clearPossibleActions");
             },
             updateActions: function () {
+                this.props.setExpandedActionElementOnParent(this.state.expandedActionElement);
                 Rance.eventManager.dispatchEvent("possibleActionsUpdated");
             },
             clearExpandedAction: function () {
@@ -14831,69 +14894,11 @@ var Rance;
                     className: "possible-actions"
                 }, allActions);
                 return (React.DOM.div({
-                    className: "possible-actions-container"
-                }, possibleActions, this.state.expandedActionElement));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="defencebuildinglist.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.StarInfo = React.createClass({
-            displayName: "StarInfo",
-            render: function () {
-                var star = this.props.selectedStar;
-                if (!star)
-                    return null;
-                var dumpDebugInfoButton = null;
-                if (Rance.Options.debugMode) {
-                    dumpDebugInfoButton = React.DOM.button({
-                        className: "star-info-dump-debug-button",
-                        onClick: function (e) {
-                            console.log(star);
-                            console.log(star.mapGenData);
-                        }
-                    }, "Debug");
-                }
-                return (React.DOM.div({
-                    className: "star-info"
+                    className: "possible-actions-wrapper"
                 }, React.DOM.div({
-                    className: "star-info-name"
-                }, star.name), React.DOM.div({
-                    className: "star-info-owner"
-                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
-                    className: "star-info-location"
-                }, "x: " + star.x.toFixed() +
-                    " y: " + star.y.toFixed()), React.DOM.div({
-                    className: "star-info-income"
-                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
-                    buildings: star.buildings["defence"]
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../possibleactions/possibleactions.ts"/>
-/// <reference path="starinfo.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.GalaxyMapUIBottomLeft = React.createClass({
-            displayName: "GalaxyMapUIBottomLeft",
-            render: function () {
-                return (React.DOM.div({
-                    className: "galaxy-map-ui-bottom-left"
-                }, UIComponents.PossibleActions({
-                    attackTargets: this.props.attackTargets,
-                    selectedStar: this.props.selectedStar,
-                    player: this.props.player
-                }), UIComponents.StarInfo({
-                    selectedStar: this.props.selectedStar
-                })));
+                    className: "possible-actions-container" +
+                        (this.state.expandedAction ? " has-expanded-action" : "")
+                }, possibleActions)));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -14901,7 +14906,8 @@ var Rance;
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
-/// <reference path="galaxymapuibottomleft.ts" />
+/// <reference path="starinfo.ts"/>
+/// <reference path="../possibleactions/possibleactions.ts"/>
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -14916,8 +14922,27 @@ var Rance;
                     currentlyReorganizing: pc.currentlyReorganizing,
                     selectedStar: pc.selectedStar,
                     attackTargets: pc.currentAttackTargets,
-                    isPlayerTurn: !this.props.game.playerOrder[0].isAI
+                    isPlayerTurn: !this.props.game.playerOrder[0].isAI,
+                    expandedActionElement: null
                 });
+            },
+            componentWillMount: function () {
+                Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
+                Rance.eventManager.addEventListener("endTurn", this.setPlayerTurn);
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("playerControlUpdated", this.updateSelection);
+                Rance.eventManager.removeEventListener("endTurn", this.setPlayerTurn);
+            },
+            componentDidUpdate: function () {
+                this.clampExpandedActionElement();
+            },
+            clampExpandedActionElement: function () {
+                if (!this.state.expandedActionElement)
+                    return;
+                var maxHeight = this.refs.leftColumnContent.getDOMNode().getBoundingClientRect().height;
+                var listElement = this.refs.expandedActionElementContainer.getDOMNode().firstChild.firstChild;
+                listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
             },
             endTurn: function () {
                 this.props.game.endTurn();
@@ -14925,6 +14950,11 @@ var Rance;
             setPlayerTurn: function () {
                 this.setState({
                     isPlayerTurn: !this.props.game.activePlayer.isAI
+                });
+            },
+            setExpandedActionElement: function (element) {
+                this.setState({
+                    expandedActionElement: element
                 });
             },
             updateSelection: function () {
@@ -14962,6 +14992,13 @@ var Rance;
                     selectionContainerClassName += " reorganizing";
                 }
                 var isInspecting = this.state.inspectedFleets.length > 0;
+                var expandedActionElement = null;
+                if (this.state.expandedActionElement) {
+                    expandedActionElement = React.DOM.div({
+                        className: "galaxy-map-ui-bottom-left-column",
+                        ref: "expandedActionElementContainer"
+                    }, this.state.expandedActionElement);
+                }
                 return (React.DOM.div({
                     className: "galaxy-map-ui"
                 }, React.DOM.div({
@@ -14982,19 +15019,21 @@ var Rance;
                     currentlyReorganizing: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization,
                     player: this.props.player
-                }))), UIComponents.GalaxyMapUIBottomLeft({
+                }))), React.DOM.div({
+                    className: "galaxy-map-ui-bottom-left"
+                }, React.DOM.div({
+                    className: "galaxy-map-ui-bottom-left-column align-bottom"
+                }, React.DOM.div({
+                    className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
+                    ref: "leftColumnContent"
+                }, UIComponents.PossibleActions({
                     attackTargets: this.state.attackTargets,
                     selectedStar: this.state.selectedStar,
-                    player: this.props.player
-                }), React.DOM.button(endTurnButtonProps, "End turn")));
-            },
-            componentWillMount: function () {
-                Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
-                Rance.eventManager.addEventListener("endTurn", this.setPlayerTurn);
-            },
-            componentWillUnmount: function () {
-                Rance.eventManager.removeEventListener("playerControlUpdated", this.updateSelection);
-                Rance.eventManager.removeEventListener("endTurn", this.setPlayerTurn);
+                    player: this.props.player,
+                    setExpandedActionElementOnParent: this.setExpandedActionElement
+                }), UIComponents.StarInfo({
+                    selectedStar: this.state.selectedStar
+                }))), expandedActionElement), React.DOM.button(endTurnButtonProps, "End turn")));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -20810,6 +20849,60 @@ var Rance;
             (function (BuildingTemplates) {
                 BuildingTemplates.commercialPortTest = {
                     type: "commercialPortTest",
+                    category: "economy",
+                    displayName: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+                BuildingTemplates.commercialPortTest2 = {
+                    type: "commercialPortTest2",
+                    category: "economy",
+                    displayName: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+                BuildingTemplates.commercialPortTest3 = {
+                    type: "commercialPortTest3",
+                    category: "economy",
+                    displayName: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+                BuildingTemplates.commercialPortTest4 = {
+                    type: "commercialPortTest4",
+                    category: "economy",
+                    displayName: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+                BuildingTemplates.commercialPortTest5 = {
+                    type: "commercialPortTest5",
+                    category: "economy",
+                    displayName: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+                BuildingTemplates.commercialPortTest6 = {
+                    type: "commercialPortTest6",
+                    category: "economy",
+                    displayName: "Commercial Spaceport Test",
+                    iconSrc: "commercialPort.png",
+                    buildCost: 0,
+                    maxPerType: 1,
+                    maxUpgradeLevel: 10
+                };
+                BuildingTemplates.commercialPortTest7 = {
+                    type: "commercialPortTest7",
                     category: "economy",
                     displayName: "Commercial Spaceport Test",
                     iconSrc: "commercialPort.png",

@@ -77,7 +77,8 @@ module Rance
             {
               listItems: rows,
               initialColumns: columns,
-              onRowChange: this.buildShip
+              onRowChange: this.buildShip,
+              addSpacer: true
             })
           )
         );

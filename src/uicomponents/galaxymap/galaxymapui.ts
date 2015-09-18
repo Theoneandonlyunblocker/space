@@ -23,8 +23,40 @@ module Rance
           currentlyReorganizing: pc.currentlyReorganizing,
           selectedStar: pc.selectedStar,
           attackTargets: pc.currentAttackTargets,
-          isPlayerTurn: !this.props.game.playerOrder[0].isAI
+          isPlayerTurn: !this.props.game.playerOrder[0].isAI,
+          expandedActionElement: null
         });
+      },
+
+      componentWillMount: function()
+      {
+        eventManager.addEventListener("playerControlUpdated",
+          this.updateSelection);
+
+        eventManager.addEventListener("endTurn",
+          this.setPlayerTurn);
+      },
+      componentWillUnmount: function()
+      {
+        eventManager.removeEventListener("playerControlUpdated",
+          this.updateSelection);
+
+        eventManager.removeEventListener("endTurn",
+          this.setPlayerTurn);
+      },
+
+      componentDidUpdate: function()
+      {
+        this.clampExpandedActionElement();
+      },
+
+      clampExpandedActionElement: function()
+      {
+        if (!this.state.expandedActionElement) return;
+
+        var maxHeight = this.refs.leftColumnContent.getDOMNode().getBoundingClientRect().height;
+        var listElement = this.refs.expandedActionElementContainer.getDOMNode().firstChild.firstChild;
+        listElement.style.maxHeight = "" + (maxHeight - 10) + "px";
       },
 
       endTurn: function()
@@ -37,6 +69,14 @@ module Rance
         this.setState(
         {
           isPlayerTurn: !this.props.game.activePlayer.isAI
+        });
+      },
+
+      setExpandedActionElement: function(element: ReactComponentPlaceHolder)
+      {
+        this.setState(
+        {
+          expandedActionElement: element
         });
       },
 
@@ -88,6 +128,18 @@ module Rance
 
         var isInspecting = this.state.inspectedFleets.length > 0;
 
+        var expandedActionElement: ReactDOMPlaceHolder = null;
+        if (this.state.expandedActionElement)
+        {
+          expandedActionElement = React.DOM.div(
+          {
+            className: "galaxy-map-ui-bottom-left-column",
+            ref: "expandedActionElementContainer"
+          },
+            this.state.expandedActionElement
+          );
+        }
+
         return(
           React.DOM.div(
           {
@@ -128,37 +180,33 @@ module Rance
             {
               className: "galaxy-map-ui-bottom-left"
             },
-              UIComponents.PossibleActions(
+              React.DOM.div(
               {
-                attackTargets: this.state.attackTargets,
-                selectedStar: this.state.selectedStar,
-                player: this.props.player
-              }),
-              UIComponents.StarInfo(
-              {
-                selectedStar: this.state.selectedStar
-              })
+                className: "galaxy-map-ui-bottom-left-column align-bottom"
+              },
+                React.DOM.div(
+                {
+                  className: "galaxy-map-ui-bottom-left-leftmost-column-wrapper",
+                  ref: "leftColumnContent"
+                },
+                  UIComponents.PossibleActions(
+                  {
+                    attackTargets: this.state.attackTargets,
+                    selectedStar: this.state.selectedStar,
+                    player: this.props.player,
+                    setExpandedActionElementOnParent: this.setExpandedActionElement
+                  }),
+                  UIComponents.StarInfo(
+                  {
+                    selectedStar: this.state.selectedStar
+                  })
+                )
+              ),
+              expandedActionElement
             ),
             React.DOM.button(endTurnButtonProps, "End turn")
           )
         );
-      },
-
-      componentWillMount: function()
-      {
-        eventManager.addEventListener("playerControlUpdated",
-          this.updateSelection);
-
-        eventManager.addEventListener("endTurn",
-          this.setPlayerTurn);
-      },
-      componentWillUnmount: function()
-      {
-        eventManager.removeEventListener("playerControlUpdated",
-          this.updateSelection);
-
-        eventManager.removeEventListener("endTurn",
-          this.setPlayerTurn);
       }
     });
   }

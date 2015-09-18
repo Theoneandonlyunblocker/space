@@ -195,7 +195,7 @@ ul
 
   tbody
   {
-    tr
+    tr:not(.list-spacer)
     {
       position: relative;
       td
@@ -205,12 +205,35 @@ ul
         min-width: @min-width;
       }
     }
+    tr.list-spacer
+    {
+      td
+      {
+        padding: 2px 0;
+      }
+    }
+  }
+}
+
+.fancy-table-style-without-splitters(@padding, @min-width)
+{
+  .base-fancy-table-style(@padding, @min-width);
+  tbody
+  {
+    tr
+    {
+      .button-style-no-border;
+      &:hover, &:focus
+      {
+        background-color: grey;
+      }
+    }
   }
 }
 
 .fancy-table-style(@padding, @min-width)
 {
-  .base-fancy-table-style(@padding, @min-width);
+  .fancy-table-style-without-splitters(@padding, @min-width);
   tbody :first-child::after
   {
     background-image: none;
@@ -219,14 +242,9 @@ ul
   {
     tr
     {
-      .button-style-no-border;
       &::after
       {
         .civ-splitter-horizontal;
-      }
-      &:hover, &:focus
-      {
-        background-color: grey;
       }
     }
   }
@@ -271,6 +289,15 @@ ul
       }
     }
   }
+}
+
+.list-spacer td
+{
+  background-image: url("../img/listSeparator.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 2px;
+  pointer-events: none;
 }
 
 progress 
@@ -2059,7 +2086,7 @@ progress::-webkit-progress-value { background: #080; }
 
   &.reorganizing
   {
-    @media(max-height: 500px)
+    @media(max-height: 520px)
     {
       top: -4px;
       .fleet-selection-controls
@@ -2082,6 +2109,11 @@ progress::-webkit-progress-value { background: #080; }
   >*
   {
     pointer-events: auto;
+  }
+
+  :first-child
+  {
+    position: relative;
   }
 
   >.fleet-info:first-child
@@ -2107,9 +2139,9 @@ progress::-webkit-progress-value { background: #080; }
     .button-style;
   }
 
-  @media(max-height: 700px)
+  &.fleet-selection-displaced
   {
-    border-width: 0 2px 2px 0;
+    border-left-width: 2px;
   }
 }
 
@@ -2130,7 +2162,7 @@ progress::-webkit-progress-value { background: #080; }
   flex-flow: column;
   overflow-y: scroll;
   overflow-x: hidden;
-  max-height: 300px;
+  max-height: 15em;
   width: 100%;
   height: 100%;
 
@@ -2183,6 +2215,11 @@ progress::-webkit-progress-value { background: #080; }
   +.fleet-info
   {
     border-top: 0;
+  }
+
+  &.fleet-selection-displaced
+  {
+    border-left-width: 3px !important;
   }
 
   &.stealthy
@@ -2306,6 +2343,7 @@ progress::-webkit-progress-value { background: #080; }
   display: inline-flex;
   flex-flow: column;
   background-color: @bg-color;
+  z-index: 1;
 
   .full-border(5px);
 
@@ -2388,7 +2426,29 @@ progress::-webkit-progress-value { background: #080; }
   z-index: -1;
   bottom: 0;
   left: 0;
+  display: flex;
+  flex-flow: row;
+  pointer-events: none;
+}
+
+.galaxy-map-ui-bottom-left-column
+{
+  display: flex;
   flex-flow: column;
+
+  &.align-bottom
+  {
+    justify-content: flex-end;
+  }
+  &.align-bottom:first-child
+  {
+    border-bottom-width: 0;
+  }
+
+  >*
+  {
+    pointer-events: auto;
+  }
 }
 
 .end-turn-button
@@ -2411,32 +2471,25 @@ progress::-webkit-progress-value { background: #080; }
 
 .possible-actions-container
 {
-  display: flex;
-  flex-flow: row;
+  display: inline-block;
+  height: 100%;
 
+  .full-border(5px);
 
-  >*
+  border-width: 5px 5px 0 0;
+  background-color: @bg-color;
+  padding: 6px 10px;
+
+  &.has-expanded-action
   {
-    justify-content: flex-end;
-    margin-top: auto;
-    pointer-events: auto;
+    display: block;
   }
 }
 
 .possible-actions
 {
-  position: relative;
-  display: flex;
+  display: inline-flex;
   flex-flow: column;
-  flex: 0 0 auto;
-  height: 100%;
-  top: 3px;
-
-  .full-border(5px);
-
-  border-width: 5px 5px 5px 0;
-  background-color: @bg-color;
-  padding: 6px 10px;
 
 }
 
@@ -2460,8 +2513,8 @@ progress::-webkit-progress-value { background: #080; }
 .expanded-action
 {
   position: relative;
+  width: 100%;
   left: -3px;
-  top: 3px;
   background-color: @bg-color2;
   padding: 0 8px;
   color: @text-color;
@@ -2523,7 +2576,7 @@ progress::-webkit-progress-value { background: #080; }
 .buildable-item-list
 {
   .sort-icons(500px);
-  .fancy-table-style(8px, 70px);
+  .fancy-table-style-without-splitters(8px, 70px);
   width: 100%;
 }
 .buildable-item
@@ -2865,14 +2918,6 @@ progress::-webkit-progress-value { background: #080; }
   .fixed-table-container-inner
   {
     max-height: 20em;
-  }
-  .list-spacer td
-  {
-    background-image: url("../img/listSeparator.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100% 2px;
-    pointer-events: none;
   }
 }
 
