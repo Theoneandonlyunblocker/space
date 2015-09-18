@@ -143,10 +143,10 @@ module Rance
             type: "debugAbility",
             displayName: "Debug Ability",
             description: "who knows what its going to do today",
-            moveDelay: 50,
+            moveDelay: 0,
             preparation:
             {
-              turnsToPrep: 2,
+              turnsToPrep: 1,
               prepDelay: 100,
               interruptsNeeded: 1
             },

@@ -467,11 +467,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var StarInfo: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var AttackTarget: React.Factory<{}>;
     }
 }
@@ -2079,6 +2074,16 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var PossibleActions: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var StarInfo: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var GalaxyMapUIBottomLeft: React.Factory<{}>;
     }
 }
 declare module Rance {

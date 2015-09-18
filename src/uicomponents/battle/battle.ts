@@ -410,13 +410,17 @@ module Rance
           this.state.hoveredUnit.battleStats.position
         )
 
+        var abilityUseDelay = ability.preparation ?
+          ability.preparation.prepDelay * ability.preparation.turnsToPrep :
+          ability.moveDelay;
+
         this.setState(
         {
           hoveredAbility: ability,
           potentialDelay:
           {
             id: this.props.battle.activeUnit.id,
-            delay: this.props.battle.activeUnit.battleStats.moveDelay + ability.moveDelay
+            delay: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay
           },
           targetsInPotentialArea: targetsInPotentialArea
         });

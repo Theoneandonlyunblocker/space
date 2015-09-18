@@ -1924,11 +1924,14 @@ var Rance;
             },
             handleMouseEnterAbility: function (ability) {
                 var targetsInPotentialArea = Rance.getUnitsInAbilityArea(this.props.battle, this.props.battle.activeUnit, ability, this.state.hoveredUnit.battleStats.position);
+                var abilityUseDelay = ability.preparation ?
+                    ability.preparation.prepDelay * ability.preparation.turnsToPrep :
+                    ability.moveDelay;
                 this.setState({
                     hoveredAbility: ability,
                     potentialDelay: {
                         id: this.props.battle.activeUnit.id,
-                        delay: this.props.battle.activeUnit.battleStats.moveDelay + ability.moveDelay
+                        delay: this.props.battle.activeUnit.battleStats.moveDelay + abilityUseDelay
                     },
                     targetsInPotentialArea: targetsInPotentialArea
                 });
@@ -6051,45 +6054,6 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="defencebuildinglist.ts"/>
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.StarInfo = React.createClass({
-            displayName: "StarInfo",
-            render: function () {
-                var star = this.props.selectedStar;
-                if (!star)
-                    return null;
-                var dumpDebugInfoButton = null;
-                if (Rance.Options.debugMode) {
-                    dumpDebugInfoButton = React.DOM.button({
-                        className: "star-info-dump-debug-button",
-                        onClick: function (e) {
-                            console.log(star);
-                            console.log(star.mapGenData);
-                        }
-                    }, "Debug");
-                }
-                return (React.DOM.div({
-                    className: "star-info"
-                }, React.DOM.div({
-                    className: "star-info-name"
-                }, star.name), React.DOM.div({
-                    className: "star-info-owner"
-                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
-                    className: "star-info-location"
-                }, "x: " + star.x.toFixed() +
-                    " y: " + star.y.toFixed()), React.DOM.div({
-                    className: "star-info-income"
-                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
-                    buildings: star.buildings["defence"]
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -7547,9 +7511,9 @@ var Rance;
                         type: "debugAbility",
                         displayName: "Debug Ability",
                         description: "who knows what its going to do today",
-                        moveDelay: 50,
+                        moveDelay: 0,
                         preparation: {
-                            turnsToPrep: 2,
+                            turnsToPrep: 1,
                             prepDelay: 100,
                             interruptsNeeded: 1
                         },
@@ -14873,11 +14837,71 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+/// <reference path="defencebuildinglist.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.StarInfo = React.createClass({
+            displayName: "StarInfo",
+            render: function () {
+                var star = this.props.selectedStar;
+                if (!star)
+                    return null;
+                var dumpDebugInfoButton = null;
+                if (Rance.Options.debugMode) {
+                    dumpDebugInfoButton = React.DOM.button({
+                        className: "star-info-dump-debug-button",
+                        onClick: function (e) {
+                            console.log(star);
+                            console.log(star.mapGenData);
+                        }
+                    }, "Debug");
+                }
+                return (React.DOM.div({
+                    className: "star-info"
+                }, React.DOM.div({
+                    className: "star-info-name"
+                }, star.name), React.DOM.div({
+                    className: "star-info-owner"
+                }, star.owner ? star.owner.name : null), dumpDebugInfoButton, React.DOM.div({
+                    className: "star-info-location"
+                }, "x: " + star.x.toFixed() +
+                    " y: " + star.y.toFixed()), React.DOM.div({
+                    className: "star-info-income"
+                }, "Income: " + star.getIncome()), UIComponents.DefenceBuildingList({
+                    buildings: star.buildings["defence"]
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../possibleactions/possibleactions.ts"/>
+/// <reference path="starinfo.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.GalaxyMapUIBottomLeft = React.createClass({
+            displayName: "GalaxyMapUIBottomLeft",
+            render: function () {
+                return (React.DOM.div({
+                    className: "galaxy-map-ui-bottom-left"
+                }, UIComponents.PossibleActions({
+                    attackTargets: this.props.attackTargets,
+                    selectedStar: this.props.selectedStar,
+                    player: this.props.player
+                }), UIComponents.StarInfo({
+                    selectedStar: this.props.selectedStar
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
-/// <reference path="starinfo.ts"/>
-/// <reference path="../possibleactions/possibleactions.ts"/>
+/// <reference path="galaxymapuibottomleft.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -14958,15 +14982,11 @@ var Rance;
                     currentlyReorganizing: this.state.currentlyReorganizing,
                     closeReorganization: this.closeReorganization,
                     player: this.props.player
-                }))), React.DOM.div({
-                    className: "galaxy-map-ui-bottom-left"
-                }, UIComponents.PossibleActions({
+                }))), UIComponents.GalaxyMapUIBottomLeft({
                     attackTargets: this.state.attackTargets,
                     selectedStar: this.state.selectedStar,
                     player: this.props.player
-                }), UIComponents.StarInfo({
-                    selectedStar: this.state.selectedStar
-                })), React.DOM.button(endTurnButtonProps, "End turn")));
+                }), React.DOM.button(endTurnButtonProps, "End turn")));
             },
             componentWillMount: function () {
                 Rance.eventManager.addEventListener("playerControlUpdated", this.updateSelection);
