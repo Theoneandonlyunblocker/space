@@ -2471,12 +2471,14 @@ progress::-webkit-progress-value { background: #080; }
 
 .possible-actions-container
 {
+  position: relative;
+  bottom: -3px;
   display: inline-block;
   height: 100%;
 
   .full-border(5px);
 
-  border-width: 5px 5px 0 0;
+  border-width: 5px 5px 5px 0;
   background-color: @bg-color;
   padding: 6px 10px;
 
@@ -2529,7 +2531,7 @@ progress::-webkit-progress-value { background: #080; }
 
 .star-info
 {
-  display: inline-flex;
+  display: flex;
   flex-flow: column;
   background-color: @bg-color;
   color: @text-color;

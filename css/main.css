@@ -1964,12 +1964,14 @@ progress::-webkit-progress-value {
   pointer-events: none !important;
 }
 .possible-actions-container {
+  position: relative;
+  bottom: -3px;
   display: inline-block;
   height: 100%;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;
-  border-width: 5px 5px 0 0;
+  border-width: 5px 5px 5px 0;
   background-color: #0c1615;
   padding: 6px 10px;
 }
@@ -2029,7 +2031,7 @@ progress::-webkit-progress-value {
   background-color: #0c1615;
 }
 .star-info {
-  display: inline-flex;
+  display: flex;
   flex-flow: column;
   background-color: #0c1615;
   color: #eeeeec;
