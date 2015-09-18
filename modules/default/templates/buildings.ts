@@ -100,6 +100,13 @@ module Rance
             buildCost: 200,
 
             maxPerType: 1,
+            effect:
+            {
+              income:
+              {
+                flat: 20
+              }
+            },
 
             maxUpgradeLevel: 4
           }
@@ -113,6 +120,11 @@ module Rance
             buildCost: 200,
 
             maxPerType: 1,
+            effect:
+            {
+              vision: 1,
+              detection: 0.999
+            },
 
             maxUpgradeLevel: 2
           }
@@ -126,6 +138,10 @@ module Rance
             buildCost: 200,
 
             maxPerType: 1,
+            effect:
+            {
+              itemLevel: 1
+            },
 
             maxUpgradeLevel: 3 // MANUFACTORY_MAX
           }
@@ -139,6 +155,13 @@ module Rance
             buildCost: 500,
 
             maxPerType: 1,
+            effect:
+            {
+              resourceIncome:
+              {
+                flat: 1
+              }
+            },
 
             maxUpgradeLevel: 3
           }

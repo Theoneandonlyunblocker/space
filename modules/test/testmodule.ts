@@ -8,14 +8,21 @@ module Rance
     {
       export module BuildingTemplates
       {
-        export var commercialPortTest: Rance.Templates.IBuildingTemplate =
+        export var commercialPortTest1: Rance.Templates.IBuildingTemplate =
         {
-          type: "commercialPortTest",
+          type: "commercialPortTest1",
           category: "economy",
-          displayName: "Commercial Spaceport Test",
+          displayName: "Commercial Spaceport Test 1",
 
           iconSrc: "commercialPort.png",
           buildCost: 0,
+          effect:
+          {
+            income:
+            {
+              multiplier: 1
+            }
+          },
 
           maxPerType: 1,
 

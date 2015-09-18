@@ -49,6 +49,8 @@ module Rance
     {
       [category: string] : Building[];
     } = {};
+    buildingsEffect: Templates.IBuildingEffect;
+    buildingsEffectIsDirty: boolean = true;
 
     voronoiCell: any;
 
@@ -125,6 +127,7 @@ module Rance
       }
 
       buildings.push(building);
+      this.buildingsEffectIsDirty = true;
 
       if (building.template.category === "defence")
       {
@@ -150,6 +153,7 @@ module Rance
 
       this.buildings[building.template.category].splice(
         buildings.indexOf(building), 1);
+      this.buildingsEffectIsDirty = true;
     }
     sortDefenceBuildings()
     {
@@ -208,18 +212,41 @@ module Rance
       eventManager.dispatchEvent("renderLayer", "starOwners", this);
       eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
     }
-    getIncome()
+    updateBuildingsEffect()
     {
-      var tempBuildingIncome = 0;
-      if (this.buildings["economy"])
+      var effect: Templates.IBuildingEffect = {};
+
+      for (var category in this.buildings)
       {
-        for (var i = 0; i < this.buildings["economy"].length; i++)
+        for (var i = 0; i < this.buildings[category].length; i++)
         {
-          var building = this.buildings["economy"][i];
-          tempBuildingIncome += building.upgradeLevel * 20;
+          var building = this.buildings[category][i];
+          building.getEffect(effect);
         }
       }
-      return this.baseIncome + tempBuildingIncome;
+
+      this.buildingsEffect = effect;
+      this.buildingsEffectIsDirty = false;
+    }
+    getBuildingsEffect()
+    {
+      if (this.buildingsEffectIsDirty)
+      {
+        this.updateBuildingsEffect();
+      }
+
+      return this.buildingsEffect;
+    }
+    getIncome()
+    {
+      var income = this.baseIncome;
+      var buildingsIncome = this.getBuildingsEffect().income;
+      if (buildingsIncome)
+      {
+        income += (buildingsIncome.flat || 0);
+        income *= (buildingsIncome.multiplier ? 1 + buildingsIncome.multiplier : 1);
+      }
+      return income;
     }
     getResourceIncome()
     {

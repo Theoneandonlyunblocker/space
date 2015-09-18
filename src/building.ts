@@ -1,4 +1,4 @@
-/// <reference path="../modules/default/templates/buildings.ts" />
+/// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
 
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
@@ -43,6 +43,44 @@ module Rance
       this.controller = props.controller || this.location.owner;
       this.upgradeLevel = props.upgradeLevel || 1;
       this.totalCost = props.totalCost || this.template.buildCost || 0;
+    }
+    getEffect(effect: Templates.IBuildingEffect = {})
+    {
+      if (!this.template.effect) return {};
+
+      var multiplier = this.template.effectMultiplierFN ?
+        this.template.effectMultiplierFN(this.upgradeLevel) :
+        this.upgradeLevel;
+
+      for (var key in this.template.effect)
+      {
+        var prop = this.template.effect[key];
+        if (isFinite(prop))
+        {
+          if (!effect[key])
+          {
+            effect[key] = 0;
+          }
+          effect[key] += prop * multiplier;
+        }
+        else
+        {
+          if (!effect[key])
+          {
+            effect[key] = {};
+          }
+          for (var key2 in prop)
+          {
+            if (!effect[key][key2])
+            {
+              effect[key][key2] = 0;
+            }
+            effect[key][key2] += prop[key2] * multiplier;
+          }
+        }
+      }
+
+      return effect;
     }
     getPossibleUpgrades()
     {

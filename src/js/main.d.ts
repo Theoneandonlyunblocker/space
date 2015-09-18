@@ -6,7 +6,6 @@
 /// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
-/// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
@@ -30,6 +29,7 @@
 /// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
+/// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../tutorials/tutorial.d.ts" />
@@ -646,24 +646,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Buildings {
-                    var sectorCommand: Rance.Templates.IDefenceBuildingTemplate;
-                    var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate;
-                    var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate;
-                    var starBase: Rance.Templates.IDefenceBuildingTemplate;
-                    var commercialPort: Rance.Templates.IBuildingTemplate;
-                    var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
-                    var itemManufactory: Rance.Templates.IBuildingTemplate;
-                    var resourceMine: Rance.Templates.IBuildingTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
     interface IBuildingUpgradeData {
         template: Templates.IBuildingTemplate;
         level: number;
@@ -685,6 +667,7 @@ declare module Rance {
             totalCost?: number;
             id?: number;
         });
+        getEffect(effect?: Templates.IBuildingEffect): {};
         getPossibleUpgrades(): IBuildingUpgradeData[];
         upgrade(): void;
         setController(newController: Player): void;
@@ -785,6 +768,8 @@ declare module Rance {
         buildings: {
             [category: string]: Building[];
         };
+        buildingsEffect: Templates.IBuildingEffect;
+        buildingsEffectIsDirty: boolean;
         voronoiCell: any;
         indexedNeighborsInRange: {
             [range: number]: {
@@ -810,6 +795,8 @@ declare module Rance {
         sortDefenceBuildings(): void;
         getSecondaryController(): Player;
         updateController(): void;
+        updateBuildingsEffect(): void;
+        getBuildingsEffect(): Templates.IBuildingEffect;
         getIncome(): number;
         getResourceIncome(): {
             resource: Templates.IResourceTemplate;
@@ -2869,6 +2856,24 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module Templates {
+                module Buildings {
+                    var sectorCommand: Rance.Templates.IDefenceBuildingTemplate;
+                    var sectorCommand1: Rance.Templates.IDefenceBuildingTemplate;
+                    var sectorCommand2: Rance.Templates.IDefenceBuildingTemplate;
+                    var starBase: Rance.Templates.IDefenceBuildingTemplate;
+                    var commercialPort: Rance.Templates.IBuildingTemplate;
+                    var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
+                    var itemManufactory: Rance.Templates.IBuildingTemplate;
+                    var resourceMine: Rance.Templates.IBuildingTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
                 module UnitArchetypes {
                     var combat: Rance.Templates.IUnitArchetype;
                     var utility: Rance.Templates.IUnitArchetype;
@@ -2922,7 +2927,7 @@ declare module Rance {
     module Modules {
         module TestModule {
             module BuildingTemplates {
-                var commercialPortTest: Rance.Templates.IBuildingTemplate;
+                var commercialPortTest1: Rance.Templates.IBuildingTemplate;
                 var commercialPortTest2: Rance.Templates.IBuildingTemplate;
                 var commercialPortTest3: Rance.Templates.IBuildingTemplate;
                 var commercialPortTest4: Rance.Templates.IBuildingTemplate;

@@ -7266,121 +7266,7 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Buildings;
-                (function (Buildings) {
-                    Buildings.sectorCommand = {
-                        type: "sectorCommand",
-                        category: "defence",
-                        family: "sectorCommand",
-                        displayName: "Sector Command",
-                        iconSrc: "sectorCommand.png",
-                        buildCost: 200,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 1,
-                        upgradeInto: [
-                            {
-                                templateType: "sectorCommand1",
-                                level: 1
-                            },
-                            {
-                                templateType: "sectorCommand2",
-                                level: 1
-                            }
-                        ],
-                        defenderAdvantage: 0.2
-                    };
-                    Buildings.sectorCommand1 = {
-                        type: "sectorCommand1",
-                        category: "defence",
-                        family: "sectorCommand",
-                        displayName: "Sector Command1",
-                        iconSrc: "sectorCommand.png",
-                        buildCost: 100,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 1,
-                        upgradeOnly: true,
-                        defenderAdvantage: 0.3
-                    };
-                    Buildings.sectorCommand2 = {
-                        type: "sectorCommand2",
-                        category: "defence",
-                        family: "sectorCommand",
-                        displayName: "Sector Command2",
-                        iconSrc: "sectorCommand.png",
-                        buildCost: 200,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 1,
-                        upgradeOnly: true,
-                        defenderAdvantage: 0.3
-                    };
-                    Buildings.starBase = {
-                        type: "starBase",
-                        category: "defence",
-                        displayName: "Starbase",
-                        iconSrc: "starBase.png",
-                        buildCost: 200,
-                        maxPerType: 3,
-                        maxUpgradeLevel: 1,
-                        defenderAdvantage: 0.1,
-                        upgradeInto: [
-                            {
-                                templateType: "sectorCommand",
-                                level: 1
-                            }
-                        ]
-                    };
-                    Buildings.commercialPort = {
-                        type: "commercialPort",
-                        category: "economy",
-                        displayName: "Commercial Spaceport",
-                        iconSrc: "commercialPort.png",
-                        buildCost: 200,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 4
-                    };
-                    Buildings.deepSpaceRadar = {
-                        type: "deepSpaceRadar",
-                        category: "vision",
-                        displayName: "Deep Space Radar",
-                        iconSrc: "commercialPort.png",
-                        buildCost: 200,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 2
-                    };
-                    Buildings.itemManufactory = {
-                        type: "itemManufactory",
-                        category: "manufactory",
-                        displayName: "Item Manufactory",
-                        iconSrc: "commercialPort.png",
-                        buildCost: 200,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 3 // MANUFACTORY_MAX
-                    };
-                    Buildings.resourceMine = {
-                        type: "resourceMine",
-                        category: "mine",
-                        displayName: "Mine",
-                        iconSrc: "commercialPort.png",
-                        buildCost: 500,
-                        maxPerType: 1,
-                        maxUpgradeLevel: 3
-                    };
-                })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/buildings.ts" />
+/// <reference path="templateinterfaces/ibuildingtemplate.d.ts" />
 /// <reference path="star.ts" />
 /// <reference path="player.ts" />
 var Rance;
@@ -7395,6 +7281,35 @@ var Rance;
             this.upgradeLevel = props.upgradeLevel || 1;
             this.totalCost = props.totalCost || this.template.buildCost || 0;
         }
+        Building.prototype.getEffect = function (effect) {
+            if (effect === void 0) { effect = {}; }
+            if (!this.template.effect)
+                return {};
+            var multiplier = this.template.effectMultiplierFN ?
+                this.template.effectMultiplierFN(this.upgradeLevel) :
+                this.upgradeLevel;
+            for (var key in this.template.effect) {
+                var prop = this.template.effect[key];
+                if (isFinite(prop)) {
+                    if (!effect[key]) {
+                        effect[key] = 0;
+                    }
+                    effect[key] += prop * multiplier;
+                }
+                else {
+                    if (!effect[key]) {
+                        effect[key] = {};
+                    }
+                    for (var key2 in prop) {
+                        if (!effect[key][key2]) {
+                            effect[key][key2] = 0;
+                        }
+                        effect[key][key2] += prop[key2] * multiplier;
+                    }
+                }
+            }
+            return effect;
+        };
         Building.prototype.getPossibleUpgrades = function () {
             var self = this;
             var upgrades = [];
@@ -7957,6 +7872,7 @@ var Rance;
             this.mapGenData = {};
             this.fleets = {};
             this.buildings = {};
+            this.buildingsEffectIsDirty = true;
             this.indexedNeighborsInRange = {};
             this.indexedDistanceToStar = {};
             // TODO rework items building
@@ -7993,6 +7909,7 @@ var Rance;
                 throw new Error("Already has building");
             }
             buildings.push(building);
+            this.buildingsEffectIsDirty = true;
             if (building.template.category === "defence") {
                 this.sortDefenceBuildings();
                 Rance.eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
@@ -8008,6 +7925,7 @@ var Rance;
             }
             var buildings = this.buildings[building.template.category];
             this.buildings[building.template.category].splice(buildings.indexOf(building), 1);
+            this.buildingsEffectIsDirty = true;
         };
         Star.prototype.sortDefenceBuildings = function () {
             this.buildings["defence"].sort(function (a, b) {
@@ -8049,15 +7967,31 @@ var Rance;
             Rance.eventManager.dispatchEvent("renderLayer", "starOwners", this);
             Rance.eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
         };
-        Star.prototype.getIncome = function () {
-            var tempBuildingIncome = 0;
-            if (this.buildings["economy"]) {
-                for (var i = 0; i < this.buildings["economy"].length; i++) {
-                    var building = this.buildings["economy"][i];
-                    tempBuildingIncome += building.upgradeLevel * 20;
+        Star.prototype.updateBuildingsEffect = function () {
+            var effect = {};
+            for (var category in this.buildings) {
+                for (var i = 0; i < this.buildings[category].length; i++) {
+                    var building = this.buildings[category][i];
+                    building.getEffect(effect);
                 }
             }
-            return this.baseIncome + tempBuildingIncome;
+            this.buildingsEffect = effect;
+            this.buildingsEffectIsDirty = false;
+        };
+        Star.prototype.getBuildingsEffect = function () {
+            if (this.buildingsEffectIsDirty) {
+                this.updateBuildingsEffect();
+            }
+            return this.buildingsEffect;
+        };
+        Star.prototype.getIncome = function () {
+            var income = this.baseIncome;
+            var buildingsIncome = this.getBuildingsEffect().income;
+            if (buildingsIncome) {
+                income += (buildingsIncome.flat || 0);
+                income *= (buildingsIncome.multiplier ? 1 + buildingsIncome.multiplier : 1);
+            }
+            return income;
         };
         Star.prototype.getResourceIncome = function () {
             if (!this.resource || !this.buildings["mine"])
@@ -20387,6 +20321,137 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Buildings;
+                (function (Buildings) {
+                    Buildings.sectorCommand = {
+                        type: "sectorCommand",
+                        category: "defence",
+                        family: "sectorCommand",
+                        displayName: "Sector Command",
+                        iconSrc: "sectorCommand.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 1,
+                        upgradeInto: [
+                            {
+                                templateType: "sectorCommand1",
+                                level: 1
+                            },
+                            {
+                                templateType: "sectorCommand2",
+                                level: 1
+                            }
+                        ],
+                        defenderAdvantage: 0.2
+                    };
+                    Buildings.sectorCommand1 = {
+                        type: "sectorCommand1",
+                        category: "defence",
+                        family: "sectorCommand",
+                        displayName: "Sector Command1",
+                        iconSrc: "sectorCommand.png",
+                        buildCost: 100,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 1,
+                        upgradeOnly: true,
+                        defenderAdvantage: 0.3
+                    };
+                    Buildings.sectorCommand2 = {
+                        type: "sectorCommand2",
+                        category: "defence",
+                        family: "sectorCommand",
+                        displayName: "Sector Command2",
+                        iconSrc: "sectorCommand.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        maxUpgradeLevel: 1,
+                        upgradeOnly: true,
+                        defenderAdvantage: 0.3
+                    };
+                    Buildings.starBase = {
+                        type: "starBase",
+                        category: "defence",
+                        displayName: "Starbase",
+                        iconSrc: "starBase.png",
+                        buildCost: 200,
+                        maxPerType: 3,
+                        maxUpgradeLevel: 1,
+                        defenderAdvantage: 0.1,
+                        upgradeInto: [
+                            {
+                                templateType: "sectorCommand",
+                                level: 1
+                            }
+                        ]
+                    };
+                    Buildings.commercialPort = {
+                        type: "commercialPort",
+                        category: "economy",
+                        displayName: "Commercial Spaceport",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        effect: {
+                            income: {
+                                flat: 20
+                            }
+                        },
+                        maxUpgradeLevel: 4
+                    };
+                    Buildings.deepSpaceRadar = {
+                        type: "deepSpaceRadar",
+                        category: "vision",
+                        displayName: "Deep Space Radar",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        effect: {
+                            vision: 1,
+                            detection: 0.999
+                        },
+                        maxUpgradeLevel: 2
+                    };
+                    Buildings.itemManufactory = {
+                        type: "itemManufactory",
+                        category: "manufactory",
+                        displayName: "Item Manufactory",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 200,
+                        maxPerType: 1,
+                        effect: {
+                            itemLevel: 1
+                        },
+                        maxUpgradeLevel: 3 // MANUFACTORY_MAX
+                    };
+                    Buildings.resourceMine = {
+                        type: "resourceMine",
+                        category: "mine",
+                        displayName: "Mine",
+                        iconSrc: "commercialPort.png",
+                        buildCost: 500,
+                        maxPerType: 1,
+                        effect: {
+                            resourceIncome: {
+                                flat: 1
+                            }
+                        },
+                        maxUpgradeLevel: 3
+                    };
+                })(Buildings = Templates.Buildings || (Templates.Buildings = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iunitarchetype.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -20847,12 +20912,17 @@ var Rance;
         (function (TestModule) {
             var BuildingTemplates;
             (function (BuildingTemplates) {
-                BuildingTemplates.commercialPortTest = {
-                    type: "commercialPortTest",
+                BuildingTemplates.commercialPortTest1 = {
+                    type: "commercialPortTest1",
                     category: "economy",
-                    displayName: "Commercial Spaceport Test",
+                    displayName: "Commercial Spaceport Test 1",
                     iconSrc: "commercialPort.png",
                     buildCost: 0,
+                    effect: {
+                        income: {
+                            multiplier: 1
+                        }
+                    },
                     maxPerType: 1,
                     maxUpgradeLevel: 10
                 };
