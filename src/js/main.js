@@ -7984,24 +7984,25 @@ var Rance;
             }
             return this.buildingsEffect;
         };
-        Star.prototype.getIncome = function () {
-            var income = this.baseIncome;
-            var buildingsIncome = this.getBuildingsEffect().income;
-            if (buildingsIncome) {
-                income += (buildingsIncome.flat || 0);
-                income *= (buildingsIncome.multiplier ? 1 + buildingsIncome.multiplier : 1);
+        Star.prototype.getEffectWithBuildingsEffect = function (base, effectType) {
+            var effect = base;
+            var buildingsEffect = this.getBuildingsEffect()[effectType];
+            if (isFinite(buildingsEffect)) {
+                return effect + buildingsEffect;
             }
-            return income;
+            else if (buildingsEffect) {
+                effect += (buildingsEffect.flat || 0);
+                effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
+            }
+            return effect;
+        };
+        Star.prototype.getIncome = function () {
+            return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
         };
         Star.prototype.getResourceIncome = function () {
-            if (!this.resource || !this.buildings["mine"])
+            if (!this.resource)
                 return null;
-            else {
-                return ({
-                    resource: this.resource,
-                    amount: this.buildings["mine"].length
-                });
-            }
+            return this.getEffectWithBuildingsEffect(0, "resourceIncome");
         };
         Star.prototype.getAllBuildings = function () {
             var buildings = [];
@@ -8381,20 +8382,13 @@ var Rance;
             return this.indexedDistanceToStar[target.id];
         };
         Star.prototype.getVisionRange = function () {
-            var baseVision = 1;
-            if (this.buildings["vision"]) {
-                for (var i = 0; i < this.buildings["vision"].length; i++) {
-                    baseVision += this.buildings["vision"][i].upgradeLevel;
-                }
-            }
-            return baseVision;
+            return this.getEffectWithBuildingsEffect(1, "vision");
         };
         Star.prototype.getVision = function () {
             return this.getLinkedInRange(this.getVisionRange()).all;
         };
         Star.prototype.getDetectionRange = function () {
-            // TODO detection buildings
-            return 0;
+            return this.getEffectWithBuildingsEffect(0, "detection");
         };
         Star.prototype.getDetection = function () {
             return this.getLinkedInRange(this.getDetectionRange()).all;
@@ -8427,13 +8421,7 @@ var Rance;
             }
         };
         Star.prototype.getItemManufactoryLevel = function () {
-            var level = 0;
-            if (this.buildings["manufactory"]) {
-                for (var i = 0; i < this.buildings["manufactory"].length; i++) {
-                    level += this.buildings["manufactory"][i].upgradeLevel;
-                }
-            }
-            return level;
+            return this.getEffectWithBuildingsEffect(0, "itemLevel");
         };
         Star.prototype.getItemAmountForTechLevel = function (techLevel, manufactoryLevel) {
             var maxManufactoryLevel = 3; // MANUFACTORY_MAX

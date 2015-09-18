@@ -797,11 +797,9 @@ declare module Rance {
         updateController(): void;
         updateBuildingsEffect(): void;
         getBuildingsEffect(): Templates.IBuildingEffect;
-        getIncome(): number;
-        getResourceIncome(): {
-            resource: Templates.IResourceTemplate;
-            amount: number;
-        };
+        getEffectWithBuildingsEffect(base: number, effectType: string): any;
+        getIncome(): any;
+        getResourceIncome(): any;
         getAllBuildings(): Building[];
         getBuildingsForPlayer(player: Player): Building[];
         getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];
@@ -857,7 +855,7 @@ declare module Rance {
         getHealingFactor(player: Player): number;
         getSeed(): string;
         seedBuildableItems(): void;
-        getItemManufactoryLevel(): number;
+        getItemManufactoryLevel(): any;
         getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number): number;
         getBuildableItems(): {
             byTechLevel: {

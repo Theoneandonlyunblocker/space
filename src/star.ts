@@ -237,29 +237,32 @@ module Rance
 
       return this.buildingsEffect;
     }
+    getEffectWithBuildingsEffect(base: number, effectType: string)
+    {
+      var effect = base;
+      var buildingsEffect = this.getBuildingsEffect()[effectType];
+
+      if (isFinite(buildingsEffect))
+      {
+        return effect + buildingsEffect;
+      }
+      else if (buildingsEffect)
+      {
+        effect += (buildingsEffect.flat || 0);
+        effect *= (isFinite(buildingsEffect.multiplier) ? 1 + buildingsEffect.multiplier : 1);
+      }
+
+      return effect;
+    }
     getIncome()
     {
-      var income = this.baseIncome;
-      var buildingsIncome = this.getBuildingsEffect().income;
-      if (buildingsIncome)
-      {
-        income += (buildingsIncome.flat || 0);
-        income *= (buildingsIncome.multiplier ? 1 + buildingsIncome.multiplier : 1);
-      }
-      return income;
+      return this.getEffectWithBuildingsEffect(this.baseIncome, "income");
     }
     getResourceIncome()
     {
-      if (!this.resource || !this.buildings["mine"]) return null;
-      else
-      {
-        return(
-        {
-          resource: this.resource,
-          amount: this.buildings["mine"].length
-        });
-      }
+      if (!this.resource) return null;
       
+      return this.getEffectWithBuildingsEffect(0, "resourceIncome");
     }
     getAllBuildings()
     {
@@ -834,17 +837,7 @@ module Rance
     }
     getVisionRange(): number
     {
-      var baseVision = 1;
-
-      if (this.buildings["vision"])
-      {
-        for (var i = 0; i < this.buildings["vision"].length; i++)
-        {
-          baseVision += this.buildings["vision"][i].upgradeLevel;
-        }
-      }
-
-      return baseVision;
+      return this.getEffectWithBuildingsEffect(1, "vision");
     }
     getVision(): Star[]
     {
@@ -852,8 +845,7 @@ module Rance
     }
     getDetectionRange(): number
     {
-      // TODO detection buildings
-      return 0;
+      return this.getEffectWithBuildingsEffect(0, "detection");
     }
     getDetection(): Star[]
     {
@@ -902,16 +894,7 @@ module Rance
     }
     getItemManufactoryLevel()
     {
-      var level = 0;
-      if (this.buildings["manufactory"])
-      {
-        for (var i = 0; i < this.buildings["manufactory"].length; i++)
-        {
-          level += this.buildings["manufactory"][i].upgradeLevel;
-        }
-      }
-
-      return level;
+      return this.getEffectWithBuildingsEffect(0, "itemLevel");
     }
     getItemAmountForTechLevel(techLevel: number, manufactoryLevel: number)
     {
