@@ -79,7 +79,7 @@ module Rance
 
         for (var i = 0; i < layersData.length; i++)
         {
-          var layer = layersData[i].layer;
+          var layer = layersData[i];
           var layerKey = layer.template.key;
 
           listItems.push(UIComponents.MapRendererLayersListItem(

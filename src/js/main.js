@@ -14934,7 +14934,7 @@ var Rance;
                 var activeLayers = mapMode.getActiveLayers();
                 var listItems = [];
                 for (var i = 0; i < layersData.length; i++) {
-                    var layer = layersData[i].layer;
+                    var layer = layersData[i];
                     var layerKey = layer.template.key;
                     listItems.push(UIComponents.MapRendererLayersListItem({
                         layer: layer,
@@ -16871,7 +16871,19 @@ var Rance;
             this.template = template;
             this.container = new PIXI.Container();
             this.container.interactiveChildren = template.interactive;
+            this.alpha = template.alpha || 1;
         }
+        Object.defineProperty(MapRendererLayer.prototype, "alpha", {
+            get: function () {
+                return this._alpha;
+            },
+            set: function (newAlpha) {
+                this._alpha = newAlpha;
+                this.container.alpha = newAlpha;
+            },
+            enumerable: true,
+            configurable: true
+        });
         MapRendererLayer.prototype.draw = function (map, mapRenderer) {
             if (!this.isDirty)
                 return;
@@ -16900,14 +16912,12 @@ var Rance;
                 throw new Error("Tried to add duplicate layer " + layer.template.key);
                 return;
             }
-            this.layers.push({
-                layer: layer
-            });
+            this.layers.push(layer);
             this.activeLayers[layer.template.key] = isActive;
         };
         MapRendererMapMode.prototype.getLayerIndex = function (layer) {
             for (var i = 0; i < this.layers.length; i++) {
-                if (this.layers[i].layer === layer)
+                if (this.layers[i] === layer)
                     return i;
             }
             return -1;
@@ -16918,10 +16928,10 @@ var Rance;
         MapRendererMapMode.prototype.getLayerIndexInContainer = function (layer) {
             var index = -1;
             for (var i = 0; i < this.layers.length; i++) {
-                if (this.activeLayers[this.layers[i].layer.template.key]) {
+                if (this.activeLayers[this.layers[i].template.key]) {
                     index++;
                 }
-                if (this.layers[i].layer === layer)
+                if (this.layers[i] === layer)
                     return index;
             }
             throw new Error("Map mode doesn't have layer " + layer.template.key);
@@ -16944,8 +16954,8 @@ var Rance;
         };
         MapRendererMapMode.prototype.getActiveLayers = function () {
             var self = this;
-            return (this.layers.filter(function (layerData) {
-                return self.activeLayers[layerData.layer.template.key];
+            return (this.layers.filter(function (layer) {
+                return self.activeLayers[layer.template.key];
             }));
         };
         return MapRendererMapMode;
@@ -17379,9 +17389,9 @@ var Rance;
                 var alreadyAdded = {};
                 var mapMode = new Rance.MapRendererMapMode(template);
                 for (var i = 0; i < template.layers.length; i++) {
-                    var templateLayerData = template.layers[i];
-                    mapMode.addLayer(this.layers[templateLayerData.layer.key], true);
-                    alreadyAdded[templateLayerData.layer.key] = true;
+                    var layer = template.layers[i];
+                    mapMode.addLayer(this.layers[layer.key], true);
+                    alreadyAdded[layer.key] = true;
                 }
                 for (var layerKey in this.layers) {
                     if (!alreadyAdded[layerKey]) {
@@ -17422,7 +17432,7 @@ var Rance;
         };
         MapRenderer.prototype.setAllLayersAsDirty = function () {
             for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                this.currentMapMode.layers[i].layer.isDirty = true;
+                this.currentMapMode.layers[i].isDirty = true;
             }
             this.isDirty = true;
             // TODO
@@ -17447,7 +17457,7 @@ var Rance;
             this.resetContainer();
             var layerData = this.currentMapMode.getActiveLayers();
             for (var i = 0; i < layerData.length; i++) {
-                var layer = layerData[i].layer;
+                var layer = layerData[i];
                 this.container.addChild(layer.container);
             }
         };
@@ -17466,7 +17476,7 @@ var Rance;
             this.resetContainer();
             var layerData = this.currentMapMode.getActiveLayers();
             for (var i = 0; i < layerData.length; i++) {
-                var layer = layerData[i].layer;
+                var layer = layerData[i];
                 this.container.addChild(layer.container);
             }
             this.setAllLayersAsDirty();
@@ -17476,7 +17486,7 @@ var Rance;
                 return;
             var layerData = this.currentMapMode.getActiveLayers();
             for (var i = 0; i < layerData.length; i++) {
-                var layer = layerData[i].layer;
+                var layer = layerData[i];
                 layer.draw(this.galaxyMap, this);
             }
             this.isDirty = false;
@@ -19695,59 +19705,59 @@ var Rance;
                     key: "defaultMapMode",
                     displayName: "Default",
                     layers: [
-                        { layer: DefaultModule.MapRendererLayers.starOwners },
-                        { layer: DefaultModule.MapRendererLayers.ownerBorders },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerVoronoiLines },
-                        { layer: DefaultModule.MapRendererLayers.starLinks },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerStars },
-                        { layer: DefaultModule.MapRendererLayers.fogOfWar },
-                        { layer: DefaultModule.MapRendererLayers.fleets }
+                        DefaultModule.MapRendererLayers.starOwners,
+                        DefaultModule.MapRendererLayers.ownerBorders,
+                        DefaultModule.MapRendererLayers.nonFillerVoronoiLines,
+                        DefaultModule.MapRendererLayers.starLinks,
+                        DefaultModule.MapRendererLayers.nonFillerStars,
+                        DefaultModule.MapRendererLayers.fogOfWar,
+                        DefaultModule.MapRendererLayers.fleets
                     ]
                 };
                 MapRendererMapModes.noStatic = {
                     key: "noStatic",
                     displayName: "No Static Layers",
                     layers: [
-                        { layer: DefaultModule.MapRendererLayers.starOwners },
-                        { layer: DefaultModule.MapRendererLayers.ownerBorders },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerStars },
-                        { layer: DefaultModule.MapRendererLayers.fogOfWar },
-                        { layer: DefaultModule.MapRendererLayers.fleets }
+                        DefaultModule.MapRendererLayers.starOwners,
+                        DefaultModule.MapRendererLayers.ownerBorders,
+                        DefaultModule.MapRendererLayers.nonFillerStars,
+                        DefaultModule.MapRendererLayers.fogOfWar,
+                        DefaultModule.MapRendererLayers.fleets
                     ]
                 };
                 MapRendererMapModes.income = {
                     key: "income",
                     displayName: "Income",
                     layers: [
-                        { layer: DefaultModule.MapRendererLayers.starIncome },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerVoronoiLines },
-                        { layer: DefaultModule.MapRendererLayers.starLinks },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerStars },
-                        { layer: DefaultModule.MapRendererLayers.fleets }
+                        DefaultModule.MapRendererLayers.starIncome,
+                        DefaultModule.MapRendererLayers.nonFillerVoronoiLines,
+                        DefaultModule.MapRendererLayers.starLinks,
+                        DefaultModule.MapRendererLayers.nonFillerStars,
+                        DefaultModule.MapRendererLayers.fleets
                     ]
                 };
                 MapRendererMapModes.influence = {
                     key: "influence",
                     displayName: "Player Influence",
                     layers: [
-                        { layer: DefaultModule.MapRendererLayers.playerInfluence },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerVoronoiLines },
-                        { layer: DefaultModule.MapRendererLayers.starLinks },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerStars },
-                        { layer: DefaultModule.MapRendererLayers.fleets }
+                        DefaultModule.MapRendererLayers.playerInfluence,
+                        DefaultModule.MapRendererLayers.nonFillerVoronoiLines,
+                        DefaultModule.MapRendererLayers.starLinks,
+                        DefaultModule.MapRendererLayers.nonFillerStars,
+                        DefaultModule.MapRendererLayers.fleets
                     ]
                 };
                 MapRendererMapModes.resources = {
                     key: "resources",
                     displayName: "Resources",
                     layers: [
-                        { layer: DefaultModule.MapRendererLayers.debugSectors },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerVoronoiLines },
-                        { layer: DefaultModule.MapRendererLayers.starLinks },
-                        { layer: DefaultModule.MapRendererLayers.nonFillerStars },
-                        { layer: DefaultModule.MapRendererLayers.fogOfWar },
-                        { layer: DefaultModule.MapRendererLayers.fleets },
-                        { layer: DefaultModule.MapRendererLayers.resources }
+                        DefaultModule.MapRendererLayers.debugSectors,
+                        DefaultModule.MapRendererLayers.nonFillerVoronoiLines,
+                        DefaultModule.MapRendererLayers.starLinks,
+                        DefaultModule.MapRendererLayers.nonFillerStars,
+                        DefaultModule.MapRendererLayers.fogOfWar,
+                        DefaultModule.MapRendererLayers.fleets,
+                        DefaultModule.MapRendererLayers.resources
                     ]
                 };
             })(MapRendererMapModes = DefaultModule.MapRendererMapModes || (DefaultModule.MapRendererMapModes = {}));

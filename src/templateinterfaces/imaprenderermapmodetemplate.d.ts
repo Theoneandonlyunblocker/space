@@ -6,11 +6,6 @@ declare module Rance
   {
     key: string;
     displayName: string;
-    // array of objects because we might want to attach additional properties
-    // per layer like alpha etc.
-    layers:
-    {
-      layer: IMapRendererLayerTemplate;
-    }[];
+    layers: IMapRendererLayerTemplate[];
   }
 }

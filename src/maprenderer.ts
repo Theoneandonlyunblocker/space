@@ -306,10 +306,10 @@ module Rance
         var mapMode = new MapRendererMapMode(template);
         for (var i = 0; i < template.layers.length; i++)
         {
-          var templateLayerData = template.layers[i];
+          var layer = template.layers[i];
           
-          mapMode.addLayer(this.layers[templateLayerData.layer.key], true);
-          alreadyAdded[templateLayerData.layer.key] = true;
+          mapMode.addLayer(this.layers[layer.key], true);
+          alreadyAdded[layer.key] = true;
         }
         for (var layerKey in this.layers)
         {
@@ -366,7 +366,7 @@ module Rance
     {
       for (var i = 0; i < this.currentMapMode.layers.length; i++)
       {
-        this.currentMapMode.layers[i].layer.isDirty = true;
+        this.currentMapMode.layers[i].isDirty = true;
       }
 
       this.isDirty = true;
@@ -400,7 +400,7 @@ module Rance
       var layerData = this.currentMapMode.getActiveLayers();
       for (var i = 0; i < layerData.length; i++)
       {
-        var layer = layerData[i].layer;
+        var layer = layerData[i];
         this.container.addChild(layer.container);
       }
     }
@@ -428,7 +428,7 @@ module Rance
       var layerData = this.currentMapMode.getActiveLayers();
       for (var i = 0; i < layerData.length; i++)
       {
-        var layer = layerData[i].layer;
+        var layer = layerData[i];
         this.container.addChild(layer.container);
       }
 
@@ -441,7 +441,7 @@ module Rance
       var layerData = this.currentMapMode.getActiveLayers();
       for (var i = 0; i < layerData.length; i++)
       {
-        var layer = layerData[i].layer;
+        var layer = layerData[i];
         layer.draw(this.galaxyMap, this);
       }
 

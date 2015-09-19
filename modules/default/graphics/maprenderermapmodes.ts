@@ -15,13 +15,13 @@ module Rance
           displayName: "Default",
           layers:
           [
-            {layer: MapRendererLayers.starOwners},
-            {layer: MapRendererLayers.ownerBorders},
-            {layer: MapRendererLayers.nonFillerVoronoiLines},
-            {layer: MapRendererLayers.starLinks},
-            {layer: MapRendererLayers.nonFillerStars},
-            {layer: MapRendererLayers.fogOfWar},
-            {layer: MapRendererLayers.fleets}
+            MapRendererLayers.starOwners,
+            MapRendererLayers.ownerBorders,
+            MapRendererLayers.nonFillerVoronoiLines,
+            MapRendererLayers.starLinks,
+            MapRendererLayers.nonFillerStars,
+            MapRendererLayers.fogOfWar,
+            MapRendererLayers.fleets
           ]
         }
         export var noStatic: IMapRendererMapModeTemplate =
@@ -30,11 +30,11 @@ module Rance
           displayName: "No Static Layers",
           layers:
           [
-            {layer: MapRendererLayers.starOwners},
-            {layer: MapRendererLayers.ownerBorders},
-            {layer: MapRendererLayers.nonFillerStars},
-            {layer: MapRendererLayers.fogOfWar},
-            {layer: MapRendererLayers.fleets}
+            MapRendererLayers.starOwners,
+            MapRendererLayers.ownerBorders,
+            MapRendererLayers.nonFillerStars,
+            MapRendererLayers.fogOfWar,
+            MapRendererLayers.fleets
           ]
         }
         export var income: IMapRendererMapModeTemplate =
@@ -43,11 +43,11 @@ module Rance
           displayName: "Income",
           layers:
           [
-            {layer: MapRendererLayers.starIncome},
-            {layer: MapRendererLayers.nonFillerVoronoiLines},
-            {layer: MapRendererLayers.starLinks},
-            {layer: MapRendererLayers.nonFillerStars},
-            {layer: MapRendererLayers.fleets}
+            MapRendererLayers.starIncome,
+            MapRendererLayers.nonFillerVoronoiLines,
+            MapRendererLayers.starLinks,
+            MapRendererLayers.nonFillerStars,
+            MapRendererLayers.fleets
           ]
         }
         export var influence: IMapRendererMapModeTemplate =
@@ -56,11 +56,11 @@ module Rance
           displayName: "Player Influence",
           layers:
           [
-            {layer: MapRendererLayers.playerInfluence},
-            {layer: MapRendererLayers.nonFillerVoronoiLines},
-            {layer: MapRendererLayers.starLinks},
-            {layer: MapRendererLayers.nonFillerStars},
-            {layer: MapRendererLayers.fleets}
+            MapRendererLayers.playerInfluence,
+            MapRendererLayers.nonFillerVoronoiLines,
+            MapRendererLayers.starLinks,
+            MapRendererLayers.nonFillerStars,
+            MapRendererLayers.fleets
           ]
         }
         export var resources: IMapRendererMapModeTemplate =
@@ -69,13 +69,13 @@ module Rance
           displayName: "Resources",
           layers:
           [
-            {layer: MapRendererLayers.debugSectors},
-            {layer: MapRendererLayers.nonFillerVoronoiLines},
-            {layer: MapRendererLayers.starLinks},
-            {layer: MapRendererLayers.nonFillerStars},
-            {layer: MapRendererLayers.fogOfWar},
-            {layer: MapRendererLayers.fleets},
-            {layer: MapRendererLayers.resources}
+            MapRendererLayers.debugSectors,
+            MapRendererLayers.nonFillerVoronoiLines,
+            MapRendererLayers.starLinks,
+            MapRendererLayers.nonFillerStars,
+            MapRendererLayers.fogOfWar,
+            MapRendererLayers.fleets,
+            MapRendererLayers.resources
           ]
         }
       }

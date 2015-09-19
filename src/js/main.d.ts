@@ -2236,18 +2236,17 @@ declare module Rance {
         template: IMapRendererLayerTemplate;
         container: PIXI.Container;
         isDirty: boolean;
+        private _alpha;
+        alpha: number;
         constructor(template: IMapRendererLayerTemplate);
         draw(map: GalaxyMap, mapRenderer: MapRenderer): void;
     }
 }
 declare module Rance {
-    interface IMapRendererMapModeLayerData {
-        layer: MapRendererLayer;
-    }
     class MapRendererMapMode {
         template: IMapRendererMapModeTemplate;
         displayName: string;
-        layers: IMapRendererMapModeLayerData[];
+        layers: MapRendererLayer[];
         activeLayers: {
             [layerName: string]: boolean;
         };
@@ -2259,7 +2258,7 @@ declare module Rance {
         toggleLayer(layer: MapRendererLayer): void;
         setLayerIndex(layer: MapRendererLayer, newIndex: number): void;
         insertLayerNextToLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: string): void;
-        getActiveLayers(): IMapRendererMapModeLayerData[];
+        getActiveLayers(): MapRendererLayer[];
     }
 }
 declare module Rance {

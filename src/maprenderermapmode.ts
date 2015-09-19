@@ -3,15 +3,11 @@
 
 module Rance
 {
-  export interface IMapRendererMapModeLayerData
-  {
-    layer: MapRendererLayer;
-  }
   export class MapRendererMapMode
   {
     template: IMapRendererMapModeTemplate;
     displayName: string;
-    layers: IMapRendererMapModeLayerData[] = [];
+    layers: MapRendererLayer[] = [];
     activeLayers:
     {
       [layerName: string]: boolean;
@@ -29,10 +25,7 @@ module Rance
         return;
       }
 
-      this.layers.push(
-      {
-        layer: layer
-      });
+      this.layers.push(layer);
 
       this.activeLayers[layer.template.key] = isActive;
     }
@@ -40,7 +33,7 @@ module Rance
     {
       for (var i = 0; i < this.layers.length; i++)
       {
-        if (this.layers[i].layer === layer) return i;
+        if (this.layers[i] === layer) return i;
       }
 
       return -1;
@@ -54,11 +47,11 @@ module Rance
       var index = -1;
       for (var i = 0; i < this.layers.length; i++)
       {
-        if (this.activeLayers[this.layers[i].layer.template.key])
+        if (this.activeLayers[this.layers[i].template.key])
         {
           index++;
         }
-        if (this.layers[i].layer === layer) return index;
+        if (this.layers[i] === layer) return index;
       }
 
       throw new Error("Map mode doesn't have layer " + layer.template.key);
@@ -84,12 +77,12 @@ module Rance
       var newIndex = this.getLayerIndex(target) + indexAdjust;
       this.setLayerIndex(toInsert, newIndex);
     }
-    getActiveLayers(): IMapRendererMapModeLayerData[]
+    getActiveLayers(): MapRendererLayer[]
     {
       var self = this;
-      return(this.layers.filter(function(layerData: IMapRendererMapModeLayerData)
+      return(this.layers.filter(function(layer: MapRendererLayer)
       {
-        return self.activeLayers[layerData.layer.template.key];
+        return self.activeLayers[layer.template.key];
       }));
     }
   }

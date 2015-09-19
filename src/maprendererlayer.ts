@@ -9,11 +9,22 @@ module Rance
     template: IMapRendererLayerTemplate;
     container: PIXI.Container;
     isDirty: boolean = true;
+    private _alpha: number;
+    get alpha(): number
+    {
+      return this._alpha;
+    }
+    set alpha(newAlpha: number)
+    {
+      this._alpha = newAlpha;
+      this.container.alpha = newAlpha;
+    }
     constructor(template: IMapRendererLayerTemplate)
     {
       this.template = template;
       this.container = new PIXI.Container();
       this.container.interactiveChildren = template.interactive;
+      this.alpha = template.alpha || 1;
     }
     draw(map: GalaxyMap, mapRenderer: MapRenderer)
     {
