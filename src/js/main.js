@@ -17443,7 +17443,6 @@ var Rance;
                 var layer = updatedLayers[i];
                 var childIndex = this.container.getChildIndex(layer.container);
                 var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
-                console.log(layer.template.key, mapModeLayerIndex);
                 if (childIndex === -1) {
                     this.container.addChildAt(layer.container, mapModeLayerIndex);
                 }
@@ -19272,6 +19271,7 @@ var Rance;
                     key: "starOwners",
                     displayName: "starOwners",
                     interactive: false,
+                    alpha: 0.5,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
                         var points;
@@ -19288,7 +19288,7 @@ var Rance;
                                 continue;
                             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                             var gfx = new PIXI.Graphics();
-                            var alpha = 0.5;
+                            var alpha = 1;
                             if (isFinite(star.owner.colorAlpha))
                                 alpha *= star.owner.colorAlpha;
                             gfx.beginFill(star.owner.color, alpha);
@@ -19318,6 +19318,7 @@ var Rance;
                     key: "fogOfWar",
                     displayName: "fogOfWar",
                     interactive: false,
+                    alpha: 0.35,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
                         if (!this.player)
@@ -19325,7 +19326,6 @@ var Rance;
                         var points = this.player.getRevealedButNotVisibleStars();
                         if (!points || points.length < 1)
                             return doc;
-                        doc.alpha = 0.35;
                         for (var i = 0; i < points.length; i++) {
                             var star = points[i];
                             var sprite = this.getFowSpriteForStar(star);
@@ -19480,6 +19480,7 @@ var Rance;
                     key: "ownerBorders",
                     displayName: "ownerBorders",
                     interactive: false,
+                    alpha: 0.7,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
                         if (Rance.Options.display.borderWidth <= 0) {
@@ -19489,7 +19490,6 @@ var Rance;
                         var borderEdges = Rance.getRevealedBorderEdges(revealedStars, map.voronoi);
                         for (var i = 0; i < borderEdges.length; i++) {
                             var gfx = new PIXI.Graphics();
-                            gfx.alpha = 0.7;
                             doc.addChild(gfx);
                             var polyLineData = borderEdges[i];
                             var player = polyLineData.points[0].star.owner;
@@ -19651,6 +19651,7 @@ var Rance;
                     key: "debugSectors",
                     displayName: "debugSectors",
                     interactive: false,
+                    alpha: 0.5,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
                         var points;
@@ -19678,8 +19679,7 @@ var Rance;
                             var color = Rance.hslToHex(hue, 0.8, 0.5);
                             var poly = new PIXI.Polygon(star.voronoiCell.vertices);
                             var gfx = new PIXI.Graphics();
-                            var alpha = 0.5;
-                            gfx.beginFill(color, alpha);
+                            gfx.beginFill(color, 1);
                             gfx.drawShape(poly);
                             gfx.endFill();
                             doc.addChild(gfx);

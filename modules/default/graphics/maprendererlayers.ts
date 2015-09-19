@@ -121,6 +121,7 @@ module Rance
           key: "starOwners",
           displayName: "starOwners",
           interactive: false,
+          alpha: 0.5,
           drawingFunction: function(map: GalaxyMap)
           {
             var doc = new PIXI.Container();
@@ -142,7 +143,7 @@ module Rance
 
               var poly = new PIXI.Polygon(star.voronoiCell.vertices);
               var gfx = new PIXI.Graphics();
-              var alpha = 0.5;
+              var alpha = 1;
               if (isFinite(star.owner.colorAlpha)) alpha *= star.owner.colorAlpha;
               gfx.beginFill(star.owner.color, alpha);
               gfx.drawShape(poly);
@@ -177,6 +178,7 @@ module Rance
           key: "fogOfWar",
           displayName: "fogOfWar",
           interactive: false,
+          alpha: 0.35,
           drawingFunction: function(map: GalaxyMap)
           {
             var doc = new PIXI.Container();
@@ -185,8 +187,6 @@ module Rance
 
             if (!points || points.length < 1) return doc;
 
-            doc.alpha = 0.35;
-            
             for (var i = 0; i < points.length; i++)
             {
               var star = points[i];
@@ -389,6 +389,7 @@ module Rance
           key: "ownerBorders",
           displayName: "ownerBorders",
           interactive: false,
+          alpha: 0.7,
           drawingFunction: function(map: GalaxyMap)
           {
             var doc = new PIXI.Container();
@@ -403,7 +404,6 @@ module Rance
             for (var i = 0; i < borderEdges.length; i++)
             {
               var gfx = new PIXI.Graphics();
-              gfx.alpha = 0.7;
               doc.addChild(gfx);
               var polyLineData = borderEdges[i];
               var player = polyLineData.points[0].star.owner;
@@ -623,6 +623,7 @@ module Rance
           key: "debugSectors",
           displayName: "debugSectors",
           interactive: false,
+          alpha: 0.5,
           drawingFunction: function(map: GalaxyMap)
           {
             var doc = new PIXI.Container();
@@ -666,8 +667,7 @@ module Rance
 
               var poly = new PIXI.Polygon(star.voronoiCell.vertices);
               var gfx = new PIXI.Graphics();
-              var alpha = 0.5;
-              gfx.beginFill(color, alpha);
+              gfx.beginFill(color, 1);
               gfx.drawShape(poly);
               gfx.endFill();
               doc.addChild(gfx);

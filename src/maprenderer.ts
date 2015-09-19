@@ -381,7 +381,6 @@ module Rance
         var layer = updatedLayers[i];
         var childIndex = this.container.getChildIndex(layer.container);
         var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
-        console.log(layer.template.key, mapModeLayerIndex);
         if (childIndex === -1)
         {
           this.container.addChildAt(layer.container, mapModeLayerIndex);
