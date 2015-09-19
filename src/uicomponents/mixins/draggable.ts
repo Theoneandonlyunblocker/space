@@ -185,30 +185,30 @@ module Rance
           domHeight = parseInt(this.getDOMNode().offsetHeight);
         }
 
-        var containerWidth = parseInt(this.containerElement.offsetWidth);
-        var containerHeight = parseInt(this.containerElement.offsetHeight);
-
+        var minX = this.containerRect.left;
+        var maxX = this.containerRect.right;
+        var minY = this.containerRect.top;
+        var maxY = this.containerRect.bottom;
 
         var x2 = x + domWidth;
         var y2 = y + domHeight;
 
-        if (x < 0)
+        if (x < minX)
         {
-          x = 0;
+          x = minX;
         }
-        else if (x2 > containerWidth)
+        else if (x2 > maxX)
         {
-          x = containerWidth - domWidth;
+          x = this.containerRect.width - domWidth;
         };
 
-        if (y < 0)
+        if (y < minY)
         {
-          y = 0;
+          y = minY;
         }
-
-        else if (y2 > containerHeight)
+        else if (y2 > maxY)
         {
-          y = containerHeight - domHeight;
+          y = this.containerRect.height - domHeight;
         };
 
         if (this.onDragMove)
@@ -323,7 +323,12 @@ module Rance
         }
 
       },
-      componentDidMount: function() {
+      setContainerRect: function()
+      {
+        this.containerRect = this.containerElement.getBoundingClientRect();
+      },
+      componentDidMount: function()
+      {
         this.DOMNode = this.getDOMNode();
         this.containerElement = document.body;
         if (this.props.containerElement)
@@ -336,10 +341,14 @@ module Rance
           // DOM node
           else this.containerElement = this.props.containerElement;
         }
+
+        this.setContainerRect();
+        window.addEventListener("resize", this.setContainerRect, false);
       },
       componentWillUnmount: function()
       {
         this.removeEventListeners();
+        window.removeEventListener("resize", this.setContainerRect);
       }
     }
   }

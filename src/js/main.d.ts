@@ -104,6 +104,7 @@ declare module Rance {
             handleDragEnd: (e: MouseEvent) => void;
             addEventListeners: () => void;
             removeEventListeners: () => void;
+            setContainerRect: () => void;
             componentDidMount: () => void;
             componentWillUnmount: () => void;
         };

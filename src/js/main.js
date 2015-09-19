@@ -489,22 +489,24 @@ var Rance;
                     domWidth = parseInt(this.getDOMNode().offsetWidth);
                     domHeight = parseInt(this.getDOMNode().offsetHeight);
                 }
-                var containerWidth = parseInt(this.containerElement.offsetWidth);
-                var containerHeight = parseInt(this.containerElement.offsetHeight);
+                var minX = this.containerRect.left;
+                var maxX = this.containerRect.right;
+                var minY = this.containerRect.top;
+                var maxY = this.containerRect.bottom;
                 var x2 = x + domWidth;
                 var y2 = y + domHeight;
-                if (x < 0) {
-                    x = 0;
+                if (x < minX) {
+                    x = minX;
                 }
-                else if (x2 > containerWidth) {
-                    x = containerWidth - domWidth;
+                else if (x2 > maxX) {
+                    x = this.containerRect.width - domWidth;
                 }
                 ;
-                if (y < 0) {
-                    y = 0;
+                if (y < minY) {
+                    y = minY;
                 }
-                else if (y2 > containerHeight) {
-                    y = containerHeight - domHeight;
+                else if (y2 > maxY) {
+                    y = this.containerRect.height - domHeight;
                 }
                 ;
                 if (this.onDragMove) {
@@ -588,6 +590,9 @@ var Rance;
                     this.touchEventTarget = null;
                 }
             },
+            setContainerRect: function () {
+                this.containerRect = this.containerElement.getBoundingClientRect();
+            },
             componentDidMount: function () {
                 this.DOMNode = this.getDOMNode();
                 this.containerElement = document.body;
@@ -599,9 +604,12 @@ var Rance;
                     else
                         this.containerElement = this.props.containerElement;
                 }
+                this.setContainerRect();
+                window.addEventListener("resize", this.setContainerRect, false);
             },
             componentWillUnmount: function () {
                 this.removeEventListeners();
+                window.removeEventListener("resize", this.setContainerRect);
             }
         };
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -14851,9 +14859,18 @@ var Rance;
                     hoverSide: null
                 });
             },
+            setLayerAlpha: function (e) {
+                var target = e.target;
+                var value = parseFloat(target.value);
+                if (isFinite(value)) {
+                    this.props.updateLayer(this.props.layer);
+                    this.props.layer.alpha = value;
+                }
+                this.forceUpdate();
+            },
             render: function () {
                 var divProps = {
-                    className: "map-renderer-layers-list-item draggable",
+                    className: "map-renderer-layers-list-item draggable draggable-container",
                     onMouseDown: this.handleMouseDown,
                     onTouchStart: this.handleMouseDown
                 };
@@ -14874,8 +14891,16 @@ var Rance;
                     checked: this.props.isActive,
                     onChange: this.props.toggleActive
                 }), React.DOM.span({
-                    className: "map-renderer-layers-list-item-name"
-                }, this.props.layerName)));
+                    className: "map-renderer-layers-list-item-name draggable-container"
+                }, this.props.layerName), React.DOM.input({
+                    className: "map-renderer-layers-list-item-alpha",
+                    type: "number",
+                    min: 0,
+                    max: 1,
+                    step: 0.05,
+                    value: this.props.layer.alpha,
+                    onChange: this.setLayerAlpha
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -14925,6 +14950,10 @@ var Rance;
                     insertPosition: position
                 });
             },
+            updateLayer: function (layer) {
+                var mapRenderer = this.props.mapRenderer;
+                mapRenderer.setLayerAsDirty(layer.template.key);
+            },
             render: function () {
                 var mapRenderer = this.props.mapRenderer;
                 var mapMode = mapRenderer.currentMapMode;
@@ -14945,7 +14974,10 @@ var Rance;
                         listItemIsDragging: Boolean(this.state.currentDraggingLayer),
                         onDragStart: this.handleDragStart,
                         onDragEnd: this.handleDragEnd,
-                        setHoverPosition: this.handleSetHoverPosition
+                        setHoverPosition: this.handleSetHoverPosition,
+                        updateLayer: this.updateLayer,
+                        containerDragOnly: true,
+                        containerElement: this
                     }));
                 }
                 return (React.DOM.ol({
@@ -19188,7 +19220,7 @@ var Rance;
             (function (MapRendererLayers) {
                 MapRendererLayers.nonFillerStars = {
                     key: "nonFillerStars",
-                    displayName: "nonFillerStars",
+                    displayName: "Stars",
                     interactive: true,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -19269,7 +19301,7 @@ var Rance;
                 };
                 MapRendererLayers.starOwners = {
                     key: "starOwners",
-                    displayName: "starOwners",
+                    displayName: "Star owners",
                     interactive: false,
                     alpha: 0.5,
                     drawingFunction: function (map) {
@@ -19316,7 +19348,7 @@ var Rance;
                 };
                 MapRendererLayers.fogOfWar = {
                     key: "fogOfWar",
-                    displayName: "fogOfWar",
+                    displayName: "Fog of war",
                     interactive: false,
                     alpha: 0.35,
                     drawingFunction: function (map) {
@@ -19336,7 +19368,7 @@ var Rance;
                 };
                 MapRendererLayers.starIncome = {
                     key: "starIncome",
-                    displayName: "starIncome",
+                    displayName: "Income",
                     interactive: false,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -19391,7 +19423,7 @@ var Rance;
                 };
                 MapRendererLayers.playerInfluence = {
                     key: "playerInfluence",
-                    displayName: "playerInfluence",
+                    displayName: "Influence",
                     interactive: false,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -19459,7 +19491,7 @@ var Rance;
                 };
                 MapRendererLayers.nonFillerVoronoiLines = {
                     key: "nonFillerVoronoiLines",
-                    displayName: "nonFillerVoronoiLines",
+                    displayName: "Star borders",
                     interactive: false,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -19478,7 +19510,7 @@ var Rance;
                 };
                 MapRendererLayers.ownerBorders = {
                     key: "ownerBorders",
-                    displayName: "ownerBorders",
+                    displayName: "Owner borders",
                     interactive: false,
                     alpha: 0.7,
                     drawingFunction: function (map) {
@@ -19503,7 +19535,7 @@ var Rance;
                 };
                 MapRendererLayers.starLinks = {
                     key: "starLinks",
-                    displayName: "starLinks",
+                    displayName: "Links",
                     interactive: false,
                     drawingFunction: function (map) {
                         var doc = new PIXI.Container();
@@ -19537,7 +19569,7 @@ var Rance;
                 };
                 MapRendererLayers.resources = {
                     key: "resources",
-                    displayName: "resources",
+                    displayName: "Resources",
                     interactive: false,
                     drawingFunction: function (map) {
                         var self = this;
@@ -19568,7 +19600,7 @@ var Rance;
                 };
                 MapRendererLayers.fleets = {
                     key: "fleets",
-                    displayName: "fleets",
+                    displayName: "Fleets",
                     interactive: true,
                     drawingFunction: function (map) {
                         var self = this;
@@ -19649,7 +19681,7 @@ var Rance;
                 };
                 MapRendererLayers.debugSectors = {
                     key: "debugSectors",
-                    displayName: "debugSectors",
+                    displayName: "Sectors (debug)",
                     interactive: false,
                     alpha: 0.5,
                     drawingFunction: function (map) {
