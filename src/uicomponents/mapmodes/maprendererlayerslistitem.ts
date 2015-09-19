@@ -62,11 +62,23 @@ module Rance
         });
       },
 
+      setLayerAlpha: function(e: Event)
+      {
+        var target = <HTMLInputElement> e.target;
+        var value = parseFloat(target.value)
+        if (isFinite(value))
+        {
+          this.props.updateLayer(this.props.layer);
+          this.props.layer.alpha = value;
+        }
+        this.forceUpdate();
+      },
+
       render: function()
       {
         var divProps: any =
         {
-          className: "map-renderer-layers-list-item draggable",
+          className: "map-renderer-layers-list-item draggable draggable-container",
           onMouseDown: this.handleMouseDown,
           onTouchStart: this.handleMouseDown
         };
@@ -98,10 +110,20 @@ module Rance
             }),
             React.DOM.span(
             {
-              className: "map-renderer-layers-list-item-name"
+              className: "map-renderer-layers-list-item-name draggable-container"
             },
               this.props.layerName
-            )
+            ),
+            React.DOM.input(
+            {
+              className: "map-renderer-layers-list-item-alpha",
+              type: "number",
+              min: 0,
+              max: 1,
+              step: 0.05,
+              value: this.props.layer.alpha,
+              onChange: this.setLayerAlpha
+            })
           )
         );
       }

@@ -67,6 +67,12 @@ module Rance
         });
       },
 
+      updateLayer: function(layer: MapRendererLayer)
+      {
+        var mapRenderer: MapRenderer = this.props.mapRenderer;
+        mapRenderer.setLayerAsDirty(layer.template.key);
+      },
+
       render: function()
       {
         var mapRenderer: MapRenderer = this.props.mapRenderer;
@@ -92,7 +98,10 @@ module Rance
             listItemIsDragging: Boolean(this.state.currentDraggingLayer),
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,
-            setHoverPosition: this.handleSetHoverPosition
+            setHoverPosition: this.handleSetHoverPosition,
+            updateLayer: this.updateLayer,
+            containerDragOnly: true,
+            containerElement: this
           }));
         }
         
