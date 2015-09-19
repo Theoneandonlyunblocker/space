@@ -393,6 +393,17 @@ module Rance
         this.setLayerAsDirty(layer.template.key);
       }
     }
+    resetMapModeLayersPosition()
+    {
+      this.resetContainer();
+
+      var layerData = this.currentMapMode.getActiveLayers();
+      for (var i = 0; i < layerData.length; i++)
+      {
+        var layer = layerData[i].layer;
+        this.container.addChild(layer.container);
+      }
+    }
     setMapModeByKey(key: string)
     {
       this.setMapMode(this.mapModes[key]);

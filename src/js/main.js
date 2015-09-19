@@ -14816,10 +14816,59 @@ var Rance;
     (function (UIComponents) {
         UIComponents.MapRendererLayersListItem = React.createClass({
             displayName: "MapRendererLayersListItem",
+            mixins: [UIComponents.Draggable, UIComponents.DropTarget],
+            cachedMidPoint: undefined,
+            getInitialState: function () {
+                return ({
+                    hoverSide: null
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.listItemIsDragging !== this.props.listItemIsDragging) {
+                    this.cachedMidPoint = undefined;
+                    this.clearHover();
+                }
+            },
+            onDragStart: function () {
+                this.props.onDragStart(this.props.layer);
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
+            },
+            handleHover: function (e) {
+                if (!this.cachedMidPoint) {
+                    var rect = this.getDOMNode().getBoundingClientRect();
+                    this.cachedMidPoint = rect.top + rect.height / 2;
+                }
+                var isAbove = e.clientY < this.cachedMidPoint;
+                this.setState({
+                    hoverSide: (isAbove ? "top" : "bottom")
+                });
+                this.props.setHoverPosition(this.props.layer, isAbove);
+            },
+            clearHover: function () {
+                this.setState({
+                    hoverSide: null
+                });
+            },
             render: function () {
-                return (React.DOM.li({
-                    className: "map-renderer-layers-list-item draggable-container"
-                }, React.DOM.input({
+                var divProps = {
+                    className: "map-renderer-layers-list-item draggable",
+                    onMouseDown: this.handleMouseDown,
+                    onTouchStart: this.handleMouseDown
+                };
+                if (this.state.dragging) {
+                    divProps.style = this.state.dragPos;
+                    divProps.className += " dragging";
+                }
+                if (this.props.listItemIsDragging) {
+                    divProps.onMouseMove = this.handleHover;
+                    divProps.onMouseLeave = this.clearHover;
+                    if (this.state.hoverSide) {
+                        divProps.className += " insert-" + this.state.hoverSide;
+                    }
+                }
+                return (React.DOM.li(divProps, React.DOM.input({
                     type: "checkbox",
                     className: "map-renderer-layers-list-item-checkbox",
                     checked: this.props.isActive,
@@ -14838,11 +14887,43 @@ var Rance;
     (function (UIComponents) {
         UIComponents.MapRendererLayersList = React.createClass({
             displayName: "MapRendererLayersList",
+            getInitialState: function () {
+                return ({
+                    currentDraggingLayer: null,
+                    indexToSwapInto: undefined,
+                    layerKeyToInsertNextTo: null,
+                    insertPosition: null
+                });
+            },
+            handleDragStart: function (layer) {
+                this.setState({
+                    currentDraggingLayer: layer
+                });
+            },
+            handleDragEnd: function () {
+                var mapRenderer = this.props.mapRenderer;
+                var toInsert = this.state.currentDraggingLayer;
+                var insertTarget = mapRenderer.layers[this.state.layerKeyToInsertNextTo];
+                mapRenderer.currentMapMode.insertLayerNextToLayer(toInsert, insertTarget, this.state.insertPosition);
+                mapRenderer.resetMapModeLayersPosition();
+                this.setState({
+                    currentDraggingLayer: null,
+                    indexToSwapInto: undefined,
+                    layerKeyToInsertNextTo: null,
+                    insertPosition: null
+                });
+            },
             handleToggleActive: function (layer) {
                 var mapRenderer = this.props.mapRenderer;
                 mapRenderer.currentMapMode.toggleLayer(layer);
                 mapRenderer.updateMapModeLayers([layer]);
                 this.forceUpdate();
+            },
+            handleSetHoverPosition: function (layer, position) {
+                this.setState({
+                    layerKeyToInsertNextTo: layer.template.key,
+                    insertPosition: position
+                });
             },
             render: function () {
                 var mapRenderer = this.props.mapRenderer;
@@ -14856,10 +14937,15 @@ var Rance;
                     var layer = layersData[i].layer;
                     var layerKey = layer.template.key;
                     listItems.push(UIComponents.MapRendererLayersListItem({
+                        layer: layer,
                         layerName: layer.template.displayName,
                         isActive: mapMode.activeLayers[layerKey],
                         key: layerKey,
-                        toggleActive: this.handleToggleActive.bind(this, layer)
+                        toggleActive: this.handleToggleActive.bind(this, layer),
+                        listItemIsDragging: Boolean(this.state.currentDraggingLayer),
+                        onDragStart: this.handleDragStart,
+                        onDragEnd: this.handleDragEnd,
+                        setHoverPosition: this.handleSetHoverPosition
                     }));
                 }
                 return (React.DOM.ol({
@@ -16848,8 +16934,13 @@ var Rance;
         };
         MapRendererMapMode.prototype.setLayerIndex = function (layer, newIndex) {
             var prevIndex = this.getLayerIndex(layer);
-            this.layers.splice(prevIndex, 1);
-            this.layers.splice(newIndex, 0, layer);
+            var spliced = this.layers.splice(prevIndex, 1)[0];
+            this.layers.splice(newIndex, 0, spliced);
+        };
+        MapRendererMapMode.prototype.insertLayerNextToLayer = function (toInsert, target, position) {
+            var indexAdjust = (position === "top" ? -1 : 0);
+            var newIndex = this.getLayerIndex(target) + indexAdjust;
+            this.setLayerIndex(toInsert, newIndex);
         };
         MapRendererMapMode.prototype.getActiveLayers = function () {
             var self = this;
@@ -17350,6 +17441,14 @@ var Rance;
                     this.container.removeChildAt(mapModeLayerIndex + 1);
                 }
                 this.setLayerAsDirty(layer.template.key);
+            }
+        };
+        MapRenderer.prototype.resetMapModeLayersPosition = function () {
+            this.resetContainer();
+            var layerData = this.currentMapMode.getActiveLayers();
+            for (var i = 0; i < layerData.length; i++) {
+                var layer = layerData[i].layer;
+                this.container.addChild(layer.container);
             }
         };
         MapRenderer.prototype.setMapModeByKey = function (key) {

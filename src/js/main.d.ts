@@ -2076,7 +2076,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var MapRendererLayersListItem: React.Factory<{}>;
+        var MapRendererLayersListItem: React.Factory<any>;
     }
 }
 declare module Rance {
@@ -2258,6 +2258,7 @@ declare module Rance {
         getLayerIndexInContainer(layer: MapRendererLayer): number;
         toggleLayer(layer: MapRendererLayer): void;
         setLayerIndex(layer: MapRendererLayer, newIndex: number): void;
+        insertLayerNextToLayer(toInsert: MapRendererLayer, target: MapRendererLayer, position: string): void;
         getActiveLayers(): IMapRendererMapModeLayerData[];
     }
 }
@@ -2332,6 +2333,7 @@ declare module Rance {
         setLayerAsDirty(layerName: string): void;
         setAllLayersAsDirty(): void;
         updateMapModeLayers(updatedLayers: MapRendererLayer[]): void;
+        resetMapModeLayersPosition(): void;
         setMapModeByKey(key: string): void;
         setMapMode(newMapMode: MapRendererMapMode): void;
         render(): void;
