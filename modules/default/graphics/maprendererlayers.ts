@@ -11,7 +11,7 @@ module Rance
         export var nonFillerStars: IMapRendererLayerTemplate =
         {
           key: "nonFillerStars",
-          displayName: "nonFillerStars",
+          displayName: "Stars",
           interactive: true,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -119,7 +119,7 @@ module Rance
         export var starOwners: IMapRendererLayerTemplate =
         {
           key: "starOwners",
-          displayName: "starOwners",
+          displayName: "Star owners",
           interactive: false,
           alpha: 0.5,
           drawingFunction: function(map: GalaxyMap)
@@ -176,7 +176,7 @@ module Rance
         export var fogOfWar: IMapRendererLayerTemplate =
         {
           key: "fogOfWar",
-          displayName: "fogOfWar",
+          displayName: "Fog of war",
           interactive: false,
           alpha: 0.35,
           drawingFunction: function(map: GalaxyMap)
@@ -201,7 +201,7 @@ module Rance
         export var starIncome: IMapRendererLayerTemplate =
         {
           key: "starIncome",
-          displayName: "starIncome",
+          displayName: "Income",
           interactive: false,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -271,7 +271,7 @@ module Rance
         export var playerInfluence: IMapRendererLayerTemplate =
         {
           key: "playerInfluence",
-          displayName: "playerInfluence",
+          displayName: "Influence",
           interactive: false,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -360,7 +360,7 @@ module Rance
         export var nonFillerVoronoiLines: IMapRendererLayerTemplate =
         {
           key: "nonFillerVoronoiLines",
-          displayName: "nonFillerVoronoiLines",
+          displayName: "Star borders",
           interactive: false,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -387,7 +387,7 @@ module Rance
         export var ownerBorders: IMapRendererLayerTemplate =
         {
           key: "ownerBorders",
-          displayName: "ownerBorders",
+          displayName: "Owner borders",
           interactive: false,
           alpha: 0.7,
           drawingFunction: function(map: GalaxyMap)
@@ -420,7 +420,7 @@ module Rance
         export var starLinks: IMapRendererLayerTemplate =
         {
           key: "starLinks",
-          displayName: "starLinks",
+          displayName: "Links",
           interactive: false,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -469,7 +469,7 @@ module Rance
         export var resources: IMapRendererLayerTemplate =
         {
           key: "resources",
-          displayName: "resources",
+          displayName: "Resources",
           interactive: false,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -512,7 +512,7 @@ module Rance
         export var fleets: IMapRendererLayerTemplate =
         {
           key: "fleets",
-          displayName: "fleets",
+          displayName: "Fleets",
           interactive: true,
           drawingFunction: function(map: GalaxyMap)
           {
@@ -621,7 +621,7 @@ module Rance
         export var debugSectors: IMapRendererLayerTemplate =
         {
           key: "debugSectors",
-          displayName: "debugSectors",
+          displayName: "Sectors (debug)",
           interactive: false,
           alpha: 0.5,
           drawingFunction: function(map: GalaxyMap)
