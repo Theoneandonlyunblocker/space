@@ -41,6 +41,14 @@ module Rance
       handleMouseDown: function(e: MouseEvent)
       {
         if (e.button) return;
+        if (this.props.containerDragOnly)
+        {
+          var target = <HTMLElement> e.target;
+          if (!target.classList.contains("draggable-container"))
+          {
+            return;
+          }
+        }
         e.preventDefault();
         e.stopPropagation();
 

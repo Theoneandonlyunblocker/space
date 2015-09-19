@@ -387,6 +387,12 @@ var Rance;
             handleMouseDown: function (e) {
                 if (e.button)
                     return;
+                if (this.props.containerDragOnly) {
+                    var target = e.target;
+                    if (!target.classList.contains("draggable-container")) {
+                        return;
+                    }
+                }
                 e.preventDefault();
                 e.stopPropagation();
                 if (this.state.dragging)
@@ -3442,72 +3448,6 @@ var Rance;
 (function (Rance) {
     var UIComponents;
     (function (UIComponents) {
-        UIComponents.LightBox = React.createClass({
-            displayName: "LightBox",
-            // far from ideal as it always triggers reflow 4 times
-            // cant figure out how to do resizing better since content size is dynamic
-            handleResize: function () {
-                var container = this.refs.container.getDOMNode();
-                var wrapperRect = this.refs.wrapper.getDOMNode().getBoundingClientRect();
-                container.classList.remove("light-box-horizontal-padding");
-                container.classList.remove("light-box-fill-horizontal");
-                container.classList.remove("light-box-vertical-padding");
-                container.classList.remove("light-box-fill-vertical");
-                if (container.getBoundingClientRect().width + 10 + wrapperRect.left < window.innerWidth) {
-                    container.classList.add("light-box-horizontal-padding");
-                }
-                else {
-                    container.classList.add("light-box-fill-horizontal");
-                }
-                if (container.getBoundingClientRect().height + 10 + wrapperRect.top < window.innerHeight) {
-                    container.classList.add("light-box-vertical-padding");
-                }
-                else {
-                    container.classList.add("light-box-fill-vertical");
-                }
-            },
-            componentDidMount: function () {
-                window.addEventListener("resize", this.handleResize, false);
-                this.handleResize();
-            },
-            componentWillUnmount: function () {
-                window.removeEventListener("resize", this.handleResize);
-            },
-            componentDidUpdate: function () {
-                this.handleResize();
-            },
-            handleClose: function () {
-                if (this.refs.content.overRideLightBoxClose) {
-                    this.refs.content.overRideLightBoxClose();
-                }
-                else {
-                    this.props.handleClose();
-                }
-            },
-            render: function () {
-                var contentProps = Rance.extendObject(this.props.contentProps);
-                contentProps.ref = "content";
-                return (React.DOM.div({
-                    className: "light-box-wrapper",
-                    ref: "wrapper"
-                }, React.DOM.div({
-                    className: "light-box-container",
-                    ref: "container"
-                }, React.DOM.button({
-                    className: "light-box-close",
-                    onClick: this.handleClose
-                }, "X"), React.DOM.div({
-                    className: "light-box-content",
-                    ref: "content"
-                }, this.props.contentConstructor(contentProps)))));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
         UIComponents.ItemPurchaseListItem = React.createClass({
             displayName: "ItemPurchaseListItem",
             makeCell: function (type) {
@@ -3695,13 +3635,14 @@ var Rance;
             mixins: [UIComponents.Draggable],
             getInitialState: function () {
                 return ({
-                    zIndex: this.props.incrementZIndex()
+                    zIndex: -1
                 });
             },
             componentDidMount: function () {
                 this.setInitialPosition();
             },
-            onDragStart: function () {
+            onMouseDown: function (e) {
+                this.handleMouseDown(e);
                 this.setState({
                     zIndex: this.props.incrementZIndex()
                 });
@@ -3709,13 +3650,13 @@ var Rance;
             setInitialPosition: function () {
                 var rect = this.getDOMNode().getBoundingClientRect();
                 var container = this.containerElement; // set in draggable mixin
-                var left = parseInt(container.offsetWidth) / 2.5 - rect.width / 2;
-                var top = parseInt(container.offsetHeight) / 3.5 - rect.height / 2;
-                left += this.props.activePopupsCount * 20;
-                top += this.props.activePopupsCount * 20;
-                left = Math.min(left, container.offsetWidth - rect.width);
-                top = Math.min(top, container.offsetHeight - rect.height);
+                var position = this.props.getInitialPosition(rect, container);
+                var left = position.left;
+                var top = position.top;
+                left = Rance.clamp(left, 0, container.offsetWidth - rect.width);
+                top = Rance.clamp(top, 0, container.offsetHeight - rect.height);
                 this.setState({
+                    zIndex: this.props.incrementZIndex(),
                     dragPos: {
                         top: top,
                         left: left
@@ -3725,16 +3666,20 @@ var Rance;
                 });
             },
             handleResizeMove: function (x, y) {
+                var minWidth = this.props.minWidth || 0;
+                var maxWidth = this.props.maxWidth || window.innerWidth;
+                var minHeight = this.props.minHeight || 0;
+                var maxHeight = this.props.maxHeight || window.innerHeight;
                 this.setState({
-                    width: x - this.state.dragPos.left,
-                    height: y - this.state.dragPos.top
+                    width: Rance.clamp(x - this.state.dragPos.left, minWidth, maxWidth),
+                    height: Rance.clamp(y - this.state.dragPos.top, minHeight, maxHeight)
                 });
             },
             render: function () {
                 var divProps = {
-                    className: "popup draggable",
-                    onTouchStart: this.handleMouseDown,
-                    onMouseDown: this.handleMouseDown,
+                    className: "popup draggable-container",
+                    onTouchStart: this.onMouseDown,
+                    onMouseDown: this.onMouseDown,
                     style: {
                         top: this.state.dragPos ? this.state.dragPos.top : 0,
                         left: this.state.dragPos ? this.state.dragPos.left : 0,
@@ -3748,7 +3693,7 @@ var Rance;
                 }
                 var contentProps = this.props.contentProps;
                 contentProps.closePopup = this.props.closePopup;
-                var resizeHandle = !this.resizable ? null : UIComponents.PopupResizeHandle({
+                var resizeHandle = !this.props.resizable ? null : UIComponents.PopupResizeHandle({
                     handleResize: this.handleResizeMove
                 });
                 return (React.DOM.div(divProps, this.props.contentConstructor(contentProps), resizeHandle));
@@ -3909,6 +3854,32 @@ var Rance;
                     popups: []
                 });
             },
+            getHighestZIndexPopup: function () {
+                if (this.state.popups.length === 0)
+                    return null;
+                var popups = [];
+                for (var ref in this.refs) {
+                    popups.push(this.refs[ref]);
+                }
+                return popups.sort(function (a, b) {
+                    return b.state.zIndex - a.state.zIndex;
+                })[0];
+            },
+            getInitialPosition: function (rect, container) {
+                if (this.state.popups.length === 1) {
+                    return ({
+                        left: container.offsetWidth / 2.5 - rect.width / 2,
+                        top: container.offsetHeight / 2.5 - rect.height / 2
+                    });
+                }
+                else {
+                    var highestZPosition = this.getHighestZIndexPopup().state.dragPos;
+                    return ({
+                        left: highestZPosition.left + 20,
+                        top: highestZPosition.top + 20
+                    });
+                }
+            },
             incrementZIndex: function () {
                 if (!this.currentZIndex)
                     this.currentZIndex = 0;
@@ -3946,22 +3917,22 @@ var Rance;
             },
             makePopup: function (props) {
                 var id = this.getPopupId();
+                var popupProps = props.popupProps ? Rance.extendObject(props.popupProps) : {};
+                popupProps.contentConstructor = props.contentConstructor;
+                popupProps.contentProps = props.contentProps;
+                popupProps.id = id;
+                popupProps.key = id;
+                popupProps.ref = id;
+                popupProps.incrementZIndex = this.incrementZIndex;
+                popupProps.closePopup = this.closePopup.bind(this, id);
+                popupProps.getInitialPosition = this.getInitialPosition;
                 if (this.props.onlyAllowOne) {
                     this.setState({
-                        popups: [
-                            {
-                                contentConstructor: props.contentConstructor,
-                                contentProps: props.contentProps,
-                                id: id
-                            }]
+                        popups: [popupProps]
                     });
                 }
                 else {
-                    var popups = this.state.popups.concat({
-                        contentConstructor: props.contentConstructor,
-                        contentProps: props.contentProps,
-                        id: id
-                    });
+                    var popups = this.state.popups.concat(popupProps);
                     this.setState({
                         popups: popups
                     });
@@ -3980,14 +3951,9 @@ var Rance;
                 var toRender = [];
                 for (var i = 0; i < popups.length; i++) {
                     var popup = popups[i];
-                    toRender.push(UIComponents.Popup({
-                        contentConstructor: popup.contentConstructor,
-                        contentProps: popup.contentProps,
-                        key: popup.id,
-                        incrementZIndex: this.incrementZIndex,
-                        closePopup: this.closePopup.bind(this, popup.id),
-                        activePopupsCount: this.state.popups.length
-                    }));
+                    var popupProps = Rance.extendObject(popup);
+                    popupProps.activePopupsCount = popups.length;
+                    toRender.push(UIComponents.Popup(popupProps));
                 }
                 if (toRender.length < 1) {
                     return null;
@@ -5229,7 +5195,25 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-/// <reference path="lightbox.ts"/>
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopMenuPopup = React.createClass({
+            displayName: "TopMenuPopup",
+            render: function () {
+                return (React.DOM.div({
+                    className: "top-menu-popup-container draggable-container"
+                }, React.DOM.button({
+                    className: "light-box-close",
+                    onClick: this.props.handleClose
+                }, "X"), React.DOM.div({
+                    className: "light-box-content"
+                }, this.props.contentConstructor(this.props.contentProps))));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../items/buyitems.ts"/>
 /// <reference path="../saves/savegame.ts"/>
 /// <reference path="../saves/loadgame.ts"/>
@@ -5237,6 +5221,135 @@ var Rance;
 /// <reference path="../diplomacy/diplomacyoverview.ts"/>
 /// <reference path="economysummary.ts"/>
 /// <reference path="optionslist.ts"/>
+/// <reference path="../popups/topmenupopup.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.TopMenuPopups = React.createClass({
+            displayName: "TopMenuPopups",
+            getInitialState: function () {
+                return ({
+                    equipItems: undefined,
+                    buyItems: undefined,
+                    economySummary: undefined,
+                    saveGame: undefined,
+                    loadGame: undefined,
+                    options: undefined,
+                    diplomacy: undefined
+                });
+            },
+            closePopup: function (popupType) {
+                this.refs.popupManager.closePopup(this.state[popupType]);
+                var stateObj = {};
+                stateObj[popupType] = undefined;
+                this.setState(stateObj);
+            },
+            makePopup: function (popupType) {
+                var contentConstructor;
+                var contentProps;
+                var popupProps = {
+                    resizable: true,
+                    containerDragOnly: true,
+                    minWidth: 150,
+                    minHeight: 50
+                };
+                switch (popupType) {
+                    case "equipItems":
+                        {
+                            contentConstructor = UIComponents.ItemEquip;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            popupProps.minWidth = 440;
+                            break;
+                        }
+                    case "buyItems":
+                        {
+                            contentConstructor = UIComponents.BuyItems;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            break;
+                        }
+                    case "economySummary":
+                        {
+                            contentConstructor = UIComponents.EconomySummary;
+                            contentProps =
+                                {
+                                    player: this.props.player
+                                };
+                            break;
+                        }
+                    case "saveGame":
+                        {
+                            contentConstructor = UIComponents.SaveGame;
+                            contentProps =
+                                {
+                                    handleClose: this.closePopup.bind(this, "saveGame")
+                                };
+                            break;
+                        }
+                    case "loadGame":
+                        {
+                            contentConstructor = UIComponents.LoadGame;
+                            contentProps =
+                                {
+                                    handleClose: this.closePopup.bind(this, "loadGame")
+                                };
+                            break;
+                        }
+                    case "options":
+                        {
+                            contentConstructor = UIComponents.OptionsList;
+                            contentProps = {};
+                            break;
+                        }
+                    case "diplomacy":
+                        {
+                            contentConstructor = UIComponents.DiplomacyOverview;
+                            contentProps =
+                                {
+                                    player: this.props.player,
+                                    totalPlayerCount: this.props.game.playerOrder.length,
+                                    metPlayers: this.props.player.diplomacyStatus.metPlayers,
+                                    statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
+                                };
+                            break;
+                        }
+                }
+                var id = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.TopMenuPopup,
+                    contentProps: {
+                        contentConstructor: contentConstructor,
+                        contentProps: contentProps,
+                        handleClose: this.closePopup.bind(this, popupType)
+                    },
+                    popupProps: popupProps
+                });
+                var stateObj = {};
+                stateObj[popupType] = id;
+                this.setState(stateObj);
+            },
+            togglePopup: function (popupType) {
+                if (isFinite(this.state[popupType])) {
+                    this.closePopup(popupType);
+                }
+                else {
+                    this.makePopup(popupType);
+                }
+            },
+            render: function () {
+                return (UIComponents.PopupManager({
+                    ref: "popupManager"
+                }));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="topmenupopups.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -5249,8 +5362,6 @@ var Rance;
             cachedMenuButtonWidth: 37,
             getInitialState: function () {
                 return ({
-                    opened: null,
-                    lightBoxElement: null,
                     hasCondensedMenu: false,
                     buttonsToPlace: 999,
                     condensedMenuOpened: Rance.Options.ui.noHamburger
@@ -5328,147 +5439,14 @@ var Rance;
                     buttonsToPlace: amountOfButtonsToPlace
                 });
             },
-            closeLightBox: function () {
-                if (this.state.opened === "options") {
-                    Rance.saveOptions();
-                }
-                this.setState({
-                    opened: null,
-                    lightBoxElement: null
-                });
-            },
-            handleEquipItems: function () {
-                if (this.state.opened === "equipItems") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "equipItems",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.ItemEquip,
-                            contentProps: {
-                                player: this.props.player
-                            }
-                        })
-                    });
-                }
-            },
-            handleBuyItems: function () {
-                if (this.state.opened === "buyItems") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "buyItems",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.BuyItems,
-                            contentProps: {
-                                player: this.props.player
-                            }
-                        })
-                    });
-                }
-            },
-            handleEconomySummary: function () {
-                if (this.state.opened === "economySummary") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "economySummary",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.EconomySummary,
-                            contentProps: {
-                                player: this.props.player
-                            }
-                        })
-                    });
-                }
-            },
-            handleSaveGame: function () {
-                if (this.state.opened === "saveGame") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "saveGame",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.SaveGame,
-                            contentProps: {
-                                handleClose: this.closeLightBox
-                            }
-                        })
-                    });
-                }
-            },
-            handleLoadGame: function () {
-                if (this.state.opened === "loadGame") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "loadGame",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.LoadGame,
-                            contentProps: {
-                                handleClose: this.closeLightBox
-                            }
-                        })
-                    });
-                }
-            },
-            handleOptions: function () {
-                if (this.state.opened === "options") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "options",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.OptionsList,
-                            contentProps: {
-                                handleClose: this.closeLightBox
-                            }
-                        })
-                    });
-                }
-            },
-            handleDiplomacy: function () {
-                if (this.state.opened === "diplomacy") {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        opened: "diplomacy",
-                        lightBoxElement: UIComponents.LightBox({
-                            handleClose: this.closeLightBox,
-                            contentConstructor: UIComponents.DiplomacyOverview,
-                            contentProps: {
-                                handleClose: this.closeLightBox,
-                                player: this.props.player,
-                                totalPlayerCount: this.props.game.playerOrder.length,
-                                metPlayers: this.props.player.diplomacyStatus.metPlayers,
-                                statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
-                            }
-                        })
-                    });
-                }
+            togglePopup: function (popupType) {
+                this.refs.popups.togglePopup(popupType);
+                this.forceUpdate();
             },
             toggleCondensedMenu: function () {
-                if (this.state.opened) {
-                    this.closeLightBox();
-                }
-                else {
-                    this.setState({
-                        condensedMenuOpened: !this.state.condensedMenuOpened
-                    });
-                }
+                this.setState({
+                    condensedMenuOpened: !this.state.condensedMenuOpened
+                });
             },
             render: function () {
                 var menuItemTabIndex = this.state.opened ? -1 : 0;
@@ -5476,13 +5454,13 @@ var Rance;
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "equipItems",
-                        onClick: this.handleEquipItems,
+                        onClick: this.togglePopup.bind(this, "equipItems"),
                         tabIndex: menuItemTabIndex
                     }, "Equip"),
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "buyItems",
-                        onClick: this.handleBuyItems,
+                        onClick: this.togglePopup.bind(this, "buyItems"),
                         tabIndex: menuItemTabIndex
                     }, "Buy items"),
                     /*
@@ -5490,32 +5468,32 @@ var Rance;
                     {
                       className: "top-menu-items-button",
                       key: "economySummary",
-                      onClick: this.handleEconomySummary,
+                      onClick: this.togglePopup.bind(this, "economySummary"),
                       tabIndex: menuItemTabIndex
                     }, "Economy"),
                     */
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "diplomacy",
-                        onClick: this.handleDiplomacy,
+                        onClick: this.togglePopup.bind(this, "diplomacy"),
                         tabIndex: menuItemTabIndex
                     }, "Diplomacy"),
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "options",
-                        onClick: this.handleOptions,
+                        onClick: this.togglePopup.bind(this, "options"),
                         tabIndex: menuItemTabIndex
                     }, "Options"),
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "loadGame",
-                        onClick: this.handleLoadGame,
+                        onClick: this.togglePopup.bind(this, "loadGame"),
                         tabIndex: menuItemTabIndex
                     }, "Load"),
                     React.DOM.button({
                         className: "top-menu-items-button",
                         key: "saveGame",
-                        onClick: this.handleSaveGame,
+                        onClick: this.togglePopup.bind(this, "saveGame"),
                         tabIndex: menuItemTabIndex
                     }, "Save")
                 ];
@@ -5544,7 +5522,11 @@ var Rance;
                 }, React.DOM.div({
                     className: "top-menu-items",
                     ref: "topMenuItems"
-                }, topMenuItems)), openedCondensedMenu, this.state.lightBoxElement));
+                }, topMenuItems)), openedCondensedMenu, UIComponents.TopMenuPopups({
+                    ref: "popups",
+                    player: this.props.player,
+                    game: this.props.game
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));

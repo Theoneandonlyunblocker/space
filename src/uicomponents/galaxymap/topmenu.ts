@@ -1,13 +1,4 @@
-/// <reference path="lightbox.ts"/>
-
-/// <reference path="../items/buyitems.ts"/>
-
-/// <reference path="../saves/savegame.ts"/>
-/// <reference path="../saves/loadgame.ts"/>
-/// <reference path="../unitlist/itemequip.ts"/>
-/// <reference path="../diplomacy/diplomacyoverview.ts"/>
-/// <reference path="economysummary.ts"/>
-/// <reference path="optionslist.ts"/>
+/// <reference path="topmenupopups.ts" />
 
 module Rance
 {
@@ -26,8 +17,6 @@ module Rance
       {
         return(
         {
-          opened: null,
-          lightBoxElement: null,
           hasCondensedMenu: false,
           buttonsToPlace: 999,
           condensedMenuOpened: Options.ui.noHamburger
@@ -142,205 +131,18 @@ module Rance
         });
       },
 
-      closeLightBox: function()
+      togglePopup: function(popupType: string)
       {
-        if (this.state.opened === "options")
-        {
-          saveOptions();
-        }
-        
-        this.setState(
-        {
-          opened: null,
-          lightBoxElement: null
-        });
-      },
-
-      handleEquipItems: function()
-      {
-        if (this.state.opened === "equipItems")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "equipItems",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.ItemEquip,
-              contentProps:
-              {
-                player: this.props.player
-              }
-            })
-          });
-        }
-      },
-
-      handleBuyItems: function()
-      {
-        if (this.state.opened === "buyItems")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "buyItems",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.BuyItems,
-              contentProps:
-              {
-                player: this.props.player
-              }
-            })
-          });
-        }
-      },
-
-      handleEconomySummary: function()
-      {
-        if (this.state.opened === "economySummary")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "economySummary",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.EconomySummary,
-              contentProps:
-              {
-                player: this.props.player
-              }
-            })
-          });
-        }
-      },
-
-      handleSaveGame: function()
-      {
-        if (this.state.opened === "saveGame")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "saveGame",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.SaveGame,
-              contentProps:
-              {
-                handleClose: this.closeLightBox
-              }
-            })
-          });
-        }
-      },
-
-      handleLoadGame: function()
-      {
-        if (this.state.opened === "loadGame")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "loadGame",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.LoadGame,
-              contentProps:
-              {
-                handleClose: this.closeLightBox
-              }
-            })
-          });
-        }
-      },
-
-      handleOptions: function()
-      {
-        if (this.state.opened === "options")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "options",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.OptionsList,
-              contentProps:
-              {
-                handleClose: this.closeLightBox
-              }
-            })
-          });
-        }
-      },
-
-      handleDiplomacy: function()
-      {
-        if (this.state.opened === "diplomacy")
-        {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            opened: "diplomacy",
-            lightBoxElement: UIComponents.LightBox(
-            {
-              handleClose: this.closeLightBox,
-              contentConstructor: UIComponents.DiplomacyOverview,
-              contentProps:
-              {
-                handleClose: this.closeLightBox,
-                player: this.props.player,
-                totalPlayerCount: this.props.game.playerOrder.length,
-                metPlayers: this.props.player.diplomacyStatus.metPlayers,
-                statusByPlayer: this.props.player.diplomacyStatus.statusByPlayer
-              }
-            })
-          });
-        }
+        this.refs.popups.togglePopup(popupType);
+        this.forceUpdate();
       },
 
       toggleCondensedMenu: function()
       {
-        if (this.state.opened)
+        this.setState(
         {
-          this.closeLightBox();
-        }
-        else
-        {
-          this.setState(
-          {
-            condensedMenuOpened: !this.state.condensedMenuOpened
-          });
-        }
+          condensedMenuOpened: !this.state.condensedMenuOpened
+        });
       },
 
       render: function()
@@ -353,14 +155,14 @@ module Rance
           {
             className: "top-menu-items-button",
             key: "equipItems",
-            onClick: this.handleEquipItems,
+            onClick: this.togglePopup.bind(this, "equipItems"),
             tabIndex: menuItemTabIndex
           }, "Equip"),
           React.DOM.button(
           {
             className: "top-menu-items-button",
             key: "buyItems",
-            onClick: this.handleBuyItems,
+            onClick: this.togglePopup.bind(this, "buyItems"),
             tabIndex: menuItemTabIndex
           }, "Buy items"),
           /*
@@ -368,7 +170,7 @@ module Rance
           {
             className: "top-menu-items-button",
             key: "economySummary",
-            onClick: this.handleEconomySummary,
+            onClick: this.togglePopup.bind(this, "economySummary"),
             tabIndex: menuItemTabIndex
           }, "Economy"),
           */
@@ -376,28 +178,28 @@ module Rance
           {
             className: "top-menu-items-button",
             key: "diplomacy",
-            onClick: this.handleDiplomacy,
+            onClick: this.togglePopup.bind(this, "diplomacy"),
             tabIndex: menuItemTabIndex
           }, "Diplomacy"),
           React.DOM.button(
           {
             className: "top-menu-items-button",
             key: "options",
-            onClick: this.handleOptions,
+            onClick: this.togglePopup.bind(this, "options"),
             tabIndex: menuItemTabIndex
           }, "Options"),
           React.DOM.button(
           {
             className: "top-menu-items-button",
             key: "loadGame",
-            onClick: this.handleLoadGame,
+            onClick: this.togglePopup.bind(this, "loadGame"),
             tabIndex: menuItemTabIndex
           }, "Load"),
           React.DOM.button(
           {
             className: "top-menu-items-button",
             key: "saveGame",
-            onClick: this.handleSaveGame,
+            onClick: this.togglePopup.bind(this, "saveGame"),
             tabIndex: menuItemTabIndex
           }, "Save")
         ]
@@ -446,7 +248,12 @@ module Rance
               )
             ),
             openedCondensedMenu,
-            this.state.lightBoxElement
+            UIComponents.TopMenuPopups(
+            {
+              ref: "popups",
+              player: this.props.player,
+              game: this.props.game
+            })
           )
         );
       }

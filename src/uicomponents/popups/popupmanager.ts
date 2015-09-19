@@ -47,6 +47,41 @@ module Rance
         });
       },
 
+      getHighestZIndexPopup: function()
+      {
+        if (this.state.popups.length === 0) return null;
+        var popups: any = [];
+        for (var ref in this.refs)
+        {
+          popups.push(this.refs[ref]);
+        }
+        return popups.sort(function(a: any, b: any)
+        {
+          return b.state.zIndex - a.state.zIndex;
+        })[0];
+      },
+
+      getInitialPosition: function(rect: ClientRect, container: HTMLElement)
+      {
+        if (this.state.popups.length === 1)
+        {
+          return(
+          {
+            left: container.offsetWidth / 2.5 - rect.width / 2,
+            top: container.offsetHeight / 2.5 - rect.height / 2
+          });
+        }
+        else
+        {
+          var highestZPosition = this.getHighestZIndexPopup().state.dragPos;
+          return(
+          {
+            left: highestZPosition.left + 20,
+            top: highestZPosition.top + 20
+          });
+        }
+      },
+
       incrementZIndex: function()
       {
         if (!this.currentZIndex) this.currentZIndex = 0;
@@ -107,29 +142,32 @@ module Rance
       {
         contentConstructor: any;
         contentProps: any;
+        popupProps: any;
       })
       {
         var id = this.getPopupId();
+
+        var popupProps = props.popupProps ? extendObject(props.popupProps) : {};
+
+        popupProps.contentConstructor = props.contentConstructor;
+        popupProps.contentProps = props.contentProps;
+        popupProps.id = id;
+        popupProps.key = id;
+        popupProps.ref = id;
+        popupProps.incrementZIndex = this.incrementZIndex;
+        popupProps.closePopup = this.closePopup.bind(this, id);
+        popupProps.getInitialPosition = this.getInitialPosition;
+
         if (this.props.onlyAllowOne)
         {
           this.setState(
           {
-            popups: [
-            {
-              contentConstructor: props.contentConstructor,
-              contentProps: props.contentProps,
-              id: id
-            }]
+            popups: [popupProps]
           });
         }
         else
         {
-          var popups = this.state.popups.concat(
-          {
-            contentConstructor: props.contentConstructor,
-            contentProps: props.contentProps,
-            id: id
-          });
+          var popups = this.state.popups.concat(popupProps);
 
           this.setState(
           {
@@ -160,16 +198,12 @@ module Rance
         {
           var popup = popups[i];
 
+          var popupProps = extendObject(popup);
+          popupProps.activePopupsCount = popups.length;
+
+
           toRender.push(
-            UIComponents.Popup(
-            {
-              contentConstructor: popup.contentConstructor,
-              contentProps: popup.contentProps,
-              key: popup.id,
-              incrementZIndex: this.incrementZIndex,
-              closePopup: this.closePopup.bind(this, popup.id),
-              activePopupsCount: this.state.popups.length
-            })
+            UIComponents.Popup(popupProps)
           );
         }
 

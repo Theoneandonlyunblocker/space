@@ -14,7 +14,7 @@ module Rance
       {
         return(
         {
-          zIndex: this.props.incrementZIndex()
+          zIndex: -1
         });
       },
 
@@ -23,8 +23,9 @@ module Rance
         this.setInitialPosition();
       },
 
-      onDragStart: function()
+      onMouseDown: function(e: MouseEvent)
       {
+        this.handleMouseDown(e);
         this.setState(
         {
           zIndex: this.props.incrementZIndex()
@@ -35,19 +36,18 @@ module Rance
       {
         var rect = this.getDOMNode().getBoundingClientRect();
         var container = this.containerElement; // set in draggable mixin
+        var position = this.props.getInitialPosition(rect, container);
 
-        var left = parseInt(container.offsetWidth) / 2.5 - rect.width / 2;
-        var top = parseInt(container.offsetHeight) / 3.5 - rect.height / 2;
+        var left = position.left;
+        var top = position.top;
 
-        left += this.props.activePopupsCount * 20;
-        top += this.props.activePopupsCount * 20;
-
-        left = Math.min(left, container.offsetWidth - rect.width);
-        top = Math.min(top, container.offsetHeight - rect.height);
+        left = clamp(left, 0, container.offsetWidth - rect.width);
+        top = clamp(top, 0, container.offsetHeight - rect.height);
 
 
         this.setState(
         {
+          zIndex: this.props.incrementZIndex(),
           dragPos:
           {
             top: top,
@@ -60,10 +60,14 @@ module Rance
 
       handleResizeMove: function(x: number, y: number)
       {
+        var minWidth = this.props.minWidth || 0;
+        var maxWidth = this.props.maxWidth || window.innerWidth;
+        var minHeight = this.props.minHeight || 0;
+        var maxHeight = this.props.maxHeight || window.innerHeight;
         this.setState(
         {
-          width: x - this.state.dragPos.left,
-          height: y - this.state.dragPos.top
+          width: clamp(x - this.state.dragPos.left, minWidth, maxWidth),
+          height: clamp(y - this.state.dragPos.top, minHeight, maxHeight)
         });
       },
 
@@ -71,9 +75,9 @@ module Rance
       {
         var divProps: any =
         {
-          className: "popup draggable",
-          onTouchStart: this.handleMouseDown,
-          onMouseDown: this.handleMouseDown,
+          className: "popup draggable-container",
+          onTouchStart: this.onMouseDown,
+          onMouseDown: this.onMouseDown,
           style:
           {
             top: this.state.dragPos ? this.state.dragPos.top : 0,
@@ -93,7 +97,7 @@ module Rance
 
         contentProps.closePopup = this.props.closePopup
 
-        var resizeHandle = !this.resizable ? null : UIComponents.PopupResizeHandle(
+        var resizeHandle = !this.props.resizable ? null : UIComponents.PopupResizeHandle(
         {
           handleResize: this.handleResizeMove
         });

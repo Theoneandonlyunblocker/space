@@ -280,11 +280,6 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var LightBox: React.Factory<{}>;
-    }
-}
-declare module Rance {
-    module UIComponents {
         var ItemPurchaseListItem: React.Factory<{}>;
     }
 }
@@ -408,6 +403,16 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var OptionsList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopMenuPopup: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var TopMenuPopups: React.Factory<{}>;
     }
 }
 declare module Rance {
