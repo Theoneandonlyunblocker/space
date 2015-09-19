@@ -799,7 +799,10 @@ declare module Rance {
         getBuildingsEffect(): Templates.IBuildingEffect;
         getEffectWithBuildingsEffect(base: number, effectType: string): any;
         getIncome(): any;
-        getResourceIncome(): any;
+        getResourceIncome(): {
+            resource: Templates.IResourceTemplate;
+            amount: any;
+        };
         getAllBuildings(): Building[];
         getBuildingsForPlayer(player: Player): Building[];
         getBuildingsByFamily(buildingTemplate: Templates.IBuildingTemplate): Building[];

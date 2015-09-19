@@ -262,7 +262,11 @@ module Rance
     {
       if (!this.resource) return null;
       
-      return this.getEffectWithBuildingsEffect(0, "resourceIncome");
+      return(
+      {
+        resource: this.resource,
+        amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
+      });
     }
     getAllBuildings()
     {

@@ -8002,7 +8002,10 @@ var Rance;
         Star.prototype.getResourceIncome = function () {
             if (!this.resource)
                 return null;
-            return this.getEffectWithBuildingsEffect(0, "resourceIncome");
+            return ({
+                resource: this.resource,
+                amount: this.getEffectWithBuildingsEffect(0, "resourceIncome")
+            });
         };
         Star.prototype.getAllBuildings = function () {
             var buildings = [];
