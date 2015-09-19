@@ -14810,11 +14810,71 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MapRendererLayersListItem = React.createClass({
+            displayName: "MapRendererLayersListItem",
+            render: function () {
+                return (React.DOM.li({
+                    className: "map-renderer-layers-list-item draggable-container"
+                }, React.DOM.input({
+                    type: "checkbox",
+                    className: "map-renderer-layers-list-item-checkbox",
+                    checked: this.props.isActive,
+                    onChange: this.props.toggleActive
+                }), React.DOM.span({
+                    className: "map-renderer-layers-list-item-name"
+                }, this.props.layerName)));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="maprendererlayerslistitem.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MapRendererLayersList = React.createClass({
+            displayName: "MapRendererLayersList",
+            handleToggleActive: function (layer) {
+                var mapRenderer = this.props.mapRenderer;
+                mapRenderer.currentMapMode.toggleLayer(layer);
+                mapRenderer.updateMapModeLayers([layer]);
+                this.forceUpdate();
+            },
+            render: function () {
+                var mapRenderer = this.props.mapRenderer;
+                var mapMode = mapRenderer.currentMapMode;
+                if (!mapMode)
+                    return null;
+                var layersData = mapMode.layers;
+                var activeLayers = mapMode.getActiveLayers();
+                var listItems = [];
+                for (var i = 0; i < layersData.length; i++) {
+                    var layer = layersData[i].layer;
+                    var layerKey = layer.template.key;
+                    listItems.push(UIComponents.MapRendererLayersListItem({
+                        layerName: layer.template.displayName,
+                        isActive: mapMode.activeLayers[layerKey],
+                        key: layerKey,
+                        toggleActive: this.handleToggleActive.bind(this, layer)
+                    }));
+                }
+                return (React.DOM.ol({
+                    className: "map-renderer-layers-list"
+                }, listItems));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
+/// <reference path="../mapmodes/maprendererlayerslist.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -14940,7 +15000,9 @@ var Rance;
                     setExpandedActionElementOnParent: this.setExpandedActionElement
                 }), UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
-                }))), expandedActionElement), React.DOM.button(endTurnButtonProps, "End turn")));
+                }))), expandedActionElement), UIComponents.MapRendererLayersList({
+                    mapRenderer: this.props.mapRenderer
+                }), React.DOM.button(endTurnButtonProps, "End turn")));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -14976,7 +15038,8 @@ var Rance;
                 }, UIComponents.GalaxyMapUI({
                     playerControl: this.props.playerControl,
                     player: this.props.player,
-                    game: this.props.game
+                    game: this.props.game,
+                    mapRenderer: this.props.mapRenderer
                 })), !Rance.Options.debugMode ? null : React.DOM.div({
                     className: "galaxy-map-debug debug"
                 }, React.DOM.select({
@@ -16741,9 +16804,12 @@ var Rance;
     var MapRendererMapMode = (function () {
         function MapRendererMapMode(template) {
             this.layers = [];
+            this.activeLayers = {};
             this.template = template;
+            this.displayName = template.displayName;
         }
-        MapRendererMapMode.prototype.addLayer = function (layer) {
+        MapRendererMapMode.prototype.addLayer = function (layer, isActive) {
+            if (isActive === void 0) { isActive = true; }
             if (this.hasLayer(layer)) {
                 throw new Error("Tried to add duplicate layer " + layer.template.key);
                 return;
@@ -16751,6 +16817,7 @@ var Rance;
             this.layers.push({
                 layer: layer
             });
+            this.activeLayers[layer.template.key] = isActive;
         };
         MapRendererMapMode.prototype.getLayerIndex = function (layer) {
             for (var i = 0; i < this.layers.length; i++) {
@@ -16761,6 +16828,34 @@ var Rance;
         };
         MapRendererMapMode.prototype.hasLayer = function (layer) {
             return this.getLayerIndex(layer) !== -1;
+        };
+        MapRendererMapMode.prototype.getLayerIndexInContainer = function (layer) {
+            var index = -1;
+            for (var i = 0; i < this.layers.length; i++) {
+                if (this.activeLayers[this.layers[i].layer.template.key]) {
+                    index++;
+                }
+                if (this.layers[i].layer === layer)
+                    return index;
+            }
+            throw new Error("Map mode doesn't have layer " + layer.template.key);
+        };
+        MapRendererMapMode.prototype.toggleLayer = function (layer) {
+            this.activeLayers[layer.template.key] = !this.activeLayers[layer.template.key];
+            if (!this.hasLayer(layer)) {
+                this.addLayer(layer);
+            }
+        };
+        MapRendererMapMode.prototype.setLayerIndex = function (layer, newIndex) {
+            var prevIndex = this.getLayerIndex(layer);
+            this.layers.splice(prevIndex, 1);
+            this.layers.splice(newIndex, 0, layer);
+        };
+        MapRendererMapMode.prototype.getActiveLayers = function () {
+            var self = this;
+            return (this.layers.filter(function (layerData) {
+                return self.activeLayers[layerData.layer.template.key];
+            }));
         };
         return MapRendererMapMode;
     })();
@@ -17189,15 +17284,32 @@ var Rance;
             }
         };
         MapRenderer.prototype.initMapModes = function () {
-            for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes) {
-                var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+            var buildMapMode = function (template) {
+                var alreadyAdded = {};
                 var mapMode = new Rance.MapRendererMapMode(template);
                 for (var i = 0; i < template.layers.length; i++) {
                     var templateLayerData = template.layers[i];
-                    mapMode.addLayer(this.layers[templateLayerData.layer.key]);
+                    mapMode.addLayer(this.layers[templateLayerData.layer.key], true);
+                    alreadyAdded[templateLayerData.layer.key] = true;
+                }
+                for (var layerKey in this.layers) {
+                    if (!alreadyAdded[layerKey]) {
+                        mapMode.addLayer(this.layers[layerKey], false);
+                        alreadyAdded[layerKey] = true;
+                    }
                 }
                 this.mapModes[mapModeKey] = mapMode;
+            }.bind(this);
+            for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes) {
+                var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+                buildMapMode(template);
             }
+            var customMapModeTemplate = {
+                key: "custom",
+                displayName: "Custom",
+                layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
+            };
+            buildMapMode(customMapModeTemplate);
         };
         MapRenderer.prototype.setParent = function (newParent) {
             var oldParent = this.parent;
@@ -17225,6 +17337,21 @@ var Rance;
             // TODO
             this.render();
         };
+        MapRenderer.prototype.updateMapModeLayers = function (updatedLayers) {
+            for (var i = 0; i < updatedLayers.length; i++) {
+                var layer = updatedLayers[i];
+                var childIndex = this.container.getChildIndex(layer.container);
+                var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
+                console.log(layer.template.key, mapModeLayerIndex);
+                if (childIndex === -1) {
+                    this.container.addChildAt(layer.container, mapModeLayerIndex);
+                }
+                else {
+                    this.container.removeChildAt(mapModeLayerIndex + 1);
+                }
+                this.setLayerAsDirty(layer.template.key);
+            }
+        };
         MapRenderer.prototype.setMapModeByKey = function (key) {
             this.setMapMode(this.mapModes[key]);
         };
@@ -17238,8 +17365,9 @@ var Rance;
             }
             this.currentMapMode = newMapMode;
             this.resetContainer();
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                var layer = this.currentMapMode.layers[i].layer;
+            var layerData = this.currentMapMode.getActiveLayers();
+            for (var i = 0; i < layerData.length; i++) {
+                var layer = layerData[i].layer;
                 this.container.addChild(layer.container);
             }
             this.setAllLayersAsDirty();
@@ -17247,8 +17375,9 @@ var Rance;
         MapRenderer.prototype.render = function () {
             if (this.preventRender || !this.isDirty)
                 return;
-            for (var i = 0; i < this.currentMapMode.layers.length; i++) {
-                var layer = this.currentMapMode.layers[i].layer;
+            var layerData = this.currentMapMode.getActiveLayers();
+            for (var i = 0; i < layerData.length; i++) {
+                var layer = layerData[i].layer;
                 layer.draw(this.galaxyMap, this);
             }
             this.isDirty = false;

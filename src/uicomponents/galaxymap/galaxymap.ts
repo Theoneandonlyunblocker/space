@@ -48,7 +48,8 @@ module Rance
               {
                 playerControl: this.props.playerControl,
                 player: this.props.player,
-                game: this.props.game
+                game: this.props.game,
+                mapRenderer: this.props.mapRenderer
               })
             ),
             !Options.debugMode ? null : React.DOM.div(

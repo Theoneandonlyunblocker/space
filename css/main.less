@@ -13,8 +13,9 @@ table
   border-collapse: separate;
 }
 
-ul
+ul, ol
 {
+  list-style: none;
   padding: 0;
   margin: 0;
 }
@@ -2469,6 +2470,14 @@ progress::-webkit-progress-value { background: #080; }
   {
     pointer-events: auto;
   }
+}
+
+.map-renderer-layers-list
+{
+  display: inline-block;
+  .full-border(5px);
+  color: @text-color;
+  background-color: @bg-color;
 }
 
 .end-turn-button

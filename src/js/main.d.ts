@@ -2076,6 +2076,16 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
+        var MapRendererLayersListItem: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapRendererLayersList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
         var GalaxyMapUI: React.Factory<{}>;
     }
 }
@@ -2231,15 +2241,24 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface IMapRendererMapModeLayerData {
+        layer: MapRendererLayer;
+    }
     class MapRendererMapMode {
         template: IMapRendererMapModeTemplate;
-        layers: {
-            layer: MapRendererLayer;
-        }[];
+        displayName: string;
+        layers: IMapRendererMapModeLayerData[];
+        activeLayers: {
+            [layerName: string]: boolean;
+        };
         constructor(template: IMapRendererMapModeTemplate);
-        addLayer(layer: MapRendererLayer): void;
+        addLayer(layer: MapRendererLayer, isActive?: boolean): void;
         getLayerIndex(layer: MapRendererLayer): number;
         hasLayer(layer: MapRendererLayer): boolean;
+        getLayerIndexInContainer(layer: MapRendererLayer): number;
+        toggleLayer(layer: MapRendererLayer): void;
+        setLayerIndex(layer: MapRendererLayer, newIndex: number): void;
+        getActiveLayers(): IMapRendererMapModeLayerData[];
     }
 }
 declare module Rance {
@@ -2312,6 +2331,7 @@ declare module Rance {
         resetContainer(): void;
         setLayerAsDirty(layerName: string): void;
         setAllLayersAsDirty(): void;
+        updateMapModeLayers(updatedLayers: MapRendererLayer[]): void;
         setMapModeByKey(key: string): void;
         setMapMode(newMapMode: MapRendererMapMode): void;
         render(): void;

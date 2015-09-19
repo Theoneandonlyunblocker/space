@@ -297,18 +297,45 @@ module Rance
     }
     initMapModes()
     {
-      for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes)
+      var buildMapMode = function(template: IMapRendererMapModeTemplate)
       {
-        var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+        var alreadyAdded :
+        {
+          [layerKey: string]: boolean;
+        } = {};
         var mapMode = new MapRendererMapMode(template);
         for (var i = 0; i < template.layers.length; i++)
         {
           var templateLayerData = template.layers[i];
           
-          mapMode.addLayer(this.layers[templateLayerData.layer.key]);
+          mapMode.addLayer(this.layers[templateLayerData.layer.key], true);
+          alreadyAdded[templateLayerData.layer.key] = true;
+        }
+        for (var layerKey in this.layers)
+        {
+          if (!alreadyAdded[layerKey])
+          {
+            mapMode.addLayer(this.layers[layerKey], false);
+            alreadyAdded[layerKey] = true;
+          }
         }
         this.mapModes[mapModeKey] = mapMode;
+      }.bind(this);
+
+      for (var mapModeKey in app.moduleData.Templates.MapRendererMapModes)
+      {
+        var template = app.moduleData.Templates.MapRendererMapModes[mapModeKey];
+        buildMapMode(template);
       }
+
+      var customMapModeTemplate: IMapRendererMapModeTemplate =
+      {
+        key: "custom",
+        displayName: "Custom",
+        layers: this.mapModes[Object.keys(this.mapModes)[0]].template.layers
+      };
+
+      buildMapMode(customMapModeTemplate);
     }
     setParent(newParent: PIXI.Container)
     {
@@ -347,6 +374,25 @@ module Rance
       // TODO
       this.render();
     }
+    updateMapModeLayers(updatedLayers: MapRendererLayer[])
+    {
+      for (var i = 0; i < updatedLayers.length; i++)
+      {
+        var layer = updatedLayers[i];
+        var childIndex = this.container.getChildIndex(layer.container);
+        var mapModeLayerIndex = this.currentMapMode.getLayerIndexInContainer(layer);
+        console.log(layer.template.key, mapModeLayerIndex);
+        if (childIndex === -1)
+        {
+          this.container.addChildAt(layer.container, mapModeLayerIndex);
+        }
+        else
+        {
+          this.container.removeChildAt(mapModeLayerIndex + 1);
+        }
+        this.setLayerAsDirty(layer.template.key);
+      }
+    }
     setMapModeByKey(key: string)
     {
       this.setMapMode(this.mapModes[key]);
@@ -368,9 +414,10 @@ module Rance
 
       this.resetContainer();
       
-      for (var i = 0; i < this.currentMapMode.layers.length; i++)
+      var layerData = this.currentMapMode.getActiveLayers();
+      for (var i = 0; i < layerData.length; i++)
       {
-        var layer = this.currentMapMode.layers[i].layer;
+        var layer = layerData[i].layer;
         this.container.addChild(layer.container);
       }
 
@@ -380,10 +427,10 @@ module Rance
     {
       if (this.preventRender || !this.isDirty) return;
 
-      for (var i = 0; i < this.currentMapMode.layers.length; i++)
+      var layerData = this.currentMapMode.getActiveLayers();
+      for (var i = 0; i < layerData.length; i++)
       {
-        var layer = this.currentMapMode.layers[i].layer;
-
+        var layer = layerData[i].layer;
         layer.draw(this.galaxyMap, this);
       }
 

@@ -3,6 +3,7 @@
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
+/// <reference path="../mapmodes/maprendererlayerslist.ts" />
 
 module Rance
 {
@@ -204,6 +205,10 @@ module Rance
               ),
               expandedActionElement
             ),
+            UIComponents.MapRendererLayersList(
+            {
+              mapRenderer: this.props.mapRenderer
+            }),
             React.DOM.button(endTurnButtonProps, "End turn")
           )
         );

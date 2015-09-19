@@ -10,7 +10,9 @@ body {
 table {
   border-collapse: separate;
 }
-ul {
+ul,
+ol {
+  list-style: none;
   padding: 0;
   margin: 0;
 }
@@ -1943,6 +1945,14 @@ progress::-webkit-progress-value {
 }
 .galaxy-map-ui-bottom-left-column > * {
   pointer-events: auto;
+}
+.map-renderer-layers-list {
+  display: inline-block;
+  border: 5px solid transparent;
+  border-image-source: url("../img/uiBorder.png");
+  border-image-slice: 10%;
+  color: #eeeeec;
+  background-color: #0c1615;
 }
 .end-turn-button {
   position: absolute;
