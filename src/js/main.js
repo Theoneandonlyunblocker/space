@@ -11417,12 +11417,39 @@ var Rance;
                     return b.score - a.score;
                 });
             };
-            MapEvaluator.prototype.getScoredExpansionTargets = function () {
+            MapEvaluator.prototype.getIndependentNeighborStars = function () {
                 var self = this;
                 var independentNeighborStars = this.player.getNeighboringStars().filter(function (star) {
                     var secondaryController = star.getSecondaryController();
                     return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
                 });
+                return independentNeighborStars;
+            };
+            MapEvaluator.prototype.getIndependentNeighborStarIslands = function (earlyReturnSize) {
+                var self = this;
+                var alreadyVisited = {};
+                var allStars = [];
+                var islandQualifierFN = function (a, b) {
+                    var secondaryController = b.getSecondaryController();
+                    return b.owner.isIndependent && (!secondaryController || secondaryController === self.player);
+                };
+                var neighborStars = this.getIndependentNeighborStars();
+                for (var i = 0; i < neighborStars.length; i++) {
+                    var neighborStar = neighborStars[i];
+                    if (alreadyVisited[neighborStar.id]) {
+                        continue;
+                    }
+                    var island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
+                    for (var j = 0; j < island.length; j++) {
+                        var star = island[j];
+                        alreadyVisited[star.id] = true;
+                        allStars.push(star);
+                    }
+                }
+                return allStars;
+            };
+            MapEvaluator.prototype.getScoredExpansionTargets = function () {
+                var independentNeighborStars = this.getIndependentNeighborStars();
                 var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
                 var scores = this.scoreIndependentTargets(evaluations);
                 return scores;
@@ -11678,6 +11705,61 @@ var Rance;
         MapAI.MapEvaluator = MapEvaluator;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../modules/default/templates/personalities.ts" />
+/// <reference path="mapevaluator.ts"/>
+var Rance;
+(function (Rance) {
+    var MapAI;
+    (function (MapAI) {
+        var GrandStrategyAI = (function () {
+            function GrandStrategyAI(personality, mapEvaluator) {
+                this.personality = personality;
+                this.mapEvaluator = mapEvaluator;
+            }
+            GrandStrategyAI.prototype.setDesires = function () {
+                this.desireForWar = this.getDesireForWar();
+                this.desireForExpansion = this.getDesireForExpansion();
+                this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
+            };
+            GrandStrategyAI.prototype.getDesireForWar = function () {
+                var fromAggressiveness = this.personality.aggressiveness;
+                var fromExpansiveness = 0;
+                var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(4);
+                if (availableExpansionTargets.length < 4) {
+                    fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
+                }
+                // TODO penalize for lots of ongoing objectives (maybe in objectivesAI instead)
+                var desire = fromAggressiveness + fromExpansiveness;
+                return desire;
+            };
+            GrandStrategyAI.prototype.getDesireForExpansion = function () {
+                var starsOwned = this.mapEvaluator.player.controlledLocations.length;
+                var totalStarsInMap = this.mapEvaluator.map.stars.length;
+                var playersInGame = this.mapEvaluator.game.playerOrder.length;
+                var starsPerPlayer = totalStarsInMap / playersInGame;
+                var baseMinStarsDesired = starsPerPlayer * 0.34;
+                var baseMaxStarsDesired = starsPerPlayer;
+                var extraMinStarsDesired = this.personality.expansiveness * (starsPerPlayer * 0.66);
+                var extraMaxStarsDesired = this.personality.expansiveness * (starsPerPlayer * (playersInGame / 4));
+                var minStarsDesired = baseMinStarsDesired + extraMinStarsDesired;
+                var maxStarsDesired = baseMaxStarsDesired + extraMaxStarsDesired;
+                var desire = 1 - Rance.clamp(Rance.getRelativeValue(starsOwned, minStarsDesired, maxStarsDesired), 0, 1);
+                // console.table([
+                // {
+                //   player: this.mapEvaluator.player.id,
+                //   expansiveness: this.personality.expansiveness.toFixed(2),
+                //   minDesired: Math.round(minStarsDesired),
+                //   maxdesired: Math.round(maxStarsDesired),
+                //   currentStars: starsOwned,
+                //   desire: desire.toFixed(2)
+                // }]);
+                return desire;
+            };
+            return GrandStrategyAI;
+        })();
+        MapAI.GrandStrategyAI = GrandStrategyAI;
+    })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../star.ts"/>
 /*
 objectives:
@@ -11720,6 +11802,7 @@ var Rance;
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="mapevaluator.ts"/>
+/// <reference path="grandstrategyai.ts" />
 /// <reference path="objective.ts"/>
 /*
 -- objectives ai
@@ -11746,7 +11829,7 @@ var Rance;
     var MapAI;
     (function (MapAI) {
         var ObjectivesAI = (function () {
-            function ObjectivesAI(mapEvaluator, personality) {
+            function ObjectivesAI(mapEvaluator, grandStrategyAI) {
                 this.objectivesByType = {
                     expansion: [],
                     cleanPirates: [],
@@ -11757,7 +11840,7 @@ var Rance;
                 this.mapEvaluator = mapEvaluator;
                 this.map = mapEvaluator.map;
                 this.player = mapEvaluator.player;
-                this.personality = personality;
+                this.grandStrategyAI = grandStrategyAI;
             }
             ObjectivesAI.prototype.setAllObjectives = function () {
                 this.objectives = [];
@@ -11801,13 +11884,13 @@ var Rance;
             };
             ObjectivesAI.prototype.getExpansionObjectives = function () {
                 var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-                var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
+                var basePriority = this.grandStrategyAI.desireForExpansion;
                 return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
             };
             ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
                 var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-                var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
-                return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
+                var basePriority = this.grandStrategyAI.desireForConsolidation;
+                return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
             };
             ObjectivesAI.prototype.getHealObjectives = function () {
                 var objective = new MapAI.Objective("heal", 1, null);
@@ -12505,6 +12588,7 @@ var Rance;
 /// <reference path="economyai.ts"/>
 /// <reference path="frontsai.ts"/>
 /// <reference path="diplomacyai.ts"/>
+/// <reference path="grandstrategyai.ts"/>
 var Rance;
 (function (Rance) {
     var MapAI;
@@ -12516,7 +12600,8 @@ var Rance;
                 this.game = game;
                 this.map = game.galaxyMap;
                 this.mapEvaluator = new MapAI.MapEvaluator(this.map, this.player, this.game);
-                this.objectivesAI = new MapAI.ObjectivesAI(this.mapEvaluator, this.personality);
+                this.grandStrategyAI = new MapAI.GrandStrategyAI(this.personality, this.mapEvaluator);
+                this.objectivesAI = new MapAI.ObjectivesAI(this.mapEvaluator, this.grandStrategyAI);
                 this.frontsAI = new MapAI.FrontsAI(this.mapEvaluator, this.objectivesAI, this.personality);
                 this.economicAI = new MapAI.EconomyAI({
                     objectivesAI: this.objectivesAI,
@@ -12530,6 +12615,7 @@ var Rance;
                 // clear cached stuff from mapevaluator
                 this.mapEvaluator.processTurnStart();
                 // gsai evaluate grand strategy
+                this.grandStrategyAI.setDesires();
                 // dai set attitude
                 this.diplomacyAI.setAttitudes();
                 // oai make objectives
@@ -14818,181 +14904,12 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.MapRendererLayersListItem = React.createClass({
-            displayName: "MapRendererLayersListItem",
-            mixins: [UIComponents.Draggable, UIComponents.DropTarget],
-            cachedMidPoint: undefined,
-            getInitialState: function () {
-                return ({
-                    hoverSide: null
-                });
-            },
-            componentWillReceiveProps: function (newProps) {
-                if (newProps.listItemIsDragging !== this.props.listItemIsDragging) {
-                    this.cachedMidPoint = undefined;
-                    this.clearHover();
-                }
-            },
-            onDragStart: function () {
-                this.props.onDragStart(this.props.layer);
-            },
-            onDragEnd: function () {
-                this.props.onDragEnd();
-            },
-            handleHover: function (e) {
-                if (!this.cachedMidPoint) {
-                    var rect = this.getDOMNode().getBoundingClientRect();
-                    this.cachedMidPoint = rect.top + rect.height / 2;
-                }
-                var isAbove = e.clientY < this.cachedMidPoint;
-                this.setState({
-                    hoverSide: (isAbove ? "top" : "bottom")
-                });
-                this.props.setHoverPosition(this.props.layer, isAbove);
-            },
-            clearHover: function () {
-                this.setState({
-                    hoverSide: null
-                });
-            },
-            setLayerAlpha: function (e) {
-                var target = e.target;
-                var value = parseFloat(target.value);
-                if (isFinite(value)) {
-                    this.props.updateLayer(this.props.layer);
-                    this.props.layer.alpha = value;
-                }
-                this.forceUpdate();
-            },
-            render: function () {
-                var divProps = {
-                    className: "map-renderer-layers-list-item draggable draggable-container",
-                    onMouseDown: this.handleMouseDown,
-                    onTouchStart: this.handleMouseDown
-                };
-                if (this.state.dragging) {
-                    divProps.style = this.state.dragPos;
-                    divProps.className += " dragging";
-                }
-                if (this.props.listItemIsDragging) {
-                    divProps.onMouseMove = this.handleHover;
-                    divProps.onMouseLeave = this.clearHover;
-                    if (this.state.hoverSide) {
-                        divProps.className += " insert-" + this.state.hoverSide;
-                    }
-                }
-                return (React.DOM.li(divProps, React.DOM.input({
-                    type: "checkbox",
-                    className: "map-renderer-layers-list-item-checkbox",
-                    checked: this.props.isActive,
-                    onChange: this.props.toggleActive
-                }), React.DOM.span({
-                    className: "map-renderer-layers-list-item-name draggable-container"
-                }, this.props.layerName), React.DOM.input({
-                    className: "map-renderer-layers-list-item-alpha",
-                    type: "number",
-                    min: 0,
-                    max: 1,
-                    step: 0.05,
-                    value: this.props.layer.alpha,
-                    onChange: this.setLayerAlpha
-                })));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
-/// <reference path="maprendererlayerslistitem.ts" />
-var Rance;
-(function (Rance) {
-    var UIComponents;
-    (function (UIComponents) {
-        UIComponents.MapRendererLayersList = React.createClass({
-            displayName: "MapRendererLayersList",
-            getInitialState: function () {
-                return ({
-                    currentDraggingLayer: null,
-                    indexToSwapInto: undefined,
-                    layerKeyToInsertNextTo: null,
-                    insertPosition: null
-                });
-            },
-            handleDragStart: function (layer) {
-                this.setState({
-                    currentDraggingLayer: layer
-                });
-            },
-            handleDragEnd: function () {
-                var mapRenderer = this.props.mapRenderer;
-                var toInsert = this.state.currentDraggingLayer;
-                var insertTarget = mapRenderer.layers[this.state.layerKeyToInsertNextTo];
-                mapRenderer.currentMapMode.insertLayerNextToLayer(toInsert, insertTarget, this.state.insertPosition);
-                mapRenderer.resetMapModeLayersPosition();
-                this.setState({
-                    currentDraggingLayer: null,
-                    indexToSwapInto: undefined,
-                    layerKeyToInsertNextTo: null,
-                    insertPosition: null
-                });
-            },
-            handleToggleActive: function (layer) {
-                var mapRenderer = this.props.mapRenderer;
-                mapRenderer.currentMapMode.toggleLayer(layer);
-                mapRenderer.updateMapModeLayers([layer]);
-                this.forceUpdate();
-            },
-            handleSetHoverPosition: function (layer, position) {
-                this.setState({
-                    layerKeyToInsertNextTo: layer.template.key,
-                    insertPosition: position
-                });
-            },
-            updateLayer: function (layer) {
-                var mapRenderer = this.props.mapRenderer;
-                mapRenderer.setLayerAsDirty(layer.template.key);
-            },
-            render: function () {
-                var mapRenderer = this.props.mapRenderer;
-                var mapMode = mapRenderer.currentMapMode;
-                if (!mapMode)
-                    return null;
-                var layersData = mapMode.layers;
-                var activeLayers = mapMode.getActiveLayers();
-                var listItems = [];
-                for (var i = 0; i < layersData.length; i++) {
-                    var layer = layersData[i];
-                    var layerKey = layer.template.key;
-                    listItems.push(UIComponents.MapRendererLayersListItem({
-                        layer: layer,
-                        layerName: layer.template.displayName,
-                        isActive: mapMode.activeLayers[layerKey],
-                        key: layerKey,
-                        toggleActive: this.handleToggleActive.bind(this, layer),
-                        listItemIsDragging: Boolean(this.state.currentDraggingLayer),
-                        onDragStart: this.handleDragStart,
-                        onDragEnd: this.handleDragEnd,
-                        setHoverPosition: this.handleSetHoverPosition,
-                        updateLayer: this.updateLayer,
-                        containerDragOnly: true,
-                        containerElement: this
-                    }));
-                }
-                return (React.DOM.ol({
-                    className: "map-renderer-layers-list"
-                }, listItems));
-            }
-        });
-    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
-})(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
-/// <reference path="../mapmodes/maprendererlayerslist.ts" />
+// /// <reference path="../mapmodes/maprendererlayerslist.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -15118,9 +15035,12 @@ var Rance;
                     setExpandedActionElementOnParent: this.setExpandedActionElement
                 }), UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
-                }))), expandedActionElement), UIComponents.MapRendererLayersList({
-                    mapRenderer: this.props.mapRenderer
-                }), React.DOM.button(endTurnButtonProps, "End turn")));
+                }))), expandedActionElement), 
+                // UIComponents.MapRendererLayersList(
+                // {
+                //   mapRenderer: this.props.mapRenderer
+                // }),
+                React.DOM.button(endTurnButtonProps, "End turn")));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -21356,7 +21276,7 @@ var Rance;
         GameLoader.prototype.deserializePlayer = function (data) {
             var personality;
             if (data.personality) {
-                personality = Rance.extendObject(Rance.makeRandomPersonality(), data.personality);
+                personality = Rance.extendObject(data.personality, Rance.makeRandomPersonality(), true);
             }
             var player = new Rance.Player(data.isAI, data.id);
             player.money = data.money;

@@ -288,14 +288,60 @@ module Rance
         });
       }
 
-      getScoredExpansionTargets()
+      getIndependentNeighborStars()
       {
-        var self = this
+        var self = this;
         var independentNeighborStars = this.player.getNeighboringStars().filter(function(star)
         {
           var secondaryController = star.getSecondaryController();
           return star.owner.isIndependent && (!secondaryController || secondaryController === self.player);
         });
+
+        return independentNeighborStars;
+      }
+
+      getIndependentNeighborStarIslands(earlyReturnSize?: number)
+      {
+        var self = this;
+
+        var alreadyVisited:
+        {
+          [starId: number]: boolean
+        } = {};
+
+        var allStars: Star[] = [];
+
+        var islandQualifierFN = function(a: Star, b: Star): boolean
+        {
+          var secondaryController = b.getSecondaryController();
+          return b.owner.isIndependent && (!secondaryController || secondaryController === self.player);
+        }
+
+        var neighborStars = this.getIndependentNeighborStars();
+        for (var i = 0; i < neighborStars.length; i++)
+        {
+          var neighborStar = neighborStars[i];
+          if (alreadyVisited[neighborStar.id])
+          {
+            continue;
+          }
+
+          var island = neighborStar.getIslandForQualifier(islandQualifierFN, earlyReturnSize);
+
+          for (var j = 0; j < island.length; j++)
+          {
+            var star = island[j];
+            alreadyVisited[star.id] = true;
+            allStars.push(star);
+          }
+        }
+
+        return allStars;
+      }
+
+      getScoredExpansionTargets()
+      {
+        var independentNeighborStars = this.getIndependentNeighborStars();
         var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
         var scores = this.scoreIndependentTargets(evaluations);
 

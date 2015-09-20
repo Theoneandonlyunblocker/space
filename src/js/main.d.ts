@@ -1482,6 +1482,8 @@ declare module Rance {
                 star: Star;
                 score: number;
             }[];
+            getIndependentNeighborStars(): Star[];
+            getIndependentNeighborStarIslands(earlyReturnSize?: number): Star[];
             getScoredExpansionTargets(): {
                 star: Star;
                 score: number;
@@ -1533,6 +1535,21 @@ declare module Rance {
 }
 declare module Rance {
     module MapAI {
+        class GrandStrategyAI {
+            personality: IPersonality;
+            mapEvaluator: MapEvaluator;
+            desireForWar: number;
+            desireForExpansion: number;
+            desireForConsolidation: number;
+            constructor(personality: IPersonality, mapEvaluator: MapEvaluator);
+            setDesires(): void;
+            getDesireForWar(): number;
+            getDesireForExpansion(): number;
+        }
+    }
+}
+declare module Rance {
+    module MapAI {
         class Objective {
             id: number;
             type: string;
@@ -1550,7 +1567,7 @@ declare module Rance {
             mapEvaluator: MapEvaluator;
             map: GalaxyMap;
             player: Player;
-            personality: IPersonality;
+            grandStrategyAI: GrandStrategyAI;
             objectivesByType: {
                 expansion: Objective[];
                 cleanPirates: Objective[];
@@ -1559,7 +1576,7 @@ declare module Rance {
             objectives: Objective[];
             maxActiveExpansionRequests: number;
             requests: any[];
-            constructor(mapEvaluator: MapEvaluator, personality: IPersonality);
+            constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI);
             setAllObjectives(): void;
             addObjectives(objectives: Objective[]): void;
             getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
@@ -1688,6 +1705,7 @@ declare module Rance {
             personality: IPersonality;
             map: GalaxyMap;
             mapEvaluator: MapEvaluator;
+            grandStrategyAI: GrandStrategyAI;
             objectivesAI: ObjectivesAI;
             economicAI: EconomyAI;
             frontsAI: FrontsAI;
@@ -2073,16 +2091,6 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var PossibleActions: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var MapRendererLayersListItem: React.Factory<any>;
-    }
-}
-declare module Rance {
-    module UIComponents {
-        var MapRendererLayersList: React.Factory<{}>;
     }
 }
 declare module Rance {

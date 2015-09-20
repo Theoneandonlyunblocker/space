@@ -1,6 +1,7 @@
 /// <reference path="../galaxymap.ts"/>
 /// <reference path="../game.ts"/>
 /// <reference path="mapevaluator.ts"/>
+/// <reference path="grandstrategyai.ts" />
 /// <reference path="objective.ts"/>
 
 /*
@@ -33,7 +34,7 @@ module Rance
       mapEvaluator: MapEvaluator;
       map: GalaxyMap;
       player: Player;
-      personality: IPersonality;
+      grandStrategyAI: GrandStrategyAI;
 
       objectivesByType =
       {
@@ -47,12 +48,12 @@ module Rance
 
       requests: any[] = [];
 
-      constructor(mapEvaluator: MapEvaluator, personality: IPersonality)
+      constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI)
       {
         this.mapEvaluator = mapEvaluator;
         this.map = mapEvaluator.map;
         this.player = mapEvaluator.player;
-        this.personality = personality;
+        this.grandStrategyAI = grandStrategyAI;
       }
 
       setAllObjectives()
@@ -123,14 +124,14 @@ module Rance
       getExpansionObjectives()
       {
         var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-        var basePriority = 0.6 + 0.4 * this.personality.expansiveness;
+        var basePriority = this.grandStrategyAI.desireForExpansion;
         return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
       }
       getCleanPiratesObjectives()
       {
         var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-        var basePriority = 0.3 + 0.7 * (1 - this.personality.expansiveness);
-        return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, 0.5);
+        var basePriority = this.grandStrategyAI.desireForConsolidation;
+        return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
       }
       getHealObjectives()
       {
