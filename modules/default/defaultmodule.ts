@@ -23,6 +23,8 @@
 /// <reference path="templates/unitfamilies.ts" />
 /// <reference path="templates/units.ts" />
 
+/// <reference path="ai/discoveryobjective.ts" />
+
 module Rance
 {
   export module Modules

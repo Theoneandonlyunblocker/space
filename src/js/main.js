@@ -21241,6 +21241,66 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var AIUtils;
+            (function (AIUtils) {
+                function moveToRoutine(front, afterMoveCallback, getMoveTargetFN) {
+                    var fleets = front.getAssociatedFleets();
+                    if (fleets.length <= 0) {
+                        afterMoveCallback();
+                        return;
+                    }
+                    var finishedMovingCount = 0;
+                    var finishFleetMoveFN = function () {
+                        finishedMovingCount++;
+                        if (finishedMovingCount >= fleets.length) {
+                            afterMoveCallback();
+                        }
+                    };
+                    for (var i = 0; i < fleets.length; i++) {
+                        var moveTarget = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : front.objective.target;
+                        fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+                    }
+                }
+                AIUtils.moveToRoutine = moveToRoutine;
+            })(AIUtils = DefaultModule.AIUtils || (DefaultModule.AIUtils = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.discovery = {
+                    preferredUnitComposition: {
+                        "scouting": 1
+                    },
+                    moveRoutine: DefaultModule.AIUtils.moveToRoutine,
+                    unitFit: function (unit, front) {
+                        return 1;
+                    },
+                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                        return [];
+                    },
+                    unitsToFillObjective: function (objective) {
+                        return { min: 1, ideal: 1 };
+                    }
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
@@ -21262,6 +21322,7 @@ var Rance;
 /// <reference path="templates/unitarchetypes.ts" />
 /// <reference path="templates/unitfamilies.ts" />
 /// <reference path="templates/units.ts" />
+/// <reference path="ai/discoveryobjective.ts" />
 var Rance;
 (function (Rance) {
     var Modules;

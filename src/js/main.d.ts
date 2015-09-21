@@ -32,6 +32,7 @@
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
+/// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
 /// <reference path="../tutorials/tutorial.d.ts" />
 declare class EventEmitter3 extends PIXI.EventEmitter {
 }
@@ -2973,6 +2974,24 @@ declare module Rance {
                     var redShip: Rance.Templates.IUnitTemplate;
                     var blueShip: Rance.Templates.IUnitTemplate;
                 }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module AIUtils {
+                function moveToRoutine(front: MapAI.Front, afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var discovery: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
