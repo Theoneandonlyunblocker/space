@@ -83,8 +83,7 @@ module Rance
         var actual = this.getTotalUnitCountByArchetype();
         return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
       }
-
-      getFrontUnitArchetypeScores(front: Front)
+      getFrontUnitArchetypeScores(front: Front): IArchetypeValues
       {
         var relativeFrontSize =
           front.units.length / Object.keys(this.player.units).length;
@@ -107,8 +106,7 @@ module Rance
 
         return scores;
       }
-
-      scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues)
+      scoreUnitFitForFront(unit: Unit, front: Front): number
       {
         switch (front.objective.type)
         {
@@ -118,11 +116,10 @@ module Rance
           }
           default:
           {
-            return this.getDefaultUnitFitScore(unit, front, frontArchetypeScores);
+            return this.getDefaultUnitFitScore(unit, front, this.getFrontUnitArchetypeScores(front));
           }
         }
       }
-
       getHealUnitFitScore(unit: Unit, front: Front)
       {
         var healthPercentage = unit.currentHealth / unit.maxHealth;
@@ -196,10 +193,7 @@ module Rance
 
         // prioritize units closer to front target
         var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-        var turnsToReach = Math.max(
-          0,
-          Math.floor((distance - 1) / unit.currentMovePoints)
-        );
+        var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
         var distanceAdjust = turnsToReach * -0.1;
         score += distanceAdjust;
         
@@ -210,14 +204,12 @@ module Rance
       {
         var scores: IFrontUnitScore[] = [];
 
-        var frontArchetypeScores = this.getFrontUnitArchetypeScores(front);
-
         for (var i = 0; i < units.length; i++)
         {
           scores.push(
           {
             unit: units[i],
-            score: this.scoreUnitFitForFront(units[i], front, frontArchetypeScores),
+            score: this.scoreUnitFitForFront(units[i], front),
             front: front
           });
         }
@@ -237,13 +229,12 @@ module Rance
 
         var recalculateScoresForFront = function(front: Front)
         {
-          var archetypeScores = this.getFrontUnitArchetypeScores(front);
           var frontScores = unitScoresByFront[front.id];
 
           for (var i = 0; i < frontScores.length; i++)
           {
             var unit = frontScores[i].unit;
-            frontScores[i].score = this.scoreUnitFitForFront(unit, front, archetypeScores);
+            frontScores[i].score = this.scoreUnitFitForFront(unit, front);
           }
         }.bind(this);
 
