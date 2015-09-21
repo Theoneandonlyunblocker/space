@@ -287,7 +287,20 @@ module Rance
           return b.score - a.score;
         });
       }
+      evaluateDesirabilityOfPlayersStars(player: Player)
+      {
+        var total = 0;
 
+        var stars = this.getVisibleStarsOfPlayer(player);
+
+        for (var i = 0; i < stars.length; i++)
+        {
+          var star = stars[i];
+          total += this.evaluateStarDesirability(star);
+        }
+
+        return total;
+      }
       getIndependentNeighborStars()
       {
         var self = this;
@@ -634,6 +647,28 @@ module Rance
 
         return byPlayer;
       }
+      getVisibleStarsOfPlayer(player: Player)
+      {
+        return this.player.getVisibleStars().filter(function(star: Star)
+        {
+          return star.owner === player;
+        });
+      }
+      getVisibleStarsOfKnownPlayers()
+      {
+        var byPlayer:
+        {
+          [playerId: number]: Star[];
+        } = {};
+
+        for (var playerId in this.player.diplomacyStatus.metPlayers)
+        {
+          var player = this.player.diplomacyStatus.metPlayers[playerId];
+          byPlayer[playerId] = this.getVisibleStarsOfPlayer(player);
+        }
+
+        return byPlayer;
+      }
       estimateGlobalStrength(player: Player)
       {
         var visibleStrength = 0;
@@ -723,6 +758,36 @@ module Rance
         }
 
         return relative;
+      }
+      getDesireToGoToWarWith(player: Player)
+      {
+        // potential gain
+        // perceived difficulty
+        var strength = this.estimateGlobalStrength(player);
+        // relations
+        var opinion = this.player.diplomacyStatus.getOpinionOf(player);
+        // trust
+        // own allies
+        //   ally ability to go to war with
+        //   ally trustworthiness
+        //   ally opinion of us
+        // enemy allies
+        //   enemy ally strength
+        // perceived threat
+        var threat = this.getPerceivedThreatOfPlayer(player);
+      }
+      getAbilityToGoToWarWith(player: Player)
+      {
+        // perceived strength
+        var strength = this.estimateGlobalStrength(player);
+        // own trustworthy allies who can join
+        //   ally ability to go to war with
+        //   ally trustworthiness
+        //   ally opinion of us
+        // enemy allies
+        //   enemy ally strength
+        // enemy is well liked
+        // distance
       }
       getDiplomacyEvaluations(currentTurn: number)
       {
