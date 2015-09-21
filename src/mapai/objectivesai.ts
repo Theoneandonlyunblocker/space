@@ -25,6 +25,16 @@ when requested units arrive
 build units near request target
  */
 
+/*
+scouting objectives
+  discovery
+    find new locations
+  tracking
+    track enemy armies
+  perimeter
+    create perimeter of vision around own locations
+ */
+
 module Rance
 {
   export module MapAI
@@ -40,11 +50,10 @@ module Rance
       {
         expansion: <Objective[]> [],
         cleanPirates: <Objective[]> [],
-        heal: <Objective[]> []
+        heal: <Objective[]> [],
+        discovery: <Objective[]> []
       };
       objectives: Objective[] = [];
-
-      maxActiveExpansionRequests: number;
 
       requests: any[] = [];
 
@@ -63,6 +72,7 @@ module Rance
         this.addObjectives(this.getExpansionObjectives());
         this.addObjectives(this.getCleanPiratesObjectives());
         this.addObjectives(this.getHealObjectives());
+        this.addObjectives(this.getDiscoveryObjectives());
       }
 
       addObjectives(objectives: Objective[])
@@ -70,25 +80,30 @@ module Rance
         this.objectives = this.objectives.concat(objectives);
       }
 
-      // base method used for getting expansion & cleanPirates objectives
-      getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number)
+      getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean)
       {
         var objectivesByTarget:
         {
           [starId: number]: Objective;
         } = {};
 
-        var allObjectives: Objective[] = [];
-
         for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
         {
           var objective = this.objectivesByType[objectiveType][i];
-          objective.isOngoing = true;
+          if (markAsOngoing) objective.isOngoing = true;
           objectivesByTarget[objective.target.id] = objective;
         }
 
-        this.objectivesByType[objectiveType] = [];
+        return objectivesByTarget;
+      }
 
+      // base method used for getting expansion & cleanPirates objectives
+      getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number)
+      {
+        var objectivesByTarget = this.getObjectivesByTarget(objectiveType, true);
+        var allObjectives: Objective[] = [];
+
+        this.objectivesByType[objectiveType] = [];
 
         var minScore: number, maxScore: number;
 
@@ -133,6 +148,13 @@ module Rance
         var basePriority = this.grandStrategyAI.desireForConsolidation;
         return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
       }
+      getDiscoveryObjectives()
+      {
+        var discoveryScores = this.mapEvaluator.getScoredDiscoveryTargets();
+        var basePriority = 0.6;
+        return this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
+      }
+
       getHealObjectives()
       {
         var objective = new Objective("heal", 1, null);

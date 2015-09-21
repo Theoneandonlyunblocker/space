@@ -262,19 +262,20 @@ module Rance
         switch (this.objective.type)
         {
           case "heal":
+          case "discovery":
           {
-            this.healMoveRoutine(afterMoveCallback);
+            this.moveToRoutine(afterMoveCallback);
             break;
           }
           default:
           {
-            this.defaultMoveRoutine(afterMoveCallback);
+            this.musterAndAttackRoutine(afterMoveCallback);
             break;
           }
         }
       }
 
-      healMoveRoutine(afterMoveCallback: Function)
+      moveToRoutine(afterMoveCallback: Function)
       {
         var fleets = this.getAssociatedFleets();
 
@@ -303,7 +304,7 @@ module Rance
         }
       }
 
-      defaultMoveRoutine(afterMoveCallback: Function)
+      musterAndAttackRoutine(afterMoveCallback: Function)
       {
         var shouldMoveToTarget: boolean;
 

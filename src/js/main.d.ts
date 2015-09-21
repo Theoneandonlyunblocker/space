@@ -1482,6 +1482,7 @@ declare module Rance {
                 star: Star;
                 score: number;
             }[];
+            evaluateDesirabilityOfPlayersStars(player: Player): number;
             getIndependentNeighborStars(): Star[];
             getIndependentNeighborStarIslands(earlyReturnSize?: number): Star[];
             getScoredExpansionTargets(): {
@@ -1489,6 +1490,10 @@ declare module Rance {
                 score: number;
             }[];
             getScoredCleanPiratesTargets(): {
+                star: Star;
+                score: number;
+            }[];
+            getScoredDiscoveryTargets(): {
                 star: Star;
                 score: number;
             }[];
@@ -1519,6 +1524,10 @@ declare module Rance {
                     [starId: number]: number;
                 };
             };
+            getVisibleStarsOfPlayer(player: Player): Star[];
+            getVisibleStarsOfKnownPlayers(): {
+                [playerId: number]: Star[];
+            };
             estimateGlobalStrength(player: Player): number;
             getPerceivedThreatOfPlayer(player: Player): number;
             getPerceivedThreatOfAllKnownPlayers(): {
@@ -1527,6 +1536,8 @@ declare module Rance {
             getRelativePerceivedThreatOfAllKnownPlayers(): {
                 [playerId: number]: number;
             };
+            getDesireToGoToWarWith(player: Player): void;
+            getAbilityToGoToWarWith(player: Player): void;
             getDiplomacyEvaluations(currentTurn: number): {
                 [playerId: number]: IDiplomacyEvaluation;
             };
@@ -1541,7 +1552,9 @@ declare module Rance {
             desireForWar: number;
             desireForExpansion: number;
             desireForConsolidation: number;
+            private desiredStars;
             constructor(personality: IPersonality, mapEvaluator: MapEvaluator);
+            private setDesiredStars();
             setDesires(): void;
             getDesireForWar(): number;
             getDesireForExpansion(): number;
@@ -1572,16 +1585,20 @@ declare module Rance {
                 expansion: Objective[];
                 cleanPirates: Objective[];
                 heal: Objective[];
+                discovery: Objective[];
             };
             objectives: Objective[];
-            maxActiveExpansionRequests: number;
             requests: any[];
             constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI);
             setAllObjectives(): void;
             addObjectives(objectives: Objective[]): void;
+            getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean): {
+                [starId: number]: Objective;
+            };
             getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
             getExpansionObjectives(): Objective[];
             getCleanPiratesObjectives(): Objective[];
+            getDiscoveryObjectives(): Objective[];
             getHealObjectives(): Objective[];
         }
     }
@@ -1619,8 +1636,8 @@ declare module Rance {
                 [starId: number]: Unit[];
             };
             moveFleets(afterMoveCallback: Function): void;
-            healMoveRoutine(afterMoveCallback: Function): void;
-            defaultMoveRoutine(afterMoveCallback: Function): void;
+            moveToRoutine(afterMoveCallback: Function): void;
+            musterAndAttackRoutine(afterMoveCallback: Function): void;
             executeAction(afterExecutedCallback: Function): void;
         }
     }
@@ -1641,8 +1658,9 @@ declare module Rance {
             getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
             getGlobalUnitArcheypeScores(): IArchetypeValues;
             getFrontUnitArchetypeScores(front: Front): IArchetypeValues;
-            scoreUnitFitForFront(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
+            scoreUnitFitForFront(unit: Unit, front: Front): number;
             getHealUnitFitScore(unit: Unit, front: Front): number;
+            getScoutingUnitFitScore(unit: Unit, front: Front): number;
             getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
             private getUnitScoresForFront(units, front);
             assignUnits(): void;
@@ -1788,6 +1806,9 @@ declare module Rance {
         starIsVisible(star: Star): boolean;
         starIsRevealed(star: Star): boolean;
         starIsDetected(star: Star): boolean;
+        getLinksToUnRevealedStars(): {
+            [starId: number]: Star[];
+        };
         buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
         addItem(item: Item): void;
         removeItem(item: Item): void;
@@ -2056,6 +2077,7 @@ declare module Rance {
         getDetectionRange(): number;
         heal(): void;
         getStrengthEvaluation(): number;
+        getTotalCost(): number;
         drawBattleScene(props: {
             unitsToDraw?: number;
             maxUnitsPerColumn: number;

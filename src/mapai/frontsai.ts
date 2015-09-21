@@ -114,6 +114,10 @@ module Rance
           {
             return this.getHealUnitFitScore(unit, front);
           }
+          case "discovery":
+          {
+            return this.getScoutingUnitFitScore(unit, front);
+          }
           default:
           {
             return this.getDefaultUnitFitScore(unit, front, this.getFrontUnitArchetypeScores(front));
@@ -127,7 +131,25 @@ module Rance
 
         return (1 - healthPercentage) * 2;
       }
+      getScoutingUnitFitScore(unit: Unit, front: Front)
+      {
+        var score = 0;
+        // ++ stealth
+        var isStealthy = unit.isStealthy();
+        // ++ vision
+        var visionRange = unit.getVisionRange();
+        // ++ proximity
+        var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
+        var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
+        var distanceAdjust = turnsToReach * -0.1;
+        
+        // -- strength
+        var strength = unit.getStrengthEvaluation();
+        // -- cost
+        var cost = unit.getTotalCost();
 
+        return score;
+      }
       getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues)
       {
         // base score based on unit composition
@@ -385,6 +407,7 @@ module Rance
 
         var frontMovePriorities =
         {
+          discovery: 999,
           expansion: 4,
           cleanPirates: 3,
           heal: -1
@@ -420,6 +443,14 @@ module Rance
           case "cleanPirates":
           {
             return(this.getUnitsToFillExpansionObjective(objective));
+          }
+          case "discovery":
+          {
+            return(
+            {
+              min: 1,
+              ideal: 1
+            });
           }
           case "heal":
           {

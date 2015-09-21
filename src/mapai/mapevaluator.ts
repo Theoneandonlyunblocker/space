@@ -351,7 +351,6 @@ module Rance
 
         return allStars;
       }
-
       getScoredExpansionTargets()
       {
         var independentNeighborStars = this.getIndependentNeighborStars();
@@ -360,10 +359,8 @@ module Rance
 
         return scores;
       }
-
       getScoredCleanPiratesTargets()
       {
-
         var ownedStarsWithPirates = this.player.controlledLocations.filter(function(star: Star)
         {
           // we could filter out stars with secondary controllers as cleaning up in
@@ -379,7 +376,74 @@ module Rance
 
         return scores;
       }
+      getScoredDiscoveryTargets()
+      {
+        var scores:
+        {
+          star: Star;
+          score: number;
+        }[] = [];
+        var starsWithDistance:
+        {
+          [starId: number]: number;
+        } = {};
 
+        var linksToUnrevealedStars = this.player.getLinksToUnRevealedStars();
+
+        var minDistance: number;
+        var maxDistance: number;
+
+        for (var starId in linksToUnrevealedStars)
+        {
+          var star = this.player.revealedStars[starId];
+          var nearest = this.player.getNearestOwnedStarTo(star);
+          var distance = star.getDistanceToStar(nearest);
+          starsWithDistance[starId] = distance;
+
+          if (!isFinite(minDistance))
+          {
+            minDistance = distance;
+          }
+          else
+          {
+            minDistance = Math.min(minDistance, distance);
+          }
+          if (!isFinite(maxDistance))
+          {
+            maxDistance = distance;
+          }
+          else
+          {
+            maxDistance = Math.max(maxDistance, distance);
+          }
+        }
+
+        for (var starId in linksToUnrevealedStars)
+        {
+          var star = this.player.revealedStars[starId];
+          var score = 0;
+
+          var relativeDistance = getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+          var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
+
+          var linksScore = linksToUnrevealedStars[starId].length * 20;
+          score += linksScore;
+
+          var desirabilityScore = this.evaluateIndividualStarDesirability(star);
+          desirabilityScore *= distanceMultiplier;
+          score += desirabilityScore;
+
+          score *= distanceMultiplier;
+
+          scores.push(
+          {
+            star: star,
+            score: score
+          });
+        }
+
+        return scores;
+      }
       getHostileShipsAtStar(star: Star)
       {
         var hostilePlayers = star.getEnemyFleetOwners(this.player);
@@ -396,7 +460,6 @@ module Rance
 
         return shipsByEnemy;
       }
-
       getHostileStrengthAtStar(star: Star)
       {
         var hostileShipsByPlayer = this.getHostileShipsAtStar(star);
@@ -420,7 +483,6 @@ module Rance
 
         return strengthByEnemy;
       }
-
       getIndependentStrengthAtStar(star: Star): number
       {
         var ships = star.getIndependentShips();
@@ -433,7 +495,6 @@ module Rance
 
         return total;
       }
-
       getTotalHostileStrengthAtStar(star: Star): number
       {
         var byPlayer = this.getHostileStrengthAtStar(star);
@@ -447,7 +508,6 @@ module Rance
 
         return total;
       }
-
       getDefenceBuildingStrengthAtStarByPlayer(star: Star)
       {
         var byPlayer:
@@ -469,7 +529,6 @@ module Rance
 
         return byPlayer;
       }
-
       getTotalDefenceBuildingStrengthAtStar(star: Star): number
       {
         var strength = 0;
@@ -485,7 +544,6 @@ module Rance
 
         return strength;
       }
-
       evaluateFleetStrength(fleet: Fleet): number
       {
         return fleet.getTotalStrengthEvaluation();
@@ -536,7 +594,6 @@ module Rance
 
         return byPlayer;
       }
-
       buildPlayerInfluenceMap(player: Player)
       {
         var playerIsImmobile = player.isIndependent;

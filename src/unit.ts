@@ -826,8 +826,21 @@ module Rance
     getStrengthEvaluation()
     {
       // TODO
-      
       return this.currentHealth;
+    }
+    getTotalCost()
+    {
+      var totalCost = 0;
+      totalCost += this.template.buildCost;
+      for (var slot in this.items)
+      {
+        if (this.items[slot])
+        {
+          totalCost += this.items[slot].template.buildCost;
+        }
+      }
+
+      return totalCost;
     }
     drawBattleScene(props:
     {

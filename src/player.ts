@@ -500,6 +500,36 @@ module Rance
       if (this.visionIsDirty) this.updateVisibleStars();
       return Boolean(this.detectedStars[star.id]);
     }
+    getLinksToUnRevealedStars()
+    {
+      var linksBySourceStarId:
+      {
+        [starId: number]: Star[];
+      } = {};
+
+      for (var starId in this.revealedStars)
+      {
+        var star = this.revealedStars[starId];
+        var links = star.getAllLinks();
+        for (var i = 0; i < links.length; i++)
+        {
+          var linkedStar = links[i];
+          if (!this.revealedStars[linkedStar.id])
+          {
+            if (!linksBySourceStarId[star.id])
+            {
+              linksBySourceStarId[star.id] = [linkedStar];
+            }
+            else
+            {
+              linksBySourceStarId[star.id].push(linkedStar);
+            }
+          }
+        }
+      }
+
+      return linksBySourceStarId;
+    }
     buildUnit(template: Templates.IUnitTemplate, location: Star)
     {
       var unit = new Rance.Unit(template);
