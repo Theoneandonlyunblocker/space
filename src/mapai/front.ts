@@ -262,6 +262,13 @@ module Rance
         switch (this.objective.type)
         {
           case "heal":
+          {
+            this.moveToRoutine(afterMoveCallback, function(fleet: Fleet)
+            {
+              return fleet.player.getNearestOwnedStarTo(fleet.location);
+            });
+            break;
+          }
           case "discovery":
           {
             this.moveToRoutine(afterMoveCallback);
@@ -275,7 +282,7 @@ module Rance
         }
       }
 
-      moveToRoutine(afterMoveCallback: Function)
+      moveToRoutine(afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star)
       {
         var fleets = this.getAssociatedFleets();
 
@@ -297,9 +304,7 @@ module Rance
 
         for (var i = 0; i < fleets.length; i++)
         {
-          var player = fleets[i].player;
-          var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
-
+          var moveTarget: Star = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : this.objective.target;
           fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
         }
       }

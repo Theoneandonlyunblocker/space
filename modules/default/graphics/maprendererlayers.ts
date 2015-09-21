@@ -541,6 +541,12 @@ module Rance
             var mouseOverFN = function(fleet: Fleet)
             {
               eventManager.dispatchEvent("hoverStar", fleet.location);
+              if (Options.debugMode && fleet.ships.length > 0 && fleet.ships[0].front)
+              {
+                var objective = fleet.ships[0].front.objective;
+                var target = objective.target ? objective.target.id : null;
+                console.log(objective.type, target);
+              }
             }
             function fleetClickFn(event: PIXI.interaction.InteractionEvent)
             {
@@ -562,6 +568,13 @@ module Rance
 
               var containerGfx = new PIXI.Graphics();
               containerGfx.lineStyle(1, 0x00000, 1);
+              // debug
+              var front = fleet.ships[0].front;
+              if (front && front.objective.type === "discovery")
+              {
+                containerGfx.lineStyle(1, 0xFF0000, 1);
+              }
+              // end debug
               containerGfx.beginFill(color, fillAlpha);
               containerGfx.drawRect(0, 0, text.width+4, text.height);
               containerGfx.endFill();
@@ -599,6 +612,10 @@ module Rance
 
               for (var j = 0; j < fleets.length; j++)
               {
+                if (fleets[j].ships.length === 0)
+                {
+                  continue;
+                }
                 if (fleets[j].isStealthy && this.player && !this.player.starIsDetected(fleets[j].location))
                 {
                   continue;

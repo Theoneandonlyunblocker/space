@@ -1636,7 +1636,7 @@ declare module Rance {
                 [starId: number]: Unit[];
             };
             moveFleets(afterMoveCallback: Function): void;
-            moveToRoutine(afterMoveCallback: Function): void;
+            moveToRoutine(afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
             musterAndAttackRoutine(afterMoveCallback: Function): void;
             executeAction(afterExecutedCallback: Function): void;
         }
@@ -1658,10 +1658,12 @@ declare module Rance {
             getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
             getGlobalUnitArcheypeScores(): IArchetypeValues;
             getFrontUnitArchetypeScores(front: Front): IArchetypeValues;
+            getDefaultFrontUnitArchetypeScores(front: Front): IArchetypeValues;
+            getAdjustedFrontPriority(front: Front): number;
             scoreUnitFitForFront(unit: Unit, front: Front): number;
             getHealUnitFitScore(unit: Unit, front: Front): number;
             getScoutingUnitFitScore(unit: Unit, front: Front): number;
-            getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues): number;
+            getDefaultUnitFitScore(unit: Unit, front: Front, baseScore: number, healthAdjust?: number): number;
             private getUnitScoresForFront(units, front);
             assignUnits(): void;
             getFrontWithId(id: number): Front;
@@ -2935,6 +2937,7 @@ declare module Rance {
                 module UnitArchetypes {
                     var combat: Rance.Templates.IUnitArchetype;
                     var utility: Rance.Templates.IUnitArchetype;
+                    var scouting: Rance.Templates.IUnitArchetype;
                     var defence: Rance.Templates.IUnitArchetype;
                 }
             }

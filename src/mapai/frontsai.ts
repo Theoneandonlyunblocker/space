@@ -85,6 +85,20 @@ module Rance
       }
       getFrontUnitArchetypeScores(front: Front): IArchetypeValues
       {
+        switch (front.objective.type)
+        {
+          case "discovery":
+          {
+            
+          }
+          default:
+          {
+            return this.getDefaultFrontUnitArchetypeScores(front);
+          }
+        }
+      }
+      getDefaultFrontUnitArchetypeScores(front: Front): IArchetypeValues
+      {
         var relativeFrontSize =
           front.units.length / Object.keys(this.player.units).length;
         var globalPreferenceWeight = relativeFrontSize;
@@ -106,56 +120,8 @@ module Rance
 
         return scores;
       }
-      scoreUnitFitForFront(unit: Unit, front: Front): number
+      getAdjustedFrontPriority(front: Front)
       {
-        switch (front.objective.type)
-        {
-          case "heal":
-          {
-            return this.getHealUnitFitScore(unit, front);
-          }
-          case "discovery":
-          {
-            return this.getScoutingUnitFitScore(unit, front);
-          }
-          default:
-          {
-            return this.getDefaultUnitFitScore(unit, front, this.getFrontUnitArchetypeScores(front));
-          }
-        }
-      }
-      getHealUnitFitScore(unit: Unit, front: Front)
-      {
-        var healthPercentage = unit.currentHealth / unit.maxHealth;
-        if (healthPercentage > 0.75) return -1;
-
-        return (1 - healthPercentage) * 2;
-      }
-      getScoutingUnitFitScore(unit: Unit, front: Front)
-      {
-        var score = 0;
-        // ++ stealth
-        var isStealthy = unit.isStealthy();
-        // ++ vision
-        var visionRange = unit.getVisionRange();
-        // ++ proximity
-        var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-        var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
-        var distanceAdjust = turnsToReach * -0.1;
-        
-        // -- strength
-        var strength = unit.getStrengthEvaluation();
-        // -- cost
-        var cost = unit.getTotalCost();
-
-        return score;
-      }
-      getDefaultUnitFitScore(unit: Unit, front: Front, frontArchetypeScores: IArchetypeValues)
-      {
-        // base score based on unit composition
-        var score = frontArchetypeScores[unit.template.archetype.type];
-
-        // add score based on front priority
         // lower priority if front requirements already met
         // more important fronts get priority but dont hog units
         var unitsOverMinimum = front.units.length - front.minUnitsDesired;
@@ -174,6 +140,69 @@ module Rance
         if (priorityMultiplier < 0) priorityMultiplier = 0;
         
         var adjustedPriority = front.priority * priorityMultiplier;
+
+        return adjustedPriority;
+      }
+      scoreUnitFitForFront(unit: Unit, front: Front): number
+      {
+        switch (front.objective.type)
+        {
+          case "heal":
+          {
+            return this.getHealUnitFitScore(unit, front);
+          }
+          case "discovery":
+          {
+            return this.getScoutingUnitFitScore(unit, front);
+          }
+          default:
+          {
+            var archetypeScores = this.getFrontUnitArchetypeScores(front);
+            var baseScore = archetypeScores[unit.template.archetype.type];
+            return this.getDefaultUnitFitScore(unit, front, baseScore);
+          }
+        }
+      }
+      getHealUnitFitScore(unit: Unit, front: Front)
+      {
+        var healthPercentage = unit.currentHealth / unit.maxHealth;
+        if (healthPercentage > 0.75) return -1;
+
+        return (1 - healthPercentage) * 2;
+      }
+      getScoutingUnitFitScore(unit: Unit, front: Front)
+      {
+        var baseScore = 0;
+        // ++ stealth
+        var isStealthy = unit.isStealthy();
+        if (isStealthy) baseScore += 0.2;
+        // ++ vision
+        var visionRange = unit.getVisionRange();
+        if (visionRange <= 0)
+        {
+          return -1;
+        }
+        else
+        {
+          baseScore += Math.pow(visionRange, 1.5) / 2;
+        }
+
+        // -- strength
+        var strength = unit.getStrengthEvaluation();
+        baseScore -= strength / 1000;
+        // -- cost
+        var cost = unit.getTotalCost();
+        baseScore -= cost / 1000;
+
+        return this.getDefaultUnitFitScore(unit, front, baseScore, 0.1);
+      }
+      getDefaultUnitFitScore(unit: Unit, front: Front, baseScore: number, healthAdjust: number = -2.5)
+      {
+        // base score. usually based on unit composition
+        var score = baseScore;
+
+        // add score based on front priority
+        var adjustedPriority = this.getAdjustedFrontPriority(front);
         score += adjustedPriority * 2;
 
         // penalize initial units for front
@@ -196,29 +225,33 @@ module Rance
           }
         }
 
+        // prefer units which had same type of objective before
+        if (unit.front && unit.front.objective.type === front.objective.type)
+        {
+          score += 0.1;
+        }
+
+
         // penalize fronts with high requirements
         // reduce forming incomplete fronts even if they have high priority
         // effect lessens as total unit count increases
-
         // TODO
         
-
         // penalize units on low health
         var healthPercentage = unit.currentHealth / unit.maxHealth;
         
         if (healthPercentage < 0.75)
         {
           var lostHealthPercentage = 1 - healthPercentage;
-          score += lostHealthPercentage * -2.5;
+          score += lostHealthPercentage * healthAdjust;
         }
-
 
         // prioritize units closer to front target
         var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
         var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
         var distanceAdjust = turnsToReach * -0.1;
         score += distanceAdjust;
-        
+
         return score;
       }
 

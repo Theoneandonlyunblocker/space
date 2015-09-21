@@ -12003,17 +12003,20 @@ var Rance;
             ObjectivesAI.prototype.getExpansionObjectives = function () {
                 var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
                 var basePriority = this.grandStrategyAI.desireForExpansion;
-                return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
+                var objectives = this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
+                return objectives.slice(0, 2);
             };
             ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
                 var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
                 var basePriority = this.grandStrategyAI.desireForConsolidation;
-                return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
+                var objectives = this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
+                return objectives;
             };
             ObjectivesAI.prototype.getDiscoveryObjectives = function () {
                 var discoveryScores = this.mapEvaluator.getScoredDiscoveryTargets();
                 var basePriority = 0.6;
-                return this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
+                var objectives = this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
+                return objectives.slice(0, 1);
             };
             ObjectivesAI.prototype.getHealObjectives = function () {
                 var objective = new MapAI.Objective("heal", 1, null);
@@ -12183,6 +12186,12 @@ var Rance;
                 }
                 switch (this.objective.type) {
                     case "heal":
+                        {
+                            this.moveToRoutine(afterMoveCallback, function (fleet) {
+                                return fleet.player.getNearestOwnedStarTo(fleet.location);
+                            });
+                            break;
+                        }
                     case "discovery":
                         {
                             this.moveToRoutine(afterMoveCallback);
@@ -12195,7 +12204,7 @@ var Rance;
                         }
                 }
             };
-            Front.prototype.moveToRoutine = function (afterMoveCallback) {
+            Front.prototype.moveToRoutine = function (afterMoveCallback, getMoveTargetFN) {
                 var fleets = this.getAssociatedFleets();
                 if (fleets.length <= 0) {
                     afterMoveCallback();
@@ -12209,8 +12218,7 @@ var Rance;
                     }
                 };
                 for (var i = 0; i < fleets.length; i++) {
-                    var player = fleets[i].player;
-                    var moveTarget = player.getNearestOwnedStarTo(fleets[i].location);
+                    var moveTarget = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : this.objective.target;
                     fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
                 }
             };
@@ -12328,6 +12336,17 @@ var Rance;
                 return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
             };
             FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
+                switch (front.objective.type) {
+                    case "discovery":
+                        {
+                        }
+                    default:
+                        {
+                            return this.getDefaultFrontUnitArchetypeScores(front);
+                        }
+                }
+            };
+            FrontsAI.prototype.getDefaultFrontUnitArchetypeScores = function (front) {
                 var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
                 var globalPreferenceWeight = relativeFrontSize;
                 var globalScores = this.getGlobalUnitArcheypeScores();
@@ -12341,48 +12360,7 @@ var Rance;
                 }
                 return scores;
             };
-            FrontsAI.prototype.scoreUnitFitForFront = function (unit, front) {
-                switch (front.objective.type) {
-                    case "heal":
-                        {
-                            return this.getHealUnitFitScore(unit, front);
-                        }
-                    case "discovery":
-                        {
-                            return this.getScoutingUnitFitScore(unit, front);
-                        }
-                    default:
-                        {
-                            return this.getDefaultUnitFitScore(unit, front, this.getFrontUnitArchetypeScores(front));
-                        }
-                }
-            };
-            FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
-                var healthPercentage = unit.currentHealth / unit.maxHealth;
-                if (healthPercentage > 0.75)
-                    return -1;
-                return (1 - healthPercentage) * 2;
-            };
-            FrontsAI.prototype.getScoutingUnitFitScore = function (unit, front) {
-                var score = 0;
-                // ++ stealth
-                var isStealthy = unit.isStealthy();
-                // ++ vision
-                var visionRange = unit.getVisionRange();
-                // ++ proximity
-                var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
-                var turnsToReach = Math.max(0, Math.floor((distance - 1) / unit.currentMovePoints));
-                var distanceAdjust = turnsToReach * -0.1;
-                // -- strength
-                var strength = unit.getStrengthEvaluation();
-                // -- cost
-                var cost = unit.getTotalCost();
-                return score;
-            };
-            FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, frontArchetypeScores) {
-                // base score based on unit composition
-                var score = frontArchetypeScores[unit.template.archetype.type];
-                // add score based on front priority
+            FrontsAI.prototype.getAdjustedFrontPriority = function (front) {
                 // lower priority if front requirements already met
                 // more important fronts get priority but dont hog units
                 var unitsOverMinimum = front.units.length - front.minUnitsDesired;
@@ -12397,6 +12375,60 @@ var Rance;
                 if (priorityMultiplier < 0)
                     priorityMultiplier = 0;
                 var adjustedPriority = front.priority * priorityMultiplier;
+                return adjustedPriority;
+            };
+            FrontsAI.prototype.scoreUnitFitForFront = function (unit, front) {
+                switch (front.objective.type) {
+                    case "heal":
+                        {
+                            return this.getHealUnitFitScore(unit, front);
+                        }
+                    case "discovery":
+                        {
+                            return this.getScoutingUnitFitScore(unit, front);
+                        }
+                    default:
+                        {
+                            var archetypeScores = this.getFrontUnitArchetypeScores(front);
+                            var baseScore = archetypeScores[unit.template.archetype.type];
+                            return this.getDefaultUnitFitScore(unit, front, baseScore);
+                        }
+                }
+            };
+            FrontsAI.prototype.getHealUnitFitScore = function (unit, front) {
+                var healthPercentage = unit.currentHealth / unit.maxHealth;
+                if (healthPercentage > 0.75)
+                    return -1;
+                return (1 - healthPercentage) * 2;
+            };
+            FrontsAI.prototype.getScoutingUnitFitScore = function (unit, front) {
+                var baseScore = 0;
+                // ++ stealth
+                var isStealthy = unit.isStealthy();
+                if (isStealthy)
+                    baseScore += 0.2;
+                // ++ vision
+                var visionRange = unit.getVisionRange();
+                if (visionRange <= 0) {
+                    return -1;
+                }
+                else {
+                    baseScore += Math.pow(visionRange, 1.5) / 2;
+                }
+                // -- strength
+                var strength = unit.getStrengthEvaluation();
+                baseScore -= strength / 1000;
+                // -- cost
+                var cost = unit.getTotalCost();
+                baseScore -= cost / 1000;
+                return this.getDefaultUnitFitScore(unit, front, baseScore, 0.1);
+            };
+            FrontsAI.prototype.getDefaultUnitFitScore = function (unit, front, baseScore, healthAdjust) {
+                if (healthAdjust === void 0) { healthAdjust = -2.5; }
+                // base score. usually based on unit composition
+                var score = baseScore;
+                // add score based on front priority
+                var adjustedPriority = this.getAdjustedFrontPriority(front);
                 score += adjustedPriority * 2;
                 // penalize initial units for front
                 // inertia at beginning of adding units to front
@@ -12413,6 +12445,10 @@ var Rance;
                         score += 0.5;
                     }
                 }
+                // prefer units which had same type of objective before
+                if (unit.front && unit.front.objective.type === front.objective.type) {
+                    score += 0.1;
+                }
                 // penalize fronts with high requirements
                 // reduce forming incomplete fronts even if they have high priority
                 // effect lessens as total unit count increases
@@ -12421,7 +12457,7 @@ var Rance;
                 var healthPercentage = unit.currentHealth / unit.maxHealth;
                 if (healthPercentage < 0.75) {
                     var lostHealthPercentage = 1 - healthPercentage;
-                    score += lostHealthPercentage * -2.5;
+                    score += lostHealthPercentage * healthAdjust;
                 }
                 // prioritize units closer to front target
                 var distance = unit.fleet.location.getDistanceToStar(front.targetLocation);
@@ -13135,6 +13171,8 @@ var Rance;
             return Boolean(this.detectedStars[star.id]);
         };
         Player.prototype.getLinksToUnRevealedStars = function () {
+            if (this.visionIsDirty)
+                this.updateVisibleStars();
             var linksBySourceStarId = {};
             for (var starId in this.revealedStars) {
                 var star = this.revealedStars[starId];
@@ -19719,6 +19757,11 @@ var Rance;
                         };
                         var mouseOverFN = function (fleet) {
                             Rance.eventManager.dispatchEvent("hoverStar", fleet.location);
+                            if (Rance.Options.debugMode && fleet.ships.length > 0 && fleet.ships[0].front) {
+                                var objective = fleet.ships[0].front.objective;
+                                var target = objective.target ? objective.target.id : null;
+                                console.log(objective.type, target);
+                            }
                         };
                         function fleetClickFn(event) {
                             var originalEvent = event.data.originalEvent;
@@ -19735,6 +19778,12 @@ var Rance;
                             var text = new PIXI.Sprite(textTexture);
                             var containerGfx = new PIXI.Graphics();
                             containerGfx.lineStyle(1, 0x00000, 1);
+                            // debug
+                            var front = fleet.ships[0].front;
+                            if (front && front.objective.type === "discovery") {
+                                containerGfx.lineStyle(1, 0xFF0000, 1);
+                            }
+                            // end debug
                             containerGfx.beginFill(color, fillAlpha);
                             containerGfx.drawRect(0, 0, text.width + 4, text.height);
                             containerGfx.endFill();
@@ -19763,6 +19812,9 @@ var Rance;
                             fleetsContainer.x = star.x;
                             fleetsContainer.y = star.y - 40;
                             for (var j = 0; j < fleets.length; j++) {
+                                if (fleets[j].ships.length === 0) {
+                                    continue;
+                                }
                                 if (fleets[j].isStealthy && this.player && !this.player.starIsDetected(fleets[j].location)) {
                                     continue;
                                 }
@@ -20823,6 +20875,15 @@ var Rance;
                             ROW_BACK: 0.6
                         }
                     };
+                    UnitArchetypes.scouting = {
+                        type: "scouting",
+                        idealWeightInBattle: 0.01,
+                        idealWeightInFleet: 0.2,
+                        rowScores: {
+                            ROW_FRONT: 0.01,
+                            ROW_BACK: 0.02
+                        }
+                    };
                     UnitArchetypes.defence = {
                         type: "defence",
                         idealWeightInBattle: 0.5,
@@ -21038,7 +21099,7 @@ var Rance;
                     Units.scout = {
                         type: "scout",
                         displayName: "Scout",
-                        archetype: Templates.UnitArchetypes.utility,
+                        archetype: Templates.UnitArchetypes.scouting,
                         families: [Templates.UnitFamilies.basic],
                         sprite: {
                             imageSrc: "scout.png",
@@ -21065,7 +21126,7 @@ var Rance;
                     Units.stealthShip = {
                         type: "stealthShip",
                         displayName: "Stealth Ship",
-                        archetype: Templates.UnitArchetypes.utility,
+                        archetype: Templates.UnitArchetypes.scouting,
                         families: [Templates.UnitFamilies.debug],
                         sprite: {
                             imageSrc: "scout.png",
