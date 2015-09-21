@@ -32,6 +32,17 @@ module Rance
               ROW_BACK: 0.6
             }
           }
+          export var scouting: Rance.Templates.IUnitArchetype =
+          {
+            type: "scouting",
+            idealWeightInBattle: 0.01,
+            idealWeightInFleet: 0.2,
+            rowScores:
+            {
+              ROW_FRONT: 0.01,
+              ROW_BACK: 0.02
+            }
+          }
           export var defence: Rance.Templates.IUnitArchetype =
           {
             type: "defence",

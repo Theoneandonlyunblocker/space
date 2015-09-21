@@ -158,7 +158,7 @@ module Rance
           {
             type: "scout",
             displayName: "Scout",
-            archetype: UnitArchetypes.utility,
+            archetype: UnitArchetypes.scouting,
             families: [UnitFamilies.basic],
             sprite:
             {
@@ -189,7 +189,7 @@ module Rance
           {
             type: "stealthShip",
             displayName: "Stealth Ship",
-            archetype: UnitArchetypes.utility,
+            archetype: UnitArchetypes.scouting,
             families: [UnitFamilies.debug],
             sprite:
             {
