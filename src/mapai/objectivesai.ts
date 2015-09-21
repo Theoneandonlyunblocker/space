@@ -140,19 +140,22 @@ module Rance
       {
         var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
         var basePriority = this.grandStrategyAI.desireForExpansion;
-        return this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
+        var objectives = this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
+        return objectives.slice(0, 2);
       }
       getCleanPiratesObjectives()
       {
         var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
         var basePriority = this.grandStrategyAI.desireForConsolidation;
-        return this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
+        var objectives = this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
+        return objectives;
       }
       getDiscoveryObjectives()
       {
         var discoveryScores = this.mapEvaluator.getScoredDiscoveryTargets();
         var basePriority = 0.6;
-        return this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
+        var objectives = this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
+        return objectives.slice(0, 1);
       }
 
       getHealObjectives()
