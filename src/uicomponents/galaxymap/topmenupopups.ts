@@ -32,7 +32,12 @@ module Rance
         this.refs.popupManager.closePopup(this.state[popupType]);
         var stateObj: any = {};
         stateObj[popupType] = undefined;
-        this.setState(stateObj)
+        this.setState(stateObj);
+
+        if (popupType === "options")
+        {
+          saveOptions();
+        }
       },
 
       makePopup: function(popupType: string)
