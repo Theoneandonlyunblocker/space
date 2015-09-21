@@ -502,6 +502,8 @@ module Rance
     }
     getLinksToUnRevealedStars()
     {
+      if (this.visionIsDirty) this.updateVisibleStars();
+      
       var linksBySourceStarId:
       {
         [starId: number]: Star[];
