@@ -13,6 +13,7 @@ module Rance
         export var cleanUpPirates: Rance.Templates.IObjectiveTemplate =
         {
           key: "cleanUpPirates",
+          movePriority: 3,
           preferredUnitComposition:
           {
             combat: 1,

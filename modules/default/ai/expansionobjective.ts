@@ -13,6 +13,7 @@ module Rance
         export var expansion: Rance.Templates.IObjectiveTemplate =
         {
           key: "expansion",
+          movePriority: 4,
           preferredUnitComposition:
           {
             combat: 1,

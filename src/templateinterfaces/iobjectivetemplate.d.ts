@@ -5,6 +5,7 @@ declare module Rance
     interface IObjectiveTemplate
     {
       key: string;
+      movePriority: number;
       preferredUnitComposition: IArchetypeValues;
       // moveRoutine
       moveRoutineFN: (front: MapAI.Front, afterMoveCallback: () => void) => void;

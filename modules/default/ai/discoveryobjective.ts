@@ -13,6 +13,7 @@ module Rance
         export var discovery: Rance.Templates.IObjectiveTemplate =
         {
           key: "discovery",
+          movePriority: 999,
           preferredUnitComposition:
           {
             "scouting": 1

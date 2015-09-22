@@ -13,6 +13,7 @@ module Rance
         export var heal: Rance.Templates.IObjectiveTemplate =
         {
           key: "heal",
+          movePriority: -1,
           preferredUnitComposition:
           {
 
