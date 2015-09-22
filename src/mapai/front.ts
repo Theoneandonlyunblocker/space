@@ -9,7 +9,6 @@ module Rance
     {
       id: number;
       objective: Objective;
-      priority: number;
       units: Unit[];
 
       minUnitsDesired: number;
@@ -23,7 +22,6 @@ module Rance
       {
         id: number;
         objective: Objective;
-        priority: number;
         units?: Unit[];
         
         minUnitsDesired: number;
@@ -35,7 +33,6 @@ module Rance
       {
         this.id = props.id;
         this.objective = props.objective;
-        this.priority = props.priority;
         this.units = props.units || [];
 
         this.minUnitsDesired = props.minUnitsDesired;
@@ -271,8 +268,7 @@ module Rance
       scoreUnitFit(unit: Unit)
       {
         var template = this.objective.template;
-        var score = this.priority;
-        score *= template.unitFitFN(unit, this);
+        var score = this.objective.priority;
         if (this.hasUnit(unit))
         {
           score += 0.2;
@@ -281,6 +277,7 @@ module Rance
             score += 0.3;
           }
         }
+        score *= template.unitFitFN(unit, this);
         score *= template.unitDesireFN(this);
         return score;
       }

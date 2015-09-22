@@ -148,7 +148,6 @@ module Rance
         var front = new Front(
         {
           id: objective.id,
-          priority: objective.priority,
           objective: objective,
 
           minUnitsDesired: unitsDesired.min,
