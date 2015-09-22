@@ -26,7 +26,31 @@ module Rance
           },
           unitFitFN: function(unit: Unit, front: MapAI.Front)
           {
-            return AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
+            var baseScore = 0;
+            // ++ stealth
+            var isStealthy = unit.isStealthy();
+            if (isStealthy) baseScore += 0.2;
+            // ++ vision
+            var visionRange = unit.getVisionRange();
+            if (visionRange <= 0)
+            {
+              return -1;
+            }
+            else
+            {
+              baseScore += Math.pow(visionRange, 1.5) / 2;
+            }
+
+            // -- strength
+            var strength = unit.getStrengthEvaluation();
+            baseScore -= strength / 1000;
+            // -- cost
+            var cost = unit.getTotalCost();
+            baseScore -= cost / 1000;
+
+            var score = baseScore * AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
+
+            return clamp(score, 0, 1);
           },
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
             mapEvaluator: MapAI.MapEvaluator)
