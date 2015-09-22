@@ -72,8 +72,7 @@ module Rance
         // TODO
         var star = this.player.getNearestOwnedStarTo(front.musterLocation);
 
-        var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
-        var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
+        var archetypeScores = front.getNewUnitArchetypeScores();
 
         var buildableUnitTypesByArchetype:
         {
@@ -90,10 +89,15 @@ module Rance
           {
             buildableUnitTypesByArchetype[archetype.type] = [];
           }
+          if (!archetypeScores[archetype.type])
+          {
+            archetypeScores[archetype.type] = 0;
+          }
 
           buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
         }
 
+        var sortedScores = getObjectKeysSortedByValue(archetypeScores, "desc");
         var unitType: Templates.IUnitTemplate;
 
         for (var i = 0; i < sortedScores.length; i++)

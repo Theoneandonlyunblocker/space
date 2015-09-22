@@ -12105,7 +12105,18 @@ var Rance;
                 }
             };
             Front.prototype.scoreUnitFit = function (unit) {
-                return this.objective.template.unitFitFN(unit, this);
+                var template = this.objective.template;
+                return template.unitFitFN(unit, this) * template.unitDesireFN(this);
+            };
+            Front.prototype.getNewUnitArchetypeScores = function () {
+                var countByArchetype = this.getUnitCountByArchetype();
+                var totalUnits = this.units.length;
+                var idealWeights = this.objective.template.preferredUnitComposition;
+                var scores = {};
+                for (var unitType in idealWeights) {
+                    scores[unitType] = totalUnits * idealWeights[unitType] - countByArchetype[unitType];
+                }
+                return scores;
             };
             return Front;
         })();
@@ -12134,58 +12145,6 @@ var Rance;
                 this.objectivesAI = objectivesAI;
                 this.personality = personality;
             }
-            FrontsAI.prototype.getTotalUnitCountByArchetype = function () {
-                var totalUnitCountByArchetype = {};
-                var units = this.player.getAllUnits();
-                for (var i = 0; i < units.length; i++) {
-                    var unitArchetype = units[i].template.archetype;
-                    if (!totalUnitCountByArchetype[unitArchetype.type]) {
-                        totalUnitCountByArchetype[unitArchetype.type] = 0;
-                    }
-                    totalUnitCountByArchetype[unitArchetype.type]++;
-                }
-                return totalUnitCountByArchetype;
-            };
-            FrontsAI.prototype.getUnitCompositionDeviationFromIdeal = function (idealWeights, unitsByArchetype) {
-                var relativeWeights = Rance.getRelativeWeightsFromObject(unitsByArchetype);
-                var deviationFromIdeal = {};
-                for (var archetype in idealWeights) {
-                    var ideal = idealWeights[archetype];
-                    var actual = relativeWeights[archetype] || 0;
-                    deviationFromIdeal[archetype] = ideal - actual;
-                }
-                return deviationFromIdeal;
-            };
-            FrontsAI.prototype.getGlobalUnitArcheypeScores = function () {
-                var ideal = this.personality.unitCompositionPreference;
-                var actual = this.getTotalUnitCountByArchetype();
-                return this.getUnitCompositionDeviationFromIdeal(ideal, actual);
-            };
-            FrontsAI.prototype.getFrontUnitArchetypeScores = function (front) {
-                switch (front.objective.type) {
-                    case "discovery":
-                        {
-                        }
-                    default:
-                        {
-                            return this.getDefaultFrontUnitArchetypeScores(front);
-                        }
-                }
-            };
-            FrontsAI.prototype.getDefaultFrontUnitArchetypeScores = function (front) {
-                var relativeFrontSize = front.units.length / Object.keys(this.player.units).length;
-                var globalPreferenceWeight = relativeFrontSize;
-                var globalScores = this.getGlobalUnitArcheypeScores();
-                var scores = {};
-                var frontArchetypes = front.getUnitCountByArchetype();
-                var frontScores = this.getUnitCompositionDeviationFromIdeal(this.personality.unitCompositionPreference, frontArchetypes);
-                for (var archetype in globalScores) {
-                    scores[archetype] = globalScores[archetype] * globalPreferenceWeight;
-                    scores[archetype] += frontScores[archetype];
-                    scores[archetype] /= 2;
-                }
-                return scores;
-            };
             FrontsAI.prototype.getUnitScoresForFront = function (units, front) {
                 var scores = [];
                 for (var i = 0; i < units.length; i++) {
@@ -12204,10 +12163,9 @@ var Rance;
                 var recalculateScoresForFront = function (front) {
                     var frontScores = unitScoresByFront[front.id];
                     for (var i = 0; i < frontScores.length; i++) {
-                        var unit = frontScores[i].unit;
-                        frontScores[i].score = this.scoreUnitFitForFront(unit, front);
+                        frontScores[i].score = front.scoreUnitFit(units[i]);
                     }
-                }.bind(this);
+                };
                 var removeUnit = function (unit) {
                     for (var frontId in unitScoresByFront) {
                         unitScoresByFront[frontId] = unitScoresByFront[frontId].filter(function (score) {
@@ -12378,8 +12336,7 @@ var Rance;
             EconomyAI.prototype.satisfyFrontRequest = function (front) {
                 // TODO
                 var star = this.player.getNearestOwnedStarTo(front.musterLocation);
-                var archetypeScores = this.frontsAI.getFrontUnitArchetypeScores(front);
-                var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
+                var archetypeScores = front.getNewUnitArchetypeScores();
                 var buildableUnitTypesByArchetype = {};
                 var buildableUnitTypes = star.getBuildableShipTypes();
                 for (var i = 0; i < buildableUnitTypes.length; i++) {
@@ -12387,8 +12344,12 @@ var Rance;
                     if (!buildableUnitTypesByArchetype[archetype.type]) {
                         buildableUnitTypesByArchetype[archetype.type] = [];
                     }
+                    if (!archetypeScores[archetype.type]) {
+                        archetypeScores[archetype.type] = 0;
+                    }
                     buildableUnitTypesByArchetype[archetype.type].push(buildableUnitTypes[i]);
                 }
+                var sortedScores = Rance.getObjectKeysSortedByValue(archetypeScores, "desc");
                 var unitType;
                 for (var i = 0; i < sortedScores.length; i++) {
                     if (buildableUnitTypesByArchetype[sortedScores[i]]) {
@@ -21108,10 +21069,15 @@ var Rance;
                     key: "discovery",
                     movePriority: 999,
                     preferredUnitComposition: {
-                        "scouting": 1
+                        scouting: 1
                     },
                     moveRoutineFN: DefaultModule.AIUtils.moveToRoutine,
-                    unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
+                    unitDesireFN: function (front) {
+                        if (front.units.length < 1)
+                            return 1;
+                        else
+                            return 0;
+                    },
                     unitFitFN: function (unit, front) {
                         return DefaultModule.AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
                     },
@@ -21218,9 +21184,9 @@ var Rance;
                     key: "expansion",
                     movePriority: 4,
                     preferredUnitComposition: {
-                        combat: 1,
-                        defence: 0.65,
-                        utility: 0.3
+                        combat: 0.65,
+                        defence: 0.25,
+                        utility: 0.1
                     },
                     moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
                     unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
@@ -21253,9 +21219,9 @@ var Rance;
                     key: "cleanUpPirates",
                     movePriority: 3,
                     preferredUnitComposition: {
-                        combat: 1,
-                        defence: 0.65,
-                        utility: 0.3
+                        combat: 0.65,
+                        defence: 0.25,
+                        utility: 0.1
                     },
                     moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
                     unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,

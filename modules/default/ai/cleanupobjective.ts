@@ -16,9 +16,9 @@ module Rance
           movePriority: 3,
           preferredUnitComposition:
           {
-            combat: 1,
-            defence: 0.65,
-            utility: 0.3
+            combat: 0.65,
+            defence: 0.25,
+            utility: 0.1
           },
           moveRoutineFN: AIUtils.musterAndAttackRoutine,
           unitDesireFN: AIUtils.defaultUnitDesireFN,

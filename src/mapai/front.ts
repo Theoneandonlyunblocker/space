@@ -266,7 +266,22 @@ module Rance
       }
       scoreUnitFit(unit: Unit)
       {
-        return this.objective.template.unitFitFN(unit, this);
+        var template = this.objective.template;
+        return template.unitFitFN(unit, this) * template.unitDesireFN(this);
+      }
+      getNewUnitArchetypeScores()
+      {
+        var countByArchetype = this.getUnitCountByArchetype();
+        var totalUnits = this.units.length;
+        var idealWeights = this.objective.template.preferredUnitComposition;
+        var scores: IArchetypeValues = {};
+
+        for (var unitType in idealWeights)
+        {
+          scores[unitType] = totalUnits * idealWeights[unitType] - countByArchetype[unitType];
+        }
+
+        return scores;
       }
     }
   }

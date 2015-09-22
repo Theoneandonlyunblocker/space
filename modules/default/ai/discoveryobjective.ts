@@ -16,10 +16,14 @@ module Rance
           movePriority: 999,
           preferredUnitComposition:
           {
-            "scouting": 1
+            scouting: 1
           },
           moveRoutineFN: AIUtils.moveToRoutine,
-          unitDesireFN: AIUtils.defaultUnitDesireFN,
+          unitDesireFN: function(front: MapAI.Front)
+          {
+            if (front.units.length < 1) return 1;
+            else return 0;
+          },
           unitFitFN: function(unit: Unit, front: MapAI.Front)
           {
             return AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);

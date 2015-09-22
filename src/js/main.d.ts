@@ -1624,6 +1624,7 @@ declare module Rance {
             };
             moveFleets(afterMoveCallback: () => void): void;
             scoreUnitFit(unit: Unit): number;
+            getNewUnitArchetypeScores(): IArchetypeValues;
         }
     }
 }
@@ -1639,11 +1640,6 @@ declare module Rance {
             frontsRequestingUnits: Front[];
             frontsToMove: Front[];
             constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, personality: IPersonality);
-            getTotalUnitCountByArchetype(): IArchetypeValues;
-            getUnitCompositionDeviationFromIdeal(idealWeights: IArchetypeValues, unitsByArchetype: IArchetypeValues): IArchetypeValues;
-            getGlobalUnitArcheypeScores(): IArchetypeValues;
-            getFrontUnitArchetypeScores(front: Front): IArchetypeValues;
-            getDefaultFrontUnitArchetypeScores(front: Front): IArchetypeValues;
             private getUnitScoresForFront(units, front);
             assignUnits(): void;
             getFrontWithId(id: number): Front;
