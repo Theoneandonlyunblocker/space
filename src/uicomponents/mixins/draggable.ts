@@ -319,10 +319,19 @@ module Rance
       },
       updateDOMNodeStyle: function()
       {
-        var s = this.DOMNode.style;
-        for (var key in this.dragPos)
+        if (this.state.clone)
         {
-          s[key] = "" + this.dragPos[key] + "px";
+          var s = this.state.clone.style;
+          s.top = "" + this.dragPos.top + "px";
+          s.left = "" + this.dragPos.left + "px";
+        }
+        else
+        {
+          var s = this.DOMNode.style;
+          for (var key in this.dragPos)
+          {
+            s[key] = "" + this.dragPos[key] + "px";
+          }
         }
       },
       componentWillMount: function()

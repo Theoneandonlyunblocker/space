@@ -587,9 +587,16 @@ var Rance;
                 this.containerRect = this.containerElement.getBoundingClientRect();
             },
             updateDOMNodeStyle: function () {
-                var s = this.DOMNode.style;
-                for (var key in this.dragPos) {
-                    s[key] = "" + this.dragPos[key] + "px";
+                if (this.state.clone) {
+                    var s = this.state.clone.style;
+                    s.top = "" + this.dragPos.top + "px";
+                    s.left = "" + this.dragPos.left + "px";
+                }
+                else {
+                    var s = this.DOMNode.style;
+                    for (var key in this.dragPos) {
+                        s[key] = "" + this.dragPos[key] + "px";
+                    }
                 }
             },
             componentWillMount: function () {
