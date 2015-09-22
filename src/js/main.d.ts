@@ -2081,6 +2081,7 @@ declare module Rance {
         heal(): void;
         getStrengthEvaluation(): number;
         getTotalCost(): number;
+        getTurnsToReachStar(star: Star): number;
         drawBattleScene(props: {
             unitsToDraw?: number;
             maxUnitsPerColumn: number;
@@ -2704,6 +2705,9 @@ declare module Rance {
         MapRendererMapModes: {
             [mapModeKey: string]: IMapRendererMapModeTemplate;
         };
+        Objectives: {
+            [key: string]: Templates.IObjectiveTemplate;
+        };
         PassiveSkills: {
             [type: string]: Templates.IPassiveSkillTemplate;
         };
@@ -2983,6 +2987,17 @@ declare module Rance {
         module DefaultModule {
             module AIUtils {
                 function moveToRoutine(front: MapAI.Front, afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
+                function musterAndAttackRoutine(front: MapAI.Front, afterMoveCallback: Function): void;
+                function defaultUnitDesireFN(front: MapAI.Front): number;
+                function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold?: number, healthAdjust?: number, distanceAdjust?: number): number;
+                function makeObjectivesFromScores(objectiveType: string, evaluationScores: {
+                    star: Star;
+                    score: number;
+                }[], basePriority: number): MapAI.Objective[];
+                function getUnitsToFillIndependentObjective(objective: MapAI.Objective): {
+                    min: number;
+                    ideal: number;
+                };
             }
         }
     }
@@ -2992,6 +3007,33 @@ declare module Rance {
         module DefaultModule {
             module Objectives {
                 var discovery: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var heal: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var expansion: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var cleanUpPirates: Rance.Templates.IObjectiveTemplate;
             }
         }
     }

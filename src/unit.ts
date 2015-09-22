@@ -842,6 +842,14 @@ module Rance
 
       return totalCost;
     }
+    getTurnsToReachStar(star: Star)
+    {
+      var currentLocation = this.fleet.location;
+      var distance = currentLocation.getDistanceToStar(star);
+      if (distance <= this.currentMovePoints) return 0;
+      distance -= this.currentMovePoints; // current turn
+      return Math.ceil(distance / this.maxMovePoints); // future turns
+    }
     drawBattleScene(props:
     {
       unitsToDraw?: number;

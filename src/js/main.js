@@ -14707,6 +14707,14 @@ var Rance;
             }
             return totalCost;
         };
+        Unit.prototype.getTurnsToReachStar = function (star) {
+            var currentLocation = this.fleet.location;
+            var distance = currentLocation.getDistanceToStar(star);
+            if (distance <= this.currentMovePoints)
+                return 0;
+            distance -= this.currentMovePoints; // current turn
+            return Math.ceil(distance / this.maxMovePoints); // future turns
+        };
         Unit.prototype.drawBattleScene = function (props) {
             var propsString = JSON.stringify(props);
             if (propsString !== this.cachedBattleScenePropsString ||
@@ -19173,6 +19181,7 @@ var Rance;
                 MapGen: {},
                 MapRendererLayers: {},
                 MapRendererMapModes: {},
+                Objectives: {},
                 PassiveSkills: {},
                 Personalities: {},
                 Resources: {},
@@ -21268,6 +21277,135 @@ var Rance;
                     }
                 }
                 AIUtils.moveToRoutine = moveToRoutine;
+                function musterAndAttackRoutine(front, afterMoveCallback) {
+                    var shouldMoveToTarget;
+                    var unitsByLocation = front.getUnitsByLocation();
+                    var fleets = front.getAssociatedFleets();
+                    var atMuster = unitsByLocation[front.musterLocation.id] ?
+                        unitsByLocation[front.musterLocation.id].length : 0;
+                    var inRangeOfTarget = 0;
+                    for (var i = 0; i < fleets.length; i++) {
+                        var distance = fleets[i].location.getDistanceToStar(front.targetLocation);
+                        if (fleets[i].getMinCurrentMovePoints() >= distance) {
+                            inRangeOfTarget += fleets[i].ships.length;
+                        }
+                    }
+                    if (front.hasMustered) {
+                        shouldMoveToTarget = true;
+                    }
+                    else {
+                        if (atMuster >= front.minUnitsDesired || inRangeOfTarget >= front.minUnitsDesired) {
+                            front.hasMustered = true;
+                            shouldMoveToTarget = true;
+                        }
+                        else {
+                            shouldMoveToTarget = false;
+                        }
+                    }
+                    var moveTarget = shouldMoveToTarget ? front.targetLocation : front.musterLocation;
+                    var finishAllMoveFN = function () {
+                        unitsByLocation = front.getUnitsByLocation();
+                        var atTarget = unitsByLocation[front.targetLocation.id] ?
+                            unitsByLocation[front.targetLocation.id].length : 0;
+                        if (atTarget >= front.minUnitsDesired) {
+                            front.executeAction(afterMoveCallback);
+                        }
+                        else {
+                            afterMoveCallback();
+                        }
+                    };
+                    var finishedMovingCount = 0;
+                    var finishFleetMoveFN = function () {
+                        finishedMovingCount++;
+                        if (finishedMovingCount >= fleets.length) {
+                            finishAllMoveFN();
+                        }
+                    };
+                    for (var i = 0; i < fleets.length; i++) {
+                        fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+                    }
+                }
+                AIUtils.musterAndAttackRoutine = musterAndAttackRoutine;
+                function defaultUnitDesireFN(front) {
+                    var desire = 1;
+                    // lower desire if front requirements already met
+                    // more important fronts get priority but dont hog units
+                    var unitsOverMinimum = front.units.length - front.minUnitsDesired;
+                    var unitsOverIdeal = front.units.length - front.idealUnitsDesired;
+                    var unitsUnderMinimum = front.minUnitsDesired - front.units.length;
+                    if (unitsOverMinimum > 0) {
+                        desire *= 0.85 / unitsOverMinimum;
+                    }
+                    if (unitsOverIdeal > 0) {
+                        desire *= 0.6 / unitsOverIdeal;
+                    }
+                    // penalize initial units for front
+                    // inertia at beginning of adding units to front
+                    // so ai prioritizes fully formed fronts to incomplete ones
+                    if (unitsUnderMinimum > 0) {
+                        var intertiaPerMissingUnit = 0.5 / front.minUnitsDesired;
+                        var newUnitInertia = intertiaPerMissingUnit * (unitsUnderMinimum - 1);
+                        desire *= 1 - newUnitInertia;
+                    }
+                    return desire;
+                }
+                AIUtils.defaultUnitDesireFN = defaultUnitDesireFN;
+                function defaultUnitFitFN(unit, front, lowHealthThreshhold, healthAdjust, distanceAdjust) {
+                    if (lowHealthThreshhold === void 0) { lowHealthThreshhold = 0.75; }
+                    if (healthAdjust === void 0) { healthAdjust = 1; }
+                    if (distanceAdjust === void 0) { distanceAdjust = 1; }
+                    var score = 1;
+                    // penalize units on low health
+                    var healthPercentage = unit.currentHealth / unit.maxHealth;
+                    if (healthPercentage < lowHealthThreshhold) {
+                        score *= 1 - healthPercentage * healthAdjust;
+                    }
+                    // prioritize units closer to front target
+                    var turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
+                    if (turnsToReach > 0) {
+                        turnsToReach *= distanceAdjust;
+                        var distanceMultiplier = 1 / (Math.log(turnsToReach + 1.5) / Math.log(2));
+                        score *= distanceMultiplier;
+                    }
+                    return score;
+                }
+                AIUtils.defaultUnitFitFN = defaultUnitFitFN;
+                function makeObjectivesFromScores(objectiveType, evaluationScores, basePriority) {
+                    var allObjectives = [];
+                    var minScore = 0;
+                    var maxScore;
+                    for (var i = 0; i < evaluationScores.length; i++) {
+                        var score = evaluationScores[i].score;
+                        maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
+                    }
+                    for (var i = 0; i < evaluationScores.length; i++) {
+                        var star = evaluationScores[i].star;
+                        var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
+                        var priority = relativeScore * basePriority;
+                        allObjectives.push(new Rance.MapAI.Objective(objectiveType, priority, star));
+                    }
+                    return allObjectives;
+                }
+                AIUtils.makeObjectivesFromScores = makeObjectivesFromScores;
+                function getUnitsToFillIndependentObjective(objective) {
+                    var min;
+                    var ideal;
+                    var star = objective.target;
+                    var independentShips = star.getIndependentShips();
+                    if (independentShips.length <= 1) {
+                        min = independentShips.length + 1;
+                        ideal = independentShips.length + 1;
+                    }
+                    else {
+                        min = Math.min(independentShips.length + 2, 6);
+                        ideal = 6;
+                    }
+                    return ({
+                        min: min,
+                        ideal: ideal
+                    });
+                }
+                AIUtils.getUnitsToFillIndependentObjective = getUnitsToFillIndependentObjective;
             })(AIUtils = DefaultModule.AIUtils || (DefaultModule.AIUtils = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
@@ -21283,19 +21421,164 @@ var Rance;
             var Objectives;
             (function (Objectives) {
                 Objectives.discovery = {
+                    key: "discovery",
                     preferredUnitComposition: {
                         "scouting": 1
                     },
-                    moveRoutine: DefaultModule.AIUtils.moveToRoutine,
-                    unitFit: function (unit, front) {
-                        return 1;
+                    moveRoutineFN: DefaultModule.AIUtils.moveToRoutine,
+                    unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
+                    unitFitFN: function (unit, front) {
+                        return DefaultModule.AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
                     },
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
-                        return [];
+                        var scores = [];
+                        var starsWithDistance = {};
+                        var linksToUnrevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
+                        var minDistance;
+                        var maxDistance;
+                        for (var starId in linksToUnrevealedStars) {
+                            var star = mapEvaluator.player.revealedStars[starId];
+                            var nearest = mapEvaluator.player.getNearestOwnedStarTo(star);
+                            var distance = star.getDistanceToStar(nearest);
+                            starsWithDistance[starId] = distance;
+                            if (!isFinite(minDistance)) {
+                                minDistance = distance;
+                            }
+                            else {
+                                minDistance = Math.min(minDistance, distance);
+                            }
+                            if (!isFinite(maxDistance)) {
+                                maxDistance = distance;
+                            }
+                            else {
+                                maxDistance = Math.max(maxDistance, distance);
+                            }
+                        }
+                        for (var starId in linksToUnrevealedStars) {
+                            var star = mapEvaluator.player.revealedStars[starId];
+                            var score = 0;
+                            var relativeDistance = Rance.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
+                            var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
+                            var linksScore = linksToUnrevealedStars[starId].length * 20;
+                            score += linksScore;
+                            var desirabilityScore = mapEvaluator.evaluateIndividualStarDesirability(star);
+                            desirabilityScore *= distanceMultiplier;
+                            score += desirabilityScore;
+                            score *= distanceMultiplier;
+                            scores.push({
+                                star: star,
+                                score: score
+                            });
+                        }
+                        return DefaultModule.AIUtils.makeObjectivesFromScores("discovery", scores, 0.5);
                     },
-                    unitsToFillObjective: function (objective) {
+                    unitsToFillObjectiveFN: function (objective) {
                         return { min: 1, ideal: 1 };
                     }
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.heal = {
+                    key: "heal",
+                    preferredUnitComposition: {},
+                    moveRoutineFN: function (front, afterMoveCallback) {
+                        DefaultModule.AIUtils.moveToRoutine(front, afterMoveCallback, function (fleet) {
+                            return fleet.player.getNearestOwnedStarTo(fleet.location);
+                        });
+                    },
+                    unitDesireFN: function (front) { return 1; },
+                    unitFitFN: function (unit, front) {
+                        var healthPercentage = unit.currentHealth / unit.maxHealth;
+                        if (healthPercentage > 0.75)
+                            return 0;
+                        return (1 - healthPercentage);
+                    },
+                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                        return [new Rance.MapAI.Objective("heal", 1, null)];
+                    },
+                    unitsToFillObjectiveFN: function (objective) {
+                        return { min: 0, ideal: 0 };
+                    }
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.expansion = {
+                    key: "expansion",
+                    preferredUnitComposition: {
+                        combat: 1,
+                        defence: 0.65,
+                        utility: 0.3
+                    },
+                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
+                    unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
+                    unitFitFN: DefaultModule.AIUtils.defaultUnitFitFN,
+                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                        var basePriority = grandStrategyAI.desireForExpansion;
+                        var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function (star) {
+                            return star.getIndependentShips().length > 0 && !star.getSecondaryController();
+                        });
+                        var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
+                        var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+                        return DefaultModule.AIUtils.makeObjectivesFromScores("expansion", scores, basePriority);
+                    },
+                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToFillIndependentObjective
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.cleanUpPirates = {
+                    key: "cleanUpPirates",
+                    preferredUnitComposition: {
+                        combat: 1,
+                        defence: 0.65,
+                        utility: 0.3
+                    },
+                    moveRoutineFN: DefaultModule.AIUtils.musterAndAttackRoutine,
+                    unitDesireFN: DefaultModule.AIUtils.defaultUnitDesireFN,
+                    unitFitFN: DefaultModule.AIUtils.defaultUnitFitFN,
+                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                        var basePriority = grandStrategyAI.desireForExpansion;
+                        var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
+                        var evaluations = mapEvaluator.evaluateIndependentTargets(independentNeighborStars);
+                        var scores = mapEvaluator.scoreIndependentTargets(evaluations);
+                        return DefaultModule.AIUtils.makeObjectivesFromScores("cleanUpPirates", scores, basePriority);
+                    },
+                    unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToFillIndependentObjective
                 };
             })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
@@ -21323,6 +21606,9 @@ var Rance;
 /// <reference path="templates/unitfamilies.ts" />
 /// <reference path="templates/units.ts" />
 /// <reference path="ai/discoveryobjective.ts" />
+/// <reference path="ai/healobjective.ts" />
+/// <reference path="ai/expansionobjective.ts" />
+/// <reference path="ai/cleanupobjective.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -21358,6 +21644,7 @@ var Rance;
                     moduleData.copyAllTemplates(DefaultModule.Templates);
                     moduleData.copyTemplates(DefaultModule.MapRendererLayers, "MapRendererLayers");
                     moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
+                    moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
                     moduleData.mapBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.starBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.defaultMap = DefaultModule.Templates.MapGen.spiralGalaxy;

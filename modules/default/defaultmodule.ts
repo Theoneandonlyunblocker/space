@@ -24,6 +24,9 @@
 /// <reference path="templates/units.ts" />
 
 /// <reference path="ai/discoveryobjective.ts" />
+/// <reference path="ai/healobjective.ts" />
+/// <reference path="ai/expansionobjective.ts" />
+/// <reference path="ai/cleanupobjective.ts" />
 
 module Rance
 {
@@ -69,6 +72,7 @@ module Rance
           moduleData.copyAllTemplates(DefaultModule.Templates);
           moduleData.copyTemplates(DefaultModule.MapRendererLayers, "MapRendererLayers");
           moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
+          moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
 
           moduleData.mapBackgroundDrawingFunction = drawNebula;
           moduleData.starBackgroundDrawingFunction = drawNebula;
