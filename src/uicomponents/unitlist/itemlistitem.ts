@@ -71,8 +71,8 @@ module Rance
 
         if (this.state.dragging && this.state.clone)
         {
-          this.state.clone.style.left = "" + this.state.dragPos.left + "px";
-          this.state.clone.style.top = "" + this.state.dragPos.top + "px";
+          this.state.clone.style.left = "" + this.dragPos.left + "px";
+          this.state.clone.style.top = "" + this.dragPos.top + "px";
         }
 
         var cells: any = [];

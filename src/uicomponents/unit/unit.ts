@@ -76,7 +76,7 @@ module Rance
 
         if (this.state.dragging)
         {
-          wrapperProps.style = this.state.dragPos;
+          wrapperProps.style = this.dragPos;
           wrapperProps.className += " dragging";
         }
 

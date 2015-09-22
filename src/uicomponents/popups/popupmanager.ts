@@ -73,7 +73,7 @@ module Rance
         }
         else
         {
-          var highestZPosition = this.getHighestZIndexPopup().state.dragPos;
+          var highestZPosition = this.getHighestZIndexPopup().dragPos;
           return(
           {
             left: highestZPosition.left + 20,

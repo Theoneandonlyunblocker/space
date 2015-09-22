@@ -37,7 +37,7 @@ module Rance
 
           if (this.state.dragging)
           {
-            divProps.style = this.state.dragPos;
+            divProps.style = this.dragPos;
             divProps.className += " dragging";
           }
         }

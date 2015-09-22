@@ -106,6 +106,8 @@ declare module Rance {
             addEventListeners: () => void;
             removeEventListeners: () => void;
             setContainerRect: () => void;
+            updateDOMNodeStyle: () => void;
+            componentWillMount: () => void;
             componentDidMount: () => void;
             componentWillUnmount: () => void;
         };

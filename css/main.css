@@ -2872,6 +2872,7 @@ progress::-webkit-progress-value {
   position: absolute;
   color: #eeeeec;
   background-color: #0c1615;
+  box-sizing: border-box;
   border: 5px solid transparent;
   border-image-source: url("../img/uiBorder.png");
   border-image-slice: 10%;

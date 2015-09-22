@@ -44,17 +44,13 @@ module Rance
         left = clamp(left, 0, container.offsetWidth - rect.width);
         top = clamp(top, 0, container.offsetHeight - rect.height);
 
-
+        this.dragPos.top = top;
+        this.dragPos.left = left;
+        this.dragPos.width = undefined;
+        this.dragPos.height = undefined;
         this.setState(
         {
-          zIndex: this.props.incrementZIndex(),
-          dragPos:
-          {
-            top: top,
-            left: left
-          },
-          width: undefined,
-          height: undefined
+          zIndex: this.props.incrementZIndex()
         });
       },
 
@@ -64,11 +60,10 @@ module Rance
         var maxWidth = this.props.maxWidth || window.innerWidth;
         var minHeight = this.props.minHeight || 0;
         var maxHeight = this.props.maxHeight || window.innerHeight;
-        this.setState(
-        {
-          width: clamp(x - this.state.dragPos.left, minWidth, maxWidth),
-          height: clamp(y - this.state.dragPos.top, minHeight, maxHeight)
-        });
+
+        this.dragPos.width = clamp(x - this.dragPos.left, minWidth, maxWidth);
+        this.dragPos.height = clamp(y - this.dragPos.top, minHeight, maxHeight);
+        this.updateDOMNodeStyle();
       },
 
       render: function()
@@ -80,10 +75,10 @@ module Rance
           onMouseDown: this.onMouseDown,
           style:
           {
-            top: this.state.dragPos ? this.state.dragPos.top : 0,
-            left: this.state.dragPos ? this.state.dragPos.left : 0,
-            width: this.state.width,
-            height: this.state.height,
+            top: this.dragPos ? this.dragPos.top : 0,
+            left: this.dragPos ? this.dragPos.left : 0,
+            width: this.dragPos.width,
+            height: this.dragPos.height,
             zIndex: this.state.zIndex
           }
         };

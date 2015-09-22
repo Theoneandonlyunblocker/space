@@ -122,13 +122,10 @@ module Rance
 
             var stateObj: any =
             {
-              dragging: true,
-              dragPos:
-              {
-                width: parseInt(ownNode.offsetWidth),
-                height: parseInt(ownNode.offsetHeight)
-              }
+              dragging: true
             }
+            this.dragPos.width = parseInt(ownNode.offsetWidth);
+            this.dragPos.height = parseInt(ownNode.offsetHeight);
 
             if (this.props.makeClone)
             {
@@ -217,16 +214,9 @@ module Rance
         }
         else
         {
-          this.setState(
-          {
-            dragPos:
-            {
-              top: y,
-              left: x,
-              width: this.state.dragPos.width,
-              height: this.state.dragPos.height
-            }
-          });
+          this.dragPos.top = y;
+          this.dragPos.left = x;
+          this.updateDOMNodeStyle();
         }
 
       },
@@ -326,6 +316,18 @@ module Rance
       setContainerRect: function()
       {
         this.containerRect = this.containerElement.getBoundingClientRect();
+      },
+      updateDOMNodeStyle: function()
+      {
+        var s = this.DOMNode.style;
+        for (var key in this.dragPos)
+        {
+          s[key] = "" + this.dragPos[key] + "px";
+        }
+      },
+      componentWillMount: function()
+      {
+        this.dragPos = {};
       },
       componentDidMount: function()
       {

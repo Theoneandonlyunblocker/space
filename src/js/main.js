@@ -444,12 +444,10 @@ var Rance;
                     if (delta >= this.props.dragThreshhold) {
                         var ownNode = this.getDOMNode();
                         var stateObj = {
-                            dragging: true,
-                            dragPos: {
-                                width: parseInt(ownNode.offsetWidth),
-                                height: parseInt(ownNode.offsetHeight)
-                            }
+                            dragging: true
                         };
+                        this.dragPos.width = parseInt(ownNode.offsetWidth);
+                        this.dragPos.height = parseInt(ownNode.offsetHeight);
                         if (this.props.makeClone) {
                             if (!this.makeDragClone) {
                                 var nextSibling = ownNode.nextSibling;
@@ -513,14 +511,9 @@ var Rance;
                     this.onDragMove(x, y);
                 }
                 else {
-                    this.setState({
-                        dragPos: {
-                            top: y,
-                            left: x,
-                            width: this.state.dragPos.width,
-                            height: this.state.dragPos.height
-                        }
-                    });
+                    this.dragPos.top = y;
+                    this.dragPos.left = x;
+                    this.updateDOMNodeStyle();
                 }
             },
             handleMouseUp: function (e) {
@@ -592,6 +585,15 @@ var Rance;
             },
             setContainerRect: function () {
                 this.containerRect = this.containerElement.getBoundingClientRect();
+            },
+            updateDOMNodeStyle: function () {
+                var s = this.DOMNode.style;
+                for (var key in this.dragPos) {
+                    s[key] = "" + this.dragPos[key] + "px";
+                }
+            },
+            componentWillMount: function () {
+                this.dragPos = {};
             },
             componentDidMount: function () {
                 this.DOMNode = this.getDOMNode();
@@ -670,7 +672,7 @@ var Rance;
                     wrapperProps.onMouseDown = wrapperProps.onTouchStart = this.handleMouseDown;
                 }
                 if (this.state.dragging) {
-                    wrapperProps.style = this.state.dragPos;
+                    wrapperProps.style = this.dragPos;
                     wrapperProps.className += " dragging";
                 }
                 if (this.props.onUnitClick) {
@@ -2645,8 +2647,8 @@ var Rance;
                 var item = this.props.item;
                 var columns = this.props.activeColumns;
                 if (this.state.dragging && this.state.clone) {
-                    this.state.clone.style.left = "" + this.state.dragPos.left + "px";
-                    this.state.clone.style.top = "" + this.state.dragPos.top + "px";
+                    this.state.clone.style.left = "" + this.dragPos.left + "px";
+                    this.state.clone.style.top = "" + this.dragPos.top + "px";
                 }
                 var cells = [];
                 for (var i = 0; i < columns.length; i++) {
@@ -2926,7 +2928,7 @@ var Rance;
                         this.handleMouseDown;
                 }
                 if (this.state.dragging) {
-                    divProps.style = this.state.dragPos;
+                    divProps.style = this.dragPos;
                     divProps.className += " dragging";
                 }
                 return (React.DOM.div(divProps, React.DOM.div({
@@ -3663,14 +3665,12 @@ var Rance;
                 var top = position.top;
                 left = Rance.clamp(left, 0, container.offsetWidth - rect.width);
                 top = Rance.clamp(top, 0, container.offsetHeight - rect.height);
+                this.dragPos.top = top;
+                this.dragPos.left = left;
+                this.dragPos.width = undefined;
+                this.dragPos.height = undefined;
                 this.setState({
-                    zIndex: this.props.incrementZIndex(),
-                    dragPos: {
-                        top: top,
-                        left: left
-                    },
-                    width: undefined,
-                    height: undefined
+                    zIndex: this.props.incrementZIndex()
                 });
             },
             handleResizeMove: function (x, y) {
@@ -3678,10 +3678,9 @@ var Rance;
                 var maxWidth = this.props.maxWidth || window.innerWidth;
                 var minHeight = this.props.minHeight || 0;
                 var maxHeight = this.props.maxHeight || window.innerHeight;
-                this.setState({
-                    width: Rance.clamp(x - this.state.dragPos.left, minWidth, maxWidth),
-                    height: Rance.clamp(y - this.state.dragPos.top, minHeight, maxHeight)
-                });
+                this.dragPos.width = Rance.clamp(x - this.dragPos.left, minWidth, maxWidth);
+                this.dragPos.height = Rance.clamp(y - this.dragPos.top, minHeight, maxHeight);
+                this.updateDOMNodeStyle();
             },
             render: function () {
                 var divProps = {
@@ -3689,10 +3688,10 @@ var Rance;
                     onTouchStart: this.onMouseDown,
                     onMouseDown: this.onMouseDown,
                     style: {
-                        top: this.state.dragPos ? this.state.dragPos.top : 0,
-                        left: this.state.dragPos ? this.state.dragPos.left : 0,
-                        width: this.state.width,
-                        height: this.state.height,
+                        top: this.dragPos ? this.dragPos.top : 0,
+                        left: this.dragPos ? this.dragPos.left : 0,
+                        width: this.dragPos.width,
+                        height: this.dragPos.height,
                         zIndex: this.state.zIndex
                     }
                 };
@@ -3881,7 +3880,7 @@ var Rance;
                     });
                 }
                 else {
-                    var highestZPosition = this.getHighestZIndexPopup().state.dragPos;
+                    var highestZPosition = this.getHighestZIndexPopup().dragPos;
                     return ({
                         left: highestZPosition.left + 20,
                         top: highestZPosition.top + 20
@@ -5771,7 +5770,7 @@ var Rance;
                     divProps.onTouchStart = this.handleMouseDown;
                     divProps.onMouseDown = this.handleMouseDown;
                     if (this.state.dragging) {
-                        divProps.style = this.state.dragPos;
+                        divProps.style = this.dragPos;
                         divProps.className += " dragging";
                     }
                 }
