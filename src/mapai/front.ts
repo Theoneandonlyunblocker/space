@@ -264,10 +264,24 @@ module Rance
           moveRoutine(this, afterMoveCallback);
         }
       }
+      hasUnit(unit: Unit)
+      {
+        return this.units.indexOf(unit) !== -1;
+      }
       scoreUnitFit(unit: Unit)
       {
         var template = this.objective.template;
-        return template.unitFitFN(unit, this) * template.unitDesireFN(this);
+        var score = template.unitFitFN(unit, this);
+        if (this.hasUnit(unit))
+        {
+          score += 0.2;
+          if (this.hasMustered)
+          {
+            score += 0.3;
+          }
+        }
+        score *= template.unitDesireFN(this);
+        return score;
       }
       getNewUnitArchetypeScores()
       {
