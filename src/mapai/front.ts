@@ -251,156 +251,22 @@ module Rance
 
         return byLocation;
       }
-
-      moveFleets(afterMoveCallback: Function)
+      moveFleets(afterMoveCallback: () => void)
       {
         if (this.units.length < 1)
         {
           afterMoveCallback();
           return;
         }
-        switch (this.objective.type)
-        {
-          case "heal":
-          {
-            this.moveToRoutine(afterMoveCallback, function(fleet: Fleet)
-            {
-              return fleet.player.getNearestOwnedStarTo(fleet.location);
-            });
-            break;
-          }
-          case "discovery":
-          {
-            this.moveToRoutine(afterMoveCallback);
-            break;
-          }
-          default:
-          {
-            this.musterAndAttackRoutine(afterMoveCallback);
-            break;
-          }
-        }
-      }
-
-      moveToRoutine(afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star)
-      {
-        var fleets = this.getAssociatedFleets();
-
-        if (fleets.length <= 0)
-        {
-          afterMoveCallback();
-          return;
-        }
-
-        var finishedMovingCount = 0;
-        var finishFleetMoveFN = function()
-        {
-          finishedMovingCount++;
-          if (finishedMovingCount >= fleets.length)
-          {
-            afterMoveCallback();
-          }
-        };
-
-        for (var i = 0; i < fleets.length; i++)
-        {
-          var moveTarget: Star = getMoveTargetFN ? getMoveTargetFN(fleets[i]) : this.objective.target;
-          fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
-        }
-      }
-
-      musterAndAttackRoutine(afterMoveCallback: Function)
-      {
-        var shouldMoveToTarget: boolean;
-
-        var unitsByLocation = this.getUnitsByLocation();
-        var fleets = this.getAssociatedFleets();
-
-        var atMuster = unitsByLocation[this.musterLocation.id] ? 
-          unitsByLocation[this.musterLocation.id].length : 0;
-
-
-        var inRangeOfTarget = 0;
-
-        for (var i = 0; i < fleets.length; i++)
-        {
-          var distance = fleets[i].location.getDistanceToStar(this.targetLocation);
-          if (fleets[i].getMinCurrentMovePoints() >= distance)
-          {
-            inRangeOfTarget += fleets[i].ships.length;
-          }
-        }
-
-
-        if (this.hasMustered)
-        {
-          shouldMoveToTarget = true;
-        }
         else
         {
-
-          if (atMuster >= this.minUnitsDesired || inRangeOfTarget >= this.minUnitsDesired)
-          {
-            this.hasMustered = true;
-            shouldMoveToTarget = true;
-          }
-          else
-          {
-            shouldMoveToTarget = false;
-          }
-
-        }
-
-        var moveTarget = shouldMoveToTarget ? this.targetLocation : this.musterLocation;
-
-
-        var finishAllMoveFN = function()
-        {
-          unitsByLocation = this.getUnitsByLocation();
-          var atTarget = unitsByLocation[this.targetLocation.id] ? 
-            unitsByLocation[this.targetLocation.id].length : 0;
-
-          if (atTarget >= this.minUnitsDesired)
-          {
-            this.executeAction(afterMoveCallback);
-          }
-          else
-          {
-            afterMoveCallback();
-          }
-        }.bind(this);
-
-        var finishedMovingCount = 0;
-        var finishFleetMoveFN = function()
-        {
-          finishedMovingCount++;
-          if (finishedMovingCount >= fleets.length)
-          {
-            finishAllMoveFN();
-          }
-        };
-
-        for (var i = 0; i < fleets.length; i++)
-        {
-          fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
+          var moveRoutine = this.objective.template.moveRoutineFN;
+          moveRoutine(this, afterMoveCallback);
         }
       }
-      executeAction(afterExecutedCallback: Function)
+      scoreUnitFit(unit: Unit)
       {
-        var star = this.targetLocation;
-        var player = this.units[0].fleet.player;
-
-        if (this.objective.type === "expansion" || this.objective.type === "cleanPirates")
-        {
-          var attackTargets = star.getTargetsForPlayer(player);
-
-          var target = attackTargets.filter(function(target)
-          {
-            return target.enemy.isIndependent;
-          })[0];
-
-          player.attackTarget(star, target, afterExecutedCallback);
-        }
+        return this.objective.template.unitFitFN(unit, this);
       }
     }
   }

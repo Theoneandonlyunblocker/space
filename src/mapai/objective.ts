@@ -43,6 +43,10 @@ module Rance
         this.priority = priority;
         this.target = target;
       }
+      getUnitsDesired()
+      {
+        return this.template.unitsToFillObjectiveFN(this);
+      }
     }
   }
 }

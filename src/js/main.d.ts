@@ -1554,12 +1554,17 @@ declare module Rance {
     module MapAI {
         class Objective {
             id: number;
+            template: Templates.IObjectiveTemplate;
             type: string;
             private _basePriority;
             priority: number;
             isOngoing: boolean;
             target: Star;
-            constructor(type: string, priority: number, target: Star);
+            constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star);
+            getUnitsDesired(): {
+                min: number;
+                ideal: number;
+            };
         }
     }
 }
@@ -1617,10 +1622,8 @@ declare module Rance {
             getUnitsByLocation(): {
                 [starId: number]: Unit[];
             };
-            moveFleets(afterMoveCallback: Function): void;
-            moveToRoutine(afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
-            musterAndAttackRoutine(afterMoveCallback: Function): void;
-            executeAction(afterExecutedCallback: Function): void;
+            moveFleets(afterMoveCallback: () => void): void;
+            scoreUnitFit(unit: Unit): number;
         }
     }
 }
@@ -1641,11 +1644,6 @@ declare module Rance {
             getGlobalUnitArcheypeScores(): IArchetypeValues;
             getFrontUnitArchetypeScores(front: Front): IArchetypeValues;
             getDefaultFrontUnitArchetypeScores(front: Front): IArchetypeValues;
-            getAdjustedFrontPriority(front: Front): number;
-            scoreUnitFitForFront(unit: Unit, front: Front): number;
-            getHealUnitFitScore(unit: Unit, front: Front): number;
-            getScoutingUnitFitScore(unit: Unit, front: Front): number;
-            getDefaultUnitFitScore(unit: Unit, front: Front, baseScore: number, healthAdjust?: number): number;
             private getUnitScoresForFront(units, front);
             assignUnits(): void;
             getFrontWithId(id: number): Front;
@@ -1655,14 +1653,6 @@ declare module Rance {
             organizeFleets(): void;
             setFrontsToMove(): void;
             moveFleets(afterMovingAllCallback: Function): void;
-            getUnitsToFillObjective(objective: Objective): {
-                min: number;
-                ideal: number;
-            };
-            getUnitsToFillExpansionObjective(objective: Objective): {
-                min: number;
-                ideal: number;
-            };
             setUnitRequests(): void;
         }
     }
@@ -2971,7 +2961,7 @@ declare module Rance {
                 function musterAndAttackRoutine(front: MapAI.Front, afterMoveCallback: Function): void;
                 function defaultUnitDesireFN(front: MapAI.Front): number;
                 function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold?: number, healthAdjust?: number, distanceAdjust?: number): number;
-                function makeObjectivesFromScores(objectiveType: string, evaluationScores: {
+                function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate, evaluationScores: {
                     star: Star;
                     score: number;
                 }[], basePriority: number): MapAI.Objective[];
