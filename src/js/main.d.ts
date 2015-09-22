@@ -1486,18 +1486,6 @@ declare module Rance {
             evaluateDesirabilityOfPlayersStars(player: Player): number;
             getIndependentNeighborStars(): Star[];
             getIndependentNeighborStarIslands(earlyReturnSize?: number): Star[];
-            getScoredExpansionTargets(): {
-                star: Star;
-                score: number;
-            }[];
-            getScoredCleanPiratesTargets(): {
-                star: Star;
-                score: number;
-            }[];
-            getScoredDiscoveryTargets(): {
-                star: Star;
-                score: number;
-            }[];
             getHostileShipsAtStar(star: Star): {
                 [playerId: number]: Unit[];
             };
@@ -1583,24 +1571,17 @@ declare module Rance {
             player: Player;
             grandStrategyAI: GrandStrategyAI;
             objectivesByType: {
-                expansion: Objective[];
-                cleanPirates: Objective[];
-                heal: Objective[];
-                discovery: Objective[];
+                [objectiveType: string]: Objective[];
             };
             objectives: Objective[];
             requests: any[];
             constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI);
             setAllObjectives(): void;
-            addObjectives(objectives: Objective[]): void;
+            getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): Objective[];
+            setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): void;
             getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean): {
-                [starId: number]: Objective;
+                [targetString: string]: Objective;
             };
-            getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number): Objective[];
-            getExpansionObjectives(): Objective[];
-            getCleanPiratesObjectives(): Objective[];
-            getDiscoveryObjectives(): Objective[];
-            getHealObjectives(): Objective[];
         }
     }
 }

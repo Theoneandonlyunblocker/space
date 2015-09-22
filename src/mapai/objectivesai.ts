@@ -46,13 +46,10 @@ module Rance
       player: Player;
       grandStrategyAI: GrandStrategyAI;
 
-      objectivesByType =
+      objectivesByType:
       {
-        expansion: <Objective[]> [],
-        cleanPirates: <Objective[]> [],
-        heal: <Objective[]> [],
-        discovery: <Objective[]> []
-      };
+        [objectiveType: string]: Objective[];
+      } = {};
       objectives: Objective[] = [];
 
       requests: any[] = [];
@@ -67,103 +64,67 @@ module Rance
 
       setAllObjectives()
       {
+        var objectiveTemplates = app.moduleData.Templates.Objectives;
         this.objectives = [];
 
-        this.addObjectives(this.getExpansionObjectives());
-        this.addObjectives(this.getCleanPiratesObjectives());
-        this.addObjectives(this.getHealObjectives());
-        this.addObjectives(this.getDiscoveryObjectives());
+        for (var key in objectiveTemplates)
+        {
+          this.setObjectivesOfType(objectiveTemplates[key]);
+        }
       }
-
-      addObjectives(objectives: Objective[])
+      getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
       {
-        this.objectives = this.objectives.concat(objectives);
-      }
+        var objectiveType = objectiveTemplate.key;
+        var byTarget = this.getObjectivesByTarget(objectiveType, true);
+        var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator);
+        var finalObjectives: Objective[] = [];
 
+        for (var i = 0; i < newObjectives.length; i++)
+        {
+          var newObjective = newObjectives[i];
+          var keyString = newObjective.target ? newObjective.target.id : "noTarget";
+          var oldObjective = byTarget[keyString];
+          if (oldObjective)
+          {
+            oldObjective.priority = newObjective.priority;
+            finalObjectives.push(oldObjective);
+          }
+          else
+          {
+            finalObjectives.push(newObjective);
+          }
+        }
+
+        return finalObjectives;
+      }
+      setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
+      {
+        var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
+        this.objectivesByType[objectiveTemplate.key] = newObjectives;
+        this.objectives = this.objectives.concat(newObjectives);
+      }
       getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean)
       {
         var objectivesByTarget:
         {
-          [starId: number]: Objective;
+          [targetString: string]: Objective;
         } = {};
+
+        if (!this.objectivesByType[objectiveType])
+        {
+          return objectivesByTarget;
+        }
 
         for (var i = 0; i < this.objectivesByType[objectiveType].length; i++)
         {
           var objective = this.objectivesByType[objectiveType][i];
           if (markAsOngoing) objective.isOngoing = true;
-          objectivesByTarget[objective.target.id] = objective;
+
+          var keyString = objective.target ? objective.target.id : "noTarget";
+          objectivesByTarget[keyString] = objective;
         }
 
         return objectivesByTarget;
-      }
-
-      // base method used for getting expansion & cleanPirates objectives
-      getIndependentFightingObjectives(objectiveType: string, evaluationScores: any, basePriority: number)
-      {
-        var objectivesByTarget = this.getObjectivesByTarget(objectiveType, true);
-        var allObjectives: Objective[] = [];
-
-        this.objectivesByType[objectiveType] = [];
-
-        var minScore: number, maxScore: number;
-
-        for (var i = 0; i < evaluationScores.length; i++)
-        {
-          var score = evaluationScores[i].score;
-          //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
-          maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
-        }
-
-        for (var i = 0; i < evaluationScores.length; i++)
-        {
-          var star = evaluationScores[i].star;
-          var relativeScore = getRelativeValue(evaluationScores[i].score, 0, maxScore);
-          var priority = relativeScore * basePriority;
-
-          if (objectivesByTarget[star.id])
-          {
-            objectivesByTarget[star.id].priority = priority;
-          }
-          else
-          {
-            objectivesByTarget[star.id] = new Objective(objectiveType, priority, star);
-          }
-
-          allObjectives.push(objectivesByTarget[star.id]);
-          this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
-        }
-
-        return allObjectives;
-      }
-
-      getExpansionObjectives()
-      {
-        var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-        var basePriority = this.grandStrategyAI.desireForExpansion;
-        var objectives = this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
-        return objectives.slice(0, 2);
-      }
-      getCleanPiratesObjectives()
-      {
-        var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-        var basePriority = this.grandStrategyAI.desireForConsolidation;
-        var objectives = this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
-        return objectives;
-      }
-      getDiscoveryObjectives()
-      {
-        var discoveryScores = this.mapEvaluator.getScoredDiscoveryTargets();
-        var basePriority = 0.6;
-        var objectives = this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
-        return objectives.slice(0, 1);
-      }
-
-      getHealObjectives()
-      {
-        var objective = new Objective("heal", 1, null);
-        this.objectivesByType["heal"] = [objective];
-
-        return [objective];
       }
     }
   }

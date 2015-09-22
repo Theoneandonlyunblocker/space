@@ -11458,66 +11458,6 @@ var Rance;
                 }
                 return allStars;
             };
-            MapEvaluator.prototype.getScoredExpansionTargets = function () {
-                var independentNeighborStars = this.getIndependentNeighborStars();
-                var evaluations = this.evaluateIndependentTargets(independentNeighborStars);
-                var scores = this.scoreIndependentTargets(evaluations);
-                return scores;
-            };
-            MapEvaluator.prototype.getScoredCleanPiratesTargets = function () {
-                var ownedStarsWithPirates = this.player.controlledLocations.filter(function (star) {
-                    // we could filter out stars with secondary controllers as cleaning up in
-                    // contested areas probably isnt smart, but clean up objectives should get
-                    // overridden in objective priority. maybe do it later if minimizing the
-                    // amount of objectives generated is important for performance
-                    return star.getIndependentShips().length > 0;
-                });
-                var evaluations = this.evaluateIndependentTargets(ownedStarsWithPirates);
-                var scores = this.scoreIndependentTargets(evaluations);
-                return scores;
-            };
-            MapEvaluator.prototype.getScoredDiscoveryTargets = function () {
-                var scores = [];
-                var starsWithDistance = {};
-                var linksToUnrevealedStars = this.player.getLinksToUnRevealedStars();
-                var minDistance;
-                var maxDistance;
-                for (var starId in linksToUnrevealedStars) {
-                    var star = this.player.revealedStars[starId];
-                    var nearest = this.player.getNearestOwnedStarTo(star);
-                    var distance = star.getDistanceToStar(nearest);
-                    starsWithDistance[starId] = distance;
-                    if (!isFinite(minDistance)) {
-                        minDistance = distance;
-                    }
-                    else {
-                        minDistance = Math.min(minDistance, distance);
-                    }
-                    if (!isFinite(maxDistance)) {
-                        maxDistance = distance;
-                    }
-                    else {
-                        maxDistance = Math.max(maxDistance, distance);
-                    }
-                }
-                for (var starId in linksToUnrevealedStars) {
-                    var star = this.player.revealedStars[starId];
-                    var score = 0;
-                    var relativeDistance = Rance.getRelativeValue(starsWithDistance[starId], minDistance, maxDistance, true);
-                    var distanceMultiplier = 0.3 + 0.7 * relativeDistance;
-                    var linksScore = linksToUnrevealedStars[starId].length * 20;
-                    score += linksScore;
-                    var desirabilityScore = this.evaluateIndividualStarDesirability(star);
-                    desirabilityScore *= distanceMultiplier;
-                    score += desirabilityScore;
-                    score *= distanceMultiplier;
-                    scores.push({
-                        star: star,
-                        score: score
-                    });
-                }
-                return scores;
-            };
             MapEvaluator.prototype.getHostileShipsAtStar = function (star) {
                 var hostilePlayers = star.getEnemyFleetOwners(this.player);
                 var shipsByEnemy = {};
@@ -11941,12 +11881,7 @@ var Rance;
     (function (MapAI) {
         var ObjectivesAI = (function () {
             function ObjectivesAI(mapEvaluator, grandStrategyAI) {
-                this.objectivesByType = {
-                    expansion: [],
-                    cleanPirates: [],
-                    heal: [],
-                    discovery: []
-                };
+                this.objectivesByType = {};
                 this.objectives = [];
                 this.requests = [];
                 this.mapEvaluator = mapEvaluator;
@@ -11955,73 +11890,49 @@ var Rance;
                 this.grandStrategyAI = grandStrategyAI;
             }
             ObjectivesAI.prototype.setAllObjectives = function () {
+                var objectiveTemplates = app.moduleData.Templates.Objectives;
                 this.objectives = [];
-                this.addObjectives(this.getExpansionObjectives());
-                this.addObjectives(this.getCleanPiratesObjectives());
-                this.addObjectives(this.getHealObjectives());
-                this.addObjectives(this.getDiscoveryObjectives());
+                for (var key in objectiveTemplates) {
+                    this.setObjectivesOfType(objectiveTemplates[key]);
+                }
             };
-            ObjectivesAI.prototype.addObjectives = function (objectives) {
-                this.objectives = this.objectives.concat(objectives);
+            ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
+                var objectiveType = objectiveTemplate.key;
+                var byTarget = this.getObjectivesByTarget(objectiveType, true);
+                var newObjectives = objectiveTemplate.creatorFunction(this.grandStrategyAI, this.mapEvaluator);
+                var finalObjectives = [];
+                for (var i = 0; i < newObjectives.length; i++) {
+                    var newObjective = newObjectives[i];
+                    var keyString = newObjective.target ? newObjective.target.id : "noTarget";
+                    var oldObjective = byTarget[keyString];
+                    if (oldObjective) {
+                        oldObjective.priority = newObjective.priority;
+                        finalObjectives.push(oldObjective);
+                    }
+                    else {
+                        finalObjectives.push(newObjective);
+                    }
+                }
+                return finalObjectives;
+            };
+            ObjectivesAI.prototype.setObjectivesOfType = function (objectiveTemplate) {
+                var newObjectives = this.getNewObjectivesOfType(objectiveTemplate);
+                this.objectivesByType[objectiveTemplate.key] = newObjectives;
+                this.objectives = this.objectives.concat(newObjectives);
             };
             ObjectivesAI.prototype.getObjectivesByTarget = function (objectiveType, markAsOngoing) {
                 var objectivesByTarget = {};
+                if (!this.objectivesByType[objectiveType]) {
+                    return objectivesByTarget;
+                }
                 for (var i = 0; i < this.objectivesByType[objectiveType].length; i++) {
                     var objective = this.objectivesByType[objectiveType][i];
                     if (markAsOngoing)
                         objective.isOngoing = true;
-                    objectivesByTarget[objective.target.id] = objective;
+                    var keyString = objective.target ? objective.target.id : "noTarget";
+                    objectivesByTarget[keyString] = objective;
                 }
                 return objectivesByTarget;
-            };
-            // base method used for getting expansion & cleanPirates objectives
-            ObjectivesAI.prototype.getIndependentFightingObjectives = function (objectiveType, evaluationScores, basePriority) {
-                var objectivesByTarget = this.getObjectivesByTarget(objectiveType, true);
-                var allObjectives = [];
-                this.objectivesByType[objectiveType] = [];
-                var minScore, maxScore;
-                for (var i = 0; i < evaluationScores.length; i++) {
-                    var score = evaluationScores[i].score;
-                    //minScore = isFinite(minScore) ? Math.min(minScore, score) : score;
-                    maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
-                }
-                for (var i = 0; i < evaluationScores.length; i++) {
-                    var star = evaluationScores[i].star;
-                    var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, 0, maxScore);
-                    var priority = relativeScore * basePriority;
-                    if (objectivesByTarget[star.id]) {
-                        objectivesByTarget[star.id].priority = priority;
-                    }
-                    else {
-                        objectivesByTarget[star.id] = new MapAI.Objective(objectiveType, priority, star);
-                    }
-                    allObjectives.push(objectivesByTarget[star.id]);
-                    this.objectivesByType[objectiveType].push(objectivesByTarget[star.id]);
-                }
-                return allObjectives;
-            };
-            ObjectivesAI.prototype.getExpansionObjectives = function () {
-                var evaluationScores = this.mapEvaluator.getScoredExpansionTargets();
-                var basePriority = this.grandStrategyAI.desireForExpansion;
-                var objectives = this.getIndependentFightingObjectives("expansion", evaluationScores, basePriority);
-                return objectives.slice(0, 2);
-            };
-            ObjectivesAI.prototype.getCleanPiratesObjectives = function () {
-                var evaluationScores = this.mapEvaluator.getScoredCleanPiratesTargets();
-                var basePriority = this.grandStrategyAI.desireForConsolidation;
-                var objectives = this.getIndependentFightingObjectives("cleanPirates", evaluationScores, basePriority);
-                return objectives;
-            };
-            ObjectivesAI.prototype.getDiscoveryObjectives = function () {
-                var discoveryScores = this.mapEvaluator.getScoredDiscoveryTargets();
-                var basePriority = 0.6;
-                var objectives = this.getIndependentFightingObjectives("discovery", discoveryScores, basePriority);
-                return objectives.slice(0, 1);
-            };
-            ObjectivesAI.prototype.getHealObjectives = function () {
-                var objective = new MapAI.Objective("heal", 1, null);
-                this.objectivesByType["heal"] = [objective];
-                return [objective];
             };
             return ObjectivesAI;
         })();
