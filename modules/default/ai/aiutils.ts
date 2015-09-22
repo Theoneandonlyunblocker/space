@@ -33,7 +33,7 @@ module Rance
             fleets[i].pathFind(moveTarget, null, finishFleetMoveFN);
           }
         }
-        export function musterAndAttackRoutine(front: MapAI.Front,afterMoveCallback: Function)
+        export function musterAndAttackRoutine(front: MapAI.Front, afterMoveCallback: Function)
         {
           var shouldMoveToTarget: boolean;
 
@@ -86,7 +86,20 @@ module Rance
 
             if (atTarget >= front.minUnitsDesired)
             {
-              front.executeAction(afterMoveCallback);
+              var star = front.targetLocation;
+              var player = front.units[0].fleet.player;
+
+              if (front.objective.type === "expansion" || front.objective.type === "cleanPirates")
+              {
+                var attackTargets = star.getTargetsForPlayer(player);
+
+                var target = attackTargets.filter(function(target)
+                {
+                  return target.enemy.isIndependent;
+                })[0];
+
+                player.attackTarget(star, target, afterMoveCallback);
+              }
             }
             else
             {
