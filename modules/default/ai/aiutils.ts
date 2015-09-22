@@ -162,7 +162,7 @@ module Rance
           
           if (healthPercentage < lowHealthThreshhold)
           {
-            score *= 1 - healthPercentage * healthAdjust;
+            score *= healthPercentage * healthAdjust;
           }
 
           // prioritize units closer to front target
