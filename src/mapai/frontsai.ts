@@ -72,7 +72,7 @@ module Rance
 
           for (var i = 0; i < frontScores.length; i++)
           {
-            frontScores[i].score = front.scoreUnitFit(units[i]);
+            frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
           }
         }
 

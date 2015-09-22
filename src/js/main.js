@@ -11954,7 +11954,6 @@ var Rance;
                 this.hasMustered = false;
                 this.id = props.id;
                 this.objective = props.objective;
-                this.priority = props.priority;
                 this.units = props.units || [];
                 this.minUnitsDesired = props.minUnitsDesired;
                 this.idealUnitsDesired = props.idealUnitsDesired;
@@ -12109,14 +12108,14 @@ var Rance;
             };
             Front.prototype.scoreUnitFit = function (unit) {
                 var template = this.objective.template;
-                var score = this.priority;
-                score *= template.unitFitFN(unit, this);
+                var score = this.objective.priority;
                 if (this.hasUnit(unit)) {
                     score += 0.2;
                     if (this.hasMustered) {
                         score += 0.3;
                     }
                 }
+                score *= template.unitFitFN(unit, this);
                 score *= template.unitDesireFN(this);
                 return score;
             };
@@ -12175,7 +12174,7 @@ var Rance;
                 var recalculateScoresForFront = function (front) {
                     var frontScores = unitScoresByFront[front.id];
                     for (var i = 0; i < frontScores.length; i++) {
-                        frontScores[i].score = front.scoreUnitFit(units[i]);
+                        frontScores[i].score = front.scoreUnitFit(frontScores[i].unit);
                     }
                 };
                 var removeUnit = function (unit) {
@@ -12223,7 +12222,6 @@ var Rance;
                 var unitsDesired = objective.getUnitsDesired();
                 var front = new MapAI.Front({
                     id: objective.id,
-                    priority: objective.priority,
                     objective: objective,
                     minUnitsDesired: unitsDesired.min,
                     idealUnitsDesired: unitsDesired.ideal,
@@ -21015,7 +21013,7 @@ var Rance;
                     // penalize units on low health
                     var healthPercentage = unit.currentHealth / unit.maxHealth;
                     if (healthPercentage < lowHealthThreshhold) {
-                        score *= 1 - healthPercentage * healthAdjust;
+                        score *= healthPercentage * healthAdjust;
                     }
                     // prioritize units closer to front target
                     var turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
@@ -21186,9 +21184,7 @@ var Rance;
                     unitDesireFN: function (front) { return 1; },
                     unitFitFN: function (unit, front) {
                         var healthPercentage = unit.currentHealth / unit.maxHealth;
-                        if (healthPercentage > 0.75)
-                            return 0;
-                        return (1 - healthPercentage);
+                        return 1 - healthPercentage;
                     },
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
                         var template = Rance.Modules.DefaultModule.Objectives.heal;

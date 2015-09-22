@@ -1595,7 +1595,6 @@ declare module Rance {
         class Front {
             id: number;
             objective: Objective;
-            priority: number;
             units: Unit[];
             minUnitsDesired: number;
             idealUnitsDesired: number;
@@ -1605,7 +1604,6 @@ declare module Rance {
             constructor(props: {
                 id: number;
                 objective: Objective;
-                priority: number;
                 units?: Unit[];
                 minUnitsDesired: number;
                 idealUnitsDesired: number;

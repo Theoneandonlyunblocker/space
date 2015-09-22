@@ -29,9 +29,7 @@ module Rance
           unitFitFN: function(unit: Unit, front: MapAI.Front)
           {
             var healthPercentage = unit.currentHealth / unit.maxHealth;
-            if (healthPercentage > 0.75) return 0;
-
-            return (1 - healthPercentage);
+            return 1 - healthPercentage;
           },
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
             mapEvaluator: MapAI.MapEvaluator)
