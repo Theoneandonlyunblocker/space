@@ -36,7 +36,9 @@ module Rance
             var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
             var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
-            return AIUtils.makeObjectivesFromScores("expansion", scores, basePriority);
+            var template = Rance.Modules.DefaultModule.Objectives.expansion;
+
+            return AIUtils.makeObjectivesFromScores(template, scores, basePriority);
           },
           unitsToFillObjectiveFN: AIUtils.getUnitsToFillIndependentObjective
         }

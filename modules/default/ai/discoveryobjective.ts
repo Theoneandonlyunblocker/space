@@ -91,7 +91,9 @@ module Rance
               });
             }
 
-            return AIUtils.makeObjectivesFromScores("discovery", scores, 0.5);
+            var template = Rance.Modules.DefaultModule.Objectives.discovery;
+
+            return AIUtils.makeObjectivesFromScores(template, scores, 0.5);
           },
           unitsToFillObjectiveFN: function(objective: MapAI.Objective)
           {

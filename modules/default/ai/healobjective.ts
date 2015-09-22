@@ -36,7 +36,8 @@ module Rance
           creatorFunction: function(grandStrategyAI: MapAI.GrandStrategyAI,
             mapEvaluator: MapAI.MapEvaluator)
           {
-            return [new MapAI.Objective("heal", 1, null)];
+            var template = Rance.Modules.DefaultModule.Objectives.expansion;
+            return [new MapAI.Objective(template, 1, null)];
           },
           unitsToFillObjectiveFN: function(objective: MapAI.Objective)
           {

@@ -19,6 +19,7 @@ module Rance
     export class Objective
     {
       id: number;
+      template: Templates.IObjectiveTemplate;
       type: string;
       private _basePriority: number;
       get priority(): number
@@ -33,11 +34,12 @@ module Rance
 
       target: Star;
 
-      constructor(type: string, priority: number, target: Star)
+      constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star)
       {
         this.id = idGenerators.objective++;
 
-        this.type = type;
+        this.template = template;
+        this.type = this.template.key;
         this.priority = priority;
         this.target = target;
       }
