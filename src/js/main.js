@@ -12104,9 +12104,21 @@ var Rance;
                     moveRoutine(this, afterMoveCallback);
                 }
             };
+            Front.prototype.hasUnit = function (unit) {
+                return this.units.indexOf(unit) !== -1;
+            };
             Front.prototype.scoreUnitFit = function (unit) {
                 var template = this.objective.template;
-                return template.unitFitFN(unit, this) * template.unitDesireFN(this);
+                var score = this.priority;
+                score *= template.unitFitFN(unit, this);
+                if (this.hasUnit(unit)) {
+                    score += 0.2;
+                    if (this.hasMustered) {
+                        score += 0.3;
+                    }
+                }
+                score *= template.unitDesireFN(this);
+                return score;
             };
             Front.prototype.getNewUnitArchetypeScores = function () {
                 var countByArchetype = this.getUnitCountByArchetype();
@@ -21079,7 +21091,27 @@ var Rance;
                             return 0;
                     },
                     unitFitFN: function (unit, front) {
-                        return DefaultModule.AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
+                        var baseScore = 0;
+                        // ++ stealth
+                        var isStealthy = unit.isStealthy();
+                        if (isStealthy)
+                            baseScore += 0.2;
+                        // ++ vision
+                        var visionRange = unit.getVisionRange();
+                        if (visionRange <= 0) {
+                            return -1;
+                        }
+                        else {
+                            baseScore += Math.pow(visionRange, 1.5) / 2;
+                        }
+                        // -- strength
+                        var strength = unit.getStrengthEvaluation();
+                        baseScore -= strength / 1000;
+                        // -- cost
+                        var cost = unit.getTotalCost();
+                        baseScore -= cost / 1000;
+                        var score = baseScore * DefaultModule.AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
+                        return Rance.clamp(score, 0, 1);
                     },
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
                         var scores = [];

@@ -1623,6 +1623,7 @@ declare module Rance {
                 [starId: number]: Unit[];
             };
             moveFleets(afterMoveCallback: () => void): void;
+            hasUnit(unit: Unit): boolean;
             scoreUnitFit(unit: Unit): number;
             getNewUnitArchetypeScores(): IArchetypeValues;
         }
