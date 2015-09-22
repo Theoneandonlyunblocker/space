@@ -28,12 +28,8 @@ module Rance
           {
             var basePriority = grandStrategyAI.desireForExpansion;
 
-            var ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(function(star: Star)
-            {
-              return star.getIndependentShips().length > 0 && !star.getSecondaryController();
-            });
-
-            var evaluations = mapEvaluator.evaluateIndependentTargets(ownedStarsWithPirates);
+            var independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
+            var evaluations = mapEvaluator.evaluateIndependentTargets(independentNeighborStars);
             var scores = mapEvaluator.scoreIndependentTargets(evaluations);
 
             var template = Rance.Modules.DefaultModule.Objectives.expansion;
