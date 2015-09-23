@@ -11777,10 +11777,13 @@ var Rance;
                 this.desireForConsolidation = 0.4 + 0.6 * (1 - this.desireForExpansion);
             };
             GrandStrategyAI.prototype.getDesireForWar = function () {
+                if (!this.desiredStars)
+                    this.setDesiredStars();
                 var fromAggressiveness = this.personality.aggressiveness;
                 var fromExpansiveness = 0;
-                var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(4);
-                if (availableExpansionTargets.length < 4) {
+                var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
+                var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
+                if (availableExpansionTargets.length < minStarsStillDesired) {
                     fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
                 }
                 // TODO penalize for lots of ongoing objectives (maybe in objectivesAI instead)

@@ -58,12 +58,13 @@ module Rance
 
       getDesireForWar()
       {
+        if (!this.desiredStars) this.setDesiredStars();
         var fromAggressiveness = this.personality.aggressiveness;
         var fromExpansiveness = 0;
-        var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(4);
-        if (availableExpansionTargets.length < 4)
+        var minStarsStillDesired = this.mapEvaluator.player.controlledLocations.length - this.desiredStars.min;
+        var availableExpansionTargets = this.mapEvaluator.getIndependentNeighborStarIslands(minStarsStillDesired);
+        if (availableExpansionTargets.length < minStarsStillDesired)
         {
-
           fromExpansiveness += this.personality.expansiveness / (1 + availableExpansionTargets.length);
         }
 
