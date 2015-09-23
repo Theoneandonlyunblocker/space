@@ -81,7 +81,7 @@ module Rance
     }
     setupPirates()
     {
-      this.name = "Independent"
+      this.name = "Independents"
       this.color = 0x000000;
       this.colorAlpha = 0;
       this.secondaryColor = 0xFFFFFF;
