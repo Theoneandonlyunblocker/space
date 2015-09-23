@@ -61,8 +61,20 @@ module Rance
       console.log("makeNotification");
       var notification = new Notification(template, props, this.currentTurn);
 
-      this.byTurn[this.currentTurn].unshift(notification);
-      this.unread.unshift(notification);
+      this.addNotification(notification);
+    }
+    addNotification(notification: Notification)
+    {
+      if (!this.byTurn[notification.turn])
+      {
+        this.byTurn[notification.turn] = [];
+      }
+      this.byTurn[notification.turn].unshift(notification);
+      
+      if (!notification.hasBeenRead)
+      {
+        this.unread.unshift(notification);
+      }
     }
     markAsRead(notification: Notification)
     {
@@ -81,18 +93,14 @@ module Rance
     }
     serialize()
     {
-      var data:
-      {
-        [turnNumber: number]: any;
-      } = {};
+      var data: any[] = []
 
       for (var turnNumber in this.byTurn)
       {
-        data[turnNumber] = [];
         var notifications = this.byTurn[turnNumber];
         for (var i = 0; i < notifications.length; i++)
         {
-          data[turnNumber].push(notifications[i].serialize());
+          data.push(notifications[i].serialize());
         }
       }
 

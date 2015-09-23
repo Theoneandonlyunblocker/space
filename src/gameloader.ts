@@ -67,8 +67,27 @@ module Rance
       var game = new Game(this.map, this.players, this.humanPlayer);
       game.independents = game.independents.concat(this.independents);
       game.turnNumber = data.turnNumber;
+      if (data.notificationLog)
+      {
+        game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
+      }
 
       return game;
+    }
+    deserializeNotificationLog(data: any[])
+    {
+      var notificationLog = new NotificationLog();
+      for (var i = 0; i < data.length; i++)
+      {
+        var template = app.moduleData.Templates.Notifications[data[i].templateKey];
+        var props = template.deserializeProps(data[i].props, this);
+        var notification = new Notification(template, props, data[i].turn);
+        notification.hasBeenRead = data[i].hasBeenRead;
+
+        notificationLog.addNotification(notification);
+      }
+
+      return notificationLog;
     }
     deserializeMap(data: any)
     {

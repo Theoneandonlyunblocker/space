@@ -11198,8 +11198,16 @@ var Rance;
         NotificationLog.prototype.makeNotification = function (template, location, props) {
             console.log("makeNotification");
             var notification = new Rance.Notification(template, props, this.currentTurn);
-            this.byTurn[this.currentTurn].unshift(notification);
-            this.unread.unshift(notification);
+            this.addNotification(notification);
+        };
+        NotificationLog.prototype.addNotification = function (notification) {
+            if (!this.byTurn[notification.turn]) {
+                this.byTurn[notification.turn] = [];
+            }
+            this.byTurn[notification.turn].unshift(notification);
+            if (!notification.hasBeenRead) {
+                this.unread.unshift(notification);
+            }
         };
         NotificationLog.prototype.markAsRead = function (notification) {
             var index = this.unread.indexOf(notification);
@@ -11214,12 +11222,11 @@ var Rance;
             });
         };
         NotificationLog.prototype.serialize = function () {
-            var data = {};
+            var data = [];
             for (var turnNumber in this.byTurn) {
-                data[turnNumber] = [];
                 var notifications = this.byTurn[turnNumber];
                 for (var i = 0; i < notifications.length; i++) {
-                    data[turnNumber].push(notifications[i].serialize());
+                    data.push(notifications[i].serialize());
                 }
             }
             return data;
@@ -11298,6 +11305,7 @@ var Rance;
                 return player.serialize();
             }));
             data.humanPlayerId = this.humanPlayer.id;
+            data.notificationLog = this.notificationLog.serialize();
             return data;
         };
         Game.prototype.save = function (name) {
@@ -21983,7 +21991,21 @@ var Rance;
             var game = new Rance.Game(this.map, this.players, this.humanPlayer);
             game.independents = game.independents.concat(this.independents);
             game.turnNumber = data.turnNumber;
+            if (data.notificationLog) {
+                game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
+            }
             return game;
+        };
+        GameLoader.prototype.deserializeNotificationLog = function (data) {
+            var notificationLog = new Rance.NotificationLog();
+            for (var i = 0; i < data.length; i++) {
+                var template = app.moduleData.Templates.Notifications[data[i].templateKey];
+                var props = template.deserializeProps(data[i].props, this);
+                var notification = new Rance.Notification(template, props, data[i].turn);
+                notification.hasBeenRead = data[i].hasBeenRead;
+                notificationLog.addNotification(notification);
+            }
+            return notificationLog;
         };
         GameLoader.prototype.deserializeMap = function (data) {
             var stars = [];

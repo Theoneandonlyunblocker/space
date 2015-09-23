@@ -110,6 +110,7 @@ module Rance
         return player.serialize();
       }));
       data.humanPlayerId = this.humanPlayer.id;
+      data.notificationLog = this.notificationLog.serialize();
 
       return data;
     }

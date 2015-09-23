@@ -1417,11 +1417,10 @@ declare module Rance {
         destroy(): void;
         setTurn(turn: number): void;
         makeNotification(template: Templates.INotificationTemplate, location: Star, props: any): void;
+        addNotification(notification: Notification): void;
         markAsRead(notification: Notification): void;
         getUnreadNotificationsForTurn(turn: number): Notification[];
-        serialize(): {
-            [turnNumber: number]: any;
-        };
+        serialize(): any[];
     }
 }
 declare module Rance {
@@ -3126,6 +3125,7 @@ declare module Rance {
         };
         constructor();
         deserializeGame(data: any): Game;
+        deserializeNotificationLog(data: any[]): NotificationLog;
         deserializeMap(data: any): GalaxyMap;
         deserializeStar(data: any): Star;
         deserializeBuildings(data: any): void;
