@@ -55,7 +55,7 @@ module Rance
         return(
           React.DOM.div(
           {
-            className: "confirm-popup"
+            className: "confirm-popup draggable-container"
           },
             React.DOM.div(
             {
@@ -65,7 +65,7 @@ module Rance
             ),
             React.DOM.div(
             {
-              className: "popup-buttons"
+              className: "popup-buttons draggable-container"
             },
               React.DOM.button(
               {

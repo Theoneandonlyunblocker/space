@@ -124,8 +124,11 @@ module Rance
             {
               dragging: true
             }
-            this.dragPos.width = parseInt(ownNode.offsetWidth);
-            this.dragPos.height = parseInt(ownNode.offsetHeight);
+            if (!this.props.preventAutoResize)
+            {
+              this.dragPos.width = parseInt(ownNode.offsetWidth);
+              this.dragPos.height = parseInt(ownNode.offsetHeight);
+            }
 
             if (this.props.makeClone)
             {

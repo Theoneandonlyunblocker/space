@@ -446,8 +446,10 @@ var Rance;
                         var stateObj = {
                             dragging: true
                         };
-                        this.dragPos.width = parseInt(ownNode.offsetWidth);
-                        this.dragPos.height = parseInt(ownNode.offsetHeight);
+                        if (!this.props.preventAutoResize) {
+                            this.dragPos.width = parseInt(ownNode.offsetWidth);
+                            this.dragPos.height = parseInt(ownNode.offsetHeight);
+                        }
                         if (this.props.makeClone) {
                             if (!this.makeDragClone) {
                                 var nextSibling = ownNode.nextSibling;
@@ -3826,11 +3828,11 @@ var Rance;
                     throw new Error("Confirm popup has no content");
                 }
                 return (React.DOM.div({
-                    className: "confirm-popup"
+                    className: "confirm-popup draggable-container"
                 }, React.DOM.div({
                     className: "confirm-popup-content"
                 }, content), React.DOM.div({
-                    className: "popup-buttons"
+                    className: "popup-buttons draggable-container"
                 }, React.DOM.button({
                     className: "popup-button",
                     onClick: this.handleOk,
@@ -15149,17 +15151,17 @@ var Rance;
                     contentConstructor: UIComponents.ConfirmPopup,
                     contentProps: {
                         contentConstructor: notification.template.contentConstructor,
-                        contentProps: notification.props,
+                        contentProps: {
+                            notification: notification
+                        },
                         handleOk: this.handleMarkAsRead.bind(this, notification),
                         handleClose: this.closePopup.bind(this, key),
                         okText: "Mark as read",
                         cancelText: "Close"
                     },
                     popupProps: {
-                        resizable: true,
                         containerDragOnly: true,
-                        minWidth: 150,
-                        minHeight: 50
+                        preventAutoResize: true
                     }
                 });
                 var stateObj = {};
@@ -21713,7 +21715,20 @@ var Rance;
                 UIComponents.BattleFinishNotification = React.createClass({
                     displayName: "BattleFinishNotification",
                     render: function () {
-                        return (null);
+                        var notification = this.props.notification;
+                        var p = notification.props;
+                        var attacker = p.attacker;
+                        var defender = p.defender;
+                        var victor = p.victor;
+                        var location = p.location;
+                        var message = notification.makeMessage();
+                        var attackSuccessString = victor === attacker ? " succesfully " : " unsuccesfully ";
+                        var controllerString = victor === attacker ? " now controls location " :
+                            " maintains control of location ";
+                        return (React.DOM.div({
+                            className: "battle-finish-notification draggable-container"
+                        }, message, React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
+                            location.name + ". " + victor.name + controllerString + location.name));
                     }
                 });
             })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));

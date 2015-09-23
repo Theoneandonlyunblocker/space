@@ -63,7 +63,10 @@ module Rance
           contentProps:
           {
             contentConstructor: notification.template.contentConstructor,
-            contentProps: notification.props,
+            contentProps:
+            {
+              notification: notification
+            },
             handleOk: this.handleMarkAsRead.bind(this, notification),
             handleClose: this.closePopup.bind(this, key),
             okText: "Mark as read",
@@ -71,10 +74,8 @@ module Rance
           },
           popupProps:
           {
-            resizable: true,
             containerDragOnly: true,
-            minWidth: 150,
-            minHeight: 50
+            preventAutoResize: true
           }
         });
 
