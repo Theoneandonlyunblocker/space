@@ -86,6 +86,8 @@ module Rance
 
       closePopup: function(key: string)
       {
+        this.refs.popupManager.closePopup(this.state[key]);
+
         var stateObj: any = {};
         stateObj[key] = undefined;
         this.setState(stateObj);
@@ -96,7 +98,7 @@ module Rance
         var key = this.getNotificationKey(notification);
         if (isFinite(this.state[key]))
         {
-          this.closePopup(notification, key);
+          this.closePopup(key);
         }
         else
         {

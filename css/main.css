@@ -2015,6 +2015,7 @@ progress::-webkit-progress-value {
   cursor: pointer;
 }
 .notification-image {
+  min-width: 48px;
   width: 48px;
   height: 48px;
 }
