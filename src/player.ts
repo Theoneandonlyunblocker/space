@@ -486,11 +486,13 @@ module Rance
     }
     starIsVisible(star: Star): boolean
     {
+      if (!this.isAI && Options.debugMode) return true;
       if (this.visionIsDirty) this.updateVisibleStars();
       return Boolean(this.visibleStars[star.id]);
     }
     starIsRevealed(star: Star): boolean
     {
+      if (!this.isAI && Options.debugMode) return true;
       if (this.visionIsDirty) this.updateVisibleStars();
       return Boolean(this.revealedStars[star.id]);
     }

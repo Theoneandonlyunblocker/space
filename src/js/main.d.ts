@@ -1407,14 +1407,18 @@ declare module Rance {
         byTurn: {
             [turnNumber: number]: Notification[];
         };
+        unread: Notification[];
         currentTurn: number;
-        eventListeners: Function[];
+        listeners: {
+            [name: string]: Function[];
+        };
         constructor();
         addEventListeners(): void;
         destroy(): void;
         setTurn(turn: number): void;
         makeNotification(template: Templates.INotificationTemplate, location: Star, props: any): void;
-        getUnreadNotificationsForThisTurn(): Notification[];
+        markAsRead(notification: Notification): void;
+        getUnreadNotificationsForTurn(turn: number): Notification[];
         serialize(): {
             [turnNumber: number]: any;
         };
@@ -2136,7 +2140,7 @@ declare module Rance {
 }
 declare module Rance {
     module UIComponents {
-        var NotificationLog: React.Factory<{}>;
+        var NotificationLog: React.Factory<any>;
     }
 }
 declare module Rance {

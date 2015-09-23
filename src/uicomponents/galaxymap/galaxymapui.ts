@@ -216,7 +216,8 @@ module Rance
             },
               UIComponents.NotificationLog(
               {
-                log: this.props.game.notificationLog
+                log: this.props.game.notificationLog,
+                currentTurn: this.props.game.turnNumber
               }),
               React.DOM.button(endTurnButtonProps, "End turn")
             )

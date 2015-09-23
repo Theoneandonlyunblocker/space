@@ -1973,6 +1973,7 @@ progress::-webkit-progress-value {
   pointer-events: auto;
 }
 .end-turn-button {
+  float: right;
   width: 250px;
   height: 40px;
   font-size: 1.5em;
@@ -2000,6 +2001,25 @@ progress::-webkit-progress-value {
 .end-turn-button:disabled *,
 .end-turn-button.disabled * {
   pointer-events: none !important;
+}
+.notification-log {
+  max-height: 15em;
+  overflow-y: auto;
+  max-width: 25em;
+  overflow-x: hidden;
+}
+.notification {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  cursor: pointer;
+}
+.notification-image {
+  width: 48px;
+  height: 48px;
+}
+.notification-message {
+  color: #eeeeec;
 }
 .possible-actions-container {
   position: relative;

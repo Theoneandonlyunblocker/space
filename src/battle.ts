@@ -392,11 +392,7 @@ module Rance
           this.battleData.building.setController(victor);
         }
       }
-      for (var i = 0; i < this.afterFinishCallbacks.length; i++)
-      {
-        this.afterFinishCallbacks[i]();
-      }
-      
+  
       if (this.isSimulated)
       {
         eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
@@ -412,10 +408,14 @@ module Rance
         eventManager.dispatchEvent("makeBattleFinishNotification", this.battleData.location,
         {
           location: this.battleData.location,
-          attacker: this.battleData.attacker,
-          defender: this.battleData.defender,
+          attacker: this.battleData.attacker.player,
+          defender: this.battleData.defender.player,
           victor: victor
         });
+      }
+      for (var i = 0; i < this.afterFinishCallbacks.length; i++)
+      {
+        this.afterFinishCallbacks[i]();
       }
     }
     getVictor()

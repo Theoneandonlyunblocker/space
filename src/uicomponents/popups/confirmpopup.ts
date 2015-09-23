@@ -38,6 +38,20 @@ module Rance
 
       render: function()
       {
+        var content: ReactComponentPlaceHolder;
+        if (this.props.contentText)
+        {
+          content = this.splitMultilineText(this.props.contentText);
+        }
+        else if (this.props.contentConstructor)
+        {
+          content = this.props.contentConstructor(this.props.contentProps);
+        }
+        else
+        {
+          throw new Error("Confirm popup has no content");
+        }
+
         return(
           React.DOM.div(
           {
@@ -47,7 +61,7 @@ module Rance
             {
               className: "confirm-popup-content"
             },
-              this.splitMultilineText(this.props.contentText)
+              content
             ),
             React.DOM.div(
             {

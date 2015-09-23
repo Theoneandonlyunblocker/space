@@ -234,6 +234,7 @@ declare module React {
         onInput?: (event: SyntheticEvent) => void;
         onSubmit?: (event: SyntheticEvent) => void;
         onClick?: (event: MouseEvent) => void;
+        onContextMenu?: (event: MouseEvent) => void;
         onDoubleClick?: (event: MouseEvent) => void;
         onDrag?: (event: MouseEvent) => void;
         onDragEnd?: (event: MouseEvent) => void;

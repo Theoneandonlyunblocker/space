@@ -11,8 +11,12 @@ module Rance
     {
       [turnNumber: number]: Notification[];
     } = {};
+    unread: Notification[] = [];
     currentTurn: number;
-    eventListeners: Function[] = [];
+    listeners:
+    {
+      [name: string]: Function[];
+    } = {};
 
     constructor()
     {
@@ -25,17 +29,26 @@ module Rance
         var template = app.moduleData.Templates.Notifications[key];
         for (var i = 0; i < template.eventListeners.length; i++)
         {
-          var listener = eventManager.addEventListener(template.eventListeners[i],
+          var listenerKey = template.eventListeners[i];
+          var listener = eventManager.addEventListener(listenerKey,
             this.makeNotification.bind(this, template));
-          this.eventListeners.push(listener);
+
+          if (!this.listeners[listenerKey])
+          {
+            this.listeners[listenerKey] = [];
+          }
+          this.listeners[listenerKey].push(listener);
         }
       }
     }
     destroy()
     {
-      for (var i = 0; i < this.eventListeners.length; i++)
+      for (var key in this.listeners)
       {
-        eventManager.removeEventListener(this.eventListeners[i]);
+        for (var i = 0; i < this.listeners[key].length; i++)
+        {
+          eventManager.removeEventListener(key, this.listeners[key][i]);
+        }
       }
     }
     setTurn(turn: number)
@@ -45,13 +58,23 @@ module Rance
     }
     makeNotification(template: Templates.INotificationTemplate, location: Star, props: any)
     {
+      console.log("makeNotification");
       var notification = new Notification(template, props, this.currentTurn);
 
-      this.byTurn[this.currentTurn].push(notification);
+      this.byTurn[this.currentTurn].unshift(notification);
+      this.unread.unshift(notification);
     }
-    getUnreadNotificationsForThisTurn()
+    markAsRead(notification: Notification)
     {
-      return this.byTurn[this.currentTurn].filter(function(notification: Notification)
+      var index = this.unread.indexOf(notification);
+      if (index === -1) throw new Error("Notification is already unread");
+
+      notification.hasBeenRead = true;
+      this.unread.splice(index, 1);
+    }
+    getUnreadNotificationsForTurn(turn: number)
+    {
+      return this.byTurn[turn].filter(function(notification: Notification)
       {
         return !notification.hasBeenRead;
       });

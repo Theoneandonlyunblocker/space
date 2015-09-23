@@ -99,13 +99,18 @@ module Rance
         this.hookUI();
       }
 
-
       this.reactUI.render();
 
       console.log("Init in " + (new Date().getTime() - startTime) + " ms");
     }
     destroy()
     {
+      if (this.game && this.game.notificationLog)
+      {
+        this.game.notificationLog.destroy();
+        this.game.notificationLog = null;
+      }
+
       if (this.mapRenderer)
       {
         this.mapRenderer.destroy();
@@ -260,6 +265,7 @@ module Rance
       if (!this.game.notificationLog)
       {
         this.game.notificationLog = new NotificationLog();
+        this.game.notificationLog.setTurn(this.game.turnNumber);
       }
     }
     initDisplay()

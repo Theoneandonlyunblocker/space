@@ -2511,6 +2511,7 @@ progress::-webkit-progress-value { background: #080; }
 }
 .end-turn-button
 {
+  float: right;
   width: 250px;
   height: 40px;
 
@@ -2518,6 +2519,29 @@ progress::-webkit-progress-value { background: #080; }
   font-weight: bolder;
 
   .button-style;
+}
+.notification-log
+{
+  max-height: 15em;
+  overflow-y: auto;
+  max-width: 25em;
+  overflow-x: hidden;
+}
+.notification
+{
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  cursor: pointer;
+}
+.notification-image
+{
+  width: 48px;
+  height: 48px;
+}
+.notification-message
+{
+  color: @text-color;
 }
 
 .possible-actions-container

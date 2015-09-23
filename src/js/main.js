@@ -3815,11 +3815,21 @@ var Rance;
                 this.props.closePopup();
             },
             render: function () {
+                var content;
+                if (this.props.contentText) {
+                    content = this.splitMultilineText(this.props.contentText);
+                }
+                else if (this.props.contentConstructor) {
+                    content = this.props.contentConstructor(this.props.contentProps);
+                }
+                else {
+                    throw new Error("Confirm popup has no content");
+                }
                 return (React.DOM.div({
                     className: "confirm-popup"
                 }, React.DOM.div({
                     className: "confirm-popup-content"
-                }, this.splitMultilineText(this.props.contentText)), React.DOM.div({
+                }, content), React.DOM.div({
                     className: "popup-buttons"
                 }, React.DOM.button({
                     className: "popup-button",
@@ -11155,21 +11165,28 @@ var Rance;
     var NotificationLog = (function () {
         function NotificationLog() {
             this.byTurn = {};
-            this.eventListeners = [];
+            this.unread = [];
+            this.listeners = {};
             this.addEventListeners();
         }
         NotificationLog.prototype.addEventListeners = function () {
             for (var key in app.moduleData.Templates.Notifications) {
                 var template = app.moduleData.Templates.Notifications[key];
                 for (var i = 0; i < template.eventListeners.length; i++) {
-                    var listener = Rance.eventManager.addEventListener(template.eventListeners[i], this.makeNotification.bind(this, template));
-                    this.eventListeners.push(listener);
+                    var listenerKey = template.eventListeners[i];
+                    var listener = Rance.eventManager.addEventListener(listenerKey, this.makeNotification.bind(this, template));
+                    if (!this.listeners[listenerKey]) {
+                        this.listeners[listenerKey] = [];
+                    }
+                    this.listeners[listenerKey].push(listener);
                 }
             }
         };
         NotificationLog.prototype.destroy = function () {
-            for (var i = 0; i < this.eventListeners.length; i++) {
-                Rance.eventManager.removeEventListener(this.eventListeners[i]);
+            for (var key in this.listeners) {
+                for (var i = 0; i < this.listeners[key].length; i++) {
+                    Rance.eventManager.removeEventListener(key, this.listeners[key][i]);
+                }
             }
         };
         NotificationLog.prototype.setTurn = function (turn) {
@@ -11177,11 +11194,20 @@ var Rance;
             this.byTurn[turn] = [];
         };
         NotificationLog.prototype.makeNotification = function (template, location, props) {
+            console.log("makeNotification");
             var notification = new Rance.Notification(template, props, this.currentTurn);
-            this.byTurn[this.currentTurn].push(notification);
+            this.byTurn[this.currentTurn].unshift(notification);
+            this.unread.unshift(notification);
         };
-        NotificationLog.prototype.getUnreadNotificationsForThisTurn = function () {
-            return this.byTurn[this.currentTurn].filter(function (notification) {
+        NotificationLog.prototype.markAsRead = function (notification) {
+            var index = this.unread.indexOf(notification);
+            if (index === -1)
+                throw new Error("Notification is already unread");
+            notification.hasBeenRead = true;
+            this.unread.splice(index, 1);
+        };
+        NotificationLog.prototype.getUnreadNotificationsForTurn = function (turn) {
+            return this.byTurn[turn].filter(function (notification) {
                 return !notification.hasBeenRead;
             });
         };
@@ -12893,11 +12919,15 @@ var Rance;
             return toReturn;
         };
         Player.prototype.starIsVisible = function (star) {
+            if (!this.isAI && Rance.Options.debugMode)
+                return true;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             return Boolean(this.visibleStars[star.id]);
         };
         Player.prototype.starIsRevealed = function (star) {
+            if (!this.isAI && Rance.Options.debugMode)
+                return true;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             return Boolean(this.revealedStars[star.id]);
@@ -13308,9 +13338,6 @@ var Rance;
                     this.battleData.building.setController(victor);
                 }
             }
-            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
-                this.afterFinishCallbacks[i]();
-            }
             if (this.isSimulated) {
                 Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.battleData.location);
             }
@@ -13321,10 +13348,13 @@ var Rance;
             if (app.humanPlayer.starIsVisible(this.battleData.location)) {
                 Rance.eventManager.dispatchEvent("makeBattleFinishNotification", this.battleData.location, {
                     location: this.battleData.location,
-                    attacker: this.battleData.attacker,
-                    defender: this.battleData.defender,
+                    attacker: this.battleData.attacker.player,
+                    defender: this.battleData.defender.player,
                     victor: victor
                 });
+            }
+            for (var i = 0; i < this.afterFinishCallbacks.length; i++) {
+                this.afterFinishCallbacks[i]();
             }
         };
         Battle.prototype.getVictor = function () {
@@ -15051,8 +15081,29 @@ var Rance;
     (function (UIComponents) {
         UIComponents.Notification = React.createClass({
             displayName: "Notification",
+            handleClose: function () {
+                this.props.markAsRead(this.props.notification);
+            },
+            handleClick: function () {
+                this.props.togglePopup(this.props.notification);
+            },
+            handleRightClick: function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleClose();
+            },
             render: function () {
-                return (null);
+                var notification = this.props.notification;
+                return (React.DOM.li({
+                    className: "notification",
+                    onClick: this.handleClick,
+                    onContextMenu: this.handleRightClick
+                }, React.DOM.img({
+                    className: "notification-image",
+                    src: notification.template.iconSrc
+                }), React.DOM.span({
+                    className: "notification-message"
+                }, notification.makeMessage())));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -15064,25 +15115,90 @@ var Rance;
     (function (UIComponents) {
         UIComponents.NotificationLog = React.createClass({
             displayName: "NotificationLog",
+            mixins: [React.addons.PureRenderMixin],
             getInitialState: function () {
-                return ({
-                    notifications: this.props.log.getUnreadNotificationsForThisTurn()
+                return ({});
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.currentTurn !== this.props.currentTurn) {
+                    this.scrollTop = undefined;
+                }
+            },
+            componentDidUpdate: function () {
+                var domNode = this.getDOMNode();
+                if (!isFinite(this.scrollTop)) {
+                    this.scrollTop = domNode.scrollTop;
+                }
+                domNode.scrollTop = domNode.scrollHeight;
+            },
+            getNotificationKey: function (notification) {
+                return "" + notification.turn + this.props.log.byTurn[notification.turn].indexOf(notification);
+            },
+            handleMarkAsRead: function (notification) {
+                this.props.log.markAsRead(notification);
+                var notificationKey = this.getNotificationKey(notification);
+                if (isFinite(this.state[notificationKey])) {
+                    this.closePopup(notificationKey);
+                }
+                else {
+                    this.forceUpdate();
+                }
+            },
+            makePopup: function (notification, key) {
+                var popupId = this.refs.popupManager.makePopup({
+                    contentConstructor: UIComponents.ConfirmPopup,
+                    contentProps: {
+                        contentConstructor: notification.template.contentConstructor,
+                        contentProps: notification.props,
+                        handleOk: this.handleMarkAsRead.bind(this, notification),
+                        handleClose: this.closePopup.bind(this, key),
+                        okText: "Mark as read",
+                        cancelText: "Close"
+                    },
+                    popupProps: {
+                        resizable: true,
+                        containerDragOnly: true,
+                        minWidth: 150,
+                        minHeight: 50
+                    }
                 });
+                var stateObj = {};
+                stateObj[key] = popupId;
+                this.setState(stateObj);
+            },
+            closePopup: function (key) {
+                var stateObj = {};
+                stateObj[key] = undefined;
+                this.setState(stateObj);
+            },
+            togglePopup: function (notification) {
+                var key = this.getNotificationKey(notification);
+                if (isFinite(this.state[key])) {
+                    this.closePopup(notification, key);
+                }
+                else {
+                    this.makePopup(notification, key);
+                }
             },
             render: function () {
                 var log = this.props.log;
-                var notifications = this.state.notifications;
+                var notifications = log.unread;
                 var items = [];
                 for (var i = 0; i < notifications.length; i++) {
-                    var logIndex = log.byTurn[notifications[i].turn].indexOf(notifications[i]);
                     items.push(UIComponents.Notification({
                         notification: notifications[i],
-                        key: logIndex
+                        key: this.getNotificationKey(notifications[i]),
+                        markAsRead: this.handleMarkAsRead,
+                        togglePopup: this.togglePopup
                     }));
                 }
-                return (React.DOM.ol({
+                return (React.DOM.div({
+                    className: "notification-log-container"
+                }, React.DOM.ol({
                     className: "notification-log"
-                }, null));
+                }, items.reverse()), UIComponents.PopupManager({
+                    ref: "popupManager"
+                })));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -15227,7 +15343,8 @@ var Rance;
                 React.DOM.div({
                     className: "galaxy-map-ui-bottom-right"
                 }, UIComponents.NotificationLog({
-                    log: this.props.game.notificationLog
+                    log: this.props.game.notificationLog,
+                    currentTurn: this.props.game.turnNumber
                 }), React.DOM.button(endTurnButtonProps, "End turn"))));
             }
         });
@@ -22269,6 +22386,10 @@ var Rance;
             console.log("Init in " + (new Date().getTime() - startTime) + " ms");
         };
         App.prototype.destroy = function () {
+            if (this.game && this.game.notificationLog) {
+                this.game.notificationLog.destroy();
+                this.game.notificationLog = null;
+            }
             if (this.mapRenderer) {
                 this.mapRenderer.destroy();
                 this.mapRenderer = null;
@@ -22371,6 +22492,7 @@ var Rance;
             }
             if (!this.game.notificationLog) {
                 this.game.notificationLog = new Rance.NotificationLog();
+                this.game.notificationLog.setTurn(this.game.turnNumber);
             }
         };
         App.prototype.initDisplay = function () {
