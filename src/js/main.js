@@ -11121,9 +11121,89 @@ var Rance;
         MapGen2.MapGenResult = MapGenResult;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
+var Rance;
+(function (Rance) {
+    var Notification = (function () {
+        function Notification(template, props, turn) {
+            this.hasBeenRead = false;
+            this.template = template;
+            this.props = props;
+            this.turn = turn;
+        }
+        Notification.prototype.makeMessage = function () {
+            return this.template.messageConstructor(this.props);
+        };
+        Notification.prototype.serialize = function () {
+            var data = {};
+            data.templateKey = this.template.key;
+            data.hasBeenRead = this.hasBeenRead;
+            data.turn = this.turn;
+            data.props = this.template.serializeProps(this.props);
+            return data;
+        };
+        return Notification;
+    })();
+    Rance.Notification = Notification;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/inotificationtemplate.d.ts" />
+/// <reference path="notification.ts" />
+/// <reference path="eventmanager.ts" />
+/// <reference path="star.ts" />
+var Rance;
+(function (Rance) {
+    var NotificationLog = (function () {
+        function NotificationLog() {
+            this.byTurn = {};
+            this.eventListeners = [];
+            this.addEventListeners();
+        }
+        NotificationLog.prototype.addEventListeners = function () {
+            for (var key in app.moduleData.Templates.Notifications) {
+                var template = app.moduleData.Templates.Notifications[key];
+                for (var i = 0; i < template.eventListeners.length; i++) {
+                    var listener = Rance.eventManager.addEventListener(template.eventListeners[i], this.makeNotification.bind(this, template));
+                    this.eventListeners.push(listener);
+                }
+            }
+        };
+        NotificationLog.prototype.destroy = function () {
+            for (var i = 0; i < this.eventListeners.length; i++) {
+                Rance.eventManager.removeEventListener(this.eventListeners[i]);
+            }
+        };
+        NotificationLog.prototype.setTurn = function (turn) {
+            this.currentTurn = turn;
+            this.byTurn[turn] = [];
+        };
+        NotificationLog.prototype.makeNotification = function (template, location, props) {
+            var notification = new Rance.Notification(template, props, this.currentTurn);
+            this.byTurn[this.currentTurn].push(notification);
+        };
+        NotificationLog.prototype.getUnreadNotificationsForThisTurn = function () {
+            return this.byTurn[this.currentTurn].filter(function (notification) {
+                return !notification.hasBeenRead;
+            });
+        };
+        NotificationLog.prototype.serialize = function () {
+            var data = {};
+            for (var turnNumber in this.byTurn) {
+                data[turnNumber] = [];
+                var notifications = this.byTurn[turnNumber];
+                for (var i = 0; i < notifications.length; i++) {
+                    data[turnNumber].push(notifications[i].serialize());
+                }
+            }
+            return data;
+        };
+        return NotificationLog;
+    })();
+    Rance.NotificationLog = NotificationLog;
+})(Rance || (Rance = {}));
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="eventmanager.ts"/>
+/// <reference path="notificationlog.ts" />
 var Rance;
 (function (Rance) {
     var Game = (function () {
@@ -11145,6 +11225,7 @@ var Rance;
                 for (var i = 0; i < this.independents.length; i++) {
                     this.processPlayerStartTurn(this.independents[i]);
                 }
+                this.notificationLog.setTurn(this.turnNumber);
             }
             Rance.eventManager.dispatchEvent("endTurn", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
@@ -11700,6 +11781,7 @@ var Rance;
                 //   enemy ally strength
                 // perceived threat
                 var threat = this.getPerceivedThreatOfPlayer(player);
+                return Math.random(); // TODO
             };
             MapEvaluator.prototype.getAbilityToGoToWarWith = function (player) {
                 // perceived strength
@@ -11712,6 +11794,7 @@ var Rance;
                 //   enemy ally strength
                 // enemy is well liked
                 // distance
+                return Math.random(); // TODO
             };
             MapEvaluator.prototype.getDiplomacyEvaluations = function (currentTurn) {
                 var evaluationByPlayer = {};
@@ -13234,6 +13317,14 @@ var Rance;
             else {
                 Rance.eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
                 Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
+            }
+            if (app.humanPlayer.starIsVisible(this.battleData.location)) {
+                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", this.battleData.location, {
+                    location: this.battleData.location,
+                    attacker: this.battleData.attacker,
+                    defender: this.battleData.defender,
+                    victor: victor
+                });
             }
         };
         Battle.prototype.getVictor = function () {
@@ -14785,12 +14876,224 @@ var Rance;
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MapRendererLayersListItem = React.createClass({
+            displayName: "MapRendererLayersListItem",
+            mixins: [UIComponents.Draggable, UIComponents.DropTarget],
+            cachedMidPoint: undefined,
+            getInitialState: function () {
+                return ({
+                    hoverSide: null
+                });
+            },
+            componentWillReceiveProps: function (newProps) {
+                if (newProps.listItemIsDragging !== this.props.listItemIsDragging) {
+                    this.cachedMidPoint = undefined;
+                    this.clearHover();
+                }
+            },
+            onDragStart: function () {
+                this.props.onDragStart(this.props.layer);
+            },
+            onDragEnd: function () {
+                this.props.onDragEnd();
+            },
+            handleHover: function (e) {
+                if (!this.cachedMidPoint) {
+                    var rect = this.getDOMNode().getBoundingClientRect();
+                    this.cachedMidPoint = rect.top + rect.height / 2;
+                }
+                var isAbove = e.clientY < this.cachedMidPoint;
+                this.setState({
+                    hoverSide: (isAbove ? "top" : "bottom")
+                });
+                this.props.setHoverPosition(this.props.layer, isAbove);
+            },
+            clearHover: function () {
+                this.setState({
+                    hoverSide: null
+                });
+            },
+            setLayerAlpha: function (e) {
+                var target = e.target;
+                var value = parseFloat(target.value);
+                if (isFinite(value)) {
+                    this.props.updateLayer(this.props.layer);
+                    this.props.layer.alpha = value;
+                }
+                this.forceUpdate();
+            },
+            render: function () {
+                var divProps = {
+                    className: "map-renderer-layers-list-item draggable draggable-container",
+                    onMouseDown: this.handleMouseDown,
+                    onTouchStart: this.handleMouseDown
+                };
+                if (this.state.dragging) {
+                    divProps.style = this.dragPos;
+                    divProps.className += " dragging";
+                }
+                if (this.props.listItemIsDragging) {
+                    divProps.onMouseMove = this.handleHover;
+                    divProps.onMouseLeave = this.clearHover;
+                    if (this.state.hoverSide) {
+                        divProps.className += " insert-" + this.state.hoverSide;
+                    }
+                }
+                return (React.DOM.li(divProps, React.DOM.input({
+                    type: "checkbox",
+                    className: "map-renderer-layers-list-item-checkbox",
+                    checked: this.props.isActive,
+                    onChange: this.props.toggleActive
+                }), React.DOM.span({
+                    className: "map-renderer-layers-list-item-name draggable-container"
+                }, this.props.layerName), React.DOM.input({
+                    className: "map-renderer-layers-list-item-alpha",
+                    type: "number",
+                    min: 0,
+                    max: 1,
+                    step: 0.05,
+                    value: this.props.layer.alpha,
+                    onChange: this.setLayerAlpha
+                })));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="maprendererlayerslistitem.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.MapRendererLayersList = React.createClass({
+            displayName: "MapRendererLayersList",
+            getInitialState: function () {
+                return ({
+                    currentDraggingLayer: null,
+                    indexToSwapInto: undefined,
+                    layerKeyToInsertNextTo: null,
+                    insertPosition: null
+                });
+            },
+            handleDragStart: function (layer) {
+                this.setState({
+                    currentDraggingLayer: layer
+                });
+            },
+            handleDragEnd: function () {
+                var mapRenderer = this.props.mapRenderer;
+                var toInsert = this.state.currentDraggingLayer;
+                var insertTarget = mapRenderer.layers[this.state.layerKeyToInsertNextTo];
+                mapRenderer.currentMapMode.insertLayerNextToLayer(toInsert, insertTarget, this.state.insertPosition);
+                mapRenderer.resetMapModeLayersPosition();
+                this.setState({
+                    currentDraggingLayer: null,
+                    indexToSwapInto: undefined,
+                    layerKeyToInsertNextTo: null,
+                    insertPosition: null
+                });
+            },
+            handleToggleActive: function (layer) {
+                var mapRenderer = this.props.mapRenderer;
+                mapRenderer.currentMapMode.toggleLayer(layer);
+                mapRenderer.updateMapModeLayers([layer]);
+                this.forceUpdate();
+            },
+            handleSetHoverPosition: function (layer, position) {
+                this.setState({
+                    layerKeyToInsertNextTo: layer.template.key,
+                    insertPosition: position
+                });
+            },
+            updateLayer: function (layer) {
+                var mapRenderer = this.props.mapRenderer;
+                mapRenderer.setLayerAsDirty(layer.template.key);
+            },
+            render: function () {
+                var mapRenderer = this.props.mapRenderer;
+                var mapMode = mapRenderer.currentMapMode;
+                if (!mapMode)
+                    return null;
+                var layersData = mapMode.layers;
+                var activeLayers = mapMode.getActiveLayers();
+                var listItems = [];
+                for (var i = 0; i < layersData.length; i++) {
+                    var layer = layersData[i];
+                    var layerKey = layer.template.key;
+                    listItems.push(UIComponents.MapRendererLayersListItem({
+                        layer: layer,
+                        layerName: layer.template.displayName,
+                        isActive: mapMode.activeLayers[layerKey],
+                        key: layerKey,
+                        toggleActive: this.handleToggleActive.bind(this, layer),
+                        listItemIsDragging: Boolean(this.state.currentDraggingLayer),
+                        onDragStart: this.handleDragStart,
+                        onDragEnd: this.handleDragEnd,
+                        setHoverPosition: this.handleSetHoverPosition,
+                        updateLayer: this.updateLayer,
+                        containerDragOnly: true,
+                        containerElement: this
+                    }));
+                }
+                return (React.DOM.ol({
+                    className: "map-renderer-layers-list"
+                }, listItems));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.Notification = React.createClass({
+            displayName: "Notification",
+            render: function () {
+                return (null);
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
+/// <reference path="notification.ts" />
+var Rance;
+(function (Rance) {
+    var UIComponents;
+    (function (UIComponents) {
+        UIComponents.NotificationLog = React.createClass({
+            displayName: "NotificationLog",
+            getInitialState: function () {
+                return ({
+                    notifications: this.props.log.getUnreadNotificationsForThisTurn()
+                });
+            },
+            render: function () {
+                var log = this.props.log;
+                var notifications = this.state.notifications;
+                var items = [];
+                for (var i = 0; i < notifications.length; i++) {
+                    var logIndex = log.byTurn[notifications[i].turn].indexOf(notifications[i]);
+                    items.push(UIComponents.Notification({
+                        notification: notifications[i],
+                        key: logIndex
+                    }));
+                }
+                return (React.DOM.ol({
+                    className: "notification-log"
+                }, null));
+            }
+        });
+    })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
+})(Rance || (Rance = {}));
 /// <reference path="topmenu.ts"/>
 /// <reference path="topbar.ts"/>
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
-// /// <reference path="../mapmodes/maprendererlayerslist.ts" />
+/// <reference path="../mapmodes/maprendererlayerslist.ts" />
+/// <reference path="../notifications/notificationlog.ts" />
 var Rance;
 (function (Rance) {
     var UIComponents;
@@ -14921,7 +15224,11 @@ var Rance;
                 // {
                 //   mapRenderer: this.props.mapRenderer
                 // }),
-                React.DOM.button(endTurnButtonProps, "End turn")));
+                React.DOM.div({
+                    className: "galaxy-map-ui-bottom-right"
+                }, UIComponents.NotificationLog({
+                    log: this.props.game.notificationLog
+                }), React.DOM.button(endTurnButtonProps, "End turn"))));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -18837,6 +19144,7 @@ var Rance;
                 MapGen: {},
                 MapRendererLayers: {},
                 MapRendererMapModes: {},
+                Notifications: {},
                 Objectives: {},
                 PassiveSkills: {},
                 Personalities: {},
@@ -21277,6 +21585,65 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var UIComponents;
+            (function (UIComponents) {
+                UIComponents.BattleFinishNotification = React.createClass({
+                    displayName: "BattleFinishNotification",
+                    render: function () {
+                        return (null);
+                    }
+                });
+            })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/inotificationtemplate.d.ts"/>
+/// <reference path="uicomponents/battlefinishnotification.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Notifications;
+            (function (Notifications) {
+                Notifications.battleFinishNotification = {
+                    key: "battleFinishNotification",
+                    iconSrc: "img\/resources\/test1.png",
+                    eventListeners: ["makeBattleFinishNotification"],
+                    contentConstructor: DefaultModule.UIComponents.BattleFinishNotification,
+                    messageConstructor: function (props) {
+                        var message = "A battle was fought in " + props.location.name + " between " +
+                            props.attacker.name + " and " + props.defender.name;
+                        return message;
+                    },
+                    serializeProps: function (props) {
+                        return ({
+                            attackerId: props.attacker.id,
+                            defenderId: props.defender.id,
+                            locationId: props.location.id,
+                            victorId: props.victor.id
+                        });
+                    },
+                    deserializeProps: function (props, gameLoader) {
+                        return ({
+                            attacker: gameLoader.playersById[props.attackerId],
+                            defender: gameLoader.playersById[props.defenderId],
+                            location: gameLoader.starsById[props.locationId],
+                            victor: gameLoader.playersById[props.victorId]
+                        });
+                    }
+                };
+            })(Notifications = DefaultModule.Notifications || (DefaultModule.Notifications = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
@@ -21302,6 +21669,7 @@ var Rance;
 /// <reference path="ai/healobjective.ts" />
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
+/// <reference path="notifications/battlefinishnotification.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -21338,6 +21706,7 @@ var Rance;
                     moduleData.copyTemplates(DefaultModule.MapRendererLayers, "MapRendererLayers");
                     moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
                     moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
+                    moduleData.copyTemplates(DefaultModule.Notifications, "Notifications");
                     moduleData.mapBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.starBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.defaultMap = DefaultModule.Templates.MapGen.spiralGalaxy;
@@ -21849,6 +22218,7 @@ var Rance;
 /// <reference path="../modules/default/defaultmodule.ts" />
 /// <reference path="../modules/test/testmodule.ts" />
 /// <reference path="gameloader.ts"/>
+/// <reference path="notificationlog.ts" />
 /// <reference path="setdynamictemplateproperties.ts"/>
 /// <reference path="templateindexes.ts"/>
 /// <reference path="options.ts"/>
@@ -21998,6 +22368,9 @@ var Rance;
                 if (player.isAI) {
                     player.setupAI(this.game);
                 }
+            }
+            if (!this.game.notificationLog) {
+                this.game.notificationLog = new Rance.NotificationLog();
             }
         };
         App.prototype.initDisplay = function () {

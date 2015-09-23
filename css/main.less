@@ -2497,20 +2497,25 @@ progress::-webkit-progress-value { background: #080; }
   border-width: 0 0 4px 0;
 }
 
-.end-turn-button
+.galaxy-map-ui-bottom-right
 {
   position: absolute;
   bottom: 0;
   right: 0;
   z-index: -201;
-
+  pointer-events: none;
+  >*
+  {
+    pointer-events: auto;
+  }
+}
+.end-turn-button
+{
   width: 250px;
   height: 40px;
 
   font-size: 1.5em;
   font-weight: bolder;
-
-  pointer-events: auto;
 
   .button-style;
 }

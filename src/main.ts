@@ -14,6 +14,7 @@
 /// <reference path="../modules/test/testmodule.ts" />
 
 /// <reference path="gameloader.ts"/>
+/// <reference path="notificationlog.ts" />
 
 /// <reference path="setdynamictemplateproperties.ts"/>
 /// <reference path="templateindexes.ts"/>
@@ -254,6 +255,11 @@ module Rance
         {
           player.setupAI(this.game);
         }
+      }
+
+      if (!this.game.notificationLog)
+      {
+        this.game.notificationLog = new NotificationLog();
       }
     }
     initDisplay()

@@ -406,6 +406,17 @@ module Rance
         eventManager.dispatchEvent("setCameraToCenterOn", this.battleData.location);
         eventManager.dispatchEvent("switchScene", "galaxyMap");
       }
+
+      if (app.humanPlayer.starIsVisible(this.battleData.location))
+      {
+        eventManager.dispatchEvent("makeBattleFinishNotification", this.battleData.location,
+        {
+          location: this.battleData.location,
+          attacker: this.battleData.attacker,
+          defender: this.battleData.defender,
+          victor: victor
+        });
+      }
     }
     getVictor()
     {

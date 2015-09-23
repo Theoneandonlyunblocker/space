@@ -3,7 +3,8 @@
 /// <reference path="fleetselection.ts"/>
 /// <reference path="starinfo.ts"/>
 /// <reference path="../possibleactions/possibleactions.ts"/>
-// /// <reference path="../mapmodes/maprendererlayerslist.ts" />
+/// <reference path="../mapmodes/maprendererlayerslist.ts" />
+/// <reference path="../notifications/notificationlog.ts" />
 
 module Rance
 {
@@ -209,7 +210,16 @@ module Rance
             // {
             //   mapRenderer: this.props.mapRenderer
             // }),
-            React.DOM.button(endTurnButtonProps, "End turn")
+            React.DOM.div(
+            {
+              className: "galaxy-map-ui-bottom-right"
+            },
+              UIComponents.NotificationLog(
+              {
+                log: this.props.game.notificationLog
+              }),
+              React.DOM.button(endTurnButtonProps, "End turn")
+            )
           )
         );
       }

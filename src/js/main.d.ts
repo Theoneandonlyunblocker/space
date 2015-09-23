@@ -19,6 +19,7 @@
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
+/// <reference path="../templateinterfaces/inotificationtemplate.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffectattributeadjustment.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
@@ -1391,6 +1392,35 @@ declare module Rance {
     }
 }
 declare module Rance {
+    class Notification {
+        template: Templates.INotificationTemplate;
+        props: any;
+        turn: number;
+        hasBeenRead: boolean;
+        constructor(template: Templates.INotificationTemplate, props: any, turn: number);
+        makeMessage(): string;
+        serialize(): any;
+    }
+}
+declare module Rance {
+    class NotificationLog {
+        byTurn: {
+            [turnNumber: number]: Notification[];
+        };
+        currentTurn: number;
+        eventListeners: Function[];
+        constructor();
+        addEventListeners(): void;
+        destroy(): void;
+        setTurn(turn: number): void;
+        makeNotification(template: Templates.INotificationTemplate, location: Star, props: any): void;
+        getUnreadNotificationsForThisTurn(): Notification[];
+        serialize(): {
+            [turnNumber: number]: any;
+        };
+    }
+}
+declare module Rance {
     class Game {
         turnNumber: number;
         independents: Player[];
@@ -1398,6 +1428,7 @@ declare module Rance {
         galaxyMap: GalaxyMap;
         humanPlayer: Player;
         activePlayer: Player;
+        notificationLog: NotificationLog;
         gameStorageKey: string;
         constructor(map: GalaxyMap, players: Player[], humanPlayer: Player);
         endTurn(): void;
@@ -1528,8 +1559,8 @@ declare module Rance {
             getRelativePerceivedThreatOfAllKnownPlayers(): {
                 [playerId: number]: number;
             };
-            getDesireToGoToWarWith(player: Player): void;
-            getAbilityToGoToWarWith(player: Player): void;
+            getDesireToGoToWarWith(player: Player): number;
+            getAbilityToGoToWarWith(player: Player): number;
             getDiplomacyEvaluations(currentTurn: number): {
                 [playerId: number]: IDiplomacyEvaluation;
             };
@@ -2086,6 +2117,26 @@ declare module Rance {
 declare module Rance {
     module UIComponents {
         var PossibleActions: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapRendererLayersListItem: React.Factory<any>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var MapRendererLayersList: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var Notification: React.Factory<{}>;
+    }
+}
+declare module Rance {
+    module UIComponents {
+        var NotificationLog: React.Factory<{}>;
     }
 }
 declare module Rance {
@@ -2674,6 +2725,9 @@ declare module Rance {
         MapRendererMapModes: {
             [mapModeKey: string]: IMapRendererMapModeTemplate;
         };
+        Notifications: {
+            [key: string]: Templates.INotificationTemplate;
+        };
         Objectives: {
             [key: string]: Templates.IObjectiveTemplate;
         };
@@ -3003,6 +3057,24 @@ declare module Rance {
         module DefaultModule {
             module Objectives {
                 var cleanUpPirates: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module UIComponents {
+                var BattleFinishNotification: React.Factory<{}>;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Notifications {
+                var battleFinishNotification: Rance.Templates.INotificationTemplate;
             }
         }
     }

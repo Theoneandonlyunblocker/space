@@ -39,12 +39,16 @@ module Rance
     {
       [mapModeKey: string]: IMapRendererMapModeTemplate;
     };
+    // can touch again
+    Notifications:
+    {
+      [key: string]: Templates.INotificationTemplate;
+    };
     // shouldnt probably touch this either
     Objectives:
     {
       [key: string]: Templates.IObjectiveTemplate;
     }
-    // can touch again
     PassiveSkills:
     {
       [type: string]: Templates.IPassiveSkillTemplate;
@@ -124,6 +128,7 @@ module Rance
       MapGen: {},
       MapRendererLayers: {},
       MapRendererMapModes: {},
+      Notifications: {},
       Objectives: {},
       PassiveSkills: {},
       Personalities: {},

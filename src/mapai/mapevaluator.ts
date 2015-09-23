@@ -739,6 +739,8 @@ module Rance
         //   enemy ally strength
         // perceived threat
         var threat = this.getPerceivedThreatOfPlayer(player);
+
+        return Math.random(); // TODO
       }
       getAbilityToGoToWarWith(player: Player)
       {
@@ -752,6 +754,8 @@ module Rance
         //   enemy ally strength
         // enemy is well liked
         // distance
+
+        return Math.random(); // TODO
       }
       getDiplomacyEvaluations(currentTurn: number)
       {

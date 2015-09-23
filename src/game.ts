@@ -1,6 +1,7 @@
 /// <reference path="player.ts"/>
 /// <reference path="galaxymap.ts"/>
 /// <reference path="eventmanager.ts"/>
+/// <reference path="notificationlog.ts" />
 
 module Rance
 {
@@ -12,6 +13,8 @@ module Rance
     galaxyMap: GalaxyMap;
     humanPlayer: Player;
     activePlayer: Player;
+
+    notificationLog: NotificationLog;
 
     gameStorageKey: string;
 
@@ -42,6 +45,8 @@ module Rance
         {
           this.processPlayerStartTurn(this.independents[i]);
         }
+
+        this.notificationLog.setTurn(this.turnNumber);
       }
 
       eventManager.dispatchEvent("endTurn", null);

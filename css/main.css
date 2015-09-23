@@ -1962,16 +1962,21 @@ progress::-webkit-progress-value {
   border: 4px solid red;
   border-width: 0 0 4px 0;
 }
-.end-turn-button {
+.galaxy-map-ui-bottom-right {
   position: absolute;
   bottom: 0;
   right: 0;
   z-index: -201;
+  pointer-events: none;
+}
+.galaxy-map-ui-bottom-right > * {
+  pointer-events: auto;
+}
+.end-turn-button {
   width: 250px;
   height: 40px;
   font-size: 1.5em;
   font-weight: bolder;
-  pointer-events: auto;
   background: linear-gradient(to bottom, #112d45 0%, #0c1615 50%, #112d45 100%);
   color: #eeeeec;
   cursor: pointer;

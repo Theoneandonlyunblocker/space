@@ -28,6 +28,8 @@
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
 
+/// <reference path="notifications/battlefinishnotification.ts" />
+
 module Rance
 {
   export module Modules
@@ -73,6 +75,7 @@ module Rance
           moduleData.copyTemplates(DefaultModule.MapRendererLayers, "MapRendererLayers");
           moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
           moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
+          moduleData.copyTemplates(DefaultModule.Notifications, "Notifications");
 
           moduleData.mapBackgroundDrawingFunction = drawNebula;
           moduleData.starBackgroundDrawingFunction = drawNebula;
