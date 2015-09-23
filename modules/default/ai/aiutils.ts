@@ -89,17 +89,14 @@ module Rance
               var star = front.targetLocation;
               var player = front.units[0].fleet.player;
 
-              if (front.objective.type === "expansion" || front.objective.type === "cleanPirates")
+              var attackTargets = star.getTargetsForPlayer(player);
+
+              var target = attackTargets.filter(function(target)
               {
-                var attackTargets = star.getTargetsForPlayer(player);
+                return target.enemy.isIndependent;
+              })[0];
 
-                var target = attackTargets.filter(function(target)
-                {
-                  return target.enemy.isIndependent;
-                })[0];
-
-                player.attackTarget(star, target, afterMoveCallback);
-              }
+              player.attackTarget(star, target, afterMoveCallback);
             }
             else
             {

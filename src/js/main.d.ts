@@ -1153,6 +1153,7 @@ declare module Rance {
     class BattleSimulator {
         battle: Battle;
         tree: MCTree;
+        hasEnded: boolean;
         constructor(battle: Battle);
         simulateBattle(): void;
         simulateMove(): void;

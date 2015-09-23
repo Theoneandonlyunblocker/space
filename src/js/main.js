@@ -10049,13 +10049,12 @@ var Rance;
 (function (Rance) {
     var BattleSimulator = (function () {
         function BattleSimulator(battle) {
+            this.hasEnded = false;
             this.battle = battle;
             battle.isSimulated = true;
-            if (battle.ended) {
-                this.finishBattle();
-                return;
+            if (!battle.ended) {
+                this.tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
             }
-            this.tree = new Rance.MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
         }
         BattleSimulator.prototype.simulateBattle = function () {
             while (!this.battle.ended) {
@@ -20963,13 +20962,11 @@ var Rance;
                         if (atTarget >= front.minUnitsDesired) {
                             var star = front.targetLocation;
                             var player = front.units[0].fleet.player;
-                            if (front.objective.type === "expansion" || front.objective.type === "cleanPirates") {
-                                var attackTargets = star.getTargetsForPlayer(player);
-                                var target = attackTargets.filter(function (target) {
-                                    return target.enemy.isIndependent;
-                                })[0];
-                                player.attackTarget(star, target, afterMoveCallback);
-                            }
+                            var attackTargets = star.getTargetsForPlayer(player);
+                            var target = attackTargets.filter(function (target) {
+                                return target.enemy.isIndependent;
+                            })[0];
+                            player.attackTarget(star, target, afterMoveCallback);
                         }
                         else {
                             afterMoveCallback();
