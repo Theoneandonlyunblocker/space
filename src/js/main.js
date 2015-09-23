@@ -5111,8 +5111,8 @@ var Rance;
                         isChecked: Rance.Options.debugMode,
                         label: "Debug mode",
                         onChangeFN: function () {
-                            Rance.toggleDebugMode();
-                            this.forceUpdate();
+                            Rance.Options.debugMode = !Rance.Options.debugMode;
+                            app.reactUI.render();
                         }.bind(this)
                     })
                 });
@@ -5147,7 +5147,8 @@ var Rance;
                     resetFN: function () {
                         Rance.extendObject(Rance.defaultOptions.debugOptions, Rance.Options.debugOptions);
                         if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode) {
-                            Rance.toggleDebugMode();
+                            Rance.Options.debugMode = !Rance.Options.debugMode;
+                            app.reactUI.render();
                             this.forceUpdate();
                         }
                     }.bind(this),
@@ -12649,7 +12650,7 @@ var Rance;
             this.AIController = new Rance.MapAI.AIController(this, game, this.personality);
         };
         Player.prototype.setupPirates = function () {
-            this.name = "Independent";
+            this.name = "Independents";
             this.color = 0x000000;
             this.colorAlpha = 0;
             this.secondaryColor = 0xFFFFFF;
@@ -15177,6 +15178,7 @@ var Rance;
                 this.setState(stateObj);
             },
             closePopup: function (key) {
+                this.refs.popupManager.closePopup(this.state[key]);
                 var stateObj = {};
                 stateObj[key] = undefined;
                 this.setState(stateObj);
@@ -15184,7 +15186,7 @@ var Rance;
             togglePopup: function (notification) {
                 var key = this.getNotificationKey(notification);
                 if (isFinite(this.state[key])) {
-                    this.closePopup(notification, key);
+                    this.closePopup(key);
                 }
                 else {
                     this.makePopup(notification, key);
@@ -19242,20 +19244,6 @@ var Rance;
 })(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
-    function toggleDebugMode() {
-        Rance.Options.debugMode = !Rance.Options.debugMode;
-        app.reactUI.render();
-    }
-    Rance.toggleDebugMode = toggleDebugMode;
-    function inspectSave(saveName) {
-        var saveKey = "Rance.Save." + saveName;
-        var save = localStorage.getItem(saveKey);
-        return JSON.parse(save);
-    }
-    Rance.inspectSave = inspectSave;
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
     var ModuleData = (function () {
         function ModuleData() {
             this.subModuleMetaData = [];
@@ -21735,8 +21723,8 @@ var Rance;
                             " maintains control of location ";
                         return (React.DOM.div({
                             className: "battle-finish-notification draggable-container"
-                        }, message, React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
-                            location.name + ". " + victor.name + controllerString + location.name));
+                        }, message + ".", React.DOM.br(null), React.DOM.br(null), "" + attacker.name + attackSuccessString + "attacked " + defender.name + " in " +
+                            location.name + ". " + victor.name + controllerString + location.name + "."));
                     }
                 });
             })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
@@ -22366,7 +22354,6 @@ var Rance;
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
 /// <reference path="itemgenerator.ts" />
-/// <reference path="debug.ts"/>
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />

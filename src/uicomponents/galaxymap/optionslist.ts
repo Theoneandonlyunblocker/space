@@ -125,8 +125,8 @@ module Rance
               label: "Debug mode",
               onChangeFN: function()
               {
-                toggleDebugMode();
-                this.forceUpdate();
+                Options.debugMode = !Options.debugMode;
+                app.reactUI.render();
               }.bind(this)
             })
         });
@@ -181,7 +181,8 @@ module Rance
             extendObject(defaultOptions.debugOptions, Options.debugOptions);
             if (Options.debugMode !== defaultOptions.debugMode)
             {
-              toggleDebugMode();
+              Options.debugMode = !Options.debugMode;
+              app.reactUI.render();
               this.forceUpdate();
             }
           }.bind(this),

@@ -2696,10 +2696,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    function toggleDebugMode(): void;
-    function inspectSave(saveName: string): any;
-}
-declare module Rance {
     interface ITemplates {
         Abilities: {
             [type: string]: Templates.IAbilityTemplate;
