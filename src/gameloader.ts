@@ -66,6 +66,7 @@ module Rance
 
       var game = new Game(this.map, this.players, this.humanPlayer);
       game.independents = game.independents.concat(this.independents);
+      game.turnNumber = data.turnNumber;
 
       return game;
     }

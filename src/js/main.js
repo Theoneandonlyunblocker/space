@@ -11180,6 +11180,7 @@ var Rance;
         };
         Game.prototype.serialize = function () {
             var data = {};
+            data.turnNumber = this.turnNumber;
             data.galaxyMap = this.galaxyMap.serialize();
             data.players = this.playerOrder.map(function (player) {
                 return player.serialize();
@@ -21477,6 +21478,7 @@ var Rance;
             this.deserializeBuildings(data.galaxyMap);
             var game = new Rance.Game(this.map, this.players, this.humanPlayer);
             game.independents = game.independents.concat(this.independents);
+            game.turnNumber = data.turnNumber;
             return game;
         };
         GameLoader.prototype.deserializeMap = function (data) {

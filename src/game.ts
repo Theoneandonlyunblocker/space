@@ -94,6 +94,7 @@ module Rance
     {
       var data: any = {};
 
+      data.turnNumber = this.turnNumber;
       data.galaxyMap = this.galaxyMap.serialize();
       data.players = this.playerOrder.map(function(player)
       {
