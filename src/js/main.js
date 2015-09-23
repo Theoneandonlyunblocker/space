@@ -5403,18 +5403,21 @@ var Rance;
             },
             componentDidMount: function () {
                 window.addEventListener("resize", this.handleResize, false);
-                Rance.eventManager.addEventListener("playerControlUpdated", this.handleResize);
+                Rance.eventManager.addEventListener("playerControlUpdated", this.delayedResize);
                 Rance.eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
                 this.handleResize();
             },
             componentWillUnmount: function () {
                 window.removeEventListener("resize", this.handleResize);
-                Rance.eventManager.removeEventListener("playerControlUpdated", this.handleResize);
+                Rance.eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
                 Rance.eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
             },
             handleToggleHamburger: function () {
                 this.handleResize();
                 this.forceUpdate();
+            },
+            delayedResize: function () {
+                window.setTimeout(this.handleResize, 0);
             },
             handleResize: function () {
                 if (!this.cachedTopMenuWidth) {
@@ -5426,7 +5429,7 @@ var Rance;
                         this.cachedButtonWidths.push(buttonWidth);
                     }
                 }
-                var topMenuHeight = window.innerHeight > 600 ? 52 : 34;
+                var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
                 var topBar = document.getElementsByClassName("top-bar-info")[0];
                 var topBarRect = topBar.getBoundingClientRect();
                 var rightmostElement = topBar;

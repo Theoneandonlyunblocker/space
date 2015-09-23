@@ -26,7 +26,7 @@ module Rance
       componentDidMount: function()
       {
         window.addEventListener("resize", this.handleResize, false);
-        eventManager.addEventListener("playerControlUpdated", this.handleResize);
+        eventManager.addEventListener("playerControlUpdated", this.delayedResize);
         eventManager.addEventListener("updateHamburgerMenu", this.handleToggleHamburger);
 
         this.handleResize();
@@ -35,7 +35,7 @@ module Rance
       componentWillUnmount: function()
       {
         window.removeEventListener("resize", this.handleResize);
-        eventManager.removeEventListener("playerControlUpdated", this.handleResize);
+        eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
         eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
       },
 
@@ -43,6 +43,11 @@ module Rance
       {
         this.handleResize();
         this.forceUpdate();
+      },
+
+      delayedResize: function()
+      {
+        window.setTimeout(this.handleResize, 0);
       },
 
       handleResize: function()
