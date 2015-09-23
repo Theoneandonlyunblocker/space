@@ -7,19 +7,17 @@ module Rance
   {
     battle: Battle;
     tree: MCTree;
+    hasEnded: boolean = false;
 
     constructor(battle: Battle)
     {
       this.battle = battle;
       battle.isSimulated = true;
 
-      if (battle.ended)
+      if (!battle.ended)
       {
-        this.finishBattle();
-        return;
+        this.tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
       }
-
-      this.tree = new MCTree(this.battle, this.battle.activeUnit.battleStats.side, true);
     }
 
     simulateBattle()
