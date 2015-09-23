@@ -70,26 +70,31 @@ module Rance
         var rightmostElement = topBar;
         var rightmostRect = topBarRect;
 
-        var fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection-container")[0];
+        var fleetContainer = <HTMLElement> document.getElementsByClassName("fleet-selection")[0];
         if (fleetContainer)
         {
           var fleetElementToCheckAgainst: HTMLElement;
-          if (fleetContainer.classList.contains("reorganizing"))
+          var firstChild: HTMLElement = <HTMLElement> fleetContainer.firstChild;
+
+          if (firstChild.classList.contains("fleet-selection-controls"))
           {
             fleetElementToCheckAgainst = <HTMLElement> document.getElementsByClassName(
               "fleet-selection-selected-wrapper")[0];
           }
           else
           {
-            fleetElementToCheckAgainst = fleetContainer;
+            fleetElementToCheckAgainst = firstChild;
           }
 
-          var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
-
-          if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right)
+          if (fleetElementToCheckAgainst)
           {
-            rightmostElement = fleetElementToCheckAgainst;
-            rightmostRect = fleetRect;
+            var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
+
+            if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right)
+            {
+              rightmostElement = fleetElementToCheckAgainst;
+              rightmostRect = fleetRect;
+            }
           }
         }
 

@@ -5426,24 +5426,27 @@ var Rance;
                         this.cachedButtonWidths.push(buttonWidth);
                     }
                 }
-                var topMenuHeight = window.innerHeight > 600 ? 50 : 32;
+                var topMenuHeight = window.innerHeight > 600 ? 52 : 34;
                 var topBar = document.getElementsByClassName("top-bar-info")[0];
                 var topBarRect = topBar.getBoundingClientRect();
                 var rightmostElement = topBar;
                 var rightmostRect = topBarRect;
-                var fleetContainer = document.getElementsByClassName("fleet-selection-container")[0];
+                var fleetContainer = document.getElementsByClassName("fleet-selection")[0];
                 if (fleetContainer) {
                     var fleetElementToCheckAgainst;
-                    if (fleetContainer.classList.contains("reorganizing")) {
+                    var firstChild = fleetContainer.firstChild;
+                    if (firstChild.classList.contains("fleet-selection-controls")) {
                         fleetElementToCheckAgainst = document.getElementsByClassName("fleet-selection-selected-wrapper")[0];
                     }
                     else {
-                        fleetElementToCheckAgainst = fleetContainer;
+                        fleetElementToCheckAgainst = firstChild;
                     }
-                    var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
-                    if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right) {
-                        rightmostElement = fleetElementToCheckAgainst;
-                        rightmostRect = fleetRect;
+                    if (fleetElementToCheckAgainst) {
+                        var fleetRect = fleetElementToCheckAgainst.getBoundingClientRect();
+                        if (fleetRect.top < topMenuHeight && fleetRect.right > topBarRect.right) {
+                            rightmostElement = fleetElementToCheckAgainst;
+                            rightmostRect = fleetRect;
+                        }
                     }
                 }
                 var spaceAvailable = window.innerWidth - rightmostRect.right;
