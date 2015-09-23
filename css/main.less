@@ -1249,6 +1249,9 @@ progress::-webkit-progress-value { background: #080; }
   border-right: 1px solid @unit-border-color;
 }
 
+@annihilatedColor1: rgba(255,0,0,0.6);
+@annihilatedColor2: rgba(255,0,0,0.3);
+
 .unit-annihilated-overlay
 {
   display: flex;
@@ -1261,12 +1264,21 @@ progress::-webkit-progress-value { background: #080; }
   z-index: 9;
   background: linear-gradient(
     to top,
-    rgba(255,0,0,0.6),
-    rgba(255,0,0,0.3)
+    @annihilatedColor1,
+    @annihilatedColor2
   );
 
   align-items: flex-end;
   justify-content: center;
+}
+
+.icon-annihilated-overlay
+{
+  background: linear-gradient(
+    to top,
+    mix(@annihilatedColor1, @annihilatedColor2, 66%),
+    mix(@annihilatedColor1, @annihilatedColor2, 33%)
+  );
 }
 
 .unit-battle-end-status-container

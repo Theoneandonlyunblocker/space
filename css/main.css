@@ -919,6 +919,9 @@ progress::-webkit-progress-value {
   align-items: flex-end;
   justify-content: center;
 }
+.icon-annihilated-overlay {
+  background: linear-gradient(to top, rgba(255, 0, 0, 0.498), rgba(255, 0, 0, 0.399));
+}
 .unit-battle-end-status-container {
   display: flex;
   position: absolute;

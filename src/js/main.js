@@ -272,6 +272,9 @@ var Rance;
                     fillerProps.className += " active-border";
                     containerProps.className += " active-border";
                 }
+                if (this.props.isAnnihilated) {
+                    containerProps.className += " icon-annihilated-overlay";
+                }
                 if (this.props.facesLeft) {
                     fillerProps.className += " unit-border-right";
                     containerProps.className += " unit-border-no-right";
@@ -749,7 +752,8 @@ var Rance;
                         icon: unit.template.icon,
                         facesLeft: this.props.facesLeft,
                         key: "icon",
-                        isActiveUnit: isActiveUnit
+                        isActiveUnit: isActiveUnit,
+                        isAnnihilated: unit.displayFlags.isAnnihilated
                     })
                 ];
                 if (this.props.facesLeft) {

@@ -182,7 +182,8 @@ module Rance
               icon: unit.template.icon,
               facesLeft: this.props.facesLeft,
               key: "icon",
-              isActiveUnit: isActiveUnit
+              isActiveUnit: isActiveUnit,
+              isAnnihilated: unit.displayFlags.isAnnihilated
             })
         ];
 

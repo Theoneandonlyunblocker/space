@@ -26,6 +26,11 @@ module Rance
           containerProps.className += " active-border";
         }
 
+        if (this.props.isAnnihilated)
+        {
+          containerProps.className += " icon-annihilated-overlay";
+        }
+
         if (this.props.facesLeft)
         {
           fillerProps.className += " unit-border-right";
