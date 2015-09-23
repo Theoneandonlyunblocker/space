@@ -5,7 +5,6 @@
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
-/// <reference path="itemgenerator.ts" />
 
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
@@ -49,7 +48,6 @@ module Rance
     {
       [id: string]: HTMLImageElement;
     } = {};
-    itemGenerator: ItemGenerator;
 
     moduleData: ModuleData;
     moduleLoader: ModuleLoader;
@@ -83,9 +81,7 @@ module Rance
 
       setAllDynamicTemplateProperties();
       buildTemplateIndexes();
-
-      this.itemGenerator = new ItemGenerator();
-
+      
       this.initUI();
       this.setInitialScene();
 

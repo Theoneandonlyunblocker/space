@@ -2,9 +2,10 @@ module Rance
 {
   export function buildTemplateIndexes()
   {
-    TemplateIndexes.distributablesByDistributionGroup = setDistributablesByDistributionGroup();
+    TemplateIndexes.distributablesByDistributionGroup = getDistributablesByDistributionGroup();
+    TemplateIndexes.itemsByTechLevel = getItemsByTechLevel();
   }
-  function setDistributablesByDistributionGroup()
+  function getDistributablesByDistributionGroup()
   {
     var result:
     {
@@ -42,6 +43,26 @@ module Rance
 
     return result;
   }
+  function getItemsByTechLevel()
+  {
+    var itemsByTechLevel:
+    {
+      [techLevel: number]: Templates.IItemTemplate[];
+    } = {};
+    for (var itemName in app.moduleData.Templates.Items)
+    {
+      var item = app.moduleData.Templates.Items[itemName];
+
+      if (!itemsByTechLevel[item.techLevel])
+      {
+        itemsByTechLevel[item.techLevel] = [];
+      }
+
+      itemsByTechLevel[item.techLevel].push(item);
+    }
+
+    return itemsByTechLevel;
+  }
   export module TemplateIndexes
   {
     export var distributablesByDistributionGroup:
@@ -51,6 +72,10 @@ module Rance
         unitFamilies: Templates.IUnitFamily[];
         resources: Templates.IResourceTemplate[];
       };
+    }
+    export var itemsByTechLevel:
+    {
+      [techLevel: number]: Templates.IItemTemplate[];
     }
   }
 }

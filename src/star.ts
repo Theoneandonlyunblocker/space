@@ -5,8 +5,6 @@
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
 
-/// <reference path="itemgenerator.ts" />
-
 module Rance
 {
 
@@ -884,7 +882,7 @@ module Rance
     {
       for (var techLevel in this.buildableItems)
       {
-        var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
+        var itemsByTechLevel = TemplateIndexes.itemsByTechLevel[techLevel];
 
         var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
 
