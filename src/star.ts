@@ -1,4 +1,5 @@
 /// <reference path="../modules/default/templates/resources.ts" />
+/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
 
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />

@@ -111,7 +111,7 @@ module Rance
       {
         if (Options.debugMode)
         {
-          console.warn("Skipped cleaning map gen data due to debug mode being enabled");
+          console.log("Skipped cleaning map gen data due to debug mode being enabled");
           return;
         }
         for (var i = 0; i < this.stars.length; i++)

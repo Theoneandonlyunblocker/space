@@ -6701,531 +6701,6 @@ var Rance;
     }
     Rance.onDOMLoaded = onDOMLoaded;
 })(Rance || (Rance = {}));
-/// <reference path="utility.ts"/>
-/// <reference path="unit.ts"/>
-var Rance;
-(function (Rance) {
-    Rance.targetSingle = function (units, target) {
-        return Rance.getFrom2dArray(units, [target]);
-    };
-    Rance.targetAll = function (units, target) {
-        return Rance.flatten2dArray(units);
-    };
-    Rance.targetRow = function (units, target) {
-        var y = target[1];
-        var targetLocations = [];
-        for (var i = 0; i < units.length; i++) {
-            targetLocations.push([i, y]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetColumn = function (units, target) {
-        var x = target[0];
-        var targetLocations = [];
-        for (var i = 0; i < units[x].length; i++) {
-            targetLocations.push([x, i]);
-        }
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetColumnNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-    Rance.targetNeighbors = function (units, target) {
-        var x = target[0];
-        var y = target[1];
-        var targetLocations = [];
-        targetLocations.push([x, y]);
-        targetLocations.push([x - 1, y]);
-        targetLocations.push([x + 1, y]);
-        targetLocations.push([x, y - 1]);
-        targetLocations.push([x, y + 1]);
-        return Rance.getFrom2dArray(units, targetLocations);
-    };
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/ieffecttemplate.d.ts"/>
-/// <reference path="../../../src/targeting.ts" />
-/// <reference path="../../../src/unit.ts" />
-/// <reference path="../../../src/damagetype.ts" />
-// "effect" should be used for referring to ability functionality. visual effects referred to as battleSFX TODO
-// example: Abilities.dealDamagePoison would have Effects.dealDamage & Effects.poison
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Effects;
-                (function (Effects) {
-                    Effects.singleTargetDamage = {
-                        name: "singleTargetDamage",
-                        targetFleets: "enemy",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
-                        effect: function (user, target, data) {
-                            var baseDamage = data.baseDamage;
-                            var damageType = data.damageType;
-                            var damageIncrease = user.getAttackDamageIncrease(damageType);
-                            var damage = baseDamage * damageIncrease;
-                            target.receiveDamage(damage, damageType);
-                        }
-                    };
-                    Effects.closeAttack = {
-                        name: "closeAttack",
-                        targetFleets: "enemy",
-                        targetingFunction: Rance.targetColumnNeighbors,
-                        targetRange: "close",
-                        effect: function (user, target) {
-                            var baseDamage = 0.66;
-                            var damageType = Rance.DamageType.physical;
-                            var damageIncrease = user.getAttackDamageIncrease(damageType);
-                            var damage = baseDamage * damageIncrease;
-                            target.receiveDamage(damage, damageType);
-                        }
-                    };
-                    Effects.wholeRowAttack = {
-                        name: "wholeRowAttack",
-                        targetFleets: "all",
-                        targetingFunction: Rance.targetRow,
-                        targetRange: "all",
-                        effect: function (user, target) {
-                            var baseDamage = 0.75;
-                            var damageType = Rance.DamageType.magical;
-                            var damageIncrease = user.getAttackDamageIncrease(damageType);
-                            var damage = baseDamage * damageIncrease;
-                            target.receiveDamage(damage, damageType);
-                        }
-                    };
-                    Effects.bombAttack = {
-                        name: "bombAttack",
-                        targetFleets: "enemy",
-                        targetingFunction: Rance.targetNeighbors,
-                        targetRange: "all",
-                        effect: function (user, target) {
-                            var baseDamage = 0.5;
-                            var damageType = Rance.DamageType.physical;
-                            var damageIncrease = user.getAttackDamageIncrease(damageType);
-                            var damage = baseDamage * damageIncrease;
-                            target.receiveDamage(damage, damageType);
-                        }
-                    };
-                    Effects.guardColumn = {
-                        name: "guardColumn",
-                        targetFleets: "all",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
-                        effect: function (user, target, data) {
-                            var data = data || {};
-                            var guardPerInt = data.perInt || 0;
-                            var flat = data.flat || 0;
-                            var guardAmount = guardPerInt * user.attributes.intelligence + flat;
-                            user.addGuard(guardAmount, "column");
-                        }
-                    };
-                    Effects.receiveCounterAttack = {
-                        name: "receiveCounterAttack",
-                        targetFleets: "all",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
-                        effect: function (user, target, data) {
-                            var counterStrength = target.getCounterAttackStrength();
-                            if (counterStrength) {
-                                Templates.Effects.singleTargetDamage.effect(target, user, {
-                                    baseDamage: data.baseDamage * counterStrength,
-                                    damageType: Rance.DamageType.physical
-                                });
-                            }
-                        }
-                    };
-                    Effects.increaseCaptureChance = {
-                        name: "increaseCaptureChance",
-                        targetFleets: "enemy",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
-                        effect: function (user, target, data) {
-                            if (!data)
-                                return;
-                            if (data.flat) {
-                                target.battleStats.captureChance += data.flat;
-                            }
-                            if (isFinite(data.multiplier)) {
-                                target.battleStats.captureChance *= data.multiplier;
-                            }
-                        }
-                    };
-                    Effects.buffTest = {
-                        name: "buffTest",
-                        targetFleets: "all",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
-                        effect: function (user, target) {
-                            user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
-                        }
-                    };
-                    Effects.healTarget = {
-                        name: "healTarget",
-                        targetFleets: "ally",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "all",
-                        effect: function (user, target, data) {
-                            var healAmount = 0;
-                            if (data.flat) {
-                                healAmount += data.flat;
-                            }
-                            if (data.maxHealthPercentage) {
-                                healAmount += target.maxHealth * data.maxHealthPercentage;
-                            }
-                            if (data.perUserUnit) {
-                                healAmount += data.perUserUnit * user.getAttackDamageIncrease(Rance.DamageType.magical);
-                            }
-                            target.removeStrength(-healAmount);
-                        }
-                    };
-                    Effects.healSelf = {
-                        name: "healSelf",
-                        targetFleets: "ally",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
-                        effect: function (user, target, data) {
-                            Templates.Effects.healTarget.effect(user, user, data);
-                        }
-                    };
-                    Effects.standBy = {
-                        name: "standBy",
-                        targetFleets: "all",
-                        targetingFunction: Rance.targetSingle,
-                        targetRange: "self",
-                        effect: function () { }
-                    };
-                })(Effects = Templates.Effects || (Templates.Effects = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var BattleSFXFunctions;
-    (function (BattleSFXFunctions) {
-        function makeSprite(imgSrc, props) {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            var img = new Image();
-            img.onload = function (e) {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                if (!props.facingRight) {
-                    ctx.scale(-1, 1);
-                }
-            };
-            // cg13300.bmp
-            img.src = imgSrc;
-            return canvas;
-        }
-        BattleSFXFunctions.makeSprite = makeSprite;
-        function makeVideo(videoSrc, props) {
-            var video = document.createElement("video");
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            var maskCanvas = document.createElement("canvas");
-            var mask = maskCanvas.getContext("2d");
-            mask.fillStyle = "#000";
-            mask.globalCompositeOperation = "luminosity";
-            var onVideoLoadFN = function () {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                maskCanvas.width = canvas.width;
-                maskCanvas.height = canvas.height;
-                props.onLoaded(canvas);
-                video.play();
-            };
-            var _ = window;
-            if (!_.abababa)
-                _.abababa = {};
-            if (!_.abababa[videoSrc])
-                _.abababa[videoSrc] = {};
-            var computeFrameFN = function (frameNumber) {
-                if (!_.abababa[videoSrc][frameNumber]) {
-                    var c3 = document.createElement("canvas");
-                    c3.width = canvas.width;
-                    c3.height = canvas.height;
-                    var ctx3 = c3.getContext("2d");
-                    ctx3.drawImage(video, 0, 0, c3.width, c3.height);
-                    var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
-                    mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-                    mask.drawImage(video, 0, 0, c3.width, c3.height);
-                    var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-                    var l = frame.data.length / 4;
-                    for (var i = 0; i < l; i++) {
-                        frame.data[i * 4 + 3] = maskData[i * 4];
-                    }
-                    ctx3.putImageData(frame, 0, 0);
-                    _.abababa[videoSrc][frameNumber] = c3;
-                }
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (!props.facingRight) {
-                    ctx.scale(-1, 1);
-                }
-                ctx.drawImage(_.abababa[videoSrc][frameNumber], 0, 0, canvas.width, canvas.height);
-            };
-            var previousFrame;
-            var playFrameFN = function () {
-                if (video.paused || video.ended)
-                    return;
-                var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
-                if (isFinite(previousFrame) && currentFrame === previousFrame) {
-                }
-                else {
-                    previousFrame = currentFrame;
-                    computeFrameFN(currentFrame);
-                }
-                window.requestAnimationFrame(playFrameFN);
-            };
-            video.oncanplay = onVideoLoadFN;
-            video.onplay = playFrameFN;
-            video.src = videoSrc;
-            if (video.readyState >= 4) {
-                onVideoLoadFN();
-            }
-            return canvas;
-        }
-        BattleSFXFunctions.makeVideo = makeVideo;
-    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var BattleSFXFunctions;
-    (function (BattleSFXFunctions) {
-        function rocketAttack(props) {
-            var minY, maxY;
-            [props.user, props.target].forEach(function (unit) {
-                if (!unit)
-                    return;
-                var unitCanvas = unit.cachedBattleScene;
-                if (unitCanvas) {
-                    var rect = unitCanvas.getBoundingClientRect();
-                    if (isFinite(minY)) {
-                        minY = Math.min(minY, rect.top);
-                    }
-                    else {
-                        minY = rect.top;
-                    }
-                    if (isFinite(maxY)) {
-                        maxY = Math.max(maxY, rect.top + rect.height);
-                    }
-                    else {
-                        maxY = rect.top + rect.height;
-                    }
-                }
-            });
-            var travelSpeed = props.width / props.duration * 3; //milliseconds
-            var acceleration = travelSpeed / 20;
-            var maxSpeed = travelSpeed;
-            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
-                transparent: true
-            });
-            var container = new PIXI.Container();
-            if (!props.facingRight) {
-                container.scale.x = -1;
-                container.x = props.width;
-            }
-            var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
-            var explosionTextures = [];
-            for (var i = 0; i < 26; i++) {
-                var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
-                explosionTextures.push(explosionTexture);
-            }
-            var startTime = Date.now();
-            var endTime = startTime + props.duration + 250;
-            var stopSpawningTime = startTime + props.duration / 2;
-            var lastTime = startTime;
-            var rocketsToSpawn = 10;
-            var explosionsToSpawn = 5;
-            var explosionRate = rocketsToSpawn / explosionsToSpawn;
-            var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
-            var nextSpawnTime = startTime;
-            var rockets = [];
-            function animate() {
-                var currentTime = Date.now();
-                var elapsedTime = currentTime - lastTime;
-                lastTime = Date.now();
-                if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
-                    nextSpawnTime += spawnRate;
-                    var sprite = new PIXI.Sprite(rocketTexture);
-                    sprite.x = 20;
-                    sprite.y = Rance.randInt(minY, maxY);
-                    container.addChild(sprite);
-                    rockets.push({
-                        sprite: sprite,
-                        speed: 0,
-                        willExplode: (rockets.length - 1) % explosionRate === 0,
-                        explosionX: Rance.randInt(props.width - 200, props.width - 50),
-                        hasExplosion: false
-                    });
-                }
-                for (var i = 0; i < rockets.length; i++) {
-                    var rocket = rockets[i];
-                    if (!rocket.hasExplosion) {
-                        if (rocket.speed < maxSpeed) {
-                            rocket.speed += acceleration;
-                        }
-                        rocket.sprite.x += rocket.speed * elapsedTime;
-                    }
-                    if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
-                        rocket.hasExplosion = true;
-                        var explosion = new PIXI.extras.MovieClip(explosionTextures);
-                        explosion.anchor = new PIXI.Point(0.5, 0.5);
-                        explosion.loop = false;
-                        explosion.position = rocket.sprite.position;
-                        container.removeChild(rocket.sprite);
-                        container.addChild(explosion);
-                        explosion.play();
-                    }
-                }
-                renderer.render(container);
-                if (currentTime < endTime) {
-                    requestAnimationFrame(animate);
-                }
-                else {
-                    renderer.destroy(true);
-                }
-            }
-            props.onLoaded(renderer.view);
-            animate();
-            return renderer.view;
-        }
-        BattleSFXFunctions.rocketAttack = rocketAttack;
-    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
-})(Rance || (Rance = {}));
-var Rance;
-(function (Rance) {
-    var BattleSFXFunctions;
-    (function (BattleSFXFunctions) {
-        function guard(props) {
-            var userCanvasWidth = props.user.cachedBattleScene.width;
-            var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
-            var baseTrailDistance = 80;
-            var maxTrailDistance = maxFrontier;
-            var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
-            var maxBlockWidth = maxFrontier * 2;
-            var uniforms = {
-                frontier: {
-                    type: "1f",
-                    value: 0
-                },
-                trailDistance: {
-                    type: "1f",
-                    value: baseTrailDistance
-                },
-                seed: {
-                    type: "1f",
-                    value: Math.random() * 420
-                },
-                blockSize: {
-                    type: "1f",
-                    value: 90
-                },
-                blockWidth: {
-                    type: "1f",
-                    value: 0
-                },
-                lineAlpha: {
-                    type: "1f",
-                    value: 1.5
-                },
-                blockAlpha: {
-                    type: "1f",
-                    value: 0
-                }
-            };
-            var travelTime = 0.2;
-            var syncUniformsFN = function (time) {
-                if (time < travelTime) {
-                    var adjustedtime = time / travelTime;
-                    uniforms.frontier.value = maxFrontier * adjustedtime;
-                }
-                else {
-                    var adjustedtime = Rance.getRelativeValue(time, travelTime - 0.02, 1);
-                    adjustedtime = Math.pow(adjustedtime, 4);
-                    uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
-                    uniforms.blockWidth.value = adjustedtime * maxBlockWidth;
-                    uniforms.lineAlpha.value = (1 - adjustedtime) * 1.5;
-                    var relativeDistance = Rance.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
-                    uniforms.blockAlpha.value = 1 - relativeDistance;
-                }
-            };
-            var guardFilter = new Rance.GuardFilter(uniforms);
-            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
-                transparent: true
-            });
-            var container = new PIXI.Container();
-            container.filters = [guardFilter];
-            container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
-            var renderTexture = new PIXI.RenderTexture(renderer, props.width, props.height);
-            var sprite = new PIXI.Sprite(renderTexture);
-            if (!props.facingRight) {
-                sprite.x = props.width;
-                sprite.scale.x = -1;
-            }
-            function animate() {
-                var elapsedTime = Date.now() - startTime;
-                var relativeTime = elapsedTime / props.duration;
-                syncUniformsFN(relativeTime);
-                renderTexture.clear();
-                renderTexture.render(container);
-                renderer.render(sprite);
-                if (elapsedTime < props.duration) {
-                    requestAnimationFrame(animate);
-                }
-                else {
-                    renderer.destroy(true);
-                }
-            }
-            props.onLoaded(renderer.view);
-            var startTime = Date.now();
-            animate();
-            return renderer.view;
-        }
-        BattleSFXFunctions.guard = guard;
-    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
-/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts" />
-/// <reference path="../../../src/battlesfxfunctions/rocketattack.ts" />
-/// <reference path="../../../src/battlesfxfunctions/guard.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var BattleSFX;
-                (function (BattleSFX) {
-                    BattleSFX.rocketAttack = {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFXFunctions.rocketAttack,
-                        delay: 0.3
-                    };
-                    BattleSFX.guard = {
-                        duration: 1500,
-                        battleOverlay: Rance.BattleSFXFunctions.guard,
-                        delay: 0.3
-                    };
-                })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
 var Rance;
@@ -7370,507 +6845,12 @@ var Rance;
     })();
     Rance.Building = Building;
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts"/>
-/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
-/// <reference path="effects.ts" />
-/// <reference path="battlesfx.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Abilities;
-                (function (Abilities) {
-                    Abilities.rangedAttack = {
-                        type: "rangedAttack",
-                        displayName: "Ranged Attack",
-                        description: "Standard ranged attack",
-                        moveDelay: 100,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
-                            sfx: Templates.BattleSFX.rocketAttack,
-                            data: {
-                                baseDamage: 1,
-                                damageType: Rance.DamageType.physical
-                            },
-                            attachedEffects: [
-                                {
-                                    template: Templates.Effects.receiveCounterAttack,
-                                    data: {
-                                        baseDamage: 0.5
-                                    }
-                                }
-                            ]
-                        }
-                    };
-                    Abilities.closeAttack = {
-                        type: "closeAttack",
-                        displayName: "Close Attack",
-                        description: "Close range attack that hits adjacent targets in same row as well",
-                        moveDelay: 90,
-                        actionsUse: 2,
-                        mainEffect: {
-                            template: Templates.Effects.closeAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
-                        }
-                    };
-                    Abilities.wholeRowAttack = {
-                        type: "wholeRowAttack",
-                        displayName: "Row Attack",
-                        description: "Attack entire row of units",
-                        moveDelay: 300,
-                        actionsUse: 1,
-                        bypassesGuard: true,
-                        mainEffect: {
-                            template: Templates.Effects.wholeRowAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
-                        }
-                    };
-                    Abilities.bombAttack = {
-                        type: "bombAttack",
-                        displayName: "Bomb Attack",
-                        description: "Ranged attack that hits all adjacent enemy units",
-                        moveDelay: 120,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.bombAttack,
-                            sfx: Templates.BattleSFX.rocketAttack
-                        }
-                    };
-                    Abilities.guardColumn = {
-                        type: "guardColumn",
-                        displayName: "Guard Column",
-                        description: "Protect allies in the same row and boost defence up to 2x",
-                        moveDelay: 100,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.guardColumn,
-                            sfx: Templates.BattleSFX.guard,
-                            data: {
-                                perInt: 20
-                            }
-                        }
-                    };
-                    Abilities.boardingHook = {
-                        type: "boardingHook",
-                        displayName: "Boarding Hook",
-                        description: "0.8x damage but increases target capture chance",
-                        moveDelay: 100,
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
-                            sfx: Templates.BattleSFX.rocketAttack,
-                            data: {
-                                baseDamage: 0.8,
-                                damageType: Rance.DamageType.physical
-                            },
-                            attachedEffects: [
-                                {
-                                    template: Templates.Effects.increaseCaptureChance,
-                                    data: {
-                                        flat: 0.5
-                                    }
-                                },
-                                {
-                                    template: Templates.Effects.receiveCounterAttack,
-                                    data: {
-                                        baseDamage: 0.5
-                                    }
-                                }
-                            ]
-                        }
-                    };
-                    Abilities.debugAbility = {
-                        type: "debugAbility",
-                        displayName: "Debug Ability",
-                        description: "who knows what its going to do today",
-                        moveDelay: 0,
-                        preparation: {
-                            turnsToPrep: 1,
-                            prepDelay: 100,
-                            interruptsNeeded: 1
-                        },
-                        actionsUse: 1,
-                        mainEffect: {
-                            template: Templates.Effects.guardColumn,
-                            sfx: Templates.BattleSFX.guard,
-                            data: {
-                                perInt: 20
-                            }
-                        }
-                    };
-                    Abilities.ranceAttack = {
-                        type: "ranceAttack",
-                        displayName: "Rance attack",
-                        description: "dont sue",
-                        moveDelay: 0,
-                        actionsUse: 0,
-                        mainEffect: {
-                            template: Templates.Effects.singleTargetDamage,
-                            sfx: {
-                                duration: 1200,
-                                userSprite: function (props) {
-                                    // cg13600.bmp
-                                    return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
-                                },
-                                battleOverlay: function (props) {
-                                    // cg40500.bmp - cg40529.bmp converted to webm
-                                    return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
-                                }
-                            },
-                            data: {
-                                baseDamage: 0.1,
-                                damageType: Rance.DamageType.physical
-                            }
-                        },
-                        secondaryEffects: [
-                            {
-                                template: Templates.Effects.singleTargetDamage,
-                                data: {
-                                    baseDamage: 0.1,
-                                    damageType: Rance.DamageType.physical
-                                },
-                                attachedEffects: [
-                                    {
-                                        template: Templates.Effects.receiveCounterAttack,
-                                        data: {
-                                            baseDamage: 0.5
-                                        }
-                                    }
-                                ],
-                                sfx: {
-                                    duration: 1500,
-                                    userSprite: function (props) {
-                                        // cg13300.bmp
-                                        return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
-                                    },
-                                    battleOverlay: function (props) {
-                                        // cg40000.bmp - cg40029.bmp converted to webm
-                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
-                                    }
-                                }
-                            }
-                        ]
-                    };
-                    Abilities.standBy = {
-                        type: "standBy",
-                        displayName: "Standby",
-                        description: "Skip a turn but next one comes faster",
-                        moveDelay: 50,
-                        actionsUse: 1,
-                        AIEvaluationPriority: 0.6,
-                        AIScoreAdjust: -0.1,
-                        disableInAIBattles: true,
-                        mainEffect: {
-                            template: Templates.Effects.standBy,
-                            sfx: {
-                                duration: 750
-                            }
-                        }
-                    };
-                })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/iturnstarteffect.d.ts"/>
-/// <reference path="abilities.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var PassiveSkills;
-                (function (PassiveSkills) {
-                    PassiveSkills.autoHeal = {
-                        type: "autoHeal",
-                        displayName: "Auto heal",
-                        description: "hiku hiku",
-                        afterAbilityUse: [
-                            {
-                                template: Templates.Effects.healSelf,
-                                data: {
-                                    flat: 50
-                                },
-                                sfx: {
-                                    duration: 1200,
-                                    battleOverlay: function (props) {
-                                        // cg40400.bmp - cg40429.bmp converted to webm
-                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
-                                    }
-                                },
-                                trigger: function (user, target) {
-                                    return user.currentHealth < user.maxHealth;
-                                }
-                            }
-                        ]
-                    };
-                    PassiveSkills.poisoned = {
-                        type: "poisoned",
-                        displayName: "Poisoned",
-                        description: "-10% max health per turn",
-                        afterAbilityUse: [
-                            {
-                                template: Templates.Effects.healSelf,
-                                data: {
-                                    maxHealthPercentage: -0.1
-                                },
-                                sfx: {
-                                    duration: 1200,
-                                    userOverlay: function (props) {
-                                        var canvas = document.createElement("canvas");
-                                        canvas.width = props.width;
-                                        canvas.height = props.height;
-                                        var ctx = canvas.getContext("2d");
-                                        ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
-                                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                        return canvas;
-                                    }
-                                }
-                            }
-                        ]
-                    };
-                    PassiveSkills.overdrive = {
-                        type: "overdrive",
-                        displayName: "Overdrive",
-                        description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
-                        atBattleStart: [
-                            {
-                                template: Templates.Effects.buffTest
-                            }
-                        ]
-                    };
-                    PassiveSkills.initialGuard = {
-                        type: "initialGuard",
-                        displayName: "Initial Guard",
-                        description: "Adds initial guard",
-                        isHidden: true,
-                        atBattleStart: [
-                            {
-                                template: Templates.Effects.guardColumn,
-                                data: { perInt: 0, flat: 50 }
-                            }
-                        ],
-                        inBattlePrep: [
-                            function (user, battlePrep) {
-                                Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
-                            }
-                        ]
-                    };
-                    PassiveSkills.warpJammer = {
-                        type: "warpJammer",
-                        displayName: "Warp Jammer",
-                        description: "Forces an extra unit to defend in neutral territory",
-                        inBattlePrep: [
-                            function (user, battlePrep) {
-                                if (user.fleet.player === battlePrep.attacker) {
-                                    battlePrep.minDefendersInNeutralTerritory += 1;
-                                }
-                            }
-                        ]
-                    };
-                    PassiveSkills.medic = {
-                        type: "medic",
-                        displayName: "Medic",
-                        description: "Heals all units in same star to full at turn start",
-                        atTurnStart: [
-                            function (user) {
-                                var star = user.fleet.location;
-                                var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
-                                for (var i = 0; i < allFriendlyUnits.length; i++) {
-                                    allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
-                                }
-                            }
-                        ]
-                    };
-                })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iitemtemplate.d.ts"/>
-/// <reference path="abilities.ts" />
-/// <reference path="passiveskills.ts" />
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var Items;
-                (function (Items) {
-                    Items.bombLauncher1 = {
-                        type: "bombLauncher1",
-                        displayName: "Bomb Launcher 1",
-                        icon: "img\/items\/cannon.png",
-                        techLevel: 1,
-                        cost: 100,
-                        slot: "high",
-                        ability: Templates.Abilities.bombAttack
-                    };
-                    Items.bombLauncher2 = {
-                        type: "bombLauncher2",
-                        displayName: "Bomb Launcher 2",
-                        icon: "img\/items\/cannon.png",
-                        techLevel: 2,
-                        cost: 200,
-                        attributes: {
-                            attack: 1
-                        },
-                        slot: "high",
-                        ability: Templates.Abilities.bombAttack
-                    };
-                    Items.bombLauncher3 = {
-                        type: "bombLauncher3",
-                        displayName: "Bomb Launcher 3",
-                        icon: "img\/items\/cannon.png",
-                        techLevel: 3,
-                        cost: 300,
-                        attributes: {
-                            attack: 3
-                        },
-                        slot: "high",
-                        ability: Templates.Abilities.bombAttack
-                    };
-                    Items.afterBurner1 = {
-                        type: "afterBurner1",
-                        displayName: "Afterburner 1",
-                        icon: "img\/items\/blueThing.png",
-                        techLevel: 1,
-                        cost: 100,
-                        attributes: {
-                            speed: 1
-                        },
-                        slot: "mid",
-                        passiveSkill: Templates.PassiveSkills.overdrive
-                    };
-                    Items.afterBurner2 = {
-                        type: "afterBurner2",
-                        displayName: "Afterburner 2",
-                        icon: "img\/items\/blueThing.png",
-                        techLevel: 2,
-                        cost: 200,
-                        attributes: {
-                            speed: 2
-                        },
-                        slot: "mid"
-                    };
-                    Items.afterBurner3 = {
-                        type: "afterBurner3",
-                        displayName: "Afterburner 3",
-                        icon: "img\/items\/blueThing.png",
-                        techLevel: 3,
-                        cost: 300,
-                        attributes: {
-                            maxActionPoints: 1,
-                            speed: 3
-                        },
-                        slot: "mid"
-                    };
-                    Items.shieldPlating1 = {
-                        type: "shieldPlating1",
-                        displayName: "Shield Plating 1",
-                        icon: "img\/items\/armor1.png",
-                        techLevel: 1,
-                        cost: 100,
-                        attributes: {
-                            defence: 1
-                        },
-                        slot: "low"
-                    };
-                    Items.shieldPlating2 = {
-                        type: "shieldPlating2",
-                        displayName: "Shield Plating 2",
-                        icon: "img\/items\/armor1.png",
-                        techLevel: 2,
-                        cost: 200,
-                        attributes: {
-                            defence: 2
-                        },
-                        slot: "low"
-                    };
-                    Items.shieldPlating3 = {
-                        type: "shieldPlating3",
-                        displayName: "Shield Plating 3",
-                        icon: "img\/items\/armor1.png",
-                        techLevel: 3,
-                        cost: 300,
-                        attributes: {
-                            defence: 3,
-                            speed: -1
-                        },
-                        slot: "low",
-                        ability: Templates.Abilities.guardColumn
-                    };
-                })(Items = Templates.Items || (Templates.Items = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/items.ts" />
-/// <reference path="unit.ts" />
-var Rance;
-(function (Rance) {
-    var Item = (function () {
-        function Item(template, id) {
-            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
-            this.template = template;
-        }
-        Item.prototype.serialize = function () {
-            var data = {};
-            data.id = this.id;
-            data.templateType = this.template.type;
-            if (this.unit) {
-                data.unitId = this.unit.id;
-            }
-            return data;
-        };
-        return Item;
-    })();
-    Rance.Item = Item;
-})(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/items.ts" />
-/// <reference path="item.ts" />
-/// <reference path="utility.ts" />
-var Rance;
-(function (Rance) {
-    var ItemGenerator = (function () {
-        function ItemGenerator() {
-            this.itemsByTechLevel = {};
-            this.indexItemsByTechLevel();
-        }
-        ItemGenerator.prototype.indexItemsByTechLevel = function () {
-            for (var itemName in app.moduleData.Templates.Items) {
-                var item = app.moduleData.Templates.Items[itemName];
-                if (!this.itemsByTechLevel[item.techLevel]) {
-                    this.itemsByTechLevel[item.techLevel] = [];
-                }
-                this.itemsByTechLevel[item.techLevel].push(item);
-            }
-        };
-        return ItemGenerator;
-    })();
-    Rance.ItemGenerator = ItemGenerator;
-})(Rance || (Rance = {}));
 /// <reference path="../modules/default/templates/resources.ts" />
+/// <reference path="templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="point.ts" />
 /// <reference path="player.ts" />
 /// <reference path="fleet.ts" />
 /// <reference path="building.ts" />
-/// <reference path="itemgenerator.ts" />
 var Rance;
 (function (Rance) {
     var Star = (function () {
@@ -8427,7 +7407,7 @@ var Rance;
         };
         Star.prototype.seedBuildableItems = function () {
             for (var techLevel in this.buildableItems) {
-                var itemsByTechLevel = app.itemGenerator.itemsByTechLevel[techLevel];
+                var itemsByTechLevel = Rance.TemplateIndexes.itemsByTechLevel[techLevel];
                 var maxItemsForTechLevel = this.getItemAmountForTechLevel(techLevel, 999);
                 itemsByTechLevel = Rance.shuffleArray(itemsByTechLevel, this.getSeed());
                 for (var i = 0; i < maxItemsForTechLevel; i++) {
@@ -8839,196 +7819,6 @@ var Rance;
         return Fleet;
     })();
     Rance.Fleet = Fleet;
-})(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var SubEmblems;
-                (function (SubEmblems) {
-                    SubEmblems.emblem0 = {
-                        type: "emblem0",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem0.png"
-                    };
-                    SubEmblems.emblem33 = {
-                        type: "emblem33",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem33.png"
-                    };
-                    SubEmblems.emblem34 = {
-                        type: "emblem34",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem34.png"
-                    };
-                    SubEmblems.emblem35 = {
-                        type: "emblem35",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem35.png"
-                    };
-                    SubEmblems.emblem36 = {
-                        type: "emblem36",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem36.png"
-                    };
-                    SubEmblems.emblem37 = {
-                        type: "emblem37",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem37.png"
-                    };
-                    SubEmblems.emblem38 = {
-                        type: "emblem38",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem38.png"
-                    };
-                    SubEmblems.emblem39 = {
-                        type: "emblem39",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem39.png"
-                    };
-                    SubEmblems.emblem40 = {
-                        type: "emblem40",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem40.png"
-                    };
-                    SubEmblems.emblem41 = {
-                        type: "emblem41",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem41.png"
-                    };
-                    SubEmblems.emblem42 = {
-                        type: "emblem42",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem42.png"
-                    };
-                    SubEmblems.emblem43 = {
-                        type: "emblem43",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem43.png"
-                    };
-                    SubEmblems.emblem44 = {
-                        type: "emblem44",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem44.png"
-                    };
-                    SubEmblems.emblem45 = {
-                        type: "emblem45",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem45.png"
-                    };
-                    SubEmblems.emblem46 = {
-                        type: "emblem46",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem46.png"
-                    };
-                    SubEmblems.emblem47 = {
-                        type: "emblem47",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem47.png"
-                    };
-                    SubEmblems.emblem48 = {
-                        type: "emblem48",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem48.png"
-                    };
-                    SubEmblems.emblem49 = {
-                        type: "emblem49",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem49.png"
-                    };
-                    SubEmblems.emblem50 = {
-                        type: "emblem50",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem50.png"
-                    };
-                    SubEmblems.emblem51 = {
-                        type: "emblem51",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem51.png"
-                    };
-                    SubEmblems.emblem52 = {
-                        type: "emblem52",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem52.png"
-                    };
-                    SubEmblems.emblem53 = {
-                        type: "emblem53",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem53.png"
-                    };
-                    SubEmblems.emblem54 = {
-                        type: "emblem54",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem54.png"
-                    };
-                    SubEmblems.emblem55 = {
-                        type: "emblem55",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem55.png"
-                    };
-                    SubEmblems.emblem56 = {
-                        type: "emblem56",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem56.png"
-                    };
-                    SubEmblems.emblem57 = {
-                        type: "emblem57",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem57.png"
-                    };
-                    SubEmblems.emblem58 = {
-                        type: "emblem58",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem58.png"
-                    };
-                    SubEmblems.emblem59 = {
-                        type: "emblem59",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem59.png"
-                    };
-                    SubEmblems.emblem61 = {
-                        type: "emblem61",
-                        position: "both",
-                        foregroundOnly: true,
-                        imageSrc: "emblem61.png"
-                    };
-                })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
 /// <reference path="../lib/husl.d.ts" />
 /// <reference path="range.ts" />
@@ -9495,7 +8285,7 @@ var Rance;
     Rance.checkRandomGenHues = checkRandomGenHues;
 })(Rance || (Rance = {}));
 /// <reference path="../lib/rng.d.ts" />
-/// <reference path="../modules/default/templates/subemblems.ts" />
+/// <reference path="templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="color.ts"/>
 var Rance;
 (function (Rance) {
@@ -9756,6 +8546,28 @@ var Rance;
         return Flag;
     })();
     Rance.Flag = Flag;
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="unit.ts" />
+var Rance;
+(function (Rance) {
+    var Item = (function () {
+        function Item(template, id) {
+            this.id = isFinite(id) ? id : Rance.idGenerators.item++;
+            this.template = template;
+        }
+        Item.prototype.serialize = function () {
+            var data = {};
+            data.id = this.id;
+            data.templateType = this.template.type;
+            if (this.unit) {
+                data.unitId = this.unit.id;
+            }
+            return data;
+        };
+        return Item;
+    })();
+    Rance.Item = Item;
 })(Rance || (Rance = {}));
 /// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="battle.ts" />
@@ -10346,61 +9158,7 @@ var Rance;
     })();
     Rance.BattlePrep = BattlePrep;
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
-var Rance;
-(function (Rance) {
-    (function (AttitudeModifierFamily) {
-        AttitudeModifierFamily[AttitudeModifierFamily["geographic"] = 0] = "geographic";
-        AttitudeModifierFamily[AttitudeModifierFamily["history"] = 1] = "history";
-        AttitudeModifierFamily[AttitudeModifierFamily["current"] = 2] = "current";
-    })(Rance.AttitudeModifierFamily || (Rance.AttitudeModifierFamily = {}));
-    var AttitudeModifierFamily = Rance.AttitudeModifierFamily;
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var AttitudeModifiers;
-                (function (AttitudeModifiers) {
-                    AttitudeModifiers.neighborStars = {
-                        type: "neighborStars",
-                        displayName: "neighborStars",
-                        family: AttitudeModifierFamily.geographic,
-                        duration: -1,
-                        startCondition: function (evaluation) {
-                            return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
-                        },
-                        getEffectFromEvaluation: function (evaluation) {
-                            return -2 * evaluation.neighborStars;
-                        }
-                    };
-                    AttitudeModifiers.atWar = {
-                        type: "atWar",
-                        displayName: "At war",
-                        family: AttitudeModifierFamily.current,
-                        duration: -1,
-                        startCondition: function (evaluation) {
-                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
-                        },
-                        constantEffect: -30
-                    };
-                    AttitudeModifiers.declaredWar = {
-                        type: "declaredWar",
-                        displayName: "Declared war",
-                        family: AttitudeModifierFamily.history,
-                        duration: 15,
-                        startCondition: function (evaluation) {
-                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
-                        },
-                        constantEffect: -35
-                    };
-                })(AttitudeModifiers = Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/attitudemodifiers.ts" />
+/// <reference path="templateinterfaces/iattitudemodifiertemplate.d.ts" />
 var Rance;
 (function (Rance) {
     var AttitudeModifier = (function () {
@@ -11120,7 +9878,7 @@ var Rance;
             };
             MapGenResult.prototype.clearMapGenData = function () {
                 if (Rance.Options.debugMode) {
-                    console.warn("Skipped cleaning map gen data due to debug mode being enabled");
+                    console.log("Skipped cleaning map gen data due to debug mode being enabled");
                     return;
                 }
                 for (var i = 0; i < this.stars.length; i++) {
@@ -12513,7 +11271,6 @@ var Rance;
         MapAI.EconomyAI = EconomyAI;
     })(MapAI = Rance.MapAI || (Rance.MapAI = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../modules/default/templates/attitudemodifiers.ts" />
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
 /// <reference path="../diplomacystatus.ts"/>
@@ -13524,8 +12281,56 @@ var Rance;
     })();
     Rance.Battle = Battle;
 })(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/effects.ts" />
-/// <reference path="../modules/default/templates/battlesfx.ts" />
+/// <reference path="utility.ts"/>
+/// <reference path="unit.ts"/>
+var Rance;
+(function (Rance) {
+    Rance.targetSingle = function (units, target) {
+        return Rance.getFrom2dArray(units, [target]);
+    };
+    Rance.targetAll = function (units, target) {
+        return Rance.flatten2dArray(units);
+    };
+    Rance.targetRow = function (units, target) {
+        var y = target[1];
+        var targetLocations = [];
+        for (var i = 0; i < units.length; i++) {
+            targetLocations.push([i, y]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetColumn = function (units, target) {
+        var x = target[0];
+        var targetLocations = [];
+        for (var i = 0; i < units[x].length; i++) {
+            targetLocations.push([x, i]);
+        }
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetColumnNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+    Rance.targetNeighbors = function (units, target) {
+        var x = target[0];
+        var y = target[1];
+        var targetLocations = [];
+        targetLocations.push([x, y]);
+        targetLocations.push([x - 1, y]);
+        targetLocations.push([x + 1, y]);
+        targetLocations.push([x, y - 1]);
+        targetLocations.push([x, y + 1]);
+        return Rance.getFrom2dArray(units, targetLocations);
+    };
+})(Rance || (Rance = {}));
+/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>
@@ -13861,52 +12666,10 @@ var Rance;
     }
     Rance.getTargetsForAllAbilities = getTargetsForAllAbilities;
 })(Rance || (Rance = {}));
-/// <reference path="../../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
-/// <reference path="../../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
-var Rance;
-(function (Rance) {
-    var Modules;
-    (function (Modules) {
-        var DefaultModule;
-        (function (DefaultModule) {
-            var Templates;
-            (function (Templates) {
-                var StatusEffects;
-                (function (StatusEffects) {
-                    StatusEffects.test = {
-                        type: "test",
-                        displayName: "test",
-                        attributes: {
-                            attack: {
-                                flat: 9
-                            },
-                            defence: {
-                                flat: 9
-                            },
-                            intelligence: {
-                                flat: -9
-                            },
-                            speed: {
-                                flat: 9
-                            }
-                        },
-                        passiveSkills: [Templates.PassiveSkills.poisoned]
-                    };
-                })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
-            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
-        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
-    })(Modules = Rance.Modules || (Rance.Modules = {}));
-})(Rance || (Rance = {}));
-/// <reference path="../modules/default/templates/statuseffects.ts" />
+/// <reference path="templateinterfaces/istatuseffecttemplate.d.ts" />
 var Rance;
 (function (Rance) {
     var StatusEffect = (function () {
-        // effects that trigger at start of battle
-        // effects that trigger when using an ability
-        // effects that trigger when targeted
-        // effects that trigger at start of turn
-        // effects that trigger at end of turn
         function StatusEffect(template, duration) {
             this.template = template;
             this.duration = duration;
@@ -20077,7 +18840,7 @@ var Rance;
         MapGen2.Region = Region;
     })(MapGen2 = Rance.MapGen2 || (Rance.MapGen2 = {}));
 })(Rance || (Rance = {}));
-/// <reference path="../../modules/default/templates/resources.ts" />
+/// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../star.ts" />
 var Rance;
 (function (Rance) {
@@ -20803,6 +19566,747 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
+        function makeSprite(imgSrc, props) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var img = new Image();
+            img.onload = function (e) {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                if (!props.facingRight) {
+                    ctx.scale(-1, 1);
+                }
+            };
+            // cg13300.bmp
+            img.src = imgSrc;
+            return canvas;
+        }
+        BattleSFXFunctions.makeSprite = makeSprite;
+        function makeVideo(videoSrc, props) {
+            var video = document.createElement("video");
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var maskCanvas = document.createElement("canvas");
+            var mask = maskCanvas.getContext("2d");
+            mask.fillStyle = "#000";
+            mask.globalCompositeOperation = "luminosity";
+            var onVideoLoadFN = function () {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                maskCanvas.width = canvas.width;
+                maskCanvas.height = canvas.height;
+                props.onLoaded(canvas);
+                video.play();
+            };
+            var _ = window;
+            if (!_.abababa)
+                _.abababa = {};
+            if (!_.abababa[videoSrc])
+                _.abababa[videoSrc] = {};
+            var computeFrameFN = function (frameNumber) {
+                if (!_.abababa[videoSrc][frameNumber]) {
+                    var c3 = document.createElement("canvas");
+                    c3.width = canvas.width;
+                    c3.height = canvas.height;
+                    var ctx3 = c3.getContext("2d");
+                    ctx3.drawImage(video, 0, 0, c3.width, c3.height);
+                    var frame = ctx3.getImageData(0, 0, c3.width, c3.height);
+                    mask.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+                    mask.drawImage(video, 0, 0, c3.width, c3.height);
+                    var maskData = mask.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
+                    var l = frame.data.length / 4;
+                    for (var i = 0; i < l; i++) {
+                        frame.data[i * 4 + 3] = maskData[i * 4];
+                    }
+                    ctx3.putImageData(frame, 0, 0);
+                    _.abababa[videoSrc][frameNumber] = c3;
+                }
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (!props.facingRight) {
+                    ctx.scale(-1, 1);
+                }
+                ctx.drawImage(_.abababa[videoSrc][frameNumber], 0, 0, canvas.width, canvas.height);
+            };
+            var previousFrame;
+            var playFrameFN = function () {
+                if (video.paused || video.ended)
+                    return;
+                var currentFrame = Math.round(Rance.roundToNearestMultiple(video.currentTime, 1 / 25) / (1 / 25));
+                if (isFinite(previousFrame) && currentFrame === previousFrame) {
+                }
+                else {
+                    previousFrame = currentFrame;
+                    computeFrameFN(currentFrame);
+                }
+                window.requestAnimationFrame(playFrameFN);
+            };
+            video.oncanplay = onVideoLoadFN;
+            video.onplay = playFrameFN;
+            video.src = videoSrc;
+            if (video.readyState >= 4) {
+                onVideoLoadFN();
+            }
+            return canvas;
+        }
+        BattleSFXFunctions.makeVideo = makeVideo;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/ieffecttemplate.d.ts"/>
+/// <reference path="../../../src/targeting.ts" />
+/// <reference path="../../../src/unit.ts" />
+/// <reference path="../../../src/damagetype.ts" />
+// "effect" should be used for referring to ability functionality. visual effects referred to as battleSFX TODO
+// example: Abilities.dealDamagePoison would have Effects.dealDamage & Effects.poison
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Effects;
+                (function (Effects) {
+                    Effects.singleTargetDamage = {
+                        name: "singleTargetDamage",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target, data) {
+                            var baseDamage = data.baseDamage;
+                            var damageType = data.damageType;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.closeAttack = {
+                        name: "closeAttack",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetColumnNeighbors,
+                        targetRange: "close",
+                        effect: function (user, target) {
+                            var baseDamage = 0.66;
+                            var damageType = Rance.DamageType.physical;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.wholeRowAttack = {
+                        name: "wholeRowAttack",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetRow,
+                        targetRange: "all",
+                        effect: function (user, target) {
+                            var baseDamage = 0.75;
+                            var damageType = Rance.DamageType.magical;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.bombAttack = {
+                        name: "bombAttack",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetNeighbors,
+                        targetRange: "all",
+                        effect: function (user, target) {
+                            var baseDamage = 0.5;
+                            var damageType = Rance.DamageType.physical;
+                            var damageIncrease = user.getAttackDamageIncrease(damageType);
+                            var damage = baseDamage * damageIncrease;
+                            target.receiveDamage(damage, damageType);
+                        }
+                    };
+                    Effects.guardColumn = {
+                        name: "guardColumn",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function (user, target, data) {
+                            var data = data || {};
+                            var guardPerInt = data.perInt || 0;
+                            var flat = data.flat || 0;
+                            var guardAmount = guardPerInt * user.attributes.intelligence + flat;
+                            user.addGuard(guardAmount, "column");
+                        }
+                    };
+                    Effects.receiveCounterAttack = {
+                        name: "receiveCounterAttack",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function (user, target, data) {
+                            var counterStrength = target.getCounterAttackStrength();
+                            if (counterStrength) {
+                                Templates.Effects.singleTargetDamage.effect(target, user, {
+                                    baseDamage: data.baseDamage * counterStrength,
+                                    damageType: Rance.DamageType.physical
+                                });
+                            }
+                        }
+                    };
+                    Effects.increaseCaptureChance = {
+                        name: "increaseCaptureChance",
+                        targetFleets: "enemy",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target, data) {
+                            if (!data)
+                                return;
+                            if (data.flat) {
+                                target.battleStats.captureChance += data.flat;
+                            }
+                            if (isFinite(data.multiplier)) {
+                                target.battleStats.captureChance *= data.multiplier;
+                            }
+                        }
+                    };
+                    Effects.buffTest = {
+                        name: "buffTest",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target) {
+                            user.addStatusEffect(new Rance.StatusEffect(Templates.StatusEffects.test, 1));
+                        }
+                    };
+                    Effects.healTarget = {
+                        name: "healTarget",
+                        targetFleets: "ally",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "all",
+                        effect: function (user, target, data) {
+                            var healAmount = 0;
+                            if (data.flat) {
+                                healAmount += data.flat;
+                            }
+                            if (data.maxHealthPercentage) {
+                                healAmount += target.maxHealth * data.maxHealthPercentage;
+                            }
+                            if (data.perUserUnit) {
+                                healAmount += data.perUserUnit * user.getAttackDamageIncrease(Rance.DamageType.magical);
+                            }
+                            target.removeStrength(-healAmount);
+                        }
+                    };
+                    Effects.healSelf = {
+                        name: "healSelf",
+                        targetFleets: "ally",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function (user, target, data) {
+                            Templates.Effects.healTarget.effect(user, user, data);
+                        }
+                    };
+                    Effects.standBy = {
+                        name: "standBy",
+                        targetFleets: "all",
+                        targetingFunction: Rance.targetSingle,
+                        targetRange: "self",
+                        effect: function () { }
+                    };
+                })(Effects = Templates.Effects || (Templates.Effects = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
+        function rocketAttack(props) {
+            var minY, maxY;
+            [props.user, props.target].forEach(function (unit) {
+                if (!unit)
+                    return;
+                var unitCanvas = unit.cachedBattleScene;
+                if (unitCanvas) {
+                    var rect = unitCanvas.getBoundingClientRect();
+                    if (isFinite(minY)) {
+                        minY = Math.min(minY, rect.top);
+                    }
+                    else {
+                        minY = rect.top;
+                    }
+                    if (isFinite(maxY)) {
+                        maxY = Math.max(maxY, rect.top + rect.height);
+                    }
+                    else {
+                        maxY = rect.top + rect.height;
+                    }
+                }
+            });
+            var travelSpeed = props.width / props.duration * 3; //milliseconds
+            var acceleration = travelSpeed / 20;
+            var maxSpeed = travelSpeed;
+            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
+                transparent: true
+            });
+            var container = new PIXI.Container();
+            if (!props.facingRight) {
+                container.scale.x = -1;
+                container.x = props.width;
+            }
+            var rocketTexture = PIXI.Texture.fromFrame("img\/battleEffects\/rocket.png");
+            var explosionTextures = [];
+            for (var i = 0; i < 26; i++) {
+                var explosionTexture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i + 1) + '.png');
+                explosionTextures.push(explosionTexture);
+            }
+            var startTime = Date.now();
+            var endTime = startTime + props.duration + 250;
+            var stopSpawningTime = startTime + props.duration / 2;
+            var lastTime = startTime;
+            var rocketsToSpawn = 10;
+            var explosionsToSpawn = 5;
+            var explosionRate = rocketsToSpawn / explosionsToSpawn;
+            var spawnRate = (stopSpawningTime - startTime) / rocketsToSpawn;
+            var nextSpawnTime = startTime;
+            var rockets = [];
+            function animate() {
+                var currentTime = Date.now();
+                var elapsedTime = currentTime - lastTime;
+                lastTime = Date.now();
+                if (currentTime < stopSpawningTime && currentTime >= nextSpawnTime) {
+                    nextSpawnTime += spawnRate;
+                    var sprite = new PIXI.Sprite(rocketTexture);
+                    sprite.x = 20;
+                    sprite.y = Rance.randInt(minY, maxY);
+                    container.addChild(sprite);
+                    rockets.push({
+                        sprite: sprite,
+                        speed: 0,
+                        willExplode: (rockets.length - 1) % explosionRate === 0,
+                        explosionX: Rance.randInt(props.width - 200, props.width - 50),
+                        hasExplosion: false
+                    });
+                }
+                for (var i = 0; i < rockets.length; i++) {
+                    var rocket = rockets[i];
+                    if (!rocket.hasExplosion) {
+                        if (rocket.speed < maxSpeed) {
+                            rocket.speed += acceleration;
+                        }
+                        rocket.sprite.x += rocket.speed * elapsedTime;
+                    }
+                    if (!rocket.hasExplosion && rocket.willExplode && rocket.sprite.x >= rocket.explosionX) {
+                        rocket.hasExplosion = true;
+                        var explosion = new PIXI.extras.MovieClip(explosionTextures);
+                        explosion.anchor = new PIXI.Point(0.5, 0.5);
+                        explosion.loop = false;
+                        explosion.position = rocket.sprite.position;
+                        container.removeChild(rocket.sprite);
+                        container.addChild(explosion);
+                        explosion.play();
+                    }
+                }
+                renderer.render(container);
+                if (currentTime < endTime) {
+                    requestAnimationFrame(animate);
+                }
+                else {
+                    renderer.destroy(true);
+                }
+            }
+            props.onLoaded(renderer.view);
+            animate();
+            return renderer.view;
+        }
+        BattleSFXFunctions.rocketAttack = rocketAttack;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
+})(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var BattleSFXFunctions;
+    (function (BattleSFXFunctions) {
+        function guard(props) {
+            var userCanvasWidth = props.user.cachedBattleScene.width;
+            var maxFrontier = Math.max(userCanvasWidth * 1.3, 300);
+            var baseTrailDistance = 80;
+            var maxTrailDistance = maxFrontier;
+            var trailDistanceGrowth = maxTrailDistance - baseTrailDistance;
+            var maxBlockWidth = maxFrontier * 2;
+            var uniforms = {
+                frontier: {
+                    type: "1f",
+                    value: 0
+                },
+                trailDistance: {
+                    type: "1f",
+                    value: baseTrailDistance
+                },
+                seed: {
+                    type: "1f",
+                    value: Math.random() * 420
+                },
+                blockSize: {
+                    type: "1f",
+                    value: 90
+                },
+                blockWidth: {
+                    type: "1f",
+                    value: 0
+                },
+                lineAlpha: {
+                    type: "1f",
+                    value: 1.5
+                },
+                blockAlpha: {
+                    type: "1f",
+                    value: 0
+                }
+            };
+            var travelTime = 0.2;
+            var syncUniformsFN = function (time) {
+                if (time < travelTime) {
+                    var adjustedtime = time / travelTime;
+                    uniforms.frontier.value = maxFrontier * adjustedtime;
+                }
+                else {
+                    var adjustedtime = Rance.getRelativeValue(time, travelTime - 0.02, 1);
+                    adjustedtime = Math.pow(adjustedtime, 4);
+                    uniforms.trailDistance.value = baseTrailDistance + trailDistanceGrowth * adjustedtime;
+                    uniforms.blockWidth.value = adjustedtime * maxBlockWidth;
+                    uniforms.lineAlpha.value = (1 - adjustedtime) * 1.5;
+                    var relativeDistance = Rance.getRelativeValue(Math.abs(0.2 - adjustedtime), 0, 0.8);
+                    uniforms.blockAlpha.value = 1 - relativeDistance;
+                }
+            };
+            var guardFilter = new Rance.GuardFilter(uniforms);
+            var renderer = PIXI.autoDetectRenderer(props.width, props.height, {
+                transparent: true
+            });
+            var container = new PIXI.Container();
+            container.filters = [guardFilter];
+            container.filterArea = new PIXI.Rectangle(0, 0, maxFrontier + 20, props.height);
+            var renderTexture = new PIXI.RenderTexture(renderer, props.width, props.height);
+            var sprite = new PIXI.Sprite(renderTexture);
+            if (!props.facingRight) {
+                sprite.x = props.width;
+                sprite.scale.x = -1;
+            }
+            function animate() {
+                var elapsedTime = Date.now() - startTime;
+                var relativeTime = elapsedTime / props.duration;
+                syncUniformsFN(relativeTime);
+                renderTexture.clear();
+                renderTexture.render(container);
+                renderer.render(sprite);
+                if (elapsedTime < props.duration) {
+                    requestAnimationFrame(animate);
+                }
+                else {
+                    renderer.destroy(true);
+                }
+            }
+            props.onLoaded(renderer.view);
+            var startTime = Date.now();
+            animate();
+            return renderer.view;
+        }
+        BattleSFXFunctions.guard = guard;
+    })(BattleSFXFunctions = Rance.BattleSFXFunctions || (Rance.BattleSFXFunctions = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/ibattlesfxtemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
+/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts" />
+/// <reference path="../../../src/battlesfxfunctions/rocketattack.ts" />
+/// <reference path="../../../src/battlesfxfunctions/guard.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var BattleSFX;
+                (function (BattleSFX) {
+                    BattleSFX.rocketAttack = {
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFXFunctions.rocketAttack,
+                        delay: 0.3
+                    };
+                    BattleSFX.guard = {
+                        duration: 1500,
+                        battleOverlay: Rance.BattleSFXFunctions.guard,
+                        delay: 0.3
+                    };
+                })(BattleSFX = Templates.BattleSFX || (Templates.BattleSFX = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/battlesfxfunctions/battlesfxutils.ts"/>
+/// <reference path="../../../src/templateinterfaces/sfxparams.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iabilitytemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iabilitytemplateeffect.d.ts"/>
+/// <reference path="effects.ts" />
+/// <reference path="battlesfx.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Abilities;
+                (function (Abilities) {
+                    Abilities.rangedAttack = {
+                        type: "rangedAttack",
+                        displayName: "Ranged Attack",
+                        description: "Standard ranged attack",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: Templates.BattleSFX.rocketAttack,
+                            data: {
+                                baseDamage: 1,
+                                damageType: Rance.DamageType.physical
+                            },
+                            attachedEffects: [
+                                {
+                                    template: Templates.Effects.receiveCounterAttack,
+                                    data: {
+                                        baseDamage: 0.5
+                                    }
+                                }
+                            ]
+                        }
+                    };
+                    Abilities.closeAttack = {
+                        type: "closeAttack",
+                        displayName: "Close Attack",
+                        description: "Close range attack that hits adjacent targets in same row as well",
+                        moveDelay: 90,
+                        actionsUse: 2,
+                        mainEffect: {
+                            template: Templates.Effects.closeAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.wholeRowAttack = {
+                        type: "wholeRowAttack",
+                        displayName: "Row Attack",
+                        description: "Attack entire row of units",
+                        moveDelay: 300,
+                        actionsUse: 1,
+                        bypassesGuard: true,
+                        mainEffect: {
+                            template: Templates.Effects.wholeRowAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.bombAttack = {
+                        type: "bombAttack",
+                        displayName: "Bomb Attack",
+                        description: "Ranged attack that hits all adjacent enemy units",
+                        moveDelay: 120,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.bombAttack,
+                            sfx: Templates.BattleSFX.rocketAttack
+                        }
+                    };
+                    Abilities.guardColumn = {
+                        type: "guardColumn",
+                        displayName: "Guard Column",
+                        description: "Protect allies in the same row and boost defence up to 2x",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.guardColumn,
+                            sfx: Templates.BattleSFX.guard,
+                            data: {
+                                perInt: 20
+                            }
+                        }
+                    };
+                    Abilities.boardingHook = {
+                        type: "boardingHook",
+                        displayName: "Boarding Hook",
+                        description: "0.8x damage but increases target capture chance",
+                        moveDelay: 100,
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: Templates.BattleSFX.rocketAttack,
+                            data: {
+                                baseDamage: 0.8,
+                                damageType: Rance.DamageType.physical
+                            },
+                            attachedEffects: [
+                                {
+                                    template: Templates.Effects.increaseCaptureChance,
+                                    data: {
+                                        flat: 0.5
+                                    }
+                                },
+                                {
+                                    template: Templates.Effects.receiveCounterAttack,
+                                    data: {
+                                        baseDamage: 0.5
+                                    }
+                                }
+                            ]
+                        }
+                    };
+                    Abilities.debugAbility = {
+                        type: "debugAbility",
+                        displayName: "Debug Ability",
+                        description: "who knows what its going to do today",
+                        moveDelay: 0,
+                        preparation: {
+                            turnsToPrep: 1,
+                            prepDelay: 100,
+                            interruptsNeeded: 1
+                        },
+                        actionsUse: 1,
+                        mainEffect: {
+                            template: Templates.Effects.guardColumn,
+                            sfx: Templates.BattleSFX.guard,
+                            data: {
+                                perInt: 20
+                            }
+                        }
+                    };
+                    Abilities.ranceAttack = {
+                        type: "ranceAttack",
+                        displayName: "Rance attack",
+                        description: "dont sue",
+                        moveDelay: 0,
+                        actionsUse: 0,
+                        mainEffect: {
+                            template: Templates.Effects.singleTargetDamage,
+                            sfx: {
+                                duration: 1200,
+                                userSprite: function (props) {
+                                    // cg13600.bmp
+                                    return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack2.png", props);
+                                },
+                                battleOverlay: function (props) {
+                                    // cg40500.bmp - cg40529.bmp converted to webm
+                                    return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/ranceAttack.webm", props);
+                                }
+                            },
+                            data: {
+                                baseDamage: 0.1,
+                                damageType: Rance.DamageType.physical
+                            }
+                        },
+                        secondaryEffects: [
+                            {
+                                template: Templates.Effects.singleTargetDamage,
+                                data: {
+                                    baseDamage: 0.1,
+                                    damageType: Rance.DamageType.physical
+                                },
+                                attachedEffects: [
+                                    {
+                                        template: Templates.Effects.receiveCounterAttack,
+                                        data: {
+                                            baseDamage: 0.5
+                                        }
+                                    }
+                                ],
+                                sfx: {
+                                    duration: 1500,
+                                    userSprite: function (props) {
+                                        // cg13300.bmp
+                                        return Rance.BattleSFXFunctions.makeSprite("img\/battleEffects\/ranceAttack.png", props);
+                                    },
+                                    battleOverlay: function (props) {
+                                        // cg40000.bmp - cg40029.bmp converted to webm
+                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/bushiAttack.webm", props);
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    Abilities.standBy = {
+                        type: "standBy",
+                        displayName: "Standby",
+                        description: "Skip a turn but next one comes faster",
+                        moveDelay: 50,
+                        actionsUse: 1,
+                        AIEvaluationPriority: 0.6,
+                        AIScoreAdjust: -0.1,
+                        disableInAIBattles: true,
+                        mainEffect: {
+                            template: Templates.Effects.standBy,
+                            sfx: {
+                                duration: 750
+                            }
+                        }
+                    };
+                })(Abilities = Templates.Abilities || (Templates.Abilities = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iattitudemodifiertemplate.d.ts"/>
+var Rance;
+(function (Rance) {
+    (function (AttitudeModifierFamily) {
+        AttitudeModifierFamily[AttitudeModifierFamily["geographic"] = 0] = "geographic";
+        AttitudeModifierFamily[AttitudeModifierFamily["history"] = 1] = "history";
+        AttitudeModifierFamily[AttitudeModifierFamily["current"] = 2] = "current";
+    })(Rance.AttitudeModifierFamily || (Rance.AttitudeModifierFamily = {}));
+    var AttitudeModifierFamily = Rance.AttitudeModifierFamily;
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var AttitudeModifiers;
+                (function (AttitudeModifiers) {
+                    AttitudeModifiers.neighborStars = {
+                        type: "neighborStars",
+                        displayName: "neighborStars",
+                        family: AttitudeModifierFamily.geographic,
+                        duration: -1,
+                        startCondition: function (evaluation) {
+                            return (evaluation.neighborStars >= 2 && evaluation.opinion < 50);
+                        },
+                        getEffectFromEvaluation: function (evaluation) {
+                            return -2 * evaluation.neighborStars;
+                        }
+                    };
+                    AttitudeModifiers.atWar = {
+                        type: "atWar",
+                        displayName: "At war",
+                        family: AttitudeModifierFamily.current,
+                        duration: -1,
+                        startCondition: function (evaluation) {
+                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
+                        },
+                        constantEffect: -30
+                    };
+                    AttitudeModifiers.declaredWar = {
+                        type: "declaredWar",
+                        displayName: "Declared war",
+                        family: AttitudeModifierFamily.history,
+                        duration: 15,
+                        startCondition: function (evaluation) {
+                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
+                        },
+                        constantEffect: -35
+                    };
+                })(AttitudeModifiers = Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/idefencebuildingtemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ibuildingtemplate.d.ts"/>
 var Rance;
@@ -20934,6 +20438,474 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/ipassiveskilltemplate.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/ibattleprepeffect.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/iturnstarteffect.d.ts"/>
+/// <reference path="abilities.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var PassiveSkills;
+                (function (PassiveSkills) {
+                    PassiveSkills.autoHeal = {
+                        type: "autoHeal",
+                        displayName: "Auto heal",
+                        description: "hiku hiku",
+                        afterAbilityUse: [
+                            {
+                                template: Templates.Effects.healSelf,
+                                data: {
+                                    flat: 50
+                                },
+                                sfx: {
+                                    duration: 1200,
+                                    battleOverlay: function (props) {
+                                        // cg40400.bmp - cg40429.bmp converted to webm
+                                        return Rance.BattleSFXFunctions.makeVideo("img\/battleEffects\/heal.webm", props);
+                                    }
+                                },
+                                trigger: function (user, target) {
+                                    return user.currentHealth < user.maxHealth;
+                                }
+                            }
+                        ]
+                    };
+                    PassiveSkills.poisoned = {
+                        type: "poisoned",
+                        displayName: "Poisoned",
+                        description: "-10% max health per turn",
+                        afterAbilityUse: [
+                            {
+                                template: Templates.Effects.healSelf,
+                                data: {
+                                    maxHealthPercentage: -0.1
+                                },
+                                sfx: {
+                                    duration: 1200,
+                                    userOverlay: function (props) {
+                                        var canvas = document.createElement("canvas");
+                                        canvas.width = props.width;
+                                        canvas.height = props.height;
+                                        var ctx = canvas.getContext("2d");
+                                        ctx.fillStyle = "rgba(30, 150, 30, 0.5)";
+                                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                        return canvas;
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    PassiveSkills.overdrive = {
+                        type: "overdrive",
+                        displayName: "Overdrive",
+                        description: "Gives buffs at battle start but become poisoned from rabbits making fun of you",
+                        atBattleStart: [
+                            {
+                                template: Templates.Effects.buffTest
+                            }
+                        ]
+                    };
+                    PassiveSkills.initialGuard = {
+                        type: "initialGuard",
+                        displayName: "Initial Guard",
+                        description: "Adds initial guard",
+                        isHidden: true,
+                        atBattleStart: [
+                            {
+                                template: Templates.Effects.guardColumn,
+                                data: { perInt: 0, flat: 50 }
+                            }
+                        ],
+                        inBattlePrep: [
+                            function (user, battlePrep) {
+                                Templates.Effects.guardColumn.effect(user, user, { perInt: 0, flat: 50 });
+                            }
+                        ]
+                    };
+                    PassiveSkills.warpJammer = {
+                        type: "warpJammer",
+                        displayName: "Warp Jammer",
+                        description: "Forces an extra unit to defend in neutral territory",
+                        inBattlePrep: [
+                            function (user, battlePrep) {
+                                if (user.fleet.player === battlePrep.attacker) {
+                                    battlePrep.minDefendersInNeutralTerritory += 1;
+                                }
+                            }
+                        ]
+                    };
+                    PassiveSkills.medic = {
+                        type: "medic",
+                        displayName: "Medic",
+                        description: "Heals all units in same star to full at turn start",
+                        atTurnStart: [
+                            function (user) {
+                                var star = user.fleet.location;
+                                var allFriendlyUnits = star.getAllShipsOfPlayer(user.fleet.player);
+                                for (var i = 0; i < allFriendlyUnits.length; i++) {
+                                    allFriendlyUnits[i].addStrength(allFriendlyUnits[i].maxHealth);
+                                }
+                            }
+                        ]
+                    };
+                })(PassiveSkills = Templates.PassiveSkills || (Templates.PassiveSkills = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iitemtemplate.d.ts"/>
+/// <reference path="abilities.ts" />
+/// <reference path="passiveskills.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var Items;
+                (function (Items) {
+                    Items.bombLauncher1 = {
+                        type: "bombLauncher1",
+                        displayName: "Bomb Launcher 1",
+                        icon: "img\/items\/cannon.png",
+                        techLevel: 1,
+                        cost: 100,
+                        slot: "high",
+                        ability: Templates.Abilities.bombAttack
+                    };
+                    Items.bombLauncher2 = {
+                        type: "bombLauncher2",
+                        displayName: "Bomb Launcher 2",
+                        icon: "img\/items\/cannon.png",
+                        techLevel: 2,
+                        cost: 200,
+                        attributes: {
+                            attack: 1
+                        },
+                        slot: "high",
+                        ability: Templates.Abilities.bombAttack
+                    };
+                    Items.bombLauncher3 = {
+                        type: "bombLauncher3",
+                        displayName: "Bomb Launcher 3",
+                        icon: "img\/items\/cannon.png",
+                        techLevel: 3,
+                        cost: 300,
+                        attributes: {
+                            attack: 3
+                        },
+                        slot: "high",
+                        ability: Templates.Abilities.bombAttack
+                    };
+                    Items.afterBurner1 = {
+                        type: "afterBurner1",
+                        displayName: "Afterburner 1",
+                        icon: "img\/items\/blueThing.png",
+                        techLevel: 1,
+                        cost: 100,
+                        attributes: {
+                            speed: 1
+                        },
+                        slot: "mid",
+                        passiveSkill: Templates.PassiveSkills.overdrive
+                    };
+                    Items.afterBurner2 = {
+                        type: "afterBurner2",
+                        displayName: "Afterburner 2",
+                        icon: "img\/items\/blueThing.png",
+                        techLevel: 2,
+                        cost: 200,
+                        attributes: {
+                            speed: 2
+                        },
+                        slot: "mid"
+                    };
+                    Items.afterBurner3 = {
+                        type: "afterBurner3",
+                        displayName: "Afterburner 3",
+                        icon: "img\/items\/blueThing.png",
+                        techLevel: 3,
+                        cost: 300,
+                        attributes: {
+                            maxActionPoints: 1,
+                            speed: 3
+                        },
+                        slot: "mid"
+                    };
+                    Items.shieldPlating1 = {
+                        type: "shieldPlating1",
+                        displayName: "Shield Plating 1",
+                        icon: "img\/items\/armor1.png",
+                        techLevel: 1,
+                        cost: 100,
+                        attributes: {
+                            defence: 1
+                        },
+                        slot: "low"
+                    };
+                    Items.shieldPlating2 = {
+                        type: "shieldPlating2",
+                        displayName: "Shield Plating 2",
+                        icon: "img\/items\/armor1.png",
+                        techLevel: 2,
+                        cost: 200,
+                        attributes: {
+                            defence: 2
+                        },
+                        slot: "low"
+                    };
+                    Items.shieldPlating3 = {
+                        type: "shieldPlating3",
+                        displayName: "Shield Plating 3",
+                        icon: "img\/items\/armor1.png",
+                        techLevel: 3,
+                        cost: 300,
+                        attributes: {
+                            defence: 3,
+                            speed: -1
+                        },
+                        slot: "low",
+                        ability: Templates.Abilities.guardColumn
+                    };
+                })(Items = Templates.Items || (Templates.Items = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/istatuseffectattributeadjustment.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/istatuseffectattributes.d.ts"/>
+/// <reference path="../../../src/templateinterfaces/istatuseffecttemplate.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var StatusEffects;
+                (function (StatusEffects) {
+                    StatusEffects.test = {
+                        type: "test",
+                        displayName: "test",
+                        attributes: {
+                            attack: {
+                                flat: 9
+                            },
+                            defence: {
+                                flat: 9
+                            },
+                            intelligence: {
+                                flat: -9
+                            },
+                            speed: {
+                                flat: 9
+                            }
+                        },
+                        passiveSkills: [Templates.PassiveSkills.poisoned]
+                    };
+                })(StatusEffects = Templates.StatusEffects || (Templates.StatusEffects = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/isubemblemtemplate.d.ts"/>
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Templates;
+            (function (Templates) {
+                var SubEmblems;
+                (function (SubEmblems) {
+                    SubEmblems.emblem0 = {
+                        type: "emblem0",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem0.png"
+                    };
+                    SubEmblems.emblem33 = {
+                        type: "emblem33",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem33.png"
+                    };
+                    SubEmblems.emblem34 = {
+                        type: "emblem34",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem34.png"
+                    };
+                    SubEmblems.emblem35 = {
+                        type: "emblem35",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem35.png"
+                    };
+                    SubEmblems.emblem36 = {
+                        type: "emblem36",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem36.png"
+                    };
+                    SubEmblems.emblem37 = {
+                        type: "emblem37",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem37.png"
+                    };
+                    SubEmblems.emblem38 = {
+                        type: "emblem38",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem38.png"
+                    };
+                    SubEmblems.emblem39 = {
+                        type: "emblem39",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem39.png"
+                    };
+                    SubEmblems.emblem40 = {
+                        type: "emblem40",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem40.png"
+                    };
+                    SubEmblems.emblem41 = {
+                        type: "emblem41",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem41.png"
+                    };
+                    SubEmblems.emblem42 = {
+                        type: "emblem42",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem42.png"
+                    };
+                    SubEmblems.emblem43 = {
+                        type: "emblem43",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem43.png"
+                    };
+                    SubEmblems.emblem44 = {
+                        type: "emblem44",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem44.png"
+                    };
+                    SubEmblems.emblem45 = {
+                        type: "emblem45",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem45.png"
+                    };
+                    SubEmblems.emblem46 = {
+                        type: "emblem46",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem46.png"
+                    };
+                    SubEmblems.emblem47 = {
+                        type: "emblem47",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem47.png"
+                    };
+                    SubEmblems.emblem48 = {
+                        type: "emblem48",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem48.png"
+                    };
+                    SubEmblems.emblem49 = {
+                        type: "emblem49",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem49.png"
+                    };
+                    SubEmblems.emblem50 = {
+                        type: "emblem50",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem50.png"
+                    };
+                    SubEmblems.emblem51 = {
+                        type: "emblem51",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem51.png"
+                    };
+                    SubEmblems.emblem52 = {
+                        type: "emblem52",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem52.png"
+                    };
+                    SubEmblems.emblem53 = {
+                        type: "emblem53",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem53.png"
+                    };
+                    SubEmblems.emblem54 = {
+                        type: "emblem54",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem54.png"
+                    };
+                    SubEmblems.emblem55 = {
+                        type: "emblem55",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem55.png"
+                    };
+                    SubEmblems.emblem56 = {
+                        type: "emblem56",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem56.png"
+                    };
+                    SubEmblems.emblem57 = {
+                        type: "emblem57",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem57.png"
+                    };
+                    SubEmblems.emblem58 = {
+                        type: "emblem58",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem58.png"
+                    };
+                    SubEmblems.emblem59 = {
+                        type: "emblem59",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem59.png"
+                    };
+                    SubEmblems.emblem61 = {
+                        type: "emblem61",
+                        position: "both",
+                        foregroundOnly: true,
+                        imageSrc: "emblem61.png"
+                    };
+                })(SubEmblems = Templates.SubEmblems || (Templates.SubEmblems = {}));
+            })(Templates = DefaultModule.Templates || (DefaultModule.Templates = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iunitarchetype.d.ts"/>
 var Rance;
 (function (Rance) {
@@ -21050,9 +21022,9 @@ var Rance;
 /// <reference path="../../../src/templateinterfaces/iunittemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/ispritetemplate.d.ts"/>
 /// <reference path="abilities.ts"/>
-/// <reference path="../../../modules/default/templates/passiveskills.ts" />
-/// <reference path="../../../modules/default/templates/unitfamilies.ts" />
-/// <reference path="../../../modules/default/templates/unitarchetypes.ts" />
+/// <reference path="passiveskills.ts" />
+/// <reference path="unitfamilies.ts" />
+/// <reference path="unitarchetypes.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -22257,10 +22229,11 @@ var Rance;
 var Rance;
 (function (Rance) {
     function buildTemplateIndexes() {
-        TemplateIndexes.distributablesByDistributionGroup = setDistributablesByDistributionGroup();
+        TemplateIndexes.distributablesByDistributionGroup = getDistributablesByDistributionGroup();
+        TemplateIndexes.itemsByTechLevel = getItemsByTechLevel();
     }
     Rance.buildTemplateIndexes = buildTemplateIndexes;
-    function setDistributablesByDistributionGroup() {
+    function getDistributablesByDistributionGroup() {
         var result = {};
         function putInGroups(distributables, distributableType) {
             for (var prop in distributables) {
@@ -22281,6 +22254,17 @@ var Rance;
         putInGroups(app.moduleData.Templates.UnitFamilies, "unitFamilies");
         putInGroups(app.moduleData.Templates.Resources, "resources");
         return result;
+    }
+    function getItemsByTechLevel() {
+        var itemsByTechLevel = {};
+        for (var itemName in app.moduleData.Templates.Items) {
+            var item = app.moduleData.Templates.Items[itemName];
+            if (!itemsByTechLevel[item.techLevel]) {
+                itemsByTechLevel[item.techLevel] = [];
+            }
+            itemsByTechLevel[item.techLevel].push(item);
+        }
+        return itemsByTechLevel;
     }
     var TemplateIndexes;
     (function (TemplateIndexes) {
@@ -22353,7 +22337,6 @@ var Rance;
 /// <reference path="galaxymap.ts"/>
 /// <reference path="renderer.ts"/>
 /// <reference path="game.ts"/>
-/// <reference path="itemgenerator.ts" />
 /// <reference path="moduledata.ts"/>
 /// <reference path="moduleloader.ts" />
 /// <reference path="../modules/default/defaultmodule.ts" />
@@ -22397,7 +22380,6 @@ var Rance;
             Rance.loadOptions();
             Rance.setAllDynamicTemplateProperties();
             Rance.buildTemplateIndexes();
-            this.itemGenerator = new Rance.ItemGenerator();
             this.initUI();
             this.setInitialScene();
             if (this.reactUI.currentScene === "galaxyMap") {

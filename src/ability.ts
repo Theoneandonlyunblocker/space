@@ -1,5 +1,6 @@
-/// <reference path="../modules/default/templates/effects.ts" />
-/// <reference path="../modules/default/templates/battlesfx.ts" />
+/// <reference path="templateinterfaces/iabilitytemplate.d.ts" />
+/// <reference path="templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="battle.ts"/>
 /// <reference path="unit.ts"/>
 /// <reference path="targeting.ts"/>

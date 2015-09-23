@@ -1,27 +1,20 @@
 /// <reference path="../../lib/pixi.d.ts" />
 /// <reference path="../../lib/tween.js.d.ts" />
 /// <reference path="../../lib/react.d.ts" />
-/// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
-/// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
-/// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../templateinterfaces/idistributable.d.ts" />
 /// <reference path="../templateinterfaces/ibuildingtemplate.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
-/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
-/// <reference path="../templateinterfaces/ipassiveskilltemplate.d.ts" />
-/// <reference path="../templateinterfaces/ibattleprepeffect.d.ts" />
-/// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
-/// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
-/// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
 /// <reference path="../../lib/husl.d.ts" />
 /// <reference path="../../lib/rng.d.ts" />
+/// <reference path="../templateinterfaces/isubemblemtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iitemtemplate.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplate.d.ts" />
 /// <reference path="../templateinterfaces/iattitudemodifiertemplate.d.ts" />
 /// <reference path="../../lib/voronoi.d.ts" />
 /// <reference path="../../lib/quadtree.d.ts" />
 /// <reference path="../templateinterfaces/inotificationtemplate.d.ts" />
-/// <reference path="../templateinterfaces/istatuseffectattributeadjustment.d.ts" />
-/// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
+/// <reference path="../templateinterfaces/iabilitytemplateeffect.d.ts" />
+/// <reference path="../templateinterfaces/ibattlesfxtemplate.d.ts" />
 /// <reference path="../templateinterfaces/istatuseffecttemplate.d.ts" />
 /// <reference path="../templateinterfaces/iunittemplate.d.ts" />
 /// <reference path="../templateinterfaces/imapgentemplate.d.ts" />
@@ -30,7 +23,14 @@
 /// <reference path="../../lib/offset.d.ts" />
 /// <reference path="../templateinterfaces/iunitfamily.d.ts" />
 /// <reference path="../templateinterfaces/mapgenoptions.d.ts" />
+/// <reference path="../templateinterfaces/ieffecttemplate.d.ts" />
+/// <reference path="../templateinterfaces/sfxparams.d.ts" />
 /// <reference path="../templateinterfaces/idefencebuildingtemplate.d.ts" />
+/// <reference path="../templateinterfaces/ipassiveskilltemplate.d.ts" />
+/// <reference path="../templateinterfaces/ibattleprepeffect.d.ts" />
+/// <reference path="../templateinterfaces/iturnstarteffect.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffectattributeadjustment.d.ts" />
+/// <reference path="../templateinterfaces/istatuseffectattributes.d.ts" />
 /// <reference path="../templateinterfaces/iunitarchetype.d.ts" />
 /// <reference path="../templateinterfaces/ispritetemplate.d.ts" />
 /// <reference path="../templateinterfaces/iobjectivetemplate.d.ts" />
@@ -575,66 +575,6 @@ declare module Rance {
     function onDOMLoaded(onLoaded: () => void): void;
 }
 declare module Rance {
-    interface TargetingFunction {
-        (units: Unit[][], target: number[]): Unit[];
-    }
-    var targetSingle: TargetingFunction;
-    var targetAll: TargetingFunction;
-    var targetRow: TargetingFunction;
-    var targetColumn: TargetingFunction;
-    var targetColumnNeighbors: TargetingFunction;
-    var targetNeighbors: TargetingFunction;
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Effects {
-                    var singleTargetDamage: Rance.Templates.IEffectTemplate;
-                    var closeAttack: Rance.Templates.IEffectTemplate;
-                    var wholeRowAttack: Rance.Templates.IEffectTemplate;
-                    var bombAttack: Rance.Templates.IEffectTemplate;
-                    var guardColumn: Rance.Templates.IEffectTemplate;
-                    var receiveCounterAttack: Rance.Templates.IEffectTemplate;
-                    var increaseCaptureChance: Rance.Templates.IEffectTemplate;
-                    var buffTest: Rance.Templates.IEffectTemplate;
-                    var healTarget: Rance.Templates.IEffectTemplate;
-                    var healSelf: Rance.Templates.IEffectTemplate;
-                    var standBy: Rance.Templates.IEffectTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
-    module BattleSFXFunctions {
-        function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
-        function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
-    }
-}
-declare module Rance {
-    module BattleSFXFunctions {
-        function rocketAttack(props: Templates.SFXParams): HTMLCanvasElement;
-    }
-}
-declare module Rance {
-    module BattleSFXFunctions {
-        function guard(props: Templates.SFXParams): HTMLCanvasElement;
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module BattleSFX {
-                    var rocketAttack: Rance.Templates.IBattleSFXTemplate;
-                    var guard: Rance.Templates.IBattleSFXTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
     module Modules {
         module DefaultModule {
             module Templates {
@@ -682,78 +622,6 @@ declare module Rance {
         upgrade(): void;
         setController(newController: Player): void;
         serialize(): any;
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Abilities {
-                    var rangedAttack: Rance.Templates.IAbilityTemplate;
-                    var closeAttack: Rance.Templates.IAbilityTemplate;
-                    var wholeRowAttack: Rance.Templates.IAbilityTemplate;
-                    var bombAttack: Rance.Templates.IAbilityTemplate;
-                    var guardColumn: Rance.Templates.IAbilityTemplate;
-                    var boardingHook: Rance.Templates.IAbilityTemplate;
-                    var debugAbility: Rance.Templates.IAbilityTemplate;
-                    var ranceAttack: Rance.Templates.IAbilityTemplate;
-                    var standBy: Rance.Templates.IAbilityTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module PassiveSkills {
-                    var autoHeal: Rance.Templates.IPassiveSkillTemplate;
-                    var poisoned: Rance.Templates.IPassiveSkillTemplate;
-                    var overdrive: Rance.Templates.IPassiveSkillTemplate;
-                    var initialGuard: Rance.Templates.IPassiveSkillTemplate;
-                    var warpJammer: Rance.Templates.IPassiveSkillTemplate;
-                    var medic: Rance.Templates.IPassiveSkillTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module Items {
-                    var bombLauncher1: Rance.Templates.IItemTemplate;
-                    var bombLauncher2: Rance.Templates.IItemTemplate;
-                    var bombLauncher3: Rance.Templates.IItemTemplate;
-                    var afterBurner1: Rance.Templates.IItemTemplate;
-                    var afterBurner2: Rance.Templates.IItemTemplate;
-                    var afterBurner3: Rance.Templates.IItemTemplate;
-                    var shieldPlating1: Rance.Templates.IItemTemplate;
-                    var shieldPlating2: Rance.Templates.IItemTemplate;
-                    var shieldPlating3: Rance.Templates.IItemTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
-    class Item {
-        id: number;
-        template: Templates.IItemTemplate;
-        unit: Unit;
-        constructor(template: Templates.IItemTemplate, id?: number);
-        serialize(): any;
-    }
-}
-declare module Rance {
-    class ItemGenerator {
-        itemsByTechLevel: {
-            [techLevel: number]: Templates.IItemTemplate[];
-        };
-        constructor();
-        indexItemsByTechLevel(): void;
     }
 }
 declare module Rance {
@@ -948,45 +816,6 @@ declare module Rance {
     }
 }
 declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module SubEmblems {
-                    var emblem0: Rance.Templates.ISubEmblemTemplate;
-                    var emblem33: Rance.Templates.ISubEmblemTemplate;
-                    var emblem34: Rance.Templates.ISubEmblemTemplate;
-                    var emblem35: Rance.Templates.ISubEmblemTemplate;
-                    var emblem36: Rance.Templates.ISubEmblemTemplate;
-                    var emblem37: Rance.Templates.ISubEmblemTemplate;
-                    var emblem38: Rance.Templates.ISubEmblemTemplate;
-                    var emblem39: Rance.Templates.ISubEmblemTemplate;
-                    var emblem40: Rance.Templates.ISubEmblemTemplate;
-                    var emblem41: Rance.Templates.ISubEmblemTemplate;
-                    var emblem42: Rance.Templates.ISubEmblemTemplate;
-                    var emblem43: Rance.Templates.ISubEmblemTemplate;
-                    var emblem44: Rance.Templates.ISubEmblemTemplate;
-                    var emblem45: Rance.Templates.ISubEmblemTemplate;
-                    var emblem46: Rance.Templates.ISubEmblemTemplate;
-                    var emblem47: Rance.Templates.ISubEmblemTemplate;
-                    var emblem48: Rance.Templates.ISubEmblemTemplate;
-                    var emblem49: Rance.Templates.ISubEmblemTemplate;
-                    var emblem50: Rance.Templates.ISubEmblemTemplate;
-                    var emblem51: Rance.Templates.ISubEmblemTemplate;
-                    var emblem52: Rance.Templates.ISubEmblemTemplate;
-                    var emblem53: Rance.Templates.ISubEmblemTemplate;
-                    var emblem54: Rance.Templates.ISubEmblemTemplate;
-                    var emblem55: Rance.Templates.ISubEmblemTemplate;
-                    var emblem56: Rance.Templates.ISubEmblemTemplate;
-                    var emblem57: Rance.Templates.ISubEmblemTemplate;
-                    var emblem58: Rance.Templates.ISubEmblemTemplate;
-                    var emblem59: Rance.Templates.ISubEmblemTemplate;
-                    var emblem61: Rance.Templates.ISubEmblemTemplate;
-                }
-            }
-        }
-    }
-}
-declare module Rance {
     interface IRange {
         min?: number;
         max?: number;
@@ -1087,6 +916,15 @@ declare module Rance {
         setBackgroundEmblem(emblem: Emblem): void;
         setCustomImage(imageSrc: string): void;
         draw(): HTMLCanvasElement;
+        serialize(): any;
+    }
+}
+declare module Rance {
+    class Item {
+        id: number;
+        template: Templates.IItemTemplate;
+        unit: Unit;
+        constructor(template: Templates.IItemTemplate, id?: number);
         serialize(): any;
     }
 }
@@ -1199,30 +1037,6 @@ declare module Rance {
         humanFormationIsValid(): boolean;
         forEachShipInFormation(formation: Unit[][], operator: (unit: Unit) => any): void;
         makeBattle(): Battle;
-    }
-}
-declare module Rance {
-    interface IDiplomacyEvaluation {
-        currentTurn: number;
-        currentStatus: DiplomaticState;
-        neighborStars: number;
-        opinion: number;
-    }
-    enum AttitudeModifierFamily {
-        geographic = 0,
-        history = 1,
-        current = 2,
-    }
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module AttitudeModifiers {
-                    var neighborStars: Rance.Templates.IAttitudeModifierTemplate;
-                    var atWar: Rance.Templates.IAttitudeModifierTemplate;
-                    var declaredWar: Rance.Templates.IAttitudeModifierTemplate;
-                }
-            }
-        }
     }
 }
 declare module Rance {
@@ -1910,6 +1724,17 @@ declare module Rance {
     }
 }
 declare module Rance {
+    interface TargetingFunction {
+        (units: Unit[][], target: number[]): Unit[];
+    }
+    var targetSingle: TargetingFunction;
+    var targetAll: TargetingFunction;
+    var targetRow: TargetingFunction;
+    var targetColumn: TargetingFunction;
+    var targetColumnNeighbors: TargetingFunction;
+    var targetNeighbors: TargetingFunction;
+}
+declare module Rance {
     interface IAbilityUseDataEffect {
         effects: {
             (): void;
@@ -1945,17 +1770,6 @@ declare module Rance {
     function getTargetsForAllAbilities(battle: Battle, user: Unit): {
         [id: number]: Templates.IAbilityTemplate[];
     };
-}
-declare module Rance {
-    module Modules {
-        module DefaultModule {
-            module Templates {
-                module StatusEffects {
-                    var test: Rance.Templates.IStatusEffectTemplate;
-                }
-            }
-        }
-    }
 }
 declare module Rance {
     class StatusEffect {
@@ -2940,6 +2754,98 @@ declare module Rance {
     }
 }
 declare module Rance {
+    module BattleSFXFunctions {
+        function makeSprite(imgSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
+        function makeVideo(videoSrc: string, props: Templates.SFXParams): HTMLCanvasElement;
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Effects {
+                    var singleTargetDamage: Rance.Templates.IEffectTemplate;
+                    var closeAttack: Rance.Templates.IEffectTemplate;
+                    var wholeRowAttack: Rance.Templates.IEffectTemplate;
+                    var bombAttack: Rance.Templates.IEffectTemplate;
+                    var guardColumn: Rance.Templates.IEffectTemplate;
+                    var receiveCounterAttack: Rance.Templates.IEffectTemplate;
+                    var increaseCaptureChance: Rance.Templates.IEffectTemplate;
+                    var buffTest: Rance.Templates.IEffectTemplate;
+                    var healTarget: Rance.Templates.IEffectTemplate;
+                    var healSelf: Rance.Templates.IEffectTemplate;
+                    var standBy: Rance.Templates.IEffectTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module BattleSFXFunctions {
+        function rocketAttack(props: Templates.SFXParams): HTMLCanvasElement;
+    }
+}
+declare module Rance {
+    module BattleSFXFunctions {
+        function guard(props: Templates.SFXParams): HTMLCanvasElement;
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module BattleSFX {
+                    var rocketAttack: Rance.Templates.IBattleSFXTemplate;
+                    var guard: Rance.Templates.IBattleSFXTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Abilities {
+                    var rangedAttack: Rance.Templates.IAbilityTemplate;
+                    var closeAttack: Rance.Templates.IAbilityTemplate;
+                    var wholeRowAttack: Rance.Templates.IAbilityTemplate;
+                    var bombAttack: Rance.Templates.IAbilityTemplate;
+                    var guardColumn: Rance.Templates.IAbilityTemplate;
+                    var boardingHook: Rance.Templates.IAbilityTemplate;
+                    var debugAbility: Rance.Templates.IAbilityTemplate;
+                    var ranceAttack: Rance.Templates.IAbilityTemplate;
+                    var standBy: Rance.Templates.IAbilityTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    interface IDiplomacyEvaluation {
+        currentTurn: number;
+        currentStatus: DiplomaticState;
+        neighborStars: number;
+        opinion: number;
+    }
+    enum AttitudeModifierFamily {
+        geographic = 0,
+        history = 1,
+        current = 2,
+    }
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module AttitudeModifiers {
+                    var neighborStars: Rance.Templates.IAttitudeModifierTemplate;
+                    var atWar: Rance.Templates.IAttitudeModifierTemplate;
+                    var declaredWar: Rance.Templates.IAttitudeModifierTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
     module Modules {
         module DefaultModule {
             module Templates {
@@ -2952,6 +2858,91 @@ declare module Rance {
                     var deepSpaceRadar: Rance.Templates.IBuildingTemplate;
                     var itemManufactory: Rance.Templates.IBuildingTemplate;
                     var resourceMine: Rance.Templates.IBuildingTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module PassiveSkills {
+                    var autoHeal: Rance.Templates.IPassiveSkillTemplate;
+                    var poisoned: Rance.Templates.IPassiveSkillTemplate;
+                    var overdrive: Rance.Templates.IPassiveSkillTemplate;
+                    var initialGuard: Rance.Templates.IPassiveSkillTemplate;
+                    var warpJammer: Rance.Templates.IPassiveSkillTemplate;
+                    var medic: Rance.Templates.IPassiveSkillTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module Items {
+                    var bombLauncher1: Rance.Templates.IItemTemplate;
+                    var bombLauncher2: Rance.Templates.IItemTemplate;
+                    var bombLauncher3: Rance.Templates.IItemTemplate;
+                    var afterBurner1: Rance.Templates.IItemTemplate;
+                    var afterBurner2: Rance.Templates.IItemTemplate;
+                    var afterBurner3: Rance.Templates.IItemTemplate;
+                    var shieldPlating1: Rance.Templates.IItemTemplate;
+                    var shieldPlating2: Rance.Templates.IItemTemplate;
+                    var shieldPlating3: Rance.Templates.IItemTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module StatusEffects {
+                    var test: Rance.Templates.IStatusEffectTemplate;
+                }
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Templates {
+                module SubEmblems {
+                    var emblem0: Rance.Templates.ISubEmblemTemplate;
+                    var emblem33: Rance.Templates.ISubEmblemTemplate;
+                    var emblem34: Rance.Templates.ISubEmblemTemplate;
+                    var emblem35: Rance.Templates.ISubEmblemTemplate;
+                    var emblem36: Rance.Templates.ISubEmblemTemplate;
+                    var emblem37: Rance.Templates.ISubEmblemTemplate;
+                    var emblem38: Rance.Templates.ISubEmblemTemplate;
+                    var emblem39: Rance.Templates.ISubEmblemTemplate;
+                    var emblem40: Rance.Templates.ISubEmblemTemplate;
+                    var emblem41: Rance.Templates.ISubEmblemTemplate;
+                    var emblem42: Rance.Templates.ISubEmblemTemplate;
+                    var emblem43: Rance.Templates.ISubEmblemTemplate;
+                    var emblem44: Rance.Templates.ISubEmblemTemplate;
+                    var emblem45: Rance.Templates.ISubEmblemTemplate;
+                    var emblem46: Rance.Templates.ISubEmblemTemplate;
+                    var emblem47: Rance.Templates.ISubEmblemTemplate;
+                    var emblem48: Rance.Templates.ISubEmblemTemplate;
+                    var emblem49: Rance.Templates.ISubEmblemTemplate;
+                    var emblem50: Rance.Templates.ISubEmblemTemplate;
+                    var emblem51: Rance.Templates.ISubEmblemTemplate;
+                    var emblem52: Rance.Templates.ISubEmblemTemplate;
+                    var emblem53: Rance.Templates.ISubEmblemTemplate;
+                    var emblem54: Rance.Templates.ISubEmblemTemplate;
+                    var emblem55: Rance.Templates.ISubEmblemTemplate;
+                    var emblem56: Rance.Templates.ISubEmblemTemplate;
+                    var emblem57: Rance.Templates.ISubEmblemTemplate;
+                    var emblem58: Rance.Templates.ISubEmblemTemplate;
+                    var emblem59: Rance.Templates.ISubEmblemTemplate;
+                    var emblem61: Rance.Templates.ISubEmblemTemplate;
                 }
             }
         }
@@ -3146,6 +3137,9 @@ declare module Rance {
                 resources: Templates.IResourceTemplate[];
             };
         };
+        var itemsByTechLevel: {
+            [techLevel: number]: Templates.IItemTemplate[];
+        };
     }
 }
 declare module Rance {
@@ -3198,7 +3192,6 @@ declare module Rance {
         images: {
             [id: string]: HTMLImageElement;
         };
-        itemGenerator: ItemGenerator;
         moduleData: ModuleData;
         moduleLoader: ModuleLoader;
         constructor();

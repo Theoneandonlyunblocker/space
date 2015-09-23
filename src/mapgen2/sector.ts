@@ -1,5 +1,4 @@
-/// <reference path="../../modules/default/templates/resources.ts" />
-
+/// <reference path="../templateinterfaces/iresourcetemplate.d.ts" />
 /// <reference path="../star.ts" />
 
 module Rance

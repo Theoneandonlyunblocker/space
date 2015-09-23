@@ -1,5 +1,3 @@
-/// <reference path="../../modules/default/templates/attitudemodifiers.ts" />
-
 /// <reference path="../game.ts"/>
 /// <reference path="../player.ts"/>
 /// <reference path="../diplomacystatus.ts"/>
