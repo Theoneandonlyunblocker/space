@@ -18,7 +18,7 @@ module Rance
         var battle: Battle = this.props.battle;
         var evaluation = this.lastEvaluation
 
-        var evaluationPercentage = ((1 - evaluation) * 50);
+        var evaluationPercentage = 50 + evaluation * 50;
 
         return(
           React.DOM.div(
@@ -53,7 +53,7 @@ module Rance
                   className: "battle-score-bar-value battle-score-bar-side1",
                   style:
                   {
-                    width: "" + (100 - evaluationPercentage) + "%",
+                    width: "" + evaluationPercentage + "%",
                     backgroundColor: "#" + hexToString(battle.side1Player.color),
                     borderColor: "#" + hexToString(battle.side1Player.secondaryColor)
                   }
@@ -63,7 +63,7 @@ module Rance
                   className: "battle-score-bar-value battle-score-bar-side2",
                   style:
                   {
-                    width: "" + evaluationPercentage + "%",
+                    width: "" + (100 - evaluationPercentage) + "%",
                     backgroundColor: "#" + hexToString(battle.side2Player.color),
                     borderColor: "#" + hexToString(battle.side2Player.secondaryColor)
                   }

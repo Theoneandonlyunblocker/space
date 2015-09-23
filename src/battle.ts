@@ -422,8 +422,8 @@ module Rance
     {
       var evaluation = this.getEvaluation();
 
-      if (evaluation < 0) return this.side1Player;
-      else if (evaluation > 0) return this.side2Player;
+      if (evaluation > 0) return this.side1Player;
+      else if (evaluation < 0) return this.side2Player;
       else return null;
     }
     getTotalHealthForColumn(position: number)
@@ -467,12 +467,12 @@ module Rance
 
       ["side1", "side2"].forEach(function(side)
       {
+        // positive * sign === good, negative * sign === bad
         var sign = side === "side1" ? 1 : -1; // positive = side1 advantage
         var currentHealth = self.getTotalHealthForSide(side).current;
         if (currentHealth <= 0)
         {
-          evaluation += 999 * sign;
-          return evaluation;
+          return -999 * sign;
         }
         // how much health remains from strating health 0.0-1.0
         var currentHealthFactor = currentHealth / self.startHealth[side];
@@ -481,7 +481,7 @@ module Rance
         {
           if (self.unitsBySide[side][i].currentHealth <= 0)
           {
-            evaluation += 0.2 * sign;
+            evaluation -= 0.2 * sign;
           }
         }
 

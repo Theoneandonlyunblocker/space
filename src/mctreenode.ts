@@ -141,11 +141,11 @@ module Rance
 
       if (this.sideId === "side1")
       {
-        if (result < 0) this.wins++;
+        if (result > 0) this.wins++;
       }
       if (this.sideId === "side2")
       {
-        if (result > 0) this.wins++;
+        if (result < 0) this.wins++;
       }
 
       this.averageScore = this.totalScore / this.visits;
