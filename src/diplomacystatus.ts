@@ -116,7 +116,7 @@ module Rance
 
     meetPlayer(player: Player)
     {
-      if (this.metPlayers[player.id]) return;
+      if (this.metPlayers[player.id] || player === this.player) return;
       else
       {
         this.metPlayers[player.id] = player;

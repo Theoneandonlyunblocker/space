@@ -865,6 +865,51 @@ module Rance
 
       return factor;
     }
+    getPresentPlayersByVisibility()
+    {
+      var byVisibilityAndId:
+      {
+        visible:
+        {
+          [playerId: number]: Player;
+        }
+        detected:
+        {
+          [playerId: number]: Player;
+        }
+      } =
+      {
+        visible: {},
+        detected: {}
+      }
+
+      var allPlayers: Player[] = [];
+      byVisibilityAndId.visible[this.owner.id] = this.owner;
+      var secondaryController = this.getSecondaryController();
+      if (secondaryController)
+      {
+        byVisibilityAndId.visible[secondaryController.id] = secondaryController;
+      }
+
+      for (var playerId in this.fleets)
+      {
+        var fleets = this.fleets[playerId];
+        for (var i = 0; i < fleets.length; i++)
+        {
+          var fleetPlayer = fleets[i].player;
+          if (fleets[i].isStealthy)
+          {
+            byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
+          }
+          else
+          {
+            byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
+          }
+        }
+      }
+
+      return byVisibilityAndId;
+    }
     getSeed()
     {
       if (!this.seed)

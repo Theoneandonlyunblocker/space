@@ -735,6 +735,14 @@ declare module Rance {
         getDetectionRange(): number;
         getDetection(): Star[];
         getHealingFactor(player: Player): number;
+        getPresentPlayersByVisibility(): {
+            visible: {
+                [playerId: number]: Player;
+            };
+            detected: {
+                [playerId: number]: Player;
+            };
+        };
         getSeed(): string;
         seedBuildableItems(): void;
         getItemManufactoryLevel(): any;
@@ -1443,9 +1451,10 @@ declare module Rance {
             objectives: Objective[];
             requests: any[];
             constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI);
+            clearObjectives(): void;
             setAllDiplomaticObjectives(): void;
             setAllMoveObjectives(): void;
-            setAllobjectivesWithTemplateProperty(propKey: string): void;
+            setAllObjectivesWithTemplateProperty(propKey: string): void;
             getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): Objective[];
             setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): void;
             getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean): {

@@ -7413,6 +7413,31 @@ var Rance;
             }
             return factor;
         };
+        Star.prototype.getPresentPlayersByVisibility = function () {
+            var byVisibilityAndId = {
+                visible: {},
+                detected: {}
+            };
+            var allPlayers = [];
+            byVisibilityAndId.visible[this.owner.id] = this.owner;
+            var secondaryController = this.getSecondaryController();
+            if (secondaryController) {
+                byVisibilityAndId.visible[secondaryController.id] = secondaryController;
+            }
+            for (var playerId in this.fleets) {
+                var fleets = this.fleets[playerId];
+                for (var i = 0; i < fleets.length; i++) {
+                    var fleetPlayer = fleets[i].player;
+                    if (fleets[i].isStealthy) {
+                        byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
+                    }
+                    else {
+                        byVisibilityAndId.visible[fleetPlayer.id] = fleetPlayer;
+                    }
+                }
+            }
+            return byVisibilityAndId;
+        };
         Star.prototype.getSeed = function () {
             if (!this.seed) {
                 var bgString = "";
@@ -9230,6 +9255,7 @@ var Rance;
         AttitudeModifier.prototype.refresh = function (newModifier) {
             this.startTurn = newModifier.startTurn;
             this.endTurn = newModifier.endTurn;
+            this.strength = newModifier.strength;
         };
         AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
             if (currentTurn === void 0) { currentTurn = this.currentTurn; }
@@ -9334,7 +9360,9 @@ var Rance;
             return Math.round(baseOpinion + modifierOpinion);
         };
         DiplomacyStatus.prototype.meetPlayer = function (player) {
-            if (this.metPlayers[player.id])
+            if (player.isIndependent || this.player.isIndependent)
+                debugger;
+            if (this.metPlayers[player.id] || player === this.player)
                 return;
             else {
                 this.metPlayers[player.id] = player;
@@ -10354,7 +10382,7 @@ var Rance;
                     var desirability = this.evaluateStarDesirability(star);
                     var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
                     var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-                    var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
+                    var ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
                     evaluationByStar[star.id] =
                         {
                             star: star,
@@ -10369,7 +10397,7 @@ var Rance;
                 var scores = [];
                 for (var starId in evaluations) {
                     var evaluation = evaluations[starId];
-                    var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
+                    var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
                     var score = evaluation.desirability * easeOfCapturing;
                     if (evaluation.star.getSecondaryController() === this.player) {
                         score *= 1.5;
@@ -10864,32 +10892,22 @@ var Rance;
                 this.player = mapEvaluator.player;
                 this.grandStrategyAI = grandStrategyAI;
             }
-            ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
-                var objectiveTemplates = app.moduleData.Templates.Objectives;
+            ObjectivesAI.prototype.clearObjectives = function () {
                 this.objectives = [];
-                for (var key in objectiveTemplates) {
-                    var template = objectiveTemplates[key];
-                    if (template.diplomacyRoutineFN) {
-                        this.setObjectivesOfType(objectiveTemplates[key]);
-                    }
-                }
+            };
+            ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
+                this.clearObjectives();
+                this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
             };
             ObjectivesAI.prototype.setAllMoveObjectives = function () {
-                var objectiveTemplates = app.moduleData.Templates.Objectives;
-                this.objectives = [];
-                for (var key in objectiveTemplates) {
-                    var template = objectiveTemplates[key];
-                    if (template.moveRoutineFN) {
-                        this.setObjectivesOfType(objectiveTemplates[key]);
-                    }
-                }
+                this.clearObjectives();
+                this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
             };
-            ObjectivesAI.prototype.setAllobjectivesWithTemplateProperty = function (propKey) {
+            ObjectivesAI.prototype.setAllObjectivesWithTemplateProperty = function (propKey) {
                 var objectiveTemplates = app.moduleData.Templates.Objectives;
-                this.objectives = [];
                 for (var key in objectiveTemplates) {
                     var template = objectiveTemplates[key];
-                    if (template.diplomacyRoutineFN) {
+                    if (template[propKey]) {
                         this.setObjectivesOfType(objectiveTemplates[key]);
                     }
                 }
@@ -11771,7 +11789,7 @@ var Rance;
                 var star = allDetected[i];
                 if (!this.detectedStars[star.id]) {
                     this.detectedStars[star.id] = star;
-                    if (!visibilityHasChanged && !detectionHasChanged && !previousDetectedStars[star.id]) {
+                    if (!detectionHasChanged && !previousDetectedStars[star.id]) {
                         detectionHasChanged = true;
                     }
                 }
@@ -11785,10 +11803,31 @@ var Rance;
                 detectionHasChanged = (Object.keys(this.detectedStars).length !==
                     Object.keys(previousDetectedStars).length);
             }
-            if (!this.isAI && visibilityHasChanged) {
+            var hasUnmetPlayers = Object.keys(this.diplomacyStatus.metPlayers).length < app.game.playerOrder.length;
+            if (hasUnmetPlayers) {
+                for (var i = 0; i < allVisible.length; i++) {
+                    var presentPlayersByVisibility = allVisible[i].getPresentPlayersByVisibility();
+                    for (var playerId in presentPlayersByVisibility.visible) {
+                        var player = presentPlayersByVisibility.visible[playerId];
+                        if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
+                            this.diplomacyStatus.meetPlayer(player);
+                        }
+                    }
+                }
+                for (var i = 0; i < allDetected.length; i++) {
+                    var presentPlayersByVisibility = allDetected[i].getPresentPlayersByVisibility();
+                    for (var playerId in presentPlayersByVisibility.detected) {
+                        var player = presentPlayersByVisibility.detected[playerId];
+                        if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
+                            this.diplomacyStatus.meetPlayer(player);
+                        }
+                    }
+                }
+            }
+            if (visibilityHasChanged && !this.isAI) {
                 Rance.eventManager.dispatchEvent("renderMap");
             }
-            else if (!this.isAI && detectionHasChanged) {
+            if (detectionHasChanged && !this.isAI) {
                 Rance.eventManager.dispatchEvent("renderLayer", "fleets");
             }
         };
@@ -11799,14 +11838,9 @@ var Rance;
             if (this.visionIsDirty)
                 this.updateVisibleStars();
             var visible = [];
-            var metPlayers = this.diplomacyStatus.metPlayers;
             for (var id in this.visibleStars) {
                 var star = this.visibleStars[id];
                 visible.push(star);
-                if (!star.owner.isIndependent && star.owner !== this
-                    && !metPlayers[star.owner.id]) {
-                    this.diplomacyStatus.meetPlayer(star.owner);
-                }
             }
             return visible;
         };

@@ -386,7 +386,7 @@ module Rance
         if (!this.detectedStars[star.id])
         {
           this.detectedStars[star.id] = star;
-          if (!visibilityHasChanged && !detectionHasChanged && !previousDetectedStars[star.id])
+          if (!detectionHasChanged && !previousDetectedStars[star.id])
           {
             detectionHasChanged = true;
           }
@@ -405,11 +405,42 @@ module Rance
           Object.keys(previousDetectedStars).length);
       }
 
-      if (!this.isAI && visibilityHasChanged)
+      var hasUnmetPlayers = Object.keys(this.diplomacyStatus.metPlayers).length < app.game.playerOrder.length;
+      if (hasUnmetPlayers)
+      {
+        for (var i = 0; i < allVisible.length; i++)
+        {
+          var presentPlayersByVisibility = allVisible[i].getPresentPlayersByVisibility();
+
+          for (var playerId in presentPlayersByVisibility.visible)
+          {
+            var player = presentPlayersByVisibility.visible[playerId];
+            if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
+            {
+              this.diplomacyStatus.meetPlayer(player);
+            }
+          }
+        }
+        for (var i = 0; i < allDetected.length; i++)
+        {
+          var presentPlayersByVisibility = allDetected[i].getPresentPlayersByVisibility();
+
+          for (var playerId in presentPlayersByVisibility.detected)
+          {
+            var player = presentPlayersByVisibility.detected[playerId];
+            if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent)
+            {
+              this.diplomacyStatus.meetPlayer(player);
+            }
+          }
+        }
+      }
+
+      if (visibilityHasChanged && !this.isAI)
       {
         eventManager.dispatchEvent("renderMap");
       }
-      else if (!this.isAI && detectionHasChanged)
+      if (detectionHasChanged && !this.isAI)
       {
         eventManager.dispatchEvent("renderLayer", "fleets");
       }
@@ -423,18 +454,11 @@ module Rance
       if (this.visionIsDirty) this.updateVisibleStars();
 
       var visible: Star[] = [];
-      var metPlayers = this.diplomacyStatus.metPlayers;
 
       for (var id in this.visibleStars)
       {
         var star = this.visibleStars[id];
         visible.push(star);
-
-        if (!star.owner.isIndependent && star.owner !== this
-          && !metPlayers[star.owner.id])
-        {
-          this.diplomacyStatus.meetPlayer(star.owner);
-        }
       }
 
       return visible;
