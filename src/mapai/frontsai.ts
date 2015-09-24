@@ -170,7 +170,7 @@ module Rance
           for (var j = 0; j < this.objectivesAI.objectives.length; j++)
           {
             var objective = this.objectivesAI.objectives[j];
-            if (objective.id === front.id && objective.priority > 0.04)
+            if (objective.id === front.id)
             {
               hasActiveObjective = true;
               break;
@@ -200,13 +200,10 @@ module Rance
             continue;
           }
 
-          if (objective.priority > 0.04)
+          if (!this.getFrontWithId(objective.id))
           {
-            if (!this.getFrontWithId(objective.id))
-            {
-              var front = this.createFront(objective);
-              this.fronts.push(front);
-            }
+            var front = this.createFront(objective);
+            this.fronts.push(front);
           }
         }
       }

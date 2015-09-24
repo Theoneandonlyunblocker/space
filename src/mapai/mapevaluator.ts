@@ -638,7 +638,7 @@ module Rance
         var visibleStrength = 0;
         var invisibleStrength = 0;
 
-        var fleets = this.getVisibleFleetsByPlayer()[player.id];
+        var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
         for (var i = 0; i < fleets.length; i++)
         {
           visibleStrength += this.evaluateFleetStrength(fleets[i]);

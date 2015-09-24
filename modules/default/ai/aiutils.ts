@@ -191,6 +191,7 @@ module Rance
           {
             var star = evaluationScores[i].star || null;
             var player = evaluationScores[i].player || null;
+            if (score < 0) continue;
             var relativeScore = getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
 

@@ -28,10 +28,17 @@ module Rance
             for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers)
             {
               var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
+              var score: number = -1;
+              if (mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player))
+              {
+                score = mapEvaluator.getDesireToGoToWarWith(player) * mapEvaluator.getAbilityToGoToWarWith(player);
+              }
+
+              console.log(mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player), mapEvaluator.player.id, player.id, score);
               scores.push(
               {
                 player: player,
-                score: mapEvaluator.getDesireToGoToWarWith(player) * mapEvaluator.getAbilityToGoToWarWith(player)
+                score: score
               });
             }
 

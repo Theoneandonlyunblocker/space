@@ -10542,7 +10542,7 @@ var Rance;
             MapEvaluator.prototype.estimateGlobalStrength = function (player) {
                 var visibleStrength = 0;
                 var invisibleStrength = 0;
-                var fleets = this.getVisibleFleetsByPlayer()[player.id];
+                var fleets = this.getVisibleFleetsByPlayer()[player.id] || [];
                 for (var i = 0; i < fleets.length; i++) {
                     visibleStrength += this.evaluateFleetStrength(fleets[i]);
                 }
@@ -10852,6 +10852,9 @@ var Rance;
                 var finalObjectives = [];
                 for (var i = 0; i < newObjectives.length; i++) {
                     var newObjective = newObjectives[i];
+                    if (newObjective.priority < 0.04) {
+                        continue;
+                    }
                     var keyString = newObjective.target ? newObjective.target.id : "noTarget";
                     var oldObjective = byTarget[keyString];
                     if (oldObjective) {
@@ -11204,7 +11207,7 @@ var Rance;
                     var hasActiveObjective = false;
                     for (var j = 0; j < this.objectivesAI.objectives.length; j++) {
                         var objective = this.objectivesAI.objectives[j];
-                        if (objective.id === front.id && objective.priority > 0.04) {
+                        if (objective.id === front.id) {
                             hasActiveObjective = true;
                             break;
                         }
@@ -11225,11 +11228,9 @@ var Rance;
                     if (!objective.template.moveRoutineFN) {
                         continue;
                     }
-                    if (objective.priority > 0.04) {
-                        if (!this.getFrontWithId(objective.id)) {
-                            var front = this.createFront(objective);
-                            this.fronts.push(front);
-                        }
+                    if (!this.getFrontWithId(objective.id)) {
+                        var front = this.createFront(objective);
+                        this.fronts.push(front);
                     }
                 }
             };
@@ -21550,6 +21551,8 @@ var Rance;
                     for (var i = 0; i < evaluationScores.length; i++) {
                         var star = evaluationScores[i].star || null;
                         var player = evaluationScores[i].player || null;
+                        if (score < 0)
+                            continue;
                         var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
                         var priority = relativeScore * basePriority;
                         allObjectives.push(new Rance.MapAI.Objective(template, priority, star, player));
@@ -21803,9 +21806,14 @@ var Rance;
                         var scores = [];
                         for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers) {
                             var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
+                            var score = -1;
+                            if (mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player)) {
+                                score = mapEvaluator.getDesireToGoToWarWith(player) * mapEvaluator.getAbilityToGoToWarWith(player);
+                            }
+                            console.log(mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player), mapEvaluator.player.id, player.id, score);
                             scores.push({
                                 player: player,
-                                score: mapEvaluator.getDesireToGoToWarWith(player) * mapEvaluator.getAbilityToGoToWarWith(player)
+                                score: score
                             });
                         }
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
@@ -22014,7 +22022,15 @@ var Rance;
                     moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
                     moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
                     moduleData.copyTemplates(DefaultModule.Notifications, "Notifications");
-                    moduleData.mapBackgroundDrawingFunction = DefaultModule.drawNebula;
+                    moduleData.mapBackgroundDrawingFunction = function (seed, renderer) {
+                        var w = renderer.width;
+                        var h = renderer.height;
+                        var gfx = new PIXI.Graphics();
+                        gfx.beginFill(0x000000);
+                        gfx.drawRect(0, 0, w, h);
+                        gfx.endFill();
+                        return gfx;
+                    };
                     moduleData.starBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.defaultMap = DefaultModule.Templates.MapGen.spiralGalaxy;
                     return moduleData;

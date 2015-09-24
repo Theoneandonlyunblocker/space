@@ -114,6 +114,10 @@ module Rance
         for (var i = 0; i < newObjectives.length; i++)
         {
           var newObjective = newObjectives[i];
+          if (newObjective.priority < 0.04)
+          {
+            continue;
+          }
           var keyString = newObjective.target ? newObjective.target.id : "noTarget";
           var oldObjective = byTarget[keyString];
           if (oldObjective)
