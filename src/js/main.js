@@ -9984,7 +9984,6 @@ var Rance;
         NotificationLog.prototype.setTurn = function (turn, isHumanTurn) {
             this.currentTurn = turn;
             this.isHumanTurn = isHumanTurn;
-            this.byTurn[turn] = [];
         };
         NotificationLog.prototype.makeNotification = function (template, props) {
             console.log("makeNotification");

@@ -56,7 +56,6 @@ module Rance
     {
       this.currentTurn = turn;
       this.isHumanTurn = isHumanTurn;
-      this.byTurn[turn] = [];
     }
     makeNotification(template: Templates.INotificationTemplate, props: any)
     {
