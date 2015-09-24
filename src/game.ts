@@ -45,6 +45,7 @@ module Rance
     {
       this.setNextPlayer();
       this.processPlayerStartTurn(this.activePlayer);
+      this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
 
       if (this.activePlayer.isAI)
       {
@@ -59,7 +60,6 @@ module Rance
           this.processPlayerStartTurn(this.independents[i]);
         }
 
-        this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
       }
 
       eventManager.dispatchEvent("endTurn", null);

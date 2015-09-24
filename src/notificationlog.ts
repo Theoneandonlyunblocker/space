@@ -59,7 +59,6 @@ module Rance
     }
     makeNotification(template: Templates.INotificationTemplate, props: any)
     {
-      console.log("makeNotification");
       var notification = new Notification(template, props, this.currentTurn);
 
       this.addNotification(notification);
