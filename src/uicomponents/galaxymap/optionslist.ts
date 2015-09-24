@@ -68,14 +68,11 @@ module Rance
           var shouldToggleDebug = false;
           if (Options.debugMode !== defaultOptions.debugMode) shouldToggleDebug = true;
           Options = extendObject(defaultOptions);
+          this.forceUpdate();
 
           if (shouldToggleDebug)
           {
             app.reactUI.render();
-          }
-          else
-          {
-            this.forceUpdate();
           }
         }.bind(this);
 
@@ -126,6 +123,7 @@ module Rance
               onChangeFN: function()
               {
                 Options.debugMode = !Options.debugMode;
+                this.forceUpdate();
                 app.reactUI.render();
               }.bind(this)
             })
@@ -182,8 +180,8 @@ module Rance
             if (Options.debugMode !== defaultOptions.debugMode)
             {
               Options.debugMode = !Options.debugMode;
-              app.reactUI.render();
               this.forceUpdate();
+              app.reactUI.render();
             }
           }.bind(this),
           key: "debug"

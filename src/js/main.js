@@ -5076,11 +5076,9 @@ var Rance;
                     if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode)
                         shouldToggleDebug = true;
                     Rance.Options = Rance.extendObject(Rance.defaultOptions);
+                    this.forceUpdate();
                     if (shouldToggleDebug) {
                         app.reactUI.render();
-                    }
-                    else {
-                        this.forceUpdate();
                     }
                 }.bind(this);
                 var confirmProps = {
@@ -5116,6 +5114,7 @@ var Rance;
                         label: "Debug mode",
                         onChangeFN: function () {
                             Rance.Options.debugMode = !Rance.Options.debugMode;
+                            this.forceUpdate();
                             app.reactUI.render();
                         }.bind(this)
                     })
@@ -5152,8 +5151,8 @@ var Rance;
                         Rance.extendObject(Rance.defaultOptions.debugOptions, Rance.Options.debugOptions);
                         if (Rance.Options.debugMode !== Rance.defaultOptions.debugMode) {
                             Rance.Options.debugMode = !Rance.Options.debugMode;
-                            app.reactUI.render();
                             this.forceUpdate();
+                            app.reactUI.render();
                         }
                     }.bind(this),
                     key: "debug"
