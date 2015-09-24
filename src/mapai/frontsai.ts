@@ -5,7 +5,6 @@
 /// <reference path="objectivesai.ts"/>
 /// <reference path="front.ts"/>
 /// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
 
 module Rance
 {
@@ -196,6 +195,10 @@ module Rance
         for (var i = 0; i < this.objectivesAI.objectives.length; i++)
         {
           var objective = this.objectivesAI.objectives[i];
+          if (!objective.template.moveRoutineFN)
+          {
+            continue;
+          }
 
           if (objective.priority > 0.04)
           {

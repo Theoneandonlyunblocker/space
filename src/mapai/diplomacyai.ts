@@ -3,6 +3,7 @@
 /// <reference path="../diplomacystatus.ts"/>
 
 /// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
 
 module Rance
 {
@@ -17,8 +18,10 @@ module Rance
 
       personality: IPersonality;
       mapEvaluator: MapEvaluator;
+      objectivesAI: ObjectivesAI;
 
-      constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality)
+      constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, game: Game,
+        personality: IPersonality)
       {
         this.game = game;
         
@@ -26,10 +29,10 @@ module Rance
         this.diplomacyStatus = this.player.diplomacyStatus;
 
         this.mapEvaluator = mapEvaluator;
+        this.objectivesAI = objectivesAI;
         
         this.personality = personality;
       }
-
       setAttitudes()
       {
         var diplomacyEvaluations =
@@ -41,6 +44,27 @@ module Rance
             this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]
           );
         }
+      }
+      resolveDiplomaticObjectives(afterAllDoneCallback: () => void)
+      {
+        var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
+        var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
+
+        this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback)
+      }
+      resolveNextObjective(objectives: Objective[], adjustments: IRoutineAdjustmentByTargetId,
+        afterAllDoneCallback: () => void)
+      {
+        var objective = objectives.pop();
+
+        if (!objective)
+        {
+          afterAllDoneCallback();
+          return;
+        }
+
+        var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
+        objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN)
       }
     }
   }

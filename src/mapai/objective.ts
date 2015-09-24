@@ -33,8 +33,10 @@ module Rance
       isOngoing: boolean = false; // used to slightly prioritize old objectives
 
       target: Star;
+      targetPlayer: Player;
 
-      constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star)
+      constructor(template: Templates.IObjectiveTemplate,priority: number, target: Star,
+        targetPlayer?: Player)
       {
         this.id = idGenerators.objective++;
 
@@ -42,6 +44,7 @@ module Rance
         this.type = this.template.key;
         this.priority = priority;
         this.target = target;
+        this.targetPlayer = targetPlayer;
       }
       getUnitsDesired()
       {

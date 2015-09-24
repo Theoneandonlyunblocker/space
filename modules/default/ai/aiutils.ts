@@ -174,7 +174,7 @@ module Rance
           return score;
         }
         export function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate,
-          evaluationScores: {star: Star; score: number;}[], basePriority: number)
+          evaluationScores: {star?: Star; player?: Player; score: number;}[], basePriority: number)
         {
           var allObjectives: MapAI.Objective[] = [];
 
@@ -189,11 +189,12 @@ module Rance
 
           for (var i = 0; i < evaluationScores.length; i++)
           {
-            var star = evaluationScores[i].star;
+            var star = evaluationScores[i].star || null;
+            var player = evaluationScores[i].player || null;
             var relativeScore = getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
 
-            allObjectives.push(new MapAI.Objective(template, priority, star));
+            allObjectives.push(new MapAI.Objective(template, priority, star, player));
           }
 
           return allObjectives;

@@ -61,15 +61,47 @@ module Rance
         this.player = mapEvaluator.player;
         this.grandStrategyAI = grandStrategyAI;
       }
-
-      setAllObjectives()
+      setAllDiplomaticObjectives()
       {
         var objectiveTemplates = app.moduleData.Templates.Objectives;
         this.objectives = [];
 
         for (var key in objectiveTemplates)
         {
-          this.setObjectivesOfType(objectiveTemplates[key]);
+          var template = objectiveTemplates[key];
+          if (template.diplomacyRoutineFN)
+          {
+            this.setObjectivesOfType(objectiveTemplates[key]);
+          }
+        }
+      }
+
+      setAllMoveObjectives()
+      {
+        var objectiveTemplates = app.moduleData.Templates.Objectives;
+        this.objectives = [];
+
+        for (var key in objectiveTemplates)
+        {
+          var template = objectiveTemplates[key];
+          if (template.moveRoutineFN)
+          {
+            this.setObjectivesOfType(objectiveTemplates[key]);
+          }
+        }
+      }
+      setAllobjectivesWithTemplateProperty(propKey: string)
+      {
+        var objectiveTemplates = app.moduleData.Templates.Objectives;
+        this.objectives = [];
+
+        for (var key in objectiveTemplates)
+        {
+          var template = objectiveTemplates[key];
+          if (template.diplomacyRoutineFN)
+          {
+            this.setObjectivesOfType(objectiveTemplates[key]);
+          }
         }
       }
       getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate)
@@ -125,6 +157,37 @@ module Rance
         }
 
         return objectivesByTarget;
+      }
+      getObjectivesWithTemplateProperty(propKey: string)
+      {
+        return this.objectives.filter(function(objective: Objective)
+        {
+          return Boolean(objective.template[propKey]);
+        });
+      }
+      getAdjustmentsForTemplateProperty(propKey: string)
+      {
+        var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
+        var adjustments: IRoutineAdjustmentByTargetId;
+
+        for (var i = 0; i < withAdjustment.length; i++)
+        {
+          for (var j = 0; j < withAdjustment[i].template[propKey].length; j++)
+          {
+            var adjustment = withAdjustment[i].template[propKey][j];
+            if (!adjustments[adjustment.target.id])
+            {
+              adjustments[adjustment.target.id] =
+              {
+                target: adjustment.target,
+                multiplier: 1
+              }
+            }
+            adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
+          }
+        }
+
+        return adjustments;
       }
     }
   }

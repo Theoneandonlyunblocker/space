@@ -10740,13 +10740,14 @@ var Rance;
     var MapAI;
     (function (MapAI) {
         var Objective = (function () {
-            function Objective(template, priority, target) {
+            function Objective(template, priority, target, targetPlayer) {
                 this.isOngoing = false; // used to slightly prioritize old objectives
                 this.id = Rance.idGenerators.objective++;
                 this.template = template;
                 this.type = this.template.key;
                 this.priority = priority;
                 this.target = target;
+                this.targetPlayer = targetPlayer;
             }
             Object.defineProperty(Objective.prototype, "priority", {
                 get: function () {
@@ -10814,11 +10815,34 @@ var Rance;
                 this.player = mapEvaluator.player;
                 this.grandStrategyAI = grandStrategyAI;
             }
-            ObjectivesAI.prototype.setAllObjectives = function () {
+            ObjectivesAI.prototype.setAllDiplomaticObjectives = function () {
                 var objectiveTemplates = app.moduleData.Templates.Objectives;
                 this.objectives = [];
                 for (var key in objectiveTemplates) {
-                    this.setObjectivesOfType(objectiveTemplates[key]);
+                    var template = objectiveTemplates[key];
+                    if (template.diplomacyRoutineFN) {
+                        this.setObjectivesOfType(objectiveTemplates[key]);
+                    }
+                }
+            };
+            ObjectivesAI.prototype.setAllMoveObjectives = function () {
+                var objectiveTemplates = app.moduleData.Templates.Objectives;
+                this.objectives = [];
+                for (var key in objectiveTemplates) {
+                    var template = objectiveTemplates[key];
+                    if (template.moveRoutineFN) {
+                        this.setObjectivesOfType(objectiveTemplates[key]);
+                    }
+                }
+            };
+            ObjectivesAI.prototype.setAllobjectivesWithTemplateProperty = function (propKey) {
+                var objectiveTemplates = app.moduleData.Templates.Objectives;
+                this.objectives = [];
+                for (var key in objectiveTemplates) {
+                    var template = objectiveTemplates[key];
+                    if (template.diplomacyRoutineFN) {
+                        this.setObjectivesOfType(objectiveTemplates[key]);
+                    }
                 }
             };
             ObjectivesAI.prototype.getNewObjectivesOfType = function (objectiveTemplate) {
@@ -10858,6 +10882,29 @@ var Rance;
                     objectivesByTarget[keyString] = objective;
                 }
                 return objectivesByTarget;
+            };
+            ObjectivesAI.prototype.getObjectivesWithTemplateProperty = function (propKey) {
+                return this.objectives.filter(function (objective) {
+                    return Boolean(objective.template[propKey]);
+                });
+            };
+            ObjectivesAI.prototype.getAdjustmentsForTemplateProperty = function (propKey) {
+                var withAdjustment = this.getObjectivesWithTemplateProperty(propKey);
+                var adjustments;
+                for (var i = 0; i < withAdjustment.length; i++) {
+                    for (var j = 0; j < withAdjustment[i].template[propKey].length; j++) {
+                        var adjustment = withAdjustment[i].template[propKey][j];
+                        if (!adjustments[adjustment.target.id]) {
+                            adjustments[adjustment.target.id] =
+                                {
+                                    target: adjustment.target,
+                                    multiplier: 1
+                                };
+                        }
+                        adjustments[adjustment.target.id].multiplier += adjustment.multiplier;
+                    }
+                }
+                return adjustments;
             };
             return ObjectivesAI;
         })();
@@ -11061,7 +11108,6 @@ var Rance;
 /// <reference path="objectivesai.ts"/>
 /// <reference path="front.ts"/>
 /// <reference path="mapevaluator.ts"/>
-/// <reference path="objectivesai.ts"/>
 var Rance;
 (function (Rance) {
     var MapAI;
@@ -11176,6 +11222,9 @@ var Rance;
                 this.removeInactiveFronts();
                 for (var i = 0; i < this.objectivesAI.objectives.length; i++) {
                     var objective = this.objectivesAI.objectives[i];
+                    if (!objective.template.moveRoutineFN) {
+                        continue;
+                    }
                     if (objective.priority > 0.04) {
                         if (!this.getFrontWithId(objective.id)) {
                             var front = this.createFront(objective);
@@ -11309,16 +11358,18 @@ var Rance;
 /// <reference path="../player.ts"/>
 /// <reference path="../diplomacystatus.ts"/>
 /// <reference path="mapevaluator.ts"/>
+/// <reference path="objectivesai.ts"/>
 var Rance;
 (function (Rance) {
     var MapAI;
     (function (MapAI) {
         var DiplomacyAI = (function () {
-            function DiplomacyAI(mapEvaluator, game, personality) {
+            function DiplomacyAI(mapEvaluator, objectivesAI, game, personality) {
                 this.game = game;
                 this.player = mapEvaluator.player;
                 this.diplomacyStatus = this.player.diplomacyStatus;
                 this.mapEvaluator = mapEvaluator;
+                this.objectivesAI = objectivesAI;
                 this.personality = personality;
             }
             DiplomacyAI.prototype.setAttitudes = function () {
@@ -11326,6 +11377,20 @@ var Rance;
                 for (var playerId in diplomacyEvaluations) {
                     this.diplomacyStatus.processAttitudeModifiersForPlayer(this.diplomacyStatus.metPlayers[playerId], diplomacyEvaluations[playerId]);
                 }
+            };
+            DiplomacyAI.prototype.resolveDiplomaticObjectives = function (afterAllDoneCallback) {
+                var objectives = this.objectivesAI.getObjectivesWithTemplateProperty("diplomacyRoutineFN");
+                var adjustments = this.objectivesAI.getAdjustmentsForTemplateProperty("diplomacyRoutineAdjustments");
+                this.resolveNextObjective(objectives, adjustments, afterAllDoneCallback);
+            };
+            DiplomacyAI.prototype.resolveNextObjective = function (objectives, adjustments, afterAllDoneCallback) {
+                var objective = objectives.pop();
+                if (!objective) {
+                    afterAllDoneCallback();
+                    return;
+                }
+                var boundResolveNextFN = this.resolveNextObjective.bind(this, objectives, adjustments, afterAllDoneCallback);
+                objective.template.diplomacyRoutineFN(objective, this, adjustments, boundResolveNextFN);
             };
             return DiplomacyAI;
         })();
@@ -11362,7 +11427,7 @@ var Rance;
                     mapEvaluator: this.mapEvaluator,
                     personality: this.personality
                 });
-                this.diplomacyAI = new MapAI.DiplomacyAI(this.mapEvaluator, this.game, this.personality);
+                this.diplomacyAI = new MapAI.DiplomacyAI(this.mapEvaluator, this.objectivesAI, this.game, this.personality);
             }
             AIController.prototype.processTurn = function (afterFinishedCallback) {
                 // clear cached stuff from mapevaluator
@@ -11372,7 +11437,13 @@ var Rance;
                 // dai set attitude
                 this.diplomacyAI.setAttitudes();
                 // oai make objectives
-                this.objectivesAI.setAllObjectives();
+                this.objectivesAI.setAllDiplomaticObjectives();
+                // dai resolve diplomatic objectives
+                this.diplomacyAI.resolveDiplomaticObjectives(this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
+            };
+            AIController.prototype.processTurnAfterDiplomaticObjectives = function (afterFinishedCallback) {
+                // oai make objectives
+                this.objectivesAI.setAllMoveObjectives();
                 // fai form fronts
                 this.frontsAI.formFronts();
                 // fai assign units
@@ -21477,10 +21548,11 @@ var Rance;
                         maxScore = isFinite(maxScore) ? Math.max(maxScore, score) : score;
                     }
                     for (var i = 0; i < evaluationScores.length; i++) {
-                        var star = evaluationScores[i].star;
+                        var star = evaluationScores[i].star || null;
+                        var player = evaluationScores[i].player || null;
                         var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
                         var priority = relativeScore * basePriority;
-                        allObjectives.push(new Rance.MapAI.Objective(template, priority, star));
+                        allObjectives.push(new Rance.MapAI.Objective(template, priority, star, player));
                     }
                     return allObjectives;
                 }
@@ -21713,6 +21785,40 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.declareWar = {
+                    key: "declareWar",
+                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                        var template = Rance.Modules.DefaultModule.Objectives.declareWar;
+                        var basePriority = grandStrategyAI.desireForWar;
+                        var scores = [];
+                        for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers) {
+                            var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
+                            scores.push({
+                                player: player,
+                                score: mapEvaluator.getDesireToGoToWarWith(player) * mapEvaluator.getAbilityToGoToWarWith(player)
+                            });
+                        }
+                        return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
+                    },
+                    diplomacyRoutineFN: function (objective, diplomacyAI, adjustments, afterDoneCallback) {
+                        diplomacyAI.diplomacyStatus.declareWarOn(objective.targetPlayer);
+                        afterDoneCallback();
+                    }
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 var Rance;
 (function (Rance) {
     var Modules;
@@ -21868,6 +21974,7 @@ var Rance;
 /// <reference path="ai/healobjective.ts" />
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
+/// <reference path="ai/declarewarobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />
 var Rance;

@@ -53,10 +53,11 @@ module Rance
           mapEvaluator: this.mapEvaluator,
           personality: this.personality
         });
-        this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.game, this.personality);
+        this.diplomacyAI = new DiplomacyAI(this.mapEvaluator, this.objectivesAI,
+          this.game, this.personality);
       }
 
-      processTurn(afterFinishedCallback?: any)
+      processTurn(afterFinishedCallback: () => void)
       {
         // clear cached stuff from mapevaluator
         this.mapEvaluator.processTurnStart();
@@ -68,7 +69,16 @@ module Rance
         this.diplomacyAI.setAttitudes();
 
         // oai make objectives
-        this.objectivesAI.setAllObjectives();
+        this.objectivesAI.setAllDiplomaticObjectives();
+
+        // dai resolve diplomatic objectives
+        this.diplomacyAI.resolveDiplomaticObjectives(
+          this.processTurnAfterDiplomaticObjectives.bind(this, afterFinishedCallback));
+      }
+      processTurnAfterDiplomaticObjectives(afterFinishedCallback: () => void)
+      {
+        // oai make objectives
+        this.objectivesAI.setAllMoveObjectives();
 
         // fai form fronts
         this.frontsAI.formFronts();
@@ -92,7 +102,7 @@ module Rance
         // function param is called after all fronts have moved
         this.frontsAI.moveFleets(this.finishMovingFleets.bind(this, afterFinishedCallback));
       }
-      finishMovingFleets(afterFinishedCallback?: any)
+      finishMovingFleets(afterFinishedCallback: () => void)
       {
         this.frontsAI.organizeFleets();
         if (afterFinishedCallback)

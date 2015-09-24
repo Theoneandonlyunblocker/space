@@ -1413,7 +1413,8 @@ declare module Rance {
             priority: number;
             isOngoing: boolean;
             target: Star;
-            constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star);
+            targetPlayer: Player;
+            constructor(template: Templates.IObjectiveTemplate, priority: number, target: Star, targetPlayer?: Player);
             getUnitsDesired(): {
                 min: number;
                 ideal: number;
@@ -1434,12 +1435,16 @@ declare module Rance {
             objectives: Objective[];
             requests: any[];
             constructor(mapEvaluator: MapEvaluator, grandStrategyAI: GrandStrategyAI);
-            setAllObjectives(): void;
+            setAllDiplomaticObjectives(): void;
+            setAllMoveObjectives(): void;
+            setAllobjectivesWithTemplateProperty(propKey: string): void;
             getNewObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): Objective[];
             setObjectivesOfType(objectiveTemplate: Templates.IObjectiveTemplate): void;
             getObjectivesByTarget(objectiveType: string, markAsOngoing: boolean): {
                 [targetString: string]: Objective;
             };
+            getObjectivesWithTemplateProperty(propKey: string): Objective[];
+            getAdjustmentsForTemplateProperty(propKey: string): IRoutineAdjustmentByTargetId;
         }
     }
 }
@@ -1532,8 +1537,11 @@ declare module Rance {
             diplomacyStatus: DiplomacyStatus;
             personality: IPersonality;
             mapEvaluator: MapEvaluator;
-            constructor(mapEvaluator: MapEvaluator, game: Game, personality: IPersonality);
+            objectivesAI: ObjectivesAI;
+            constructor(mapEvaluator: MapEvaluator, objectivesAI: ObjectivesAI, game: Game, personality: IPersonality);
             setAttitudes(): void;
+            resolveDiplomaticObjectives(afterAllDoneCallback: () => void): void;
+            resolveNextObjective(objectives: Objective[], adjustments: IRoutineAdjustmentByTargetId, afterAllDoneCallback: () => void): void;
         }
     }
 }
@@ -1551,8 +1559,9 @@ declare module Rance {
             frontsAI: FrontsAI;
             diplomacyAI: DiplomacyAI;
             constructor(player: Player, game: Game, personality?: IPersonality);
-            processTurn(afterFinishedCallback?: any): void;
-            finishMovingFleets(afterFinishedCallback?: any): void;
+            processTurn(afterFinishedCallback: () => void): void;
+            processTurnAfterDiplomaticObjectives(afterFinishedCallback: () => void): void;
+            finishMovingFleets(afterFinishedCallback: () => void): void;
         }
     }
 }
@@ -3006,7 +3015,8 @@ declare module Rance {
                 function defaultUnitDesireFN(front: MapAI.Front): number;
                 function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold?: number, healthAdjust?: number, distanceAdjust?: number): number;
                 function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate, evaluationScores: {
-                    star: Star;
+                    star?: Star;
+                    player?: Player;
                     score: number;
                 }[], basePriority: number): MapAI.Objective[];
                 function getUnitsToFillIndependentObjective(objective: MapAI.Objective): {
@@ -3049,6 +3059,15 @@ declare module Rance {
         module DefaultModule {
             module Objectives {
                 var cleanUpPirates: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var declareWar: Rance.Templates.IObjectiveTemplate;
             }
         }
     }
