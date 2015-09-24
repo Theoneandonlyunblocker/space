@@ -3140,6 +3140,9 @@ progress::-webkit-progress-value {
   margin-left: 0.25em;
   color: #f3c620;
 }
+.building-upgrade-list {
+  overflow-y: auto;
+}
 .building-upgrade-group-header {
   font-size: 0.82em;
 }
