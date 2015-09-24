@@ -1056,6 +1056,7 @@ declare module Rance {
         });
         setStrength(evaluation: IDiplomacyEvaluation): number;
         getFreshness(currentTurn?: number): number;
+        refresh(newModifier: AttitudeModifier): void;
         getAdjustedStrength(currentTurn?: number): number;
         hasExpired(currentTurn?: number): boolean;
         shouldEnd(evaluation: IDiplomacyEvaluation): boolean;
@@ -1097,7 +1098,7 @@ declare module Rance {
         makePeaceWith(player: Player): void;
         canAttackFleetOfPlayer(player: Player): boolean;
         canAttackBuildingOfPlayer(player: Player): boolean;
-        hasModifierOfSameType(player: Player, modifier: AttitudeModifier): boolean;
+        getModifierOfSameType(player: Player, modifier: AttitudeModifier): AttitudeModifier;
         addAttitudeModifier(player: Player, modifier: AttitudeModifier): void;
         triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player): void;
         processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation): void;

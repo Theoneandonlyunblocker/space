@@ -51,7 +51,6 @@ module Rance
       {
         this.strength = props.strength;
       }
-
     }
 
     setStrength(evaluation: IDiplomacyEvaluation)
@@ -80,6 +79,12 @@ module Rance
       {
         return 1 - getRelativeValue(currentTurn, this.startTurn, this.endTurn);
       }
+    }
+    refresh(newModifier: AttitudeModifier)
+    {
+      this.startTurn = newModifier.startTurn;
+      this.endTurn = newModifier.endTurn;
+      this.strength = newModifier.strength;
     }
     getAdjustedStrength(currentTurn: number = this.currentTurn)
     {

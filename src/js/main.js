@@ -9227,6 +9227,10 @@ var Rance;
                 return 1 - Rance.getRelativeValue(currentTurn, this.startTurn, this.endTurn);
             }
         };
+        AttitudeModifier.prototype.refresh = function (newModifier) {
+            this.startTurn = newModifier.startTurn;
+            this.endTurn = newModifier.endTurn;
+        };
         AttitudeModifier.prototype.getAdjustedStrength = function (currentTurn) {
             if (currentTurn === void 0) { currentTurn = this.currentTurn; }
             var freshenss = this.getFreshness(currentTurn);
@@ -9280,6 +9284,7 @@ var Rance;
             this.attitudeModifiersByPlayer = {};
             this.listeners = {};
             this.player = player;
+            this.addEventListeners();
         }
         DiplomacyStatus.prototype.addEventListeners = function () {
             for (var key in app.moduleData.Templates.AttitudeModifiers) {
@@ -9351,7 +9356,6 @@ var Rance;
             this.statusByPlayer[player.id] = DiplomaticState.war;
             player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
             Rance.eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
-            player.diplomacyStatus.updateAttitudes();
             var playersAreRelevantToHuman = true;
             [this.player, player].forEach(function (p) {
                 if (app.humanPlayer !== p && !app.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
@@ -9389,23 +9393,26 @@ var Rance;
             }
             return false;
         };
-        DiplomacyStatus.prototype.hasModifierOfSameType = function (player, modifier) {
+        DiplomacyStatus.prototype.getModifierOfSameType = function (player, modifier) {
             var modifiers = this.attitudeModifiersByPlayer[player.id];
             for (var i = 0; i < modifiers.length; i++) {
                 if (modifiers[i].template.type === modifier.template.type) {
-                    return true;
+                    return modifiers[i];
                 }
             }
-            return false;
+            return null;
         };
         DiplomacyStatus.prototype.addAttitudeModifier = function (player, modifier) {
             if (!this.attitudeModifiersByPlayer[player.id]) {
                 this.attitudeModifiersByPlayer[player.id] = [];
             }
-            if (this.hasModifierOfSameType(player, modifier)) {
+            var sameType = this.getModifierOfSameType(player, modifier);
+            if (sameType) {
+                sameType.refresh(modifier);
                 return;
             }
             this.attitudeModifiersByPlayer[player.id].push(modifier);
+            this.updateAttitudes();
         };
         DiplomacyStatus.prototype.triggerAttitudeModifier = function (template, player, source) {
             if (player !== this.player)
@@ -14269,14 +14276,11 @@ var Rance;
                     setExpandedActionElementOnParent: this.setExpandedActionElement
                 }), UIComponents.StarInfo({
                     selectedStar: this.state.selectedStar
-                }))), expandedActionElement), 
-                // UIComponents.MapRendererLayersList(
-                // {
-                //   mapRenderer: this.props.mapRenderer
-                // }),
-                React.DOM.div({
+                }))), expandedActionElement), !Rance.Options.debugMode ? null : UIComponents.MapRendererLayersList({
+                    mapRenderer: this.props.mapRenderer
+                }), React.DOM.div({
                     className: "galaxy-map-ui-bottom-right"
-                }, UIComponents.NotificationLog({
+                }, !Rance.Options.debugMode ? null : UIComponents.NotificationLog({
                     log: this.props.game.notificationLog,
                     currentTurn: this.props.game.turnNumber
                 }), React.DOM.button(endTurnButtonProps, "End turn"))));
@@ -22066,15 +22070,7 @@ var Rance;
                     moduleData.copyTemplates(DefaultModule.MapRendererMapModes, "MapRendererMapModes");
                     moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
                     moduleData.copyTemplates(DefaultModule.Notifications, "Notifications");
-                    moduleData.mapBackgroundDrawingFunction = function (seed, renderer) {
-                        var w = renderer.width;
-                        var h = renderer.height;
-                        var gfx = new PIXI.Graphics();
-                        gfx.beginFill(0x000000);
-                        gfx.drawRect(0, 0, w, h);
-                        gfx.endFill();
-                        return gfx;
-                    };
+                    moduleData.mapBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.starBackgroundDrawingFunction = DefaultModule.drawNebula;
                     moduleData.defaultMap = DefaultModule.Templates.MapGen.spiralGalaxy;
                     return moduleData;

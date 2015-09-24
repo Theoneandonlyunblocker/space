@@ -39,6 +39,7 @@ module Rance
     constructor(player: Player)
     {
       this.player = player;
+      this.addEventListeners();
     }
     addEventListeners()
     {
@@ -144,7 +145,6 @@ module Rance
       player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
 
       eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
-      player.diplomacyStatus.updateAttitudes();
 
       var playersAreRelevantToHuman = true;
 
@@ -202,7 +202,7 @@ module Rance
       return false;
     }
 
-    hasModifierOfSameType(player: Player, modifier: AttitudeModifier)
+    getModifierOfSameType(player: Player, modifier: AttitudeModifier)
     {
       var modifiers = this.attitudeModifiersByPlayer[player.id];
 
@@ -210,11 +210,11 @@ module Rance
       {
         if (modifiers[i].template.type === modifier.template.type)
         {
-          return true;
+          return modifiers[i];
         }
       }
 
-      return false;
+      return null;
     }
 
     addAttitudeModifier(player: Player, modifier: AttitudeModifier)
@@ -224,12 +224,15 @@ module Rance
         this.attitudeModifiersByPlayer[player.id] = [];
       }
 
-      if (this.hasModifierOfSameType(player, modifier))
+      var sameType = this.getModifierOfSameType(player, modifier);
+      if (sameType)
       {
+        sameType.refresh(modifier);
         return;
       }
 
       this.attitudeModifiersByPlayer[player.id].push(modifier);
+      this.updateAttitudes();
     }
     triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player)
     {
@@ -331,7 +334,6 @@ module Rance
           modifier.setStrength(evaluation);
         }
       }
-      
     }
 
     serialize()
