@@ -81,19 +81,7 @@ module Rance
           moduleData.copyTemplates(DefaultModule.Objectives, "Objectives");
           moduleData.copyTemplates(DefaultModule.Notifications, "Notifications");
 
-          moduleData.mapBackgroundDrawingFunction = function(seed: string,
-            renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer)
-          {
-            var w = renderer.width;
-            var h = renderer.height;
-
-            var gfx = new PIXI.Graphics();
-            gfx.beginFill(0x000000);
-            gfx.drawRect(0, 0, w, h);
-            gfx.endFill();
-
-            return gfx;
-          }
+          moduleData.mapBackgroundDrawingFunction = drawNebula;
           moduleData.starBackgroundDrawingFunction = drawNebula;
 
           moduleData.defaultMap = DefaultModule.Templates.MapGen.spiralGalaxy

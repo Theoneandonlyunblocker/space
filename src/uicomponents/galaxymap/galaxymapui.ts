@@ -206,15 +206,15 @@ module Rance
               ),
               expandedActionElement
             ),
-            // UIComponents.MapRendererLayersList(
-            // {
-            //   mapRenderer: this.props.mapRenderer
-            // }),
+            !Options.debugMode ? null : UIComponents.MapRendererLayersList(
+            {
+              mapRenderer: this.props.mapRenderer
+            }),
             React.DOM.div(
             {
               className: "galaxy-map-ui-bottom-right"
             },
-              UIComponents.NotificationLog(
+              !Options.debugMode ? null : UIComponents.NotificationLog(
               {
                 log: this.props.game.notificationLog,
                 currentTurn: this.props.game.turnNumber
