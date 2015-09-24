@@ -167,7 +167,7 @@ module Rance
           if (turnsToReach > 0)
           {
             turnsToReach *= distanceAdjust;
-            var distanceMultiplier = 1 / (Math.log(turnsToReach + 1.5) / Math.log(2));
+            var distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
             score *= distanceMultiplier;
           }
 

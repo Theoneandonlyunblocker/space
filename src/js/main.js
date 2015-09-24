@@ -9360,8 +9360,6 @@ var Rance;
             return Math.round(baseOpinion + modifierOpinion);
         };
         DiplomacyStatus.prototype.meetPlayer = function (player) {
-            if (player.isIndependent || this.player.isIndependent)
-                debugger;
             if (this.metPlayers[player.id] || player === this.player)
                 return;
             else {
@@ -10053,7 +10051,6 @@ var Rance;
             this.isHumanTurn = isHumanTurn;
         };
         NotificationLog.prototype.makeNotification = function (template, props) {
-            console.log("makeNotification");
             var notification = new Rance.Notification(template, props, this.currentTurn);
             this.addNotification(notification);
             if (this.isHumanTurn) {
@@ -10122,6 +10119,7 @@ var Rance;
         Game.prototype.endTurn = function () {
             this.setNextPlayer();
             this.processPlayerStartTurn(this.activePlayer);
+            this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
             if (this.activePlayer.isAI) {
                 this.activePlayer.AIController.processTurn(this.endTurn.bind(this));
             }
@@ -10130,7 +10128,6 @@ var Rance;
                 for (var i = 0; i < this.independents.length; i++) {
                     this.processPlayerStartTurn(this.independents[i]);
                 }
-                this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
             }
             Rance.eventManager.dispatchEvent("endTurn", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
@@ -13454,10 +13451,16 @@ var Rance;
         Unit.prototype.getTurnsToReachStar = function (star) {
             var currentLocation = this.fleet.location;
             var distance = currentLocation.getDistanceToStar(star);
-            if (distance <= this.currentMovePoints)
-                return 0;
+            if (distance <= this.currentMovePoints) {
+                if (this.currentMovePoints === 0) {
+                    return 0;
+                }
+                else {
+                    return distance / this.currentMovePoints;
+                }
+            }
             distance -= this.currentMovePoints; // current turn
-            return Math.ceil(distance / this.maxMovePoints); // future turns
+            return distance / this.maxMovePoints; // future turns
         };
         Unit.prototype.drawBattleScene = function (props) {
             var propsString = JSON.stringify(props);
@@ -21616,7 +21619,7 @@ var Rance;
                     var turnsToReach = unit.getTurnsToReachStar(front.targetLocation);
                     if (turnsToReach > 0) {
                         turnsToReach *= distanceAdjust;
-                        var distanceMultiplier = 1 / (Math.log(turnsToReach + 1.5) / Math.log(2));
+                        var distanceMultiplier = 1 / (Math.log(turnsToReach + 2.5) / Math.log(2.5));
                         score *= distanceMultiplier;
                     }
                     return score;
@@ -21888,11 +21891,12 @@ var Rance;
                         var scores = [];
                         for (var playerId in mapEvaluator.player.diplomacyStatus.metPlayers) {
                             var player = mapEvaluator.player.diplomacyStatus.metPlayers[playerId];
-                            var score = -1;
-                            if (mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player)) {
-                                score = mapEvaluator.getDesireToGoToWarWith(player) * mapEvaluator.getAbilityToGoToWarWith(player);
+                            if (!mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player)) {
+                                continue;
                             }
-                            console.log(mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player), mapEvaluator.player.id, player.id, score);
+                            var score = mapEvaluator.getDesireToGoToWarWith(player) *
+                                mapEvaluator.getAbilityToGoToWarWith(player);
+                            // console.log(mapEvaluator.player.diplomacyStatus.canDeclareWarOn(player), mapEvaluator.player.id, player.id, score);
                             scores.push({
                                 player: player,
                                 score: score
