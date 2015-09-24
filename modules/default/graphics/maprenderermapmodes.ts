@@ -15,9 +15,9 @@ module Rance
           displayName: "Default",
           layers:
           [
+            MapRendererLayers.nonFillerVoronoiLines,
             MapRendererLayers.starOwners,
             MapRendererLayers.ownerBorders,
-            MapRendererLayers.nonFillerVoronoiLines,
             MapRendererLayers.starLinks,
             MapRendererLayers.nonFillerStars,
             MapRendererLayers.fogOfWar,

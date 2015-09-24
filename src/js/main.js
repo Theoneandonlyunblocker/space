@@ -18939,9 +18939,9 @@ var Rance;
                     key: "defaultMapMode",
                     displayName: "Default",
                     layers: [
+                        DefaultModule.MapRendererLayers.nonFillerVoronoiLines,
                         DefaultModule.MapRendererLayers.starOwners,
                         DefaultModule.MapRendererLayers.ownerBorders,
-                        DefaultModule.MapRendererLayers.nonFillerVoronoiLines,
                         DefaultModule.MapRendererLayers.starLinks,
                         DefaultModule.MapRendererLayers.nonFillerStars,
                         DefaultModule.MapRendererLayers.fogOfWar,
