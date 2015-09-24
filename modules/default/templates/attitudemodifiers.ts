@@ -61,11 +61,7 @@ module Rance
             displayName: "Declared war",
             family: AttitudeModifierFamily.history,
             duration: 15,
-
-            startCondition: function(evaluation: IDiplomacyEvaluation)
-            {
-              return (evaluation.currentStatus >= DiplomaticState.war)
-            },
+            triggers: ["addDeclaredWarAttitudeModifier"],
 
             constantEffect: -35
           }

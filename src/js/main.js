@@ -9278,8 +9278,31 @@ var Rance;
             this.metPlayers = {};
             this.statusByPlayer = {};
             this.attitudeModifiersByPlayer = {};
+            this.listeners = {};
             this.player = player;
         }
+        DiplomacyStatus.prototype.addEventListeners = function () {
+            for (var key in app.moduleData.Templates.AttitudeModifiers) {
+                var template = app.moduleData.Templates.AttitudeModifiers[key];
+                if (template.triggers) {
+                    for (var i = 0; i < template.triggers.length; i++) {
+                        var listenerKey = template.triggers[i];
+                        var listener = Rance.eventManager.addEventListener(listenerKey, this.triggerAttitudeModifier.bind(this, template));
+                        if (!this.listeners[listenerKey]) {
+                            this.listeners[listenerKey] = [];
+                        }
+                        this.listeners[listenerKey].push(listener);
+                    }
+                }
+            }
+        };
+        DiplomacyStatus.prototype.destroy = function () {
+            for (var key in this.listeners) {
+                for (var i = 0; i < this.listeners[key].length; i++) {
+                    Rance.eventManager.removeEventListener(key, this.listeners[key][i]);
+                }
+            }
+        };
         DiplomacyStatus.prototype.getBaseOpinion = function () {
             if (isFinite(this.baseOpinion))
                 return this.baseOpinion;
@@ -9327,6 +9350,7 @@ var Rance;
             }
             this.statusByPlayer[player.id] = DiplomaticState.war;
             player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
+            Rance.eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
             player.diplomacyStatus.updateAttitudes();
             var playersAreRelevantToHuman = true;
             [this.player, player].forEach(function (p) {
@@ -9383,6 +9407,15 @@ var Rance;
             }
             this.attitudeModifiersByPlayer[player.id].push(modifier);
         };
+        DiplomacyStatus.prototype.triggerAttitudeModifier = function (template, player, source) {
+            if (player !== this.player)
+                return;
+            var modifier = new Rance.AttitudeModifier({
+                template: template,
+                startTurn: app.game.turnNumber
+            });
+            this.addAttitudeModifier(source, modifier);
+        };
         DiplomacyStatus.prototype.processAttitudeModifiersForPlayer = function (player, evaluation) {
             /*
             remove modifiers that should be removed
@@ -9418,10 +9451,9 @@ var Rance;
                 var modifier;
                 modifier = activeModifiers[template.type];
                 var alreadyHasModifierOfType = modifier;
-                if (!alreadyHasModifierOfType && !template.triggeredOnly) {
+                if (!alreadyHasModifierOfType && !template.triggers) {
                     if (!template.startCondition) {
-                        throw new Error("Attitude modifier is not trigger only despite " +
-                            "having no start condition specified");
+                        throw new Error("Attitude modifier has no start condition or triggers");
                     }
                     else {
                         var shouldStart = template.startCondition(evaluation);
@@ -10042,6 +10074,16 @@ var Rance;
             this.humanPlayer = humanPlayer;
             this.turnNumber = 1;
         }
+        Game.prototype.destroy = function () {
+            this.notificationLog.destroy();
+            this.notificationLog = null;
+            for (var i = 0; i < this.playerOrder.length; i++) {
+                this.playerOrder[i].destroy();
+            }
+            for (var i = 0; i < this.independents.length; i++) {
+                this.independents[i].destroy();
+            }
+        };
         Game.prototype.endTurn = function () {
             this.setNextPlayer();
             this.processPlayerStartTurn(this.activePlayer);
@@ -11504,6 +11546,10 @@ var Rance;
             this.diplomacyStatus = new Rance.DiplomacyStatus(this);
             this.money = 1000;
         }
+        Player.prototype.destroy = function () {
+            this.diplomacyStatus.destroy();
+            this.diplomacyStatus = null;
+        };
         Player.prototype.makeColorScheme = function () {
             var scheme = Rance.generateColorScheme(this.color);
             this.color = scheme.main;
@@ -20410,9 +20456,7 @@ var Rance;
                         displayName: "Declared war",
                         family: AttitudeModifierFamily.history,
                         duration: 15,
-                        startCondition: function (evaluation) {
-                            return (evaluation.currentStatus >= Rance.DiplomaticState.war);
-                        },
+                        triggers: ["addDeclaredWarAttitudeModifier"],
                         constantEffect: -35
                     };
                 })(AttitudeModifiers = Templates.AttitudeModifiers || (Templates.AttitudeModifiers = {}));
@@ -22616,9 +22660,9 @@ var Rance;
             console.log("Init in " + (new Date().getTime() - startTime) + " ms");
         };
         App.prototype.destroy = function () {
-            if (this.game && this.game.notificationLog) {
-                this.game.notificationLog.destroy();
-                this.game.notificationLog = null;
+            if (this.game) {
+                this.game.destroy();
+                this.game = null;
             }
             if (this.mapRenderer) {
                 this.mapRenderer.destroy();

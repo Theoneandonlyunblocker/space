@@ -100,10 +100,10 @@ module Rance
     }
     destroy()
     {
-      if (this.game && this.game.notificationLog)
+      if (this.game)
       {
-        this.game.notificationLog.destroy();
-        this.game.notificationLog = null;
+        this.game.destroy();
+        this.game = null;
       }
 
       if (this.mapRenderer)

@@ -31,11 +31,47 @@ module Rance
       [playerId: number]: AttitudeModifier[];
     } = {};
 
+    listeners:
+    {
+      [name: string]: Function[];
+    } = {};
+
     constructor(player: Player)
     {
       this.player = player;
     }
+    addEventListeners()
+    {
+      for (var key in app.moduleData.Templates.AttitudeModifiers)
+      {
+        var template = app.moduleData.Templates.AttitudeModifiers[key];
+        if (template.triggers)
+        {
+          for (var i = 0; i < template.triggers.length; i++)
+          {
+            var listenerKey = template.triggers[i];
+            var listener = eventManager.addEventListener(listenerKey,
+              this.triggerAttitudeModifier.bind(this, template));
 
+            if (!this.listeners[listenerKey])
+            {
+              this.listeners[listenerKey] = [];
+            }
+            this.listeners[listenerKey].push(listener);
+          }
+        }
+      }
+    }
+    destroy()
+    {
+      for (var key in this.listeners)
+      {
+        for (var i = 0; i < this.listeners[key].length; i++)
+        {
+          eventManager.removeEventListener(key, this.listeners[key][i]);
+        }
+      }
+    }
     getBaseOpinion()
     {
       if (isFinite(this.baseOpinion)) return this.baseOpinion;
@@ -107,6 +143,7 @@ module Rance
       this.statusByPlayer[player.id] = DiplomaticState.war;
       player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
 
+      eventManager.dispatchEvent("addDeclaredWarAttitudeModifier", player, this.player);
       player.diplomacyStatus.updateAttitudes();
 
       var playersAreRelevantToHuman = true;
@@ -194,6 +231,17 @@ module Rance
 
       this.attitudeModifiersByPlayer[player.id].push(modifier);
     }
+    triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player)
+    {
+      if (player !== this.player) return;
+
+      var modifier = new AttitudeModifier(
+      {
+        template: template,
+        startTurn: app.game.turnNumber
+      });
+      this.addAttitudeModifier(source, modifier);
+    }
 
     processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation)
     {
@@ -252,12 +300,11 @@ module Rance
         modifier = activeModifiers[template.type];
         var alreadyHasModifierOfType = modifier;
 
-        if (!alreadyHasModifierOfType && !template.triggeredOnly)
+        if (!alreadyHasModifierOfType && !template.triggers)
         {
           if (!template.startCondition)
           {
-            throw new Error("Attitude modifier is not trigger only despite " +
-              "having no start condition specified");
+            throw new Error("Attitude modifier has no start condition or triggers");
           }
           else
           {

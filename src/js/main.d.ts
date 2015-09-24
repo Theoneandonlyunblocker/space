@@ -1080,7 +1080,12 @@ declare module Rance {
         attitudeModifiersByPlayer: {
             [playerId: number]: AttitudeModifier[];
         };
+        listeners: {
+            [name: string]: Function[];
+        };
         constructor(player: Player);
+        addEventListeners(): void;
+        destroy(): void;
         getBaseOpinion(): number;
         updateAttitudes(): void;
         handleDiplomaticStatusUpdate(): void;
@@ -1094,6 +1099,7 @@ declare module Rance {
         canAttackBuildingOfPlayer(player: Player): boolean;
         hasModifierOfSameType(player: Player, modifier: AttitudeModifier): boolean;
         addAttitudeModifier(player: Player, modifier: AttitudeModifier): void;
+        triggerAttitudeModifier(template: Templates.IAttitudeModifierTemplate, player: Player, source: Player): void;
         processAttitudeModifiersForPlayer(player: Player, evaluation: IDiplomacyEvaluation): void;
         serialize(): any;
     }
@@ -1250,6 +1256,7 @@ declare module Rance {
         notificationLog: NotificationLog;
         gameStorageKey: string;
         constructor(map: GalaxyMap, players: Player[], humanPlayer: Player);
+        destroy(): void;
         endTurn(): void;
         processPlayerStartTurn(player: Player): void;
         setNextPlayer(): void;
@@ -1600,6 +1607,7 @@ declare module Rance {
             [id: number]: Star;
         };
         constructor(isAI: boolean, id?: number);
+        destroy(): void;
         makeColorScheme(): void;
         setupAI(game: Game): void;
         setupPirates(): void;

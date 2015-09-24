@@ -13,7 +13,7 @@ declare module Rance
       // stronger effect or opposite sign (+-), don't count this modifier
       canBeOverriddenBy?: IAttitudeModifierTemplate[];
       
-      triggeredOnly?: boolean;
+      triggers?: string[];
       startCondition?: (evaluation: IDiplomacyEvaluation) => boolean;
       // if endCondition is not defined and duration is infinite, the opposite of startCondition is used
       // to determine when to end modifier

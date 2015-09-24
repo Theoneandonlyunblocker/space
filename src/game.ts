@@ -27,6 +27,19 @@ module Rance
       this.humanPlayer = humanPlayer;
       this.turnNumber = 1;
     }
+    destroy()
+    {
+      this.notificationLog.destroy();
+      this.notificationLog = null;
+      for (var i = 0; i < this.playerOrder.length; i++)
+      {
+        this.playerOrder[i].destroy();
+      }
+      for (var i = 0; i < this.independents.length; i++)
+      {
+        this.independents[i].destroy();
+      }
+    }
 
     endTurn()
     {

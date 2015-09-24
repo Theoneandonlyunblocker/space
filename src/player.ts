@@ -68,6 +68,11 @@ module Rance
 
       this.money = 1000;
     }
+    destroy()
+    {
+      this.diplomacyStatus.destroy();
+      this.diplomacyStatus = null;
+    }
     makeColorScheme()
     {
       var scheme = generateColorScheme(this.color);
