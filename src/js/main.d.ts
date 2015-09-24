@@ -573,6 +573,7 @@ declare module Rance {
     };
     function getDropTargetAtLocation(x: number, y: number): HTMLElement;
     function onDOMLoaded(onLoaded: () => void): void;
+    function meetAllPlayers(): void;
 }
 declare module Rance {
     module Modules {

@@ -6709,6 +6709,15 @@ var Rance;
         }
     }
     Rance.onDOMLoaded = onDOMLoaded;
+    function meetAllPlayers() {
+        for (var i = 0; i < app.game.playerOrder.length; i++) {
+            var player = app.game.playerOrder[i];
+            if (player !== app.humanPlayer) {
+                app.humanPlayer.diplomacyStatus.meetPlayer(player);
+            }
+        }
+    }
+    Rance.meetAllPlayers = meetAllPlayers;
 })(Rance || (Rance = {}));
 /// <reference path="../../../src/templateinterfaces/iresourcetemplate.d.ts"/>
 /// <reference path="../../../src/templateinterfaces/idistributable.d.ts" />
