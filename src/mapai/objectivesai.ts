@@ -61,44 +61,28 @@ module Rance
         this.player = mapEvaluator.player;
         this.grandStrategyAI = grandStrategyAI;
       }
+      clearObjectives()
+      {
+        this.objectives = [];
+      }
       setAllDiplomaticObjectives()
       {
-        var objectiveTemplates = app.moduleData.Templates.Objectives;
-        this.objectives = [];
-
-        for (var key in objectiveTemplates)
-        {
-          var template = objectiveTemplates[key];
-          if (template.diplomacyRoutineFN)
-          {
-            this.setObjectivesOfType(objectiveTemplates[key]);
-          }
-        }
+        this.clearObjectives();
+        this.setAllObjectivesWithTemplateProperty("diplomacyRoutineFN");
       }
-
       setAllMoveObjectives()
       {
-        var objectiveTemplates = app.moduleData.Templates.Objectives;
-        this.objectives = [];
-
-        for (var key in objectiveTemplates)
-        {
-          var template = objectiveTemplates[key];
-          if (template.moveRoutineFN)
-          {
-            this.setObjectivesOfType(objectiveTemplates[key]);
-          }
-        }
+        this.clearObjectives();
+        this.setAllObjectivesWithTemplateProperty("moveRoutineFN");
       }
-      setAllobjectivesWithTemplateProperty(propKey: string)
+      setAllObjectivesWithTemplateProperty(propKey: string)
       {
         var objectiveTemplates = app.moduleData.Templates.Objectives;
-        this.objectives = [];
 
         for (var key in objectiveTemplates)
         {
           var template = objectiveTemplates[key];
-          if (template.diplomacyRoutineFN)
+          if (template[propKey])
           {
             this.setObjectivesOfType(objectiveTemplates[key]);
           }

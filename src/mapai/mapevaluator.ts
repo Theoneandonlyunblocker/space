@@ -241,7 +241,7 @@ module Rance
           var independentStrength = this.getIndependentStrengthAtStar(star) || 1;
 
           var ownInfluenceMap = this.getPlayerInfluenceMap(this.player);
-          var ownInfluenceAtStar = ownInfluenceMap[star.id] || 0;
+          var ownInfluenceAtStar = ownInfluenceMap[star.id] || 1;
 
           evaluationByStar[star.id] =
           {
@@ -267,7 +267,7 @@ module Rance
         {
           var evaluation = evaluations[starId];
 
-          var easeOfCapturing = Math.log(0.01 + evaluation.ownInfluence / evaluation.independentStrength);
+          var easeOfCapturing = evaluation.ownInfluence / evaluation.independentStrength;
 
           var score = evaluation.desirability * easeOfCapturing;
           if (evaluation.star.getSecondaryController() === this.player)
