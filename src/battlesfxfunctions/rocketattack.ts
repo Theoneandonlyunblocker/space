@@ -58,7 +58,7 @@ module Rance
       }
 
       var startTime = Date.now();
-      var endTime = startTime + props.duration + 250;
+      var endTime = startTime + props.duration;
       var stopSpawningTime = startTime + props.duration / 2;
       var lastTime = startTime;
 
