@@ -13,6 +13,7 @@ module Rance
     } = {};
     unread: Notification[] = [];
     currentTurn: number;
+    isHumanTurn: boolean = true;
     listeners:
     {
       [name: string]: Function[];
@@ -51,17 +52,22 @@ module Rance
         }
       }
     }
-    setTurn(turn: number)
+    setTurn(turn: number, isHumanTurn: boolean)
     {
       this.currentTurn = turn;
+      this.isHumanTurn = isHumanTurn;
       this.byTurn[turn] = [];
     }
-    makeNotification(template: Templates.INotificationTemplate, location: Star, props: any)
+    makeNotification(template: Templates.INotificationTemplate, props: any)
     {
       console.log("makeNotification");
       var notification = new Notification(template, props, this.currentTurn);
 
       this.addNotification(notification);
+      if (this.isHumanTurn)
+      {
+        eventManager.dispatchEvent("updateNotificationLog");
+      }
     }
     addNotification(notification: Notification)
     {

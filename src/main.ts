@@ -260,7 +260,7 @@ module Rance
       if (!this.game.notificationLog)
       {
         this.game.notificationLog = new NotificationLog();
-        this.game.notificationLog.setTurn(this.game.turnNumber);
+        this.game.notificationLog.setTurn(this.game.turnNumber, true);
       }
     }
     initDisplay()

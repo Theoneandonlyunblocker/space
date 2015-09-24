@@ -8,6 +8,7 @@ module Rance
     {
       displayName: "NotificationLog",
       mixins: [React.addons.PureRenderMixin],
+      updateListener: undefined,
 
       getInitialState: function()
       {
@@ -23,6 +24,16 @@ module Rance
         {
           this.scrollTop = undefined;
         }
+      },
+
+      componentDidMount: function()
+      {
+        this.updateListener = eventManager.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
+      },
+
+      componentWillUnmount: function()
+      {
+        eventManager.removeEventListener("updateNotificationLog", this.updateListener);
       },
 
       componentDidUpdate: function()

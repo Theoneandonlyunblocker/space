@@ -9319,6 +9319,18 @@ var Rance;
             this.statusByPlayer[player.id] = DiplomaticState.war;
             player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
             player.diplomacyStatus.updateAttitudes();
+            var playersAreRelevantToHuman = true;
+            [this.player, player].forEach(function (p) {
+                if (app.humanPlayer !== p && !app.humanPlayer.diplomacyStatus.metPlayers[p.id]) {
+                    playersAreRelevantToHuman = false;
+                }
+            });
+            if (playersAreRelevantToHuman) {
+                Rance.eventManager.dispatchEvent("makeWarDeclarationNotification", {
+                    player1: this.player,
+                    player2: player
+                });
+            }
         };
         DiplomacyStatus.prototype.makePeaceWith = function (player) {
             if (this.statusByPlayer[player.id] <= DiplomaticState.peace) {
@@ -9936,6 +9948,7 @@ var Rance;
         function NotificationLog() {
             this.byTurn = {};
             this.unread = [];
+            this.isHumanTurn = true;
             this.listeners = {};
             this.addEventListeners();
         }
@@ -9959,14 +9972,18 @@ var Rance;
                 }
             }
         };
-        NotificationLog.prototype.setTurn = function (turn) {
+        NotificationLog.prototype.setTurn = function (turn, isHumanTurn) {
             this.currentTurn = turn;
+            this.isHumanTurn = isHumanTurn;
             this.byTurn[turn] = [];
         };
-        NotificationLog.prototype.makeNotification = function (template, location, props) {
+        NotificationLog.prototype.makeNotification = function (template, props) {
             console.log("makeNotification");
             var notification = new Rance.Notification(template, props, this.currentTurn);
             this.addNotification(notification);
+            if (this.isHumanTurn) {
+                Rance.eventManager.dispatchEvent("updateNotificationLog");
+            }
         };
         NotificationLog.prototype.addNotification = function (notification) {
             if (!this.byTurn[notification.turn]) {
@@ -10028,7 +10045,7 @@ var Rance;
                 for (var i = 0; i < this.independents.length; i++) {
                     this.processPlayerStartTurn(this.independents[i]);
                 }
-                this.notificationLog.setTurn(this.turnNumber);
+                this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
             }
             Rance.eventManager.dispatchEvent("endTurn", null);
             Rance.eventManager.dispatchEvent("updateSelection", null);
@@ -12123,7 +12140,7 @@ var Rance;
                 Rance.eventManager.dispatchEvent("switchScene", "galaxyMap");
             }
             if (app.humanPlayer.starIsVisible(this.battleData.location)) {
-                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", this.battleData.location, {
+                Rance.eventManager.dispatchEvent("makeBattleFinishNotification", {
                     location: this.battleData.location,
                     attacker: this.battleData.attacker.player,
                     defender: this.battleData.defender.player,
@@ -13899,6 +13916,7 @@ var Rance;
         UIComponents.NotificationLog = React.createClass({
             displayName: "NotificationLog",
             mixins: [React.addons.PureRenderMixin],
+            updateListener: undefined,
             getInitialState: function () {
                 return ({});
             },
@@ -13906,6 +13924,12 @@ var Rance;
                 if (newProps.currentTurn !== this.props.currentTurn) {
                     this.scrollTop = undefined;
                 }
+            },
+            componentDidMount: function () {
+                this.updateListener = Rance.eventManager.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
+            },
+            componentWillUnmount: function () {
+                Rance.eventManager.removeEventListener("updateNotificationLog", this.updateListener);
             },
             componentDidUpdate: function () {
                 var domNode = this.getDOMNode();
@@ -21753,6 +21777,64 @@ var Rance;
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
     })(Modules = Rance.Modules || (Rance.Modules = {}));
 })(Rance || (Rance = {}));
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var UIComponents;
+            (function (UIComponents) {
+                UIComponents.WarDeclarationNotification = React.createClass({
+                    displayName: "WarDeclarationNotification",
+                    render: function () {
+                        var notification = this.props.notification;
+                        var p = notification.props;
+                        return (React.DOM.div({
+                            className: "war-declaration-notification draggable-container"
+                        }, null));
+                    }
+                });
+            })(UIComponents = DefaultModule.UIComponents || (DefaultModule.UIComponents = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/inotificationtemplate.d.ts"/>
+/// <reference path="uicomponents/wardeclarationnotification.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Notifications;
+            (function (Notifications) {
+                Notifications.WarDeclarationNotification = {
+                    key: "WarDeclarationNotification",
+                    iconSrc: "img\/resources\/test2.png",
+                    eventListeners: ["makeWarDeclarationNotification"],
+                    contentConstructor: DefaultModule.UIComponents.WarDeclarationNotification,
+                    messageConstructor: function (props) {
+                        var message = props.player1.name + " declared war on " + props.player2.name;
+                        return message;
+                    },
+                    serializeProps: function (props) {
+                        return ({
+                            player1Id: props.player1.id,
+                            player2Id: props.player2.id,
+                        });
+                    },
+                    deserializeProps: function (props, gameLoader) {
+                        return ({
+                            player1: gameLoader.playersById[props.player1Id],
+                            player2: gameLoader.playersById[props.player2Id],
+                        });
+                    }
+                };
+            })(Notifications = DefaultModule.Notifications || (DefaultModule.Notifications = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
 /// <reference path="../../src/moduledata.ts" />
 /// <reference path="../../src/spritesheetcachingfunctions.ts" />
 /// <reference path="graphics/drawnebula.ts" />
@@ -21779,6 +21861,7 @@ var Rance;
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
+/// <reference path="notifications/wardeclarationnotification.ts" />
 var Rance;
 (function (Rance) {
     var Modules;
@@ -21962,6 +22045,7 @@ var Rance;
             game.turnNumber = data.turnNumber;
             if (data.notificationLog) {
                 game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
+                game.notificationLog.setTurn(game.turnNumber, true);
             }
             return game;
         };
@@ -22507,7 +22591,7 @@ var Rance;
             }
             if (!this.game.notificationLog) {
                 this.game.notificationLog = new Rance.NotificationLog();
-                this.game.notificationLog.setTurn(this.game.turnNumber);
+                this.game.notificationLog.setTurn(this.game.turnNumber, true);
             }
         };
         App.prototype.initDisplay = function () {

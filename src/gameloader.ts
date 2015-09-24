@@ -70,6 +70,7 @@ module Rance
       if (data.notificationLog)
       {
         game.notificationLog = this.deserializeNotificationLog(data.notificationLog);
+        game.notificationLog.setTurn(game.turnNumber, true);
       }
 
       return game;

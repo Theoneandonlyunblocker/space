@@ -29,6 +29,8 @@
 /// <reference path="ai/cleanupobjective.ts" />
 
 /// <reference path="notifications/battlefinishnotification.ts" />
+/// <reference path="notifications/wardeclarationnotification.ts" />
+
 
 module Rance
 {

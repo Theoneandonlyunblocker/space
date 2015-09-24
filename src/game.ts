@@ -46,7 +46,7 @@ module Rance
           this.processPlayerStartTurn(this.independents[i]);
         }
 
-        this.notificationLog.setTurn(this.turnNumber);
+        this.notificationLog.setTurn(this.turnNumber, !this.activePlayer.isAI);
       }
 
       eventManager.dispatchEvent("endTurn", null);

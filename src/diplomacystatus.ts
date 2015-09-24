@@ -108,6 +108,25 @@ module Rance
       player.diplomacyStatus.statusByPlayer[this.player.id] = DiplomaticState.war;
 
       player.diplomacyStatus.updateAttitudes();
+
+      var playersAreRelevantToHuman = true;
+
+      [this.player, player].forEach(function(p: Player)
+      {
+        if (app.humanPlayer !== p && !app.humanPlayer.diplomacyStatus.metPlayers[p.id])
+        {
+          playersAreRelevantToHuman = false;
+        }
+      });
+
+      if (playersAreRelevantToHuman)
+      {
+        eventManager.dispatchEvent("makeWarDeclarationNotification",
+        {
+          player1: this.player,
+          player2: player
+        });
+      }
     }
 
     makePeaceWith(player: Player)

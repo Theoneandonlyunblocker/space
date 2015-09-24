@@ -405,7 +405,7 @@ module Rance
 
       if (app.humanPlayer.starIsVisible(this.battleData.location))
       {
-        eventManager.dispatchEvent("makeBattleFinishNotification", this.battleData.location,
+        eventManager.dispatchEvent("makeBattleFinishNotification",
         {
           location: this.battleData.location,
           attacker: this.battleData.attacker.player,

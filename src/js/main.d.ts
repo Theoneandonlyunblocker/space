@@ -1223,14 +1223,15 @@ declare module Rance {
         };
         unread: Notification[];
         currentTurn: number;
+        isHumanTurn: boolean;
         listeners: {
             [name: string]: Function[];
         };
         constructor();
         addEventListeners(): void;
         destroy(): void;
-        setTurn(turn: number): void;
-        makeNotification(template: Templates.INotificationTemplate, location: Star, props: any): void;
+        setTurn(turn: number, isHumanTurn: boolean): void;
+        makeNotification(template: Templates.INotificationTemplate, props: any): void;
         addNotification(notification: Notification): void;
         markAsRead(notification: Notification): void;
         getUnreadNotificationsForTurn(turn: number): Notification[];
@@ -3065,6 +3066,24 @@ declare module Rance {
         module DefaultModule {
             module Notifications {
                 var battleFinishNotification: Rance.Templates.INotificationTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module UIComponents {
+                var WarDeclarationNotification: React.Factory<{}>;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Notifications {
+                var WarDeclarationNotification: Rance.Templates.INotificationTemplate;
             }
         }
     }
