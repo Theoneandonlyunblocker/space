@@ -877,7 +877,7 @@ module Rance
         {
           var star = stars[i];
 
-          var danger = enemyInfluence[star.id];
+          var danger = enemyInfluence[star.id] || 1;
           if (!enemyVision.visible[star.id])
           {
             danger *= 0.5;

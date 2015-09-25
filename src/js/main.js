@@ -10804,7 +10804,7 @@ var Rance;
                 }, this);
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
-                    var danger = enemyInfluence[star.id];
+                    var danger = enemyInfluence[star.id] || 1;
                     if (!enemyVision.visible[star.id]) {
                         danger *= 0.5;
                     }
@@ -19033,8 +19033,19 @@ var Rance;
                             containerGfx.lineStyle(1, 0x00000, 1);
                             // debug
                             var front = fleet.ships[0].front;
-                            if (front && front.objective.type === "discovery") {
-                                containerGfx.lineStyle(1, 0xFF0000, 1);
+                            if (front) {
+                                switch (front.objective.type) {
+                                    case "discovery":
+                                        {
+                                            containerGfx.lineStyle(1, 0xFF0000, 1);
+                                            break;
+                                        }
+                                    case "perimeter":
+                                        {
+                                            containerGfx.lineStyle(1, 0x0000FF, 1);
+                                            break;
+                                        }
+                                }
                             }
                             // end debug
                             containerGfx.beginFill(color, fillAlpha);
@@ -21319,8 +21330,8 @@ var Rance;
                 (function (UnitArchetypes) {
                     UnitArchetypes.combat = {
                         type: "combat",
-                        idealWeightInBattle: 0.75,
-                        idealWeightInFleet: 0.75,
+                        idealWeightInBattle: 1,
+                        idealWeightInFleet: 1,
                         rowScores: {
                             ROW_FRONT: 1,
                             ROW_BACK: 0.6
@@ -21329,7 +21340,7 @@ var Rance;
                     UnitArchetypes.utility = {
                         type: "utility",
                         idealWeightInBattle: 0.33,
-                        idealWeightInFleet: 0.45,
+                        idealWeightInFleet: 0.5,
                         rowScores: {
                             ROW_FRONT: 0.4,
                             ROW_BACK: 0.6
@@ -21827,6 +21838,50 @@ var Rance;
                     return score;
                 }
                 AIUtils.defaultUnitFitFN = defaultUnitFitFN;
+                function scoutingUnitDesireFN(front) {
+                    if (front.units.length < 1)
+                        return 1;
+                    else
+                        return 0;
+                }
+                AIUtils.scoutingUnitDesireFN = scoutingUnitDesireFN;
+                function scoutingUnitFitFN(unit, front) {
+                    var baseScore = 0;
+                    // ++ stealth
+                    var isStealthy = unit.isStealthy();
+                    if (isStealthy)
+                        baseScore += 0.2;
+                    // ++ vision
+                    var visionRange = unit.getVisionRange();
+                    if (visionRange <= 0) {
+                        return -1;
+                    }
+                    else {
+                        baseScore += Math.pow(visionRange, 1.5) / 2;
+                    }
+                    // -- strength
+                    var strength = unit.getStrengthEvaluation();
+                    baseScore -= strength / 1000;
+                    // -- cost
+                    var cost = unit.getTotalCost();
+                    baseScore -= cost / 1000;
+                    var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 1);
+                    return Rance.clamp(score, 0, 1);
+                }
+                AIUtils.scoutingUnitFitFN = scoutingUnitFitFN;
+                function mergeScoresByStar(merged, scores) {
+                    for (var i = 0; i < scores.length; i++) {
+                        var star = scores[i].star;
+                        if (!merged[star.id]) {
+                            merged[star.id] = scores[i];
+                        }
+                        else {
+                            merged[star.id].score += scores[i].score;
+                        }
+                    }
+                    return merged;
+                }
+                AIUtils.mergeScoresByStar = mergeScoresByStar;
                 function makeObjectivesFromScores(template, evaluationScores, basePriority) {
                     var allObjectives = [];
                     var minScore = 0;
@@ -21838,7 +21893,7 @@ var Rance;
                     for (var i = 0; i < evaluationScores.length; i++) {
                         var star = evaluationScores[i].star || null;
                         var player = evaluationScores[i].player || null;
-                        if (score < 0)
+                        if (score < 0.04)
                             continue;
                         var relativeScore = Rance.getRelativeValue(evaluationScores[i].score, minScore, maxScore);
                         var priority = relativeScore * basePriority;
@@ -21887,35 +21942,8 @@ var Rance;
                         scouting: 1
                     },
                     moveRoutineFN: DefaultModule.AIUtils.moveToRoutine,
-                    unitDesireFN: function (front) {
-                        if (front.units.length < 1)
-                            return 1;
-                        else
-                            return 0;
-                    },
-                    unitFitFN: function (unit, front) {
-                        var baseScore = 0;
-                        // ++ stealth
-                        var isStealthy = unit.isStealthy();
-                        if (isStealthy)
-                            baseScore += 0.2;
-                        // ++ vision
-                        var visionRange = unit.getVisionRange();
-                        if (visionRange <= 0) {
-                            return -1;
-                        }
-                        else {
-                            baseScore += Math.pow(visionRange, 1.5) / 2;
-                        }
-                        // -- strength
-                        var strength = unit.getStrengthEvaluation();
-                        baseScore -= strength / 1000;
-                        // -- cost
-                        var cost = unit.getTotalCost();
-                        baseScore -= cost / 1000;
-                        var score = baseScore * DefaultModule.AIUtils.defaultUnitFitFN(unit, front, -1, 0, 1);
-                        return Rance.clamp(score, 0, 1);
-                    },
+                    unitDesireFN: DefaultModule.AIUtils.scoutingUnitDesireFN,
+                    unitFitFN: DefaultModule.AIUtils.scoutingUnitFitFN,
                     creatorFunction: function (grandStrategyAI, mapEvaluator) {
                         var scores = [];
                         var starsWithDistance = {};
@@ -22070,6 +22098,58 @@ var Rance;
                         return DefaultModule.AIUtils.makeObjectivesFromScores(template, scores, basePriority);
                     },
                     unitsToFillObjectiveFN: DefaultModule.AIUtils.getUnitsToFillIndependentObjective
+                };
+            })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
+        })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
+    })(Modules = Rance.Modules || (Rance.Modules = {}));
+})(Rance || (Rance = {}));
+/// <reference path="../../../src/templateinterfaces/iobjectivetemplate.d.ts" />
+/// <reference path="aiutils.ts" />
+var Rance;
+(function (Rance) {
+    var Modules;
+    (function (Modules) {
+        var DefaultModule;
+        (function (DefaultModule) {
+            var Objectives;
+            (function (Objectives) {
+                Objectives.perimeter = {
+                    key: "perimeter",
+                    movePriority: 7,
+                    preferredUnitComposition: {
+                        scouting: 1
+                    },
+                    moveRoutineFN: DefaultModule.AIUtils.moveToRoutine,
+                    unitDesireFN: DefaultModule.AIUtils.scoutingUnitDesireFN,
+                    unitFitFN: DefaultModule.AIUtils.scoutingUnitFitFN,
+                    creatorFunction: function (grandStrategyAI, mapEvaluator) {
+                        var playersToEstablishPerimeterAgainst = [];
+                        var diplomacyStatus = mapEvaluator.player.diplomacyStatus;
+                        var statusByPlayer = diplomacyStatus.statusByPlayer;
+                        for (var playerId in statusByPlayer) {
+                            if (statusByPlayer[playerId] >= Rance.DiplomaticState.war) {
+                                playersToEstablishPerimeterAgainst.push(diplomacyStatus.metPlayers[playerId]);
+                            }
+                        }
+                        var allScoresByStar = {};
+                        for (var i = 0; i < playersToEstablishPerimeterAgainst.length; i++) {
+                            var player = playersToEstablishPerimeterAgainst[i];
+                            var scores = mapEvaluator.getScoredPerimeterLocationsAgainstPlayer(player, 1);
+                            DefaultModule.AIUtils.mergeScoresByStar(allScoresByStar, scores);
+                        }
+                        var allScores = [];
+                        for (var starId in allScoresByStar) {
+                            if (allScoresByStar[starId].score > 0.04) {
+                                allScores.push(allScoresByStar[starId]);
+                            }
+                        }
+                        var template = Rance.Modules.DefaultModule.Objectives.perimeter;
+                        var objectives = DefaultModule.AIUtils.makeObjectivesFromScores(template, allScores, 0.5);
+                        return objectives;
+                    },
+                    unitsToFillObjectiveFN: function (objective) {
+                        return { min: 1, ideal: 1 };
+                    }
                 };
             })(Objectives = DefaultModule.Objectives || (DefaultModule.Objectives = {}));
         })(DefaultModule = Modules.DefaultModule || (Modules.DefaultModule = {}));
@@ -22270,6 +22350,7 @@ var Rance;
 /// <reference path="ai/healobjective.ts" />
 /// <reference path="ai/expansionobjective.ts" />
 /// <reference path="ai/cleanupobjective.ts" />
+/// <reference path="ai/perimeterobjective.ts" />
 /// <reference path="ai/declarewarobjective.ts" />
 /// <reference path="notifications/battlefinishnotification.ts" />
 /// <reference path="notifications/wardeclarationnotification.ts" />

@@ -570,9 +570,21 @@ module Rance
               containerGfx.lineStyle(1, 0x00000, 1);
               // debug
               var front = fleet.ships[0].front;
-              if (front && front.objective.type === "discovery")
+              if (front)
               {
-                containerGfx.lineStyle(1, 0xFF0000, 1);
+                switch (front.objective.type)
+                {
+                  case "discovery":
+                  {
+                    containerGfx.lineStyle(1, 0xFF0000, 1);
+                    break;
+                  }
+                  case "perimeter":
+                  {
+                    containerGfx.lineStyle(1, 0x0000FF, 1);
+                    break;
+                  }
+                }
               }
               // end debug
               containerGfx.beginFill(color, fillAlpha);

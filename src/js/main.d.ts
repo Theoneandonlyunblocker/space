@@ -3077,10 +3077,22 @@ declare module Rance {
     module Modules {
         module DefaultModule {
             module AIUtils {
+                interface IScoresByStar {
+                    [starId: number]: {
+                        star: Star;
+                        score: number;
+                    };
+                }
                 function moveToRoutine(front: MapAI.Front, afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star): void;
                 function musterAndAttackRoutine(front: MapAI.Front, afterMoveCallback: Function): void;
                 function defaultUnitDesireFN(front: MapAI.Front): number;
                 function defaultUnitFitFN(unit: Unit, front: MapAI.Front, lowHealthThreshhold?: number, healthAdjust?: number, distanceAdjust?: number): number;
+                function scoutingUnitDesireFN(front: MapAI.Front): number;
+                function scoutingUnitFitFN(unit: Unit, front: MapAI.Front): number;
+                function mergeScoresByStar(merged: IScoresByStar, scores: {
+                    star: Star;
+                    score: number;
+                }[]): IScoresByStar;
                 function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate, evaluationScores: {
                     star?: Star;
                     player?: Player;
@@ -3126,6 +3138,15 @@ declare module Rance {
         module DefaultModule {
             module Objectives {
                 var cleanUpPirates: Rance.Templates.IObjectiveTemplate;
+            }
+        }
+    }
+}
+declare module Rance {
+    module Modules {
+        module DefaultModule {
+            module Objectives {
+                var perimeter: Rance.Templates.IObjectiveTemplate;
             }
         }
     }

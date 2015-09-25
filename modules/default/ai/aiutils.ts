@@ -6,6 +6,14 @@ module Rance
     {
       export module AIUtils
       {
+        export interface IScoresByStar
+        {
+          [starId: number]:
+          {
+            star: Star;
+            score: number;
+          }
+        }
         export function moveToRoutine(front: MapAI.Front,
           afterMoveCallback: Function, getMoveTargetFN?: (fleet: Fleet) => Star)
         {
@@ -173,6 +181,56 @@ module Rance
 
           return score;
         }
+        export function scoutingUnitDesireFN(front: MapAI.Front)
+        {
+          if (front.units.length < 1) return 1;
+          else return 0;
+        }
+        export function scoutingUnitFitFN(unit: Unit, front: MapAI.Front)
+        {
+          var baseScore = 0;
+          // ++ stealth
+          var isStealthy = unit.isStealthy();
+          if (isStealthy) baseScore += 0.2;
+          // ++ vision
+          var visionRange = unit.getVisionRange();
+          if (visionRange <= 0)
+          {
+            return -1;
+          }
+          else
+          {
+            baseScore += Math.pow(visionRange, 1.5) / 2;
+          }
+
+          // -- strength
+          var strength = unit.getStrengthEvaluation();
+          baseScore -= strength / 1000;
+          // -- cost
+          var cost = unit.getTotalCost();
+          baseScore -= cost / 1000;
+
+          var score = baseScore * defaultUnitFitFN(unit, front, -1, 0, 1);
+
+          return clamp(score, 0, 1);
+        }
+        export function mergeScoresByStar(merged: IScoresByStar, scores: {star: Star; score: number;}[])
+        {
+          for (var i = 0; i < scores.length; i++)
+          {
+            var star = scores[i].star;
+            if (!merged[star.id])
+            {
+              merged[star.id] = scores[i];
+            }
+            else
+            {
+              merged[star.id].score += scores[i].score;
+            }
+          }
+
+          return merged;
+        }
         export function makeObjectivesFromScores(template: Rance.Templates.IObjectiveTemplate,
           evaluationScores: {star?: Star; player?: Player; score: number;}[], basePriority: number)
         {
@@ -191,7 +249,7 @@ module Rance
           {
             var star = evaluationScores[i].star || null;
             var player = evaluationScores[i].player || null;
-            if (score < 0) continue;
+            if (score < 0.04) continue;
             var relativeScore = getRelativeValue(evaluationScores[i].score, minScore, maxScore);
             var priority = relativeScore * basePriority;
 
