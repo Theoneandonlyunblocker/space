@@ -55,6 +55,13 @@ module Rance
           [playerId: number]: Fleet[];
         }
       } = {};
+      cachedDetectionMaps:
+      {
+        [playerId: number]:
+        {
+          [starId: number]: Star;
+        }
+      } = {};
       cachedOwnIncome: number;
       evaluationParameters:
       {
@@ -85,6 +92,7 @@ module Rance
       {
         this.cachedInfluenceMaps = {};
         this.cachedVisibleFleets = {};
+        this.cachedDetectionMaps = {};
         this.cachedOwnIncome = undefined;
       }
 
@@ -722,6 +730,70 @@ module Rance
         }
 
         return relative;
+      }
+      getVisionCoverageAroundStar(star: Star, range: number, useDetection: boolean = false)
+      {
+        var toCheck = star.getLinkedInRange(range).byRange;
+        var coverageScore: number = 0;
+        var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
+
+        for (var distanceString in toCheck)
+        {
+          var scorePerVisibleStar = 1 / toCheck[distanceString].length;
+
+          for (var i = 0; i < toCheck[distanceString].length; i++)
+          {
+            var neighbor = toCheck[distanceString][i];
+            if (visibilityCheckFN(neighbor))
+            {
+              coverageScore += scorePerVisibleStar;
+            }
+            else
+            {
+              coverageScore -= scorePerVisibleStar;
+            }
+          }
+        }
+
+        return coverageScore;
+      }
+      buildPlayerDetectionMap(player: Player)
+      {
+        var detectedStars:
+        {
+          [starId: number]: Star;
+        } = {};
+
+        var revealedStarsOfPlayer: Star[] = this.player.getRevealedStars().filter(function(star: Star)
+        {
+          return star.owner === player;
+        });
+        var visibleFleetsOfPlayer: Fleet[] = this.getVisibleFleetsByPlayer()[player.id] || [];
+
+        var detectionSources: Array<Fleet|Star> = [];
+        detectionSources = detectionSources.concat(revealedStarsOfPlayer); // cant concat the 2 because
+        detectionSources = detectionSources.concat(visibleFleetsOfPlayer); // weird typing
+
+        for (var i = 0; i < detectionSources.length; i++)
+        {
+          var source = detectionSources[i];
+          var detected = source.getDetection();
+
+          for (var j = 0; j < detected.length; j++)
+          {
+            var star = detected[j];
+            if (!detectedStars[star.id])
+            {
+              detectedStars[star.id] = star;
+            }
+          }
+        }
+
+        return detectedStars;
+      }
+      getScoredPerimeterLocationsAgainstPlayer(player: Player)
+      {
+        var influence = this.getPlayerInfluenceMap(player);
       }
       getDesireToGoToWarWith(player: Player)
       {
