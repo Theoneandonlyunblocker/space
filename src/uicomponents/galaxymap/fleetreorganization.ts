@@ -103,9 +103,9 @@ module Rance
                 fleet: selectedFleets[0],
 
                 onMouseUp: this.handleDrop,
-
                 onDragStart: this.handleDragStart,
-                onDragEnd: this.handleDragEnd
+                onDragEnd: this.handleDragEnd,
+                player: selectedFleets[0].player
               }),
               React.DOM.div(
               {
@@ -116,9 +116,9 @@ module Rance
                 fleet: selectedFleets[1],
 
                 onMouseUp: this.handleDrop,
-
                 onDragStart: this.handleDragStart,
-                onDragEnd: this.handleDragEnd
+                onDragEnd: this.handleDragEnd,
+                player: selectedFleets[0].player
               })
             ),
             React.DOM.div(
