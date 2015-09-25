@@ -114,7 +114,7 @@ module Rance
     }
     getUnMetPlayerCount()
     {
-      return Object.keys(this.metPlayers).length - app.game.playerOrder.length;
+      return app.game.playerOrder.length - Object.keys(this.metPlayers).length;
     }
     meetPlayer(player: Player)
     {
