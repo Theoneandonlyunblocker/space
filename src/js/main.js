@@ -5601,9 +5601,11 @@ var Rance;
             render: function () {
                 var resources = [];
                 var resourceIncome = this.props.player.getResourceIncome();
-                for (var resourceType in this.props.player.resources) {
-                    var amount = this.props.player.resources[resourceType];
-                    var income = resourceIncome[resourceType].amount;
+                var resourceTypes = Object.keys(resourceIncome).concat(Object.keys(this.props.player.resources));
+                for (var i = 0; i < resourceTypes.length; i++) {
+                    var resourceType = resourceTypes[i];
+                    var amount = this.props.player.resources[resourceType] || 0;
+                    var income = resourceIncome[resourceType].amount || 0;
                     if (amount === 0 && income === 0)
                         continue;
                     var resourceData = {
@@ -5634,7 +5636,6 @@ var Rance;
                 var incomeClass = "top-bar-money-income";
                 if (income < 0)
                     incomeClass += " negative";
-                console.trace();
                 return (React.DOM.div({
                     className: "top-bar"
                 }, React.DOM.div({
