@@ -1331,9 +1331,14 @@ declare module Rance {
                     [playerId: number]: Fleet[];
                 };
             };
-            cachedDetectionMaps: {
+            cachedVisionMaps: {
                 [playerId: number]: {
-                    [starId: number]: Star;
+                    visible: {
+                        [starId: number]: Star;
+                    };
+                    detected: {
+                        [starId: number]: Star;
+                    };
                 };
             };
             cachedOwnIncome: number;
@@ -1405,10 +1410,29 @@ declare module Rance {
                 [playerId: number]: number;
             };
             getVisionCoverageAroundStar(star: Star, range: number, useDetection?: boolean): number;
-            buildPlayerDetectionMap(player: Player): {
-                [starId: number]: Star;
+            estimateFleetRange(fleet: Fleet, baseRange: number, afterSixUnits: number, getRangeFNName: string): number;
+            estimateFleetVisionRange(fleet: Fleet): number;
+            estimateFleetDetectionRange(fleet: Fleet): number;
+            buildPlayerVisionMap(player: Player): {
+                visible: {
+                    [starId: number]: Star;
+                };
+                detected: {
+                    [starId: number]: Star;
+                };
             };
-            getScoredPerimeterLocationsAgainstPlayer(player: Player): void;
+            getPlayerVisionMap(player: Player): {
+                visible: {
+                    [starId: number]: Star;
+                };
+                detected: {
+                    [starId: number]: Star;
+                };
+            };
+            getScoredPerimeterLocationsAgainstPlayer(player: Player, safetyFactor: number): {
+                score: number;
+                star: Star;
+            }[];
             getDesireToGoToWarWith(player: Player): number;
             getAbilityToGoToWarWith(player: Player): number;
             getDiplomacyEvaluations(currentTurn: number): {

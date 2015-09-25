@@ -10311,7 +10311,7 @@ var Rance;
             function MapEvaluator(map, player, game) {
                 this.cachedInfluenceMaps = {};
                 this.cachedVisibleFleets = {};
-                this.cachedDetectionMaps = {};
+                this.cachedVisionMaps = {};
                 this.map = map;
                 this.player = player;
                 this.game = game;
@@ -10320,7 +10320,7 @@ var Rance;
             MapEvaluator.prototype.processTurnStart = function () {
                 this.cachedInfluenceMaps = {};
                 this.cachedVisibleFleets = {};
-                this.cachedDetectionMaps = {};
+                this.cachedVisionMaps = {};
                 this.cachedOwnIncome = undefined;
             };
             MapEvaluator.prototype.evaluateStarIncome = function (star) {
@@ -10714,46 +10714,109 @@ var Rance;
             };
             MapEvaluator.prototype.getVisionCoverageAroundStar = function (star, range, useDetection) {
                 if (useDetection === void 0) { useDetection = false; }
-                var toCheck = star.getLinkedInRange(range).byRange;
+                var toCheck = star.getLinkedInRange(range).all;
+                var scorePerVisibleStar = 1 / toCheck.length;
                 var coverageScore = 0;
                 var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
-                for (var distanceString in toCheck) {
-                    var scorePerVisibleStar = 1 / toCheck[distanceString].length;
-                    for (var i = 0; i < toCheck[distanceString].length; i++) {
-                        var neighbor = toCheck[distanceString][i];
-                        if (visibilityCheckFN(neighbor)) {
-                            coverageScore += scorePerVisibleStar;
-                        }
-                        else {
-                            coverageScore -= scorePerVisibleStar;
-                        }
+                for (var i = 0; i < toCheck.length; i++) {
+                    var neighbor = toCheck[i];
+                    if (visibilityCheckFN.call(this.player, neighbor)) {
+                        coverageScore += scorePerVisibleStar;
                     }
                 }
                 return coverageScore;
             };
-            MapEvaluator.prototype.buildPlayerDetectionMap = function (player) {
+            MapEvaluator.prototype.estimateFleetRange = function (fleet, baseRange, afterSixUnits, getRangeFNName) {
+                var range = baseRange;
+                if (fleet.ships.length >= 6) {
+                    range += afterSixUnits;
+                }
+                for (var i = 0; i < fleet.ships.length; i++) {
+                    var unit = fleet.ships[i];
+                    if (this.player.unitIsIdentified(unit)) {
+                        range = Math.max(range, unit[getRangeFNName]());
+                    }
+                }
+                return range;
+            };
+            MapEvaluator.prototype.estimateFleetVisionRange = function (fleet) {
+                return this.estimateFleetRange(fleet, 1, 1, "getVisionRange");
+            };
+            MapEvaluator.prototype.estimateFleetDetectionRange = function (fleet) {
+                return this.estimateFleetRange(fleet, -1, 1, "getDetectionRange");
+            };
+            MapEvaluator.prototype.buildPlayerVisionMap = function (player) {
                 var detectedStars = {};
+                var visibleStars = {};
                 var revealedStarsOfPlayer = this.player.getRevealedStars().filter(function (star) {
                     return star.owner === player;
                 });
                 var visibleFleetsOfPlayer = this.getVisibleFleetsByPlayer()[player.id] || [];
-                var detectionSources = [];
-                detectionSources = detectionSources.concat(revealedStarsOfPlayer); // cant concat the 2 because
-                detectionSources = detectionSources.concat(visibleFleetsOfPlayer); // weird typing
-                for (var i = 0; i < detectionSources.length; i++) {
-                    var source = detectionSources[i];
-                    var detected = source.getDetection();
-                    for (var j = 0; j < detected.length; j++) {
-                        var star = detected[j];
+                var processDetectionSource = function (source, detectionRange, visionRange) {
+                    var detected = source.getLinkedInRange(detectionRange).all;
+                    for (var i = 0; i < detected.length; i++) {
+                        var star = detected[i];
                         if (!detectedStars[star.id]) {
                             detectedStars[star.id] = star;
                         }
                     }
+                    var visible = source.getLinkedInRange(visionRange).all;
+                    for (var i = 0; i < visible.length; i++) {
+                        var star = visible[i];
+                        if (!visibleStars[star.id]) {
+                            visibleStars[star.id] = star;
+                        }
+                    }
+                };
+                for (var i = 0; i < revealedStarsOfPlayer.length; i++) {
+                    var star = revealedStarsOfPlayer[i];
+                    var detectionRange = this.player.starIsDetected(star) ? star.getDetectionRange() : 0;
+                    var visionRange = this.player.starIsDetected(star) ? star.getVisionRange() : 1;
+                    processDetectionSource(star, detectionRange, visionRange);
                 }
-                return detectedStars;
+                for (var i = 0; i < visibleFleetsOfPlayer.length; i++) {
+                    var fleet = visibleFleetsOfPlayer[i];
+                    var detectionRange = this.estimateFleetDetectionRange(fleet);
+                    var visionRange = this.estimateFleetVisionRange(fleet);
+                    processDetectionSource(fleet.location, detectionRange, visionRange);
+                }
+                return ({
+                    visible: visibleStars,
+                    detected: detectedStars
+                });
             };
-            MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player) {
-                var influence = this.getPlayerInfluenceMap(player);
+            MapEvaluator.prototype.getPlayerVisionMap = function (player) {
+                if (!this.cachedVisionMaps[player.id]) {
+                    this.cachedVisionMaps[player.id] = this.buildPlayerVisionMap(player);
+                }
+                return this.cachedVisionMaps[player.id];
+            };
+            MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player, safetyFactor) {
+                var ownInfluence = this.getPlayerInfluenceMap(this.player);
+                var enemyInfluence = this.getPlayerInfluenceMap(player);
+                var enemyVision = this.getPlayerVisionMap(player);
+                var scores = [];
+                var revealedStars = this.player.getRevealedStars();
+                var stars = revealedStars.filter(function (star) {
+                    return star.owner.isIndependent || star.owner === this.player;
+                }, this);
+                for (var i = 0; i < stars.length; i++) {
+                    var star = stars[i];
+                    var danger = enemyInfluence[star.id];
+                    if (!enemyVision.visible[star.id]) {
+                        danger *= 0.5;
+                    }
+                    danger *= safetyFactor;
+                    var safety = ownInfluence[star.id] / danger;
+                    var vision = this.getVisionCoverageAroundStar(star, 2);
+                    var lackOfVision = 1 - vision;
+                    var score = lackOfVision * safety;
+                    scores.push({
+                        star: star,
+                        score: score
+                    });
+                }
+                return scores;
             };
             MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
                 // potential gain
