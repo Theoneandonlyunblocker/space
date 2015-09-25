@@ -58,6 +58,8 @@ module Rance
         var playerData = data.players[i];
         this.deserializeDiplomacyStatus(this.playersById[playerData.id], 
           playerData.diplomacyStatus);
+        this.deserializeIdentifiedUnits(this.playersById[playerData.id],
+          playerData.identifiedUnitIds);
       }
 
       this.humanPlayer = this.playersById[data.humanPlayerId];
@@ -243,13 +245,6 @@ module Rance
         player.addFleet(this.deserializeFleet(player, fleet));
       }
 
-      // identified units
-      for (var i = 0; i < data.identifiedUnitIds.length; i++)
-      {
-        var unit = this.unitsById[data.identifiedUnitIds[i]];
-        player.identifyUnit(unit);
-      }
-
       // stars
       for (var i = 0; i < data.controlledLocationIds.length; i++)
       {
@@ -304,6 +299,17 @@ module Rance
 
             player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
           }
+        }
+      }
+    }
+    deserializeIdentifiedUnits(player: Player, data: number[])
+    {
+      for (var i = 0; i < data.length; i++)
+      {
+        var unit = this.unitsById[data[i]];
+        if (unit)
+        {
+          player.identifyUnit(unit);
         }
       }
     }
