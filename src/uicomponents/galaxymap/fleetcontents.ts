@@ -26,15 +26,16 @@ module Rance
 
         for (var i = 0; i < this.props.fleet.ships.length; i++)
         {
+          var ship = this.props.fleet.ships[i];
           shipInfos.push(UIComponents.ShipInfo(
           {
-            key: this.props.fleet.ships[i].id,
-            ship: this.props.fleet.ships[i],
+            key: ship.id,
+            ship: ship,
             isDraggable: hasDraggableContent,
             onDragStart: this.props.onDragStart,
             onDragMove: this.props.onDragMove,
             onDragEnd: this.props.onDragEnd,
-            isNotDetected: this.props.isNotDetected
+            isIdentified: Boolean(this.props.player.identifiedUnits[ship.id])
           }));
         }
 

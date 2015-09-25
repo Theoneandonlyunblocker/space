@@ -5727,8 +5727,6 @@ var Rance;
                     onChange: isNotDetected ? null : this.setFleetName,
                     readOnly: isNotDetected
                 }), React.DOM.div({
-                    className: "fleet-info-shipcount"
-                }, isNotDetected ? "?" : fleet.ships.length), React.DOM.div({
                     className: "fleet-info-strength"
                 }, React.DOM.span({
                     className: "fleet-info-strength-current" + healthStatus
@@ -5790,7 +5788,7 @@ var Rance;
             },
             render: function () {
                 var ship = this.props.ship;
-                var isNotDetected = this.props.isNotDetected;
+                var isNotDetected = !this.props.isIdentified;
                 var divProps = {
                     className: "ship-info"
                 };
@@ -5842,14 +5840,15 @@ var Rance;
                 var hasDraggableContent = (this.props.onDragStart ||
                     this.props.onDragEnd);
                 for (var i = 0; i < this.props.fleet.ships.length; i++) {
+                    var ship = this.props.fleet.ships[i];
                     shipInfos.push(UIComponents.ShipInfo({
-                        key: this.props.fleet.ships[i].id,
-                        ship: this.props.fleet.ships[i],
+                        key: ship.id,
+                        ship: ship,
                         isDraggable: hasDraggableContent,
                         onDragStart: this.props.onDragStart,
                         onDragMove: this.props.onDragMove,
                         onDragEnd: this.props.onDragEnd,
-                        isNotDetected: this.props.isNotDetected
+                        isIdentified: Boolean(this.props.player.identifiedUnits[ship.id])
                     }));
                 }
                 if (hasDraggableContent) {
@@ -6022,12 +6021,13 @@ var Rance;
                 }
                 var fleetInfos = [];
                 for (var i = 0; i < selectedFleets.length; i++) {
+                    var fleet = selectedFleets[i];
                     var infoProps = {
-                        key: selectedFleets[i].id,
-                        fleet: selectedFleets[i],
+                        key: fleet.id,
+                        fleet: fleet,
                         hasMultipleSelected: hasMultipleSelected,
                         isInspecting: this.props.isInspecting,
-                        isNotDetected: this.props.isInspecting && !this.props.player.starIsDetected(selectedFleets[i].location)
+                        isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
                     };
                     fleetInfos.push(UIComponents.FleetInfo(infoProps));
                 }
@@ -6063,7 +6063,7 @@ var Rance;
                 if (!hasMultipleSelected) {
                     fleetContents = UIComponents.FleetContents({
                         fleet: selectedFleets[0],
-                        isNotDetected: this.props.isInspecting && !this.props.player.starIsDetected(selectedFleets[0].location)
+                        player: this.props.player
                     });
                 }
                 var isReorganizing = this.props.currentlyReorganizing.length > 0;
@@ -7140,6 +7140,14 @@ var Rance;
                 return [];
             for (var i = 0; i < fleets.length; i++) {
                 allShips = allShips.concat(fleets[i].ships);
+            }
+            return allShips;
+        };
+        Star.prototype.getAllShips = function () {
+            var allShips = [];
+            for (var playerId in this.fleets) {
+                var fleets = this.fleets[playerId];
+                allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
             }
             return allShips;
         };
@@ -10270,6 +10278,7 @@ var Rance;
             function MapEvaluator(map, player, game) {
                 this.cachedInfluenceMaps = {};
                 this.cachedVisibleFleets = {};
+                this.cachedDetectionMaps = {};
                 this.map = map;
                 this.player = player;
                 this.game = game;
@@ -10278,6 +10287,7 @@ var Rance;
             MapEvaluator.prototype.processTurnStart = function () {
                 this.cachedInfluenceMaps = {};
                 this.cachedVisibleFleets = {};
+                this.cachedDetectionMaps = {};
                 this.cachedOwnIncome = undefined;
             };
             MapEvaluator.prototype.evaluateStarIncome = function (star) {
@@ -10668,6 +10678,49 @@ var Rance;
                     relative[playerId] = Rance.getRelativeValue(byPlayer[playerId], min, max);
                 }
                 return relative;
+            };
+            MapEvaluator.prototype.getVisionCoverageAroundStar = function (star, range, useDetection) {
+                if (useDetection === void 0) { useDetection = false; }
+                var toCheck = star.getLinkedInRange(range).byRange;
+                var coverageScore = 0;
+                var visibilityCheckFN = useDetection ? this.player.starIsDetected : this.player.starIsVisible;
+                for (var distanceString in toCheck) {
+                    var scorePerVisibleStar = 1 / toCheck[distanceString].length;
+                    for (var i = 0; i < toCheck[distanceString].length; i++) {
+                        var neighbor = toCheck[distanceString][i];
+                        if (visibilityCheckFN(neighbor)) {
+                            coverageScore += scorePerVisibleStar;
+                        }
+                        else {
+                            coverageScore -= scorePerVisibleStar;
+                        }
+                    }
+                }
+                return coverageScore;
+            };
+            MapEvaluator.prototype.buildPlayerDetectionMap = function (player) {
+                var detectedStars = {};
+                var revealedStarsOfPlayer = this.player.getRevealedStars().filter(function (star) {
+                    return star.owner === player;
+                });
+                var visibleFleetsOfPlayer = this.getVisibleFleetsByPlayer()[player.id] || [];
+                var detectionSources = [];
+                detectionSources = detectionSources.concat(revealedStarsOfPlayer); // cant concat the 2 because
+                detectionSources = detectionSources.concat(visibleFleetsOfPlayer); // weird typing
+                for (var i = 0; i < detectionSources.length; i++) {
+                    var source = detectionSources[i];
+                    var detected = source.getDetection();
+                    for (var j = 0; j < detected.length; j++) {
+                        var star = detected[j];
+                        if (!detectedStars[star.id]) {
+                            detectedStars[star.id] = star;
+                        }
+                    }
+                }
+                return detectedStars;
+            };
+            MapEvaluator.prototype.getScoredPerimeterLocationsAgainstPlayer = function (player) {
+                var influence = this.getPlayerInfluenceMap(player);
             };
             MapEvaluator.prototype.getDesireToGoToWarWith = function (player) {
                 // potential gain
@@ -11562,6 +11615,7 @@ var Rance;
             this.visibleStars = {};
             this.revealedStars = {};
             this.detectedStars = {};
+            this.identifiedUnits = {};
             this.id = isFinite(id) ? id : Rance.idGenerators.player++;
             this.name = "Player " + this.id;
             this.isAI = isAI;
@@ -11790,6 +11844,10 @@ var Rance;
                         detectionHasChanged = true;
                     }
                 }
+                var unitsToIdentify = star.getAllShips();
+                for (var j = 0; j < unitsToIdentify.length; j++) {
+                    this.identifyUnit(unitsToIdentify[j]);
+                }
             }
             this.visionIsDirty = false;
             if (!visibilityHasChanged) {
@@ -11926,6 +11984,19 @@ var Rance;
             Rance.eventManager.dispatchEvent("playerControlUpdated");
             return unit;
         };
+        Player.prototype.identifyUnit = function (unit) {
+            if (!this.identifiedUnits[unit.id]) {
+                this.identifiedUnits[unit.id] = unit;
+            }
+        };
+        Player.prototype.fleetIsFullyIdentified = function (fleet) {
+            for (var i = 0; i < fleet.ships.length; i++) {
+                if (!this.identifiedUnits[fleet.ships[i].id]) {
+                    return false;
+                }
+            }
+            return true;
+        };
         Player.prototype.addItem = function (item) {
             this.items.push(item);
         };
@@ -12017,7 +12088,11 @@ var Rance;
             data.items = this.items.map(function (item) { return item.serialize(); });
             data.revealedStarIds = [];
             for (var id in this.revealedStars) {
-                data.revealedStarIds.push(parseInt(id));
+                data.revealedStarIds.push(this.revealedStars[id].id);
+            }
+            data.identifiedUnitIds = [];
+            for (var id in this.identifiedUnits) {
+                data.identifiedUnitIds.push(this.identifiedUnits[id].id);
             }
             if (this.isAI && this.AIController) {
                 data.personality = Rance.extendObject(this.AIController.personality);
@@ -22371,6 +22446,11 @@ var Rance;
             for (var i = 0; i < data.fleets.length; i++) {
                 var fleet = data.fleets[i];
                 player.addFleet(this.deserializeFleet(player, fleet));
+            }
+            // identified units
+            for (var i = 0; i < data.identifiedUnitIds.length; i++) {
+                var unit = this.unitsById[data.identifiedUnitIds[i]];
+                player.identifyUnit(unit);
             }
             // stars
             for (var i = 0; i < data.controlledLocationIds.length; i++) {

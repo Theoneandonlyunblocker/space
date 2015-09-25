@@ -703,6 +703,7 @@ declare module Rance {
         removeFleet(fleet: Fleet): boolean;
         removeFleets(fleets: Fleet[]): void;
         getAllShipsOfPlayer(player: Player): Unit[];
+        getAllShips(): Unit[];
         getIndependentShips(): Unit[];
         getTargetsForPlayer(player: Player): {
             type: string;
@@ -1326,6 +1327,11 @@ declare module Rance {
                     [playerId: number]: Fleet[];
                 };
             };
+            cachedDetectionMaps: {
+                [playerId: number]: {
+                    [starId: number]: Star;
+                };
+            };
             cachedOwnIncome: number;
             evaluationParameters: {
                 starDesirability: {
@@ -1394,6 +1400,11 @@ declare module Rance {
             getRelativePerceivedThreatOfAllKnownPlayers(): {
                 [playerId: number]: number;
             };
+            getVisionCoverageAroundStar(star: Star, range: number, useDetection?: boolean): number;
+            buildPlayerDetectionMap(player: Player): {
+                [starId: number]: Star;
+            };
+            getScoredPerimeterLocationsAgainstPlayer(player: Player): void;
             getDesireToGoToWarWith(player: Player): number;
             getAbilityToGoToWarWith(player: Player): number;
             getDiplomacyEvaluations(currentTurn: number): {
@@ -1616,6 +1627,9 @@ declare module Rance {
         detectedStars: {
             [id: number]: Star;
         };
+        identifiedUnits: {
+            [id: number]: Unit;
+        };
         constructor(isAI: boolean, id?: number);
         destroy(): void;
         makeColorScheme(): void;
@@ -1659,6 +1673,8 @@ declare module Rance {
             [starId: number]: Star[];
         };
         buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
+        identifyUnit(unit: Unit): void;
+        fleetIsFullyIdentified(fleet: Fleet): boolean;
         addItem(item: Item): void;
         removeItem(item: Item): void;
         getAllBuildableItems(): {

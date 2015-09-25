@@ -98,13 +98,14 @@ module Rance
 
         for (var i = 0; i < selectedFleets.length; i++)
         {
+          var fleet = selectedFleets[i];
           var infoProps: any =
           {
-            key: selectedFleets[i].id,
-            fleet: selectedFleets[i],
+            key: fleet.id,
+            fleet: fleet,
             hasMultipleSelected: hasMultipleSelected,
             isInspecting: this.props.isInspecting,
-            isNotDetected: this.props.isInspecting && !this.props.player.starIsDetected(selectedFleets[i].location)
+            isNotDetected: this.props.isInspecting && !this.props.player.fleetIsFullyIdentified(fleet)
           };
 
           fleetInfos.push(UIComponents.FleetInfo(infoProps));
@@ -166,7 +167,7 @@ module Rance
           fleetContents = UIComponents.FleetContents(
           {
             fleet: selectedFleets[0],
-            isNotDetected: this.props.isInspecting && !this.props.player.starIsDetected(selectedFleets[0].location)
+            player: this.props.player
           });
         }
 

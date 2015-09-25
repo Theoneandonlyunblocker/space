@@ -57,6 +57,10 @@ module Rance
     {
       [id: number]: Star;
     } = {};
+    identifiedUnits:
+    {
+      [id: number]: Unit;
+    } = {};
 
     constructor(isAI: boolean, id?: number)
     {
@@ -391,6 +395,11 @@ module Rance
             detectionHasChanged = true;
           }
         }
+        var unitsToIdentify = star.getAllShips();
+        for (var j = 0; j < unitsToIdentify.length; j++)
+        {
+          this.identifyUnit(unitsToIdentify[j]);
+        }
       }
 
       this.visionIsDirty = false;
@@ -576,6 +585,25 @@ module Rance
 
       return unit;
     }
+    identifyUnit(unit: Unit)
+    {
+      if (!this.identifiedUnits[unit.id])
+      {
+        this.identifiedUnits[unit.id] = unit;
+      }
+    }
+    fleetIsFullyIdentified(fleet: Fleet)
+    {
+      for (var i = 0; i < fleet.ships.length; i++)
+      {
+        if (!this.identifiedUnits[fleet.ships[i].id])
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
     addItem(item: Item)
     {
       this.items.push(item);
@@ -701,7 +729,13 @@ module Rance
       data.revealedStarIds = [];
       for (var id in this.revealedStars)
       {
-        data.revealedStarIds.push(parseInt(id));
+        data.revealedStarIds.push(this.revealedStars[id].id);
+      }
+
+      data.identifiedUnitIds = [];
+      for (var id in this.identifiedUnits)
+      {
+        data.identifiedUnitIds.push(this.identifiedUnits[id].id);
       }
 
       if (this.isAI && this.AIController)

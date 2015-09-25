@@ -53,10 +53,6 @@ module Rance
               }),
               React.DOM.div(
               {
-                className: "fleet-info-shipcount"
-              }, isNotDetected ? "?" : fleet.ships.length),
-              React.DOM.div(
-              {
                 className: "fleet-info-strength"
               }, 
                 React.DOM.span(

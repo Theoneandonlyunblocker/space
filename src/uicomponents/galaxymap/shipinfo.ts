@@ -22,7 +22,7 @@ module Rance
       render: function()
       {
         var ship = this.props.ship;
-        var isNotDetected = this.props.isNotDetected;
+        var isNotDetected = !this.props.isIdentified;
 
         var divProps: any =
         {

@@ -462,6 +462,17 @@ module Rance
 
       return allShips;
     }
+    getAllShips(): Unit[]
+    {
+      var allShips: Unit[] = [];
+      for (var playerId in this.fleets)
+      {
+        var fleets = this.fleets[playerId];
+        allShips = allShips.concat(this.getAllShipsOfPlayer(fleets[0].player));
+      }
+
+      return allShips;
+    }
     getIndependentShips(): Unit[]
     {
       var ships: Unit[] = [];

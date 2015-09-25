@@ -243,6 +243,13 @@ module Rance
         player.addFleet(this.deserializeFleet(player, fleet));
       }
 
+      // identified units
+      for (var i = 0; i < data.identifiedUnitIds.length; i++)
+      {
+        var unit = this.unitsById[data.identifiedUnitIds[i]];
+        player.identifyUnit(unit);
+      }
+
       // stars
       for (var i = 0; i < data.controlledLocationIds.length; i++)
       {
