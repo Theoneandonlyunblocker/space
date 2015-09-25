@@ -261,7 +261,7 @@ module Rance
         this.move(move.star);
         if (onMove) onMove();
 
-      }.bind(this), 100);
+      }.bind(this), 10);
     }
     getFriendlyFleetsAtOwnLocation()
     {
