@@ -5599,12 +5599,18 @@ var Rance;
         UIComponents.TopBarResources = React.createClass({
             displayName: "TopBarResources",
             render: function () {
+                var player = this.props.player;
                 var resources = [];
-                var resourceIncome = this.props.player.getResourceIncome();
-                var resourceTypes = Object.keys(resourceIncome).concat(Object.keys(this.props.player.resources));
+                var resourceIncome = player.getResourceIncome();
+                var resourceTypes = Object.keys(player.resources);
+                for (var _resourceType in resourceIncome) {
+                    if (resourceTypes.indexOf(_resourceType) === -1) {
+                        resourceTypes.push(_resourceType);
+                    }
+                }
                 for (var i = 0; i < resourceTypes.length; i++) {
                     var resourceType = resourceTypes[i];
-                    var amount = this.props.player.resources[resourceType] || 0;
+                    var amount = player.resources[resourceType] || 0;
                     var income = resourceIncome[resourceType].amount || 0;
                     if (amount === 0 && income === 0)
                         continue;
