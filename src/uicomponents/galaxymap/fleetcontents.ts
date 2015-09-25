@@ -35,7 +35,7 @@ module Rance
             onDragStart: this.props.onDragStart,
             onDragMove: this.props.onDragMove,
             onDragEnd: this.props.onDragEnd,
-            isIdentified: Boolean(this.props.player.identifiedUnits[ship.id])
+            isIdentified: this.props.player.unitIsIdentified(ship)
           }));
         }
 

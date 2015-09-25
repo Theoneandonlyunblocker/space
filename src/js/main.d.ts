@@ -1682,6 +1682,7 @@ declare module Rance {
         };
         buildUnit(template: Templates.IUnitTemplate, location: Star): Unit;
         identifyUnit(unit: Unit): void;
+        unitIsIdentified(unit: Unit): boolean;
         fleetIsFullyIdentified(fleet: Fleet): boolean;
         addItem(item: Item): void;
         removeItem(item: Item): void;

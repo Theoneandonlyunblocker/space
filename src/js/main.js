@@ -5848,7 +5848,7 @@ var Rance;
                         onDragStart: this.props.onDragStart,
                         onDragMove: this.props.onDragMove,
                         onDragEnd: this.props.onDragEnd,
-                        isIdentified: Boolean(this.props.player.identifiedUnits[ship.id])
+                        isIdentified: this.props.player.unitIsIdentified(ship)
                     }));
                 }
                 if (hasDraggableContent) {
@@ -11824,7 +11824,6 @@ var Rance;
             return allStars;
         };
         Player.prototype.updateVisionInStar = function (star) {
-            console.log("updateVisionInStar", star.id, this.name);
             // meet players
             if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
                 this.meetPlayersInStarByVisibility(star, "visible");
@@ -12025,7 +12024,17 @@ var Rance;
                 this.identifiedUnits[unit.id] = unit;
             }
         };
+        Player.prototype.unitIsIdentified = function (unit) {
+            if (Rance.Options.debugMode && !this.isAI) {
+                return true;
+            }
+            else
+                return Boolean(this.identifiedUnits[unit.id]);
+        };
         Player.prototype.fleetIsFullyIdentified = function (fleet) {
+            if (Rance.Options.debugMode && !this.isAI) {
+                return true;
+            }
             for (var i = 0; i < fleet.ships.length; i++) {
                 if (!this.identifiedUnits[fleet.ships[i].id]) {
                     return false;

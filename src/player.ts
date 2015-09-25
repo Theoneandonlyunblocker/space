@@ -346,7 +346,6 @@ module Rance
     }
     updateVisionInStar(star: Star)
     {
-      console.log("updateVisionInStar", star.id, this.name);
       // meet players
       if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
       {
@@ -616,8 +615,20 @@ module Rance
         this.identifiedUnits[unit.id] = unit;
       }
     }
+    unitIsIdentified(unit: Unit)
+    {
+      if (Options.debugMode && !this.isAI)
+      {
+        return true;
+      }
+      else return Boolean(this.identifiedUnits[unit.id]);
+    }
     fleetIsFullyIdentified(fleet: Fleet)
     {
+      if (Options.debugMode && !this.isAI)
+      {
+        return true;
+      }
       for (var i = 0; i < fleet.ships.length; i++)
       {
         if (!this.identifiedUnits[fleet.ships[i].id])
