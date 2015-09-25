@@ -621,7 +621,7 @@ module Rance
       {
         return true;
       }
-      else return Boolean(this.identifiedUnits[unit.id]);
+      else return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
     }
     fleetIsFullyIdentified(fleet: Fleet)
     {
