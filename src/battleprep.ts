@@ -162,11 +162,12 @@ module Rance
         {
           var rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
           var scoutedUnits = player.starIsDetected(self.battleData.location) ? enemyUnits : null;
-          rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits)
+          rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits);
         }
 
         var idealMaxUnits = Math.ceil(MAX_UNITS_PER_SIDE / archetype.idealWeightInBattle);
-        var overMax = Math.max(0, unitsPlacedByArchetype[archetype.type] - idealMaxUnits);
+        var unitsPlaced = unitsPlacedByArchetype[archetype.type] || 0;
+        var overMax = Math.max(0, unitsPlaced - idealMaxUnits);
 
         score *= 1 - overMax * 0.15;
         score *= rowModifier;

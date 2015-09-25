@@ -9100,7 +9100,8 @@ var Rance;
                     rowModifier = archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits);
                 }
                 var idealMaxUnits = Math.ceil(MAX_UNITS_PER_SIDE / archetype.idealWeightInBattle);
-                var overMax = Math.max(0, unitsPlacedByArchetype[archetype.type] - idealMaxUnits);
+                var unitsPlaced = unitsPlacedByArchetype[archetype.type] || 0;
+                var overMax = Math.max(0, unitsPlaced - idealMaxUnits);
                 score *= 1 - overMax * 0.15;
                 score *= rowModifier;
                 return ({
@@ -10307,6 +10308,7 @@ var Rance;
                 productionWeight: 1,
             }
         };
+        // TODO split into multiple classes eg vision, influence maps etc.
         var MapEvaluator = (function () {
             function MapEvaluator(map, player, game) {
                 this.cachedInfluenceMaps = {};
@@ -12109,7 +12111,7 @@ var Rance;
                 return true;
             }
             else
-                return Boolean(this.identifiedUnits[unit.id]);
+                return Boolean(this.identifiedUnits[unit.id]) || Boolean(this.units[unit.id]);
         };
         Player.prototype.fleetIsFullyIdentified = function (fleet) {
             if (Rance.Options.debugMode && !this.isAI) {
@@ -21317,8 +21319,8 @@ var Rance;
                 (function (UnitArchetypes) {
                     UnitArchetypes.combat = {
                         type: "combat",
-                        idealWeightInBattle: 1,
-                        idealWeightInFleet: 1,
+                        idealWeightInBattle: 0.75,
+                        idealWeightInFleet: 0.75,
                         rowScores: {
                             ROW_FRONT: 1,
                             ROW_BACK: 0.6
@@ -21327,7 +21329,7 @@ var Rance;
                     UnitArchetypes.utility = {
                         type: "utility",
                         idealWeightInBattle: 0.33,
-                        idealWeightInFleet: 0.5,
+                        idealWeightInFleet: 0.45,
                         rowScores: {
                             ROW_FRONT: 0.4,
                             ROW_BACK: 0.6

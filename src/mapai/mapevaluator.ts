@@ -33,6 +33,7 @@ module Rance
         ownInfluence: number;
       }
     }
+    // TODO split into multiple classes eg vision, influence maps etc.
     export class MapEvaluator
     {
       map: GalaxyMap;
