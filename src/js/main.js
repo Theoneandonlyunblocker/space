@@ -7840,7 +7840,7 @@ var Rance;
                 this.move(move.star);
                 if (onMove)
                     onMove();
-            }.bind(this), 100);
+            }.bind(this), 10);
         };
         Fleet.prototype.getFriendlyFleetsAtOwnLocation = function () {
             return this.location.fleets[this.player.id];
