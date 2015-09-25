@@ -5577,15 +5577,16 @@ var Rance;
         UIComponents.Resource = React.createClass({
             displayName: "Resource",
             render: function () {
+                var sign = this.props.income < 0 ? "-" : "+";
                 return (React.DOM.div({
                     className: "resource",
-                    title: this.props.resource.displayName
+                    title: this.props.resource.displayName + ""
                 }, React.DOM.img({
                     className: "resource-icon",
                     src: this.props.resource.icon
                 }, null), React.DOM.div({
                     className: "resource-amount"
-                }, this.props.amount)));
+                }, "" + this.props.amount + " (" + sign + this.props.income + ")")));
             }
         });
     })(UIComponents = Rance.UIComponents || (Rance.UIComponents = {}));
@@ -5599,10 +5600,16 @@ var Rance;
             displayName: "TopBarResources",
             render: function () {
                 var resources = [];
+                var resourceIncome = this.props.player.getResourceIncome();
                 for (var resourceType in this.props.player.resources) {
+                    var amount = this.props.player.resources[resourceType];
+                    var income = resourceIncome[resourceType].amount;
+                    if (amount === 0 && income === 0)
+                        continue;
                     var resourceData = {
                         resource: app.moduleData.Templates.Resources[resourceType],
-                        amount: this.props.player.resources[resourceType],
+                        amount: amount,
+                        income: income,
                         key: resourceType
                     };
                     resources.push(UIComponents.Resource(resourceData));
@@ -5627,6 +5634,7 @@ var Rance;
                 var incomeClass = "top-bar-money-income";
                 if (income < 0)
                     incomeClass += " negative";
+                console.trace();
                 return (React.DOM.div({
                     className: "top-bar"
                 }, React.DOM.div({
@@ -5931,14 +5939,16 @@ var Rance;
                     fleet: selectedFleets[0],
                     onMouseUp: this.handleDrop,
                     onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd
+                    onDragEnd: this.handleDragEnd,
+                    player: selectedFleets[0].player
                 }), React.DOM.div({
                     className: "fleet-reorganization-contents-divider"
                 }, null), UIComponents.FleetContents({
                     fleet: selectedFleets[1],
                     onMouseUp: this.handleDrop,
                     onDragStart: this.handleDragStart,
-                    onDragEnd: this.handleDragEnd
+                    onDragEnd: this.handleDragEnd,
+                    player: selectedFleets[0].player
                 })), React.DOM.div({
                     className: "fleet-reorganization-footer"
                 }, React.DOM.button({

@@ -7,11 +7,12 @@ module Rance
       displayName: "Resource",
       render: function()
       {
+        var sign = this.props.income < 0 ? "-" : "+";
         return(
           React.DOM.div(
           {
             className: "resource",
-            title: this.props.resource.displayName
+            title: this.props.resource.displayName + ""
           },
             React.DOM.img(
             {
@@ -24,7 +25,7 @@ module Rance
             {
               className: "resource-amount"
             },
-              this.props.amount
+              "" + this.props.amount + " (" + sign + this.props.income + ")"
             )
           )
         );
