@@ -888,10 +888,15 @@ module Rance
         {
           [playerId: number]: Player;
         }
+        all:
+        {
+          [playerId: number]: Player;
+        }
       } =
       {
         visible: {},
-        detected: {}
+        detected: {},
+        all: {}
       }
 
       var allPlayers: Player[] = [];
@@ -908,6 +913,11 @@ module Rance
         for (var i = 0; i < fleets.length; i++)
         {
           var fleetPlayer = fleets[i].player;
+          if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id])
+          {
+            break;
+          }
+          byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
           if (fleets[i].isStealthy)
           {
             byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;

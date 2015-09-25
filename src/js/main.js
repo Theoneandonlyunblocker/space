@@ -7424,7 +7424,8 @@ var Rance;
         Star.prototype.getPresentPlayersByVisibility = function () {
             var byVisibilityAndId = {
                 visible: {},
-                detected: {}
+                detected: {},
+                all: {}
             };
             var allPlayers = [];
             byVisibilityAndId.visible[this.owner.id] = this.owner;
@@ -7436,6 +7437,10 @@ var Rance;
                 var fleets = this.fleets[playerId];
                 for (var i = 0; i < fleets.length; i++) {
                     var fleetPlayer = fleets[i].player;
+                    if (byVisibilityAndId.detected[fleetPlayer.id] && byVisibilityAndId.visible[fleetPlayer.id]) {
+                        break;
+                    }
+                    byVisibilityAndId.all[fleetPlayer.id] = fleetPlayer;
                     if (fleets[i].isStealthy) {
                         byVisibilityAndId.detected[fleetPlayer.id] = fleetPlayer;
                     }
@@ -7787,6 +7792,14 @@ var Rance;
             this.subtractMovePoints();
             this.visionIsDirty = true;
             this.player.visionIsDirty = true;
+            // todo maybe send an event instead?
+            for (var i = 0; i < app.game.playerOrder.length; i++) {
+                var player = app.game.playerOrder[i];
+                if (player.isIndependent || player === this.player) {
+                    continue;
+                }
+                player.updateAllVisibilityInStar(newLocation);
+            }
             Rance.eventManager.dispatchEvent("renderLayer", "fleets", this.location);
             Rance.eventManager.dispatchEvent("updateSelection", null);
         };
@@ -9366,6 +9379,9 @@ var Rance;
                 modifierOpinion += attitudeModifiers[i].getAdjustedStrength();
             }
             return Math.round(baseOpinion + modifierOpinion);
+        };
+        DiplomacyStatus.prototype.getUnMetPlayerCount = function () {
+            return app.game.playerOrder.length - Object.keys(this.metPlayers).length;
         };
         DiplomacyStatus.prototype.meetPlayer = function (player) {
             if (this.metPlayers[player.id] || player === this.player)
@@ -11807,9 +11823,46 @@ var Rance;
             }
             return allStars;
         };
+        Player.prototype.updateVisionInStar = function (star) {
+            console.log("updateVisionInStar", star.id, this.name);
+            // meet players
+            if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
+                this.meetPlayersInStarByVisibility(star, "visible");
+            }
+        };
+        Player.prototype.updateDetectionInStar = function (star) {
+            // meet players
+            if (this.diplomacyStatus.getUnMetPlayerCount() > 0) {
+                this.meetPlayersInStarByVisibility(star, "detected");
+            }
+            // identify ships
+            var unitsToIdentify = star.getAllShips();
+            for (var i = 0; i < unitsToIdentify.length; i++) {
+                this.identifyUnit(unitsToIdentify[i]);
+            }
+        };
+        Player.prototype.updateAllVisibilityInStar = function (star) {
+            if (this.starIsVisible(star)) {
+                this.updateVisionInStar(star);
+            }
+            if (this.starIsDetected(star)) {
+                this.updateDetectionInStar(star);
+            }
+        };
+        Player.prototype.meetPlayersInStarByVisibility = function (star, visibility) {
+            var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
+            for (var playerId in presentPlayersByVisibility[visibility]) {
+                var player = presentPlayersByVisibility[visibility][playerId];
+                if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
+                    this.diplomacyStatus.meetPlayer(player);
+                }
+            }
+        };
         Player.prototype.updateVisibleStars = function () {
             var previousVisibleStars = Rance.extendObject(this.visibleStars);
             var previousDetectedStars = Rance.extendObject(this.detectedStars);
+            var newVisibleStars = [];
+            var newDetectedStars = [];
             var visibilityHasChanged = false;
             var detectionHasChanged = false;
             this.visibleStars = {};
@@ -11828,8 +11881,9 @@ var Rance;
                 var star = allVisible[i];
                 if (!this.visibleStars[star.id]) {
                     this.visibleStars[star.id] = star;
-                    if (!visibilityHasChanged && !previousVisibleStars[star.id]) {
+                    if (!previousVisibleStars[star.id]) {
                         visibilityHasChanged = true;
+                        newVisibleStars.push(star);
                     }
                     if (!this.revealedStars[star.id]) {
                         this.revealedStars[star.id] = star;
@@ -11840,13 +11894,10 @@ var Rance;
                 var star = allDetected[i];
                 if (!this.detectedStars[star.id]) {
                     this.detectedStars[star.id] = star;
-                    if (!detectionHasChanged && !previousDetectedStars[star.id]) {
+                    if (!previousDetectedStars[star.id]) {
                         detectionHasChanged = true;
+                        newDetectedStars.push(star);
                     }
-                }
-                var unitsToIdentify = star.getAllShips();
-                for (var j = 0; j < unitsToIdentify.length; j++) {
-                    this.identifyUnit(unitsToIdentify[j]);
                 }
             }
             this.visionIsDirty = false;
@@ -11858,26 +11909,11 @@ var Rance;
                 detectionHasChanged = (Object.keys(this.detectedStars).length !==
                     Object.keys(previousDetectedStars).length);
             }
-            var hasUnmetPlayers = Object.keys(this.diplomacyStatus.metPlayers).length < app.game.playerOrder.length;
-            if (hasUnmetPlayers) {
-                for (var i = 0; i < allVisible.length; i++) {
-                    var presentPlayersByVisibility = allVisible[i].getPresentPlayersByVisibility();
-                    for (var playerId in presentPlayersByVisibility.visible) {
-                        var player = presentPlayersByVisibility.visible[playerId];
-                        if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
-                            this.diplomacyStatus.meetPlayer(player);
-                        }
-                    }
-                }
-                for (var i = 0; i < allDetected.length; i++) {
-                    var presentPlayersByVisibility = allDetected[i].getPresentPlayersByVisibility();
-                    for (var playerId in presentPlayersByVisibility.detected) {
-                        var player = presentPlayersByVisibility.detected[playerId];
-                        if (!player.isIndependent && !this.diplomacyStatus.metPlayers[playerId] && !this.isIndependent) {
-                            this.diplomacyStatus.meetPlayer(player);
-                        }
-                    }
-                }
+            for (var i = 0; i < newVisibleStars.length; i++) {
+                this.updateVisionInStar(newVisibleStars[i]);
+            }
+            for (var i = 0; i < newDetectedStars.length; i++) {
+                this.updateDetectionInStar(newDetectedStars[i]);
             }
             if (visibilityHasChanged && !this.isAI) {
                 Rance.eventManager.dispatchEvent("renderMap");
@@ -22321,6 +22357,7 @@ var Rance;
             for (var i = 0; i < data.players.length; i++) {
                 var playerData = data.players[i];
                 this.deserializeDiplomacyStatus(this.playersById[playerData.id], playerData.diplomacyStatus);
+                this.deserializeIdentifiedUnits(this.playersById[playerData.id], playerData.identifiedUnitIds);
             }
             this.humanPlayer = this.playersById[data.humanPlayerId];
             this.deserializeBuildings(data.galaxyMap);
@@ -22447,11 +22484,6 @@ var Rance;
                 var fleet = data.fleets[i];
                 player.addFleet(this.deserializeFleet(player, fleet));
             }
-            // identified units
-            for (var i = 0; i < data.identifiedUnitIds.length; i++) {
-                var unit = this.unitsById[data.identifiedUnitIds[i]];
-                player.identifyUnit(unit);
-            }
             // stars
             for (var i = 0; i < data.controlledLocationIds.length; i++) {
                 player.addStar(this.starsById[data.controlledLocationIds[i]]);
@@ -22488,6 +22520,14 @@ var Rance;
                         });
                         player.diplomacyStatus.addAttitudeModifier(this.playersById[playerId], modifier);
                     }
+                }
+            }
+        };
+        GameLoader.prototype.deserializeIdentifiedUnits = function (player, data) {
+            for (var i = 0; i < data.length; i++) {
+                var unit = this.unitsById[data[i]];
+                if (unit) {
+                    player.identifyUnit(unit);
                 }
             }
         };

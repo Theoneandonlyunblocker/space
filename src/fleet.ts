@@ -218,6 +218,18 @@ module Rance
       this.visionIsDirty = true;
       this.player.visionIsDirty = true;
 
+      // todo maybe send an event instead?
+      for (var i = 0; i < app.game.playerOrder.length; i++)
+      {
+        var player = app.game.playerOrder[i];
+        if (player.isIndependent || player === this.player)
+        {
+          continue;
+        }
+
+        player.updateAllVisibilityInStar(newLocation);
+      }
+
       eventManager.dispatchEvent("renderLayer", "fleets", this.location);
       eventManager.dispatchEvent("updateSelection", null);
     }

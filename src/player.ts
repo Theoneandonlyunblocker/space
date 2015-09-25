@@ -346,10 +346,11 @@ module Rance
     }
     updateVisionInStar(star: Star)
     {
+      console.log("updateVisionInStar", star.id, this.name);
       // meet players
       if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
       {
-        this.meetPlayersByVisibility("visible");
+        this.meetPlayersInStarByVisibility(star, "visible");
       }
     }
     updateDetectionInStar(star: Star)
@@ -357,7 +358,7 @@ module Rance
       // meet players
       if (this.diplomacyStatus.getUnMetPlayerCount() > 0)
       {
-        this.meetPlayersByVisibility("detected");
+        this.meetPlayersInStarByVisibility(star, "detected");
       }
       // identify ships
       var unitsToIdentify = star.getAllShips();
@@ -377,9 +378,9 @@ module Rance
         this.updateDetectionInStar(star);
       }
     }
-    meetPlayersByVisibility(visibility: string)
+    meetPlayersInStarByVisibility(star: Star, visibility: string)
     {
-      var presentPlayersByVisibility = allVisible[i].getPresentPlayersByVisibility();
+      var presentPlayersByVisibility = star.getPresentPlayersByVisibility();
 
       for (var playerId in presentPlayersByVisibility[visibility])
       {

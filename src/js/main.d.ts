@@ -743,6 +743,9 @@ declare module Rance {
             detected: {
                 [playerId: number]: Player;
             };
+            all: {
+                [playerId: number]: Player;
+            };
         };
         getSeed(): string;
         seedBuildableItems(): void;
@@ -1100,6 +1103,7 @@ declare module Rance {
         updateAttitudes(): void;
         handleDiplomaticStatusUpdate(): void;
         getOpinionOf(player: Player): number;
+        getUnMetPlayerCount(): number;
         meetPlayer(player: Player): void;
         canDeclareWarOn(player: Player): boolean;
         canMakePeaceWith(player: Player): boolean;
@@ -1661,6 +1665,10 @@ declare module Rance {
         };
         getGloballyBuildableShips(): Templates.IUnitTemplate[];
         getNeighboringStars(): Star[];
+        updateVisionInStar(star: Star): void;
+        updateDetectionInStar(star: Star): void;
+        updateAllVisibilityInStar(star: Star): void;
+        meetPlayersInStarByVisibility(star: Star, visibility: string): void;
         updateVisibleStars(): void;
         getVisibleStars(): Star[];
         getRevealedStars(): Star[];
@@ -3192,6 +3200,7 @@ declare module Rance {
         deserializeBuilding(data: any): Building;
         deserializePlayer(data: any): Player;
         deserializeDiplomacyStatus(player: Player, data: any): void;
+        deserializeIdentifiedUnits(player: Player, data: number[]): void;
         deserializeFlag(data: any): Flag;
         deserializeFleet(player: Player, data: any): Fleet;
         deserializeShip(data: any): Unit;
